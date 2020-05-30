@@ -1,11 +1,11 @@
-## Amplify for iOS (Preview)
+## Amplify for iOS
 <img src="https://s3.amazonaws.com/aws-mobile-hub-images/aws-amplify-logo.png" alt="AWS Amplify" width="550" >
 AWS Amplify provides a declarative and easy-to-use interface across different categories of cloud operations. AWS Amplify goes well with any JavaScript based frontend workflow, and React Native for mobile developers.
 
 Our default implementation works with Amazon Web Services (AWS), but AWS Amplify is designed to be open and pluggable for any custom backend or service.
 
 - **API Documentation**
-  https://aws-amplify.github.io/docs/ios/start
+  https://docs.amplify.aws/start/q/integration/ios
 
 [![Discord](https://img.shields.io/discord/308323056592486420?logo=discord)](https://discord.gg/jWVbPfC) 
 
