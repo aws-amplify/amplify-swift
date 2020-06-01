@@ -38,7 +38,7 @@ Pod::Spec.new do |s|
     ss.preserve_path = 'AmplifyTools'
     ss.script_phase = {
       :name => 'AmplifyTools',
-      :script => 'mkdir -p ${PODS_ROOT}/AmplifyTools; cp -vf "${PODS_TARGET_SRCROOT}/AmplifyTools/amplify-tools.sh" ${PODS_ROOT}/AmplifyTools/.',
+      :script => 'mkdir -p "${PODS_ROOT}/AmplifyTools"; cp -vf "${PODS_TARGET_SRCROOT}/AmplifyTools/amplify-tools.sh" "${PODS_ROOT}/AmplifyTools/."',
       :execution_position => :before_compile
     }
   end
