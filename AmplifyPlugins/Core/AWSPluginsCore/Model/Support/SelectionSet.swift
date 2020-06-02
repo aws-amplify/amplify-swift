@@ -35,8 +35,7 @@ extension SelectionSet {
 
     func withModelFields(_ fields: [ModelField]) {
         fields.forEach { field in
-            let isRequiredAssociation = field.isRequired && field.isAssociationOwner
-            if isRequiredAssociation, let associatedModel = field.associatedModel {
+            if field.isAssociationOwner, let associatedModel = field.associatedModel {
                 let child = SelectionSet(value: .init(name: field.name, fieldType: .model))
                 child.withModelFields(associatedModel.schema.graphQLFields)
                 self.addChild(settingParentOf: child)

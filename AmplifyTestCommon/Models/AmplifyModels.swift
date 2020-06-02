@@ -17,5 +17,8 @@ final public class AmplifyModels: AmplifyModelRegistration {
   public func registerModels(registry: ModelRegistry.Type) {
     ModelRegistry.register(modelType: Post.self)
     ModelRegistry.register(modelType: Comment.self)
+    ModelRegistry.register(modelType: User.self)
+    ModelRegistry.register(modelType: UserFollowers.self)
+    ModelRegistry.register(modelType: UserFollowing.self)
   }
 }

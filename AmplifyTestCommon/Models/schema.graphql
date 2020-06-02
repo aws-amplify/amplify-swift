@@ -37,3 +37,23 @@ type Article
         { allow: owner, ownerField: "owner", operations: [update] }
     ])
 }
+
+
+type User @model {
+    id: ID!
+    name: String!
+    following: [UserFollowing] @connection (name: "following")
+    followers: [UserFollowers] @connection (name: "followers")
+}
+
+type UserFollowing @model {
+  id: ID!
+  user: User @connection(name: "following")
+  followingUser: User @connection
+}
+
+type UserFollowers @model {
+  id: ID!
+  user: User @connection(name: "followers")
+  followersUser: User @connection
+}
