@@ -167,10 +167,10 @@ class GraphQLSyncBasedTests: XCTestCase {
 
         let updatedTitle = title + "Updated"
 
-        let modifiedPost = Post(id: createdPost.model["id"] as? String ?? "",
-                                title: updatedTitle,
-                                content: createdPost.model["content"] as? String ?? "",
-                                createdAt: Date())
+        let modifiedPost = AmplifyTestCommon.Post(id: createdPost.model["id"] as? String ?? "",
+                                                  title: updatedTitle,
+                                                  content: createdPost.model["content"] as? String ?? "",
+                                                  createdAt: Temporal.DateTime.now())
 
         let completeInvoked = expectation(description: "request completed")
         var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
@@ -235,10 +235,10 @@ class GraphQLSyncBasedTests: XCTestCase {
 
         let updatedTitle = title + "Updated"
 
-        let modifiedPost = Post(id: createdPost.model["id"] as? String ?? "",
+        let modifiedPost = AmplifyTestCommon.Post(id: createdPost.model["id"] as? String ?? "",
                                 title: updatedTitle,
                                 content: createdPost.model["content"] as? String ?? "",
-                                createdAt: Date())
+                                createdAt: Temporal.DateTime(Date()))
 
         let completeInvoked = expectation(description: "request completed")
         var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
@@ -305,10 +305,10 @@ class GraphQLSyncBasedTests: XCTestCase {
             return
         }
         let updatedTitle = title + "Updated"
-        let modifiedPost = Post(id: createdPost.model["id"] as? String ?? "",
-                                title: updatedTitle,
-                                content: createdPost.model["content"] as? String ?? "",
-                                createdAt: Date())
+        let modifiedPost = AmplifyTestCommon.Post(id: createdPost.model["id"] as? String ?? "",
+                                                  title: updatedTitle,
+                                                  content: createdPost.model["content"] as? String ?? "",
+                                                  createdAt: Temporal.DateTime.now())
         let firstUpdateSuccess = expectation(description: "first update mutation should be successful")
 
         let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: modifiedPost,
@@ -523,7 +523,9 @@ class GraphQLSyncBasedTests: XCTestCase {
     // MARK: Helpers
 
     func createPost(id: String, title: String) -> MutationSyncResult? {
-        let post = Post(id: id, title: title, content: "content", createdAt: Date())
+        let post = AmplifyTestCommon.Post(id: id, title: title,
+                                          content: "content",
+                                          createdAt: Temporal.DateTime.now())
         return createPost(post: post)
     }
 

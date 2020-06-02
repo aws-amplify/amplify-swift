@@ -42,10 +42,9 @@ class AnyModelIntegrationTests: XCTestCase {
     }
 
     func testCreateAsAnyModel() throws {
-
-        let originalPost = Post(title: "Post title",
-                                content: "Original post content as of \(Date())",
-                                createdAt: Date())
+        let originalPost = AmplifyTestCommon.Post(title: "Post title",
+                                                  content: "Original post content as of \(Date())",
+            createdAt: Temporal.DateTime(Date()))
         let anyPost = try originalPost.eraseToAnyModel()
 
         let callbackInvoked = expectation(description: "Callback invoked")
@@ -93,9 +92,9 @@ class AnyModelIntegrationTests: XCTestCase {
     }
 
     func testUpdateAsAnyModel() throws {
-        let originalPost = Post(title: "Post title",
-                                content: "Original post content as of \(Date())",
-                                createdAt: Date())
+        let originalPost = AmplifyTestCommon.Post(title: "Post title",
+                                                  content: "Original post content as of \(Date())",
+            createdAt: Temporal.DateTime(Date()))
         let originalAnyPost = try originalPost.eraseToAnyModel()
 
         let createCallbackInvoked = expectation(description: "Create callback invoked")
@@ -154,9 +153,9 @@ class AnyModelIntegrationTests: XCTestCase {
     }
 
     func testDeleteAsAnyModel() throws {
-        let originalPost = Post(title: "Post title",
-                                content: "Original post content as of \(Date())",
-                                createdAt: Date())
+        let originalPost = AmplifyTestCommon.Post(title: "Post title",
+                                                  content: "Original post content as of \(Date())",
+            createdAt: Temporal.DateTime(Date()))
         let originalAnyPost = try originalPost.eraseToAnyModel()
 
         let createCallbackInvoked = expectation(description: "Create callback invoked")
