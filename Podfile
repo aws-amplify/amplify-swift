@@ -3,7 +3,7 @@ platform :ios, "11.0"
 target "Amplify" do
   AWS_SDK_VERSION = "2.13.4"
 
-  # Comment the next line if you"re not using Swift and don"t want to use dynamic frameworks
+  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
   use_frameworks!
 
   pod "SwiftFormat/CLI"

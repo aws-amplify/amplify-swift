@@ -1,0 +1,15 @@
+platform :ios, "13.0"
+
+target "AmplifyCombineSupport" do
+  use_frameworks!
+
+  pod 'Amplify', :path => '../'
+
+  pod "SwiftFormat/CLI"
+  pod "SwiftLint"
+
+  target "AmplifyCombineSupportTests" do
+    pod 'AmplifyTestCommon', :path => '../'
+  end
+
+end

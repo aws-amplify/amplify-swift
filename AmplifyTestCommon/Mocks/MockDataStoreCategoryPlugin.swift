@@ -9,6 +9,21 @@ import Amplify
 import Combine
 
 class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
+    struct Responders {
+        var clear: ClearResponder?
+        var deleteById: DeleteByIdResponder?
+        var deleteByInstance: DeleteByInstanceResponder?
+        var queryById: QueryByIdResponder?
+        var queryByPredicate: QueryByPredicateResponder?
+        var save: SaveResponder?
+    }
+
+    var responders: Responders
+
+    override init() {
+        self.responders = Responders()
+        super.init()
+    }
 
     var key: String {
         return "MockDataStoreCategoryPlugin"
@@ -26,12 +41,35 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     func save<M: Model>(_ model: M,
                         where condition: QueryPredicate? = nil,
                         completion: (DataStoreResult<M>) -> Void) {
+        if let responder = responders.save {
+            let result = responder(model, condition)
+            switch result {
+            case .failure(let dataStoreError):
+                completion(.failure(dataStoreError))
+            case .success(let someModel):
+                if let concreteModel = someModel as? M {
+                    completion(.success(concreteModel))
+                }
+            }
+        }
+
         notify("save")
     }
 
     func query<M: Model>(_ modelType: M.Type,
                          byId id: String,
                          completion: (DataStoreResult<M?>) -> Void) {
+        if let responder = responders.queryById {
+            let result = responder(modelType, id)
+            switch result {
+            case .failure(let dataStoreError):
+                completion(.failure(dataStoreError))
+            case .success(let someModel):
+                if let concreteModel = someModel as? M {
+                    completion(.success(concreteModel))
+                }
+            }
+        }
         notify("queryById")
     }
 
@@ -39,22 +77,45 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
                          where predicate: QueryPredicate?,
                          paginate paginationInput: QueryPaginationInput?,
                          completion: (DataStoreResult<[M]>) -> Void) {
+        if let responder = responders.queryByPredicate {
+            let result = responder(modelType, predicate, paginationInput)
+            switch result {
+            case .failure(let dataStoreError):
+                completion(.failure(dataStoreError))
+            case .success(let someModel):
+                if let models = someModel as? [M] {
+                    completion(.success(models))
+                }
+            }
+        }
         notify("queryByPredicate")
     }
 
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
                           completion: (DataStoreResult<Void>) -> Void) {
+        if let responder = responders.deleteById {
+            let result = responder(modelType, id)
+            completion(result)
+        }
         notify("deleteById")
     }
 
     func delete<M: Model>(_ model: M,
                           where predicate: QueryPredicate? = nil,
                           completion: @escaping DataStoreCallback<Void>) {
+        if let responder = responders.deleteByInstance {
+            let result = responder(model, predicate)
+            completion(result)
+        }
         notify("deleteByPredicate")
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {
+        if let responder = responders.clear {
+            let result = responder()
+            completion(result)
+        }
         notify("clear")
     }
 
