@@ -1,4 +1,6 @@
 # Changelog
+## Unreleased Changes
+* Allow Amplify tools to run if the project folder has a space char
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
