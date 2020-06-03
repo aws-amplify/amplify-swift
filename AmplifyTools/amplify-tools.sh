@@ -6,46 +6,75 @@
 # SPDX-License-Identifier: Apache-2.0
 
 set -e
+
+if ! which node >/dev/null; then
+  echo "warning: Node is not installed. Visit https://nodejs.org/en/download/ to install it"
+  exit 1
+fi
+
 export PATH=$PATH:$(npm bin -g)
 
-MIN_SUPPORTED_VERSION_MAJOR=2
-MIN_SUPPORTED_VERSION_MINOR=17
-MIN_SUPPORTED_VERSION_PATCH=1
+AMP_APP_VERSION_MINIMUM="2.17.1"
+AMP_APP_VERSION_CURRENT=`npx -q amplify-app --version`
+AMP_APP_VERSION_INVALID=0
 
-CURR_VERSION=`npx -q amplify-app --version`
-CURR_VERSION_MAJOR=`echo ${CURR_VERSION} | tr  '.' ' ' | awk '{print $1}'`
-CURR_VERSION_MINOR=`echo ${CURR_VERSION} | tr  '.' ' ' | awk '{print $2}'`
-CURR_VERSION_PATCH=`echo ${CURR_VERSION} | tr  '.' ' ' | awk '{print $3}'`
-LOCAL_AMPAPP_VERSION_INVALID=0
+#TODO: This is vending unicode, need to strip these characters our safely
+#      and fix whatever is outputting these characters
+#AMP_CLI_VERSION_MINIMUM="4.21.0"
+#AMP_CLI_VERSION_CURRENT=`npx -q amplify --version |grep "\."`
+#AMP_CLI_VERSION_INVALID=0
 
-checkVersionAmplifyApp() {
-    if [ ${CURR_VERSION_MAJOR} -lt ${MIN_SUPPORTED_VERSION_MAJOR} ]; then
-	LOCAL_AMPAPP_VERSION_INVALID=1
+VERSION_INVALID=
+checkMinVersionCompatibility() {
+    VERSION_INVALID=0
+    CURR_VERSION_MAJOR=`echo "${1}" | tr  '.' ' ' | awk '{print $1}'`
+    CURR_VERSION_MINOR=`echo "${1}" | tr  '.' ' ' | awk '{print $2}'`
+    CURR_VERSION_PATCH=`echo "${1}" | tr  '.' ' ' | awk '{print $3}'`
+
+    REQU_VERSION_MAJOR=`echo "${2}" | tr  '.' ' ' | awk '{print $1}'`
+    REQU_VERSION_MINOR=`echo "${2}" | tr  '.' ' ' | awk '{print $2}'`
+    REQU_VERSION_PATCH=`echo "${2}" | tr  '.' ' ' | awk '{print $3}'`
+
+    if [ -z "${CURR_VERSION_MAJOR}" ] ||
+	[ -z "${CURR_VERSION_MINOR}" ] ||
+	[ -z "${CURR_VERSION_PATCH}" ] ||
+	[ -z "${REQU_VERSION_MAJOR}" ] ||
+	[ -z "${REQU_VERSION_MINOR}" ] ||
+	[ -z "${REQU_VERSION_PATCH}" ]; then
+	VERSION_INVALID=1
+	return
+    fi
+
+    if [ ${CURR_VERSION_MAJOR} -lt ${REQU_VERSION_MAJOR} ]; then
+	VERSION_INVALID=1
 	return
     else
-	if [ ${CURR_VERSION_MINOR} -lt ${MIN_SUPPORTED_VERSION_MINOR} ]; then
-	    LOCAL_AMPAPP_VERSION_INVALID=1
+	if [ ${CURR_VERSION_MINOR} -lt ${REQU_VERSION_MINOR} ]; then
+	    VERSION_INVALID=1
 	    return
 	else
-	    if [ ${CURR_VERSION_PATCH} -lt ${MIN_SUPPORTED_VERSION_PATCH} ]; then
-		LOCAL_AMPAPP_VERSION_INVALID=1
+	    if [ ${CURR_VERSION_PATCH} -lt ${REQU_VERSION_PATCH} ]; then
+		VERSION_INVALID=1
 		return
 	    fi
 	fi
     fi
 }
-checkVersionAmplifyApp
 
-if [ ${LOCAL_AMPAPP_VERSION_INVALID} -eq 1 ]; then
+checkMinVersionCompatibility "${AMP_APP_VERSION_CURRENT}" "${AMP_APP_VERSION_MINIMUM}"
+AMP_APP_VERSION_INVALID=${VERSION_INVALID}
+
+#checkMinVersionCompatibility "${AMP_CLI_VERSION_CURRENT}" "${AMP_CLI_VERSION_MINIMUM}"
+#AMP_CLI_VERSION_INVALID=${VERSION_INVALID}
+
+if [ ${AMP_APP_VERSION_INVALID} -eq 1 ]; then
     NPX_AMP_APPCMD="npx amplify-app@latest"
 else
     NPX_AMP_APPCMD="npx amplify-app"
 fi
 
-if ! which node >/dev/null; then
-  echo "warning: Node is not installed. Visit https://nodejs.org/en/download/ to install it"
-  exit 1
-elif ! test -f ./amplifytools.xcconfig; then
+
+if ! test -f ./amplifytools.xcconfig; then
   ${NPX_AMP_APPCMD} --platform ios
 fi
 
