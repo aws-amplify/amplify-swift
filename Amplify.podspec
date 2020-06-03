@@ -7,8 +7,8 @@
 #
 
 Pod::Spec.new do |s|
-  AMPLIFY_VERSION = '1.0.0'
   AWS_SDK_VERSION = '~> 2.13.4'
+  AMPLIFY_VERSION = '1.0.0'
 
   s.name         = 'Amplify'
   s.version      = AMPLIFY_VERSION
