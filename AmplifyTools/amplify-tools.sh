@@ -52,9 +52,7 @@ stripEscapeUtil() {
 VERSION_INVALID=
 checkMinVersionCompatibility() {
     VERSION_INVALID=0
-    #Workaround using npx -q strip-ansi-cli
-    # 1.  I would prefer to use sed, but sed on mac does not support special characters on mac
-    # 2.  We should actually fix this in the CLI
+
     stripEscapeUtil "${1}"
     CURR_VERSION_SAFE="${STRIP_ESCAPE_RESULT}"
     CURR_VERSION_MAJOR=`echo "${CURR_VERSION_SAFE}" | tr  '.' ' ' | awk '{print $1}'`
