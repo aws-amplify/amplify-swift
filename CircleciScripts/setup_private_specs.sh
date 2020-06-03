@@ -63,8 +63,7 @@ function update_spec_repo {
 function write_munged_podspec {
   declare -r src_file=$1
   declare -r dst_file=$2
-  sed "s/${old_version}/${new_version}/g" "${src_file}" \
-    | sed "s#s.source *=.*#s.source = { :git => 'file://${src_dir}' }#" \
+  ruby -e "puts ARGF.read.gsub('$old_version', '$new_version').gsub!(/s.source *=.*?\}/m,'s.source = { :git => \'file://${src_dir}\' }')" "${src_file}" \
     > "${dst_file}"
 }
 

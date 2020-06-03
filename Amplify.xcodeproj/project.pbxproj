@@ -302,6 +302,7 @@
 		B99EF4B723DB072000D821BC /* Temporal+Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99EF4B623DB072000D821BC /* Temporal+Hashable.swift */; };
 		B9A329CC243559BF00C5B80C /* TimeInterval+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A329CB243559BF00C5B80C /* TimeInterval+Helper.swift */; };
 		B9A6A4E024452E0D00AC2792 /* AccessLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A6A4DF24452E0D00AC2792 /* AccessLevel.swift */; };
+		B9AA09F12473CA29000E6FBB /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AA09F02473CA29000E6FBB /* PostStatus.swift */; };
 		B9AE8FD923D8C609002742F9 /* TemporalFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AE8FD823D8C609002742F9 /* TemporalFormat.swift */; };
 		B9AE8FDB23D8C643002742F9 /* TemporalFormat+Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AE8FDA23D8C643002742F9 /* TemporalFormat+Time.swift */; };
 		B9AF547A23F324DB0059E6C4 /* TemporalOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AF547923F324DB0059E6C4 /* TemporalOperation.swift */; };
@@ -310,7 +311,6 @@
 		B9B50DC423D917BB0086F1E1 /* TemporalFormat+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC323D917BB0086F1E1 /* TemporalFormat+Date.swift */; };
 		B9B50DC623D918020086F1E1 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC523D918020086F1E1 /* Date.swift */; };
 		B9B50DC823DA15890086F1E1 /* DataStoreError+Temporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC723DA15890086F1E1 /* DataStoreError+Temporal.swift */; };
-		B9AA09F12473CA29000E6FBB /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AA09F02473CA29000E6FBB /* PostStatus.swift */; };
 		B9B64A9F23FCBF7E00730B68 /* ModelValueConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */; };
 		B9DCA263240F217C00075E22 /* AnyEncodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DCA262240F217C00075E22 /* AnyEncodableTests.swift */; };
 		B9FAA10B23878122009414B4 /* ModelField+Association.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10A23878122009414B4 /* ModelField+Association.swift */; };
@@ -1038,6 +1038,7 @@
 		B99EF4B623DB072000D821BC /* Temporal+Hashable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Temporal+Hashable.swift"; sourceTree = "<group>"; };
 		B9A329CB243559BF00C5B80C /* TimeInterval+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+Helper.swift"; sourceTree = "<group>"; };
 		B9A6A4DF24452E0D00AC2792 /* AccessLevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccessLevel.swift; sourceTree = "<group>"; };
+		B9AA09F02473CA29000E6FBB /* PostStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostStatus.swift; sourceTree = "<group>"; };
 		B9AE8FD823D8C609002742F9 /* TemporalFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporalFormat.swift; sourceTree = "<group>"; };
 		B9AE8FDA23D8C643002742F9 /* TemporalFormat+Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TemporalFormat+Time.swift"; sourceTree = "<group>"; };
 		B9AF547923F324DB0059E6C4 /* TemporalOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporalOperation.swift; sourceTree = "<group>"; };
@@ -1046,7 +1047,6 @@
 		B9B50DC323D917BB0086F1E1 /* TemporalFormat+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TemporalFormat+Date.swift"; sourceTree = "<group>"; };
 		B9B50DC523D918020086F1E1 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		B9B50DC723DA15890086F1E1 /* DataStoreError+Temporal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataStoreError+Temporal.swift"; sourceTree = "<group>"; };
-		B9AA09F02473CA29000E6FBB /* PostStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostStatus.swift; sourceTree = "<group>"; };
 		B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelValueConverter.swift; sourceTree = "<group>"; };
 		B9DCA262240F217C00075E22 /* AnyEncodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyEncodableTests.swift; sourceTree = "<group>"; };
 		B9FAA10A23878122009414B4 /* ModelField+Association.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelField+Association.swift"; sourceTree = "<group>"; };
@@ -3104,10 +3104,10 @@
 			buildConfigurationList = FA131AC12360FE070008381C /* Build configuration list for PBXNativeTarget "AWSPluginsCore" */;
 			buildPhases = (
 				2F8DAE72BD3C0F67BA5CAD60 /* [CP] Check Pods Manifest.lock */,
+				FA131AA52360FE070008381C /* Headers */,
 				FA131AA62360FE070008381C /* Sources */,
 				FA131AD12360FF310008381C /* SwiftFormat */,
 				FA131AD22360FF320008381C /* SwiftLint */,
-				FA131AA52360FE070008381C /* Headers */,
 				FA131AA72360FE070008381C /* Frameworks */,
 				FA131AA82360FE070008381C /* Resources */,
 			);
@@ -3149,10 +3149,10 @@
 			buildConfigurationList = FAB2C9A12384B108008EE879 /* Build configuration list for PBXNativeTarget "AWSPluginsTestCommon" */;
 			buildPhases = (
 				1738E575674762DA4F3DA08A /* [CP] Check Pods Manifest.lock */,
+				FAB2C9952384B108008EE879 /* Headers */,
 				FAB2C9962384B108008EE879 /* Sources */,
 				FAB2C9A22384B11B008EE879 /* SwiftFormat */,
 				FAB2C9A32384B131008EE879 /* SwiftLint */,
-				FAB2C9952384B108008EE879 /* Headers */,
 				FAB2C9972384B108008EE879 /* Frameworks */,
 				FAB2C9982384B108008EE879 /* Resources */,
 			);
@@ -3170,10 +3170,10 @@
 			buildConfigurationList = FAC234E62279F8DA00424678 /* Build configuration list for PBXNativeTarget "Amplify" */;
 			buildPhases = (
 				5F9B8F5FB2FC02D2CEA5EFD6 /* [CP] Check Pods Manifest.lock */,
+				FAC234CD2279F8DA00424678 /* Headers */,
+				FAC234CE2279F8DA00424678 /* Sources */,
 				FAF8AC86233AB5CF009FBF97 /* SwiftFormat */,
 				FAC23581227A2D8C00424678 /* SwiftLint */,
-				FAC234CE2279F8DA00424678 /* Sources */,
-				FAC234CD2279F8DA00424678 /* Headers */,
 				FAC234CF2279F8DA00424678 /* Frameworks */,
 				FAC234D02279F8DA00424678 /* Resources */,
 			);
@@ -3238,10 +3238,10 @@
 			buildConfigurationList = FACA360D2327FBD4000E74F6 /* Build configuration list for PBXNativeTarget "AmplifyTestCommon" */;
 			buildPhases = (
 				8934CE3BAE4AA68651840D9C /* [CP] Check Pods Manifest.lock */,
+				FACA35FF2327FBD4000E74F6 /* Headers */,
 				FACA36002327FBD4000E74F6 /* Sources */,
 				215A84AA234D330400109930 /* SwiftFormat */,
 				215A84AB234D332D00109930 /* SwiftLint */,
-				FACA35FF2327FBD4000E74F6 /* Headers */,
 				FACA36012327FBD4000E74F6 /* Frameworks */,
 				FACA36022327FBD4000E74F6 /* Resources */,
 			);
@@ -3446,7 +3446,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/.swiftlint.yml\" --path \"${SRCROOT}/AmplifyTests\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		21578BEF234D43E600FF0F03 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3464,7 +3464,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/.swiftlint.yml\" --path \"${SRCROOT}/AmplifyFunctionalTests\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		21578BF1234D459B00FF0F03 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3482,7 +3482,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyTests\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		21578BF2234D45BF00FF0F03 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3500,7 +3500,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyFunctionalTests\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		215A84AA234D330400109930 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3518,7 +3518,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyTestCommon\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		215A84AB234D332D00109930 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3536,7 +3536,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/.swiftlint.yml\" --path \"${SRCROOT}/AmplifyTestCommon\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		2F8DAE72BD3C0F67BA5CAD60 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3862,7 +3862,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/.swiftlint.yml\" --path \"${SRCROOT}/Amplify\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		FAF8AC86233AB5CF009FBF97 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3880,7 +3880,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/Amplify\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
