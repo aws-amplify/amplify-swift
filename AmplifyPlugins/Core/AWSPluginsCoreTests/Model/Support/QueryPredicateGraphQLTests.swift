@@ -176,4 +176,20 @@ class QueryPredicateGraphQLTests: XCTestCase {
 
         XCTAssert(titleFilter["beginsWith"] as? String == "Title")
     }
+
+    func testSupportedPredicateSupportsDate() throws {
+        let date = try Temporal.Date(iso8601String: "2019-11-23")
+        XCTAssertNotNil(Post.keys.createdAt == date)
+    }
+
+    func testSupportedPredicateSupportsDateTime() throws {
+        let dateTime = try Temporal.DateTime(iso8601String: "2019-11-23T02:06:50.689Z")
+        XCTAssertNotNil(Post.keys.createdAt == dateTime)
+    }
+
+    func testSupportedPredicateSupportsTime() throws {
+        let time = try Temporal.Time(iso8601String: "02:06:50.689")
+        XCTAssertNotNil(Post.keys.createdAt == time)
+    }
+
 }
