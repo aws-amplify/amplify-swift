@@ -1,6 +1,7 @@
 # Changelog
 ## Unreleased Changes
-* Allow Amplify tools to run if the project folder has a space char
+* Allow Amplify tools to run if the project folder has a space char ([#506](https://github.com/aws-amplify/amplify-ios/pull/506))
+* Update Amplify tools script to check for minimum version of amplify-app and amplify cli ([#511](https://github.com/aws-amplify/amplify-ios/pull/511))
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
