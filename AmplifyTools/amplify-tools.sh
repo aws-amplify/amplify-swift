@@ -98,7 +98,7 @@ checkMinVersionCompatibility "${AMP_CLI_VERSION_CURRENT}" "${AMP_CLI_VERSION_MIN
 AMP_CLI_VERSION_INVALID=${VERSION_INVALID}
 
 if [ ${AMP_CLI_VERSION_INVALID} -eq 1 ]; then
-    echo "ERROR: Minimum version required of Amplify CLI is not installed."
+    echo "error: Minimum version required of Amplify CLI is not installed."
     echo "  Min required version: (${AMP_CLI_VERSION_MINIMUM})"
     echo "  Found Version: (${AMP_CLI_VERSION_CURRENT})"
     echo ""
