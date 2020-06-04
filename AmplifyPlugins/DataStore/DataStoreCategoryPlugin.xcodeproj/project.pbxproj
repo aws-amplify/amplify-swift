@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		08CDDE1B95AB6381CC206339 /* Pods_AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64CD158FEB5A00387A5194DB /* Pods_AWSDataStoreCategoryPlugin.framework */; };
-		0DA38963A6DD53AF9BCDFC68 /* Pods_AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CF3060AE9E227813325029F /* Pods_AWSDataStoreCategoryPlugin.framework */; };
-		1CB256DB1E49BBEF19B0DE8C /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 901B53EACEE953021704BB41 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */; };
+		0CED484A59D39BAD5B9E757A /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F987EC33AAD7C0904A598CA /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */; };
 		21233DD8247591D100039337 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21233DD7247591D100039337 /* amplifyconfiguration.json */; };
 		21233DE02475935600039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21233DDF2475935600039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests.swift */; };
 		21233DE22475935600039337 /* AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2149E59B238867E100873955 /* AWSDataStoreCategoryPlugin.framework */; };
@@ -58,9 +56,6 @@
 		2149E62223886CEE00873955 /* AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2149E59B238867E100873955 /* AWSDataStoreCategoryPlugin.framework */; };
 		2149E62D23886D3900873955 /* SyncMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E62B23886D3900873955 /* SyncMetadataTests.swift */; };
 		21B3AD27242BB58000C7E1DA /* ProcessMutationErrorFromCloudOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B3AD26242BB58000C7E1DA /* ProcessMutationErrorFromCloudOperationTests.swift */; };
-		3808ED8C8D20C6D7C89358CB /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 575857DEEC21C1866B9185A4 /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework */; };
-		63499C67A1A6711637CD08AD /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 715777CA4DC182BC96B88C19 /* Pods_HostApp.framework */; };
-		65681A029CC7068D348C585E /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78D7B65396B17E57FDE99E6D /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */; };
 		6B01B71D23A4615900AD0E97 /* SyncMutationToCloudOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B01B71C23A4615900AD0E97 /* SyncMutationToCloudOperationTests.swift */; };
 		6B01B72023A4672500AD0E97 /* RequestRetryable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B01B71E23A4672500AD0E97 /* RequestRetryable.swift */; };
 		6B01B72223A4672500AD0E97 /* RequestRetryablePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B01B71F23A4672500AD0E97 /* RequestRetryablePolicy.swift */; };
@@ -85,7 +80,10 @@
 		6BC4FDAA23A899680027D20C /* MockRequestRetryablePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BC4FDA923A899680027D20C /* MockRequestRetryablePolicy.swift */; };
 		6BDC224023E21A4E007C8410 /* RemoteSyncEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDC223F23E21A4E007C8410 /* RemoteSyncEngineTests.swift */; };
 		6BDC224223E27324007C8410 /* MockAWSInitialSyncOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDC224123E27324007C8410 /* MockAWSInitialSyncOrchestrator.swift */; };
-		9BDB42C47E6D7F9A113AE558 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C6448DF009E54C11ACE4515 /* Pods_HostApp.framework */; };
+		8141657E756CC7B2EE1CE851 /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA320D973669D3843FDF755E /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework */; };
+		A209418EED69D7B1BB8A55C2 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C63AE18F2569D004E94BD550 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */; };
+		A569484A6FBAE7EC7ADF3FD4 /* Pods_AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A1D332BE6CF885805360B3D /* Pods_AWSDataStoreCategoryPlugin.framework */; };
+		B10BF4A52A1C9840C208C8A8 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19AFF6D00CF3AF927BA90382 /* Pods_HostApp.framework */; };
 		B912D1B824296F1E0028F05C /* QueryPaginationInput+SQLite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B912D1B724296F1E0028F05C /* QueryPaginationInput+SQLite.swift */; };
 		B912D1BA242984D10028F05C /* QueryPaginationInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B912D1B9242984D10028F05C /* QueryPaginationInputTests.swift */; };
 		B9334BA22433AF3E00C9F407 /* DataStoreConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9334BA12433AF3E00C9F407 /* DataStoreConfiguration.swift */; };
@@ -96,8 +94,6 @@
 		B9E010E4239167E000DCE8C8 /* TestModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E010E3239167E000DCE8C8 /* TestModelRegistration.swift */; };
 		B9FAA140238C600A009414B4 /* ListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA13F238C600A009414B4 /* ListTests.swift */; };
 		B9FAA142238C6082009414B4 /* BaseDataStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA141238C6082009414B4 /* BaseDataStoreTests.swift */; };
-		E7B9BF8EC63BF1F1A6AB5F1A /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F15A47E1AA494DF5B39514BC /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */; };
-		E7FC24029D94A9B73B3EC793 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4402752860B9CC02A9A6BD8E /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */; };
 		FA0427C82396C27400D25AB0 /* SyncEngineStartupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0427C72396C27400D25AB0 /* SyncEngineStartupTests.swift */; };
 		FA0427CA2396C35500D25AB0 /* InitialSyncOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0427C92396C35500D25AB0 /* InitialSyncOrchestrator.swift */; };
 		FA0427CC2396C7E400D25AB0 /* InitialSyncOrchestratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0427CB2396C7E400D25AB0 /* InitialSyncOrchestratorTests.swift */; };
@@ -204,7 +200,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		18669A1BE454F2AE676FBEA4 /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
+		08C5AE6BB158C1525C9AD57D /* Pods-HostApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.debug.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.debug.xcconfig"; sourceTree = "<group>"; };
+		187B250EA1E6EB23F8B7F5A3 /* Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.release.xcconfig"; sourceTree = "<group>"; };
+		19AFF6D00CF3AF927BA90382 /* Pods_HostApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1AF725CF8D5E6F10D86CB75C /* Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		21233DD7247591D100039337 /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 		21233DDD2475935600039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSDataStoreCategoryPluginAuthIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21233DDF2475935600039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreCategoryPluginAuthIntegrationTests.swift; sourceTree = "<group>"; };
@@ -260,12 +259,9 @@
 		2149E62123886CEE00873955 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2149E62B23886D3900873955 /* SyncMetadataTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncMetadataTests.swift; sourceTree = "<group>"; };
 		21B3AD26242BB58000C7E1DA /* ProcessMutationErrorFromCloudOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessMutationErrorFromCloudOperationTests.swift; sourceTree = "<group>"; };
-		2579CC5CDF970194E62AAB06 /* Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
-		2F7EE0BE289FD9000DB970AB /* Pods-AWSDataStoreCategoryPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin/Pods-AWSDataStoreCategoryPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		4402752860B9CC02A9A6BD8E /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		44F4E761D163EA71F74685F7 /* Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		575857DEEC21C1866B9185A4 /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		64CD158FEB5A00387A5194DB /* Pods_AWSDataStoreCategoryPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSDataStoreCategoryPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		280D7C45F839531215A44B34 /* Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
+		32AD9436C9FB473423CA9786 /* Pods-AWSDataStoreCategoryPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin/Pods-AWSDataStoreCategoryPlugin.release.xcconfig"; sourceTree = "<group>"; };
+		6A1D332BE6CF885805360B3D /* Pods_AWSDataStoreCategoryPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSDataStoreCategoryPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B01B71C23A4615900AD0E97 /* SyncMutationToCloudOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMutationToCloudOperationTests.swift; sourceTree = "<group>"; };
 		6B01B71E23A4672500AD0E97 /* RequestRetryable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestRetryable.swift; sourceTree = "<group>"; };
 		6B01B71F23A4672500AD0E97 /* RequestRetryablePolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestRetryablePolicy.swift; sourceTree = "<group>"; };
@@ -290,15 +286,8 @@
 		6BC4FDA923A899680027D20C /* MockRequestRetryablePolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRequestRetryablePolicy.swift; sourceTree = "<group>"; };
 		6BDC223F23E21A4E007C8410 /* RemoteSyncEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteSyncEngineTests.swift; sourceTree = "<group>"; };
 		6BDC224123E27324007C8410 /* MockAWSInitialSyncOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAWSInitialSyncOrchestrator.swift; sourceTree = "<group>"; };
-		6CF3060AE9E227813325029F /* Pods_AWSDataStoreCategoryPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSDataStoreCategoryPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		715777CA4DC182BC96B88C19 /* Pods_HostApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		74F804F52DF34831C8F60044 /* Pods-HostApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.debug.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.debug.xcconfig"; sourceTree = "<group>"; };
-		78D7B65396B17E57FDE99E6D /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		84A0848093D62C14AC3C7340 /* Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		86DD2C7F81D8956DF18EB8DB /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
-		901B53EACEE953021704BB41 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9C6448DF009E54C11ACE4515 /* Pods_HostApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		AA98AF8502498A6DD04B5B9D /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
+		9D42A96449A4B73735566C07 /* Pods-AWSDataStoreCategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin/Pods-AWSDataStoreCategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
+		9F987EC33AAD7C0904A598CA /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B912D1B724296F1E0028F05C /* QueryPaginationInput+SQLite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QueryPaginationInput+SQLite.swift"; sourceTree = "<group>"; };
 		B912D1B9242984D10028F05C /* QueryPaginationInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryPaginationInputTests.swift; sourceTree = "<group>"; };
 		B9334BA12433AF3E00C9F407 /* DataStoreConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConfiguration.swift; sourceTree = "<group>"; };
@@ -309,9 +298,12 @@
 		B9E010E3239167E000DCE8C8 /* TestModelRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestModelRegistration.swift; sourceTree = "<group>"; };
 		B9FAA13F238C600A009414B4 /* ListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTests.swift; sourceTree = "<group>"; };
 		B9FAA141238C6082009414B4 /* BaseDataStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDataStoreTests.swift; sourceTree = "<group>"; };
-		C5AAB88D0D658A7531FC0244 /* Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
-		CD06D94E36718128AEAB1BAB /* Pods-AWSDataStoreCategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin/Pods-AWSDataStoreCategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		F15A47E1AA494DF5B39514BC /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C63AE18F2569D004E94BD550 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4BB518039D7C264E092363E /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
+		D59B63DF64CCA73C910ADD66 /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
+		DCC3AA75D77D0DB916EC42DB /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
+		EA320D973669D3843FDF755E /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA53DF78CC578B7C81E72D83 /* Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		FA0427C72396C27400D25AB0 /* SyncEngineStartupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngineStartupTests.swift; sourceTree = "<group>"; };
 		FA0427C92396C35500D25AB0 /* InitialSyncOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialSyncOrchestrator.swift; sourceTree = "<group>"; };
 		FA0427CB2396C7E400D25AB0 /* InitialSyncOrchestratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialSyncOrchestratorTests.swift; sourceTree = "<group>"; };
@@ -385,7 +377,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				21233DE22475935600039337 /* AWSDataStoreCategoryPlugin.framework in Frameworks */,
-				3808ED8C8D20C6D7C89358CB /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework in Frameworks */,
+				8141657E756CC7B2EE1CE851 /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,8 +385,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08CDDE1B95AB6381CC206339 /* Pods_AWSDataStoreCategoryPlugin.framework in Frameworks */,
-				0DA38963A6DD53AF9BCDFC68 /* Pods_AWSDataStoreCategoryPlugin.framework in Frameworks */,
+				A569484A6FBAE7EC7ADF3FD4 /* Pods_AWSDataStoreCategoryPlugin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -403,8 +394,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2149E5E82388692E00873955 /* AWSDataStoreCategoryPlugin.framework in Frameworks */,
-				1CB256DB1E49BBEF19B0DE8C /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework in Frameworks */,
-				E7FC24029D94A9B73B3EC793 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework in Frameworks */,
+				A209418EED69D7B1BB8A55C2 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,8 +402,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9BDB42C47E6D7F9A113AE558 /* Pods_HostApp.framework in Frameworks */,
-				63499C67A1A6711637CD08AD /* Pods_HostApp.framework in Frameworks */,
+				B10BF4A52A1C9840C208C8A8 /* Pods_HostApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -422,8 +411,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2149E62223886CEE00873955 /* AWSDataStoreCategoryPlugin.framework in Frameworks */,
-				65681A029CC7068D348C585E /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework in Frameworks */,
-				E7B9BF8EC63BF1F1A6AB5F1A /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework in Frameworks */,
+				0CED484A59D39BAD5B9E757A /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,7 +444,7 @@
 				9B5889A231ECAD33B03B5DF6 /* Pods */,
 				2149E59C238867E100873955 /* Products */,
 				FA9C743C238CB493009DAFCF /* Recovered References */,
-				3AEEACBB0C50C10072D5F8FF /* Frameworks */,
+				B158D86B8144CD1BD9589BA7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -604,33 +592,33 @@
 			path = AWSDataStoreCategoryPluginIntegrationTests;
 			sourceTree = "<group>";
 		};
-		3AEEACBB0C50C10072D5F8FF /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				6CF3060AE9E227813325029F /* Pods_AWSDataStoreCategoryPlugin.framework */,
-				4402752860B9CC02A9A6BD8E /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */,
-				715777CA4DC182BC96B88C19 /* Pods_HostApp.framework */,
-				F15A47E1AA494DF5B39514BC /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */,
-				575857DEEC21C1866B9185A4 /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		9B5889A231ECAD33B03B5DF6 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				CD06D94E36718128AEAB1BAB /* Pods-AWSDataStoreCategoryPlugin.debug.xcconfig */,
-				2F7EE0BE289FD9000DB970AB /* Pods-AWSDataStoreCategoryPlugin.release.xcconfig */,
-				44F4E761D163EA71F74685F7 /* Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.debug.xcconfig */,
-				84A0848093D62C14AC3C7340 /* Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.release.xcconfig */,
-				74F804F52DF34831C8F60044 /* Pods-HostApp.debug.xcconfig */,
-				AA98AF8502498A6DD04B5B9D /* Pods-HostApp.release.xcconfig */,
-				86DD2C7F81D8956DF18EB8DB /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig */,
-				18669A1BE454F2AE676FBEA4 /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig */,
-				2579CC5CDF970194E62AAB06 /* Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.debug.xcconfig */,
-				C5AAB88D0D658A7531FC0244 /* Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig */,
+				9D42A96449A4B73735566C07 /* Pods-AWSDataStoreCategoryPlugin.debug.xcconfig */,
+				32AD9436C9FB473423CA9786 /* Pods-AWSDataStoreCategoryPlugin.release.xcconfig */,
+				EA53DF78CC578B7C81E72D83 /* Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.debug.xcconfig */,
+				187B250EA1E6EB23F8B7F5A3 /* Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.release.xcconfig */,
+				08C5AE6BB158C1525C9AD57D /* Pods-HostApp.debug.xcconfig */,
+				DCC3AA75D77D0DB916EC42DB /* Pods-HostApp.release.xcconfig */,
+				1AF725CF8D5E6F10D86CB75C /* Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.debug.xcconfig */,
+				280D7C45F839531215A44B34 /* Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig */,
+				D59B63DF64CCA73C910ADD66 /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig */,
+				D4BB518039D7C264E092363E /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		B158D86B8144CD1BD9589BA7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6A1D332BE6CF885805360B3D /* Pods_AWSDataStoreCategoryPlugin.framework */,
+				C63AE18F2569D004E94BD550 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */,
+				19AFF6D00CF3AF927BA90382 /* Pods_HostApp.framework */,
+				EA320D973669D3843FDF755E /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework */,
+				9F987EC33AAD7C0904A598CA /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		B996FC4523FF3C41006D0F68 /* Models */ = {
@@ -705,10 +693,6 @@
 		FA9C743C238CB493009DAFCF /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
-				64CD158FEB5A00387A5194DB /* Pods_AWSDataStoreCategoryPlugin.framework */,
-				78D7B65396B17E57FDE99E6D /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */,
-				901B53EACEE953021704BB41 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */,
-				9C6448DF009E54C11ACE4515 /* Pods_HostApp.framework */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -882,13 +866,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 21233DE52475935600039337 /* Build configuration list for PBXNativeTarget "AWSDataStoreCategoryPluginAuthIntegrationTests" */;
 			buildPhases = (
-				59FCB223260E328206F1E047 /* [CP] Check Pods Manifest.lock */,
+				AD5BC378F2D55B9395E322C1 /* [CP] Check Pods Manifest.lock */,
 				21233DD92475935600039337 /* Sources */,
 				21233DEB2475939D00039337 /* SwiftFormat */,
 				21233DEC247593A600039337 /* SwiftLint */,
 				21233DDA2475935600039337 /* Frameworks */,
 				21233DDB2475935600039337 /* Resources */,
-				A1376C8453CABC03F7CF0C11 /* [CP] Embed Pods Frameworks */,
+				4A5A17F4F2B8074D1E356A1C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -905,7 +889,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2149E5A3238867E100873955 /* Build configuration list for PBXNativeTarget "AWSDataStoreCategoryPlugin" */;
 			buildPhases = (
-				85DA96279C68FE5809B48B1B /* [CP] Check Pods Manifest.lock */,
+				86ED83A55D031B665943F4A2 /* [CP] Check Pods Manifest.lock */,
 				2149E596238867E100873955 /* Headers */,
 				2149E597238867E100873955 /* Sources */,
 				2149E63023886EE400873955 /* Swift Format */,
@@ -926,13 +910,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2149E5ED2388692E00873955 /* Build configuration list for PBXNativeTarget "AWSDataStoreCategoryPluginTests" */;
 			buildPhases = (
-				08289990D5BB11284752D2DC /* [CP] Check Pods Manifest.lock */,
+				D84EA54935C6CA2D38085518 /* [CP] Check Pods Manifest.lock */,
 				2149E5DF2388692E00873955 /* Sources */,
 				FA9EB2C7238894B400BAADBD /* SwiftFormat */,
 				FA9EB2C8238894CB00BAADBD /* SwiftLint */,
 				2149E5E02388692E00873955 /* Frameworks */,
 				2149E5E12388692E00873955 /* Resources */,
-				C01946720C8E68541B329579 /* [CP] Embed Pods Frameworks */,
+				CF72DE9644BC321291D5C479 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -948,11 +932,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2149E61623886C7F00873955 /* Build configuration list for PBXNativeTarget "HostApp" */;
 			buildPhases = (
-				CDD5E84933F150040DD4035E /* [CP] Check Pods Manifest.lock */,
+				2E80F29F403714D767BDA795 /* [CP] Check Pods Manifest.lock */,
 				2149E60123886C7B00873955 /* Sources */,
 				2149E60223886C7B00873955 /* Frameworks */,
 				2149E60323886C7B00873955 /* Resources */,
-				50B9D3566132A3E54BA4C2F8 /* [CP] Embed Pods Frameworks */,
+				7271A3236003399AB5B44010 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -967,13 +951,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2149E62523886CEE00873955 /* Build configuration list for PBXNativeTarget "AWSDataStoreCategoryPluginIntegrationTests" */;
 			buildPhases = (
-				1713BE6ABCD8154CDEC377DD /* [CP] Check Pods Manifest.lock */,
+				A899EACFF3F7C89D72958FD3 /* [CP] Check Pods Manifest.lock */,
 				2149E61923886CEE00873955 /* Sources */,
 				FA9EB2C52388949500BAADBD /* SwiftFormat */,
 				FA9EB2C6238894A800BAADBD /* SwiftLint */,
 				2149E61A23886CEE00873955 /* Frameworks */,
 				2149E61B23886CEE00873955 /* Resources */,
-				ED8E6EC9BE2DB356A6000F74 /* [CP] Embed Pods Frameworks */,
+				ECF2CDA8C3C3FA627B752832 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1086,50 +1070,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		08289990D5BB11284752D2DC /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		1713BE6ABCD8154CDEC377DD /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		21233DEB2475939D00039337 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1202,102 +1142,7 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\"  --config \"${SRCROOT}/../../.swiftformat\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
-		50B9D3566132A3E54BA4C2F8 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		59FCB223260E328206F1E047 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		85DA96279C68FE5809B48B1B /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-AWSDataStoreCategoryPlugin-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A1376C8453CABC03F7CF0C11 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C01946720C8E68541B329579 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		CDD5E84933F150040DD4035E /* [CP] Check Pods Manifest.lock */ = {
+		2E80F29F403714D767BDA795 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1319,7 +1164,146 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		ED8E6EC9BE2DB356A6000F74 /* [CP] Embed Pods Frameworks */ = {
+		4A5A17F4F2B8074D1E356A1C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7271A3236003399AB5B44010 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		86ED83A55D031B665943F4A2 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AWSDataStoreCategoryPlugin-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A899EACFF3F7C89D72958FD3 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AD5BC378F2D55B9395E322C1 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CF72DE9644BC321291D5C479 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D84EA54935C6CA2D38085518 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		ECF2CDA8C3C3FA627B752832 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1634,7 +1618,7 @@
 /* Begin XCBuildConfiguration section */
 		21233DE62475935600039337 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2579CC5CDF970194E62AAB06 /* Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.debug.xcconfig */;
+			baseConfigurationReference = 1AF725CF8D5E6F10D86CB75C /* Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W3DRXD72QU;
@@ -1655,7 +1639,7 @@
 		};
 		21233DE72475935600039337 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C5AAB88D0D658A7531FC0244 /* Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig */;
+			baseConfigurationReference = 280D7C45F839531215A44B34 /* Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W3DRXD72QU;
@@ -1796,7 +1780,7 @@
 		};
 		2149E5A4238867E100873955 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CD06D94E36718128AEAB1BAB /* Pods-AWSDataStoreCategoryPlugin.debug.xcconfig */;
+			baseConfigurationReference = 9D42A96449A4B73735566C07 /* Pods-AWSDataStoreCategoryPlugin.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -1822,7 +1806,7 @@
 		};
 		2149E5A5238867E100873955 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F7EE0BE289FD9000DB970AB /* Pods-AWSDataStoreCategoryPlugin.release.xcconfig */;
+			baseConfigurationReference = 32AD9436C9FB473423CA9786 /* Pods-AWSDataStoreCategoryPlugin.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -1848,7 +1832,7 @@
 		};
 		2149E5EB2388692E00873955 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 44F4E761D163EA71F74685F7 /* Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.debug.xcconfig */;
+			baseConfigurationReference = EA53DF78CC578B7C81E72D83 /* Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1870,7 +1854,7 @@
 		};
 		2149E5EC2388692E00873955 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 84A0848093D62C14AC3C7340 /* Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.release.xcconfig */;
+			baseConfigurationReference = 187B250EA1E6EB23F8B7F5A3 /* Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1891,7 +1875,7 @@
 		};
 		2149E61723886C7F00873955 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 74F804F52DF34831C8F60044 /* Pods-HostApp.debug.xcconfig */;
+			baseConfigurationReference = 08C5AE6BB158C1525C9AD57D /* Pods-HostApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -1911,7 +1895,7 @@
 		};
 		2149E61823886C7F00873955 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AA98AF8502498A6DD04B5B9D /* Pods-HostApp.release.xcconfig */;
+			baseConfigurationReference = DCC3AA75D77D0DB916EC42DB /* Pods-HostApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -1931,7 +1915,7 @@
 		};
 		2149E62623886CEE00873955 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 86DD2C7F81D8956DF18EB8DB /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig */;
+			baseConfigurationReference = D59B63DF64CCA73C910ADD66 /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1953,7 +1937,7 @@
 		};
 		2149E62723886CEE00873955 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 18669A1BE454F2AE676FBEA4 /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig */;
+			baseConfigurationReference = D4BB518039D7C264E092363E /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;

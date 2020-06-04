@@ -7,9 +7,11 @@
 #
 
 Pod::Spec.new do |s|
+  AMPLIFY_VERSION = '1.0.0'
+  AWS_SDK_VERSION = '~> 2.13.4'
 
   s.name         = "AmplifyTestCommon"
-  s.version      = "1.0.0"
+  s.version      = AMPLIFY_VERSION
   s.summary      = "Test resources used by different targets"
 
   s.description  = "Provides different test resources and mock methods"
@@ -24,12 +26,12 @@ Pod::Spec.new do |s|
 
   s.source_files = 'AmplifyTestCommon/**/*.swift'
 
-  s.dependency 'Amplify', '1.0.0'
+  s.dependency 'Amplify', AMPLIFY_VERSION
 
   s.subspec 'AWSPluginsTestCommon' do |ss|
     ss.source_files = 'AmplifyPlugins/Core/AWSPluginsTestCommon/**/*.swift'
-    ss.dependency 'AWSPluginsCore', '1.0.0'
-    ss.dependency 'AWSCore'
+    ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
+    ss.dependency 'AWSCore', AWS_SDK_VERSION
   end
 
 end
