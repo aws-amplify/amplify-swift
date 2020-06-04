@@ -109,7 +109,7 @@ class GraphQLModelBasedTests: XCTestCase {
         let createdPost = Post(id: uuid,
                                title: uniqueTitle,
                                content: "content",
-                               createdAt: Date(),
+                               createdAt: .now(),
                                draft: true,
                                rating: 12.3)
         guard createPost(post: createdPost) != nil else {
@@ -156,7 +156,7 @@ class GraphQLModelBasedTests: XCTestCase {
     func testCreatPostWithModel() {
         let completeInvoked = expectation(description: "request completed")
 
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         _ = Amplify.API.mutate(request: .create(post)) { event in
             switch event {
             case .success(let data):
@@ -184,7 +184,9 @@ class GraphQLModelBasedTests: XCTestCase {
         }
 
         let completeInvoked = expectation(description: "request completed")
-        let comment = Comment(content: "commentContent", createdAt: Date(), post: createdPost)
+        let comment = Comment(content: "commentContent",
+                                                createdAt: .now(),
+                                                post: createdPost)
         _ = Amplify.API.mutate(request: .create(comment)) { event in
             switch event {
             case .success(let data):
@@ -302,7 +304,7 @@ class GraphQLModelBasedTests: XCTestCase {
                     progressInvoked.fulfill()
                 }
 
-            },
+        },
             completionListener: { event in
                 switch event {
                 case .failure(let error):
@@ -310,7 +312,7 @@ class GraphQLModelBasedTests: XCTestCase {
                 case .success:
                     completedInvoked.fulfill()
                 }
-            })
+        })
 
         XCTAssertNotNil(operation)
         wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -357,7 +359,7 @@ class GraphQLModelBasedTests: XCTestCase {
                 case .data:
                     progressInvoked.fulfill()
                 }
-            },
+        },
             completionListener: { event in
                 switch event {
                 case .failure(let error):
@@ -365,7 +367,7 @@ class GraphQLModelBasedTests: XCTestCase {
                 case .success:
                     completedInvoked.fulfill()
                 }
-            })
+        })
         XCTAssertNotNil(operation)
         wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let uuid = UUID().uuidString
@@ -410,7 +412,7 @@ class GraphQLModelBasedTests: XCTestCase {
                 case .data:
                     progressInvoked.fulfill()
                 }
-            },
+        },
             completionListener: { event in
                 switch event {
                 case .failure(let error):
@@ -418,7 +420,7 @@ class GraphQLModelBasedTests: XCTestCase {
                 case .success:
                     completedInvoked.fulfill()
                 }
-            })
+        })
         XCTAssertNotNil(operation)
         wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let uuid = UUID().uuidString
@@ -463,7 +465,7 @@ class GraphQLModelBasedTests: XCTestCase {
                 case .data:
                     progressInvoked.fulfill()
                 }
-            },
+        },
             completionListener: { event in
                 switch event {
                 case .failure(let error):
@@ -471,7 +473,7 @@ class GraphQLModelBasedTests: XCTestCase {
                 case .success:
                     completedInvoked.fulfill()
                 }
-            })
+        })
         XCTAssertNotNil(operation)
         wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let uuid = UUID().uuidString
@@ -496,18 +498,18 @@ class GraphQLModelBasedTests: XCTestCase {
 
     // MARK: Helpers
 
-    func createPost(id: String, title: String) -> AmplifyTestCommon.Post? {
-        let post = Post(id: id, title: title, content: "content", createdAt: Date())
+    func createPost(id: String, title: String) -> Post? {
+        let post = Post(id: id, title: title, content: "content", createdAt: .now())
         return createPost(post: post)
     }
 
-    func createComment(content: String, post: AmplifyTestCommon.Post) -> AmplifyTestCommon.Comment? {
-        let comment = Comment(content: content, createdAt: Date(), post: post)
+    func createComment(content: String, post: Post) -> Comment? {
+        let comment = Comment(content: content, createdAt: .now(), post: post)
         return createComment(comment: comment)
     }
 
-    func createPost(post: AmplifyTestCommon.Post) -> AmplifyTestCommon.Post? {
-        var result: AmplifyTestCommon.Post?
+    func createPost(post: Post) -> Post? {
+        var result: Post?
         let completeInvoked = expectation(description: "request completed")
 
         _ = Amplify.API.mutate(request: .create(post)) { event in
@@ -528,8 +530,8 @@ class GraphQLModelBasedTests: XCTestCase {
         return result
     }
 
-    func createComment(comment: AmplifyTestCommon.Comment) -> AmplifyTestCommon.Comment? {
-        var result: AmplifyTestCommon.Comment?
+    func createComment(comment: Comment) -> Comment? {
+        var result: Comment?
         let completeInvoked = expectation(description: "request completed")
 
         _ = Amplify.API.mutate(request: .create(comment)) { event in
@@ -550,11 +552,11 @@ class GraphQLModelBasedTests: XCTestCase {
         return result
     }
 
-    func updatePost(id: String, title: String) -> AmplifyTestCommon.Post? {
-        var result: AmplifyTestCommon.Post?
+    func updatePost(id: String, title: String) -> Post? {
+        var result: Post?
         let completeInvoked = expectation(description: "request completed")
 
-        let post = Post(id: id, title: title, content: "content", createdAt: Date())
+        let post = Post(id: id, title: title, content: "content", createdAt: .now())
         _ = Amplify.API.mutate(request: .update(post)) { event in
             switch event {
             case .success(let data):
@@ -573,8 +575,8 @@ class GraphQLModelBasedTests: XCTestCase {
         return result
     }
 
-    func deletePost(post: AmplifyTestCommon.Post) -> AmplifyTestCommon.Post? {
-        var result: AmplifyTestCommon.Post?
+    func deletePost(post: Post) -> Post? {
+        var result: Post?
         let completeInvoked = expectation(description: "request completed")
 
         _ = Amplify.API.mutate(request: .delete(post)) { event in
