@@ -1,7 +1,6 @@
 # Combine support for Amplify for iOS
 
 <img src="https://s3.amazonaws.com/aws-mobile-hub-images/aws-amplify-logo.png" alt="AWS Amplify" width="550" >
-AWS Amplify provides a declarative and easy-to-use interface across different categories of cloud operations. AWS Amplify goes well with any JavaScript based frontend workflow, and React Native for mobile developers.
 
 The default Amplify library for iOS supports iOS 11 and higher, and ships with APIs that return results on `Result` callbacks, as in:
 
@@ -191,10 +190,8 @@ func delete<M: Model>(_ model: M,
 **AmplifyCombineSupport**
 
 ```swift
-func delete<M: Model>(
-  _ model: M,
-  where predicate: QueryPredicate? = nil
-) -> DataStorePublisher<Void> {
+func delete<M: Model>(_ model: M,
+                      where predicate: QueryPredicate? = nil) -> DataStorePublisher<Void> {
 ```
 
 #### `clear`
