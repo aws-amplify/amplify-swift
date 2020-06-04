@@ -170,7 +170,7 @@ class GraphQLSyncBasedTests: XCTestCase {
         let modifiedPost = Post(id: createdPost.model["id"] as? String ?? "",
                                 title: updatedTitle,
                                 content: createdPost.model["content"] as? String ?? "",
-                                createdAt: Date())
+                                createdAt: .now())
 
         let completeInvoked = expectation(description: "request completed")
         var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
@@ -238,7 +238,7 @@ class GraphQLSyncBasedTests: XCTestCase {
         let modifiedPost = Post(id: createdPost.model["id"] as? String ?? "",
                                 title: updatedTitle,
                                 content: createdPost.model["content"] as? String ?? "",
-                                createdAt: Date())
+                                createdAt: .now())
 
         let completeInvoked = expectation(description: "request completed")
         var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
@@ -277,8 +277,8 @@ class GraphQLSyncBasedTests: XCTestCase {
                 guard let error = errors.first,
                     let extensions = error.extensions,
                     case let .string(errorTypeValue) = extensions["errorType"] else {
-                    XCTFail("Failed to get errorType from extensions of the GraphQL error")
-                    return
+                        XCTFail("Failed to get errorType from extensions of the GraphQL error")
+                        return
                 }
                 let errorType = AppSyncErrorType(errorTypeValue)
                 XCTAssertEqual(errorType, .conditionalCheck)
@@ -308,7 +308,7 @@ class GraphQLSyncBasedTests: XCTestCase {
         let modifiedPost = Post(id: createdPost.model["id"] as? String ?? "",
                                 title: updatedTitle,
                                 content: createdPost.model["content"] as? String ?? "",
-                                createdAt: Date())
+                                createdAt: .now())
         let firstUpdateSuccess = expectation(description: "first update mutation should be successful")
 
         let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: modifiedPost,
@@ -372,7 +372,7 @@ class GraphQLSyncBasedTests: XCTestCase {
                 let serializedJSON = try JSONEncoder().encode(dataObject)
                 let decoder = JSONDecoder()
                 decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
-                let mutationSync = try decoder.decode(MutationSync<AmplifyTestCommon.Post>.self, from: serializedJSON)
+                let mutationSync = try decoder.decode(MutationSync<Post>.self, from: serializedJSON)
                 XCTAssertEqual(mutationSync.model.title, updatedTitle)
                 XCTAssertEqual(mutationSync.model.content, createdPost.model["content"] as? String)
                 XCTAssertEqual(mutationSync.syncMetadata.version, 2)
@@ -523,11 +523,13 @@ class GraphQLSyncBasedTests: XCTestCase {
     // MARK: Helpers
 
     func createPost(id: String, title: String) -> MutationSyncResult? {
-        let post = Post(id: id, title: title, content: "content", createdAt: Date())
+        let post = Post(id: id, title: title,
+                        content: "content",
+                        createdAt: .now())
         return createPost(post: post)
     }
 
-    func createPost(post: AmplifyTestCommon.Post) -> MutationSyncResult? {
+    func createPost(post: Post) -> MutationSyncResult? {
         var result: MutationSyncResult?
         let completeInvoked = expectation(description: "request completed")
 

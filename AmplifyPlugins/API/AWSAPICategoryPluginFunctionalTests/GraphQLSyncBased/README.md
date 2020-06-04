@@ -26,6 +26,12 @@ The following steps demonstrate how to set up an GraphQL endpoint with AppSync t
 ```
 When asked to provide the schema, create the `schema.graphql` file
 ```
+enum PostStatus {
+    PRIVATE
+    DRAFT
+    PUBLISHED
+}
+
 type Post @model {
     id: ID!
     title: String!
@@ -34,6 +40,7 @@ type Post @model {
     updatedAt: AWSDateTime
     draft: Boolean
     rating: Float
+    status: PostStatus
     comments: [Comment] @connection(name: "PostComment")
 }
 
