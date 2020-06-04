@@ -11,8 +11,6 @@ import SQLite
 
 typealias ModelValues = [String: Any?]
 
-typealias ConvertCache = [String: ModelValues]
-
 /// Struct used to hold the values extracted from a executed `Statement`.
 ///
 /// This type allows the results to be decoded into the actual models with a single call

@@ -12,7 +12,6 @@ extension Statement {
     func convert(toUntypedModel modelType: Model.Type,
                  using statement: SelectStatement) throws -> [Model] {
         var models = [Model]()
-//        var convertedCache: ConvertCache = [:]
 
         for row in self {
             let modelValues = try convert(row: row, to: modelType, using: statement)
