@@ -109,7 +109,7 @@ class GraphQLModelBasedTests: XCTestCase {
         let createdPost = AmplifyTestCommon.Post(id: uuid,
                                                  title: uniqueTitle,
                                                  content: "content",
-                                                 createdAt: Temporal.DateTime.now(),
+                                                 createdAt: .now(),
                                                  draft: true,
                                                  rating: 12.3)
         guard createPost(post: createdPost) != nil else {
@@ -156,7 +156,7 @@ class GraphQLModelBasedTests: XCTestCase {
     func testCreatPostWithModel() {
         let completeInvoked = expectation(description: "request completed")
 
-        let post = AmplifyTestCommon.Post(title: "title", content: "content", createdAt: Temporal.DateTime.now())
+        let post = AmplifyTestCommon.Post(title: "title", content: "content", createdAt: .now())
         _ = Amplify.API.mutate(request: .create(post)) { event in
             switch event {
             case .success(let data):
@@ -185,7 +185,7 @@ class GraphQLModelBasedTests: XCTestCase {
 
         let completeInvoked = expectation(description: "request completed")
         let comment = AmplifyTestCommon.Comment(content: "commentContent",
-                                                createdAt: Temporal.DateTime.now(),
+                                                createdAt: .now(),
                                                 post: createdPost)
         _ = Amplify.API.mutate(request: .create(comment)) { event in
             switch event {
@@ -499,12 +499,12 @@ class GraphQLModelBasedTests: XCTestCase {
     // MARK: Helpers
 
     func createPost(id: String, title: String) -> AmplifyTestCommon.Post? {
-        let post = Post(id: id, title: title, content: "content", createdAt: Temporal.DateTime.now())
+        let post = Post(id: id, title: title, content: "content", createdAt: .now())
         return createPost(post: post)
     }
 
     func createComment(content: String, post: AmplifyTestCommon.Post) -> AmplifyTestCommon.Comment? {
-        let comment = Comment(content: content, createdAt: Temporal.DateTime.now(), post: post)
+        let comment = Comment(content: content, createdAt: .now(), post: post)
         return createComment(comment: comment)
     }
 
@@ -556,7 +556,7 @@ class GraphQLModelBasedTests: XCTestCase {
         var result: AmplifyTestCommon.Post?
         let completeInvoked = expectation(description: "request completed")
 
-        let post = Post(id: id, title: title, content: "content", createdAt: Temporal.DateTime.now())
+        let post = Post(id: id, title: title, content: "content", createdAt: .now())
         _ = Amplify.API.mutate(request: .update(post)) { event in
             switch event {
             case .success(let data):

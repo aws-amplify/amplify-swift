@@ -170,7 +170,7 @@ class GraphQLSyncBasedTests: XCTestCase {
         let modifiedPost = AmplifyTestCommon.Post(id: createdPost.model["id"] as? String ?? "",
                                                   title: updatedTitle,
                                                   content: createdPost.model["content"] as? String ?? "",
-                                                  createdAt: Temporal.DateTime.now())
+                                                  createdAt: .now())
 
         let completeInvoked = expectation(description: "request completed")
         var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
@@ -238,7 +238,7 @@ class GraphQLSyncBasedTests: XCTestCase {
         let modifiedPost = AmplifyTestCommon.Post(id: createdPost.model["id"] as? String ?? "",
                                 title: updatedTitle,
                                 content: createdPost.model["content"] as? String ?? "",
-                                createdAt: Temporal.DateTime(Date()))
+                                createdAt: .now())
 
         let completeInvoked = expectation(description: "request completed")
         var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
@@ -308,7 +308,7 @@ class GraphQLSyncBasedTests: XCTestCase {
         let modifiedPost = AmplifyTestCommon.Post(id: createdPost.model["id"] as? String ?? "",
                                                   title: updatedTitle,
                                                   content: createdPost.model["content"] as? String ?? "",
-                                                  createdAt: Temporal.DateTime.now())
+                                                  createdAt: .now())
         let firstUpdateSuccess = expectation(description: "first update mutation should be successful")
 
         let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: modifiedPost,
@@ -525,7 +525,7 @@ class GraphQLSyncBasedTests: XCTestCase {
     func createPost(id: String, title: String) -> MutationSyncResult? {
         let post = AmplifyTestCommon.Post(id: id, title: title,
                                           content: "content",
-                                          createdAt: Temporal.DateTime.now())
+                                          createdAt: .now())
         return createPost(post: post)
     }
 
