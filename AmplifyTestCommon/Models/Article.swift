@@ -9,7 +9,7 @@
 import Amplify
 import Foundation
 
-public struct Blog: Model {
+public struct Article: Model {
     public let id: String
     public var content: String
     public var createdAt: Temporal.DateTime

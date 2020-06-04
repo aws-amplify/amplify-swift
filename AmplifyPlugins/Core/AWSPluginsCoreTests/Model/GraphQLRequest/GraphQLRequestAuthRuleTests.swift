@@ -13,7 +13,7 @@ import XCTest
 class GraphQLRequestAuthRuleTests: XCTestCase {
 
     override func setUp() {
-        ModelRegistry.register(modelType: Blog.self)
+        ModelRegistry.register(modelType: Article.self)
     }
 
     override func tearDown() {
@@ -21,16 +21,16 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
     }
 
     func testQueryGraphQLRequest() throws {
-        let blog = Blog(content: "content", createdAt: .now(), owner: nil, authorNotes: nil)
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: blog.modelName, operationType: .query)
+        let article = Article(content: "content", createdAt: .now(), owner: nil, authorNotes: nil)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: article.modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: blog.id))
+        documentBuilder.add(decorator: ModelIdDecorator(id: article.id))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
         let documentStringValue = """
-        query GetBlog($id: ID!) {
-          getBlog(id: $id) {
+        query GetArticle($id: ID!) {
+          getArticle(id: $id) {
             id
             authorNotes
             content
@@ -44,7 +44,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         }
         """
 
-        let request = GraphQLRequest<MutationSyncResult?>.query(modelName: blog.modelName, byId: blog.id)
+        let request = GraphQLRequest<MutationSyncResult?>.query(modelName: article.modelName, byId: article.id)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
@@ -53,20 +53,20 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
             XCTFail("The request doesn't contain variables")
             return
         }
-        XCTAssertEqual(variables["id"] as? String, blog.id)
+        XCTAssertEqual(variables["id"] as? String, article.id)
     }
 
     func testCreateMutationGraphQLRequest() throws {
-        let blog = Blog(content: "content", createdAt: .now(), owner: nil, authorNotes: nil)
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: blog.modelName, operationType: .mutation)
+        let article = Article(content: "content", createdAt: .now(), owner: nil, authorNotes: nil)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: article.modelName, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
-        documentBuilder.add(decorator: ModelDecorator(model: blog))
+        documentBuilder.add(decorator: ModelDecorator(model: article))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
         let documentStringValue = """
-        mutation CreateBlog($input: CreateBlogInput!) {
-          createBlog(input: $input) {
+        mutation CreateArticle($input: CreateArticleInput!) {
+          createArticle(input: $input) {
             id
             authorNotes
             content
@@ -79,7 +79,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.createMutation(of: blog)
+        let request = GraphQLRequest<MutationSyncResult>.createMutation(of: article)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
@@ -93,21 +93,21 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
             XCTFail("The document variables property doesn't contain a valid input")
             return
         }
-        XCTAssert(input["content"] as? String == blog.content)
+        XCTAssert(input["content"] as? String == article.content)
         XCTAssertFalse(input.keys.contains("owner"))
     }
 
     func testUpdateMutationGraphQLRequest() throws {
-        let blog = Blog(content: "content", createdAt: .now(), owner: nil, authorNotes: nil)
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: blog.modelName, operationType: .mutation)
+        let article = Article(content: "content", createdAt: .now(), owner: nil, authorNotes: nil)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: article.modelName, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
-        documentBuilder.add(decorator: ModelDecorator(model: blog))
+        documentBuilder.add(decorator: ModelDecorator(model: article))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
         let documentStringValue = """
-        mutation UpdateBlog($input: UpdateBlogInput!) {
-          updateBlog(input: $input) {
+        mutation UpdateArticle($input: UpdateArticleInput!) {
+          updateArticle(input: $input) {
             id
             authorNotes
             content
@@ -120,7 +120,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: blog)
+        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: article)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
@@ -133,21 +133,21 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
             XCTFail("The document variables property doesn't contain a valid input")
             return
         }
-        XCTAssert(input["content"] as? String == blog.content)
+        XCTAssert(input["content"] as? String == article.content)
         XCTAssertFalse(input.keys.contains("owner"))
     }
 
     func testDeleteMutationGraphQLRequest() throws {
-        let blog = Blog(content: "content", createdAt: .now(), owner: nil, authorNotes: nil)
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: blog.modelName, operationType: .mutation)
+        let article = Article(content: "content", createdAt: .now(), owner: nil, authorNotes: nil)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: article.modelName, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
-        documentBuilder.add(decorator: ModelIdDecorator(id: blog.id))
+        documentBuilder.add(decorator: ModelIdDecorator(id: article.id))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
         let documentStringValue = """
-        mutation DeleteBlog($input: DeleteBlogInput!) {
-          deleteBlog(input: $input) {
+        mutation DeleteArticle($input: DeleteArticleInput!) {
+          deleteArticle(input: $input) {
             id
             authorNotes
             content
@@ -161,7 +161,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         }
         """
 
-        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: blog.modelName, id: blog.id)
+        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: article.modelName, id: article.id)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
@@ -174,13 +174,13 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
             XCTFail("The document variables property doesn't contain a valid input")
             return
         }
-        XCTAssertEqual(input["id"] as? String, blog.id)
+        XCTAssertEqual(input["id"] as? String, article.id)
         XCTAssertFalse(input.keys.contains("owner"))
         XCTAssertFalse(input.keys.contains("authorNotes"))
     }
 
     func testOnCreateSubscriptionGraphQLRequest() throws {
-        let modelType = Blog.self as Model.Type
+        let modelType = Article.self as Model.Type
         let ownerId = "111"
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
@@ -188,8 +188,8 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, ownerId)))
         let document = documentBuilder.build()
         let documentStringValue = """
-        subscription OnCreateBlog($owner: String!) {
-          onCreateBlog(owner: $owner) {
+        subscription OnCreateArticle($owner: String!) {
+          onCreateArticle(owner: $owner) {
             id
             authorNotes
             content
@@ -221,15 +221,15 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
     }
 
     func testOnUpdateSubscriptionGraphQLRequest() throws {
-        let modelType = Blog.self as Model.Type
+        let modelType = Article.self as Model.Type
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, "111")))
         let document = documentBuilder.build()
         let documentStringValue = """
-        subscription OnUpdateBlog {
-          onUpdateBlog {
+        subscription OnUpdateArticle {
+          onUpdateArticle {
             id
             authorNotes
             content
@@ -253,15 +253,15 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
     }
 
     func testOnDeleteSubscriptionGraphQLRequest() throws {
-        let modelType = Blog.self as Model.Type
+        let modelType = Article.self as Model.Type
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, "111")))
         let document = documentBuilder.build()
         let documentStringValue = """
-        subscription OnDeleteBlog {
-          onDeleteBlog {
+        subscription OnDeleteArticle {
+          onDeleteArticle {
             id
             authorNotes
             content
@@ -285,7 +285,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
     }
 
     func testSyncQueryGraphQLRequest() throws {
-        let modelType = Blog.self as Model.Type
+        let modelType = Article.self as Model.Type
         let nextToken = "nextToken"
         let limit = 100
         let lastSync = 123
@@ -296,8 +296,8 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
         let documentStringValue = """
-        query SyncBlogs($lastSync: AWSTimestamp, $limit: Int, $nextToken: String) {
-          syncBlogs(lastSync: $lastSync, limit: $limit, nextToken: $nextToken) {
+        query SyncArticles($lastSync: AWSTimestamp, $limit: Int, $nextToken: String) {
+          syncArticles(lastSync: $lastSync, limit: $limit, nextToken: $nextToken) {
             items {
               id
               authorNotes

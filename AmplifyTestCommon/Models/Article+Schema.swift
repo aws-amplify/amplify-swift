@@ -9,7 +9,7 @@
 import Amplify
 import Foundation
 
-extension Blog {
+extension Article {
     // MARK: - CodingKeys
     public enum CodingKeys: String, ModelKey {
         case id
@@ -23,9 +23,9 @@ extension Blog {
     //  MARK: - ModelSchema
 
     public static let schema = defineSchema { model in
-        let blog = Blog.keys
+        let article = Article.keys
 
-        model.pluralName = "Blogs"
+        model.pluralName = "Articles"
 
         model.authRules = [
             rule(allow: .owner, ownerField: "owner", operations: [.create, .read]),
@@ -34,10 +34,10 @@ extension Blog {
 
         model.fields(
             .id(),
-            .field(blog.content, is: .required, ofType: .string),
-            .field(blog.createdAt, is: .required, ofType: .dateTime),
-            .field(blog.owner, is: .optional, ofType: .string),
-            .field(blog.authorNotes,
+            .field(article.content, is: .required, ofType: .string),
+            .field(article.createdAt, is: .required, ofType: .dateTime),
+            .field(article.owner, is: .optional, ofType: .string),
+            .field(article.authorNotes,
                    is: .optional,
                    ofType: .string,
                    authRules: [rule(allow: .owner, ownerField: "owner", operations: [.update])]
