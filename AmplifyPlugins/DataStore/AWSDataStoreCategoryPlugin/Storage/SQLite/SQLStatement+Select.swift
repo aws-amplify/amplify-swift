@@ -9,78 +9,47 @@ import Amplify
 import Foundation
 import SQLite
 
-/// Represents a `select` SQL statement associated with a `Model` instance and
-/// optionally composed by a `ConditionStatement`.
-struct SelectStatement: SQLStatement {
+struct SelectStatementMetadata {
 
-    let modelType: Model.Type
-    let conditionStatement: ConditionStatement?
-    let paginationInput: QueryPaginationInput?
+    typealias ColumnMapping = [String: (ModelSchema, ModelField)]
+
+    let statement: String
+    let columnMapping: ColumnMapping
+    let bindings: [Binding?]
 
     // TODO remove this once sorting support is added to DataStore
-    // Used by plugin to order and limit results for system table queries
-    let additionalStatements: String?
-    let namespace = "root"
-
-    init(from modelType: Model.Type,
-         predicate: QueryPredicate? = nil,
-         paginationInput: QueryPaginationInput? = nil,
-         additionalStatements: String? = nil) {
-        self.modelType = modelType
-
-        var conditionStatement: ConditionStatement?
-        if let predicate = predicate {
-            let statement = ConditionStatement(modelType: modelType,
-                                               predicate: predicate,
-                                               namespace: namespace[...])
-            conditionStatement = statement
-        }
-        self.conditionStatement = conditionStatement
-        self.paginationInput = paginationInput
-        self.additionalStatements = additionalStatements
-    }
-
-    var stringValue: String {
+    static func get(from modelType: Model.Type,
+                    predicate: QueryPredicate? = nil,
+                    paginationInput: QueryPaginationInput? = nil,
+                    additionalStatements: String? = nil) -> SelectStatementMetadata {
+        let rootNamespace = "root"
         let schema = modelType.schema
         let fields = schema.columns
         let tableName = schema.name
+        var columnMapping: ColumnMapping = [:]
         var columns = fields.map { field -> String in
-            return field.columnName(forNamespace: namespace) + " " + field.columnAlias()
+            columnMapping.updateValue((schema, field), forKey: field.name)
+            return field.columnName(forNamespace: rootNamespace) + " as " + field.columnAlias()
         }
 
         // eager load many-to-one/one-to-one relationships
-        var joinStatements: [String] = []
-        for foreignKey in schema.foreignKeys {
-            let associatedModelType = foreignKey.requiredAssociatedModel
-            let associatedSchema = associatedModelType.schema
-            let associatedTableName = associatedModelType.schema.name
-
-            // columns
-            let alias = foreignKey.name
-            let associatedColumn = associatedSchema.primaryKey.columnName(forNamespace: alias)
-            let foreignKeyName = foreignKey.columnName(forNamespace: "root")
-
-            // append columns from relationships
-            columns += associatedSchema.columns.map { field -> String in
-                return field.columnName(forNamespace: alias) + " " + field.columnAlias(forNamespace: alias)
-            }
-
-            let joinType = foreignKey.isRequired ? "inner" : "left outer"
-
-            joinStatements.append("""
-            \(joinType) join \(associatedTableName) as \(alias)
-              on \(associatedColumn) = \(foreignKeyName)
-            """)
-        }
+        let (joinedColumns, joinStatements, joinedColumnMapping) = joins(from: schema)
+        columns += joinedColumns
+        columnMapping.merge(joinedColumnMapping) { _, new in new }
 
         var sql = """
         select
           \(joinedAsSelectedColumns(columns))
-        from \(tableName) as root
+        from \(tableName) as \(rootNamespace)
         \(joinStatements.joined(separator: "\n"))
         """.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        if let conditionStatement = conditionStatement {
+        var bindings: [Binding?] = []
+        if let predicate = predicate {
+            let conditionStatement = ConditionStatement(modelType: modelType,
+                                                        predicate: predicate,
+                                                        namespace: rootNamespace[...])
+            bindings.append(contentsOf: conditionStatement.variables)
             sql = """
             \(sql)
             where 1 = 1
@@ -101,12 +70,81 @@ struct SelectStatement: SQLStatement {
             \(paginationInput.sqlStatement)
             """
         }
+        return SelectStatementMetadata(statement: sql,
+                                       columnMapping: columnMapping,
+                                       bindings: bindings)
+    }
 
-        return sql
+    /// Tuple that represents a pair of `columns` and `statements`
+    private typealias JoinStatements = ([String], [String], ColumnMapping)
+
+    /// Walk through the associations recursively to generate join statements.
+    ///
+    /// Implementation note: this should be revisited once we define support
+    /// for explicit `eager` vs `lazy` associations.
+    private static func joins(from schema: ModelSchema) -> JoinStatements {
+        var columns: [String] = []
+        var joinStatements: [String] = []
+        var columnMapping: ColumnMapping = [:]
+
+        func visitAssociations(node: ModelSchema, namespace: String = "root") {
+            for foreignKey in node.foreignKeys {
+                let associatedModelType = foreignKey.requiredAssociatedModel
+                let associatedSchema = associatedModelType.schema
+                let associatedTableName = associatedModelType.schema.name
+
+                // columns
+                let alias = namespace == "root" ? foreignKey.name : "\(namespace).\(foreignKey.name)"
+                let associatedColumn = associatedSchema.primaryKey.columnName(forNamespace: alias)
+                let foreignKeyName = foreignKey.columnName(forNamespace: namespace)
+
+                // append columns from relationships
+                columns += associatedSchema.columns.map { field -> String in
+                    columnMapping.updateValue((associatedSchema, field), forKey: "\(alias).\(field.name)")
+                    return field.columnName(forNamespace: alias) + " as " + field.columnAlias(forNamespace: alias)
+                }
+
+                let joinType = foreignKey.isRequired ? "inner" : "left outer"
+
+                joinStatements.append("""
+                \(joinType) join \(associatedTableName) as \(alias)
+                  on \(associatedColumn) = \(foreignKeyName)
+                """)
+                visitAssociations(node: associatedModelType.schema,
+                                  namespace: alias)
+            }
+        }
+        visitAssociations(node: schema)
+
+        return (columns, joinStatements, columnMapping)
+    }
+
+}
+
+/// Represents a `select` SQL statement associated with a `Model` instance and
+/// optionally composed by a `ConditionStatement`.
+struct SelectStatement: SQLStatement {
+
+    let modelType: Model.Type
+    let metadata: SelectStatementMetadata
+
+    init(from modelType: Model.Type,
+         predicate: QueryPredicate? = nil,
+         paginationInput: QueryPaginationInput? = nil,
+         additionalStatements: String? = nil) {
+        self.modelType = modelType
+        self.metadata = .get(from: modelType,
+                             predicate: predicate,
+                             paginationInput: paginationInput,
+                             additionalStatements: additionalStatements)
+    }
+
+    var stringValue: String {
+        metadata.statement
     }
 
     var variables: [Binding?] {
-        return conditionStatement?.variables ?? []
+        metadata.bindings
     }
 
 }

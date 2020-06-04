@@ -35,9 +35,12 @@ protocol StatementModelConvertible {
 
     /// Converts all the rows in the current executed `Statement` to the given `Model` type.
     ///
-    /// - Parameter modelType the target `Model` type
+    /// - Parameters:
+    ///   - modelType - the target `Model` type
+    ///   - statement - the query executed that generated this result
     /// - Returns: an array of `Model` of the specified type
-    func convert<M: Model>(to modelType: M.Type) throws -> [M]
+    func convert<M: Model>(to modelType: M.Type,
+                           using statement: SelectStatement) throws -> [M]
 
 }
 
@@ -45,89 +48,109 @@ protocol StatementModelConvertible {
 extension Statement: StatementModelConvertible {
 
     var logger: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName)
+        Amplify.Logging.logger(forCategory: .dataStore)
     }
 
-    public func convert<M: Model>(to modelType: M.Type) throws -> [M] {
-        var rows: [ModelValues] = []
-        var convertedCache: ConvertCache = [:]
+    func convert<M: Model>(to modelType: M.Type,
+                           using statement: SelectStatement) throws -> [M] {
+        var elements: [ModelValues] = []
+
+        // parse each row of the result
         for row in self {
-            let modelDictionary = try mapEach(row: row,
-                                              to: modelType,
-                                              cache: &convertedCache)
-            rows.append(modelDictionary)
+            let modelDictionary = try convert(row: row, to: modelType, using: statement)
+            elements.append(modelDictionary)
         }
-        let values: ModelValues = ["elements": rows]
+
+        let values: ModelValues = ["elements": elements]
         let result: StatementResult<M> = try StatementResult.from(dictionary: values)
         return result.elements
     }
 
-    internal func mapEach(row: Element,
-                          to modelType: Model.Type,
-                          cache: inout ConvertCache,
-                          fieldName: String? = nil) throws -> ModelValues {
-        // hold the extracted values
-        var values: ModelValues = [:]
-
-        let columns = columnNames
-        let propertyPrefix = fieldName != nil ? "\(fieldName!)." : nil
-        let schema = modelType.schema
-
-        // check if model with the given id was already converted to ModelValues
-        // this is a needed optimization since the same row can be present in different
-        // parts of the result set, including in circular association scenarios
-        let keyName = (propertyPrefix ?? "") + schema.primaryKey.sqlName
-        let indexOfId = columns.firstIndex(of: keyName)
-        if let index = indexOfId, let id = row[index] as? String, let cached = cache[id] {
-            return cached
-        }
-
-        for (index, column) in columns.enumerated()
-            where propertyPrefix == nil || column.starts(with: propertyPrefix!) {
-
-            let name: String = propertyPrefix != nil
-                ? column.replacingOccurrences(of: propertyPrefix!, with: "")
-                : column
-            if name.firstIndex(of: ".") != nil {
-                let propertyName = String(name.split(separator: ".").first!)
-                guard let associatedField = schema.field(withName: propertyName) else {
-                    preconditionFailure("""
-                    Field `\(propertyName)` not found on `\(schema.name)`.
-                    The property was found on the result set but was not defined in the
-                    `\(schema.name)` schema.
-                    """)
-                }
-                let associatedModelType = associatedField.requiredAssociatedModel
-                let associatedModel = try mapEach(row: row,
-                                                  to: associatedModelType,
-                                                  cache: &cache,
-                                                  fieldName: propertyName)
-                values[propertyName] = associatedModel
-            } else if let field = schema.field(withName: name) {
-                values[name] = try SQLiteModelValueConverter.convertToSource(from: row[index],
-                                                                             fieldType: field.type)
-            } else {
+    func convert(row: Element,
+                 to modelType: Model.Type,
+                 using statement: SelectStatement) throws -> ModelValues {
+        let columnMapping = statement.metadata.columnMapping
+        let modelDictionary = ([:] as ModelValues).mutableCopy()
+        for (index, value) in row.enumerated() {
+            let column = columnNames[index]
+            guard let (schema, field) = columnMapping[column] else {
                 logger.debug("""
-                A column named \(name) was found in the result set but no field on
-                \(schema.name) could be found with that name and it will be ignored.
+                A column named \(column) was found in the result set but no field on
+                \(modelType.modelName) could be found with that name and it will be ignored.
                 """)
+                continue
             }
-        }
 
-        if let id = values[schema.primaryKey.name] as? String {
-            // create instances of lazy-load lists of fields that represent "many" associations
-            schema.fields.values.filter { $0.isArray }.forEach { field in
-                // TODO extract this to a List utility
-                let lazyListDecodable: [String: Any?] = [
-                    "associatedId": id,
-                    "associatedField": field.associatedField?.name,
-                    "elements": []
-                ]
-                values[field.name] = lazyListDecodable
+            let modelValue = try SQLiteModelValueConverter.convertToSource(
+                from: value,
+                fieldType: field.type
+            )
+            modelDictionary.updateValue(modelValue, forKeyPath: column)
+
+            // create lazy list for "many" relationships
+            if let id = modelValue as? String, field.isPrimaryKey {
+                let associations = schema.fields.values.filter {
+                    $0.isArray && $0.hasAssociation
+                }
+                let prefix = field.name.replacingOccurrences(of: field.name, with: "")
+                associations.forEach { association in
+                    let associatedField = association.associatedField?.name
+                    let lazyList = List<AnyModel>.lazyInit(associatedId: id,
+                                                           associatedWith: associatedField)
+                    let listKeyPath = prefix + association.name
+                    modelDictionary.updateValue(lazyList, forKeyPath: listKeyPath)
+                }
             }
-            cache.updateValue(values, forKey: id)
         }
-        return values
+        // swiftlint:disable:next force_cast
+        return modelDictionary as! ModelValues
+    }
+
+}
+
+internal extension List {
+
+    static func lazyInit(associatedId: String, associatedWith: String?) -> [String: Any?] {
+        return [
+            "associatedId": associatedId,
+            "associatedField": associatedWith,
+            "elements": []
+        ]
+    }
+}
+
+internal extension Dictionary where Key == String, Value == Any? {
+
+    func mutableCopy() -> NSMutableDictionary {
+        // swiftlint:disable:next force_cast
+        return (self as NSDictionary).mutableCopy() as! NSMutableDictionary
+    }
+}
+
+internal extension NSMutableDictionary {
+
+    func updateValue(_ value: Value?, forKey key: String) {
+        setObject(value as Any, forKey: key as NSString)
+    }
+
+    func updateValue(_ value: Value?, forKeyPath keyPath: String) {
+        if keyPath.firstIndex(of: ".") == nil {
+            updateValue(value, forKey: keyPath)
+        }
+        let keyComponents = keyPath.components(separatedBy: ".")
+        var current = self
+        for (index, key) in keyComponents.enumerated() {
+            let isLast = index == keyComponents.endIndex - 1
+            if isLast {
+                current.updateValue(value, forKey: key)
+            } else if let nested = current[key] as? NSMutableDictionary {
+                current = nested
+            } else {
+                let nested: NSMutableDictionary = [:]
+                current.updateValue(nested, forKey: key)
+                current = nested
+            }
+        }
     }
 
 }
