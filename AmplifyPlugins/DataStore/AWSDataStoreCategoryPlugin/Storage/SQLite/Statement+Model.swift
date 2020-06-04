@@ -110,6 +110,10 @@ extension Statement: StatementModelConvertible {
 
 internal extension List {
 
+    /// Creates a data structure that is capable of initializing a `List<M>` with
+    /// lazy-load capabilities when the list is being decoded.
+    ///
+    /// See the `List.init(from:Decoder)` for details.
     static func lazyInit(associatedId: String, associatedWith: String?) -> [String: Any?] {
         return [
             "associatedId": associatedId,
@@ -121,18 +125,51 @@ internal extension List {
 
 internal extension Dictionary where Key == String, Value == Any? {
 
+    /// Utility to create a `NSMutableDictionary` from a Swift `Dictionary<String, Any?>`.
     func mutableCopy() -> NSMutableDictionary {
         // swiftlint:disable:next force_cast
         return (self as NSDictionary).mutableCopy() as! NSMutableDictionary
     }
 }
 
+/// Extension that adds utilities to created nested values in a dictionary
+/// from a `keyPath` notation (e.g. `root.with.some.nested.prop`.
 internal extension NSMutableDictionary {
 
+    /// Utility to allows Swift standard types to be used in `setObject`
+    /// of the `NSMutableDictionary`.
+    ///
+    /// - Parameters:
+    ///   - value: the value to be set
+    ///   - key: the key as a `String`
     func updateValue(_ value: Value?, forKey key: String) {
         setObject(value as Any, forKey: key as NSString)
     }
 
+    /// Utility that enables the automatic creation of nested dictionaries when
+    /// a `keyPath` is passed, even if no existing value is set in that `keyPath`.
+    ///
+    /// This function will auto-create nested structures and set the value accordingly.
+    ///
+    /// - Example
+    ///
+    /// ```swift
+    /// let dict = [:].mutableCopy()
+    /// dict.updateValue(1, "some.nested.value")
+    ///
+    /// // dict now is
+    /// [
+    ///     "some": [
+    ///         "nested": [
+    ///             "value": 1
+    ///         ]
+    ///     ]
+    /// ]
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - value: the value to be set
+    ///   - keyPath: the key path as a `String` (e.g. "nested.key")
     func updateValue(_ value: Value?, forKeyPath keyPath: String) {
         if keyPath.firstIndex(of: ".") == nil {
             updateValue(value, forKey: keyPath)

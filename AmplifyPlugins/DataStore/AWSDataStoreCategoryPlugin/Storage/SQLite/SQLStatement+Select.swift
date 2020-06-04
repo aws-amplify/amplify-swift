@@ -9,6 +9,8 @@ import Amplify
 import Foundation
 import SQLite
 
+/// Support data structure used to hold information about `SelectStatement` than
+/// can be used later to parse the results.
 struct SelectStatementMetadata {
 
     typealias ColumnMapping = [String: (ModelSchema, ModelField)]
@@ -17,7 +19,7 @@ struct SelectStatementMetadata {
     let columnMapping: ColumnMapping
     let bindings: [Binding?]
 
-    // TODO remove this once sorting support is added to DataStore
+    // TODO remove additionalStatements once sorting support is added to DataStore
     static func get(from modelType: Model.Type,
                     predicate: QueryPredicate? = nil,
                     paginationInput: QueryPaginationInput? = nil,
