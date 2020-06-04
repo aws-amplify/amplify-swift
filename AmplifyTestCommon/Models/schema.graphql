@@ -23,7 +23,7 @@ type Comment @model {
     post: Post! @connection(name: "PostComment")
 }
 
-type Blog
+type Article
     @model
     @auth(rules: [
         { allow: owner, ownerField: "owner", operations: [create, read] },
