@@ -42,8 +42,8 @@ class AnyModelIntegrationTests: XCTestCase {
     }
 
     func testCreateAsAnyModel() throws {
-        let originalPost = AmplifyTestCommon.Post(title: "Post title",
-                                                  content: "Original post content as of \(Date())",
+        let originalPost = Post(title: "Post title",
+                                content: "Original post content as of \(Date())",
             createdAt: .now())
         let anyPost = try originalPost.eraseToAnyModel()
 
@@ -92,8 +92,8 @@ class AnyModelIntegrationTests: XCTestCase {
     }
 
     func testUpdateAsAnyModel() throws {
-        let originalPost = AmplifyTestCommon.Post(title: "Post title",
-                                                  content: "Original post content as of \(Date())",
+        let originalPost = Post(title: "Post title",
+                                content: "Original post content as of \(Date())",
             createdAt: .now())
         let originalAnyPost = try originalPost.eraseToAnyModel()
 
@@ -153,8 +153,8 @@ class AnyModelIntegrationTests: XCTestCase {
     }
 
     func testDeleteAsAnyModel() throws {
-        let originalPost = AmplifyTestCommon.Post(title: "Post title",
-                                                  content: "Original post content as of \(Date())",
+        let originalPost = Post(title: "Post title",
+                                content: "Original post content as of \(Date())",
             createdAt: .now())
         let originalAnyPost = try originalPost.eraseToAnyModel()
 
