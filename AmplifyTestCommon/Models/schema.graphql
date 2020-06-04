@@ -13,6 +13,7 @@ type Post @model {
     draft: Boolean
     rating: Float
     status: PostStatus
+    blog: Blog @connection(name: "BlogPost")
     comments: [Comment] @connection(name: "PostComment")
 }
 
@@ -23,21 +24,12 @@ type Comment @model {
     post: Post! @connection(name: "PostComment")
 }
 
-type Blog
-    @model
-    @auth(rules: [
-        { allow: owner, ownerField: "owner", operations: [create, read] },
-        { allow: groups, groups: ["Admin"] }
-    ]) {
+type Blog @model {
     id: ID!
-    content: String!
+    title: String!
     createdAt: AWSDateTime!
-    owner: String
-    authorsNotes: String @auth( rules: [
-        { allow: owner, ownerField: "owner", operations: [update] }
-    ])
+    posts: [Post] @connection(name: "BlogPost")
 }
-
 
 type User @model {
     id: ID!
@@ -56,4 +48,19 @@ type UserFollowers @model {
   id: ID!
   user: User @connection(name: "followers")
   followersUser: User @connection
+}
+
+type Article
+    @model
+    @auth(rules: [
+        { allow: owner, ownerField: "owner", operations: [create, read] },
+        { allow: groups, groups: ["Admin"] }
+    ]) {
+    id: ID!
+    content: String!
+    createdAt: AWSDateTime!
+    owner: String
+    authorsNotes: String @auth( rules: [
+        { allow: owner, ownerField: "owner", operations: [update] }
+    ])
 }

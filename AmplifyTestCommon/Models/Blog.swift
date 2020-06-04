@@ -10,21 +10,18 @@ import Amplify
 import Foundation
 
 public struct Blog: Model {
-    public let id: String
-    public var content: String
-    public var createdAt: Temporal.DateTime
-    public var owner: String?
-    public var authorNotes: String?
+  public let id: String
+  public var title: String
+  public var createdAt: Temporal.DateTime
+  public var posts: List<Post>?
 
-    public init(id: String = UUID().uuidString,
-                content: String,
-                createdAt: Temporal.DateTime,
-                owner: String?,
-                authorNotes: String?) {
-        self.id = id
-        self.content = content
-        self.createdAt = createdAt
-        self.owner = owner
-        self.authorNotes = authorNotes
-    }
+  public init(id: String = UUID().uuidString,
+      title: String,
+      createdAt: Temporal.DateTime,
+      posts: List<Post>? = []) {
+      self.id = id
+      self.title = title
+      self.createdAt = createdAt
+      self.posts = posts
+  }
 }

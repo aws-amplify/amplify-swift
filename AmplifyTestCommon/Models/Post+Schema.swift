@@ -20,6 +20,7 @@ extension Post {
     case draft
     case rating
     case status
+    case blog
     case comments
   }
 
@@ -40,6 +41,7 @@ extension Post {
       .field(post.draft, is: .optional, ofType: .bool),
       .field(post.rating, is: .optional, ofType: .double),
       .field(post.status, is: .optional, ofType: .enum(type: PostStatus.self)),
+      .belongsTo(post.blog, is: .optional, ofType: Blog.self, targetName: "postBlogId"),
       .hasMany(post.comments, is: .optional, ofType: Comment.self, associatedWith: Comment.keys.post)
     )
     }

@@ -18,6 +18,7 @@ public struct Post: Model {
   public var draft: Bool?
   public var rating: Double?
   public var status: PostStatus?
+  public var blog: Blog?
   public var comments: List<Comment>?
 
   public init(id: String = UUID().uuidString,
@@ -28,6 +29,7 @@ public struct Post: Model {
       draft: Bool? = nil,
       rating: Double? = nil,
       status: PostStatus? = nil,
+      blog: Blog? = nil,
       comments: List<Comment>? = []) {
       self.id = id
       self.title = title
@@ -37,6 +39,7 @@ public struct Post: Model {
       self.draft = draft
       self.rating = rating
       self.status = status
+      self.blog = blog
       self.comments = comments
   }
 }

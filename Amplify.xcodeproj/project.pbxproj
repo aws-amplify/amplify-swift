@@ -78,6 +78,8 @@
 		214F497B2486D8A200DA616C /* User+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49752486D8A200DA616C /* User+Schema.swift */; };
 		214F497C2486D8A200DA616C /* UserFollowers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49762486D8A200DA616C /* UserFollowers.swift */; };
 		214F497E2486DA5000DA616C /* GraphQLRequestOptionalAssociationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F497D2486DA5000DA616C /* GraphQLRequestOptionalAssociationTests.swift */; };
+		214F49CD24898E8500DA616C /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49CB24898E8400DA616C /* Article.swift */; };
+		214F49CE24898E8500DA616C /* Article+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49CC24898E8500DA616C /* Article+Schema.swift */; };
 		21558E3E237BB4BF0032A5BB /* GraphQLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */; };
 		21558E40237CB8640032A5BB /* GraphQLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21558E3F237CB8640032A5BB /* GraphQLError.swift */; };
 		216879FE23636A0A004A056E /* RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216879FD23636A0A004A056E /* RepeatingTimer.swift */; };
@@ -720,6 +722,8 @@
 		214F49752486D8A200DA616C /* User+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+Schema.swift"; sourceTree = "<group>"; };
 		214F49762486D8A200DA616C /* UserFollowers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFollowers.swift; sourceTree = "<group>"; };
 		214F497D2486DA5000DA616C /* GraphQLRequestOptionalAssociationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestOptionalAssociationTests.swift; sourceTree = "<group>"; };
+		214F49CB24898E8400DA616C /* Article.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Article.swift; sourceTree = "<group>"; };
+		214F49CC24898E8500DA616C /* Article+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Article+Schema.swift"; sourceTree = "<group>"; };
 		21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequest.swift; sourceTree = "<group>"; };
 		21558E3F237CB8640032A5BB /* GraphQLError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLError.swift; sourceTree = "<group>"; };
 		215F4BCAAB89FA54AA121BDE /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
@@ -2198,6 +2202,8 @@
 			isa = PBXGroup;
 			children = (
 				FAF512AD23986791001ADF4E /* AmplifyModels.swift */,
+				214F49CB24898E8400DA616C /* Article.swift */,
+				214F49CC24898E8500DA616C /* Article+Schema.swift */,
 				B9FAA10C23878BD6009414B4 /* Associations */,
 				210B3E35245CB86500F43848 /* Blog.swift */,
 				210B3E38245CB88D00F43848 /* Blog+Schema.swift */,
@@ -4417,6 +4423,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				214F49CD24898E8500DA616C /* Article.swift in Sources */,
 				B9FAA116238799D3009414B4 /* Author.swift in Sources */,
 				B9521833237E21BA00F53237 /* Comment+Schema.swift in Sources */,
 				FA176ED7238503C200C5C5F9 /* HubListenerTestUtilities.swift in Sources */,
@@ -4459,6 +4466,7 @@
 				214F49782486D8A200DA616C /* UserFollowing.swift in Sources */,
 				21F40A3C23A2952C0074678E /* AuthHelper.swift in Sources */,
 				B4F3E9FA24314ECC00F23296 /* MockAuthCategoryPlugin.swift in Sources */,
+				214F49CE24898E8500DA616C /* Article+Schema.swift in Sources */,
 				FA1846EE23998E44009B9D01 /* MockAPIResponders.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

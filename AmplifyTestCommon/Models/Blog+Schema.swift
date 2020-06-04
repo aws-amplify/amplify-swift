@@ -10,38 +10,27 @@ import Amplify
 import Foundation
 
 extension Blog {
-    // MARK: - CodingKeys
-    public enum CodingKeys: String, ModelKey {
-        case id
-        case content
-        case createdAt
-        case owner
-        case authorNotes
-    }
+  // MARK: - CodingKeys
+   public enum CodingKeys: String, ModelKey {
+    case id
+    case title
+    case createdAt
+    case posts
+  }
 
-    public static let keys = CodingKeys.self
-    //  MARK: - ModelSchema
+  public static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
 
-    public static let schema = defineSchema { model in
-        let blog = Blog.keys
+  public static let schema = defineSchema { model in
+    let blog = Blog.keys
 
-        model.pluralName = "Blogs"
+    model.pluralName = "Blogs"
 
-        model.authRules = [
-            rule(allow: .owner, ownerField: "owner", operations: [.create, .read]),
-            rule(allow: .groups, groups: ["Admin"]),
-        ]
-
-        model.fields(
-            .id(),
-            .field(blog.content, is: .required, ofType: .string),
-            .field(blog.createdAt, is: .required, ofType: .dateTime),
-            .field(blog.owner, is: .optional, ofType: .string),
-            .field(blog.authorNotes,
-                   is: .optional,
-                   ofType: .string,
-                   authRules: [rule(allow: .owner, ownerField: "owner", operations: [.update])]
-            )
-        )
+    model.fields(
+      .id(),
+      .field(blog.title, is: .required, ofType: .string),
+      .field(blog.createdAt, is: .required, ofType: .dateTime),
+      .hasMany(blog.posts, is: .optional, ofType: Post.self, associatedWith: Post.keys.blog)
+    )
     }
 }

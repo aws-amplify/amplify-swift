@@ -45,6 +45,12 @@ class GraphQLGetQueryTests: XCTestCase {
             status
             title
             updatedAt
+            blog {
+              id
+              createdAt
+              title
+              __typename
+            }
             __typename
           }
         }
@@ -75,6 +81,15 @@ class GraphQLGetQueryTests: XCTestCase {
             status
             title
             updatedAt
+            blog {
+              id
+              createdAt
+              title
+              __typename
+              _version
+              _deleted
+              _lastChangedAt
+            }
             __typename
             _version
             _deleted
@@ -121,6 +136,12 @@ class GraphQLGetQueryTests: XCTestCase {
               status
               title
               updatedAt
+              blog {
+                id
+                createdAt
+                title
+                __typename
+              }
               __typename
             }
             __typename
@@ -157,6 +178,15 @@ class GraphQLGetQueryTests: XCTestCase {
               status
               title
               updatedAt
+              blog {
+                id
+                createdAt
+                title
+                __typename
+                _version
+                _deleted
+                _lastChangedAt
+              }
               __typename
               _version
               _deleted

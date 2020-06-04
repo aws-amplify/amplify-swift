@@ -37,6 +37,7 @@ type Post @model {
     draft: Boolean
     rating: Float
     status: PostStatus
+    blog: Blog @connection(name: "BlogPost")
     comments: [Comment] @connection(name: "PostComment")
 }
 
@@ -44,7 +45,14 @@ type Comment @model {
     id: ID!
     content: String!
     createdAt: AWSDateTime!
-    post: Post @connection(name: "PostComment")
+    post: Post! @connection(name: "PostComment")
+}
+
+type Blog @model {
+    id: ID!
+    title: String!
+    createdAt: AWSDateTime!
+    posts: [Post] @connection(name: "BlogPost")
 }
 ```
 

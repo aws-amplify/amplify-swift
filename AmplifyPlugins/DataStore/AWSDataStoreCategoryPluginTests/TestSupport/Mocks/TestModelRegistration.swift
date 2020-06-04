@@ -12,9 +12,10 @@ import Foundation
 struct TestModelRegistration: AmplifyModelRegistration {
 
     func registerModels(registry: ModelRegistry.Type) {
-        // Post and Comment
+        // Blog, Post, Comment
         registry.register(modelType: Post.self)
         registry.register(modelType: Comment.self)
+        registry.register(modelType: Blog.self)
 
         // Mock Models
         registry.register(modelType: MockSynced.self)
