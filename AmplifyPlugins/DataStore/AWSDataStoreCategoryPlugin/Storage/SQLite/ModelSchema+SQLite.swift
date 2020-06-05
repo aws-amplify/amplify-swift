@@ -93,7 +93,7 @@ extension ModelField: SQLColumn {
         if let namespace = namespace {
             column = "\(namespace).\(column)"
         }
-        return "as \(column.quoted())"
+        return column.quoted()
     }
 
 }

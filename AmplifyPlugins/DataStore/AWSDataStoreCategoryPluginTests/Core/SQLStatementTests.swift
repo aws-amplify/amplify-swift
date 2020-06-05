@@ -276,7 +276,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
-        from Post as root
+        from Post as "root"
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
@@ -297,7 +297,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
-        from Post as root
+        from Post as "root"
         where 1 = 1
           and "root"."draft" = ?
           and "root"."rating" > ?
@@ -323,8 +323,8 @@ class SQLStatementTests: XCTestCase {
           "root"."commentPostId" as "commentPostId", "post"."id" as "post.id", "post"."content" as "post.content",
           "post"."createdAt" as "post.createdAt", "post"."draft" as "post.draft", "post"."rating" as "post.rating",
           "post"."status" as "post.status", "post"."title" as "post.title", "post"."updatedAt" as "post.updatedAt"
-        from Comment as root
-        inner join Post as post
+        from Comment as "root"
+        inner join Post as "post"
           on "post"."id" = "root"."commentPostId"
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
@@ -346,7 +346,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
-        from Post as root
+        from Post as "root"
         limit 20 offset 40
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)

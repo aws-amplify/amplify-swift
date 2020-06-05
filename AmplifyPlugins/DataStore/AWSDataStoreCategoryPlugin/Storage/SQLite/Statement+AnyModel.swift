@@ -9,14 +9,12 @@ import Amplify
 import SQLite
 
 extension Statement {
-    public func convert(toUntypedModel modelType: Model.Type) throws -> [Model] {
+    func convert(toUntypedModel modelType: Model.Type,
+                 using statement: SelectStatement) throws -> [Model] {
         var models = [Model]()
-        var convertedCache: ConvertCache = [:]
 
         for row in self {
-            let modelValues = try mapEach(row: row,
-                                          to: modelType,
-                                          cache: &convertedCache)
+            let modelValues = try convert(row: row, to: modelType, using: statement)
             let untypedModel = try convert(toAnyModel: modelType, modelDictionary: modelValues)
             models.append(untypedModel)
         }

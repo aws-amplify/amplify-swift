@@ -480,11 +480,11 @@
 			isa = PBXGroup;
 			children = (
 				FAED5741238B52CE008EBED8 /* ModelStorageBehavior.swift */,
-				2149E5AB2388684F00873955 /* SQLite */,
 				2149E5AA2388684F00873955 /* StorageEngine.swift */,
 				21233E1224763D0700039337 /* StorageEngine+SyncRequirement.swift */,
 				2149E5A92388684F00873955 /* StorageEngineAdapter.swift */,
 				2149E5A82388684F00873955 /* StorageEngineBehavior.swift */,
+				2149E5AB2388684F00873955 /* SQLite */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
