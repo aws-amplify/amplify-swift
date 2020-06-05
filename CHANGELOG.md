@@ -2,14 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## Unreleased Changes
+## 1.0.1 (2020-06-05)
 
 ### Bug Fixes
 
-* Allow Amplify tools to run if the project folder has a space char ([#506](https://github.com/aws-amplify/amplify-ios/pull/506))
-* Update Amplify tools script to check for minimum version of amplify-app and amplify cli ([#511](https://github.com/aws-amplify/amplify-ios/pull/511))
+* **DataStore:** Fixed a DataStore issue where nested associations that were 3 levels or more deep would fail to decode into the Swift models ([#520](https://github.com/aws-amplify/amplify-ios/pull/520))
+* **DataStore:** Support all Temporal types in predicates ([#513](https://github.com/aws-amplify/amplify-ios/pull/513))
+* **API:** Fixed a problem with the selection set that is generated for a Model containing a connection to another Model ([#509](https://github.com/aws-amplify/amplify-ios/pull/509))
+* **API:** Fixed a bug with nil value not updated in GraphQL model value to nil ([#519](https://github.com/aws-amplify/amplify-ios/pull/519))
+* **API:** Fixed QueryPredicate to GraphQLValue logic, missing Temporal.DateTime conversion ([#508](https://github.com/aws-amplify/amplify-ios/pull/508))
+* **Tools:** Allow Amplify tools to run if the project folder has a space char ([#506](https://github.com/aws-amplify/amplify-ios/pull/506))
+* **Tools:** Update Amplify tools script to check for minimum version of amplify-app and amplify cli ([#511](https://github.com/aws-amplify/amplify-ios/pull/511))
+
+### Misc
+
 * Fixed build errors for fresh installation of Amplify pods ([#517](https://github.com/aws-amplify/amplify-ios/pull/517))
-* Fixed a DataStore issue where nested associations that were 3 levels or more deep would fail to decode into the Swift models ([#520](https://github.com/aws-amplify/amplify-ios/pull/520))
+* Updated Datastore models for testing. ([#526](https://github.com/aws-amplify/amplify-ios/pull/526/))
+* Integration test for Auth ([#497](https://github.com/aws-amplify/amplify-ios/pull/497))
 
 ## 1.0.0 (2020-05-26)
 
