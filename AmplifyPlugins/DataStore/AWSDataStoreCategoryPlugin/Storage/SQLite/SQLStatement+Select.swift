@@ -42,7 +42,7 @@ struct SelectStatementMetadata {
         var sql = """
         select
           \(joinedAsSelectedColumns(columns))
-        from \(tableName) as \(rootNamespace)
+        from \(tableName) as "\(rootNamespace)"
         \(joinStatements.joined(separator: "\n"))
         """.trimmingCharacters(in: .whitespacesAndNewlines)
 
@@ -109,7 +109,7 @@ struct SelectStatementMetadata {
                 let joinType = foreignKey.isRequired ? "inner" : "left outer"
 
                 joinStatements.append("""
-                \(joinType) join \(associatedTableName) as \(alias)
+                \(joinType) join \(associatedTableName) as "\(alias)"
                   on \(associatedColumn) = \(foreignKeyName)
                 """)
                 visitAssociations(node: associatedModelType.schema,
