@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file. See [standa
 * Allow Amplify tools to run if the project folder has a space char ([#506](https://github.com/aws-amplify/amplify-ios/pull/506))
 * Update Amplify tools script to check for minimum version of amplify-app and amplify cli ([#511](https://github.com/aws-amplify/amplify-ios/pull/511))
 * Fixed build errors for fresh installation of Amplify pods ([#517](https://github.com/aws-amplify/amplify-ios/pull/517))
+* Fixed a DataStore issue where nested associations that were 3 levels or more deep would fail to decode into the Swift models ([#520](https://github.com/aws-amplify/amplify-ios/pull/520))
 
 ## 1.0.0 (2020-05-26)
 
