@@ -121,7 +121,7 @@ internal extension List {
     }
 }
 
-internal extension Dictionary where Key == String, Value == Any? {
+private extension Dictionary where Key == String, Value == Any? {
 
     /// Utility to create a `NSMutableDictionary` from a Swift `Dictionary<String, Any?>`.
     func mutableCopy() -> NSMutableDictionary {
@@ -132,7 +132,7 @@ internal extension Dictionary where Key == String, Value == Any? {
 
 /// Extension that adds utilities to created nested values in a dictionary
 /// from a `keyPath` notation (e.g. `root.with.some.nested.prop`.
-internal extension NSMutableDictionary {
+private extension NSMutableDictionary {
 
     /// Utility to allows Swift standard types to be used in `setObject`
     /// of the `NSMutableDictionary`.
@@ -141,7 +141,8 @@ internal extension NSMutableDictionary {
     ///   - value: the value to be set
     ///   - key: the key as a `String`
     func updateValue(_ value: Value?, forKey key: String) {
-        setObject(value as Any, forKey: key as NSString)
+        let object = value == nil ? NSNull() : value as Any
+        setObject(object, forKey: key as NSString)
     }
 
     /// Utility that enables the automatic creation of nested dictionaries when

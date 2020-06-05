@@ -20,10 +20,10 @@ struct SelectStatementMetadata {
     let bindings: [Binding?]
 
     // TODO remove additionalStatements once sorting support is added to DataStore
-    static func get(from modelType: Model.Type,
-                    predicate: QueryPredicate? = nil,
-                    paginationInput: QueryPaginationInput? = nil,
-                    additionalStatements: String? = nil) -> SelectStatementMetadata {
+    static func metadata(from modelType: Model.Type,
+                         predicate: QueryPredicate? = nil,
+                         paginationInput: QueryPaginationInput? = nil,
+                         additionalStatements: String? = nil) -> SelectStatementMetadata {
         let rootNamespace = "root"
         let schema = modelType.schema
         let fields = schema.columns
@@ -35,15 +35,15 @@ struct SelectStatementMetadata {
         }
 
         // eager load many-to-one/one-to-one relationships
-        let (joinedColumns, joinStatements, joinedColumnMapping) = joins(from: schema)
-        columns += joinedColumns
-        columnMapping.merge(joinedColumnMapping) { _, new in new }
+        let joinStatements = joins(from: schema)
+        columns += joinStatements.columns
+        columnMapping.merge(joinStatements.columnMapping) { _, new in new }
 
         var sql = """
         select
           \(joinedAsSelectedColumns(columns))
         from \(tableName) as "\(rootNamespace)"
-        \(joinStatements.joined(separator: "\n"))
+        \(joinStatements.statements.joined(separator: "\n"))
         """.trimmingCharacters(in: .whitespacesAndNewlines)
 
         var bindings: [Binding?] = []
@@ -77,14 +77,17 @@ struct SelectStatementMetadata {
                                        bindings: bindings)
     }
 
-    /// Tuple that represents a pair of `columns` and `statements`
-    private typealias JoinStatements = ([String], [String], ColumnMapping)
+    struct JoinStatement {
+        let columns: [String]
+        let statements: [String]
+        let columnMapping: ColumnMapping
+    }
 
     /// Walk through the associations recursively to generate join statements.
     ///
     /// Implementation note: this should be revisited once we define support
     /// for explicit `eager` vs `lazy` associations.
-    private static func joins(from schema: ModelSchema) -> JoinStatements {
+    private static func joins(from schema: ModelSchema) -> JoinStatement {
         var columns: [String] = []
         var joinStatements: [String] = []
         var columnMapping: ColumnMapping = [:]
@@ -118,7 +121,9 @@ struct SelectStatementMetadata {
         }
         visitAssociations(node: schema)
 
-        return (columns, joinStatements, columnMapping)
+        return JoinStatement(columns: columns,
+                             statements: joinStatements,
+                             columnMapping: columnMapping)
     }
 
 }
@@ -135,10 +140,10 @@ struct SelectStatement: SQLStatement {
          paginationInput: QueryPaginationInput? = nil,
          additionalStatements: String? = nil) {
         self.modelType = modelType
-        self.metadata = .get(from: modelType,
-                             predicate: predicate,
-                             paginationInput: paginationInput,
-                             additionalStatements: additionalStatements)
+        self.metadata = .metadata(from: modelType,
+                                  predicate: predicate,
+                                  paginationInput: paginationInput,
+                                  additionalStatements: additionalStatements)
     }
 
     var stringValue: String {
