@@ -12,6 +12,15 @@ if ! which node >/dev/null; then
   exit 1
 fi
 
+# Check for NVM and make sure it's initialized
+NVM_PATH = "~/.nvm/nvm.sh"
+if [ -f $NVM_PATH ]; then
+  echo "NVM found, initializing it..."
+  . $NVM_PATH
+fi
+
+export PATH=$PATH:$(npm bin -g)
+
 # Note the use of tail -1 is important here because when upgrading between versions
 # the first time that you run these commands, we have seen this variable take on the value of:
 # """
