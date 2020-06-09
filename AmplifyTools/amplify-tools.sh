@@ -13,10 +13,10 @@ if ! which node >/dev/null; then
 fi
 
 # Check for NVM and make sure it's initialized
-NVM_PATH = "~/.nvm/nvm.sh"
-if [ -f $NVM_PATH ]; then
+NVM_PATH="~/.nvm/nvm.sh"
+if [ -f "${NVM_PATH}" ]; then
   echo "NVM found, initializing it..."
-  . $NVM_PATH
+  . ${NVM_PATH}
 fi
 
 export PATH=$PATH:$(npm bin -g)
