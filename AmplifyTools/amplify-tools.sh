@@ -5,7 +5,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-set -e
+# Check NodeJS installation
 
 if ! which node >/dev/null; then
   echo "warning: Node is not installed. Visit https://nodejs.org/en/download/ to install it"
@@ -13,13 +13,15 @@ if ! which node >/dev/null; then
 fi
 
 # Check for NVM and make sure it's initialized
-NVM_PATH="~/.nvm/nvm.sh"
+NVM_PATH=~/.nvm/nvm.sh
 if [ -f "${NVM_PATH}" ]; then
   echo "NVM found, initializing it..."
-  . ${NVM_PATH}
+  source $NVM_PATH
 fi
 
 export PATH=$PATH:$(npm bin -g)
+
+set -e
 
 # Note the use of tail -1 is important here because when upgrading between versions
 # the first time that you run these commands, we have seen this variable take on the value of:
