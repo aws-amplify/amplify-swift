@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## Unreleased
+
+### Bug Fixes
+
+* **Tools:** Update Amplify tools script to resolve node correctly when NVM is installed ([#524](https://github.com/aws-amplify/amplify-ios/pull/524))
+
 ## 1.0.1 (2020-06-05)
 
 ### Bug Fixes
