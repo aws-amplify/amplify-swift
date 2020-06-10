@@ -16,10 +16,10 @@ Pod::Spec.new do |s|
 
   s.description  = "Provides different test resources and mock methods"
 
-  s.homepage     = "https://aws.amazon.com/amplify/"
+  s.homepage     = "hhttps://github.com/aws-amplify/amplify-ios"
   s.license      = 'Apache License, Version 2.0'
   s.author       = { 'Amazon Web Services' => 'amazonwebservices' }
-  s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => s.version}
+  s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => "v#{s.version}" }
 
   s.platform     = :ios, '11.0'
   s.swift_version = '5.0'
