@@ -10,16 +10,41 @@ import UIKit
 import Foundation
 
 class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin {
+    var responders = MockPredictionsCategoryPlugin.Responders()
 
     func configure(using configuration: Any?) throws {
         notify()
+    }
+
+    func convert(speechToText url: URL,
+                 options: PredictionsSpeechToTextRequest.Options?,
+                 listener: PredictionsSpeechToTextOperation.ResultListener?) -> PredictionsSpeechToTextOperation {
+        notify("speechToText")
+
+        if let responder = responders.convertSpeechToText {
+            let result = responder(url, options)
+            listener?(result)
+        }
+
+        let request = PredictionsSpeechToTextRequest(speechToText: url,
+                                                     options: options ?? PredictionsSpeechToTextRequest.Options())
+        return MockPredictionsSpeechToTextOperation(request: request)
+
     }
 
     func convert(textToSpeech: String,
                  options: PredictionsTextToSpeechRequest.Options?,
                  listener: PredictionsTextToSpeechOperation.ResultListener?) -> PredictionsTextToSpeechOperation {
         notify("textToSpeech")
-        fatalError("Add the rest of implementation")
+
+        if let responder = responders.convertTextToSpeech {
+            let result = responder(textToSpeech, options)
+            listener?(result)
+        }
+
+        let request = PredictionsTextToSpeechRequest(textToSpeech: textToSpeech,
+                                                     options: options ?? PredictionsTextToSpeechRequest.Options())
+        return MockPredictionsTextToSpeechOperation(request: request)
     }
 
     func convert(textToTranslate: String,
@@ -28,6 +53,12 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
                  options: PredictionsTranslateTextRequest.Options?,
                  listener: PredictionsTranslateTextOperation.ResultListener?) -> PredictionsTranslateTextOperation {
         notify("textToTranslate")
+
+        if let responder = responders.convertTextToTranslate {
+            let result = responder(textToTranslate, language, targetLanguage, options)
+            listener?(result)
+        }
+
         let request = PredictionsTranslateTextRequest(textToTranslate: textToTranslate,
                                                       targetLanguage: targetLanguage ?? .italian,
                                                       language: language ?? .english,
@@ -36,23 +67,17 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
 
     }
 
-    func convert(speechToText: URL,
-                 options: PredictionsSpeechToTextRequest.Options?,
-                 listener: PredictionsSpeechToTextOperation.ResultListener?) -> PredictionsSpeechToTextOperation {
-        notify("speechToText")
-        let request = PredictionsSpeechToTextRequest(speechToText: speechToText,
-                                                     options: options ?? PredictionsSpeechToTextRequest.Options())
-        return MockPredictionsSpeechToTextOperation(request: request)
-
-    }
-
     func identify(type: IdentifyAction,
                   image: URL,
                   options: PredictionsIdentifyRequest.Options?,
                   listener: PredictionsIdentifyOperation.ResultListener?)
         -> PredictionsIdentifyOperation {
-
             notify("identifyLabels")
+
+            if let responder = responders.identify {
+                let result = responder(type, image, options)
+                listener?(result)
+            }
 
             let request = PredictionsIdentifyRequest(image: image,
                                                      identifyType: type,
@@ -64,6 +89,12 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
                    options: PredictionsInterpretRequest.Options?,
                    listener: PredictionsInterpretOperation.ResultListener?) -> PredictionsInterpretOperation {
         notify("interpret")
+
+        if let responder = responders.interpret {
+            let result = responder(text, options)
+            listener?(result)
+        }
+
         let request = PredictionsInterpretRequest(textToInterpret: text,
                                                   options: options ?? PredictionsInterpretRequest.Options())
         return MockPredictionsInterpretOperation(request: request)
@@ -120,6 +151,26 @@ class MockPredictionsSpeechToTextOperation: AmplifyOperation<
     init(request: Request) {
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.speechToText,
+                   request: request)
+    }
+
+}
+
+class MockPredictionsTextToSpeechOperation: AmplifyOperation<
+    PredictionsTextToSpeechRequest,
+    TextToSpeechResult,
+    PredictionsError
+>, PredictionsTextToSpeechOperation {
+
+    override func pause() {
+    }
+
+    override func resume() {
+    }
+
+    init(request: Request) {
+        super.init(categoryType: .predictions,
+                   eventName: HubPayload.EventName.Predictions.textToSpeech,
                    request: request)
     }
 

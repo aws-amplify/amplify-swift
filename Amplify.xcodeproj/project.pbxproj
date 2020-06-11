@@ -394,6 +394,7 @@
 		FA5704C7245F368200392C19 /* ProgressListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5704C6245F368200392C19 /* ProgressListener.swift */; };
 		FA5704C9245F3C6900392C19 /* AmplifyInProcessReportingOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5704C8245F3C6900392C19 /* AmplifyInProcessReportingOperation.swift */; };
 		FA5704CB245F58C600392C19 /* AmplifyOperation+Hub.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5704CA245F58C600392C19 /* AmplifyOperation+Hub.swift */; };
+		FA590AF1249A938D00E5D992 /* MockPredictionsCategoryResponders.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA590AF0249A938D00E5D992 /* MockPredictionsCategoryResponders.swift */; };
 		FA5BF25F2385A0500070C843 /* Category+Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5BF25E2385A0500070C843 /* Category+Logging.swift */; };
 		FA5D4CF3238AFD7B00D2F54A /* ModelRegistry+Syncable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5D4CF2238AFD7B00D2F54A /* ModelRegistry+Syncable.swift */; };
 		FA5D76AF23947E9C00489864 /* Model+CodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5D76AE23947E9C00489864 /* Model+CodableTests.swift */; };
@@ -1189,6 +1190,7 @@
 		FA5704C6245F368200392C19 /* ProgressListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressListener.swift; sourceTree = "<group>"; };
 		FA5704C8245F3C6900392C19 /* AmplifyInProcessReportingOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyInProcessReportingOperation.swift; sourceTree = "<group>"; };
 		FA5704CA245F58C600392C19 /* AmplifyOperation+Hub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AmplifyOperation+Hub.swift"; sourceTree = "<group>"; };
+		FA590AF0249A938D00E5D992 /* MockPredictionsCategoryResponders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPredictionsCategoryResponders.swift; sourceTree = "<group>"; };
 		FA5BF25E2385A0500070C843 /* Category+Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Category+Logging.swift"; sourceTree = "<group>"; };
 		FA5D4CF2238AFD7B00D2F54A /* ModelRegistry+Syncable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelRegistry+Syncable.swift"; sourceTree = "<group>"; };
 		FA5D76AE23947E9C00489864 /* Model+CodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+CodableTests.swift"; sourceTree = "<group>"; };
@@ -2922,6 +2924,7 @@
 				FAC23589227A45D500424678 /* MockHubCategoryPlugin.swift */,
 				FAC0A2BB22B4603800B50912 /* MockLoggingCategoryPlugin.swift */,
 				B4BD6B3623708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift */,
+				FA590AF0249A938D00E5D992 /* MockPredictionsCategoryResponders.swift */,
 				FA4A955E239ADEBD008E876E /* MockResponder.swift */,
 				FAC23553227A056600424678 /* MockStorageCategoryPlugin.swift */,
 			);
@@ -4472,6 +4475,7 @@
 				FAA2E8BC239FFC7700E420EA /* MockModels.swift in Sources */,
 				B9FAA11E23879B9F009414B4 /* Book+Schema.swift in Sources */,
 				FACA361B2327FC74000E74F6 /* MockLoggingCategoryPlugin.swift in Sources */,
+				FA590AF1249A938D00E5D992 /* MockPredictionsCategoryResponders.swift in Sources */,
 				FACF52042329633500646E10 /* TestExtensions.swift in Sources */,
 				216E460824913D430035E3CE /* Color.swift in Sources */,
 				B9FAA11823879A57009414B4 /* Author+Schema.swift in Sources */,
