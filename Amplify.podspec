@@ -7,7 +7,7 @@
 #
 
 Pod::Spec.new do |s|
-  AMPLIFY_VERSION = '1.0.0'
+  AMPLIFY_VERSION = '1.0.1'
 
   s.name         = 'Amplify'
   s.version      = AMPLIFY_VERSION

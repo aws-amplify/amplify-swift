@@ -188,7 +188,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                                             paginationInput: paginationInput,
                                             additionalStatements: additionalStatements)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
-            let result: [M] = try rows.convert(to: modelType)
+            let result: [M] = try rows.convert(to: modelType, using: statement)
             completion(.success(result))
         } catch {
             completion(.failure(causedBy: error))
@@ -243,7 +243,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let ids = [String](modelById.keys)
         let rows = try connection.prepare(sql).bind(ids)
 
-        let syncMetadataList = try rows.convert(to: MutationSyncMetadata.self)
+        let syncMetadataList = try rows.convert(to: MutationSyncMetadata.self,
+                                                using: statement)
         let mutationSyncList = try syncMetadataList.map { syncMetadata -> MutationSync<AnyModel> in
             guard let model = modelById[syncMetadata.id] else {
                 throw DataStoreError.invalidOperation(causedBy: nil)
@@ -258,7 +259,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let modelType = MutationSyncMetadata.self
         let statement = SelectStatement(from: modelType, predicate: field("id").eq(modelId))
         let rows = try connection.prepare(statement.stringValue).run(statement.variables)
-        let result = try rows.convert(to: modelType)
+        let result = try rows.convert(to: modelType,
+                                      using: statement)
         return try result.unique()
     }
 
@@ -266,7 +268,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let statement = SelectStatement(from: ModelSyncMetadata.self,
                                         predicate: field("id").eq(modelType.modelName))
         let rows = try connection.prepare(statement.stringValue).run(statement.variables)
-        let result = try rows.convert(to: ModelSyncMetadata.self)
+        let result = try rows.convert(to: ModelSyncMetadata.self,
+                                      using: statement)
         return try result.unique()
     }
 

@@ -15,8 +15,8 @@ class APICategoryPluginConcurrencyTests: XCTestCase {
     override func setUp() {
         Amplify.reset()
         Amplify.Logging.logLevel = .verbose
-        ModelRegistry.register(modelType: AmplifyTestCommon.Post.self)
-        ModelRegistry.register(modelType: AmplifyTestCommon.Comment.self)
+        ModelRegistry.register(modelType: Post.self)
+        ModelRegistry.register(modelType: Comment.self)
 
         let apiConfig = APICategoryConfiguration(plugins: [
             "awsAPICategoryPlugin": [

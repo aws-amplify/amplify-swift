@@ -24,7 +24,7 @@ extension Model {
 
             // swiftlint:disable:next syntactic_sugar
             guard case .some(Optional<Any>.some(let value)) = fieldValue ?? nil else {
-                input[name] = nil
+                input.updateValue(nil, forKey: name)
                 return
             }
 
