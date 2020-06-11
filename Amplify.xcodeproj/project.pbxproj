@@ -452,6 +452,7 @@
 		FAB2C9A52384B21C008EE879 /* MockAWSAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2A72321DCDD00B3DEB5 /* MockAWSAuthService.swift */; };
 		FAB2C9A62384B229008EE879 /* AWSPluginsTestCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA131AE023610B6A0008381C /* AWSPluginsTestCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FAB3CA15238D9BE400F59BD0 /* DefaultLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB3CA14238D9BE400F59BD0 /* DefaultLogger.swift */; };
+		FAB4B6E42485B31C0069B398 /* MockDataStoreResponders.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB4B6E32485B31C0069B398 /* MockDataStoreResponders.swift */; };
 		FAB9D811233BF5F600928AA9 /* AmplifyOperationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB9D810233BF5F600928AA9 /* AmplifyOperationContext.swift */; };
 		FAC0A29B22B3DEEE00B50912 /* HubPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A29A22B3DEEE00B50912 /* HubPayload.swift */; };
 		FAC0A2AD22B43FE700B50912 /* HubCategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2AC22B43FE700B50912 /* HubCategory+ClientBehavior.swift */; };
@@ -1244,6 +1245,7 @@
 		FAB2C99A2384B108008EE879 /* AWSPluginsTestCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSPluginsTestCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAB2C9DD2384E034008EE879 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = "../../../Library/Developer/Xcode/DerivedData/APICategoryPlugin-exvfngtmuctecdgobxqxqwwvmwgo/Build/Products/Debug-iphonesimulator/Starscream/Starscream.framework"; sourceTree = "<group>"; };
 		FAB3CA14238D9BE400F59BD0 /* DefaultLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DefaultLogger.swift; path = Amplify/Categories/Logging/DefaultLogger.swift; sourceTree = SOURCE_ROOT; };
+		FAB4B6E32485B31C0069B398 /* MockDataStoreResponders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataStoreResponders.swift; sourceTree = "<group>"; };
 		FAB9D810233BF5F600928AA9 /* AmplifyOperationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyOperationContext.swift; sourceTree = "<group>"; };
 		FAC0A29A22B3DEEE00B50912 /* HubPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPayload.swift; sourceTree = "<group>"; };
 		FAC0A2AC22B43FE700B50912 /* HubCategory+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HubCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
@@ -2914,13 +2916,14 @@
 				FAC2355E227A056600424678 /* MockAnalyticsCategoryPlugin.swift */,
 				FAC23557227A056600424678 /* MockAPICategoryPlugin.swift */,
 				FA1846ED23998E43009B9D01 /* MockAPIResponders.swift */,
+				B4F3E9F924314ECC00F23296 /* MockAuthCategoryPlugin.swift */,
 				FAD3937E23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift */,
+				FAB4B6E32485B31C0069B398 /* MockDataStoreResponders.swift */,
 				FAC23589227A45D500424678 /* MockHubCategoryPlugin.swift */,
 				FAC0A2BB22B4603800B50912 /* MockLoggingCategoryPlugin.swift */,
 				B4BD6B3623708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift */,
 				FA4A955E239ADEBD008E876E /* MockResponder.swift */,
 				FAC23553227A056600424678 /* MockStorageCategoryPlugin.swift */,
-				B4F3E9F924314ECC00F23296 /* MockAuthCategoryPlugin.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -4452,6 +4455,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAB4B6E42485B31C0069B398 /* MockDataStoreResponders.swift in Sources */,
 				214F49CD24898E8500DA616C /* Article.swift in Sources */,
 				B9FAA116238799D3009414B4 /* Author.swift in Sources */,
 				B9521833237E21BA00F53237 /* Comment+Schema.swift in Sources */,
