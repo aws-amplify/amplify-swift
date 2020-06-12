@@ -183,4 +183,25 @@ extension ModelField {
         return false
     }
 
+    public var embeddedType: Embedded.Type? {
+        switch type {
+        case .embedded(let type), .embeddedCollection(let type):
+            if let embeddedType = type as? Embedded.Type {
+                return embeddedType
+            }
+            return nil
+        default:
+            return nil
+        }
+    }
+
+    public var isEmbeddedType: Bool {
+        if case .embedded = type {
+            return true
+        }
+        if case .embeddedCollection = type {
+            return true
+        }
+        return false
+    }
 }

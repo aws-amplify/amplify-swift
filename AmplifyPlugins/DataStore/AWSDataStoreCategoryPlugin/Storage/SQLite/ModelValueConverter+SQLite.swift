@@ -48,7 +48,7 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
             // collections are not converted to SQL Binding since they represent a model association
             // and the foreign key lives on the other side of the association
             return nil
-        case .customType:
+        case .embedded, .embeddedCollection:
             if let encodable = value as? Encodable {
                 return try SQLiteModelValueConverter.toJSON(encodable)
             }
@@ -77,7 +77,7 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
             return nil
         case .enum:
             return value as? String
-        case .customType:
+        case .embedded, .embeddedCollection:
             if let stringValue = value as? String {
                 return try SQLiteModelValueConverter.fromJSON(stringValue)
             }

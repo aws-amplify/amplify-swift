@@ -69,8 +69,6 @@
 		21420AA0237222A900FA140C /* AWSAuthorizationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420A8D237222A900FA140C /* AWSAuthorizationType.swift */; };
 		2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2144226B234BDD9B009357F7 /* StorageUploadFileRequest.swift */; };
 		2144226E234BDE23009357F7 /* StorageUploadFileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2144226D234BDE23009357F7 /* StorageUploadFileOperation.swift */; };
-		214F49CD24898E8500DA616C /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49CB24898E8400DA616C /* Article.swift */; };
-		214F49CE24898E8500DA616C /* Article+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49CC24898E8500DA616C /* Article+Schema.swift */; };
 		214F49772486D8A200DA616C /* UserFollowers+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49712486D8A100DA616C /* UserFollowers+Schema.swift */; };
 		214F49782486D8A200DA616C /* UserFollowing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49722486D8A200DA616C /* UserFollowing.swift */; };
 		214F49792486D8A200DA616C /* UserFollowing+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49732486D8A200DA616C /* UserFollowing+Schema.swift */; };
@@ -78,11 +76,20 @@
 		214F497B2486D8A200DA616C /* User+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49752486D8A200DA616C /* User+Schema.swift */; };
 		214F497C2486D8A200DA616C /* UserFollowers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49762486D8A200DA616C /* UserFollowers.swift */; };
 		214F497E2486DA5000DA616C /* GraphQLRequestOptionalAssociationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F497D2486DA5000DA616C /* GraphQLRequestOptionalAssociationTests.swift */; };
+		214F49CD24898E8500DA616C /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49CB24898E8400DA616C /* Article.swift */; };
+		214F49CE24898E8500DA616C /* Article+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49CC24898E8500DA616C /* Article+Schema.swift */; };
 		21558E3E237BB4BF0032A5BB /* GraphQLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */; };
 		21558E40237CB8640032A5BB /* GraphQLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21558E3F237CB8640032A5BB /* GraphQLError.swift */; };
 		216879FE23636A0A004A056E /* RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216879FD23636A0A004A056E /* RepeatingTimer.swift */; };
 		21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A3D236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift */; };
 		21687A41236371E1004A056E /* AnalyticsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A40236371E1004A056E /* AnalyticsError.swift */; };
+		216E45ED248E914F0035E3CE /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E45EA248E914E0035E3CE /* Category.swift */; };
+		216E45EE248E914F0035E3CE /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E45EB248E914F0035E3CE /* Todo.swift */; };
+		216E45EF248E914F0035E3CE /* Todo+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E45EC248E914F0035E3CE /* Todo+Schema.swift */; };
+		216E45F1248E971E0035E3CE /* GraphQLRequestNonModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E45F0248E971E0035E3CE /* GraphQLRequestNonModelTests.swift */; };
+		216E460824913D430035E3CE /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E460724913D430035E3CE /* Color.swift */; };
+		216E460A249183230035E3CE /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E4609249183230035E3CE /* Section.swift */; };
+		216E461A249189050035E3CE /* Embedded.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E4619249189050035E3CE /* Embedded.swift */; };
 		217855C3237F84D700A30D19 /* RESTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217855C2237F84D700A30D19 /* RESTRequest.swift */; };
 		2183A56323EA4A7800232880 /* GraphQLSubscriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE72023EA184F007D8E71 /* GraphQLSubscriptionTests.swift */; };
 		2183A56423EA4A7F00232880 /* GraphQLGetQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71A23EA1847007D8E71 /* GraphQLGetQueryTests.swift */; };
@@ -712,8 +719,6 @@
 		21420A8D237222A900FA140C /* AWSAuthorizationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthorizationType.swift; sourceTree = "<group>"; };
 		2144226B234BDD9B009357F7 /* StorageUploadFileRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageUploadFileRequest.swift; sourceTree = "<group>"; };
 		2144226D234BDE23009357F7 /* StorageUploadFileOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageUploadFileOperation.swift; sourceTree = "<group>"; };
-		214F49CB24898E8400DA616C /* Article.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Article.swift; sourceTree = "<group>"; };
-		214F49CC24898E8500DA616C /* Article+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Article+Schema.swift"; sourceTree = "<group>"; };
 		214F49712486D8A100DA616C /* UserFollowers+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserFollowers+Schema.swift"; sourceTree = "<group>"; };
 		214F49722486D8A200DA616C /* UserFollowing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFollowing.swift; sourceTree = "<group>"; };
 		214F49732486D8A200DA616C /* UserFollowing+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserFollowing+Schema.swift"; sourceTree = "<group>"; };
@@ -721,12 +726,21 @@
 		214F49752486D8A200DA616C /* User+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+Schema.swift"; sourceTree = "<group>"; };
 		214F49762486D8A200DA616C /* UserFollowers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFollowers.swift; sourceTree = "<group>"; };
 		214F497D2486DA5000DA616C /* GraphQLRequestOptionalAssociationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestOptionalAssociationTests.swift; sourceTree = "<group>"; };
+		214F49CB24898E8400DA616C /* Article.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Article.swift; sourceTree = "<group>"; };
+		214F49CC24898E8500DA616C /* Article+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Article+Schema.swift"; sourceTree = "<group>"; };
 		21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequest.swift; sourceTree = "<group>"; };
 		21558E3F237CB8640032A5BB /* GraphQLError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLError.swift; sourceTree = "<group>"; };
 		215F4BCAAB89FA54AA121BDE /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		216879FD23636A0A004A056E /* RepeatingTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepeatingTimer.swift; sourceTree = "<group>"; };
 		21687A3D236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AnalyticsCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		21687A40236371E1004A056E /* AnalyticsError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsError.swift; sourceTree = "<group>"; };
+		216E45EA248E914E0035E3CE /* Category.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
+		216E45EB248E914F0035E3CE /* Todo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
+		216E45EC248E914F0035E3CE /* Todo+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Todo+Schema.swift"; sourceTree = "<group>"; };
+		216E45F0248E971E0035E3CE /* GraphQLRequestNonModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestNonModelTests.swift; sourceTree = "<group>"; };
+		216E460724913D430035E3CE /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		216E4609249183230035E3CE /* Section.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Section.swift; sourceTree = "<group>"; };
+		216E4619249189050035E3CE /* Embedded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Embedded.swift; sourceTree = "<group>"; };
 		217855C2237F84D700A30D19 /* RESTRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTRequest.swift; sourceTree = "<group>"; };
 		217856BA2383320900A30D19 /* GraphQLQueryType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLQueryType.swift; sourceTree = "<group>"; };
 		217856BD2383322700A30D19 /* GraphQLMutationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLMutationType.swift; sourceTree = "<group>"; };
@@ -1514,9 +1528,10 @@
 		2129BE302394828B006363A1 /* GraphQLRequest */ = {
 			isa = PBXGroup;
 			children = (
-				2129BE322394828B006363A1 /* GraphQLRequestModelTests.swift */,
 				219A888623EB89C200BBC5F2 /* GraphQLRequestAnyModelWithSyncTests.swift */,
 				21A3FDB8246494CD00E76120 /* GraphQLRequestAuthRuleTests.swift */,
+				2129BE322394828B006363A1 /* GraphQLRequestModelTests.swift */,
+				216E45F0248E971E0035E3CE /* GraphQLRequestNonModelTests.swift */,
 				214F497D2486DA5000DA616C /* GraphQLRequestOptionalAssociationTests.swift */,
 			);
 			path = GraphQLRequest;
@@ -1623,6 +1638,18 @@
 				21687A40236371E1004A056E /* AnalyticsError.swift */,
 			);
 			path = Error;
+			sourceTree = "<group>";
+		};
+		216E45E9248E91420035E3CE /* NonModel */ = {
+			isa = PBXGroup;
+			children = (
+				216E460724913D430035E3CE /* Color.swift */,
+				216E45EA248E914E0035E3CE /* Category.swift */,
+				216E45EB248E914F0035E3CE /* Todo.swift */,
+				216E45EC248E914F0035E3CE /* Todo+Schema.swift */,
+				216E4609249183230035E3CE /* Section.swift */,
+			);
+			path = NonModel;
 			sourceTree = "<group>";
 		};
 		21A3FDAD24630D4200E76120 /* Decorator */ = {
@@ -2165,6 +2192,9 @@
 			isa = PBXGroup;
 			children = (
 				2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */,
+				FA8EE775238626C70097E4F1 /* AnyModel */,
+				B9FAA1232388BE2B009414B4 /* Collection */,
+				216E4619249189050035E3CE /* Embedded.swift */,
 				B92E03A72367CE7A006CEB8D /* Model.swift */,
 				B9FAA17F238FBB5D009414B4 /* Model+Array.swift */,
 				B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */,
@@ -2175,8 +2205,6 @@
 				B92E03A92367CE7A006CEB8D /* ModelRegistry.swift */,
 				FA5D4CF2238AFD7B00D2F54A /* ModelRegistry+Syncable.swift */,
 				FA8EE780238628490097E4F1 /* Persistable.swift */,
-				FA8EE775238626C70097E4F1 /* AnyModel */,
-				B9FAA1232388BE2B009414B4 /* Collection */,
 				B937FBFC23FB4ED300081639 /* Schema */,
 				B91A879A23D1256B0049A12F /* Temporal */,
 			);
@@ -2200,6 +2228,7 @@
 		B952182D237E21B900F53237 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				216E45E9248E91420035E3CE /* NonModel */,
 				FAF512AD23986791001ADF4E /* AmplifyModels.swift */,
 				214F49CB24898E8400DA616C /* Article.swift */,
 				214F49CC24898E8500DA616C /* Article+Schema.swift */,
@@ -3978,6 +4007,7 @@
 				21A3FDB62464590600E76120 /* ModelMultipleOwnerAuthRuleTests.swift in Sources */,
 				2129BE3A2394828B006363A1 /* QueryPredicateGraphQLTests.swift in Sources */,
 				2129BE48239489AC006363A1 /* MutationSyncMetadataTests.swift in Sources */,
+				216E45F1248E971E0035E3CE /* GraphQLRequestNonModelTests.swift in Sources */,
 				21A3FDAF24630D7F00E76120 /* ModelWithOwnerFieldAuthRuleTests.swift in Sources */,
 				2183A56823EA4A8E00232880 /* GraphQLDeleteMutationTests.swift in Sources */,
 				21A3FDB42463C49F00E76120 /* ModelReadUpdateAuthRuleTests.swift in Sources */,
@@ -4022,6 +4052,7 @@
 				B9B64A9F23FCBF7E00730B68 /* ModelValueConverter.swift in Sources */,
 				B92E03B82367CE7A006CEB8D /* ModelSchema+Definition.swift in Sources */,
 				21558E40237CB8640032A5BB /* GraphQLError.swift in Sources */,
+				216E461A249189050035E3CE /* Embedded.swift in Sources */,
 				950A26DD23D15D7E00D92B19 /* PredictionsSpeechToTextOperation.swift in Sources */,
 				B4D3853C236C97360014653D /* PredictionsTranslateTextRequest.swift in Sources */,
 				B452F1D32450EEAE0069F7FA /* AuthResendSignUpCodeOperation.swift in Sources */,
@@ -4425,6 +4456,7 @@
 				B9FAA116238799D3009414B4 /* Author.swift in Sources */,
 				B9521833237E21BA00F53237 /* Comment+Schema.swift in Sources */,
 				FA176ED7238503C200C5C5F9 /* HubListenerTestUtilities.swift in Sources */,
+				216E45EE248E914F0035E3CE /* Todo.swift in Sources */,
 				21F40A3A23A294770074678E /* TestConfigHelper.swift in Sources */,
 				B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */,
 				FACA361C2327FC7D000E74F6 /* MockHubCategoryPlugin.swift in Sources */,
@@ -4437,6 +4469,7 @@
 				B9FAA11E23879B9F009414B4 /* Book+Schema.swift in Sources */,
 				FACA361B2327FC74000E74F6 /* MockLoggingCategoryPlugin.swift in Sources */,
 				FACF52042329633500646E10 /* TestExtensions.swift in Sources */,
+				216E460824913D430035E3CE /* Color.swift in Sources */,
 				B9FAA11823879A57009414B4 /* Author+Schema.swift in Sources */,
 				B9521836237E21BA00F53237 /* Post+Schema.swift in Sources */,
 				FA4A955F239ADEBD008E876E /* MockResponder.swift in Sources */,
@@ -4456,6 +4489,7 @@
 				21F40A4023A295470074678E /* TestCommonConstants.swift in Sources */,
 				214F497C2486D8A200DA616C /* UserFollowers.swift in Sources */,
 				B9521835237E21BA00F53237 /* Comment.swift in Sources */,
+				216E45EF248E914F0035E3CE /* Todo+Schema.swift in Sources */,
 				FACA361E2327FC8E000E74F6 /* MockAnalyticsCategoryPlugin.swift in Sources */,
 				2129BE012394627B006363A1 /* PostCommentModelRegistration.swift in Sources */,
 				B9FAA10E23878BF3009414B4 /* UserAccount.swift in Sources */,
@@ -4463,7 +4497,9 @@
 				21F40A3C23A2952C0074678E /* AuthHelper.swift in Sources */,
 				B4F3E9FA24314ECC00F23296 /* MockAuthCategoryPlugin.swift in Sources */,
 				214F49CE24898E8500DA616C /* Article+Schema.swift in Sources */,
+				216E460A249183230035E3CE /* Section.swift in Sources */,
 				FA1846EE23998E44009B9D01 /* MockAPIResponders.swift in Sources */,
+				216E45ED248E914F0035E3CE /* Category.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

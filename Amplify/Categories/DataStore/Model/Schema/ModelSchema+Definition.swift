@@ -19,13 +19,14 @@ public enum ModelFieldType {
     case timestamp
     case bool
     case `enum`(type: EnumPersistable.Type)
-    case customType(_ type: Codable.Type)
+    case embedded(type: Codable.Type)
+    case embeddedCollection(of: Codable.Type)
     case model(type: Model.Type)
     case collection(of: Model.Type)
 
     public var isArray: Bool {
         switch self {
-        case .collection:
+        case .collection, .embeddedCollection:
             return true
         default:
             return false
@@ -63,8 +64,8 @@ public enum ModelFieldType {
         if let modelType = type as? Model.Type {
             return .model(type: modelType)
         }
-        if let codableType = type as? Codable.Type {
-            return .customType(codableType)
+        if let embeddedType = type as? Codable.Type {
+            return .embedded(type: embeddedType)
         }
         preconditionFailure("Could not create a ModelFieldType from \(String(describing: type)) MetaType")
     }
