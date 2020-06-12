@@ -18,10 +18,7 @@ extension AuthCategory: CategoryConfigurable {
             throw error
         }
 
-        for (pluginKey, pluginConfiguration) in configuration.plugins {
-            let plugin = try getPlugin(for: pluginKey)
-            try plugin.configure(using: pluginConfiguration)
-        }
+        try Amplify.configure(plugins: Array(plugins.values), using: configuration)
 
         isConfigured = true
     }

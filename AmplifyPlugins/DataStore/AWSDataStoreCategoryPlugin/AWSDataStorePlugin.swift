@@ -78,7 +78,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// By the time this method gets called, DataStore will already have invoked
     /// `AmplifyModelRegistration.registerModels`, so we can inspect those models to derive isSyncEnabled, and pass
     /// them to `StorageEngine.setUp(models:)`
-    public func configure(using amplifyConfiguration: Any) throws {
+    public func configure(using amplifyConfiguration: Any?) throws {
         modelRegistration.registerModels(registry: ModelRegistry.self)
         resolveSyncEnabled()
         try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)

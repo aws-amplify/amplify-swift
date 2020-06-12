@@ -103,9 +103,9 @@ class DefaultHubPluginTests: XCTestCase {
         let unexpectedMessageReceived = expectation(description: "Message was received after removing listener")
         unexpectedMessageReceived.isInverted = true
 
-        var isStillRegistered = true
+        let isStillRegistered = AtomicValue(initialValue: true)
         let unsubscribeToken = plugin.listen(to: .storage, isIncluded: nil) { hubPayload in
-            if isStillRegistered {
+            if isStillRegistered.get() {
                 // Ignore system-generated notifications (e.g., "configuration finished"). After we `removeListener`
                 // though, we don't expect to receive any message, so we only check for the message name if we haven't
                 // yet unsubscribed.
@@ -130,10 +130,13 @@ class DefaultHubPluginTests: XCTestCase {
 
         plugin.removeListener(unsubscribeToken)
 
-        isStillRegistered = try HubListenerTestUtilities.waitForListener(with: unsubscribeToken,
-                                                                         plugin: plugin,
-                                                                         timeout: 0.5)
-        XCTAssertFalse(isStillRegistered, "Should not be registered after removeListener")
+        isStillRegistered.set(
+            try HubListenerTestUtilities.waitForListener(with: unsubscribeToken,
+                                                         plugin: plugin,
+                                                         timeout: 0.5)
+        )
+
+        XCTAssertFalse(isStillRegistered.get(), "Should not be registered after removeListener")
 
         plugin.dispatch(to: .storage, payload: HubPayload(eventName: "TEST_EVENT"))
         wait(for: [unexpectedMessageReceived], timeout: 0.5)

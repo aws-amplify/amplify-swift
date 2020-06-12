@@ -10,7 +10,7 @@ import Amplify
 
 extension CoreMLPredictionsPlugin {
 
-    public func configure(using configuration: Any) throws {
+    public func configure(using configuration: Any?) throws {
         guard configuration is JSONValue else {
             let errorDescription = CoreMLPluginErrorString.decodeConfigurationError.errorDescription
             let recoverySuggestion = CoreMLPluginErrorString.decodeConfigurationError.recoverySuggestion

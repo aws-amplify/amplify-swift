@@ -112,7 +112,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     let queue = DispatchQueue(label: "MockDispatchingStoragePlugin.dispatch")
 
-    func configure(using configuration: Any) throws {}
+    func configure(using configuration: Any?) throws {}
 
     func getURL(key: String,
                 options: StorageGetURLRequest.Options? = nil,

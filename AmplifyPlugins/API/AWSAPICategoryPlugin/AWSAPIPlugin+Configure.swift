@@ -17,16 +17,16 @@ public extension AWSAPIPlugin {
     /// - Parameter configuration: The configuration specified for this plugin
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the required configuration values is invalid or empty
-    func configure(using configuration: Any) throws {
+    func configure(using configuration: Any?) throws {
 
         guard let jsonValue = configuration as? JSONValue else {
             throw PluginError.pluginConfigurationError(
                 "Could not cast incoming configuration to JSONValue",
                 """
-                The specified configuration is not convertible to a JSONValue. Review the configuration and ensure it \
-                contains the expected values, and does not use any types that aren't convertible to a corresponding \
-                JSONValue:
-                \(configuration)
+                The specified configuration is either nil, or not convertible to a JSONValue. Review the configuration \
+                and ensure it contains the expected values, and does not use any types that aren't convertible to a \
+                corresponding JSONValue:
+                \(String(describing: configuration))
                 """
             )
         }

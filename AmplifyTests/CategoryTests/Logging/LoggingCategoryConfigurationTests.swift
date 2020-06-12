@@ -142,7 +142,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         let plugin = MockLoggingCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin.listeners.append { message in
-            if message == "error(_:)" {
+            if message.starts(with: "error(_:)") {
                 methodInvokedOnDefaultPlugin.fulfill()
             }
         }
@@ -164,7 +164,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
             expectation(description: "test method should not be invoked on default plugin")
         methodShouldNotBeInvokedOnDefaultPlugin.isInverted = true
         plugin1.listeners.append { message in
-            if message == "error(_:)" {
+            if message.starts(with: "error(_:)") {
                 methodShouldNotBeInvokedOnDefaultPlugin.fulfill()
             }
         }
@@ -174,7 +174,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         let methodShouldBeInvokedOnSecondPlugin =
             expectation(description: "test method should be invoked on second plugin")
         plugin2.listeners.append { message in
-            if message == "error(_:)" {
+            if message.starts(with: "error(_:)") {
                 methodShouldBeInvokedOnSecondPlugin.fulfill()
             }
         }

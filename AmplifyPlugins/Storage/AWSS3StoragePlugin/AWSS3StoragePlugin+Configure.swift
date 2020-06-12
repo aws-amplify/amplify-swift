@@ -20,9 +20,9 @@ extension AWSS3StoragePlugin {
     /// - Parameter configuration: The configuration specified for this plugin
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
-    public func configure(using configuration: Any) throws {
+    public func configure(using configuration: Any?) throws {
         guard let config = configuration as? JSONValue else {
-            throw StorageError.configuration(PluginErrorConstants.decodeConfigurationError.errorDescription,
+            throw PluginError.pluginConfigurationError(PluginErrorConstants.decodeConfigurationError.errorDescription,
                                                        PluginErrorConstants.decodeConfigurationError.recoverySuggestion)
         }
 

@@ -58,4 +58,5 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
             XCTFail("Failed to configure analytics plugin")
         }
     }
+
 }

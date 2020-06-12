@@ -6,18 +6,17 @@
 //
 
 import XCTest
+import Amplify
+import AWSS3StoragePlugin
 
-@testable import Amplify
-@testable import AWSAPICategoryPlugin
-
-class AWSAPICategoryPluginConfigurationTests: XCTestCase {
+class AWSS3StoragePluginBaseConfigTests: XCTestCase {
 
     func testThrowsOnMissingConfig() throws {
-        let plugin = AWSAPIPlugin()
+        let plugin = AWSS3StoragePlugin()
         try Amplify.add(plugin: plugin)
 
-        let categoryConfig = APICategoryConfiguration(plugins: ["NonExistentPlugin": true])
-        let amplifyConfig = AmplifyConfiguration(api: categoryConfig)
+        let categoryConfig = StorageCategoryConfiguration(plugins: ["NonExistentPlugin": true])
+        let amplifyConfig = AmplifyConfiguration(storage: categoryConfig)
         do {
             try Amplify.configure(amplifyConfig)
             XCTFail("Should have thrown a pluginConfigurationError if not supplied with a plugin-specific config.")

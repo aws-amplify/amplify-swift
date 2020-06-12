@@ -6,18 +6,17 @@
 //
 
 import XCTest
+import Amplify
+import CoreMLPredictionsPlugin
 
-@testable import Amplify
-@testable import AWSAPICategoryPlugin
-
-class AWSAPICategoryPluginConfigurationTests: XCTestCase {
+class CoreMLPredictionsPluginConfigTests: XCTestCase {
 
     func testThrowsOnMissingConfig() throws {
-        let plugin = AWSAPIPlugin()
+        let plugin = CoreMLPredictionsPlugin()
         try Amplify.add(plugin: plugin)
 
-        let categoryConfig = APICategoryConfiguration(plugins: ["NonExistentPlugin": true])
-        let amplifyConfig = AmplifyConfiguration(api: categoryConfig)
+        let categoryConfig = PredictionsCategoryConfiguration(plugins: ["NonExistentPlugin": true])
+        let amplifyConfig = AmplifyConfiguration(predictions: categoryConfig)
         do {
             try Amplify.configure(amplifyConfig)
             XCTFail("Should have thrown a pluginConfigurationError if not supplied with a plugin-specific config.")

@@ -16,17 +16,18 @@ class ConfigurationTests: XCTestCase {
         Amplify.reset()
     }
 
+    // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
     func testPreconditionFailureInvokingWithNoPlugin() throws {
         let amplifyConfig = AmplifyConfiguration()
         try Amplify.configure(amplifyConfig)
 
-        // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
         let exception: BadInstructionException? = catchBadInstruction {
             _ = Amplify.API.get(request: RESTRequest()) { _ in }
         }
         XCTAssertNotNil(exception)
     }
 
+    // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
     func testPreconditionFailureInvokingBeforeConfig() throws {
         let plugin = MockAPICategoryPlugin()
         try Amplify.add(plugin: plugin)
@@ -57,24 +58,6 @@ class ConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         wait(for: [configureWasInvoked], timeout: 1.0)
-    }
-
-    func testThrowsOnNonExistentPlugin() throws {
-        try Amplify.add(plugin: MockLoggingCategoryPlugin())
-
-        let loggingConfig = LoggingCategoryConfiguration(
-            plugins: ["NonExistentPlugin": true]
-        )
-
-        let amplifyConfig = AmplifyConfiguration(logging: loggingConfig)
-
-        XCTAssertThrowsError(try Amplify.configure(amplifyConfig),
-                             "Throws for nonexistent plugin") { error in
-                                guard case LoggingError.configuration = error else {
-                                    XCTFail("Should have thrown for nonexistent plugin")
-                                    return
-                                }
-        }
     }
 
     func testMultipleConfigureCallsThrowError() throws {
