@@ -12,28 +12,24 @@ extension AuthenticationProviderAdapter {
 
     func signOut(request: AuthSignOutRequest, completionHandler: @escaping (Result<Void, AuthError>) -> Void) {
 
-        if request.options.globalSignOut {
-            // If user is signed in through HostedUI the signout require UI to complete. So calling this in main thread.
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else {
-                    return
-                }
-                self.signOutWithUI(completionHandler)
+        // If user is signed in through HostedUI the signout require UI to complete. So calling this in main thread.
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
             }
-        } else {
-            awsMobileClient.signOutLocally()
-            completionHandler(.success(()))
+            self.signOutWithUI(isGlobalSignout: request.options.globalSignOut,
+                               completionHandler: completionHandler)
         }
     }
 
-    private func signOutWithUI(_ completionHandler: @escaping (Result<Void, AuthError>) -> Void) {
+    private func signOutWithUI(isGlobalSignout: Bool, completionHandler: @escaping (Result<Void, AuthError>) -> Void) {
 
         // Stop the execution here if we are not running on the main thread.
         // There is no point on returning an error back to the developer, because
         // they do not control how the UI is presented.
         dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
 
-        let signOutOptions = SignOutOptions(signOutGlobally: true, invalidateTokens: true)
+        let signOutOptions = SignOutOptions(signOutGlobally: isGlobalSignout, invalidateTokens: true)
         awsMobileClient.signOut(options: signOutOptions) { [weak self] error in
             guard error == nil else {
                 let authError = AuthErrorHelper.toAuthError(error!)
