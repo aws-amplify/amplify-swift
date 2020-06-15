@@ -9,7 +9,7 @@
 import Amplify
 import Foundation
 
-public struct Section: Embedded {
+public struct Section: Embeddable {
     var name: String
     var number: Double
 }

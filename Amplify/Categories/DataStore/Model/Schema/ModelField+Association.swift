@@ -183,10 +183,10 @@ extension ModelField {
         return false
     }
 
-    public var embeddedType: Embedded.Type? {
+    public var embeddedType: Embeddable.Type? {
         switch type {
         case .embedded(let type), .embeddedCollection(let type):
-            if let embeddedType = type as? Embedded.Type {
+            if let embeddedType = type as? Embeddable.Type {
                 return embeddedType
             }
             return nil
@@ -196,12 +196,11 @@ extension ModelField {
     }
 
     public var isEmbeddedType: Bool {
-        if case .embedded = type {
+        switch type {
+        case .embedded, .embeddedCollection:
             return true
+        default:
+            return false
         }
-        if case .embeddedCollection = type {
-            return true
-        }
-        return false
     }
 }

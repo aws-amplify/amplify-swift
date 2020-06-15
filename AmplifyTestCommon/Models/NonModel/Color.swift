@@ -9,7 +9,7 @@
 import Amplify
 import Foundation
 
-public struct Color: Embedded {
+public struct Color: Embeddable {
   var name: String
   var red: Int
   var green: Int
