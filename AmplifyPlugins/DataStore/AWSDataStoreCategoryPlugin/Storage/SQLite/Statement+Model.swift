@@ -90,7 +90,7 @@ extension Statement: StatementModelConvertible {
                 let associations = schema.fields.values.filter {
                     $0.isArray && $0.hasAssociation
                 }
-                let prefix = field.name.replacingOccurrences(of: field.name, with: "")
+                let prefix = column.replacingOccurrences(of: field.name, with: "")
                 associations.forEach { association in
                     let associatedField = association.associatedField?.name
                     let lazyList = List<AnyModel>.lazyInit(associatedId: id,
