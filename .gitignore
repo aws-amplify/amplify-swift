@@ -36,7 +36,6 @@ package-lock.json
 ######################
 *credentials.json
 Pods
-Podfile.lock
 Documentation
 Scripts/build.sh
 Scripts/gcovr

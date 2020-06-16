@@ -1,21 +1,20 @@
+load '../../build-support/dependencies.rb'
+
 platform :ios, '11.0'
 use_frameworks!
 
-AWS_SDK_VERSION = "2.13.0"
-
-pod 'SwiftFormat/CLI'
-pod 'SwiftLint'
+include_build_tools!
 
 target 'AWSPinpointAnalyticsPlugin' do
     pod 'Amplify', :path => '../../'
     pod 'AWSPluginsCore', :path => '../../'
-    pod "AWSPinpoint", "~> #{AWS_SDK_VERSION}"
+    pod "AWSPinpoint", optimistic_version($AWS_SDK_VERSION)
 end
 
 target "HostApp" do
     use_frameworks!
-    pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
-    pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+    include_test_utilities!
+
     pod 'AmplifyTestCommon', :path => '../../'
     pod 'Amplify', :path => '../../'
     pod 'AWSPluginsCore', :path => '../../'

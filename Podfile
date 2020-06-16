@@ -1,18 +1,16 @@
+load 'build-support/dependencies.rb'
+
 platform :ios, "11.0"
 
 target "Amplify" do
-  AWS_SDK_VERSION = "2.13.4"
-
   # Comment the next line if you"re not using Swift and don"t want to use dynamic frameworks
   use_frameworks!
 
-  pod "SwiftFormat/CLI"
-  pod "SwiftLint"
+  include_build_tools!
 
   abstract_target "AmplifyTestConfigs" do
-    pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
-    pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
-    pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
+    include_test_utilities!
+    pod "AWSMobileClient", optimistic_version($AWS_SDK_VERSION)
     
     target "AmplifyTestCommon" do
     end
@@ -29,11 +27,10 @@ target "Amplify" do
     inherit! :complete
     use_frameworks!
 
-    pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
+    pod "AWSMobileClient", optimistic_version($AWS_SDK_VERSION)
 
     abstract_target "AWSPluginsTestConfigs" do
-      pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
-      pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+      include_test_utilities!
 
       target "AWSPluginsCoreTests" do
       end
@@ -48,7 +45,6 @@ end
 
 target "AmplifyTestApp" do
   use_frameworks!
-  pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
-  pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
-  pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+  pod "AWSMobileClient", optimistic_version($AWS_SDK_VERSION)
+  include_test_utilities!
 end
