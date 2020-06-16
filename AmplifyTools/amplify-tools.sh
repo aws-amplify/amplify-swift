@@ -18,9 +18,9 @@ if [ -f "${NVM_PATH}" ]; then
   source "${NVM_PATH}"
 fi
 
-export PATH=$PATH:$(npm bin -g)
-
 set -e
+
+export PATH=$PATH:$(npm bin -g)
 
 # Note the use of tail -1 is important here because when upgrading between versions
 # the first time that you run these commands, we have seen this variable take on the value of:
