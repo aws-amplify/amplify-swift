@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file. See [standa
 ### Bug Fixes
 
 * **DataStore:** Fixed a DataStore issue where lazy `List<M>` initialization would fail for relationships 3+ levels deep ([#534](https://github.com/aws-amplify/amplify-ios/pull/534))
+* **DataStore, API:** Add Emeddable type to store schema info for custom types ([#539](https://github.com/aws-amplify/amplify-ios/pull/539))
 
 ## 1.0.1 (2020-06-05)
 
