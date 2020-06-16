@@ -5,12 +5,20 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-set -e
 
 if ! which node >/dev/null; then
   echo "warning: Node is not installed. Visit https://nodejs.org/en/download/ to install it"
   exit 1
 fi
+
+# Check for NVM and make sure it's initialized
+NVM_PATH="${HOME}/.nvm/nvm.sh"
+if [ -f "${NVM_PATH}" ]; then
+  echo "NVM found, initializing it..."
+  source "${NVM_PATH}"
+fi
+
+set -e
 
 export PATH=$PATH:$(npm bin -g)
 

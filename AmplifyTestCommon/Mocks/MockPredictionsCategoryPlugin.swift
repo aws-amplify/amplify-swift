@@ -11,7 +11,7 @@ import Foundation
 
 class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin {
 
-    func configure(using configuration: Any) throws {
+    func configure(using configuration: Any?) throws {
         notify()
     }
 

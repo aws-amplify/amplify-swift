@@ -417,4 +417,22 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.invalidRegion.errorDescription)
         }
     }
+
+    func testThrowsOnMissingConfig() throws {
+        let plugin = AWSPinpointAnalyticsPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let categoryConfig = AnalyticsCategoryConfiguration(plugins: ["NonExistentPlugin": true])
+        let amplifyConfig = AmplifyConfiguration(analytics: categoryConfig)
+        do {
+            try Amplify.configure(amplifyConfig)
+            XCTFail("Should have thrown a pluginConfigurationError if not supplied with a plugin-specific config.")
+        } catch {
+            guard case PluginError.pluginConfigurationError = error else {
+                XCTFail("Should have thrown a pluginConfigurationError if not supplied with a plugin-specific config.")
+                return
+            }
+        }
+    }
+
 }

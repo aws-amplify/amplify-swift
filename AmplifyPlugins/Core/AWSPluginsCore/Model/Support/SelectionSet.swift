@@ -13,6 +13,7 @@ public typealias SelectionSet = Tree<SelectionSetField>
 public enum SelectionSetFieldType {
     case pagination
     case model
+    case embedded
     case value
 }
 
@@ -35,7 +36,11 @@ extension SelectionSet {
 
     func withModelFields(_ fields: [ModelField]) {
         fields.forEach { field in
-            if field.isAssociationOwner, let associatedModel = field.associatedModel {
+            if field.isEmbeddedType, let embeddedType = field.embeddedType {
+                let child = SelectionSet(value: .init(name: field.name, fieldType: .embedded))
+                child.withCodableFields(embeddedType.schema.sortedFields)
+                self.addChild(settingParentOf: child)
+            } else if field.isAssociationOwner, let associatedModel = field.associatedModel {
                 let child = SelectionSet(value: .init(name: field.name, fieldType: .model))
                 child.withModelFields(associatedModel.schema.graphQLFields)
                 self.addChild(settingParentOf: child)
@@ -44,6 +49,19 @@ extension SelectionSet {
             }
         }
 
+        addChild(settingParentOf: .init(value: .init(name: "__typename", fieldType: .value)))
+    }
+
+    func withCodableFields(_ fields: [ModelField]) {
+        fields.forEach { field in
+            if field.isEmbeddedType, let embeddedType = field.embeddedType {
+                let child = SelectionSet(value: .init(name: field.name, fieldType: .embedded))
+                child.withCodableFields(embeddedType.schema.sortedFields)
+                self.addChild(settingParentOf: child)
+            } else {
+                self.addChild(settingParentOf: .init(value: .init(name: field.name, fieldType: .value)))
+            }
+        }
         addChild(settingParentOf: .init(value: .init(name: "__typename", fieldType: .value)))
     }
 
@@ -68,7 +86,7 @@ extension SelectionSet {
         let indent = indentSize == 0 ? "" : String(repeating: "  ", count: indentSize)
 
         switch value.fieldType {
-        case .model, .pagination:
+        case .model, .pagination, .embedded:
             if let name = value.name {
                 result.append(indent + name + " {")
                 children.forEach { innerSelectionSetField in

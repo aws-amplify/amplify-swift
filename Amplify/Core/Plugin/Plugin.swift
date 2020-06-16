@@ -20,7 +20,7 @@ public protocol Plugin: CategoryTypeable, Resettable {
     /// handling potential conflicts with globally-specified options.
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If the plugin encounters an error during configuration
-    func configure(using configuration: Any) throws
+    func configure(using configuration: Any?) throws
 }
 
 /// Convenience typealias to clarify when Strings are being used as plugin keys

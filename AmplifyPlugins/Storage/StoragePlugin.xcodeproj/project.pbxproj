@@ -110,6 +110,7 @@
 		B4FEB6FE2375DA1600818CD2 /* AWSS3StorageServiceEscapeHatchBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6D82375DA1500818CD2 /* AWSS3StorageServiceEscapeHatchBehaviorTests.swift */; };
 		B4FEB6FF2375DA1600818CD2 /* AWSS3StorageServiceMultiPartUploadBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6D92375DA1500818CD2 /* AWSS3StorageServiceMultiPartUploadBehaviorTests.swift */; };
 		C7C8E0966435A67F3C443F6A /* Pods_AWSS3StoragePlugin_AWSS3StoragePluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A7357AE068121E124484319 /* Pods_AWSS3StoragePlugin_AWSS3StoragePluginTests.framework */; };
+		FA11225C24944BEB00492048 /* AWSS3StoragePluginBaseConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA11225B24944BEB00492048 /* AWSS3StoragePluginBaseConfigTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -268,6 +269,7 @@
 		E0B21A30E0704D952D3DE1C3 /* Pods-HostApp-AWSS3StoragePluginFunctionalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSS3StoragePluginFunctionalTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSS3StoragePluginFunctionalTests/Pods-HostApp-AWSS3StoragePluginFunctionalTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F2499EEE6F1A16D91ABBEC87 /* Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPluginTests/Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F899D288C85D558A4322DDB6 /* Pods-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePlugin-AWSS3StoragePluginTests/Pods-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig"; sourceTree = "<group>"; };
+		FA11225B24944BEB00492048 /* AWSS3StoragePluginBaseConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginBaseConfigTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -561,6 +563,7 @@
 		B4FEB6AA2375DA1500818CD2 /* AWSS3StoragePluginTests */ = {
 			isa = PBXGroup;
 			children = (
+				FA11225B24944BEB00492048 /* AWSS3StoragePluginBaseConfigTests.swift */,
 				B4FEB6C12375DA1500818CD2 /* AWSS3StoragePluginClientBehaviorTests.swift */,
 				B4FEB6C02375DA1500818CD2 /* AWSS3StoragePluginConfigureTests.swift */,
 				B4FEB6BF2375DA1500818CD2 /* AWSS3StoragePluginResetTests.swift */,
@@ -1205,6 +1208,7 @@
 				B4FEB6F12375DA1600818CD2 /* AWSS3StorageRemoveRequestTests.swift in Sources */,
 				B4FEB6FC2375DA1600818CD2 /* AWSS3StorageServiceDownloadBehaviorTests.swift in Sources */,
 				B4FEB6E12375DA1500818CD2 /* AWSS3StorageGetURLOperationTests.swift in Sources */,
+				FA11225C24944BEB00492048 /* AWSS3StoragePluginBaseConfigTests.swift in Sources */,
 				B4FEB6E52375DA1500818CD2 /* AWSS3StorageOperationTestBase.swift in Sources */,
 				B4FEB6FE2375DA1600818CD2 /* AWSS3StorageServiceEscapeHatchBehaviorTests.swift in Sources */,
 				B4FEB6EE2375DA1500818CD2 /* StorageRequestUtilsGetterTests.swift in Sources */,

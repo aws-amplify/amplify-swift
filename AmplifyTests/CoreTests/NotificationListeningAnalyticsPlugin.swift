@@ -16,7 +16,7 @@ class NotificationListeningAnalyticsPlugin: AnalyticsCategoryPlugin {
         self.notificationReceived = notificationReceived
     }
 
-    func configure(using configuration: Any) throws {
+    func configure(using configuration: Any?) throws {
         let isConfigured = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
 
         var token: UnsubscribeToken?

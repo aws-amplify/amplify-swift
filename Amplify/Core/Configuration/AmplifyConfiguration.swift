@@ -145,4 +145,21 @@ extension Amplify {
 
         try configurable.configure(using: configuration)
     }
+
+    /// Configures a list of plugins with the specified CategoryConfiguration. If any configurations do not match the
+    /// specified plugins, emits a log warning.
+    static func configure(plugins: [Plugin], using configuration: CategoryConfiguration) throws {
+        var pluginConfigurations = configuration.plugins
+
+        for plugin in plugins {
+            let pluginConfiguration = pluginConfigurations[plugin.key]
+            try plugin.configure(using: pluginConfiguration)
+            pluginConfigurations.removeValue(forKey: plugin.key)
+        }
+
+        for unusedPluginKey in pluginConfigurations.keys {
+            log.warn("No plugin found for configuration key `\(unusedPluginKey)`. Add a plugin for that key.")
+        }
+    }
+
 }

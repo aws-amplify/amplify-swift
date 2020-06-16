@@ -49,6 +49,16 @@ extension Model {
                 // TODO how to handle associations of type "many" (i.e. cascade save)?
                 // This is not supported right now and might be added as a future feature
                 break
+            case .embedded, .embeddedCollection:
+                if let encodable = value as? Encodable {
+                    let jsonEncoder = JSONEncoder(dateEncodingStrategy: ModelDateFormatting.encodingStrategy)
+                    do {
+                        let data = try jsonEncoder.encode(encodable.eraseToAnyEncodable())
+                        input[name] = try JSONSerialization.jsonObject(with: data)
+                    } catch {
+                        preconditionFailure("Could not turn into json object from \(value)")
+                    }
+                }
             default:
                 input[name] = value
             }

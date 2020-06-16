@@ -45,8 +45,8 @@ final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
     }
 
     /// For protocol conformance only--this plugin has no applicable configurations
-    public func configure(using configuration: Any) throws {
-        return
+    public func configure(using configuration: Any?) throws {
+        // Do nothing
     }
 
     /// Removes listeners and empties the message queue

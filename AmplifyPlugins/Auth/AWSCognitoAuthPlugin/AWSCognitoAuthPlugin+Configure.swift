@@ -17,10 +17,12 @@ extension AWSCognitoAuthPlugin {
     /// - Parameter configuration: The configuration specified for this plugin
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
-    public func configure(using configuration: Any) throws {
+    public func configure(using configuration: Any?) throws {
         guard let jsonValueConfiguration = configuration as? JSONValue else {
-            throw AuthError.configuration(AuthPluginErrorConstants.decodeConfigurationError.errorDescription,
-                                          AuthPluginErrorConstants.decodeConfigurationError.recoverySuggestion)
+            throw PluginError.pluginConfigurationError(
+                AuthPluginErrorConstants.decodeConfigurationError.errorDescription,
+                AuthPluginErrorConstants.decodeConfigurationError.recoverySuggestion
+            )
         }
         do {
             // Convert the JSONValue to [String: Any] dictionary to be used by AWSMobileClient

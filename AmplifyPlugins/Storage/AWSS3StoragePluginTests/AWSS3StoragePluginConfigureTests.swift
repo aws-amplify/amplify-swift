@@ -50,7 +50,7 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
 
     func testConfigureThrowsErrorForMissingConfiguration() {
         XCTAssertThrowsError(try storagePlugin.configure(using: "")) { error in
-            guard case let StorageError.configuration(errorDescription, _, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
