@@ -82,25 +82,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     public func configure(using amplifyConfiguration: Any) throws {
         modelRegistration.registerModels(registry: ModelRegistry.self)
         resolveSyncEnabled()
+
         try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
-//        ///
-        // if there is existing stored value, take it otherwise set as ""
-//        let oldVersion = schemaVersion.string(forKey: "Version")
-//        guard oldVersion != nil else {
-//            schemaVersion.set("", forKey: "Version")
-//
-////            try storageEngine.setUp(models: ModelRegistry.models)
-//            return
-//        }
-//
-//        let newVersion = modelRegistration.version
-//        if oldVersion != newVersion {
-//            storageEngine.clear(completion: { _ in })
-//            try storageEngine.setUp(models: ModelRegistry.models)
-//            schemaVersion.set(newVersion, forKey: "Version")
-//        }
-//
-//        ///
 
         try storageEngine.setUp(models: ModelRegistry.models)
 

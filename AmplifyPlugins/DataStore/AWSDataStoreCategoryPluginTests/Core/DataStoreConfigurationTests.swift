@@ -1,16 +1,8 @@
-//
-// Copyright 2018-2020 Amazon.com,
-// Inc. or its affiliates. All Rights Reserved.
-//
-// SPDX-License-Identifier: Apache-2.0
-//
-
 ////
-////  StorageEngineTests.swift
-////  AWSDataStoreCategoryPluginTests
+//// Copyright 2018-2020 Amazon.com,
+//// Inc. or its affiliates. All Rights Reserved.
 ////
-////  Created by Guo, Rui on 6/12/20.
-////  Copyright © 2020 Amazon Web Services. All rights reserved.
+//// SPDX-License-Identifier: Apache-2.0
 ////
 //
 //import XCTest
@@ -18,10 +10,7 @@
 //@testable import AmplifyTestCommon
 //@testable import AWSDataStoreCategoryPlugin
 //
-//
 //class DataStoreConfigurationTests: XCTestCase {
-//
-//
 //
 //    func testDatabaseRecreation() throws {
 //        // This is an example of a functional test case.
@@ -62,7 +51,7 @@
 //        SQLiteStorageEngineAdapter(connection: Connection, dbFilePath: URL?)
 ////        StorageEngine(isSyncEnabled: false, dataStoreConfiguration: T##DataStoreConfiguration, newVersion: newVersion)
 //
-//        Amplify.DataStore.query(Post.self, completion: { res in
+//        Amplify.DataStore.query(Post.self, completion: { result in
 //            switch result {
 //            case .success(let posts):
 //                print("Posts retrieved successfully: \(posts)")

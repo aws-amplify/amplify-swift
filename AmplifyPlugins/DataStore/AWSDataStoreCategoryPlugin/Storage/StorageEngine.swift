@@ -86,16 +86,20 @@ final class StorageEngine: StorageEngineBehavior {
 
         let dbFilePath = SQLiteStorageEngineAdapter.getFilePath(databaseName: databaseName ?? "app")
 
-        let oldVersion = userDefault.string(forKey: "Version")
-
-        if oldVersion != "" && oldVersion != newVersion {
-            let fileManager = FileManager.default
-            do {
-                try fileManager.removeItem(at: dbFilePath!)
-                StorageEngine.log.verbose("Warning: Recreating database since there is a shcema change detected, your previous data will be gone")
-            } catch {
-                StorageEngine.log.error("Failed to delete database file located at: \(dbFilePath!), error: \(error)")
-            }
+        let result = VersionHelper.deleteDBIfRequired(newVersion: newVersion,
+                                         dbFilePath: dbFilePath!)
+        
+        switch result {
+        case .success(.DataBaseDeleteAndVersionUpdated):
+            UserDefaults.standard.set(newVersion, forKey: "Version")
+            UserDefaults.standard.synchronize()
+        case .success(.DatabaseFirstTimeCreation):
+            UserDefaults.standard.set(newVersion, forKey: "Version")
+            UserDefaults.standard.synchronize()
+        case .success(.VersionUnchanged):
+            break
+        case .failure(let error):
+            StorageEngine.log.error("Failed to delete database file located at: \(dbFilePath!), error: \(error)")
         }
 
         let storageAdapter = try SQLiteStorageEngineAdapter(databaseName: databaseName ?? "app")
@@ -119,9 +123,6 @@ final class StorageEngine: StorageEngineBehavior {
                       validAPIPluginKey: validAPIPluginKey,
                       validAuthPluginKey: validAuthPluginKey)
         }
-
-        UserDefaults.standard.set(newVersion, forKey: "Version")
-        UserDefaults.standard.synchronize()
     }
 
     @available(iOS 13.0, *)
