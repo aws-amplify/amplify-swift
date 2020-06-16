@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## Unreleased
 
+### ⚠ BREAKING CHANGES
+* **Tools:** Update Amplify tools script to resolve min CLI version for codegen changes ([#554](https://github.com/aws-amplify/amplify-ios/pull/554))
+
 ### Bug Fixes
 
 * **DataStore:** Fixed a DataStore issue where lazy `List<M>` initialization would fail for relationships 3+ levels deep ([#534](https://github.com/aws-amplify/amplify-ios/pull/534))
