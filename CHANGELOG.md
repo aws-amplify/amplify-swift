@@ -4,10 +4,13 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## Unreleased
 
+### ⚠ BREAKING CHANGES
+* **DataStore/API** category using generated Model classes from Amplify CLI will require the minimum Amplify CLI version of x.x.x. Current implementations do not expect the field types `embedded(type:)` and `embeddedCollection(of:)` that will break with compile time error. When upgrading Amplify Library, please upgrade Amplify CLI before running `amplify codegen models` to codegen the new `Embeddable` types.
+
 ### Bug Fixes
 
 * **DataStore:** Fixed a DataStore issue where lazy `List<M>` initialization would fail for relationships 3+ levels deep ([#534](https://github.com/aws-amplify/amplify-ios/pull/534))
-* **DataStore, API:** Add Emeddable type to store schema info for custom types ([#539](https://github.com/aws-amplify/amplify-ios/pull/539))
+* **DataStore/API:** Add Emeddable type to store schema info for custom types ([#539](https://github.com/aws-amplify/amplify-ios/pull/539))
 
 ## 1.0.1 (2020-06-05)
 
