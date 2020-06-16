@@ -26,7 +26,7 @@ class MockLoggingCategoryPlugin: MessageReporter, LoggingCategoryPlugin, Logger 
         return "MockLoggingCategoryPlugin"
     }
 
-    func configure(using configuration: Any) throws {
+    func configure(using configuration: Any?) throws {
         notify()
     }
 
@@ -36,27 +36,27 @@ class MockLoggingCategoryPlugin: MessageReporter, LoggingCategoryPlugin, Logger 
     }
 
     func error(_ message: @autoclosure () -> String) {
-        notify()
+        notify("\(#function): \(message())")
     }
 
     func error(error: Error) {
-        notify()
+        notify("error(error:): \(error)")
     }
 
     func warn(_ message: @autoclosure () -> String) {
-        notify()
+        notify("\(#function): \(message())")
     }
 
     func info(_ message: @autoclosure () -> String) {
-        notify()
+        notify("\(#function): \(message())")
     }
 
     func debug(_ message: @autoclosure () -> String) {
-        notify()
+        notify("\(#function): \(message())")
     }
 
     func verbose(_ message: @autoclosure () -> String) {
-        notify()
+        notify("\(#function): \(message())")
     }
 }
 

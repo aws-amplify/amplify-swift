@@ -26,18 +26,7 @@ extension LoggingCategory: CategoryConfigurable {
                 throw error
             }
 
-            guard let pluginConfiguration = configuration.plugins[plugin.key] else {
-                throw LoggingError.configuration(
-                    "No configuration found for added plugin `\(plugin.key)`",
-                    """
-                    Either fix the configuration file to specify the plugin's key value of '\(plugin.key)',
-                    or add a plugin with one of the keys specified in the configuration:
-                    \(configuration.plugins.keys.joined(separator: ", "))
-                    """
-                )
-            }
-
-            try plugin.configure(using: pluginConfiguration)
+            try plugin.configure(using: configuration.plugins[plugin.key])
             self.plugin = plugin
             configurationState = .configured
         }

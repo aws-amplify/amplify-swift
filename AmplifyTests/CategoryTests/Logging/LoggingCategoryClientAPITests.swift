@@ -31,7 +31,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "error(_:)" {
+            if message.starts(with: "error(_:)") {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -48,7 +48,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "error(error:)" {
+            if message.starts(with: "error(error:)") {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -66,7 +66,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "warn(_:)" {
+            if message.starts(with: "warn(_:)") {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -83,7 +83,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "info(_:)" {
+            if message.starts(with: "info(_:)") {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -100,7 +100,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "debug(_:)" {
+            if message.starts(with: "debug(_:)") {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -117,7 +117,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "verbose(_:)" {
+            if message.starts(with: "verbose(_:)") {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -130,9 +130,12 @@ class LoggingCategoryClientAPITests: XCTestCase {
     // MARK: - Other tests
 
     func testAmplifyDoesNotEvaluateMessageAutoclosureForLoggingStatements() throws {
-        let plugin = MockLoggingCategoryPlugin()
+        let plugin = NonEvaluatingLoggingPlugin()
         try Amplify.add(plugin: plugin)
-        try Amplify.configure(mockAmplifyConfig)
+
+        let categoryConfig = LoggingCategoryConfiguration(plugins: [plugin.key: true])
+        let amplifyConfig = AmplifyConfiguration(logging: categoryConfig)
+        try Amplify.configure(amplifyConfig)
 
         let messageWasEvaluated = expectation(description: "message should not be evaluated")
         messageWasEvaluated.isInverted = true
@@ -141,16 +144,57 @@ class LoggingCategoryClientAPITests: XCTestCase {
         waitForExpectations(timeout: 0.5)
     }
 
-    func testAmplifyDoesNotEvaluateMessageAutoclosureForNonLoggingStatements() throws {
-        let plugin = MockLoggingCategoryPlugin()
-        try Amplify.add(plugin: plugin)
-        try Amplify.configure(mockAmplifyConfig)
+}
 
-        let messageWasEvaluated = expectation(description: "message should not be evaluated")
-        messageWasEvaluated.isInverted = true
-        Amplify.Logging.info("Should not evaluate \(messageWasEvaluated.fulfill())")
+// A bare class that does not forward or evaluate message autoclosure. Used to test that Amplify, as
+// a framework, does not evaluate the autoclosure
+class NonEvaluatingLoggingPlugin: LoggingCategoryPlugin, Logger {
+    var logLevel = LogLevel.error
 
-        waitForExpectations(timeout: 0.5)
+    let key = "NonEvaluatingLoggingPlugin"
+
+    func configure(using configuration: Any?) throws {
+        // Do nothing
+    }
+
+    var `default`: Logger {
+        self
+    }
+
+    func logger(forCategory category: String) -> Logger {
+        self
+    }
+
+    func logger(forCategory category: String, logLevel: LogLevel) -> Logger {
+        self
+    }
+
+    func reset(onComplete: @escaping BasicClosure) {
+        onComplete()
+    }
+
+    func error(_ message: @autoclosure () -> String) {
+        // Do nothing
+    }
+
+    func error(error: Error) {
+        // Do nothing
+    }
+
+    func warn(_ message: @autoclosure () -> String) {
+        // Do nothing
+    }
+
+    func info(_ message: @autoclosure () -> String) {
+        // Do nothing
+    }
+
+    func debug(_ message: @autoclosure () -> String) {
+        // Do nothing
+    }
+
+    func verbose(_ message: @autoclosure () -> String) {
+        // Do nothing
     }
 
 }

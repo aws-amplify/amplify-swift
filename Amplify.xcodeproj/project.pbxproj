@@ -2834,9 +2834,9 @@
 		FAC2354C227A056600424678 /* CategoryTests */ = {
 			isa = PBXGroup;
 			children = (
-				B4F3E9F624314E1300F23296 /* Auth */,
 				FAC2355D227A056600424678 /* Analytics */,
 				FAC23555227A056600424678 /* API */,
+				B4F3E9F624314E1300F23296 /* Auth */,
 				FAD3937B23820CE200463F5E /* DataStore */,
 				FAC23584227A442000424678 /* Hub */,
 				FAC23559227A056600424678 /* Logging */,
@@ -2956,9 +2956,9 @@
 			isa = PBXGroup;
 			children = (
 				FA607FE1233D131B00DFEA24 /* AmplifyOperationHubTests.swift */,
-				FACF52052329652600646E10 /* DefaultPluginTests */,
 				FAC23585227A443200424678 /* HubCategoryConfigurationTests.swift */,
 				FAC23587227A446C00424678 /* HubClientAPITests.swift */,
+				FACF52052329652600646E10 /* DefaultPluginTests */,
 			);
 			path = Hub;
 			sourceTree = "<group>";

@@ -1,20 +1,19 @@
+load '../../build-support/dependencies.rb'
+
 platform :ios, '13.0'
 use_frameworks!
 
-AWS_SDK_VERSION = "2.13.0"
-
-pod 'SwiftFormat/CLI'
-pod 'SwiftLint'
+include_build_tools!
 
 target 'AWSPredictionsPlugin' do
   pod 'Amplify', :path => '../../'
   pod 'AWSPluginsCore', :path => '../../'
-  pod "AWSTranslate", "~> #{AWS_SDK_VERSION}"
-  pod "AWSRekognition", "~> #{AWS_SDK_VERSION}"
-  pod "AWSPolly", "~> #{AWS_SDK_VERSION}"
-  pod "AWSComprehend", "~> #{AWS_SDK_VERSION}"
-  pod "AWSTranscribeStreaming", "~> #{AWS_SDK_VERSION}"
-  pod "AWSTextract", "~> #{AWS_SDK_VERSION}"
+  pod "AWSTranslate", optimistic_version($AWS_SDK_VERSION)
+  pod "AWSRekognition", optimistic_version($AWS_SDK_VERSION)
+  pod "AWSPolly", optimistic_version($AWS_SDK_VERSION)
+  pod "AWSComprehend", optimistic_version($AWS_SDK_VERSION)
+  pod "AWSTranscribeStreaming", optimistic_version($AWS_SDK_VERSION)
+  pod "AWSTextract", optimistic_version($AWS_SDK_VERSION)
 end
 
 target 'CoreMLPredictionsPlugin' do
@@ -24,8 +23,7 @@ end
 
 target "HostApp" do
   use_frameworks!
-  pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
-  pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+  include_test_utilities!
   pod 'AmplifyTestCommon', :path => '../../'
 
   target "AWSPredictionsPluginIntegrationTests" do

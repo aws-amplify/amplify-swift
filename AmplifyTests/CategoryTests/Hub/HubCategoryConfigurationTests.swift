@@ -262,4 +262,38 @@ class HubCategoryConfigurationTests: XCTestCase {
         XCTAssertNoThrow(try Amplify.Hub.configure(using: categoryConfig))
     }
 
+    /// Test that Amplify logs a warning if it encounters a plugin configuration key without a corresponding plugin
+    ///
+    /// - Given:
+    ///   - A configuration with a nonexistent plugin key specified
+    /// - When:
+    ///    - I invoke `Amplify.configure()`
+    /// - Then:
+    ///    - I should see a log warning
+    ///
+    func testWarnsOnMissingPlugin() throws {
+        let warningReceived = expectation(description: "Warning message received")
+
+        let loggingPlugin = MockLoggingCategoryPlugin()
+        loggingPlugin.listeners.append { message in
+            if message.starts(with: "warn(_:): No plugin found") {
+                warningReceived.fulfill()
+            }
+        }
+        let loggingConfig = LoggingCategoryConfiguration(
+            plugins: [loggingPlugin.key: true]
+        )
+        try Amplify.add(plugin: loggingPlugin)
+
+        let categoryConfig = HubCategoryConfiguration(
+            plugins: ["NonExistentPlugin": true]
+        )
+
+        let amplifyConfig = AmplifyConfiguration(hub: categoryConfig, logging: loggingConfig)
+
+        try Amplify.configure(amplifyConfig)
+
+        waitForExpectations(timeout: 0.1)
+    }
+
 }

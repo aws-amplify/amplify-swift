@@ -922,6 +922,7 @@
 		B4DFA5BE237A611D0013E17B /* AWSAPICategoryPluginTests */ = {
 			isa = PBXGroup;
 			children = (
+				B4DFA5DD237A611D0013E17B /* Info.plist */,
 				B4DFA5DE237A611D0013E17B /* AWSAPICategoryPlugin+ConfigureTests.swift */,
 				B4DFA5CC237A611D0013E17B /* AWSAPICategoryPlugin+GraphQLBehaviorTests.swift */,
 				B4DFA5C9237A611D0013E17B /* AWSAPICategoryPlugin+InterceptorBehaviorTests.swift */,
@@ -932,7 +933,6 @@
 				B4DFA5CB237A611D0013E17B /* AWSAPICategoryPluginTestBase.swift */,
 				FA9554E1238B6C1200D42A43 /* Concurrency */,
 				B4DFA5C6237A611D0013E17B /* Configuration */,
-				B4DFA5DD237A611D0013E17B /* Info.plist */,
 				B4DFA5D9237A611D0013E17B /* Interceptor */,
 				B4DFA5BF237A611D0013E17B /* Mocks */,
 				B4DFA5C3237A611D0013E17B /* Operation */,

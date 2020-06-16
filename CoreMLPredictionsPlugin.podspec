@@ -1,6 +1,6 @@
-Pod::Spec.new do |s|
-  AMPLIFY_VERSION = '1.0.1'
+load 'build-support/dependencies.rb'
 
+Pod::Spec.new do |s|
   s.name         = 'CoreMLPredictionsPlugin'
 
   s.version      = AMPLIFY_VERSION
@@ -8,10 +8,10 @@ Pod::Spec.new do |s|
 
   s.description  = 'AWS Amplify for iOS provides a declarative library for application development using cloud services'
 
-  s.homepage     = 'https://aws.amazon.com/amplify/'
+  s.homepage     = 'https://github.com/aws-amplify/amplify-ios'
   s.license      = 'Apache License, Version 2.0'
   s.author       = { 'Amazon Web Services' => 'amazonwebservices' }
-  s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => s.version}
+  s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => release_tag() }
 
   s.platform     = :ios, '13.0'
   s.swift_version = '5.0'

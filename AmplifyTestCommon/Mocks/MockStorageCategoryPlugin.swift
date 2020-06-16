@@ -87,7 +87,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         return "MockStorageCategoryPlugin"
     }
 
-    func configure(using configuration: Any) throws {
+    func configure(using configuration: Any?) throws {
         notify()
     }
 

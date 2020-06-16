@@ -6,18 +6,17 @@
 //
 
 import XCTest
+import Amplify
+import AWSCognitoAuthPlugin
 
-@testable import Amplify
-@testable import AWSAPICategoryPlugin
-
-class AWSAPICategoryPluginConfigurationTests: XCTestCase {
+class AWSCognitoAuthPluginConfigTests: XCTestCase {
 
     func testThrowsOnMissingConfig() throws {
-        let plugin = AWSAPIPlugin()
+        let plugin = AWSCognitoAuthPlugin()
         try Amplify.add(plugin: plugin)
 
-        let categoryConfig = APICategoryConfiguration(plugins: ["NonExistentPlugin": true])
-        let amplifyConfig = AmplifyConfiguration(api: categoryConfig)
+        let categoryConfig = AuthCategoryConfiguration(plugins: ["NonExistentPlugin": true])
+        let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
         do {
             try Amplify.configure(amplifyConfig)
             XCTFail("Should have thrown a pluginConfigurationError if not supplied with a plugin-specific config.")
