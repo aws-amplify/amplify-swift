@@ -6,7 +6,7 @@
 #  To see working Podspecs in the CocoaPods repo see https://github.com/CocoaPods/Specs/
 #
 
-load 'dependencies.rb'
+load 'build-support/dependencies.rb'
 
 Pod::Spec.new do |s|
   s.name         = 'AWSPluginsCore'

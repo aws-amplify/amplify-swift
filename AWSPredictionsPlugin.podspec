@@ -1,4 +1,4 @@
-load 'dependencies.rb'
+load 'build-support/dependencies.rb'
 
 Pod::Spec.new do |s|
   s.name         = 'AWSPredictionsPlugin'

@@ -1,4 +1,4 @@
-load '../../dependencies.rb'
+load '../../build-support/dependencies.rb'
 
 platform :ios, '13.0'
 use_frameworks!
