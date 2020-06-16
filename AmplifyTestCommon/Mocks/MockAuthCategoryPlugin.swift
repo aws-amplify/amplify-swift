@@ -165,7 +165,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         return "MockAuthCategoryPlugin"
     }
 
-    func configure(using configuration: Any) throws {
+    func configure(using configuration: Any?) throws {
         notify()
     }
 

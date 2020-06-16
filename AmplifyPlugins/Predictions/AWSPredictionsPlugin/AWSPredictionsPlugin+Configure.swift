@@ -20,7 +20,7 @@ extension AWSPredictionsPlugin {
     /// - Parameter configuration: The configuration specified for this plugin
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
-    public func configure(using configuration: Any) throws {
+    public func configure(using configuration: Any?) throws {
 
         guard let jsonValueConfiguration = configuration as? JSONValue else {
             throw PluginError.pluginConfigurationError(PluginErrorMessage.decodeConfigurationError.errorDescription,

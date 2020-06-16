@@ -14,7 +14,7 @@ class MockHubCategoryPlugin: MessageReporter, HubCategoryPlugin {
         return "MockHubCategoryPlugin"
     }
 
-    func configure(using configuration: Any) throws {
+    func configure(using configuration: Any?) throws {
         notify()
     }
 
