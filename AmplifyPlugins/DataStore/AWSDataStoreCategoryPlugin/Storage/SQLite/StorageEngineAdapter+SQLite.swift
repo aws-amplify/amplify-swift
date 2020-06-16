@@ -22,6 +22,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
         }
         var dbFilePath = documentsPath.appendingPathComponent("\(databaseName).db")
+
         let path = dbFilePath.absoluteString
 
         let connection: Connection
@@ -60,6 +61,14 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         """
 
         try connection.execute(databaseInitializationStatement)
+    }
+
+    static func getFilePath(databaseName: String = "database") -> URL? {
+        guard let documentsPath = getDocumentPath() else {
+            preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
+        }
+        let dbFilePath = documentsPath.appendingPathComponent("\(databaseName).db")
+        return dbFilePath
     }
 
     func setUp(models: [Model.Type]) throws {

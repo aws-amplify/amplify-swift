@@ -78,9 +78,26 @@ final class StorageEngine: StorageEngineBehavior {
     convenience init(isSyncEnabled: Bool,
                      dataStoreConfiguration: DataStoreConfiguration,
                      validAPIPluginKey: String = "awsAPIPlugin",
-                     validAuthPluginKey: String = "awsCognitoAuthPlugin") throws {
+                     validAuthPluginKey: String = "awsCognitoAuthPlugin",
+                     userDefault: UserDefaults = UserDefaults.standard,
+                     newVersion: String) throws {
         let key = kCFBundleNameKey as String
         let databaseName = Bundle.main.object(forInfoDictionaryKey: key) as? String
+
+        let dbFilePath = SQLiteStorageEngineAdapter.getFilePath(databaseName: databaseName ?? "app")
+
+        let oldVersion = userDefault.string(forKey: "Version")
+
+        if oldVersion != "" && oldVersion != newVersion {
+            let fileManager = FileManager.default
+            do {
+                try fileManager.removeItem(at: dbFilePath!)
+                StorageEngine.log.verbose("Warning: Recreating database since there is a shcema change detected, your previous data will be gone")
+            } catch {
+                StorageEngine.log.error("Failed to delete database file located at: \(dbFilePath!), error: \(error)")
+            }
+        }
+
         let storageAdapter = try SQLiteStorageEngineAdapter(databaseName: databaseName ?? "app")
 
         try storageAdapter.setUp(models: StorageEngine.systemModels)
@@ -102,6 +119,9 @@ final class StorageEngine: StorageEngineBehavior {
                       validAPIPluginKey: validAPIPluginKey,
                       validAuthPluginKey: validAuthPluginKey)
         }
+
+        UserDefaults.standard.set(newVersion, forKey: "Version")
+        UserDefaults.standard.synchronize()
     }
 
     @available(iOS 13.0, *)

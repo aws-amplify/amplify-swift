@@ -52,6 +52,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.isSyncEnabled = false
         self.validAPIPluginKey =  "awsAPIPlugin"
         self.validAuthPluginKey = "awsCognitoAuthPlugin"
+
         if #available(iOS 13.0, *) {
             self.dataStorePublisher = DataStorePublisher()
         } else {
@@ -82,6 +83,24 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         modelRegistration.registerModels(registry: ModelRegistry.self)
         resolveSyncEnabled()
         try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
+//        ///
+        // if there is existing stored value, take it otherwise set as ""
+//        let oldVersion = schemaVersion.string(forKey: "Version")
+//        guard oldVersion != nil else {
+//            schemaVersion.set("", forKey: "Version")
+//
+////            try storageEngine.setUp(models: ModelRegistry.models)
+//            return
+//        }
+//
+//        let newVersion = modelRegistration.version
+//        if oldVersion != newVersion {
+//            storageEngine.clear(completion: { _ in })
+//            try storageEngine.setUp(models: ModelRegistry.models)
+//            schemaVersion.set(newVersion, forKey: "Version")
+//        }
+//
+//        ///
 
         try storageEngine.setUp(models: ModelRegistry.models)
 
@@ -119,7 +138,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled,
                                           dataStoreConfiguration: dataStoreConfiguration,
                                           validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+                                          validAuthPluginKey: validAuthPluginKey,
+                                          newVersion: modelRegistration.version)
         if #available(iOS 13.0, *) {
             setupStorageSink()
         }
