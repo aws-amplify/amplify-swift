@@ -43,4 +43,33 @@ class ModelGraphQLTests: XCTestCase {
         XCTAssertTrue(graphQLInput.keys.contains("updatedAt"))
         XCTAssertNil(graphQLInput["updatedAt"]!)
     }
+
+    func testTodoModelToGraphQLInputSuccess() {
+        let color = Color(name: "red", red: 255, green: 0, blue: 0)
+        let category = Category(name: "green", color: color)
+        let todo = Todo(name: "name",
+                        description: "description",
+                        categories: [category],
+                        stickies: ["stickie1"])
+
+        let graphQLInput = todo.graphQLInput
+
+        XCTAssertEqual(graphQLInput["id"] as? String, todo.id)
+        XCTAssertEqual(graphQLInput["name"] as? String, todo.name)
+        XCTAssertEqual(graphQLInput["description"] as? String, todo.description)
+        guard let categories = graphQLInput["categories"] as? [[String: Any]] else {
+            XCTFail("Couldn't get array of categories")
+            return
+        }
+        XCTAssertEqual(categories.count, 1)
+        XCTAssertEqual(categories[0]["name"] as? String, category.name)
+        guard let expectedColor = categories[0]["color"] as? [String: Any] else {
+            XCTFail("Couldn't get color in category")
+            return
+        }
+        XCTAssertEqual(expectedColor["name"] as? String, color.name)
+        XCTAssertEqual(expectedColor["red"] as? Int, color.red)
+        XCTAssertEqual(expectedColor["green"] as? Int, color.green)
+        XCTAssertEqual(expectedColor["blue"] as? Int, color.blue)
+    }
 }

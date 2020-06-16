@@ -51,7 +51,7 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
     /// Append the correct conflict resolution fields for `model` and `pagination` selection sets.
     private func addConflictResolution(selectionSet: SelectionSet) {
         switch selectionSet.value.fieldType {
-        case .value:
+        case .value, .embedded:
             break
         case .model:
             selectionSet.addChild(settingParentOf: .init(value: .init(name: "_version", fieldType: .value)))

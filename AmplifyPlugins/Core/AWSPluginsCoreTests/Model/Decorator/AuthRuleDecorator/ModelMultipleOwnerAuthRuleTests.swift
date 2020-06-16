@@ -49,7 +49,7 @@ public struct ModelMultipleOwner: Model {
         model.fields(
             .id(),
             .field(modelMultipleOwner.content, is: .required, ofType: .string),
-            .field(modelMultipleOwner.editors, is: .optional, ofType: .customType([String].self))
+            .field(modelMultipleOwner.editors, is: .optional, ofType: .embeddedCollection(of: String.self))
         )
     }
 }

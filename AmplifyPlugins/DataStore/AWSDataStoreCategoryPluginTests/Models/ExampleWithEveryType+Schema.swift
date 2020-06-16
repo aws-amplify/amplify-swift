@@ -41,8 +41,8 @@ extension ExampleWithEveryType {
             .field(example.boolField, is: .required, ofType: .bool),
             .field(example.dateField, is: .required, ofType: .date),
             .field(example.enumField, is: .required, ofType: .enum(type: ExampleEnum.self)),
-            .field(example.nonModelField, is: .required, ofType: .customType(ExampleNonModelType.self)),
-            .field(example.arrayOfStringsField, is: .required, ofType: .customType([String].self))
+            .field(example.nonModelField, is: .required, ofType: .embedded(type: ExampleNonModelType.self)),
+            .field(example.arrayOfStringsField, is: .required, ofType: .embeddedCollection(of: [String].self))
         )
     }
 
