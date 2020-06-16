@@ -190,10 +190,9 @@ class PredictionsPluginConfigurationTests: XCTestCase {
             try Amplify.configure(amplifyConfig)
             XCTFail("Should have thrown a pluginConfigurationError if not supplied with a plugin-specific config.")
         } catch {
-            if case PluginError.pluginConfigurationError = error {
-                // Pass
-            } else {
+            guard case PluginError.pluginConfigurationError = error else {
                 XCTFail("Should have thrown a pluginConfigurationError if not supplied with a plugin-specific config.")
+                return
             }
         }
     }

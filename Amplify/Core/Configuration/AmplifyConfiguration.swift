@@ -160,7 +160,6 @@ extension Amplify {
         for unusedPluginKey in pluginConfigurations.keys {
             log.warn("No plugin found for configuration key `\(unusedPluginKey)`. Add a plugin for that key.")
         }
-
     }
 
 }
