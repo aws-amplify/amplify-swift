@@ -1,5 +1,5 @@
 # Version definitions
-$AMPLIFY_VERSION = '1.0.1'
+$AMPLIFY_VERSION = '1.0.2'
 $AWS_SDK_VERSION = '2.13.4'
 
 # http://guides.cocoapods.org/using/the-podfile.html#specifying-pod-versions

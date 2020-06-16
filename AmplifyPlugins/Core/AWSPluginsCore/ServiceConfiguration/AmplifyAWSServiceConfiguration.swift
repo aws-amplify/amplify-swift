@@ -12,7 +12,7 @@ public class AmplifyAWSServiceConfiguration: AWSServiceConfiguration {
     override public class func baseUserAgent() -> String! {
         //TODO: Retrieve this version from a centralized location:
         //https://github.com/aws-amplify/amplify-ios/issues/276
-        let version = "1.0.1"
+        let version = "1.0.2"
         let sdkName = "amplify-iOS"
         let systemName = UIDevice.current.systemName.replacingOccurrences(of: " ", with: "-")
         let systemVersion = UIDevice.current.systemVersion
