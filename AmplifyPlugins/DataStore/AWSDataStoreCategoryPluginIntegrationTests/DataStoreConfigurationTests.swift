@@ -5,14 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-//
-//  DataStoreConfigurationTests.swift
-//  AWSDataStoreCategoryPluginIntegrationTests
-//
-//  Created by Guo, Rui on 6/15/20.
-//  Copyright © 2020 Amazon Web Services. All rights reserved.
-//
-
 import XCTest
 
 import AmplifyPlugins
@@ -25,96 +17,95 @@ import AWSPluginsCore
 
 class DataStoreConfigurationTests: XCTestCase {
 
-    func testConfigWithSameSchema() throws {
+    func testConfigureWithSameSchemaDoesNotDeleteDatabase() throws {
+        Amplify.reset()
 
-        let databaseCreationDone = expectation(description: "Old database deleted and new database recreated")
+        let prevoisVersion = "123"
+
+        let saveSuccess = expectation(description: "Save was successful")
 
         do {
-            let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels())
+            let dataStoreConfiguration = AmplifyConfiguration(dataStore: nil)
+            let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: prevoisVersion))
             try Amplify.add(plugin: dataStorePlugin)
-            try Amplify.configure()
-            print("Amplify configured with DataStore plugin")
+            try Amplify.configure(dataStoreConfiguration)
         } catch {
-            print("Failed to initialize Amplify with \(error)")
+            XCTFail("Failed to initialize Amplify with \(error)")
         }
 
-        let time: Temporal.DateTime = .now()
-        let post = Post(title: "title", content: "content", createdAt: time)
-        let id = post.id
+        let post = Post(title: "title", content: "content", createdAt: .now())
 
         Amplify.DataStore.save(post, completion: { result in
             switch result {
             case .success:
-                print("Post saved successfully!")
-                databaseCreationDone.fulfill()
+                saveSuccess.fulfill()
             case .failure(let error):
-                print("Error saving post \(error)")
+                XCTFail("Error saving post \(error)")
             }
         })
-        wait(for: [databaseCreationDone], timeout: 10)
+        wait(for: [saveSuccess], timeout: TestCommonConstants.networkTimeout)
 
         Amplify.reset()
 
-        let databaseRecreationDone = expectation(description: "Database remains")
+        let querySuccess = expectation(description: "Database remains")
         do {
-            let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels())
+            let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: prevoisVersion))
             try Amplify.add(plugin: dataStorePlugin)
             try Amplify.configure()
-            print("Amplify configured with DataStore plugin")
         } catch {
-            print("Failed to initialize Amplify with \(error)")
+            XCTFail("Failed to initialize Amplify with \(error)")
         }
 
-        Amplify.DataStore.query(Post.self, byId: id) { result in
+        Amplify.DataStore.query(Post.self, byId: post.id) { result in
             switch result {
-            case .success(let postRes):
-                XCTAssertNotNil(postRes)
-                XCTAssertEqual(postRes!.id, id)
-                XCTAssertEqual(postRes!.title, "title")
-                XCTAssertEqual(postRes!.content, "content")
-                XCTAssertEqual(postRes!.createdAt, time)
-                databaseRecreationDone.fulfill()
+            case .success(let postOptional):
+                querySuccess.fulfill()
+                guard let queriedPost = postOptional else {
+                    XCTFail("could not retrieve post across Amplify re-configure")
+                    return
+                }
+                XCTAssertEqual(queriedPost.title, "title")
+                XCTAssertEqual(queriedPost.content, "content")
+                XCTAssertEqual(queriedPost.createdAt, post.createdAt)
             case .failure(let error):
-                print("Error retrieving posts \(error)")
-                XCTFail("Database is not the same")
+                XCTFail("Database is not the same, this shouldn't happen, error: \(error)")
             }
         }
 
-        wait(for: [databaseRecreationDone], timeout: 10)
+        wait(for: [querySuccess], timeout: TestCommonConstants.networkTimeout)
 
         Amplify.DataStore.clear(completion: { _ in })
+        Amplify.reset()
     }
 
     func testConfigWithDifferentSchema() throws {
+        Amplify.reset()
 
-        let databaseCreationDone = expectation(description: "Database created")
+        UserDefaults.standard.removeObject(forKey: SQLiteStorageEngineAdapter.dbVersionKey)
+        let prevoisVersion = "123"
 
+        let saveSuccess = expectation(description: "Save was successful")
         do {
-            let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels())
+            let dataStoreConfiguration = AmplifyConfiguration(dataStore: nil)
+            let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: prevoisVersion))
             try Amplify.add(plugin: dataStorePlugin)
-            try Amplify.configure()
-            print("Amplify configured with DataStore plugin")
-            databaseCreationDone.fulfill()
+            try Amplify.configure(dataStoreConfiguration)
         } catch {
-            print("Failed to initialize Amplify with \(error)")
+            XCTFail("Failed to initialize Amplify with \(error)")
         }
-
-        wait(for: [databaseCreationDone], timeout: 10)
 
         let time = Temporal.DateTime.now()
         let post = Post(title: "title", content: "content", createdAt: time)
 
-        let saveToDatabaseDone = expectation(description: "Save data to Database done")
         Amplify.DataStore.save(post, completion: { result in
             switch result {
             case .success:
-                print("Post saved successfully!")
-                saveToDatabaseDone.fulfill()
+                saveSuccess.fulfill()
             case .failure(let error):
-                print("Error saving post \(error)")
+                XCTFail("Error saving post \(error)")
             }
         })
-        wait(for: [saveToDatabaseDone], timeout: 10)
+        wait(for: [saveSuccess], timeout: TestCommonConstants.networkTimeout)
 
         ModelRegistry.reset()
         Amplify.reset()
@@ -125,26 +116,26 @@ class DataStoreConfigurationTests: XCTestCase {
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: "1234"))
             try Amplify.add(plugin: dataStorePlugin)
             try Amplify.configure()
-            print("Amplify configured with DataStore plugin")
             databaseRecreationDone.fulfill()
         } catch {
-            print("Failed to initialize Amplify with \(error)")
+            XCTFail("Failed to initialize Amplify with \(error)")
         }
         wait(for: [databaseRecreationDone], timeout: 10)
 
-        let databaseRecreationSuccessful = expectation(description: "Old database deleted and new database recreated")
+        let querySuccess = expectation(description: "Old database deleted and new database recreated")
 
         Amplify.DataStore.query(Post.self) { result in
             switch result {
             case .success(let postRes):
                 XCTAssertTrue(postRes.isEmpty)
-                databaseRecreationSuccessful.fulfill()
+                querySuccess.fulfill()
             case .failure(let error):
-                print("Error retrieving posts \(error)")
                 XCTFail("Database Recreation Failed")
             }
         }
-        wait(for: [databaseRecreationSuccessful], timeout: 10)
+        wait(for: [querySuccess], timeout: TestCommonConstants.networkTimeout)
+
+        Amplify.DataStore.clear(completion: { _ in })
     }
 
 }

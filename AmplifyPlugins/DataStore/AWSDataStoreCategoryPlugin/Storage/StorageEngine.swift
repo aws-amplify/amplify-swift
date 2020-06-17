@@ -10,6 +10,7 @@ import Combine
 import Foundation
 import AWSPluginsCore
 
+// swiftlint:disable type_body_length
 final class StorageEngine: StorageEngineBehavior {
     // TODO: Make this private once we get a mutation flow that passes the type of mutation as needed
     let storageAdapter: StorageEngineAdapter
@@ -79,20 +80,20 @@ final class StorageEngine: StorageEngineBehavior {
                      dataStoreConfiguration: DataStoreConfiguration,
                      validAPIPluginKey: String = "awsAPIPlugin",
                      validAuthPluginKey: String = "awsCognitoAuthPlugin",
-                     modelSchemaVersion: String,
+                     modelRegistryVersion: String,
                      userDefault: UserDefaults = UserDefaults.standard) throws {
 
         let key = kCFBundleNameKey as String
         let databaseName = Bundle.main.object(forInfoDictionaryKey: key) as? String ?? "app"
 
-        let result = SQLiteStorageEngineAdapter.clearIfNewVersion(version: modelSchemaVersion,
-                                                                  databaseName: databaseName)
-        if case let .failure(error) = result {
-            StorageEngine.log.error("Failed to delete database file called: \(databaseName), error: \(error)")
-            throw error
-        }
+//        do {
+//            try SQLiteStorageEngineAdapter.clearIfNewVersion(version: modelRegistryVersion,
+//                                                             databaseName: databaseName)
+//        } catch {
+//            preconditionFailure("Failed to delete \(databaseName) database, error: \(error)")
+//        }
 
-        let storageAdapter = try SQLiteStorageEngineAdapter(databaseName: databaseName)
+        let storageAdapter = try SQLiteStorageEngineAdapter(version: modelRegistryVersion, databaseName: databaseName)
 
         try storageAdapter.setUp(models: StorageEngine.systemModels)
         if #available(iOS 13.0, *) {

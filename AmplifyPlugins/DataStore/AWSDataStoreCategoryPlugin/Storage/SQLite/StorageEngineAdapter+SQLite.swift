@@ -16,10 +16,14 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     internal var connection: Connection!
     private var dbFilePath: URL?
-    static let dbVersionKey = "com.awsamazon.dataStore.dbVersion"
+    static let dbVersionKey = "com.amazonaws.DataStore.dbVersion"
 
-    convenience init(databaseName: String = "database") throws {
+    convenience init(version: String,
+                     databaseName: String = "database",
+                     userDefaults: UserDefaults = UserDefaults.standard) throws {
         var dbFilePath = SQLiteStorageEngineAdapter.getDbFilePath(databaseName: databaseName)
+
+        try SQLiteStorageEngineAdapter.clearIfNewVersion(version: version, dbFilePath: dbFilePath)
 
         let path = dbFilePath.absoluteString
 
@@ -34,14 +38,19 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             throw DataStoreError.invalidDatabase(path: path, error)
         }
 
-        try self.init(connection: connection, dbFilePath: dbFilePath)
+        try self.init(connection: connection, dbFilePath: dbFilePath, userDefaults: userDefaults, version: version)
+
     }
 
-    internal init(connection: Connection, dbFilePath: URL? = nil) throws {
+    internal init(connection: Connection,
+                  dbFilePath: URL? = nil,
+                  userDefaults: UserDefaults = UserDefaults.standard,
+                  version: String = "version") throws {
         self.connection = connection
         self.dbFilePath = dbFilePath
         try SQLiteStorageEngineAdapter.initializeDatabase(connection: connection)
         log.verbose("Initialized \(connection)")
+        userDefaults.set(version, forKey: SQLiteStorageEngineAdapter.dbVersionKey)
     }
 
     static func initializeDatabase(connection: Connection) throws {
@@ -304,19 +313,20 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     static func clearIfNewVersion(version: String,
-                                  databaseName: String,
+                                  dbFilePath: URL,
                                   userDefaults: UserDefaults = UserDefaults.standard,
-                                  fileManager: FileManager = FileManager.default) -> DataStoreResult<Void> {
-
-        let dbFilePath = SQLiteStorageEngineAdapter.getDbFilePath(databaseName: databaseName)
+                                  fileManager: FileManager = FileManager.default) throws {
 
         guard let previousVersion = userDefaults.string(forKey: dbVersionKey) else {
-            userDefaults.set(version, forKey: dbVersionKey)
-            return .emptyResult
+            return
         }
 
         if previousVersion == version {
-            return .emptyResult
+            return
+        }
+
+        guard fileManager.fileExists(atPath: dbFilePath.path) else {
+            return
         }
 
         log.verbose("\(#function) Warning: Schema change detected, removing your previous database")
@@ -324,11 +334,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             try fileManager.removeItem(at: dbFilePath)
         } catch {
             log.error("\(#function) Failed to delete database file located at: \(dbFilePath), error: \(error)")
-            return .failure(causedBy: error)
+            throw error
         }
 
-        userDefaults.set(version, forKey: dbVersionKey)
-        return .emptyResult
     }
 }
 

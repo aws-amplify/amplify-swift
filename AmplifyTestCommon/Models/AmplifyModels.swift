@@ -13,11 +13,11 @@ import Foundation
 
 final public class AmplifyModels: AmplifyModelRegistration {
     public let version: String
-    
+
     public init(version: String = "46369a50a95486d76713fd33833fb782") {
         self.version = version
     }
-    
+
     public func registerModels(registry: ModelRegistry.Type) {
         ModelRegistry.register(modelType: Post.self)
         ModelRegistry.register(modelType: Comment.self)

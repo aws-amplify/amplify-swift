@@ -122,7 +122,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
                                           dataStoreConfiguration: dataStoreConfiguration,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey,
-                                          modelSchemaVersion: modelRegistration.version)
+                                          modelRegistryVersion: modelRegistration.version)
         if #available(iOS 13.0, *) {
             setupStorageSink()
         }

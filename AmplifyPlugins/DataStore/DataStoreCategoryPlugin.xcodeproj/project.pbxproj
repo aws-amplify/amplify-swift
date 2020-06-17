@@ -98,7 +98,6 @@
 		D83D4A4624994B7E00B7EF15 /* DataStoreModelsVersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83D4A4424994A1900B7EF15 /* DataStoreModelsVersionTests.swift */; };
 		D8B90862249839D4002593F5 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21233DD7247591D100039337 /* amplifyconfiguration.json */; };
 		D8C5BA59249815A6007C3A68 /* DataStoreConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C5BA58249815A6007C3A68 /* DataStoreConfigurationTests.swift */; };
-		D8D4E09A2495DE57005594A3 /* SQLiteStorageEngineAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5F7238869CF00873955 /* SQLiteStorageEngineAdapterTests.swift */; };
 		FA0427C82396C27400D25AB0 /* SyncEngineStartupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0427C72396C27400D25AB0 /* SyncEngineStartupTests.swift */; };
 		FA0427CA2396C35500D25AB0 /* InitialSyncOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0427C92396C35500D25AB0 /* InitialSyncOrchestrator.swift */; };
 		FA0427CC2396C7E400D25AB0 /* InitialSyncOrchestratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0427CB2396C7E400D25AB0 /* InitialSyncOrchestratorTests.swift */; };
@@ -1563,7 +1562,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2149E60C23886C7B00873955 /* ViewController.swift in Sources */,
-				D8D4E09A2495DE57005594A3 /* SQLiteStorageEngineAdapterTests.swift in Sources */,
 				2149E60823886C7B00873955 /* AppDelegate.swift in Sources */,
 				2149E60A23886C7B00873955 /* SceneDelegate.swift in Sources */,
 			);

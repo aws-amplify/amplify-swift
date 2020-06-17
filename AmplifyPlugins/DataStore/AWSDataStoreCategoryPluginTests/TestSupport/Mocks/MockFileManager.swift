@@ -9,11 +9,14 @@ import Foundation
 
 enum MockFileManagerError: Error {
     case failToDeleteDatabase
+    case fileDoseNotExist
 }
 class MockFileManager: FileManager {
 
     var removeItem: ((URL) -> Void)?
+
     var hasError: Bool = false
+    var fileExists: Bool = false
 
     override init() {}
 
@@ -24,5 +27,9 @@ class MockFileManager: FileManager {
         if let removeItem = removeItem {
             removeItem(URL)
         }
+    }
+
+    override func fileExists(atPath path: String) -> Bool {
+        return fileExists
     }
 }
