@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### ⚠ BREAKING CHANGES
 * **DataStore/API** category using generated Model classes from Amplify CLI will require the minimum Amplify CLI version of 4.21.4. Current implementations do not expect the field types `embedded(type:)` and `embeddedCollection(of:)` that will break with compile time error. When upgrading Amplify Library, please upgrade Amplify CLI before running `amplify codegen models` to codegen the new `Embeddable` types.
+* **Tools:** Update Amplify tools script to resolve min CLI version for codegen changes ([#554](https://github.com/aws-amplify/amplify-ios/pull/554))
 
 ### Bug Fixes
 
