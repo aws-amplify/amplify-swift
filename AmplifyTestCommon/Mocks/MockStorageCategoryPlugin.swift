@@ -10,10 +10,17 @@ import Foundation
 
 class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
 
+    var responders = Responders()
+
     func getURL(key: String,
                 options: StorageGetURLRequest.Options?,
                 resultListener: StorageGetURLOperation.ResultListener?) -> StorageGetURLOperation {
         notify("getURL")
+
+        if let responder = responders.getURL {
+            responder(key, options, resultListener)
+        }
+
         let options = options ?? StorageGetURLRequest.Options()
         let request = StorageGetURLRequest(key: key, options: options)
         return MockStorageGetURLOperation(request: request)
@@ -25,9 +32,10 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
                       resultListener: StorageDownloadDataOperation.ResultListener?
     ) -> StorageDownloadDataOperation {
         notify("downloadData")
-            let options = options ?? StorageDownloadDataRequest.Options()
-            let request = StorageDownloadDataRequest(key: key, options: options)
-            return MockStorageDownloadDataOperation(request: request)
+        let options = options ?? StorageDownloadDataRequest.Options()
+        let request = StorageDownloadDataRequest(key: key, options: options)
+        responders.downloadData?(key, options, progressListener, resultListener)
+        return MockStorageDownloadDataOperation(request: request)
     }
 
     func downloadFile(key: String,
@@ -37,9 +45,10 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
                       resultListener: StorageDownloadFileOperation.ResultListener?
     ) -> StorageDownloadFileOperation {
         notify("downloadFile")
-            let options = options ?? StorageDownloadFileRequest.Options()
-            let request = StorageDownloadFileRequest(key: key, local: local, options: options)
-            return MockStorageDownloadFileOperation(request: request)
+        responders.downloadFile?(key, local, options, progressListener, resultListener)
+        let options = options ?? StorageDownloadFileRequest.Options()
+        let request = StorageDownloadFileRequest(key: key, local: local, options: options)
+        return MockStorageDownloadFileOperation(request: request)
     }
 
     func uploadData(key: String,
@@ -49,6 +58,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
                     resultListener: StorageUploadDataOperation.ResultListener?
     ) -> StorageUploadDataOperation {
         notify("uploadData")
+        responders.uploadData?(key, data, options, progressListener, resultListener)
         let options = options ?? StorageUploadDataRequest.Options()
         let request = StorageUploadDataRequest(key: key, data: data, options: options)
         return MockStorageUploadDataOperation(request: request)
@@ -61,6 +71,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
                     resultListener: StorageUploadFileOperation.ResultListener?
     ) -> StorageUploadFileOperation {
         notify("uploadFile")
+        responders.uploadFile?(key, local, options, progressListener, resultListener)
         let options = options ?? StorageUploadFileRequest.Options()
         let request = StorageUploadFileRequest(key: key, local: local, options: options)
         return MockStorageUploadFileOperation(request: request)
@@ -70,6 +81,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
                 options: StorageRemoveRequest.Options?,
                 resultListener: StorageRemoveOperation.ResultListener?) -> StorageRemoveOperation {
         notify("remove")
+        responders.remove?(key, options, resultListener)
         let options = options ?? StorageRemoveRequest.Options()
         let request = StorageRemoveRequest(key: key, options: options)
         return MockStorageRemoveOperation(request: request)
@@ -78,6 +90,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
     func list(options: StorageListRequest.Options?,
               resultListener: StorageListOperation.ResultListener?) -> StorageListOperation {
         notify("list")
+        responders.list?(options, resultListener)
         let options = options ?? StorageListRequest.Options()
         let request = StorageListRequest(options: options)
         return MockStorageListOperation(request: request)

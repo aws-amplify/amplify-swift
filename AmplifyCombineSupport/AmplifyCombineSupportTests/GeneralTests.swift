@@ -12,30 +12,31 @@ import AmplifyCombineSupport
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-class DataStoreCombineSupportTests: XCTestCase {
+class StorageGeneralTests: XCTestCase {
 
-    var plugin: MockDataStoreCategoryPlugin!
+    var plugin: MockStorageCategoryPlugin!
 
     override func setUpWithError() throws {
         Amplify.reset()
 
-        let dataStoreConfig = DataStoreCategoryConfiguration(
-            plugins: ["MockDataStoreCategoryPlugin": true]
+        let categoryConfig = StorageCategoryConfiguration(
+            plugins: ["MockStorageCategoryPlugin": true]
         )
 
-        let config = AmplifyConfiguration(dataStore: dataStoreConfig)
-        plugin = MockDataStoreCategoryPlugin()
+        let amplifyConfig = AmplifyConfiguration(storage: categoryConfig)
+        plugin = MockStorageCategoryPlugin()
         try Amplify.add(plugin: plugin)
-        try Amplify.configure(config)
+        try Amplify.configure(amplifyConfig)
     }
 
-    func testClearSucceeds() {
+    func testGetURLSucceeds() {
         let receivedValue = expectation(description: "Received value")
         let receivedError = expectation(description: "Received error")
         receivedError.isInverted = true
-        let responder: ClearResponder = { .successfulVoid }
-        plugin.responders.clear = responder
-        _ = Amplify.DataStore.clear()
+        plugin.responders.getURL = { _, _ in
+            .success(URL(fileURLWithPath: "file:///path/to/file"))
+        }
+        _ = Amplify.Storage.getURL(key: "key")
             .sink(receiveCompletion: { completion in
                 if case .failure = completion {
                     receivedError.fulfill()
@@ -47,13 +48,14 @@ class DataStoreCombineSupportTests: XCTestCase {
         waitForExpectations(timeout: 0.05)
     }
 
-    func testClearFails() {
+    func testGetURLFails() {
         let receivedValue = expectation(description: "Received value")
         receivedValue.isInverted = true
         let receivedError = expectation(description: "Received error")
-        let responder: ClearResponder = { .failure(DataStoreError.invalidModelName("Blah")) }
-        plugin.responders.clear = responder
-        _ = Amplify.DataStore.clear()
+        plugin.responders.getURL = { _, _ in
+            .failure(.unknown("Test"))
+        }
+        _ = Amplify.Storage.getURL(key: "key")
             .sink(receiveCompletion: { completion in
                 if case .failure = completion {
                     receivedError.fulfill()
@@ -65,13 +67,14 @@ class DataStoreCombineSupportTests: XCTestCase {
         waitForExpectations(timeout: 0.05)
     }
 
-    func testDeleteByIdSucceeds() {
+    func testDownloadFileSucceeds() {
         let receivedValue = expectation(description: "Received value")
         let receivedError = expectation(description: "Received error")
         receivedError.isInverted = true
-        let responder: DeleteByIdResponder = { _, _ in .successfulVoid }
-        plugin.responders.deleteById = responder
-        _ = Amplify.DataStore.delete(Post.self, withId: "1")
+        plugin.responders.downloadFile = { _, _, _, _ in
+            .successfulVoid
+        }
+        _ = Amplify.Storage.downloadFile(key: "key", local: URL(fileURLWithPath: "file:///path/to/file"))
             .sink(receiveCompletion: { completion in
                 if case .failure = completion {
                     receivedError.fulfill()
@@ -83,15 +86,14 @@ class DataStoreCombineSupportTests: XCTestCase {
         waitForExpectations(timeout: 0.05)
     }
 
-    func testDeleteByIdFails() {
+    func testDownloadFileFails() {
         let receivedValue = expectation(description: "Received value")
         receivedValue.isInverted = true
         let receivedError = expectation(description: "Received error")
-        let responder: DeleteByIdResponder = { _, _ in
-            .failure(DataStoreError.invalidModelName("Blah"))
+        plugin.responders.downloadFile = { _, _, _, _ in
+            .failure(.unknown("Test"))
         }
-        plugin.responders.deleteById = responder
-        _ = Amplify.DataStore.delete(Post.self, withId: "1")
+        _ = Amplify.Storage.downloadFile(key: "key", local: URL(fileURLWithPath: "file:///path/to/file"))
             .sink(receiveCompletion: { completion in
                 if case .failure = completion {
                     receivedError.fulfill()
@@ -103,14 +105,14 @@ class DataStoreCombineSupportTests: XCTestCase {
         waitForExpectations(timeout: 0.05)
     }
 
-    func testDeleteByInstanceSucceeds() {
+    func testUploadDataSucceeds() {
         let receivedValue = expectation(description: "Received value")
         let receivedError = expectation(description: "Received error")
         receivedError.isInverted = true
-        let responder: DeleteByInstanceResponder = { _, _ in .successfulVoid }
-        plugin.responders.deleteByInstance = responder
-        let post = Post(title: "Title", content: "Content", createdAt: Temporal.DateTime.now())
-        _ = Amplify.DataStore.delete(post)
+        plugin.responders.uploadData = { _, _, _, _ in
+            .success("Test")
+        }
+        _ = Amplify.Storage.uploadData(key: "key", data: Data())
             .sink(receiveCompletion: { completion in
                 if case .failure = completion {
                     receivedError.fulfill()
@@ -122,16 +124,14 @@ class DataStoreCombineSupportTests: XCTestCase {
         waitForExpectations(timeout: 0.05)
     }
 
-    func testDeleteByInstanceFails() {
+    func testUploadDataFails() {
         let receivedValue = expectation(description: "Received value")
         receivedValue.isInverted = true
         let receivedError = expectation(description: "Received error")
-        let responder: DeleteByInstanceResponder = { _, _ in
-            .failure(DataStoreError.invalidModelName("Blah"))
+        plugin.responders.uploadData = { _, _, _, _ in
+            .failure(.unknown("Test"))
         }
-        plugin.responders.deleteByInstance = responder
-        let post = Post(title: "T", content: "C", createdAt: Temporal.DateTime.now())
-        _ = Amplify.DataStore.delete(post)
+        _ = Amplify.Storage.uploadData(key: "key", data: Data())
             .sink(receiveCompletion: { completion in
                 if case .failure = completion {
                     receivedError.fulfill()
@@ -143,15 +143,14 @@ class DataStoreCombineSupportTests: XCTestCase {
         waitForExpectations(timeout: 0.05)
     }
 
-    func testQueryByIdSucceeds() {
+    func testUploadFileSucceeds() {
         let receivedValue = expectation(description: "Received value")
         let receivedError = expectation(description: "Received error")
         receivedError.isInverted = true
-        let responder: QueryByIdResponder = { _, _ in
-            .success(Post(title: "T", content: "C", createdAt: Temporal.DateTime.now()))
+        plugin.responders.uploadFile = { _, _, _, _ in
+            .success("Test")
         }
-        plugin.responders.queryById = responder
-        _ = Amplify.DataStore.query(Post.self, byId: "1")
+        _ = Amplify.Storage.uploadFile(key: "key", local: URL(fileURLWithPath: "file:///path/to/file"))
             .sink(receiveCompletion: { completion in
                 if case .failure = completion {
                     receivedError.fulfill()
@@ -163,15 +162,14 @@ class DataStoreCombineSupportTests: XCTestCase {
         waitForExpectations(timeout: 0.05)
     }
 
-    func testQueryByIdFails() {
+    func testUploadFileFails() {
         let receivedValue = expectation(description: "Received value")
         receivedValue.isInverted = true
         let receivedError = expectation(description: "Received error")
-        let responder: QueryByIdResponder = { _, _ in
-            .failure(DataStoreError.invalidModelName("Blah"))
+        plugin.responders.uploadFile = { _, _, _, _ in
+            .failure(.unknown("Test"))
         }
-        plugin.responders.queryById = responder
-        _ = Amplify.DataStore.query(Post.self, byId: "1")
+        _ = Amplify.Storage.uploadFile(key: "key", local: URL(fileURLWithPath: "file:///path/to/file"))
             .sink(receiveCompletion: { completion in
                 if case .failure = completion {
                     receivedError.fulfill()
@@ -183,15 +181,14 @@ class DataStoreCombineSupportTests: XCTestCase {
         waitForExpectations(timeout: 0.05)
     }
 
-    func testQueryByPredicateSucceeds() {
+    func testRemoveSucceeds() {
         let receivedValue = expectation(description: "Received value")
         let receivedError = expectation(description: "Received error")
         receivedError.isInverted = true
-        let responder: QueryByPredicateResponder = { _, _, _ in
-            .success([Post(title: "T", content: "C", createdAt: Temporal.DateTime.now())])
+        plugin.responders.remove = { _, _ in
+            .success("Test")
         }
-        plugin.responders.queryByPredicate = responder
-        _ = Amplify.DataStore.query(Post.self)
+        _ = Amplify.Storage.remove(key: "key")
             .sink(receiveCompletion: { completion in
                 if case .failure = completion {
                     receivedError.fulfill()
@@ -203,15 +200,14 @@ class DataStoreCombineSupportTests: XCTestCase {
         waitForExpectations(timeout: 0.05)
     }
 
-    func testQueryByPredicateFails() {
+    func testRemoveFails() {
         let receivedValue = expectation(description: "Received value")
         receivedValue.isInverted = true
         let receivedError = expectation(description: "Received error")
-        let responder: QueryByPredicateResponder = { _, _, _ in
-            .failure(DataStoreError.invalidModelName("Blah"))
+        plugin.responders.remove = { _, _ in
+            .failure(.unknown("Test"))
         }
-        plugin.responders.queryByPredicate = responder
-        _ = Amplify.DataStore.query(Post.self)
+        _ = Amplify.Storage.remove(key: "key")
             .sink(receiveCompletion: { completion in
                 if case .failure = completion {
                     receivedError.fulfill()
@@ -223,14 +219,14 @@ class DataStoreCombineSupportTests: XCTestCase {
         waitForExpectations(timeout: 0.05)
     }
 
-    func testSaveSucceeds() {
+    func testListSucceeds() {
         let receivedValue = expectation(description: "Received value")
         let receivedError = expectation(description: "Received error")
         receivedError.isInverted = true
-        let responder: SaveResponder = { model, _ in .success(model) }
-        plugin.responders.save = responder
-        let post = Post(title: "T", content: "C", createdAt: Temporal.DateTime.now())
-        _ = Amplify.DataStore.save(post)
+        plugin.responders.list = { _ in
+            .success(StorageListResult(items: []))
+        }
+        _ = Amplify.Storage.list()
             .sink(receiveCompletion: { completion in
                 if case .failure = completion {
                     receivedError.fulfill()
@@ -242,16 +238,14 @@ class DataStoreCombineSupportTests: XCTestCase {
         waitForExpectations(timeout: 0.05)
     }
 
-    func testSaveFails() {
+    func testListFails() {
         let receivedValue = expectation(description: "Received value")
         receivedValue.isInverted = true
         let receivedError = expectation(description: "Received error")
-        let responder: SaveResponder = { _, _ in
-            .failure(DataStoreError.invalidModelName("Blah"))
+        plugin.responders.list = { _ in
+            .failure(.unknown("Test"))
         }
-        plugin.responders.save = responder
-        let post = Post(title: "T", content: "C", createdAt: Temporal.DateTime.now())
-        _ = Amplify.DataStore.save(post)
+        _ = Amplify.Storage.list()
             .sink(receiveCompletion: { completion in
                 if case .failure = completion {
                     receivedError.fulfill()

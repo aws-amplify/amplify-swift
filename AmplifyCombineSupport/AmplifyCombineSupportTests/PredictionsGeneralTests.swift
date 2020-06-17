@@ -12,7 +12,7 @@ import AmplifyCombineSupport
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-class PredictionsCombineSupportTests: XCTestCase {
+class PredictionsGeneralTests: XCTestCase {
 
     var plugin: MockPredictionsCategoryPlugin!
 
