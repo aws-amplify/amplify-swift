@@ -1,20 +1,28 @@
 //
-//  MockFileManager.swift
-//  AWSDataStoreCategoryPluginTests
+// Copyright 2018-2020 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
 //
-//  Created by Guo, Rui on 6/16/20.
-//  Copyright © 2020 Amazon Web Services. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
 
-//class MockFileManager: FileManager {
-//    var removeItem: ((URL) -> Void)?
-//    init(removeItemBehavior: @escaping (URL) -> Void) {
-//        self.removeItem = removeItemBehavior
-//    }
-//    
-//    func removeItem(at path: URL) throws {
-//        if let removeItem
-//    }
-//}
+enum MockFileManagerError: Error {
+    case failToDeleteDatabase
+}
+class MockFileManager: FileManager {
+
+    var removeItem: ((URL) -> Void)?
+    var hasError: Bool = false
+
+    override init() {}
+
+    override func removeItem(at URL: URL) throws {
+        if hasError {
+            throw MockFileManagerError.failToDeleteDatabase
+        }
+        if let removeItem = removeItem {
+            removeItem(URL)
+        }
+    }
+}

@@ -79,30 +79,20 @@ final class StorageEngine: StorageEngineBehavior {
                      dataStoreConfiguration: DataStoreConfiguration,
                      validAPIPluginKey: String = "awsAPIPlugin",
                      validAuthPluginKey: String = "awsCognitoAuthPlugin",
-                     userDefault: UserDefaults = UserDefaults.standard,
-                     newVersion: String) throws {
+                     modelSchemaVersion: String,
+                     userDefault: UserDefaults = UserDefaults.standard) throws {
+
         let key = kCFBundleNameKey as String
-        let databaseName = Bundle.main.object(forInfoDictionaryKey: key) as? String
+        let databaseName = Bundle.main.object(forInfoDictionaryKey: key) as? String ?? "app"
 
-        let dbFilePath = SQLiteStorageEngineAdapter.getFilePath(databaseName: databaseName ?? "app")
-
-        let result = VersionHelper.deleteDBIfRequired(newVersion: newVersion,
-                                         dbFilePath: dbFilePath!)
-        
-        switch result {
-        case .success(.DataBaseDeleteAndVersionUpdated):
-            UserDefaults.standard.set(newVersion, forKey: "Version")
-            UserDefaults.standard.synchronize()
-        case .success(.DatabaseFirstTimeCreation):
-            UserDefaults.standard.set(newVersion, forKey: "Version")
-            UserDefaults.standard.synchronize()
-        case .success(.VersionUnchanged):
-            break
-        case .failure(let error):
-            StorageEngine.log.error("Failed to delete database file located at: \(dbFilePath!), error: \(error)")
+        let result = SQLiteStorageEngineAdapter.clearIfNewVersion(version: modelSchemaVersion,
+                                                                  databaseName: databaseName)
+        if case let .failure(error) = result {
+            StorageEngine.log.error("Failed to delete database file called: \(databaseName), error: \(error)")
+            throw error
         }
 
-        let storageAdapter = try SQLiteStorageEngineAdapter(databaseName: databaseName ?? "app")
+        let storageAdapter = try SQLiteStorageEngineAdapter(databaseName: databaseName)
 
         try storageAdapter.setUp(models: StorageEngine.systemModels)
         if #available(iOS 13.0, *) {

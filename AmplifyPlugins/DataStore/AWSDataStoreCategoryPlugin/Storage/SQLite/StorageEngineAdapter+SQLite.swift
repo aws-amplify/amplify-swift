@@ -16,12 +16,10 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     internal var connection: Connection!
     private var dbFilePath: URL?
+    static let dbVersionKey = "com.awsamazon.dataStore.dbVersion"
 
     convenience init(databaseName: String = "database") throws {
-        guard let documentsPath = getDocumentPath() else {
-            preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
-        }
-        var dbFilePath = documentsPath.appendingPathComponent("\(databaseName).db")
+        var dbFilePath = SQLiteStorageEngineAdapter.getDbFilePath(databaseName: databaseName)
 
         let path = dbFilePath.absoluteString
 
@@ -63,7 +61,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         try connection.execute(databaseInitializationStatement)
     }
 
-    static func getFilePath(databaseName: String = "database") -> URL? {
+    static func getDbFilePath(databaseName: String) -> URL {
         guard let documentsPath = getDocumentPath() else {
             preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
         }
@@ -303,6 +301,34 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             completion(.failure(causedBy: DataStoreError.invalidDatabase(path: dbFilePath.absoluteString, error)))
         }
         completion(.successfulVoid)
+    }
+
+    static func clearIfNewVersion(version: String,
+                                  databaseName: String,
+                                  userDefaults: UserDefaults = UserDefaults.standard,
+                                  fileManager: FileManager = FileManager.default) -> DataStoreResult<Void> {
+
+        let dbFilePath = SQLiteStorageEngineAdapter.getDbFilePath(databaseName: databaseName)
+
+        guard let previousVersion = userDefaults.string(forKey: dbVersionKey) else {
+            userDefaults.set(version, forKey: dbVersionKey)
+            return .emptyResult
+        }
+
+        if previousVersion == version {
+            return .emptyResult
+        }
+
+        log.verbose("\(#function) Warning: Schema change detected, removing your previous database")
+        do {
+            try fileManager.removeItem(at: dbFilePath)
+        } catch {
+            log.error("\(#function) Failed to delete database file located at: \(dbFilePath), error: \(error)")
+            return .failure(causedBy: error)
+        }
+
+        userDefaults.set(version, forKey: dbVersionKey)
+        return .emptyResult
     }
 }
 
