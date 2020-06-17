@@ -6,7 +6,12 @@
 #  To see working Podspecs in the CocoaPods repo see https://github.com/CocoaPods/Specs/
 #
 
-load 'build-support/dependencies.rb'
+# Version definitions
+$AMPLIFY_VERSION = '1.0.1'
+$AMPLIFY_RELEASE_TAG = "v#{$AMPLIFY_VERSION}"
+
+$AWS_SDK_VERSION = '2.13.4'
+$OPTIMISTIC_AWS_SDK_VERSION = "~> #{$AWS_SDK_VERSION}"
 
 Pod::Spec.new do |s|
   s.name         = "AmplifyTestCommon"
@@ -18,7 +23,7 @@ Pod::Spec.new do |s|
   s.homepage     = "hhttps://github.com/aws-amplify/amplify-ios"
   s.license      = 'Apache License, Version 2.0'
   s.author       = { 'Amazon Web Services' => 'amazonwebservices' }
-  s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => release_tag() }
+  s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => $AMPLIFY_RELEASE_TAG }
 
   s.platform     = :ios, '11.0'
   s.swift_version = '5.0'
@@ -30,7 +35,7 @@ Pod::Spec.new do |s|
   s.subspec 'AWSPluginsTestCommon' do |ss|
     ss.source_files = 'AmplifyPlugins/Core/AWSPluginsTestCommon/**/*.swift'
     ss.dependency 'AWSPluginsCore', $AMPLIFY_VERSION
-    ss.dependency 'AWSCore', optimistic_version($AWS_SDK_VERSION)
+    ss.dependency 'AWSCore', $OPTIMISTIC_AWS_SDK_VERSION
   end
 
 end

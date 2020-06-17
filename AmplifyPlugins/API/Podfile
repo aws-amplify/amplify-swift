@@ -25,7 +25,7 @@ target "HostApp" do
   include_test_utilities!
   pod 'AmplifyTestCommon', :path => '../../'
   pod 'Amplify', :path => '../../'
-  pod "AWSMobileClient", optimistic_version($AWS_SDK_VERSION)
+  pod "AWSMobileClient", $OPTIMISTIC_AWS_SDK_VERSION
 
   target "AWSAPICategoryPluginTestCommon" do
     inherit! :complete

@@ -8,7 +8,7 @@ include_build_tools!
 target 'AWSCognitoAuthPlugin' do
   pod 'Amplify', :path => '../../'
   pod 'AWSPluginsCore', :path => '../../'
-  pod "AWSMobileClient", optimistic_version($AWS_SDK_VERSION)
+  pod "AWSMobileClient", $OPTIMISTIC_AWS_SDK_VERSION
 
   target "AWSCognitoAuthPluginTests" do
     inherit! :complete
