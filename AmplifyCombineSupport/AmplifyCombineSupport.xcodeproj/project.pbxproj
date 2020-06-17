@@ -11,9 +11,11 @@
 		460AF4071FCD205E333B7B83 /* Pods_AmplifyCombineSupport_AmplifyCombineSupportTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F226E1FBC291A229DC3F519A /* Pods_AmplifyCombineSupport_AmplifyCombineSupportTests.framework */; };
 		FA01939C248956C400CC7FA0 /* AmplifyCombineSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA019392248956C400CC7FA0 /* AmplifyCombineSupport.framework */; };
 		FA0193A1248956C400CC7FA0 /* DataStoreCombineSupportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0193A0248956C400CC7FA0 /* DataStoreCombineSupportTests.swift */; };
-		FA0193A3248956C400CC7FA0 /* AmplifyCombineSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = FA019395248956C400CC7FA0 /* AmplifyCombineSupport.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FA1D07EF249AB315000B6C3E /* PredictionsCombineSupportChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1D07ED249AB1BA000B6C3E /* PredictionsCombineSupportChainTests.swift */; };
 		FA94579624895B2C00A06087 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA94579524895B2C00A06087 /* DataStore.swift */; };
 		FA94579824895D3D00A06087 /* DataStoreCombineSupportChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA94579724895D3D00A06087 /* DataStoreCombineSupportChainTests.swift */; };
+		FAAD18812492F106006C27DD /* Predictions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAD18802492F106006C27DD /* Predictions.swift */; };
+		FAAD18832492F5DF006C27DD /* PredictionsCombineSupportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAD18822492F5DF006C27DD /* PredictionsCombineSupportTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,13 +36,15 @@
 		DDDEAAAA7007F69994E2D1FA /* Pods-AmplifyCombineSupport-AmplifyCombineSupportTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyCombineSupport-AmplifyCombineSupportTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyCombineSupport-AmplifyCombineSupportTests/Pods-AmplifyCombineSupport-AmplifyCombineSupportTests.release.xcconfig"; sourceTree = "<group>"; };
 		F226E1FBC291A229DC3F519A /* Pods_AmplifyCombineSupport_AmplifyCombineSupportTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyCombineSupport_AmplifyCombineSupportTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA019392248956C400CC7FA0 /* AmplifyCombineSupport.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AmplifyCombineSupport.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FA019395248956C400CC7FA0 /* AmplifyCombineSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AmplifyCombineSupport.h; sourceTree = "<group>"; };
 		FA019396248956C400CC7FA0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA01939B248956C400CC7FA0 /* AmplifyCombineSupportTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AmplifyCombineSupportTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA0193A0248956C400CC7FA0 /* DataStoreCombineSupportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreCombineSupportTests.swift; sourceTree = "<group>"; };
 		FA0193A2248956C400CC7FA0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA1D07ED249AB1BA000B6C3E /* PredictionsCombineSupportChainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsCombineSupportChainTests.swift; sourceTree = "<group>"; };
 		FA94579524895B2C00A06087 /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		FA94579724895D3D00A06087 /* DataStoreCombineSupportChainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreCombineSupportChainTests.swift; sourceTree = "<group>"; };
+		FAAD18802492F106006C27DD /* Predictions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Predictions.swift; sourceTree = "<group>"; };
+		FAAD18822492F5DF006C27DD /* PredictionsCombineSupportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsCombineSupportTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,9 +111,9 @@
 		FA019394248956C400CC7FA0 /* AmplifyCombineSupport */ = {
 			isa = PBXGroup;
 			children = (
-				FA019395248956C400CC7FA0 /* AmplifyCombineSupport.h */,
 				FA019396248956C400CC7FA0 /* Info.plist */,
 				FA94579524895B2C00A06087 /* DataStore.swift */,
+				FAAD18802492F106006C27DD /* Predictions.swift */,
 			);
 			path = AmplifyCombineSupport;
 			sourceTree = "<group>";
@@ -117,9 +121,11 @@
 		FA01939F248956C400CC7FA0 /* AmplifyCombineSupportTests */ = {
 			isa = PBXGroup;
 			children = (
+				FA0193A2248956C400CC7FA0 /* Info.plist */,
 				FA94579724895D3D00A06087 /* DataStoreCombineSupportChainTests.swift */,
 				FA0193A0248956C400CC7FA0 /* DataStoreCombineSupportTests.swift */,
-				FA0193A2248956C400CC7FA0 /* Info.plist */,
+				FA1D07ED249AB1BA000B6C3E /* PredictionsCombineSupportChainTests.swift */,
+				FAAD18822492F5DF006C27DD /* PredictionsCombineSupportTests.swift */,
 			);
 			path = AmplifyCombineSupportTests;
 			sourceTree = "<group>";
@@ -131,7 +137,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA0193A3248956C400CC7FA0 /* AmplifyCombineSupport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,6 +170,8 @@
 			buildPhases = (
 				25CD662525EE0E8D711B605E /* [CP] Check Pods Manifest.lock */,
 				FA019397248956C400CC7FA0 /* Sources */,
+				FA1D07EB249AB007000B6C3E /* SwiftFormat */,
+				FA1D07EC249AB009000B6C3E /* SwiftLint */,
 				FA019398248956C400CC7FA0 /* Frameworks */,
 				FA019399248956C400CC7FA0 /* Resources */,
 				9B8A8CD00D7798025E4E4B3D /* [CP] Embed Pods Frameworks */,
@@ -296,6 +303,42 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AmplifyCombineSupport-AmplifyCombineSupportTests/Pods-AmplifyCombineSupport-AmplifyCombineSupportTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		FA1D07EB249AB007000B6C3E /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
+		};
+		FA1D07EC249AB009000B6C3E /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
+		};
 		FA945792248959A400A06087 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -339,6 +382,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAAD18812492F106006C27DD /* Predictions.swift in Sources */,
 				FA94579624895B2C00A06087 /* DataStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -347,8 +391,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA1D07EF249AB315000B6C3E /* PredictionsCombineSupportChainTests.swift in Sources */,
 				FA0193A1248956C400CC7FA0 /* DataStoreCombineSupportTests.swift in Sources */,
 				FA94579824895D3D00A06087 /* DataStoreCombineSupportChainTests.swift in Sources */,
+				FAAD18832492F5DF006C27DD /* PredictionsCombineSupportTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
