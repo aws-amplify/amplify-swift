@@ -86,13 +86,6 @@ final class StorageEngine: StorageEngineBehavior {
         let key = kCFBundleNameKey as String
         let databaseName = Bundle.main.object(forInfoDictionaryKey: key) as? String ?? "app"
 
-//        do {
-//            try SQLiteStorageEngineAdapter.clearIfNewVersion(version: modelRegistryVersion,
-//                                                             databaseName: databaseName)
-//        } catch {
-//            preconditionFailure("Failed to delete \(databaseName) database, error: \(error)")
-//        }
-
         let storageAdapter = try SQLiteStorageEngineAdapter(version: modelRegistryVersion, databaseName: databaseName)
 
         try storageAdapter.setUp(models: StorageEngine.systemModels)

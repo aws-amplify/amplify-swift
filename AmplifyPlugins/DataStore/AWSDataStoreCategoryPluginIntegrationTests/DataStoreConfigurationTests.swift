@@ -75,13 +75,11 @@ class DataStoreConfigurationTests: XCTestCase {
         wait(for: [querySuccess], timeout: TestCommonConstants.networkTimeout)
 
         Amplify.DataStore.clear(completion: { _ in })
-        Amplify.reset()
     }
 
     func testConfigWithDifferentSchema() throws {
         Amplify.reset()
 
-        UserDefaults.standard.removeObject(forKey: SQLiteStorageEngineAdapter.dbVersionKey)
         let prevoisVersion = "123"
 
         let saveSuccess = expectation(description: "Save was successful")

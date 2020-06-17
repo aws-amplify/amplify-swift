@@ -20,10 +20,13 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     convenience init(version: String,
                      databaseName: String = "database",
-                     userDefaults: UserDefaults = UserDefaults.standard) throws {
+                     userDefaults: UserDefaults = UserDefaults.standard,
+                     fileManager: FileManager = FileManager.default) throws {
         var dbFilePath = SQLiteStorageEngineAdapter.getDbFilePath(databaseName: databaseName)
 
-        try SQLiteStorageEngineAdapter.clearIfNewVersion(version: version, dbFilePath: dbFilePath)
+        try SQLiteStorageEngineAdapter.clearIfNewVersion(version: version,
+                                                         dbFilePath: dbFilePath,
+                                                         fileManager: fileManager)
 
         let path = dbFilePath.absoluteString
 
@@ -315,7 +318,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     static func clearIfNewVersion(version: String,
                                   dbFilePath: URL,
                                   userDefaults: UserDefaults = UserDefaults.standard,
-                                  fileManager: FileManager = FileManager.default) throws {
+                                  fileManager: FileManager) throws {
 
         guard let previousVersion = userDefaults.string(forKey: dbVersionKey) else {
             return
