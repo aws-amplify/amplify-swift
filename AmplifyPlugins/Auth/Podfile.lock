@@ -1,14 +1,14 @@
 PODS:
-  - Amplify (1.0.1):
-    - Amplify/Default (= 1.0.1)
-  - Amplify/Default (1.0.1)
-  - AmplifyTestCommon (1.0.1):
-    - Amplify (= 1.0.1)
-    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.0.1)
-  - AmplifyTestCommon/AWSPluginsTestCommon (1.0.1):
-    - Amplify (= 1.0.1)
+  - Amplify (1.0.2):
+    - Amplify/Default (= 1.0.2)
+  - Amplify/Default (1.0.2)
+  - AmplifyTestCommon (1.0.2):
+    - Amplify (= 1.0.2)
+    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.0.2)
+  - AmplifyTestCommon/AWSPluginsTestCommon (1.0.2):
+    - Amplify (= 1.0.2)
     - AWSCore (~> 2.13.4)
-    - AWSPluginsCore (= 1.0.1)
+    - AWSPluginsCore (= 1.0.2)
   - AWSAuthCore (2.13.4):
     - AWSCore (= 2.13.4)
   - AWSCognitoIdentityProvider (2.13.4):
@@ -19,8 +19,8 @@ PODS:
   - AWSMobileClient (2.13.4):
     - AWSAuthCore (= 2.13.4)
     - AWSCognitoIdentityProvider (= 2.13.4)
-  - AWSPluginsCore (1.0.1):
-    - Amplify (= 1.0.1)
+  - AWSPluginsCore (1.0.2):
+    - Amplify (= 1.0.2)
     - AWSCore (~> 2.13.4)
     - AWSMobileClient (~> 2.13.4)
   - CwlCatchException (1.0.2)
@@ -40,7 +40,7 @@ DEPENDENCIES:
   - SwiftLint
 
 SPEC REPOS:
-  https://cdn.cocoapods.org/:
+  trunk:
     - AWSAuthCore
     - AWSCognitoIdentityProvider
     - AWSCognitoIdentityProviderASF
@@ -72,19 +72,19 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  Amplify: 58bd74cef8478c40e93df97db8d6e97db645f849
-  AmplifyTestCommon: 81f2cb494229ebbc0cadbe7c7044e7484182b727
+  Amplify: b4deddc12754b7e6c31dc6f321e1ff5d70aa6cf5
+  AmplifyTestCommon: 39b9df2217758281185e5dbf8856f3167a3b976b
   AWSAuthCore: 72b4bd064c28985ea5345c62759632d511de342a
   AWSCognitoIdentityProvider: a2d1d2857316519c018c03ac8205cf78154db5c0
   AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
   AWSCore: 06beea22b6bdbfe9f5ab5015c6901e8475c746a8
   AWSMobileClient: 33ecce524fbc011d543dae8306ca29a43ecb72e5
-  AWSPluginsCore: b6fb2dc62e35a24261544709826e142c0c082c6f
+  AWSPluginsCore: 80c20f4154c3662ade141139a9aa08f691e363ac
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SwiftFormat: 87e745cb2f6509894a44ac4f311a8722a9ebcb8b
   SwiftLint: 22ccbbe3b8008684be5955693bab135e0ed6a447
 
-PODFILE CHECKSUM: 8f8fc80cd855afcb3e7186a793ed5f1aabf51a53
+PODFILE CHECKSUM: 371cf67fe35ebb5167d0880bad12b01618a0fb0e
 
 COCOAPODS: 1.9.3

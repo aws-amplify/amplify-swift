@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## Unreleased
+## 1.0.2 (2020-06-18)
 
 ### ⚠ BREAKING CHANGES
 * **Tools:** Update Amplify tools script to resolve min CLI version for codegen changes ([#554](https://github.com/aws-amplify/amplify-ios/pull/554))
