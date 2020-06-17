@@ -8,7 +8,7 @@ include_build_tools!
 target 'AWSPinpointAnalyticsPlugin' do
     pod 'Amplify', :path => '../../'
     pod 'AWSPluginsCore', :path => '../../'
-    pod "AWSPinpoint", optimistic_version($AWS_SDK_VERSION)
+    pod "AWSPinpoint", $OPTIMISTIC_AWS_SDK_VERSION
 end
 
 target "HostApp" do

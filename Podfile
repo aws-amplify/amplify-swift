@@ -10,7 +10,7 @@ target "Amplify" do
 
   abstract_target "AmplifyTestConfigs" do
     include_test_utilities!
-    pod "AWSMobileClient", optimistic_version($AWS_SDK_VERSION)
+    pod "AWSMobileClient", $OPTIMISTIC_AWS_SDK_VERSION
     
     target "AmplifyTestCommon" do
     end
@@ -27,7 +27,7 @@ target "Amplify" do
     inherit! :complete
     use_frameworks!
 
-    pod "AWSMobileClient", optimistic_version($AWS_SDK_VERSION)
+    pod "AWSMobileClient", $OPTIMISTIC_AWS_SDK_VERSION
 
     abstract_target "AWSPluginsTestConfigs" do
       include_test_utilities!
@@ -45,6 +45,6 @@ end
 
 target "AmplifyTestApp" do
   use_frameworks!
-  pod "AWSMobileClient", optimistic_version($AWS_SDK_VERSION)
+  pod "AWSMobileClient", $OPTIMISTIC_AWS_SDK_VERSION
   include_test_utilities!
 end
