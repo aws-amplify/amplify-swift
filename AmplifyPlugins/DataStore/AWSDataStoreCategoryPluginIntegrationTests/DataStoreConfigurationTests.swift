@@ -25,10 +25,9 @@ class DataStoreConfigurationTests: XCTestCase {
         let saveSuccess = expectation(description: "Save was successful")
 
         do {
-            let dataStoreConfiguration = AmplifyConfiguration(dataStore: nil)
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: prevoisVersion))
             try Amplify.add(plugin: dataStorePlugin)
-            try Amplify.configure(dataStoreConfiguration)
+            try Amplify.configure(AmplifyConfiguration(dataStore: nil))
         } catch {
             XCTFail("Failed to initialize Amplify with \(error)")
         }
@@ -48,14 +47,16 @@ class DataStoreConfigurationTests: XCTestCase {
         Amplify.reset()
 
         let querySuccess = expectation(description: "Database remains")
+
         do {
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: prevoisVersion))
             try Amplify.add(plugin: dataStorePlugin)
-            try Amplify.configure()
+            try Amplify.configure(AmplifyConfiguration(dataStore: nil))
         } catch {
             XCTFail("Failed to initialize Amplify with \(error)")
         }
 
+        // Here trying to query the saved data from above, because if the schema hasn't been changed that the database and saved data should persist.
         Amplify.DataStore.query(Post.self, byId: post.id) { result in
             switch result {
             case .success(let postOptional):
@@ -84,16 +85,14 @@ class DataStoreConfigurationTests: XCTestCase {
 
         let saveSuccess = expectation(description: "Save was successful")
         do {
-            let dataStoreConfiguration = AmplifyConfiguration(dataStore: nil)
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: prevoisVersion))
             try Amplify.add(plugin: dataStorePlugin)
-            try Amplify.configure(dataStoreConfiguration)
+            try Amplify.configure(AmplifyConfiguration(dataStore: nil))
         } catch {
             XCTFail("Failed to initialize Amplify with \(error)")
         }
 
-        let time = Temporal.DateTime.now()
-        let post = Post(title: "title", content: "content", createdAt: time)
+        let post = Post(title: "title", content: "content", createdAt: .now())
 
         Amplify.DataStore.save(post, completion: { result in
             switch result {
@@ -103,24 +102,20 @@ class DataStoreConfigurationTests: XCTestCase {
                 XCTFail("Error saving post \(error)")
             }
         })
+
         wait(for: [saveSuccess], timeout: TestCommonConstants.networkTimeout)
 
-        ModelRegistry.reset()
         Amplify.reset()
 
-        let databaseRecreationDone = expectation(description: "Old database deleted and new database recreated")
+        let querySuccess = expectation(description: "Old database deleted and new database recreated")
 
         do {
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: "1234"))
             try Amplify.add(plugin: dataStorePlugin)
-            try Amplify.configure()
-            databaseRecreationDone.fulfill()
+            try Amplify.configure(AmplifyConfiguration(dataStore: nil))
         } catch {
             XCTFail("Failed to initialize Amplify with \(error)")
         }
-        wait(for: [databaseRecreationDone], timeout: 10)
-
-        let querySuccess = expectation(description: "Old database deleted and new database recreated")
 
         Amplify.DataStore.query(Post.self) { result in
             switch result {
@@ -128,9 +123,10 @@ class DataStoreConfigurationTests: XCTestCase {
                 XCTAssertTrue(postRes.isEmpty)
                 querySuccess.fulfill()
             case .failure(let error):
-                XCTFail("Database Recreation Failed")
+                XCTFail("Database Recreation Failed due to \(error)")
             }
         }
+
         wait(for: [querySuccess], timeout: TestCommonConstants.networkTimeout)
 
         Amplify.DataStore.clear(completion: { _ in })

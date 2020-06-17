@@ -8,9 +8,9 @@
 import Foundation
 
 enum MockFileManagerError: Error {
-    case failToDeleteDatabase
-    case fileDoseNotExist
+    case removeItemError
 }
+
 class MockFileManager: FileManager {
 
     var removeItem: ((URL) -> Void)?
@@ -22,7 +22,7 @@ class MockFileManager: FileManager {
 
     override func removeItem(at URL: URL) throws {
         if hasError {
-            throw MockFileManagerError.failToDeleteDatabase
+            throw MockFileManagerError.removeItemError
         }
         if let removeItem = removeItem {
             removeItem(URL)

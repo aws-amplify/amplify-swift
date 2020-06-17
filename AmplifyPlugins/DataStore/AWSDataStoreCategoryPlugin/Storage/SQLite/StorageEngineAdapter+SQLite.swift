@@ -77,8 +77,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         guard let documentsPath = getDocumentPath() else {
             preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
         }
-        let dbFilePath = documentsPath.appendingPathComponent("\(databaseName).db")
-        return dbFilePath
+        return documentsPath.appendingPathComponent("\(databaseName).db")
     }
 
     func setUp(models: [Model.Type]) throws {

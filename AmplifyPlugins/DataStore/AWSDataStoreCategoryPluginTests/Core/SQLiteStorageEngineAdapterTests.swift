@@ -400,7 +400,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     }
 
     func testVersionInUserDefaultsRemainsSameAndFileExists() {
-        let invoked = expectation(description: "Version remains the same")
+        let fileExistsInvoked = expectation(description: "Version remains the same")
 
         guard let userDefaults = UserDefaults.init(suiteName: "testVersionInUserDefaultsRemainsSame") else {
             XCTFail("Could not create a UserDafult with this suite name")
@@ -423,16 +423,15 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             XCTFail("Test has failed due to \(error)")
         }
 
-        XCTAssertEqual(userDefaults.string(forKey: SQLiteStorageEngineAdapter.dbVersionKey), newVersion)
-        invoked.fulfill()
+        fileExistsInvoked.fulfill()
 
-        wait(for: [invoked], timeout: 10)
+        wait(for: [fileExistsInvoked], timeout: 10)
 
         _ = UserDefaults.removeObject(userDefaults)
     }
 
     func testVersionInUserDefaultsRemainsSameButFileDoesNotExist() {
-        let invoked = expectation(description: "Version remains the same")
+        let fileNotExistInvoked = expectation(description: "Version remains the same")
 
         guard let userDefaults = UserDefaults.init(suiteName: "VersionRemainsSameButFileDoesNotExist") else {
             XCTFail("Could not create a UserDafult with this suite name")
@@ -454,44 +453,9 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             XCTFail("Test has failed due to \(error)")
         }
 
-        XCTAssertEqual(userDefaults.string(forKey: SQLiteStorageEngineAdapter.dbVersionKey), newVersion)
-        invoked.fulfill()
+        fileNotExistInvoked.fulfill()
 
-        wait(for: [invoked], timeout: 10)
-
-        _ = UserDefaults.removeObject(userDefaults)
-    }
-
-    func testVersionInUserDefaultsHasChanged() {
-
-        let removeItemInvoked = expectation(description: "Version has updated and old database is deleted")
-
-        guard let userDefaults = UserDefaults.init(suiteName: "testVersionHasChanged") else {
-            XCTFail("Could not create a UserDafult with this suite name")
-            return
-        }
-
-        userDefaults.set("previousVersion", forKey: SQLiteStorageEngineAdapter.dbVersionKey)
-
-        let newVersion = "newVersion"
-
-        let mockFileManager = MockFileManager()
-        mockFileManager.fileExists = true
-        mockFileManager.removeItem = { url in
-            removeItemInvoked.fulfill()
-        }
-
-        do {
-            try SQLiteStorageEngineAdapter.clearIfNewVersion(version: newVersion,
-                                                             dbFilePath: URL(string: "dbFilePath")!,
-                                                             userDefaults: userDefaults,
-                                                             fileManager: mockFileManager)
-        } catch {
-            XCTFail("Test has failed due to \(error)")
-        }
-
-//        XCTAssertEqual(userDefaults.string(forKey: SQLiteStorageEngineAdapter.dbVersionKey), newVersion)
-        wait(for: [removeItemInvoked], timeout: 10)
+        wait(for: [fileNotExistInvoked], timeout: 10)
 
         _ = UserDefaults.removeObject(userDefaults)
     }
