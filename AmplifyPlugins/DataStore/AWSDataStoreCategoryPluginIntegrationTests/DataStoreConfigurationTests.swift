@@ -42,6 +42,7 @@ class DataStoreConfigurationTests: XCTestCase {
                 XCTFail("Error saving post \(error)")
             }
         })
+
         wait(for: [saveSuccess], timeout: TestCommonConstants.networkTimeout)
 
         Amplify.reset()
@@ -84,6 +85,7 @@ class DataStoreConfigurationTests: XCTestCase {
         let prevoisVersion = "123"
 
         let saveSuccess = expectation(description: "Save was successful")
+
         do {
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: prevoisVersion))
             try Amplify.add(plugin: dataStorePlugin)

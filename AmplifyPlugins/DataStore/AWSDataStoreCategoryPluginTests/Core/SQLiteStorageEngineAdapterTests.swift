@@ -387,6 +387,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         let newVersion = "newVersion"
 
         let mockFileManager = MockFileManager()
+
         do {
             try SQLiteStorageEngineAdapter.clearIfNewVersion(version: newVersion,
                                                              dbFilePath: URL(string: "dbFilePath")!,
@@ -431,7 +432,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     }
 
     func testVersionInUserDefaultsRemainsSameButFileDoesNotExist() {
-        let fileNotExistInvoked = expectation(description: "Version remains the same")
+        let fileNotExistsInvoked = expectation(description: "Version remains the same")
 
         guard let userDefaults = UserDefaults.init(suiteName: "VersionRemainsSameButFileDoesNotExist") else {
             XCTFail("Could not create a UserDafult with this suite name")
@@ -453,16 +454,16 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             XCTFail("Test has failed due to \(error)")
         }
 
-        fileNotExistInvoked.fulfill()
+        fileNotExistsInvoked.fulfill()
 
-        wait(for: [fileNotExistInvoked], timeout: 10)
+        wait(for: [fileNotExistsInvoked], timeout: 10)
 
         _ = UserDefaults.removeObject(userDefaults)
     }
 
     func testVersionInUserDefaultsUpdateFail() {
 
-        let failToremoveItemInvoked = expectation(description: "Should fail to delete old database")
+        let failedToRemoveItemInvoked = expectation(description: "Should fail to delete old database")
 
         guard let userDefaults = UserDefaults.init(suiteName: "testVersionHasChanged") else {
             XCTFail("Could not create a UserDafult with this suite name")
@@ -483,12 +484,11 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                                                              userDefaults: userDefaults,
                                                              fileManager: mockFileManager)
         } catch {
-            failToremoveItemInvoked.fulfill()
+            failedToRemoveItemInvoked.fulfill()
         }
 
-        wait(for: [failToremoveItemInvoked], timeout: 10)
+        wait(for: [failedToRemoveItemInvoked], timeout: 10)
 
         _ = UserDefaults.removeObject(userDefaults)
     }
-
 }

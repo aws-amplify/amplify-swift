@@ -20,13 +20,11 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     convenience init(version: String,
                      databaseName: String = "database",
-                     userDefaults: UserDefaults = UserDefaults.standard,
-                     fileManager: FileManager = FileManager.default) throws {
+                     userDefaults: UserDefaults = UserDefaults.standard) throws {
         var dbFilePath = SQLiteStorageEngineAdapter.getDbFilePath(databaseName: databaseName)
 
         try SQLiteStorageEngineAdapter.clearIfNewVersion(version: version,
-                                                         dbFilePath: dbFilePath,
-                                                         fileManager: fileManager)
+                                                         dbFilePath: dbFilePath)
 
         let path = dbFilePath.absoluteString
 
@@ -41,7 +39,10 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             throw DataStoreError.invalidDatabase(path: path, error)
         }
 
-        try self.init(connection: connection, dbFilePath: dbFilePath, userDefaults: userDefaults, version: version)
+        try self.init(connection: connection,
+                      dbFilePath: dbFilePath,
+                      userDefaults: userDefaults,
+                      version: version)
 
     }
 
@@ -317,7 +318,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     static func clearIfNewVersion(version: String,
                                   dbFilePath: URL,
                                   userDefaults: UserDefaults = UserDefaults.standard,
-                                  fileManager: FileManager) throws {
+                                  fileManager: FileManager = FileManager.default) throws {
 
         guard let previousVersion = userDefaults.string(forKey: dbVersionKey) else {
             return
