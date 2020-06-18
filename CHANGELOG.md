@@ -4,13 +4,10 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## 1.0.2 (2020-06-18)
 
-### ⚠ BREAKING CHANGES
-* **DataStore/API** category using generated Model classes containing embedded types will require Amplify CLI 4.21.4 to generate working Model classes. This is to fix the bug in generating the incorrect selection set when using DataStore with sync enabled and API. The ModelFieldType `.customType` has been replaced with `embedded(type:)` and `embeddedCollection(of:)`. When upgrading to 1.0.2, please also upgrade Amplify CLI before running `amplify codegen models` to generate the new `Embeddable` types. We have considered this breaking change a non-major version bump as existing host applications will continue to experience the existing behavior after upgrading the library if they do not generate the new Model classes.
-
 ### Bug Fixes
 
 * **DataStore:** Fixed a DataStore issue where lazy `List<M>` initialization would fail for relationships 3+ levels deep ([#534](https://github.com/aws-amplify/amplify-ios/pull/534))
-* **DataStore/API:** Add Emeddable type to store schema info for custom types ([#539](https://github.com/aws-amplify/amplify-ios/pull/539))
+* **DataStore/API:** Add Emeddable type to store schema info for custom types ([#539](https://github.com/aws-amplify/amplify-ios/pull/539)). Using generated Model classes containing embedded types will require Amplify CLI 4.21.4 to generate working Model classes. This is to fix the bug in generating the incorrect selection set when using DataStore with sync enabled and API. The ModelFieldType `.customType` has been replaced with `embedded(type:)` and `embeddedCollection(of:)`. When upgrading to 1.0.2, please also upgrade Amplify CLI before running `amplify codegen models` to generate the new `Embeddable` types. 
 * **Tools:** Update Amplify tools script to resolve node correctly when NVM is installed ([#535](https://github.com/aws-amplify/amplify-ios/pull/535))
 * **Tools:** Update Amplify tools script to resolve min CLI version for codegen changes ([#554](https://github.com/aws-amplify/amplify-ios/pull/554))
 * **Auth** Signout will completely delete the session in webui ([#542](https://github.com/aws-amplify/amplify-ios/pull/542))
