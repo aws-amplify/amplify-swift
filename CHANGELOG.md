@@ -7,16 +7,19 @@ All notable changes to this project will be documented in this file. See [standa
 ### Bug Fixes
 
 * **DataStore:** Fixed a DataStore issue where lazy `List<M>` initialization would fail for relationships 3+ levels deep ([#534](https://github.com/aws-amplify/amplify-ios/pull/534))
-* **DataStore/API:** Add Emeddable type to store schema info for custom types ([#539](https://github.com/aws-amplify/amplify-ios/pull/539)). This bug impacts developers with schemas containing embedded types when using DataStore with sync to cloud enabled or using API with Model classes. To fix this bug, upgrade both Amplify CLI to 4.21.4 and Amplify Libraries to 1.0.2. There is a known incompatibility if only upgrading CLI but not the Library. Then run `amplify codegen models` to regenerate the Model classes. The ModelFieldType `.customType` has been replaced with `embedded(type:)` and `embeddedCollection(of:)`. 
+* **DataStore/API:** Add Emeddable type to store schema info for custom types ([#539](https://github.com/aws-amplify/amplify-ios/pull/539) and [#562](https://github.com/aws-amplify/amplify-ios/pull/562)). This bug impacts developers with schemas containing embedded types when using DataStore with sync to cloud enabled or using API with Model classes. To fix this bug, upgrade both Amplify CLI to 4.21.4 and Amplify Libraries to 1.0.2. There is a known incompatibility if only upgrading CLI but not the Library. Then run `amplify codegen models` to regenerate the Model classes. The ModelFieldType `.customType` has been replaced with `embedded(type:)` and `embeddedCollection(of:)`. 
 * **Tools:** Update Amplify tools script to resolve node correctly when NVM is installed ([#535](https://github.com/aws-amplify/amplify-ios/pull/535))
 * **Tools:** Update Amplify tools script to resolve min CLI version for codegen changes ([#554](https://github.com/aws-amplify/amplify-ios/pull/554))
 * **Auth** Signout will completely delete the session in webui ([#542](https://github.com/aws-amplify/amplify-ios/pull/542))
 * **Core** Fix plugin configuration validation ([#543](https://github.com/aws-amplify/amplify-ios/pull/543))
+* **DataStore** Model schema updates clears local database on configure ([#551](https://github.com/aws-amplify/amplify-ios/pull/551))
 
 ### Misc
 
 * **Build** Add common dependency configuration, standardize environment across all modules, podspec source version tag and url ([#538](https://github.com/aws-amplify/amplify-ios/pull/538))
-
+* **Build** Update CoreML podspec with amplify version ([#555](https://github.com/aws-amplify/amplify-ios/pull/555))
+* **Build** Fix `pod lib lint` error using local variable definitions in Podspec files ([#557](https://github.com/aws-amplify/amplify-ios/pull/557))
+* **Core** Move DataStore Model Schema related classes to Internal directory ([#563](https://github.com/aws-amplify/amplify-ios/pull/563))
 
 ## 1.0.1 (2020-06-05)
 
