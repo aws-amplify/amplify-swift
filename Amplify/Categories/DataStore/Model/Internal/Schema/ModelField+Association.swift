@@ -101,6 +101,8 @@ public enum ModelAssociation {
 
 extension ModelField {
 
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public var hasAssociation: Bool {
         return association != nil
     }
@@ -108,6 +110,8 @@ extension ModelField {
     /// If the field represents an association returns the `Model.Type`.
     /// - seealso: `ModelFieldType`
     /// - seealso: `ModelFieldAssociation`
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public var associatedModel: Model.Type? {
         switch type {
         case .model(let type), .collection(let type):
@@ -124,6 +128,8 @@ extension ModelField {
     ///
     /// - Note: as a maintainer, make sure you use this computed property only when context
     /// allows (i.e. the field is a valid relationship, such as foreign keys).
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public var requiredAssociatedModel: Model.Type {
         guard let modelType = associatedModel else {
             preconditionFailure("""
@@ -134,6 +140,8 @@ extension ModelField {
         return modelType
     }
 
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public var isAssociationOwner: Bool {
         guard case .belongsTo = association else {
             return false
@@ -141,6 +149,8 @@ extension ModelField {
         return true
     }
 
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public var associatedField: ModelField? {
         if hasAssociation {
             let associatedModel = requiredAssociatedModel
@@ -161,6 +171,8 @@ extension ModelField {
         return nil
     }
 
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public var isOneToOne: Bool {
         if case .hasOne = association {
             return true
@@ -171,6 +183,8 @@ extension ModelField {
         return false
     }
 
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public var isOneToMany: Bool {
         if case .hasMany = association, case .belongsTo = associatedField?.association {
             return true
@@ -178,6 +192,8 @@ extension ModelField {
         return false
     }
 
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public var isManyToOne: Bool {
         if case .belongsTo = association, case .hasMany = associatedField?.association {
             return true
@@ -185,6 +201,8 @@ extension ModelField {
         return false
     }
 
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public var embeddedType: Embeddable.Type? {
         switch type {
         case .embedded(let type), .embeddedCollection(let type):
@@ -197,6 +215,8 @@ extension ModelField {
         }
     }
 
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public var isEmbeddedType: Bool {
         switch type {
         case .embedded, .embeddedCollection:

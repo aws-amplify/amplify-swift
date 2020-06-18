@@ -42,6 +42,8 @@ struct PersistableHelper {
     ///   - lhs: a reference to a Persistable object
     ///   - rhs: another reference
     /// - Returns: `true` in case both values are equal or `false` otherwise
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public static func isEqual(_ lhs: Persistable?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return true

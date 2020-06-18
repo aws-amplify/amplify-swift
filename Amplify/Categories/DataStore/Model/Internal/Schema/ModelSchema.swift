@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public enum ModelAttribute {
 
     /// Represents a database index, often used for frequent query optimizations.
@@ -14,6 +16,8 @@ public enum ModelAttribute {
     case isSystem
 }
 
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public enum ModelFieldAttribute {
     case primaryKey
 }
@@ -51,6 +55,8 @@ public struct ModelField {
     }
 }
 
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public typealias ModelFields = [String: ModelField]
 
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
