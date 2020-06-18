@@ -337,9 +337,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             try fileManager.removeItem(at: dbFilePath)
         } catch {
             log.error("\(#function) Failed to delete database file located at: \(dbFilePath), error: \(error)")
-            throw error
+            throw DataStoreError.invalidDatabase(path: dbFilePath.path, error)
         }
-
     }
 }
 

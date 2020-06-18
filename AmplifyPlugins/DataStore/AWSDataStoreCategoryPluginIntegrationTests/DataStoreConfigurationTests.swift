@@ -17,8 +17,15 @@ import AWSPluginsCore
 
 class DataStoreConfigurationTests: XCTestCase {
 
-    func testConfigureWithSameSchemaDoesNotDeleteDatabase() throws {
+    override func setUp() {
         Amplify.reset()
+    }
+
+    override func tearDown() {
+        Amplify.DataStore.clear(completion: { _ in })
+    }
+
+    func testConfigureWithSameSchemaDoesNotDeleteDatabase() throws {
 
         let previousVersion = "previousVersion"
         let saveSuccess = expectation(description: "Save was successful")
@@ -75,12 +82,9 @@ class DataStoreConfigurationTests: XCTestCase {
         }
 
         wait(for: [querySuccess], timeout: TestCommonConstants.networkTimeout)
-
-        Amplify.DataStore.clear(completion: { _ in })
     }
 
     func testConfigureWithDifferentSchemaClearsDatabase() throws {
-        Amplify.reset()
 
         let prevoisVersion = "previousVersion"
         let saveSuccess = expectation(description: "Save was successful")
@@ -108,7 +112,7 @@ class DataStoreConfigurationTests: XCTestCase {
 
         Amplify.reset()
 
-        let querySuccess = expectation(description: "Old database deleted and new database recreated")
+        let querySuccess = expectation(description: "query was successful")
 
         do {
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: "1234"))
@@ -126,13 +130,10 @@ class DataStoreConfigurationTests: XCTestCase {
                 XCTAssertTrue(postResult.isEmpty)
                 querySuccess.fulfill()
             case .failure(let error):
-                XCTFail(error)
+                XCTFail(error.errorDescription)
             }
         }
 
         wait(for: [querySuccess], timeout: TestCommonConstants.networkTimeout)
-
-        Amplify.DataStore.clear(completion: { _ in })
     }
-
 }

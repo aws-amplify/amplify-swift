@@ -377,7 +377,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     }
 
     func testClearIfNewVersionWithEmptyUserDefaults() {
-        guard let userDefaults = UserDefaults.init(suiteName: "testVersionIsEmpty") else {
+        guard let userDefaults = UserDefaults.init(suiteName: "testClearIfNewVersionWithEmptyUserDefaults") else {
             XCTFail("Could not create a UserDafult with this suite name")
             return
         }
@@ -402,7 +402,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     }
 
     func testClearIfNewVersionWithVersionSameAsPrevious() {
-        guard let userDefaults = UserDefaults.init(suiteName: "testVersionInUserDefaultsRemainsSame") else {
+        guard let userDefaults = UserDefaults.init(suiteName: "testClearIfNewVersionWithVersionSameAsPrevious") else {
             XCTFail("Could not create a UserDafult with this suite name")
             return
         }
@@ -429,7 +429,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     }
 
     func testClearIfNewVersionWithMissingFile() {
-        guard let userDefaults = UserDefaults.init(suiteName: "VersionRemainsSameButFileDoesNotExist") else {
+        guard let userDefaults = UserDefaults.init(suiteName: "testClearIfNewVersionWithMissingFile") else {
             XCTFail("Could not create a UserDafult with this suite name")
             return
         }
@@ -456,13 +456,13 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     }
 
     func testClearIfNewVersionFailure() {
-        guard let userDefaults = UserDefaults.init(suiteName: "testVersionHasChanged") else {
+        guard let userDefaults = UserDefaults.init(suiteName: "testClearIfNewVersionFailure") else {
             XCTFail("Could not create a UserDafult with this suite name")
             return
         }
 
         userDefaults.set("previousVersion", forKey: SQLiteStorageEngineAdapter.dbVersionKey)
-        
+
         let newVersion = "newVersion"
         let mockFileManager = MockFileManager()
         mockFileManager.hasError = true
@@ -474,7 +474,10 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                                                              userDefaults: userDefaults,
                                                              fileManager: mockFileManager)
         } catch {
-            XCTAssertEqual(error as? MockFileManagerError, MockFileManagerError.removeItemError)
+            guard let dataStoreError = error as? DataStoreError, case .invalidDatabase = dataStoreError else {
+                XCTFail("Expected DataStoreErrorF")
+                return
+            }
         }
 
         _ = UserDefaults.removeObject(userDefaults)
