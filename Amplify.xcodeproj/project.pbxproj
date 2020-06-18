@@ -111,6 +111,7 @@
 		21A3FDB62464590600E76120 /* ModelMultipleOwnerAuthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A3FDB52464590600E76120 /* ModelMultipleOwnerAuthRuleTests.swift */; };
 		21A3FDB9246494CD00E76120 /* GraphQLRequestAuthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A3FDB8246494CD00E76120 /* GraphQLRequestAuthRuleTests.swift */; };
 		21A3FDBF2465FA1500E76120 /* AuthRule+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A3FDBE2465FA1500E76120 /* AuthRule+Extension.swift */; };
+		21AD4257249BFFE00016FE95 /* DeprecatedTodo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AD4255249BFFDF0016FE95 /* DeprecatedTodo.swift */; };
 		21C395B3245729EC00597EA2 /* AppSyncErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */; };
 		21D79FDA237617C60057D00D /* SubscriptionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FD9237617C60057D00D /* SubscriptionEvent.swift */; };
 		21D79FE32377F4120057D00D /* SubscriptionConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FE22377F4120057D00D /* SubscriptionConnectionState.swift */; };
@@ -757,6 +758,7 @@
 		21A3FDB52464590600E76120 /* ModelMultipleOwnerAuthRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelMultipleOwnerAuthRuleTests.swift; sourceTree = "<group>"; };
 		21A3FDB8246494CD00E76120 /* GraphQLRequestAuthRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestAuthRuleTests.swift; sourceTree = "<group>"; };
 		21A3FDBE2465FA1500E76120 /* AuthRule+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthRule+Extension.swift"; sourceTree = "<group>"; };
+		21AD4255249BFFDF0016FE95 /* DeprecatedTodo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DeprecatedTodo.swift; path = Deprecated/DeprecatedTodo.swift; sourceTree = "<group>"; };
 		21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorType.swift; sourceTree = "<group>"; };
 		21D79FD9237617C60057D00D /* SubscriptionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionEvent.swift; sourceTree = "<group>"; };
 		21D79FE22377F4120057D00D /* SubscriptionConnectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionConnectionState.swift; sourceTree = "<group>"; };
@@ -2228,6 +2230,7 @@
 		B952182D237E21B900F53237 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				21AD4255249BFFDF0016FE95 /* DeprecatedTodo.swift */,
 				216E45E9248E91420035E3CE /* NonModel */,
 				FAF512AD23986791001ADF4E /* AmplifyModels.swift */,
 				214F49CB24898E8400DA616C /* Article.swift */,
@@ -4489,6 +4492,7 @@
 				21F40A4023A295470074678E /* TestCommonConstants.swift in Sources */,
 				214F497C2486D8A200DA616C /* UserFollowers.swift in Sources */,
 				B9521835237E21BA00F53237 /* Comment.swift in Sources */,
+				21AD4257249BFFE00016FE95 /* DeprecatedTodo.swift in Sources */,
 				216E45EF248E914F0035E3CE /* Todo+Schema.swift in Sources */,
 				FACA361E2327FC8E000E74F6 /* MockAnalyticsCategoryPlugin.swift in Sources */,
 				2129BE012394627B006363A1 /* PostCommentModelRegistration.swift in Sources */,
