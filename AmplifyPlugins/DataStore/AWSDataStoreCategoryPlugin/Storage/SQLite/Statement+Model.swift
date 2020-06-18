@@ -8,6 +8,7 @@
 import Amplify
 import Foundation
 import SQLite
+import AWSPluginsCore
 
 typealias ModelValues = [String: Any?]
 

@@ -6,8 +6,8 @@
 //
 
 import Foundation
+import Amplify
 
-/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
 public struct AnyModel: Model {
     public let id: Identifier
     public let instance: Model

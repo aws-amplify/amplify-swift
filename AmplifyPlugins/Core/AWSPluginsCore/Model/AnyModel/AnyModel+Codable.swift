@@ -6,8 +6,8 @@
 //
 
 import Foundation
+import Amplify
 
-/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
 /// Custom implementation of Codable for AnyModel stores the instance as its JSON string representation and uses the
 /// ModelRegistry utilities to deserialize it
 public extension AnyModel {
