@@ -7,7 +7,6 @@
 
 import Foundation
 
-/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
 /// Establishes how `Model` fields should be converted to and from different targets (e.g. SQL and GraphQL).
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
