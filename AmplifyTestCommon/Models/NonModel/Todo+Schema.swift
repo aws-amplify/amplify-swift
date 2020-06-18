@@ -33,7 +33,7 @@ extension Todo {
       .field(todo.name, is: .required, ofType: .string),
       .field(todo.description, is: .optional, ofType: .string),
       .field(todo.categories, is: .optional, ofType: .embeddedCollection(of: Category.self)),
-      .field(todo.section, is: .optional, ofType: .customType(type: Section.self)),
+      .field(todo.section, is: .optional, ofType: .embedded(type: Section.self)),
       .field(todo.stickies, is: .optional, ofType: .embeddedCollection(of: String.self))
     )
     }

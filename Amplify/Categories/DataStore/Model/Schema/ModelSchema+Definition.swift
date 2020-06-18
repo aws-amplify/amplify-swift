@@ -34,10 +34,10 @@ public enum ModelFieldType {
     }
 
     @available(*, deprecated, message: """
-        This has been replaced with `.embedded(type)` and `.embeddedCollection(of)`
+        This has been replaced with `.embedded(type)` and `.embeddedCollection(of)` \
         Please use Amplify CLI 4.21.4 or newer to re-generate your Models to conform to Embeddable type.
     """)
-    public static func customType(type: Codable.Type) -> ModelFieldType {
+    public static func customType(_ type: Codable.Type) -> ModelFieldType {
         return .embedded(type: type)
     }
 
