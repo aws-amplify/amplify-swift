@@ -7,7 +7,6 @@
 
 import Foundation
 
-/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
 /// Defines the association type between two models. The type of association is
 /// important when defining how to store and query them. Each association have
 /// its own rules depending on the storage mechanism.
@@ -85,6 +84,8 @@ import Foundation
 /// }
 /// ```
 ///
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public enum ModelAssociation {
     case hasMany(associatedWith: CodingKey?)
     case hasOne(associatedWith: CodingKey?)

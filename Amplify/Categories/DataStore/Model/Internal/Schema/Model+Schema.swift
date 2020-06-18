@@ -7,7 +7,6 @@
 
 import Foundation
 
-/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
 extension Model {
 
     public static var schema: ModelSchema {

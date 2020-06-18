@@ -7,7 +7,8 @@
 
 import Foundation
 
-/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public struct ModelDateFormatting {
 
     public static let decodingStrategy: JSONDecoder.DateDecodingStrategy = {

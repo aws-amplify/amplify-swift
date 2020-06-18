@@ -9,8 +9,9 @@ import Foundation
 
 // MARK: - Model
 
-/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
 /// All persistent models should conform to the Model protocol.
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public protocol Model: Codable {
 
     /// Alias of Model identifier (i.e. primary key)

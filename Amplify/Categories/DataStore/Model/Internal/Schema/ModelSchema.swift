@@ -18,7 +18,8 @@ public enum ModelFieldAttribute {
     case primaryKey
 }
 
-/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public struct ModelField {
 
     public let name: String
@@ -52,7 +53,8 @@ public struct ModelField {
 
 public typealias ModelFields = [String: ModelField]
 
-/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public struct ModelSchema {
 
     public let name: String
