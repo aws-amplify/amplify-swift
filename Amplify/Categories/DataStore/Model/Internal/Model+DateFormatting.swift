@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
 public struct ModelDateFormatting {
 
     public static let decodingStrategy: JSONDecoder.DateDecodingStrategy = {

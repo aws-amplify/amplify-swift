@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
 /// Protocol that represents a `Codable` Enum that can be persisted and easily
 /// integrate with remote APIs since it must have a raw `String` value.
 ///

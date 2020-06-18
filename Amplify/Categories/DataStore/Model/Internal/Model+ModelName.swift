@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
 extension Model {
     public static var modelName: String {
         return String(describing: self)

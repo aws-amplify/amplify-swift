@@ -1672,6 +1672,26 @@
 			path = AuthRuleDecorator;
 			sourceTree = "<group>";
 		};
+		21AD424A249BEC440016FE95 /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				FA8EE775238626C70097E4F1 /* AnyModel */,
+				216E4619249189050035E3CE /* Embedded.swift */,
+				B92E03A72367CE7A006CEB8D /* Model.swift */,
+				B9FAA17F238FBB5D009414B4 /* Model+Array.swift */,
+				B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */,
+				FACBA78C23949588006349C8 /* Model+DateFormatting.swift */,
+				B996FC4C24059918006D0F68 /* Model+Enum.swift */,
+				FA8EE778238627040097E4F1 /* Model+ModelName.swift */,
+				FA8EE77C238627350097E4F1 /* Model+Subscript.swift */,
+				B92E03A92367CE7A006CEB8D /* ModelRegistry.swift */,
+				FA5D4CF2238AFD7B00D2F54A /* ModelRegistry+Syncable.swift */,
+				FA8EE780238628490097E4F1 /* Persistable.swift */,
+				B937FBFC23FB4ED300081639 /* Schema */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
 		21C395B4245729F100597EA2 /* API */ = {
 			isa = PBXGroup;
 			children = (
@@ -2194,20 +2214,8 @@
 			isa = PBXGroup;
 			children = (
 				2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */,
-				FA8EE775238626C70097E4F1 /* AnyModel */,
 				B9FAA1232388BE2B009414B4 /* Collection */,
-				216E4619249189050035E3CE /* Embedded.swift */,
-				B92E03A72367CE7A006CEB8D /* Model.swift */,
-				B9FAA17F238FBB5D009414B4 /* Model+Array.swift */,
-				B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */,
-				FACBA78C23949588006349C8 /* Model+DateFormatting.swift */,
-				B996FC4C24059918006D0F68 /* Model+Enum.swift */,
-				FA8EE778238627040097E4F1 /* Model+ModelName.swift */,
-				FA8EE77C238627350097E4F1 /* Model+Subscript.swift */,
-				B92E03A92367CE7A006CEB8D /* ModelRegistry.swift */,
-				FA5D4CF2238AFD7B00D2F54A /* ModelRegistry+Syncable.swift */,
-				FA8EE780238628490097E4F1 /* Persistable.swift */,
-				B937FBFC23FB4ED300081639 /* Schema */,
+				21AD424A249BEC440016FE95 /* Internal */,
 				B91A879A23D1256B0049A12F /* Temporal */,
 			);
 			path = Model;

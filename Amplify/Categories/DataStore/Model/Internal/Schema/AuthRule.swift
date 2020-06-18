@@ -21,6 +21,7 @@ public enum ModelOperation {
 
 public typealias AuthRules = [AuthRule]
 
+/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
 public struct AuthRule {
     public let allow: AuthStrategy
     public let ownerField: String?

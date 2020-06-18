@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
 /// Adds JSON serialization behavior to all types that conform to the `Model` protocol.
 extension Model where Self: Codable {
 

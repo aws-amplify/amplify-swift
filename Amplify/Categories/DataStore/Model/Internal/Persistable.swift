@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
 /// Types that conform to the `Persistable` protocol represent values that can be
 /// persisted in a database.
 ///

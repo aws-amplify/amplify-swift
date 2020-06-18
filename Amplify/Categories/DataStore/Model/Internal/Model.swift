@@ -9,6 +9,7 @@ import Foundation
 
 // MARK: - Model
 
+/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
 /// All persistent models should conform to the Model protocol.
 public protocol Model: Codable {
 

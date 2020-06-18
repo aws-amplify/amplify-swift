@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Note that although this is public, it is intended for internal use and not consumed directly by host applications.
 /// Establishes how `Model` fields should be converted to and from different targets (e.g. SQL and GraphQL).
 public protocol ModelValueConverter {
 
