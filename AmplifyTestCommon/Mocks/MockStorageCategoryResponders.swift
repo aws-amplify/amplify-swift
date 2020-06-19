@@ -8,6 +8,9 @@
 import Amplify
 
 extension MockStorageCategoryPlugin {
+    /// Note: In order to handle returning a progress and result publisher that can be invoked before the
+    /// operation itself completes, these responders are responsible for invoking the incoming response
+    /// listeners, as opposed to the other style of responder that simply synchronously returns a result.
     struct Responders {
         var getURL: GetURLResponder?
         var downloadData: DownloadDataResponder?
