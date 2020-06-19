@@ -34,7 +34,7 @@ public protocol StorageCategoryBehavior {
                       progressListener: ProgressListener?,
                       resultListener: StorageDownloadDataOperation.ResultListener?) -> StorageDownloadDataOperation
     
-    /// Downloads an object from storage to a local file
+    /// Download an object from storage to a local file
     ///
     /// - Parameters:
     ///   - key: The unique identifier for the object in storage
@@ -64,7 +64,7 @@ public protocol StorageCategoryBehavior {
                     progressListener: ProgressListener?,
                     resultListener: StorageUploadDataOperation.ResultListener?) -> StorageUploadDataOperation
     
-    /// Uploads a local file to storage
+    /// Upload a local file to storage
     ///
     /// - Parameters:
     ///   - key: The unique identifier of the object in storage
@@ -79,7 +79,7 @@ public protocol StorageCategoryBehavior {
                     progressListener: ProgressListener?,
                     resultListener: StorageUploadFileOperation.ResultListener?) -> StorageUploadFileOperation
     
-    /// Deletes an object from storage
+    /// Delete an object from storage
     ///
     /// - Parameters:
     ///   - key: The unique identifier of the object in storage
@@ -90,7 +90,7 @@ public protocol StorageCategoryBehavior {
                 options: StorageRemoveOperation.Request.Options?,
                 resultListener: StorageRemoveOperation.ResultListener?) -> StorageRemoveOperation
     
-    /// Lists the object identifiers under the heiarchy specified by the path, relative to access level, from storage
+    /// List the object identifiers under the hierarchy specified by the path, relative to access level, from storage
     ///
     /// - Parameters:
     ///   - options: Parameters to specific plugin behavior

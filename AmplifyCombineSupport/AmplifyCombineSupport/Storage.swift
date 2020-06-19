@@ -98,7 +98,7 @@ public extension StorageCategoryBehavior {
         }.eraseToAnyPublisher()
     }
 
-    /// Lists the object identifiers under the heiarchy specified by the path, relative to access level, from storage
+    /// List the object identifiers under the hierarchy specified by the path, relative to access level, from storage
     ///
     /// - Parameters:
     ///   - options: Parameters to specific plugin behavior
@@ -109,7 +109,7 @@ public extension StorageCategoryBehavior {
         }.eraseToAnyPublisher()
     }
 
-    /// Deletes an object from storage
+    /// Delete an object from storage
     ///
     /// - Parameters:
     ///   - key: The unique identifier of the object in storage
