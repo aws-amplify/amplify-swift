@@ -95,7 +95,7 @@ import AmplifyPlugins
 import AmplifyCombineSupport
 ```
 
-## API Mapping
+## API Comparison: Standard Amplify vs. AmplifyCombineSupport
 
 AmplifyCombineSupport strives to provide the same API signature and call patterns as vanilla Amplify, minus the result callbacks. Thus, `Amplify.DataStore.save(_:where:completion:)` has a CombineSupport equivalent of `Amplify.DataStore.save(_:where:)`. Similarly, the types used in result callbacks in vanilla Amplify APIs translate logically to the Output and Error types of `AnyPublisher`s returned from AmplifyCombineSupport APIs. Where method signatures conflict because of ambiguous type requirements, AmplifyCombineSupport will provide a method flavor appended with `...WithPublisher`, as in a hypothetical `DataStore.saveWithPublisher(...) -> AnyPublisher<...>`.
 
@@ -115,9 +115,9 @@ The names of the "in process" and "result" publishers vary by API category, to r
 
 ### APIs that return operations
 
-The **Standard Amplify** flavor of most APIs returns a use-case specific Operation that may be used to cancel an in-progress operation. The **AmplifyCombineSupport** APIs do not support cancellation of the operation. Canceling a subscription to a publisher simply releases that publisher, but does not affect the work in the underlying operation.
+The Standard Amplify flavor of most APIs returns a use-case specific Operation that may be used to cancel an in-progress operation. The `AmplifyCombineSupport` APIs do not support cancellation of the operation. Canceling a subscription to a publisher simply releases that publisher, but does not affect the work in the underlying operation.
 
-If your use case requires both Combine-style publisher support and cancellation, you can adapt the **Standard Amplify** API to send result events to a `Future` and retain the operation, as in this example for the Storage category:
+If your use case requires both Combine-style publisher support and cancellation, you can adapt the standard API, as in this example for the Storage category:
 
 ```swift
 let progressSubject = PassthroughSubject<Progress, Never>()
@@ -184,15 +184,6 @@ public typealias DataStorePublisher<Output> = AnyPublisher<Output, DataStoreErro
 
 #### `save`
 
-**Standard Amplify**
-
-```swift
-func save<M: Model>(_ model: M,
-                    where condition: QueryPredicate?,
-                    completion: @escaping DataStoreCallback<M>)
-```
-
-**AmplifyCombineSupport**
 ```swift
 func save<M: Model>(_ model: M,
                     where condition: QueryPredicate? = nil) -> DataStorePublisher<M>
@@ -200,33 +191,12 @@ func save<M: Model>(_ model: M,
 
 #### `query` by id
 
-**Standard Amplify**
-
-```swift
-func query<M: Model>(_ modelType: M.Type,
-                     byId id: String,
-                     completion: DataStoreCallback<M?>)
-```
-
-**AmplifyCombineSupport**
-
 ```swift
 func query<M: Model>(_ modelType: M.Type,
                      byId id: String) -> DataStorePublisher<M?>
 ```
 
 #### `query` by predicate
-
-**Standard Amplify**
-
-```swift
-func query<M: Model>(_ modelType: M.Type,
-                     where predicate: QueryPredicate?,
-                     paginate paginationInput: QueryPaginationInput?,
-                     completion: DataStoreCallback<[M]>)
-```
-
-**AmplifyCombineSupport**
 
 ```swift
 func query<M: Model>(_ modelType: M.Type,
@@ -236,17 +206,6 @@ func query<M: Model>(_ modelType: M.Type,
 
 #### `delete` by id
 
-**Standard Amplify**
-
-```swift
-func delete<M: Model>(_ modelType: M.Type,
-                      withId id: String,
-                      completion: @escaping DataStoreCallback<Void>)
-
-```
-
-**AmplifyCombineSupport**
-
 ```swift
 func delete<M: Model>(_ modelType: M.Type,
                       withId id: String) -> DataStorePublisher<Void>
@@ -254,30 +213,12 @@ func delete<M: Model>(_ modelType: M.Type,
 
 #### `delete` by predicate
 
-**Standard Amplify**
-
-```swift
-func delete<M: Model>(_ model: M,
-                      where predicate: QueryPredicate?,
-                      completion: @escaping DataStoreCallback<Void>)
-```
-
-**AmplifyCombineSupport**
-
 ```swift
 func delete<M: Model>(_ model: M,
                       where predicate: QueryPredicate? = nil) -> DataStorePublisher<Void>
 ```
 
 #### `clear`
-
-**Standard Amplify**
-
-```swift
-func clear(completion: @escaping DataStoreCallback<Void>)
-```
-
-**AmplifyCombineSupport**
 
 ```swift
 func clear() -> DataStorePublisher<Void>
@@ -313,16 +254,6 @@ public typealias PredictionsPublisher<Output> = AnyPublisher<Output, Predictions
 
 #### `convert` speech to text
 
-**Standard Amplify**
-
-```swift
-func convert(speechToText: URL,
-             options: PredictionsSpeechToTextRequest.Options?,
-             listener: PredictionsSpeechToTextOperation.ResultListener?) -> PredictionsSpeechToTextOperation
-```
-
-**AmplifyCombineSupport**
-
 ```swift
 func convert(speechToText: URL,
              options: PredictionsSpeechToTextRequest.Options? = nil) -> PredictionsPublisher<SpeechToTextResult>
@@ -330,34 +261,12 @@ func convert(speechToText: URL,
 
 #### `convert` text to speech
 
-**Standard Amplify**
-
-```swift
-func convert(textToSpeech: String,
-             options: PredictionsTextToSpeechRequest.Options?,
-             listener: PredictionsTextToSpeechOperation.ResultListener?) -> PredictionsTextToSpeechOperation
-```
-
-**AmplifyCombineSupport**
-
 ```swift
     func convert(textToSpeech: String,
                  options: PredictionsTextToSpeechRequest.Options? = nil) -> PredictionsPublisher<TextToSpeechResult>
 ```
 
 #### `convert` text to translate
-
-**Standard Amplify**
-
-```swift
-func convert(textToTranslate: String,
-             language: LanguageType?,
-             targetLanguage: LanguageType?,
-             options: PredictionsTranslateTextRequest.Options?,
-             listener: PredictionsTranslateTextOperation.ResultListener?) -> PredictionsTranslateTextOperation
-```
-
-**AmplifyCombineSupport**
 
 ```swift
 func convert(textToTranslate: String,
@@ -368,17 +277,6 @@ func convert(textToTranslate: String,
 
 #### `identify`
 
-**Standard Amplify**
-
-```swift
-func identify(type: IdentifyAction,
-              image: URL,
-              options: PredictionsIdentifyRequest.Options?,
-              listener: PredictionsIdentifyOperation.ResultListener?) -> PredictionsIdentifyOperation
-```
-
-**AmplifyCombineSupport**
-
 ```swift
 func identify(type: IdentifyAction,
               image: URL,
@@ -386,16 +284,6 @@ func identify(type: IdentifyAction,
 ```
 
 #### `interpret`
-
-**Standard Amplify**
-
-```swift
-func interpret(text: String,
-               options: PredictionsInterpretRequest.Options?,
-               listener: PredictionsInterpretOperation.ResultListener?) -> PredictionsInterpretOperation
-```
-
-**AmplifyCombineSupport**
 
 ```swift
 func interpret(text: String,
@@ -426,35 +314,12 @@ public struct StorageInProcessPublisher<Output> {
 
 #### `downloadData`
 
-**Standard Amplify**
-
-```swift
-func downloadData(key: String,
-                  options: StorageDownloadDataOperation.Request.Options?,
-                  progressListener: ProgressListener?,
-                  resultListener: StorageDownloadDataOperation.ResultListener?) -> StorageDownloadDataOperation
-```
-
-**AmplifyCombineSupport**
-
 ```swift
 func downloadData(key: String,
                   options: StorageDownloadDataOperation.Request.Options? = nil) -> StorageInProcessPublisher<Data>
 ```
 
 #### `downloadFile`
-
-**Standard Amplify**
-
-```swift
-func downloadFile(key: String,
-                  local: URL,
-                  options: StorageDownloadFileOperation.Request.Options?,
-                  progressListener: ProgressListener?,
-                  resultListener: StorageDownloadFileOperation.ResultListener?) -> StorageDownloadFileOperation
-```
-
-**AmplifyCombineSupport**
 
 ```swift
 func downloadFile(key: String,
@@ -464,16 +329,6 @@ func downloadFile(key: String,
 
 #### `getURL`
 
-**Standard Amplify**
-
-```swift
-func getURL(key: String,
-            options: StorageGetURLOperation.Request.Options?,
-            resultListener: StorageGetURLOperation.ResultListener?) -> StorageGetURLOperation
-```
-
-**AmplifyCombineSupport**
-
 ```swift
 func getURL(key: String,
             options: StorageGetURLOperation.Request.Options? = nil) -> StoragePublisher<URL>
@@ -481,30 +336,11 @@ func getURL(key: String,
 
 #### `list`
 
-**Standard Amplify**
-
-```swift
-func list(options: StorageListOperation.Request.Options?,
-          resultListener: StorageListOperation.ResultListener?) -> StorageListOperation
-```
-
-**AmplifyCombineSupport**
-
 ```swift
 func list(options: StorageListOperation.Request.Options? = nil) -> StoragePublisher<StorageListResult>
 ```
 
 #### `remove`
-
-**Standard Amplify**
-
-```swift
-func remove(key: String,
-            options: StorageRemoveOperation.Request.Options?,
-            resultListener: StorageRemoveOperation.ResultListener?) -> StorageRemoveOperation
-```
-
-**AmplifyCombineSupport**
 
 ```swift
 func remove(key: String,
@@ -512,17 +348,6 @@ func remove(key: String,
 ```
 
 #### `uploadData`
-
-**Standard Amplify**
-
-```swift
-func uploadData(key: String,
-                data: Data,
-                options: StorageUploadDataOperation.Request.Options?,
-                progressListener: ProgressListener?,
-                resultListener: StorageUploadDataOperation.ResultListener?) -> StorageUploadDataOperation
-```
-**AmplifyCombineSupport**
 
 ```swift
 func uploadData(key: String,
@@ -532,20 +357,8 @@ func uploadData(key: String,
 
 #### `uploadFile`
 
-**Standard Amplify**
-
-```swift
-func uploadFile(key: String,
-                local: URL,
-                options: StorageUploadFileOperation.Request.Options?,
-                progressListener: ProgressListener?,
-                resultListener: StorageUploadFileOperation.ResultListener?) -> StorageUploadFileOperation
-```
-**AmplifyCombineSupport**
-
 ```swift
     func uploadFile(key: String,
                     local: URL,
                     options: StorageUploadFileOperation.Request.Options? = nil) -> StorageInProcessPublisher<String>
 ```
-
