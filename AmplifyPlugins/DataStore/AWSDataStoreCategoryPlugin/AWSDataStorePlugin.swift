@@ -52,6 +52,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.isSyncEnabled = false
         self.validAPIPluginKey =  "awsAPIPlugin"
         self.validAuthPluginKey = "awsCognitoAuthPlugin"
+
         if #available(iOS 13.0, *) {
             self.dataStorePublisher = DataStorePublisher()
         } else {
@@ -81,6 +82,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     public func configure(using amplifyConfiguration: Any?) throws {
         modelRegistration.registerModels(registry: ModelRegistry.self)
         resolveSyncEnabled()
+
         try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
 
         try storageEngine.setUp(models: ModelRegistry.models)
@@ -119,7 +121,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled,
                                           dataStoreConfiguration: dataStoreConfiguration,
                                           validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+                                          validAuthPluginKey: validAuthPluginKey,
+                                          modelRegistryVersion: modelRegistration.version)
         if #available(iOS 13.0, *) {
             setupStorageSink()
         }
