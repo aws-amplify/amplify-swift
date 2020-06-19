@@ -152,13 +152,94 @@ resultSubscription.cancel() // Only cancels subscription, download is still prog
 downloadOperation.cancel() // Cancels download
 ```
 
-## API reference by category
+## Category reference
 
 ---
 API
 ---
 
-TBD
+**GraphQL APIs**
+
+### New Typealiases
+
+```swift
+/// A publisher that returns values from `query` and `mutate` GraphQL operations
+public typealias GraphQLPublisher<R: Decodable> = AnyPublisher<
+    GraphQLResponse<R>,
+    APIError
+>
+
+/// A publisher that returns values from a GraphQL `subscribe` operation. Subscription events delivered
+/// in the result stream may include GraphQL errors (such as partially-decoded results), but those
+/// errors do not represent the end of the subscription stream. The publisher will emit a `completion`
+/// when the subscription is terminated and no longer receiving updates.
+public typealias GraphQLSubscriptionPublisher<R: Decodable> = AnyPublisher<
+    SubscriptionEvent<GraphQLResponse<R>>,
+    APIError
+>
+```
+
+### `query`
+
+```swift
+func query<R: Decodable>(request: GraphQLRequest<R>) -> GraphQLPublisher<R>
+```
+
+### `mutate`
+
+```swift
+func mutate<R: Decodable>(request: GraphQLRequest<R>) -> GraphQLPublisher<R>
+```
+
+### `subscribe`
+
+```swift
+func subscribe<R: Decodable>(request: GraphQLRequest<R>) -> GraphQLSubscriptionPublisher<R>
+```
+
+**REST APIs**
+
+### New Typealias
+
+```swift
+public typealias APIRESTPublisher = AnyPublisher<Data, APIError>
+```
+
+### `delete`
+
+```swift
+func delete(request: RESTRequest) -> APIRESTPublisher
+```
+
+### `get`
+
+```swift
+func get(request: RESTRequest) -> APIRESTPublisher
+```
+
+### `head`
+
+```swift
+func head(request: RESTRequest) -> APIRESTPublisher
+```
+
+### `patch`
+
+```swift
+func patch(request: RESTRequest) -> APIRESTPublisher
+```
+
+### `post`
+
+```swift
+func post(request: RESTRequest) -> APIRESTPublisher
+```
+
+### `put`
+
+```swift
+func put(request: RESTRequest) -> APIRESTPublisher
+```
 
 ---
 Analytics
@@ -176,27 +257,27 @@ TBD
 DataStore
 ---
 
-**New Typealiases**
+### New Typealiases
 
 ```swift
 public typealias DataStorePublisher<Output> = AnyPublisher<Output, DataStoreError>
 ```
 
-#### `save`
+### `save`
 
 ```swift
 func save<M: Model>(_ model: M,
                     where condition: QueryPredicate? = nil) -> DataStorePublisher<M>
 ```
 
-#### `query` by id
+### `query` by id
 
 ```swift
 func query<M: Model>(_ modelType: M.Type,
                      byId id: String) -> DataStorePublisher<M?>
 ```
 
-#### `query` by predicate
+### `query` by predicate
 
 ```swift
 func query<M: Model>(_ modelType: M.Type,
@@ -204,21 +285,21 @@ func query<M: Model>(_ modelType: M.Type,
                      paginate paginationInput: QueryPaginationInput? = nil) -> DataStorePublisher<[M]>
 ```
 
-#### `delete` by id
+### `delete` by id
 
 ```swift
 func delete<M: Model>(_ modelType: M.Type,
                       withId id: String) -> DataStorePublisher<Void>
 ```
 
-#### `delete` by predicate
+### `delete` by predicate
 
 ```swift
 func delete<M: Model>(_ model: M,
                       where predicate: QueryPredicate? = nil) -> DataStorePublisher<Void>
 ```
 
-#### `clear`
+### `clear`
 
 ```swift
 func clear() -> DataStorePublisher<Void>
@@ -246,27 +327,27 @@ The Logging category does not offer any CombineSupport APIs.
 Predictions
 ---
 
-**New Typealiases**
+### New Typealiases
 
 ```swift
 public typealias PredictionsPublisher<Output> = AnyPublisher<Output, PredictionsError>
 ```
 
-#### `convert` speech to text
+### `convert` speech to text
 
 ```swift
 func convert(speechToText: URL,
              options: PredictionsSpeechToTextRequest.Options? = nil) -> PredictionsPublisher<SpeechToTextResult>
 ```
 
-#### `convert` text to speech
+### `convert` text to speech
 
 ```swift
     func convert(textToSpeech: String,
                  options: PredictionsTextToSpeechRequest.Options? = nil) -> PredictionsPublisher<TextToSpeechResult>
 ```
 
-#### `convert` text to translate
+### `convert` text to translate
 
 ```swift
 func convert(textToTranslate: String,
@@ -275,7 +356,7 @@ func convert(textToTranslate: String,
              options: PredictionsTranslateTextRequest.Options? = nil) -> PredictionsPublisher<TranslateTextResult>
 ```
 
-#### `identify`
+### `identify`
 
 ```swift
 func identify(type: IdentifyAction,
@@ -283,7 +364,7 @@ func identify(type: IdentifyAction,
               options: PredictionsIdentifyRequest.Options? = nil) -> PredictionsPublisher<IdentifyResult>
 ```
 
-#### `interpret`
+### `interpret`
 
 ```swift
 func interpret(text: String,
@@ -294,7 +375,7 @@ func interpret(text: String,
 Storage
 ---
 
-**New types**
+### New types
 
 ```swift
 /// Convenience typealias defining a result publisher for Storage operations
@@ -312,14 +393,14 @@ public struct StorageInProcessPublisher<Output> {
 }
 ```
 
-#### `downloadData`
+### `downloadData`
 
 ```swift
 func downloadData(key: String,
                   options: StorageDownloadDataOperation.Request.Options? = nil) -> StorageInProcessPublisher<Data>
 ```
 
-#### `downloadFile`
+### `downloadFile`
 
 ```swift
 func downloadFile(key: String,
@@ -327,27 +408,27 @@ func downloadFile(key: String,
                   options: StorageDownloadFileOperation.Request.Options? = nil) -> StorageInProcessPublisher<Void>
 ```
 
-#### `getURL`
+### `getURL`
 
 ```swift
 func getURL(key: String,
             options: StorageGetURLOperation.Request.Options? = nil) -> StoragePublisher<URL>
 ```
 
-#### `list`
+### `list`
 
 ```swift
 func list(options: StorageListOperation.Request.Options? = nil) -> StoragePublisher<StorageListResult>
 ```
 
-#### `remove`
+### `remove`
 
 ```swift
 func remove(key: String,
             options: StorageRemoveOperation.Request.Options? = nil) -> StoragePublisher<String>
 ```
 
-#### `uploadData`
+### `uploadData`
 
 ```swift
 func uploadData(key: String,
@@ -355,7 +436,7 @@ func uploadData(key: String,
                 options: StorageUploadDataOperation.Request.Options? = nil) -> StorageInProcessPublisher<String>
 ```
 
-#### `uploadFile`
+### `uploadFile`
 
 ```swift
     func uploadFile(key: String,
