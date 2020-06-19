@@ -97,7 +97,7 @@ import AmplifyCombineSupport
 
 ## API Comparison: Standard Amplify vs. AmplifyCombineSupport
 
-AmplifyCombineSupport strives to provide the same API signature and call patterns as vanilla Amplify, minus the result callbacks. Thus, `Amplify.DataStore.save(_:where:completion:)` has a CombineSupport equivalent of `Amplify.DataStore.save(_:where:)`. Similarly, the types used in result callbacks in vanilla Amplify APIs translate logically to the Output and Error types of `AnyPublisher`s returned from AmplifyCombineSupport APIs. Where method signatures conflict because of ambiguous type requirements, AmplifyCombineSupport will provide a method flavor appended with `...WithPublisher`, as in a hypothetical `DataStore.saveWithPublisher(...) -> AnyPublisher<...>`.
+`AmplifyCombineSupport` strives to provide the same API signature and call patterns as vanilla Amplify, minus the result callbacks. Thus, `Amplify.DataStore.save(_:where:completion:)` has an `AmplifyCombineSupport` equivalent of `Amplify.DataStore.save(_:where:)`. Similarly, the types used in result callbacks in standard Amplify APIs translate logically to the `Output` and `Failure` types of `AnyPublisher`s returned from `AmplifyCombineSupport` APIs.
 
 ### APIs with in-process listeners
 APIs that accept both an "in process" and "result" listener have a CombineSupport flavor that returns a category-specific struct containing both an "in process" and "result" publisher. Callers can subscribe to either or both, as in this example for the Storage category:
