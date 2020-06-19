@@ -154,19 +154,27 @@ downloadOperation.cancel() // Cancels download
 
 ## API reference by category
 
-### API
+---
+API
+---
 
 TBD
 
-### Analytics
+---
+Analytics
+---
 
 The Analytics category does not offer any CombineSupport APIs.
 
-### Auth
+---
+Auth
+---
 
 TBD
 
-### DataStore
+---
+DataStore
+---
 
 **New Typealiases**
 
@@ -275,7 +283,9 @@ func clear(completion: @escaping DataStoreCallback<Void>)
 func clear() -> DataStorePublisher<Void>
 ```
 
-### Hub
+---
+Hub
+---
 
 TBD, but potentially:
 
@@ -285,11 +295,15 @@ typealias HubPublisher<Output> = AnyPublisher<Output, Never>
 func publisher(for channel: HubChannel) -> HubPublisher
 ```
 
-### Logging
+---
+Logging
+---
 
 The Logging category does not offer any CombineSupport APIs.
 
-### Predictions
+---
+Predictions
+---
 
 **New Typealiases**
 
@@ -388,7 +402,9 @@ func interpret(text: String,
                options: PredictionsInterpretRequest.Options? = nil) -> PredictionsPublisher<InterpretResult>
 ```
 
-### Storage
+---
+Storage
+---
 
 **New types**
 
