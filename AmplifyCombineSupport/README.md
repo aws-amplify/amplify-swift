@@ -58,7 +58,7 @@ subscription = Publishers.Zip(
 
 Compared to nesting these dependent calls in callbacks, this provides a much more readable pattern.
 
-**NOTE**: Remember that Combine `sink` subscriptions are not retained by the publishers, so you must maintain a reference to the subscription in your code, such as in an instance variable of the enclosing type:
+**NOTE**: Remember that Combine publishers do not retain `sink` subscriptions, so you must maintain a reference to the subscription in your code, such as in an instance variable of the enclosing type:
 
 ```swift
 struct MyAppCode {
@@ -77,7 +77,7 @@ struct MyAppCode {
 
 ## Installation
 
-Install from CocoaPods by adding the pod to your Podfile:
+Install from CocoaPods by adding the `AmplifyCombineSupport` pod to your Podfile:
 
 ```ruby
 pod 'Amplify'
@@ -87,7 +87,7 @@ pod 'AmplifyCombineSupport'
 
 ## Usage
 
-Use in your projects by importing the AmplifyCombineSupport module alongside Amplify and AmplifyPlugins:
+Use in your projects by importing the `AmplifyCombineSupport` module alongside `Amplify` and `AmplifyPlugins`:
 
 ```swift
 import Amplify
@@ -95,9 +95,9 @@ import AmplifyPlugins
 import AmplifyCombineSupport
 ```
 
-## API Comparison: Standard Amplify vs. AmplifyCombineSupport
+## API Comparison: Standard Amplify vs. `AmplifyCombineSupport`
 
-`AmplifyCombineSupport` strives to provide the same API signature and call patterns as vanilla Amplify, minus the result callbacks. Thus, `Amplify.DataStore.save(_:where:completion:)` has an `AmplifyCombineSupport` equivalent of `Amplify.DataStore.save(_:where:)`. Similarly, the types used in result callbacks in standard Amplify APIs translate logically to the `Output` and `Failure` types of `AnyPublisher`s returned from `AmplifyCombineSupport` APIs.
+`AmplifyCombineSupport` strives to provide the same API signature and call patterns as "standard" Amplify, minus the result callbacks. Thus, `Amplify.DataStore.save(_:where:completion:)` has an `AmplifyCombineSupport` equivalent of `Amplify.DataStore.save(_:where:)`. Similarly, the Result callback `Success` and `Failure` types in standard Amplify APIs translate exactly to the `Output` and `Failure` types of `AnyPublisher`s returned from `AmplifyCombineSupport` APIs.
 
 ### APIs with in-process listeners
 APIs that accept both an "in process" and "result" listener have a CombineSupport flavor that returns a category-specific struct containing both an "in process" and "result" publisher. Callers can subscribe to either or both, as in this example for the Storage category:
@@ -111,13 +111,13 @@ let resultSubscription = publisher.resultPublisher.sink(
 )
 ```
 
-The names of the "in process" and "result" publishers vary by API category, to reflect their use case.
+The names of the "in process" and "result" properties vary by API category, to reflect their use case. See the API documentation for details.
 
 ### APIs that return operations
 
-The Standard Amplify flavor of most APIs returns a use-case specific Operation that may be used to cancel an in-progress operation. The `AmplifyCombineSupport` APIs do not support cancellation of the operation. Canceling a subscription to a publisher simply releases that publisher, but does not affect the work in the underlying operation.
+The Standard Amplify flavor of most APIs returns a use-case specific Operation that you may use to cancel an in-progress operation. The `AmplifyCombineSupport` APIs do not support cancellation of the operation. Canceling a subscription to a publisher simply releases that publisher, but does not affect the work in the underlying operation.
 
-If your use case requires both Combine-style publisher support and cancellation, you can adapt the standard API, as in this example for the Storage category:
+If your use case requires both Combine-style publisher support and cancellation, you can adapt the standard API, as in this example for the Storage category, without even using `AmplifyCombineSupport` module:
 
 ```swift
 let progressSubject = PassthroughSubject<Progress, Never>()
