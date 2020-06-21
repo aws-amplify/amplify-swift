@@ -9,31 +9,33 @@ import Foundation
 
 public protocol AuthCategoryDeviceBehavior: class {
 
-    /// Fetch devices assigned to the current device
+    /// Fetch devices assigned to the current user
+    ///
     /// - Parameters:
-    ///   - options: Parameters specific to plugin behavior.
-    ///   - listener: Triggered when the operation completes.
+    ///   - options: Parameters specific to plugin behavior
+    ///   - listener: Triggered when the operation completes
     func fetchDevices(
         options: AuthFetchDevicesOperation.Request.Options?,
         listener: AuthFetchDevicesOperation.ResultListener?) -> AuthFetchDevicesOperation
 
-    /// Forget device from the user
+    /// Forget a device from the user
     ///
     /// - Parameters:
-    ///   - authDevice: Device to be forgotten
-    ///   - options: Parameters specific to plugin behavior.
-    ///   - listener: Triggered when the operation completes.
+    ///   - authDevice: Device to be forgotten. Defaults to the current device.
+    ///   - options: Parameters specific to plugin behavior
+    ///   - listener: Triggered when the operation completes
     func forgetDevice(
         _ device: AuthDevice?,
         options: AuthForgetDeviceOperation.Request.Options?,
         listener: AuthForgetDeviceOperation.ResultListener?) -> AuthForgetDeviceOperation
 
-    /// Make the current user device as remebered
+    /// Remember the current user device
     ///
     /// - Parameters:
-    ///   - options: Parameters specific to plugin behavior.
-    ///   - listener: Triggered when the operation completes.
+    ///   - options: Parameters specific to plugin behavior
+    ///   - listener: Triggered when the operation completes
     func rememberDevice(
         options: AuthRememberDeviceOperation.Request.Options?,
         listener: AuthRememberDeviceOperation.ResultListener?) -> AuthRememberDeviceOperation
+
 }

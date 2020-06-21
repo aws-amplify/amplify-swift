@@ -9,15 +9,15 @@ import Foundation
 
 public protocol AuthCategoryUserBehavior: class {
 
-    /// Returns the currently logged in user.
+    /// Returns the currently logged in user, if any
     ///
     func getCurrentUser() -> AuthUser?
 
-    /// Fetch user attributes for the current user.
+    /// Fetch user attributes for the current user
     ///
     /// - Parameters:
     ///   - options: Parameters specific to plugin behavior
-    ///   - listener: Triggered when the operation completes.
+    ///   - listener: Triggered when the operation completes
     func fetchUserAttributes(options: AuthFetchUserAttributeOperation.Request.Options?,
                              listener: AuthFetchUserAttributeOperation.ResultListener?)
         -> AuthFetchUserAttributeOperation
@@ -27,7 +27,7 @@ public protocol AuthCategoryUserBehavior: class {
     /// - Parameters:
     ///   - userAttribute: Attribute that need to be updated
     ///   - options: Parameters specific to plugin behavior
-    ///   - listener: Triggered when the operation completes.
+    ///   - listener: Triggered when the operation completes
     func update(userAttribute: AuthUserAttribute,
                 options: AuthUpdateUserAttributeOperation.Request.Options?,
                 listener: AuthUpdateUserAttributeOperation.ResultListener?) -> AuthUpdateUserAttributeOperation
@@ -37,7 +37,7 @@ public protocol AuthCategoryUserBehavior: class {
     /// - Parameters:
     ///   - userAttributes: List of attribtues that need ot be updated
     ///   - options: Parameters specific to plugin behavior
-    ///   - listener: Triggered when the operation completes.
+    ///   - listener: Triggered when the operation completes
     func update(userAttributes: [AuthUserAttribute],
                 options: AuthUpdateUserAttributesOperation.Request.Options?,
                 listener: AuthUpdateUserAttributesOperation.ResultListener?) -> AuthUpdateUserAttributesOperation
@@ -47,7 +47,7 @@ public protocol AuthCategoryUserBehavior: class {
     /// - Parameters:
     ///   - attributeKey: Attribute to be verified
     ///   - options: Parameters specific to plugin behavior
-    ///   - listener: Triggered when the operation completes.
+    ///   - listener: Triggered when the operation completes
     func resendConfirmationCode(for attributeKey: AuthUserAttributeKey,
                                 options: AuthAttributeResendConfirmationCodeOperation.Request.Options?,
                                 listener: AuthAttributeResendConfirmationCodeOperation.ResultListener?)
@@ -59,7 +59,7 @@ public protocol AuthCategoryUserBehavior: class {
     ///   - userAttribute: Attribute to verify
     ///   - confirmationCode: Confirmation code received
     ///   - options: Parameters specific to plugin behavior
-    ///   - listener: Triggered when the operation completes.
+    ///   - listener: Triggered when the operation completes
     func confirm(userAttribute: AuthUserAttributeKey,
                  confirmationCode: String,
                  options: AuthConfirmUserAttributeOperation.Request.Options?,
@@ -72,7 +72,7 @@ public protocol AuthCategoryUserBehavior: class {
     ///   - oldPassword: Current password of the user
     ///   - newPassword: New password to be updated
     ///   - options: Parameters specific to plugin behavior
-    ///   - listener: Triggered when the operation completes.
+    ///   - listener: Triggered when the operation completes
     func update(oldPassword: String,
                 to newPassword: String,
                 options: AuthChangePasswordOperation.Request.Options?,

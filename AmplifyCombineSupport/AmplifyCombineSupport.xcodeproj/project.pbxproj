@@ -11,10 +11,13 @@
 		460AF4071FCD205E333B7B83 /* Pods_AmplifyCombineSupport_AmplifyCombineSupportTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F226E1FBC291A229DC3F519A /* Pods_AmplifyCombineSupport_AmplifyCombineSupportTests.framework */; };
 		FA01939C248956C400CC7FA0 /* AmplifyCombineSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA019392248956C400CC7FA0 /* AmplifyCombineSupport.framework */; };
 		FA0193A1248956C400CC7FA0 /* DataStoreGeneralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0193A0248956C400CC7FA0 /* DataStoreGeneralTests.swift */; };
+		FA12BAD224A009CE0088B748 /* AuthNSignInAndUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA12BAD124A009CE0088B748 /* AuthNSignInAndUpTests.swift */; };
 		FA1D07EF249AB315000B6C3E /* PredictionsChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1D07ED249AB1BA000B6C3E /* PredictionsChainTests.swift */; };
 		FA1D07F1249AB61C000B6C3E /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1D07F0249AB61C000B6C3E /* Storage.swift */; };
 		FA1D07F5249ABE86000B6C3E /* StoragePublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1D07F4249ABE86000B6C3E /* StoragePublisherTests.swift */; };
 		FA44D5EC249AC7F7001EED40 /* StorageChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA44D5EB249AC7F6001EED40 /* StorageChainTests.swift */; };
+		FA453B83249FF1BB00A29AA2 /* Auth+AuthNBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA453B82249FF1BB00A29AA2 /* Auth+AuthNBehavior.swift */; };
+		FA453B8C24A004E400A29AA2 /* AuthNGeneralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA453B8A24A0043900A29AA2 /* AuthNGeneralTests.swift */; };
 		FA51A701249D71D800DA27B9 /* API+APICategoryRESTBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA51A700249D71D800DA27B9 /* API+APICategoryRESTBehavior.swift */; };
 		FA51A703249D73A700DA27B9 /* API+APICategoryGraphQLBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA51A702249D73A600DA27B9 /* API+APICategoryGraphQLBehavior.swift */; };
 		FA51A705249D7AFE00DA27B9 /* APIRESTGeneralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA51A704249D7AFE00DA27B9 /* APIRESTGeneralTests.swift */; };
@@ -27,6 +30,10 @@
 		FAAD18812492F106006C27DD /* Predictions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAD18802492F106006C27DD /* Predictions.swift */; };
 		FAAD18832492F5DF006C27DD /* PredictionsGeneralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAD18822492F5DF006C27DD /* PredictionsGeneralTests.swift */; };
 		FAB7EF72249E960000D47B3A /* APIGraphQLChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7EF71249E960000D47B3A /* APIGraphQLChainTests.swift */; };
+		FAC3843D249FEC1F009FFA0E /* AuthDeviceBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC3843C249FEC1F009FFA0E /* AuthDeviceBehaviorTests.swift */; };
+		FAC3843F249FEC84009FFA0E /* Auth+DeviceBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC3843E249FEC83009FFA0E /* Auth+DeviceBehavior.swift */; };
+		FAE074CD249FCE5000D20A47 /* Auth+UserBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE074CC249FCE5000D20A47 /* Auth+UserBehavior.swift */; };
+		FAE074D0249FD37B00D20A47 /* AuthUserBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE074CF249FD37B00D20A47 /* AuthUserBehaviorTests.swift */; };
 		FAE624E6249D7E620076BF35 /* APIRESTChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE624E5249D7E620076BF35 /* APIRESTChainTests.swift */; };
 		FAE624E8249E85060076BF35 /* APIGraphQLGeneralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE624E7249E85060076BF35 /* APIGraphQLGeneralTests.swift */; };
 /* End PBXBuildFile section */
@@ -53,10 +60,13 @@
 		FA01939B248956C400CC7FA0 /* AmplifyCombineSupportTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AmplifyCombineSupportTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA0193A0248956C400CC7FA0 /* DataStoreGeneralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreGeneralTests.swift; sourceTree = "<group>"; };
 		FA0193A2248956C400CC7FA0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA12BAD124A009CE0088B748 /* AuthNSignInAndUpTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthNSignInAndUpTests.swift; sourceTree = "<group>"; };
 		FA1D07ED249AB1BA000B6C3E /* PredictionsChainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsChainTests.swift; sourceTree = "<group>"; };
 		FA1D07F0249AB61C000B6C3E /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		FA1D07F4249ABE86000B6C3E /* StoragePublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoragePublisherTests.swift; sourceTree = "<group>"; };
 		FA44D5EB249AC7F6001EED40 /* StorageChainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageChainTests.swift; sourceTree = "<group>"; };
+		FA453B82249FF1BB00A29AA2 /* Auth+AuthNBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Auth+AuthNBehavior.swift"; sourceTree = "<group>"; };
+		FA453B8A24A0043900A29AA2 /* AuthNGeneralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthNGeneralTests.swift; sourceTree = "<group>"; };
 		FA51A700249D71D800DA27B9 /* API+APICategoryRESTBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "API+APICategoryRESTBehavior.swift"; sourceTree = "<group>"; };
 		FA51A702249D73A600DA27B9 /* API+APICategoryGraphQLBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "API+APICategoryGraphQLBehavior.swift"; sourceTree = "<group>"; };
 		FA51A704249D7AFE00DA27B9 /* APIRESTGeneralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRESTGeneralTests.swift; sourceTree = "<group>"; };
@@ -69,6 +79,10 @@
 		FAAD18802492F106006C27DD /* Predictions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Predictions.swift; sourceTree = "<group>"; };
 		FAAD18822492F5DF006C27DD /* PredictionsGeneralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsGeneralTests.swift; sourceTree = "<group>"; };
 		FAB7EF71249E960000D47B3A /* APIGraphQLChainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIGraphQLChainTests.swift; sourceTree = "<group>"; };
+		FAC3843C249FEC1F009FFA0E /* AuthDeviceBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthDeviceBehaviorTests.swift; sourceTree = "<group>"; };
+		FAC3843E249FEC83009FFA0E /* Auth+DeviceBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Auth+DeviceBehavior.swift"; sourceTree = "<group>"; };
+		FAE074CC249FCE5000D20A47 /* Auth+UserBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Auth+UserBehavior.swift"; sourceTree = "<group>"; };
+		FAE074CF249FD37B00D20A47 /* AuthUserBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUserBehaviorTests.swift; sourceTree = "<group>"; };
 		FAE624E5249D7E620076BF35 /* APIRESTChainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRESTChainTests.swift; sourceTree = "<group>"; };
 		FAE624E7249E85060076BF35 /* APIGraphQLGeneralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIGraphQLGeneralTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -140,6 +154,9 @@
 				FA019396248956C400CC7FA0 /* Info.plist */,
 				FA51A702249D73A600DA27B9 /* API+APICategoryGraphQLBehavior.swift */,
 				FA51A700249D71D800DA27B9 /* API+APICategoryRESTBehavior.swift */,
+				FA453B82249FF1BB00A29AA2 /* Auth+AuthNBehavior.swift */,
+				FAC3843E249FEC83009FFA0E /* Auth+DeviceBehavior.swift */,
+				FAE074CC249FCE5000D20A47 /* Auth+UserBehavior.swift */,
 				FA94579524895B2C00A06087 /* DataStore.swift */,
 				FAAD18802492F106006C27DD /* Predictions.swift */,
 				FA1D07F0249AB61C000B6C3E /* Storage.swift */,
@@ -150,6 +167,7 @@
 		FA01939F248956C400CC7FA0 /* AmplifyCombineSupportTests */ = {
 			isa = PBXGroup;
 			children = (
+				FAE074CE249FD36300D20A47 /* Auth */,
 				FA51A6FF249D71B800DA27B9 /* API */,
 				FA651664249BF432002A1275 /* DataStore */,
 				FA651663249BF42C002A1275 /* Predictions */,
@@ -207,6 +225,17 @@
 				FA0193A0248956C400CC7FA0 /* DataStoreGeneralTests.swift */,
 			);
 			name = DataStore;
+			sourceTree = "<group>";
+		};
+		FAE074CE249FD36300D20A47 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				FAC3843C249FEC1F009FFA0E /* AuthDeviceBehaviorTests.swift */,
+				FA453B8A24A0043900A29AA2 /* AuthNGeneralTests.swift */,
+				FA12BAD124A009CE0088B748 /* AuthNSignInAndUpTests.swift */,
+				FAE074CF249FD37B00D20A47 /* AuthUserBehaviorTests.swift */,
+			);
+			name = Auth;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -461,11 +490,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA453B83249FF1BB00A29AA2 /* Auth+AuthNBehavior.swift in Sources */,
 				FAAD18812492F106006C27DD /* Predictions.swift in Sources */,
+				FAC3843F249FEC84009FFA0E /* Auth+DeviceBehavior.swift in Sources */,
 				FA94579624895B2C00A06087 /* DataStore.swift in Sources */,
 				FA51A703249D73A700DA27B9 /* API+APICategoryGraphQLBehavior.swift in Sources */,
 				FA51A701249D71D800DA27B9 /* API+APICategoryRESTBehavior.swift in Sources */,
 				FA1D07F1249AB61C000B6C3E /* Storage.swift in Sources */,
+				FAE074CD249FCE5000D20A47 /* Auth+UserBehavior.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -474,6 +506,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA1D07EF249AB315000B6C3E /* PredictionsChainTests.swift in Sources */,
+				FA12BAD224A009CE0088B748 /* AuthNSignInAndUpTests.swift in Sources */,
 				FA0193A1248956C400CC7FA0 /* DataStoreGeneralTests.swift in Sources */,
 				FA651661249BF3A9002A1275 /* DownloadDataTests.swift in Sources */,
 				FA651668249BFE63002A1275 /* UploadDataTests.swift in Sources */,
@@ -485,8 +518,11 @@
 				FA44D5EC249AC7F7001EED40 /* StorageChainTests.swift in Sources */,
 				FAB7EF72249E960000D47B3A /* APIGraphQLChainTests.swift in Sources */,
 				FAE624E6249D7E620076BF35 /* APIRESTChainTests.swift in Sources */,
+				FA453B8C24A004E400A29AA2 /* AuthNGeneralTests.swift in Sources */,
 				FA65166A249C003D002A1275 /* UploadFileTests.swift in Sources */,
 				FA651666249BFC24002A1275 /* DownloadFileTests.swift in Sources */,
+				FAE074D0249FD37B00D20A47 /* AuthUserBehaviorTests.swift in Sources */,
+				FAC3843D249FEC1F009FFA0E /* AuthDeviceBehaviorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

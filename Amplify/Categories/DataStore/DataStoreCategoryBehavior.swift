@@ -22,7 +22,7 @@ public protocol DataStoreBaseBehavior {
     func save<M: Model>(_ model: M,
                         where condition: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>)
-    
+
     /// Queries for a specific model instance by id
     ///
     /// - Parameters:
@@ -32,7 +32,7 @@ public protocol DataStoreBaseBehavior {
     func query<M: Model>(_ modelType: M.Type,
                          byId id: String,
                          completion: DataStoreCallback<M?>)
-    
+
     /// Queries for any model instances that match the specified predicate
     ///
     /// - Parameters:
@@ -44,7 +44,7 @@ public protocol DataStoreBaseBehavior {
                          where predicate: QueryPredicate?,
                          paginate paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>)
-    
+
     /// Deletes the specified model instance from the DataStore. If sync is enabled, this will delete the
     /// model from the remote store as well.
     ///
@@ -55,7 +55,7 @@ public protocol DataStoreBaseBehavior {
     func delete<M: Model>(_ model: M,
                           where predicate: QueryPredicate?,
                           completion: @escaping DataStoreCallback<Void>)
-    
+
     /// Deletes the model with the specified ID from the DataStore. If sync is enabled, this will delete the
     /// model from the remote store as well.
     ///
@@ -66,7 +66,7 @@ public protocol DataStoreBaseBehavior {
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
                           completion: @escaping DataStoreCallback<Void>)
-    
+
     /// Clears the local data store
     ///
     /// - Note: If sync is enabled, this method does **not** clear the remote store

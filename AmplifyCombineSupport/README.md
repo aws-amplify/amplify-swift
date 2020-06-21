@@ -251,7 +251,194 @@ The Analytics category does not offer any CombineSupport APIs.
 Auth
 ---
 
-TBD
+### New Typealiases
+
+```swift
+public typealias AuthPublisher<Output> = AnyPublisher<Output, AuthError>
+```
+
+### `confirmResetPassword`
+
+```swift
+func confirmResetPassword(
+    for username: String,
+    with newPassword: String,
+    confirmationCode: String,
+    options: AuthConfirmResetPasswordOperation.Request.Options? = nil
+) -> AuthPublisher<Void>
+```
+
+### `confirmSignIn`
+
+```swift
+func confirmSignIn(
+    challengeResponse: String,
+    options: AuthConfirmSignInOperation.Request.Options? = nil
+) -> AuthPublisher<AuthSignInResult>
+```
+
+### `confirmSignUp`
+
+```swift
+func confirmSignUp(
+    for username: String,
+    confirmationCode: String,
+    options: AuthConfirmSignUpOperation.Request.Options? = nil
+) -> AuthPublisher<AuthSignUpResult>
+```
+
+### `confirm` user attribute
+
+```swift
+func confirm(
+    userAttribute: AuthUserAttributeKey,
+    confirmationCode: String,
+    options: AuthConfirmUserAttributeOperation.Request.Options?
+) -> AuthPublisher<Void>
+```
+
+### `fetchAuthSession`
+
+```swift
+func fetchAuthSession(
+    options: AuthFetchSessionOperation.Request.Options? = nil
+) -> AuthPublisher<AuthSession>
+```
+
+### `fetchDevices`
+
+```swift
+func fetchDevices(
+    options: AuthFetchDevicesOperation.Request.Options? = nil
+) -> AuthPublisher<[AuthDevice]>
+```
+
+### `fetchUserAttributes`
+
+```swift
+func fetchUserAttributes(
+    options: AuthFetchUserAttributeOperation.Request.Options?
+) -> AuthPublisher<[AuthUserAttribute]>
+```
+
+### `forgetDevice`
+
+```swift
+func forgetDevice(
+    _ device: AuthDevice? = nil,
+    options: AuthForgetDeviceOperation.Request.Options? = nil
+) -> AuthPublisher<Void>
+```
+
+### `rememberDevice`
+
+```swift
+func rememberDevice(
+    options: AuthRememberDeviceOperation.Request.Options? = nil
+) -> AuthPublisher<Void>
+```
+
+### `resendConfirmationCode` for user attribute
+
+```swift
+func resendConfirmationCode(
+    for attributeKey: AuthUserAttributeKey,
+    options: AuthAttributeResendConfirmationCodeOperation.Request.Options?
+) -> AuthPublisher<AuthCodeDeliveryDetails>
+```
+
+### `resendSignUpCode`
+
+```swift
+func resendSignUpCode(
+    for username: String,
+    options: AuthResendSignUpCodeOperation.Request.Options? = nil
+) -> AuthPublisher<AuthCodeDeliveryDetails>
+```
+
+### `resetPassword`
+
+```swift
+func resetPassword(
+    for username: String,
+    options: AuthResetPasswordOperation.Request.Options? = nil
+) -> AuthPublisher<AuthResetPasswordResult>
+```
+
+### `signIn`
+
+```swift
+func signIn(
+    username: String? = nil,
+    password: String? = nil,
+    options: AuthSignInOperation.Request.Options? = nil
+) -> AuthPublisher<AuthSignInResult>
+```
+
+### `signInWithWebUI`
+
+```swift
+func signInWithWebUI(
+    presentationAnchor: AuthUIPresentationAnchor,
+    options: AuthWebUISignInOperation.Request.Options? = nil
+) -> AuthPublisher<AuthSignInResult>
+```
+
+### `signInWithWebUI` for auth provider
+
+```swift
+func signInWithWebUI(
+    for authProvider: AuthProvider,
+    presentationAnchor: AuthUIPresentationAnchor,
+    options: AuthSocialWebUISignInOperation.Request.Options? = nil
+) -> AuthPublisher<AuthSignInResult>
+```
+
+### `signOut`
+
+```swift
+func signOut(
+    options: AuthSignOutOperation.Request.Options? = nil
+) -> AuthPublisher<Void>
+```
+
+### `signUp`
+
+```swift
+func signUp(
+    username: String,
+    password: String? = nil,
+    options: AuthSignUpOperation.Request.Options? = nil
+) -> AuthPublisher<AuthSignUpResult>
+```
+
+### `update` password
+
+```swift
+func update(
+    oldPassword: String,
+    to newPassword: String,
+    options: AuthChangePasswordOperation.Request.Options?
+) -> AuthPublisher<Void>
+```
+
+### `update` single user attribute
+
+```swift
+func update(
+    userAttribute: AuthUserAttribute,
+    options: AuthUpdateUserAttributeOperation.Request.Options?
+) -> AuthPublisher<AuthUpdateAttributeResult>
+```
+
+### `update` multiple user attributes
+
+```swift
+func update(
+    userAttributes: [AuthUserAttribute],
+    options: AuthUpdateUserAttributesOperation.Request.Options?
+) -> AuthPublisher<[AuthUserAttributeKey : AuthUpdateAttributeResult]>
+```
 
 ---
 DataStore
