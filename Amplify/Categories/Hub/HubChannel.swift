@@ -90,6 +90,4 @@ extension HubChannel {
     }
 }
 
-extension HubChannel: Hashable {
-
-}
+extension HubChannel: Hashable { }
