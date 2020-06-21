@@ -89,3 +89,7 @@ extension HubChannel {
         }
     }
 }
+
+extension HubChannel: Hashable {
+
+}
