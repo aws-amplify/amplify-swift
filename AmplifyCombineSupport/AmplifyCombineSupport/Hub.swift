@@ -10,14 +10,12 @@ import Combine
 
 public typealias HubPublisher = AnyPublisher<HubPayload, Never>
 
-private typealias SharedHubPublisher = Publishers.Share<PassthroughSubject<HubPayload, Never>>
-
 /// Maintains a map of Publishers by Hub Channel, so we can share multiple downstream subscribers with a single
 /// subscription to the Hub. Note that this will register a hub listener for the channel for the duration of the app
 /// lifespan
 private struct HubListenerMap {
     static var `default` = HubListenerMap()
-    var publishers = AtomicValue<[HubChannel: SharedHubPublisher]>(initialValue: [:])
+    var publishers = AtomicValue<[HubChannel: HubPublisher]>(initialValue: [:])
 }
 
 public extension HubCategoryBehavior {
@@ -26,7 +24,7 @@ public extension HubCategoryBehavior {
     ///
     /// - Parameter channel: The channel to listen for messages on
     func publisher(for channel: HubChannel) -> HubPublisher {
-        var sharedPublisher: SharedHubPublisher!
+        var sharedPublisher: HubPublisher!
 
         HubListenerMap.default.publishers.with { publishers in
             if publishers[channel] != nil {
@@ -39,11 +37,11 @@ public extension HubCategoryBehavior {
                 subject.send(payload)
             }
 
-            sharedPublisher = subject.share()
+            sharedPublisher = subject.eraseToAnyPublisher()
             publishers[channel] = sharedPublisher
         }
 
-        return sharedPublisher.eraseToAnyPublisher()
+        return sharedPublisher
     }
 
 }
