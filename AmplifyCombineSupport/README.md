@@ -496,11 +496,17 @@ func clear() -> DataStorePublisher<Void>
 Hub
 ---
 
-TBD, but potentially:
+Rather than provide a large set of Combine publisher APIs, `AmplifyCombineSupport` adds only one API to Hub. The Publisher can be subsequently subscribed, filtered, and transformed as needed.
+
+### New Typealiases
 
 ```swift
-typealias HubPublisher<Output> = AnyPublisher<Output, Never>
+public typealias HubPublisher = AnyPublisher<HubPayload, Never>
+```
 
+### `publisher`
+
+```swift
 func publisher(for channel: HubChannel) -> HubPublisher
 ```
 

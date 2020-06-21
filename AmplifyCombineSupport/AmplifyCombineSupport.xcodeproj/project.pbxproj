@@ -12,6 +12,8 @@
 		FA01939C248956C400CC7FA0 /* AmplifyCombineSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA019392248956C400CC7FA0 /* AmplifyCombineSupport.framework */; };
 		FA0193A1248956C400CC7FA0 /* DataStoreGeneralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0193A0248956C400CC7FA0 /* DataStoreGeneralTests.swift */; };
 		FA12BAD224A009CE0088B748 /* AuthNSignInAndUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA12BAD124A009CE0088B748 /* AuthNSignInAndUpTests.swift */; };
+		FA12BAD424A00E690088B748 /* Hub.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA12BAD324A00E690088B748 /* Hub.swift */; };
+		FA12BAD724A01CA90088B748 /* HubTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA12BAD624A01CA90088B748 /* HubTests.swift */; };
 		FA1D07EF249AB315000B6C3E /* PredictionsChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1D07ED249AB1BA000B6C3E /* PredictionsChainTests.swift */; };
 		FA1D07F1249AB61C000B6C3E /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1D07F0249AB61C000B6C3E /* Storage.swift */; };
 		FA1D07F5249ABE86000B6C3E /* StoragePublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1D07F4249ABE86000B6C3E /* StoragePublisherTests.swift */; };
@@ -61,6 +63,8 @@
 		FA0193A0248956C400CC7FA0 /* DataStoreGeneralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreGeneralTests.swift; sourceTree = "<group>"; };
 		FA0193A2248956C400CC7FA0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA12BAD124A009CE0088B748 /* AuthNSignInAndUpTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthNSignInAndUpTests.swift; sourceTree = "<group>"; };
+		FA12BAD324A00E690088B748 /* Hub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hub.swift; sourceTree = "<group>"; };
+		FA12BAD624A01CA90088B748 /* HubTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubTests.swift; sourceTree = "<group>"; };
 		FA1D07ED249AB1BA000B6C3E /* PredictionsChainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsChainTests.swift; sourceTree = "<group>"; };
 		FA1D07F0249AB61C000B6C3E /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		FA1D07F4249ABE86000B6C3E /* StoragePublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoragePublisherTests.swift; sourceTree = "<group>"; };
@@ -158,6 +162,7 @@
 				FAC3843E249FEC83009FFA0E /* Auth+DeviceBehavior.swift */,
 				FAE074CC249FCE5000D20A47 /* Auth+UserBehavior.swift */,
 				FA94579524895B2C00A06087 /* DataStore.swift */,
+				FA12BAD324A00E690088B748 /* Hub.swift */,
 				FAAD18802492F106006C27DD /* Predictions.swift */,
 				FA1D07F0249AB61C000B6C3E /* Storage.swift */,
 			);
@@ -167,14 +172,23 @@
 		FA01939F248956C400CC7FA0 /* AmplifyCombineSupportTests */ = {
 			isa = PBXGroup;
 			children = (
-				FAE074CE249FD36300D20A47 /* Auth */,
 				FA51A6FF249D71B800DA27B9 /* API */,
+				FAE074CE249FD36300D20A47 /* Auth */,
 				FA651664249BF432002A1275 /* DataStore */,
+				FA12BAD524A01C920088B748 /* Hub */,
 				FA651663249BF42C002A1275 /* Predictions */,
 				FA651662249BF421002A1275 /* Storage */,
 				FA44D5ED249AC818001EED40 /* Support Files */,
 			);
 			path = AmplifyCombineSupportTests;
+			sourceTree = "<group>";
+		};
+		FA12BAD524A01C920088B748 /* Hub */ = {
+			isa = PBXGroup;
+			children = (
+				FA12BAD624A01CA90088B748 /* HubTests.swift */,
+			);
+			name = Hub;
 			sourceTree = "<group>";
 		};
 		FA44D5ED249AC818001EED40 /* Support Files */ = {
@@ -498,6 +512,7 @@
 				FA51A701249D71D800DA27B9 /* API+APICategoryRESTBehavior.swift in Sources */,
 				FA1D07F1249AB61C000B6C3E /* Storage.swift in Sources */,
 				FAE074CD249FCE5000D20A47 /* Auth+UserBehavior.swift in Sources */,
+				FA12BAD424A00E690088B748 /* Hub.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -517,6 +532,7 @@
 				FA51A705249D7AFE00DA27B9 /* APIRESTGeneralTests.swift in Sources */,
 				FA44D5EC249AC7F7001EED40 /* StorageChainTests.swift in Sources */,
 				FAB7EF72249E960000D47B3A /* APIGraphQLChainTests.swift in Sources */,
+				FA12BAD724A01CA90088B748 /* HubTests.swift in Sources */,
 				FAE624E6249D7E620076BF35 /* APIRESTChainTests.swift in Sources */,
 				FA453B8C24A004E400A29AA2 /* AuthNGeneralTests.swift in Sources */,
 				FA65166A249C003D002A1275 /* UploadFileTests.swift in Sources */,
