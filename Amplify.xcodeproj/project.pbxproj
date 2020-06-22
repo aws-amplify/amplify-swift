@@ -110,12 +110,12 @@
 		21A3FDB62464590600E76120 /* ModelMultipleOwnerAuthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A3FDB52464590600E76120 /* ModelMultipleOwnerAuthRuleTests.swift */; };
 		21A3FDB9246494CD00E76120 /* GraphQLRequestAuthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A3FDB8246494CD00E76120 /* GraphQLRequestAuthRuleTests.swift */; };
 		21A3FDBF2465FA1500E76120 /* AuthRule+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A3FDBE2465FA1500E76120 /* AuthRule+Extension.swift */; };
-		21AD4257249BFFE00016FE95 /* DeprecatedTodo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AD4255249BFFDF0016FE95 /* DeprecatedTodo.swift */; };
 		21AD424B249BF0DA0016FE95 /* AnyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACBAD522386160100E29E56 /* AnyModel.swift */; };
 		21AD424C249BF0DE0016FE95 /* AnyModel+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE776238626D60097E4F1 /* AnyModel+Codable.swift */; };
 		21AD424D249BF0E50016FE95 /* AnyModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE78223862DDB0097E4F1 /* AnyModel+Schema.swift */; };
 		21AD424E249BF0E90016FE95 /* AnyModel+Subscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE77E2386274A0097E4F1 /* AnyModel+Subscript.swift */; };
 		21AD424F249BF0EC0016FE95 /* Model+AnyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE77A2386271A0097E4F1 /* Model+AnyModel.swift */; };
+		21AD4257249BFFE00016FE95 /* DeprecatedTodo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AD4255249BFFDF0016FE95 /* DeprecatedTodo.swift */; };
 		21AD425A249C0D910016FE95 /* AnyModelTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213481D8242AFA62001966DE /* AnyModelTester.swift */; };
 		21AD425B249C0DBE0016FE95 /* AnyModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE772238621320097E4F1 /* AnyModelTests.swift */; };
 		21C395B3245729EC00597EA2 /* AppSyncErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */; };
@@ -1677,12 +1677,10 @@
 			isa = PBXGroup;
 			children = (
 				216E4619249189050035E3CE /* Embedded.swift */,
-				B92E03A72367CE7A006CEB8D /* Model.swift */,
 				B9FAA17F238FBB5D009414B4 /* Model+Array.swift */,
 				B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */,
 				FACBA78C23949588006349C8 /* Model+DateFormatting.swift */,
 				B996FC4C24059918006D0F68 /* Model+Enum.swift */,
-				FA8EE778238627040097E4F1 /* Model+ModelName.swift */,
 				FA8EE77C238627350097E4F1 /* Model+Subscript.swift */,
 				B92E03A92367CE7A006CEB8D /* ModelRegistry.swift */,
 				FA5D4CF2238AFD7B00D2F54A /* ModelRegistry+Syncable.swift */,
@@ -2222,6 +2220,8 @@
 		B92E03A62367CE7A006CEB8D /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B92E03A72367CE7A006CEB8D /* Model.swift */,
+				FA8EE778238627040097E4F1 /* Model+ModelName.swift */,
 				2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */,
 				B9FAA1232388BE2B009414B4 /* Collection */,
 				21AD424A249BEC440016FE95 /* Internal */,
