@@ -9,18 +9,19 @@ import Foundation
 
 /// Behavior of the Storage category that clients will use
 public protocol StorageCategoryBehavior {
-    /// Retrieve the remote URL for the object from storage.
+    
+    /// Retrieve the remote URL for the object from storage
     ///
     /// - Parameters:
-    ///   - key: The unique identifier for the object in storage.
+    ///   - key: The unique identifier for the object in storage
     ///   - options: Parameters to specific plugin behavior
     ///   - resultListener: Triggered when the operation is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     func getURL(key: String,
                 options: StorageGetURLOperation.Request.Options?,
                 resultListener: StorageGetURLOperation.ResultListener?) -> StorageGetURLOperation
-
-    /// Retrieve the object from storage into memory.
+    
+    /// Retrieve an object from storage into memory
     ///
     /// - Parameters:
     ///   - key: The unique identifier for the object in storage
@@ -32,12 +33,12 @@ public protocol StorageCategoryBehavior {
                       options: StorageDownloadDataOperation.Request.Options?,
                       progressListener: ProgressListener?,
                       resultListener: StorageDownloadDataOperation.ResultListener?) -> StorageDownloadDataOperation
-
-    /// Download to file the object from storage.
+    
+    /// Download an object from storage to a local file
     ///
     /// - Parameters:
-    ///   - key: The unique identifier for the object in storage.
-    ///   - local: The local file to download the object to.
+    ///   - key: The unique identifier for the object in storage
+    ///   - local: The local file to download the object to
     ///   - options: Parameters to specific plugin behavior
     ///   - progressListener: Triggered intermittently to represent the ongoing progress of this operation
     ///   - resultListener: Triggered when the download is complete
@@ -47,11 +48,11 @@ public protocol StorageCategoryBehavior {
                       options: StorageDownloadFileOperation.Request.Options?,
                       progressListener: ProgressListener?,
                       resultListener: StorageDownloadFileOperation.ResultListener?) -> StorageDownloadFileOperation
-
-    /// Upload data to storage
+    
+    /// Upload data from memory to storage
     ///
     /// - Parameters:
-    ///   - key: The unique identifier of the object in storage.
+    ///   - key: The unique identifier of the object in storage
     ///   - data: The data in memory to be uploaded
     ///   - options: Parameters to specific plugin behavior
     ///   - progressListener: Triggered intermittently to represent the ongoing progress of this operation
@@ -62,12 +63,12 @@ public protocol StorageCategoryBehavior {
                     options: StorageUploadDataOperation.Request.Options?,
                     progressListener: ProgressListener?,
                     resultListener: StorageUploadDataOperation.ResultListener?) -> StorageUploadDataOperation
-
-    /// Upload local file to storage
+    
+    /// Upload a local file to storage
     ///
     /// - Parameters:
-    ///   - key: The unique identifier of the object in storage.
-    ///   - local: The path to a local file.
+    ///   - key: The unique identifier of the object in storage
+    ///   - local: The path to a local file
     ///   - options: Parameters to specific plugin behavior
     ///   - progressListener: Triggered intermittently to represent the ongoing progress of this operation
     ///   - resultListener: Triggered when the upload is complete
@@ -77,19 +78,19 @@ public protocol StorageCategoryBehavior {
                     options: StorageUploadFileOperation.Request.Options?,
                     progressListener: ProgressListener?,
                     resultListener: StorageUploadFileOperation.ResultListener?) -> StorageUploadFileOperation
-
-    /// Delete object from storage
+    
+    /// Delete an object from storage
     ///
     /// - Parameters:
-    ///   - key: The unique identifier of the object in storage.
+    ///   - key: The unique identifier of the object in storage
     ///   - options: Parameters to specific plugin behavior
     ///   - resultListener: Triggered when the remove is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     func remove(key: String,
                 options: StorageRemoveOperation.Request.Options?,
                 resultListener: StorageRemoveOperation.ResultListener?) -> StorageRemoveOperation
-
-    /// List the object identifiers under the heiarchy specified by the path, relative to access level, from storage
+    
+    /// List the object identifiers under the hierarchy specified by the path, relative to access level, from storage
     ///
     /// - Parameters:
     ///   - options: Parameters to specific plugin behavior
@@ -98,3 +99,4 @@ public protocol StorageCategoryBehavior {
     func list(options: StorageListOperation.Request.Options?,
               resultListener: StorageListOperation.ResultListener?) -> StorageListOperation
 }
+

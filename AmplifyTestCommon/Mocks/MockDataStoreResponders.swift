@@ -8,13 +8,13 @@
 import Amplify
 
 extension MockDataStoreCategoryPlugin {
-    enum ResponderKeys {
-        case clear
-        case deleteById
-        case deleteByInstance
-        case queryById
-        case queryByPredicate
-        case save
+    struct Responders {
+        var clear: ClearResponder?
+        var deleteById: DeleteByIdResponder?
+        var deleteByInstance: DeleteByInstanceResponder?
+        var queryById: QueryByIdResponder?
+        var queryByPredicate: QueryByPredicateResponder?
+        var save: SaveResponder?
     }
 }
 

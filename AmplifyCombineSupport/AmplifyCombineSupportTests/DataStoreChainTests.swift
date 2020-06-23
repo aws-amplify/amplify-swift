@@ -13,7 +13,7 @@ import AmplifyCombineSupport
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-class DataStoreCombineSupportChainTests: XCTestCase {
+class DataStoreChainTests: XCTestCase {
 
     var plugin: MockDataStoreCategoryPlugin!
 
