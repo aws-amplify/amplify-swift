@@ -79,11 +79,13 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func query<M: Model>(_ modelType: M.Type,
                                 where predicate: QueryPredicate? = nil,
+                                orderBy: QueryOrderBy? = nil,
                                 paginate paginationInput: QueryPaginationInput? = nil,
                                 completion: DataStoreCallback<[M]>) {
         reinitStorageEngineIfNeeded()
         storageEngine.query(modelType,
                             predicate: predicate,
+                            orderBy: orderBy,
                             paginationInput: paginationInput,
                             completion: completion)
     }
@@ -165,6 +167,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
             let metadata = MutationSyncMetadata.keys
             storageEngine.query(MutationSyncMetadata.self,
                                 predicate: metadata.id == model.id,
+                                orderBy: nil,
                                 paginationInput: .firstResult) {
                                     switch $0 {
                                     case .success(let result):

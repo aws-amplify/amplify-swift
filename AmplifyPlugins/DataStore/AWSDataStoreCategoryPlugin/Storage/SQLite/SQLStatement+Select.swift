@@ -22,6 +22,7 @@ struct SelectStatementMetadata {
     // TODO remove additionalStatements once sorting support is added to DataStore
     static func metadata(from modelType: Model.Type,
                          predicate: QueryPredicate? = nil,
+                         orderBy: QueryOrderBy? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          additionalStatements: String? = nil) -> SelectStatementMetadata {
         let rootNamespace = "root"
@@ -56,6 +57,20 @@ struct SelectStatementMetadata {
             \(sql)
             where 1 = 1
             \(conditionStatement.stringValue)
+            """
+        }
+
+        if let orderBy = orderBy {
+            let order: String
+            if orderBy.DESC {
+                order = "DESC"
+            } else {
+                order = "ASC"
+            }
+
+            sql = """
+            \(sql)
+            order by \(orderBy.field.stringValue) \(order)
             """
         }
 
@@ -137,11 +152,13 @@ struct SelectStatement: SQLStatement {
 
     init(from modelType: Model.Type,
          predicate: QueryPredicate? = nil,
+         orderBy: QueryOrderBy? = nil,
          paginationInput: QueryPaginationInput? = nil,
          additionalStatements: String? = nil) {
         self.modelType = modelType
         self.metadata = .metadata(from: modelType,
                                   predicate: predicate,
+                                  orderBy: orderBy,
                                   paginationInput: paginationInput,
                                   additionalStatements: additionalStatements)
     }

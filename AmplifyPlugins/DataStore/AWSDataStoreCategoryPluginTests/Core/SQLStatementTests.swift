@@ -352,6 +352,29 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
+    // MARK: - Select Statements orderBy
+
+    /// - Given: a `Model` type and a `orderBy`
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - the orderBy should be `id` and descending to`true`
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if the statement contains the correct `order by` and `descending`
+    func testSelectStatementWithOrderBy() {
+        let statement = SelectStatement(from: Post.self, predicate: nil, paginationInput: .page(2, limit: 20))
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
+        from Post as "root"
+        order by
+          "id"
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
     // MARK: - Query Predicates
 
     /// - Given: a simple predicate

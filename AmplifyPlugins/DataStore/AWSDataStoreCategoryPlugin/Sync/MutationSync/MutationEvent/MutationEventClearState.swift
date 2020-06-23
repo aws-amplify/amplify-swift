@@ -24,6 +24,7 @@ final class MutationEventClearState {
 
         storageAdapter.query(MutationEvent.self,
                              predicate: predicate,
+                             orderBy: nil,
                              paginationInput: nil,
                              additionalStatements: orderClause) { result in
                                 switch result {
