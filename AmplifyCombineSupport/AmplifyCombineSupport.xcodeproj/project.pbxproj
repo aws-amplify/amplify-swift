@@ -15,6 +15,9 @@
 		FA1D07F1249AB61C000B6C3E /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1D07F0249AB61C000B6C3E /* Storage.swift */; };
 		FA1D07F5249ABE86000B6C3E /* StoragePublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1D07F4249ABE86000B6C3E /* StoragePublisherTests.swift */; };
 		FA44D5EC249AC7F7001EED40 /* StorageChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA44D5EB249AC7F6001EED40 /* StorageChainTests.swift */; };
+		FA51A701249D71D800DA27B9 /* API+APICategoryRESTBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA51A700249D71D800DA27B9 /* API+APICategoryRESTBehavior.swift */; };
+		FA51A703249D73A700DA27B9 /* API+APICategoryGraphQLBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA51A702249D73A600DA27B9 /* API+APICategoryGraphQLBehavior.swift */; };
+		FA51A705249D7AFE00DA27B9 /* APIRESTGeneralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA51A704249D7AFE00DA27B9 /* APIRESTGeneralTests.swift */; };
 		FA651661249BF3A9002A1275 /* DownloadDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA651660249BF3A9002A1275 /* DownloadDataTests.swift */; };
 		FA651666249BFC24002A1275 /* DownloadFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA651665249BFC24002A1275 /* DownloadFileTests.swift */; };
 		FA651668249BFE63002A1275 /* UploadDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA651667249BFE63002A1275 /* UploadDataTests.swift */; };
@@ -23,6 +26,9 @@
 		FA94579824895D3D00A06087 /* DataStoreChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA94579724895D3D00A06087 /* DataStoreChainTests.swift */; };
 		FAAD18812492F106006C27DD /* Predictions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAD18802492F106006C27DD /* Predictions.swift */; };
 		FAAD18832492F5DF006C27DD /* PredictionsGeneralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAD18822492F5DF006C27DD /* PredictionsGeneralTests.swift */; };
+		FAB7EF72249E960000D47B3A /* APIGraphQLChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7EF71249E960000D47B3A /* APIGraphQLChainTests.swift */; };
+		FAE624E6249D7E620076BF35 /* APIRESTChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE624E5249D7E620076BF35 /* APIRESTChainTests.swift */; };
+		FAE624E8249E85060076BF35 /* APIGraphQLGeneralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE624E7249E85060076BF35 /* APIGraphQLGeneralTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +57,9 @@
 		FA1D07F0249AB61C000B6C3E /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		FA1D07F4249ABE86000B6C3E /* StoragePublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoragePublisherTests.swift; sourceTree = "<group>"; };
 		FA44D5EB249AC7F6001EED40 /* StorageChainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageChainTests.swift; sourceTree = "<group>"; };
+		FA51A700249D71D800DA27B9 /* API+APICategoryRESTBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "API+APICategoryRESTBehavior.swift"; sourceTree = "<group>"; };
+		FA51A702249D73A600DA27B9 /* API+APICategoryGraphQLBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "API+APICategoryGraphQLBehavior.swift"; sourceTree = "<group>"; };
+		FA51A704249D7AFE00DA27B9 /* APIRESTGeneralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRESTGeneralTests.swift; sourceTree = "<group>"; };
 		FA651660249BF3A9002A1275 /* DownloadDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadDataTests.swift; sourceTree = "<group>"; };
 		FA651665249BFC24002A1275 /* DownloadFileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFileTests.swift; sourceTree = "<group>"; };
 		FA651667249BFE63002A1275 /* UploadDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadDataTests.swift; sourceTree = "<group>"; };
@@ -59,6 +68,9 @@
 		FA94579724895D3D00A06087 /* DataStoreChainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreChainTests.swift; sourceTree = "<group>"; };
 		FAAD18802492F106006C27DD /* Predictions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Predictions.swift; sourceTree = "<group>"; };
 		FAAD18822492F5DF006C27DD /* PredictionsGeneralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsGeneralTests.swift; sourceTree = "<group>"; };
+		FAB7EF71249E960000D47B3A /* APIGraphQLChainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIGraphQLChainTests.swift; sourceTree = "<group>"; };
+		FAE624E5249D7E620076BF35 /* APIRESTChainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRESTChainTests.swift; sourceTree = "<group>"; };
+		FAE624E7249E85060076BF35 /* APIGraphQLGeneralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIGraphQLGeneralTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +138,8 @@
 			isa = PBXGroup;
 			children = (
 				FA019396248956C400CC7FA0 /* Info.plist */,
+				FA51A702249D73A600DA27B9 /* API+APICategoryGraphQLBehavior.swift */,
+				FA51A700249D71D800DA27B9 /* API+APICategoryRESTBehavior.swift */,
 				FA94579524895B2C00A06087 /* DataStore.swift */,
 				FAAD18802492F106006C27DD /* Predictions.swift */,
 				FA1D07F0249AB61C000B6C3E /* Storage.swift */,
@@ -136,6 +150,7 @@
 		FA01939F248956C400CC7FA0 /* AmplifyCombineSupportTests */ = {
 			isa = PBXGroup;
 			children = (
+				FA51A6FF249D71B800DA27B9 /* API */,
 				FA651664249BF432002A1275 /* DataStore */,
 				FA651663249BF42C002A1275 /* Predictions */,
 				FA651662249BF421002A1275 /* Storage */,
@@ -150,6 +165,17 @@
 				FA0193A2248956C400CC7FA0 /* Info.plist */,
 			);
 			name = "Support Files";
+			sourceTree = "<group>";
+		};
+		FA51A6FF249D71B800DA27B9 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				FAB7EF71249E960000D47B3A /* APIGraphQLChainTests.swift */,
+				FAE624E7249E85060076BF35 /* APIGraphQLGeneralTests.swift */,
+				FAE624E5249D7E620076BF35 /* APIRESTChainTests.swift */,
+				FA51A704249D7AFE00DA27B9 /* APIRESTGeneralTests.swift */,
+			);
+			name = API;
 			sourceTree = "<group>";
 		};
 		FA651662249BF421002A1275 /* Storage */ = {
@@ -437,6 +463,8 @@
 			files = (
 				FAAD18812492F106006C27DD /* Predictions.swift in Sources */,
 				FA94579624895B2C00A06087 /* DataStore.swift in Sources */,
+				FA51A703249D73A700DA27B9 /* API+APICategoryGraphQLBehavior.swift in Sources */,
+				FA51A701249D71D800DA27B9 /* API+APICategoryRESTBehavior.swift in Sources */,
 				FA1D07F1249AB61C000B6C3E /* Storage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -452,6 +480,11 @@
 				FA94579824895D3D00A06087 /* DataStoreChainTests.swift in Sources */,
 				FA1D07F5249ABE86000B6C3E /* StoragePublisherTests.swift in Sources */,
 				FAAD18832492F5DF006C27DD /* PredictionsGeneralTests.swift in Sources */,
+				FAE624E8249E85060076BF35 /* APIGraphQLGeneralTests.swift in Sources */,
+				FA51A705249D7AFE00DA27B9 /* APIRESTGeneralTests.swift in Sources */,
+				FA44D5EC249AC7F7001EED40 /* StorageChainTests.swift in Sources */,
+				FAB7EF72249E960000D47B3A /* APIGraphQLChainTests.swift in Sources */,
+				FAE624E6249D7E620076BF35 /* APIRESTChainTests.swift in Sources */,
 				FA44D5EC249AC7F7001EED40 /* StorageChainTests.swift in Sources */,
 				FA65166A249C003D002A1275 /* UploadFileTests.swift in Sources */,
 				FA651666249BFC24002A1275 /* DownloadFileTests.swift in Sources */,

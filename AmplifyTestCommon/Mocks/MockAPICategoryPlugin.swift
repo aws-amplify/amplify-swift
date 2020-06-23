@@ -12,6 +12,8 @@ import Foundation
 class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     var responders = [ResponderKeys: Any]()
 
+    var restResponders = RESTResponders()
+    
     // MARK: - Properties
 
     var key: String {
@@ -116,6 +118,12 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     func get(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         notify("get")
+
+        if let responder = restResponders.get {
+            let result = responder(request)
+            listener?(result)
+        }
+
         let operationRequest = RESTOperationRequest(apiName: request.apiName,
                                                     operationType: .get,
                                                     path: request.path,
@@ -128,6 +136,12 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     func put(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         notify("put")
+        
+        if let responder = restResponders.put {
+            let result = responder(request)
+            listener?(result)
+        }
+
         let request = RESTOperationRequest(apiName: request.apiName,
                                            operationType: .put,
                                            path: request.path,
@@ -140,6 +154,12 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     func post(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         notify("post")
+        
+        if let responder = restResponders.post {
+            let result = responder(request)
+            listener?(result)
+        }
+
         let request = RESTOperationRequest(apiName: request.apiName,
                                            operationType: .post,
                                            path: request.path,
@@ -152,6 +172,12 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     func delete(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         notify("delete")
+        
+        if let responder = restResponders.delete {
+            let result = responder(request)
+            listener?(result)
+        }
+
         let request = RESTOperationRequest(apiName: request.apiName,
                                            operationType: .delete,
                                            path: request.path,
@@ -164,6 +190,12 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     func patch(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         notify("patch")
+        
+        if let responder = restResponders.patch {
+            let result = responder(request)
+            listener?(result)
+        }
+
         let request = RESTOperationRequest(apiName: request.apiName,
                                            operationType: .patch,
                                            path: request.path,
@@ -176,6 +208,12 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     func head(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         notify("head")
+        
+        if let responder = restResponders.head {
+            let result = responder(request)
+            listener?(result)
+        }
+
         let request = RESTOperationRequest(apiName: request.apiName,
                                            operationType: .head,
                                            path: request.path,

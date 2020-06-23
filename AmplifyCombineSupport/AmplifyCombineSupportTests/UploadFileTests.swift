@@ -81,7 +81,7 @@ class UploadFileTests: XCTestCase {
         let receivedCompletion = expectation(description: "Received completion")
 
         plugin.responders.uploadFile = { _, _, _, progressListener, resultListener in
-            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(50)) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                 progressListener?(Progress())
                 resultListener?(.success("Test"))
             }

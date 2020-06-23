@@ -13,6 +13,15 @@ extension MockAPICategoryPlugin {
         case subscribeRequestListener
         case mutateRequestListener
     }
+    
+    struct RESTResponders {
+        var get: RESTResponder?
+        var put: RESTResponder?
+        var post: RESTResponder?
+        var delete: RESTResponder?
+        var head: RESTResponder?
+        var patch: RESTResponder?
+    }
 }
 
 typealias QueryRequestListenerResponder<R: Decodable> = MockResponder<
@@ -33,3 +42,5 @@ typealias SubscribeRequestListenerResponder<R: Decodable> = MockResponder<
     ),
     GraphQLSubscriptionOperation<R>?
 >
+
+typealias RESTResponder = (RESTRequest) -> RESTOperation.OperationResult
