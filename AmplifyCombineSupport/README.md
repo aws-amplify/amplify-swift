@@ -280,9 +280,7 @@ func query<M: Model>(_ modelType: M.Type,
 ### `query` by predicate
 
 ```swift
-func query<M: Model>(_ modelType: M.Type,
-                     where predicate: QueryPredicate? = nil,
-                     paginate paginationInput: QueryPaginationInput? = nil) -> DataStorePublisher<[M]>
+func clear() -> DataStorePublisher<Void>
 ```
 
 ### `delete` by id

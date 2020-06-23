@@ -485,6 +485,7 @@
 				FA44D5EC249AC7F7001EED40 /* StorageChainTests.swift in Sources */,
 				FAB7EF72249E960000D47B3A /* APIGraphQLChainTests.swift in Sources */,
 				FAE624E6249D7E620076BF35 /* APIRESTChainTests.swift in Sources */,
+				FA44D5EC249AC7F7001EED40 /* StorageChainTests.swift in Sources */,
 				FA65166A249C003D002A1275 /* UploadFileTests.swift in Sources */,
 				FA651666249BFC24002A1275 /* DownloadFileTests.swift in Sources */,
 			);
