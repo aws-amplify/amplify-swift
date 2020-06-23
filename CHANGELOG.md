@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## Unreleased
 
+### Features
+
+* Added Combine support to Amplify APIs via the `AmplifyCombineSupport` module. See [README](./AmplifyCombineSupport/README.md) for details. ([#575](https://github.com/aws-amplify/amplify-ios/issues/575))
+
 ### ⚠ BREAKING CHANGES
 * **Tools:** Update Amplify tools script to resolve min CLI version for codegen changes ([#554](https://github.com/aws-amplify/amplify-ios/pull/554))
 
