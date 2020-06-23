@@ -17,16 +17,13 @@
 		FA1D07EF249AB315000B6C3E /* PredictionsChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1D07ED249AB1BA000B6C3E /* PredictionsChainTests.swift */; };
 		FA1D07F1249AB61C000B6C3E /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1D07F0249AB61C000B6C3E /* Storage.swift */; };
 		FA1D07F5249ABE86000B6C3E /* StoragePublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1D07F4249ABE86000B6C3E /* StoragePublisherTests.swift */; };
-		FA44D5EC249AC7F7001EED40 /* StorageChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA44D5EB249AC7F6001EED40 /* StorageChainTests.swift */; };
 		FA453B83249FF1BB00A29AA2 /* Auth+AuthNBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA453B82249FF1BB00A29AA2 /* Auth+AuthNBehavior.swift */; };
 		FA453B8C24A004E400A29AA2 /* AuthNGeneralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA453B8A24A0043900A29AA2 /* AuthNGeneralTests.swift */; };
 		FA51A701249D71D800DA27B9 /* API+APICategoryRESTBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA51A700249D71D800DA27B9 /* API+APICategoryRESTBehavior.swift */; };
 		FA51A703249D73A700DA27B9 /* API+APICategoryGraphQLBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA51A702249D73A600DA27B9 /* API+APICategoryGraphQLBehavior.swift */; };
 		FA51A705249D7AFE00DA27B9 /* APIRESTGeneralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA51A704249D7AFE00DA27B9 /* APIRESTGeneralTests.swift */; };
 		FA651661249BF3A9002A1275 /* DownloadDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA651660249BF3A9002A1275 /* DownloadDataTests.swift */; };
-		FA651666249BFC24002A1275 /* DownloadFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA651665249BFC24002A1275 /* DownloadFileTests.swift */; };
 		FA651668249BFE63002A1275 /* UploadDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA651667249BFE63002A1275 /* UploadDataTests.swift */; };
-		FA65166A249C003D002A1275 /* UploadFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA651669249C003D002A1275 /* UploadFileTests.swift */; };
 		FA94579624895B2C00A06087 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA94579524895B2C00A06087 /* DataStore.swift */; };
 		FA94579824895D3D00A06087 /* DataStoreChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA94579724895D3D00A06087 /* DataStoreChainTests.swift */; };
 		FAAD18812492F106006C27DD /* Predictions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAD18802492F106006C27DD /* Predictions.swift */; };
@@ -530,18 +527,12 @@
 				FAAD18832492F5DF006C27DD /* PredictionsGeneralTests.swift in Sources */,
 				FAE624E8249E85060076BF35 /* APIGraphQLGeneralTests.swift in Sources */,
 				FA51A705249D7AFE00DA27B9 /* APIRESTGeneralTests.swift in Sources */,
-				FA44D5EC249AC7F7001EED40 /* StorageChainTests.swift in Sources */,
 				FAB7EF72249E960000D47B3A /* APIGraphQLChainTests.swift in Sources */,
 				FA12BAD724A01CA90088B748 /* HubTests.swift in Sources */,
 				FAE624E6249D7E620076BF35 /* APIRESTChainTests.swift in Sources */,
 				FA453B8C24A004E400A29AA2 /* AuthNGeneralTests.swift in Sources */,
-				FA65166A249C003D002A1275 /* UploadFileTests.swift in Sources */,
-				FA651666249BFC24002A1275 /* DownloadFileTests.swift in Sources */,
 				FAE074D0249FD37B00D20A47 /* AuthUserBehaviorTests.swift in Sources */,
 				FAC3843D249FEC1F009FFA0E /* AuthDeviceBehaviorTests.swift in Sources */,
-				FA44D5EC249AC7F7001EED40 /* StorageChainTests.swift in Sources */,
-				FA65166A249C003D002A1275 /* UploadFileTests.swift in Sources */,
-				FA651666249BFC24002A1275 /* DownloadFileTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
