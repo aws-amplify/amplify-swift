@@ -9,7 +9,7 @@ import Foundation
 
 /// Behavior of the Storage category that clients will use
 public protocol StorageCategoryBehavior {
-    
+
     /// Retrieve the remote URL for the object from storage
     ///
     /// - Parameters:
@@ -20,7 +20,7 @@ public protocol StorageCategoryBehavior {
     func getURL(key: String,
                 options: StorageGetURLOperation.Request.Options?,
                 resultListener: StorageGetURLOperation.ResultListener?) -> StorageGetURLOperation
-    
+
     /// Retrieve an object from storage into memory
     ///
     /// - Parameters:
@@ -33,7 +33,7 @@ public protocol StorageCategoryBehavior {
                       options: StorageDownloadDataOperation.Request.Options?,
                       progressListener: ProgressListener?,
                       resultListener: StorageDownloadDataOperation.ResultListener?) -> StorageDownloadDataOperation
-    
+
     /// Download an object from storage to a local file
     ///
     /// - Parameters:
@@ -48,7 +48,7 @@ public protocol StorageCategoryBehavior {
                       options: StorageDownloadFileOperation.Request.Options?,
                       progressListener: ProgressListener?,
                       resultListener: StorageDownloadFileOperation.ResultListener?) -> StorageDownloadFileOperation
-    
+
     /// Upload data from memory to storage
     ///
     /// - Parameters:
@@ -63,7 +63,7 @@ public protocol StorageCategoryBehavior {
                     options: StorageUploadDataOperation.Request.Options?,
                     progressListener: ProgressListener?,
                     resultListener: StorageUploadDataOperation.ResultListener?) -> StorageUploadDataOperation
-    
+
     /// Upload a local file to storage
     ///
     /// - Parameters:
@@ -78,7 +78,7 @@ public protocol StorageCategoryBehavior {
                     options: StorageUploadFileOperation.Request.Options?,
                     progressListener: ProgressListener?,
                     resultListener: StorageUploadFileOperation.ResultListener?) -> StorageUploadFileOperation
-    
+
     /// Delete an object from storage
     ///
     /// - Parameters:
@@ -89,7 +89,7 @@ public protocol StorageCategoryBehavior {
     func remove(key: String,
                 options: StorageRemoveOperation.Request.Options?,
                 resultListener: StorageRemoveOperation.ResultListener?) -> StorageRemoveOperation
-    
+
     /// List the object identifiers under the hierarchy specified by the path, relative to access level, from storage
     ///
     /// - Parameters:

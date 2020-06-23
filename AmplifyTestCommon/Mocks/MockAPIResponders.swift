@@ -13,7 +13,7 @@ extension MockAPICategoryPlugin {
         case subscribeRequestListener
         case mutateRequestListener
     }
-    
+
     struct RESTResponders {
         var get: RESTResponder?
         var put: RESTResponder?

@@ -154,7 +154,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
         let plugin = MockAuthCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin.listeners.append { message in
-            if message == "changePassword" {
+            if message == "update(oldPassword:to:options:listener:)" {
                 methodInvokedOnDefaultPlugin.fulfill()
             }
         }
@@ -180,7 +180,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
     func testCanUseSpecifiedPlugin() throws {
         let defaultPlugin = MockAuthCategoryPlugin()
         defaultPlugin.listeners.append { message in
-            if message == "changePassword" {
+            if message == "update(oldPassword:to:options:listener:)" {
                 XCTFail("test method should not be invoked on default plugin")
             }
         }
@@ -190,7 +190,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
         let methodShouldBeInvokedOnSecondPlugin =
             expectation(description: "test method should be invoked on second plugin")
         anotherPlugin.listeners.append { message in
-            if message == "changePassword" {
+            if message == "update(oldPassword:to:options:listener:)" {
                 methodShouldBeInvokedOnSecondPlugin.fulfill()
             }
         }
