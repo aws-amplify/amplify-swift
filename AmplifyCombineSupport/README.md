@@ -15,7 +15,7 @@ Amplify.DataStore.save(Post(title: "My Post", content: "My content", ...), compl
 })
 ```
 
-The AmplifyCombineSupport pod extends the base Amplify categories with APIs that return appropriate Combine publishers, which allow developers to use familiar Combine patterns, as in:
+The AmplifyCombineSupport module extends the base Amplify categories with APIs that return appropriate Combine publishers, which allow developers to use familiar Combine patterns, as in:
 
 ```swift
 Amplify.DataStore.save(Post(title: "My Post", content: "My content", ...))
@@ -95,11 +95,86 @@ import AmplifyPlugins
 import AmplifyCombineSupport
 ```
 
-## API Mapping
+## API Comparison: Standard Amplify vs. AmplifyCombineSupport
 
-AmplifyCombineSupport strives to provide the same API signature and call patterns as vanilla Amplify, minus the result callbacks. Thus, `Amplify.DataStore.save(_:where:completion:)` has a CombineSupport equivalent of `Amplify.DataStore.save(_:where:)`. Similarly, the types used in result callbacks in vanilla Amplify APIs translate logically to the Output and Error types of `AnyPublisher`s returned from AmplifyCombineSupport APIs. Where method signatures conflict because of ambiguous type requirements, AmplifyCombineSupport will provide a method flavor appended with `...WithPublisher`, as in a hypothetical `DataStore.saveWithPublisher(...) -> AnyPublisher<...>`.
+`AmplifyCombineSupport` strives to provide the same API signature and call patterns as vanilla Amplify, minus the result callbacks. Thus, `Amplify.DataStore.save(_:where:completion:)` has an `AmplifyCombineSupport` equivalent of `Amplify.DataStore.save(_:where:)`. Similarly, the types used in result callbacks in standard Amplify APIs translate logically to the `Output` and `Failure` types of `AnyPublisher`s returned from `AmplifyCombineSupport` APIs.
 
-### DataStore
+### APIs with in-process listeners
+APIs that accept both an "in process" and "result" listener have a CombineSupport flavor that returns a category-specific struct containing both an "in process" and "result" publisher. Callers can subscribe to either or both, as in this example for the Storage category:
+
+```swift
+let publisher = Amplify.Storage.downloadData(key: "myObject")
+let progressSubscription = publisher.progressPublisher.sink { print($0.fractionCompleted) }
+let resultSubscription = publisher.resultPublisher.sink(
+    receiveCompletion: { print("Download completed: \($0)") },
+    receiveValue: { print("Data downloaded: \($0)") }
+)
+```
+
+The names of the "in process" and "result" publishers vary by API category, to reflect their use case.
+
+### APIs that return operations
+
+The Standard Amplify flavor of most APIs returns a use-case specific Operation that may be used to cancel an in-progress operation. The `AmplifyCombineSupport` APIs do not support cancellation of the operation. Canceling a subscription to a publisher simply releases that publisher, but does not affect the work in the underlying operation.
+
+If your use case requires both Combine-style publisher support and cancellation, you can adapt the standard API, as in this example for the Storage category:
+
+```swift
+let progressSubject = PassthroughSubject<Progress, Never>()
+let resultSubject = PassthroughSubject<Data, StorageError>()
+
+let progressListener: ProgressListener = {
+    progressSubject.send($0)
+}
+
+let downloadOperation = Amplify.Storage.downloadData(
+    key: "myObject",
+    progressListener: progressListener
+) { result in
+        progressSubject.send(completion: .finished)
+    switch result {
+    case .failure(let storageError):
+        resultSubject.send(completion: .failure(storageError))
+    case .success(let data):
+        resultSubject.send(data)
+        resultSubject.send(completion: .finished)
+    }
+}
+
+let progressSubscription = progressSubject.sink { print($0.fractionCompleted) }
+let resultSubscription = resultSubject.sink(
+    receiveCompletion: { print("Download completed: \($0)") },
+    receiveValue: { print("Data downloaded: \($0)") }
+)
+
+progressSubscription.cancel() // Only cancels subscription, download is still progressing
+resultSubscription.cancel() // Only cancels subscription, download is still progressing
+downloadOperation.cancel() // Cancels download
+```
+
+## API reference by category
+
+---
+API
+---
+
+TBD
+
+---
+Analytics
+---
+
+The Analytics category does not offer any CombineSupport APIs.
+
+---
+Auth
+---
+
+TBD
+
+---
+DataStore
+---
 
 **New Typealiases**
 
@@ -107,17 +182,8 @@ AmplifyCombineSupport strives to provide the same API signature and call pattern
 public typealias DataStorePublisher<Output> = AnyPublisher<Output, DataStoreError>
 ```
 
-#### `Save`
+#### `save`
 
-**Standard Amplify**
-
-```swift
-func save<M: Model>(_ model: M,
-                    where condition: QueryPredicate?,
-                    completion: @escaping DataStoreCallback<M>)
-```
-
-**AmplifyCombineSupport**
 ```swift
 func save<M: Model>(_ model: M,
                     where condition: QueryPredicate? = nil) -> DataStorePublisher<M>
@@ -125,33 +191,12 @@ func save<M: Model>(_ model: M,
 
 #### `query` by id
 
-**Standard Amplify**
-
-```swift
-func query<M: Model>(_ modelType: M.Type,
-                     byId id: String,
-                     completion: DataStoreCallback<M?>)
-```
-
-**AmplifyCombineSupport**
-
 ```swift
 func query<M: Model>(_ modelType: M.Type,
                      byId id: String) -> DataStorePublisher<M?>
 ```
 
 #### `query` by predicate
-
-**Standard Amplify**
-
-```swift
-func query<M: Model>(_ modelType: M.Type,
-                     where predicate: QueryPredicate?,
-                     paginate paginationInput: QueryPaginationInput?,
-                     completion: DataStoreCallback<[M]>)
-```
-
-**AmplifyCombineSupport**
 
 ```swift
 func query<M: Model>(_ modelType: M.Type,
@@ -161,17 +206,6 @@ func query<M: Model>(_ modelType: M.Type,
 
 #### `delete` by id
 
-**Standard Amplify**
-
-```swift
-func delete<M: Model>(_ modelType: M.Type,
-                      withId id: String,
-                      completion: @escaping DataStoreCallback<Void>)
-
-```
-
-**AmplifyCombineSupport**
-
 ```swift
 func delete<M: Model>(_ modelType: M.Type,
                       withId id: String) -> DataStorePublisher<Void>
@@ -179,31 +213,152 @@ func delete<M: Model>(_ modelType: M.Type,
 
 #### `delete` by predicate
 
-**Standard Amplify**
-
 ```swift
 func delete<M: Model>(_ model: M,
-                      where predicate: QueryPredicate?,
-                      completion: @escaping DataStoreCallback<Void>)
-```
-
-**AmplifyCombineSupport**
-
-```swift
-func delete<M: Model>(_ model: M,
-                      where predicate: QueryPredicate? = nil) -> DataStorePublisher<Void> {
+                      where predicate: QueryPredicate? = nil) -> DataStorePublisher<Void>
 ```
 
 #### `clear`
 
-**Standard Amplify**
-
-```swift
-func clear(completion: @escaping DataStoreCallback<Void>)
-```
-
-**AmplifyCombineSupport**
-
 ```swift
 func clear() -> DataStorePublisher<Void>
+```
+
+---
+Hub
+---
+
+TBD, but potentially:
+
+```swift
+typealias HubPublisher<Output> = AnyPublisher<Output, Never>
+
+func publisher(for channel: HubChannel) -> HubPublisher
+```
+
+---
+Logging
+---
+
+The Logging category does not offer any CombineSupport APIs.
+
+---
+Predictions
+---
+
+**New Typealiases**
+
+```swift
+public typealias PredictionsPublisher<Output> = AnyPublisher<Output, PredictionsError>
+```
+
+#### `convert` speech to text
+
+```swift
+func convert(speechToText: URL,
+             options: PredictionsSpeechToTextRequest.Options? = nil) -> PredictionsPublisher<SpeechToTextResult>
+```
+
+#### `convert` text to speech
+
+```swift
+    func convert(textToSpeech: String,
+                 options: PredictionsTextToSpeechRequest.Options? = nil) -> PredictionsPublisher<TextToSpeechResult>
+```
+
+#### `convert` text to translate
+
+```swift
+func convert(textToTranslate: String,
+             language: LanguageType?,
+             targetLanguage: LanguageType?,
+             options: PredictionsTranslateTextRequest.Options? = nil) -> PredictionsPublisher<TranslateTextResult>
+```
+
+#### `identify`
+
+```swift
+func identify(type: IdentifyAction,
+              image: URL,
+              options: PredictionsIdentifyRequest.Options? = nil) -> PredictionsPublisher<IdentifyResult>
+```
+
+#### `interpret`
+
+```swift
+func interpret(text: String,
+               options: PredictionsInterpretRequest.Options? = nil) -> PredictionsPublisher<InterpretResult>
+```
+
+---
+Storage
+---
+
+**New types**
+
+```swift
+/// Convenience typealias defining a result publisher for Storage operations
+public typealias StoragePublisher<Output> = AnyPublisher<Output, StorageError>
+
+/// Encapsulates a result publisher and a progress publisher for operations that publish in-process updates, such as
+/// uploads and downloads.
+public struct StorageInProcessPublisher<Output> {
+    /// Publishes progress updates for the associated operation. Completes when the `resultPublisher` receives a
+    /// completion.
+    public let progressPublisher: AnyPublisher<Progress, Never>
+    
+    /// Publishes an update with the result of an operation
+    public let resultPublisher: StoragePublisher<Output>
+}
+```
+
+#### `downloadData`
+
+```swift
+func downloadData(key: String,
+                  options: StorageDownloadDataOperation.Request.Options? = nil) -> StorageInProcessPublisher<Data>
+```
+
+#### `downloadFile`
+
+```swift
+func downloadFile(key: String,
+                  local: URL,
+                  options: StorageDownloadFileOperation.Request.Options? = nil) -> StorageInProcessPublisher<Void>
+```
+
+#### `getURL`
+
+```swift
+func getURL(key: String,
+            options: StorageGetURLOperation.Request.Options? = nil) -> StoragePublisher<URL>
+```
+
+#### `list`
+
+```swift
+func list(options: StorageListOperation.Request.Options? = nil) -> StoragePublisher<StorageListResult>
+```
+
+#### `remove`
+
+```swift
+func remove(key: String,
+            options: StorageRemoveOperation.Request.Options? = nil) -> StoragePublisher<String>
+```
+
+#### `uploadData`
+
+```swift
+func uploadData(key: String,
+                data: Data,
+                options: StorageUploadDataOperation.Request.Options? = nil) -> StorageInProcessPublisher<String>
+```
+
+#### `uploadFile`
+
+```swift
+    func uploadFile(key: String,
+                    local: URL,
+                    options: StorageUploadFileOperation.Request.Options? = nil) -> StorageInProcessPublisher<String>
 ```

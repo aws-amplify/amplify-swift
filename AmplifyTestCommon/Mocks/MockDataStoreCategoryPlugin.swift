@@ -9,21 +9,7 @@ import Amplify
 import Combine
 
 class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
-    struct Responders {
-        var clear: ClearResponder?
-        var deleteById: DeleteByIdResponder?
-        var deleteByInstance: DeleteByInstanceResponder?
-        var queryById: QueryByIdResponder?
-        var queryByPredicate: QueryByPredicateResponder?
-        var save: SaveResponder?
-    }
-
-    var responders: Responders
-
-    override init() {
-        self.responders = Responders()
-        super.init()
-    }
+    var responders = Responders()
 
     var key: String {
         return "MockDataStoreCategoryPlugin"
