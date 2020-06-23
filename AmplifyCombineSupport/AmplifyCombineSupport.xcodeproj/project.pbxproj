@@ -539,6 +539,9 @@
 				FA651666249BFC24002A1275 /* DownloadFileTests.swift in Sources */,
 				FAE074D0249FD37B00D20A47 /* AuthUserBehaviorTests.swift in Sources */,
 				FAC3843D249FEC1F009FFA0E /* AuthDeviceBehaviorTests.swift in Sources */,
+				FA44D5EC249AC7F7001EED40 /* StorageChainTests.swift in Sources */,
+				FA65166A249C003D002A1275 /* UploadFileTests.swift in Sources */,
+				FA651666249BFC24002A1275 /* DownloadFileTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
