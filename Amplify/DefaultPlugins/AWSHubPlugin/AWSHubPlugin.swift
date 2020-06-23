@@ -25,7 +25,7 @@ final public class AWSHubPlugin: HubCategoryPlugin {
         return "awsHubPlugin"
     }
 
-    private let dispatcher = HubChannelDispatcher()
+    let dispatcher = HubChannelDispatcher()
 
     // MARK: - HubCategoryPlugin
 
