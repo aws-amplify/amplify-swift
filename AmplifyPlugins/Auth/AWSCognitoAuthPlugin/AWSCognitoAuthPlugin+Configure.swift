@@ -68,7 +68,9 @@ extension AWSCognitoAuthPlugin {
             let amplifyError = AuthError.configuration(
                 "Error configuring \(String(describing: self))",
                 """
-                Couldnot read Cognito identity pool information from the configuration
+                Could not read Cognito identity pool information from the configuration. Make sure that auth category
+                is properly configured and auth information are present in the configuration. You can use Amplify CLI to
+                configure the auth category.
                 """)
             throw amplifyError
         }
@@ -83,7 +85,9 @@ extension AWSCognitoAuthPlugin {
             let amplifyError = AuthError.configuration(
                 "Error configuring \(String(describing: self))",
                 """
-                Couldnot read Cognito user pool information from the configuration
+                Could not read Cognito user pool information from the configuration. Make sure that auth category is
+                properly configured and auth information are present in the configuration. You can use Amplify CLI to
+                configure the auth category.
                 """)
             throw amplifyError
         }
