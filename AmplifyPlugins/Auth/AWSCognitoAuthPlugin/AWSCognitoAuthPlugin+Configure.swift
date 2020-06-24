@@ -9,6 +9,7 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 import AWSMobileClient
+import AWSCore
 
 extension AWSCognitoAuthPlugin {
 
@@ -30,7 +31,12 @@ extension AWSCognitoAuthPlugin {
             let authConfig = (try? JSONSerialization.jsonObject(with: configurationData, options: [])
                 as? [String: Any]) ?? [:]
             AWSInfo.configureDefaultAWSInfo(authConfig)
-            let awsMobileClient = AWSMobileClientAdapter()
+
+            let identityPoolConfig = try identityPoolServiceConfiguration(from: jsonValueConfiguration)
+            let userPoolConfig = try userPoolServiceConfiguration(from: jsonValueConfiguration)
+
+            let awsMobileClient = AWSMobileClientAdapter(userPoolConfiguration: userPoolConfig,
+                                                         identityPoolConfiguration: identityPoolConfig)
             try awsMobileClient.initialize()
             let authenticationProvider = AuthenticationProviderAdapter(awsMobileClient: awsMobileClient)
             let authorizationProvider = AuthorizationProviderAdapter(awsMobileClient: awsMobileClient)
@@ -44,6 +50,7 @@ extension AWSCognitoAuthPlugin {
                       hubEventHandler: hubEventHandler)
         } catch let authError as AuthError {
             throw authError
+
         } catch {
             let amplifyError = AuthError.configuration(
                 "Error configuring \(String(describing: self))",
@@ -53,6 +60,39 @@ extension AWSCognitoAuthPlugin {
                 error)
             throw amplifyError
         }
+    }
+
+    func identityPoolServiceConfiguration(from authConfiguration: JSONValue) throws -> AmplifyAWSServiceConfiguration {
+        let regionKeyPath = "CredentialsProvider.CognitoIdentity.Default.Region"
+        guard case .string(let regionString) = authConfiguration.value(at: regionKeyPath) else {
+            let amplifyError = AuthError.configuration(
+                "Error configuring \(String(describing: self))",
+                """
+                Could not read Cognito identity pool information from the configuration. Make sure that auth category
+                is properly configured and auth information are present in the configuration. You can use Amplify CLI to
+                configure the auth category.
+                """)
+            throw amplifyError
+        }
+        let region = (regionString as NSString).aws_regionTypeValue()
+        let anonymousCredentialProvider = AWSAnonymousCredentialsProvider()
+        return AmplifyAWSServiceConfiguration(region: region, credentialsProvider: anonymousCredentialProvider)
+    }
+
+    func userPoolServiceConfiguration(from authConfiguration: JSONValue) throws -> AmplifyAWSServiceConfiguration {
+        let regionKeyPath = "CognitoUserPool.Default.Region"
+        guard case .string(let regionString) = authConfiguration.value(at: regionKeyPath) else {
+            let amplifyError = AuthError.configuration(
+                "Error configuring \(String(describing: self))",
+                """
+                Could not read Cognito user pool information from the configuration. Make sure that auth category is
+                properly configured and auth information are present in the configuration. You can use Amplify CLI to
+                configure the auth category.
+                """)
+            throw amplifyError
+        }
+        let region = (regionString as NSString).aws_regionTypeValue()
+        return AmplifyAWSServiceConfiguration(region: region)
     }
 
     // MARK: Internal
