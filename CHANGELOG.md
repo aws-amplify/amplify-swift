@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Misc
 
-* Changed the repo's default branch to 'main' ([#999](https://github.com/aws-amplify/amplify-ios/pull/999))
+* Changed the repo's default branch to 'main' ([#579](https://github.com/aws-amplify/amplify-ios/pull/579))
 
 ## 1.0.1 (2020-06-05)
 
