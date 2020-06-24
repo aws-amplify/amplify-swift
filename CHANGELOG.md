@@ -8,13 +8,15 @@ All notable changes to this project will be documented in this file. See [standa
 
 * Added Combine support to Amplify APIs via the `AmplifyCombineSupport` module. See [README](./AmplifyCombineSupport/README.md) for details. ([#575](https://github.com/aws-amplify/amplify-ios/issues/575))
 
-### ⚠ BREAKING CHANGES
-* **Tools:** Update Amplify tools script to resolve min CLI version for codegen changes ([#554](https://github.com/aws-amplify/amplify-ios/pull/554))
-
 ### Bug Fixes
 
 * **DataStore:** Fixed a DataStore issue where lazy `List<M>` initialization would fail for relationships 3+ levels deep ([#534](https://github.com/aws-amplify/amplify-ios/pull/534))
 * **Tools:** Update Amplify tools script to resolve node correctly when NVM is installed ([#524](https://github.com/aws-amplify/amplify-ios/pull/524))
+* **Tools:** Update Amplify tools script to resolve min CLI version for codegen changes ([#554](https://github.com/aws-amplify/amplify-ios/pull/554))
+
+### Misc
+
+* Changed the repo's default branch to 'main' ([#579](https://github.com/aws-amplify/amplify-ios/pull/579))
 
 ## 1.0.1 (2020-06-05)
 
