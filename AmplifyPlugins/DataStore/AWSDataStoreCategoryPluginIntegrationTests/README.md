@@ -7,7 +7,7 @@ The following steps demonstrate how to set up DataStore with a conflict resoluti
 
 1. `amplify init` and choose `iOS` for type of app you are building
 
-2. Create the `schema.graphql` file in the same directory and use the schema from [AmplifyTestCommon](https://github.com/aws-amplify/amplify-ios/blob/master/AmplifyTestCommon/Models/schema.graphql)
+2. Create the `schema.graphql` file in the same directory and use the schema from [AmplifyTestCommon](https://github.com/aws-amplify/amplify-ios/blob/main/AmplifyTestCommon/Models/schema.graphql)
 
 3. `amplify add api`
 
