@@ -11,6 +11,9 @@
 /// let id = model["id"]
 /// ```
 extension Model {
+
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public subscript(_ key: String) -> Any?? {
         let mirror = Mirror(reflecting: self)
         let firstChild = mirror.children.first { $0.label == key }

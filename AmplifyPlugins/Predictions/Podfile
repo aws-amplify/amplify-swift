@@ -8,12 +8,12 @@ include_build_tools!
 target 'AWSPredictionsPlugin' do
   pod 'Amplify', :path => '../../'
   pod 'AWSPluginsCore', :path => '../../'
-  pod "AWSTranslate", optimistic_version($AWS_SDK_VERSION)
-  pod "AWSRekognition", optimistic_version($AWS_SDK_VERSION)
-  pod "AWSPolly", optimistic_version($AWS_SDK_VERSION)
-  pod "AWSComprehend", optimistic_version($AWS_SDK_VERSION)
-  pod "AWSTranscribeStreaming", optimistic_version($AWS_SDK_VERSION)
-  pod "AWSTextract", optimistic_version($AWS_SDK_VERSION)
+  pod "AWSTranslate", $OPTIMISTIC_AWS_SDK_VERSION
+  pod "AWSRekognition", $OPTIMISTIC_AWS_SDK_VERSION
+  pod "AWSPolly", $OPTIMISTIC_AWS_SDK_VERSION
+  pod "AWSComprehend", $OPTIMISTIC_AWS_SDK_VERSION
+  pod "AWSTranscribeStreaming", $OPTIMISTIC_AWS_SDK_VERSION
+  pod "AWSTextract", $OPTIMISTIC_AWS_SDK_VERSION
 end
 
 target 'CoreMLPredictionsPlugin' do

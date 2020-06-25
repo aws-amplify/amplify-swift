@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import XCTest
 
 class AnyModelTests: XCTestCase {

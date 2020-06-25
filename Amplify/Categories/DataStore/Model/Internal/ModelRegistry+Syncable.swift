@@ -6,6 +6,9 @@
 //
 
 public extension ModelRegistry {
+
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     static var hasSyncableModels: Bool {
         if #available(iOS 13.0, *) {
             return models.contains { !$0.schema.isSystem }

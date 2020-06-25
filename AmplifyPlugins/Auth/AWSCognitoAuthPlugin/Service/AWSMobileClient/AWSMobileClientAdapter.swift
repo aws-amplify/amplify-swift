@@ -7,12 +7,17 @@
 
 import Amplify
 import AWSMobileClient
+import AWSPluginsCore
 
 class AWSMobileClientAdapter: AWSMobileClientBehavior {
 
     let awsMobileClient: AWSMobileClient
 
-    init() {
+    init(userPoolConfiguration: AmplifyAWSServiceConfiguration,
+         identityPoolConfiguration: AmplifyAWSServiceConfiguration) {
+
+        AWSMobileClient.updateCognitoService(userPoolConfiguration: userPoolConfiguration,
+                                             identityPoolConfiguration: identityPoolConfiguration)
         self.awsMobileClient = AWSMobileClient.default()
     }
 

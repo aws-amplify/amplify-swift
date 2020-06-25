@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public enum AuthStrategy {
     case owner
     case groups
@@ -12,6 +14,8 @@ public enum AuthStrategy {
     case `public`
 }
 
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public enum ModelOperation {
     case create
     case update
@@ -19,8 +23,12 @@ public enum ModelOperation {
     case read
 }
 
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public typealias AuthRules = [AuthRule]
 
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public struct AuthRule {
     public let allow: AuthStrategy
     public let ownerField: String?

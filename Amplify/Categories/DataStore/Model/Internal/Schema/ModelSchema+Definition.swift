@@ -8,6 +8,8 @@
 import Foundation
 
 /// Defines the type of a `Model` field.
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public enum ModelFieldType {
 
     case string
@@ -31,6 +33,14 @@ public enum ModelFieldType {
         default:
             return false
         }
+    }
+
+    @available(*, deprecated, message: """
+        This has been replaced with `.embedded(type)` and `.embeddedCollection(of)` \
+        Please use Amplify CLI 4.21.4 or newer to re-generate your Models to conform to Embeddable type.
+    """)
+    public static func customType(_ type: Codable.Type) -> ModelFieldType {
+        return .embedded(type: type)
     }
 
     public static func from(type: Any.Type) -> ModelFieldType {
@@ -71,6 +81,8 @@ public enum ModelFieldType {
     }
 }
 
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public enum ModelFieldNullability {
     case optional
     case required
@@ -85,6 +97,8 @@ public enum ModelFieldNullability {
     }
 }
 
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public struct ModelSchemaDefinition {
 
     internal let name: String
@@ -124,6 +138,8 @@ public struct ModelSchemaDefinition {
     }
 }
 
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public enum ModelFieldDefinition {
 
     case field(name: String,

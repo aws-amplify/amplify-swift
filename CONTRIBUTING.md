@@ -156,7 +156,7 @@ Create a commit with the proposed change changes:
 ### Step 6: Pull Request
 
 - Push your changes to your GitHub fork
-- Submit a Pull Requests on the aws-sdk-ios repo to the `master` branch and add the Amplify Native team using @aws-amplify/amplify-native so we can approve/provide feedback.
+- Submit a Pull Requests on the amplify-ios repo to the `main` branch and add the Amplify Native team using @aws-amplify/amplify-native so we can approve/provide feedback.
 - The title of your PR must be descriptive to the specific change.
 - No period at the end of the title.
 - Pull Request message should indicate which issues are fixed: `fixes #<issue>` or `closes #<issue>`.
@@ -164,12 +164,12 @@ Create a commit with the proposed change changes:
 - If not obvious (i.e. from unit tests), describe how you verified that your change works.
 - If this PR includes breaking changes, they must be listed at the top of the changelog as described above in the Pull Request Checklist.
 - Discuss review comments and iterate until you get at least one “Approve”. When iterating, push new commits to the same branch. 
-- Usually all these are going to be squashed when you merge to master.
+- Usually all these are going to be squashed when you merge to main.
 - Make sure to update the PR title/description if things change. 
-- Rebase with master if the master branch has commits ahead of your fork.
+- Rebase with the `main` branch if it has commits ahead of your fork.
 
 ### Step 7: Merge
-Once your PR has been approved and tested, we will merge it into `master` for you and barring any unforeseen circumstances, your changes will be released in our next version. Yay!! 
+Once your PR has been approved and tested, we will merge it into `main` for you and barring any unforeseen circumstances, your changes will be released in our next version. Yay!! 
 
 ## Troubleshooting
 
@@ -206,6 +206,6 @@ If you discover a potential security issue in this project we ask that you notif
 
 ## Licensing
 
-See the [LICENSE](https://github.com/aws-amplify/amplify-ios/blob/master/LICENSE) file for our project's licensing. We will ask you to confirm the licensing of your contribution.
+See the [LICENSE](https://github.com/aws-amplify/amplify-ios/blob/main/LICENSE) file for our project's licensing. We will ask you to confirm the licensing of your contribution.
 
 We may ask you to sign a [Contributor License Agreement (CLA)](http://en.wikipedia.org/wiki/Contributor_License_Agreement) for larger changes.

@@ -10,6 +10,7 @@ import Combine
 import Foundation
 import AWSPluginsCore
 
+// swiftlint:disable type_body_length
 final class StorageEngine: StorageEngineBehavior {
     // TODO: Make this private once we get a mutation flow that passes the type of mutation as needed
     let storageAdapter: StorageEngineAdapter
@@ -78,10 +79,14 @@ final class StorageEngine: StorageEngineBehavior {
     convenience init(isSyncEnabled: Bool,
                      dataStoreConfiguration: DataStoreConfiguration,
                      validAPIPluginKey: String = "awsAPIPlugin",
-                     validAuthPluginKey: String = "awsCognitoAuthPlugin") throws {
+                     validAuthPluginKey: String = "awsCognitoAuthPlugin",
+                     modelRegistryVersion: String,
+                     userDefault: UserDefaults = UserDefaults.standard) throws {
+
         let key = kCFBundleNameKey as String
-        let databaseName = Bundle.main.object(forInfoDictionaryKey: key) as? String
-        let storageAdapter = try SQLiteStorageEngineAdapter(databaseName: databaseName ?? "app")
+        let databaseName = Bundle.main.object(forInfoDictionaryKey: key) as? String ?? "app"
+
+        let storageAdapter = try SQLiteStorageEngineAdapter(version: modelRegistryVersion, databaseName: databaseName)
 
         try storageAdapter.setUp(models: StorageEngine.systemModels)
         if #available(iOS 13.0, *) {

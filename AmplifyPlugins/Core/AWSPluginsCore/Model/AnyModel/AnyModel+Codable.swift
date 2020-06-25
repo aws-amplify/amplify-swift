@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import Amplify
 
-// Custom implementation of Codable for AnyModel stores the instance as its JSON string representation and uses the
-// ModelRegistry utilities to deserialize it
+/// Custom implementation of Codable for AnyModel stores the instance as its JSON string representation and uses the
+/// ModelRegistry utilities to deserialize it
 public extension AnyModel {
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
