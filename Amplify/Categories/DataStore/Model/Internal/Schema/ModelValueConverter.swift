@@ -8,6 +8,8 @@
 import Foundation
 
 /// Establishes how `Model` fields should be converted to and from different targets (e.g. SQL and GraphQL).
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public protocol ModelValueConverter {
 
     /// The base type on the source (i.e. the `Model` property type)
@@ -45,11 +47,15 @@ extension ModelValueConverter {
         JSONEncoder(dateEncodingStrategy: ModelDateFormatting.encodingStrategy)
     }
 
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public static func toJSON(_ value: Encodable) throws -> String? {
         let data = try jsonEncoder.encode(value.eraseToAnyEncodable())
         return String(data: data, encoding: .utf8)
     }
 
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public static func fromJSON(_ value: String) throws -> Any? {
         guard let data = value.data(using: .utf8) else {
             return nil

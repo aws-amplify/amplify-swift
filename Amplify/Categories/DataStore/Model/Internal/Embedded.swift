@@ -13,6 +13,8 @@ import Foundation
 /// `embedded(type:)` or `embeddedCollection(of:)` must comform to the `Embeddable` protocol except for Swift's Basic
 /// types embedded as a collection. A collection of String can be embedded in the `Model` as
 /// `embeddedCollection(of: String.self)` without needing to conform to Embeddable.
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public protocol Embeddable: Codable {
 
     /// A reference to the `ModelSchema` associated with this embedded type.

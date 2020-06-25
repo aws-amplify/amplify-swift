@@ -8,6 +8,8 @@
 import Foundation
 
 /// Defines the type of a `Model` field.
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public enum ModelFieldType {
 
     case string
@@ -79,6 +81,8 @@ public enum ModelFieldType {
     }
 }
 
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public enum ModelFieldNullability {
     case optional
     case required
@@ -93,6 +97,8 @@ public enum ModelFieldNullability {
     }
 }
 
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public struct ModelSchemaDefinition {
 
     internal let name: String
@@ -132,6 +138,8 @@ public struct ModelSchemaDefinition {
     }
 }
 
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public enum ModelFieldDefinition {
 
     case field(name: String,

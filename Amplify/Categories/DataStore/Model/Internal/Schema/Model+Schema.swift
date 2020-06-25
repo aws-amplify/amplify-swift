@@ -9,11 +9,15 @@ import Foundation
 
 extension Model {
 
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public static var schema: ModelSchema {
         // TODO load schema from JSON when this it not overridden by specific models
         ModelSchema(name: modelName, fields: [:])
     }
 
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public var schema: ModelSchema {
         type(of: self).schema
     }
@@ -36,6 +40,8 @@ extension Model {
     ///   - attributes: model attributes (aka "directives" or "annotations")
     ///   - define: the closure used to define the model attributes and fields
     /// - Returns: a valid `ModelSchema` instance
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public static func defineSchema(name: String? = nil,
                                     attributes: ModelAttribute...,
                                     define: (inout ModelSchemaDefinition) -> Void) -> ModelSchema {
@@ -45,6 +51,8 @@ extension Model {
         return definition.build()
     }
 
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
     public static func rule(allow: AuthStrategy,
                             ownerField: String? = nil,
                             identityClaim: String? = nil,
