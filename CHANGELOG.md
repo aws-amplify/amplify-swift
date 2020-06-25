@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file. See [standa
 * **DataStore** Model schema updates clears local database on configure ([#551](https://github.com/aws-amplify/amplify-ios/pull/551))
 * **DataStore/API** Add Emeddable type to `Model` internals, to store schema info for custom types ([#539](https://github.com/aws-amplify/amplify-ios/pull/539) and [#562](https://github.com/aws-amplify/amplify-ios/pull/562)). This bug impacts developers with schemas containing embedded types when using DataStore with sync to cloud enabled or using API with Model classes. To fix this bug, upgrade both Amplify CLI to 4.22.0, and Amplify Libraries to 1.0.2. There is a known incompatibility if only upgrading CLI but not the Library. Then run `amplify codegen models` to regenerate the Model classes. The internal ModelFieldType `.customType` has been replaced with `.embedded(type:)` and `embeddedCollection(of:)`. 
 * **Tools** Update Amplify tools script to resolve node correctly when NVM is installed ([#535](https://github.com/aws-amplify/amplify-ios/pull/535))
-* **Tools** Update Amplify tools script to resolve min CLI version for codegen changes ([#554](https://github.com/aws-amplify/amplify-ios/pull/554))
+* **Tools** Update Amplify tools script to resolve min CLI version for codegen changes ([#583](https://github.com/aws-amplify/amplify-ios/pull/583))
 
 ### Misc
 
