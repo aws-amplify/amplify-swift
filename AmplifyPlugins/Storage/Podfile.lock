@@ -1,19 +1,19 @@
 PODS:
-  - Amplify (1.0.1):
-    - Amplify/Default (= 1.0.1)
-  - Amplify/Default (1.0.1)
-  - AmplifyPlugins/AWSCognitoAuthPlugin (1.0.1):
+  - Amplify (1.0.2):
+    - Amplify/Default (= 1.0.2)
+  - Amplify/Default (1.0.2)
+  - AmplifyPlugins/AWSCognitoAuthPlugin (1.0.2):
     - AWSAuthCore (~> 2.13.5)
     - AWSCore (~> 2.13.5)
     - AWSMobileClient (~> 2.13.5)
-    - AWSPluginsCore (= 1.0.1)
-  - AmplifyTestCommon (1.0.1):
-    - Amplify (= 1.0.1)
-    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.0.1)
-  - AmplifyTestCommon/AWSPluginsTestCommon (1.0.1):
-    - Amplify (= 1.0.1)
+    - AWSPluginsCore (= 1.0.2)
+  - AmplifyTestCommon (1.0.2):
+    - Amplify (= 1.0.2)
+    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.0.2)
+  - AmplifyTestCommon/AWSPluginsTestCommon (1.0.2):
+    - Amplify (= 1.0.2)
     - AWSCore (~> 2.13.5)
-    - AWSPluginsCore (= 1.0.1)
+    - AWSPluginsCore (= 1.0.2)
   - AWSAuthCore (2.13.5):
     - AWSCore (= 2.13.5)
   - AWSCognitoIdentityProvider (2.13.5):
@@ -24,8 +24,8 @@ PODS:
   - AWSMobileClient (2.13.5):
     - AWSAuthCore (= 2.13.5)
     - AWSCognitoIdentityProvider (= 2.13.5)
-  - AWSPluginsCore (1.0.1):
-    - Amplify (= 1.0.1)
+  - AWSPluginsCore (1.0.2):
+    - Amplify (= 1.0.2)
     - AWSCore (~> 2.13.5)
     - AWSMobileClient (~> 2.13.5)
   - AWSS3 (2.13.5):
@@ -83,15 +83,15 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  Amplify: 58bd74cef8478c40e93df97db8d6e97db645f849
-  AmplifyPlugins: 579447713c30bc6a10e33238b6943ed97243bde9
-  AmplifyTestCommon: 1c794366e80adf3cf0c17487cebee863b16500d6
+  Amplify: b4deddc12754b7e6c31dc6f321e1ff5d70aa6cf5
+  AmplifyPlugins: c8cf007b601647169e54ed985e83082b2243498a
+  AmplifyTestCommon: 743929a3a7d00dd2303d65aac59a0f2b43b5913d
   AWSAuthCore: 135ff7620051fd35d1d6a0da23c0613598cbc6a3
   AWSCognitoIdentityProvider: 94290a6f8603e05542b4f8ef3d92dae85ff86706
   AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
   AWSCore: 5122783f63f0f6467f61289461ced7324b2e94d1
   AWSMobileClient: aa7b304dfa5c79c4bcc2cb879b476da16ef4294a
-  AWSPluginsCore: f3be008c119cffa60b86d32ffed905759f071289
+  AWSPluginsCore: fb2cc6aaff8a7ef49c2a53620f1a0e9c61dafcb4
   AWSS3: 1f2d86401dee6fecbb7e956729033f5b0dd25513
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961

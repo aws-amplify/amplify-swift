@@ -1,14 +1,14 @@
 PODS:
-  - Amplify (1.0.1):
-    - Amplify/Default (= 1.0.1)
-  - Amplify/Default (1.0.1)
-  - AmplifyTestCommon (1.0.1):
-    - Amplify (= 1.0.1)
-    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.0.1)
-  - AmplifyTestCommon/AWSPluginsTestCommon (1.0.1):
-    - Amplify (= 1.0.1)
+  - Amplify (1.0.2):
+    - Amplify/Default (= 1.0.2)
+  - Amplify/Default (1.0.2)
+  - AmplifyTestCommon (1.0.2):
+    - Amplify (= 1.0.2)
+    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.0.2)
+  - AmplifyTestCommon/AWSPluginsTestCommon (1.0.2):
+    - Amplify (= 1.0.2)
     - AWSCore (~> 2.13.5)
-    - AWSPluginsCore (= 1.0.1)
+    - AWSPluginsCore (= 1.0.2)
   - AWSAuthCore (2.13.5):
     - AWSCore (= 2.13.5)
   - AWSCognitoIdentityProvider (2.13.5):
@@ -21,8 +21,8 @@ PODS:
   - AWSMobileClient (2.13.5):
     - AWSAuthCore (= 2.13.5)
     - AWSCognitoIdentityProvider (= 2.13.5)
-  - AWSPluginsCore (1.0.1):
-    - Amplify (= 1.0.1)
+  - AWSPluginsCore (1.0.2):
+    - Amplify (= 1.0.2)
     - AWSCore (~> 2.13.5)
     - AWSMobileClient (~> 2.13.5)
   - AWSPolly (2.13.5):
@@ -95,15 +95,15 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  Amplify: 58bd74cef8478c40e93df97db8d6e97db645f849
-  AmplifyTestCommon: 1c794366e80adf3cf0c17487cebee863b16500d6
+  Amplify: b4deddc12754b7e6c31dc6f321e1ff5d70aa6cf5
+  AmplifyTestCommon: 743929a3a7d00dd2303d65aac59a0f2b43b5913d
   AWSAuthCore: 135ff7620051fd35d1d6a0da23c0613598cbc6a3
   AWSCognitoIdentityProvider: 94290a6f8603e05542b4f8ef3d92dae85ff86706
   AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
   AWSComprehend: 8e1303856ed760dc51c7204cfe76aec1c48ec990
   AWSCore: 5122783f63f0f6467f61289461ced7324b2e94d1
   AWSMobileClient: aa7b304dfa5c79c4bcc2cb879b476da16ef4294a
-  AWSPluginsCore: f3be008c119cffa60b86d32ffed905759f071289
+  AWSPluginsCore: fb2cc6aaff8a7ef49c2a53620f1a0e9c61dafcb4
   AWSPolly: e6d51e1520f0d23d3119d1d534d9e56683509ac6
   AWSRekognition: 1753b66387fff06a4575f441c910d45850736ec7
   AWSTextract: 52331e4ba11e52a47bf24bf67b75ddfe467745b4
