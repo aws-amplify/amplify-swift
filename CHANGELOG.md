@@ -2,17 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## Unreleased
+## 1.0.2 (2020-06-25)
 
 ### Bug Fixes
 
-* **DataStore:** Fixed a DataStore issue where lazy `List<M>` initialization would fail for relationships 3+ levels deep ([#534](https://github.com/aws-amplify/amplify-ios/pull/534))
-* **Tools:** Update Amplify tools script to resolve node correctly when NVM is installed ([#524](https://github.com/aws-amplify/amplify-ios/pull/524))
-* **Tools:** Update Amplify tools script to resolve min CLI version for codegen changes ([#554](https://github.com/aws-amplify/amplify-ios/pull/554))
+* **Auth** Signout will completely delete the session in webui ([#542](https://github.com/aws-amplify/amplify-ios/pull/542))
+* **Core** Fix plugin configuration validation ([#543](https://github.com/aws-amplify/amplify-ios/pull/543))
+* **DataStore** Fixed a DataStore issue where lazy `List<M>` initialization would fail for relationships 3+ levels deep ([#534](https://github.com/aws-amplify/amplify-ios/pull/534))
+* **DataStore** Model schema updates clears local database on configure ([#551](https://github.com/aws-amplify/amplify-ios/pull/551))
+* **DataStore/API** Add Emeddable type to `Model` internals, to store schema info for custom types ([#539](https://github.com/aws-amplify/amplify-ios/pull/539) and [#562](https://github.com/aws-amplify/amplify-ios/pull/562)). This bug impacts developers with schemas containing embedded types when using DataStore with sync to cloud enabled or using API with Model classes. To fix this bug, upgrade both Amplify CLI to 4.22.0, and Amplify Libraries to 1.0.2. There is a known incompatibility if only upgrading CLI but not the Library. Then run `amplify codegen models` to regenerate the Model classes. The internal ModelFieldType `.customType` has been replaced with `.embedded(type:)` and `embeddedCollection(of:)`. 
+* **Tools** Update Amplify tools script to resolve node correctly when NVM is installed ([#535](https://github.com/aws-amplify/amplify-ios/pull/535))
+* **Tools** Update Amplify tools script to resolve min CLI version for codegen changes ([#583](https://github.com/aws-amplify/amplify-ios/pull/583))
 
 ### Misc
 
-* Changed the repo's default branch to 'main' ([#579](https://github.com/aws-amplify/amplify-ios/pull/579))
+* **Build** Add common dependency configuration, standardize environment across all modules, podspec source version tag and url ([#538](https://github.com/aws-amplify/amplify-ios/pull/538))
+* **Build** Update CoreML podspec with amplify version ([#555](https://github.com/aws-amplify/amplify-ios/pull/555))
+* **Build** Fix `pod lib lint` error using local variable definitions in Podspec files ([#557](https://github.com/aws-amplify/amplify-ios/pull/557))
+* **Build** Changed the repo's default branch to 'main' ([#579](https://github.com/aws-amplify/amplify-ios/pull/579))
+* **Core** Move DataStore Model Schema related classes to Internal directory ([#563](https://github.com/aws-amplify/amplify-ios/pull/563))
 
 ## 1.0.1 (2020-06-05)
 
