@@ -7,11 +7,10 @@ defaults: &defaults
     xcode: "11.4.0"
   working_directory: ~/amplify-ios
   environment:
-      BUNDLE_PATH: vendor/bundle
+    BUNDLE_PATH: vendor/bundle
 
 references:
-  repo_cache_key: &repo_cache_key
-    v1-repo-{{ .Branch }}-{{ .Revision }}
+  repo_cache_key: &repo_cache_key v1-repo-{{ .Branch }}-{{ .Revision }}
 
   restore_repo: &restore_repo
     restore_cache:
@@ -20,11 +19,9 @@ references:
         - v1-repo-{{ .Branch }}
         - v1-repo
 
-  pods_cache_key: &pods_cache_key
-    v3-dependency-pods-{{ checksum "~/amplify-ios/Podfile" }}
-  
-  pods_backup_cache_key: &pods_backup_cache_key
-    v3-dependency-pods
+  pods_cache_key: &pods_cache_key v3-dependency-pods-{{ checksum "~/amplify-ios/Podfile" }}
+
+  pods_backup_cache_key: &pods_backup_cache_key v3-dependency-pods
 
   restore_pods: &restore_pods
     restore_cache:
@@ -64,18 +61,18 @@ commands:
       - save_cache:
           key: v1-<< parameters.prefix >>-dependency-pods-{{ checksum "Podfile" }}
           paths:
-            - ./Pods 
-  
+            - ./Pods
+
   restore_plugin_pods:
     parameters:
       prefix:
         type: string
     steps:
       - restore_cache:
-          keys: 
+          keys:
             - v1-<< parameters.prefix >>-dependency-pods-{{ checksum "Podfile" }}
             - v1-<< parameters.prefix >>-dependency-pods
-            
+
 jobs:
   checkout_code:
     <<: *defaults
@@ -84,9 +81,9 @@ jobs:
       - checkout
       - save_cache:
           key: *repo_cache_key
-          paths: 
+          paths:
             - ~/amplify-ios
-  
+
   install_gems:
     <<: *defaults
     steps:
@@ -149,18 +146,33 @@ jobs:
           command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | xcpretty --simple --color --report junit
       - store_test_results:
           path: build/reports
-  
+
   deploy:
     <<: *defaults
+    parameters:
+      lane:
+        type: string
+        default: "unstable"
     description: deploy pods to trunk
-    steps: 
+    steps:
       - *restore_repo
       - restore_gems
       - check_bundle
       - run:
           name: Release pods
-          command: bundle exec fastlane release_pods
+          command: bundle exec fastlane << parameters.lane >>
           no_output_timeout: 20m
+
+deploy_requires: &deploy_requires
+  requires:
+    - build_test_amplify
+    - unit_test_analytics
+    - unit_test_api
+    - unit_test_auth
+    - unit_test_core_ml
+    - unit_test_datastore
+    - unit_test_predictions
+    - unit_test_storage
 
 workflows:
   build_test_deploy:
@@ -222,16 +234,17 @@ workflows:
           requires:
             - install_gems
       - deploy:
+          name: deploy unstable
+          <<: *deploy_requires
+          filters:
+            branches:
+              only:
+                - main
+      - deploy:
+          name: deploy stable
+          lane: release
+          <<: *deploy_requires
           filters:
             branches:
               only:
                 - release
-          requires:
-            - build_test_amplify
-            - unit_test_analytics
-            - unit_test_api
-            - unit_test_auth
-            - unit_test_core_ml
-            - unit_test_datastore
-            - unit_test_predictions
-            - unit_test_storage
