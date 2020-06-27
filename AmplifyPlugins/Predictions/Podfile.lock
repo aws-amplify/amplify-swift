@@ -1,14 +1,14 @@
 PODS:
-  - Amplify (1.0.2):
-    - Amplify/Default (= 1.0.2)
-  - Amplify/Default (1.0.2)
-  - AmplifyTestCommon (1.0.2):
-    - Amplify (= 1.0.2)
-    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.0.2)
-  - AmplifyTestCommon/AWSPluginsTestCommon (1.0.2):
-    - Amplify (= 1.0.2)
+  - Amplify (1.0.3):
+    - Amplify/Default (= 1.0.3)
+  - Amplify/Default (1.0.3)
+  - AmplifyTestCommon (1.0.3):
+    - Amplify (= 1.0.3)
+    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.0.3)
+  - AmplifyTestCommon/AWSPluginsTestCommon (1.0.3):
+    - Amplify (= 1.0.3)
     - AWSCore (~> 2.13.6)
-    - AWSPluginsCore (= 1.0.2)
+    - AWSPluginsCore (= 1.0.3)
   - AWSAuthCore (2.13.6):
     - AWSCore (= 2.13.6)
   - AWSCognitoIdentityProvider (2.13.6):
@@ -21,8 +21,8 @@ PODS:
   - AWSMobileClient (2.13.6):
     - AWSAuthCore (= 2.13.6)
     - AWSCognitoIdentityProvider (= 2.13.6)
-  - AWSPluginsCore (1.0.2):
-    - Amplify (= 1.0.2)
+  - AWSPluginsCore (1.0.3):
+    - Amplify (= 1.0.3)
     - AWSCore (~> 2.13.6)
     - AWSMobileClient (~> 2.13.6)
   - AWSPolly (2.13.6):
@@ -95,15 +95,15 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  Amplify: b4deddc12754b7e6c31dc6f321e1ff5d70aa6cf5
-  AmplifyTestCommon: 5be7bf7cfd515a8ea0dc66eb3d9e6900288d3306
+  Amplify: e9029b71d965db29a6434692b4bc8ee29ebfa7df
+  AmplifyTestCommon: d88bf77887b70ddfbb6e4b0accb80e1cb56f3fc9
   AWSAuthCore: 62e92b5ffbd66b8ba0eac471e7f90ccfa76cf63b
   AWSCognitoIdentityProvider: 05f14f7c892df9ff764268d2ac33b4e95288e603
   AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
   AWSComprehend: bb9cd353578aae1c350dbb96ea11bbc255659689
   AWSCore: 2b6015f278770e745b4863ac5f45e007e647f298
   AWSMobileClient: 420a899c4691c7f0991daa35daee82a84396ec63
-  AWSPluginsCore: 3e6d6be84232b1c114935134a2b6763c0ad06b5e
+  AWSPluginsCore: 5b1aaeebd0407dcfad03fca13c8c9da8a9039574
   AWSPolly: 8c3f2a0a0ac889261b2f6c4b77026046aa143f5f
   AWSRekognition: 98f0f0f40e439e85c0d55d4ed6bb81d5ebfe88e0
   AWSTextract: d93b4a28b9f6ca2b806c7b8fe044578d5a675994
