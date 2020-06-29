@@ -74,7 +74,7 @@ platform :ios do
     sh('git', 'config', '--global', 'user.name', $GITHUB_USER)
 
     commit_message = "chore: release #{next_version} [skip ci]"
-    sh('git', 'commit', '-am', "#{commit_message}")
+    sh('git', 'commit', '-am', commit_message)
     sh('git', 'push', 'origin')
 
   end
@@ -93,13 +93,14 @@ platform :ios do
     AmplifyPods.pods.each do |pod|
 
       UI.message("Pushing pod #{pod[:spec]}")
-      pod_push(path: pod[:spec], allow_warnings: true)
+      sh('pod', 'trunk', 'push', pod[:spec], '--allow-warnings', '--synchronous')
 
-      if pod[:sleep]
-        UI.message("Sleeping for #{COCOAPODS_PUSH_WAIT_TIME}s")
-        sleep COCOAPODS_PUSH_WAIT_TIME
-      end
+      # TODO: utilize action once the PR for adding `synchronous` options has been merged
+      # https://github.com/fastlane/fastlane/pull/16698
+      # pod_push(path: pod[:spec], allow_warnings: true, synchronous: true)
 
-      sh('pod', 'repo', 'update')
+      # In theory `repo update` should no longer be needed with the synchronous option
+      # Leaving it just in case. We can remove after the first successful release
+      # sh('pod', 'repo', 'update')
   end
 end
