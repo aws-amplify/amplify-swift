@@ -10,7 +10,6 @@ COCOAPODS_PUSH_WAIT_TIME = 600
 platform :ios do
   desc "Create a pre-release version by pushing a tag to GitHub, and pushing pods to CocoaPods"
   lane :unstable do 
-
     next_version = calculate_next_canary_version
 
     UI.message("Releasing unstable version: #{next_version}")
@@ -71,12 +70,13 @@ platform :ios do
   private_lane :release_commit do |options|
     next_version = options[:version]
 
-    sh("git config --global user.email $GITHUB_EMAIL")
-    sh("git config --global user.name $GITHUB_USER")
+    sh('git', 'config', '--global', 'user.email', $GITHUB_EMAIL)
+    sh('git', 'config', '--global', 'user.name', $GITHUB_USER)
 
     commit_message = "chore: release #{next_version} [skip ci]"
-    sh("git commit -am '#{commit_message}'")
-    sh("git push origin")
+    sh('git', 'commit', '-am', "#{commit_message}")
+    sh('git', 'push', 'origin')
+
   end
 
   desc "Tag in git and push to GitHub"
@@ -100,6 +100,6 @@ platform :ios do
         sleep COCOAPODS_PUSH_WAIT_TIME
       end
 
-      Actions.sh('pod repo update')
+      sh('pod', 'repo', 'update')
   end
 end
