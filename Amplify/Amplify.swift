@@ -22,6 +22,11 @@ public class Amplify {
     /// ConfigurationError.amplifyAlreadyConfigured error.
     static var isConfigured = false
 
+    @available(iOS 13.0.0, *)
+    public static var DevMenu: AmplifyDevMenu?
+
+    static var isDeveloperMenuEnabled = false
+
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
     // It is not supported to mutate these category properties. They are `var` to support the `reset()` method for
     // ease of testing.
@@ -63,6 +68,27 @@ public class Amplify {
         }
     }
 
+    @available(iOS 13.0.0, *)
+    public static func enableDevMenu(devMenuDelegate: DevMenuDelegate) {
+        DevMenu = AmplifyDevMenu(delegate: devMenuDelegate)
+        isDeveloperMenuEnabled = true
+    }
+
+    static func isDevMenuEnabled() -> Bool {
+        return isDeveloperMenuEnabled
+    }
+
+    static func getPlugin() -> LoggingCategoryPlugin {
+        #if DEBUG
+        if isDevMenuEnabled() {
+            return PersistentLoggingPlugin(plugin: AWSUnifiedLoggingPlugin())
+        } else {
+            return AWSUnifiedLoggingPlugin()
+        }
+        #else
+            return AWSUnifiedLoggingPlugin()
+        #endif
+    }
 }
 
 extension Amplify: DefaultLogger { }
