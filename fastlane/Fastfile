@@ -5,8 +5,6 @@ default_platform(:ios)
 
 PLIST_KEY = "CFBundleShortVersionString"
 
-COCOAPODS_PUSH_WAIT_TIME = 600
-
 platform :ios do
   desc "Create a pre-release version by pushing a tag to GitHub, and pushing pods to CocoaPods"
   lane :unstable do 
