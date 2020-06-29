@@ -74,7 +74,7 @@ platform :ios do
     sh("git config --global user.email $GITHUB_EMAIL")
     sh("git config --global user.name $GITHUB_USER")
 
-    commit_message = "chore(release): #{next_version} [skip ci]"
+    commit_message = "chore: release #{next_version} [skip ci]"
     sh("git commit -am '#{commit_message}'")
     sh("git push origin")
   end
