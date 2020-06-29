@@ -8,13 +8,12 @@ PLIST_KEY = "CFBundleShortVersionString"
 COCOAPODS_PUSH_WAIT_TIME = 600
 
 platform :ios do
-
   desc "Create a pre-release version by pushing a tag to GitHub, and pushing pods to CocoaPods"
   lane :unstable do 
 
     next_version = calculate_next_canary_version
 
-    UI.message("Release unstable version: #{next_version}")
+    UI.message("Releasing unstable version: #{next_version}")
 
     # Increment all specs and plists
     increment_versions(version: next_version)
@@ -28,10 +27,9 @@ platform :ios do
 
   desc "Create a release version by building and committing a changelog, pushing a tag to GitHub, and pushing pods to CocoaPods"  
   lane :release do
-
     next_version, commits = calculate_next_release_version
 
-    UI.message("Release version: #{next_version}")
+    UI.message("Releasing version: #{next_version}")
 
     # Increment all specs and plists
     increment_versions(version: next_version)
@@ -40,7 +38,7 @@ platform :ios do
 
     write_changelog(changelog: changelog, path: 'CHANGELOG.md')
 
-    # Commit and push
+    # Commit and push 
     release_commit(version: next_version)
 
     # Create tag and push to origin
