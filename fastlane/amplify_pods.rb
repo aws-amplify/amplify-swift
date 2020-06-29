@@ -2,7 +2,6 @@ module AmplifyPods
   @@pods = [
     {
       spec: "Amplify.podspec",
-      sleep: true,
       constants: ['AMPLIFY_VERSION'],
       plist_paths: [
         "Amplify/Info.plist",
@@ -14,9 +13,6 @@ module AmplifyPods
     },
     {
       spec: "AWSPluginsCore.podspec",
-      # AmplifyPlugins depends on AWSPluginsCore, but skipping the sleep here
-      # since there's one after CoreMLPredictionsPlugin
-      sleep: false,
       constants: ['AMPLIFY_VERSION'],
       plist_paths: [
         "AmplifyPlugins/Core/AWSPluginsCore/Info.plist",
@@ -26,7 +22,6 @@ module AmplifyPods
     },
     {
       spec: "CoreMLPredictionsPlugin.podspec",
-      sleep: true,
       constants: ['AMPLIFY_VERSION'],
       plist_paths: [
         "AmplifyPlugins/Predictions/CoreMLPredictionsPlugin/Resources/Info.plist"
@@ -34,7 +29,6 @@ module AmplifyPods
     },
     {
       spec: "AWSPredictionsPlugin.podspec",
-      sleep: false,
       constants: ['AMPLIFY_VERSION'],
       plist_paths: [
         "AmplifyPlugins/Predictions/AWSPredictionsPlugin/Resources/Info.plist"
@@ -42,7 +36,6 @@ module AmplifyPods
     },
     {
       spec: "AmplifyPlugins.podspec",
-      sleep: false,
       constants: ['AMPLIFY_VERSION'],
       plist_paths: [
         "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPlugin/Resources/Info.plist",
