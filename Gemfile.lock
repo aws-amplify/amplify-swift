@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/aws-amplify/amplify-ci-support
-  revision: 6cf31df574fd6ff0d8aac28ada68bda615ccf84d
+  revision: 26e84a769abecbdd6687829cc74d627ec1c6ba4c
   branch: master
   glob: src/fastlane/release_actions/*.gemspec
   specs:
@@ -22,7 +22,7 @@ GEM
       json (>= 1.5.1)
     atomos (0.1.3)
     aws-eventstream (1.1.0)
-    aws-partitions (1.336.0)
+    aws-partitions (1.337.0)
     aws-sdk-core (3.102.1)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.239.0)
@@ -177,7 +177,7 @@ GEM
     i18n (0.9.5)
       concurrent-ruby (~> 1.0)
     jmespath (1.4.0)
-    json (2.3.0)
+    json (2.3.1)
     jwt (2.1.0)
     memoist (0.16.2)
     mini_magick (4.10.1)
