@@ -50,7 +50,7 @@ platform :ios do
     version = options[:version].to_s
 
     AmplifyPods.pods.each do |pod|
-      spec, push, constants, plist_paths = pod.values
+      spec, constants, plist_paths = pod.values
 
       UI.message("Incrementing version for #{spec}")
 
