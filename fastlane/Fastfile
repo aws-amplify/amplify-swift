@@ -90,9 +90,11 @@ platform :ios do
   desc "Release pods"
   private_lane :release_pods do
     AmplifyPods.pods.each do |pod|
+      pod_path = "~/amplify-ios/#{pod[:spec]}"
 
       UI.message("Pushing pod #{pod[:spec]}")
-      sh('pod', 'trunk', 'push', pod[:spec], '--allow-warnings', '--synchronous')
+
+      sh('pod', 'trunk', 'push', pod_path, '--allow-warnings', '--synchronous')
 
       # TODO: utilize action once the PR for adding `synchronous` options has been merged
       # https://github.com/fastlane/fastlane/pull/16698
