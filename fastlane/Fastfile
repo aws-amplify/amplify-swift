@@ -1,49 +1,104 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
-
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
+require_relative './amplify_pods.rb'
 
 opt_out_usage
-
 default_platform(:ios)
 
-COCOAPODS_PUSH_WAIT_TIME = 600
-
-pods = [
-  {spec: "Amplify.podspec", sleep: true},
-  # AmplifyPlugins depends on AWSPluginsCore, but skipping the sleep here
-  # since there's one after CoreMLPredictionsPlugin
-  {spec: "AWSPluginsCore.podspec", sleep: false},
-  {spec: "CoreMLPredictionsPlugin.podspec", sleep: true},
-  {spec: "AWSPredictionsPlugin.podspec", sleep: false},
-  {spec: "AmplifyPlugins.podspec", sleep: false}
-]
+PLIST_KEY = "CFBundleShortVersionString"
 
 platform :ios do
-  desc "Release pods"
-  lane :release_pods do
+  desc "Create a pre-release version by pushing a tag to GitHub, and pushing pods to CocoaPods"
+  lane :unstable do 
+    next_version = calculate_next_canary_version
 
-    pods.each { |pod|
-      UI.message("Pushing pod #{pod[:spec]}")
-      pod_push(path: pod[:spec], allow_warnings: true)
-      if pod[:sleep]
-        UI.message("Sleeping for #{COCOAPODS_PUSH_WAIT_TIME}s")
-        sleep COCOAPODS_PUSH_WAIT_TIME
+    UI.message("Releasing unstable version: #{next_version}")
+
+    # Increment all specs and plists
+    increment_versions(version: next_version)
+
+    # Create tag and push to origin
+    add_tag(version: next_version)
+
+    # Push to CocoaPods
+    release_pods()
+  end
+
+  desc "Create a release version by building and committing a changelog, pushing a tag to GitHub, and pushing pods to CocoaPods"  
+  lane :release do
+    next_version, commits = calculate_next_release_version
+
+    UI.message("Releasing version: #{next_version}")
+
+    # Increment all specs and plists
+    increment_versions(version: next_version)
+
+    changelog = build_changelog(version: next_version, commits: commits)
+
+    write_changelog(changelog: changelog, path: 'CHANGELOG.md')
+
+    # Commit and push 
+    release_commit(version: next_version)
+
+    # Create tag and push to origin
+    add_tag(version: next_version)
+
+    # Push pods
+    release_pods()
+  end
+
+  desc "Increment versions"
+  private_lane :increment_versions do |options|
+    version = options[:version].to_s
+
+    AmplifyPods.pods.each do |pod|
+      spec, push, constants, plist_paths = pod.values
+
+      UI.message("Incrementing version for #{spec}")
+
+      constants.each do |constant|
+        set_key_value(file: spec, key: constant, value: version)
       end
-      
-      Actions.sh('pod repo update')
-    }
+
+      plist_paths.each do |plist_path|
+        set_info_plist_value(path: plist_path, key: PLIST_KEY, value: version)
+      end
+    end
+  end
+  
+  desc "Commit and push"
+  private_lane :release_commit do |options|
+    next_version = options[:version]
+
+    sh('git', 'config', '--global', 'user.email', $GITHUB_EMAIL)
+    sh('git', 'config', '--global', 'user.name', $GITHUB_USER)
+
+    commit_message = "chore: release #{next_version} [skip ci]"
+    sh('git', 'commit', '-am', commit_message)
+    sh('git', 'push', 'origin')
 
   end
 
+  desc "Tag in git and push to GitHub"
+  private_lane :add_tag do |options|
+    next_version = options[:version]
+
+    add_git_tag(tag: next_version)
+    push_git_tags(tag: next_version)
+  end
+
+
+  desc "Release pods"
+  private_lane :release_pods do
+    AmplifyPods.pods.each do |pod|
+
+      UI.message("Pushing pod #{pod[:spec]}")
+      sh('pod', 'trunk', 'push', pod[:spec], '--allow-warnings', '--synchronous')
+
+      # TODO: utilize action once the PR for adding `synchronous` options has been merged
+      # https://github.com/fastlane/fastlane/pull/16698
+      # pod_push(path: pod[:spec], allow_warnings: true, synchronous: true)
+
+      # In theory `repo update` should no longer be needed with the synchronous option
+      # Leaving it just in case. We can remove after the first successful release
+      # sh('pod', 'repo', 'update')
+  end
 end
