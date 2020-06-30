@@ -155,6 +155,9 @@ jobs:
         default: "unstable"
     description: deploy pods to trunk
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "80:9a:29:87:ac:5f:1a:9b:c5:a4:3d:37:c1:10:87:2f"
       - *restore_repo
       - restore_gems
       - check_bundle
