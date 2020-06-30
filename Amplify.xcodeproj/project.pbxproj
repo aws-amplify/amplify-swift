@@ -196,6 +196,8 @@
 		97CB860024AA451B000C65FB /* AmplifyDevMenuRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F924AA451B000C65FB /* AmplifyDevMenuRow.swift */; };
 		97CB860124AA451B000C65FB /* PersistentLogWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85FA24AA451B000C65FB /* PersistentLogWrapper.swift */; };
 		97CB860224AA451B000C65FB /* AmplifyDevMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85FC24AA451B000C65FB /* AmplifyDevMenuItem.swift */; };
+		97CB860424AB936E000C65FB /* Amplify+DevMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB860324AB936E000C65FB /* Amplify+DevMenu.swift */; };
+		97CB860624ABA023000C65FB /* LongPressGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB860524ABA023000C65FB /* LongPressGestureRecognizer.swift */; };
 		B4251A0124250369007F59EF /* AuthConfirmResetPasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A0024250369007F59EF /* AuthConfirmResetPasswordRequest.swift */; };
 		B4251A05242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A04242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift */; };
 		B4251A072425047D007F59EF /* AuthChangePasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A062425047D007F59EF /* AuthChangePasswordRequest.swift */; };
@@ -926,6 +928,8 @@
 		97CB85F924AA451B000C65FB /* AmplifyDevMenuRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyDevMenuRow.swift; sourceTree = "<group>"; };
 		97CB85FA24AA451B000C65FB /* PersistentLogWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentLogWrapper.swift; sourceTree = "<group>"; };
 		97CB85FC24AA451B000C65FB /* AmplifyDevMenuItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyDevMenuItem.swift; sourceTree = "<group>"; };
+		97CB860324AB936E000C65FB /* Amplify+DevMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Amplify+DevMenu.swift"; sourceTree = "<group>"; };
+		97CB860524ABA023000C65FB /* LongPressGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressGestureRecognizer.swift; sourceTree = "<group>"; };
 		9883B94C1A1C9D551AC012AE /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSDataStoreCategoryPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSDataStoreCategoryPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99CFDB8E55EADE7A74938E6C /* Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		9AC75D55C68207254CB859A9 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPredictionsPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPredictionsPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1998,6 +2002,8 @@
 				97CB85F724AA451B000C65FB /* View */,
 				97CB85FA24AA451B000C65FB /* PersistentLogWrapper.swift */,
 				97CB85FB24AA451B000C65FB /* Data */,
+				97CB860324AB936E000C65FB /* Amplify+DevMenu.swift */,
+				97CB860524ABA023000C65FB /* LongPressGestureRecognizer.swift */,
 			);
 			path = AmplifyDevMenu;
 			sourceTree = "<group>";
@@ -4243,6 +4249,7 @@
 				2129BE512395A66F006363A1 /* AmplifyModelRegistration.swift in Sources */,
 				210922572359693900CEC295 /* BasicAnalyticsEvent.swift in Sources */,
 				FAC2353F227A055200424678 /* PluginError.swift in Sources */,
+				97CB860624ABA023000C65FB /* LongPressGestureRecognizer.swift in Sources */,
 				FA5704C7245F368200392C19 /* ProgressListener.swift in Sources */,
 				FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */,
 				FA5704C9245F3C6900392C19 /* AmplifyInProcessReportingOperation.swift in Sources */,
@@ -4345,6 +4352,7 @@
 				B473B548245E097600C45C72 /* AuthSignOutOperation.swift in Sources */,
 				FA8F4D242395B1B600861D91 /* MutationEvent+Model.swift in Sources */,
 				95DAAB38237E63370028544F /* Landmark.swift in Sources */,
+				97CB860424AB936E000C65FB /* Amplify+DevMenu.swift in Sources */,
 				21FFF988230B7B2C005878EA /* AsychronousOperation.swift in Sources */,
 				95DAAB49237E639E0028544F /* IdentifyDocumentTextResult.swift in Sources */,
 				B46884122460A8D600221268 /* AuthFetchDevicesOperation.swift in Sources */,
