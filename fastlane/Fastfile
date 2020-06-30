@@ -90,7 +90,7 @@ platform :ios do
   desc "Release pods"
   private_lane :release_pods do
     AmplifyPods.pods.each do |pod|
-      pod_path = "~/amplify-ios/#{pod[:spec]}"
+      pod_path = "/Users/distiller/amplify-ios/#{pod[:spec]}"
 
       UI.message("Pushing pod #{pod[:spec]}")
 
