@@ -13,8 +13,8 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
 
     let awsMobileClient: AWSMobileClient
 
-    init(userPoolConfiguration: AmplifyAWSServiceConfiguration,
-         identityPoolConfiguration: AmplifyAWSServiceConfiguration) {
+    init(userPoolConfiguration: AmplifyAWSServiceConfiguration?,
+         identityPoolConfiguration: AmplifyAWSServiceConfiguration?) {
 
         AWSMobileClient.updateCognitoService(userPoolConfiguration: userPoolConfiguration,
                                              identityPoolConfiguration: identityPoolConfiguration)
