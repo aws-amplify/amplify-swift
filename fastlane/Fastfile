@@ -50,7 +50,7 @@ platform :ios do
     version = options[:version].to_s
 
     AmplifyPods.pods.each do |pod|
-      spec, push, constants, plist_paths = pod.values
+      spec, constants, plist_paths = pod.values
 
       UI.message("Incrementing version for #{spec}")
 
@@ -80,25 +80,28 @@ platform :ios do
   desc "Tag in git and push to GitHub"
   private_lane :add_tag do |options|
     next_version = options[:version]
+    next_tag = "v#{next_version}"
 
-    add_git_tag(tag: next_version)
-    push_git_tags(tag: next_version)
+    add_git_tag(tag: next_tag)
+    push_git_tags(tag: next_tag)
   end
 
 
   desc "Release pods"
   private_lane :release_pods do
     AmplifyPods.pods.each do |pod|
+      pod_path = "/Users/distiller/amplify-ios/#{pod[:spec]}"
 
       UI.message("Pushing pod #{pod[:spec]}")
-      sh('pod', 'trunk', 'push', pod[:spec], '--allow-warnings', '--synchronous')
+
+      sh('pod', 'trunk', 'push', pod_path, '--allow-warnings', '--synchronous')
 
       # TODO: utilize action once the PR for adding `synchronous` options has been merged
       # https://github.com/fastlane/fastlane/pull/16698
       # pod_push(path: pod[:spec], allow_warnings: true, synchronous: true)
 
-      # In theory `repo update` should no longer be needed with the synchronous option
-      # Leaving it just in case. We can remove after the first successful release
-      # sh('pod', 'repo', 'update')
+      # This shouldn't be necessary... but it is
+      sh('pod', 'repo', 'update')
+    end
   end
 end
