@@ -100,5 +100,6 @@ platform :ios do
       # In theory `repo update` should no longer be needed with the synchronous option
       # Leaving it just in case. We can remove after the first successful release
       # sh('pod', 'repo', 'update')
+    end
   end
 end
