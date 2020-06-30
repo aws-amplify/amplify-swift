@@ -243,7 +243,7 @@ workflows:
             branches:
               only:
                 - main
-                - conventional-commits
+                - conventional-commits-fixes
       - deploy:
           name: deploy stable
           lane: release
