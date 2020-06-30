@@ -100,8 +100,7 @@ platform :ios do
       # https://github.com/fastlane/fastlane/pull/16698
       # pod_push(path: pod[:spec], allow_warnings: true, synchronous: true)
 
-      # In theory `repo update` should no longer be needed with the synchronous option
-      # Leaving it just in case. We can remove after the first successful release
+      # This shouldn't be necessary... but it is
       sh('pod', 'repo', 'update')
     end
   end
