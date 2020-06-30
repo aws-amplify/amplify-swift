@@ -87,6 +87,7 @@ struct SelectStatementMetadata {
             \(paginationInput.sqlStatement)
             """
         }
+
         return SelectStatementMetadata(statement: sql,
                                        columnMapping: columnMapping,
                                        bindings: bindings)

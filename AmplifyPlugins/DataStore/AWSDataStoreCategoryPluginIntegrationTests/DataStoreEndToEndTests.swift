@@ -45,8 +45,12 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                         return
                 }
 
+                if post.id != newPost.id {
+                    return
+                }
+
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                    XCTAssertEqual(post.content, post.content)
+                    XCTAssertEqual(post.content, newPost.content)
                     XCTAssertEqual(mutationEvent.version, 1)
                     createReceived.fulfill()
                     return
@@ -60,8 +64,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 }
 
                 if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                    deleteReceived.fulfill()
                     XCTAssertEqual(mutationEvent.version, 3)
+                    deleteReceived.fulfill()
                     return
                 }
         }
@@ -116,8 +120,12 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                         return
                 }
 
+                if post.id != newPost.id {
+                    return
+                }
+
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                    XCTAssertEqual(post.content, post.content)
+                    XCTAssertEqual(post.content, newPost.content)
                     XCTAssertEqual(mutationEvent.version, 1)
                     createReceived.fulfill()
                     return
@@ -178,9 +186,13 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                     return
             }
 
+            if post.id != newPost.id {
+                return
+            }
+
             if payload.eventName == HubPayload.EventName.DataStore.syncReceived {
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                    XCTAssertEqual(post.content, post.content)
+                    XCTAssertEqual(post.content, newPost.content)
                     XCTAssertEqual(mutationEvent.version, 1)
                     createReceived.fulfill()
                     return

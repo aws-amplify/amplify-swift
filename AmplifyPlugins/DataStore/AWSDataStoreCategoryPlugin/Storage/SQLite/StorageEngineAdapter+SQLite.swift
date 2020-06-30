@@ -194,6 +194,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         query(modelType,
               predicate: predicate,
               orderBy: orderBy,
+              paginationInput: paginationInput,
               additionalStatements: nil,
               completion: completion)
     }

@@ -362,15 +362,66 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the generated SQL statement is valid
     ///   - check if the statement contains the correct `order by` and `descending`
     func testSelectStatementWithOrderBy() {
-        let statement = SelectStatement(from: Post.self, predicate: nil, paginationInput: .page(2, limit: 20))
+        let statement = SelectStatement(from: Post.self, orderBy: .ordering(field: Post.keys.id, DESC: true))
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
         from Post as "root"
-        order by
-          "id"
+        order by id DESC
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    func testSelectStatementWithPredicateAndOrderBy() {
+        let statement = SelectStatement(from: Post.self,
+                                        predicate: Post.keys.rating > 4,
+                                        orderBy: .ordering(field: Post.keys.id, DESC: true))
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
+        from Post as "root"
+        where 1 = 1
+          and "root"."rating" > ?
+        order by id DESC
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    func testSelectStatementWithOrderByAndPaginationInfo() {
+        let statement = SelectStatement(from: Post.self,
+                                        orderBy: .ordering(field: Post.keys.id, DESC: true),
+                                        paginationInput: .page(0, limit: 5))
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
+        from Post as "root"
+        order by id DESC
+        limit 5 offset 0
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    func testSelectStatementWithPredicateAndOrderByAndPaginationInfo() {
+        let statement = SelectStatement(from: Post.self,
+                                        predicate: Post.keys.rating > 4,
+                                        orderBy: .ordering(field: Post.keys.id, DESC: true),
+                                        paginationInput: .page(0, limit: 5))
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
+        from Post as "root"
+        where 1 = 1
+          and "root"."rating" > ?
+        order by id DESC
+        limit 5 offset 0
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
