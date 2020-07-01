@@ -96,7 +96,7 @@ platform :ios do
       dupe_error = "[!] Unable to accept duplicate entry"
 
       begin
-        sh('pod', 'trunk', 'push', pod_path, '--allow-warnings', '--synchronous')
+        sh('bundle', 'exec', 'pod', 'trunk', 'push', pod_path, '--allow-warnings', '--synchronous')
       rescue => ex
         unless ex.to_s.include? dupe_error
           raise Exception.new "Unrecoverable error in pod push trunk"
@@ -108,7 +108,7 @@ platform :ios do
       # pod_push(path: pod[:spec], allow_warnings: true, synchronous: true)
 
       # This shouldn't be necessary... but it is
-      sh('pod', 'repo', 'update')
+      sh('bundle', 'exec', 'pod', 'repo', 'update')
     end
   end
 end
