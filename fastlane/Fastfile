@@ -86,7 +86,6 @@ platform :ios do
     push_git_tags(tag: next_tag)
   end
 
-
   desc "Release pods"
   private_lane :release_pods do
     AmplifyPods.pods.each do |pod|
