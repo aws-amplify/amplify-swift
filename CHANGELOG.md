@@ -4,7 +4,8 @@
 
 ### Bug Fixes
 
-- DataStore E2E Integration Tests (#596)
+- DataStore E2E Integration Tests ([#596](https://github.com/aws-amplify/amplify-ios/pull/596))
+- Auth updated the AWSMobileClient version to 2.14.0 to fix a crash related to nil user pool client ([#592](https://github.com/aws-amplify/amplify-ios/issues/592))
 
 ## 1.0.3 (2020-06-26)
 
