@@ -7,34 +7,34 @@ PODS:
     - AmplifyTestCommon/AWSPluginsTestCommon (= 1.0.3)
   - AmplifyTestCommon/AWSPluginsTestCommon (1.0.3):
     - Amplify (= 1.0.3)
-    - AWSCore (~> 2.13.6)
+    - AWSCore (~> 2.14.0)
     - AWSPluginsCore (= 1.0.3)
-  - AWSAuthCore (2.13.6):
-    - AWSCore (= 2.13.6)
-  - AWSCognitoIdentityProvider (2.13.6):
+  - AWSAuthCore (2.14.0):
+    - AWSCore (= 2.14.0)
+  - AWSCognitoIdentityProvider (2.14.0):
     - AWSCognitoIdentityProviderASF (= 1.0.1)
-    - AWSCore (= 2.13.6)
+    - AWSCore (= 2.14.0)
   - AWSCognitoIdentityProviderASF (1.0.1)
-  - AWSComprehend (2.13.6):
-    - AWSCore (= 2.13.6)
-  - AWSCore (2.13.6)
-  - AWSMobileClient (2.13.6):
-    - AWSAuthCore (= 2.13.6)
-    - AWSCognitoIdentityProvider (= 2.13.6)
+  - AWSComprehend (2.14.0):
+    - AWSCore (= 2.14.0)
+  - AWSCore (2.14.0)
+  - AWSMobileClient (2.14.0):
+    - AWSAuthCore (= 2.14.0)
+    - AWSCognitoIdentityProvider (= 2.14.0)
   - AWSPluginsCore (1.0.3):
     - Amplify (= 1.0.3)
-    - AWSCore (~> 2.13.6)
-    - AWSMobileClient (~> 2.13.6)
-  - AWSPolly (2.13.6):
-    - AWSCore (= 2.13.6)
-  - AWSRekognition (2.13.6):
-    - AWSCore (= 2.13.6)
-  - AWSTextract (2.13.6):
-    - AWSCore (= 2.13.6)
-  - AWSTranscribeStreaming (2.13.6):
-    - AWSCore (= 2.13.6)
-  - AWSTranslate (2.13.6):
-    - AWSCore (= 2.13.6)
+    - AWSCore (~> 2.14.0)
+    - AWSMobileClient (~> 2.14.0)
+  - AWSPolly (2.14.0):
+    - AWSCore (= 2.14.0)
+  - AWSRekognition (2.14.0):
+    - AWSCore (= 2.14.0)
+  - AWSTextract (2.14.0):
+    - AWSCore (= 2.14.0)
+  - AWSTranscribeStreaming (2.14.0):
+    - AWSCore (= 2.14.0)
+  - AWSTranslate (2.14.0):
+    - AWSCore (= 2.14.0)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
@@ -44,13 +44,13 @@ PODS:
 DEPENDENCIES:
   - Amplify (from `../../`)
   - AmplifyTestCommon (from `../../`)
-  - AWSComprehend (~> 2.13.6)
+  - AWSComprehend (~> 2.14.0)
   - AWSPluginsCore (from `../../`)
-  - AWSPolly (~> 2.13.6)
-  - AWSRekognition (~> 2.13.6)
-  - AWSTextract (~> 2.13.6)
-  - AWSTranscribeStreaming (~> 2.13.6)
-  - AWSTranslate (~> 2.13.6)
+  - AWSPolly (~> 2.14.0)
+  - AWSRekognition (~> 2.14.0)
+  - AWSTextract (~> 2.14.0)
+  - AWSTranscribeStreaming (~> 2.14.0)
+  - AWSTranslate (~> 2.14.0)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
   - SwiftFormat/CLI
@@ -96,19 +96,19 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Amplify: e9029b71d965db29a6434692b4bc8ee29ebfa7df
-  AmplifyTestCommon: d88bf77887b70ddfbb6e4b0accb80e1cb56f3fc9
-  AWSAuthCore: 62e92b5ffbd66b8ba0eac471e7f90ccfa76cf63b
-  AWSCognitoIdentityProvider: 05f14f7c892df9ff764268d2ac33b4e95288e603
+  AmplifyTestCommon: 778abf91cc67d7a7040c63b67e11ca9716da04bc
+  AWSAuthCore: 6b337af04751dcbb4bc50f18dbed0343ba345e17
+  AWSCognitoIdentityProvider: bd4cf5f70b9224b1ea42b423a75716cafb8f7ac4
   AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
-  AWSComprehend: bb9cd353578aae1c350dbb96ea11bbc255659689
-  AWSCore: 2b6015f278770e745b4863ac5f45e007e647f298
-  AWSMobileClient: 420a899c4691c7f0991daa35daee82a84396ec63
-  AWSPluginsCore: 5b1aaeebd0407dcfad03fca13c8c9da8a9039574
-  AWSPolly: 8c3f2a0a0ac889261b2f6c4b77026046aa143f5f
-  AWSRekognition: 98f0f0f40e439e85c0d55d4ed6bb81d5ebfe88e0
-  AWSTextract: d93b4a28b9f6ca2b806c7b8fe044578d5a675994
-  AWSTranscribeStreaming: b0004f4f0fe2a5c38a2764bdefe70893e945d2f5
-  AWSTranslate: 9e3a79d5497700d608cfb0febf68e1c0f7f915cc
+  AWSComprehend: b3ae5469831cf0652fcbc03adeeac935ba896199
+  AWSCore: 6398ca88010f34653a07d54a252affe920a99965
+  AWSMobileClient: 0f4ae3f60722fc2cec7ca926fd442ff55a2154a5
+  AWSPluginsCore: 4325943a8fbe29d3fb37aacd50f48307c1acb556
+  AWSPolly: b716120b1a7b495dff9d5d580be4f8bd973387f0
+  AWSRekognition: dd59c06a8225fa8eb3f1b2e5648a6741c2d2a38e
+  AWSTextract: efda2c333155e996f82e37f19ce4f0a5fdc4fc9d
+  AWSTranscribeStreaming: 7ca3aa03279688071f8307bc68fedd5d33c98ffa
+  AWSTranslate: 72bafddafcaa3e23cd43f0a973efcff68cc0885f
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SwiftFormat: a5ab293a7f6a812bec6f4ffc5507b7ed08f7f6e1
