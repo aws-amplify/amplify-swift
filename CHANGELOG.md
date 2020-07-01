@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.4 (2020-07-01)
+
+### Bug Fixes
+
+- DataStore E2E Integration Tests (#596)
+
 ## 1.0.3 (2020-06-26)
 
 ### Bug Fixes
