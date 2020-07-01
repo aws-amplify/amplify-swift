@@ -35,14 +35,14 @@ platform :ios do
 
     write_changelog(changelog: changelog, path: 'CHANGELOG.md')
 
-    # Commit and push 
-    release_commit(version: next_version)
+    # # Commit and push 
+    # release_commit(version: next_version)
 
-    # Create tag and push to origin
-    add_tag(version: next_version)
+    # # Create tag and push to origin
+    # add_tag(version: next_version)
 
-    # Push pods
-    release_pods()
+    # # Push pods
+    # release_pods()
   end
 
   desc "Increment versions"

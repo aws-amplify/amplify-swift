@@ -48,3 +48,4 @@ awsconfiguration.json
 amplifyconfiguration.json
 credentials-mc.json
 
+fastlane/report.xml
