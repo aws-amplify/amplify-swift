@@ -73,10 +73,10 @@ platform :ios do
 
     commit_message = "chore: release #{next_version} [skip ci]"
     sh('git', 'commit', '-am', commit_message)
-    sh('git', 'push', 'origin')
-
+    sh('git', 'push', 'origin', 'release')
+    sh('git', 'push', 'origin', 'release:main')
   end
-
+  
   desc "Tag in git and push to GitHub"
   private_lane :add_tag do |options|
     next_version = options[:version]
