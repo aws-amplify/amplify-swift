@@ -128,6 +128,7 @@ platform :ios do
     i = 0
 
     while (i < retries)
+      sleep 30
       begin
         sh('bundle', 'exec', 'pod', 'trunk', 'push', pod_path, '--allow-warnings', '--synchronous')
         # if succeeded without error -> break out of loop
