@@ -31,20 +31,18 @@ platform :ios do
     # Increment all specs and plists
     increment_versions(version: next_version)
 
-    p commits
-
     changelog = build_changelog(version: next_version, commits: commits)
 
     write_changelog(changelog: changelog, path: 'CHANGELOG.md')
 
-    # # Commit and push 
-    # release_commit(version: next_version)
+    # Commit and push 
+    release_commit(version: next_version)
 
-    # # Create tag and push to origin
-    # add_tag(version: next_version)
+    # Create tag and push to origin
+    add_tag(version: next_version)
 
-    # # Push pods
-    # release_pods()
+    # Push pods
+    release_pods()
   end
 
   desc "Increment versions"
@@ -75,10 +73,10 @@ platform :ios do
 
     commit_message = "chore: release #{next_version} [skip ci]"
     sh('git', 'commit', '-am', commit_message)
-    sh('git', 'push', 'origin')
-
+    sh('git', 'push', 'origin', 'release')
+    sh('git', 'push', 'origin', 'release:main')
   end
-
+  
   desc "Tag in git and push to GitHub"
   private_lane :add_tag do |options|
     next_version = options[:version]
