@@ -11,12 +11,12 @@ import UIKit
 @available(iOS 13.0.0, *)
 class LongPressGestureRecognizer: NSObject, UIGestureRecognizerDelegate {
 
-    weak var devMenuDelegate: DevMenuDelegate?
+    weak var uiWindow: UIWindow?
     weak var triggerDelegate: TriggerDelegate?
 
-    init(devMenuDelegate: DevMenuDelegate, triggerDelegate: TriggerDelegate) {
+    init(uiWindow: UIWindow, triggerDelegate: TriggerDelegate) {
         super.init()
-        self.devMenuDelegate = devMenuDelegate
+        self.uiWindow = uiWindow
         self.triggerDelegate = triggerDelegate
         registerLongPressRecognizer()
     }
@@ -33,9 +33,10 @@ class LongPressGestureRecognizer: NSObject, UIGestureRecognizerDelegate {
 
     @available(iOS 13.0.0, *)
     private func registerLongPressRecognizer() {
-        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(
-                                                                LongPressGestureRecognizer.longPressed(sender:)))
+        let longPressRecognizer = UILongPressGestureRecognizer(
+                                    target: self,
+                                    action: #selector(LongPressGestureRecognizer.longPressed(sender:)))
         longPressRecognizer.delegate = self
-        devMenuDelegate?.presentationContext().addGestureRecognizer(longPressRecognizer)
+        uiWindow?.addGestureRecognizer(longPressRecognizer)
     }
 }

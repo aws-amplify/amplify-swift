@@ -12,14 +12,7 @@ struct AmplifyDevMenuItem: Identifiable {
     var id = UUID()
     var title: String
 
-    init?(title: String) {
-
-        // The name must not be empty
-        guard !title.isEmpty else {
-            return nil
-        }
-
-        // Initialize stored properties.
+    init(title: String) {
         self.title = title
     }
 }

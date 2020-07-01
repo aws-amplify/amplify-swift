@@ -23,6 +23,6 @@ struct AmplifyDevMenuRow: View {
 @available(iOS 13.0.0, *)
 struct AmplifyDevMenuRow_Previews: PreviewProvider {
     static var previews: some View {
-        AmplifyDevMenuRow(rowItem: AmplifyDevMenuItem(title: "View Environment Information")!)
+        AmplifyDevMenuRow(rowItem: AmplifyDevMenuItem(title: "View Environment Information"))
     }
 }

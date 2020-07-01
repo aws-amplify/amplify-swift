@@ -17,7 +17,9 @@ public final class AmplifyDevMenu: TriggerDelegate {
 
     init(delegate: DevMenuDelegate) {
         self.devMenuDelegate = delegate
-        self.longPressGestureRecognizer = LongPressGestureRecognizer(devMenuDelegate: delegate, triggerDelegate: self)
+        self.longPressGestureRecognizer = LongPressGestureRecognizer(
+                                                uiWindow: delegate.presentationContext(),
+                                                triggerDelegate: self)
     }
 
     public func onTrigger() {
@@ -26,9 +28,12 @@ public final class AmplifyDevMenu: TriggerDelegate {
 
     private func showMenu() {
         print("showMenu")
+        guard let rootViewController = devMenuDelegate?.presentationContext().rootViewController else {
+            print("Warning: RootViewController is nil")
+            return
+        }
         let viewController = UIHostingController(rootView: AmplifyDevMenuList())
-        devMenuDelegate?.presentationContext().rootViewController?
-            .present(viewController, animated: true, completion: nil)
+        rootViewController.present(viewController, animated: true)
     }
 
 }

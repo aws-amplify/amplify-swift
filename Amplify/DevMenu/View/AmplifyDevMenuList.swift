@@ -11,17 +11,18 @@ import SwiftUI
 struct AmplifyDevMenuList: View {
     var amplifyDevMenuListItems: [AmplifyDevMenuItem] =
     [
-        AmplifyDevMenuItem(title: "View Environment Information")!,
-        AmplifyDevMenuItem(title: "View Device Infomation")!,
-        AmplifyDevMenuItem(title: "View Logs")!,
-        AmplifyDevMenuItem(title: "File Issue")!
+        AmplifyDevMenuItem(title: "View Environment Information"),
+        AmplifyDevMenuItem(title: "View Device Infomation"),
+        AmplifyDevMenuItem(title: "View Logs"),
+        AmplifyDevMenuItem(title: "File Issue")
     ]
 
     var body: some View {
         NavigationView {
             SwiftUI.List(amplifyDevMenuListItems) { listItem in
                 AmplifyDevMenuRow(rowItem: listItem)
-                }.navigationBarTitle(
+            }
+            .navigationBarTitle(
                     Text("Amplify Developer Menu"),
                     displayMode: .inline)
         }

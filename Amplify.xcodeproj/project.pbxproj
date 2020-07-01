@@ -1994,7 +1994,7 @@
 			path = Amplify/Categories/Predictions/Result;
 			sourceTree = SOURCE_ROOT;
 		};
-		97CB85F424AA451B000C65FB /* AmplifyDevMenu */ = {
+		97CB85F424AA451B000C65FB /* DevMenu */ = {
 			isa = PBXGroup;
 			children = (
 				97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */,
@@ -2005,7 +2005,7 @@
 				97CB860324AB936E000C65FB /* Amplify+DevMenu.swift */,
 				97CB860524ABA023000C65FB /* LongPressGestureRecognizer.swift */,
 			);
-			path = AmplifyDevMenu;
+			path = DevMenu;
 			sourceTree = "<group>";
 		};
 		97CB85F724AA451B000C65FB /* View */ = {
@@ -2770,7 +2770,7 @@
 			isa = PBXGroup;
 			children = (
 				FAC2354A227A055A00424678 /* Amplify.swift */,
-				97CB85F424AA451B000C65FB /* AmplifyDevMenu */,
+				97CB85F424AA451B000C65FB /* DevMenu */,
 				FAC234EE227A053D00424678 /* Categories */,
 				FAC2352E227A055200424678 /* Core */,
 				FADDA7BC2374CA4A00836431 /* DefaultPlugins */,

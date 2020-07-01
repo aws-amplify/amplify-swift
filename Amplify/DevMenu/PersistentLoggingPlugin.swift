@@ -11,9 +11,7 @@ public class PersistentLoggingPlugin: LoggingCategoryPlugin {
 
     var plugin: LoggingCategoryPlugin
 
-    public var key: String {
-        return "PersistentLoggingPlugin"
-    }
+    public let key: String = "PersistentLoggingPlugin"
 
     public func configure(using configuration: Any?) throws {
         try plugin.configure(using: configuration)
