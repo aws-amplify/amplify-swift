@@ -68,8 +68,8 @@ platform :ios do
   private_lane :release_commit do |options|
     next_version = options[:version]
 
-    sh('git', 'config', '--global', 'user.email', $GITHUB_EMAIL)
-    sh('git', 'config', '--global', 'user.name', $GITHUB_USER)
+    sh('git', 'config', '--global', 'user.email', ENV['GITHUB_EMAIL'])
+    sh('git', 'config', '--global', 'user.name', ENV['GITHUB_USER'])
 
     commit_message = "chore: release #{next_version} [skip ci]"
     sh('git', 'commit', '-am', commit_message)
