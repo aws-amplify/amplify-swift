@@ -69,13 +69,7 @@ platform :ios do
     
       AmplifyPods.plugins.each do |plugin|
         path = "#{plugin_root}/#{plugin}"
-        # TODO: 
-        # currently, the array form results in:
-        # --- Step: cd /Users/ivan/dev/work/ios/amplify-ios/AmplifyPlugins/Storage \&\& pod update ---
-        # sh('cd', path, '&&', 'pod', 'update')
-
-        # This works but is unsafe
-        sh("cd #{path} && pod update") 
+        Dir.chdir(path){ sh('pod', 'update') }
       end
     end
   end
