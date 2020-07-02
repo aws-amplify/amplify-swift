@@ -44,8 +44,8 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v1-gems-{{ checksum "~/amplify-ios/Gemfile.lock" }}
-            - v1-gems-
+            - v2-gems-{{ checksum "~/amplify-ios/Gemfile.lock" }}
+            - v2-gems-
 
   check_bundle:
     steps:
@@ -96,7 +96,7 @@ jobs:
             BUNDLE_JOBS: 4
             BUNDLE_RETRY: 3
       - save_cache:
-          key: v1-gems-{{ checksum "~/amplify-ios/Gemfile.lock" }}
+          key: v2-gems-{{ checksum "~/amplify-ios/Gemfile.lock" }}
           paths:
             - vendor/bundle
 
