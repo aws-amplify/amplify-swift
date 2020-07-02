@@ -26,6 +26,11 @@ Create a pre-release version by pushing a tag to GitHub, and pushing pods to Coc
 fastlane ios release
 ```
 Create a release version by building and committing a changelog, pushing a tag to GitHub, and pushing pods to CocoaPods
+### ios test
+```
+fastlane ios test
+```
+
 
 ----
 

@@ -61,6 +61,8 @@ platform :ios do
       plist_paths.each do |plist_path|
         set_info_plist_value(path: plist_path, key: PLIST_KEY, value: version)
       end
+
+      set_key_value(file: "AmplifyPlugins/Core/AWSPluginsCore/ServiceConfiguration/AmplifyAWSServiceConfiguration.swift", key: "version", value: version)
     end
   end
   

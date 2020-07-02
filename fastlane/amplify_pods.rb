@@ -8,7 +8,8 @@ module AmplifyPods
         "AmplifyTests/Info.plist",
         "AmplifyFunctionalTests/Info.plist",
         "AmplifyTestApp/Info.plist",
-        "AmplifyTestCommon/Info.plist"
+        "AmplifyTestCommon/Info.plist",
+        "build-support/dependencies.rb"
       ]
     },
     {
@@ -40,8 +41,19 @@ module AmplifyPods
       plist_paths: [
         "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPlugin/Resources/Info.plist",
         "AmplifyPlugins/API/AWSAPICategoryPlugin/Info.plist",
-        "AmplifyPlugins/Storage/AWSS3StoragePlugin/Resources/Info.plist"
+        "AmplifyPlugins/Storage/AWSS3StoragePlugin/Resources/Info.plist",
+        "AmplifyPlugins/Auth/AWSCognitoAuthPlugin/Resources/Info.plist"
       ]
+    },
+    {
+      spec: "AmplifyTestCommon.podspec",
+      constants: ['AMPLIFY_VERSION'],
+      plist_paths: [
+        "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPlugin/Resources/Info.plist",
+        "AmplifyPlugins/API/AWSAPICategoryPlugin/Info.plist",
+        "AmplifyPlugins/Storage/AWSS3StoragePlugin/Resources/Info.plist"
+      ],
+      no_push: true
     }
   ]
   def self.pods
