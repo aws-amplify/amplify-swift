@@ -89,6 +89,9 @@ platform :ios do
 
     commit_message = "chore: release #{next_version} [skip ci]"
     sh('git', 'commit', '-am', commit_message)
+
+    # TODO: could we hold off pushing to origin until after the pods publish?
+    # Will make it easier to deal with if something fails
     sh('git', 'push', 'origin', 'release')
     sh('git', 'push', 'origin', 'release:main')
   end
