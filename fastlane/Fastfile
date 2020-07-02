@@ -63,6 +63,20 @@ platform :ios do
       end
 
       set_key_value(file: "AmplifyPlugins/Core/AWSPluginsCore/ServiceConfiguration/AmplifyAWSServiceConfiguration.swift", key: "version", value: version)
+
+      # increment plugin lock files by calling pod update on each
+      plugin_root = '/Users/distiller/amplify-ios//AmplifyPlugins'
+    
+      AmplifyPods.plugins.each do |plugin|
+        path = "#{plugin_root}/#{plugin}"
+        # TODO: 
+        # currently, the array form results in:
+        # --- Step: cd /Users/ivan/dev/work/ios/amplify-ios/AmplifyPlugins/Storage \&\& pod update ---
+        # sh('cd', path, '&&', 'pod', 'update')
+
+        # This works but is unsafe
+        sh("cd #{path} && pod update") 
+      end
     end
   end
   

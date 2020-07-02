@@ -56,7 +56,11 @@ module AmplifyPods
       no_push: true
     }
   ]
+  @@plugins = ['API', 'Analytics', 'Auth', 'DataStore', 'Predictions', 'Storage']
   def self.pods
     @@pods
+  end
+  def self.plugins
+    @@plugins
   end
 end
