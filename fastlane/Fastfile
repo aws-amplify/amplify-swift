@@ -89,23 +89,20 @@ platform :ios do
   desc "Release pods"
   private_lane :release_pods do
     AmplifyPods.pods.each do |pod|
+      if pod[:no_push]
+        next
+      end
+
       pod_path = "/Users/distiller/amplify-ios/#{pod[:spec]}"
 
       UI.message "Pushing pod #{pod[:spec]}"
 
-      server_error = " [!] An internal server error occurred"
-      dupe_error = "[!] Unable to accept duplicate entry"
-
-      begin
-        sh('bundle', 'exec', 'pod', 'trunk', 'push', pod_path, '--allow-warnings', '--synchronous')
-      rescue => ex
-        if ex.to_s.include? server_error
-          retry_pod_push(pod_path: pod_path)
-        elseif ex.to_s.include? dupe_error
-          # do nothing
-        else
-          UI.error "Unrecoverable error in pod push trunk"
-          raise Exception.new ex
+      with_retry do
+        begin
+          sh('bundle', 'exec', 'pod', 'trunk', 'push', pod_path, '--allow-warnings', '--synchronous')
+        rescue Exception => exception
+          raise unless exception.message =~ /Unable to accept duplicate entry/i
+          UI.warn("Version already exists. Ignoring")
         end
       end
 
@@ -117,29 +114,16 @@ platform :ios do
       sh('bundle', 'exec', 'pod', 'repo', 'update')
     end
   end
+end
 
-  desc "Retry pod push if sever error occured"
-  private_lane :retry_pod_push do |options|
-    pod_path = options[:pod_path]
-
-    server_error = " [!] An internal server error occurred"
-
-    retries = 5
-    i = 0
-
-    while (i < retries)
-      sleep 30
-      begin
-        sh('bundle', 'exec', 'pod', 'trunk', 'push', pod_path, '--allow-warnings', '--synchronous')
-        # if succeeded without error -> break out of loop
-        break
-      rescue => ex
-        unless ex.to_s.include? server_error
-          UI.error "Unrecoverable error in pod push trunk"
-          raise Exception.new ex
-        end
-        i = i + 1
-      end
-    end
+def with_retry(retries=5, wait=10)
+  begin
+    yield
+  rescue Exception => e
+    retries -= 1
+    raise e if retries.zero?
+    UI.error("Error occurred: #{exception}; retrying...")
+    sleep(wait)
+    retry
   end
 end
