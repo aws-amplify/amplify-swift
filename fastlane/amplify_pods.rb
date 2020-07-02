@@ -48,11 +48,7 @@ module AmplifyPods
     {
       spec: "AmplifyTestCommon.podspec",
       constants: ['AMPLIFY_VERSION'],
-      plist_paths: [
-        "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPlugin/Resources/Info.plist",
-        "AmplifyPlugins/API/AWSAPICategoryPlugin/Info.plist",
-        "AmplifyPlugins/Storage/AWSS3StoragePlugin/Resources/Info.plist"
-      ],
+      plist_paths: [],
       no_push: true
     }
   ]
