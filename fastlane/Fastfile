@@ -43,6 +43,8 @@ platform :ios do
 
     # Push pods
     release_pods()
+
+    post_release()
   end
 
   desc "Increment versions"
@@ -62,16 +64,9 @@ platform :ios do
         set_info_plist_value(path: plist_path, key: PLIST_KEY, value: version)
       end
 
+      # One-offs
       set_key_value(file: "AmplifyPlugins/Core/AWSPluginsCore/ServiceConfiguration/AmplifyAWSServiceConfiguration.swift", key: "version", value: version)
-
-      # increment plugin lock files by calling pod update on each
-      plugin_root = '/Users/distiller/amplify-ios//AmplifyPlugins'
-    
-      AmplifyPods.plugins.each do |plugin|
-        path = "#{plugin_root}/#{plugin}"
-        Dir.chdir(path){ sh('pod', 'update') }
-      end
-    end
+      set_key_value(file: "build-support/dependencies.rb", key: "AMPLIFY_VERSION", value: version)
   end
   
   desc "Commit and push"
@@ -83,11 +78,6 @@ platform :ios do
 
     commit_message = "chore: release #{next_version} [skip ci]"
     sh('git', 'commit', '-am', commit_message)
-
-    # TODO: could we hold off pushing to origin until after the pods publish?
-    # Will make it easier to deal with if something fails
-    sh('git', 'push', 'origin', 'release')
-    sh('git', 'push', 'origin', 'release:main')
   end
   
   desc "Tag in git and push to GitHub"
@@ -126,6 +116,27 @@ platform :ios do
       # This shouldn't be necessary... but it is
       sh('bundle', 'exec', 'pod', 'repo', 'update')
     end
+  end
+
+  desc "Post-release"
+  private_lane :post_release do
+    # increment plugin lock files by calling pod update on each
+    # plugin_root = '/Users/distiller/amplify-ios/AmplifyPlugins'
+    plugin_root = '/Users/ivan/dev/work/ios/amplify-ios/AmplifyPlugins'
+  
+    sh('bundle', 'exec', 'pod', 'repo', 'update')
+
+    AmplifyPods.plugins.each do |plugin|
+      path = "#{plugin_root}/#{plugin}"
+      Dir.chdir(path){ sh('pod', 'update') }
+    end
+
+    commit_message = "chore: update pods #{next_version} [skip ci]"
+    sh('git', 'commit', '-am', commit_message)
+
+    # push to origin
+    sh('git', 'push', 'origin', 'release')
+    sh('git', 'push', 'origin', 'release:main')
   end
 end
 

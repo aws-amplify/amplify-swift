@@ -8,8 +8,7 @@ module AmplifyPods
         "AmplifyTests/Info.plist",
         "AmplifyFunctionalTests/Info.plist",
         "AmplifyTestApp/Info.plist",
-        "AmplifyTestCommon/Info.plist",
-        "build-support/dependencies.rb"
+        "AmplifyTestCommon/Info.plist"
       ]
     },
     {
