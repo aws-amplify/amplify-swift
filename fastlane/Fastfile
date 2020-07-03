@@ -130,7 +130,7 @@ platform :ios do
       Dir.chdir(path){ sh('pod', 'update') }
     end
 
-    commit_message = "chore: update pods #{next_version} [skip ci]"
+    commit_message = "chore: update pods to #{next_version} [skip ci]"
     sh('git', 'commit', '-am', commit_message)
 
     # push to origin
