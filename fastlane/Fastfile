@@ -121,8 +121,7 @@ platform :ios do
   desc "Post-release"
   private_lane :post_release do
     # increment plugin lock files by calling pod update on each
-    # plugin_root = '/Users/distiller/amplify-ios/AmplifyPlugins'
-    plugin_root = '/Users/ivan/dev/work/ios/amplify-ios/AmplifyPlugins'
+    plugin_root = '/Users/distiller/amplify-ios/AmplifyPlugins'
   
     sh('bundle', 'exec', 'pod', 'repo', 'update')
 
