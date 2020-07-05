@@ -22,7 +22,7 @@ struct SelectStatementMetadata {
     // TODO remove additionalStatements once sorting support is added to DataStore
     static func metadata(from modelType: Model.Type,
                          predicate: QueryPredicate? = nil,
-                         orderBy: QueryOrderBy? = nil,
+                         sort: SortInput? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          additionalStatements: String? = nil) -> SelectStatementMetadata {
         let rootNamespace = "root"
@@ -60,17 +60,26 @@ struct SelectStatementMetadata {
             """
         }
 
-        if let orderBy = orderBy {
-            let order: String
-            if orderBy.DESC {
-                order = "DESC"
-            } else {
-                order = "ASC"
+        if let sort = sort {
+            var sortStatement = "order by"
+            let length = sort.inputs.count
+
+            // The first 0 ~ length-1 sort.inputs should be followed by comma.
+            for index in 0 ..< length - 1 {
+                sortStatement = """
+                \(sortStatement) \(sort.inputs[index].field.stringValue) \(sort.inputs[index].order),
+                """
             }
 
+            // The last sort.input should not be followed by comma.
+            sortStatement = """
+            \(sortStatement) \(sort.inputs[length - 1].field.stringValue) \(sort.inputs[length - 1].order)
+            """
+
+            // Concatanate SQLStatement
             sql = """
             \(sql)
-            order by \(orderBy.field.stringValue) \(order)
+            \(sortStatement)
             """
         }
 
@@ -153,13 +162,13 @@ struct SelectStatement: SQLStatement {
 
     init(from modelType: Model.Type,
          predicate: QueryPredicate? = nil,
-         orderBy: QueryOrderBy? = nil,
+         sort: SortInput? = nil,
          paginationInput: QueryPaginationInput? = nil,
          additionalStatements: String? = nil) {
         self.modelType = modelType
         self.metadata = .metadata(from: modelType,
                                   predicate: predicate,
-                                  orderBy: orderBy,
+                                  sort: sort,
                                   paginationInput: paginationInput,
                                   additionalStatements: additionalStatements)
     }

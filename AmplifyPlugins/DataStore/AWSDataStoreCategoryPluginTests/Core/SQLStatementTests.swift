@@ -352,32 +352,48 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
-    // MARK: - Select Statements orderBy
+    // MARK: - Select Statements Sort
 
-    /// - Given: a `Model` type and a `orderBy`
+    /// - Given: a `Model` type and a `SortInput`
     /// - When:
     ///   - the model is of type `Post`
     ///   - the orderBy should be `id` and descending to`true`
     /// - Then:
     ///   - check if the generated SQL statement is valid
     ///   - check if the statement contains the correct `order by` and `descending`
-    func testSelectStatementWithOrderBy() {
-        let statement = SelectStatement(from: Post.self, orderBy: .ordering(field: Post.keys.id, DESC: true))
+    func testSelectStatementWithSingleFieldSort() {
+        let statement = SelectStatement(from: Post.self,
+                                        sort: .asc(Post.keys.id))
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
         from Post as "root"
-        order by id DESC
+        order by id ASC
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
-    func testSelectStatementWithPredicateAndOrderBy() {
+    func testSelectStatementWithDoubleFieldsSort() {
+        let statement = SelectStatement(from: Post.self,
+                                        sort: SortInput(.asc(Post.keys.id),
+                                                        .asc(Post.keys.createdAt)))
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
+        from Post as "root"
+        order by id ASC, createdAt ASC
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    func testSelectStatementWithPredicateAndSort() {
         let statement = SelectStatement(from: Post.self,
                                         predicate: Post.keys.rating > 4,
-                                        orderBy: .ordering(field: Post.keys.id, DESC: true))
+                                        sort: .desc(Post.keys.id))
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
@@ -391,9 +407,9 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
-    func testSelectStatementWithOrderByAndPaginationInfo() {
+    func testSelectStatementWithSortAndPaginationInfo() {
         let statement = SelectStatement(from: Post.self,
-                                        orderBy: .ordering(field: Post.keys.id, DESC: true),
+                                        sort: .desc(Post.keys.id),
                                         paginationInput: .page(0, limit: 5))
         let expectedStatement = """
         select
@@ -407,10 +423,10 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
-    func testSelectStatementWithPredicateAndOrderByAndPaginationInfo() {
+    func testSelectStatementWithPredicateAndSortAndPaginationInfo() {
         let statement = SelectStatement(from: Post.self,
                                         predicate: Post.keys.rating > 4,
-                                        orderBy: .ordering(field: Post.keys.id, DESC: true),
+                                        sort: .desc(Post.keys.id),
                                         paginationInput: .page(0, limit: 5))
         let expectedStatement = """
         select

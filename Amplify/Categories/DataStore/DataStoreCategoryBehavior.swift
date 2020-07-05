@@ -22,7 +22,7 @@ public protocol DataStoreBaseBehavior {
 
     func query<M: Model>(_ modelType: M.Type,
                          where predicate: QueryPredicate?,
-                         order orderBy: QueryOrderBy?,
+                         sort: SortInput?,
                          paginate paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>)
 

@@ -29,7 +29,7 @@ extension AWSMutationDatabaseAdapter: MutationEventSource {
 
         storageAdapter.query(MutationEvent.self,
                              predicate: predicate,
-                             orderBy: nil,
+                             sort: nil,
                              paginationInput: nil,
                              additionalStatements: orderAndLimitClause) { result in
                                 switch result {

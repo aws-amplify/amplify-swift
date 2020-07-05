@@ -21,7 +21,7 @@ extension MutationEvent {
 
         storageAdapter.query(MutationEvent.self,
                              predicate: predicate,
-                             orderBy: nil,
+                             sort: nil,
                              paginationInput: nil,
                              additionalStatements: orderByCreatedAt) { completion($0) }
     }
