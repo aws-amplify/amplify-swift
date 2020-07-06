@@ -11,7 +11,4 @@ import Foundation
 public protocol DevMenuBehavior {
     /// Display the menu
     func showMenu()
-
-    /// Set  a `TriggerRecognizer` to listen to corresponding trigger events for showing the developer menu
-    func updateTriggerRecognizer(triggerRecognizer: TriggerRecognizer)
 }

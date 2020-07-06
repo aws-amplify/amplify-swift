@@ -20,8 +20,8 @@ public final class AmplifyDevMenu: DevMenuBehavior, TriggerDelegate {
     init(devMenuPresentationContextProvider: DevMenuPresentationContextProvider) {
         self.devMenuPresentationContextProvider = devMenuPresentationContextProvider
         self.triggerRecognizer = LongPressGestureRecognizer(
-            uiWindow: devMenuPresentationContextProvider.devMenuPresentationContext(),
-            triggerDelegate: self)
+            uiWindow: devMenuPresentationContextProvider.devMenuPresentationContext())
+        triggerRecognizer?.updateTriggerDelegate(delegate: self)
     }
 
     public func onTrigger(triggerRecognizer: TriggerRecognizer) {
@@ -37,10 +37,4 @@ public final class AmplifyDevMenu: DevMenuBehavior, TriggerDelegate {
         let viewController = UIHostingController(rootView: AmplifyDevMenuList())
         rootViewController.present(viewController, animated: true)
     }
-
-    public func updateTriggerRecognizer(triggerRecognizer: TriggerRecognizer) {
-        self.triggerRecognizer = triggerRecognizer
-        triggerRecognizer.updateTriggerDelegate(delegate: self)
-    }
-
 }
