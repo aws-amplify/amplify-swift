@@ -15,9 +15,9 @@ module AmplifyPods
       spec: "AWSPluginsCore.podspec",
       constants: ['AMPLIFY_VERSION'],
       plist_paths: [
+        "AmplifyPlugins/Core/AWSPluginsTestCommon/Info.plist"
         "AmplifyPlugins/Core/AWSPluginsCore/Info.plist",
         "AmplifyPlugins/Core/AWSPluginsCoreTests/Info.plist",
-        "AmplifyPlugins/Core/AWSPluginsTestCommon/Info.plist"
       ]
     },
     {
@@ -40,8 +40,9 @@ module AmplifyPods
       plist_paths: [
         "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPlugin/Resources/Info.plist",
         "AmplifyPlugins/API/AWSAPICategoryPlugin/Info.plist",
-        "AmplifyPlugins/Storage/AWSS3StoragePlugin/Resources/Info.plist",
-        "AmplifyPlugins/Auth/AWSCognitoAuthPlugin/Resources/Info.plist"
+        "AmplifyPlugins/Auth/AWSCognitoAuthPlugin/Resources/Info.plist",
+        "AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin/Info.plist",
+        "AmplifyPlugins/Storage/AWSS3StoragePlugin/Resources/Info.plist"
       ]
     },
     {

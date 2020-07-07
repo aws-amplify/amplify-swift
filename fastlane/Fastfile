@@ -96,6 +96,7 @@ platform :ios do
   private_lane :release_pods do
     AmplifyPods.pods.each do |pod|
       if pod[:no_push]
+        UI.message "Skipping pushing pod #{pod[:spec]}"
         next
       end
 
@@ -107,7 +108,7 @@ platform :ios do
         begin
           sh('bundle', 'exec', 'pod', 'trunk', 'push', pod_path, '--allow-warnings', '--synchronous')
         rescue Exception => exception
-          raise unless exception.message =~ /Unable to accept duplicate entry/i
+          raise exception unless exception.message =~ /Unable to accept duplicate entry/i
           UI.warn("Version already exists. Ignoring")
         end
       end
