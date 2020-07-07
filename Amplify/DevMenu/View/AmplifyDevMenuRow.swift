@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// View corresponding to each row in Developer Menu
 @available(iOS 13.0.0, *)
 struct AmplifyDevMenuRow: View {
     var rowItem: AmplifyDevMenuItem
