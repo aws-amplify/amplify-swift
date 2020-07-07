@@ -190,6 +190,10 @@
 		95DAAB8A237F13B70028544F /* TextToSpeechResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB88237F13B70028544F /* TextToSpeechResult.swift */; };
 		95DAAB8C237F13D10028544F /* PredictionsTextToSpeechRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB8B237F13D10028544F /* PredictionsTextToSpeechRequest.swift */; };
 		972D1CA72316922ECE530571 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 934ECFB4BB156267C1BC067A /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework */; };
+		974FF12D24B0434B0050D01B /* DevMenuPresentationContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF12C24B0434B0050D01B /* DevMenuPresentationContextProvider.swift */; };
+		974FF12F24B043780050D01B /* TriggerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF12E24B043780050D01B /* TriggerDelegate.swift */; };
+		974FF13124B043B90050D01B /* TriggerRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF13024B043B90050D01B /* TriggerRecognizer.swift */; };
+		974FF13324B043E60050D01B /* DevMenuBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF13224B043E60050D01B /* DevMenuBehavior.swift */; };
 		97CB85FD24AA451B000C65FB /* PersistentLoggingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */; };
 		97CB85FE24AA451B000C65FB /* AmplifyDevMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */; };
 		97CB85FF24AA451B000C65FB /* AmplifyDevMenuList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F824AA451B000C65FB /* AmplifyDevMenuList.swift */; };
@@ -921,6 +925,10 @@
 		95DAAB87237F13B70028544F /* IdentifyEntityMatchesResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyEntityMatchesResult.swift; sourceTree = "<group>"; };
 		95DAAB88237F13B70028544F /* TextToSpeechResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextToSpeechResult.swift; sourceTree = "<group>"; };
 		95DAAB8B237F13D10028544F /* PredictionsTextToSpeechRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsTextToSpeechRequest.swift; sourceTree = "<group>"; };
+		974FF12C24B0434B0050D01B /* DevMenuPresentationContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevMenuPresentationContextProvider.swift; sourceTree = "<group>"; };
+		974FF12E24B043780050D01B /* TriggerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TriggerDelegate.swift; sourceTree = "<group>"; };
+		974FF13024B043B90050D01B /* TriggerRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TriggerRecognizer.swift; sourceTree = "<group>"; };
+		974FF13224B043E60050D01B /* DevMenuBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevMenuBehavior.swift; sourceTree = "<group>"; };
 		976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentLoggingPlugin.swift; sourceTree = "<group>"; };
 		97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyDevMenu.swift; sourceTree = "<group>"; };
@@ -2004,6 +2012,10 @@
 				97CB85FB24AA451B000C65FB /* Data */,
 				97CB860324AB936E000C65FB /* Amplify+DevMenu.swift */,
 				97CB860524ABA023000C65FB /* LongPressGestureRecognizer.swift */,
+				974FF12C24B0434B0050D01B /* DevMenuPresentationContextProvider.swift */,
+				974FF12E24B043780050D01B /* TriggerDelegate.swift */,
+				974FF13024B043B90050D01B /* TriggerRecognizer.swift */,
+				974FF13224B043E60050D01B /* DevMenuBehavior.swift */,
 			);
 			path = DevMenu;
 			sourceTree = "<group>";
@@ -4230,6 +4242,7 @@
 				B9485E9923F40877009C4F93 /* Date+Operation.swift in Sources */,
 				FA6BC872235F5BD60001A882 /* GraphQLOperation.swift in Sources */,
 				FAF1B88423392F7C007F1435 /* ConcurrentDispatcher.swift in Sources */,
+				974FF12D24B0434B0050D01B /* DevMenuPresentationContextProvider.swift in Sources */,
 				21687A41236371E1004A056E /* AnalyticsError.swift in Sources */,
 				FAC23528227A053D00424678 /* AnalyticsCategory+ClientBehavior.swift in Sources */,
 				B43CD8562411472300BF5A60 /* AuthSignUpResult.swift in Sources */,
@@ -4258,6 +4271,7 @@
 				B92E03B02367CE7A006CEB8D /* DataStoreCallback.swift in Sources */,
 				B92E03BA2367CE7A006CEB8D /* Model+Codable.swift in Sources */,
 				210B3E34245CB73400F43848 /* AuthRule.swift in Sources */,
+				974FF13324B043E60050D01B /* DevMenuBehavior.swift in Sources */,
 				FA8EE781238628490097E4F1 /* Persistable.swift in Sources */,
 				B9485E9723F40848009C4F93 /* Time+Operation.swift in Sources */,
 				FA5BF25F2385A0500070C843 /* Category+Logging.swift in Sources */,
@@ -4335,6 +4349,7 @@
 				FA09B93B2321A36F000E064D /* StorageCategory+CategoryConfigurable.swift in Sources */,
 				95DAAB4C237E639E0028544F /* IdentifyEntitiesResult.swift in Sources */,
 				B473B53E245DE8E100C45C72 /* AuthConfirmSignInOperation.swift in Sources */,
+				974FF13124B043B90050D01B /* TriggerRecognizer.swift in Sources */,
 				B43CD858241147F900BF5A60 /* AuthUser.swift in Sources */,
 				97CB85FD24AA451B000C65FB /* PersistentLoggingPlugin.swift in Sources */,
 				B43CD8542411469D00BF5A60 /* AuthConfirmSignUpRequest.swift in Sources */,
@@ -4429,6 +4444,7 @@
 				B9B50DC823DA15890086F1E1 /* DataStoreError+Temporal.swift in Sources */,
 				FACD26502386E9410068FBE6 /* JSONValue+Subscript.swift in Sources */,
 				B450741324115C260098F02D /* AuthSignInRequest.swift in Sources */,
+				974FF12F24B043780050D01B /* TriggerDelegate.swift in Sources */,
 				B4FA336A24105EB700E1C659 /* AuthCategoryConfiguration.swift in Sources */,
 				FAC23523227A053D00424678 /* LoggingCategoryPlugin.swift in Sources */,
 				B9FB05F82383740D00DE1FD4 /* DataStoreStatement.swift in Sources */,
