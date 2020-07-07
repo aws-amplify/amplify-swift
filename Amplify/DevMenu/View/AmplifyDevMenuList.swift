@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// View containing a list of developer menu items
 @available(iOS 13.0.0, *)
 struct AmplifyDevMenuList: View {
     var amplifyDevMenuListItems: [AmplifyDevMenuItem] =
