@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Data class for a row shown in the Developer Menu
 @available(iOS 13.0.0, *)
 struct AmplifyDevMenuItem: Identifiable {
     var id = UUID()

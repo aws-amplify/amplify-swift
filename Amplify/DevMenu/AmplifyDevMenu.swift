@@ -9,39 +9,32 @@ import Foundation
 import UIKit
 import SwiftUI
 
+/// Presents a developer menu using the provided `DevMenuPresentationContextProvider`
+/// upon notification from a `TriggerRecognizer`. Default recognizer is a `LongPressGestureRecognizer`
 @available(iOS 13.0.0, *)
-public final class AmplifyDevMenu: TriggerDelegate {
+public final class AmplifyDevMenu: DevMenuBehavior, TriggerDelegate {
 
-    weak var devMenuDelegate: DevMenuDelegate?
-    var longPressGestureRecognizer: LongPressGestureRecognizer?
+    weak var devMenuPresentationContextProvider: DevMenuPresentationContextProvider?
+    var triggerRecognizer: TriggerRecognizer?
 
-    init(delegate: DevMenuDelegate) {
-        self.devMenuDelegate = delegate
-        self.longPressGestureRecognizer = LongPressGestureRecognizer(
-                                                uiWindow: delegate.presentationContext(),
-                                                triggerDelegate: self)
+    init(devMenuPresentationContextProvider: DevMenuPresentationContextProvider) {
+        self.devMenuPresentationContextProvider = devMenuPresentationContextProvider
+        self.triggerRecognizer = LongPressGestureRecognizer(
+            uiWindow: devMenuPresentationContextProvider.devMenuPresentationContext())
+        triggerRecognizer?.updateTriggerDelegate(delegate: self)
     }
 
-    public func onTrigger() {
+    public func onTrigger(triggerRecognizer: TriggerRecognizer) {
         showMenu()
     }
 
-    private func showMenu() {
-        print("showMenu")
-        guard let rootViewController = devMenuDelegate?.presentationContext().rootViewController else {
-            print("Warning: RootViewController is nil")
-            return
+    public func showMenu() {
+        guard let rootViewController =
+            devMenuPresentationContextProvider?.devMenuPresentationContext().rootViewController else {
+                print("Warning: RootViewController of the UIWindow is nil")
+                return
         }
         let viewController = UIHostingController(rootView: AmplifyDevMenuList())
         rootViewController.present(viewController, animated: true)
     }
-
-}
-
-public protocol DevMenuDelegate: AnyObject {
-    func presentationContext() -> UIWindow
-}
-
-public protocol TriggerDelegate: AnyObject {
-    func onTrigger()
 }
