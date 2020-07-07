@@ -44,7 +44,7 @@ platform :ios do
     # Push pods
     release_pods()
 
-    post_release()
+    post_release(version: next_version)
   end
 
   desc "Increment versions"
@@ -78,6 +78,9 @@ platform :ios do
 
     commit_message = "chore: release #{next_version} [skip ci]"
     sh('git', 'commit', '-am', commit_message)
+
+    # push to origin
+    sh('git', 'push', 'origin', 'release')
   end
   
   desc "Tag in git and push to GitHub"
@@ -119,7 +122,8 @@ platform :ios do
   end
 
   desc "Post-release"
-  private_lane :post_release do
+  private_lane :post_release do |options|
+    version = options[:version].to_s
     # increment plugin lock files by calling pod update on each
     plugin_root = '/Users/distiller/amplify-ios/AmplifyPlugins'
   
@@ -130,7 +134,7 @@ platform :ios do
       Dir.chdir(path){ sh('pod', 'update') }
     end
 
-    commit_message = "chore: update pods to #{next_version} [skip ci]"
+    commit_message = "chore: update pods to #{version} [skip ci]"
     sh('git', 'commit', '-am', commit_message)
 
     # push to origin
