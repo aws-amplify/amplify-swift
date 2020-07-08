@@ -33,8 +33,6 @@ platform :ios do
 
     changelog = build_changelog(version: next_version, commits: commits)
 
-    write_changelog(changelog: changelog, path: 'CHANGELOG.md')
-
     # Commit and push 
     release_commit(version: next_version)
 
@@ -44,7 +42,7 @@ platform :ios do
     # Push pods
     release_pods()
 
-    post_release(version: next_version)
+    post_release(version: next_version, changelog: changelog)
   end
 
   desc "Increment versions"
@@ -106,16 +104,12 @@ platform :ios do
 
       with_retry do
         begin
-          sh('bundle', 'exec', 'pod', 'trunk', 'push', pod_path, '--allow-warnings', '--synchronous')
-        rescue Exception => exception
+          pod_push(path: pod[:spec], allow_warnings: true, synchronous: true)
+        rescue exception
           raise exception unless exception.message =~ /Unable to accept duplicate entry/i
           UI.warn("Version already exists. Ignoring")
         end
       end
-
-      # TODO: utilize action once the PR for adding `synchronous` options has been merged
-      # https://github.com/fastlane/fastlane/pull/16698
-      # pod_push(path: pod[:spec], allow_warnings: true, synchronous: true)
 
       # This shouldn't be necessary... but it is
       sh('bundle', 'exec', 'pod', 'repo', 'update')
@@ -125,6 +119,8 @@ platform :ios do
   desc "Post-release"
   private_lane :post_release do |options|
     version = options[:version].to_s
+    changelog = options[:changelog]
+    tag = "v#{version}"
     # increment plugin lock files by calling pod update on each
     plugin_root = '/Users/distiller/amplify-ios/AmplifyPlugins'
   
@@ -135,8 +131,13 @@ platform :ios do
       Dir.chdir(path){ sh('pod', 'update') }
     end
 
-    commit_message = "chore: update pods to #{version} [skip ci]"
+    write_changelog(changelog: changelog, path: 'CHANGELOG.md')
+
+    commit_message = "chore: finalize release #{version} [skip ci]"
     sh('git', 'commit', '-am', commit_message)
+
+    add_git_tag(tag: tag, force: true)
+    push_git_tags(tag: tag, force: true)
 
     # push to origin
     sh('git', 'push', 'origin', 'release')
@@ -147,11 +148,12 @@ end
 def with_retry(retries=5, wait=10)
   begin
     yield
-  rescue Exception => e
+  rescue e
     retries -= 1
     raise e if retries.zero?
-    UI.error("Error occurred: #{exception}; retrying...")
-    sleep(wait)
+      UI.error("Error occurred: #{exception}; retrying...")
+      sleep(wait)
     retry
+    end
   end
 end

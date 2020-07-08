@@ -15,9 +15,9 @@ module AmplifyPods
       spec: "AWSPluginsCore.podspec",
       constants: ['AMPLIFY_VERSION'],
       plist_paths: [
-        "AmplifyPlugins/Core/AWSPluginsTestCommon/Info.plist"
+        "AmplifyPlugins/Core/AWSPluginsTestCommon/Info.plist",
         "AmplifyPlugins/Core/AWSPluginsCore/Info.plist",
-        "AmplifyPlugins/Core/AWSPluginsCoreTests/Info.plist",
+        "AmplifyPlugins/Core/AWSPluginsCoreTests/Info.plist"
       ]
     },
     {
