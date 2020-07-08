@@ -61,25 +61,15 @@ struct SelectStatementMetadata {
         }
 
         if let sort = sort {
-            var sortStatement = "order by"
-            let length = sort.inputs.count
-
-            // The first 0 ~ length-1 sort.inputs should be followed by comma.
-            for index in 0 ..< length - 1 {
-                sortStatement = """
-                \(sortStatement) \(sort.inputs[index].field.stringValue) \(sort.inputs[index].order),
-                """
-            }
-
-            // The last sort.input should not be followed by comma.
-            sortStatement = """
-            \(sortStatement) \(sort.inputs[length - 1].field.stringValue) \(sort.inputs[length - 1].order)
-            """
+            let sortClause = sort
+                .inputs
+                .map { $0.orderByClause }
+                .joined(separator: ", ")
 
             // Concatanate SQLStatement
             sql = """
             \(sql)
-            \(sortStatement)
+            order by \(sortClause)
             """
         }
 

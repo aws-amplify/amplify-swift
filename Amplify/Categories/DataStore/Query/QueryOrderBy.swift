@@ -7,37 +7,25 @@
 
 import Foundation
 
-public protocol QuerySort {}
-
 /// A simple struct that holds sort information that can be applied queries.
 
-public struct QueryOrderBy: QuerySort {
-    public let field: CodingKey
-    public let order: String
+public enum QueryOrderBy {
+    case ascending(CodingKey)
+    case descending(CodingKey)
 }
 
-extension QueryOrderBy {
-    public static func asc(_ field: CodingKey) -> QueryOrderBy {
-        return QueryOrderBy(field: field, order: "ASC")
-    }
-
-    public static func desc(_ field: CodingKey) -> QueryOrderBy {
-        return QueryOrderBy(field: field, order: "DESC")
-    }
-}
-
-public struct SortInput: QuerySort {
+public struct SortInput {
     public let inputs: [QueryOrderBy]
 
     public init(_ inputs: QueryOrderBy...) {
         self.inputs = inputs
     }
 
-    public static func asc(_ field: CodingKey) -> SortInput {
-        return self.init(QueryOrderBy(field: field, order: "ASC"))
+    public static func ascending(_ field: CodingKey) -> SortInput {
+        return SortInput(.ascending(field))
     }
 
-    public static func desc(_ field: CodingKey) -> SortInput {
-        return self.init(QueryOrderBy(field: field, order: "DESC"))
+    public static func descending(_ field: CodingKey) -> SortInput {
+        return SortInput(.descending(field))
     }
 }

@@ -363,7 +363,7 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the statement contains the correct `order by` and `descending`
     func testSelectStatementWithSingleFieldSort() {
         let statement = SelectStatement(from: Post.self,
-                                        sort: .asc(Post.keys.id))
+                                        sort: .ascending(Post.keys.id))
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
@@ -377,8 +377,8 @@ class SQLStatementTests: XCTestCase {
 
     func testSelectStatementWithDoubleFieldsSort() {
         let statement = SelectStatement(from: Post.self,
-                                        sort: SortInput(.asc(Post.keys.id),
-                                                        .asc(Post.keys.createdAt)))
+                                        sort: SortInput(.ascending(Post.keys.id),
+                                                        .ascending(Post.keys.createdAt)))
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
@@ -393,7 +393,7 @@ class SQLStatementTests: XCTestCase {
     func testSelectStatementWithPredicateAndSort() {
         let statement = SelectStatement(from: Post.self,
                                         predicate: Post.keys.rating > 4,
-                                        sort: .desc(Post.keys.id))
+                                        sort: .descending(Post.keys.id))
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
@@ -409,7 +409,7 @@ class SQLStatementTests: XCTestCase {
 
     func testSelectStatementWithSortAndPaginationInfo() {
         let statement = SelectStatement(from: Post.self,
-                                        sort: .desc(Post.keys.id),
+                                        sort: .descending(Post.keys.id),
                                         paginationInput: .page(0, limit: 5))
         let expectedStatement = """
         select
@@ -426,7 +426,7 @@ class SQLStatementTests: XCTestCase {
     func testSelectStatementWithPredicateAndSortAndPaginationInfo() {
         let statement = SelectStatement(from: Post.self,
                                         predicate: Post.keys.rating > 4,
-                                        sort: .desc(Post.keys.id),
+                                        sort: .descending(Post.keys.id),
                                         paginationInput: .page(0, limit: 5))
         let expectedStatement = """
         select

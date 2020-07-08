@@ -9,3 +9,13 @@ import Amplify
 import Foundation
 import SQLite
 
+extension QueryOrderBy {
+    var orderByClause: String {
+        switch self {
+        case .ascending(let key):
+            return "\(key.stringValue) ASC"
+        case .descending(let key):
+            return "\(key.stringValue) DESC"
+        }
+    }
+}
