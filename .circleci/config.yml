@@ -4,7 +4,7 @@ version: 2.1
 
 defaults: &defaults
   macos:
-    xcode: "11.4.0"
+    xcode: '11.4.1'
   working_directory: ~/amplify-ios
   environment:
     BUNDLE_PATH: vendor/bundle
@@ -152,19 +152,19 @@ jobs:
     parameters:
       lane:
         type: string
-        default: "unstable"
+        default: 'unstable'
     description: deploy pods to trunk
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "80:9a:29:87:ac:5f:1a:9b:c5:a4:3d:37:c1:10:87:2f"
+            - '80:9a:29:87:ac:5f:1a:9b:c5:a4:3d:37:c1:10:87:2f'
       - *restore_repo
       - restore_gems
       - check_bundle
       - run:
           name: Release pods
           command: bundle exec fastlane << parameters.lane >>
-          no_output_timeout: 20m
+          no_output_timeout: 60m
 
 deploy_requires: &deploy_requires
   requires:
