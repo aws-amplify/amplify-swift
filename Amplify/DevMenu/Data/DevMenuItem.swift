@@ -9,11 +9,13 @@ import Foundation
 
 /// Data class for a row shown in the Developer Menu
 @available(iOS 13.0.0, *)
-struct AmplifyDevMenuItem: Identifiable {
+struct DevMenuItem: Identifiable {
     var id = UUID()
     var title: String
+    var tag: Int
 
-    init(title: String) {
+    init(title: String, tag: Int) {
         self.title = title
+        self.tag = tag
     }
 }

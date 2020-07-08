@@ -9,8 +9,8 @@ import SwiftUI
 
 /// View corresponding to each row in Developer Menu
 @available(iOS 13.0.0, *)
-struct AmplifyDevMenuRow: View {
-    var rowItem: AmplifyDevMenuItem
+struct DevMenuRow: View {
+    var rowItem: DevMenuItem
 
     var body: some View {
         HStack {
@@ -22,8 +22,10 @@ struct AmplifyDevMenuRow: View {
 }
 
 @available(iOS 13.0.0, *)
-struct AmplifyDevMenuRow_Previews: PreviewProvider {
+struct DevMenuRow_Previews: PreviewProvider {
     static var previews: some View {
-        AmplifyDevMenuRow(rowItem: AmplifyDevMenuItem(title: "View Environment Information"))
+        DevMenuRow(rowItem: DevMenuItem(
+                                title: DevMenuList.titleEnvironmentInformation,
+                                tag: DevMenuList.tagEnvironmentInformation))
     }
 }
