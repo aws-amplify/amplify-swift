@@ -11,35 +11,60 @@ import SwiftUI
 @available(iOS 13.0.0, *)
 struct DevMenuList: View {
 
-    /// Integer tags to identify row items in Dev Menu
-    public static let tagEnvironmentInformation = 0
-    public static let tagDeviceInformation = 1
-    public static let tagViewLogs = 2
-    public static let tagFileIssue = 3
+    private let screenTitle = "Amplify Developer Menu"
 
-    /// Title corresponding to row items in Dev Menu
-    public static let titleEnvironmentInformation = "View Environment Information"
-    public static let titleDeviceInformation = "View Device Infomation"
-    public static let titleViewLogs = "View Logs"
-    public static let titleFileIssue = "File Issue"
+    /// Item labels for each row in the Developer Menu
+    public enum ItemLabel {
+        case environmentInformation
+        case deviceInformation
+        case logViewer
+        case reportIssue
+
+        var stringValue: String {
+            switch self {
+            case .environmentInformation:
+                return "Environment Information"
+            case  .deviceInformation:
+                return "Device Information"
+            case .logViewer:
+                return "Log Viewer"
+            case .reportIssue:
+                return "Report Issue"
+            }
+        }
+
+        // systemName parameter for SFSymbols used in `UIImage(systemName:)` initializer
+        var iconName: String {
+            switch self {
+            case .environmentInformation:
+                return "globe"
+            case  .deviceInformation:
+                return "desktopcomputer"
+            case .logViewer:
+                return "eyeglasses"
+            case .reportIssue:
+                return "exclamationmark.circle"
+            }
+        }
+    }
 
     private let amplifyDevMenuListItems: [DevMenuItem] =
     [
-        DevMenuItem(title: titleEnvironmentInformation, tag: tagEnvironmentInformation),
-        DevMenuItem(title: titleDeviceInformation, tag: tagDeviceInformation),
-        DevMenuItem(title: titleViewLogs, tag: tagViewLogs),
-        DevMenuItem(title: titleFileIssue, tag: tagFileIssue)
+        DevMenuItem(label: .environmentInformation),
+        DevMenuItem(label: .deviceInformation),
+        DevMenuItem(label: .logViewer),
+        DevMenuItem(label: .reportIssue)
     ]
 
     var body: some View {
         NavigationView {
             SwiftUI.List(amplifyDevMenuListItems) { listItem in
-                NavigationLink(destination: DetailViewFactory.getDetailView(devMenuItemTag: listItem.tag)) {
+                NavigationLink(destination: DetailViewFactory.getDetailView(devMenuItemLabel: listItem.label)) {
                     DevMenuRow(rowItem: listItem)
                 }
             }
             .navigationBarTitle(
-                Text("Amplify Developer Menu"),
+                Text(screenTitle),
                 displayMode: .inline)
         }
 

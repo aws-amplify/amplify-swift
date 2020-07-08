@@ -7,13 +7,12 @@
 
 import Foundation
 
+@available(iOS 13.0.0, *)
 struct DeviceInfoItem: Identifiable {
     var id = UUID()
-    var key: String
-    var value: String
+    var label: DeviceInfoDetailView.ItemLabel
 
-    init(key: String, value: String) {
-        self.key = key
-        self.value = value
+    init(label: DeviceInfoDetailView.ItemLabel) {
+        self.label = label
     }
 }

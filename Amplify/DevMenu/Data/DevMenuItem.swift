@@ -11,11 +11,9 @@ import Foundation
 @available(iOS 13.0.0, *)
 struct DevMenuItem: Identifiable {
     var id = UUID()
-    var title: String
-    var tag: Int
+    var label: DevMenuList.ItemLabel
 
-    init(title: String, tag: Int) {
-        self.title = title
-        self.tag = tag
+    init(label: DevMenuList.ItemLabel) {
+        self.label = label
     }
 }

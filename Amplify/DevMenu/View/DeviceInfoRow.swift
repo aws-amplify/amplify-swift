@@ -12,15 +12,9 @@ struct DeviceInfoRow: View {
     var rowItem: DeviceInfoItem
 
     var body: some View {
-        VStack {
-            HStack {
-                Text(rowItem.key).bold()
-                Spacer()
-            }
-            HStack {
-                Text(rowItem.value)
-                Spacer()
-            }
+        VStack(alignment: .leading) {
+            Text(rowItem.label.key).bold()
+            Text(rowItem.label.value)
         }
     }
 }
@@ -28,8 +22,6 @@ struct DeviceInfoRow: View {
 @available(iOS 13.0.0, *)
 struct DeviceInfoRow_Previews: PreviewProvider {
     static var previews: some View {
-        DeviceInfoRow(rowItem: DeviceInfoItem(
-                                key: DeviceInfoDetailView.deviceNameKey,
-                                value: UIDevice.current.name))
+        DeviceInfoRow(rowItem: DeviceInfoItem(label: .deviceName))
     }
 }

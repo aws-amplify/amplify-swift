@@ -11,9 +11,9 @@ import SwiftUI
 @available(iOS 13.0, *)
 public class DetailViewFactory {
 
-    public static func getDetailView(devMenuItemTag: Int) -> AnyView {
-        switch devMenuItemTag {
-        case DevMenuList.tagDeviceInformation:
+    static func getDetailView(devMenuItemLabel: DevMenuList.ItemLabel) -> AnyView {
+        switch devMenuItemLabel {
+        case .deviceInformation:
             return AnyView(DeviceInfoDetailView())
         default:
             return AnyView(EmptyView())
