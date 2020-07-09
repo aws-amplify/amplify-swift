@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// A factory to create detail views based on `DevMenutItemType`
+/// A factory to create detail views based on `DevMenuItemType`
 @available(iOS 13.0, *)
 class DetailViewFactory {
 
