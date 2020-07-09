@@ -10,10 +10,10 @@ import Foundation
 /// Data class for a row shown in the Developer Menu
 @available(iOS 13.0.0, *)
 struct DevMenuItem: Identifiable {
-    var id = UUID()
-    var label: DevMenuList.ItemLabel
+    let id = UUID()
+    let type: DevMenuItemType
 
-    init(label: DevMenuList.ItemLabel) {
-        self.label = label
+    init(type: DevMenuItemType) {
+        self.type = type
     }
 }

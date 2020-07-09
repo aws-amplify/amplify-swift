@@ -198,6 +198,8 @@
 		974FF18324B54B500050D01B /* DeviceInfoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18224B54B500050D01B /* DeviceInfoDetailView.swift */; };
 		974FF18524B54DFF0050D01B /* DeviceInfoRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18424B54DFF0050D01B /* DeviceInfoRow.swift */; };
 		974FF18724B54E590050D01B /* DeviceInfoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18624B54E590050D01B /* DeviceInfoItem.swift */; };
+		974FF18924B6B66C0050D01B /* DevMenuItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18824B6B66C0050D01B /* DevMenuItemType.swift */; };
+		974FF18B24B6BA130050D01B /* DeviceInfoItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18A24B6BA130050D01B /* DeviceInfoItemType.swift */; };
 		97CB85FD24AA451B000C65FB /* PersistentLoggingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */; };
 		97CB85FE24AA451B000C65FB /* AmplifyDevMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */; };
 		97CB85FF24AA451B000C65FB /* DevMenuList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F824AA451B000C65FB /* DevMenuList.swift */; };
@@ -937,6 +939,8 @@
 		974FF18224B54B500050D01B /* DeviceInfoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoDetailView.swift; sourceTree = "<group>"; };
 		974FF18424B54DFF0050D01B /* DeviceInfoRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoRow.swift; sourceTree = "<group>"; };
 		974FF18624B54E590050D01B /* DeviceInfoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoItem.swift; sourceTree = "<group>"; };
+		974FF18824B6B66C0050D01B /* DevMenuItemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevMenuItemType.swift; sourceTree = "<group>"; };
+		974FF18A24B6BA130050D01B /* DeviceInfoItemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoItemType.swift; sourceTree = "<group>"; };
 		976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentLoggingPlugin.swift; sourceTree = "<group>"; };
 		97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyDevMenu.swift; sourceTree = "<group>"; };
@@ -2061,6 +2065,8 @@
 			children = (
 				97CB85FC24AA451B000C65FB /* DevMenuItem.swift */,
 				974FF18624B54E590050D01B /* DeviceInfoItem.swift */,
+				974FF18824B6B66C0050D01B /* DevMenuItemType.swift */,
+				974FF18A24B6BA130050D01B /* DeviceInfoItemType.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -4255,6 +4261,7 @@
 				95DAAB22237E63370028544F /* SpeechType.swift in Sources */,
 				95DAAB8C237F13D10028544F /* PredictionsTextToSpeechRequest.swift in Sources */,
 				B493E69124524D3200D9E521 /* DeliveryDestination.swift in Sources */,
+				974FF18B24B6BA130050D01B /* DeviceInfoItemType.swift in Sources */,
 				97CB860224AA451B000C65FB /* DevMenuItem.swift in Sources */,
 				95DAAB24237E63370028544F /* IdentifiedText.swift in Sources */,
 				B4B5CCA92458A33F0019C783 /* AuthUpdateAttributeStep.swift in Sources */,
@@ -4502,6 +4509,7 @@
 				B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */,
 				21409C5A2384C57D000A53C9 /* GraphQLMutationType.swift in Sources */,
 				B493E69E245394E200D9E521 /* AuthSignUpStep.swift in Sources */,
+				974FF18924B6B66C0050D01B /* DevMenuItemType.swift in Sources */,
 				95DAAB35237E63370028544F /* Polygon.swift in Sources */,
 				B452F1D52450EEEB0069F7FA /* AuthResendSignUpCodeRequest.swift in Sources */,
 				B4926F6C242501A9007B769C /* AuthResetPasswordResult.swift in Sources */,

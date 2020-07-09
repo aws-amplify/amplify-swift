@@ -12,54 +12,18 @@ import SwiftUI
 struct DevMenuList: View {
 
     private let screenTitle = "Amplify Developer Menu"
-
-    /// Item labels for each row in the Developer Menu
-    public enum ItemLabel {
-        case environmentInformation
-        case deviceInformation
-        case logViewer
-        case reportIssue
-
-        var stringValue: String {
-            switch self {
-            case .environmentInformation:
-                return "Environment Information"
-            case  .deviceInformation:
-                return "Device Information"
-            case .logViewer:
-                return "Log Viewer"
-            case .reportIssue:
-                return "Report Issue"
-            }
-        }
-
-        // systemName parameter for SFSymbols used in `UIImage(systemName:)` initializer
-        var iconName: String {
-            switch self {
-            case .environmentInformation:
-                return "globe"
-            case  .deviceInformation:
-                return "desktopcomputer"
-            case .logViewer:
-                return "eyeglasses"
-            case .reportIssue:
-                return "exclamationmark.circle"
-            }
-        }
-    }
-
     private let amplifyDevMenuListItems: [DevMenuItem] =
     [
-        DevMenuItem(label: .environmentInformation),
-        DevMenuItem(label: .deviceInformation),
-        DevMenuItem(label: .logViewer),
-        DevMenuItem(label: .reportIssue)
+        DevMenuItem(type: .environmentInformation),
+        DevMenuItem(type: .deviceInformation),
+        DevMenuItem(type: .logViewer),
+        DevMenuItem(type: .reportIssue)
     ]
 
     var body: some View {
         NavigationView {
             SwiftUI.List(amplifyDevMenuListItems) { listItem in
-                NavigationLink(destination: DetailViewFactory.getDetailView(devMenuItemLabel: listItem.label)) {
+                NavigationLink(destination: DetailViewFactory.getDetailView(type: listItem.type)) {
                     DevMenuRow(rowItem: listItem)
                 }
             }

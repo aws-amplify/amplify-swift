@@ -7,12 +7,13 @@
 
 import Foundation
 
+/// Data class for a each item shown in the Device Info screen
 @available(iOS 13.0.0, *)
 struct DeviceInfoItem: Identifiable {
-    var id = UUID()
-    var label: DeviceInfoDetailView.ItemLabel
+    let id = UUID()
+    let type: DeviceInfoItemType
 
-    init(label: DeviceInfoDetailView.ItemLabel) {
-        self.label = label
+    init(type: DeviceInfoItemType) {
+        self.type = type
     }
 }

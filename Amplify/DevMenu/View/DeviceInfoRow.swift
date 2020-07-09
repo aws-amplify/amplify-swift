@@ -13,8 +13,8 @@ struct DeviceInfoRow: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text(rowItem.label.key).bold()
-            Text(rowItem.label.value)
+            Text(rowItem.type.key).bold()
+            Text(rowItem.type.value)
         }
     }
 }
@@ -22,6 +22,6 @@ struct DeviceInfoRow: View {
 @available(iOS 13.0.0, *)
 struct DeviceInfoRow_Previews: PreviewProvider {
     static var previews: some View {
-        DeviceInfoRow(rowItem: DeviceInfoItem(label: .deviceName))
+        DeviceInfoRow(rowItem: DeviceInfoItem(type: .deviceName))
     }
 }

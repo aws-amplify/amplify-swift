@@ -14,10 +14,10 @@ struct DevMenuRow: View {
 
     var body: some View {
         HStack {
-            Image(systemName: rowItem.label.iconName)
+            Image(systemName: rowItem.type.iconName)
                 .frame(width: 50.0, height: 50.0)
                 .foregroundColor(.secondary)
-            Text(rowItem.label.stringValue)
+            Text(rowItem.type.stringValue)
             Spacer()
         }
     }
@@ -26,6 +26,6 @@ struct DevMenuRow: View {
 @available(iOS 13.0.0, *)
 struct DevMenuRow_Previews: PreviewProvider {
     static var previews: some View {
-        DevMenuRow(rowItem: DevMenuItem(label: .environmentInformation))
+        DevMenuRow(rowItem: DevMenuItem(type: .environmentInformation))
     }
 }

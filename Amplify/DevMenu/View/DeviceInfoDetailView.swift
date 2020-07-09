@@ -6,70 +6,20 @@
 //
 
 import SwiftUI
-import UIKit
 
 /// Detail view containing device information
 @available(iOS 13.0.0, *)
 struct DeviceInfoDetailView: View {
 
     private let screenTitle = "Device Information"
-
-    /// Item labels for each row in the Device Info
-    public enum ItemLabel {
-        case deviceName
-        case systemName
-        case systemVersion
-        case modelName
-        case localizedModelName
-        case isSimulator
-
-        var key: String {
-            switch self {
-            case .deviceName:
-                return "Device Name"
-            case  .systemName:
-                return "System Name"
-            case .systemVersion:
-                return "System Version"
-            case .modelName:
-                return "Model Name"
-            case .localizedModelName:
-                return "Localized Model Name"
-            case .isSimulator:
-                return "Running on simulator"
-            }
-        }
-
-        var value: String {
-            switch self {
-            case .deviceName:
-                return UIDevice.current.name
-            case  .systemName:
-                return UIDevice.current.systemName
-            case .systemVersion:
-                return UIDevice.current.systemVersion
-            case .modelName:
-                return UIDevice.current.model
-            case .localizedModelName:
-                return UIDevice.current.localizedModel
-            case .isSimulator:
-                #if targetEnvironment(simulator)
-                    return "Yes"
-                #else
-                    return "No"
-                #endif
-            }
-        }
-    }
-
     private let deviceInfoItems: [DeviceInfoItem] =
     [
-        DeviceInfoItem(label: .deviceName),
-        DeviceInfoItem(label: .systemName),
-        DeviceInfoItem(label: .systemVersion),
-        DeviceInfoItem(label: .modelName),
-        DeviceInfoItem(label: .localizedModelName),
-        DeviceInfoItem(label: .isSimulator)
+        DeviceInfoItem(type: .deviceName),
+        DeviceInfoItem(type: .systemName),
+        DeviceInfoItem(type: .systemVersion),
+        DeviceInfoItem(type: .modelName),
+        DeviceInfoItem(type: .localizedModelName),
+        DeviceInfoItem(type: .isSimulator)
     ]
 
     var body: some View {
