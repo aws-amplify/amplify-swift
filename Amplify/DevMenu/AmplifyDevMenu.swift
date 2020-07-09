@@ -34,7 +34,7 @@ public final class AmplifyDevMenu: DevMenuBehavior, TriggerDelegate {
                 print("Warning: RootViewController of the UIWindow is nil")
                 return
         }
-        let viewController = UIHostingController(rootView: AmplifyDevMenuList())
+        let viewController = UIHostingController(rootView: DevMenuList())
         rootViewController.present(viewController, animated: true)
     }
 }
