@@ -17,6 +17,7 @@ public protocol APICategoryGraphQLBehavior: class {
     ///   - request: The GraphQL request containing apiName, document, variables, and responseType
     ///   - listener: The event listener for the operation
     /// - Returns: The AmplifyOperation being enqueued
+    @discardableResult
     func query<R: Decodable>(request: GraphQLRequest<R>,
                              listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R>
 
@@ -27,6 +28,7 @@ public protocol APICategoryGraphQLBehavior: class {
     ///   - request: The GraphQL request containing apiName, document, variables, and responseType
     ///   - listener: The event listener for the operation
     /// - Returns: The AmplifyOperation being enqueued
+    @discardableResult
     func mutate<R: Decodable>(request: GraphQLRequest<R>,
                               listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R>
 
