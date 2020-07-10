@@ -221,7 +221,6 @@ extension AuthorizationProviderAdapter {
         completionHandler(.success(authSession))
     }
 
-    /// Check if the error is caused by improper configuration of Cognito Identity Pool
     private func isErrorCausedByMisconfiguredIdentityPool(_ error: Error) -> Bool {
         if let awsMobileClientError = error as? AWSMobileClientError,
             case .cognitoIdentityPoolNotConfigured = awsMobileClientError {
