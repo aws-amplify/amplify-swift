@@ -137,7 +137,14 @@ extension AuthenticationProviderAdapter {
         let navController = UINavigationController(rootViewController: UIViewController())
         navController.isNavigationBarHidden = true
         navController.modalPresentationStyle = .overCurrentContext
-        window.rootViewController?.present(navController, animated: false, completion: {
+
+        // Get a valid controller to present the view controller.
+        var parentViewController = window.rootViewController
+        while ((parentViewController?.presentedViewController) != nil) {
+            parentViewController = parentViewController?.presentedViewController
+        }
+
+        parentViewController?.present(navController, animated: false, completion: {
 
             self.awsMobileClient.showSignIn(navigationController: navController,
                                             signInUIOptions: SignInUIOptions(),
