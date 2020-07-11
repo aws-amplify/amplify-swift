@@ -200,6 +200,11 @@
 		974FF18724B54E590050D01B /* DeviceInfoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18624B54E590050D01B /* DeviceInfoItem.swift */; };
 		974FF18924B6B66C0050D01B /* DevMenuItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18824B6B66C0050D01B /* DevMenuItemType.swift */; };
 		974FF18B24B6BA130050D01B /* DeviceInfoItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18A24B6BA130050D01B /* DeviceInfoItemType.swift */; };
+		974FF18D24B8F4C80050D01B /* EnvironmentInfoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18C24B8F4C80050D01B /* EnvironmentInfoDetailView.swift */; };
+		974FF19124B904A40050D01B /* EnvironmentInfoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF19024B904A40050D01B /* EnvironmentInfoItem.swift */; };
+		974FF19324B909570050D01B /* DevEnvironmentInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF19224B909570050D01B /* DevEnvironmentInfo.swift */; };
+		974FF19524B90C850050D01B /* EnvironmentInfoRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF19424B90C850050D01B /* EnvironmentInfoRow.swift */; };
+		974FF19724B910F70050D01B /* AmplifyVersionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF19624B910F70050D01B /* AmplifyVersionable.swift */; };
 		97CB85FD24AA451B000C65FB /* PersistentLoggingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */; };
 		97CB85FE24AA451B000C65FB /* AmplifyDevMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */; };
 		97CB85FF24AA451B000C65FB /* DevMenuList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F824AA451B000C65FB /* DevMenuList.swift */; };
@@ -941,6 +946,11 @@
 		974FF18624B54E590050D01B /* DeviceInfoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoItem.swift; sourceTree = "<group>"; };
 		974FF18824B6B66C0050D01B /* DevMenuItemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevMenuItemType.swift; sourceTree = "<group>"; };
 		974FF18A24B6BA130050D01B /* DeviceInfoItemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoItemType.swift; sourceTree = "<group>"; };
+		974FF18C24B8F4C80050D01B /* EnvironmentInfoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentInfoDetailView.swift; sourceTree = "<group>"; };
+		974FF19024B904A40050D01B /* EnvironmentInfoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentInfoItem.swift; sourceTree = "<group>"; };
+		974FF19224B909570050D01B /* DevEnvironmentInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevEnvironmentInfo.swift; sourceTree = "<group>"; };
+		974FF19424B90C850050D01B /* EnvironmentInfoRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentInfoRow.swift; sourceTree = "<group>"; };
+		974FF19624B910F70050D01B /* AmplifyVersionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyVersionable.swift; sourceTree = "<group>"; };
 		976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentLoggingPlugin.swift; sourceTree = "<group>"; };
 		97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyDevMenu.swift; sourceTree = "<group>"; };
@@ -2038,8 +2048,10 @@
 			children = (
 				97CB860324AB936E000C65FB /* Amplify+DevMenu.swift */,
 				97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */,
+				974FF19624B910F70050D01B /* AmplifyVersionable.swift */,
 				974FF13224B043E60050D01B /* DevMenuBehavior.swift */,
 				974FF12C24B0434B0050D01B /* DevMenuPresentationContextProvider.swift */,
+				974FF19224B909570050D01B /* DevEnvironmentInfo.swift */,
 				974FF17F24B549000050D01B /* Trigger */,
 				974FF17E24B548C20050D01B /* Logging */,
 				97CB85FB24AA451B000C65FB /* Data */,
@@ -2054,8 +2066,10 @@
 				97CB85F824AA451B000C65FB /* DevMenuList.swift */,
 				97CB85F924AA451B000C65FB /* DevMenuRow.swift */,
 				974FF18024B549470050D01B /* DetailViewFactory.swift */,
-				974FF18224B54B500050D01B /* DeviceInfoDetailView.swift */,
 				974FF18424B54DFF0050D01B /* DeviceInfoRow.swift */,
+				974FF18224B54B500050D01B /* DeviceInfoDetailView.swift */,
+				974FF19424B90C850050D01B /* EnvironmentInfoRow.swift */,
+				974FF18C24B8F4C80050D01B /* EnvironmentInfoDetailView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2064,9 +2078,10 @@
 			isa = PBXGroup;
 			children = (
 				97CB85FC24AA451B000C65FB /* DevMenuItem.swift */,
-				974FF18624B54E590050D01B /* DeviceInfoItem.swift */,
 				974FF18824B6B66C0050D01B /* DevMenuItemType.swift */,
+				974FF18624B54E590050D01B /* DeviceInfoItem.swift */,
 				974FF18A24B6BA130050D01B /* DeviceInfoItemType.swift */,
+				974FF19024B904A40050D01B /* EnvironmentInfoItem.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -4177,6 +4192,7 @@
 				B4D3853C236C97360014653D /* PredictionsTranslateTextRequest.swift in Sources */,
 				B452F1D32450EEAE0069F7FA /* AuthResendSignUpCodeOperation.swift in Sources */,
 				FAC2352B227A053D00424678 /* AnalyticsEvent.swift in Sources */,
+				974FF19124B904A40050D01B /* EnvironmentInfoItem.swift in Sources */,
 				B4FEA92124635BFB0009B47B /* AuthCategoryDeviceBehavior.swift in Sources */,
 				FAA98B02239214A30039EE71 /* DataStoreConflict.swift in Sources */,
 				B450741124115C140098F02D /* AuthSignInOperation.swift in Sources */,
@@ -4238,6 +4254,7 @@
 				FAC2351B227A053D00424678 /* APICategoryBehavior.swift in Sources */,
 				B473B540245DE93100C45C72 /* AuthConfirmSignInRequest.swift in Sources */,
 				B46884102460A85200221268 /* AuthDevice.swift in Sources */,
+				974FF19724B910F70050D01B /* AmplifyVersionable.swift in Sources */,
 				FA5D4CF3238AFD7B00D2F54A /* ModelRegistry+Syncable.swift in Sources */,
 				FAAFAF37239051E6002CF932 /* AtomicDictionary.swift in Sources */,
 				95DAAB2F237E63370028544F /* LanguageType.swift in Sources */,
@@ -4250,6 +4267,7 @@
 				2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */,
 				FAA2E8CA23A02A2600E420EA /* DataStoreCategory+Resettable.swift in Sources */,
 				B9B50DC423D917BB0086F1E1 /* TemporalFormat+Date.swift in Sources */,
+				974FF19524B90C850050D01B /* EnvironmentInfoRow.swift in Sources */,
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,
 				21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */,
 				FAC428A0235F7F980000F221 /* AmplifyAPICategory+RESTBehavior.swift in Sources */,
@@ -4330,6 +4348,7 @@
 				B468841A2460A98E00221268 /* AuthForgetDeviceRequest.swift in Sources */,
 				217855C3237F84D700A30D19 /* RESTRequest.swift in Sources */,
 				95DAAB34237E63370028544F /* Emotion.swift in Sources */,
+				974FF19324B909570050D01B /* DevEnvironmentInfo.swift in Sources */,
 				95DAAB20237E63370028544F /* SyntaxToken.swift in Sources */,
 				FA4E731623294B6E003B8EEB /* AWSHubPlugin.swift in Sources */,
 				FAC23543227A055200424678 /* Category+Configuration.swift in Sources */,
@@ -4513,6 +4532,7 @@
 				95DAAB35237E63370028544F /* Polygon.swift in Sources */,
 				B452F1D52450EEEB0069F7FA /* AuthResendSignUpCodeRequest.swift in Sources */,
 				B4926F6C242501A9007B769C /* AuthResetPasswordResult.swift in Sources */,
+				974FF18D24B8F4C80050D01B /* EnvironmentInfoDetailView.swift in Sources */,
 				B98E9D102372236300934B51 /* QueryPredicate.swift in Sources */,
 				B98E9D142372236300934B51 /* QueryPredicate+Equatable.swift in Sources */,
 			);

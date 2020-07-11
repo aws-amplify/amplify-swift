@@ -23,14 +23,10 @@ struct DeviceInfoDetailView: View {
     ]
 
     var body: some View {
-        NavigationView {
-            SwiftUI.List(deviceInfoItems) { listItem in
-                DeviceInfoRow(rowItem: listItem)
-            }
-            .navigationBarTitle(
-                Text(screenTitle),
-                displayMode: .inline)
+        SwiftUI.List(deviceInfoItems) { listItem in
+            DeviceInfoRow(rowItem: listItem)
         }
+        .navigationBarTitle(Text(screenTitle))
     }
 }
 

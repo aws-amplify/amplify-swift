@@ -15,6 +15,8 @@ class DetailViewFactory {
         switch type {
         case .deviceInformation:
             return AnyView(DeviceInfoDetailView())
+        case .environmentInformation:
+            return AnyView(EnvironmentInfoDetailView())
         default:
             return AnyView(EmptyView())
         }
