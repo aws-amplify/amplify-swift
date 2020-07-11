@@ -138,7 +138,7 @@ extension AuthenticationProviderAdapter {
         navController.isNavigationBarHidden = true
         navController.modalPresentationStyle = .overCurrentContext
 
-        // Get a valid controller to present the view controller.
+        // Get top most view controller to present a navController
         var parentViewController = window.rootViewController
         while ((parentViewController?.presentedViewController) != nil) {
             parentViewController = parentViewController?.presentedViewController
