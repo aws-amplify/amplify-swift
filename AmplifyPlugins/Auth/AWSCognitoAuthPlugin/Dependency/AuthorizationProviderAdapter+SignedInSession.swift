@@ -112,9 +112,7 @@ extension AuthorizationProviderAdapter {
                 if let urlError = error as NSError?, urlError.domain == NSURLErrorDomain {
                     self.fetchSignedInSessionWithOfflineError(completionHandler)
 
-                } else if let cognitoIdentityPoolError = error as NSError?,
-                    cognitoIdentityPoolError.domain == AWSCognitoIdentityErrorDomain,
-                    cognitoIdentityPoolError.code == AWSCognitoIdentityErrorType.notAuthorized.rawValue {
+                } else if self.isErrorCausedByMisconfiguredIdentityPool(error!) {
                     self.fetchSignedInSessionWithNoIdentityPool(withTokensResult: tokenResult,
                                                                 userSubResult: userSubResult,
                                                                 completionHandler)
@@ -221,5 +219,18 @@ extension AuthorizationProviderAdapter {
                                                 awsCredentialsResult: .failure(credentialsError),
                                                 cognitoTokensResult: tokenResult)
         completionHandler(.success(authSession))
+    }
+
+    private func isErrorCausedByMisconfiguredIdentityPool(_ error: Error) -> Bool {
+        if let awsMobileClientError = error as? AWSMobileClientError,
+            case .cognitoIdentityPoolNotConfigured = awsMobileClientError {
+            return true
+        }
+        if let cognitoIdentityPoolError = error as NSError?,
+            cognitoIdentityPoolError.domain == AWSCognitoIdentityErrorDomain,
+            cognitoIdentityPoolError.code == AWSCognitoIdentityErrorType.notAuthorized.rawValue {
+            return true
+        }
+        return false
     }
 }
