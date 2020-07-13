@@ -9,12 +9,19 @@ import Foundation
 
 // struct to decode/encode information about developer environment in json format
 struct DevEnvironmentInfo: Codable {
-    let nodejsVersion, npmVersion, amplifyCLIVersion, podVersion: String
-    let xcodeVersion, osVersion: String
+    let nodejsVersion: String
+    let npmVersion: String
+    let amplifyCLIVersion: String
+    let podVersion: String
+    let xcodeVersion: String
+    let osVersion: String
 
     enum CodingKeys: String, CodingKey {
-        case nodejsVersion, npmVersion
+        case nodejsVersion
+        case npmVersion
         case amplifyCLIVersion = "amplifyCliVersion"
-        case podVersion, xcodeVersion, osVersion
+        case podVersion
+        case xcodeVersion
+        case osVersion
     }
 }

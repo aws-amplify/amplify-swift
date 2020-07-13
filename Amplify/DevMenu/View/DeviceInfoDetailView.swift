@@ -24,7 +24,7 @@ struct DeviceInfoDetailView: View {
 
     var body: some View {
         SwiftUI.List(deviceInfoItems) { listItem in
-            DeviceInfoRow(rowItem: listItem)
+            InfoRow(item: listItem)
         }
         .navigationBarTitle(Text(screenTitle))
     }

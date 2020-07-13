@@ -196,15 +196,15 @@
 		974FF13324B043E60050D01B /* DevMenuBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF13224B043E60050D01B /* DevMenuBehavior.swift */; };
 		974FF18124B549470050D01B /* DetailViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18024B549470050D01B /* DetailViewFactory.swift */; };
 		974FF18324B54B500050D01B /* DeviceInfoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18224B54B500050D01B /* DeviceInfoDetailView.swift */; };
-		974FF18524B54DFF0050D01B /* DeviceInfoRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18424B54DFF0050D01B /* DeviceInfoRow.swift */; };
+		974FF18524B54DFF0050D01B /* InfoRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18424B54DFF0050D01B /* InfoRow.swift */; };
 		974FF18724B54E590050D01B /* DeviceInfoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18624B54E590050D01B /* DeviceInfoItem.swift */; };
 		974FF18924B6B66C0050D01B /* DevMenuItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18824B6B66C0050D01B /* DevMenuItemType.swift */; };
 		974FF18B24B6BA130050D01B /* DeviceInfoItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18A24B6BA130050D01B /* DeviceInfoItemType.swift */; };
 		974FF18D24B8F4C80050D01B /* EnvironmentInfoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF18C24B8F4C80050D01B /* EnvironmentInfoDetailView.swift */; };
 		974FF19124B904A40050D01B /* EnvironmentInfoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF19024B904A40050D01B /* EnvironmentInfoItem.swift */; };
 		974FF19324B909570050D01B /* DevEnvironmentInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF19224B909570050D01B /* DevEnvironmentInfo.swift */; };
-		974FF19524B90C850050D01B /* EnvironmentInfoRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF19424B90C850050D01B /* EnvironmentInfoRow.swift */; };
 		974FF19724B910F70050D01B /* AmplifyVersionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF19624B910F70050D01B /* AmplifyVersionable.swift */; };
+		974FF19B24BD05AA0050D01B /* EnvironmentInfoItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF19A24BD05AA0050D01B /* EnvironmentInfoItemType.swift */; };
 		97CB85FD24AA451B000C65FB /* PersistentLoggingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */; };
 		97CB85FE24AA451B000C65FB /* AmplifyDevMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */; };
 		97CB85FF24AA451B000C65FB /* DevMenuList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F824AA451B000C65FB /* DevMenuList.swift */; };
@@ -942,15 +942,15 @@
 		974FF13224B043E60050D01B /* DevMenuBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevMenuBehavior.swift; sourceTree = "<group>"; };
 		974FF18024B549470050D01B /* DetailViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewFactory.swift; sourceTree = "<group>"; };
 		974FF18224B54B500050D01B /* DeviceInfoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoDetailView.swift; sourceTree = "<group>"; };
-		974FF18424B54DFF0050D01B /* DeviceInfoRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoRow.swift; sourceTree = "<group>"; };
+		974FF18424B54DFF0050D01B /* InfoRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoRow.swift; sourceTree = "<group>"; };
 		974FF18624B54E590050D01B /* DeviceInfoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoItem.swift; sourceTree = "<group>"; };
 		974FF18824B6B66C0050D01B /* DevMenuItemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevMenuItemType.swift; sourceTree = "<group>"; };
 		974FF18A24B6BA130050D01B /* DeviceInfoItemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoItemType.swift; sourceTree = "<group>"; };
 		974FF18C24B8F4C80050D01B /* EnvironmentInfoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentInfoDetailView.swift; sourceTree = "<group>"; };
 		974FF19024B904A40050D01B /* EnvironmentInfoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentInfoItem.swift; sourceTree = "<group>"; };
 		974FF19224B909570050D01B /* DevEnvironmentInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevEnvironmentInfo.swift; sourceTree = "<group>"; };
-		974FF19424B90C850050D01B /* EnvironmentInfoRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentInfoRow.swift; sourceTree = "<group>"; };
 		974FF19624B910F70050D01B /* AmplifyVersionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyVersionable.swift; sourceTree = "<group>"; };
+		974FF19A24BD05AA0050D01B /* EnvironmentInfoItemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentInfoItemType.swift; sourceTree = "<group>"; };
 		976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentLoggingPlugin.swift; sourceTree = "<group>"; };
 		97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyDevMenu.swift; sourceTree = "<group>"; };
@@ -2066,9 +2066,8 @@
 				97CB85F824AA451B000C65FB /* DevMenuList.swift */,
 				97CB85F924AA451B000C65FB /* DevMenuRow.swift */,
 				974FF18024B549470050D01B /* DetailViewFactory.swift */,
-				974FF18424B54DFF0050D01B /* DeviceInfoRow.swift */,
+				974FF18424B54DFF0050D01B /* InfoRow.swift */,
 				974FF18224B54B500050D01B /* DeviceInfoDetailView.swift */,
-				974FF19424B90C850050D01B /* EnvironmentInfoRow.swift */,
 				974FF18C24B8F4C80050D01B /* EnvironmentInfoDetailView.swift */,
 			);
 			path = View;
@@ -2082,6 +2081,7 @@
 				974FF18624B54E590050D01B /* DeviceInfoItem.swift */,
 				974FF18A24B6BA130050D01B /* DeviceInfoItemType.swift */,
 				974FF19024B904A40050D01B /* EnvironmentInfoItem.swift */,
+				974FF19A24BD05AA0050D01B /* EnvironmentInfoItemType.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -4244,7 +4244,7 @@
 				6BB7441023A9954900B0EB6C /* DispatchSource+MakeOneOff.swift in Sources */,
 				21FFF994230C96CB005878EA /* StorageUploadDataOperation.swift in Sources */,
 				95DAAB30237E63370028544F /* IdentifyAction.swift in Sources */,
-				974FF18524B54DFF0050D01B /* DeviceInfoRow.swift in Sources */,
+				974FF18524B54DFF0050D01B /* InfoRow.swift in Sources */,
 				21D79FE32377F4120057D00D /* SubscriptionConnectionState.swift in Sources */,
 				B43DC73A2410526C00D40275 /* AuthError.swift in Sources */,
 				95DAAB45237E639E0028544F /* IdentifyResult.swift in Sources */,
@@ -4267,9 +4267,9 @@
 				2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */,
 				FAA2E8CA23A02A2600E420EA /* DataStoreCategory+Resettable.swift in Sources */,
 				B9B50DC423D917BB0086F1E1 /* TemporalFormat+Date.swift in Sources */,
-				974FF19524B90C850050D01B /* EnvironmentInfoRow.swift in Sources */,
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,
 				21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */,
+				974FF19B24BD05AA0050D01B /* EnvironmentInfoItemType.swift in Sources */,
 				FAC428A0235F7F980000F221 /* AmplifyAPICategory+RESTBehavior.swift in Sources */,
 				B43DC738241051A200D40275 /* AuthSignUpRequest.swift in Sources */,
 				95DAAB46237E639E0028544F /* IdentifyTextResult.swift in Sources */,

@@ -13,15 +13,6 @@ struct EnvironmentInfoDetailView: View {
     private let screenTitle  = "Environment Information"
     private let amplifyEnvSectionTitle  = "Amplify Environment Information"
     private let devEnvSectionTitle  = "Developer Environment Information"
-    private let notAvailable = "Not Available"
-
-    // Key descriptions for environment information
-    private let nodeJsVersionDesc = "Node.js version"
-    private let npmVersionDesc = "npm version"
-    private let amplifyCLIVersionDesc = "Amplify CLI version"
-    private let podVersionDesc = "CocoaPods version"
-    private let xcodeVersionDesc = "Xcode version"
-    private let osVersionDesc = "macOS version"
 
     /// Lists containing items belonging to two sections : Amplify and Developer Environment Informatoin
     private var amplifyEnvSectionItems = [EnvironmentInfoItem]()
@@ -40,7 +31,7 @@ struct EnvironmentInfoDetailView: View {
                     NoItemView()
                 } else {
                     ForEach(amplifyEnvSectionItems) { listItem in
-                        EnvironmentInfoRow(rowItem: listItem)
+                        InfoRow(item: listItem)
                     }
                 }
             }
@@ -49,7 +40,7 @@ struct EnvironmentInfoDetailView: View {
                     NoItemView()
                 } else {
                     ForEach(devEnvSectionItems) { listItem in
-                        EnvironmentInfoRow(rowItem: listItem)
+                        InfoRow(item: listItem)
                     }
                 }
             }
@@ -60,23 +51,23 @@ struct EnvironmentInfoDetailView: View {
 
     private mutating func populateDevEnvSectionItems(devEnvInfo: DevEnvironmentInfo) {
         devEnvSectionItems.append(EnvironmentInfoItem(
-            key: nodeJsVersionDesc,
-            value: devEnvInfo.nodejsVersion.isEmpty ? notAvailable : devEnvInfo.nodejsVersion))
+            key: EnvironmentInfoItemType.nodejsVersion.key,
+            value: devEnvInfo.nodejsVersion))
         devEnvSectionItems.append(EnvironmentInfoItem(
-            key: npmVersionDesc,
-            value: devEnvInfo.npmVersion.isEmpty ? notAvailable : devEnvInfo.npmVersion))
+            key: EnvironmentInfoItemType.npmVersion.key,
+            value: devEnvInfo.npmVersion))
         devEnvSectionItems.append(EnvironmentInfoItem(
-            key: amplifyCLIVersionDesc,
-            value: devEnvInfo.amplifyCLIVersion.isEmpty ? notAvailable : devEnvInfo.amplifyCLIVersion))
+            key: EnvironmentInfoItemType.amplifyCLIVersion.key,
+            value: devEnvInfo.amplifyCLIVersion))
         devEnvSectionItems.append(EnvironmentInfoItem(
-            key: podVersionDesc,
-            value: devEnvInfo.podVersion.isEmpty ? notAvailable : devEnvInfo.podVersion))
+            key: EnvironmentInfoItemType.podVersion.key,
+            value: devEnvInfo.podVersion))
         devEnvSectionItems.append(EnvironmentInfoItem(
-            key: xcodeVersionDesc,
-            value: devEnvInfo.xcodeVersion.isEmpty ? notAvailable : devEnvInfo.xcodeVersion))
+            key: EnvironmentInfoItemType.xcodeVersion.key,
+            value: devEnvInfo.xcodeVersion))
         devEnvSectionItems.append(EnvironmentInfoItem(
-            key: osVersionDesc,
-            value: devEnvInfo.osVersion.isEmpty ? notAvailable : devEnvInfo.osVersion))
+            key: EnvironmentInfoItemType.osVersion.key,
+            value: devEnvInfo.osVersion))
     }
 
     private mutating func populateAmplifyEnvSectionItems() {
