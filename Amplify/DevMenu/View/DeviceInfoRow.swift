@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// View corresponding to each row in Device Information Screen
 @available(iOS 13.0.0, *)
 struct DeviceInfoRow: View {
     var rowItem: DeviceInfoItem

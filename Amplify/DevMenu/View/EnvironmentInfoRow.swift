@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// View corresponding to each row in Environment Information screen
 @available(iOS 13.0.0, *)
 struct EnvironmentInfoRow: View {
     var rowItem: EnvironmentInfoItem

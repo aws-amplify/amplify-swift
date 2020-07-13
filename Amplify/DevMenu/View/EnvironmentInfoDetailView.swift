@@ -30,33 +30,32 @@ struct EnvironmentInfoDetailView: View {
     init() {
         // TODO : Read environment information from json file and
         // call populateDevEnvSectionItems()
+        populateAmplifyEnvSectionItems()
     }
 
     var body: some View {
-        VStack {
-            HeaderView(title: amplifyEnvSectionTitle)
-            if amplifyEnvSectionItems.isEmpty {
-                NoItemView()
-            } else {
-                SwiftUI.List {
+        SwiftUI.List {
+            Section(header: Text(amplifyEnvSectionTitle), footer: EmptyView()) {
+                if amplifyEnvSectionItems.isEmpty {
+                    NoItemView()
+                } else {
                     ForEach(amplifyEnvSectionItems) { listItem in
                         EnvironmentInfoRow(rowItem: listItem)
                     }
                 }
             }
-            HeaderView(title: devEnvSectionTitle)
-            if devEnvSectionItems.isEmpty {
-                NoItemView()
-            } else {
-                SwiftUI.List {
+            Section(header: Text(devEnvSectionTitle), footer: EmptyView()) {
+                if devEnvSectionItems.isEmpty {
+                    NoItemView()
+                } else {
                     ForEach(devEnvSectionItems) { listItem in
                         EnvironmentInfoRow(rowItem: listItem)
                     }
                 }
             }
-            Spacer()
         }
         .navigationBarTitle(screenTitle)
+        .listStyle(GroupedListStyle())
     }
 
     private mutating func populateDevEnvSectionItems(devEnvInfo: DevEnvironmentInfo) {
@@ -80,6 +79,66 @@ struct EnvironmentInfoDetailView: View {
             value: devEnvInfo.osVersion.isEmpty ? notAvailable : devEnvInfo.osVersion))
     }
 
+    private mutating func populateAmplifyEnvSectionItems() {
+        // Add Analytics plugins information
+        for pluginKey in Amplify.Analytics.plugins.keys {
+            if let versionable = (try? Amplify.Auth.getPlugin(for: pluginKey)) as? AmplifyVersionable {
+                amplifyEnvSectionItems.append(EnvironmentInfoItem(key: pluginKey, value: versionable.version))
+            }
+        }
+
+        // Add API plugins information
+        if let apiCategoryPlugin = Amplify.API as? AmplifyAPICategory {
+            for pluginKey in apiCategoryPlugin.plugins.keys {
+                if let versionable = (try? Amplify.Auth.getPlugin(for: pluginKey)) as? AmplifyVersionable {
+                    amplifyEnvSectionItems.append(EnvironmentInfoItem(key: pluginKey, value: versionable.version))
+                }
+            }
+        }
+
+        // Add Auth plugins information
+        for pluginKey in Amplify.Analytics.plugins.keys {
+            if let versionable = (try? Amplify.Auth.getPlugin(for: pluginKey)) as? AmplifyVersionable {
+                amplifyEnvSectionItems.append(EnvironmentInfoItem(key: pluginKey, value: versionable.version))
+            }
+        }
+
+        // Add DataStore plugins information
+        for pluginKey in Amplify.DataStore.plugins.keys {
+            if let versionable = (try? Amplify.DataStore.getPlugin(for: pluginKey)) as? AmplifyVersionable {
+                amplifyEnvSectionItems.append(EnvironmentInfoItem(key: pluginKey, value: versionable.version))
+            }
+        }
+
+        // Add Hub plugins information
+        for pluginKey in Amplify.Hub.plugins.keys {
+            if let versionable = (try? Amplify.DataStore.getPlugin(for: pluginKey)) as? AmplifyVersionable {
+                amplifyEnvSectionItems.append(EnvironmentInfoItem(key: pluginKey, value: versionable.version))
+            }
+        }
+
+        // Add Logging plugins information
+        if let versionable = Amplify.Logging.plugin as? AmplifyVersionable {
+            amplifyEnvSectionItems.append(EnvironmentInfoItem(
+                                                key: Amplify.Logging.plugin.key,
+                                                value: versionable.version))
+        }
+
+        // Add Predictions plugins information
+        for pluginKey in Amplify.Predictions.plugins.keys {
+            if let versionable = (try? Amplify.Predictions.getPlugin(for: pluginKey)) as? AmplifyVersionable {
+                amplifyEnvSectionItems.append(EnvironmentInfoItem(key: pluginKey, value: versionable.version))
+            }
+        }
+
+        // Add Storage plugins information
+        for pluginKey in Amplify.Storage.plugins.keys {
+            if let versionable = (try? Amplify.Predictions.getPlugin(for: pluginKey)) as? AmplifyVersionable {
+                amplifyEnvSectionItems.append(EnvironmentInfoItem(key: pluginKey, value: versionable.version))
+            }
+        }
+    }
+
 }
 
 @available(iOS 13.0.0, *)
@@ -96,21 +155,5 @@ struct NoItemView: View {
             Text("Information not available").padding(15)
             Spacer()
         }
-    }
-}
-
-@available(iOS 13.0, *)
-struct HeaderView: View {
-    var title: String
-
-    init(title: String) {
-        self.title = title
-    }
-
-    var body: some View {
-        HStack {
-            Text(title).bold().padding(10)
-            Spacer()
-        }.background(Color.black.opacity(0.3))
     }
 }

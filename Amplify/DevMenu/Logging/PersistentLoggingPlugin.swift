@@ -7,7 +7,8 @@
 
 import Foundation
 
-public class PersistentLoggingPlugin: LoggingCategoryPlugin {
+public class PersistentLoggingPlugin: LoggingCategoryPlugin, AmplifyVersionable {
+    var version: String = "1.0"
 
     var plugin: LoggingCategoryPlugin
 

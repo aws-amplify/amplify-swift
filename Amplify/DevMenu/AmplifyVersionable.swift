@@ -9,5 +9,5 @@ import Foundation
 
 /// Implement this protocol to support versioning in your plugin
 protocol AmplifyVersionable {
-    static var version: String { get }
+    var version: String { get }
 }
