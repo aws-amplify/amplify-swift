@@ -98,7 +98,7 @@ platform :ios do
         next
       end
 
-      pod_path = "/Users/distiller/amplify-ios/#{pod[:spec]}"
+      pod_path = "#{ENV['CIRCLE_WORKING_DIRECTORY']}/#{pod[:spec]}"
 
       UI.message "Pushing pod #{pod[:spec]}"
 
@@ -122,7 +122,7 @@ platform :ios do
     changelog = options[:changelog]
     tag = "v#{version}"
     # increment plugin lock files by calling pod update on each
-    plugin_root = '/Users/distiller/amplify-ios/AmplifyPlugins'
+    plugin_root = "#{ENV['CIRCLE_WORKING_DIRECTORY']}/AmplifyPlugins"
   
     sh('bundle', 'exec', 'pod', 'repo', 'update')
 
