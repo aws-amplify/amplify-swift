@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 import SQLite
 
-extension QueryOrderBy {
+extension QuerySortBy {
     var orderByClause: String {
         switch self {
         case .ascending(let key):

@@ -354,14 +354,14 @@ class SQLStatementTests: XCTestCase {
 
     // MARK: - Select Statements Sort
 
-    /// - Given: a `Model` type and a `SortInput`
+    /// - Given: a `Model` type and a `QuerySortInput`
     /// - When:
     ///   - the model is of type `Post`
-    ///   - the orderBy should be `id` and descending to`true`
+    ///   - the sort should be `id` of descending order
     /// - Then:
     ///   - check if the generated SQL statement is valid
-    ///   - check if the statement contains the correct `order by` and `descending`
-    func testSelectStatementWithSingleFieldSort() {
+    ///   - check if the statement contains the correct `order by` and `ascending`
+    func testSelectStatementWithOneSort() {
         let statement = SelectStatement(from: Post.self,
                                         sort: .ascending(Post.keys.id))
         let expectedStatement = """
@@ -375,21 +375,39 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
-    func testSelectStatementWithDoubleFieldsSort() {
+    // MARK: - Select Statements Sorts
+
+    /// - Given: a `Model` type and two `QuerySortInput`s
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - the sort should be `id` of descending order and `createdAt` of descending order
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if the statement contains the correct `order by` and `ascending`
+    func testSelectStatementWithTwoFieldsSort() {
         let statement = SelectStatement(from: Post.self,
-                                        sort: SortInput(.ascending(Post.keys.id),
-                                                        .ascending(Post.keys.createdAt)))
+                                        sort: .by(.ascending(Post.keys.id),
+                                                  .descending(Post.keys.createdAt)))
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
         from Post as "root"
-        order by id ASC, createdAt ASC
+        order by id ASC, createdAt DESC
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
+    // MARK: - Select Statements Where and Sort
+
+    /// - Given: a `Model` type, a `QueryPredicate`and  a `QuerySortInput`
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - the sort should meet predicate condition be `id` of descending order
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if the statement contains the correct `where` statement, `order by` and `ascending`
     func testSelectStatementWithPredicateAndSort() {
         let statement = SelectStatement(from: Post.self,
                                         predicate: Post.keys.rating > 4,
@@ -407,6 +425,16 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
+    // MARK: - Select Statements Where and Sort
+
+    /// - Given: a `Model` type, a `QuerySortInput`, a `QueryPaginationInput`
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - the sort should be `id` of descending order and
+    ///   - the pagination input has `page` 0 and `limit` 5
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if the statement contains the correct `where` statement, `order by` and `ascending`
     func testSelectStatementWithSortAndPaginationInfo() {
         let statement = SelectStatement(from: Post.self,
                                         sort: .descending(Post.keys.id),
@@ -423,6 +451,17 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
+    // MARK: - Select Statements Where and Sort
+
+    /// - Given: a `Model` type, a `QueryPredicate`,  a `QuerySortInput` and a `QueryPaginationInput`
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - the predicate should meet the condtion
+    ///   - the sort should  be `id` of descending order
+    ///   - the pagination input has `page` 0 and `limit` 5
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if the statement contains the correct `where` statement, `order by` and `ascending`
     func testSelectStatementWithPredicateAndSortAndPaginationInfo() {
         let statement = SelectStatement(from: Post.self,
                                         predicate: Post.keys.rating > 4,

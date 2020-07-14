@@ -9,23 +9,27 @@ import Foundation
 
 /// A simple struct that holds sort information that can be applied queries.
 
-public enum QueryOrderBy {
+public enum QuerySortBy {
     case ascending(CodingKey)
     case descending(CodingKey)
 }
 
-public struct SortInput {
-    public let inputs: [QueryOrderBy]
+public struct QuerySortInput {
+    public let inputs: [QuerySortBy]
 
-    public init(_ inputs: QueryOrderBy...) {
+    public init(_ inputs: [QuerySortBy]) {
         self.inputs = inputs
     }
 
-    public static func ascending(_ field: CodingKey) -> SortInput {
-        return SortInput(.ascending(field))
+    public static func by(_ inputs: QuerySortBy...) -> QuerySortInput {
+        return self.init(inputs)
     }
 
-    public static func descending(_ field: CodingKey) -> SortInput {
-        return SortInput(.descending(field))
+    public static func ascending(_ field: CodingKey) -> QuerySortInput {
+        return QuerySortInput([.ascending(field)])
+    }
+
+    public static func descending(_ field: CodingKey) -> QuerySortInput {
+        return QuerySortInput([.descending(field)])
     }
 }

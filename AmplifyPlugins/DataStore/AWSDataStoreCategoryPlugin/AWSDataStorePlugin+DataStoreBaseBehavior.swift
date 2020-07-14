@@ -79,13 +79,13 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func query<M: Model>(_ modelType: M.Type,
                                 where predicate: QueryPredicate? = nil,
-                                sort: SortInput? = nil,
+                                sort sortInput: QuerySortInput? = nil,
                                 paginate paginationInput: QueryPaginationInput? = nil,
                                 completion: DataStoreCallback<[M]>) {
         reinitStorageEngineIfNeeded()
         storageEngine.query(modelType,
                             predicate: predicate,
-                            sort: sort,
+                            sort: sortInput,
                             paginationInput: paginationInput,
                             completion: completion)
     }

@@ -188,7 +188,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate? = nil,
-                         sort: SortInput? = nil,
+                         sort: QuerySortInput? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          completion: DataStoreCallback<[M]>) {
         query(modelType,
@@ -201,7 +201,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate? = nil,
-                         sort: SortInput? = nil,
+                         sort: QuerySortInput? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          additionalStatements: String? = nil,
                          completion: DataStoreCallback<[M]>) {

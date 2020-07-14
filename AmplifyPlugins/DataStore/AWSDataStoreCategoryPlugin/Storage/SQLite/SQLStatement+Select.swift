@@ -22,7 +22,7 @@ struct SelectStatementMetadata {
     // TODO remove additionalStatements once sorting support is added to DataStore
     static func metadata(from modelType: Model.Type,
                          predicate: QueryPredicate? = nil,
-                         sort: SortInput? = nil,
+                         sort: QuerySortInput? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          additionalStatements: String? = nil) -> SelectStatementMetadata {
         let rootNamespace = "root"
@@ -152,7 +152,7 @@ struct SelectStatement: SQLStatement {
 
     init(from modelType: Model.Type,
          predicate: QueryPredicate? = nil,
-         sort: SortInput? = nil,
+         sort: QuerySortInput? = nil,
          paginationInput: QueryPaginationInput? = nil,
          additionalStatements: String? = nil) {
         self.modelType = modelType
