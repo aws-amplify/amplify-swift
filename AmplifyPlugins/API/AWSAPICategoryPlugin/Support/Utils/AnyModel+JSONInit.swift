@@ -7,6 +7,7 @@
 
 import Foundation
 import Amplify
+import AWSPluginsCore
 
 extension AnyModel {
     /// Initializes an AnyModel instance from incoming JSONValue. The JSONValue is expected to be provided by the AWS

@@ -38,14 +38,15 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-                guard let mutationEvent = payload.data as? MutationEvent,
-                    let post = try? mutationEvent.decodeModel() as? Post
+                guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
                         return
                 }
 
-                if post.id != newPost.id {
+                // This check is to protect against stray events being processed after the test has completed,
+                // and it shouldn't be construed as a pattern necessary for production applications.
+                guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
                     return
                 }
 
@@ -113,14 +114,15 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-                guard let mutationEvent = payload.data as? MutationEvent,
-                    let post = try? mutationEvent.decodeModel() as? Post
+                guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
                         return
                 }
 
-                if post.id != newPost.id {
+                // This check is to protect against stray events being processed after the test has completed,
+                // and it shouldn't be construed as a pattern necessary for production applications.
+                guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
                     return
                 }
 
@@ -179,14 +181,15 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let conditionalReceived = expectation(description: "Conditional save failed received")
 
         let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
-            guard let mutationEvent = payload.data as? MutationEvent,
-                let post = try? mutationEvent.decodeModel() as? Post
+            guard let mutationEvent = payload.data as? MutationEvent
                 else {
                     XCTFail("Can't cast payload as mutation event")
                     return
             }
 
-            if post.id != newPost.id {
+            // This check is to protect against stray events being processed after the test has completed,
+            // and it shouldn't be construed as a pattern necessary for production applications.
+            guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
                 return
             }
 

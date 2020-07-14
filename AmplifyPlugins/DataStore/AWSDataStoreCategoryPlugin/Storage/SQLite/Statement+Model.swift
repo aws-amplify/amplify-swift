@@ -8,6 +8,7 @@
 import Amplify
 import Foundation
 import SQLite
+import AWSPluginsCore
 
 typealias ModelValues = [String: Any?]
 
@@ -20,7 +21,7 @@ struct StatementResult<M: Model>: Decodable {
 
     let elements: [M]
 
-    public static func from(dictionary: ModelValues) throws -> Self {
+    static func from(dictionary: ModelValues) throws -> Self {
         let data = try JSONSerialization.data(withJSONObject: dictionary)
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy

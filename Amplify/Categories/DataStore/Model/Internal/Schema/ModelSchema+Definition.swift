@@ -1,0 +1,227 @@
+//
+// Copyright 2018-2020 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import Foundation
+
+/// Defines the type of a `Model` field.
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
+public enum ModelFieldType {
+
+    case string
+    case int
+    case double
+    case date
+    case dateTime
+    case time
+    case timestamp
+    case bool
+    case `enum`(type: EnumPersistable.Type)
+    case embedded(type: Codable.Type)
+    case embeddedCollection(of: Codable.Type)
+    case model(type: Model.Type)
+    case collection(of: Model.Type)
+
+    public var isArray: Bool {
+        switch self {
+        case .collection, .embeddedCollection:
+            return true
+        default:
+            return false
+        }
+    }
+
+    @available(*, deprecated, message: """
+        This has been replaced with `.embedded(type)` and `.embeddedCollection(of)` \
+        Please use Amplify CLI 4.21.4 or newer to re-generate your Models to conform to Embeddable type.
+    """)
+    public static func customType(_ type: Codable.Type) -> ModelFieldType {
+        return .embedded(type: type)
+    }
+
+    public static func from(type: Any.Type) -> ModelFieldType {
+        if type is String.Type {
+            return .string
+        }
+        if type is Int.Type || type is Int64.Type {
+            return .int
+        }
+        if type is Double.Type {
+            return .double
+        }
+        if type is Bool.Type {
+            return .bool
+        }
+        if type is Date.Type {
+            return .dateTime
+        }
+        if type is Temporal.Date.Type {
+            return .date
+        }
+        if type is Temporal.DateTime.Type {
+            return .dateTime
+        }
+        if type is Temporal.Time.Type {
+            return .time
+        }
+        if let enumType = type as? EnumPersistable.Type {
+            return .enum(type: enumType)
+        }
+        if let modelType = type as? Model.Type {
+            return .model(type: modelType)
+        }
+        if let embeddedType = type as? Codable.Type {
+            return .embedded(type: embeddedType)
+        }
+        preconditionFailure("Could not create a ModelFieldType from \(String(describing: type)) MetaType")
+    }
+}
+
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
+public enum ModelFieldNullability {
+    case optional
+    case required
+
+    var isRequired: Bool {
+        switch self {
+        case .optional:
+            return false
+        case .required:
+            return true
+        }
+    }
+}
+
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
+public struct ModelSchemaDefinition {
+
+    internal let name: String
+    public var pluralName: String?
+    public var authRules: AuthRules
+    internal var fields: ModelFields
+    internal var attributes: [ModelAttribute]
+
+    init(name: String,
+         pluralName: String? = nil,
+         authRules: AuthRules = [],
+         attributes: [ModelAttribute] = []) {
+        self.name = name
+        self.pluralName = pluralName
+        self.fields = [:] as ModelFields
+        self.authRules = authRules
+        self.attributes = attributes
+    }
+
+    public mutating func fields(_ fields: ModelFieldDefinition...) {
+        fields.forEach { definition in
+            let field = definition.modelField
+            self.fields[field.name] = field
+        }
+    }
+
+    public mutating func attributes(_ attributes: ModelAttribute...) {
+        self.attributes = attributes
+    }
+
+    internal func build() -> ModelSchema {
+        return ModelSchema(name: name,
+                           pluralName: pluralName,
+                           authRules: authRules,
+                           attributes: attributes,
+                           fields: fields)
+    }
+}
+
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
+public enum ModelFieldDefinition {
+
+    case field(name: String,
+               type: ModelFieldType,
+               nullability: ModelFieldNullability,
+               association: ModelAssociation?,
+               attributes: [ModelFieldAttribute],
+               authRules: AuthRules)
+
+    public static func field(_ key: CodingKey,
+                             is nullability: ModelFieldNullability = .required,
+                             ofType type: ModelFieldType = .string,
+                             attributes: [ModelFieldAttribute] = [],
+                             association: ModelAssociation? = nil,
+                             authRules: AuthRules = []) -> ModelFieldDefinition {
+        return .field(name: key.stringValue,
+                      type: type,
+                      nullability: nullability,
+                      association: association,
+                      attributes: attributes,
+                      authRules: authRules)
+    }
+
+    public static func id(_ key: CodingKey) -> ModelFieldDefinition {
+        return id(key.stringValue)
+    }
+
+    public static func id(_ name: String = "id") -> ModelFieldDefinition {
+        return .field(name: name,
+                      type: .string,
+                      nullability: .required,
+                      association: nil,
+                      attributes: [.primaryKey],
+                      authRules: [])
+    }
+
+    public static func hasMany(_ key: CodingKey,
+                               is nullability: ModelFieldNullability = .required,
+                               ofType type: Model.Type,
+                               associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
+        return .field(key,
+                      is: nullability,
+                      ofType: .collection(of: type),
+                      association: .hasMany(associatedWith: associatedKey))
+    }
+
+    public static func hasOne(_ key: CodingKey,
+                              is nullability: ModelFieldNullability = .required,
+                              ofType type: Model.Type,
+                              associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
+        return .field(key,
+                      is: nullability,
+                      ofType: .model(type: type),
+                      association: .hasOne(associatedWith: associatedKey))
+    }
+
+    public static func belongsTo(_ key: CodingKey,
+                                 is nullability: ModelFieldNullability = .required,
+                                 ofType type: Model.Type,
+                                 associatedWith associatedKey: CodingKey? = nil,
+                                 targetName: String? = nil) -> ModelFieldDefinition {
+        return .field(key,
+                      is: nullability,
+                      ofType: .model(type: type),
+                      association: .belongsTo(associatedWith: associatedKey, targetName: targetName))
+    }
+
+    public var modelField: ModelField {
+        guard case let .field(name,
+                              type,
+                              nullability,
+                              association,
+                              attributes,
+                              authRules) = self else {
+            preconditionFailure("Unexpected enum value found: \(String(describing: self))")
+        }
+        return ModelField(name: name,
+                          type: type,
+                          isRequired: nullability.isRequired,
+                          isArray: type.isArray,
+                          attributes: attributes,
+                          association: association,
+                          authRules: authRules)
+    }
+}

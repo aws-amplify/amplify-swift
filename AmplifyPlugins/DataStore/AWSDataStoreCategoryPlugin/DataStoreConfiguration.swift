@@ -50,7 +50,11 @@ public struct DataStoreConfiguration {
     /// A callback called when a conflict could not be resolved by the service
     public let conflictHandler: DataStoreConflictHandler
 
-    /// How often the sync engine will run (in seconds)
+    /// The maximum interval (in seconds) the system will continue to perform delta queries.
+    /// After this interval expires, the system performs a base query to retrieve all data.
+    /// This defaults to 24 hours, and developers should rarely need to customize this.
+    /// More information can be found here:
+    /// https://docs.amplify.aws/lib/datastore/how-it-works/q/platform/ios#sync-data-to-cloud
     public let syncInterval: TimeInterval
 
     /// The number of records to sync per execution

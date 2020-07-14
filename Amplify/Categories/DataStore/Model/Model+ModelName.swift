@@ -6,6 +6,7 @@
 //
 
 extension Model {
+
     public static var modelName: String {
         return String(describing: self)
     }
