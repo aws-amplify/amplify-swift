@@ -12,25 +12,12 @@ import SwiftUI
 struct DeviceInfoDetailView: View {
 
     private let screenTitle = "Device Information"
-    private let deviceInfoItems: [DeviceInfoItem] =
-    [
-        DeviceInfoItem(type: .deviceName),
-        DeviceInfoItem(type: .systemName),
-        DeviceInfoItem(type: .systemVersion),
-        DeviceInfoItem(type: .modelName),
-        DeviceInfoItem(type: .localizedModelName),
-        DeviceInfoItem(type: .isSimulator)
-    ]
 
     var body: some View {
-        NavigationView {
-            SwiftUI.List(deviceInfoItems) { listItem in
-                DeviceInfoRow(rowItem: listItem)
-            }
-            .navigationBarTitle(
-                Text(screenTitle),
-                displayMode: .inline)
+        SwiftUI.List(DeviceInfoHelper.getDeviceInformation()) { listItem in
+            InfoRow(infoItem: listItem)
         }
+        .navigationBarTitle(Text(screenTitle))
     }
 }
 
