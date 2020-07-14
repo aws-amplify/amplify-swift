@@ -11,8 +11,6 @@ import Foundation
 @available(iOS 13.0.0, *)
 struct PluginInfoHelper {
 
-    static let versionNotAvailable = "Version not available"
-
     static func getPluginInformation() -> [PluginInfoItem] {
         var pluginList = [PluginInfoItem]()
 
@@ -21,7 +19,8 @@ struct PluginInfoHelper {
             if let versionable = (try? Amplify.Auth.getPlugin(for: pluginKey)) as? AmplifyVersionable {
                 pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionable.version))
             } else {
-                pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionNotAvailable))
+                pluginList.append(PluginInfoItem(displayName: pluginKey,
+                                                 information: DevMenuStringConstants.versionNotAvailable))
             }
         }
 
@@ -31,7 +30,8 @@ struct PluginInfoHelper {
                 if let versionable = (try? Amplify.Auth.getPlugin(for: pluginKey)) as? AmplifyVersionable {
                     pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionable.version))
                 } else {
-                    pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionNotAvailable))
+                    pluginList.append(PluginInfoItem(displayName: pluginKey,
+                                                     information: DevMenuStringConstants.versionNotAvailable))
                 }
             }
         }
@@ -41,7 +41,8 @@ struct PluginInfoHelper {
             if let versionable = (try? Amplify.Auth.getPlugin(for: pluginKey)) as? AmplifyVersionable {
                 pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionable.version))
             } else {
-                pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionNotAvailable))
+                pluginList.append(PluginInfoItem(displayName: pluginKey,
+                                                 information: DevMenuStringConstants.versionNotAvailable))
             }
         }
 
@@ -50,7 +51,8 @@ struct PluginInfoHelper {
             if let versionable = (try? Amplify.DataStore.getPlugin(for: pluginKey)) as? AmplifyVersionable {
                 pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionable.version))
             } else {
-                pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionNotAvailable))
+                pluginList.append(PluginInfoItem(displayName: pluginKey,
+                                                 information: DevMenuStringConstants.versionNotAvailable))
             }
         }
 
@@ -59,7 +61,8 @@ struct PluginInfoHelper {
             if let versionable = (try? Amplify.DataStore.getPlugin(for: pluginKey)) as? AmplifyVersionable {
                 pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionable.version))
             } else {
-                pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionNotAvailable))
+                pluginList.append(PluginInfoItem(displayName: pluginKey,
+                                                 information: DevMenuStringConstants.versionNotAvailable))
             }
         }
 
@@ -67,7 +70,8 @@ struct PluginInfoHelper {
         if let versionable = Amplify.Logging.plugin as? AmplifyVersionable {
             pluginList.append(PluginInfoItem(displayName: Amplify.Logging.plugin.key, information: versionable.version))
         } else {
-            pluginList.append(PluginInfoItem(displayName: Amplify.Logging.plugin.key, information: versionNotAvailable))
+            pluginList.append(PluginInfoItem(displayName: Amplify.Logging.plugin.key,
+                                             information: DevMenuStringConstants.versionNotAvailable))
         }
 
         // Add Predictions plugins information
@@ -75,7 +79,8 @@ struct PluginInfoHelper {
             if let versionable = (try? Amplify.Predictions.getPlugin(for: pluginKey)) as? AmplifyVersionable {
                 pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionable.version))
             } else {
-                pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionNotAvailable))
+                pluginList.append(PluginInfoItem(displayName: pluginKey,
+                                                 information: DevMenuStringConstants.versionNotAvailable))
             }
         }
 
@@ -84,7 +89,8 @@ struct PluginInfoHelper {
             if let versionable = (try? Amplify.Predictions.getPlugin(for: pluginKey)) as? AmplifyVersionable {
                 pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionable.version))
             } else {
-                pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionNotAvailable))
+                pluginList.append(PluginInfoItem(displayName: pluginKey,
+                                                 information: DevMenuStringConstants.versionNotAvailable))
             }
         }
 

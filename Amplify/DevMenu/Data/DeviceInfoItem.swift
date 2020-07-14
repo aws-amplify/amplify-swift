@@ -12,11 +12,6 @@ import Foundation
 struct DeviceInfoItem: Identifiable, InfoItemProvider {
     let id = UUID()
     let type: DeviceInfoItemType
-    let notAvailable: String = "Not available"
-
-    init(type: DeviceInfoItemType) {
-        self.type = type
-    }
 
     var displayName: String {
         switch type {
@@ -38,18 +33,18 @@ struct DeviceInfoItem: Identifiable, InfoItemProvider {
     var information: String {
         switch type {
         case .deviceName(let value):
-            return value ?? notAvailable
+            return value ?? DevMenuStringConstants.notAvailable
         case  .systemName(let value):
-            return value ?? notAvailable
+            return value ?? DevMenuStringConstants.notAvailable
         case .systemVersion(let value):
-            return value ?? notAvailable
+            return value ?? DevMenuStringConstants.notAvailable
         case .modelName(let value):
-            return value ?? notAvailable
+            return value ?? DevMenuStringConstants.notAvailable
         case .localizedModelName(let value):
-            return value ?? notAvailable
+            return value ?? DevMenuStringConstants.notAvailable
         case .isSimulator(let value):
             guard  let value = value else {
-                return notAvailable
+                return DevMenuStringConstants.notAvailable
             }
             return value ? "Yes" : "No"
         }

@@ -13,11 +13,6 @@ struct EnvironmentInfoItem: Identifiable, InfoItemProvider {
 
     let id = UUID()
     let type: EnvironmentInfoItemType
-    let notAvailable: String = "Not available"
-
-    init(type: EnvironmentInfoItemType) {
-        self.type = type
-    }
 
     var displayName: String {
         switch type {
@@ -39,17 +34,17 @@ struct EnvironmentInfoItem: Identifiable, InfoItemProvider {
     var information: String {
         switch type {
         case .nodejsVersion(let value):
-            return value ?? notAvailable
+            return value ?? DevMenuStringConstants.notAvailable
         case .npmVersion(let value):
-            return value ?? notAvailable
+            return value ?? DevMenuStringConstants.notAvailable
         case .amplifyCLIVersion(let value):
-            return value ?? notAvailable
+            return value ?? DevMenuStringConstants.notAvailable
         case .podVersion(let value):
-            return value ?? notAvailable
+            return value ?? DevMenuStringConstants.notAvailable
         case .xcodeVersion(let value):
-            return value ?? notAvailable
+            return value ?? DevMenuStringConstants.notAvailable
         case .osVersion(let value):
-            return value ?? notAvailable
+            return value ?? DevMenuStringConstants.notAvailable
         }
     }
 }

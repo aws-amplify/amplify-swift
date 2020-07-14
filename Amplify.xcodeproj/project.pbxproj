@@ -210,6 +210,7 @@
 		974FF1A124BE14E00050D01B /* DeviceInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF1A024BE14E00050D01B /* DeviceInfoHelper.swift */; };
 		974FF1A324BE16F90050D01B /* EnvironmentInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF1A224BE16F90050D01B /* EnvironmentInfoHelper.swift */; };
 		974FF1A524BE18460050D01B /* PluginInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF1A424BE18460050D01B /* PluginInfoHelper.swift */; };
+		974FF1A724BE5F630050D01B /* DevMenuStringConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF1A624BE5F630050D01B /* DevMenuStringConstants.swift */; };
 		97CB85FD24AA451B000C65FB /* PersistentLoggingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */; };
 		97CB85FE24AA451B000C65FB /* AmplifyDevMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */; };
 		97CB85FF24AA451B000C65FB /* DevMenuList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F824AA451B000C65FB /* DevMenuList.swift */; };
@@ -961,6 +962,7 @@
 		974FF1A024BE14E00050D01B /* DeviceInfoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoHelper.swift; sourceTree = "<group>"; };
 		974FF1A224BE16F90050D01B /* EnvironmentInfoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentInfoHelper.swift; sourceTree = "<group>"; };
 		974FF1A424BE18460050D01B /* PluginInfoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginInfoHelper.swift; sourceTree = "<group>"; };
+		974FF1A624BE5F630050D01B /* DevMenuStringConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevMenuStringConstants.swift; sourceTree = "<group>"; };
 		976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentLoggingPlugin.swift; sourceTree = "<group>"; };
 		97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyDevMenu.swift; sourceTree = "<group>"; };
@@ -2062,6 +2064,7 @@
 				974FF13224B043E60050D01B /* DevMenuBehavior.swift */,
 				974FF12C24B0434B0050D01B /* DevMenuPresentationContextProvider.swift */,
 				974FF19224B909570050D01B /* DevEnvironmentInfo.swift */,
+				974FF1A624BE5F630050D01B /* DevMenuStringConstants.swift */,
 				974FF17F24B549000050D01B /* Trigger */,
 				974FF17E24B548C20050D01B /* Logging */,
 				97CB85FB24AA451B000C65FB /* Data */,
@@ -4228,6 +4231,7 @@
 				B4FA336624105DCD00E1C659 /* AuthCategory+ClientBehavior.swift in Sources */,
 				FA6BC87B235F5D240001A882 /* APICategoryGraphQLBehavior.swift in Sources */,
 				FA6BC86B235F57920001A882 /* APIError.swift in Sources */,
+				974FF1A724BE5F630050D01B /* DevMenuStringConstants.swift in Sources */,
 				B996FC4D24059918006D0F68 /* Model+Enum.swift in Sources */,
 				216879FE23636A0A004A056E /* RepeatingTimer.swift in Sources */,
 				B4251A072425047D007F59EF /* AuthChangePasswordRequest.swift in Sources */,

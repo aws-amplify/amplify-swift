@@ -15,7 +15,7 @@ struct PluginInfoItem: Identifiable, InfoItemProvider {
     var information: String
 
     init(displayName: String, information: String) {
-        self.displayName = displayName.isEmpty ? "Unknown Plugin" : displayName
-        self.information = information.isEmpty ? "Not Available" : information
+        self.displayName = displayName.isEmpty ? DevMenuStringConstants.unknownPlugin : displayName
+        self.information = information.isEmpty ? DevMenuStringConstants.notAvailable : information
     }
 }
