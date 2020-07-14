@@ -7,13 +7,51 @@
 
 import Foundation
 
-/// Data class for a each item shown in the Device Info screen
+/// Data class for each item shown in the Device Info screen
 @available(iOS 13.0.0, *)
-struct DeviceInfoItem: Identifiable {
+struct DeviceInfoItem: Identifiable, InfoItemProvider {
     let id = UUID()
     let type: DeviceInfoItemType
+    let notAvailable: String = "Not available"
 
     init(type: DeviceInfoItemType) {
         self.type = type
+    }
+
+    var displayName: String {
+        switch type {
+        case .deviceName:
+            return "Device Name"
+        case  .systemName:
+            return "System Name"
+        case .systemVersion:
+            return "System Version"
+        case .modelName:
+            return "Model Name"
+        case .localizedModelName:
+            return "Localized Model Name"
+        case .isSimulator:
+            return "Running on simulator"
+        }
+    }
+
+    var information: String {
+        switch type {
+        case .deviceName(let value):
+            return value ?? notAvailable
+        case  .systemName(let value):
+            return value ?? notAvailable
+        case .systemVersion(let value):
+            return value ?? notAvailable
+        case .modelName(let value):
+            return value ?? notAvailable
+        case .localizedModelName(let value):
+            return value ?? notAvailable
+        case .isSimulator(let value):
+            guard  let value = value else {
+                return notAvailable
+            }
+            return value ? "Yes" : "No"
+        }
     }
 }

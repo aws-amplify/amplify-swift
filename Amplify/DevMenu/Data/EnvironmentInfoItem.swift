@@ -7,15 +7,49 @@
 
 import Foundation
 
-/// Data class for a each item shown in the Environment Info screen
+/// Data class for  each item showing Developer Environment Information
 @available(iOS 13.0.0, *)
-struct EnvironmentInfoItem: Identifiable {
-    let id = UUID()
-    let key: String
-    let value: String
+struct EnvironmentInfoItem: Identifiable, InfoItemProvider {
 
-    init(key: String, value: String) {
-        self.key = key
-        self.value = value
+    let id = UUID()
+    let type: EnvironmentInfoItemType
+    let notAvailable: String = "Not available"
+
+    init(type: EnvironmentInfoItemType) {
+        self.type = type
+    }
+
+    var displayName: String {
+        switch type {
+        case .nodejsVersion:
+            return "Node.js version"
+        case .npmVersion:
+            return "npm version"
+        case .amplifyCLIVersion:
+            return "Amplify CLI version"
+        case .podVersion:
+            return "CocoaPods version"
+        case .xcodeVersion:
+            return "Xcode version"
+        case .osVersion:
+            return "macOS version"
+        }
+    }
+
+    var information: String {
+        switch type {
+        case .nodejsVersion(let value):
+            return value ?? notAvailable
+        case .npmVersion(let value):
+            return value ?? notAvailable
+        case .amplifyCLIVersion(let value):
+            return value ?? notAvailable
+        case .podVersion(let value):
+            return value ?? notAvailable
+        case .xcodeVersion(let value):
+            return value ?? notAvailable
+        case .osVersion(let value):
+            return value ?? notAvailable
+        }
     }
 }

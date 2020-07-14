@@ -10,32 +10,12 @@ import SwiftUI
 /// View corresponding to each row in Device Information Screen / Environment Information Screen
 @available(iOS 13.0.0, *)
 struct InfoRow: View {
-    private let notAvailable = "Not Available"
-    var key: String
-    var value: String
-
-    init(item: DeviceInfoItem) {
-        self.key = item.type.key
-        if item.type.value.isEmpty {
-            self.value = notAvailable
-        } else {
-            self.value = item.type.value
-        }
-    }
-
-    init(item: EnvironmentInfoItem) {
-        self.key = item.key
-        if item.value.isEmpty {
-            self.value = notAvailable
-        } else {
-            self.value = item.value
-        }
-    }
+    var infoItem: InfoItemProvider
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text(self.key).bold()
-            Text(self.value)
+            Text(self.infoItem.displayName).bold()
+            Text(self.infoItem.information)
         }
     }
 }
@@ -43,6 +23,6 @@ struct InfoRow: View {
 @available(iOS 13.0.0, *)
 struct DeviceInfoRow_Previews: PreviewProvider {
     static var previews: some View {
-        InfoRow(item: DeviceInfoItem(type: .deviceName))
+        InfoRow(infoItem: DeviceInfoItem(type: .deviceName("iPhone")))
     }
 }

@@ -7,29 +7,12 @@
 
 import Foundation
 
+/// Item types for each row displaying Developer Environment Information
 enum EnvironmentInfoItemType {
-    case nodejsVersion
-    case npmVersion
-    case amplifyCLIVersion
-    case podVersion
-    case xcodeVersion
-    case osVersion
-
-    // Key descriptions for environment information
-    var key: String {
-        switch self {
-        case .nodejsVersion:
-            return "Node.js version"
-        case .npmVersion:
-            return "npm version"
-        case .amplifyCLIVersion:
-            return "Amplify CLI version"
-        case .podVersion:
-            return "CocoaPods version"
-        case .xcodeVersion:
-            return "Xcode version"
-        case .osVersion:
-            return "macOS version"
-        }
-    }
+    case nodejsVersion(String?)
+    case npmVersion(String?)
+    case amplifyCLIVersion(String?)
+    case podVersion(String?)
+    case xcodeVersion(String?)
+    case osVersion(String?)
 }
