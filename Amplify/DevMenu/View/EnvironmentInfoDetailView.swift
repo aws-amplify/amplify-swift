@@ -20,7 +20,7 @@ struct EnvironmentInfoDetailView: View {
 
     init() {
         // TODO : Read environment information from json file and populate devEnvSectionItems
-        // devEnvSectionItems = PluginInfoHelper.getPluginInformation()
+        // devEnvSectionItems = EnvironmentInfoHelper.getDeveloperEnvironmentInformation()
         self.amplifyPluginSectionItems = PluginInfoHelper.getPluginInformation()
     }
 
