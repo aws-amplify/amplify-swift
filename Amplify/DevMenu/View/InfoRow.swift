@@ -7,14 +7,15 @@
 
 import SwiftUI
 
+/// View corresponding to each row in Device Information Screen / Environment Information Screen
 @available(iOS 13.0.0, *)
-struct DeviceInfoRow: View {
-    var rowItem: DeviceInfoItem
+struct InfoRow: View {
+    var infoItem: InfoItemProvider
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text(rowItem.type.key).bold()
-            Text(rowItem.type.value)
+            Text(self.infoItem.displayName).bold()
+            Text(self.infoItem.information)
         }
     }
 }
@@ -22,6 +23,6 @@ struct DeviceInfoRow: View {
 @available(iOS 13.0.0, *)
 struct DeviceInfoRow_Previews: PreviewProvider {
     static var previews: some View {
-        DeviceInfoRow(rowItem: DeviceInfoItem(type: .deviceName))
+        InfoRow(infoItem: DeviceInfoItem(type: .deviceName("iPhone")))
     }
 }
