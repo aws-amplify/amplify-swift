@@ -80,7 +80,7 @@ class DataStoreLocalUsageTests: LocalUsageIntegrationTestBase {
                 previousRating = rating
             }
         }
-        
+
         // https://developer.apple.com/documentation/swift/dictionary/3127163-init
         let postsDic = Dictionary(grouping: posts, by: { $0.rating! })
         for (_, pairs) in postsDic {

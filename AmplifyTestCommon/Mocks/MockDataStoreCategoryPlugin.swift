@@ -37,7 +37,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
     func query<M: Model>(_ modelType: M.Type,
                          where predicate: QueryPredicate?,
-                         sort: QuerySortInput?,
+                         sort sortInput: QuerySortInput?,
                          paginate paginationInput: QueryPaginationInput?,
                          completion: (DataStoreResult<[M]>) -> Void) {
         notify("queryByPredicate")
