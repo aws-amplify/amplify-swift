@@ -14,7 +14,7 @@ import AWSMobileClient
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
-class LocalUsageIntegrationTestBase: XCTestCase {
+class LocalStoreIntegrationTestBase: XCTestCase {
 
     override func setUp() {
         super.setUp()

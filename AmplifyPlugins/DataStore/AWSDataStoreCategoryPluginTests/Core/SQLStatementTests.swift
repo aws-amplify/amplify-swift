@@ -354,10 +354,10 @@ class SQLStatementTests: XCTestCase {
 
     // MARK: - Select Statements Sort
 
-    /// - Given: a `Model` type and a `QuerySortInput`
+    /// - Given: a `Model` type and a `QuerySortBy`
     /// - When:
     ///   - the model is of type `Post`
-    ///   - the sort should be `id` of descending order
+    ///   - the sort should be `id` of ascending order
     /// - Then:
     ///   - check if the generated SQL statement is valid
     ///   - check if the statement contains the correct `order by` and `ascending`
@@ -375,9 +375,7 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
-    // MARK: - Select Statements Sorts
-
-    /// - Given: a `Model` type and two `QuerySortInput`s
+    /// - Given: a `Model` type and two `QuerySortBy`s
     /// - When:
     ///   - the model is of type `Post`
     ///   - the sort should be `id` of descending order and `createdAt` of descending order
@@ -399,9 +397,7 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
-    // MARK: - Select Statements Where and Sort
-
-    /// - Given: a `Model` type, a `QueryPredicate`and  a `QuerySortInput`
+    /// - Given: a `Model` type, a `QueryPredicate`and  a `QuerySortBy`
     /// - When:
     ///   - the model is of type `Post`
     ///   - the sort should meet predicate condition be `id` of descending order
@@ -425,9 +421,7 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
-    // MARK: - Select Statements Where and Sort
-
-    /// - Given: a `Model` type, a `QuerySortInput`, a `QueryPaginationInput`
+    /// - Given: a `Model` type, a `QuerySortBy`, a `QueryPaginationInput`
     /// - When:
     ///   - the model is of type `Post`
     ///   - the sort should be `id` of descending order and
@@ -451,9 +445,7 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
-    // MARK: - Select Statements Where and Sort
-
-    /// - Given: a `Model` type, a `QueryPredicate`,  a `QuerySortInput` and a `QueryPaginationInput`
+    /// - Given: a `Model` type, a `QueryPredicate`,  a `QuerySortBy` and a `QueryPaginationInput`
     /// - When:
     ///   - the model is of type `Post`
     ///   - the predicate should meet the condtion

@@ -10,7 +10,7 @@ import Foundation
 import SQLite
 
 extension QuerySortBy {
-    var orderByClause: String {
+    var sqlOrderBy: String {
         switch self {
         case .ascending(let key):
             return "\(key.stringValue) ASC"

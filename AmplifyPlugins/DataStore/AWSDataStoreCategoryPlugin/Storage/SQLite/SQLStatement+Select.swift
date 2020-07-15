@@ -60,16 +60,15 @@ struct SelectStatementMetadata {
             """
         }
 
-        if let sort = sort {
-            let sortClause = sort
+        if let sort = sort, !sort.inputs.isEmpty {
+            let sortStatementClause = sort
                 .inputs
-                .map { $0.orderByClause }
+                .map { $0.sqlOrderBy }
                 .joined(separator: ", ")
 
-            // Concatanate SQLStatement
             sql = """
             \(sql)
-            order by \(sortClause)
+            order by \(sortStatementClause)
             """
         }
 
