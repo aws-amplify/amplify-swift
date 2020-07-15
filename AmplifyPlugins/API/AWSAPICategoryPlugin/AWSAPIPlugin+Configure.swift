@@ -35,8 +35,7 @@ public extension AWSAPIPlugin {
 
         let pluginConfig = try AWSAPICategoryPluginConfiguration(jsonValue: jsonValue, authService: authService)
 
-        configure(authService: authService,
-                  pluginConfig: pluginConfig)
+        configure(authService: authService, pluginConfig: pluginConfig)
 
         log.info("Configure finished")
     }

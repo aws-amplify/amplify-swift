@@ -15,7 +15,7 @@ extension DataStoreCategory: CategoryConfigurable {
         }
     }
 
-    func configure(using configuration: CategoryConfiguration) throws {
+    func configure(using configuration: CategoryConfiguration?) throws {
         guard !isConfigured else {
             let error = ConfigurationError.amplifyAlreadyConfigured(
                 "\(categoryType.displayName) has already been configured.",

@@ -8,7 +8,7 @@
 extension LoggingCategory: CategoryConfigurable {
 
     /// Configures the LoggingCategory using the incoming CategoryConfiguration.
-    func configure(using configuration: CategoryConfiguration) throws {
+    func configure(using configuration: CategoryConfiguration?) throws {
         try concurrencyQueue.sync {
             let plugin: LoggingCategoryPlugin
             switch configurationState {
@@ -26,7 +26,7 @@ extension LoggingCategory: CategoryConfigurable {
                 throw error
             }
 
-            try plugin.configure(using: configuration.plugins[plugin.key])
+            try plugin.configure(using: configuration?.plugins[plugin.key])
             self.plugin = plugin
             configurationState = .configured
         }
