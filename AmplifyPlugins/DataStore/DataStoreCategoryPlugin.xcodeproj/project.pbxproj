@@ -95,6 +95,8 @@
 		B9FAA140238C600A009414B4 /* ListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA13F238C600A009414B4 /* ListTests.swift */; };
 		B9FAA142238C6082009414B4 /* BaseDataStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA141238C6082009414B4 /* BaseDataStoreTests.swift */; };
 		D80064F62499297800935DA3 /* MockFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80064F52499297800935DA3 /* MockFileManager.swift */; };
+		D80B86BF24BF913100B82FD0 /* DataStoreLocalStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80B86BE24BF913100B82FD0 /* DataStoreLocalStoreTests.swift */; };
+		D80B86C124BF91E100B82FD0 /* LocalStoreIntegrationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80B86C024BF91E100B82FD0 /* LocalStoreIntegrationTestBase.swift */; };
 		D8B90862249839D4002593F5 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21233DD7247591D100039337 /* amplifyconfiguration.json */; };
 		D8C5BA59249815A6007C3A68 /* DataStoreConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C5BA58249815A6007C3A68 /* DataStoreConfigurationTests.swift */; };
 		FA0427C82396C27400D25AB0 /* SyncEngineStartupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0427C72396C27400D25AB0 /* SyncEngineStartupTests.swift */; };
@@ -306,6 +308,8 @@
 		D4BB518039D7C264E092363E /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		D59B63DF64CCA73C910ADD66 /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D80064F52499297800935DA3 /* MockFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFileManager.swift; sourceTree = "<group>"; };
+		D80B86BE24BF913100B82FD0 /* DataStoreLocalStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreLocalStoreTests.swift; sourceTree = "<group>"; };
+		D80B86C024BF91E100B82FD0 /* LocalStoreIntegrationTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStoreIntegrationTestBase.swift; sourceTree = "<group>"; };
 		D8C5BA58249815A6007C3A68 /* DataStoreConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConfigurationTests.swift; sourceTree = "<group>"; };
 		DCC3AA75D77D0DB916EC42DB /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
 		EA320D973669D3843FDF755E /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -591,6 +595,7 @@
 				21233DD7247591D100039337 /* amplifyconfiguration.json */,
 				FA6B0EA9249445D50062AA59 /* AWSDataStorePluginConfigurationTests.swift */,
 				FAB571412395A3E80006A5F8 /* DataStoreEndToEndTests.swift */,
+				D80B86BE24BF913100B82FD0 /* DataStoreLocalStoreTests.swift */,
 				D8C5BA58249815A6007C3A68 /* DataStoreConfigurationTests.swift */,
 				2149E62123886CEE00873955 /* Info.plist */,
 				213481BE24213E13001966DE /* README.md */,
@@ -755,6 +760,7 @@
 			isa = PBXGroup;
 			children = (
 				FAB5713F23958C210006A5F8 /* SyncEngineIntegrationTestBase.swift */,
+				D80B86C024BF91E100B82FD0 /* LocalStoreIntegrationTestBase.swift */,
 				FAD2BDF5239583B2006EB065 /* TestModelRegistration.swift */,
 			);
 			path = TestSupport;
@@ -1573,6 +1579,8 @@
 				D8C5BA59249815A6007C3A68 /* DataStoreConfigurationTests.swift in Sources */,
 				2149E62D23886D3900873955 /* SyncMetadataTests.swift in Sources */,
 				FAD2BDF6239583B2006EB065 /* TestModelRegistration.swift in Sources */,
+				D80B86BF24BF913100B82FD0 /* DataStoreLocalStoreTests.swift in Sources */,
+				D80B86C124BF91E100B82FD0 /* LocalStoreIntegrationTestBase.swift in Sources */,
 				FA3841EB23889D6C0070AD5B /* SubscriptionEndToEndTests.swift in Sources */,
 				FAB571422395A3E80006A5F8 /* DataStoreEndToEndTests.swift in Sources */,
 				FAB5714023958C210006A5F8 /* SyncEngineIntegrationTestBase.swift in Sources */,
