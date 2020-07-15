@@ -14,26 +14,26 @@ PODS:
     - Amplify (= 1.0.4)
     - AWSCore (~> 2.14.0)
     - AWSPluginsCore (= 1.0.4)
-  - AWSAuthCore (2.14.0):
-    - AWSCore (= 2.14.0)
-  - AWSCognitoIdentityProvider (2.14.0):
+  - AWSAuthCore (2.14.2):
+    - AWSCore (= 2.14.2)
+  - AWSCognitoIdentityProvider (2.14.2):
     - AWSCognitoIdentityProviderASF (= 1.0.1)
-    - AWSCore (= 2.14.0)
+    - AWSCore (= 2.14.2)
   - AWSCognitoIdentityProviderASF (1.0.1)
-  - AWSCore (2.14.0)
-  - AWSMobileClient (2.14.0):
-    - AWSAuthCore (= 2.14.0)
-    - AWSCognitoIdentityProvider (= 2.14.0)
+  - AWSCore (2.14.2)
+  - AWSMobileClient (2.14.2):
+    - AWSAuthCore (= 2.14.2)
+    - AWSCognitoIdentityProvider (= 2.14.2)
   - AWSPluginsCore (1.0.4):
     - Amplify (= 1.0.4)
     - AWSCore (~> 2.14.0)
     - AWSMobileClient (~> 2.14.0)
-  - AWSS3 (2.14.0):
-    - AWSCore (= 2.14.0)
+  - AWSS3 (2.14.2):
+    - AWSCore (= 2.14.2)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
-  - SwiftFormat/CLI (0.44.14)
+  - SwiftFormat/CLI (0.44.17)
   - SwiftLint (0.39.2)
 
 DEPENDENCIES:
@@ -86,16 +86,16 @@ SPEC CHECKSUMS:
   Amplify: 7626e435f3e78ac3508252557e375f994d5d5154
   AmplifyPlugins: aba4f9e4432ebc089aaea45722d2c5711d3e58f4
   AmplifyTestCommon: fb6f2e2e876cd4ec582c55e9bf7cb0bfe2ae21e9
-  AWSAuthCore: 6b337af04751dcbb4bc50f18dbed0343ba345e17
-  AWSCognitoIdentityProvider: bd4cf5f70b9224b1ea42b423a75716cafb8f7ac4
+  AWSAuthCore: 7ab6f5ab60ba8bb91a4868581946a993cbbae76d
+  AWSCognitoIdentityProvider: 609856c741ef86037055223b3a46f4eeb49319d0
   AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
-  AWSCore: 6398ca88010f34653a07d54a252affe920a99965
-  AWSMobileClient: 0f4ae3f60722fc2cec7ca926fd442ff55a2154a5
+  AWSCore: 80da498ab0979e77dbdc7690a61ceaaccfb0499a
+  AWSMobileClient: b80f21439aa95df2375e7acdde76d2f60c12f4b7
   AWSPluginsCore: 646f8c2d831a52f2293da0dfd59a31eee61f6ad5
-  AWSS3: 947204f8280a28864e899f7544176ff53a0e87e9
+  AWSS3: 2ea579ed91fb01a187f7d8d827e3936da488531e
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
-  SwiftFormat: a5ab293a7f6a812bec6f4ffc5507b7ed08f7f6e1
+  SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
   SwiftLint: 22ccbbe3b8008684be5955693bab135e0ed6a447
 
 PODFILE CHECKSUM: 23c3028505a2f56c001d01c66c1622dff6f8dd8e

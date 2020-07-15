@@ -197,4 +197,17 @@ class PredictionsPluginConfigurationTests: XCTestCase {
         }
     }
 
+    func testConfigureFailureForNilConfiguration() throws {
+        let plugin = AWSPredictionsPlugin()
+        do {
+            try plugin.configure(using: nil)
+            XCTFail("Predictions configuration should not succeed")
+        } catch {
+            guard let pluginError = error as? PluginError,
+                case .pluginConfigurationError(_, _, _) = pluginError else {
+                    XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
+                    return
+            }
+        }
+    }
 }

@@ -13,7 +13,7 @@ protocol CategoryConfigurable: class, CategoryTypeable {
     /// Configures the category and added plugins using `configuration`
     ///
     /// - Parameter configuration: The CategoryConfiguration
-    func configure(using configuration: CategoryConfiguration) throws
+    func configure(using configuration: CategoryConfiguration?) throws
 
     /// Convenience method for configuring the category using the top-level AmplifyConfiguration
     ///
