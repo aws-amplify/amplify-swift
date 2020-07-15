@@ -18,9 +18,11 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
     /// - Given: 15 posts that has been saved
     /// - When:
-    ///    - attempt to query existing posts with offset and limit
+    ///    - query with pagination input given a page number and limit 10
     /// - Then:
-    ///    - the existing data that matches offset and limit will be returned
+    ///    - first page returns the 10 (the defined limit) of 15 posts
+    ///    - second page returns the remaining 5 posts
+    ///    - the 15 retrieved posts have unique identifiers
     func testQueryWithPaginationInput() throws {
         _ = setUpLocalStore(numberOfPosts: 15)
         var posts = [Post]()
@@ -38,7 +40,7 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         }
         wait(for: [queryFirstTimeSuccess], timeout: 10)
 
-        XCTAssertTrue(posts.count == 10)
+        XCTAssertEqual(posts.count, 10)
 
         let querySecondTimeSuccess = expectation(description: "Query post completed")
         Amplify.DataStore.query(Post.self,
@@ -53,12 +55,11 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         }
         wait(for: [querySecondTimeSuccess], timeout: 10)
 
-        XCTAssertTrue(posts.count == 15)
+        XCTAssertEqual(posts.count, 15)
 
-        let idArray = posts.map { $0.id }
-        let idSet = Set(idArray)
-        
-        XCTAssertTrue(idSet.count == 15)
+        let idSet = Set(posts.map { $0.id })
+
+        XCTAssertEqual(idSet.count, 15)
     }
 
     func setUpLocalStore(numberOfPosts: Int) -> [Post] {
