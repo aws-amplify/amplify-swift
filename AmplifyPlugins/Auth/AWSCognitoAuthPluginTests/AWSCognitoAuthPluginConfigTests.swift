@@ -166,4 +166,26 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
         }
     }
 
+    /// Test Auth configuration with nil value
+    ///
+    /// - Given: Given a nil config for user pool and identity pool
+    /// - When:
+    ///    - I configure auth with the given configuration
+    /// - Then:
+    ///    - I should get an exception.
+    ///
+    func testConfigureFailureForNilConfiguration() throws {
+        let plugin = AWSCognitoAuthPlugin()
+        do {
+            try plugin.configure(using: nil)
+            XCTFail("Auth configuration should not succeed")
+        } catch {
+            guard let apiError = error as? PluginError,
+                case .pluginConfigurationError(_, _, _) = apiError else {
+                    XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
+                    return
+            }
+        }
+    }
+
 }

@@ -197,4 +197,17 @@ class PredictionsPluginConfigurationTests: XCTestCase {
         }
     }
 
+    func testConfigureFailureForNilConfiguration() throws {
+        let plugin = AWSAPIPlugin()
+        do {
+            try plugin.configure(using: nil)
+            XCTFail("Predictions configuration should not succeed")
+        } catch {
+            guard let apiError = error as? PluginError,
+                case .pluginConfigurationError(_, _, _) = apiError else {
+                    XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
+                    return
+            }
+        }
+    }
 }

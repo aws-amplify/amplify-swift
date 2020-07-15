@@ -59,4 +59,17 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
         }
     }
 
+    func testConfigureFailureForNilConfiguration() throws {
+        let plugin = AWSPinpointAnalyticsPlugin()
+        do {
+            try plugin.configure(using: nil)
+            XCTFail("Analytics configuration should not succeed")
+        } catch {
+            guard let apiError = error as? PluginError,
+                case .pluginConfigurationError(_, _, _) = apiError else {
+                    XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
+                    return
+            }
+        }
+    }
 }

@@ -140,7 +140,7 @@ extension AuthenticationProviderAdapter {
 
         // Get top most view controller to present a navController
         var parentViewController = window.rootViewController
-        while ((parentViewController?.presentedViewController) != nil) {
+        while (parentViewController?.presentedViewController) != nil {
             parentViewController = parentViewController?.presentedViewController
         }
 
