@@ -192,6 +192,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                          completion: DataStoreCallback<[M]>) {
         query(modelType,
               predicate: predicate,
+              paginationInput: paginationInput,
               additionalStatements: nil,
               completion: completion)
     }
