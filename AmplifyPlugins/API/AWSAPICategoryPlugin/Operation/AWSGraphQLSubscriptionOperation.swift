@@ -43,11 +43,10 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             subscriptionConnection.unsubscribe(item: subscriptionItem)
             let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.disconnected)
             dispatchInProcess(data: subscriptionEvent)
-            dispatch(result: .successfulVoid)
-            finish()
-        } else {
-            super.cancel()
         }
+        super.cancel()
+        dispatch(result: .successfulVoid)
+        finish()
     }
 
     override public func main() {
