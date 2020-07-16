@@ -15,9 +15,9 @@ module AmplifyPods
       spec: "AWSPluginsCore.podspec",
       constants: ['AMPLIFY_VERSION'],
       plist_paths: [
+        "AmplifyPlugins/Core/AWSPluginsTestCommon/Info.plist",
         "AmplifyPlugins/Core/AWSPluginsCore/Info.plist",
-        "AmplifyPlugins/Core/AWSPluginsCoreTests/Info.plist",
-        "AmplifyPlugins/Core/AWSPluginsTestCommon/Info.plist"
+        "AmplifyPlugins/Core/AWSPluginsCoreTests/Info.plist"
       ]
     },
     {
@@ -40,11 +40,23 @@ module AmplifyPods
       plist_paths: [
         "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPlugin/Resources/Info.plist",
         "AmplifyPlugins/API/AWSAPICategoryPlugin/Info.plist",
+        "AmplifyPlugins/Auth/AWSCognitoAuthPlugin/Resources/Info.plist",
+        "AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin/Info.plist",
         "AmplifyPlugins/Storage/AWSS3StoragePlugin/Resources/Info.plist"
       ]
+    },
+    {
+      spec: "AmplifyTestCommon.podspec",
+      constants: ['AMPLIFY_VERSION'],
+      plist_paths: [],
+      no_push: true
     }
   ]
+  @@plugins = ['API', 'Analytics', 'Auth', 'DataStore', 'Predictions', 'Storage']
   def self.pods
     @@pods
+  end
+  def self.plugins
+    @@plugins
   end
 end

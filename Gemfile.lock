@@ -1,10 +1,10 @@
 GIT
   remote: https://github.com/aws-amplify/amplify-ci-support
-  revision: d6ccaffae0c1fd6426d9209fffa04f7300377726
+  revision: e484c7fb9ee9b156f450af83a282cc1a31a74c5d
   branch: master
   glob: src/fastlane/release_actions/*.gemspec
   specs:
-    fastlane-plugin-release_actions (1.0.3)
+    fastlane-plugin-release_actions (1.0.4)
 
 GEM
   remote: https://rubygems.org/
@@ -22,16 +22,16 @@ GEM
       json (>= 1.5.1)
     atomos (0.1.3)
     aws-eventstream (1.1.0)
-    aws-partitions (1.337.0)
-    aws-sdk-core (3.102.1)
+    aws-partitions (1.339.0)
+    aws-sdk-core (3.103.0)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.239.0)
       aws-sigv4 (~> 1.1)
       jmespath (~> 1.0)
-    aws-sdk-kms (1.35.0)
+    aws-sdk-kms (1.36.0)
       aws-sdk-core (~> 3, >= 3.99.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.72.0)
+    aws-sdk-s3 (1.73.0)
       aws-sdk-core (~> 3, >= 3.102.1)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.1)
@@ -83,11 +83,12 @@ GEM
     concurrent-ruby (1.1.6)
     declarative (0.0.20)
     declarative-option (0.1.0)
-    digest-crc (0.5.1)
+    digest-crc (0.6.1)
+      rake (~> 13.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.7.5)
-    emoji_regex (1.0.1)
+    emoji_regex (3.0.0)
     escape (0.0.4)
     ethon (0.12.0)
       ffi (>= 1.3.0)
@@ -100,16 +101,16 @@ GEM
     faraday_middleware (1.0.0)
       faraday (~> 1.0)
     fastimage (2.1.7)
-    fastlane (2.149.1)
+    fastlane (2.151.1)
       CFPropertyList (>= 2.3, < 4.0.0)
       addressable (>= 2.3, < 3.0.0)
       aws-sdk-s3 (~> 1.0)
-      babosa (>= 1.0.2, < 2.0.0)
+      babosa (>= 1.0.3, < 2.0.0)
       bundler (>= 1.12.0, < 3.0.0)
       colored
       commander-fastlane (>= 4.4.6, < 5.0.0)
       dotenv (>= 2.1.1, < 3.0.0)
-      emoji_regex (>= 0.1, < 2.0)
+      emoji_regex (>= 0.1, < 4.0)
       excon (>= 0.71.0, < 1.0.0)
       faraday (>= 0.17, < 2.0)
       faraday-cookie_jar (~> 0.0.6)
@@ -120,13 +121,11 @@ GEM
       google-cloud-storage (>= 1.15.0, < 2.0.0)
       highline (>= 1.7.2, < 2.0.0)
       json (< 3.0.0)
-      jwt (~> 2.1.0)
+      jwt (>= 2.1.0, < 3)
       mini_magick (>= 4.9.4, < 5.0.0)
-      multi_xml (~> 0.5)
       multipart-post (~> 2.0.0)
       plist (>= 3.1.0, < 4.0.0)
-      public_suffix (~> 2.0.0)
-      rubyzip (>= 1.3.0, < 2.0.0)
+      rubyzip (>= 2.0.0, < 3.0.0)
       security (= 0.1.3)
       simctl (~> 1.6.3)
       slack-notifier (>= 2.0.0, < 3.0.0)
@@ -178,14 +177,13 @@ GEM
       concurrent-ruby (~> 1.0)
     jmespath (1.4.0)
     json (2.3.1)
-    jwt (2.1.0)
+    jwt (2.2.1)
     memoist (0.16.2)
     mini_magick (4.10.1)
     mini_mime (1.0.2)
     minitest (5.14.1)
     molinillo (0.6.6)
     multi_json (1.14.1)
-    multi_xml (0.6.0)
     multipart-post (2.0.0)
     nanaimo (0.2.6)
     nap (1.1.0)
@@ -193,7 +191,8 @@ GEM
     netrc (0.11.0)
     os (1.1.0)
     plist (3.5.0)
-    public_suffix (2.0.5)
+    public_suffix (4.0.5)
+    rake (13.0.1)
     representable (3.0.4)
       declarative (< 0.1.0)
       declarative-option (< 0.2.0)
@@ -201,7 +200,7 @@ GEM
     retriable (3.1.2)
     rouge (2.0.7)
     ruby-macho (1.4.0)
-    rubyzip (1.3.0)
+    rubyzip (2.3.0)
     security (0.1.3)
     signet (0.14.0)
       addressable (~> 2.3)
@@ -251,4 +250,4 @@ DEPENDENCIES
   xcpretty
 
 BUNDLED WITH
-   1.17.2
+   2.1.2
