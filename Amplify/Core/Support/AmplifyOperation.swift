@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
 import Foundation
 
 /// An abstract representation of an Amplify unit of work. Subclasses may aggregate multiple work items
@@ -17,8 +18,22 @@ import Foundation
 /// Pausable/resumable tasks that do not require Hub dispatching should use AsynchronousOperation instead.
 open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: AmplifyError>: AsynchronousOperation {
 
+    struct OperationCancelledError: Error { }
+
     /// The concrete Request associated with this operation
     public typealias Request = Request
+
+    /// The concrete Success type associated with this operation
+    public typealias Success = Success
+
+    /// The concrete Failure type associated with this operation
+    public typealias Failure = Failure
+
+    /// Convenience typealias defining the `Result`s dispatched by this operation
+    public typealias OperationResult = Result<Success, Failure>
+
+    /// Convenience typealias for the `listener` callback submitted during Operation creation
+    public typealias ResultListener = (OperationResult) -> Void
 
     /// The unique ID of the operation. In categories where operations are persisted for future processing, this id can
     /// be used to identify previously-scheduled work for progress tracking or other functions.
@@ -34,6 +49,17 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
     public let eventName: HubPayloadEventName
 
     private var resultListenerUnsubscribeToken: UnsubscribeToken?
+
+    /// Local storage for the result publisher associated with this operation. In iOS
+    /// 13 and higher, this is initialized to be a `Future<Success, Failure>`. We use a
+    /// Future here to ensure that a subscriber will always receive a value, even if
+    /// the operation has already completed execution by the time the subscriber is
+    /// attached. We derive the `resultPublisher` computed property from this value.
+    var resultFuture: Any
+
+    /// Local storage for the result promise associated with this operation. We use
+    /// this promise handle to resolve the operation in the `dispatch` method
+    var resultPromise: Any
 
     /// Creates an AmplifyOperation for the specified reequest.
     ///
@@ -80,7 +106,14 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
         self.request = request
         self.id = UUID()
 
+        self.resultFuture = false
+        self.resultPromise = false
+
         super.init()
+
+        if #available(iOS 13.0, *) {
+            resultFuture = Future<Success, Failure> { self.resultPromise = $0 }
+        }
 
         if let resultListener = resultListener {
             self.resultListenerUnsubscribeToken = subscribe(resultListener: resultListener)
@@ -111,6 +144,45 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
         // We know that `token` is assigned by `Amplify.Hub.listen` so it's safe to force-unwrap
         return token!
     }
+
+    /// Classes that override this method must emit a completion to the `resultPublisher` upon cancellation
+    open override func cancel() {
+        super.cancel()
+        if #available(iOS 13.0, *) {
+            let cancellationError = Failure(
+                errorDescription: "Operation cancelled",
+                recoverySuggestion: "The operation was cancelled before it completed",
+                error: OperationCancelledError()
+            )
+            publish(result: .failure(cancellationError))
+        }
+    }
+
+    /// Dispatches an event to the hub. Internally, creates an
+    /// `AmplifyOperationContext` object from the operation's `id`, and `request`. On
+    /// iOS 13+, this method also publishes the result on the `resultPublisher`.
+    ///
+    /// - Parameter result: The OperationResult to dispatch to the hub as part of the
+    ///   HubPayload
+    public func dispatch(result: OperationResult) {
+        if #available(iOS 13.0, *) {
+            publish(result: result)
+        }
+
+        let channel = HubChannel(from: categoryType)
+        let context = AmplifyOperationContext(operationId: id, request: request)
+        let payload = HubPayload(eventName: eventName, context: context, data: result)
+        Amplify.Hub.dispatch(to: channel, payload: payload)
+    }
+
+    /// Removes the listener that was registered during operation instantiation
+    public func removeResultListener() {
+        guard let unsubscribeToken = resultListenerUnsubscribeToken else {
+            return
+        }
+        Amplify.Hub.removeListener(unsubscribeToken)
+    }
+
 }
 
 /// All AmplifyOperations must be associated with an Amplify Category
@@ -128,33 +200,6 @@ extension AmplifyOperation: HubPayloadEventNameable { }
 
 /// Conformance to Cancellable we gain for free by subclassing AsynchronousOperation
 extension AmplifyOperation: Cancellable { }
-
-public extension AmplifyOperation {
-    /// Convenience typealias defining the `Result`s dispatched by this operation
-    typealias OperationResult = Result<Success, Failure>
-
-    /// Convenience typealias for the `listener` callback submitted during Operation creation
-    typealias ResultListener = (OperationResult) -> Void
-
-    /// Dispatches an event to the hub. Internally, creates an `AmplifyOperationContext` object from the
-    /// operation's `id`, and `request`
-    /// - Parameter result: The OperationResult to dispatch to the hub as part of the HubPayload
-    func dispatch(result: OperationResult) {
-        let channel = HubChannel(from: categoryType)
-        let context = AmplifyOperationContext(operationId: id, request: request)
-        let payload = HubPayload(eventName: eventName, context: context, data: result)
-        Amplify.Hub.dispatch(to: channel, payload: payload)
-    }
-
-    /// Removes the listener that was registered during operation instantiation
-    func removeResultListener() {
-        guard let unsubscribeToken = resultListenerUnsubscribeToken else {
-            return
-        }
-        Amplify.Hub.removeListener(unsubscribeToken)
-    }
-
-}
 
 /// Describes the parameters that are passed during the creation of an AmplifyOperation
 public protocol AmplifyOperationRequest {

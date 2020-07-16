@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
 import Foundation
 
 /// An AmplifyOperation that emits InProcess values intermittently during the operation.
@@ -20,8 +21,15 @@ open class AmplifyInProcessReportingOperation<
     Success,
     Failure: AmplifyError
 >: AmplifyOperation<Request, Success, Failure> {
+    public typealias InProcess = InProcess
+
     var inProcessListenerUnsubscribeToken: UnsubscribeToken?
-    var secondaryResultListenerToken: UnsubscribeToken?
+
+    /// Local storage for the result publisher associated with this operation. In iOS
+    /// 13 and higher, this is initialized to be a `PassthroughSubject<InProcess,
+    /// Never>`. In versions of iOS prior to 13, this is initialized to `false`. We
+    /// derive the `inProcessPublisher` computed property from this value.
+    var inProcessSubject: Any
 
     public init(categoryType: CategoryType,
                 eventName: HubPayloadEventName,
@@ -29,7 +37,13 @@ open class AmplifyInProcessReportingOperation<
                 inProcessListener: InProcessListener? = nil,
                 resultListener: ResultListener? = nil) {
 
+        self.inProcessSubject = false
+
         super.init(categoryType: categoryType, eventName: eventName, request: request, resultListener: resultListener)
+
+        if #available(iOS 13.0, *) {
+            inProcessSubject = PassthroughSubject<InProcess, Never>()
+        }
 
         // If the inProcessListener is present, we need to register a hub event listener for it, and ensure we
         // automatically unsubscribe when we receive a completion event for the operation
@@ -38,8 +52,8 @@ open class AmplifyInProcessReportingOperation<
         }
     }
 
-    /// Registers an in-process listener for this operation. If the operation completes, this listener will
-    /// automatically be removed.
+    /// Registers an in-process listener for this operation. If the operation
+    /// completes, this listener will automatically be removed.
     ///
     /// - Parameter inProcessListener: The listener for in-process events
     /// - Returns: an UnsubscribeToken that can be used to remove the listener from Hub
@@ -60,10 +74,30 @@ open class AmplifyInProcessReportingOperation<
         }
 
         inProcessListenerToken = Amplify.Hub.listen(to: channel,
-                                                   isIncluded: filterById,
-                                                   listener: inProcessHubListener)
+                                                    isIncluded: filterById,
+                                                    listener: inProcessHubListener)
 
         return inProcessListenerToken
+    }
+
+    /// Classes that override this method must emit a completion to the `inProcessPublisher` upon cancellation
+    open override func cancel() {
+        super.cancel()
+        if #available(iOS 13.0, *) {
+            publish(completion: .finished)
+        }
+    }
+
+    /// Invokes `super.dispatch()`. On iOS 13+, this method first publishes a
+    /// `.finished` completion on the in-process publisher.
+    ///
+    /// - Parameter result: The OperationResult to dispatch to the hub as part of the
+    ///   HubPayload
+    public override func dispatch(result: OperationResult) {
+        if #available(iOS 13.0, *) {
+            publish(completion: .finished)
+        }
+        super.dispatch(result: result)
     }
 
 }
@@ -72,10 +106,14 @@ public extension AmplifyInProcessReportingOperation {
     /// Convenience typealias for the `inProcessListener` callback submitted during Operation creation
     typealias InProcessListener = (InProcess) -> Void
 
-    /// Dispatches an event to the hub. Internally, creates an `AmplifyOperationContext` object from the
-    /// operation's `id`, and `request`
+    /// Dispatches an event to the hub. Internally, creates an
+    /// `AmplifyOperationContext` object from the operation's `id`, and `request`
     /// - Parameter result: The OperationResult to dispatch to the hub as part of the HubPayload
     func dispatchInProcess(data: InProcess) {
+        if #available(iOS 13.0, *) {
+            publish(inProcessValue: data)
+        }
+
         let channel = HubChannel(from: categoryType)
         let context = AmplifyOperationContext(operationId: id, request: request)
         let payload = HubPayload(eventName: eventName, context: context, data: data)
@@ -86,10 +124,6 @@ public extension AmplifyInProcessReportingOperation {
     func removeInProcessResultListener() {
         if let inProcessListenerUnsubscribeToken = inProcessListenerUnsubscribeToken {
             Amplify.Hub.removeListener(inProcessListenerUnsubscribeToken)
-        }
-
-        if let secondaryResultListenerToken = secondaryResultListenerToken {
-            Amplify.Hub.removeListener(secondaryResultListenerToken)
         }
     }
 
