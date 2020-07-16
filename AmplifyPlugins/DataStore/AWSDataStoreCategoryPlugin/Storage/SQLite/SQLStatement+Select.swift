@@ -19,7 +19,6 @@ struct SelectStatementMetadata {
     let columnMapping: ColumnMapping
     let bindings: [Binding?]
 
-    // TODO remove additionalStatements once sorting support is added to DataStore
     static func metadata(from modelType: Model.Type,
                          predicate: QueryPredicate? = nil,
                          sort: QuerySortInput? = nil,
