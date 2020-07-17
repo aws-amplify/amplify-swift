@@ -19,8 +19,9 @@ extension AWSS3StorageService {
         let downloadTaskCreatedHandler = AWSS3StorageService.makeDownloadTaskCreatedHandler(onEvent: onEvent)
         let expression = AWSS3TransferUtilityDownloadExpression()
         expression.progressBlock = AWSS3StorageService.makeOnDownloadProgressHandler(onEvent: onEvent)
-        let onDownloadCompletedHandler = AWSS3StorageService.makeDownloadCompletedHandler(onEvent: onEvent,
-                                                                                          serviceKey: serviceKey)
+        let onDownloadCompletedHandler = AWSS3StorageService.makeDownloadCompletedHandler(fileURL: fileURL,
+                                                                                          serviceKey: serviceKey,
+                                                                                          onEvent: onEvent)
 
         if let fileURL = fileURL {
             transferUtility.download(to: fileURL,
@@ -74,8 +75,9 @@ extension AWSS3StorageService {
     }
 
     private static func makeDownloadCompletedHandler(
-        onEvent: @escaping StorageServiceDownloadEventHandler,
-        serviceKey: String) -> AWSS3TransferUtilityDownloadCompletionHandlerBlock {
+        fileURL: URL? = nil,
+        serviceKey: String,
+        onEvent: @escaping StorageServiceDownloadEventHandler) -> AWSS3TransferUtilityDownloadCompletionHandlerBlock {
 
         let block: AWSS3TransferUtilityDownloadCompletionHandlerBlock = { task, location, data, error in
             guard let response = task.response else {
@@ -83,16 +85,17 @@ extension AWSS3StorageService {
                 return
             }
 
-            let storageError = StorageErrorHelper.mapHttpResponseCode(statusCode: response.statusCode,
-                                                                      serviceKey: serviceKey)
-            guard storageError == nil else {
-                onEvent(StorageEvent.failed(storageError!))
+            if let storageError = StorageErrorHelper.mapHttpResponseCode(statusCode: response.statusCode,
+                                                                         serviceKey: serviceKey) {
+                deleteFileIfKeyNotFound(storageError: storageError, fileURL: fileURL)
+                onEvent(StorageEvent.failed(storageError))
                 return
             }
 
             guard error == nil else {
                 let error = error! as NSError
                 let storageError = StorageErrorHelper.mapTransferUtilityError(error)
+                deleteFileIfKeyNotFound(storageError: storageError, fileURL: fileURL)
                 onEvent(StorageEvent.failed(storageError))
                 return
             }
@@ -101,5 +104,17 @@ extension AWSS3StorageService {
         }
 
         return block
+    }
+
+    // TransferUtility saves the error response at the file location when the key cannot be found in S3
+    // This is an best-effort attempt to ensure that the file is removed
+    private static func deleteFileIfKeyNotFound(storageError: StorageError, fileURL: URL?) {
+        if case .keyNotFound = storageError, let fileURL = fileURL {
+            do {
+                try FileManager.default.removeItem(at: fileURL)
+            } catch {
+                Amplify.Logging.error(error: error)
+            }
+        }
     }
 }
