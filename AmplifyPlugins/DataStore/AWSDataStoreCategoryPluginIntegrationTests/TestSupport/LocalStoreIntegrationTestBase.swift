@@ -25,7 +25,7 @@ class LocalStoreIntegrationTestBase: XCTestCase {
 
         do {
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: TestModelRegistration()))
-            try Amplify.configure(AmplifyConfiguration(dataStore: nil))
+            try Amplify.configure()
         } catch {
             XCTFail(String(describing: error))
             return

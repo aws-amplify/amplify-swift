@@ -60,14 +60,9 @@ struct SelectStatementMetadata {
         }
 
         if let sort = sort, !sort.inputs.isEmpty {
-            let sortStatementClause = sort
-                .inputs
-                .map { $0.sqlOrderBy }
-                .joined(separator: ", ")
-
             sql = """
             \(sql)
-            order by \(sortStatementClause)
+            order by \(sort.sortStatement(namespace: rootNamespace))
             """
         }
 

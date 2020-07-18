@@ -22,6 +22,12 @@ public struct QuerySortInput {
 
     /// Creates a `QuerySortInput` in an expressive way, enabling a short
     /// and developer friendly access to an instance of `QuerySortInput`.
+    /// Simply by calling:
+    /// - Amplify.Datastore.query(model.self, sort: .ascending(model.keys.id))
+    /// or
+    /// - Amplify.Datastore.query(model.self, sort: .descending(model.keys.id))
+    /// or
+    /// - Amplify.Datastore.query(model.self, sort: .by(.ascending(model.keys.id), .descending(model.keys.createdAt))
     ///
     /// - Parameters:
     ///   - inputs: a variadic parameters that take uncertain number of `QuerySortBy`
@@ -30,14 +36,12 @@ public struct QuerySortInput {
         return self.init(inputs)
     }
 
-    /// Unlike `by` above take variadic parameter, `ascending` takes only one `CodingKey`
-    /// field and returns a new instance of `QuerySortInput`
+    /// Returns an ascending sort specifier for `field`
     public static func ascending(_ field: CodingKey) -> QuerySortInput {
         return QuerySortInput([.ascending(field)])
     }
 
-    /// Like `ascending` above, `descending` takes only one `CodingKey` field
-    /// and returns a new instance of `QuerySortInput`
+    /// Returns an descending sort specifier for `field`
     public static func descending(_ field: CodingKey) -> QuerySortInput {
         return QuerySortInput([.descending(field)])
     }

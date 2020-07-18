@@ -370,7 +370,7 @@ class SQLStatementTests: XCTestCase {
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
         from Post as "root"
-        order by id ASC
+        order by "root"."id" asc
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
@@ -392,7 +392,7 @@ class SQLStatementTests: XCTestCase {
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
         from Post as "root"
-        order by id ASC, createdAt DESC
+        order by "root"."id" asc, "root"."createdAt" desc
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
@@ -416,7 +416,7 @@ class SQLStatementTests: XCTestCase {
         from Post as "root"
         where 1 = 1
           and "root"."rating" > ?
-        order by id DESC
+        order by "root"."id" desc
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
@@ -439,7 +439,7 @@ class SQLStatementTests: XCTestCase {
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
         from Post as "root"
-        order by id DESC
+        order by "root"."id" desc
         limit 5 offset 0
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
@@ -467,7 +467,7 @@ class SQLStatementTests: XCTestCase {
         from Post as "root"
         where 1 = 1
           and "root"."rating" > ?
-        order by id DESC
+        order by "root"."id" desc
         limit 5 offset 0
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
