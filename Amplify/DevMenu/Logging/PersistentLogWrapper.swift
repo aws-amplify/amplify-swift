@@ -14,7 +14,7 @@ class PersistentLogWrapper: Logger {
     var wrapper: Logger
 
     /// Array of `LogEntry` containing the history of logs
-    private var logHistory: [LogEntryItem] = [LogEntryItem]()
+    private var logHistory: [LogEntryItem] = []
 
     init(logWrapper: Logger) {
         self.wrapper = logWrapper

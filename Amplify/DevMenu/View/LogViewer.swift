@@ -53,12 +53,12 @@ struct LogViewer: View {
                 Text(noLogsAvailable)
                 Spacer()
             } else {
-                SearchBar(text: $searchText, searchHint: searchHint)
+                SearchBar(text: $searchText, searchHint: searchHint).padding(.horizontal)
                 Picker("Filter", selection: $filter) {
                     ForEach(FilterType.allCases) { filter in
                         Text(filter.rawValue.capitalized).tag(filter)
                     }
-                }.pickerStyle(SegmentedPickerStyle())
+                }.pickerStyle(SegmentedPickerStyle()).padding(.horizontal, 25)
                 SwiftUI.List(filteredList.filter {
                     searchText.isEmpty ? true : $0.message.lowercased().contains(searchText.lowercased())
                 }) { logEntry in

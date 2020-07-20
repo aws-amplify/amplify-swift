@@ -19,12 +19,12 @@ struct LogEntryHelper {
 
     /// Helper function to fetch logs from `PersistentLoggingPlugin`
     static func getLogHistory() -> [LogEntryItem] {
-        if let loggingPlugin : PersistentLoggingPlugin =  Amplify.Logging.plugin as? PersistentLoggingPlugin {
-            if let logger : PersistentLogWrapper = loggingPlugin.default as? PersistentLogWrapper {
+        if let loggingPlugin: PersistentLoggingPlugin =  Amplify.Logging.plugin as? PersistentLoggingPlugin {
+            if let logger: PersistentLogWrapper = loggingPlugin.default as? PersistentLogWrapper {
                 return logger.getLogHistory()
             }
         }
-        
+
         return [LogEntryItem]()
     }
 }
