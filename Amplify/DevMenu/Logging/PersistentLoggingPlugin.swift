@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// `LoggingCategoryPlugin` that wraps a `AWSUnifiedLoggingPlugin` and saves the logs in memory
 public class PersistentLoggingPlugin: LoggingCategoryPlugin {
 
     var plugin: LoggingCategoryPlugin

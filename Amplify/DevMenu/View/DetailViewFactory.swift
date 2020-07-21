@@ -17,6 +17,8 @@ class DetailViewFactory {
             return AnyView(DeviceInfoDetailView())
         case .environmentInformation:
             return AnyView(EnvironmentInfoDetailView())
+        case .logViewer:
+            return AnyView(LogViewer())
         default:
             return AnyView(EmptyView())
         }
