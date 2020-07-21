@@ -66,9 +66,16 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
         var keyValueBlocks = [AWSTextractBlock]()
 
         for block in textractTextBlocks {
-            guard let text = block.text, let identifier = block.identifier else {
-                continue
-            }
+//            guard let text = block.text, let identifier = block.identifier else {
+//                continue
+//            }
+
+            let text: String = block.text != nil ? block.text! : ""
+            let identifier: String = block.identifier != nil ? block.identifier! : ""
+
+//            guard let identifier = block.identifier else {
+//                continue
+//            }
 
             guard let boundingBox = processBoundingBox(block.geometry?.boundingBox) else {
                 continue
@@ -77,6 +84,7 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
             guard let polygon = processPolygon(block.geometry?.polygon) else {
                 continue
             }
+
             let word = IdentifiedWord(text: text,
                                       boundingBox: boundingBox,
                                       polygon: polygon,

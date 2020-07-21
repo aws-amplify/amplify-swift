@@ -9,7 +9,7 @@ import CoreGraphics
 
 public struct IdentifiedLine: IdentifiedText {
 
-    public let text: String
+    public let text: String?
     public let boundingBox: CGRect
     public let polygon: Polygon?
     public let page: Int?
