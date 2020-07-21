@@ -211,6 +211,7 @@
 		974FF1A324BE16F90050D01B /* EnvironmentInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF1A224BE16F90050D01B /* EnvironmentInfoHelper.swift */; };
 		974FF1A524BE18460050D01B /* PluginInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF1A424BE18460050D01B /* PluginInfoHelper.swift */; };
 		974FF1A724BE5F630050D01B /* DevMenuStringConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF1A624BE5F630050D01B /* DevMenuStringConstants.swift */; };
+		977007E324C1585100848468 /* LogEntryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977007E224C1585100848468 /* LogEntryItem.swift */; };
 		97CB85FD24AA451B000C65FB /* PersistentLoggingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */; };
 		97CB85FE24AA451B000C65FB /* AmplifyDevMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */; };
 		97CB85FF24AA451B000C65FB /* DevMenuList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F824AA451B000C65FB /* DevMenuList.swift */; };
@@ -219,6 +220,9 @@
 		97CB860224AA451B000C65FB /* DevMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85FC24AA451B000C65FB /* DevMenuItem.swift */; };
 		97CB860424AB936E000C65FB /* Amplify+DevMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB860324AB936E000C65FB /* Amplify+DevMenu.swift */; };
 		97CB860624ABA023000C65FB /* LongPressGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB860524ABA023000C65FB /* LongPressGestureRecognizer.swift */; };
+		97DC3D5024C1FCEE00D79E24 /* LogEntryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC3D4F24C1FCEE00D79E24 /* LogEntryRow.swift */; };
+		97DC3D5224C1FE4100D79E24 /* LogViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC3D5124C1FE4100D79E24 /* LogViewer.swift */; };
+		97DC3D5424C200A600D79E24 /* LogEntryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC3D5324C200A600D79E24 /* LogEntryHelper.swift */; };
 		B4251A0124250369007F59EF /* AuthConfirmResetPasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A0024250369007F59EF /* AuthConfirmResetPasswordRequest.swift */; };
 		B4251A05242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A04242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift */; };
 		B4251A072425047D007F59EF /* AuthChangePasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A062425047D007F59EF /* AuthChangePasswordRequest.swift */; };
@@ -964,6 +968,7 @@
 		974FF1A424BE18460050D01B /* PluginInfoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginInfoHelper.swift; sourceTree = "<group>"; };
 		974FF1A624BE5F630050D01B /* DevMenuStringConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevMenuStringConstants.swift; sourceTree = "<group>"; };
 		976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		977007E224C1585100848468 /* LogEntryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEntryItem.swift; sourceTree = "<group>"; };
 		97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentLoggingPlugin.swift; sourceTree = "<group>"; };
 		97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyDevMenu.swift; sourceTree = "<group>"; };
 		97CB85F824AA451B000C65FB /* DevMenuList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevMenuList.swift; sourceTree = "<group>"; };
@@ -972,6 +977,9 @@
 		97CB85FC24AA451B000C65FB /* DevMenuItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevMenuItem.swift; sourceTree = "<group>"; };
 		97CB860324AB936E000C65FB /* Amplify+DevMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Amplify+DevMenu.swift"; sourceTree = "<group>"; };
 		97CB860524ABA023000C65FB /* LongPressGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressGestureRecognizer.swift; sourceTree = "<group>"; };
+		97DC3D4F24C1FCEE00D79E24 /* LogEntryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEntryRow.swift; sourceTree = "<group>"; };
+		97DC3D5124C1FE4100D79E24 /* LogViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewer.swift; sourceTree = "<group>"; };
+		97DC3D5324C200A600D79E24 /* LogEntryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEntryHelper.swift; sourceTree = "<group>"; };
 		9883B94C1A1C9D551AC012AE /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSDataStoreCategoryPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSDataStoreCategoryPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99CFDB8E55EADE7A74938E6C /* Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		9AC75D55C68207254CB859A9 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPredictionsPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPredictionsPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2082,6 +2090,8 @@
 				974FF18424B54DFF0050D01B /* InfoRow.swift */,
 				974FF18224B54B500050D01B /* DeviceInfoDetailView.swift */,
 				974FF18C24B8F4C80050D01B /* EnvironmentInfoDetailView.swift */,
+				97DC3D4F24C1FCEE00D79E24 /* LogEntryRow.swift */,
+				97DC3D5124C1FE4100D79E24 /* LogViewer.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2097,9 +2107,11 @@
 				974FF19A24BD05AA0050D01B /* EnvironmentInfoItemType.swift */,
 				974FF19E24BE13100050D01B /* PluginInfoItem.swift */,
 				974FF19C24BE0B4B0050D01B /* InfoItemProvider.swift */,
+				977007E224C1585100848468 /* LogEntryItem.swift */,
 				974FF1A024BE14E00050D01B /* DeviceInfoHelper.swift */,
 				974FF1A224BE16F90050D01B /* EnvironmentInfoHelper.swift */,
 				974FF1A424BE18460050D01B /* PluginInfoHelper.swift */,
+				97DC3D5324C200A600D79E24 /* LogEntryHelper.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -4245,6 +4257,7 @@
 				FAC0A2AF22B4400100B50912 /* LoggingCategory+ClientBehavior.swift in Sources */,
 				95DAAB28237E63370028544F /* Celebrity.swift in Sources */,
 				FA0933812384749A00C2FD5F /* LoggingCategory+Logger.swift in Sources */,
+				97DC3D5024C1FCEE00D79E24 /* LogEntryRow.swift in Sources */,
 				B4926F6E24250219007B769C /* AuthResetPasswordOperation.swift in Sources */,
 				FA6BC87F235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift in Sources */,
 				B9FAA175238EFC5A009414B4 /* String+Extensions.swift in Sources */,
@@ -4357,7 +4370,9 @@
 				FADB3A6823612940006D6FE9 /* BasicClosure.swift in Sources */,
 				FAAFAF3D2390D4A6002CF932 /* AmplifyErrorMessages.swift in Sources */,
 				B92E03B32367CE7A006CEB8D /* DataStoreCategory.swift in Sources */,
+				977007E324C1585100848468 /* LogEntryItem.swift in Sources */,
 				FA9FB77D232AA0D800C04D32 /* FilteredListener.swift in Sources */,
+				97DC3D5224C1FE4100D79E24 /* LogViewer.swift in Sources */,
 				B4B5CCA52458A1940019C783 /* AuthUpdateUserAttributesOperation.swift in Sources */,
 				B463D6CF24633E45008C0F85 /* AuthCategory+UserBehavior.swift in Sources */,
 				B9AE8FDB23D8C643002742F9 /* TemporalFormat+Time.swift in Sources */,
@@ -4483,6 +4498,7 @@
 				B9FAA1272388BE91009414B4 /* List+LazyLoad.swift in Sources */,
 				B4FA76072416E82B006F59CE /* AuthFetchSessionRequest.swift in Sources */,
 				B4340A24238325B900101BBA /* DefaultNetworkPolicy.swift in Sources */,
+				97DC3D5424C200A600D79E24 /* LogEntryHelper.swift in Sources */,
 				B4D38537236C97360014653D /* PredictionsCategory+CategoryConfigurable.swift in Sources */,
 				B9AE8FD923D8C609002742F9 /* TemporalFormat.swift in Sources */,
 				FA4E730C23282917003B8EEB /* Amplify+Resolve.swift in Sources */,
