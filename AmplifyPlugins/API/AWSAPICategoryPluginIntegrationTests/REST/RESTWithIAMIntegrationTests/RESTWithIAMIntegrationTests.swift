@@ -66,7 +66,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             case .success(let data):
                 XCTFail("Unexpected .complted event: \(data)")
             case .failure(let error):
-                guard case let .httpStatusError(statusCode, _) = error else {
+                guard case let .httpStatusError(statusCode, _, _) = error else {
                     XCTFail("Error should be httpStatusError")
                     return
                 }
@@ -138,7 +138,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             case .success(let data):
                 XCTFail("Unexpected .completed event: \(data)")
             case .failure(let error):
-                guard case let .httpStatusError(statusCode, _) = error else {
+                guard case let .httpStatusError(statusCode, _, _) = error else {
                     XCTFail("Error should be httpStatusError")
                     return
                 }
@@ -159,7 +159,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             case .success(let data):
                 XCTFail("Unexpected .completed event: \(data)")
             case .failure(let error):
-                guard case let .httpStatusError(statusCode, _) = error else {
+                guard case let .httpStatusError(statusCode, _, _) = error else {
                     XCTFail("Error should be httpStatusError")
                     return
                 }

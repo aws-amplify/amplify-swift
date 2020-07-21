@@ -29,7 +29,7 @@ public enum APIError {
     case networkError(ErrorDescription, UserInfo? = nil, Error? = nil)
 
     /// A non 2xx response from the service.
-    case httpStatusError(StatusCode, HTTPURLResponse)
+    case httpStatusError(StatusCode, HTTPURLResponse, Data?)
 
     /// An error to encapsulate an error received by a dependent plugin
     case pluginError(AmplifyError)
@@ -54,7 +54,7 @@ extension APIError: AmplifyError {
         case .networkError(let errorDescription, _, _):
             return errorDescription
 
-        case .httpStatusError(let statusCode, _):
+        case .httpStatusError(let statusCode, _, _):
             return "The HTTP response status code is [\(statusCode)]."
 
         case .pluginError(let error):

@@ -11,10 +11,12 @@ import Amplify
 struct APIOperationResponse {
     let urlError: URLError?
     let httpURLResponse: HTTPURLResponse?
+    let responseData: Data?
 
-    public init(error: Error?, response: URLResponse?) {
+    public init(error: Error?, response: URLResponse?, data: Data? = nil) {
         self.urlError = error as? URLError
         self.httpURLResponse = response as? HTTPURLResponse
+        self.responseData = data
     }
 }
 
@@ -32,7 +34,7 @@ extension APIOperationResponse {
 
             let successStatusCodes = 200 ..< 300
             if !successStatusCodes.contains(statusCode) {
-                throw APIError.httpStatusError(statusCode, response)
+                throw APIError.httpStatusError(statusCode, response, responseData)
             }
         case (.some(let error), .some(let response)):
             let userInfo = ["HTTPURLResponse": response]
