@@ -10,11 +10,16 @@ import Foundation
 /// Helper class to fetch log entry related information
 struct LogEntryHelper {
 
+    /// Date formatter instance for date formatting
+    private static let dateFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSS"
+            return formatter
+     }()
+
     /// Helper function to get current time in a specified format
-    static func getDateFormatter() -> DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSS"
-        return dateFormatter
+    static func dateString(from date: Date) -> String {
+            return dateFormatter.string(from: date)
     }
 
     /// Helper function to fetch logs from `PersistentLoggingPlugin`

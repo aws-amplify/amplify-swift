@@ -11,16 +11,16 @@ import SwiftUI
 @available(iOS 13.0.0, *)
 struct LogEntryRow: View {
     var logEntryItem: LogEntryItem
-    let dateFormatter: DateFormatter = LogEntryHelper.getDateFormatter()
 
     var body: some View {
         VStack(alignment: .leading) {
             Group {
                 Text(logLevelString).foregroundColor(logLevelTextColor).bold() +
+                Text(" ") +
                 Text(logEntryItem.message)
             }.lineLimit(2).padding(.bottom, 5)
 
-            Text(dateFormatter.string(from: logEntryItem.timeStamp))
+            Text(LogEntryHelper.dateString(from: logEntryItem.timeStamp))
                 .font(.system(size: 15))
                 .foregroundColor(Color.secondary)
         }.padding(5)
@@ -30,15 +30,15 @@ struct LogEntryRow: View {
     var logLevelString: String {
         switch logEntryItem.logLevel {
         case .debug:
-            return "[debug] "
+            return "[debug]"
         case .verbose:
-            return "[verbose] "
+            return "[verbose]"
         case .error:
-            return "[error] "
+            return "[error]"
         case .warn:
-            return "[warn] "
+            return "[warn]"
         case .info:
-            return "[info] "
+            return "[info]"
         }
     }
 
