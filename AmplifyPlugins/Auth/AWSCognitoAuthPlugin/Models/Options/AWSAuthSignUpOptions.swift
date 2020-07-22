@@ -13,7 +13,7 @@ public struct AWSAuthSignUpOptions {
 
     public let metadata: [String: String]?
 
-    public init(validationData: [String: String]?, metadata: [String: String]?) {
+    public init(validationData: [String: String]? = nil, metadata: [String: String]? = nil) {
         self.validationData = validationData
         self.metadata = metadata
     }

@@ -11,7 +11,7 @@ public struct AWSAuthResetPasswordOptions {
 
     public let metadata: [String: String]?
 
-    public init(metadata: [String: String]?) {
+    public init(metadata: [String: String]? = nil) {
         self.metadata = metadata
     }
 }

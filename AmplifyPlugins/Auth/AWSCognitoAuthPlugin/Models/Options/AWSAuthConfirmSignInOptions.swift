@@ -13,7 +13,7 @@ public struct AWSAuthConfirmSignInOptions {
 
     public let metadata: [String: String]?
 
-    public init(userAttributes: [AuthUserAttribute]?, metadata: [String: String]?) {
+    public init(userAttributes: [AuthUserAttribute]? = nil, metadata: [String: String]? = nil) {
         self.userAttributes = userAttributes
         self.metadata = metadata
     }
