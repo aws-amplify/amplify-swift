@@ -8,7 +8,7 @@
 import CoreGraphics
 
 public protocol IdentifiedText {
-    var text: String? { get }
+    var text: String { get }
     var boundingBox: CGRect { get }
     var polygon: Polygon? { get }
     var page: Int? { get }

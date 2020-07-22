@@ -52,6 +52,7 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
                                   identifiedLines: identifiedLines)
     }
 
+    // swiftlint:disable cyclomatic_complexity
     static func processText(_ textractTextBlocks: [AWSTextractBlock]) -> IdentifyDocumentTextResult {
 
         var words = [IdentifiedWord]()
@@ -66,44 +67,53 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
         var keyValueBlocks = [AWSTextractBlock]()
 
         for block in textractTextBlocks {
-//            guard let text = block.text, let identifier = block.identifier else {
-//                continue
-//            }
-
-            let text: String = block.text != nil ? block.text! : ""
-            let identifier: String = block.identifier != nil ? block.identifier! : ""
-
-//            guard let identifier = block.identifier else {
-//                continue
-//            }
-
-            guard let boundingBox = processBoundingBox(block.geometry?.boundingBox) else {
-                continue
-            }
-
-            guard let polygon = processPolygon(block.geometry?.polygon) else {
-                continue
-            }
-
-            let word = IdentifiedWord(text: text,
-                                      boundingBox: boundingBox,
-                                      polygon: polygon,
-                                      page: Int(truncating: block.page ?? 0))
-
-            let line = IdentifiedLine(text: text,
-                                      boundingBox: boundingBox,
-                                      polygon: polygon,
-                                      page: Int(truncating: block.page ?? 0))
-
             switch block.blockType {
             case .line:
+                guard let text = block.text else {
+                    continue
+                }
+                guard let boundingBox = processBoundingBox(block.geometry?.boundingBox) else {
+                    continue
+                }
+
+                guard let polygon = processPolygon(block.geometry?.polygon) else {
+                    continue
+                }
+                let line = IdentifiedLine(text: text,
+                                          boundingBox: boundingBox,
+                                          polygon: polygon,
+                                          page: Int(truncating: block.page ?? 0))
                 lines.append(text)
                 linesDetailed.append(line)
             case .word:
+                guard let text = block.text, let identifier = block.identifier else {
+                    continue
+                }
+                guard let boundingBox = processBoundingBox(block.geometry?.boundingBox) else {
+                    continue
+                }
+
+                guard let polygon = processPolygon(block.geometry?.polygon) else {
+                    continue
+                }
+                let word = IdentifiedWord(text: text,
+                                          boundingBox: boundingBox,
+                                          polygon: polygon,
+                                          page: Int(truncating: block.page ?? 0))
                 fullText += text + " "
                 words.append(word)
                 blockMap[identifier] = block
             case .selectionElement:
+                guard let identifier = block.identifier else {
+                    continue
+                }
+                guard let boundingBox = processBoundingBox(block.geometry?.boundingBox) else {
+                    continue
+                }
+
+                guard let polygon = processPolygon(block.geometry?.polygon) else {
+                    continue
+                }
                 let selectionStatus = block.selectionStatus == .selected ? true : false
                 let selection = Selection(boundingBox: boundingBox, polygon: polygon, isSelected: selectionStatus)
                 selections.append(selection)
@@ -111,9 +121,15 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
             case .table:
                 tableBlocks.append(block)
             case .keyValueSet:
+                guard let identifier = block.identifier else {
+                    continue
+                }
                 keyValueBlocks.append(block)
                 blockMap[identifier] = block
             default:
+                guard let identifier = block.identifier else {
+                    continue
+                }
                 blockMap[identifier] = block
 
             }
