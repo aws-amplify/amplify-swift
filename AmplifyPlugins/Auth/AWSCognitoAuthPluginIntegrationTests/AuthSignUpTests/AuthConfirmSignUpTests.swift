@@ -63,20 +63,20 @@ class AuthConfirmSignUpTests: AWSAuthBaseTest {
         let operationExpectation = expectation(description: "Operation should complete")
         let operation = Amplify.Auth.confirmSignUp(for: username,
                                                    confirmationCode: "") { result in
-                                                    defer {
-                                                        operationExpectation.fulfill()
-                                                    }
-                                                    switch result {
-                                                    case .success:
-                                                        XCTFail("""
-                                                    confirmSignUp with validation error should not succeed
-                                                    """)
-                                                    case .failure(let error):
-                                                        guard case .validation(_, _, _, _) = error else {
-                                                            XCTFail("Should return validation error")
-                                                            return
-                                                        }
-                                                    }
+            defer {
+                operationExpectation.fulfill()
+            }
+            switch result {
+            case .success:
+                XCTFail("""
+            confirmSignUp with validation error should not succeed
+            """)
+            case .failure(let error):
+                guard case .validation(_, _, _, _) = error else {
+                    XCTFail("Should return validation error")
+                    return
+                }
+            }
         }
         XCTAssertNotNil(operation, "confirmSignUp operations should not be nil")
         wait(for: [operationExpectation], timeout: networkTimeout)
