@@ -112,10 +112,10 @@ extension ModelField {
     /// - seealso: `ModelFieldAssociation`
     /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
     ///   by host applications. The behavior of this may change without warning.
-    public var associatedModel: Model.Type? {
+    public var associatedModel: String? {
         switch type {
-        case .model(let type), .collection(let type):
-            return type
+        case .model(let modelName), .collection(let modelName):
+            return modelName
         default:
             return nil
         }
@@ -130,14 +130,14 @@ extension ModelField {
     /// allows (i.e. the field is a valid relationship, such as foreign keys).
     /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
     ///   by host applications. The behavior of this may change without warning.
-    public var requiredAssociatedModel: Model.Type {
-        guard let modelType = associatedModel else {
+    public var requiredAssociatedModel: String {
+        guard let modelName = associatedModel else {
             preconditionFailure("""
             Model fields that are foreign keys must be connected to another Model.
             Check the `ModelSchema` section of your "\(name)+Schema.swift" file.
             """)
         }
-        return modelType
+        return modelName
     }
 
     /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
@@ -157,13 +157,15 @@ extension ModelField {
             switch association {
             case .belongsTo(let associatedKey, _):
                 // TODO handle modelName casing (convert to camelCase)
-                let key = associatedKey?.stringValue ?? associatedModel.modelName
-                return associatedModel.schema.field(withName: key)
+                let key = associatedKey?.stringValue ?? associatedModel
+                let schema = ModelRegistry.modelSchema(from: key)
+                return schema.field(withName: key)
             case .hasOne(let associatedKey),
                  .hasMany(let associatedKey):
                 // TODO handle modelName casing (convert to camelCase)
-                let key = associatedKey?.stringValue ?? associatedModel.modelName
-                return associatedModel.schema.field(withName: key)
+                let key = associatedKey?.stringValue ?? associatedModel
+                let schema = ModelRegistry.modelSchema(from: key)
+                return schema.field(withName: key)
             case .none:
                 return nil
             }

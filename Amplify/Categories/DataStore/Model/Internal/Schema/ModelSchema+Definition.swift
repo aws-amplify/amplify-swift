@@ -23,8 +23,8 @@ public enum ModelFieldType {
     case `enum`(type: EnumPersistable.Type)
     case embedded(type: Codable.Type)
     case embeddedCollection(of: Codable.Type)
-    case model(type: Model.Type)
-    case collection(of: Model.Type)
+    case model(name: String)
+    case collection(modelName: String)
 
     public var isArray: Bool {
         switch self {
@@ -72,7 +72,7 @@ public enum ModelFieldType {
             return .enum(type: enumType)
         }
         if let modelType = type as? Model.Type {
-            return .model(type: modelType)
+            return .model(name: modelType.modelName)
         }
         if let embeddedType = type as? Codable.Type {
             return .embedded(type: embeddedType)
@@ -182,7 +182,7 @@ public enum ModelFieldDefinition {
                                associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
-                      ofType: .collection(of: type),
+                      ofType: .collection(modelName: type.modelName),
                       association: .hasMany(associatedWith: associatedKey))
     }
 
@@ -192,7 +192,7 @@ public enum ModelFieldDefinition {
                               associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
-                      ofType: .model(type: type),
+                      ofType: .model(name: type.modelName),
                       association: .hasOne(associatedWith: associatedKey))
     }
 
@@ -203,7 +203,7 @@ public enum ModelFieldDefinition {
                                  targetName: String? = nil) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
-                      ofType: .model(type: type),
+                      ofType: .model(name: type.modelName),
                       association: .belongsTo(associatedWith: associatedKey, targetName: targetName))
     }
 

@@ -95,8 +95,8 @@ struct SelectStatementMetadata {
         func visitAssociations(node: ModelSchema, namespace: String = "root") {
             for foreignKey in node.foreignKeys {
                 let associatedModelType = foreignKey.requiredAssociatedModel
-                let associatedSchema = associatedModelType.schema
-                let associatedTableName = associatedModelType.schema.name
+                let associatedSchema = ModelRegistry.modelSchema(from: associatedModelType)
+                let associatedTableName = associatedSchema.name
 
                 // columns
                 let alias = namespace == "root" ? foreignKey.name : "\(namespace).\(foreignKey.name)"
@@ -115,8 +115,7 @@ struct SelectStatementMetadata {
                 \(joinType) join \(associatedTableName) as "\(alias)"
                   on \(associatedColumn) = \(foreignKeyName)
                 """)
-                visitAssociations(node: associatedModelType.schema,
-                                  namespace: alias)
+                visitAssociations(node: associatedSchema, namespace: alias)
             }
         }
         visitAssociations(node: schema)

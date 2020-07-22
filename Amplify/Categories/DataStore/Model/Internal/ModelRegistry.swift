@@ -45,6 +45,13 @@ public struct ModelRegistry {
         }
     }
 
+    public static func modelSchema(from name: String) -> ModelSchema {
+        concurrencyQueue.sync {
+
+        }
+        fatalError()
+    }
+
     public static func decode(modelName: String,
                               from jsonString: String,
                               jsonDecoder: JSONDecoder? = nil) throws -> Model {
