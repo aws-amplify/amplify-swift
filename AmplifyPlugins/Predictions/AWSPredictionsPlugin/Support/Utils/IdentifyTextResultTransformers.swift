@@ -67,6 +67,10 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
         var keyValueBlocks = [AWSTextractBlock]()
 
         for block in textractTextBlocks {
+            guard let identifier = block.identifier else {
+                continue
+            }
+
             switch block.blockType {
             case .line:
                 guard let text = block.text else {
@@ -85,8 +89,9 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
                                           page: Int(truncating: block.page ?? 0))
                 lines.append(text)
                 linesDetailed.append(line)
+                blockMap[identifier] = block
             case .word:
-                guard let text = block.text, let identifier = block.identifier else {
+                guard let text = block.text else {
                     continue
                 }
                 guard let boundingBox = processBoundingBox(block.geometry?.boundingBox) else {
@@ -104,9 +109,6 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
                 words.append(word)
                 blockMap[identifier] = block
             case .selectionElement:
-                guard let identifier = block.identifier else {
-                    continue
-                }
                 guard let boundingBox = processBoundingBox(block.geometry?.boundingBox) else {
                     continue
                 }
@@ -121,9 +123,6 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
             case .table:
                 tableBlocks.append(block)
             case .keyValueSet:
-                guard let identifier = block.identifier else {
-                    continue
-                }
                 keyValueBlocks.append(block)
                 blockMap[identifier] = block
             default:
@@ -131,7 +130,6 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
                     continue
                 }
                 blockMap[identifier] = block
-
             }
         }
 
@@ -263,13 +261,12 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
                      keyText += text + " "
             case .value:
                 for valueId in ids {
-                     let valueBlock = blockMap[valueId]
+                    let valueBlock = blockMap[valueId]
                     guard let valueBlockType = valueBlock?.blockType else {
                         continue
                     }
                     switch valueBlockType {
                     case .word:
-
                         if let text = valueBlock?.text {
                         valueText += text + " "
                         }
@@ -278,7 +275,6 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
                     default: break
                     }
                 }
-
             default:
                 break
             }
@@ -293,9 +289,9 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
         }
 
         return BoundedKeyValue(key: keyText,
-                        value: valueText,
-                        isSelected: valueSelected,
-                        boundingBox: boundingBox,
-                        polygon: polygon)
+                               value: valueText,
+                               isSelected: valueSelected,
+                               boundingBox: boundingBox,
+                               polygon: polygon)
     }
 }
