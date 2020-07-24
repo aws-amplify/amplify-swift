@@ -98,8 +98,6 @@ platform :ios do
         next
       end
 
-      pod_path = "#{ENV['CIRCLE_WORKING_DIRECTORY']}/#{pod[:spec]}"
-
       UI.message "Pushing pod #{pod[:spec]}"
 
       with_retry do
@@ -111,8 +109,10 @@ platform :ios do
         end
       end
 
-      # This shouldn't be necessary... but it is
-      sh('bundle', 'exec', 'pod', 'repo', 'update')
+      unless pod == AmplifyPods.pods.last
+        # This shouldn't be necessary... but it is
+        sh('bundle', 'exec', 'pod', 'repo', 'update')
+      end
     end
   end
 
@@ -121,11 +121,11 @@ platform :ios do
     version = options[:version].to_s
     changelog = options[:changelog]
     tag = "v#{version}"
-    # increment plugin lock files by calling pod update on each
-    plugin_root = "#{ENV['CIRCLE_WORKING_DIRECTORY']}/AmplifyPlugins"
+    plugin_root = File.expand_path("#{ENV['CIRCLE_WORKING_DIRECTORY']}/AmplifyPlugins")
   
     sh('bundle', 'exec', 'pod', 'repo', 'update')
 
+    # increment plugin lock files by calling pod update on each
     AmplifyPods.plugins.each do |plugin|
       path = "#{plugin_root}/#{plugin}"
       Dir.chdir(path){ sh('pod', 'update') }
