@@ -121,7 +121,6 @@ platform :ios do
     version = options[:version].to_s
     changelog = options[:changelog]
     tag = "v#{version}"
-    
     plugin_root = File.expand_path("#{ENV['CIRCLE_WORKING_DIRECTORY']}/AmplifyPlugins")
   
     sh('bundle', 'exec', 'pod', 'repo', 'update')
