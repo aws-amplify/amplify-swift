@@ -10,14 +10,14 @@ extension MutationEvent {
     public init(untypedModel model: Model,
                 mutationType: MutationType,
                 version: Int? = nil) throws {
-        guard let modelType = ModelRegistry.modelType(from: model.modelName) else {
+        guard let schema = ModelRegistry.modelSchema(from: model.modelName) else {
             let dataStoreError = DataStoreError.invalidModelName(model.modelName)
             throw dataStoreError
         }
 
         let json = try model.toJSON()
         self.init(modelId: model.id,
-                  modelName: modelType.schema.name,
+                  modelName: schema.name,
                   json: json,
                   mutationType: mutationType,
                   version: version)

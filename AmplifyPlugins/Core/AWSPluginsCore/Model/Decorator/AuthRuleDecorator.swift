@@ -35,8 +35,8 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
-        let authRules = modelType.schema.authRules
+                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
+        let authRules = modelSchema.authRules
         guard !authRules.isEmpty else {
             return document
         }

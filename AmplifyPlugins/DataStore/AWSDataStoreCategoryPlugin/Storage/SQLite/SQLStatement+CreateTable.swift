@@ -52,7 +52,7 @@ struct CreateTableStatement: SQLStatement {
         for (index, foreignKey) in foreignKeys.enumerated() {
             statement += "  foreign key(\"\(foreignKey.sqlName)\") "
             let associatedModel = foreignKey.requiredAssociatedModel
-            let schema = ModelRegistry.modelSchema(from: associatedModel)
+            let schema = ModelRegistry.modelSchema(from: associatedModel)!
             let associatedId = schema.primaryKey
             let associatedModelName = schema.name
             statement += "references \(associatedModelName)(\"\(associatedId.sqlName)\")\n"

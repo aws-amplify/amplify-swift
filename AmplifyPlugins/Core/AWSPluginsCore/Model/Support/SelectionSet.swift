@@ -42,7 +42,7 @@ extension SelectionSet {
                 self.addChild(settingParentOf: child)
             } else if field.isAssociationOwner, let associatedModel = field.associatedModel {
                 let child = SelectionSet(value: .init(name: field.name, fieldType: .model))
-                let schema = ModelRegistry.modelSchema(from: associatedModel)
+                let schema = ModelRegistry.modelSchema(from: associatedModel)!
                 child.withModelFields(schema.graphQLFields)
                 self.addChild(settingParentOf: child)
             } else {

@@ -95,7 +95,7 @@ struct SelectStatementMetadata {
         func visitAssociations(node: ModelSchema, namespace: String = "root") {
             for foreignKey in node.foreignKeys {
                 let associatedModelType = foreignKey.requiredAssociatedModel
-                let associatedSchema = ModelRegistry.modelSchema(from: associatedModelType)
+                let associatedSchema = ModelRegistry.modelSchema(from: associatedModelType)!
                 let associatedTableName = associatedSchema.name
 
                 // columns

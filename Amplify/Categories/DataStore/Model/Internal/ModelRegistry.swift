@@ -20,6 +20,8 @@ public struct ModelRegistry {
 
     private static var modelDecoders = [String: ModelDecoder]()
 
+    private static var modelSchemas = [String: ModelSchema]()
+
     public static var models: [Model.Type] {
         concurrencyQueue.sync {
             Array(modelTypes.values)
@@ -38,18 +40,18 @@ public struct ModelRegistry {
             modelTypes[modelType.modelName] = modelType
         }
     }
+    
 
-    public static func modelType(from name: String) -> Model.Type? {
+//    public static func modelType(from name: String) -> Model.Type? {
+//        concurrencyQueue.sync {
+//            modelTypes[name]
+//        }
+//    }
+
+    public static func modelSchema(from name: String) -> ModelSchema? {
         concurrencyQueue.sync {
-            modelTypes[name]
+            modelSchemas[name]
         }
-    }
-
-    public static func modelSchema(from name: String) -> ModelSchema {
-        concurrencyQueue.sync {
-
-        }
-        fatalError()
     }
 
     public static func decode(modelName: String,

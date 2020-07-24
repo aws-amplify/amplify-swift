@@ -158,13 +158,13 @@ extension ModelField {
             case .belongsTo(let associatedKey, _):
                 // TODO handle modelName casing (convert to camelCase)
                 let key = associatedKey?.stringValue ?? associatedModel
-                let schema = ModelRegistry.modelSchema(from: key)
-                return schema.field(withName: key)
+                let schema = ModelRegistry.modelSchema(from: key)!
+                return schema.field(withName: key)!
             case .hasOne(let associatedKey),
                  .hasMany(let associatedKey):
                 // TODO handle modelName casing (convert to camelCase)
                 let key = associatedKey?.stringValue ?? associatedModel
-                let schema = ModelRegistry.modelSchema(from: key)
+                let schema = ModelRegistry.modelSchema(from: key)!
                 return schema.field(withName: key)
             case .none:
                 return nil
