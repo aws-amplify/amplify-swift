@@ -111,8 +111,10 @@ platform :ios do
         end
       end
 
-      # This shouldn't be necessary... but it is
-      sh('bundle', 'exec', 'pod', 'repo', 'update')
+      unless pod == AmplifyPods.pods.last
+        # This shouldn't be necessary... but it is
+        sh('bundle', 'exec', 'pod', 'repo', 'update')
+      end
     end
   end
 
