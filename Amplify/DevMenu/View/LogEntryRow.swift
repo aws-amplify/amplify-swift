@@ -15,7 +15,7 @@ struct LogEntryRow: View {
     var body: some View {
         VStack(alignment: .leading) {
             Group {
-                Text(logLevelString).foregroundColor(logLevelTextColor).bold() +
+                Text(logEntryItem.logLevelString).foregroundColor(logEntryItem.logLevelTextColor).bold() +
                 Text(" ") +
                 Text(logEntryItem.message)
             }.lineLimit(2).padding(.bottom, 5)
@@ -24,37 +24,5 @@ struct LogEntryRow: View {
                 .font(.system(size: 15))
                 .foregroundColor(Color.secondary)
         }.padding(5)
-    }
-
-    /// String to display corresponding to `LogLevel`
-    var logLevelString: String {
-        switch logEntryItem.logLevel {
-        case .debug:
-            return "[debug]"
-        case .verbose:
-            return "[verbose]"
-        case .error:
-            return "[error]"
-        case .warn:
-            return "[warn]"
-        case .info:
-            return "[info]"
-        }
-    }
-
-    /// Color of `logLevelString` corresponding to `LogLevel`
-    var logLevelTextColor: Color {
-        switch logEntryItem.logLevel {
-        case .debug:
-            return Color.gray
-        case .verbose:
-            return Color.green
-        case .error:
-            return Color.red
-        case .warn:
-            return Color.yellow
-        case .info:
-            return Color.blue
-        }
     }
 }

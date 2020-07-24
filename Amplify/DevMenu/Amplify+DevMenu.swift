@@ -30,19 +30,19 @@ extension Amplify {
     }
 
     /// Returns a `PersistentLoggingPlugin` if developer menu feature is enabled in debug mode
-    static func getLoggingCategoryPlugin() -> LoggingCategoryPlugin {
+    static func getLoggingCategoryPlugin(loggingPlugin: LoggingCategoryPlugin) -> LoggingCategoryPlugin {
         if #available(iOS 13.0.0, *) {
             #if DEBUG
                 if isDevMenuEnabled() {
-                    return PersistentLoggingPlugin(plugin: AWSUnifiedLoggingPlugin())
+                    return PersistentLoggingPlugin(plugin: loggingPlugin)
                 } else {
-                    return AWSUnifiedLoggingPlugin()
+                    return loggingPlugin
                 }
             #else
-                return AWSUnifiedLoggingPlugin()
+                return loggingPlugin
             #endif
         } else {
-            return AWSUnifiedLoggingPlugin()
+            return loggingPlugin
         }
     }
 

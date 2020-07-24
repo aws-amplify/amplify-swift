@@ -19,8 +19,8 @@ struct EnvironmentInfoDetailView: View {
     private var devEnvSectionItems = [EnvironmentInfoItem]()
 
     init() {
-        // TODO : Read environment information from json file and populate devEnvSectionItems
-        // devEnvSectionItems = EnvironmentInfoHelper.getDeveloperEnvironmentInformation()
+        self.devEnvSectionItems = EnvironmentInfoHelper.fetchDeveloperInformationFromJson(
+            filename: EnvironmentInfoHelper.environmentInfoSourceFileName)
         self.amplifyPluginSectionItems = PluginInfoHelper.getPluginInformation()
     }
 

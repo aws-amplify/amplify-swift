@@ -19,8 +19,8 @@ class DetailViewFactory {
             return AnyView(EnvironmentInfoDetailView())
         case .logViewer:
             return AnyView(LogViewer())
-        default:
-            return AnyView(EmptyView())
+        case .reportIssue:
+            return AnyView(IssueReporter())
         }
     }
 

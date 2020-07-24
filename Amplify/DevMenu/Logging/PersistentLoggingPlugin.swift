@@ -7,10 +7,12 @@
 
 import Foundation
 
-/// `LoggingCategoryPlugin` that wraps a `AWSUnifiedLoggingPlugin` and saves the logs in memory
+/// `LoggingCategoryPlugin` that wraps another`LoggingCategoryPlugin` and saves the logs in memory
+@available(iOS 13.0, *)
 public class PersistentLoggingPlugin: LoggingCategoryPlugin {
 
     var plugin: LoggingCategoryPlugin
+    var persistentLogWrapper: PersistentLogWrapper?
 
     public let key: String = "PersistentLoggingPlugin"
 
@@ -30,11 +32,15 @@ public class PersistentLoggingPlugin: LoggingCategoryPlugin {
         plugin.reset(onComplete: onComplete)
     }
 
-    init(plugin: AWSUnifiedLoggingPlugin) {
+    init(plugin: LoggingCategoryPlugin) {
         self.plugin = plugin
     }
 
     public var `default`: Logger {
-        PersistentLogWrapper(logWrapper: plugin.default)
+        if persistentLogWrapper == nil {
+            persistentLogWrapper = PersistentLogWrapper(logWrapper: plugin.default)
+        }
+
+        return persistentLogWrapper!
     }
 }
