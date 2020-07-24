@@ -23,7 +23,7 @@ extension AWSRESTOperation: APIOperation {
             return
         }
 
-        let apiOperationResponse = APIOperationResponse(error: nil, response: response)
+        let apiOperationResponse = APIOperationResponse(error: nil, response: response, data: data)
         do {
             try apiOperationResponse.validate()
         } catch let error as APIError {
