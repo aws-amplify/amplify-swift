@@ -98,7 +98,7 @@ platform :ios do
         next
       end
 
-      pod_path = "#{ENV['CIRCLE_WORKING_DIRECTORY']}/#{pod[:spec]}"
+      pod_path = File.expand_path("#{ENV['CIRCLE_WORKING_DIRECTORY']}/#{pod[:spec]}")
 
       UI.message "Pushing pod #{pod[:spec]}"
 
