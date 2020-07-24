@@ -1,22 +1,22 @@
 PODS:
-  - AWSAuthCore (2.14.0):
-    - AWSCore (= 2.14.0)
-  - AWSCognitoIdentityProvider (2.14.0):
+  - AWSAuthCore (2.15.0):
+    - AWSCore (= 2.15.0)
+  - AWSCognitoIdentityProvider (2.15.0):
     - AWSCognitoIdentityProviderASF (= 1.0.1)
-    - AWSCore (= 2.14.0)
+    - AWSCore (= 2.15.0)
   - AWSCognitoIdentityProviderASF (1.0.1)
-  - AWSCore (2.14.0)
-  - AWSMobileClient (2.14.0):
-    - AWSAuthCore (= 2.14.0)
-    - AWSCognitoIdentityProvider (= 2.14.0)
+  - AWSCore (2.15.0)
+  - AWSMobileClient (2.15.0):
+    - AWSAuthCore (= 2.15.0)
+    - AWSCognitoIdentityProvider (= 2.15.0)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
-  - SwiftFormat/CLI (0.44.14)
+  - SwiftFormat/CLI (0.44.17)
   - SwiftLint (0.39.2)
 
 DEPENDENCIES:
-  - AWSMobileClient (~> 2.14.0)
+  - AWSMobileClient (~> 2.15.0)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
   - SwiftFormat/CLI
@@ -49,14 +49,14 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  AWSAuthCore: 6b337af04751dcbb4bc50f18dbed0343ba345e17
-  AWSCognitoIdentityProvider: bd4cf5f70b9224b1ea42b423a75716cafb8f7ac4
+  AWSAuthCore: 284f1bc07187fad68ba52a0af088fe84f7af538e
+  AWSCognitoIdentityProvider: 451b1a39c5c73afa9fc2bf8d29cb0892e9b3b34c
   AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
-  AWSCore: 6398ca88010f34653a07d54a252affe920a99965
-  AWSMobileClient: 0f4ae3f60722fc2cec7ca926fd442ff55a2154a5
+  AWSCore: b732e43f2afaef25c3a7dd9408b8c594213397bd
+  AWSMobileClient: 633ec8c81dadec097e1fdb62e372e0af9b6dd706
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
-  SwiftFormat: a5ab293a7f6a812bec6f4ffc5507b7ed08f7f6e1
+  SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
   SwiftLint: 22ccbbe3b8008684be5955693bab135e0ed6a447
 
 PODFILE CHECKSUM: a2acde35ab1bc6b80b362106cfda70905a6a840f
