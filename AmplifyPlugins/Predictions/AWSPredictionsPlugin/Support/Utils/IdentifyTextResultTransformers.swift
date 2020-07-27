@@ -126,9 +126,6 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
                 keyValueBlocks.append(block)
                 blockMap[identifier] = block
             default:
-                guard let identifier = block.identifier else {
-                    continue
-                }
                 blockMap[identifier] = block
             }
         }
@@ -203,7 +200,6 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
     static func constructTableCell(_ block: AWSTextractBlock?) -> Table.Cell? {
         guard let blockType = block?.blockType,
             let selectionStatus = block?.selectionStatus,
-            let text = block?.text,
             let rowSpan = block?.rowSpan,
             let columnSpan = block?.columnSpan,
             let geometry = block?.geometry,
@@ -217,7 +213,10 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
 
         switch blockType {
         case .word:
-             words += text + " "
+            guard let text = block?.text else {
+                return nil
+            }
+            words += text + " "
         case .selectionElement:
             isSelected = selectionStatus == .selected ? true : false
         default: break
