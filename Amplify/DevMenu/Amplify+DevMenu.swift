@@ -18,7 +18,7 @@ extension Amplify {
         #if DEBUG
             devMenu = AmplifyDevMenu(devMenuPresentationContextProvider: contextProvider)
         #else
-            print("Developer Menu is available only in debug mode")
+        Logging.warn(DevMenuStringConstants.logTag + "Developer Menu is available only in debug mode")
         #endif
 
     }
