@@ -86,7 +86,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
         let createTableStatements = models
             .sortByDependencyOrder()
-            .map { CreateTableStatement(modelType: $0).stringValue }
+            .map { CreateTableStatement(schema: $0.schema).stringValue }
             .joined(separator: "\n")
 
         do {
@@ -153,7 +153,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                           predicate: QueryPredicate,
                           completion: (DataStoreResult<[M]>) -> Void) {
         do {
-            let statement = DeleteStatement(modelType: modelType, predicate: predicate)
+            let statement = DeleteStatement(schema: modelType.schema, predicate: predicate)
             _ = try connection.prepare(statement.stringValue).run(statement.variables)
             completion(.success([]))
         } catch {
@@ -223,7 +223,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         var sql = "select count(\(primaryKey)) from \(schema.name) where \(primaryKey) = ?"
         var variables: [Binding?] = [id]
         if let predicate = predicate {
-            let conditionStatement = ConditionStatement(modelType: modelType,
+            let conditionStatement = ConditionStatement(schema: schema,
                                                         predicate: predicate)
             sql = """
             \(sql)
@@ -237,6 +237,34 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         if let count = result as? Int64 {
             if count > 1 {
                 throw DataStoreError.nonUniqueResult(model: modelType.modelName,
+                                                     count: Int(count))
+            }
+            return count == 1
+        }
+        return false
+    }
+
+    func exists(_ schema: ModelSchema,
+                withId id: Model.Identifier,
+                predicate: QueryPredicate? = nil) throws -> Bool {
+        let primaryKey = schema.primaryKey.sqlName
+        var sql = "select count(\(primaryKey)) from \(schema.name) where \(primaryKey) = ?"
+        var variables: [Binding?] = [id]
+        if let predicate = predicate {
+            let conditionStatement = ConditionStatement(schema: schema,
+                                                        predicate: predicate)
+            sql = """
+            \(sql)
+            \(conditionStatement.stringValue)
+            """
+
+            variables.append(contentsOf: conditionStatement.variables)
+        }
+
+        let result = try connection.scalar(sql, variables)
+        if let count = result as? Int64 {
+            if count > 1 {
+                throw DataStoreError.nonUniqueResult(model: schema.name,
                                                      count: Int(count))
             }
             return count == 1

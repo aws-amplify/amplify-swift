@@ -12,18 +12,18 @@ import SQLite
 /// Represents a `update` SQL statement.
 struct UpdateStatement: SQLStatement {
 
-    let modelType: Model.Type
+    let schema: ModelSchema
     let conditionStatement: ConditionStatement?
 
     private let model: Model
 
     init(model: Model, condition: QueryPredicate? = nil) {
-        self.modelType = type(of: model)
+        self.schema = model.schema
         self.model = model
 
         var conditionStatement: ConditionStatement?
         if let condition = condition {
-            let statement = ConditionStatement(modelType: modelType,
+            let statement = ConditionStatement(schema: schema,
                                                predicate: condition)
             conditionStatement = statement
         }
@@ -32,7 +32,6 @@ struct UpdateStatement: SQLStatement {
     }
 
     var stringValue: String {
-        let schema = modelType.schema
         let columns = updateColumns.map { $0.columnName() }
 
         let columnsStatement = columns.map { column in
@@ -66,6 +65,6 @@ struct UpdateStatement: SQLStatement {
     }
 
     private var updateColumns: [ModelField] {
-        modelType.schema.columns.filter { !$0.isPrimaryKey }
+        schema.columns.filter { !$0.isPrimaryKey }
     }
 }

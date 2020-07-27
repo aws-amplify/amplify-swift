@@ -10,6 +10,12 @@ import AWSPluginsCore
 
 extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
+    public func save(_ json: Codable,
+                     where condition: QueryPredicate? = nil,
+                     completion: @escaping DataStoreCallback<Codable>) {
+        
+    }
+
     public func save<M: Model>(_ model: M,
                                where condition: QueryPredicate? = nil,
                                completion: @escaping DataStoreCallback<M>) {

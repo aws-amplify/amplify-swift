@@ -12,16 +12,16 @@ import SQLite
 /// Represents a `delete` SQL statement that is optionally composed by a `ConditionStatement`.
 struct DeleteStatement: SQLStatement {
 
-    let modelType: Model.Type
+    let schema: ModelSchema
     let conditionStatement: ConditionStatement?
     let namespace = "root"
 
-    init(modelType: Model.Type, predicate: QueryPredicate? = nil) {
-        self.modelType = modelType
+    init(schema: ModelSchema, predicate: QueryPredicate? = nil) {
+        self.schema = schema
 
         var conditionStatement: ConditionStatement?
         if let predicate = predicate {
-            let statement = ConditionStatement(modelType: modelType,
+            let statement = ConditionStatement(schema: schema,
                                                predicate: predicate,
                                                namespace: namespace[...])
             conditionStatement = statement
@@ -30,15 +30,14 @@ struct DeleteStatement: SQLStatement {
     }
 
     init(modelType: Model.Type, withId id: Model.Identifier) {
-        self.init(modelType: modelType, predicate: field("id") == id)
+        self.init(schema: modelType.schema, predicate: field("id") == id)
     }
 
     init(model: Model) {
-        self.init(modelType: type(of: model))
+        self.init(schema: model.schema)
     }
 
     var stringValue: String {
-        let schema = modelType.schema
         let sql = """
         delete from \(schema.name) as \(namespace)
         """

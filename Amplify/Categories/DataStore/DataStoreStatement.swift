@@ -16,7 +16,7 @@ public protocol DataStoreStatement {
     associatedtype Variables
 
     /// The type of the `Model` associated with a particular statement
-    var modelType: Model.Type { get }
+    var schema: ModelSchema { get }
 
     /// The actual string content of the statement (e.g. a SQL query or a GraphQL document)
     var stringValue: String { get }

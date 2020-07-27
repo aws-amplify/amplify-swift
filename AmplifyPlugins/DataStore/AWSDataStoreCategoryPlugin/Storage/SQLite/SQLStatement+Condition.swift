@@ -18,7 +18,7 @@ typealias SQLPredicate = (String, [Binding?])
 ///   - modelType: the metatype of the `Model`
 ///   - predicate: the query predicate
 /// - Returns: a tuple containing the SQL string and the associated values
-private func translateQueryPredicate(from modelType: Model.Type,
+private func translateQueryPredicate(from schema: ModelSchema,
                                      predicate: QueryPredicate,
                                      namespace: Substring? = nil) -> SQLPredicate {
     var sql: [String] = []
@@ -65,14 +65,14 @@ private func translateQueryPredicate(from modelType: Model.Type,
 /// compose `insert`, `update`, `delete` and `select` statements with conditions.
 struct ConditionStatement: SQLStatement {
 
-    let modelType: Model.Type
+    let schema: ModelSchema
     let stringValue: String
     let variables: [Binding?]
 
-    init(modelType: Model.Type, predicate: QueryPredicate, namespace: Substring? = nil) {
-        self.modelType = modelType
+    init(schema: ModelSchema, predicate: QueryPredicate, namespace: Substring? = nil) {
+        self.schema = schema
 
-        let (sql, variables) = translateQueryPredicate(from: modelType,
+        let (sql, variables) = translateQueryPredicate(from: schema,
                                                        predicate: predicate,
                                                        namespace: namespace)
         self.stringValue = sql

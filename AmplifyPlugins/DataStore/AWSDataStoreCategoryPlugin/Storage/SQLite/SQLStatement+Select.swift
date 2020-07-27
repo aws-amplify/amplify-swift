@@ -20,12 +20,11 @@ struct SelectStatementMetadata {
     let bindings: [Binding?]
 
     // TODO remove additionalStatements once sorting support is added to DataStore
-    static func metadata(from modelType: Model.Type,
+    static func metadata(from schema: ModelSchema,
                          predicate: QueryPredicate? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          additionalStatements: String? = nil) -> SelectStatementMetadata {
         let rootNamespace = "root"
-        let schema = modelType.schema
         let fields = schema.columns
         let tableName = schema.name
         var columnMapping: ColumnMapping = [:]
@@ -48,7 +47,7 @@ struct SelectStatementMetadata {
 
         var bindings: [Binding?] = []
         if let predicate = predicate {
-            let conditionStatement = ConditionStatement(modelType: modelType,
+            let conditionStatement = ConditionStatement(schema: schema,
                                                         predicate: predicate,
                                                         namespace: rootNamespace[...])
             bindings.append(contentsOf: conditionStatement.variables)
@@ -131,15 +130,15 @@ struct SelectStatementMetadata {
 /// optionally composed by a `ConditionStatement`.
 struct SelectStatement: SQLStatement {
 
-    let modelType: Model.Type
+    let schema: ModelSchema
     let metadata: SelectStatementMetadata
 
     init(from modelType: Model.Type,
          predicate: QueryPredicate? = nil,
          paginationInput: QueryPaginationInput? = nil,
          additionalStatements: String? = nil) {
-        self.modelType = modelType
-        self.metadata = .metadata(from: modelType,
+        self.schema = modelType.schema
+        self.metadata = .metadata(from: schema,
                                   predicate: predicate,
                                   paginationInput: paginationInput,
                                   additionalStatements: additionalStatements)

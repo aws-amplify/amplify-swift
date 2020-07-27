@@ -40,13 +40,19 @@ public struct ModelRegistry {
             modelTypes[modelType.modelName] = modelType
         }
     }
-    
 
-//    public static func modelType(from name: String) -> Model.Type? {
-//        concurrencyQueue.sync {
-//            modelTypes[name]
-//        }
-//    }
+    public static func register(modelName: String, schema: ModelSchema) {
+        concurrencyQueue.sync {
+            modelSchemas[modelName] = schema
+        }
+    }
+
+
+    public static func modelType(from name: String) -> Model.Type? {
+        concurrencyQueue.sync {
+            modelTypes[name]
+        }
+    }
 
     public static func modelSchema(from name: String) -> ModelSchema? {
         concurrencyQueue.sync {

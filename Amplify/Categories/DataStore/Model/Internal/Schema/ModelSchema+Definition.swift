@@ -180,10 +180,10 @@ public enum ModelFieldDefinition {
                                is nullability: ModelFieldNullability = .required,
                                ofType type: Model.Type,
                                associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
-        return .field(key,
+        return .    field(key,
                       is: nullability,
                       ofType: .collection(modelName: type.modelName),
-                      association: .hasMany(associatedWith: associatedKey))
+                      association: .hasMany(associatedWith: associatedKey.stringValue))
     }
 
     public static func hasOne(_ key: CodingKey,
@@ -193,7 +193,7 @@ public enum ModelFieldDefinition {
         return .field(key,
                       is: nullability,
                       ofType: .model(name: type.modelName),
-                      association: .hasOne(associatedWith: associatedKey))
+                      association: .hasOne(associatedWith: associatedKey.stringValue))
     }
 
     public static func belongsTo(_ key: CodingKey,
@@ -204,7 +204,7 @@ public enum ModelFieldDefinition {
         return .field(key,
                       is: nullability,
                       ofType: .model(name: type.modelName),
-                      association: .belongsTo(associatedWith: associatedKey, targetName: targetName))
+                      association: .belongsTo(associatedWith: associatedKey?.stringValue, targetName: targetName))
     }
 
     public var modelField: ModelField {

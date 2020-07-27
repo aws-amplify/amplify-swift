@@ -12,14 +12,13 @@ import Foundation
 /// associated with the passed `Model.Type`.
 struct CreateTableStatement: SQLStatement {
 
-    let modelType: Model.Type
+    let schema: ModelSchema
 
-    init(modelType: Model.Type) {
-        self.modelType = modelType
+    init(schema: ModelSchema) {
+        self.schema = schema
     }
 
     var stringValue: String {
-        let schema = modelType.schema
         let name = schema.name
         var statement = "create table if not exists \(name) (\n"
 

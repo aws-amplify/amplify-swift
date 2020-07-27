@@ -87,9 +87,9 @@ import Foundation
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public enum ModelAssociation {
-    case hasMany(associatedWith: CodingKey?)
-    case hasOne(associatedWith: CodingKey?)
-    case belongsTo(associatedWith: CodingKey?, targetName: String?)
+    case hasMany(associatedWith: String?)
+    case hasOne(associatedWith: String?)
+    case belongsTo(associatedWith: String?, targetName: String?)
 
     public static let belongsTo: ModelAssociation = .belongsTo(associatedWith: nil, targetName: nil)
 
@@ -157,13 +157,13 @@ extension ModelField {
             switch association {
             case .belongsTo(let associatedKey, _):
                 // TODO handle modelName casing (convert to camelCase)
-                let key = associatedKey?.stringValue ?? associatedModel
+                let key = associatedKey ?? associatedModel
                 let schema = ModelRegistry.modelSchema(from: key)!
                 return schema.field(withName: key)!
             case .hasOne(let associatedKey),
                  .hasMany(let associatedKey):
                 // TODO handle modelName casing (convert to camelCase)
-                let key = associatedKey?.stringValue ?? associatedModel
+                let key = associatedKey ?? associatedModel
                 let schema = ModelRegistry.modelSchema(from: key)!
                 return schema.field(withName: key)
             case .none:
