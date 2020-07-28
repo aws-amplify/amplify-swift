@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import Amplify
+@testable import Amplify
 import AWSS3StoragePlugin
 
 class AWSS3StoragePluginBaseConfigTests: XCTestCase {
@@ -26,6 +26,11 @@ class AWSS3StoragePluginBaseConfigTests: XCTestCase {
                 return
             }
         }
+    }
+
+    override func tearDown() {
+        // Need this to avoid plugin already configured exception in the subsequent tests
+        Amplify.reset()
     }
 
 }

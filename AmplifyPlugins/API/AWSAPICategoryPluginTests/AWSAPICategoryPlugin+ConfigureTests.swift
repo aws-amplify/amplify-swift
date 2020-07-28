@@ -35,7 +35,21 @@ class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
         do {
             try apiPlugin.configure(using: apiPluginConfig)
         } catch {
-            XCTFail("Failed to configure storage plugin: \(error)")
+            XCTFail("Failed to configure api plugin: \(error)")
+        }
+    }
+
+    func testConfigureFailureForNilConfiguration() throws {
+        let plugin = AWSAPIPlugin()
+        do {
+            try plugin.configure(using: nil)
+            XCTFail("Api configuration should not succeed")
+        } catch {
+            guard let apiError = error as? PluginError,
+                case .pluginConfigurationError(_, _, _) = apiError else {
+                    XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
+                    return
+            }
         }
     }
 

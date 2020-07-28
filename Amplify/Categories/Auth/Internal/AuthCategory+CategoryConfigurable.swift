@@ -9,7 +9,7 @@ import Foundation
 
 extension AuthCategory: CategoryConfigurable {
 
-    func configure(using configuration: CategoryConfiguration) throws {
+    func configure(using configuration: CategoryConfiguration?) throws {
         guard !isConfigured else {
             let error = ConfigurationError.amplifyAlreadyConfigured(
                 "\(categoryType.displayName) has already been configured.",
@@ -24,9 +24,6 @@ extension AuthCategory: CategoryConfigurable {
     }
 
     func configure(using amplifyConfiguration: AmplifyConfiguration) throws {
-        guard let configuration = categoryConfiguration(from: amplifyConfiguration) else {
-            return
-        }
-        try configure(using: configuration)
+        try configure(using: categoryConfiguration(from: amplifyConfiguration))
     }
 }

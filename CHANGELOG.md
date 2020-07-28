@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.5 (2020-07-24)
+
+### Bug Fixes
+
+- **auth**: missing initializers for AWSAuth*Options (#658)
+- **storage**: delete file if key not found on download (#652)
+- Fix cancellation logic for AWSGraphQLSubscriptionOperation (#650)
+- Plugins that are not configured correctly will be error at initial step (#642)
+- **Datastore**: paginationInput not passed down in query (#647)
+- **auth**: Fix an issue that prevents signInWithWebUI to present over a presenting vc (#635)
+- **auth**: User pool token, user sub should be returned for signedIn user with no identityPool config (#632)
+
 ## 1.0.4 (2020-07-01)
 
 ### Bug Fixes

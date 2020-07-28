@@ -11,7 +11,6 @@
 		3AB72AEC1B90671D652C3F96 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 234C2AFA9205B1766FB8E090 /* Pods_HostApp.framework */; };
 		8337B0CA31C0E650D640B82C /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 242DDB230CE2BA243E395217 /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework */; };
 		B40F165D24784AE300CDB920 /* AWSCognitoAuthPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B43DC7452410572400D40275 /* AWSCognitoAuthPlugin.framework */; };
-		B40F167A24784B3400CDB920 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = B40F166524784B3400CDB920 /* amplifyconfiguration.json */; };
 		B40F167C24784B3400CDB920 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B40F166824784B3400CDB920 /* README.md */; };
 		B40F167D24784B3400CDB920 /* AuthSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40F166A24784B3400CDB920 /* AuthSignInHelper.swift */; };
 		B40F167E24784B3400CDB920 /* AuthConfigurationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40F166B24784B3400CDB920 /* AuthConfigurationHelper.swift */; };
@@ -114,6 +113,7 @@
 		B4F3EA4F243A782700F23296 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3EA4C243A782700F23296 /* ViewController.swift */; };
 		B4F3EA50243A782700F23296 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3EA4D243A782700F23296 /* AppDelegate.swift */; };
 		B4F3EA51243A782700F23296 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3EA4E243A782700F23296 /* SceneDelegate.swift */; };
+		D8D4514C24C7AF2600EE2086 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = D8D4514B24C7AF2500EE2086 /* amplifyconfiguration.json */; };
 		FA6B0EA8249443C90062AA59 /* AWSCognitoAuthPluginConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B0EA7249443C90062AA59 /* AWSCognitoAuthPluginConfigTests.swift */; };
 		FECB988C412E46FD5961894A /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1674B6AE81501F6E278CE00B /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework */; };
 /* End PBXBuildFile section */
@@ -159,7 +159,6 @@
 		8B2FC5990A6ABD808EA9B984 /* Pods-AWSAuthPlugin-AWSAuthPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAuthPlugin-AWSAuthPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSAuthPlugin-AWSAuthPluginTests/Pods-AWSAuthPlugin-AWSAuthPluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		94AE978618BF1C30FD808FB6 /* Pods-HostApp-AWSAuthPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAuthPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAuthPluginIntegrationTests/Pods-HostApp-AWSAuthPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B40F165824784AE300CDB920 /* AWSCognitoAuthPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSCognitoAuthPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B40F166524784B3400CDB920 /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 		B40F166724784B3400CDB920 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B40F166824784B3400CDB920 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		B40F166A24784B3400CDB920 /* AuthSignInHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSignInHelper.swift; sourceTree = "<group>"; };
@@ -278,6 +277,7 @@
 		B4F3EA4E243A782700F23296 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		C49A4C812B0F973F5536DCC8 /* Pods-AWSAuthPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAuthPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSAuthPlugin/Pods-AWSAuthPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		C5E50D8021B9740CB511898D /* Pods-AWSAuthPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAuthPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSAuthPlugin/Pods-AWSAuthPlugin.debug.xcconfig"; sourceTree = "<group>"; };
+		D8D4514B24C7AF2500EE2086 /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 		E9289652B314AA0AA1F31BC8 /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
 		FA6B0EA7249443C90062AA59 /* AWSCognitoAuthPluginConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSCognitoAuthPluginConfigTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -341,7 +341,7 @@
 		B40F166424784B3400CDB920 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
-				B40F166524784B3400CDB920 /* amplifyconfiguration.json */,
+				D8D4514B24C7AF2500EE2086 /* amplifyconfiguration.json */,
 			);
 			path = Configuration;
 			sourceTree = "<group>";
@@ -896,7 +896,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B40F167C24784B3400CDB920 /* README.md in Resources */,
-				B40F167A24784B3400CDB920 /* amplifyconfiguration.json in Resources */,
+				D8D4514C24C7AF2600EE2086 /* amplifyconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

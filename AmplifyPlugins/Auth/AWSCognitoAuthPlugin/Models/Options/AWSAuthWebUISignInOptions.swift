@@ -23,4 +23,9 @@ public struct AWSAuthWebUISignInOptions {
     /// `federationProviderName` is required if you are signIn directly with a third party provider. For example if you
     /// are using Auth0, specify the `federationProviderName` as <your_domain>.auth0.com.
     public let federationProviderName: String?
+
+    public init(idpIdentifier: String? = nil, federationProviderName: String? = nil) {
+        self.idpIdentifier = idpIdentifier
+        self.federationProviderName = federationProviderName
+    }
 }

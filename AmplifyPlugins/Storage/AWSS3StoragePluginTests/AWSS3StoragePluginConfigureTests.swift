@@ -72,6 +72,19 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
         }
     }
 
+    func testConfigureFailureForNilConfiguration() throws {
+        do {
+            try storagePlugin.configure(using: nil)
+            XCTFail("Storage configuration should not succeed")
+        } catch {
+            guard let pluginError = error as? PluginError,
+                case .pluginConfigurationError(_, _, _) = pluginError else {
+                    XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
+                    return
+            }
+        }
+    }
+
     func testConfigureThrowsErrorForMissingBucketConfig() {
         let region = JSONValue.init(stringLiteral: testRegion)
         let storagePluginConfig = JSONValue.init(
