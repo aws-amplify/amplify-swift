@@ -8,6 +8,9 @@
 import Amplify
 
 protocol ModelStorageBehavior {
+
+    func setUp(schemas: [ModelSchema]) throws
+
     func setUp(models: [Model.Type]) throws
 
     func save<M: Model>(_ model: M,

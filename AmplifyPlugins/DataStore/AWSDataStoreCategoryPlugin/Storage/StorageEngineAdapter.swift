@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 import AWSPluginsCore
 
-protocol StorageEngineAdapter: class, ModelStorageBehavior, JsonModelStorageBehavior {
+protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
     // MARK: - Async APIs
     func save(untypedModel: Model, completion: @escaping DataStoreCallback<Model>)

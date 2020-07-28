@@ -80,7 +80,22 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
         return documentsPath.appendingPathComponent("\(databaseName).db")
     }
+    func setUp(schemas: [ModelSchema]) throws {
+        log.debug("Setting up \(schemas.count) models")
 
+        let createTableStatements = schemas
+            .sortByDependencyOrder()
+            .map { CreateTableStatement(schema: $0).stringValue }
+            .joined(separator: "\n")
+
+        log.debug(createTableStatements)
+        do {
+            try connection.execute(createTableStatements)
+        } catch {
+            throw DataStoreError.invalidOperation(causedBy: error)
+        }
+    }
+    
     func setUp(models: [Model.Type]) throws {
         log.debug("Setting up \(models.count) models")
 

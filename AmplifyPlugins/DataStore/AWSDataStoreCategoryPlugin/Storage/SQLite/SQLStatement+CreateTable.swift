@@ -19,6 +19,7 @@ struct CreateTableStatement: SQLStatement {
     }
 
     var stringValue: String {
+        print("sc name - \(schema.name)")
         let name = schema.name
         var statement = "create table if not exists \(name) (\n"
 

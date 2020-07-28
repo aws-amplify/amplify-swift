@@ -157,3 +157,30 @@ extension Array where Element == Model.Type {
     }
 
 }
+
+
+extension Array where Element == ModelSchema {
+
+    func sortByDependencyOrder() -> Self {
+        var sortedKeys: [String] = []
+        var sortMap: [String: ModelSchema] = [:]
+
+        func walkAssociatedModels(of schema: ModelSchema) {
+            if !sortedKeys.contains(schema.name) {
+                let associatedModels = schema.sortedFields
+                    .filter { $0.isForeignKey }
+                    .map { ModelRegistry.modelSchema(from:$0.requiredAssociatedModel )! }
+                associatedModels.forEach(walkAssociatedModels(of:))
+
+                let key = schema.name
+                sortedKeys.append(key)
+                sortMap[key] = schema
+            }
+        }
+
+        let sortedStartList = sorted { $0.name < $1.name }
+        sortedStartList.forEach(walkAssociatedModels(of:))
+        return sortedKeys.map { sortMap[$0]! }
+    }
+
+}

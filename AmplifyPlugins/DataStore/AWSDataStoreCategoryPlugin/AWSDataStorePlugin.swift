@@ -85,7 +85,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
         try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
 
-        try storageEngine.setUp(models: ModelRegistry.models)
+        try storageEngine.setUp(schemas: ModelRegistry.modelSchemas)
 
         let filter = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
         var token: UnsubscribeToken?

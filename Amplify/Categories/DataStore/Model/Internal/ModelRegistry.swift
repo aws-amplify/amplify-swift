@@ -20,11 +20,17 @@ public struct ModelRegistry {
 
     private static var modelDecoders = [String: ModelDecoder]()
 
-    private static var modelSchemas = [String: ModelSchema]()
+    private static var modelSchemaMapping = [String: ModelSchema]()
 
     public static var models: [Model.Type] {
         concurrencyQueue.sync {
             Array(modelTypes.values)
+        }
+    }
+
+    public static var modelSchemas: [ModelSchema] {
+        concurrencyQueue.sync {
+            Array(modelSchemaMapping.values)
         }
     }
 
@@ -43,7 +49,7 @@ public struct ModelRegistry {
 
     public static func register(modelName: String, schema: ModelSchema) {
         concurrencyQueue.sync {
-            modelSchemas[modelName] = schema
+            modelSchemaMapping[modelName] = schema
         }
     }
 
@@ -56,7 +62,7 @@ public struct ModelRegistry {
 
     public static func modelSchema(from name: String) -> ModelSchema? {
         concurrencyQueue.sync {
-            modelSchemas[name]
+            modelSchemaMapping[name]
         }
     }
 

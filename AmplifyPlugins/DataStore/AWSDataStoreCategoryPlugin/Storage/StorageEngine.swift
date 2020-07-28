@@ -126,6 +126,10 @@ final class StorageEngine: StorageEngineBehavior {
         }
     }
 
+    func setUp(schemas: [ModelSchema]) throws {
+        try storageAdapter.setUp(schemas: schemas)
+    }
+
     func setUp(models: [Model.Type]) throws {
         try storageAdapter.setUp(models: models)
     }

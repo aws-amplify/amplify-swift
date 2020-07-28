@@ -202,20 +202,20 @@ extension ModelField {
         }
         return false
     }
-
-    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
-    ///   by host applications. The behavior of this may change without warning.
-    public var embeddedType: Embeddable.Type? {
-        switch type {
-        case .embedded(let type), .embeddedCollection(let type):
-            if let embeddedType = type as? Embeddable.Type {
-                return embeddedType
-            }
-            return nil
-        default:
-            return nil
-        }
-    }
+//
+//    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+//    ///   by host applications. The behavior of this may change without warning.
+//    public var embeddedType: Embeddable.Type? {
+//        switch type {
+//        case .embedded(let type), .embeddedCollection(let type):
+//            if let embeddedType = type as? Embeddable.Type {
+//                return embeddedType
+//            }
+//            return nil
+//        default:
+//            return nil
+//        }
+//    }
 
     /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
     ///   by host applications. The behavior of this may change without warning.

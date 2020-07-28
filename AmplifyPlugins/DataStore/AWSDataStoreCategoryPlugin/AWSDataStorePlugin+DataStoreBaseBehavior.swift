@@ -8,16 +8,14 @@
 import Amplify
 import AWSPluginsCore
 
-struct DynamicModel: Model {
 
-    let data: [String: Any]
-}
 extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
-    public func save(_ data: ModelValues,
+    public func save<M: Model>(_ model: M,
                      schema: ModelSchema,
                      where condition: QueryPredicate? = nil,
-                     completion: @escaping DataStoreCallback<Codable>) {
+                     completion: @escaping DataStoreCallback<M>) {
+        log.verbose("Saving: \(model) with condition: \(String(describing: condition))")
         reinitStorageEngineIfNeeded()
 
         let modelExists: Bool
@@ -26,9 +24,8 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 throw DataStoreError.configuration("Unable to get storage adapter",
                                                    "")
             }
-            let id = "" // Get id from JsonData
             modelExists = try engine.storageAdapter.exists(schema,
-                                                           withId: id,
+                                                           withId: model.id,
                                                            predicate: nil)
         } catch {
             if let dataStoreError = error as? DataStoreError {
@@ -41,51 +38,6 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
             return
         }
         let mutationType = modelExists ? MutationEvent.MutationType.update : .create
-//
-//        let publishingCompletion: DataStoreCallback<Data> = { result in
-//            switch result {
-//            case .success(let model):
-//                // TODO: Differentiate between save & update
-//                // TODO: Handle errors from mutation event creation
-//                self.publishMutationEvent(from: model, mutationType: mutationType)
-//            case .failure:
-//                break
-//            }
-//
-//            completion(result)
-//        }
-
- 
-    }
-
-    public func save<M: Model>(_ model: M,
-                               where condition: QueryPredicate? = nil,
-                               completion: @escaping DataStoreCallback<M>) {
-        log.verbose("Saving: \(model) with condition: \(String(describing: condition))")
-        reinitStorageEngineIfNeeded()
-
-        // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
-        // mutation type
-        let modelExists: Bool
-        do {
-            guard let engine = storageEngine as? StorageEngine else {
-                throw DataStoreError.configuration("Unable to get storage adapter",
-                                                   "")
-            }
-            modelExists = try engine.storageAdapter.exists(M.self.schema, withId: model.id, predicate: nil)
-        } catch {
-            if let dataStoreError = error as? DataStoreError {
-                completion(.failure(dataStoreError))
-                return
-            }
-
-            let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
-            completion(.failure(dataStoreError))
-            return
-        }
-
-        let mutationType = modelExists ? MutationEvent.MutationType.update : .create
-
         let publishingCompletion: DataStoreCallback<M> = { result in
             switch result {
             case .success(let model):
@@ -103,6 +55,13 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                            condition: condition,
                            completion: publishingCompletion)
 
+ 
+    }
+
+    public func save<M: Model>(_ model: M,
+                               where condition: QueryPredicate? = nil,
+                               completion: @escaping DataStoreCallback<M>) {
+        self.save(model, schema: model.schema, completion: completion)
     }
 
     public func query<M: Model>(_ modelType: M.Type,
