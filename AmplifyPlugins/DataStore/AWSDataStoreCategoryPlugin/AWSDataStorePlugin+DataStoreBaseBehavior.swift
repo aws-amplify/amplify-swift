@@ -8,12 +8,54 @@
 import Amplify
 import AWSPluginsCore
 
+struct DynamicModel: Model {
+
+    let data: [String: Any]
+}
 extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
-    public func save(_ json: Codable,
+    public func save(_ data: ModelValues,
+                     schema: ModelSchema,
                      where condition: QueryPredicate? = nil,
                      completion: @escaping DataStoreCallback<Codable>) {
-        
+        reinitStorageEngineIfNeeded()
+
+        let modelExists: Bool
+        do {
+            guard let engine = storageEngine as? StorageEngine else {
+                throw DataStoreError.configuration("Unable to get storage adapter",
+                                                   "")
+            }
+            let id = "" // Get id from JsonData
+            modelExists = try engine.storageAdapter.exists(schema,
+                                                           withId: id,
+                                                           predicate: nil)
+        } catch {
+            if let dataStoreError = error as? DataStoreError {
+                completion(.failure(dataStoreError))
+                return
+            }
+
+            let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
+            completion(.failure(dataStoreError))
+            return
+        }
+        let mutationType = modelExists ? MutationEvent.MutationType.update : .create
+//
+//        let publishingCompletion: DataStoreCallback<Data> = { result in
+//            switch result {
+//            case .success(let model):
+//                // TODO: Differentiate between save & update
+//                // TODO: Handle errors from mutation event creation
+//                self.publishMutationEvent(from: model, mutationType: mutationType)
+//            case .failure:
+//                break
+//            }
+//
+//            completion(result)
+//        }
+
+ 
     }
 
     public func save<M: Model>(_ model: M,
@@ -30,7 +72,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 throw DataStoreError.configuration("Unable to get storage adapter",
                                                    "")
             }
-            modelExists = try engine.storageAdapter.exists(M.self, withId: model.id, predicate: nil)
+            modelExists = try engine.storageAdapter.exists(M.self.schema, withId: model.id, predicate: nil)
         } catch {
             if let dataStoreError = error as? DataStoreError {
                 completion(.failure(dataStoreError))

@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 import AWSPluginsCore
 
-protocol StorageEngineAdapter: class, ModelStorageBehavior {
+protocol StorageEngineAdapter: class, ModelStorageBehavior, JsonModelStorageBehavior {
 
     // MARK: - Async APIs
     func save(untypedModel: Model, completion: @escaping DataStoreCallback<Model>)
@@ -38,7 +38,7 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
     // MARK: - Synchronous APIs
 
-    func exists(_ modelType: Model.Type,
+    func exists(_ schema: ModelSchema,
                 withId id: Model.Identifier,
                 predicate: QueryPredicate?) throws -> Bool
 

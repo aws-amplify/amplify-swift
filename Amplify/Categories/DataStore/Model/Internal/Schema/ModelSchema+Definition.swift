@@ -22,7 +22,7 @@ public enum ModelFieldType {
     case bool
     case `enum`(type: EnumPersistable.Type)
     case embedded(type: Codable.Type)
-    case embeddedCollection(of: Codable.Type)
+    case embeddedCollection(of: String)
     case model(name: String)
     case collection(modelName: String)
 

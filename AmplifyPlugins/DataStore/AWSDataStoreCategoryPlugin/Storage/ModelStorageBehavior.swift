@@ -28,3 +28,25 @@ protocol ModelStorageBehavior {
                          completion: DataStoreCallback<[M]>)
 
 }
+
+protocol JsonModelStorageBehavior {
+    func setUp(models: [ModelSchema]) throws
+
+    func save(_ jsonData: Data,
+              schema: ModelSchema,
+              condition: QueryPredicate?,
+              completion: @escaping DataStoreCallback<Data>)
+
+    func delete(_ modelName: String,
+                withId id: Model.Identifier,
+                completion: @escaping DataStoreCallback<Data?>)
+
+    func delete(_ modelName: String,
+                predicate: QueryPredicate,
+                completion: @escaping DataStoreCallback<[Data]>)
+
+    func query(_ modelName: String,
+               predicate: QueryPredicate?,
+               paginationInput: QueryPaginationInput?,
+               completion: DataStoreCallback<[Data]>)
+}
