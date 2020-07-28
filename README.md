@@ -7,18 +7,23 @@ Our default implementation works with Amazon Web Services (AWS), but AWS Amplify
 - **API Documentation**
   https://docs.amplify.aws/start/q/integration/ios
 
-[![Discord](https://img.shields.io/discord/308323056592486420?logo=discord)](https://discord.gg/jWVbPfC) 
+[![Cocoapods](https://img.shields.io/cocoapods/v/Amplify)](https://cocoapods.org/pods/Amplify)
+[![CircleCI](https://circleci.com/gh/aws-amplify/amplify-ios.svg?style=shield)](https://circleci.com/gh/aws-amplify/amplify-ios)
+[![Discord](https://img.shields.io/discord/308323056592486420?logo=discord)](https://discord.gg/jWVbPfC)
 
 ## Features/APIs
 
-- [**Analytics**](https://aws-amplify.github.io/docs/ios/analytics): Easily collect analytics data for your app. Analytics data includes user sessions and other custom events that you want to track in your app.
-- [**API**](https://aws-amplify.github.io/docs/ios/api): Interact with your AWS AppSync API or make HTTP requests to your API Gateway endpoint with Amplify API. It provides a GraphQL client interface to use with Amplify Tool's model generation and automatic signing process to authenticate your requests.
-- [**Storage**](https://aws-amplify.github.io/docs/ios/storage): Provides a simple mechanism for managing user content for your app in guest, protected or private storage buckets.
-- [**Predictions**](https://aws-amplify.github.io/docs/ios/predictions): Provides a solution for using AI and ML cloud services to enhance your application.
+- [Analytics](https://docs.amplify.aws/lib/analytics/getting-started/q/platform/ios) - for logging metrics and understanding your users.
+- [API (GraphQL)](https://docs.amplify.aws/lib/graphqlapi/getting-started/q/platform/ios) - for adding a GraphQL endpoint to your app.
+- [API (REST)](https://docs.amplify.aws/lib/restapi/getting-started/q/platform/ios) - for adding a REST endpoint to your app.
+- [Authentication](https://docs.amplify.aws/lib/auth/getting-started/q/platform/ios) - for managing your users.
+- [DataStore](https://docs.amplify.aws/lib/datastore/getting-started/q/platform/ios) - for making it easier to program for a distributed data store for offline and online scenarios.
+- [Predictions](https://docs.amplify.aws/lib/predictions/getting-started/q/platform/ios) - to detect text, images, and more!
+- [Storage](https://docs.amplify.aws/lib/storage/getting-started/q/platform/ios) - store complex objects like pictures and videos to the cloud.
 
 All services and features not listed above are supported via the [iOS SDK](https://docs.amplify.aws/sdk/q/platform/ios) or if supported by a category can be accessed via the Escape Hatch like below:`
 
-``` swift
+```swift
 let rekognitionService = Amplify.Predictions.getEscapeHatch(key: .rekognition) as! AWSRekognition
 let request = rekognitionService.AWSRekognitionCreateCollectionRequest()
 rekognitionService.createCollection(request)
@@ -38,57 +43,69 @@ Amplify requires Xcode 11 or higher to build.
 
 ### CocoaPods
 
-1. Amplify for iOS is available through [CocoaPods](http://cocoapods.org). If you have not installed CocoaPods, install CocoaPods by running the command:
+| :information_source: For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/lib/q/platform/ios)   |
+|-------------------------------------------------|
 
-        $ gem install cocoapods
-        $ pod setup
+1. Amplify for iOS is available through [CocoaPods](http://cocoapods.org). If you have not installed CocoaPods, install CocoaPods by running the command:
+    ```
+    $ gem install cocoapods
+    $ pod setup
+    ```
 
     Depending on your system settings, you may have to use `sudo` for installing `cocoapods` as follows:
+    
+    ```
+    $ sudo gem install cocoapods
+    $ pod setup
+    ```
 
-        $ sudo gem install cocoapods
-        $ pod setup
 2. In your project directory (the directory where your `*.xcodeproj` file is), type `pod init` and open the Podfile that was created. Add the `Amplify` pod and any plugins you would like to use. Below is an example of what a podfile might look like if you were going to use the Predictions plugin.
+    ```ruby
+    source 'https://github.com/CocoaPods/Specs.git'
+    
+    platform :ios, '13.0'
+    use_frameworks!
 
-        source 'https://github.com/CocoaPods/Specs.git'
-        
-        platform :ios, '13.0'
-        use_frameworks!
-        
-        target :'YourTarget' do
-            pod 'Amplify'
-            pod 'AmplifyPlugins'
-            pod 'AWSPluginsCore'
-            pod 'AWSPredictionsPlugin'
-            pod 'CoreMLPredictionsPlugin'
-            pod 'AWSMobileClient'
-        end
+    target :'YourTarget' do
+        pod 'Amplify'
+        pod 'AmplifyPlugins/AWSCognitoAuthPlugin'
+        pod 'AWSPredictionsPlugin'
+        pod 'CoreMLPredictionsPlugin'
+    end
+    ```
         
 3. Then run the following command:
-    
-        $ pod install
+    ```
+    $ pod install
+    ```
 4. Open up `*.xcworkspace` with Xcode and start using Amplify.
 
     ![image](readme-images/cocoapods-setup-02.png?raw=true)
 
     **Note**: Do **NOT** use `*.xcodeproj`. If you open up a project file instead of a workspace, you will receive an error.
 
+### Swift Package Manager (SPM)
+
+Support for SPM coming soon. Follow [#90](https://github.com/aws-amplify/amplify-ios/issues/90) for updates.
+
 ### Carthage
 
-Support for Carthage coming soon.
+Support for Carthage coming soon. Follow [#280](https://github.com/aws-amplify/amplify-ios/issues/280) for updates.
 
 ### Development Pods
 
 You can manually install the library by cloning this repo and creating a Podfile that references your local clone of it like below:
 
-``` ruby
-  pod 'Amplify', :path => '~/amplify-ios'
-  pod 'AWSPluginsCore', :path => '~/amplify-ios'
-  pod 'CoreMLPredictionsPlugin', :path => '~/amplify-ios'
-  pod 'AWSPredictionsPlugin', :path => '~/amplify-ios'
-  pod 'AmplifyPlugins/AWSAPIPlugin', :path => '~/amplify-ios'
+```ruby
+pod 'Amplify', :path => '~/amplify-ios'
+pod 'AWSPluginsCore', :path => '~/amplify-ios'
+pod 'CoreMLPredictionsPlugin', :path => '~/amplify-ios'
+pod 'AWSPredictionsPlugin', :path => '~/amplify-ios'
+pod 'AmplifyPlugins/AWSAPIPlugin', :path => '~/amplify-ios'
 ```
 
 Then, install the dependencies:
+
 ```
 pod install
 ```
@@ -96,6 +113,11 @@ pod install
 Open your project using ./YOUR-PROJECT-NAME.xcworkspace file. Remember to always use ./YOUR-PROJECT-NAME.xcworkspace to open your Xcode project from now on.
 
 ## Reporting Bugs/Feature Requests
+
+[![Open Bugs](https://img.shields.io/github/issues/aws-amplify/amplify-ios/bug?color=d73a4a&label=bugs)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
+[![Open Questions](https://img.shields.io/github/issues/aws-amplify/amplify-ios/usage%20question?color=558dfd&label=questions)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+label%3A%22usage+question%22+is%3Aopen)
+[![Feature Requests](https://img.shields.io/github/issues/aws-amplify/amplify-ios/feature%20request?color=ff9001&label=feature%20requests)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+label%3A%22feature+request%22+is%3Aopen+)
+[![Closed Issues](https://img.shields.io/github/issues-closed/aws-amplify/amplify-ios?color=%2325CC00)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+is%3Aclosed+)
 
 We welcome you to use the GitHub issue tracker to report bugs or suggest features.
 
