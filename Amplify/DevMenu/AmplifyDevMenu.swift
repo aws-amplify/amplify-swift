@@ -32,7 +32,7 @@ public final class AmplifyDevMenu: DevMenuBehavior, TriggerDelegate {
         guard let rootViewController =
             devMenuPresentationContextProvider?.devMenuPresentationContext().rootViewController else {
                 Amplify.Logging.warn(DevMenuStringConstants.logTag +
-                    "Warning: RootViewController of the UIWindow is nil")
+                    "RootViewController of the UIWindow is nil")
                 return
         }
         let viewController = UIHostingController(rootView: DevMenuList())

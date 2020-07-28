@@ -81,34 +81,27 @@ struct IssueInfo {
 
     /// Returns logs information in the form of text
     func getLogEntryDescription() -> String {
-         var description: String
 
-        if logEntryItems.isEmpty {
-             description = infoNotAvailable
-         } else {
-             description = ""
-            for item in logEntryItems {
-                description.append("\(LogEntryHelper.dateString(from: item.timeStamp)) "
-                    + "\(item.logLevelString) "
-                    + "\(item.message) \n")
-             }
-         }
+        guard !logEntryItems.isEmpty else {
+           return infoNotAvailable
+        }
 
-         return description
+        return logEntryItems.reduce("") {(description, item) -> String in
+            return ("\(description)"
+            + "\(LogEntryHelper.dateString(from: item.timeStamp)) "
+            + "\(item.logLevelString) "
+            + "\(item.message) \n")
+        }
      }
 
     private func getItemsDescription(items: [InfoItemProvider]) -> String {
-        var description: String
 
-        if items.isEmpty {
-            description = infoNotAvailable
-        } else {
-            description = ""
-            for item in items {
-                description.append("\(item.displayName) - \(item.information) \n")
-            }
+        guard !items.isEmpty else {
+           return infoNotAvailable
         }
 
-        return description
+        return items.reduce("") {(description, item) -> String in
+            return ("\(description)\(item.displayName) - \(item.information) \n")
+        }
     }
 }

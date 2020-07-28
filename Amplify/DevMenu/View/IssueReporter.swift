@@ -57,7 +57,7 @@ struct IssueReporter: View {
                     .border(Color.blue)
                     .padding(.bottom)
                     .alert(isPresented: $showAlertIfInvalidURL) {
-                        Alert(title: Text("Error"),
+                        Alert(title: Text(githubURLErrorTitle),
                               message: Text(githubURLErrorMessage),
                               dismissButton: .default(Text("OK")))
                 }
