@@ -67,6 +67,96 @@ class IdentifyResultTransformers {
 
     }
 
+    static func processChild(ids: [String],
+                             blockMap: [String: AWSTextractBlock]) -> String {
+        var keyText = ""
+        for keyId in ids {
+            let keyBlock = blockMap[keyId]
+            guard let keyBlockType = keyBlock?.blockType else {
+                continue
+            }
+            switch keyBlockType {
+            case .word:
+                if let text = keyBlock?.text {
+                    keyText += text + " "
+                }
+            default: break
+            }
+        }
+        return keyText
+    }
+
+    static func processValue(ids: [String],
+                             blockMap: [String: AWSTextractBlock]) -> (String, Bool) {
+        var valueText = ""
+        var valueSelected = false
+
+        // VALUE block has a CHILD list of IDs for the WORD block
+        for valueId in ids {
+            let valueBlock = blockMap[valueId]
+            guard let valueRelatioins = valueBlock?.relationships else {
+                continue
+            }
+            for valueRelation in valueRelatioins {
+                guard let ids = valueRelation.ids else {
+                    break
+                }
+                for id in ids {
+                    let wordBlock = blockMap[id]
+                    guard let wordValueBlockType = wordBlock?.blockType else {
+                        continue
+                    }
+                    switch wordValueBlockType {
+                    case .word:
+                        if let text = wordBlock?.text {
+                            valueText += text + " "
+                        }
+                    case .selectionElement:
+                        valueSelected = wordBlock?.selectionStatus == .selected ? true : false
+                    default: break
+                    }
+                }
+            }
+
+        }
+        return (valueText, valueSelected)
+    }
+
+    static func parseLineBlock(block: AWSTextractBlock) -> IdentifiedLine? {
+        guard let text = block.text,
+            let boundingBox = processBoundingBox(block.geometry?.boundingBox),
+            let polygon = processPolygon(block.geometry?.polygon) else {
+                return nil
+        }
+
+        return IdentifiedLine(text: text,
+                              boundingBox: boundingBox,
+                              polygon: polygon,
+                              page: Int(truncating: block.page ?? 0))
+    }
+
+    static func parseWordBlock(block: AWSTextractBlock) -> IdentifiedWord? {
+        guard let text = block.text,
+            let boundingBox = processBoundingBox(block.geometry?.boundingBox),
+            let polygon = processPolygon(block.geometry?.polygon) else {
+                return nil
+        }
+
+         return IdentifiedWord(text: text,
+                               boundingBox: boundingBox,
+                               polygon: polygon,
+                               page: Int(truncating: block.page ?? 0))
+    }
+
+    static func parseSelectionElementBlock(block: AWSTextractBlock) -> Selection? {
+        guard let boundingBox = processBoundingBox(block.geometry?.boundingBox),
+            let polygon = processPolygon(block.geometry?.polygon) else {
+                return nil
+        }
+        let selectionStatus = block.selectionStatus == .selected ? true : false
+        return Selection(boundingBox: boundingBox, polygon: polygon, isSelected: selectionStatus)
+    }
+
     // swiftlint:disable cyclomatic_complexity
     static func processLandmarks(_ rekognitionLandmarks: [AWSRekognitionLandmark]?) -> [Landmark] {
         var landmarks = [Landmark]()

@@ -52,99 +52,53 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
                                   identifiedLines: identifiedLines)
     }
 
-    // swiftlint:disable cyclomatic_complexity
     static func processText(_ textractTextBlocks: [AWSTextractBlock]) -> IdentifyDocumentTextResult {
-
+        var fullText = ""
         var words = [IdentifiedWord]()
         var lines = [String]()
         var linesDetailed = [IdentifiedLine]()
         var selections = [Selection]()
-        var fullText = ""
         var tables = [Table]()
         var keyValues = [BoundedKeyValue]()
-        var blockMap = [String: AWSTextractBlock]()
         var tableBlocks = [AWSTextractBlock]()
         var keyValueBlocks = [AWSTextractBlock]()
+        var blockMap = [String: AWSTextractBlock]()
 
         for block in textractTextBlocks {
             guard let identifier = block.identifier else {
                 continue
             }
 
+            blockMap[identifier] = block
+
             switch block.blockType {
             case .line:
-                guard let text = block.text else {
-                    continue
+                if let line = parseLineBlock(block: block) {
+                    lines.append(line.text)
+                    linesDetailed.append(line)
                 }
-                guard let boundingBox = processBoundingBox(block.geometry?.boundingBox) else {
-                    continue
-                }
-
-                guard let polygon = processPolygon(block.geometry?.polygon) else {
-                    continue
-                }
-                let line = IdentifiedLine(text: text,
-                                          boundingBox: boundingBox,
-                                          polygon: polygon,
-                                          page: Int(truncating: block.page ?? 0))
-                lines.append(text)
-                linesDetailed.append(line)
-                blockMap[identifier] = block
             case .word:
-                guard let text = block.text else {
-                    continue
+                if let word = parseWordBlock(block: block) {
+                    fullText += word.text + " "
+                    words.append(word)
+                    blockMap[identifier] = block
                 }
-                guard let boundingBox = processBoundingBox(block.geometry?.boundingBox) else {
-                    continue
-                }
-
-                guard let polygon = processPolygon(block.geometry?.polygon) else {
-                    continue
-                }
-                let word = IdentifiedWord(text: text,
-                                          boundingBox: boundingBox,
-                                          polygon: polygon,
-                                          page: Int(truncating: block.page ?? 0))
-                fullText += text + " "
-                words.append(word)
-                blockMap[identifier] = block
             case .selectionElement:
-                guard let boundingBox = processBoundingBox(block.geometry?.boundingBox) else {
-                    continue
+                if let selection = parseSelectionElementBlock(block: block) {
+                    selections.append(selection)
+                    blockMap[identifier] = block
                 }
-
-                guard let polygon = processPolygon(block.geometry?.polygon) else {
-                    continue
-                }
-                let selectionStatus = block.selectionStatus == .selected ? true : false
-                let selection = Selection(boundingBox: boundingBox, polygon: polygon, isSelected: selectionStatus)
-                selections.append(selection)
-                blockMap[identifier] = block
             case .table:
                 tableBlocks.append(block)
             case .keyValueSet:
                 keyValueBlocks.append(block)
-                blockMap[identifier] = block
             default:
-                blockMap[identifier] = block
+                continue
             }
         }
 
-        if !tableBlocks.isEmpty {
-            for tableBlock in tableBlocks {
-                if let table = processTable(tableBlock, blockMap: blockMap) {
-                    tables.append(table)
-                }
-            }
-        }
-
-        if !keyValueBlocks.isEmpty {
-            for keyValueBlock in keyValueBlocks where keyValueBlock.entityTypes?.contains("KEY") ?? false {
-                if let keyValue = processKeyValue(keyValueBlock, blockMap: blockMap) {
-                    keyValues.append(keyValue)
-                }
-            }
-        }
+        tables = processTables(tableBlocks: tableBlocks, blockMap: blockMap)
+        keyValues = processKeyValues(keyValueBlocks: keyValueBlocks, blockMap: blockMap)
 
         return IdentifyDocumentTextResult(
             fullText: fullText,
@@ -156,15 +110,47 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
             keyValues: keyValues)
     }
 
-    static func processTable(_ block: AWSTextractBlock,
+    static func processTables(tableBlocks: [AWSTextractBlock],
+                              blockMap: [String: AWSTextractBlock]) -> [Table] {
+        var tables = [Table]()
+        for tableBlock in tableBlocks {
+            if let table = processTable(tableBlock, blockMap: blockMap) {
+                tables.append(table)
+            }
+        }
+        return tables
+    }
+
+    static func processKeyValues(keyValueBlocks: [AWSTextractBlock],
+                                 blockMap: [String: AWSTextractBlock]) -> [BoundedKeyValue] {
+        var keyValues =  [BoundedKeyValue]()
+        for keyValueBlock in keyValueBlocks where keyValueBlock.entityTypes?.contains("KEY") ?? false {
+            if let keyValue = processKeyValue(keyValueBlock, blockMap: blockMap) {
+                keyValues.append(keyValue)
+            }
+        }
+        return keyValues
+    }
+
+    // https://docs.aws.amazon.com/textract/latest/dg/how-it-works-tables.html
+    /**
+    * Converts a given Amazon Textract block into Amplify-compatible
+    * table object.
+    * @param block Textract text block
+    * @param blockMap map of Textract blocks by their IDs
+    * @return Amplify Table instance
+    */
+    static func processTable(_ tableBlock: AWSTextractBlock,
                              blockMap: [String: AWSTextractBlock]) -> Table? {
 
-        guard let relationships = block.relationships else {
+        guard let relationships = tableBlock.relationships else {
             return nil
         }
         var table = Table()
         var rows = Set<Int>()
         var cols = Set<Int>()
+
+        // Each TABLE block contains CELL blocks
         for tableRelation in relationships {
             guard let ids = tableRelation.ids else {
                 continue
@@ -181,13 +167,13 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
                 let row = Int(truncating: rowIndex) - 1
                 let col = Int(truncating: colIndex) - 1
                 if !rows.contains(row) {
-                rows.insert(row)
+                    rows.insert(row)
                 }
                 if !cols.contains(col) {
-                cols.insert(col)
+                    cols.insert(col)
                 }
-                if let cell = constructTableCell(cellBlock) {
-                table.cells.append(cell)
+                if let cell = constructTableCell(cellBlock, blockMap) {
+                    table.cells.append(cell)
                 }
             }
 
@@ -197,29 +183,42 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
         return table
     }
 
-    static func constructTableCell(_ block: AWSTextractBlock?) -> Table.Cell? {
-        guard let blockType = block?.blockType,
-            let selectionStatus = block?.selectionStatus,
+    static func constructTableCell(_ block: AWSTextractBlock?, _ blockMap: [String: AWSTextractBlock]) -> Table.Cell? {
+        guard let selectionStatus = block?.selectionStatus,
             let rowSpan = block?.rowSpan,
             let columnSpan = block?.columnSpan,
             let geometry = block?.geometry,
             let textractBoundingBox = geometry.boundingBox,
-            let texttractPolygon = geometry.polygon
+            let texttractPolygon = geometry.polygon,
+            let relationships = block?.relationships
             else {
                 return nil
         }
+
         var words = ""
         var isSelected = false
 
-        switch blockType {
-        case .word:
-            guard let text = block?.text else {
-                return nil
+        // Each CELL block consists of WORD and/or SELECTION_ELEMENT blocks
+        for cellRelation in relationships {
+            guard let ids = cellRelation.ids else {
+                continue
             }
-            words += text + " "
-        case .selectionElement:
-            isSelected = selectionStatus == .selected ? true : false
-        default: break
+
+            for wordId in ids {
+                let wordBlock = blockMap[wordId]
+
+                switch wordBlock?.blockType {
+                case .word:
+                    guard let text = wordBlock?.text else {
+                        return nil
+                    }
+                    words += text + " "
+                case .selectionElement:
+                    isSelected = selectionStatus == .selected ? true : false
+                default:
+                    break
+                }
+            }
         }
 
         guard let boundingBox = processBoundingBox(textractBoundingBox) else {
@@ -239,6 +238,14 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
         return cell
     }
 
+    // https://docs.aws.amazon.com/textract/latest/dg/how-it-works-kvp.html
+    /**
+    * Converts a given Amazon Textract block into Amplify-compatible
+    * key-value pair feature. Returns null if not a valid table.
+    * @param block Textract text block
+    * @param blockMap map of Textract blocks by their IDs
+    * @return Amplify KeyValue instance
+    */
     static func processKeyValue(_ keyBlock: AWSTextractBlock?,
                                 blockMap: [String: AWSTextractBlock]) -> BoundedKeyValue? {
         var keyText = ""
@@ -250,30 +257,20 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
             return nil
         }
 
+        // KEY_VALUE_SET block contains CHILD and VALUE entity type blocks
         for keyBlockRelationship in relationships {
-            guard let text = keyBlock.text,
-                let ids = keyBlockRelationship.ids else {
-                    continue
+
+            guard let ids = keyBlockRelationship.ids else {
+                continue
             }
+
             switch keyBlockRelationship.types {
-            case .child where keyBlock.blockType == .word:
-                     keyText += text + " "
+            case .child:
+                keyText = processChild(ids: ids, blockMap: blockMap)
             case .value:
-                for valueId in ids {
-                    let valueBlock = blockMap[valueId]
-                    guard let valueBlockType = valueBlock?.blockType else {
-                        continue
-                    }
-                    switch valueBlockType {
-                    case .word:
-                        if let text = valueBlock?.text {
-                        valueText += text + " "
-                        }
-                    case .selectionElement:
-                        valueSelected = keyBlock.selectionStatus == .selected ? true : false
-                    default: break
-                    }
-                }
+                let valueResult = processValue(ids: ids, blockMap: blockMap)
+                valueText = valueResult.0
+                valueSelected = valueResult.1
             default:
                 break
             }
