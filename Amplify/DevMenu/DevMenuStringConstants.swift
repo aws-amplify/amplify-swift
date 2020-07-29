@@ -12,4 +12,5 @@ struct DevMenuStringConstants {
     static let notAvailable = "Not available"
     static let unknownPlugin = "Unknown Plugin"
     static let versionNotAvailable = "Version not available"
+    static let logTag = "DevMenu"
 }

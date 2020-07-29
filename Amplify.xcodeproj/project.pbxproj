@@ -211,6 +211,9 @@
 		974FF1A324BE16F90050D01B /* EnvironmentInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF1A224BE16F90050D01B /* EnvironmentInfoHelper.swift */; };
 		974FF1A524BE18460050D01B /* PluginInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF1A424BE18460050D01B /* PluginInfoHelper.swift */; };
 		974FF1A724BE5F630050D01B /* DevMenuStringConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF1A624BE5F630050D01B /* DevMenuStringConstants.swift */; };
+		975751A724CA0DCB00FA0A6E /* IssueReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975751A624CA0DCB00FA0A6E /* IssueReporter.swift */; };
+		975751AB24CA27AD00FA0A6E /* IssueInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975751AA24CA27AD00FA0A6E /* IssueInfo.swift */; };
+		975751AD24CA35F000FA0A6E /* IssueInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975751AC24CA35F000FA0A6E /* IssueInfoHelper.swift */; };
 		977007E324C1585100848468 /* LogEntryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977007E224C1585100848468 /* LogEntryItem.swift */; };
 		97CB85FD24AA451B000C65FB /* PersistentLoggingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */; };
 		97CB85FE24AA451B000C65FB /* AmplifyDevMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */; };
@@ -967,6 +970,9 @@
 		974FF1A224BE16F90050D01B /* EnvironmentInfoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentInfoHelper.swift; sourceTree = "<group>"; };
 		974FF1A424BE18460050D01B /* PluginInfoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginInfoHelper.swift; sourceTree = "<group>"; };
 		974FF1A624BE5F630050D01B /* DevMenuStringConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevMenuStringConstants.swift; sourceTree = "<group>"; };
+		975751A624CA0DCB00FA0A6E /* IssueReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueReporter.swift; sourceTree = "<group>"; };
+		975751AA24CA27AD00FA0A6E /* IssueInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueInfo.swift; sourceTree = "<group>"; };
+		975751AC24CA35F000FA0A6E /* IssueInfoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueInfoHelper.swift; sourceTree = "<group>"; };
 		976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		977007E224C1585100848468 /* LogEntryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEntryItem.swift; sourceTree = "<group>"; };
 		97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentLoggingPlugin.swift; sourceTree = "<group>"; };
@@ -2092,6 +2098,7 @@
 				974FF18C24B8F4C80050D01B /* EnvironmentInfoDetailView.swift */,
 				97DC3D4F24C1FCEE00D79E24 /* LogEntryRow.swift */,
 				97DC3D5124C1FE4100D79E24 /* LogViewer.swift */,
+				975751A624CA0DCB00FA0A6E /* IssueReporter.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2108,10 +2115,12 @@
 				974FF19E24BE13100050D01B /* PluginInfoItem.swift */,
 				974FF19C24BE0B4B0050D01B /* InfoItemProvider.swift */,
 				977007E224C1585100848468 /* LogEntryItem.swift */,
+				975751AA24CA27AD00FA0A6E /* IssueInfo.swift */,
 				974FF1A024BE14E00050D01B /* DeviceInfoHelper.swift */,
 				974FF1A224BE16F90050D01B /* EnvironmentInfoHelper.swift */,
 				974FF1A424BE18460050D01B /* PluginInfoHelper.swift */,
 				97DC3D5324C200A600D79E24 /* LogEntryHelper.swift */,
+				975751AC24CA35F000FA0A6E /* IssueInfoHelper.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -4383,6 +4392,7 @@
 				B450741524115C340098F02D /* AuthSignInResult.swift in Sources */,
 				B468841A2460A98E00221268 /* AuthForgetDeviceRequest.swift in Sources */,
 				217855C3237F84D700A30D19 /* RESTRequest.swift in Sources */,
+				975751AD24CA35F000FA0A6E /* IssueInfoHelper.swift in Sources */,
 				95DAAB34237E63370028544F /* Emotion.swift in Sources */,
 				974FF19324B909570050D01B /* DevEnvironmentInfo.swift in Sources */,
 				95DAAB20237E63370028544F /* SyntaxToken.swift in Sources */,
@@ -4440,8 +4450,10 @@
 				FA09B92D2321A27F000E064D /* CategoryConfigurable.swift in Sources */,
 				B92E03B72367CE7A006CEB8D /* ModelRegistry.swift in Sources */,
 				95DAAB83237F13940028544F /* EntityMatch.swift in Sources */,
+				975751AB24CA27AD00FA0A6E /* IssueInfo.swift in Sources */,
 				FA09B93B2321A36F000E064D /* StorageCategory+CategoryConfigurable.swift in Sources */,
 				95DAAB4C237E639E0028544F /* IdentifyEntitiesResult.swift in Sources */,
+				975751A724CA0DCB00FA0A6E /* IssueReporter.swift in Sources */,
 				B473B53E245DE8E100C45C72 /* AuthConfirmSignInOperation.swift in Sources */,
 				974FF13124B043B90050D01B /* TriggerRecognizer.swift in Sources */,
 				B43CD858241147F900BF5A60 /* AuthUser.swift in Sources */,

@@ -30,8 +30,7 @@ struct DevMenuList: View {
             .navigationBarTitle(
                 Text(screenTitle),
                 displayMode: .inline)
-        }
-
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

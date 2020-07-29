@@ -8,6 +8,7 @@
 import Foundation
 
 /// Helper class to fetch log entry related information
+@available(iOS 13.0, *)
 struct LogEntryHelper {
 
     /// Date formatter instance for date formatting
