@@ -148,20 +148,21 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
 
-//            // load the recent saved instance and pass it back to the callback
-//            query(modelType, predicate: field("id").eq(model.id)) {
-//                switch $0 {
-//                case .success(let result):
-//                    if let saved = result.first {
-//                        completion(.success(saved))
-//                    } else {
-//                        completion(.failure(.nonUniqueResult(model: modelType.modelName,
-//                                                             count: result.count)))
-//                    }
-//                case .failure(let error):
-//                    completion(.failure(error))
-//                }
-//            }
+            // load the recent saved instance and pass it back to the callback
+            let modelType = M.self
+            query(modelType, schema: schema, predicate: field("id").eq(model.id)) {
+                switch $0 {
+                case .success(let result):
+                    if let saved = result.first {
+                        completion(.success(saved))
+                    } else {
+                        completion(.failure(.nonUniqueResult(model: schema.name,
+                                                             count: result.count)))
+                    }
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
         } catch {
             completion(.failure(causedBy: error))
         }
@@ -212,11 +213,12 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     
 
     func query<M: Model>(_ modelType: M.Type,
+                         schema: ModelSchema,
                          predicate: QueryPredicate? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          completion: DataStoreCallback<[M]>) {
         query(modelType,
-              schema: modelType.schema,
+              schema: schema,
               predicate: predicate,
               paginationInput: paginationInput,
               additionalStatements: nil,

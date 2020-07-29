@@ -50,8 +50,7 @@ extension Statement: StatementModelConvertible {
         Amplify.Logging.logger(forCategory: .dataStore)
     }
 
-    func convert<M: Model>(to modelType: M.Type,
-                           using statement: SelectStatement) throws -> [M] {
+    func convert<M: Model>(to modelType: M.Type, using statement: SelectStatement) throws -> [M] {
         var elements: [ModelValues] = []
 
         // parse each row of the result

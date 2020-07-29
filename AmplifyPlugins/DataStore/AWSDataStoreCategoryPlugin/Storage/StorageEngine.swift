@@ -340,10 +340,12 @@ final class StorageEngine: StorageEngineBehavior {
     }
 
     func query<M: Model>(_ modelType: M.Type,
+                         schema: ModelSchema,
                          predicate: QueryPredicate? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          completion: DataStoreCallback<[M]>) {
         return storageAdapter.query(modelType,
+                                    schema: schema,
                                     predicate: predicate,
                                     paginationInput: paginationInput,
                                     completion: completion)

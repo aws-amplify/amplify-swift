@@ -31,6 +31,7 @@ protocol ModelStorageBehavior {
                           completion: @escaping DataStoreCallback<[M]>)
 
     func query<M: Model>(_ modelType: M.Type,
+                         schema: ModelSchema,
                          predicate: QueryPredicate?,
                          paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>)
