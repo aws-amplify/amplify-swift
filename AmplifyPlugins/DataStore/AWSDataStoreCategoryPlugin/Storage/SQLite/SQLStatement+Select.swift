@@ -133,15 +133,25 @@ struct SelectStatement: SQLStatement {
     let schema: ModelSchema
     let metadata: SelectStatementMetadata
 
-    init(from modelType: Model.Type,
+    init(from schema: ModelSchema,
          predicate: QueryPredicate? = nil,
          paginationInput: QueryPaginationInput? = nil,
          additionalStatements: String? = nil) {
-        self.schema = modelType.schema
+        self.schema = schema
         self.metadata = .metadata(from: schema,
                                   predicate: predicate,
                                   paginationInput: paginationInput,
                                   additionalStatements: additionalStatements)
+    }
+
+    init(from modelType: Model.Type,
+         predicate: QueryPredicate? = nil,
+         paginationInput: QueryPaginationInput? = nil,
+         additionalStatements: String? = nil) {
+        self.init(from: modelType.schema,
+                  predicate: predicate,
+                  paginationInput: paginationInput,
+                  additionalStatements: additionalStatements)
     }
 
     var stringValue: String {

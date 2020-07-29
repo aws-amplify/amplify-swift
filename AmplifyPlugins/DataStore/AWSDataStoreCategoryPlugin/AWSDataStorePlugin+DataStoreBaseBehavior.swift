@@ -47,15 +47,10 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
             case .failure:
                 break
             }
-
             completion(result)
         }
 
-        storageEngine.save(model,
-                           condition: condition,
-                           completion: publishingCompletion)
-
- 
+        storageEngine.save(model, schema: schema, where: condition, completion: publishingCompletion)
     }
 
     public func save<M: Model>(_ model: M,

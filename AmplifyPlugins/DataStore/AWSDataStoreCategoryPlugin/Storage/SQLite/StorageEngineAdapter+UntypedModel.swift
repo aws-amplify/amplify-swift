@@ -25,7 +25,7 @@ extension SQLiteStorageEngineAdapter {
                 let statement = UpdateStatement(model: untypedModel)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             } else {
-                let statement = InsertStatement(model: untypedModel)
+                let statement = InsertStatement(model: untypedModel, schema: untypedModel.schema)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
 
@@ -39,7 +39,7 @@ extension SQLiteStorageEngineAdapter {
                predicate: QueryPredicate? = nil,
                completion: DataStoreCallback<[Model]>) {
         do {
-            let statement = SelectStatement(from: modelType, predicate: predicate)
+            let statement = SelectStatement(from: modelType.schema, predicate: predicate)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result: [Model] = try rows.convert(toUntypedModel: modelType, using: statement)
             completion(.success(result))

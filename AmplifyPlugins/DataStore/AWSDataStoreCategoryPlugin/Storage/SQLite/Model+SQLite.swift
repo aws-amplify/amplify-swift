@@ -57,9 +57,8 @@ extension Model {
     ///
     /// - Parameter fields: an optional subset of fields
     /// - Returns: an array of SQLite's `Binding` compatible type
-    internal func sqlValues(for fields: [ModelField]? = nil) -> [Binding?] {
-        let modelType = type(of: self)
-        let modelFields = fields ?? modelType.schema.sortedFields
+    internal func sqlValues(for fields: [ModelField]? = nil, schema: ModelSchema) -> [Binding?] {
+        let modelFields = fields ?? schema.sortedFields
         let values: [Binding?] = modelFields.map { field in
 
             // self[field.name] subscript accessor returns an Any??, we need to do a few things:
@@ -90,9 +89,10 @@ extension Model {
             // safely attempt a cast to Persistable below.
 
             // if value is an associated model, get its id
-            if let value = value as? Model, field.isForeignKey {
-                let associatedModel: Model.Type = type(of: value)
-                return value[associatedModel.schema.primaryKey.name] as? String
+            if  field.isForeignKey {
+                print(field)
+               // let associatedModel: Model.Type = type(of: value)
+               // return value[associatedModel.schema.primaryKey.name] as? String
             }
 
             // otherwise, delegate to the value converter
@@ -101,7 +101,7 @@ extension Model {
                 return binding
             } catch {
                 logger.warn("""
-                Error converting \(modelType.modelName).\(field.name) to the proper SQLite Binding.
+                Error converting \(self.modelName).\(field.name) to the proper SQLite Binding.
                 Root cause is: \(String(describing: error))
                 """)
                 return nil

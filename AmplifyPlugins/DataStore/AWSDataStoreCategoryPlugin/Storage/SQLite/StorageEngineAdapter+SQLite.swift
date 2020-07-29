@@ -111,10 +111,12 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
-    func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: DataStoreCallback<M>) {
+    public func save<M: Model>(_ model: M,
+                               schema: ModelSchema,
+                               where condition: QueryPredicate? = nil,
+                               completion: @escaping DataStoreCallback<M>) {
         do {
-            let modelType = type(of: model)
-            let modelExists = try exists(modelType, withId: model.id)
+            let modelExists = try exists(schema, withId: model.id)
 
             if !modelExists {
                 if condition != nil {
@@ -125,13 +127,13 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                     return
                 }
 
-                let statement = InsertStatement(model: model)
+                let statement = InsertStatement(model: model, schema: schema)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
 
             if modelExists {
                 if condition != nil {
-                    let modelExistsWithCondition = try exists(modelType, withId: model.id, predicate: condition)
+                    let modelExistsWithCondition = try exists(schema, withId: model.id, predicate: condition)
                     if !modelExistsWithCondition {
                         let dataStoreError = DataStoreError.invalidCondition(
                         "Save failed due to condition did not match existing model instance.",
@@ -145,23 +147,28 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
 
-            // load the recent saved instance and pass it back to the callback
-            query(modelType, predicate: field("id").eq(model.id)) {
-                switch $0 {
-                case .success(let result):
-                    if let saved = result.first {
-                        completion(.success(saved))
-                    } else {
-                        completion(.failure(.nonUniqueResult(model: modelType.modelName,
-                                                             count: result.count)))
-                    }
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
+//            // load the recent saved instance and pass it back to the callback
+//            query(modelType, predicate: field("id").eq(model.id)) {
+//                switch $0 {
+//                case .success(let result):
+//                    if let saved = result.first {
+//                        completion(.success(saved))
+//                    } else {
+//                        completion(.failure(.nonUniqueResult(model: modelType.modelName,
+//                                                             count: result.count)))
+//                    }
+//                case .failure(let error):
+//                    completion(.failure(error))
+//                }
+//            }
         } catch {
             completion(.failure(causedBy: error))
         }
+
+    }
+    
+    func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: DataStoreCallback<M>) {
+        fatalError()
     }
 
     func delete<M: Model>(_ modelType: M.Type,
@@ -294,7 +301,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>] {
-        let statement = SelectStatement(from: MutationSyncMetadata.self)
+        let statement = SelectStatement(from: MutationSyncMetadata.schema)
         let primaryKey = MutationSyncMetadata.schema.primaryKey.sqlName
         // This is a temp workaround since we don't currently support the "in" operator
         // in query predicates (this avoids the 1 + n query problem). Consider adding "in" support
@@ -328,7 +335,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func queryModelSyncMetadata(for modelType: Model.Type) throws -> ModelSyncMetadata? {
-        let statement = SelectStatement(from: ModelSyncMetadata.self,
+        let statement = SelectStatement(from: ModelSyncMetadata.schema,
                                         predicate: field("id").eq(modelType.modelName))
         let rows = try connection.prepare(statement.stringValue).run(statement.variables)
         let result = try rows.convert(to: ModelSyncMetadata.self,

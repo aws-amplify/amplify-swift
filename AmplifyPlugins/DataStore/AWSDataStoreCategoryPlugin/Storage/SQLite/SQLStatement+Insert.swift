@@ -15,10 +15,11 @@ struct InsertStatement: SQLStatement {
     let schema: ModelSchema
     let variables: [Binding?]
 
-    init(model: Model) {
-        self.schema = model.schema
-        self.variables = model.sqlValues(for: schema.columns)
+    init(model: Model, schema: ModelSchema) {
+        self.schema = schema
+        self.variables = model.sqlValues(for: schema.columns, schema: schema)
     }
+    
 
     var stringValue: String {
         let fields = schema.columns
