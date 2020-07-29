@@ -23,7 +23,9 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
         }
 
         let convertInvoked = expectation(description: "Convert operation invoked")
-        let options = PredictionsSpeechToTextRequest.Options()
+        let options = PredictionsSpeechToTextRequest.Options(defaultNetworkPolicy: .auto,
+                                                             language: .usEnglish,
+                                                             pluginOptions: nil)
         let operation = Amplify.Predictions.convert(speechToText: url,
                                                     options: options) { event in
             switch event {
