@@ -23,6 +23,7 @@ final class MutationEventClearState {
         """
 
         storageAdapter.query(MutationEvent.self,
+                             schema: MutationEvent.schema,
                              predicate: predicate,
                              paginationInput: nil,
                              additionalStatements: orderClause) { result in

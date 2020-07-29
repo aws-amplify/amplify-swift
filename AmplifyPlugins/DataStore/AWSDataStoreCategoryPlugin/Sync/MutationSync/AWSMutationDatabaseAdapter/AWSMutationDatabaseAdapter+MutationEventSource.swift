@@ -28,6 +28,7 @@ extension AWSMutationDatabaseAdapter: MutationEventSource {
         """
 
         storageAdapter.query(MutationEvent.self,
+                             schema: MutationEvent.schema,
                              predicate: predicate,
                              paginationInput: nil,
                              additionalStatements: orderAndLimitClause) { result in

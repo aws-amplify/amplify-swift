@@ -303,6 +303,7 @@ final class StorageEngine: StorageEngineBehavior {
         do {
             try storageAdapter.transaction {
                 storageAdapter.query(modelType,
+                                     schema: modelType.schema,
                                      predicate: predicate,
                                      paginationInput: nil,
                                      additionalStatements: nil,

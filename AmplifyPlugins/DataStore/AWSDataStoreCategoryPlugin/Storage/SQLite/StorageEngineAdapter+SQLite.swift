@@ -14,6 +14,7 @@ import AWSPluginsCore
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.
 final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
+
     internal var connection: Connection!
     private var dbFilePath: URL?
     static let dbVersionKey = "com.amazonaws.DataStore.dbVersion"
@@ -208,11 +209,14 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
+    
+
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          completion: DataStoreCallback<[M]>) {
         query(modelType,
+              schema: modelType.schema,
               predicate: predicate,
               paginationInput: paginationInput,
               additionalStatements: nil,
@@ -220,12 +224,13 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func query<M: Model>(_ modelType: M.Type,
+                         schema: ModelSchema,
                          predicate: QueryPredicate? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          additionalStatements: String? = nil,
                          completion: DataStoreCallback<[M]>) {
         do {
-            let statement = SelectStatement(from: modelType,
+            let statement = SelectStatement(from: schema,
                                             predicate: predicate,
                                             paginationInput: paginationInput,
                                             additionalStatements: additionalStatements)
