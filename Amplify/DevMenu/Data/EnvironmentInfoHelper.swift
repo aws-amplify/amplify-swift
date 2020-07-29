@@ -12,6 +12,25 @@ import UIKit
 @available(iOS 13.0.0, *)
 struct EnvironmentInfoHelper {
 
+    static let environmentInfoSourceFileName = "local-env-info"
+
+    static func fetchDeveloperInformationFromJson(filename: String) -> [EnvironmentInfoItem] {
+        guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
+            Amplify.Logging.error(DevMenuStringConstants.logTag + "json file doesn't exist")
+            return [EnvironmentInfoItem]()
+        }
+
+        do {
+            let jsonData = try Data(contentsOf: url)
+            let decoder = JSONDecoder()
+            let environmentInfo = try decoder.decode(DevEnvironmentInfo.self, from: jsonData)
+            return getDeveloperEnvironmentInformation(devEnvInfo: environmentInfo)
+        } catch {
+            Amplify.Logging.error(DevMenuStringConstants.logTag + "json file parsing failed")
+            return [EnvironmentInfoItem]()
+        }
+    }
+
     static func getDeveloperEnvironmentInformation(devEnvInfo: DevEnvironmentInfo) -> [EnvironmentInfoItem] {
         return [
             EnvironmentInfoItem(type: .nodejsVersion(devEnvInfo.nodejsVersion)),

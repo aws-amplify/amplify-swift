@@ -8,6 +8,7 @@
 import Foundation
 
 /// Class that wraps another `Logger` and saves the logs in memory
+@available(iOS 13.0, *)
 class PersistentLogWrapper: Logger {
     var logLevel: LogLevel
 
