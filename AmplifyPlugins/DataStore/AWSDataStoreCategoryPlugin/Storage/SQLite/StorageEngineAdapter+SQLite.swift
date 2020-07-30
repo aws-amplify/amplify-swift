@@ -169,8 +169,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     }
     
-    func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: DataStoreCallback<M>) {
-        fatalError()
+    func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: @escaping DataStoreCallback<M>) {
+        save(model, schema: model.schema, where: condition, completion: completion)
     }
 
     func delete<M: Model>(_ modelType: M.Type,

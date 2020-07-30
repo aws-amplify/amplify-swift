@@ -172,6 +172,7 @@ final class StorageEngine: StorageEngineBehavior {
             if #available(iOS 13.0, *) {
                 self.log.verbose("\(#function) syncing mutation for \(savedModel)")
                 self.syncMutation(of: savedModel,
+                                  schema: schema,
                                   mutationType: mutationType,
                                   predicate: condition,
                                   syncEngine: syncEngine,
@@ -463,6 +464,7 @@ final class StorageEngine: StorageEngineBehavior {
 
     @available(iOS 13.0, *)
     private func syncMutation<M: Model>(of savedModel: M,
+                                        schema: ModelSchema? = nil,
                                         mutationType: MutationEvent.MutationType,
                                         predicate: QueryPredicate? = nil,
                                         syncEngine: RemoteSyncEngineBehavior,
@@ -475,6 +477,7 @@ final class StorageEngine: StorageEngineBehavior {
             }
 
             mutationEvent = try MutationEvent(model: savedModel,
+                                              modelName: schema?.name,
                                               mutationType: mutationType,
                                               graphQLFilterJSON: graphQLFilterJSON)
 
