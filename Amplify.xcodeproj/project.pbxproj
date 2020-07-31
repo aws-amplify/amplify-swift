@@ -214,6 +214,8 @@
 		975751A724CA0DCB00FA0A6E /* IssueReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975751A624CA0DCB00FA0A6E /* IssueReporter.swift */; };
 		975751AB24CA27AD00FA0A6E /* IssueInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975751AA24CA27AD00FA0A6E /* IssueInfo.swift */; };
 		975751AD24CA35F000FA0A6E /* IssueInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975751AC24CA35F000FA0A6E /* IssueInfoHelper.swift */; };
+		975751B224D2129E00FA0A6E /* DevMenuExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975751B124D2129E00FA0A6E /* DevMenuExtensionTests.swift */; };
+		975751B424D21DE000FA0A6E /* MockDevMenuContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975751B324D21DE000FA0A6E /* MockDevMenuContextProvider.swift */; };
 		977007E324C1585100848468 /* LogEntryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977007E224C1585100848468 /* LogEntryItem.swift */; };
 		97CB85FD24AA451B000C65FB /* PersistentLoggingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */; };
 		97CB85FE24AA451B000C65FB /* AmplifyDevMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */; };
@@ -973,6 +975,8 @@
 		975751A624CA0DCB00FA0A6E /* IssueReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueReporter.swift; sourceTree = "<group>"; };
 		975751AA24CA27AD00FA0A6E /* IssueInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueInfo.swift; sourceTree = "<group>"; };
 		975751AC24CA35F000FA0A6E /* IssueInfoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueInfoHelper.swift; sourceTree = "<group>"; };
+		975751B124D2129E00FA0A6E /* DevMenuExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevMenuExtensionTests.swift; sourceTree = "<group>"; };
+		975751B324D21DE000FA0A6E /* MockDevMenuContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDevMenuContextProvider.swift; sourceTree = "<group>"; };
 		976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		977007E224C1585100848468 /* LogEntryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEntryItem.swift; sourceTree = "<group>"; };
 		97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentLoggingPlugin.swift; sourceTree = "<group>"; };
@@ -2069,6 +2073,14 @@
 			path = Trigger;
 			sourceTree = "<group>";
 		};
+		975751B024D2128600FA0A6E /* DevMenuTests */ = {
+			isa = PBXGroup;
+			children = (
+				975751B124D2129E00FA0A6E /* DevMenuExtensionTests.swift */,
+			);
+			path = DevMenuTests;
+			sourceTree = "<group>";
+		};
 		97CB85F424AA451B000C65FB /* DevMenu */ = {
 			isa = PBXGroup;
 			children = (
@@ -2882,6 +2894,7 @@
 		FAC234DF2279F8DA00424678 /* AmplifyTests */ = {
 			isa = PBXGroup;
 			children = (
+				975751B024D2128600FA0A6E /* DevMenuTests */,
 				FAC2354C227A056600424678 /* CategoryTests */,
 				FAC23570227A056B00424678 /* CoreTests */,
 				FAC2357B227A059900424678 /* Resources */,
@@ -3089,6 +3102,7 @@
 				FA4A955E239ADEBD008E876E /* MockResponder.swift */,
 				FAC23553227A056600424678 /* MockStorageCategoryPlugin.swift */,
 				B4F3E9F924314ECC00F23296 /* MockAuthCategoryPlugin.swift */,
+				975751B324D21DE000FA0A6E /* MockDevMenuContextProvider.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -4631,6 +4645,7 @@
 				FA47B8382350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift in Sources */,
 				FAC23574227A056B00424678 /* ConfigurationTests.swift in Sources */,
 				B9DCA263240F217C00075E22 /* AnyEncodableTests.swift in Sources */,
+				975751B224D2129E00FA0A6E /* DevMenuExtensionTests.swift in Sources */,
 				FAA64FC72397347B00B9C3C6 /* AtomicValue+RangeReplaceableCollectionTests.swift in Sources */,
 				FA09B9432321CB0C000E064D /* JSONValueTests.swift in Sources */,
 				FAC235A1227A5D8C00424678 /* DefaultHubPluginConcurrencyTests.swift in Sources */,
@@ -4681,6 +4696,7 @@
 				FACA36152327FC39000E74F6 /* MessageReporter.swift in Sources */,
 				FAF512AE23986791001ADF4E /* AmplifyModels.swift in Sources */,
 				B9FAA11C23879B35009414B4 /* Book.swift in Sources */,
+				975751B424D21DE000FA0A6E /* MockDevMenuContextProvider.swift in Sources */,
 				214F49772486D8A200DA616C /* UserFollowers+Schema.swift in Sources */,
 				B9FAA11423878CEA009414B4 /* UserProfile+Schema.swift in Sources */,
 				214F49792486D8A200DA616C /* UserFollowing+Schema.swift in Sources */,
