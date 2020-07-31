@@ -38,4 +38,10 @@ public final class AmplifyDevMenu: DevMenuBehavior, TriggerDelegate {
         let viewController = UIHostingController(rootView: DevMenuList())
         rootViewController.present(viewController, animated: true)
     }
+
+    public func destroy() {
+        triggerRecognizer?.destroy()
+        triggerRecognizer = nil
+        devMenuPresentationContextProvider = nil
+    }
 }

@@ -13,10 +13,15 @@ import UIKit
 class LongPressGestureRecognizer: NSObject, TriggerRecognizer, UIGestureRecognizerDelegate {
 
     weak var triggerDelegate: TriggerDelegate?
+    weak var uiWindow: UIWindow?
+    var longPressGestureRecognizer: UILongPressGestureRecognizer?
 
     init(uiWindow: UIWindow) {
         super.init()
-        registerLongPressRecognizer(window: uiWindow)
+        self.uiWindow = uiWindow
+        self.longPressGestureRecognizer = UILongPressGestureRecognizer(
+            target: self, action: #selector(LongPressGestureRecognizer.longPressed(sender:)))
+        registerLongPressRecognizer()
     }
 
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
@@ -38,11 +43,20 @@ class LongPressGestureRecognizer: NSObject, TriggerRecognizer, UIGestureRecogniz
     /// Register a `UILongPressGestureRecognizer` to `uiWindow`
     /// to listen to long press events
     @available(iOS 13.0.0, *)
-    private func registerLongPressRecognizer(window: UIWindow) {
-        let longPressRecognizer = UILongPressGestureRecognizer(
-                                    target: self,
-                                    action: #selector(LongPressGestureRecognizer.longPressed(sender:)))
-        longPressRecognizer.delegate = self
-        window.addGestureRecognizer(longPressRecognizer)
+    private func registerLongPressRecognizer() {
+        if longPressGestureRecognizer != nil && uiWindow != nil {
+            longPressGestureRecognizer!.delegate = self
+            uiWindow!.addGestureRecognizer(longPressGestureRecognizer!)
+        }
+    }
+
+    /// Unregisters the long press recognizer from `UIWindow`
+    func destroy() {
+        if longPressGestureRecognizer != nil && uiWindow != nil {
+            uiWindow!.removeGestureRecognizer(longPressGestureRecognizer!)
+            triggerDelegate = nil
+            longPressGestureRecognizer = nil
+            uiWindow = nil
+        }
     }
 }

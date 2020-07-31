@@ -11,4 +11,6 @@ import Foundation
 /// which notifies a `TriggerDelegate` if it has one
 public protocol TriggerRecognizer {
     func updateTriggerDelegate(delegate: TriggerDelegate)
+
+    func destroy()
 }

@@ -18,7 +18,7 @@ extension Amplify {
         #if DEBUG
             devMenu = AmplifyDevMenu(devMenuPresentationContextProvider: contextProvider)
         #else
-        Logging.warn(DevMenuStringConstants.logTag + "Developer Menu is available only in debug mode")
+            Logging.warn(DevMenuStringConstants.logTag + "Developer Menu is available only in debug mode")
         #endif
 
     }
@@ -46,4 +46,14 @@ extension Amplify {
         }
     }
 
+    /// Disables developer menu
+    @available(iOS 13.0.0, *)
+    public static func disableDevMenu() {
+        if devMenu != nil {
+            Amplify.Logging.removePlugin(for: DevMenuStringConstants.persistentLoggingPluginKey)
+            devMenu?.destroy()
+            devMenu = nil
+
+        }
+    }
 }

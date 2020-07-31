@@ -38,4 +38,8 @@ class DevMenuExtensionTests: XCTestCase {
             XCTAssertFalse(devMenuPlugin is PersistentLoggingPlugin)
         #endif
     }
+
+    override func tearDown() {
+        Amplify.disableDevMenu()
+    }
 }

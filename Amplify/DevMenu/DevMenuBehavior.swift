@@ -11,4 +11,7 @@ import Foundation
 public protocol DevMenuBehavior {
     /// Display the menu
     func showMenu()
+
+    /// Destroys the menu
+    func destroy()
 }
