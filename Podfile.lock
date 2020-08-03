@@ -12,14 +12,14 @@ PODS:
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
-  - SwiftFormat/CLI (0.45.2)
+  - SwiftFormat/CLI (0.44.17)
   - SwiftLint (0.39.2)
 
 DEPENDENCIES:
   - AWSMobileClient (~> 2.15.0)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
-  - SwiftFormat/CLI
+  - SwiftFormat/CLI (= 0.44.17)
   - SwiftLint
 
 SPEC REPOS:
@@ -56,7 +56,7 @@ SPEC CHECKSUMS:
   AWSMobileClient: 633ec8c81dadec097e1fdb62e372e0af9b6dd706
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
-  SwiftFormat: 07a1794c1331daaefc1ca6c2ff1da38ee9ca090a
+  SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
   SwiftLint: 22ccbbe3b8008684be5955693bab135e0ed6a447
 
 PODFILE CHECKSUM: a2acde35ab1bc6b80b362106cfda70905a6a840f
