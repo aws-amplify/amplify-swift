@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.6 (2020-08-03)
+
+### Bug Fixes
+
+- Update AppSyncRealTimeClient dependency (#683)
+
 ## 1.0.5 (2020-07-24)
 
 ### Bug Fixes
