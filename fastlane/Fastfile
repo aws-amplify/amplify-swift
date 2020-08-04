@@ -65,6 +65,7 @@ platform :ios do
       # One-offs
       set_key_value(file: "AmplifyPlugins/Core/AWSPluginsCore/ServiceConfiguration/AmplifyAWSServiceConfiguration.swift", key: "version", value: version)
       set_key_value(file: "build-support/dependencies.rb", key: "AMPLIFY_VERSION", value: version)
+    end
   end
   
   desc "Commit and push"
@@ -154,6 +155,5 @@ def with_retry(retries=5, wait=10)
       UI.error("Error occurred: #{exception}; retrying...")
       sleep(wait)
     retry
-    end
   end
 end
