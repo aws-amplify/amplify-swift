@@ -93,11 +93,11 @@ class IdentifyResultTransformers {
                 continue
             }
             for valueBlockRelation in valueBlockRelations {
-                guard let ids = valueBlockRelation.ids else {
+                guard let wordBlockIds = valueBlockRelation.ids else {
                     break
                 }
-                for id in ids {
-                    let wordBlock = blockMap[id]
+                for wordBlockId in wordBlockIds {
+                    let wordBlock = blockMap[wordBlockId]
                     guard let wordValueBlockType = wordBlock?.blockType else {
                         continue
                     }

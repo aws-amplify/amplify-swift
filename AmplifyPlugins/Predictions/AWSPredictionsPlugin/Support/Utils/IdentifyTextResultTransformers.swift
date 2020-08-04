@@ -189,6 +189,7 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
 
         var words = ""
         var isSelected = false
+        var selectionItemFound = false
 
         for cellRelation in relationships {
             guard let wordOrSelectionIds = cellRelation.ids else {
@@ -205,7 +206,13 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
                     }
                     words += text + " "
                 case .selectionElement:
-                    isSelected = selectionStatus == .selected ? true : false
+                    if !selectionItemFound {
+                        selectionItemFound = true
+                        //TODO: Support multiple selection items found in a single cell
+                        isSelected = selectionStatus == .selected
+                    } else {
+                        Amplify.log.error("Multiple selection items found in single cell")
+                    }
                 default:
                     break
                 }
