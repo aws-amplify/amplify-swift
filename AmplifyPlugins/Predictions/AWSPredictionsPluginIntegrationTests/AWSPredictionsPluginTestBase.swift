@@ -21,7 +21,6 @@ class AWSPredictionsPluginTestBase: XCTestCase {
         continueAfterFailure = false
 
         Amplify.reset()
-        Amplify.Logging.logLevel = .verbose
 
         let bundle = Bundle(for: type(of: self))
         guard let configFile = bundle.url(forResource: "amplifyconfiguration", withExtension: "json") else {
@@ -32,7 +31,6 @@ class AWSPredictionsPluginTestBase: XCTestCase {
         do {
             let configData = try Data(contentsOf: configFile)
             let amplifyConfig = try JSONDecoder().decode(AmplifyConfiguration.self, from: configData)
-
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSPredictionsPlugin())
             try Amplify.configure(amplifyConfig)

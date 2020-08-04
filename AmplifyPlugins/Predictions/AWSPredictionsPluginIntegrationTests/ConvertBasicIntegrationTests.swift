@@ -34,7 +34,7 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
                 XCTAssertNotNil(result, "Result should contain value")
             case .failure(let error):
                 DispatchQueue.main.async {
-                XCTFail("Should not receieve error \(error)")
+                    XCTFail("Should not receieve error \(error)")
                 }
             }
 

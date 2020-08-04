@@ -200,11 +200,21 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
                                                      options: PredictionsIdentifyRequest.Options()) { event in
             switch event {
             case .success(let result):
-                let data = result as? IdentifyDocumentTextResult
-                XCTAssertNotNil(data)
-                XCTAssertFalse(data!.keyValues.isEmpty)
-                XCTAssertFalse(data!.fullText.isEmpty)
-                XCTAssertFalse(data!.tables.isEmpty)
+                guard let data = result as? IdentifyDocumentTextResult else {
+                    XCTFail("data shouldn't be nil")
+                    return
+                }
+                XCTAssertFalse(data.fullText.isEmpty)
+                XCTAssertFalse(data.words.isEmpty)
+                XCTAssertEqual(data.words.count, 55)
+                XCTAssertFalse(data.rawLineText.isEmpty)
+                XCTAssertEqual(data.rawLineText.count, 23)
+                XCTAssertFalse(data.identifiedLines.isEmpty)
+                XCTAssertEqual(data.identifiedLines.count, 23)
+                XCTAssertFalse(data.tables.isEmpty)
+                XCTAssertEqual(data.tables.count, 1)
+                XCTAssertFalse(data.keyValues.isEmpty)
+                XCTAssertEqual(data.keyValues.count, 5)
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("Failed with \(error)")
@@ -236,10 +246,19 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
                                                      options: PredictionsIdentifyRequest.Options()) { event in
             switch event {
             case .success(let result):
-                let data = result as? IdentifyDocumentTextResult
-                XCTAssertNotNil(data)
-                XCTAssertFalse(data!.keyValues.isEmpty)
-                XCTAssertFalse(data!.fullText.isEmpty)
+                guard let data = result as? IdentifyDocumentTextResult else {
+                    XCTFail("data shouldn't be nil")
+                    return
+                }
+                XCTAssertFalse(data.fullText.isEmpty)
+                XCTAssertFalse(data.words.isEmpty)
+                XCTAssertEqual(data.words.count, 28)
+                XCTAssertFalse(data.rawLineText.isEmpty)
+                XCTAssertEqual(data.rawLineText.count, 16)
+                XCTAssertFalse(data.identifiedLines.isEmpty)
+                XCTAssertEqual(data.identifiedLines.count, 16)
+                XCTAssertFalse(data.keyValues.isEmpty)
+                XCTAssertEqual(data.keyValues.count, 7)
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("Failed with \(error)")
@@ -267,15 +286,24 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
 
         let completeInvoked = expectation(description: "Completed is invoked")
 
-                let operation = Amplify.Predictions.identify(type: .detectText(.table),
-                                                     image: url,
-                                                     options: PredictionsIdentifyRequest.Options()) { event in
+            let operation = Amplify.Predictions.identify(type: .detectText(.table),
+                                                         image: url,
+                                                         options: PredictionsIdentifyRequest.Options()) { event in
             switch event {
             case .success(let result):
-                let data = result as? IdentifyDocumentTextResult
-                XCTAssertNotNil(data)
-                XCTAssertFalse(data!.fullText.isEmpty)
-                XCTAssertFalse(data!.tables.isEmpty)
+                guard let data = result as? IdentifyDocumentTextResult else {
+                    XCTFail("data shouldn't be nil")
+                    return
+                }
+                XCTAssertFalse(data.fullText.isEmpty)
+                XCTAssertFalse(data.words.isEmpty)
+                XCTAssertEqual(data.words.count, 5)
+                XCTAssertFalse(data.rawLineText.isEmpty)
+                XCTAssertEqual(data.rawLineText.count, 3)
+                XCTAssertFalse(data.identifiedLines.isEmpty)
+                XCTAssertEqual(data.identifiedLines.count, 3)
+                XCTAssertFalse(data.tables.isEmpty)
+                XCTAssertEqual(data.tables.count, 1)
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("Failed with \(error)")

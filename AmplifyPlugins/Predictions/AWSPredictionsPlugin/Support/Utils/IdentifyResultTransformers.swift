@@ -67,38 +67,33 @@ class IdentifyResultTransformers {
 
     }
 
-    static func processChild(ids: [String],
-                             blockMap: [String: AWSTextractBlock]) -> String {
+    static func processChildOfKeyValueSet(ids: [String],
+                                          blockMap: [String: AWSTextractBlock]) -> String {
         var keyText = ""
         for keyId in ids {
-            let keyBlock = blockMap[keyId]
-            guard let keyBlockType = keyBlock?.blockType else {
+            guard let keyBlock = blockMap[keyId],
+                let text = keyBlock.text,
+                case .word = keyBlock.blockType else {
                 continue
             }
-            switch keyBlockType {
-            case .word:
-                if let text = keyBlock?.text {
-                    keyText += text + " "
-                }
-            default: break
-            }
+            keyText += text + " "
         }
-        return keyText
+        return keyText.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    static func processValue(ids: [String],
-                             blockMap: [String: AWSTextractBlock]) -> (String, Bool) {
+    static func processValueOfKeyValueSet(ids: [String],
+                                          blockMap: [String: AWSTextractBlock]) -> (String, Bool) {
         var valueText = ""
         var valueSelected = false
 
         // VALUE block has a CHILD list of IDs for the WORD block
         for valueId in ids {
             let valueBlock = blockMap[valueId]
-            guard let valueRelatioins = valueBlock?.relationships else {
+            guard let valueBlockRelations = valueBlock?.relationships else {
                 continue
             }
-            for valueRelation in valueRelatioins {
-                guard let ids = valueRelation.ids else {
+            for valueBlockRelation in valueBlockRelations {
+                guard let ids = valueBlockRelation.ids else {
                     break
                 }
                 for id in ids {
@@ -112,14 +107,13 @@ class IdentifyResultTransformers {
                             valueText += text + " "
                         }
                     case .selectionElement:
-                        valueSelected = wordBlock?.selectionStatus == .selected ? true : false
+                        valueSelected = wordBlock?.selectionStatus == .selected
                     default: break
                     }
                 }
             }
-
         }
-        return (valueText, valueSelected)
+        return (valueText.trimmingCharacters(in: .whitespacesAndNewlines), valueSelected)
     }
 
     static func parseLineBlock(block: AWSTextractBlock) -> IdentifiedLine? {
