@@ -77,17 +77,17 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
         for block in blockMap.values {
             switch block.blockType {
             case .line:
-                if let line = parseLineBlock(block: block) {
+                if let line = processLineBlock(block: block) {
                     lines.append(line.text)
                     linesDetailed.append(line)
                 }
             case .word:
-                if let word = parseWordBlock(block: block) {
+                if let word = processWordBlock(block: block) {
                     fullText += word.text + " "
                     words.append(word)
                 }
             case .selectionElement:
-                if let selection = parseSelectionElementBlock(block: block) {
+                if let selection = processSelectionElementBlock(block: block) {
                     selections.append(selection)
                 }
             case .table:

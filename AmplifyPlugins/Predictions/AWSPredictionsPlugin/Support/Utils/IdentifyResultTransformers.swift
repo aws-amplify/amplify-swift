@@ -86,7 +86,6 @@ class IdentifyResultTransformers {
         var valueText = ""
         var valueSelected = false
 
-        // VALUE block has a CHILD list of IDs for the WORD block
         for valueId in ids {
             let valueBlock = blockMap[valueId]
             guard let valueBlockRelations = valueBlock?.relationships else {
@@ -116,7 +115,7 @@ class IdentifyResultTransformers {
         return (valueText.trimmingCharacters(in: .whitespacesAndNewlines), valueSelected)
     }
 
-    static func parseLineBlock(block: AWSTextractBlock) -> IdentifiedLine? {
+    static func processLineBlock(block: AWSTextractBlock) -> IdentifiedLine? {
         guard let text = block.text,
             let boundingBox = processBoundingBox(block.geometry?.boundingBox),
             let polygon = processPolygon(block.geometry?.polygon) else {
@@ -129,7 +128,7 @@ class IdentifyResultTransformers {
                               page: Int(truncating: block.page ?? 0))
     }
 
-    static func parseWordBlock(block: AWSTextractBlock) -> IdentifiedWord? {
+    static func processWordBlock(block: AWSTextractBlock) -> IdentifiedWord? {
         guard let text = block.text,
             let boundingBox = processBoundingBox(block.geometry?.boundingBox),
             let polygon = processPolygon(block.geometry?.polygon) else {
@@ -142,7 +141,7 @@ class IdentifyResultTransformers {
                                page: Int(truncating: block.page ?? 0))
     }
 
-    static func parseSelectionElementBlock(block: AWSTextractBlock) -> Selection? {
+    static func processSelectionElementBlock(block: AWSTextractBlock) -> Selection? {
         guard let boundingBox = processBoundingBox(block.geometry?.boundingBox),
             let polygon = processPolygon(block.geometry?.polygon) else {
                 return nil
