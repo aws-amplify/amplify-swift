@@ -93,7 +93,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                 XCTAssertEqual(todo.id, expectedId)
                 XCTAssertEqual(todo.name, expectedName)
                 XCTAssertEqual(todo.description, expectedDescription)
-                XCTAssertEqual(todo.typename, String(describing: Todo.self))
+                XCTAssertEqual(todo.typename, String(describing: AWSAPICategoryPluginTestCommon.Todo.self))
 
                 completeInvoked.fulfill()
             case .failure(let error):
@@ -147,7 +147,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                      variables: CreateTodoMutation.variables(id: expectedId,
                                                                              name: expectedName,
                                                                              description: expectedDescription),
-                                     responseType: Todo?.self,
+                                     responseType: AWSAPICategoryPluginTestCommon.Todo?.self,
                                      decodePath: CreateTodoMutation.decodePath)
 
         let operation = Amplify.API.mutate(request: request) { event in
@@ -166,7 +166,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                 XCTAssertEqual(todo.id, expectedId)
                 XCTAssertEqual(todo.name, expectedName)
                 XCTAssertEqual(todo.description, expectedDescription)
-                XCTAssertEqual(todo.typename, String(describing: Todo.self))
+                XCTAssertEqual(todo.typename, String(describing: AWSAPICategoryPluginTestCommon.Todo.self))
 
                 completeInvoked.fulfill()
             case .failure(let error):
@@ -190,7 +190,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                      variables: CreateTodoMutation.variables(id: uuid,
                                                                              name: "",
                                                                              description: description),
-                                     responseType: Todo?.self,
+                                     responseType: AWSAPICategoryPluginTestCommon.Todo?.self,
                                      decodePath: CreateTodoMutation.decodePath)
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
@@ -287,7 +287,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                 XCTAssertEqual(todo.id, todo.id)
                 XCTAssertEqual(todo.name, name)
                 XCTAssertEqual(todo.description, description)
-                XCTAssertEqual(todo.typename, String(describing: Todo.self))
+                XCTAssertEqual(todo.typename, String(describing: AWSAPICategoryPluginTestCommon.Todo.self))
 
                 completeInvoked.fulfill()
             case .failure(let error):
@@ -365,7 +365,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                 XCTAssertEqual(todo.id, todo.id)
                 XCTAssertEqual(todo.name, expectedName)
                 XCTAssertEqual(todo.description, expectedDescription)
-                XCTAssertEqual(todo.typename, String(describing: Todo.self))
+                XCTAssertEqual(todo.typename, String(describing: AWSAPICategoryPluginTestCommon.Todo.self))
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -409,7 +409,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                 XCTAssertEqual(deleteTodo.id, todo.id)
                 XCTAssertEqual(deleteTodo.name, name)
                 XCTAssertEqual(deleteTodo.description, description)
-                XCTAssertEqual(deleteTodo.typename, String(describing: Todo.self))
+                XCTAssertEqual(deleteTodo.typename, String(describing: AWSAPICategoryPluginTestCommon.Todo.self))
                 deleteCompleteInvoked.fulfill()
             case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -739,9 +739,9 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
 
     // MARK: Common functionality
 
-    func createTodo(id: String, name: String, description: String) -> Todo? {
+    func createTodo(id: String, name: String, description: String) -> AWSAPICategoryPluginTestCommon.Todo? {
         let completeInvoked = expectation(description: "Completd is invoked")
-        var todo: Todo?
+        var todo: AWSAPICategoryPluginTestCommon.Todo?
 
         let request = GraphQLRequest(document: CreateTodoMutation.document,
                                      variables: CreateTodoMutation.variables(id: id,
@@ -770,9 +770,9 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         return todo
     }
 
-    func updateTodo(id: String, name: String, description: String) -> Todo? {
+    func updateTodo(id: String, name: String, description: String) -> AWSAPICategoryPluginTestCommon.Todo? {
         let completeInvoked = expectation(description: "Completd is invoked")
-        var todo: Todo?
+        var todo: AWSAPICategoryPluginTestCommon.Todo?
 
         let request = GraphQLRequest(document: UpdateTodoMutation.document,
                                      variables: UpdateTodoMutation.variables(id: id,
@@ -801,9 +801,9 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         return todo
     }
 
-    func deleteTodo(id: String, name: String, description: String) -> Todo? {
+    func deleteTodo(id: String, name: String, description: String) -> AWSAPICategoryPluginTestCommon.Todo? {
         let completeInvoked = expectation(description: "Completd is invoked")
-        var todo: Todo?
+        var todo: AWSAPICategoryPluginTestCommon.Todo?
 
         let request = GraphQLRequest(document: DeleteTodoMutation.document,
                                      variables: DeleteTodoMutation.variables(id: id),

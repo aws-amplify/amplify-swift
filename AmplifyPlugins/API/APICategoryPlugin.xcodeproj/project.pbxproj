@@ -37,7 +37,6 @@
 		219A888F23ECF8A400BBC5F2 /* RESTWithUserPoolIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A888E23ECF8A400BBC5F2 /* RESTWithUserPoolIntegrationTests.swift */; };
 		219A889123ECF8A500BBC5F2 /* AWSAPICategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSAPICategoryPlugin.framework */; };
 		219A88A223EE034F00BBC5F2 /* RESTWithUserPoolIntegrationTests-amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 219A889F23EE01A700BBC5F2 /* RESTWithUserPoolIntegrationTests-amplifyconfiguration.json */; };
-		219A88A323EE034F00BBC5F2 /* RESTWithUserPoolIntegrationTests-awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 219A889E23EE01A600BBC5F2 /* RESTWithUserPoolIntegrationTests-awsconfiguration.json */; };
 		219A88A523EE054000BBC5F2 /* RESTWithUserPoolIntegrationTests-credentials.json in Resources */ = {isa = PBXBuildFile; fileRef = 219A88A423EE054000BBC5F2 /* RESTWithUserPoolIntegrationTests-credentials.json */; };
 		219A88A723EE05C200BBC5F2 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 219A88A623EE05C200BBC5F2 /* README.md */; };
 		21A3EFC623A946590095D8E6 /* GraphQLWithUserPoolIntegrationTests-credentials.json in Resources */ = {isa = PBXBuildFile; fileRef = 21A3EFC523A946580095D8E6 /* GraphQLWithUserPoolIntegrationTests-credentials.json */; };
@@ -302,7 +301,6 @@
 		219A888C23ECF8A400BBC5F2 /* RESTWithUserPoolIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RESTWithUserPoolIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		219A888E23ECF8A400BBC5F2 /* RESTWithUserPoolIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTWithUserPoolIntegrationTests.swift; sourceTree = "<group>"; };
 		219A889023ECF8A500BBC5F2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		219A889E23EE01A600BBC5F2 /* RESTWithUserPoolIntegrationTests-awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "RESTWithUserPoolIntegrationTests-awsconfiguration.json"; sourceTree = "<group>"; };
 		219A889F23EE01A700BBC5F2 /* RESTWithUserPoolIntegrationTests-amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "RESTWithUserPoolIntegrationTests-amplifyconfiguration.json"; sourceTree = "<group>"; };
 		219A88A423EE054000BBC5F2 /* RESTWithUserPoolIntegrationTests-credentials.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "RESTWithUserPoolIntegrationTests-credentials.json"; sourceTree = "<group>"; };
 		219A88A623EE05C200BBC5F2 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -700,7 +698,6 @@
 				219A889023ECF8A500BBC5F2 /* Info.plist */,
 				219A88A623EE05C200BBC5F2 /* README.md */,
 				219A889F23EE01A700BBC5F2 /* RESTWithUserPoolIntegrationTests-amplifyconfiguration.json */,
-				219A889E23EE01A600BBC5F2 /* RESTWithUserPoolIntegrationTests-awsconfiguration.json */,
 				219A88A423EE054000BBC5F2 /* RESTWithUserPoolIntegrationTests-credentials.json */,
 				219A888E23ECF8A400BBC5F2 /* RESTWithUserPoolIntegrationTests.swift */,
 			);
@@ -1432,7 +1429,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				219A88A223EE034F00BBC5F2 /* RESTWithUserPoolIntegrationTests-amplifyconfiguration.json in Resources */,
-				219A88A323EE034F00BBC5F2 /* RESTWithUserPoolIntegrationTests-awsconfiguration.json in Resources */,
 				21598CE3239FF54E00529F29 /* RESTWithIAMIntegrationTests-amplifyconfiguration.json in Resources */,
 				21233D0B2469EBA000039337 /* GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration.json in Resources */,
 				B478F6E32374E0CF00C4F92B /* Main.storyboard in Resources */,
