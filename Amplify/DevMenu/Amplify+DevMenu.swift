@@ -48,12 +48,8 @@ extension Amplify {
 
     /// Disables developer menu
     @available(iOS 13.0.0, *)
-    public static func disableDevMenu() {
-        if devMenu != nil {
-            Amplify.Logging.removePlugin(for: DevMenuStringConstants.persistentLoggingPluginKey)
-            devMenu?.destroy()
-            devMenu = nil
-
-        }
+    static func disableDevMenu() {
+        devMenu?.destroy()
+        devMenu = nil
     }
 }

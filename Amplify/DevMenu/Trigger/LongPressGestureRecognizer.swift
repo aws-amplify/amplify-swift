@@ -42,7 +42,6 @@ class LongPressGestureRecognizer: NSObject, TriggerRecognizer, UIGestureRecogniz
 
     /// Register a `UILongPressGestureRecognizer` to `uiWindow`
     /// to listen to long press events
-    @available(iOS 13.0.0, *)
     private func registerLongPressRecognizer() {
         if longPressGestureRecognizer != nil && uiWindow != nil {
             longPressGestureRecognizer!.delegate = self
@@ -54,9 +53,10 @@ class LongPressGestureRecognizer: NSObject, TriggerRecognizer, UIGestureRecogniz
     func destroy() {
         if longPressGestureRecognizer != nil && uiWindow != nil {
             uiWindow!.removeGestureRecognizer(longPressGestureRecognizer!)
-            triggerDelegate = nil
-            longPressGestureRecognizer = nil
-            uiWindow = nil
         }
+
+        longPressGestureRecognizer = nil
+        uiWindow = nil
+        triggerDelegate = nil
     }
 }

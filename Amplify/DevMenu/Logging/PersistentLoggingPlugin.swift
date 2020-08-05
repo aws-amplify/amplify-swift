@@ -29,6 +29,7 @@ public class PersistentLoggingPlugin: LoggingCategoryPlugin {
     }
 
     public func reset(onComplete: @escaping BasicClosure) {
+        persistentLogWrapper = nil
         plugin.reset(onComplete: onComplete)
     }
 

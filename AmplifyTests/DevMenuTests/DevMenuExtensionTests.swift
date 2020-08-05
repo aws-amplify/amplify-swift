@@ -12,34 +12,40 @@ import XCTest
 @available(iOS 13.0.0, *)
 class DevMenuExtensionTests: XCTestCase {
 
-    var contextProvider: DevMenuPresentationContextProvider!
-    var plugin: LoggingCategoryPlugin!
-
     override func setUp() {
-        contextProvider = MockDevMenuContextProvider()
-        plugin = AWSUnifiedLoggingPlugin()
-        Amplify.enableDevMenu(contextProvider: contextProvider)
+        Amplify.enableDevMenu(contextProvider: MockDevMenuContextProvider())
     }
 
+    ///  Test if dev menu is enabled
+    ///
+    /// - Given:  Amplify is configured with Dev Menu enabled
+    /// - When:
+    ///    - I check whether dev menu is enabled
+    /// - Then:
+    ///    -  isDevMenuEnabled() should return true
+    ///
     func testAmplifyInit() {
-        #if DEBUG
-            XCTAssertTrue(Amplify.isDevMenuEnabled())
-        #else
-            XCTAssertFalse(Amplify.isDevMenuEnabled())
-        #endif
+        XCTAssertTrue(Amplify.isDevMenuEnabled())
     }
 
+    /// Test if PersistentLoggingPlugin is returned on enabling dev menu
+    ///
+    /// - Given:  Amplify is configured with Dev Menu enabled
+    /// - When:
+    ///    - I check the type of LoggingCategoryPlugin
+    /// - Then:
+    ///    - It should be of PersistentLoggingPlugin type
+    ///
     func testLoggingCategoryPlugin() {
-        #if DEBUG
-            let devMenuPlugin = Amplify.getLoggingCategoryPlugin(loggingPlugin: plugin)
+        do {
+            let devMenuPlugin = try Amplify.Logging.getPlugin(for: DevMenuStringConstants.persistentLoggingPluginKey)
             XCTAssertTrue(devMenuPlugin is PersistentLoggingPlugin)
-        #else
-            let devMenuPlugin = Amplify.getLoggingCategoryPlugin(loggingPlugin: plugin)
-            XCTAssertFalse(devMenuPlugin is PersistentLoggingPlugin)
-        #endif
+        } catch {
+            print(error)
+        }
     }
 
     override func tearDown() {
-        Amplify.disableDevMenu()
+        Amplify.reset()
     }
 }
