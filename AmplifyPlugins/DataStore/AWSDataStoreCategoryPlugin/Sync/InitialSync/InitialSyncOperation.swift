@@ -112,7 +112,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
         let minSyncPageSize = Int(min(syncMaxRecords - recordsReceived, syncPageSize))
         let limit = minSyncPageSize < 0 ? Int(syncPageSize) : minSyncPageSize
-        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: modelType,
+        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelName: modelType.modelName,
                                                                 limit: limit,
                                                                 nextToken: nextToken,
                                                                 lastSync: lastSyncTime)

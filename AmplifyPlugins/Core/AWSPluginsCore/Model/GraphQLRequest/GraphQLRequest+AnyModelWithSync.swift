@@ -29,14 +29,14 @@ protocol ModelSyncGraphQLRequestFactory {
                                where filter: GraphQLFilter?,
                                version: Int?) -> GraphQLRequest<MutationSyncResult>
 
-    static func subscription(to modelType: Model.Type,
+    static func subscription(to modelName: String,
                              subscriptionType: GraphQLSubscriptionType) -> GraphQLRequest<MutationSyncResult>
 
-    static func subscription(to modelType: Model.Type,
+    static func subscription(to modelName: String,
                              subscriptionType: GraphQLSubscriptionType,
                              ownerId: String) -> GraphQLRequest<MutationSyncResult>
 
-    static func syncQuery(modelType: Model.Type,
+    static func syncQuery(modelName: String,
                           where predicate: QueryPredicate?,
                           limit: Int?,
                           nextToken: String?,
@@ -93,10 +93,10 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                   decodePath: document.name)
     }
 
-    public static func subscription(to modelType: Model.Type,
+    public static func subscription(to modelName: String,
                                     subscriptionType: GraphQLSubscriptionType) -> GraphQLRequest<MutationSyncResult> {
 
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelType.modelName,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: subscriptionType))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
@@ -108,11 +108,11 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                   decodePath: document.name)
     }
 
-    public static func subscription(to modelType: Model.Type,
+    public static func subscription(to modelName: String,
                                     subscriptionType: GraphQLSubscriptionType,
                                     ownerId: String) -> GraphQLRequest<MutationSyncResult> {
 
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelType.modelName,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: subscriptionType))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
@@ -125,12 +125,12 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                   decodePath: document.name)
     }
 
-    public static func syncQuery(modelType: Model.Type,
+    public static func syncQuery(modelName: String,
                                  where predicate: QueryPredicate? = nil,
                                  limit: Int? = nil,
                                  nextToken: String? = nil,
                                  lastSync: Int? = nil) -> GraphQLRequest<SyncQueryResult> {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelType.modelName, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         if let predicate = predicate {
             documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))

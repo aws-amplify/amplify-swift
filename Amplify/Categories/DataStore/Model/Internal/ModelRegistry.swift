@@ -47,9 +47,15 @@ public struct ModelRegistry {
         }
     }
 
-    public static func register(modelName: String, schema: ModelSchema) {
+    public static func register(modelName: String, schema: ModelSchema, dynamicModelType: Model.Type) {
         concurrencyQueue.sync {
             modelSchemaMapping[modelName] = schema
+            let modelDecoder: ModelDecoder = { jsonString, jsonDecoder in
+                let model = try dynamicModelType.from(json: jsonString, decoder: jsonDecoder)
+                return model
+            }
+
+            modelDecoders[modelName] = modelDecoder
         }
     }
 
