@@ -14,6 +14,11 @@ class DevMenuExtensionTests: XCTestCase {
 
     override func setUp() {
         Amplify.enableDevMenu(contextProvider: MockDevMenuContextProvider())
+        do {
+            try Amplify.configure()
+        } catch {
+            print(error)
+        }
     }
 
     ///  Test if dev menu is enabled
