@@ -11,14 +11,14 @@ import Foundation
 extension Amplify {
 
     @available(iOS 13.0.0, *)
-    public static var devMenu: AmplifyDevMenu?
+    static var devMenu: AmplifyDevMenu?
 
     @available(iOS 13.0.0, *)
     public static func enableDevMenu(contextProvider: DevMenuPresentationContextProvider) {
         #if DEBUG
             devMenu = AmplifyDevMenu(devMenuPresentationContextProvider: contextProvider)
         #else
-        Logging.warn(DevMenuStringConstants.logTag + "Developer Menu is available only in debug mode")
+            Logging.warn(DevMenuStringConstants.logTag + "Developer Menu is available only in debug mode")
         #endif
 
     }
@@ -45,5 +45,4 @@ extension Amplify {
             return loggingPlugin
         }
     }
-
 }

@@ -10,5 +10,6 @@ import Foundation
 /// A protocol to be implemented for recognizing user interaction events
 /// which notifies a `TriggerDelegate` if it has one
 public protocol TriggerRecognizer {
+    /// Update trigger delegate so that it can be notified in case a trigger happens
     func updateTriggerDelegate(delegate: TriggerDelegate)
 }

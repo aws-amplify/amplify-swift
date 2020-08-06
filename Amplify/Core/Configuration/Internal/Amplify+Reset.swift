@@ -43,6 +43,10 @@ extension Amplify {
             }
         }
 
+        if #available(iOS 13.0.0, *) {
+            devMenu = nil
+        }
+
         group.wait()
 
         // Initialize Logging and Hub first, to ensure their default plugins are registered and available to other
