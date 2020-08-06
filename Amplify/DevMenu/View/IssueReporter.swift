@@ -38,13 +38,8 @@ struct IssueReporter: View {
                     .frame(height: 350)
 
                 HStack {
-                    Text(moreCharactersRequired)
+                    Text("\(moreCharactersRequired): \(remainingCharactersRequired())")
                         .foregroundColor(Color.secondary)
-                        .font(.system(size: 15))
-                    Text(":")
-                        .foregroundColor(Color.secondary)
-                        .font(.system(size: 15))
-                    Text("" + String(moreNumOfCharactersRequired())).foregroundColor(Color.secondary)
                         .font(.system(size: 15))
                     Spacer()
                 }.padding(.bottom)
@@ -74,14 +69,14 @@ struct IssueReporter: View {
                               message: Text(githubURLErrorMessage),
                               dismissButton: .default(Text("OK")))
                     }
-                    .disabled(moreNumOfCharactersRequired() > 0)
+                    .disabled(shouldDisableReporting())
 
                 Button(copyToClipboardButtonText, action: copyToClipboard)
                     .padding()
                     .font(.subheadline)
                     .frame(maxWidth: .infinity)
                     .border(Color.blue)
-                    .disabled(moreNumOfCharactersRequired() > 0)
+                    .disabled(shouldDisableReporting())
 
             }.padding()
                 .navigationBarTitle(Text(screenTitle))
@@ -90,8 +85,12 @@ struct IssueReporter: View {
 
     /// Get number of extra characters required for a valid issue description length
     /// Returns 0 if issue description length fulfills `minCharacterLimit` criteria
-    private func moreNumOfCharactersRequired() -> Int {
+    private func remainingCharactersRequired() -> Int {
         return max(IssueReporter.minCharacterLimit - issueDescription.count, 0)
+    }
+
+    private func shouldDisableReporting() -> Bool {
+      return remainingCharactersRequired() > 0
     }
 
     /// Open Amplify iOS issue logging screen on Github
