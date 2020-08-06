@@ -44,7 +44,7 @@ extension Amplify {
         }
 
         if #available(iOS 13.0.0, *) {
-            disableDevMenu()
+            devMenu = nil
         }
 
         group.wait()

@@ -11,7 +11,7 @@ import Foundation
 extension Amplify {
 
     @available(iOS 13.0.0, *)
-    public static var devMenu: AmplifyDevMenu?
+    static var devMenu: AmplifyDevMenu?
 
     @available(iOS 13.0.0, *)
     public static func enableDevMenu(contextProvider: DevMenuPresentationContextProvider) {
@@ -44,12 +44,5 @@ extension Amplify {
         } else {
             return loggingPlugin
         }
-    }
-
-    /// Disables developer menu
-    @available(iOS 13.0.0, *)
-    static func disableDevMenu() {
-        devMenu?.destroy()
-        devMenu = nil
     }
 }
