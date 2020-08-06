@@ -8,6 +8,7 @@
 import XCTest
 import AmplifyPlugins
 import AWSPredictionsPlugin
+import AWSCore
 
 @testable import Amplify
 
@@ -19,8 +20,6 @@ class AWSPredictionsPluginTestBase: XCTestCase {
         super.setUp()
 
         continueAfterFailure = false
-
-        Amplify.reset()
 
         let bundle = Bundle(for: type(of: self))
         guard let configFile = bundle.url(forResource: "amplifyconfiguration", withExtension: "json") else {

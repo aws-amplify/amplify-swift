@@ -10,6 +10,7 @@ import AWSRekognition
 import Amplify
 import AWSTextract
 
+// swiftlint:disable type_body_length
 class IdentifyTextResultTransformers: IdentifyResultTransformers {
 
     static func processText(_ rekognitionTextBlocks: [AWSRekognitionTextDetection]) -> IdentifyTextResult {
@@ -35,7 +36,6 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
             case .line:
                 lines.append(detectedText)
                 identifiedLines.append(line)
-
             case .word:
                 fullText += detectedText + " "
                 words.append(word)
@@ -150,12 +150,13 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
             }
 
             for cellId in cellIds {
-                let cellBlock = blockMap[cellId]
-
-                guard let rowIndex = cellBlock?.rowIndex,
-                    let colIndex = cellBlock?.columnIndex else {
-                    continue
+                guard let cellBlock = blockMap[cellId],
+                    let rowIndex = cellBlock.rowIndex,
+                    let colIndex = cellBlock.columnIndex
+                    else {
+                        continue
                 }
+
                 // textract starts indexing at 1, so subtract it by 1.
                 let row = Int(truncating: rowIndex) - 1
                 let col = Int(truncating: colIndex) - 1
@@ -174,19 +175,19 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
         return table
     }
 
-    static func constructTableCell(_ block: AWSTextractBlock?, _ blockMap: [String: AWSTextractBlock]) -> Table.Cell? {
-        guard block?.blockType == .cell,
-            let selectionStatus = block?.selectionStatus,
-            let relationships = block?.relationships,
-            let rowSpan = block?.rowSpan,
-            let columnSpan = block?.columnSpan,
-            let geometry = block?.geometry,
+    static func constructTableCell(_ block: AWSTextractBlock, _ blockMap: [String: AWSTextractBlock]) -> Table.Cell? {
+        guard block.blockType == .cell,
+            let relationships = block.relationships,
+            let rowSpan = block.rowSpan,
+            let columnSpan = block.columnSpan,
+            let geometry = block.geometry,
             let textractBoundingBox = geometry.boundingBox,
             let texttractPolygon = geometry.polygon
             else {
                 return nil
         }
 
+        let selectionStatus = block.selectionStatus
         var words = ""
         var isSelected = false
         var selectionItemFound = false
@@ -206,24 +207,17 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
                     }
                     words += text + " "
                 case .selectionElement:
-                    if !selectionItemFound {
-                        selectionItemFound = true
-                        //TODO: Support multiple selection items found in a single cell
-                        isSelected = selectionStatus == .selected
-                    } else {
-                        Amplify.log.error("Multiple selection items found in single cell")
-                    }
+                    let result = processSelectionElement(selectionItemFound, selectionStatus: selectionStatus)
+                    isSelected = result.0
+                    selectionItemFound = result.1
                 default:
                     break
                 }
             }
         }
 
-        guard let boundingBox = processBoundingBox(textractBoundingBox) else {
-            return nil
-        }
-
-        guard let polygon = processPolygon(texttractPolygon) else {
+        guard let boundingBox = processBoundingBox(textractBoundingBox),
+            let polygon = processPolygon(texttractPolygon) else {
             return nil
         }
 
@@ -248,7 +242,6 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
         var valueSelected = false
 
         for keyBlockRelationship in relationships {
-
             guard let ids = keyBlockRelationship.ids else {
                 continue
             }
@@ -278,5 +271,109 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
                                isSelected: valueSelected,
                                boundingBox: boundingBox,
                                polygon: polygon)
+    }
+
+    static func processChildOfKeyValueSet(ids: [String],
+                                          blockMap: [String: AWSTextractBlock]) -> String {
+        var keyText = ""
+        for keyId in ids {
+            guard let keyBlock = blockMap[keyId],
+                let text = keyBlock.text,
+                case .word = keyBlock.blockType else {
+                continue
+            }
+            keyText += text + " "
+        }
+        return keyText.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    static func processValueOfKeyValueSet(ids: [String],
+                                          blockMap: [String: AWSTextractBlock]) -> (String, Bool) {
+        var valueText = ""
+        var isSelected = false
+        var selectionItemFound = false
+
+        for valueId in ids {
+            guard let valueBlock = blockMap[valueId],
+                let valueBlockRelations = valueBlock.relationships else {
+                continue
+            }
+
+            for valueBlockRelation in valueBlockRelations {
+                guard let wordBlockIds = valueBlockRelation.ids else {
+                    break
+                }
+
+                for wordBlockId in wordBlockIds {
+                    guard let wordBlock = blockMap[wordBlockId] else {
+                        continue
+                    }
+                    let wordValueBlockType = wordBlock.blockType
+                    let selectionStatus = wordBlock.selectionStatus
+
+                    switch wordValueBlockType {
+                    case .word:
+                        if let text = wordBlock.text {
+                            valueText += text + " "
+                        }
+                    case .selectionElement:
+                        let result = processSelectionElement(selectionItemFound, selectionStatus: selectionStatus)
+                        isSelected = result.0
+                        selectionItemFound = result.1
+                    default: break
+                    }
+                }
+            }
+        }
+        return (valueText.trimmingCharacters(in: .whitespacesAndNewlines), isSelected)
+    }
+
+    static func processSelectionElement(_ selectionItemFoundOld: Bool,
+                                        selectionStatus: AWSTextractSelectionStatus) -> (Bool, Bool) {
+        var selectionItemFound = selectionItemFoundOld
+        var isSelected = false
+        if !selectionItemFound {
+            selectionItemFound = true
+            //TODO: Support multiple selection items found in a single cell
+            isSelected = selectionStatus == .selected
+        } else {
+            Amplify.log.error("Multiple selection items found in single cell")
+        }
+        return (isSelected, selectionItemFound)
+    }
+
+    static func processLineBlock(block: AWSTextractBlock) -> IdentifiedLine? {
+        guard let text = block.text,
+            let boundingBox = processBoundingBox(block.geometry?.boundingBox),
+            let polygon = processPolygon(block.geometry?.polygon) else {
+                return nil
+        }
+
+        return IdentifiedLine(text: text,
+                              boundingBox: boundingBox,
+                              polygon: polygon,
+                              page: Int(truncating: block.page ?? 0))
+    }
+
+    static func processWordBlock(block: AWSTextractBlock) -> IdentifiedWord? {
+        guard let text = block.text,
+            let boundingBox = processBoundingBox(block.geometry?.boundingBox),
+            let polygon = processPolygon(block.geometry?.polygon) else {
+                return nil
+        }
+
+         return IdentifiedWord(text: text,
+                               boundingBox: boundingBox,
+                               polygon: polygon,
+                               page: Int(truncating: block.page ?? 0))
+    }
+
+    static func processSelectionElementBlock(block: AWSTextractBlock) -> Selection? {
+        guard let boundingBox = processBoundingBox(block.geometry?.boundingBox),
+            let polygon = processPolygon(block.geometry?.polygon) else {
+                return nil
+        }
+        let selectionStatus = block.selectionStatus == .selected
+        return Selection(boundingBox: boundingBox, polygon: polygon, isSelected: selectionStatus)
     }
 }
