@@ -17,6 +17,7 @@ struct IssueReporter: View {
     @State var includeDeviceInfo = true
     @State var showAlertIfInvalidURL = false
 
+    private static let minCharacterLimit = 140
     private let issueDescriptionHint = "Please provide a short description of the issue.."
     private let includeLogsText = "Include logs"
     private let includeEnvInfoText = "Include environment information"
@@ -27,6 +28,7 @@ struct IssueReporter: View {
     private let amplifyIosNewIssueUrl = "https://github.com/aws-amplify/amplify-ios/issues/new?&title=&body="
     private let githubURLErrorTitle = "Error"
     private let githubURLErrorMessage = "Unable to parse Github URL. Please use the Copy to Clipboard option."
+    private let moreCharactersRequired = "Characters required"
 
     var body: some View {
         ScrollView {
@@ -34,7 +36,18 @@ struct IssueReporter: View {
                 MultilineTextField(text: $issueDescription, placeHolderText: issueDescriptionHint)
                     .border(Color.gray)
                     .frame(height: 350)
-                    .padding(.bottom)
+
+                HStack {
+                    Text(moreCharactersRequired)
+                        .foregroundColor(Color.secondary)
+                        .font(.system(size: 15))
+                    Text(":")
+                        .foregroundColor(Color.secondary)
+                        .font(.system(size: 15))
+                    Text("" + String(moreNumOfCharactersRequired())).foregroundColor(Color.secondary)
+                        .font(.system(size: 15))
+                    Spacer()
+                }.padding(.bottom)
 
                 Toggle(isOn: $includeEnvInfo) {
                     Text(includeEnvInfoText).bold()
@@ -60,17 +73,25 @@ struct IssueReporter: View {
                         Alert(title: Text(githubURLErrorTitle),
                               message: Text(githubURLErrorMessage),
                               dismissButton: .default(Text("OK")))
-                }
+                    }
+                    .disabled(moreNumOfCharactersRequired() > 0)
 
                 Button(copyToClipboardButtonText, action: copyToClipboard)
                     .padding()
                     .font(.subheadline)
                     .frame(maxWidth: .infinity)
                     .border(Color.blue)
+                    .disabled(moreNumOfCharactersRequired() > 0)
 
             }.padding()
                 .navigationBarTitle(Text(screenTitle))
         }
+    }
+
+    /// Get number of extra characters required for a valid issue description length
+    /// Returns 0 if issue description length fulfills `minCharacterLimit` criteria
+    private func moreNumOfCharactersRequired() -> Int {
+        return max(IssueReporter.minCharacterLimit - issueDescription.count, 0)
     }
 
     /// Open Amplify iOS issue logging screen on Github
