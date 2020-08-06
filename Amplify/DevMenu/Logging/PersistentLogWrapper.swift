@@ -18,7 +18,7 @@ class PersistentLogWrapper: Logger {
     private var logHistory: [LogEntryItem] = []
 
     /// Maximum number of `LogEntryItem`  stored
-    private let logLimit = 2_000
+    public static let logLimit = 2_000
 
     init(logWrapper: Logger) {
         self.wrapper = logWrapper
@@ -60,7 +60,7 @@ class PersistentLogWrapper: Logger {
     }
 
     private func addToLogHistory(logItem: LogEntryItem) {
-        if logHistory.count == logLimit {
+        if logHistory.count == PersistentLogWrapper.logLimit {
             logHistory.removeFirst()
         }
 

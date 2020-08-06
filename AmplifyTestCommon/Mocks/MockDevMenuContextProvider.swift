@@ -10,7 +10,9 @@ import Amplify
 /// Mock class for presenting UI context to developer menu
 class MockDevMenuContextProvider: DevMenuPresentationContextProvider {
 
+    let uiWindow = UIWindow()
+
     func devMenuPresentationContext() -> UIWindow {
-        return UIWindow()
+        return uiWindow
     }
 }
