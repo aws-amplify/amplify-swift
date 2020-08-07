@@ -12,4 +12,9 @@ extension DataStoreCategory: DataStoreSubscribeBehavior {
     public func publisher<M: Model>(for modelType: M.Type) -> AnyPublisher<MutationEvent, DataStoreError> {
         return plugin.publisher(for: modelType)
     }
+
+    @available(iOS 13.0, *)
+    public func publisher(modelName: String) -> AnyPublisher<MutationEvent, DataStoreError> {
+        return plugin.publisher(modelName: modelName)
+    }
 }

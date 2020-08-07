@@ -17,4 +17,9 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
             // to exist for deployment targets >=iOS13.0
             return dataStorePublisher!.publisher(for: modelType)
     }
+
+    @available(iOS 13.0, *)
+    public func publisher(modelName: String) -> AnyPublisher<MutationEvent, DataStoreError> {
+        return dataStorePublisher!.publisher(modelName: modelName)
+    }
 }

@@ -41,4 +41,7 @@ public protocol DataStoreSubscribeBehavior {
     /// - Parameter modelType: The model type to observe
     @available(iOS 13.0, *)
     func publisher<M: Model>(for modelType: M.Type) -> AnyPublisher<MutationEvent, DataStoreError>
+
+    @available(iOS 13.0, *)
+    func publisher(modelName: String) -> AnyPublisher<MutationEvent, DataStoreError>
 }

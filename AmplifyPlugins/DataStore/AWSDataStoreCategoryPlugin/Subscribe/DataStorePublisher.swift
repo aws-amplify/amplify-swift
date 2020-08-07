@@ -14,6 +14,12 @@ struct DataStorePublisher: DataStoreSubscribeBehavior {
 
     private let subject = PassthroughSubject<MutationEvent, DataStoreError>()
 
+    func publisher(modelName: String) -> AnyPublisher<MutationEvent, DataStoreError> {
+        return subject
+        .filter { $0.modelName == modelName }
+        .eraseToAnyPublisher()
+    }
+
     func publisher<M: Model>(for modelType: M.Type) -> AnyPublisher<MutationEvent, DataStoreError> {
         return subject
             .filter { $0.modelName == modelType.modelName }
