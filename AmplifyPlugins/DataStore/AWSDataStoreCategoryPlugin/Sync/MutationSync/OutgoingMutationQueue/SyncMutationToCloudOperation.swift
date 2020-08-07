@@ -113,7 +113,9 @@ class SyncMutationToCloudOperation: Operation {
                                                                             version: mutationEvent.version)
             case .create:
                 let model = try mutationEvent.decodeModel()
-                request = GraphQLRequest<MutationSyncResult>.createMutation(of: model, version: mutationEvent.version)
+                request = GraphQLRequest<MutationSyncResult>.createMutation(of: model,
+                                                                            modelName: mutationEvent.modelName,
+                                                                            version: mutationEvent.version)
             }
         } catch {
             let apiError = APIError.unknown("Couldn't decode model", "", error)

@@ -18,6 +18,7 @@ protocol ModelSyncGraphQLRequestFactory {
     static func query(modelName: String, byId id: String) -> GraphQLRequest<MutationSyncResult?>
 
     static func createMutation(of model: Model,
+                               modelName: String,
                                version: Int?) -> GraphQLRequest<MutationSyncResult>
 
     static func updateMutation(of model: Model,
@@ -63,8 +64,9 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
     }
 
     public static func createMutation(of model: Model,
+                                      modelName: String,
                                       version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        createOrUpdateMutation(of: model, type: .create, version: version)
+        createOrUpdateMutation(of: model, modelName: modelName, type: .create, version: version)
     }
 
     public static func updateMutation(of model: Model,
@@ -149,10 +151,11 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
     // MARK: Private methods
 
     private static func createOrUpdateMutation(of model: Model,
+                                               modelName: String? = nil,
                                                where filter: GraphQLFilter? = nil,
                                                type: GraphQLMutationType,
                                                version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: model.modelName,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName ?? model.modelName,
                                                                     operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
         documentBuilder.add(decorator: ModelDecorator(model: model))
