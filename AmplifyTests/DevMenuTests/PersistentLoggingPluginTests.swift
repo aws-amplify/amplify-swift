@@ -1,0 +1,49 @@
+//
+// Copyright 2018-2020 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import XCTest
+@testable import Amplify
+@testable import AmplifyTestCommon
+
+@available(iOS 13.0.0, *)
+class PersistentLoggingPluginTests: XCTestCase {
+
+    let provider = MockDevMenuContextProvider()
+
+    override func setUp() {
+        do {
+            Amplify.enableDevMenu(contextProvider: provider)
+
+            /// After Amplify.reset() is called in teardown(), Amplify.configure() doesn't
+            /// initialize the plugin for LoggingCategory . This doesn't call Amplify.getLoggingCategoryPlugin()
+            /// and the plugin is not updated to PersistentLoggingPlugin. Making a call to
+            /// add() so that configure() updates the plugin
+            try Amplify.add(plugin: AWSUnifiedLoggingPlugin())
+
+            try Amplify.configure(AmplifyConfiguration())
+        } catch {
+            XCTFail("Failed \(error)")
+        }
+    }
+
+    /// Check for logwrapper type in persistentloggingplugin
+    ///
+    /// - Given:  Amplify is configured with Dev Menu enabled
+    /// - When:
+    ///    - I check for the type of logwrapper type in persistentloggingplugin
+    /// - Then:
+    ///    - I should get PersistentLogWrapper
+
+    func testPersistentLogWrapperType() throws {
+        let devMenuPlugin = try Amplify.Logging.getPlugin(for: DevMenuStringConstants.persistentLoggingPluginKey)
+        XCTAssertTrue(devMenuPlugin.default is PersistentLogWrapper)
+    }
+
+    override func tearDown() {
+        Amplify.reset()
+    }
+}

@@ -216,6 +216,9 @@
 		975751AD24CA35F000FA0A6E /* IssueInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975751AC24CA35F000FA0A6E /* IssueInfoHelper.swift */; };
 		975751B224D2129E00FA0A6E /* DevMenuExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975751B124D2129E00FA0A6E /* DevMenuExtensionTests.swift */; };
 		975751B424D21DE000FA0A6E /* MockDevMenuContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975751B324D21DE000FA0A6E /* MockDevMenuContextProvider.swift */; };
+		976D4D5124DC8A370083F5AC /* GestureRecognizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976D4D5024DC8A370083F5AC /* GestureRecognizerTests.swift */; };
+		976D4D5324DC90610083F5AC /* PersistentLogWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976D4D5224DC90610083F5AC /* PersistentLogWrapperTests.swift */; };
+		976D4D5524DCA3F80083F5AC /* PersistentLoggingPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976D4D5424DCA3F80083F5AC /* PersistentLoggingPluginTests.swift */; };
 		977007E324C1585100848468 /* LogEntryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977007E224C1585100848468 /* LogEntryItem.swift */; };
 		97CB85FD24AA451B000C65FB /* PersistentLoggingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */; };
 		97CB85FE24AA451B000C65FB /* AmplifyDevMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */; };
@@ -977,6 +980,9 @@
 		975751AC24CA35F000FA0A6E /* IssueInfoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueInfoHelper.swift; sourceTree = "<group>"; };
 		975751B124D2129E00FA0A6E /* DevMenuExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevMenuExtensionTests.swift; sourceTree = "<group>"; };
 		975751B324D21DE000FA0A6E /* MockDevMenuContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDevMenuContextProvider.swift; sourceTree = "<group>"; };
+		976D4D5024DC8A370083F5AC /* GestureRecognizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureRecognizerTests.swift; sourceTree = "<group>"; };
+		976D4D5224DC90610083F5AC /* PersistentLogWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentLogWrapperTests.swift; sourceTree = "<group>"; };
+		976D4D5424DCA3F80083F5AC /* PersistentLoggingPluginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentLoggingPluginTests.swift; sourceTree = "<group>"; };
 		976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		977007E224C1585100848468 /* LogEntryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEntryItem.swift; sourceTree = "<group>"; };
 		97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentLoggingPlugin.swift; sourceTree = "<group>"; };
@@ -2077,6 +2083,9 @@
 			isa = PBXGroup;
 			children = (
 				975751B124D2129E00FA0A6E /* DevMenuExtensionTests.swift */,
+				976D4D5024DC8A370083F5AC /* GestureRecognizerTests.swift */,
+				976D4D5224DC90610083F5AC /* PersistentLogWrapperTests.swift */,
+				976D4D5424DCA3F80083F5AC /* PersistentLoggingPluginTests.swift */,
 			);
 			path = DevMenuTests;
 			sourceTree = "<group>";
@@ -4617,6 +4626,7 @@
 				FA4B38AB238482B100E20DAB /* DefaultLoggingPluginTests.swift in Sources */,
 				FA6BC869235F52740001A882 /* APICategoryClientGraphQLTests.swift in Sources */,
 				FACD264C2386E8F10068FBE6 /* JSONValue+SubscriptTests.swift in Sources */,
+				976D4D5524DCA3F80083F5AC /* PersistentLoggingPluginTests.swift in Sources */,
 				FACD264D2386E8F10068FBE6 /* JSONValue+KeyPathTests.swift in Sources */,
 				FA9FB782232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift in Sources */,
 				FAC23567227A056600424678 /* APICategoryClientRESTTests.swift in Sources */,
@@ -4639,6 +4649,7 @@
 				FAAFAF3323904BA4002CF932 /* AtomicValue+NumericTests.swift in Sources */,
 				FA176EDD2385943000C5C5F9 /* NotificationListeningAnalyticsPlugin.swift in Sources */,
 				FA47B8362350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift in Sources */,
+				976D4D5124DC8A370083F5AC /* GestureRecognizerTests.swift in Sources */,
 				B4F3E9F824314E2B00F23296 /* AuthCategoryConfigurationTests.swift in Sources */,
 				FAC2356E227A056600424678 /* AnalyticsCategoryClientAPITests.swift in Sources */,
 				B4BD6B3323708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift in Sources */,
@@ -4652,6 +4663,7 @@
 				FAC2356C227A056600424678 /* LoggingCategoryClientAPITests.swift in Sources */,
 				FAC23586227A443200424678 /* HubCategoryConfigurationTests.swift in Sources */,
 				B99EF4B523DB020C00D821BC /* TemporalComparableTests.swift in Sources */,
+				976D4D5324DC90610083F5AC /* PersistentLogWrapperTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
