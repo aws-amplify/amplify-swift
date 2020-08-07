@@ -20,7 +20,6 @@ class GestureRecognizerTests: XCTestCase {
     ///    inside `LongPressGestureRecognizer`
     /// - Then:
     ///    - It should return true
-    ///
 
     func testGestureRecognizerAddedToWindow() {
         let contextProvider = MockDevMenuContextProvider()

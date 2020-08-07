@@ -18,7 +18,7 @@ class PersistentLogWrapper: Logger {
     private var logHistory: [LogEntryItem] = []
 
     /// Maximum number of `LogEntryItem`  stored
-    public static let logLimit = 2_000
+    static let logLimit = 2_000
 
     init(logWrapper: Logger) {
         self.wrapper = logWrapper

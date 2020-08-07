@@ -37,7 +37,6 @@ class PersistentLoggingPluginTests: XCTestCase {
     ///    - I check for the type of logwrapper type in persistentloggingplugin
     /// - Then:
     ///    - I should get PersistentLogWrapper
-    ///
 
     func testPersistentLogWrapperType() throws {
         let devMenuPlugin = try Amplify.Logging.getPlugin(for: DevMenuStringConstants.persistentLoggingPluginKey)

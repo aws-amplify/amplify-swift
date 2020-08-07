@@ -38,7 +38,6 @@ class PersistentLogWrapperTests: XCTestCase {
     /// - Then:
     ///    -  LogHistory should not be empty and must contain a
     ///    single log item with loglevel as error and message the same as passed to error()
-    ///
 
     func testError() {
         Amplify.Logging.error("Error message")
@@ -56,7 +55,6 @@ class PersistentLogWrapperTests: XCTestCase {
     /// - Then:
     ///    -  LogHistory should not be empty and must contain a
     ///    single log item with loglevel as verbose and message the same as passed to verbose()
-    ///
 
     func testVerbose() {
         Amplify.Logging.verbose("Verbose message")
@@ -74,7 +72,6 @@ class PersistentLogWrapperTests: XCTestCase {
     /// - Then:
     ///    -  LogHistory should not be empty and must contain a
     ///    single log item with loglevel as warn and message the same as passed to warn()
-    ///
 
     func testWarn() {
         Amplify.Logging.warn("Warn message")
@@ -92,7 +89,6 @@ class PersistentLogWrapperTests: XCTestCase {
     /// - Then:
     ///    -  LogHistory should not be empty and must contain a
     ///    single log item with loglevel as info and message the same as passed to info()
-    ///
 
     func testInfo() {
         Amplify.Logging.info("Info message")
@@ -110,7 +106,6 @@ class PersistentLogWrapperTests: XCTestCase {
     /// - Then:
     ///    -  LogHistory should not be empty and must contain a
     ///    single log item with loglevel as debug and message the same as passed to debug()
-    ///
 
     func testDebug() {
         Amplify.Logging.debug("Debug message")
@@ -128,7 +123,6 @@ class PersistentLogWrapperTests: XCTestCase {
     /// - Then:
     ///    -  The log wrapper should retain only logs the same as the log limit and
     ///     first log should be removed
-    ///
 
     func testLogLimit() {
         for itemNumber in 1 ... PersistentLogWrapper.logLimit + 1 {
