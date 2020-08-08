@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		17CD56B119F2F31BD4D27C0A /* Pods_AWSCognitoAuthPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58D3E33555611987B753EF2D /* Pods_AWSCognitoAuthPlugin.framework */; };
+		21621E0C24DE1EFE00497A24 /* AWSAuthResendSignUpCodeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21621E0B24DE1EFE00497A24 /* AWSAuthResendSignUpCodeOptions.swift */; };
+		21621E0E24DE1FC300497A24 /* AWSResendAttributeConfirmationCodeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21621E0D24DE1FC300497A24 /* AWSResendAttributeConfirmationCodeOptions.swift */; };
+		21621E1024DE2D5600497A24 /* AWSUpdateUserAttributesOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21621E0F24DE2D5600497A24 /* AWSUpdateUserAttributesOptions.swift */; };
+		21621E1224DE2D6100497A24 /* AWSUpdateUserAttributeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21621E1124DE2D6100497A24 /* AWSUpdateUserAttributeOptions.swift */; };
 		3AB72AEC1B90671D652C3F96 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 234C2AFA9205B1766FB8E090 /* Pods_HostApp.framework */; };
 		8337B0CA31C0E650D640B82C /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 242DDB230CE2BA243E395217 /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework */; };
 		B40F165D24784AE300CDB920 /* AWSCognitoAuthPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B43DC7452410572400D40275 /* AWSCognitoAuthPlugin.framework */; };
@@ -147,6 +151,10 @@
 		1218D5A8F8902BF0D88AFB50 /* Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		1674B6AE81501F6E278CE00B /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E372E3DB1CE31F318AE8281 /* Pods-HostApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.debug.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.debug.xcconfig"; sourceTree = "<group>"; };
+		21621E0B24DE1EFE00497A24 /* AWSAuthResendSignUpCodeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthResendSignUpCodeOptions.swift; sourceTree = "<group>"; };
+		21621E0D24DE1FC300497A24 /* AWSResendAttributeConfirmationCodeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSResendAttributeConfirmationCodeOptions.swift; sourceTree = "<group>"; };
+		21621E0F24DE2D5600497A24 /* AWSUpdateUserAttributesOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSUpdateUserAttributesOptions.swift; sourceTree = "<group>"; };
+		21621E1124DE2D6100497A24 /* AWSUpdateUserAttributeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSUpdateUserAttributeOptions.swift; sourceTree = "<group>"; };
 		234C2AFA9205B1766FB8E090 /* Pods_HostApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		242DDB230CE2BA243E395217 /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		351EEBA51873352B4E797CE0 /* Pods-HostApp-AWSAuthPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAuthPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAuthPluginIntegrationTests/Pods-HostApp-AWSAuthPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -487,10 +495,14 @@
 				B41D0F492475A3960049D08D /* AWSAuthConfirmResetPasswordOptions.swift */,
 				B41D0F432475A3960049D08D /* AWSAuthConfirmSignInOptions.swift */,
 				B41D0F442475A3960049D08D /* AWSAuthConfirmSignUpOptions.swift */,
+				21621E0B24DE1EFE00497A24 /* AWSAuthResendSignUpCodeOptions.swift */,
 				B41D0F452475A3960049D08D /* AWSAuthResetPasswordOptions.swift */,
 				B41D0F462475A3960049D08D /* AWSAuthSignInOptions.swift */,
 				B41D0F472475A3960049D08D /* AWSAuthSignUpOptions.swift */,
 				B41D0F482475A3960049D08D /* AWSAuthWebUISignInOptions.swift */,
+				21621E0D24DE1FC300497A24 /* AWSResendAttributeConfirmationCodeOptions.swift */,
+				21621E1124DE2D6100497A24 /* AWSUpdateUserAttributeOptions.swift */,
+				21621E0F24DE2D5600497A24 /* AWSUpdateUserAttributesOptions.swift */,
 			);
 			path = Options;
 			sourceTree = "<group>";
@@ -1247,6 +1259,7 @@
 				B41D0FCB2475A3960049D08D /* Tokens+Extension.swift in Sources */,
 				B41D0FBF2475A3960049D08D /* AWSAuthResetPasswordOperation.swift in Sources */,
 				B41D0FC32475A3960049D08D /* AuthPluginErrorConstants.swift in Sources */,
+				21621E0C24DE1EFE00497A24 /* AWSAuthResendSignUpCodeOptions.swift in Sources */,
 				B41D0FD02475A3960049D08D /* AuthSignUpRequest+Validate.swift in Sources */,
 				B41D0FB32475A3960049D08D /* AWSAuthAttributeResendConfirmationCodeOperation.swift in Sources */,
 				B41D0F952475A3960049D08D /* AuthenticationProviderAdapter+Password.swift in Sources */,
@@ -1274,6 +1287,7 @@
 				B41D10082475AB7E0049D08D /* AWSCognitoAuthPlugin+ClientBehavior.swift in Sources */,
 				B41D0FA72475A3960049D08D /* SignInResult+Extension.swift in Sources */,
 				B41D0F922475A3960049D08D /* AuthorizationProviderBehavior.swift in Sources */,
+				21621E0E24DE1FC300497A24 /* AWSResendAttributeConfirmationCodeOptions.swift in Sources */,
 				B41D0F902475A3960049D08D /* AuthUserServiceAdapter.swift in Sources */,
 				B41D0FD82475A3960049D08D /* AWSMobileClientBehavior.swift in Sources */,
 				B41D0FCF2475A3960049D08D /* AuthResetPasswordRequest+Validate.swift in Sources */,
@@ -1285,6 +1299,7 @@
 				B41D0FBE2475A3960049D08D /* AWSAuthForgetDeviceOperation.swift in Sources */,
 				B41D0FB42475A3960049D08D /* AWSAuthFetchUserAttributeOperation.swift in Sources */,
 				B41D0F9E2475A3960049D08D /* AWSAuthConfirmSignUpOptions.swift in Sources */,
+				21621E1224DE2D6100497A24 /* AWSUpdateUserAttributeOptions.swift in Sources */,
 				B41D0FB22475A3960049D08D /* AWSAuthUpdateUserAttributeOperation.swift in Sources */,
 				B41D0FBA2475A3960049D08D /* AWSAuthSocialWebUISignInOperation.swift in Sources */,
 				B41D0FC42475A3960049D08D /* UserCodeDeliveryDetails+Extension.swift in Sources */,
@@ -1316,6 +1331,7 @@
 				B41D0F8A2475A3960049D08D /* AuthHubEventHandler.swift in Sources */,
 				B41D0FA22475A3960049D08D /* AWSAuthWebUISignInOptions.swift in Sources */,
 				B41D0FC62475A3960049D08D /* AWSMobileClient+Reset.swift in Sources */,
+				21621E1024DE2D5600497A24 /* AWSUpdateUserAttributesOptions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

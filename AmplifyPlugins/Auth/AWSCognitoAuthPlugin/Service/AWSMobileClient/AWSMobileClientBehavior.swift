@@ -26,11 +26,13 @@ protocol AWSMobileClientBehavior {
                        completionHandler: @escaping ((SignUpResult?, Error?) -> Void))
 
     func resendSignUpCode(username: String,
+                          clientMetaData: [String: String],
                           completionHandler: @escaping ((SignUpResult?, Error?) -> Void))
 
     func signIn(username: String,
                 password: String,
                 validationData: [String: String]?,
+                clientMetaData: [String: String],
                 completionHandler: @escaping ((SignInResult?, Error?) -> Void))
 
     func federatedSignIn(providerName: String, token: String,
@@ -57,9 +59,11 @@ protocol AWSMobileClientBehavior {
     func getUserSub() -> String?
 
     func verifyUserAttribute(attributeName: String,
+                             clientMetaData: [String: String],
                              completionHandler: @escaping ((UserCodeDeliveryDetails?, Error?) -> Void))
 
     func updateUserAttributes(attributeMap: [String: String],
+                              clientMetaData: [String: String],
                               completionHandler: @escaping (([UserCodeDeliveryDetails]?, Error?) -> Void))
 
     func getUserAttributes(completionHandler: @escaping (([String: String]?, Error?) -> Void))
