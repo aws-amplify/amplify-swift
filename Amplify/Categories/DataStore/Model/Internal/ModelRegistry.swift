@@ -16,13 +16,21 @@ public struct ModelRegistry {
     /// ModelDecoders are used to decode untyped model data, looking up by model name
     private typealias ModelDecoder = (String, JSONDecoder?) throws -> Model
 
-    private static var modelTypes = [String: Model.Type]()
+    private static var modelTypes = [ModelName: Model.Type]()
 
-    private static var modelDecoders = [String: ModelDecoder]()
+    private static var modelDecoders = [ModelName: ModelDecoder]()
+
+    private static var modelSchemaMapping = [ModelName: ModelSchema]()
 
     public static var models: [Model.Type] {
         concurrencyQueue.sync {
             Array(modelTypes.values)
+        }
+    }
+    
+    public static var modelSchemas: [ModelSchema] {
+        concurrencyQueue.sync {
+            Array(modelSchemaMapping.values)
         }
     }
 
@@ -34,18 +42,39 @@ public struct ModelRegistry {
             }
 
             modelDecoders[modelType.modelName] = modelDecoder
-
+            modelSchemaMapping[modelType.modelName] = modelType.schema
             modelTypes[modelType.modelName] = modelType
         }
     }
 
-    public static func modelType(from name: String) -> Model.Type? {
+    public static func register(modelName: ModelName,
+                                modelSchema: ModelSchema,
+                                modelType: Model.Type,
+                                jsonDecoder: @escaping (String, JSONDecoder?) throws -> Model) {
+        concurrencyQueue.sync {
+            let modelDecoder: ModelDecoder = { jsonString, decoder in
+                return try jsonDecoder(jsonString, decoder)
+            }
+
+            modelSchemaMapping[modelName] = modelSchema
+            modelTypes[modelName] = modelType
+            modelDecoders[modelName] = modelDecoder
+        }
+    }
+
+    public static func modelType(from name: ModelName) -> Model.Type? {
         concurrencyQueue.sync {
             modelTypes[name]
         }
     }
 
-    public static func decode(modelName: String,
+    public static func modelSchema(from name: ModelName) -> ModelSchema? {
+        concurrencyQueue.sync {
+            modelSchemaMapping[name]
+        }
+    }
+
+    public static func decode(modelName: ModelName,
                               from jsonString: String,
                               jsonDecoder: JSONDecoder? = nil) throws -> Model {
         try concurrencyQueue.sync {

@@ -12,14 +12,13 @@ import Foundation
 /// associated with the passed `Model.Type`.
 struct CreateTableStatement: SQLStatement {
 
-    let modelType: Model.Type
+    let schema: ModelSchema
 
-    init(modelType: Model.Type) {
-        self.modelType = modelType
+    init(schema: ModelSchema) {
+        self.schema = schema
     }
 
     var stringValue: String {
-        let schema = modelType.schema
         let name = schema.name
         var statement = "create table if not exists \(name) (\n"
 
@@ -52,8 +51,10 @@ struct CreateTableStatement: SQLStatement {
         for (index, foreignKey) in foreignKeys.enumerated() {
             statement += "  foreign key(\"\(foreignKey.sqlName)\") "
             let associatedModel = foreignKey.requiredAssociatedModel
-            let associatedId = associatedModel.schema.primaryKey
-            let associatedModelName = associatedModel.schema.name
+            // TODO: Handle the force unwrapping
+            let schema = ModelRegistry.modelSchema(from: associatedModel)!
+            let associatedId = schema.primaryKey
+            let associatedModelName = schema.name
             statement += "references \(associatedModelName)(\"\(associatedId.sqlName)\")\n"
             statement += "    on delete cascade"
             let isNotLastKey = index < foreignKeys.endIndex - 1

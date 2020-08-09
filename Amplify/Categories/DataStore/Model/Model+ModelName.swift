@@ -14,4 +14,5 @@ extension Model {
     public var modelName: String {
         return type(of: self).modelName
     }
+
 }

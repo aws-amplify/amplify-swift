@@ -20,12 +20,11 @@ struct SelectStatementMetadata {
     let bindings: [Binding?]
 
     // TODO remove additionalStatements once sorting support is added to DataStore
-    static func metadata(from modelType: Model.Type,
+    static func metadata(from schema: ModelSchema,
                          predicate: QueryPredicate? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          additionalStatements: String? = nil) -> SelectStatementMetadata {
         let rootNamespace = "root"
-        let schema = modelType.schema
         let fields = schema.columns
         let tableName = schema.name
         var columnMapping: ColumnMapping = [:]
@@ -48,7 +47,7 @@ struct SelectStatementMetadata {
 
         var bindings: [Binding?] = []
         if let predicate = predicate {
-            let conditionStatement = ConditionStatement(modelType: modelType,
+            let conditionStatement = ConditionStatement(schema: schema,
                                                         predicate: predicate,
                                                         namespace: rootNamespace[...])
             bindings.append(contentsOf: conditionStatement.variables)
@@ -94,9 +93,10 @@ struct SelectStatementMetadata {
 
         func visitAssociations(node: ModelSchema, namespace: String = "root") {
             for foreignKey in node.foreignKeys {
-                let associatedModelType = foreignKey.requiredAssociatedModel
-                let associatedSchema = associatedModelType.schema
-                let associatedTableName = associatedModelType.schema.name
+                let associatedModelName = foreignKey.requiredAssociatedModel
+                // TODO: Handle force unwrap
+                let associatedSchema = ModelRegistry.modelSchema(from: associatedModelName)!
+                let associatedTableName = associatedSchema.name
 
                 // columns
                 let alias = namespace == "root" ? foreignKey.name : "\(namespace).\(foreignKey.name)"
@@ -115,8 +115,7 @@ struct SelectStatementMetadata {
                 \(joinType) join \(associatedTableName) as "\(alias)"
                   on \(associatedColumn) = \(foreignKeyName)
                 """)
-                visitAssociations(node: associatedModelType.schema,
-                                  namespace: alias)
+                visitAssociations(node: associatedSchema, namespace: alias)
             }
         }
         visitAssociations(node: schema)
@@ -132,15 +131,15 @@ struct SelectStatementMetadata {
 /// optionally composed by a `ConditionStatement`.
 struct SelectStatement: SQLStatement {
 
-    let modelType: Model.Type
+    let schema: ModelSchema
     let metadata: SelectStatementMetadata
 
-    init(from modelType: Model.Type,
+    init(from schema: ModelSchema,
          predicate: QueryPredicate? = nil,
          paginationInput: QueryPaginationInput? = nil,
          additionalStatements: String? = nil) {
-        self.modelType = modelType
-        self.metadata = .metadata(from: modelType,
+        self.schema = schema
+        self.metadata = .metadata(from: schema,
                                   predicate: predicate,
                                   paginationInput: paginationInput,
                                   additionalStatements: additionalStatements)

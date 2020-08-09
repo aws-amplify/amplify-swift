@@ -57,9 +57,8 @@ extension Model {
     ///
     /// - Parameter fields: an optional subset of fields
     /// - Returns: an array of SQLite's `Binding` compatible type
-    internal func sqlValues(for fields: [ModelField]? = nil) -> [Binding?] {
-        let modelType = type(of: self)
-        let modelFields = fields ?? modelType.schema.sortedFields
+    internal func sqlValues(for fields: [ModelField]? = nil, schema: ModelSchema) -> [Binding?] {
+        let modelFields = fields ?? schema.sortedFields
         let values: [Binding?] = modelFields.map { field in
 
             // self[field.name] subscript accessor returns an Any??, we need to do a few things:
@@ -101,7 +100,7 @@ extension Model {
                 return binding
             } catch {
                 logger.warn("""
-                Error converting \(modelType.modelName).\(field.name) to the proper SQLite Binding.
+                    Error converting \(schema.name).\(field.name) to the proper SQLite Binding.
                 Root cause is: \(String(describing: error))
                 """)
                 return nil
@@ -142,7 +141,7 @@ extension Array where Element == Model.Type {
             if !sortedKeys.contains(modelType.schema.name) {
                 let associatedModels = modelType.schema.sortedFields
                     .filter { $0.isForeignKey }
-                    .map { $0.requiredAssociatedModel }
+                    .map { ModelRegistry.modelType(from: $0.requiredAssociatedModel)! }
                 associatedModels.forEach(walkAssociatedModels(of:))
 
                 let key = modelType.schema.name
@@ -152,6 +151,32 @@ extension Array where Element == Model.Type {
         }
 
         let sortedStartList = sorted { $0.modelName < $1.modelName }
+        sortedStartList.forEach(walkAssociatedModels(of:))
+        return sortedKeys.map { sortMap[$0]! }
+    }
+
+}
+
+extension Array where Element == ModelSchema {
+
+    func sortByDependencyOrder() -> Self {
+        var sortedKeys: [String] = []
+        var sortMap: [String: ModelSchema] = [:]
+
+        func walkAssociatedModels(of schema: ModelSchema) {
+            if !sortedKeys.contains(schema.name) {
+                let associatedModels = schema.sortedFields
+                    .filter { $0.isForeignKey }
+                    .map { ModelRegistry.modelSchema(from: $0.requiredAssociatedModel )! }
+                associatedModels.forEach(walkAssociatedModels(of:))
+
+                let key = schema.name
+                sortedKeys.append(key)
+                sortMap[key] = schema
+            }
+        }
+
+        let sortedStartList = sorted { $0.name < $1.name }
         sortedStartList.forEach(walkAssociatedModels(of:))
         return sortedKeys.map { sortMap[$0]! }
     }

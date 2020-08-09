@@ -41,7 +41,7 @@ class SQLStatementTests: XCTestCase {
     /// - Then:
     ///   - check if the generated SQL statement is valid
     func testCreateTableFromSimpleModel() {
-        let statement = CreateTableStatement(modelType: Post.self)
+        let statement = CreateTableStatement(schema: Post.schema)
         let expectedStatement = """
         create table if not exists Post (
           "id" text primary key not null,
@@ -65,7 +65,7 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the generated SQL statement is valid:
     ///     - contains a `foreign key` referencing `Post`
     func testCreateTableFromModelWithForeignKey() {
-        let statement = CreateTableStatement(modelType: Comment.self)
+        let statement = CreateTableStatement(schema: Comment.schema)
         let expectedStatement = """
         create table if not exists Comment (
           "id" text primary key not null,
@@ -88,7 +88,7 @@ class SQLStatementTests: XCTestCase {
     ///     - contains a `foreign key` referencing `UserProfile`
     ///     - the foreign key column is `unique`
     func testCreateTableFromModelWithOneToOneForeignKey() {
-        let statement = CreateTableStatement(modelType: UserProfile.self)
+        let statement = CreateTableStatement(schema: UserProfile.schema)
         let expectedStatement = """
         create table if not exists UserProfile (
           "id" text primary key not null,
@@ -109,7 +109,7 @@ class SQLStatementTests: XCTestCase {
     ///     - contains a `foreign key` referencing `Author`
     ///     - contains a `foreign key` referencing `Book`
     func testCreateTableFromManyToManyAssociationModel() {
-        let statement = CreateTableStatement(modelType: BookAuthor.self)
+        let statement = CreateTableStatement(schema: BookAuthor.schema)
         let expectedStatement = """
         create table if not exists BookAuthor (
           "id" text primary key not null,
@@ -137,7 +137,7 @@ class SQLStatementTests: XCTestCase {
                         content: "content",
                         createdAt: .now(),
                         status: .draft)
-        let statement = InsertStatement(model: post)
+        let statement = InsertStatement(model: post, schema: Post.schema)
 
         let expectedStatement = """
         insert into Post ("id", "content", "createdAt", "draft", "rating", "status", "title", "updatedAt")
@@ -162,7 +162,7 @@ class SQLStatementTests: XCTestCase {
     func testInsertStatementFromModelWithForeignKey() {
         let post = Post(title: "title", content: "content", createdAt: .now())
         let comment = Comment(content: "comment", createdAt: .now(), post: post)
-        let statement = InsertStatement(model: comment)
+        let statement = InsertStatement(model: comment, schema: Comment.schema)
 
         let expectedStatement = """
         insert into Comment ("id", "content", "createdAt", "commentPostId")
@@ -270,7 +270,7 @@ class SQLStatementTests: XCTestCase {
     /// - Then:
     ///   - check if the generated SQL statement is valid
     func testSelectStatementFromModel() {
-        let statement = SelectStatement(from: Post.self)
+        let statement = SelectStatement(from: Post.schema)
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
@@ -291,7 +291,7 @@ class SQLStatementTests: XCTestCase {
     func testSelectStatementFromModelWithPredicate() {
         let post = Post.keys
         let predicate = post.draft == false && post.rating > 3
-        let statement = SelectStatement(from: Post.self, predicate: predicate)
+        let statement = SelectStatement(from: Post.schema, predicate: predicate)
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
@@ -316,7 +316,7 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the generated SQL statement is valid
     ///   - check if an inner join is added referencing `Post`
     func testSelectStatementFromModelWithJoin() {
-        let statement = SelectStatement(from: Comment.self)
+        let statement = SelectStatement(from: Comment.schema)
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
@@ -340,7 +340,7 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the generated SQL statement is valid
     ///   - check if the statement contains the correct `limit` and `offset`
     func testSelectStatementWithPaginationInfo() {
-        let statement = SelectStatement(from: Post.self, predicate: nil, paginationInput: .page(2, limit: 20))
+        let statement = SelectStatement(from: Post.schema, predicate: nil, paginationInput: .page(2, limit: 20))
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
@@ -364,7 +364,7 @@ class SQLStatementTests: XCTestCase {
         let post = Post.keys
 
         let predicate = post.id != nil
-        let statement = ConditionStatement(modelType: Post.self, predicate: predicate)
+        let statement = ConditionStatement(schema: Post.schema, predicate: predicate)
 
         XCTAssertEqual("""
           and "id" is not null
@@ -382,7 +382,7 @@ class SQLStatementTests: XCTestCase {
         let post = Post.keys
 
         let predicate = post.id != nil
-        let statement = ConditionStatement(modelType: Post.self, predicate: predicate, namespace: "root")
+        let statement = ConditionStatement(schema: Post.schema, predicate: predicate, namespace: "root")
 
         XCTAssertEqual("""
           and "root"."id" is not null
@@ -400,7 +400,7 @@ class SQLStatementTests: XCTestCase {
         func assertPredicate(_ predicate: QueryPredicate,
                              matches sql: String,
                              bindings: [Binding?]? = nil) {
-            let statement = ConditionStatement(modelType: Post.self, predicate: predicate, namespace: "root")
+            let statement = ConditionStatement(schema: Post.schema, predicate: predicate, namespace: "root")
             XCTAssertEqual(statement.stringValue, "  and \(sql)")
             if let bindings = bindings {
                 XCTAssertEqual(bindings.count, statement.variables.count)
@@ -449,7 +449,7 @@ class SQLStatementTests: XCTestCase {
             && post.updatedAt == nil
             && (post.content ~= "gelato" || post.title.beginsWith("ice cream"))
 
-        let statement = ConditionStatement(modelType: Post.self, predicate: predicate)
+        let statement = ConditionStatement(schema: Post.schema, predicate: predicate)
 
         XCTAssertEqual("""
           and "id" is not null
@@ -489,7 +489,7 @@ class SQLStatementTests: XCTestCase {
             && post.updatedAt == nil
             && (post.content ~= "gelato" || post.title.beginsWith("ice cream"))
 
-        let statement = ConditionStatement(modelType: Post.self, predicate: predicate, namespace: "root")
+        let statement = ConditionStatement(schema: Post.schema, predicate: predicate, namespace: "root")
 
         XCTAssertEqual("""
           and "root"."id" is not null
