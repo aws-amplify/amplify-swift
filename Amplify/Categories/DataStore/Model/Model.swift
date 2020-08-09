@@ -30,3 +30,16 @@ public protocol Model: Codable {
     var id: Identifier { get }
 
 }
+
+public protocol JsonModel: Model {
+
+    /// Return the value for key
+    func internal_value(for key: String) -> Any?
+}
+
+extension JsonModel {
+
+    public func internal_value(for key: String) -> Any? {
+        return nil
+    }
+}
