@@ -18,13 +18,13 @@ class CoreMLPredictionsPluginIntegrationTest: AWSPredictionsPluginTestBase {
         let identifyInvoked = expectation(description: "Identify operation invoked")
         let operation = Amplify.Predictions.identify(type: .detectLabels(.all),
                                                      image: url) { event in
-                                                        switch event {
-                                                        case .success(let result):
-                                                            identifyInvoked.fulfill()
-                                                            XCTAssertNotNil(result, "Result should contain value")
-                                                        case .failure(let error):
-                                                            XCTFail("Should not receive error \(error)")
-                                                        }
+            switch event {
+            case .success(let result):
+                identifyInvoked.fulfill()
+                XCTAssertNotNil(result, "Result should contain value")
+            case .failure(let error):
+                XCTFail("Should not receive error \(error)")
+            }
         }
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: networkTimeout)
