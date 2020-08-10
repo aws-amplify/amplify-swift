@@ -197,7 +197,6 @@ class PredictionsPluginConfigurationTests: XCTestCase {
         }
     }
 
-    // swiftlint:disable empty_enum_arguments
     func testConfigureFailureForNilConfiguration() throws {
         let plugin = AWSPredictionsPlugin()
         do {
@@ -205,7 +204,7 @@ class PredictionsPluginConfigurationTests: XCTestCase {
             XCTFail("Predictions configuration should not succeed")
         } catch {
             guard let pluginError = error as? PluginError,
-                case .pluginConfigurationError(_, _, _) = pluginError else {
+                case .pluginConfigurationError = pluginError else {
                     XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
                     return
             }
