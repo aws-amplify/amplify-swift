@@ -162,6 +162,8 @@
 		D432BCA8697EDA48BB605DA8 /* Pods_HostApp_AWSPredictionsPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E04A7C1995F7FD1ABC3831B /* Pods_HostApp_AWSPredictionsPluginTests.framework */; };
 		D852D5F724D8E22400F00DDE /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = D852D5F524D8E22400F00DDE /* amplifyconfiguration.json */; };
 		D852D5F824D8E22400F00DDE /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = D852D5F624D8E22400F00DDE /* awsconfiguration.json */; };
+		D896D39B24E1F57F00C26665 /* IdentifyTextResultTransformers+Tables.swift in Sources */ = {isa = PBXBuildFile; fileRef = D896D39A24E1F57F00C26665 /* IdentifyTextResultTransformers+Tables.swift */; };
+		D896D39D24E1F62400C26665 /* IdentifyTextResultTransformers+KeyValueSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = D896D39C24E1F62400C26665 /* IdentifyTextResultTransformers+KeyValueSet.swift */; };
 		D8A993B924D927DD00C8223E /* testImageTextWithTables.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D8A993B824D927DD00C8223E /* testImageTextWithTables.jpg */; };
 		D8A993BB24D9281A00C8223E /* testImageTextForms.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D8A993BA24D9281A00C8223E /* testImageTextForms.jpg */; };
 		D8A993BD24D9285700C8223E /* testImageTextAll.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D8A993BC24D9285700C8223E /* testImageTextAll.jpg */; };
@@ -397,6 +399,8 @@
 		CF132CBD61DB1BCD0B4F8E8D /* Pods-AWSPredictionsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPredictionsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPredictionsPluginTests/Pods-AWSPredictionsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D852D5F524D8E22400F00DDE /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 		D852D5F624D8E22400F00DDE /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
+		D896D39A24E1F57F00C26665 /* IdentifyTextResultTransformers+Tables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IdentifyTextResultTransformers+Tables.swift"; sourceTree = "<group>"; };
+		D896D39C24E1F62400C26665 /* IdentifyTextResultTransformers+KeyValueSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IdentifyTextResultTransformers+KeyValueSet.swift"; sourceTree = "<group>"; };
 		D8A993B824D927DD00C8223E /* testImageTextWithTables.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageTextWithTables.jpg; sourceTree = "<group>"; };
 		D8A993BA24D9281A00C8223E /* testImageTextForms.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageTextForms.jpg; sourceTree = "<group>"; };
 		D8A993BC24D9285700C8223E /* testImageTextAll.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageTextAll.jpg; sourceTree = "<group>"; };
@@ -629,6 +633,8 @@
 				95DAAA58237B8ED30028544F /* IdentifyLabelsResultTransformers.swift */,
 				95DAAA55237B8ED30028544F /* IdentifyResultTransformers.swift */,
 				95DAAA5A237B8ED30028544F /* IdentifyTextResultTransformers.swift */,
+				D896D39A24E1F57F00C26665 /* IdentifyTextResultTransformers+Tables.swift */,
+				D896D39C24E1F62400C26665 /* IdentifyTextResultTransformers+KeyValueSet.swift */,
 				95DAAA57237B8ED30028544F /* PredictionsErrorHelper.swift */,
 			);
 			path = Utils;
@@ -1835,6 +1841,7 @@
 				95DAAA76237B8ED40028544F /* AWSTranslateBehavior.swift in Sources */,
 				B4215C1B2385A31E0057CF0E /* IdentifyConfiguration.swift in Sources */,
 				95A422BB23C8EE2600D534C7 /* AWSTranscribeStreamingAdapter.swift in Sources */,
+				D896D39D24E1F62400C26665 /* IdentifyTextResultTransformers+KeyValueSet.swift in Sources */,
 				95DAAAE7237DFC440028544F /* AWSPollyAdapter.swift in Sources */,
 				95DAAA70237B8ED40028544F /* AWSPollyBehavior.swift in Sources */,
 				95DAAA84237B8ED40028544F /* IdentifyResultTransformers.swift in Sources */,
@@ -1865,6 +1872,7 @@
 				95DAAA94237B8ED40028544F /* AWSPredictionsPlugin+Configure.swift in Sources */,
 				95DAAAF1237DFE5F0028544F /* VoiceType+AWSExtension.swift in Sources */,
 				95DAAA80237B8ED40028544F /* PredictionsAWSServices.swift in Sources */,
+				D896D39B24E1F57F00C26665 /* IdentifyTextResultTransformers+Tables.swift in Sources */,
 				950A26C923D127A900D92B19 /* AWSPollyOperation.swift in Sources */,
 				95DAAA77237B8ED40028544F /* AWSComprehendBehavior.swift in Sources */,
 				95DAAA87237B8ED40028544F /* IdentifyLabelsResultTransformers.swift in Sources */,
