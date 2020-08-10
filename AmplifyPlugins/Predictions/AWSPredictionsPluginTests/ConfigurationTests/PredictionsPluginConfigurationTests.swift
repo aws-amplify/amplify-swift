@@ -197,6 +197,7 @@ class PredictionsPluginConfigurationTests: XCTestCase {
         }
     }
 
+    // swiftlint:disable empty_enum_arguments
     func testConfigureFailureForNilConfiguration() throws {
         let plugin = AWSPredictionsPlugin()
         do {
