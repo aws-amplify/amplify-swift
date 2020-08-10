@@ -10,7 +10,6 @@ import Foundation
 // No-listener versions of the public APIs, to clean call sites that use Combine
 // publishers to get results
 
-@available(iOS 13.0, *)
 public extension AuthCategoryDeviceBehavior {
 
     /// Fetch devices assigned to the current device

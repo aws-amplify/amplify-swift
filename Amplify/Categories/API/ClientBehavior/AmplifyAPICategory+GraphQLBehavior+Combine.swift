@@ -8,7 +8,6 @@
 // No-listener versions of the public APIs, to clean call sites that use Combine
 // publishers to get results
 
-@available(iOS 13.0, *)
 extension APICategoryGraphQLBehavior {
     public func query<R: Decodable>(request: GraphQLRequest<R>) -> GraphQLOperation<R> {
         query(request: request, listener: nil)
