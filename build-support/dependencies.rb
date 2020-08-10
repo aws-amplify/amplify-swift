@@ -1,19 +1,20 @@
 # Version definitions
 
 # Amplify release version
-$AMPLIFY_VERSION = '1.0.4'
+$AMPLIFY_VERSION = '1.0.6'
 
 # GitHub tag name for Amplify releases
 $AMPLIFY_RELEASE_TAG = "v#{$AMPLIFY_VERSION}"
 
 # AWS SDK version
 # http://guides.cocoapods.org/using/the-podfile.html#specifying-pod-versions
-$AWS_SDK_VERSION = '2.14.0'
+$AWS_SDK_VERSION = '2.15.0'
 $OPTIMISTIC_AWS_SDK_VERSION = "~> #{$AWS_SDK_VERSION}"
 
 # Include common tooling
 def include_build_tools!
-  pod 'SwiftFormat/CLI'
+  # Pin to 0.44.17 until we resolve closing braces
+  pod 'SwiftFormat/CLI', '0.44.17'
   pod 'SwiftLint'
 end
 

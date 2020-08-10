@@ -341,9 +341,9 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let signInInvoked = expectation(description: "sign in completed")
         _ = Amplify.Auth.signIn(username: username, password: password) { event in
             switch event {
-            case .completed:
+            case .success:
                 signInInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed to Sign in user \(error)")
             default:
                 XCTFail("Unexpected event")
@@ -357,7 +357,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         var resultOptional: String?
         _ = Amplify.Auth.fetchAuthSession(listener: { event in
             switch event {
-            case .completed(let authSession):
+            case .success(let authSession):
                 guard let cognitoAuthSession = authSession as? AuthCognitoIdentityProvider else {
                     XCTFail("Could not get auth session as AuthCognitoIdentityProvider")
                     return
@@ -369,7 +369,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 case .failure(let error):
                     XCTFail("Failed to get auth session \(error)")
                 }
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed to get auth session \(error)")
             default:
                 XCTFail("Unexpected event")
@@ -387,9 +387,9 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let signOutCompleted = expectation(description: "sign out completed")
         Amplify.Auth.signOut { event in
             switch event {
-            case .completed:
+            case .success:
                 signOutCompleted.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Could not sign out user \(error)")
             default:
                 XCTFail("Unexpected event")

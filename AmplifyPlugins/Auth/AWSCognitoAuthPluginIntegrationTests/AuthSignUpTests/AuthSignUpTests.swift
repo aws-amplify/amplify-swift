@@ -50,6 +50,37 @@ class AuthSignUpTests: AWSAuthBaseTest {
         wait(for: [operationExpectation], timeout: networkTimeout)
     }
 
+    /// Test if user registration is successful.
+    ///
+    /// - Given: A username that is not present in the system
+    /// - When:
+    ///    - I invoke Amplify.Auth.signUp with the username, a random password and AWSAuthSignUpOptions
+    /// - Then:
+    ///    - I should get a signup complete step.
+    ///
+    func testRegisterUserWithSignUpOptions() {
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
+
+        let operationExpectation = expectation(description: "Operation should complete")
+        let awsAuthSignUpOptions = AWSAuthSignUpOptions(validationData: ["mydata": "myvalue"],
+                                                        metadata: ["mydata": "myvalue"])
+        let options = AuthSignUpOperation.Request.Options(pluginOptions: awsAuthSignUpOptions)
+        let operation = Amplify.Auth.signUp(username: username, password: password, options: options) { result in
+            defer {
+                operationExpectation.fulfill()
+            }
+            switch result {
+            case .success(let signUpResult):
+                XCTAssertTrue(signUpResult.isSignupComplete, "Signup should be complete")
+            case .failure(let error):
+                XCTFail("SignUp a new user should not fail \(error)")
+            }
+        }
+        XCTAssertNotNil(operation, "SignUp operations should not be nil")
+        wait(for: [operationExpectation], timeout: networkTimeout)
+    }
+
     /// Test is signUp return validation error
     ///
     /// - Given: An invalid input to signUp like empty username

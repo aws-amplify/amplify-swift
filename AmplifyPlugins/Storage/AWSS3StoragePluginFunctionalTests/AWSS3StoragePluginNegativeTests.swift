@@ -43,6 +43,41 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
+    /// Given: Object does not exist in storage
+    /// When: Call the downloadFile API with path to local file
+    /// Then: Download fails and local file should not exist
+    func testDownloadToFileNonexistentKey() {
+        let key = UUID().uuidString
+        let expectedKey = "public/" + key
+        let filePath = NSTemporaryDirectory() + key + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        let failInvoked = expectation(description: "Failed is invoked")
+        let operation = Amplify.Storage.downloadFile(
+            key: key,
+            local: fileURL,
+            progressListener: nil) { event in
+                switch event {
+                case .success:
+                    XCTFail("Should not have completed successfully")
+                case .failure(let error):
+                    guard case let .keyNotFound(key, _, _, _) = error else {
+                        XCTFail("Should have been validation error")
+                        return
+                    }
+
+                    if FileManager.default.fileExists(atPath: fileURL.path) {
+                        XCTFail("local file should not exist")
+                    }
+
+                    XCTAssertEqual(key, expectedKey)
+                    failInvoked.fulfill()
+                }
+        }
+
+        XCTAssertNotNil(operation)
+        wait(for: [failInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+
     /// Given: A path to file that does not exist
     /// When: Upload the file
     /// Then: The operation fails with StorageError.missingLocalFile
