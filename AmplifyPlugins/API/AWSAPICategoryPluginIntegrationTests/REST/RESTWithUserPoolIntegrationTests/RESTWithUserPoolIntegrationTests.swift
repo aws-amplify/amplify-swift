@@ -66,7 +66,6 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
     }
 
     func testGetAPIFailedWithSignedOutError() {
-        signOut()
         let failedInvoked = expectation(description: "request failed")
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.get(request: request) { event in
