@@ -72,7 +72,7 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         if let result = (authSession as? AuthCognitoTokensProvider)?.getCognitoTokens() {
             switch result {
             case .success(let tokens):
-                return .success(tokens.idToken)
+                return .success(tokens.accessToken)
             case .failure(let error):
                 return .failure(error)
             }

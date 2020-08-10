@@ -50,24 +50,28 @@ type SocialNote
 
 ```json
 {
-    "user1": "<USER EMAIL>",
-    "passwordUser1": "<PASSWORD>"
-    "user2": "<USER2 EMAIL>",
-    "passwordUser2": "<PASSWORD>"
+    "user1": "[USER EMAIL]",
+    "passwordUser1": "[PASSWORD]"
+    "user2": "[USER2 EMAIL]",
+    "passwordUser2": "[PASSWORD]"
 }
 
 ```
 
-7. `amplify console auth`
-```perl
-? Which console `User Pool`
+7. Create a two new users in the userpool. First, retrieve the Cognito User Pool's Pool Id, you can find this in `amplifyconfiguration.json` under
 ```
-
-8. Click on `Users and groups`, Sign up the two new users with the email and a temporary password. 
-
-9. Click on App clients, and keep note of the app client web's `App client id`. This can be used the AWS AppSync console Queries.
-
-10. `amplify console api`
-Click on Queries tab, and click on Log in. This will prompt you to enter the app client id, username, and temporary password. After logging in successfully, it will ask you to enter a new password. Make sure those are the same as the one specified in the credentials json file from step 5. Do this for both users.
+"CognitoUserPool": {
+    "Default": {
+        "PoolId": "[POOL_ID]",
+```
+Run the `admin-create-user` command to create a new user
+```
+aws cognito-idp admin-create-user --user-pool-id [POOL_ID] --username [USER EMAIL]
+```
+Run the `admin-set-user-password` command to confirm the user
+```
+aws cognito-idp admin-set-user-password --user-pool-id [POOL_ID] --username [USER EMAIL] --password [PASSWORD] --permanent
+```
+See https://docs.aws.amazon.com/cli/latest/reference/cognito-idp/index.html#cli-aws-cognito-idp for more details using AWS CLI
 
 You can now run the tests!
