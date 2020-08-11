@@ -22,9 +22,9 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
         return subscriptionEventSubject.eraseToAnyPublisher()
     }
 
-    init(modelType: Model.Type, api: APICategoryGraphQLBehavior, auth: AuthCategoryBehavior?) {
+    init(schema: ModelSchema, api: APICategoryGraphQLBehavior, auth: AuthCategoryBehavior?) {
         self.subscriptionEventSubject = PassthroughSubject<IncomingSubscriptionEventPublisherEvent, DataStoreError>()
-        self.asyncEvents = IncomingAsyncSubscriptionEventPublisher(modelType: modelType,
+        self.asyncEvents = IncomingAsyncSubscriptionEventPublisher(schema: schema,
                                                                    api: api,
                                                                    auth: auth)
 

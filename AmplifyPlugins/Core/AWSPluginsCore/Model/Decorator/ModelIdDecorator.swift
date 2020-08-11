@@ -18,7 +18,7 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
+                         schema: ModelSchema) -> SingleDirectiveGraphQLDocument {
         var inputs = document.inputs
 
         if case .mutation = document.operationType {

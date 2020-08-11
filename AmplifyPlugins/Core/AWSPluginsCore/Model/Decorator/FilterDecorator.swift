@@ -19,9 +19,9 @@ public struct FilterDecorator: ModelBasedGraphQLDocumentDecorator {
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
+                         schema: ModelSchema) -> SingleDirectiveGraphQLDocument {
         var inputs = document.inputs
-        let modelName = modelType.schema.name
+        let modelName = schema.name
         if case .mutation = document.operationType {
             inputs["condition"] = GraphQLDocumentInput(type: "Model\(modelName)ConditionInput",
                 value: .object(filter))

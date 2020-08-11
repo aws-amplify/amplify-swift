@@ -18,6 +18,7 @@ protocol ModelSyncGraphQLRequestFactory {
     static func query(modelName: String, byId id: String) -> GraphQLRequest<MutationSyncResult?>
 
     static func createMutation(of model: Model,
+                               modelName: String,
                                version: Int?) -> GraphQLRequest<MutationSyncResult>
 
     static func updateMutation(of model: Model,
@@ -29,12 +30,13 @@ protocol ModelSyncGraphQLRequestFactory {
                                where filter: GraphQLFilter?,
                                version: Int?) -> GraphQLRequest<MutationSyncResult>
 
-    static func subscription(to modelType: Model.Type,
+    static func subscription(to modelName: ModelName,
                              subscriptionType: GraphQLSubscriptionType) -> GraphQLRequest<MutationSyncResult>
 
-    static func subscription(to modelType: Model.Type,
+    static func subscription(to modelName: ModelName,
                              subscriptionType: GraphQLSubscriptionType,
                              ownerId: String) -> GraphQLRequest<MutationSyncResult>
+    
 
     static func syncQuery(modelType: Model.Type,
                           where predicate: QueryPredicate?,
@@ -63,8 +65,9 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
     }
 
     public static func createMutation(of model: Model,
+                                      modelName: String,
                                       version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        createOrUpdateMutation(of: model, type: .create, version: version)
+        createOrUpdateMutation(of: model, modelName: modelName, type: .create, version: version)
     }
 
     public static func updateMutation(of model: Model,
@@ -93,10 +96,10 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                   decodePath: document.name)
     }
 
-    public static func subscription(to modelType: Model.Type,
+    public static func subscription(to modelName: ModelName,
                                     subscriptionType: GraphQLSubscriptionType) -> GraphQLRequest<MutationSyncResult> {
 
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: subscriptionType))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
@@ -107,11 +110,11 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                   decodePath: document.name)
     }
 
-    public static func subscription(to modelType: Model.Type,
+    public static func subscription(to modelName: ModelName,
                                     subscriptionType: GraphQLSubscriptionType,
                                     ownerId: String) -> GraphQLRequest<MutationSyncResult> {
 
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: subscriptionType))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(subscriptionType, ownerId)))
@@ -128,7 +131,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                  limit: Int? = nil,
                                  nextToken: String? = nil,
                                  lastSync: Int? = nil) -> GraphQLRequest<SyncQueryResult> {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelType.modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         if let predicate = predicate {
             documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
@@ -147,10 +150,11 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
     // MARK: Private methods
 
     private static func createOrUpdateMutation(of model: Model,
+                                               modelName: String? = nil,
                                                where filter: GraphQLFilter? = nil,
                                                type: GraphQLMutationType,
                                                version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: model.modelName,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName ?? model.modelName,
                                                                     operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
         documentBuilder.add(decorator: ModelDecorator(model: model))

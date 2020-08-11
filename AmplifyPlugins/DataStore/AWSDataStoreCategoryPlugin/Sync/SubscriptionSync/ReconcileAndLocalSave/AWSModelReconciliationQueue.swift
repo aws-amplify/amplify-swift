@@ -13,7 +13,7 @@ import Foundation
 //Used for testing:
 @available(iOS 13.0, *)
 typealias ModelReconciliationQueueFactory = (
-    Model.Type,
+    ModelSchema,
     StorageEngineAdapter,
     APICategoryGraphQLBehavior,
     AuthCategoryBehavior?,
@@ -71,32 +71,32 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         return modelReconciliationQueueSubject.eraseToAnyPublisher()
     }
 
-    init(modelType: Model.Type,
+    init(schema: ModelSchema,
          storageAdapter: StorageEngineAdapter?,
          api: APICategoryGraphQLBehavior,
          auth: AuthCategoryBehavior?,
          incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
 
-        self.modelName = modelType.modelName
+        self.modelName = schema.name
 
         self.storageAdapter = storageAdapter
 
         self.modelReconciliationQueueSubject = PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>()
 
         self.reconcileAndSaveQueue = OperationQueue()
-        reconcileAndSaveQueue.name = "com.amazonaws.DataStore.\(modelType).reconcile"
+        reconcileAndSaveQueue.name = "com.amazonaws.DataStore.\(schema.name).reconcile"
         reconcileAndSaveQueue.maxConcurrentOperationCount = 1
         reconcileAndSaveQueue.underlyingQueue = DispatchQueue.global()
         reconcileAndSaveQueue.isSuspended = false
 
         self.incomingSubscriptionEventQueue = OperationQueue()
-        incomingSubscriptionEventQueue.name = "com.amazonaws.DataStore.\(modelType).remoteEvent"
+        incomingSubscriptionEventQueue.name = "com.amazonaws.DataStore.\(schema.name).remoteEvent"
         incomingSubscriptionEventQueue.maxConcurrentOperationCount = 1
         incomingSubscriptionEventQueue.underlyingQueue = DispatchQueue.global()
         incomingSubscriptionEventQueue.isSuspended = true
 
         let resolvedIncomingSubscriptionEvents = incomingSubscriptionEvents ??
-            AWSIncomingSubscriptionEventPublisher(modelType: modelType, api: api, auth: auth)
+            AWSIncomingSubscriptionEventPublisher(schema: schema, api: api, auth: auth)
         self.incomingSubscriptionEvents = resolvedIncomingSubscriptionEvents
 
         self.incomingEventsSink = resolvedIncomingSubscriptionEvents

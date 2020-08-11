@@ -77,7 +77,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         let syncableModels = ModelRegistry.models.filter { $0.schema.isSyncable }
         let sortedModels = syncableModels.sortByDependencyOrder()
         for model in sortedModels {
-            enqueueSyncOperation(for: model)
+          //  enqueueSyncOperation(for: model)
         }
     }
 

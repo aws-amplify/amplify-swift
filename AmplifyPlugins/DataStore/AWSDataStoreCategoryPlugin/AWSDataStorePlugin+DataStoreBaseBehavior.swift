@@ -13,6 +13,14 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     public func save<M: Model>(_ model: M,
                                where condition: QueryPredicate? = nil,
                                completion: @escaping DataStoreCallback<M>) {
+        save(model, schema: model.schema, where: condition, completion: completion)
+
+    }
+
+    public func save<M: Model>(_ model: M,
+                               schema: ModelSchema,
+                               where condition: QueryPredicate? = nil,
+                               completion: @escaping DataStoreCallback<M>) {
         log.verbose("Saving: \(model) with condition: \(String(describing: condition))")
         reinitStorageEngineIfNeeded()
 
@@ -24,7 +32,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 throw DataStoreError.configuration("Unable to get storage adapter",
                                                    "")
             }
-            modelExists = try engine.storageAdapter.exists(M.schema, withId: model.id, predicate: nil)
+            modelExists = try engine.storageAdapter.exists(schema, withId: model.id, predicate: nil)
         } catch {
             if let dataStoreError = error as? DataStoreError {
                 completion(.failure(dataStoreError))
@@ -52,9 +60,9 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         }
 
         storageEngine.save(model,
-                           condition: condition,
+                           schema: schema,
+                           where: condition,
                            completion: publishingCompletion)
-
     }
 
     public func query<M: Model>(_ modelType: M.Type,
@@ -81,8 +89,17 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                 where predicate: QueryPredicate? = nil,
                                 paginate paginationInput: QueryPaginationInput? = nil,
                                 completion: DataStoreCallback<[M]>) {
+        query(modelType, schema: modelType.schema, where: predicate, paginate: paginationInput, completion: completion)
+    }
+
+    public func query<M: Model>(_ modelType: M.Type,
+                                schema: ModelSchema,
+                                where predicate: QueryPredicate? = nil,
+                                paginate paginationInput: QueryPaginationInput? = nil,
+                                completion: DataStoreCallback<[M]>) {
         reinitStorageEngineIfNeeded()
         storageEngine.query(modelType,
+                            schema: schema,
                             predicate: predicate,
                             paginationInput: paginationInput,
                             completion: completion)

@@ -21,8 +21,8 @@ public struct GraphQLQuery: SingleDirectiveGraphQLDocument {
         self.selectionSet = selectionSet
     }
 
-    public init(modelType: Model.Type) {
-        self.selectionSet = SelectionSet(fields: modelType.schema.graphQLFields)
+    public init(graphQLFields: [ModelField]) {
+        self.selectionSet = SelectionSet(fields: graphQLFields)
     }
 
     public var name: String = ""

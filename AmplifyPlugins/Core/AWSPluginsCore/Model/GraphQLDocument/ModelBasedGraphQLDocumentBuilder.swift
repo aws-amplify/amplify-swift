@@ -13,25 +13,25 @@ import Amplify
 public struct ModelBasedGraphQLDocumentBuilder {
     private var decorators = [ModelBasedGraphQLDocumentDecorator]()
     private var document: SingleDirectiveGraphQLDocument
-    private let modelType: Model.Type
+    private let schema: ModelSchema
 
     public init(modelName: String, operationType: GraphQLOperationType) {
-        guard let modelType = ModelRegistry.modelType(from: modelName) else {
+        guard let modelSchema = ModelRegistry.modelSchema(from: modelName)  else {
             preconditionFailure("Missing ModelType in ModelRegistry for model name: \(modelName)")
         }
 
-        self.init(modelType: modelType, operationType: operationType)
+        self.init(schema: modelSchema, operationType: operationType)
     }
 
-    public init(modelType: Model.Type, operationType: GraphQLOperationType) {
-        self.modelType = modelType
+    public init(schema: ModelSchema, operationType: GraphQLOperationType) {
+        self.schema = schema
         switch operationType {
         case .query:
-            self.document = GraphQLQuery(modelType: modelType)
+            self.document = GraphQLQuery(graphQLFields: schema.graphQLFields)
         case .mutation:
-            self.document = GraphQLMutation(modelType: modelType)
+            self.document = GraphQLMutation(graphQLFields: schema.graphQLFields)
         case .subscription:
-            self.document = GraphQLSubscription(modelType: modelType)
+            self.document = GraphQLSubscription(graphQLFields: schema.graphQLFields)
         }
     }
 
@@ -42,7 +42,7 @@ public struct ModelBasedGraphQLDocumentBuilder {
     public mutating func build() -> SingleDirectiveGraphQLDocument {
 
         let decoratedDocument = decorators.reduce(document) { doc, decorator in
-            decorator.decorate(doc, modelType: self.modelType)
+            decorator.decorate(doc, schema: self.schema)
         }
 
         return decoratedDocument
