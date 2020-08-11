@@ -286,9 +286,9 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
 
         let completeInvoked = expectation(description: "Completed is invoked")
 
-            let operation = Amplify.Predictions.identify(type: .detectText(.table),
-                                                         image: url,
-                                                         options: PredictionsIdentifyRequest.Options()) { event in
+        let operation = Amplify.Predictions.identify(type: .detectText(.table),
+                                                     image: url,
+                                                     options: PredictionsIdentifyRequest.Options()) { event in
             switch event {
             case .success(let result):
                 guard let data = result as? IdentifyDocumentTextResult else {
@@ -304,6 +304,17 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
                 XCTAssertEqual(data.identifiedLines.count, 3)
                 XCTAssertFalse(data.tables.isEmpty)
                 XCTAssertEqual(data.tables.count, 1)
+                XCTAssertFalse(data.tables[0].cells.isEmpty)
+                XCTAssertEqual(data.tables[0].cells.count, 3)
+                XCTAssertEqual(data.tables[0].cells[0].rowIndex, 1)
+                XCTAssertEqual(data.tables[0].cells[0].columnIndex, 1)
+                XCTAssertEqual(data.tables[0].cells[0].text, "Upper left")
+                XCTAssertEqual(data.tables[0].cells[1].rowIndex, 2)
+                XCTAssertEqual(data.tables[0].cells[1].columnIndex, 2)
+                XCTAssertEqual(data.tables[0].cells[1].text, "Middle")
+                XCTAssertEqual(data.tables[0].cells[2].rowIndex, 3)
+                XCTAssertEqual(data.tables[0].cells[2].columnIndex, 3)
+                XCTAssertEqual(data.tables[0].cells[2].text, "Bottom right")
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("Failed with \(error)")

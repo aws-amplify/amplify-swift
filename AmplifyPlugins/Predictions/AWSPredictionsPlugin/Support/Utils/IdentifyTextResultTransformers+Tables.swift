@@ -67,6 +67,8 @@ extension IdentifyTextResultTransformers {
     static func constructTableCell(_ block: AWSTextractBlock, _ blockMap: [String: AWSTextractBlock]) -> Table.Cell? {
         guard block.blockType == .cell,
             let relationships = block.relationships,
+            let rowIndex = block.rowIndex,
+            let columnIndex = block.columnIndex,
             let rowSpan = block.rowSpan,
             let columnSpan = block.columnSpan,
             let geometry = block.geometry,
@@ -115,10 +117,12 @@ extension IdentifyTextResultTransformers {
                 return nil
         }
 
-        return Table.Cell(text: words,
+        return Table.Cell(text: words.trimmingCharacters(in: .whitespacesAndNewlines),
                           boundingBox: boundingBox,
                           polygon: polygon,
                           isSelected: isSelected,
+                          rowIndex: Int(truncating: rowIndex),
+                          columnIndex: Int(truncating: columnIndex),
                           rowSpan: Int(truncating: rowSpan),
                           columnSpan: Int(truncating: columnSpan))
     }
