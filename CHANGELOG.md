@@ -1,5 +1,11 @@
 # Changelog
 
+## unreleased
+
+### Bug Fixes
+
+- Fixed the bug where cell struct is missing rowIndex and columnIndex
+
 ## 1.0.6 (2020-08-03)
 
 ### Bug Fixes
