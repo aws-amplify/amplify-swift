@@ -1,10 +1,10 @@
 # Changelog
 
-## unreleased
+## Unreleased
 
 ### Bug Fixes
 
-- Fixed the bug where cell struct is missing rowIndex and columnIndex
+- **Predictions**: Add rowIndex and columnIndex to Cell struct([#704](https://github.com/aws-amplify/amplify-ios/pull/704)
 
 ## 1.0.6 (2020-08-03)
 
