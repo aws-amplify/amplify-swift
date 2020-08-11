@@ -304,6 +304,8 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
                 XCTAssertEqual(data.identifiedLines.count, 3)
                 XCTAssertFalse(data.tables.isEmpty)
                 XCTAssertEqual(data.tables.count, 1)
+                XCTAssertFalse(data.tables[0].cells.isEmpty)
+                XCTAssertEqual(data.tables[0].cells.count, 3)
                 XCTAssertEqual(data.tables[0].cells[0].rowIndex, 1)
                 XCTAssertEqual(data.tables[0].cells[0].columnIndex, 1)
                 XCTAssertEqual(data.tables[0].cells[0].text, "Upper left")
