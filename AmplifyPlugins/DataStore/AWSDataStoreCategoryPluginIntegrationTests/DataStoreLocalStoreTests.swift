@@ -144,7 +144,6 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         let postsDic = Dictionary(grouping: posts, by: { $0.rating! })
         for (_, pairs) in postsDic {
             for index in 0 ..< pairs.count - 1 {
-                print(pairs[index].title)
                 if pairs[index].title < pairs[index + 1].title {
                     XCTFail("title should be in descending order")
                 }

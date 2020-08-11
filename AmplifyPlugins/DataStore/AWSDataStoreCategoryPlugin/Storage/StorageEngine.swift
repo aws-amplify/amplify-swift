@@ -295,7 +295,6 @@ final class StorageEngine: StorageEngineBehavior {
                                      predicate: predicate,
                                      sort: nil,
                                      paginationInput: nil,
-                                     additionalStatements: nil,
                                      completion: queryCompletionBlock)
             }
         } catch {

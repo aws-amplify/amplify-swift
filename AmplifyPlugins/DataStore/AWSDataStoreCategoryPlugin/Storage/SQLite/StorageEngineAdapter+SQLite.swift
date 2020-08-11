@@ -191,26 +191,11 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                          sort: QuerySortInput? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          completion: DataStoreCallback<[M]>) {
-        query(modelType,
-              predicate: predicate,
-              sort: sort,
-              paginationInput: paginationInput,
-              additionalStatements: nil,
-              completion: completion)
-    }
-
-    func query<M: Model>(_ modelType: M.Type,
-                         predicate: QueryPredicate? = nil,
-                         sort: QuerySortInput? = nil,
-                         paginationInput: QueryPaginationInput? = nil,
-                         additionalStatements: String? = nil,
-                         completion: DataStoreCallback<[M]>) {
         do {
             let statement = SelectStatement(from: modelType,
                                             predicate: predicate,
                                             sort: sort,
-                                            paginationInput: paginationInput,
-                                            additionalStatements: additionalStatements)
+                                            paginationInput: paginationInput)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result: [M] = try rows.convert(to: modelType, using: statement)
             completion(.success(result))

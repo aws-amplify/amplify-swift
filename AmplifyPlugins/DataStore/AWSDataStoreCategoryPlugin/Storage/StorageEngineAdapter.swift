@@ -34,7 +34,6 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
                          predicate: QueryPredicate?,
                          sort: QuerySortInput?,
                          paginationInput: QueryPaginationInput?,
-                         additionalStatements: String?,
                          completion: DataStoreCallback<[M]>)
 
     // MARK: - Synchronous APIs
