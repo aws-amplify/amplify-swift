@@ -12,12 +12,20 @@ extension SQLiteStorageEngineAdapter {
 
     func save(untypedModel: Model, completion: DataStoreCallback<Model>) {
         do {
-            guard let modelType = ModelRegistry.modelType(from: untypedModel.modelName) else {
-                let error = DataStoreError.invalidModelName(untypedModel.modelName)
+
+            var modelName: String = ""
+            if untypedModel is JsonModel {
+                modelName = (untypedModel as! JsonModel).internal_value(for: "__typename") as! String
+            } else {
+                modelName = untypedModel.modelName
+            }
+
+            guard let schema = ModelRegistry.modelSchema(from: modelName) else {
+                let error = DataStoreError.invalidModelName(modelName)
                 throw error
             }
 
-            let shouldUpdate = try exists(modelType.schema, withId: untypedModel.id)
+            let shouldUpdate = try exists(schema, withId: untypedModel.id)
 
             // TODO serialize result and create a new instance of the model
             // (some columns might be auto-generated after DB insert/update)
@@ -25,7 +33,7 @@ extension SQLiteStorageEngineAdapter {
                 let statement = UpdateStatement(model: untypedModel)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             } else {
-                let statement = InsertStatement(model: untypedModel, schema: untypedModel.schema)
+                let statement = InsertStatement(model: untypedModel, schema: schema)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
 
