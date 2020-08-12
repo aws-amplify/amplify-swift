@@ -6,6 +6,12 @@ default_platform(:ios)
 PLIST_KEY = "CFBundleShortVersionString"
 
 platform :ios do
+  before_all do 
+    # Perform a fetch before inferring the next version 
+    # to reduce race conditions with simultaneous pipelines attempting to create the same tag
+    sh('git', 'fetch', '--tags')
+    sh('git', 'fetch')
+  end
   desc "Create a pre-release version by pushing a tag to GitHub, and pushing pods to CocoaPods"
   lane :unstable do 
     next_version = calculate_next_canary_version
@@ -104,8 +110,8 @@ platform :ios do
       with_retry do
         begin
           pod_push(path: pod[:spec], allow_warnings: true, synchronous: true)
-        rescue exception
-          raise exception unless exception.message =~ /Unable to accept duplicate entry/i
+        rescue StandardError => e
+          raise e unless e.message =~ /Unable to accept duplicate entry/i
           UI.warn("Version already exists. Ignoring")
         end
       end
@@ -146,13 +152,13 @@ platform :ios do
   end
 end
 
-def with_retry(retries=5, wait=10)
+def with_retry(retries=5, wait=60)
   begin
     yield
-  rescue e
+  rescue StandardError => e
     retries -= 1
     raise e if retries.zero?
-      UI.error("Error occurred: #{exception}; retrying...")
+      UI.error("Error occurred: #{e}; retrying...")
       sleep(wait)
     retry
   end
