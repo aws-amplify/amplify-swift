@@ -84,6 +84,8 @@ class AnyModelIntegrationTests: XCTestCase {
                     XCTFail("partial: \(model), \(errors)")
                 case .transformationError(let rawResponse, let apiError):
                     XCTFail("transformationError: \(rawResponse), \(apiError)")
+                case .unknown(let errorDescription, let recoverySuggestion, _):
+                    XCTFail("UnknownError: \(errorDescription), \(recoverySuggestion)")
                 }
             }
             return
@@ -148,6 +150,8 @@ class AnyModelIntegrationTests: XCTestCase {
                     XCTFail("partial: \(model), \(errors)")
                 case .transformationError(let rawResponse, let apiError):
                     XCTFail("transformationError: \(rawResponse), \(apiError)")
+                case .unknown(let errorDescription, let recoverySuggestion, _):
+                    XCTFail("UnknownError: \(errorDescription), \(recoverySuggestion)")
                 }
             }
             return
@@ -205,6 +209,8 @@ class AnyModelIntegrationTests: XCTestCase {
                     XCTFail("partial: \(model), \(errors)")
                 case .transformationError(let rawResponse, let apiError):
                     XCTFail("transformationError: \(rawResponse), \(apiError)")
+                case .unknown(let errorDescription, let recoverySuggestion, _):
+                    XCTFail("UnknownError: \(errorDescription), \(recoverySuggestion)")
                 }
             }
             return

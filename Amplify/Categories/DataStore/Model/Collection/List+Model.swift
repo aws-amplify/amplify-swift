@@ -112,6 +112,17 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
                 let field = Element.schema.field(withName: associatedField)
                 // TODO handle eager loaded associations with elements
                 self.init([], associatedId: associatedId, associatedField: field)
+            } else if case let .array(jsonArray) = list["items"] {
+                let encoder = JSONEncoder()
+                encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
+                let elements = try jsonArray.map { (jsonElement) -> Element in
+                    let serializedJSON = try encoder.encode(jsonElement)
+                    return try decoder.decode(Element.self, from: serializedJSON)
+                }
+
+                self.init(elements)
             } else {
                 self.init(Elements())
             }
