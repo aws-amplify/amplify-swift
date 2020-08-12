@@ -83,7 +83,9 @@ extension AuthenticationProviderAdapter {
     func resendSignUpCode(request: AuthResendSignUpCodeRequest,
                           completionHandler: @escaping (Result<AuthCodeDeliveryDetails, AuthError>) -> Void) {
 
-        awsMobileClient.resendSignUpCode(username: request.username) { result, error in
+        let clientMetaData = (request.options.pluginOptions as? AWSAuthResendSignUpCodeOptions)?.metadata ?? [:]
+
+        awsMobileClient.resendSignUpCode(username: request.username, clientMetaData: clientMetaData) { result, error in
             guard error == nil else {
                 let authError = AuthErrorHelper.toAuthError(error!)
                 completionHandler(.failure(authError))
