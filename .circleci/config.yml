@@ -10,14 +10,14 @@ defaults: &defaults
     BUNDLE_PATH: vendor/bundle
 
 references:
-  repo_cache_key: &repo_cache_key v1-repo-{{ .Branch }}-{{ .Revision }}
+  repo_cache_key: &repo_cache_key v2-repo-{{ .Branch }}-{{ .Revision }}
 
   restore_repo: &restore_repo
     restore_cache:
       keys:
         - *repo_cache_key
-        - v1-repo-{{ .Branch }}
-        - v1-repo
+        - v2-repo-{{ .Branch }}
+        - v2-repo
 
   pods_cache_key: &pods_cache_key v3-dependency-pods-{{ checksum "~/amplify-ios/Podfile" }}
 
