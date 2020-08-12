@@ -8,7 +8,6 @@
 import XCTest
 
 import AmplifyPlugins
-import AWSMobileClient
 import AWSPluginsCore
 
 @testable import Amplify
@@ -65,8 +64,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 }
 
                 if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                    deleteReceived.fulfill()
                     XCTAssertEqual(mutationEvent.version, 3)
+                    deleteReceived.fulfill()
                     return
                 }
         }

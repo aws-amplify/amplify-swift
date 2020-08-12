@@ -352,6 +352,127 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
+    // MARK: - Select Statements Sort
+
+    /// - Given: a `Model` type and a `QuerySortBy`
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - the sort should be `id` of ascending order
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if the statement contains the correct `order by` and `ascending`
+    func testSelectStatementWithOneSort() {
+        let statement = SelectStatement(from: Post.self,
+                                        sort: .ascending(Post.keys.id))
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
+        from Post as "root"
+        order by "root"."id" asc
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    /// - Given: a `Model` type and two `QuerySortBy`s
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - the sort should be `id` of descending order and `createdAt` of descending order
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if the statement contains the correct `order by` and `ascending`
+    func testSelectStatementWithTwoFieldsSort() {
+        let statement = SelectStatement(from: Post.self,
+                                        sort: .by(.ascending(Post.keys.id),
+                                                  .descending(Post.keys.createdAt)))
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
+        from Post as "root"
+        order by "root"."id" asc, "root"."createdAt" desc
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    /// - Given: a `Model` type, a `QueryPredicate`and  a `QuerySortBy`
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - the sort should meet predicate condition be `id` of descending order
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if the statement contains the correct `where` statement, `order by` and `ascending`
+    func testSelectStatementWithPredicateAndSort() {
+        let statement = SelectStatement(from: Post.self,
+                                        predicate: Post.keys.rating > 4,
+                                        sort: .descending(Post.keys.id))
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
+        from Post as "root"
+        where 1 = 1
+          and "root"."rating" > ?
+        order by "root"."id" desc
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    /// - Given: a `Model` type, a `QuerySortBy`, a `QueryPaginationInput`
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - the sort should be `id` of descending order and
+    ///   - the pagination input has `page` 0 and `limit` 5
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if the statement contains the correct `where` statement, `order by` and `ascending`
+    func testSelectStatementWithSortAndPaginationInfo() {
+        let statement = SelectStatement(from: Post.self,
+                                        sort: .descending(Post.keys.id),
+                                        paginationInput: .page(0, limit: 5))
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
+        from Post as "root"
+        order by "root"."id" desc
+        limit 5 offset 0
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    /// - Given: a `Model` type, a `QueryPredicate`,  a `QuerySortBy` and a `QueryPaginationInput`
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - the predicate should meet the condtion
+    ///   - the sort should  be `id` of descending order
+    ///   - the pagination input has `page` 0 and `limit` 5
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if the statement contains the correct `where` statement, `order by` and `ascending`
+    func testSelectStatementWithPredicateAndSortAndPaginationInfo() {
+        let statement = SelectStatement(from: Post.self,
+                                        predicate: Post.keys.rating > 4,
+                                        sort: .descending(Post.keys.id),
+                                        paginationInput: .page(0, limit: 5))
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
+        from Post as "root"
+        where 1 = 1
+          and "root"."rating" > ?
+        order by "root"."id" desc
+        limit 5 offset 0
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
     // MARK: - Query Predicates
 
     /// - Given: a simple predicate

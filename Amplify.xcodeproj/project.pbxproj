@@ -359,6 +359,7 @@
 		FA00F68E24DA3DFF003E8A71 /* HubCategoryBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00F68D24DA3DFE003E8A71 /* HubCategoryBehavior+Combine.swift */; };
 		FA00F69024DA3F95003E8A71 /* HubCombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00F68F24DA3F95003E8A71 /* HubCombineTests.swift */; };
 		FA00F69224DA4087003E8A71 /* PredictionsCategoryBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00F69124DA4087003E8A71 /* PredictionsCategoryBehavior+Combine.swift */; };
+		D8DD7A1D24A1CCCD001C49FD /* QuerySortInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD7A1C24A1CCCD001C49FD /* QuerySortInput.swift */; };
 		FA0173352375F8A5005DDDFC /* LoggingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173342375F8A5005DDDFC /* LoggingError.swift */; };
 		FA0173372375FAA5005DDDFC /* HubError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173362375FAA5005DDDFC /* HubError.swift */; };
 		FA05B83424CE265E0026180B /* StorageCategory+ClientBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA05B83324CE265D0026180B /* StorageCategory+ClientBehavior+Combine.swift */; };
@@ -431,6 +432,7 @@
 		FA6BC87F235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC87E235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift */; };
 		FA76A2D12342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA76A2D02342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift */; };
 		FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA76A2D22342B47100B91ADB /* HubPayloadEventName.swift */; };
+		FA87609324E45091004148C6 /* AmplifyConfigurationInitFromFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87609024E44CCC004148C6 /* AmplifyConfigurationInitFromFileTests.swift */; };
 		FA8EE779238627040097E4F1 /* Model+ModelName.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE778238627040097E4F1 /* Model+ModelName.swift */; };
 		FA8EE77D238627350097E4F1 /* Model+Subscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE77C238627350097E4F1 /* Model+Subscript.swift */; };
 		FA8EE781238628490097E4F1 /* Persistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE780238628490097E4F1 /* Persistable.swift */; };
@@ -1139,6 +1141,7 @@
 		D5363CAF9EFAA822FED56808 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5521D5FA66340943C39C451 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		D83C515F248964780091548E /* ModelGraphQLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelGraphQLTests.swift; sourceTree = "<group>"; };
+		D8DD7A1C24A1CCCD001C49FD /* QuerySortInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuerySortInput.swift; sourceTree = "<group>"; };
 		DD2486414D63230FF39130C7 /* Pods-Amplify-AWSPluginsCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore/Pods-Amplify-AWSPluginsCore.debug.xcconfig"; sourceTree = "<group>"; };
 		DEEB82A328223C60557B75C1 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		E1306F31E45EE7C6B6048F89 /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -1239,6 +1242,7 @@
 		FA6BC87E235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryInterceptorBehavior.swift; sourceTree = "<group>"; };
 		FA76A2D02342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		FA76A2D22342B47100B91ADB /* HubPayloadEventName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPayloadEventName.swift; sourceTree = "<group>"; };
+		FA87609024E44CCC004148C6 /* AmplifyConfigurationInitFromFileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyConfigurationInitFromFileTests.swift; sourceTree = "<group>"; };
 		FA8EE772238621320097E4F1 /* AnyModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyModelTests.swift; sourceTree = "<group>"; };
 		FA8EE776238626D60097E4F1 /* AnyModel+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnyModel+Codable.swift"; sourceTree = "<group>"; };
 		FA8EE778238627040097E4F1 /* Model+ModelName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+ModelName.swift"; sourceTree = "<group>"; };
@@ -2340,6 +2344,7 @@
 				B98E9D072372236200934B51 /* QueryOperator.swift */,
 				B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */,
 				B912D1B5242960D40028F05C /* QueryPaginationInput.swift */,
+				D8DD7A1C24A1CCCD001C49FD /* QuerySortInput.swift */,
 				B98E9D082372236200934B51 /* QueryPredicate.swift */,
 				B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */,
 			);
@@ -3082,9 +3087,10 @@
 		FACA35F32327FB14000E74F6 /* AmplifyFunctionalTests */ = {
 			isa = PBXGroup;
 			children = (
-				FA9D6C1D238DEEF900C7DD9F /* Hub */,
-				FACA35F42327FB14000E74F6 /* AmplifyConfigurationTests.swift */,
 				FACA35F62327FB14000E74F6 /* Info.plist */,
+				FA87609024E44CCC004148C6 /* AmplifyConfigurationInitFromFileTests.swift */,
+				FACA35F42327FB14000E74F6 /* AmplifyConfigurationTests.swift */,
+				FA9D6C1D238DEEF900C7DD9F /* Hub */,
 			);
 			path = AmplifyFunctionalTests;
 			sourceTree = "<group>";
@@ -4446,6 +4452,7 @@
 				B450741324115C260098F02D /* AuthSignInRequest.swift in Sources */,
 				B4FA336A24105EB700E1C659 /* AuthCategoryConfiguration.swift in Sources */,
 				FAC23523227A053D00424678 /* LoggingCategoryPlugin.swift in Sources */,
+				D8DD7A1D24A1CCCD001C49FD /* QuerySortInput.swift in Sources */,
 				B9FB05F82383740D00DE1FD4 /* DataStoreStatement.swift in Sources */,
 				FAC23527227A053D00424678 /* LoggingCategoryClientBehavior.swift in Sources */,
 				FA09B92B2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift in Sources */,
@@ -4537,6 +4544,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA9D6C1E238DEF0E00C7DD9F /* DefaultHubPluginPerformanceTestHelpers.swift in Sources */,
+				FA87609324E45091004148C6 /* AmplifyConfigurationInitFromFileTests.swift in Sources */,
 				FA9D6C1F238DEF1100C7DD9F /* SerialDispatcherPerformanceTests.swift in Sources */,
 				FA9D6C1B238DEEEB00C7DD9F /* ConcurrentDispatcherPerformanceTests.swift in Sources */,
 				FACA35F52327FB14000E74F6 /* AmplifyConfigurationTests.swift in Sources */,

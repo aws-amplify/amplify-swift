@@ -20,9 +20,6 @@ class LocalStoreIntegrationTestBase: XCTestCase {
 
         continueAfterFailure = false
 
-        Amplify.reset()
-        Amplify.Logging.logLevel = .verbose
-
         do {
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: TestModelRegistration()))
             try Amplify.configure(AmplifyConfiguration(dataStore: nil))
@@ -34,6 +31,7 @@ class LocalStoreIntegrationTestBase: XCTestCase {
 
     override func tearDown() {
         Amplify.DataStore.clear(completion: { _ in })
+        Amplify.reset()
     }
 
 }

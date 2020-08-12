@@ -62,6 +62,289 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         XCTAssertEqual(idSet.count, 15)
     }
 
+    /// - Given: 20 posts that has been saved
+    /// - When:
+    ///    - attempt to query existing posts that are sorted by rating in ascending order
+    /// - Then:
+    ///    - the existing data will be returned in expected order
+    func testQueryWithSortReturnsPostsInAscendingOrder() throws {
+        _ = setUpLocalStore(numberOfPosts: 20)
+
+        let querySuccess = expectation(description: "Query post completed")
+        var posts = [Post]()
+
+        Amplify.DataStore.query(Post.self,
+                                sort: .ascending(Post.keys.rating)) { result in
+            switch result {
+            case .success(let returnPosts):
+                posts = returnPosts
+                querySuccess.fulfill()
+            case .failure(let error):
+                XCTFail("Error querying posts: \(error)")
+            }
+        }
+        wait(for: [querySuccess], timeout: 10)
+
+        XCTAssertEqual(posts.count, 20)
+
+        var previousRating: Double = 0
+        for post in posts {
+            guard let rating = post.rating else {
+                XCTFail("Rating should not be nil")
+                return
+            }
+            if rating < previousRating {
+                XCTFail("ratings should be in ascending order")
+            } else {
+                previousRating = rating
+            }
+        }
+    }
+
+    /// - Given: 50 posts that has been saved
+    /// - When:
+    ///    - attempt to query existing posts firstly sorted by rating in ascending order and secondly sorted by title in descending order
+    /// - Then:
+    ///    - the existing data will be returned in expected order
+    func testQueryWithMultipleSortsReturnsPosts() throws {
+        _ = setUpLocalStore(numberOfPosts: 50)
+
+        let querySuccess = expectation(description: "Query post completed")
+        var posts = [Post]()
+
+        Amplify.DataStore.query(Post.self,
+                                sort: .by(.ascending(Post.keys.rating),
+                                          .descending(Post.keys.title))) { result in
+            switch result {
+            case .success(let returnPosts):
+                posts = returnPosts
+                querySuccess.fulfill()
+            case .failure(let error):
+                XCTFail("Error querying posts: \(error)")
+            }
+        }
+        wait(for: [querySuccess], timeout: 10)
+
+        var previousRating: Double = 0
+        for post in posts {
+            guard let rating = post.rating else {
+                XCTFail("Rating should not be nil")
+                return
+            }
+            if rating < previousRating {
+                XCTFail("ratings should be in ascending order")
+            } else {
+                previousRating = rating
+            }
+        }
+
+        // Group the posts by the first sort field, rating. By using `Dictionary(grouping:by:)`,
+        // the values in each grouop will be the same order as the original Post array
+        // See https://developer.apple.com/documentation/swift/dictionary/3127163-init for more details
+        let postsDic = Dictionary(grouping: posts, by: { $0.rating! })
+        for (_, pairs) in postsDic {
+            for index in 0 ..< pairs.count - 1 {
+                if pairs[index].title < pairs[index + 1].title {
+                    XCTFail("title should be in descending order")
+                }
+            }
+        }
+    }
+
+    /// - Given: 20 posts that has been saved
+    /// - When:
+    ///    - attempt to query existing posts matching a condition and sorted by rating in ascending order
+    /// - Then:
+    ///    - the existing data that matches the given condition will be returned in ascending order by rating
+    func testQueryWithPredicateAndSort() throws {
+        _ = setUpLocalStore(numberOfPosts: 20)
+
+        let querySuccess = expectation(description: "Query post completed")
+        var posts = [Post]()
+
+        Amplify.DataStore.query(Post.self,
+                                where: Post.keys.rating >= 2,
+                                sort: .ascending(Post.keys.rating)) { result in
+            switch result {
+            case .success(let returnPosts):
+                posts = returnPosts
+                querySuccess.fulfill()
+            case .failure(let error):
+                XCTFail("Error querying posts: \(error)")
+            }
+        }
+        wait(for: [querySuccess], timeout: 10)
+
+        var previousRating: Double = 0
+        for post in posts {
+            guard let rating = post.rating else {
+                XCTFail("Rating should not be nil")
+                return
+            }
+            if rating < 2 {
+                XCTFail("Predicate is not working as expected")
+            }
+            if rating < previousRating {
+                XCTFail("ratings should be in ascending order")
+            } else {
+                previousRating = rating
+            }
+        }
+    }
+
+    /// - Given: 20 posts that has been saved
+    /// - When:
+    ///    - attempt to query the first 10 existing posts that are sorted by rating in ascending order
+    /// - Then:
+    ///    - the existing data that matches the given condition will be returned in ascending order by rating
+    func testQueryWithSortAndPagintate() throws {
+        _ = setUpLocalStore(numberOfPosts: 20)
+
+        let querySuccess = expectation(description: "Query post completed")
+        var posts = [Post]()
+
+        Amplify.DataStore.query(Post.self,
+                                sort: .by(.ascending(Post.keys.rating),
+                                          .descending(Post.keys.title)),
+                                paginate: .page(0, limit: 10)) { result in
+            switch result {
+            case .success(let returnPosts):
+                posts = returnPosts
+                querySuccess.fulfill()
+            case .failure(let error):
+                XCTFail("Error querying posts: \(error)")
+            }
+        }
+        wait(for: [querySuccess], timeout: 10)
+
+        XCTAssertEqual(posts.count, 10)
+
+        var previousRating: Double = 0
+        for post in posts {
+            guard let rating = post.rating else {
+                XCTFail("Rating should not be nil")
+                return
+            }
+            if rating < previousRating {
+                XCTFail("ratings should be in ascending order")
+            } else {
+                previousRating = rating
+            }
+        }
+    }
+
+    /// - Given: 50 posts that has been saved
+    /// - When:
+    ///    - attempt to query the first 10 existing posts that mathches a condition and are sorted by rating in ascending order
+    /// - Then:
+    ///    - 10 or less existing data that matches the given condition will be returned in ascending order by rating
+    func testQueryWithPredicateAndSortAndPagintate() throws {
+        let localPosts = setUpLocalStore(numberOfPosts: 50)
+        let filteredPosts = localPosts.filter { $0.rating! >= 2.0 }
+        let count = filteredPosts.count
+
+        let querySuccess = expectation(description: "Query post completed")
+        var posts = [Post]()
+        Amplify.DataStore.query(Post.self,
+                                where: Post.keys.rating >= 2,
+                                sort: .ascending(Post.keys.rating),
+                                paginate: .page(0, limit: 10)) { result in
+            switch result {
+            case .success(let returnPosts):
+                posts = returnPosts
+                querySuccess.fulfill()
+            case .failure(let error):
+                XCTFail("Error querying posts: \(error)")
+            }
+        }
+        wait(for: [querySuccess], timeout: 10)
+
+        if count >= 10 {
+            XCTAssertEqual(posts.count, 10)
+        } else {
+            XCTAssertEqual(posts.count, count)
+        }
+
+        var previousRating: Double = 0
+        for post in posts {
+            guard let rating = post.rating else {
+                XCTFail("Rating should not be nil")
+                return
+            }
+            if rating < 2 {
+                XCTFail("Predicate is not working as expected")
+            }
+            if rating < previousRating {
+                XCTFail("ratings should be in ascending order")
+            } else {
+                previousRating = rating
+            }
+        }
+    }
+
+    /// - Given: 50 posts that has been saved
+    /// - When:
+    ///    - attempt to query the every existing posts that mathches a condition and are sorted by rating in ascending order
+    /// - Then:
+    ///    - the existing data that matches the given condition will be returned in ascending order by rating
+    func testQueryWithPredicateAndSortWithMultiplePages() throws {
+        _ = setUpLocalStore(numberOfPosts: 50)
+
+        var count = 0
+        Amplify.DataStore.query(Post.self,
+                                where: Post.keys.rating >= 2) { result in
+            switch result {
+            case .success(let returnPosts):
+                count = returnPosts.count
+            case .failure(let error):
+                XCTFail("Error querying posts: \(error)")
+            }
+        }
+
+        var posts = [Post]()
+        var currentPage: UInt = 0
+        var shouldRepeat = true
+        repeat {
+            let querySuccess = expectation(description: "Query post completed")
+            Amplify.DataStore.query(Post.self,
+                                    where: Post.keys.rating >= 2,
+                                    sort: .ascending(Post.keys.rating),
+                                    paginate: .page(currentPage, limit: 10)) { result in
+                switch result {
+                case .success(let returnPosts):
+                    posts.append(contentsOf: returnPosts)
+                    if returnPosts.count == 10 {
+                        currentPage += 1
+                    } else {
+                        shouldRepeat = false
+                    }
+                    querySuccess.fulfill()
+                case .failure(let error):
+                    XCTFail("Error querying posts: \(error)")
+                }
+            }
+            wait(for: [querySuccess], timeout: 10)
+        } while shouldRepeat
+
+        XCTAssertEqual(posts.count, count)
+
+        var previousRating: Double = 0
+        for post in posts {
+            guard let rating = post.rating else {
+                XCTFail("Rating should not be nil")
+                return
+            }
+            if rating < 2 {
+                XCTFail("Predicate is not working as expected")
+            }
+            if rating < previousRating {
+                XCTFail("ratings should be in ascending order")
+            } else {
+                previousRating = rating
+            }
+        }
+    }
+
     func setUpLocalStore(numberOfPosts: Int) -> [Post] {
         var savedPosts = [Post]()
         for _ in 0 ..< numberOfPosts {

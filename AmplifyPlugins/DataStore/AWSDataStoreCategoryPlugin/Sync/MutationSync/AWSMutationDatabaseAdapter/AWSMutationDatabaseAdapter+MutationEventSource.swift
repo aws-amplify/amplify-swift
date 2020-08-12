@@ -21,16 +21,10 @@ extension AWSMutationDatabaseAdapter: MutationEventSource {
         let fields = MutationEvent.keys
         let predicate = fields.inProcess == false || fields.inProcess == nil
 
-        // TODO remove this in favor of proper sorting/orderBy API
-        let orderAndLimitClause = """
-        ORDER BY \(MutationEvent.keys.createdAt.stringValue) ASC
-        LIMIT 1
-        """
-
         storageAdapter.query(MutationEvent.self,
                              predicate: predicate,
-                             paginationInput: nil,
-                             additionalStatements: orderAndLimitClause) { result in
+                             sort: .ascending(MutationEvent.keys.createdAt),
+                             paginationInput: nil) { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     completion(.failure(dataStoreError))

@@ -6,64 +6,49 @@
 //
 
 import XCTest
-@testable import Amplify
 import AWSAPICategoryPlugin
-import AWSMobileClient
+import AmplifyPlugins
+
+@testable import Amplify
 @testable import AmplifyTestCommon
 
 class RESTWithUserPoolIntegrationTests: XCTestCase {
+    struct User {
+        let username: String
+        let password: String
+    }
+    let amplifyConfigurationFile = "RESTWithUserPoolIntegrationTests-amplifyconfiguration"
+    let credentialsFile = "RESTWithUserPoolIntegrationTests-credentials"
+    var user1: User!
 
-    static let amplifyConfiguration = "RESTWithUserPoolIntegrationTests-amplifyconfiguration"
-    static let awsconfiguration = "RESTWithUserPoolIntegrationTests-awsconfiguration"
-    static let credentials = "RESTWithUserPoolIntegrationTests-credentials"
-    static var user1: String!
-    static var password: String!
-
-    static override func setUp() {
+    override func setUp() {
         do {
 
-            let credentials = try TestConfigHelper.retrieveCredentials(
-                forResource: RESTWithUserPoolIntegrationTests.credentials)
+            let credentials = try TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
 
             guard let user1 = credentials["user1"], let password = credentials["password"] else {
                 XCTFail("Missing credentials.json data")
                 return
             }
-
-            RESTWithUserPoolIntegrationTests.user1 = user1
-            RESTWithUserPoolIntegrationTests.password = password
-
-            let awsConfiguration = try TestConfigHelper.retrieveAWSConfiguration(
-                forResource: RESTWithUserPoolIntegrationTests.awsconfiguration)
-            AWSInfo.configureDefaultAWSInfo(awsConfiguration)
-        } catch {
-            XCTFail("Error during setup: \(error)")
-        }
-    }
-
-    override func setUp() {
-        do {
-            AuthHelper.initializeMobileClient()
-
-            Amplify.reset()
+            self.user1 = User(username: user1, password: password)
 
             try Amplify.add(plugin: AWSAPIPlugin())
-
-            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
-                forResource: RESTWithUserPoolIntegrationTests.amplifyConfiguration)
+            try Amplify.add(plugin: AWSCognitoAuthPlugin())
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
             try Amplify.configure(amplifyConfig)
         } catch {
             XCTFail("Error during setup: \(error)")
         }
+        signOut()
     }
 
     override func tearDown() {
+        signOut()
         Amplify.reset()
     }
 
     func testGetAPISuccess() {
-        AuthHelper.signIn(username: RESTWithUserPoolIntegrationTests.user1,
-                          password: RESTWithUserPoolIntegrationTests.password)
+        signIn(username: user1.username, password: user1.password)
         let completeInvoked = expectation(description: "request completed")
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.get(request: request) { event in
@@ -80,8 +65,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testGetAPIFailedWithNotAuthenticated() {
-        AuthHelper.signOut()
+    func testGetAPIFailedWithSignedOutError() {
         let failedInvoked = expectation(description: "request failed")
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.get(request: request) { event in
@@ -99,8 +83,8 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
                     return
                 }
 
-                guard case .notAuthorized = authError else {
-                    XCTFail("Error should be AuthError.notAuthorized")
+                guard case .signedOut = authError else {
+                    XCTFail("Error should be AuthError.signedOut")
                     return
                 }
 
@@ -109,5 +93,32 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
         }
 
         wait(for: [failedInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    func signIn(username: String, password: String) {
+        let signInInvoked = expectation(description: "sign in completed")
+        _ = Amplify.Auth.signIn(username: username, password: password) { event in
+            switch event {
+            case .success:
+                signInInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Failed to Sign in user \(error)")
+            }
+        }
+        wait(for: [signInInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    func signOut() {
+        let signOutCompleted = expectation(description: "sign out completed")
+        _ = Amplify.Auth.signOut { event in
+            switch event {
+            case .success:
+                signOutCompleted.fulfill()
+            case .failure(let error):
+                print("Could not sign out user \(error)")
+                signOutCompleted.fulfill()
+            }
+        }
+        wait(for: [signOutCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 }

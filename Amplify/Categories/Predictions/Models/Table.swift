@@ -32,6 +32,8 @@ public extension Table {
         public let polygon: Polygon
 
         public let isSelected: Bool
+        public let rowIndex: Int
+        public let columnIndex: Int
         public let rowSpan: Int
         public let columnSpan: Int
 
@@ -39,12 +41,16 @@ public extension Table {
                     boundingBox: CGRect,
                     polygon: Polygon,
                     isSelected: Bool,
+                    rowIndex: Int,
+                    columnIndex: Int,
                     rowSpan: Int,
                     columnSpan: Int) {
             self.text = text
             self.boundingBox = boundingBox
             self.polygon = polygon
             self.isSelected = isSelected
+            self.rowIndex = rowIndex
+            self.columnIndex = columnIndex
             self.rowSpan = rowSpan
             self.columnSpan = columnSpan
         }
