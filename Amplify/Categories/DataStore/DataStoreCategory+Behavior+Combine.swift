@@ -76,17 +76,20 @@ public extension DataStoreBaseBehavior {
     /// - Parameters:
     ///   - modelType: The type of the model to query
     ///   - predicate: The predicate for filtering results
-    ///   - paginationInput: Describes how to paginate the query results
+    ///   - sort: Describes how to sort the query results
+    ///   - paginate: Describes how to paginate the query results
     /// - Returns: A DataStorePublisher with the results of the operation
     func query<M: Model>(
         _ modelType: M.Type,
         where predicate: QueryPredicate? = nil,
+        sort sortInput: QuerySortInput? = nil,
         paginate paginationInput: QueryPaginationInput? = nil
     ) -> DataStorePublisher<[M]> {
         Future { promise in
             self.query(
                 modelType,
                 where: predicate,
+                sort: sortInput,
                 paginate: paginationInput
             ) {
                 promise($0)
