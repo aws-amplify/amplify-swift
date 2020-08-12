@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.1.0 (2020-08-12)
+
+### Features
+
+- **auth**: Add metadata options for passing clientMetadata to APIs (#700)
+- Add Combine support (#667)
+- Mark APIs that return operations with @discardableResult (#633)
+- Add AmplifyConfiguration file-based initializer (#707)
+
+### Bug Fixes
+
+- **Predictions**: rowIndex and columnIndex for cell (#704)
+- **predictions**: TABLE, CELL & KEY_VALUE_SET blocks are not properly processed (#660)
+- **api**: cognito user pool intercept with accessToken (#690)
+
 ## Unreleased
 
 ### Bug Fixes
