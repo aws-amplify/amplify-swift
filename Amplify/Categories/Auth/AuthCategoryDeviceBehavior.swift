@@ -13,6 +13,7 @@ public protocol AuthCategoryDeviceBehavior: class {
     /// - Parameters:
     ///   - options: Parameters specific to plugin behavior.
     ///   - listener: Triggered when the operation completes.
+    @discardableResult
     func fetchDevices(
         options: AuthFetchDevicesOperation.Request.Options?,
         listener: AuthFetchDevicesOperation.ResultListener?) -> AuthFetchDevicesOperation
@@ -23,6 +24,7 @@ public protocol AuthCategoryDeviceBehavior: class {
     ///   - authDevice: Device to be forgotten
     ///   - options: Parameters specific to plugin behavior.
     ///   - listener: Triggered when the operation completes.
+    @discardableResult
     func forgetDevice(
         _ device: AuthDevice?,
         options: AuthForgetDeviceOperation.Request.Options?,
@@ -33,6 +35,7 @@ public protocol AuthCategoryDeviceBehavior: class {
     /// - Parameters:
     ///   - options: Parameters specific to plugin behavior.
     ///   - listener: Triggered when the operation completes.
+    @discardableResult
     func rememberDevice(
         options: AuthRememberDeviceOperation.Request.Options?,
         listener: AuthRememberDeviceOperation.ResultListener?) -> AuthRememberDeviceOperation

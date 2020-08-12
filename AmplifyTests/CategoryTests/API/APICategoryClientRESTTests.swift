@@ -34,7 +34,7 @@ class APICategoryClientRESTTests: XCTestCase {
             }
         }
 
-        _ = Amplify.API.get(request: RESTRequest()) { _ in }
+        Amplify.API.get(request: RESTRequest()) { _ in }
 
         waitForExpectations(timeout: 0.5)
     }
