@@ -61,6 +61,11 @@ public struct AmplifyConfiguration: Codable {
         self.predictions = predictions
         self.storage = storage
     }
+
+    public init(configurationFile url: URL) throws {
+        self = try AmplifyConfiguration.loadAmplifyConfiguration(from: url)
+    }
+
 }
 
 // MARK: - Configure

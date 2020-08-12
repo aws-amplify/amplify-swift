@@ -12,6 +12,14 @@ import XCTest
 
 class AmplifyConfigurationTests: XCTestCase {
 
+    override static func setUp() {
+        Amplify.reset()
+    }
+
+    override static func tearDown() {
+        Amplify.reset()
+    }
+
     override func setUp() {
         Amplify.reset()
     }
