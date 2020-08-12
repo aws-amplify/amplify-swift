@@ -59,7 +59,7 @@ amplify add auth
 ? Which triggers do you want to enable for Cognito
     Custom Message
     Pre Sign-up
-    [Choose any many that you would like]
+    [Choose as many that you would like to manually verify later]
 ? What functionality do you want to use for Custom Message
     Create your own module
 ? What functionality do you want to use for Pre Sign-up 
@@ -103,3 +103,5 @@ Next create `credentials.json` and add it to the same folder path, with the foll
 ```
 
 The email should be a valid email you can use for testing, for example for making sure you receive a confirmation code when updating user's attributes with an email.
+
+After running tests pass that in `metadata`, you can verify the corresponding lambdas have been trigger with payloads containing this data.
