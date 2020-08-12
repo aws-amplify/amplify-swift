@@ -13,7 +13,7 @@ import AWSPluginsCore
 extension MockSQLiteStorageEngineAdapter {
     enum ResponderKeys {
         // swiftlint:disable:next identifier_name
-        case queryModelTypePredicateAdditionalStatements
+        case queryModelTypePredicate
         case queryMutationSyncMetadata
         case saveModelCompletion
         case saveUntypedModel
@@ -25,8 +25,8 @@ extension MockSQLiteStorageEngineAdapter {
 
 /// Note: In the original method, `completion` is non-escaping, so rather than attempting to pass `completion`, this
 /// responder must return a value that the mock method will pass to the callback.
-typealias QueryModelTypePredicateAdditionalStatementsResponder<M: Model> =
-    MockResponder<(M.Type, QueryPredicate?, String?), DataStoreResult<[M]>>
+typealias QueryModelTypePredicateResponder<M: Model> =
+    MockResponder<(M.Type, QueryPredicate?), DataStoreResult<[M]>>
 
 typealias QueryMutationSyncMetadataResponder = ThrowingMockResponder<String, MutationSyncMetadata?>
 

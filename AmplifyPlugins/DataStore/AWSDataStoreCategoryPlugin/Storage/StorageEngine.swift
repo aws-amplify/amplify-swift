@@ -293,8 +293,8 @@ final class StorageEngine: StorageEngineBehavior {
             try storageAdapter.transaction {
                 storageAdapter.query(modelType,
                                      predicate: predicate,
+                                     sort: nil,
                                      paginationInput: nil,
-                                     additionalStatements: nil,
                                      completion: queryCompletionBlock)
             }
         } catch {
@@ -329,10 +329,12 @@ final class StorageEngine: StorageEngineBehavior {
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate? = nil,
+                         sort: QuerySortInput? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          completion: DataStoreCallback<[M]>) {
         return storageAdapter.query(modelType,
                                     predicate: predicate,
+                                    sort: sort,
                                     paginationInput: paginationInput,
                                     completion: completion)
     }

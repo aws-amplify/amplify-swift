@@ -94,13 +94,6 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         completion(result)
     }
 
-    func query<M: Model>(_ modelType: M.Type,
-                         predicate: QueryPredicate?,
-                         paginationInput: QueryPaginationInput?,
-                         completion: DataStoreCallback<[M]>) {
-        XCTFail("Not expected to execute")
-    }
-
     func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>] {
         XCTFail("Not expected to execute")
         return []
@@ -140,12 +133,12 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate?,
+                         sort: QuerySortInput?,
                          paginationInput: QueryPaginationInput?,
-                         additionalStatements: String?,
                          completion: DataStoreCallback<[M]>) {
-        if let responder = responders[.queryModelTypePredicateAdditionalStatements]
-            as? QueryModelTypePredicateAdditionalStatementsResponder<M> {
-            let result = responder.callback((modelType, predicate, additionalStatements))
+        if let responder = responders[.queryModelTypePredicate]
+            as? QueryModelTypePredicateResponder<M> {
+            let result = responder.callback((modelType, predicate))
             completion(result)
             return
         }
@@ -211,6 +204,7 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate?,
+                         sort: QuerySortInput?,
                          paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>) {
         //TODO: Find way to mock this
