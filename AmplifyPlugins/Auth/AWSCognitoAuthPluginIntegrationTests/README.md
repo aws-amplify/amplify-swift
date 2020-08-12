@@ -78,7 +78,7 @@ exports.handler = (event, context, callback) => {
 };
 ```
 
-For Custom Message and other lambdas
+For Custom Message and any other lambdas
 ```
 // you can simply set them to log the input so you can verify valid and correct validationData/clientMetadata
 exports.handler = (event, context, callback) => {
