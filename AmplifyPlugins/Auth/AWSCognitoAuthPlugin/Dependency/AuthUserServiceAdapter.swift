@@ -77,7 +77,7 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
                                          completionHandler: @escaping ResendAttributeConfirmationCodeCompletion) {
 
         let clientMetaData = (request.options.pluginOptions
-                                as? AWSResendAttributeConfirmationCodeOptions)?.metadata ?? [:]
+                                as? AWSAttributeResendConfirmationCodeOptions)?.metadata ?? [:]
 
         awsMobileClient.verifyUserAttribute(attributeName: request.attributeKey.rawValue,
                                             clientMetaData: clientMetaData) { result, error in

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct AWSResendAttributeConfirmationCodeOptions {
+public struct AWSAttributeResendConfirmationCodeOptions {
 
     public let metadata: [String: String]?
 
