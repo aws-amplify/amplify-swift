@@ -5,8 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
+
 extension HubCategory: HubCategoryBehavior {
     public func dispatch(to channel: HubChannel, payload: HubPayload) {
+        if #available(iOS 13.0, *) {
+            Amplify.Hub.subject(for: channel).send(payload)
+        }
         plugin.dispatch(to: channel, payload: payload)
     }
 

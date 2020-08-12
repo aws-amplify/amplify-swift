@@ -15,6 +15,9 @@ public enum ConfigurationError {
 
     /// Unable to decode `amplifyconfiguration.json` into a valid AmplifyConfiguration object
     case unableToDecode(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// An unknown error occurred
+    case unknown(ErrorDescription, RecoverySuggestion, Error?)
 }
 
 extension ConfigurationError: AmplifyError {
@@ -22,7 +25,8 @@ extension ConfigurationError: AmplifyError {
         switch self {
         case .amplifyAlreadyConfigured(let description, _, _),
              .invalidAmplifyConfigurationFile(let description, _, _),
-             .unableToDecode(let description, _, _):
+             .unableToDecode(let description, _, _),
+             .unknown(let description, _, _):
             return description
         }
     }
@@ -31,7 +35,8 @@ extension ConfigurationError: AmplifyError {
         switch self {
         case .amplifyAlreadyConfigured(_, let recoverySuggestion, _),
              .invalidAmplifyConfigurationFile(_, let recoverySuggestion, _),
-             .unableToDecode(_, let recoverySuggestion, _):
+             .unableToDecode(_, let recoverySuggestion, _),
+             .unknown(_, let recoverySuggestion, _):
             return recoverySuggestion
         }
     }
@@ -40,8 +45,22 @@ extension ConfigurationError: AmplifyError {
         switch self {
         case .amplifyAlreadyConfigured(_, _, let underlyingError),
              .invalidAmplifyConfigurationFile(_, _, let underlyingError),
-             .unableToDecode(_, _, let underlyingError):
+             .unableToDecode(_, _, let underlyingError),
+             .unknown(_, _, let underlyingError):
             return underlyingError
         }
     }
+
+    public init(
+        errorDescription: ErrorDescription = "An unknown error occurred",
+        recoverySuggestion: RecoverySuggestion = "See `underlyingError` for more details",
+        error: Error
+    ) {
+        if let error = error as? Self {
+            self = error
+        } else {
+            self = .unknown(errorDescription, recoverySuggestion, error)
+        }
+    }
+
 }

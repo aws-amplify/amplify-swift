@@ -31,11 +31,9 @@ public extension AWSAPIPlugin {
             )
         }
 
-        let authService = AWSAuthService()
+        let dependencies = try ConfigurationDependencies(configurationValues: jsonValue)
 
-        let pluginConfig = try AWSAPICategoryPluginConfiguration(jsonValue: jsonValue, authService: authService)
-
-        configure(authService: authService, pluginConfig: pluginConfig)
+        configure(using: dependencies)
 
         log.info("Configure finished")
     }
@@ -45,21 +43,58 @@ public extension AWSAPIPlugin {
 
 extension AWSAPIPlugin {
 
+    /// A holder for AWSAPIPlugin dependencies that provides sane defaults for
+    /// production
+    struct ConfigurationDependencies {
+        let authService: AWSAuthServiceBehavior
+        let pluginConfig: AWSAPICategoryPluginConfiguration
+        let subscriptionConnectionFactory: SubscriptionConnectionFactory
+
+        init(
+            configurationValues: JSONValue,
+            authService: AWSAuthServiceBehavior? = nil,
+            subscriptionConnectionFactory: SubscriptionConnectionFactory? = nil
+        ) throws {
+            let authService = authService
+                ?? AWSAuthService()
+
+            let pluginConfig = try AWSAPICategoryPluginConfiguration(
+                jsonValue: configurationValues,
+                authService: authService
+            )
+
+            let subscriptionConnectionFactory = subscriptionConnectionFactory
+                ?? AWSSubscriptionConnectionFactory()
+
+            self.init(
+                pluginConfig: pluginConfig,
+                authService: authService,
+                subscriptionConnectionFactory: subscriptionConnectionFactory
+            )
+        }
+
+        init(
+            pluginConfig: AWSAPICategoryPluginConfiguration,
+            authService: AWSAuthServiceBehavior,
+            subscriptionConnectionFactory: SubscriptionConnectionFactory
+        ) {
+            self.pluginConfig = pluginConfig
+            self.authService = authService
+            self.subscriptionConnectionFactory = subscriptionConnectionFactory
+        }
+
+    }
+
     /// Internal configure method to set the properties of the plugin
     ///
     /// Called from the configure method which implements the Plugin protocol. Useful for testing by passing in mocks.
     ///
     /// - Parameters:
-    ///   - storageService: The S3 storage service object.
-    ///   - authService: The authentication service object.
-    ///   - defaultAccessLevel: The access level to be used for all API calls by default.
-    ///   - queue: The queue which operations are stored and dispatched for asychronous processing.
-    func configure(authService: AWSAuthServiceBehavior,
-                   pluginConfig: AWSAPICategoryPluginConfiguration,
-                   subscriptionConnectionFactory: SubscriptionConnectionFactory = AWSSubscriptionConnectionFactory()) {
-        self.authService = authService
-        self.pluginConfig = pluginConfig
-        self.subscriptionConnectionFactory = subscriptionConnectionFactory
+    ///   - dependencies: The dependencies needed to complete plugin configuration
+    func configure(using dependencies: ConfigurationDependencies) {
+        authService = dependencies.authService
+        pluginConfig = dependencies.pluginConfig
+        subscriptionConnectionFactory = dependencies.subscriptionConnectionFactory
     }
 
 }

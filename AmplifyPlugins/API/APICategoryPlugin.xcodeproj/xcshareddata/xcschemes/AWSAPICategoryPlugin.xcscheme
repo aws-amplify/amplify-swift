@@ -53,13 +53,22 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "AWSRESTOperationTests">
+                  Identifier = "AWSRESTOperationTests/testRESTOperationConstructURLFailure()">
                </Test>
                <Test
-                  Identifier = "AWSRESTOperationTests/testGetFailsWithBadAPIName()">
+                  Identifier = "AWSRESTOperationTests/testRESTOperationEndpointConfigurationError()">
                </Test>
                <Test
-                  Identifier = "AWSRESTOperationTests/testGetReturnsOperation()">
+                  Identifier = "AWSRESTOperationTests/testRESTOperationInterceptorError()">
+               </Test>
+               <Test
+                  Identifier = "AWSRESTOperationTests/testRESTOperationSuccess()">
+               </Test>
+               <Test
+                  Identifier = "AWSRESTOperationTests/testRESTOperationValidationError()">
+               </Test>
+               <Test
+                  Identifier = "GraphQLSubscribeCombineTests">
                </Test>
             </SkippedTests>
          </TestableReference>

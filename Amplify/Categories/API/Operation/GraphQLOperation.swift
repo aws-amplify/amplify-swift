@@ -5,18 +5,18 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public typealias GraphQLOperation<R: Decodable> = AmplifyOperation<
+open class GraphQLOperation<R: Decodable>: AmplifyOperation<
     GraphQLOperationRequest<R>,
     GraphQLResponse<R>,
     APIError
->
+> { }
 
-public typealias GraphQLSubscriptionOperation<R: Decodable> = AmplifyInProcessReportingOperation<
+open class GraphQLSubscriptionOperation<R: Decodable>: AmplifyInProcessReportingOperation<
     GraphQLOperationRequest<R>,
     SubscriptionEvent<GraphQLResponse<R>>,
     Void,
     APIError
->
+> { }
 
 public extension HubPayload.EventName.API {
     /// eventName for HubPayloads emitted by this operation

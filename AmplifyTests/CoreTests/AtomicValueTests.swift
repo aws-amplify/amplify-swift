@@ -42,6 +42,25 @@ class AtomicValueTests: XCTestCase {
         XCTAssertEqual(atomicInvocationCounter.get().invocationCount, 10_000)
     }
 
+    func testWith() {
+        let atomicDict = AtomicValue(initialValue: [Int: Int]())
+
+        DispatchQueue.concurrentPerform(iterations: 10_000) { iteration in
+            atomicDict.with { value in
+                let bucket = iteration % 10
+                if value[bucket] != nil {
+                    value[bucket]! += 1
+                } else {
+                    value[bucket] = 1
+                }
+            }
+        }
+
+        for bucket in 0 ..< 10 {
+            XCTAssertEqual(atomicDict.get()[bucket], 1_000)
+        }
+    }
+
 }
 
 final class InvocationCounter {
