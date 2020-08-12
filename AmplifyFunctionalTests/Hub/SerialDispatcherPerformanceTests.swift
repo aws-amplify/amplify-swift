@@ -21,6 +21,7 @@ class SerialDispatcherPerformanceTests: XCTestCase {
     }
 
     override func setUp() {
+        Amplify.reset()
         let config = AmplifyConfiguration()
         do {
             try Amplify.configure(config)
