@@ -63,7 +63,7 @@ class GraphQLSubscribeTests: OperationTestBase {
     /// - The value handler is invoked with a disconnection message
     /// - The completion handler is invoked with a normal termination
     func testHappyPath() throws {
-        let testJSON: JSONValue = ["foo": true]
+        let testJSON: JSONValue = true
         let testData = #"{"data": {"foo": true}}"# .data(using: .utf8)!
         receivedCompletionFinish.shouldTrigger = true
         receivedCompletionFailure.shouldTrigger = false
@@ -172,7 +172,7 @@ class GraphQLSubscribeTests: OperationTestBase {
     }
 
     func testMultipleSuccessValues() throws {
-        let testJSON: JSONValue = ["foo": true]
+        let testJSON: JSONValue = true
         let testData = #"{"data": {"foo": true}}"# .data(using: .utf8)!
         receivedCompletionFinish.shouldTrigger = true
         receivedCompletionFailure.shouldTrigger = false

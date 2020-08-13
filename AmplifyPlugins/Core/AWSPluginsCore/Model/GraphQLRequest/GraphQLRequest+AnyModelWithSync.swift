@@ -58,8 +58,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
         return GraphQLRequest<MutationSyncResult?>(document: document.stringValue,
                                                    variables: document.variables,
-                                                   responseType: MutationSyncResult?.self,
-                                                   decodePath: document.name)
+                                                   responseType: MutationSyncResult?.self)
     }
 
     public static func createMutation(of model: Model,
@@ -89,8 +88,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
-                                                  responseType: MutationSyncResult.self,
-                                                  decodePath: document.name)
+                                                  responseType: MutationSyncResult.self)
     }
 
     public static func subscription(to modelType: Model.Type,
@@ -103,8 +101,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
-                                                  responseType: MutationSyncResult.self,
-                                                  decodePath: document.name)
+                                                  responseType: MutationSyncResult.self)
     }
 
     public static func subscription(to modelType: Model.Type,
@@ -119,8 +116,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
-                                                  responseType: MutationSyncResult.self,
-                                                  decodePath: document.name)
+                                                  responseType: MutationSyncResult.self)
     }
 
     public static func syncQuery(modelType: Model.Type,
@@ -140,8 +136,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
         return GraphQLRequest<SyncQueryResult>(document: document.stringValue,
                                                variables: document.variables,
-                                               responseType: SyncQueryResult.self,
-                                               decodePath: document.name)
+                                               responseType: SyncQueryResult.self)
     }
 
     // MARK: Private methods
@@ -163,7 +158,6 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
-                                                  responseType: MutationSyncResult.self,
-                                                  decodePath: document.name)
+                                                  responseType: MutationSyncResult.self)
     }
 }

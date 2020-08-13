@@ -16,7 +16,7 @@ class GraphQLQueryCombineTests: OperationTestBase {
     let testDocument = "query { getTodo { id name description }}"
 
     func testQuerySucceeds() throws {
-        let testJSONData: JSONValue = ["foo": true]
+        let testJSONData: JSONValue = true
         let sentData = #"{"data": {"foo": true}}"# .data(using: .utf8)!
         try setUpPluginForSingleResponse(sending: sentData, for: .graphQL)
 

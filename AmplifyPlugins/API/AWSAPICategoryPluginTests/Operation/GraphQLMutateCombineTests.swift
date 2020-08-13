@@ -16,7 +16,7 @@ class GraphQLMutateCombineTests: OperationTestBase {
     let testDocument = "mutate { updateTodo { id name description }}"
 
     func testMutateSucceeds() throws {
-        let testJSONData: JSONValue = ["foo": true]
+        let testJSONData: JSONValue = true
         let sentData = #"{"data": {"foo": true}}"# .data(using: .utf8)!
         try setUpPluginForSingleResponse(sending: sentData, for: .graphQL)
 

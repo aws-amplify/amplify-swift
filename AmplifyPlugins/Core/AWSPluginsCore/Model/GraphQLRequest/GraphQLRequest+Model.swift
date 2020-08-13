@@ -29,7 +29,7 @@ protocol ModelGraphQLRequestFactory {
     ///
     /// - seealso: `GraphQLQuery`, `GraphQLQueryType.list`
     static func list<M: Model>(_ modelType: M.Type,
-                               where predicate: QueryPredicate?) -> GraphQLRequest<[M]>
+                               where predicate: QueryPredicate?) -> GraphQLRequest<List<M>>
 
     /// Creates a `GraphQLRequest` that represents a query that expects a single value as a result.
     /// The request will be created with the correct correct document based on the `ModelSchema` and
@@ -151,8 +151,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
         let document = documentBuilder.build()
         return GraphQLRequest<M>(document: document.stringValue,
                                  variables: document.variables,
-                                 responseType: M.self,
-                                 decodePath: document.name)
+                                 responseType: M.self)
     }
 
     public static func get<M: Model>(_ modelType: M.Type,
@@ -164,12 +163,11 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
 
         return GraphQLRequest<M?>(document: document.stringValue,
                                   variables: document.variables,
-                                  responseType: M?.self,
-                                  decodePath: document.name)
+                                  responseType: M?.self)
     }
 
     public static func list<M: Model>(_ modelType: M.Type,
-                                      where predicate: QueryPredicate? = nil) -> GraphQLRequest<[M]> {
+                                      where predicate: QueryPredicate? = nil) -> GraphQLRequest<List<M>> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
 
@@ -180,10 +178,9 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
         documentBuilder.add(decorator: PaginationDecorator())
         let document = documentBuilder.build()
 
-        return GraphQLRequest<[M]>(document: document.stringValue,
-                                   variables: document.variables,
-                                   responseType: [M].self,
-                                   decodePath: document.name + ".items")
+        return GraphQLRequest<List<M>>(document: document.stringValue,
+                                       variables: document.variables,
+                                       responseType: List<M>.self)
     }
 
     public static func subscription<M: Model>(of modelType: M.Type,
@@ -194,7 +191,6 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
 
         return GraphQLRequest<M>(document: document.stringValue,
                                  variables: document.variables,
-                                 responseType: modelType,
-                                 decodePath: document.name)
+                                 responseType: modelType)
     }
 }

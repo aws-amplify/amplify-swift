@@ -130,8 +130,7 @@ class GraphQLModelBasedTests: XCTestCase {
         """
         let graphQLRequest = GraphQLRequest(document: document,
                                             variables: ["id": uuid],
-                                            responseType: Post?.self,
-                                            decodePath: "getPost")
+                                            responseType: Post?.self)
         _ = Amplify.API.query(request: graphQLRequest) { event in
             switch event {
             case .success(let graphQLResponse):
