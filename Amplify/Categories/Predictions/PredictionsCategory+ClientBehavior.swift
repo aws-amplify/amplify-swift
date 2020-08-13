@@ -9,6 +9,7 @@ import Foundation
 
 extension PredictionsCategory: PredictionsCategoryBehavior {
 
+    @discardableResult
     public func convert(textToSpeech: String,
                         options: PredictionsTextToSpeechRequest.Options? = nil,
                         listener: PredictionsTextToSpeechOperation.ResultListener?
@@ -18,6 +19,7 @@ extension PredictionsCategory: PredictionsCategoryBehavior {
                        listener: listener)
     }
 
+    @discardableResult
     public func convert(textToTranslate: String,
                         language: LanguageType?,
                         targetLanguage: LanguageType?,
@@ -31,6 +33,7 @@ extension PredictionsCategory: PredictionsCategoryBehavior {
                            listener: listener)
     }
 
+    @discardableResult
     public func convert(speechToText: URL,
                         options: PredictionsSpeechToTextRequest.Options?,
                         listener: PredictionsSpeechToTextOperation.ResultListener?
@@ -38,6 +41,7 @@ extension PredictionsCategory: PredictionsCategoryBehavior {
         plugin.convert(speechToText: speechToText, options: options, listener: listener)
     }
 
+    @discardableResult
     public func identify(type: IdentifyAction,
                          image: URL,
                          options: PredictionsIdentifyRequest.Options? = nil,
@@ -49,6 +53,7 @@ extension PredictionsCategory: PredictionsCategoryBehavior {
                         listener: listener)
     }
 
+    @discardableResult
     public func interpret(text: String,
                           options: PredictionsInterpretRequest.Options? = nil,
                           listener: PredictionsInterpretOperation.ResultListener?
