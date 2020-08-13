@@ -20,16 +20,34 @@ protocol ModelGraphQLRequestFactory {
 
     /// Creates a `GraphQLRequest` that represents a query that expects multiple values as a result.
     /// The request will be created with the correct document based on the `ModelSchema` and
-    /// variables based on the the predicate.
+    /// variables based on the predicate.
     ///
     /// - Parameters:
     ///   - modelType: the metatype of the model
     ///   - predicate: an optional predicate containing the criteria for the query
+    ///   - limit: limit the number of results to be returned
     /// - Returns: a valid `GraphQLRequest` instance
     ///
     /// - seealso: `GraphQLQuery`, `GraphQLQueryType.list`
     static func list<M: Model>(_ modelType: M.Type,
-                               where predicate: QueryPredicate?) -> GraphQLRequest<List<M>>
+                               where predicate: QueryPredicate?,
+                               limit: Int?) -> GraphQLRequest<List<M>>
+
+    /// Creates a `GraphQLRequest` that represents a query that expects multiple values as a result.
+    /// The request will be created with the correct document based on the `ModelSchema` and
+    /// variables based on the the predicate and limit. Use this to get a `PaginatedResult` which
+    /// can be used to retrieve the another `GraphQLRequest` for the subsequential page of results.
+    ///
+    /// - Parameters:
+    ///   - modelType: the metatype of the model
+    ///   - predicate: an optional predicate containing the criteria for the query
+    ///   - limit: limit the number of results to be returned
+    /// - Returns: a valid `GraphQLRequest` instance with `PaginatedResult`
+    ///
+    /// - seealso: `GraphQLQuery`, `GraphQLQueryType.list`
+    static func list<M: Model>(_ modelType: M.Type,
+                                      where predicate: QueryPredicate?,
+                                      limit: Int?) -> GraphQLRequest<PaginatedResult<M>>
 
     /// Creates a `GraphQLRequest` that represents a query that expects a single value as a result.
     /// The request will be created with the correct correct document based on the `ModelSchema` and
@@ -111,6 +129,7 @@ protocol ModelGraphQLRequestFactory {
 /// with static types that conform to the `Model` protocol.
 extension GraphQLRequest: ModelGraphQLRequestFactory {
 
+
     public static func create<M: Model>(_ model: M) -> GraphQLRequest<M> {
         return mutation(of: model, type: .create)
     }
@@ -169,7 +188,8 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
     }
 
     public static func list<M: Model>(_ modelType: M.Type,
-                                      where predicate: QueryPredicate? = nil) -> GraphQLRequest<List<M>> {
+                                      where predicate: QueryPredicate? = nil,
+                                      limit: Int? = nil) -> GraphQLRequest<List<M>> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
 
@@ -177,13 +197,32 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
             documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
         }
 
-        documentBuilder.add(decorator: PaginationDecorator())
+        documentBuilder.add(decorator: PaginationDecorator(limit: limit))
         let document = documentBuilder.build()
 
         return GraphQLRequest<List<M>>(document: document.stringValue,
                                        variables: document.variables,
                                        responseType: List<M>.self,
                                        decodePath: document.name)
+    }
+
+    public static func list<M: Model>(_ modelType: M.Type,
+                                      where predicate: QueryPredicate? = nil,
+                                      limit: Int? = 1_000) -> GraphQLRequest<PaginatedResult<M>> {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
+
+        if let predicate = predicate {
+            documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
+        }
+
+        documentBuilder.add(decorator: PaginationDecorator(limit: limit))
+        let document = documentBuilder.build()
+
+        return GraphQLRequest<PaginatedResult<M>>(document: document.stringValue,
+                                                variables: document.variables,
+                                                responseType: PaginatedResult<M>.self,
+                                                decodePath: document.name)
     }
 
     public static func subscription<M: Model>(of modelType: M.Type,
