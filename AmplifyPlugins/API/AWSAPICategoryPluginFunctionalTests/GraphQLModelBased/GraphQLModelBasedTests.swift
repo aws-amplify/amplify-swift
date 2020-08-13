@@ -7,6 +7,7 @@
 
 import XCTest
 import AWSMobileClient
+import AWSPluginsCore
 @testable import AWSAPICategoryPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -169,8 +170,8 @@ class GraphQLModelBasedTests: XCTestCase {
         }
 
         let completeInvoked = expectation(description: "request completed")
-
-        _ = Amplify.API.query(request: .list(Post.self)) { event in
+        let request: GraphQLRequest<List<Post>> = .list(Post.self)
+        _ = Amplify.API.query(request: request) { event in
             switch event {
             case .success(let graphQLResponse):
                 guard case let .success(posts) = graphQLResponse else {
@@ -186,6 +187,66 @@ class GraphQLModelBasedTests: XCTestCase {
         }
 
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    /// Test paginated list query contains next GraphQLRequest to continue pagination
+    ///
+    /// - Given: Two posts, and a query with a limit of 1
+    /// - When:
+    ///    - query returns successful paginated results
+    /// - Then:
+    ///    - paginated result can be used for subsequential queries
+    ///
+    func testPaginatedListQuery() {
+        let uuid1 = UUID().uuidString
+        let uuid2 = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let title = testMethodName + "Title"
+        guard createPost(id: uuid1, title: title) != nil,
+              createPost(id: uuid2, title: title) != nil else {
+            XCTFail("Failed to ensure at least two Posts to be retrieved on the listQuery")
+            return
+        }
+
+        let firstQueryCompleted = expectation(description: "first query completed")
+        let post = Post.keys
+        let predicate = post.id == uuid1 || post.id == uuid2
+        var nextRequestOptional: GraphQLRequest<PaginatedResult<Post>>?
+        _ = Amplify.API.query(request: .paginatedList(Post.self, where: predicate, limit: 1)) { event in
+            switch event {
+            case .success(let graphQLResponse):
+                guard case let .success(paginatedResult) = graphQLResponse else {
+                    XCTFail("Missing successful response")
+                    return
+                }
+                XCTAssertTrue(paginatedResult.hasNextResult())
+                nextRequestOptional = paginatedResult.getRequestForNextResult()
+                firstQueryCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            }
+        }
+
+        wait(for: [firstQueryCompleted], timeout: TestCommonConstants.networkTimeout)
+        guard let nextRequest = nextRequestOptional else {
+            XCTAssertNotNil(nextRequestOptional)
+            return
+        }
+        let secondQueryCompleted = expectation(description: "second query completed")
+        _ = Amplify.API.query(request: nextRequest) { event in
+            switch event {
+            case .success(let graphQLResponse):
+                guard case let .success(paginatedResult) = graphQLResponse else {
+                    XCTFail("Missing successful response for second page")
+                    return
+                }
+                XCTAssertNotNil(paginatedResult)
+                secondQueryCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            }
+        }
+        wait(for: [secondQueryCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testListQueryWithPredicate() {
@@ -212,7 +273,8 @@ class GraphQLModelBasedTests: XCTestCase {
             post.rating == 12.3 &&
             post.draft == true
 
-        _ = Amplify.API.query(request: .list(Post.self, where: predicate)) { event in
+        let request: GraphQLRequest<List<Post>> = .list(Post.self, where: predicate)
+        _ = Amplify.API.query(request: request) { event in
             switch event {
             case .success(let graphQLResponse):
                 guard case let .success(posts) = graphQLResponse else {

@@ -15,7 +15,9 @@ struct GraphQLResponseDecoder {
     static func decode<R: Decodable>(graphQLServiceResponse: AWSAppSyncGraphQLResponse,
                                      responseType: R.Type,
                                      decodePath: String?,
-                                     rawGraphQLResponse: Data) throws -> GraphQLResponse<R> {
+                                     rawGraphQLResponse: Data,
+                                     document: String? = nil,
+                                     variables: [String: Any]? = nil) throws -> GraphQLResponse<R> {
 
         switch (graphQLServiceResponse.data, graphQLServiceResponse.errors) {
         case (nil, nil):
@@ -29,13 +31,17 @@ struct GraphQLResponseDecoder {
                                    The service did not return an expected GraphQL response: \
                                    \(rawGraphQLResponseString)
                                    """)
-
         case (.some(let data), .none):
             do {
                 let jsonValue = JSONValue.object(data)
                 let graphQLData = try getModelJSONValue(from: jsonValue, at: decodePath)
-                let responseData = try decode(graphQLData: graphQLData,
+                var responseData = try decode(graphQLData: graphQLData,
                                               into: responseType)
+                responseData = try decodeToPaginatedResult(responseData: responseData,
+                                                           responseType: responseType,
+                                                           graphQLData: graphQLData,
+                                                           document: document,
+                                                           variables: variables)
                 return GraphQLResponse<R>.success(responseData)
             } catch let decodingError as DecodingError {
                 let error = APIError(error: decodingError)
@@ -47,11 +53,9 @@ struct GraphQLResponseDecoder {
             } catch {
                 throw error
             }
-
         case (.none, .some(let errors)):
             let responseErrors = try decodeErrors(graphQLErrors: errors)
             return GraphQLResponse<R>.failure(.error(responseErrors))
-
         case (.some(let data), .some(let errors)):
             do {
                 if data.count == 1, let first = data.first, case .null = first.value {
@@ -61,8 +65,11 @@ struct GraphQLResponseDecoder {
 
                 let jsonValue = JSONValue.object(data)
                 let graphQLData = try getModelJSONValue(from: jsonValue, at: decodePath)
-                let responseData = try decode(graphQLData: graphQLData,
+                var responseData = try decode(graphQLData: graphQLData,
                                               into: responseType)
+                responseData = try decodeToPaginatedResult(responseData: responseData,
+                                                           responseType: responseType,
+                                                           graphQLData: graphQLData)
                 let responseErrors = try decodeErrors(graphQLErrors: errors)
                 return GraphQLResponse<R>.failure(.partial(responseData, responseErrors))
             } catch let decodingError as DecodingError {
