@@ -9,11 +9,13 @@ extension AmplifyAPICategory: APICategoryGraphQLBehavior {
 
     // MARK: - Request-based GraphQL operations
 
+    @discardableResult
     public func query<R: Decodable>(request: GraphQLRequest<R>,
                                     listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> {
         plugin.query(request: request, listener: listener)
     }
 
+    @discardableResult
     public func mutate<R: Decodable>(request: GraphQLRequest<R>,
                                      listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> {
         plugin.mutate(request: request, listener: listener)

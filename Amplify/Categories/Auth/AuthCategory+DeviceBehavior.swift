@@ -9,6 +9,7 @@ import Foundation
 
 extension AuthCategory: AuthCategoryDeviceBehavior {
 
+    @discardableResult
     public func fetchDevices(
         options: AuthFetchDevicesOperation.Request.Options? = nil,
         listener: AuthFetchDevicesOperation.ResultListener?) -> AuthFetchDevicesOperation {
@@ -16,6 +17,7 @@ extension AuthCategory: AuthCategoryDeviceBehavior {
                                    listener: listener)
     }
 
+    @discardableResult
     public func forgetDevice(
         _ device: AuthDevice? = nil,
         options: AuthForgetDeviceOperation.Request.Options? = nil,
@@ -25,6 +27,7 @@ extension AuthCategory: AuthCategoryDeviceBehavior {
                                    listener: listener)
     }
 
+    @discardableResult
     public func rememberDevice(
         options: AuthRememberDeviceOperation.Request.Options? = nil,
         listener: AuthRememberDeviceOperation.ResultListener?) -> AuthRememberDeviceOperation {

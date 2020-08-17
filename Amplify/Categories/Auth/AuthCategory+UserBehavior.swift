@@ -13,6 +13,7 @@ extension AuthCategory: AuthCategoryUserBehavior {
         return plugin.getCurrentUser()
     }
 
+    @discardableResult
     public func fetchUserAttributes(options: AuthFetchUserAttributeOperation.Request.Options? = nil,
                                     listener: AuthFetchUserAttributeOperation.ResultListener?)
         -> AuthFetchUserAttributeOperation {
@@ -20,6 +21,7 @@ extension AuthCategory: AuthCategoryUserBehavior {
                                               listener: listener)
     }
 
+    @discardableResult
     public func update(userAttribute: AuthUserAttribute,
                        options: AuthUpdateUserAttributeOperation.Request.Options? = nil,
                        listener: AuthUpdateUserAttributeOperation.ResultListener?) -> AuthUpdateUserAttributeOperation {
@@ -28,6 +30,7 @@ extension AuthCategory: AuthCategoryUserBehavior {
                              listener: listener)
     }
 
+    @discardableResult
     public func update(userAttributes: [AuthUserAttribute],
                        options: AuthUpdateUserAttributesOperation.Request.Options? = nil,
                        listener: AuthUpdateUserAttributesOperation.ResultListener?)
@@ -37,6 +40,7 @@ extension AuthCategory: AuthCategoryUserBehavior {
                                  listener: listener)
     }
 
+    @discardableResult
     public func resendConfirmationCode(for attributeKey: AuthUserAttributeKey,
                                        options: AuthAttributeResendConfirmationCodeOperation.Request.Options? = nil,
                                        listener: AuthAttributeResendConfirmationCodeOperation.ResultListener?)
@@ -47,6 +51,7 @@ extension AuthCategory: AuthCategoryUserBehavior {
 
     }
 
+    @discardableResult
     public func confirm(userAttribute: AuthUserAttributeKey,
                         confirmationCode: String,
                         options: AuthConfirmUserAttributeOperation.Request.Options? = nil,
@@ -58,6 +63,7 @@ extension AuthCategory: AuthCategoryUserBehavior {
                                   listener: listener)
     }
 
+    @discardableResult
     public func update(oldPassword: String,
                        to newPassword: String,
                        options: AuthChangePasswordOperation.Request.Options? = nil,

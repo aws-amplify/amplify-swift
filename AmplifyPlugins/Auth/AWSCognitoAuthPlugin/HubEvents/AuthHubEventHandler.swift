@@ -64,7 +64,7 @@ class AuthHubEventHandler: AuthHubEventBehavior {
 
             case HubPayload.EventName.Auth.signOutAPI:
                 guard let event = payload.data as? AWSAuthSignOutOperation.OperationResult,
-                    case .success(_) = event else {
+                    case .success = event else {
                         return
                 }
                 self?.sendUserSignedOutEvent()
@@ -94,7 +94,7 @@ class AuthHubEventHandler: AuthHubEventBehavior {
             case let .failure(authError) = tokensProvider.getCognitoTokens() else {
                 return
         }
-        guard case .sessionExpired(_, _, _) = authError else {
+        guard case .sessionExpired = authError else {
             return
         }
         sendSessionExpiredEvent()
