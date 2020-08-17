@@ -122,7 +122,20 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
             return
         }
 
+<<<<<<< HEAD
         completion?(.success(nil))
+    }
+
+    private func dispatchSyncQueriesStarted(_ syncableModels: [Model.Type]) {
+        let modelTask = syncableModels.map { $0.modelName }
+        let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesStarted,
+                                 data: ["models": modelTask])
+        Amplify.Hub.dispatch(to: .dataStore, payload: payload)
+=======
+        let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
+        Amplify.Hub.dispatch(to: .dataStore, payload: payload)
+        completion?(.successfulVoid)
+>>>>>>> Network Status isn't implemented yet and need to check payload of modelSynced
     }
 
     private func dispatchSyncQueriesStarted(_ syncableModels: [Model.Type]) {

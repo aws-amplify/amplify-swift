@@ -331,6 +331,9 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         Amplify.Hub.dispatch(to: .dataStore,
                              payload: HubPayload(eventName: HubPayload.EventName.DataStore.syncStarted))
 
+        Amplify.Hub.dispatch(to: .dataStore,
+                             payload: HubPayload(eventName: HubPayload.EventName.DataStore.ready))
+
         remoteSyncTopicPublisher.send(.syncStarted)
         stateMachine.notify(action: .notifiedSyncStarted)
     }
