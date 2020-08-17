@@ -30,7 +30,7 @@ class LocalSubscriptionTests: XCTestCase {
         do {
             let connection = try Connection(.inMemory)
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
-            try storageAdapter.setUp(models: StorageEngine.systemModels)
+            try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
             let outgoingMutationQueue = NoOpMutationQueue()
             let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
