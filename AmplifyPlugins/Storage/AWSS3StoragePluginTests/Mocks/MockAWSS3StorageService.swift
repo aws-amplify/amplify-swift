@@ -174,10 +174,10 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
         XCTAssertEqual(uploadServiceKey, serviceKey)
         if let uploadUploadSource = uploadUploadSource {
             var uploadSourceEqual = false
-            if case .data(_) = uploadSource, case .data(_) = uploadUploadSource {
+            if case .data = uploadSource, case .data = uploadUploadSource {
                 uploadSourceEqual = true
             }
-            if case .local(_) = uploadSource, case .local(_) = uploadUploadSource {
+            if case .local = uploadSource, case .local = uploadUploadSource {
                 uploadSourceEqual = true
             }
             XCTAssertTrue(uploadSourceEqual)
@@ -199,10 +199,10 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
         XCTAssertEqual(multiPartUploadServiceKey, serviceKey)
         if let multiPartUploadUploadSource = multiPartUploadUploadSource {
             var uploadSourceEqual = false
-            if case .data(_) = uploadSource, case .data(_) = multiPartUploadUploadSource {
+            if case .data = uploadSource, case .data = multiPartUploadUploadSource {
                 uploadSourceEqual = true
             }
-            if case .local(_) = uploadSource, case .local(_) = multiPartUploadUploadSource {
+            if case .local = uploadSource, case .local = multiPartUploadUploadSource {
                 uploadSourceEqual = true
             }
             XCTAssertTrue(uploadSourceEqual)

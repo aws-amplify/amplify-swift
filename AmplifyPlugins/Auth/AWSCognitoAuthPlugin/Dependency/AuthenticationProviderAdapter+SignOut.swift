@@ -33,7 +33,7 @@ extension AuthenticationProviderAdapter {
         awsMobileClient.signOut(options: signOutOptions) { [weak self] error in
             guard error == nil else {
                 let authError = AuthErrorHelper.toAuthError(error!)
-                if case .notAuthorized(_, _, _) = authError {
+                if case .notAuthorized = authError {
                     // signOut globally might return notAuthorized when the current token is expired or invalidated
                     // In this case, we just signOut the user locally and return a success result back.
                     self?.awsMobileClient.signOutLocally()
