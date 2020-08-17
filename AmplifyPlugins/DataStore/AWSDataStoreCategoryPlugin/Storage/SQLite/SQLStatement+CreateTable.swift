@@ -50,8 +50,9 @@ struct CreateTableStatement: SQLStatement {
         for (index, foreignKey) in foreignKeys.enumerated() {
             statement += "  foreign key(\"\(foreignKey.sqlName)\") "
             let associatedModel = foreignKey.requiredAssociatedModel
-            let associatedId = associatedModel.schema.primaryKey
-            let associatedModelName = associatedModel.schema.name
+            let schema = ModelRegistry.modelSchema(from: associatedModel)!
+            let associatedId = schema.primaryKey
+            let associatedModelName = schema.name
             statement += "references \(associatedModelName)(\"\(associatedId.sqlName)\")\n"
             statement += "    on delete cascade"
             let isNotLastKey = index < foreignKeys.endIndex - 1

@@ -142,7 +142,7 @@ extension Array where Element == Model.Type {
             if !sortedKeys.contains(modelType.schema.name) {
                 let associatedModels = modelType.schema.sortedFields
                     .filter { $0.isForeignKey }
-                    .map { $0.requiredAssociatedModel }
+                    .map { ModelRegistry.modelType(from: $0.requiredAssociatedModel)! }
                 associatedModels.forEach(walkAssociatedModels(of:))
 
                 let key = modelType.schema.name
