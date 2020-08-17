@@ -61,8 +61,8 @@ Compared to nesting these dependent calls in callbacks, this provides a much mor
 **NOTE**: Remember that Combine publishers do not retain `sink` subscriptions, so you must maintain a reference to the subscription in your code, such as in an instance variable of the enclosing type:
 
 ```swift
-struct MyAppCode {
-    var subscription AnyCancellable?
+class MyAppCode {
+    var subscription: AnyCancellable?
 
     ...
 
