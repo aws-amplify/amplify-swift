@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1 (2020-08-18)
+
+### Bug Fixes
+
+- Propagate @discardableResult to implementations (#719)
+
 ## 1.1.0 (2020-08-12)
 
 ### Features
