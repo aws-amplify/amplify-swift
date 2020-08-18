@@ -10,11 +10,11 @@ import XCTest
 
 class AmplifyAWSServiceConfigurationTests: XCTestCase {
     let credentialProvider = AWSAuthService().getCredentialsProvider()
-
+    
     override func tearDown() {
         AmplifyAWSServiceConfiguration.platformMapping = [:]
     }
-
+    
     /// Test initiating AmplifyAWSServiceConfiguration
     ///
     /// - Given: Amplify library
@@ -28,10 +28,9 @@ class AmplifyAWSServiceConfigurationTests: XCTestCase {
         let currentSystemVersion = UIDevice.current.systemVersion
         let expectedLocale = Locale.current.identifier
         let expectedSystem = "\(currentSystemName)/\(currentSystemVersion)"
-
-        let configuration = AmplifyAWSServiceConfiguration(region: .USEast1,
-                                                           credentialsProvider: credentialProvider)
-
+        
+        let configuration = AmplifyAWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialProvider)
+        
         XCTAssertNotNil(configuration.userAgent)
         let userAgentParts = configuration.userAgent.components(separatedBy: " ")
         XCTAssertEqual(3, userAgentParts.count)
@@ -39,7 +38,7 @@ class AmplifyAWSServiceConfigurationTests: XCTestCase {
         XCTAssertEqual(expectedSystem, userAgentParts[1])
         XCTAssertEqual(expectedLocale, userAgentParts[2])
     }
-
+    
     /// Test adding a new platform to AmplifyAWSServiceConfiguration
     ///
     /// - Given: Amplify library
@@ -49,14 +48,14 @@ class AmplifyAWSServiceConfigurationTests: XCTestCase {
     ///    - AmplifyAWSServiceConfiguration should be configured properly with the new platform added.
     ///
     func testAddNewPlatform() {
-        AmplifyAWSServiceConfiguration.addPlatform(.flutter, version: "1.1")
+        AmplifyAWSServiceConfiguration.addUserAgentPlatform(.flutter, version: "1.1")
         let currentSystemName = UIDevice.current.systemName.replacingOccurrences(of: " ", with: "-")
         let currentSystemVersion = UIDevice.current.systemVersion
         let expectedLocale = Locale.current.identifier
         let expectedSystem = "\(currentSystemName)/\(currentSystemVersion)"
-
+        
         let configuration = AmplifyAWSServiceConfiguration()
-
+        
         XCTAssertNotNil(configuration.userAgent)
         let userAgentParts = configuration.userAgent.components(separatedBy: " ")
         XCTAssertEqual(4, userAgentParts.count)
@@ -64,7 +63,7 @@ class AmplifyAWSServiceConfigurationTests: XCTestCase {
         XCTAssertEqual(expectedSystem, userAgentParts[2])
         XCTAssertEqual(expectedLocale, userAgentParts[3])
     }
-
+    
     /// Test overriding iOS platform in AmplifyAWSServiceConfiguration
     ///
     /// - Given: Amplify library
@@ -74,7 +73,7 @@ class AmplifyAWSServiceConfigurationTests: XCTestCase {
     ///    - AmplifyAWSServiceConfiguration should not take the override for iOS
     ///
     func testOverrideiOSPlatform() {
-        AmplifyAWSServiceConfiguration.addPlatform(.iOS, version: "0.33") // Uses an old version number
+        AmplifyAWSServiceConfiguration.addUserAgentPlatform(.ios, version: "0.33") // Uses an old version number
         let configuration = AmplifyAWSServiceConfiguration()
         XCTAssertNotNil(configuration.userAgent)
         let userAgentParts = configuration.userAgent.components(separatedBy: " ")
