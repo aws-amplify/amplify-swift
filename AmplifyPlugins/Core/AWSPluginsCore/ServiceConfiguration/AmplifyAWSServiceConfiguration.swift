@@ -9,15 +9,16 @@ import Foundation
 import AWSCore
 
 public class AmplifyAWSServiceConfiguration: AWSServiceConfiguration {
+    private static let version = "1.1.0"
+
     override public class func baseUserAgent() -> String! {
         //TODO: Retrieve this version from a centralized location:
         //https://github.com/aws-amplify/amplify-ios/issues/276
-        let version = "1.1.0"
-        let sdkName = "amplify-iOS"
+        let platformInfo = AmplifyAWSServiceConfiguration.platformInformation()
         let systemName = UIDevice.current.systemName.replacingOccurrences(of: " ", with: "-")
         let systemVersion = UIDevice.current.systemVersion
         let localeIdentifier = Locale.current.identifier
-        return "\(sdkName)/\(version) \(systemName)/\(systemVersion) \(localeIdentifier)"
+        return "\(platformInfo) \(systemName)/\(systemVersion) \(localeIdentifier)"
     }
 
     override public var userAgent: String {
@@ -39,5 +40,24 @@ public class AmplifyAWSServiceConfiguration: AWSServiceConfiguration {
 
     public init(region regionType: AWSRegionType) {
         super.init(region: regionType, credentialsProvider: nil)
+    }
+}
+
+extension AmplifyAWSServiceConfiguration {
+
+    static var platformMapping: [Platform: String] = [:]
+
+    public static func addUserAgentPlatform(_ platform: Platform, version: String) {
+        platformMapping[platform] = version
+    }
+
+    public enum Platform: String {
+        case flutter = "amplify-flutter"
+    }
+
+    static func platformInformation() -> String {
+        var platformTokens = platformMapping.map { "\($0.rawValue)/\($1)" }
+        platformTokens.append("amplify-iOS/\(version)")
+        return platformTokens.joined(separator: " ")
     }
 }
