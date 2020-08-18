@@ -48,22 +48,16 @@ extension AmplifyAWSServiceConfiguration {
     static var platformMapping: [Platform: String] = [:]
 
     public static func addUserAgentPlatform(_ platform: Platform, version: String) {
-        guard platform != .ios else {
-            return
-        }
         platformMapping[platform] = version
     }
 
     public enum Platform: String {
-
-        case ios = "amplify-iOS"
-
         case flutter = "amplify-flutter"
     }
 
     static func platformInformation() -> String {
-        var mapping = platformMapping
-        mapping[.ios] = version
-        return mapping.map {"\($0.rawValue)/\($1)"}.joined(separator: " ")
+        let sdkName = "amplify-iOS"
+        let additionalPlatform = platformMapping.map {" \($0.rawValue)/\($1)"}.joined()
+        return "\(sdkName)/\(version)\(additionalPlatform)"
     }
 }
