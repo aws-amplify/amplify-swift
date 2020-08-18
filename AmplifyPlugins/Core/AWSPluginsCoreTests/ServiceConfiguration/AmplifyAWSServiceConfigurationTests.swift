@@ -53,13 +53,13 @@ class AmplifyAWSServiceConfigurationTests: XCTestCase {
         let currentSystemVersion = UIDevice.current.systemVersion
         let expectedLocale = Locale.current.identifier
         let expectedSystem = "\(currentSystemName)/\(currentSystemVersion)"
-
+        let expectedPlatform = "\(AmplifyAWSServiceConfiguration.Platform.flutter.rawValue)/1.1"
         let configuration = AmplifyAWSServiceConfiguration()
 
         XCTAssertNotNil(configuration.userAgent)
         let userAgentParts = configuration.userAgent.components(separatedBy: " ")
         XCTAssertEqual(4, userAgentParts.count)
-        XCTAssert(userAgentParts[0].starts(with: AmplifyAWSServiceConfiguration.Platform.flutter.rawValue))
+        XCTAssertEqual(expectedPlatform, userAgentParts[0])
         XCTAssert(userAgentParts[1].starts(with: "amplify-iOS/"))
         XCTAssertEqual(expectedSystem, userAgentParts[2])
         XCTAssertEqual(expectedLocale, userAgentParts[3])

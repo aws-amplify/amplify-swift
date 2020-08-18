@@ -56,8 +56,8 @@ extension AmplifyAWSServiceConfiguration {
     }
 
     static func platformInformation() -> String {
-        let sdkName = "amplify-iOS"
-        let additionalPlatform = platformMapping.map {"\($0.rawValue)/\($1) "}.joined()
-        return "\(additionalPlatform)\(sdkName)/\(version)"
+        var platformTokens = platformMapping.map { "\($0.rawValue)/\($1)" }
+        platformTokens.append("amplify-iOS/\(version)")
+        return platformTokens.joined(separator: " ")
     }
 }
