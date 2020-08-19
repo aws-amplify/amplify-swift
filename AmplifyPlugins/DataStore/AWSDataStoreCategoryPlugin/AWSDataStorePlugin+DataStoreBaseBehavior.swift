@@ -99,7 +99,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) {
         reinitStorageEngineIfNeeded()
-        // TODO: handle query predicate like in the update flow
+        // Predicate not currently supported, see #730
         storageEngine.delete(type(of: model), withId: model.id) { result in
             self.onDeleteCompletion(result: result, completion: completion)
         }
