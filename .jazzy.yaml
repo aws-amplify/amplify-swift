@@ -1,5 +1,4 @@
 module: Amplify
-module_version: 0.11.0
 author: Amazon Web Services
 github_url: https://github.com/aws-amplify/amplify-ios
 
