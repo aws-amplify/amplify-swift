@@ -99,7 +99,7 @@ class GraphQLRequestModelTests: XCTestCase {
         let request = GraphQLRequest<Post>.list(Post.self, where: predicate)
 
         XCTAssertEqual(document.stringValue, request.document)
-        XCTAssert(request.responseType == List<Post>.self)
+        XCTAssert(request.responseType == [Post].self)
         XCTAssertNotNil(request.variables)
     }
 

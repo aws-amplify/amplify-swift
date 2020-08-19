@@ -29,7 +29,7 @@ protocol ModelGraphQLRequestFactory {
     ///
     /// - seealso: `GraphQLQuery`, `GraphQLQueryType.list`
     static func list<M: Model>(_ modelType: M.Type,
-                               where predicate: QueryPredicate?) -> GraphQLRequest<List<M>>
+                               where predicate: QueryPredicate?) -> GraphQLRequest<[M]>
 
     /// Creates a `GraphQLRequest` that represents a query that expects a single value as a result.
     /// The request will be created with the correct correct document based on the `ModelSchema` and
@@ -167,7 +167,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
     }
 
     public static func list<M: Model>(_ modelType: M.Type,
-                                      where predicate: QueryPredicate? = nil) -> GraphQLRequest<List<M>> {
+                                      where predicate: QueryPredicate? = nil) -> GraphQLRequest<[M]> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
 
@@ -178,9 +178,9 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
         documentBuilder.add(decorator: PaginationDecorator())
         let document = documentBuilder.build()
 
-        return GraphQLRequest<List<M>>(document: document.stringValue,
+        return GraphQLRequest<[M]>(document: document.stringValue,
                                        variables: document.variables,
-                                       responseType: List<M>.self)
+                                       responseType: [M].self)
     }
 
     public static func subscription<M: Model>(of modelType: M.Type,
