@@ -86,6 +86,11 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
 
     // MARK: - Persistent Operations
 
+    /// Returns the number of currently loaded elements
+    public var currentCount: Int {
+        elements.count
+    }
+
     public var totalCount: Int {
         // TODO handle total count
         return 0
