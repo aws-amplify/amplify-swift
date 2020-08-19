@@ -98,7 +98,6 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
     }
 
     public func limit(_ limit: Int) -> Self {
-        // TODO handle query with limit
         self.limit = limit
         state = .pending
         return self
