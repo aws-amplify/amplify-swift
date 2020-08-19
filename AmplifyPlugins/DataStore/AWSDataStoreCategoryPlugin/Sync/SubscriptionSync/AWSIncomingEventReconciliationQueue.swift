@@ -82,7 +82,8 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 
     func offer(_ remoteModel: MutationSync<AnyModel>) {
         guard let queue = reconciliationQueues[remoteModel.model.modelName] else {
-            // TODO: Error handling
+            Amplify.DataStore.log
+                .error("Unable to find a reconciliation queue for \(remoteModel.model.modelName)")
             return
         }
 
