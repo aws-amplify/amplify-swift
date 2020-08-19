@@ -198,7 +198,6 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             return
         }
 
-        // TODO: Wrap this in a transaction
         if remoteModel.syncMetadata.deleted {
             saveDeleteMutation(storageAdapter: storageAdapter, remoteModel: remoteModel)
         } else {
