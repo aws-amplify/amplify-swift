@@ -34,9 +34,6 @@ public extension StorageDownloadDataRequest {
         /// key/values
         public let pluginOptions: Any?
 
-        // TODO: transferAcceleration should be in pluginOptions
-        // https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
-
         public init(accessLevel: StorageAccessLevel = .guest,
                     targetIdentityId: String? = nil,
                     pluginOptions: Any? = nil) {
