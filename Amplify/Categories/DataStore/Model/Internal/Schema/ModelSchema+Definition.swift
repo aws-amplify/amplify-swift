@@ -36,13 +36,15 @@ public enum ModelFieldType {
     }
 
     @available(*, deprecated, message: """
-        This has been replaced with `.embedded(type)` and `.embeddedCollection(of)` \
-        Please use Amplify CLI 4.21.4 or newer to re-generate your Models to conform to Embeddable type.
-    """)
+    This has been replaced with `.embedded(type)` and `.embeddedCollection(of)` \
+    Please use Amplify CLI 4.21.4 or newer to re-generate your Models to conform to Embeddable type.
+    """
+    )
     public static func customType(_ type: Codable.Type) -> ModelFieldType {
         return .embedded(type: type)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     public static func from(type: Any.Type) -> ModelFieldType {
         if type is String.Type {
             return .string
