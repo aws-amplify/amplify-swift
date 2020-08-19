@@ -115,7 +115,6 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
             if case let .string(associatedId) = list["associatedId"],
                case let .string(associatedField) = list["associatedField"] {
                 let field = Element.schema.field(withName: associatedField)
-                // TODO handle eager loaded associations with elements
                 self.init([], associatedId: associatedId, associatedField: field)
             } else {
                 self.init(Elements())
