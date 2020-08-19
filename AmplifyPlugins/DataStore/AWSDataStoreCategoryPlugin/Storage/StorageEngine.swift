@@ -12,7 +12,6 @@ import AWSPluginsCore
 
 // swiftlint:disable type_body_length
 final class StorageEngine: StorageEngineBehavior {
-    // TODO: Make this private once we get a mutation flow that passes the type of mutation as needed
     let storageAdapter: StorageEngineAdapter
     private let dataStoreConfiguration: DataStoreConfiguration
     var syncEngine: RemoteSyncEngineBehavior?

@@ -258,7 +258,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         // Hold a reference so we can `reset` while initial sync is in process
         self.initialSyncOrchestrator = initialSyncOrchestrator
 
-        // TODO: This should be an AsynchronousOperation, not a semaphore-waited block
         let semaphore = DispatchSemaphore(value: 0)
 
         initialSyncOrchestrator.sync { result in

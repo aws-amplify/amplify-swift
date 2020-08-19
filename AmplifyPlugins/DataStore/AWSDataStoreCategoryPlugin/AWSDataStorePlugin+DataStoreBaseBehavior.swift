@@ -16,8 +16,6 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         log.verbose("Saving: \(model) with condition: \(String(describing: condition))")
         reinitStorageEngineIfNeeded()
 
-        // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
-        // mutation type
         let modelExists: Bool
         do {
             guard let engine = storageEngine as? StorageEngine else {
@@ -41,8 +39,6 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         let publishingCompletion: DataStoreCallback<M> = { result in
             switch result {
             case .success(let model):
-                // TODO: Differentiate between save & update
-                // TODO: Handle errors from mutation event creation
                 self.publishMutationEvent(from: model, mutationType: mutationType)
             case .failure:
                 break
