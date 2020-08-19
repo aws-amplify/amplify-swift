@@ -179,8 +179,9 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
         let document = documentBuilder.build()
 
         return GraphQLRequest<[M]>(document: document.stringValue,
-                                       variables: document.variables,
-                                       responseType: [M].self)
+                                   variables: document.variables,
+                                   responseType: [M].self,
+                                   decodePath: document.name + ".items")
     }
 
     public static func subscription<M: Model>(of modelType: M.Type,
