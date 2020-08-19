@@ -91,8 +91,9 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
         elements.count
     }
 
+    @available(*, deprecated, message: "Not supported. Use `currentCount` instead.")
+    /// Not supported. Currently hardcoded to return 0
     public var totalCount: Int {
-        // TODO handle total count
         return 0
     }
 
