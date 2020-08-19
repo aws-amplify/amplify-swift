@@ -37,8 +37,6 @@ extension List {
             return
         }
 
-        // TODO: this is currently done by specific plugin implementations (API or DataStore)
-        // How to add this name resolution to Amplify?
         let modelName = Element.modelName
         var name = modelName.camelCased() + associatedField.name.pascalCased() + "Id"
         if case let .belongsTo(_, targetName) = associatedField.association {
