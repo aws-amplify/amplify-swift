@@ -18,9 +18,6 @@ extension SQLiteStorageEngineAdapter {
             }
 
             let shouldUpdate = try exists(modelType, withId: untypedModel.id)
-
-            // TODO serialize result and create a new instance of the model
-            // (some columns might be auto-generated after DB insert/update)
             if shouldUpdate {
                 let statement = UpdateStatement(model: untypedModel)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
