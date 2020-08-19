@@ -61,7 +61,6 @@ public struct MutationSync<ModelType: Model>: Decodable {
               case let .number(lastChangedAt) = json["_lastChangedAt"],
               case let .number(version) = json["_version"] else {
 
-            // TODO query name could be useful for the message, but re-creating it here is not great
             let queryName = "sync\(modelType.schema.pluralName ?? modelType.modelName)"
             throw DataStoreError.decodingError(
                 """
