@@ -10,7 +10,7 @@ import Amplify
 
 typealias GraphQLInput = [String: Any?]
 
-/// Extension that adds GraphQL specific utilities to concret types of `Model`.
+/// Extension that adds GraphQL specific utilities to concrete types of `Model`.
 extension Model {
 
     /// Get the `Model` values as a `Dictionary` of `String` to `Any?` that can be
@@ -46,8 +46,7 @@ extension Model {
                 }
                 input[fieldName] = (value as? Model)?.id
             case .collection:
-                // TODO how to handle associations of type "many" (i.e. cascade save)?
-                // This is not supported right now and might be added as a future feature
+                // Not supported. See #729
                 break
             case .embedded, .embeddedCollection:
                 if let encodable = value as? Encodable {
