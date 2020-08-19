@@ -64,6 +64,10 @@ extension List {
     /// current `DispatchQueue` until data is ready. When operating on large result
     /// sets, prefer using the asynchronous `load(completion:)` instead.
     ///
+    /// -Note: This method will crash with a `fatalError` if it encounters an error
+    /// while loading, as opposed to the asynchronous `load(completion:)` method which
+    /// returns a result failure.
+    ///
     /// - Returns: the current instance after data was loaded.
     /// - seealso: `load(completion:)`
     public func load() -> Self {
@@ -90,7 +94,6 @@ extension List {
                 semaphore.signal()
             case .failure(let error):
                 semaphore.signal()
-                // TODO how to handle this failure? should it crash? just log the error?
                 fatalError(error.errorDescription)
             }
         }
