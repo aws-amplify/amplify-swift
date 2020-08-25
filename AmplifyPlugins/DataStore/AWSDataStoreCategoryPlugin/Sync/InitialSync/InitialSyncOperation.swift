@@ -16,7 +16,7 @@ final class InitialSyncOperation: AsynchronousOperation {
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
     private weak var storageAdapter: StorageEngineAdapter?
     private let dataStoreConfiguration: DataStoreConfiguration
-    private var modelSyncedPayload: ModelSyncedPayload?
+    private var modelSyncedPayload: ModelSyncedPayload
 
     private let modelType: Model.Type
     private let completion: AWSInitialSyncOrchestrator.SyncOperationResultHandler
@@ -160,21 +160,21 @@ final class InitialSyncOperation: AsynchronousOperation {
         recordsReceived += UInt(items.count)
 
         if lastSyncTime != nil {
-            modelSyncedPayload?.isFullSync = false
-            modelSyncedPayload?.isDeltaSync = true
+            modelSyncedPayload.isFullSync = false
+            modelSyncedPayload.isDeltaSync = true
         } else {
-            modelSyncedPayload?.isFullSync = true
-            modelSyncedPayload?.isDeltaSync = false
+            modelSyncedPayload.isFullSync = true
+            modelSyncedPayload.isDeltaSync = false
         }
 
         for item in items {
             let itemMetadata = item.syncMetadata
             if itemMetadata.deleted {
-                modelSyncedPayload?.deleteCount += 1
+                modelSyncedPayload.deleteCount += 1
             } else if itemMetadata.version == 1 {
-                modelSyncedPayload?.createCount += 1
+                modelSyncedPayload.createCount += 1
             } else {
-                modelSyncedPayload?.updateCount += 1
+                modelSyncedPayload.updateCount += 1
             }
             reconciliationQueue.offer(item)
         }

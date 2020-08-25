@@ -92,8 +92,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         token = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { _ in
             self.storageEngine.startSync()
 
-            let payloadOfOutboxStatus = HubPayload(eventName: HubPayload.EventName.DataStore.outboxStatusChanged)
-            Amplify.Hub.dispatch(to: .dataStore, payload: payloadOfOutboxStatus)
+            let outboxStatusPayload = HubPayload(eventName: HubPayload.EventName.DataStore.outboxStatusChanged)
+            Amplify.Hub.dispatch(to: .dataStore, payload: outboxStatusPayload)
 
             let payload = HubPayload(eventName: HubPayload.EventName.DataStore.ready)
             Amplify.Hub.dispatch(to: .dataStore, payload: payload)

@@ -8,24 +8,24 @@
 import Foundation
 
 struct ModelSyncedPayload {
-    var modelName: String
+    let modelName: String
     var isFullSync: Bool
     var isDeltaSync: Bool
     var createCount: Int
     var updateCount: Int
     var deleteCount: Int
 
-    init(modelName: String? = nil,
-         isFullSync: Bool? = nil,
-         isDeltaSync: Bool? = nil,
-         createCount: Int? = nil,
-         updateCount: Int? = nil,
-         deleteCount: Int? = nil) {
-        self.modelName = modelName ?? ""
-        self.isFullSync = isFullSync ?? false
-        self.isDeltaSync = isDeltaSync ?? false
-        self.createCount = createCount ?? 0
-        self.updateCount = updateCount ?? 0
-        self.deleteCount = deleteCount ?? 0
+    init(modelName: String,
+         isFullSync: Bool = false,
+         isDeltaSync: Bool = false,
+         createCount: Int = 0,
+         updateCount: Int = 0,
+         deleteCount: Int = 0) {
+        self.modelName = modelName
+        self.isFullSync = isFullSync
+        self.isDeltaSync = isDeltaSync
+        self.createCount = createCount
+        self.updateCount = updateCount
+        self.deleteCount = deleteCount
     }
 }
