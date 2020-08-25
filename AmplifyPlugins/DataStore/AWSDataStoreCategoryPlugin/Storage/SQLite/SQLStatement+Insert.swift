@@ -11,7 +11,6 @@ import SQLite
 
 /// Represents a `insert` SQL statement associated with a `Model` instance.
 struct InsertStatement: SQLStatement {
-
     let modelSchema: ModelSchema
     let variables: [Binding?]
 

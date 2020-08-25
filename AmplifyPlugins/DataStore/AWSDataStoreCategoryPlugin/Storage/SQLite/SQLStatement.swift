@@ -22,3 +22,12 @@ extension SQLStatement {
         return []
     }
 }
+
+extension SQLStatement {
+
+    // modelType is deprecated and instead modelSchema is used
+    //
+    var modelType: Model.Type {
+        fatalError()
+    }
+}
