@@ -16,6 +16,7 @@ final class InitialSyncOperation: AsynchronousOperation {
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
     private weak var storageAdapter: StorageEngineAdapter?
     private let dataStoreConfiguration: DataStoreConfiguration
+    private var modelSyncedPayload: ModelSyncedPayload?
 
     private let modelType: Model.Type
     private let completion: AWSInitialSyncOrchestrator.SyncOperationResultHandler
@@ -42,6 +43,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         self.dataStoreConfiguration = dataStoreConfiguration
         self.completion = completion
         self.recordsReceived = 0
+        self.modelSyncedPayload = ModelSyncedPayload(modelName: modelType.modelName)
     }
 
     override func main() {
@@ -157,7 +159,23 @@ final class InitialSyncOperation: AsynchronousOperation {
         let items = syncQueryResult.items
         recordsReceived += UInt(items.count)
 
+        if lastSyncTime != nil {
+            modelSyncedPayload?.isFullSync = false
+            modelSyncedPayload?.isDeltaSync = true
+        } else {
+            modelSyncedPayload?.isFullSync = true
+            modelSyncedPayload?.isDeltaSync = false
+        }
+
         for item in items {
+            let itemMetadata = item.syncMetadata
+            if itemMetadata.deleted {
+                modelSyncedPayload?.deleteCount += 1
+            } else if itemMetadata.version == 1 {
+                modelSyncedPayload?.createCount += 1
+            } else {
+                modelSyncedPayload?.updateCount += 1
+            }
             reconciliationQueue.offer(item)
         }
 
@@ -188,7 +206,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             case .failure(let dataStoreError):
                 self.finish(result: .failure(dataStoreError))
             case .success:
-                self.finish(result: .successfulVoid)
+                self.finish(result: .success(self.modelSyncedPayload))
             }
         }
     }

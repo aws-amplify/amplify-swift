@@ -54,6 +54,12 @@ extension RemoteSyncEngine {
             if let reachability = api as? APICategoryReachabilityBehavior {
                 do {
                     networkReachabilityPublisher = try reachability.reachabilityPublisher()
+//                    _ = networkReachabilityPublisher?.sink(receiveValue: { value in
+//                        let payload = HubPayload(eventName: HubPayload.EventName.DataStore.networkStatusChanged,
+//                                                 data: value.isOnline)
+//                        Amplify.Hub.dispatch(to: .dataStore, payload: payload)
+//                    })
+
                 } catch {
                     log.error("\(#function): Unable to listen on reachability: \(error)")
                 }

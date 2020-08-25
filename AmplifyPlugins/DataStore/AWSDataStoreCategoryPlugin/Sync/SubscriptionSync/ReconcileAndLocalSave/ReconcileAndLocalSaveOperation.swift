@@ -60,7 +60,6 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                     self.respond(to: newState)
                 }
         }
-
     }
 
     override func main() {

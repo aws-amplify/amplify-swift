@@ -67,7 +67,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
             }
             reconciliationQueues[modelName] = queue
             let modelReconciliationQueueSink = queue.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
-                                                                    receiveValue: onReceiveValue(receiveValue:))
+                                                                     receiveValue: onReceiveValue(receiveValue:))
             modelReconciliationQueueSinks[modelName] = modelReconciliationQueueSink
         }
     }
@@ -148,3 +148,6 @@ extension AWSIncomingEventReconciliationQueue: Resettable {
     }
 
 }
+
+@available(iOS 13.0, *)
+extension AWSIncomingEventReconciliationQueue: DefaultLogger { }

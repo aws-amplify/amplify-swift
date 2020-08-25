@@ -9,7 +9,7 @@ import Amplify
 import AWSPluginsCore
 
 protocol InitialSyncOrchestrator {
-    func sync(completion: @escaping (Result<Void, DataStoreError>) -> Void)
+    func sync(completion: @escaping (Result<ModelSyncedPayload?, DataStoreError>) -> Void)
 }
 
 // For testing
@@ -22,7 +22,7 @@ typealias InitialSyncOrchestratorFactory =
 
 @available(iOS 13.0, *)
 final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
-    typealias SyncOperationResult = Result<Void, DataStoreError>
+    typealias SyncOperationResult = Result<ModelSyncedPayload?, DataStoreError>
     typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
 
     private let dataStoreConfiguration: DataStoreConfiguration
@@ -62,7 +62,8 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
         log.info("Beginning initial sync")
 
-        enqueueSyncableModels()
+        let syncableModels = ModelRegistry.models.filter { $0.schema.isSyncable }
+        enqueueSyncableModels(syncableModels)
 
         // This operation is intentionally not cancel-aware; we always want resolveCompletion to execute
         // as the last item
@@ -71,10 +72,11 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         }
 
         syncOperationQueue.isSuspended = false
+
+        dispatchSyncQueriesStarted(syncableModels)
     }
 
-    private func enqueueSyncableModels() {
-        let syncableModels = ModelRegistry.models.filter { $0.schema.isSyncable }
+    private func enqueueSyncableModels(_ syncableModels: [Model.Type]) {
         let sortedModels = syncableModels.sortByDependencyOrder()
         for model in sortedModels {
             enqueueSyncOperation(for: model)
@@ -84,12 +86,17 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     /// Enqueues sync operations for models and downstream dependencies
     private func enqueueSyncOperation(for modelType: Model.Type) {
         let syncOperationCompletion: SyncOperationResultHandler = { result in
-            if case .failure(let dataStoreError) = result {
+            switch result {
+            case .failure(let dataStoreError):
                 let syncError = DataStoreError.sync(
                     "An error occurred syncing \(modelType.modelName)",
                     "",
                     dataStoreError)
                 self.syncErrors.append(syncError)
+            case .success(let modelSyncedPayload):
+                let payload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
+                                         data: modelSyncedPayload)
+                Amplify.Hub.dispatch(to: .dataStore, payload: payload)
             }
         }
 
@@ -115,7 +122,14 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
             return
         }
 
-        completion?(.successfulVoid)
+        completion?(.success(nil))
+    }
+
+    private func dispatchSyncQueriesStarted(_ syncableModels: [Model.Type]) {
+        let modelTask = syncableModels.map { $0.modelName }
+        let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesStarted,
+                                 data: ["models": modelTask])
+        Amplify.Hub.dispatch(to: .dataStore, payload: payload)
     }
 
 }

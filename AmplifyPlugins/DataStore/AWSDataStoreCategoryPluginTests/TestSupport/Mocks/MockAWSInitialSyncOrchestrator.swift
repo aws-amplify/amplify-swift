@@ -22,7 +22,7 @@ class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
                                        storageAdapter: storageAdapter)
     }
 
-    typealias SyncOperationResult = Result<Void, DataStoreError>
+    typealias SyncOperationResult = Result<ModelSyncPayload?, DataStoreError>
     typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
 
     private static var instance: MockAWSInitialSyncOrchestrator?

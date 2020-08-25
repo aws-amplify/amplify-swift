@@ -23,4 +23,22 @@ public extension HubPayload.EventName.DataStore {
     /// Dispatched when DataStore receives a sync response from the remote API via the API category. The Hub Payload
     /// will be a `MutationEvent` instance that caused the conditional save failed.
     static let conditionalSaveFailed = "DataStore.conditionalSaveFailed"
+
+    static let networkStatusChanged = "DataStore.networkStatusChanged"
+
+    static let outboxStatusChanged = "DataStore.outboxStatusChanged"
+
+    static let subscriptionEstablished = "DataStore.subscriptionEstablished"
+
+    static let syncQueriesStarted = "DataStore.syncQueriesStarted"
+
+    static let modelSynced = "DataStore.modelSynced"
+
+    static let syncQueriesReady = "DataStore.syncQueriesReady"
+
+    static let ready = "DataStore.ready"
+
+    static let outboxMutationEnqueued = "DataStore.outboxMutationEnqueued"
+
+    static let outboxMutationProcessed = "DataStore.outboxMutationProcessed"
 }

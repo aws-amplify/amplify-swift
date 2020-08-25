@@ -91,6 +91,13 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         var token: UnsubscribeToken?
         token = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { _ in
             self.storageEngine.startSync()
+
+            let payloadOfOutboxStatus = HubPayload(eventName: HubPayload.EventName.DataStore.outboxStatusChanged)
+            Amplify.Hub.dispatch(to: .dataStore, payload: payloadOfOutboxStatus)
+
+            let payload = HubPayload(eventName: HubPayload.EventName.DataStore.ready)
+            Amplify.Hub.dispatch(to: .dataStore, payload: payload)
+
             if let token = token {
                 Amplify.Hub.removeListener(token)
             }

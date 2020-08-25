@@ -187,6 +187,15 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                     "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent.id); result: \(result)")
                 self.processSyncMutationToCloudResult(result, mutationEvent: mutationEvent, api: api)
         }
+
+        let payloadOfOutboxStatus = HubPayload(eventName: HubPayload.EventName.DataStore.outboxStatusChanged,
+                                               data: operationQueue.operationCount == 0 ? true : false)
+        Amplify.Hub.dispatch(to: .dataStore, payload: payloadOfOutboxStatus)
+
+        let payloadOfOutgoingMutation = HubPayload(eventName: HubPayload.EventName.DataStore.outboxMutationEnqueued,
+                                                   data: mutationEvent)
+        Amplify.Hub.dispatch(to: .dataStore, payload: payloadOfOutgoingMutation)
+
         operationQueue.addOperation(syncMutationToCloudOperation)
         stateMachine.notify(action: .enqueuedEvent)
     }
@@ -240,6 +249,10 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             case .success:
                 self.log.verbose("mutationEvent deleted successfully")
             }
+
+            let payload = HubPayload(eventName: HubPayload.EventName.DataStore.outboxMutationProcessed,
+                                     data: mutationEvent)
+            Amplify.Hub.dispatch(to: .dataStore, payload: payload)
 
             self.stateMachine.notify(action: .processedEvent)
         }

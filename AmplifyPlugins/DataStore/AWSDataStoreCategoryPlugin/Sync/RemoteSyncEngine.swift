@@ -126,6 +126,12 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                 }
         }
 
+//        _ = self.networkReachabilityPublisher?.sink(receiveValue: { value in
+//            let payload = HubPayload(eventName: HubPayload.EventName.DataStore.networkStatusChanged,
+//                                     data: value.isOnline)
+//            Amplify.Hub.dispatch(to: .dataStore, payload: payload)
+//        })
+
         self.outgoingMutationQueueSink = self.outgoingMutationQueue.publisher.sink { mutationEvent in
             self.remoteSyncTopicPublisher.send(.mutationEvent(mutationEvent))
         }
@@ -271,6 +277,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
                 self.stateMachine.notify(action: .errored(dataStoreError))
             } else {
+                let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
+                Amplify.Hub.dispatch(to: .dataStore, payload: payload)
                 self.log.info("Successfully finished sync")
 
                 self.remoteSyncTopicPublisher.send(.performedInitialSync)
