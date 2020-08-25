@@ -15,6 +15,13 @@ public protocol DataStoreStatement {
     /// The type of the variables container related to a concrete statement implementation
     associatedtype Variables
 
+    /// The type of the `Model` associated with a particular statement
+    @available(*, deprecated, message: """
+        Use of modelType inside the DatastoreStatement is deprecated, instead make use of
+        `ModelSchema` through the `modelSchema` property.
+    """)
+    var modelType: Model.Type { get }
+
     /// The model schema of the `Model` associated with a particular statement
     var modelSchema: ModelSchema { get }
 
