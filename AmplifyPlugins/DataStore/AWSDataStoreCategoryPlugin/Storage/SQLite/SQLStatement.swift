@@ -25,9 +25,8 @@ extension SQLStatement {
 
 extension SQLStatement {
 
-    // modelType is deprecated and instead modelSchema is used
-    //
+    // `modelType` is deprecated, instead modelSchema should be used.
     var modelType: Model.Type {
-        fatalError()
+        fatalError("Use of modelType is deprecated in SQLStatement")
     }
 }

@@ -110,7 +110,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                     return
                 }
 
-                let statement = InsertStatement(model: model)
+                let statement = InsertStatement(model: model, modelSchema: modelType.schema)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
 
@@ -126,7 +126,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                     }
                 }
 
-                let statement = UpdateStatement(model: model, condition: condition)
+                let statement = UpdateStatement(model: model,
+                                                modelSchema: modelType.schema,
+                                                condition: condition)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
 

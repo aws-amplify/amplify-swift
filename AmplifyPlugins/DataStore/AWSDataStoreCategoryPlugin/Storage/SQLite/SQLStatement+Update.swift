@@ -17,9 +17,9 @@ struct UpdateStatement: SQLStatement {
 
     private let model: Model
 
-    init(model: Model, condition: QueryPredicate? = nil) {
-        self.modelSchema = model.schema
+    init(model: Model, modelSchema: ModelSchema, condition: QueryPredicate? = nil) {
         self.model = model
+        self.modelSchema = model.schema
 
         var conditionStatement: ConditionStatement?
         if let condition = condition {
