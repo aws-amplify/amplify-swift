@@ -155,6 +155,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     private func receiveCompletion(_ completion: Subscribers.Completion<DataStoreError>) {
         switch completion {
         case .finished:
+            log.info("receivedCompletion: finished")
             modelReconciliationQueueSubject.send(completion: .finished)
         case .failure(let dataStoreError):
             log.error("receiveCompletion: error: \(dataStoreError)")

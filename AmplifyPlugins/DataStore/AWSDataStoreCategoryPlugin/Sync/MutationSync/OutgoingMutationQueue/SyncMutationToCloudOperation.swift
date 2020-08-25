@@ -166,7 +166,6 @@ class SyncMutationToCloudOperation: Operation {
             if let reachability = api as? APICategoryReachabilityBehavior {
                 do {
                     networkReachabilityPublisher = try reachability.reachabilityPublisher(for: request.apiName)
-
                 } catch {
                     log.error("\(#function): Unable to listen on reachability: \(error)")
                 }

@@ -55,42 +55,6 @@ final class InitialSyncOperation: AsynchronousOperation {
         log.info("Beginning sync for \(modelType.modelName)")
         let lastSyncTime = getLastSyncTime()
         query(lastSyncTime: lastSyncTime)
-
-        var modelSyncedPayload = ModelSyncedPayload()
-        modelSyncedPayload.modelName = modelType.modelName
-        modelSyncedPayload.isFullSync = lastSyncTime == 0 ? true : false
-        modelSyncedPayload.isDeltaSync = !modelSyncedPayload.isFullSync
-
-        guard let reconciliationQueue = reconciliationQueue else {
-            return
-        }
-
-        _ = reconciliationQueue.publisher.sink(
-            receiveCompletion: { result in
-            print(result)
-        }, receiveValue: { result in
-            print(result)
-            switch result {
-            case .initialized, .started, .paused:
-                print(result)
-            case .mutationEvent(let mutationEvent):
-                modelSyncedPayload.modelName = mutationEvent.modelName
-                switch mutationEvent.mutationType {
-                case "create":
-                    modelSyncedPayload.createCount += 1
-                case "update":
-                     modelSyncedPayload.updateCount += 1
-                case "delete":
-                     modelSyncedPayload.deleteCount += 1
-                default:
-                    print(result)
-                }
-            }
-        })
-
-        let payload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
-                                 data: modelSyncedPayload)
-        Amplify.Hub.dispatch(to: .dataStore, payload: payload)
     }
 
     private func getLastSyncTime() -> Int? {

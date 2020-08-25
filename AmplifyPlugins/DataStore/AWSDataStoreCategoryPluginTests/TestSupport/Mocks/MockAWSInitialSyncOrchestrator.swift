@@ -22,7 +22,7 @@ class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
                                        storageAdapter: storageAdapter)
     }
 
-    typealias SyncOperationResult = Result<ModelSyncPayload?, DataStoreError>
+    typealias SyncOperationResult = Result<ModelSyncedPayload?, DataStoreError>
     typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
 
     private static var instance: MockAWSInitialSyncOrchestrator?
@@ -43,7 +43,7 @@ class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     }
 
     func sync(completion: @escaping SyncOperationResultHandler) {
-        let response = MockAWSInitialSyncOrchestrator.mockedResponse ?? .successfulVoid
+        let response = MockAWSInitialSyncOrchestrator.mockedResponse ?? .success(nil)
         completion(response)
     }
 }

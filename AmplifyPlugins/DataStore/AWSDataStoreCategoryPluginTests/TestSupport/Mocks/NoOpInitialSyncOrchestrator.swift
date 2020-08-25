@@ -13,7 +13,7 @@ struct NoOpInitialSyncOrchestrator: InitialSyncOrchestrator {
         NoOpInitialSyncOrchestrator()
     }
 
-    func sync(completion: @escaping (Result<Void, DataStoreError>) -> Void) {
-        completion(Result.successfulVoid)
+    func sync(completion: @escaping (Result<ModelSyncedPayload?, DataStoreError>) -> Void) {
+        completion(Result.success(nil))
     }
 }
