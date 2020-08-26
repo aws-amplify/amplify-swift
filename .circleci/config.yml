@@ -149,7 +149,7 @@ jobs:
           command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | xcpretty --simple --color --report junit
       - run:
           name: Upload coverage report to Codecov
-          command: bash <(curl -s https://codecov.io/bash) -F $CIRCLE_JOB
+          command: bash <(curl -s https://codecov.io/bash) -F moduleA
       - store_test_results:
           path: build/reports
 
