@@ -9,22 +9,20 @@ import Amplify
 import Foundation
 
 /// Represents a `create table` SQL statement. The table is created based on the `ModelSchema`
-/// associated with the passed `Model.Type`.
 struct CreateTableStatement: SQLStatement {
 
-    let modelType: Model.Type
+    let modelSchema: ModelSchema
 
-    init(modelType: Model.Type) {
-        self.modelType = modelType
+    init(modelSchema: ModelSchema) {
+        self.modelSchema = modelSchema
     }
 
     var stringValue: String {
-        let schema = modelType.schema
-        let name = schema.name
+        let name = modelSchema.name
         var statement = "create table if not exists \(name) (\n"
 
-        let columns = schema.columns
-        let foreignKeys = schema.foreignKeys
+        let columns = modelSchema.columns
+        let foreignKeys = modelSchema.foreignKeys
 
         for (index, column) in columns.enumerated() {
             statement += "  \"\(column.sqlName)\" \(column.sqlType.rawValue)"
