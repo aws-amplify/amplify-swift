@@ -115,7 +115,7 @@ jobs:
           name: Test amplify
           command: xcodebuild test -enableThreadSanitizer NO -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}" | xcpretty --simple --color --report junit
       - run:
-          name: Store coverage data
+          name: Upload coverage report to Codecov
           command: bash <(curl -s https://codecov.io/bash) -F $CIRCLE_JOB
       - store_test_results:
           path: build/reports
@@ -147,6 +147,9 @@ jobs:
       - run:
           name: Test << parameters.path >>
           command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | xcpretty --simple --color --report junit
+      - run:
+          name: Upload coverage report to Codecov
+          command: bash <(curl -s https://codecov.io/bash) -F $CIRCLE_JOB
       - store_test_results:
           path: build/reports
 
