@@ -17,9 +17,9 @@ public protocol DataStoreStatement {
 
     /// The type of the `Model` associated with a particular statement
     @available(*, deprecated, message: """
-        Use of modelType inside the DatastoreStatement is deprecated, instead make use of
-        `ModelSchema` through the `modelSchema` property.
+    Use of modelType inside the DatastoreStatement is deprecated, use modelSchema instead.
     """)
+
     var modelType: Model.Type { get }
 
     /// The model schema of the `Model` associated with a particular statement
