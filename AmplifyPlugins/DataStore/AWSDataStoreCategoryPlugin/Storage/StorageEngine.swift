@@ -132,7 +132,7 @@ final class StorageEngine: StorageEngineBehavior {
     }
 
     public func save<M: Model>(_ model: M,
-                               schema: ModelSchema,
+                               modelSchema: ModelSchema,
                                where condition: QueryPredicate? = nil,
                                completion: @escaping DataStoreCallback<M>) {
 
@@ -140,7 +140,7 @@ final class StorageEngine: StorageEngineBehavior {
         // mutation type
         let modelExists: Bool
         do {
-            modelExists = try storageAdapter.exists(schema, withId: model.id, predicate: nil)
+            modelExists = try storageAdapter.exists(modelSchema, withId: model.id, predicate: nil)
         } catch {
             let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
             completion(.failure(dataStoreError))
@@ -157,7 +157,7 @@ final class StorageEngine: StorageEngineBehavior {
         }
 
         let wrappedCompletion: DataStoreCallback<M> = { result in
-            guard schema.isSyncable, let syncEngine = self.syncEngine else {
+            guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
                 completion(result)
                 return
             }
@@ -170,7 +170,7 @@ final class StorageEngine: StorageEngineBehavior {
             if #available(iOS 13.0, *) {
                 self.log.verbose("\(#function) syncing mutation for \(savedModel)")
                 self.syncMutation(of: savedModel,
-                                  schema: schema,
+                                  modelSchema: modelSchema,
                                   mutationType: mutationType,
                                   predicate: condition,
                                   syncEngine: syncEngine,
@@ -180,11 +180,11 @@ final class StorageEngine: StorageEngineBehavior {
             }
         }
 
-        storageAdapter.save(model, schema: schema, where: condition, completion: wrappedCompletion)
+        storageAdapter.save(model, modelSchema: modelSchema, where: condition, completion: wrappedCompletion)
     }
 
     func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: @escaping DataStoreCallback<M>) {
-        save(model, schema: model.schema, where: condition, completion: completion)
+        save(model, modelSchema: model.schema, where: condition, completion: completion)
     }
 
     func delete<M: Model>(_ modelType: M.Type,
@@ -338,12 +338,12 @@ final class StorageEngine: StorageEngineBehavior {
     }
 
     func query<M>(_ modelType: M.Type,
-                  schema: ModelSchema,
+                  modelSchema: ModelSchema,
                   predicate: QueryPredicate?,
                   paginationInput: QueryPaginationInput?,
                   completion: (DataStoreResult<[M]>) -> Void) where M: Model {
         return storageAdapter.query(modelType,
-                                    schema: schema,
+                                    modelSchema: modelSchema,
                                     predicate: predicate,
                                     paginationInput: paginationInput,
                                     completion: completion)
@@ -354,7 +354,7 @@ final class StorageEngine: StorageEngineBehavior {
                          paginationInput: QueryPaginationInput? = nil,
                          completion: DataStoreCallback<[M]>) {
         return storageAdapter.query(modelType,
-                                    schema: modelType.schema,
+                                    modelSchema: modelType.schema,
                                     predicate: predicate,
                                     paginationInput: paginationInput,
                                     completion: completion)
@@ -472,7 +472,7 @@ final class StorageEngine: StorageEngineBehavior {
 
     @available(iOS 13.0, *)
     private func syncMutation<M: Model>(of savedModel: M,
-                                        schema: ModelSchema? = nil,
+                                        modelSchema: ModelSchema? = nil,
                                         mutationType: MutationEvent.MutationType,
                                         predicate: QueryPredicate? = nil,
                                         syncEngine: RemoteSyncEngineBehavior,
@@ -485,7 +485,7 @@ final class StorageEngine: StorageEngineBehavior {
             }
 
             mutationEvent = try MutationEvent(model: savedModel,
-                                              modelName: schema?.name,
+                                              modelName: modelSchema?.name,
                                               mutationType: mutationType,
                                               graphQLFilterJSON: graphQLFilterJSON)
 

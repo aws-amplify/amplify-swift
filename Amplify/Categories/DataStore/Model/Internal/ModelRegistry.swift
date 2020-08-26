@@ -47,15 +47,15 @@ public struct ModelRegistry {
         }
     }
 
-    public static func register(modelName: ModelName,
+    public static func register(modelType: Model.Type,
                                 modelSchema: ModelSchema,
-                                modelType: Model.Type,
                                 jsonDecoder: @escaping (String, JSONDecoder?) throws -> Model) {
         concurrencyQueue.sync {
             let modelDecoder: ModelDecoder = { jsonString, decoder in
                 return try jsonDecoder(jsonString, decoder)
             }
 
+            let modelName = modelSchema.name
             modelSchemaMapping[modelName] = modelSchema
             modelTypes[modelName] = modelType
             modelDecoders[modelName] = modelDecoder
