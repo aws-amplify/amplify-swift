@@ -116,7 +116,7 @@ jobs:
           command: xcodebuild test -enableThreadSanitizer NO -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}" | xcpretty --simple --color --report junit
       - run:
           name: Store coverage data
-          command: .circleci/codecov.sh  # From https://codecov.io/bash
+          command: bash <(curl -s https://codecov.io/bash) -F $CIRCLE_JOB
       - store_test_results:
           path: build/reports
 
