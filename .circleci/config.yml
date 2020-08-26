@@ -73,8 +73,6 @@ commands:
             - v1-<< parameters.prefix >>-dependency-pods-{{ checksum "Podfile" }}
             - v1-<< parameters.prefix >>-dependency-pods
 
-  show_carryforward_flags: true
-  
 jobs:
   checkout_code:
     <<: *defaults
@@ -118,7 +116,7 @@ jobs:
           command: xcodebuild test -enableThreadSanitizer NO -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}" | xcpretty --simple --color --report junit
       - run:
           name: Upload coverage report to Codecov
-          command: bash <(curl -s https://codecov.io/bash) -F $CIRCLE_JOB
+          command: bash .circleci/codecov.sh -F $CIRCLE_JOB
       - store_test_results:
           path: build/reports
 
