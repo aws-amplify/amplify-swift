@@ -73,6 +73,8 @@ commands:
             - v1-<< parameters.prefix >>-dependency-pods-{{ checksum "Podfile" }}
             - v1-<< parameters.prefix >>-dependency-pods
 
+  show_carryforward_flags: true
+  
 jobs:
   checkout_code:
     <<: *defaults
@@ -149,7 +151,7 @@ jobs:
           command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | xcpretty --simple --color --report junit
       - run:
           name: Upload coverage report to Codecov
-          command: bash <(curl -s https://codecov.io/bash) -F << parameters.path >>
+          command: bash <(curl -s https://codecov.io/bash) -F << parameters.name >>
       - store_test_results:
           path: build/reports
 
