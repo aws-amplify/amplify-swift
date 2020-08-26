@@ -86,7 +86,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
         let createTableStatements = models
             .sortByDependencyOrder()
-            .map { CreateTableStatement(modelType: $0).stringValue }
+            .map { CreateTableStatement(modelSchema: $0.schema).stringValue }
             .joined(separator: "\n")
 
         do {
@@ -110,7 +110,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                     return
                 }
 
-                let statement = InsertStatement(model: model)
+                let statement = InsertStatement(model: model, modelSchema: modelType.schema)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
 
@@ -126,7 +126,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                     }
                 }
 
-                let statement = UpdateStatement(model: model, condition: condition)
+                let statement = UpdateStatement(model: model,
+                                                modelSchema: modelType.schema,
+                                                condition: condition)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
 
@@ -153,7 +155,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                           predicate: QueryPredicate,
                           completion: (DataStoreResult<[M]>) -> Void) {
         do {
-            let statement = DeleteStatement(modelType: modelType, predicate: predicate)
+            let statement = DeleteStatement(modelSchema: modelType.schema, predicate: predicate)
             _ = try connection.prepare(statement.stringValue).run(statement.variables)
             completion(.success([]))
         } catch {
@@ -178,7 +180,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                 withId id: Model.Identifier,
                 completion: DataStoreCallback<Void>) {
         do {
-            let statement = DeleteStatement(modelType: modelType, withId: id)
+            let statement = DeleteStatement(modelSchema: modelType.schema, withId: id)
             _ = try connection.prepare(statement.stringValue).run(statement.variables)
             completion(.emptyResult)
         } catch {
@@ -192,7 +194,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                          paginationInput: QueryPaginationInput? = nil,
                          completion: DataStoreCallback<[M]>) {
         do {
-            let statement = SelectStatement(from: modelType,
+            let statement = SelectStatement(from: modelType.schema,
                                             predicate: predicate,
                                             sort: sort,
                                             paginationInput: paginationInput)
@@ -212,7 +214,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         var sql = "select count(\(primaryKey)) from \(schema.name) where \(primaryKey) = ?"
         var variables: [Binding?] = [id]
         if let predicate = predicate {
-            let conditionStatement = ConditionStatement(modelType: modelType,
+            let conditionStatement = ConditionStatement(modelSchema: modelType.schema,
                                                         predicate: predicate)
             sql = """
             \(sql)
@@ -240,7 +242,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>] {
-        let statement = SelectStatement(from: MutationSyncMetadata.self)
+        let statement = SelectStatement(from: MutationSyncMetadata.schema)
         let primaryKey = MutationSyncMetadata.schema.primaryKey.sqlName
         // This is a temp workaround since we don't currently support the "in" operator
         // in query predicates (this avoids the 1 + n query problem). Consider adding "in" support
@@ -266,7 +268,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func queryMutationSyncMetadata(for modelId: Model.Identifier) throws -> MutationSyncMetadata? {
         let modelType = MutationSyncMetadata.self
-        let statement = SelectStatement(from: modelType, predicate: field("id").eq(modelId))
+        let statement = SelectStatement(from: modelType.schema, predicate: field("id").eq(modelId))
         let rows = try connection.prepare(statement.stringValue).run(statement.variables)
         let result = try rows.convert(to: modelType,
                                       using: statement)
@@ -274,7 +276,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func queryModelSyncMetadata(for modelType: Model.Type) throws -> ModelSyncMetadata? {
-        let statement = SelectStatement(from: ModelSyncMetadata.self,
+        let statement = SelectStatement(from: ModelSyncMetadata.schema,
                                         predicate: field("id").eq(modelType.modelName))
         let rows = try connection.prepare(statement.stringValue).run(statement.variables)
         let result = try rows.convert(to: ModelSyncMetadata.self,
