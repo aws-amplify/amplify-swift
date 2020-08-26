@@ -15,10 +15,10 @@ typealias SQLPredicate = (String, [Binding?])
 /// It walks all nodes of a predicate tree and output the appropriate SQL statement.
 ///
 /// - Parameters:
-///   - modelType: the metatype of the `Model`
+///   - modelSchema: the model schema of the `Model`
 ///   - predicate: the query predicate
 /// - Returns: a tuple containing the SQL string and the associated values
-private func translateQueryPredicate(from modelType: Model.Type,
+private func translateQueryPredicate(from modelSchema: ModelSchema,
                                      predicate: QueryPredicate,
                                      namespace: Substring? = nil) -> SQLPredicate {
     var sql: [String] = []
@@ -65,14 +65,14 @@ private func translateQueryPredicate(from modelType: Model.Type,
 /// compose `insert`, `update`, `delete` and `select` statements with conditions.
 struct ConditionStatement: SQLStatement {
 
-    let modelType: Model.Type
+    let modelSchema: ModelSchema
     let stringValue: String
     let variables: [Binding?]
 
-    init(modelType: Model.Type, predicate: QueryPredicate, namespace: Substring? = nil) {
-        self.modelType = modelType
+    init(modelSchema: ModelSchema, predicate: QueryPredicate, namespace: Substring? = nil) {
+        self.modelSchema = modelSchema
 
-        let (sql, variables) = translateQueryPredicate(from: modelType,
+        let (sql, variables) = translateQueryPredicate(from: modelSchema,
                                                        predicate: predicate,
                                                        namespace: namespace)
         self.stringValue = sql
