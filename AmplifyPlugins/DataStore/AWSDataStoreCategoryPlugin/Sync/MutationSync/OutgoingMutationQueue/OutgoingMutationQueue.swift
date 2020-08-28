@@ -188,15 +188,16 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                 self.processSyncMutationToCloudResult(result, mutationEvent: mutationEvent, api: api)
         }
 
-        let payloadOfOutboxStatus = HubPayload(eventName: HubPayload.EventName.DataStore.outboxStatusChanged,
-                                               data: operationQueue.operationCount == 0 ? true : false)
-        Amplify.Hub.dispatch(to: .dataStore, payload: payloadOfOutboxStatus)
+        operationQueue.addOperation(syncMutationToCloudOperation)
 
         let payloadOfOutgoingMutation = HubPayload(eventName: HubPayload.EventName.DataStore.outboxMutationEnqueued,
                                                    data: mutationEvent)
         Amplify.Hub.dispatch(to: .dataStore, payload: payloadOfOutgoingMutation)
 
-        operationQueue.addOperation(syncMutationToCloudOperation)
+        let payloadOfOutboxStatus = HubPayload(eventName: HubPayload.EventName.DataStore.outboxStatus,
+                                               data: ["isEmpty": operationQueue.operationCount == 0 ? true : false])
+        Amplify.Hub.dispatch(to: .dataStore, payload: payloadOfOutboxStatus)
+
         stateMachine.notify(action: .enqueuedEvent)
     }
 
@@ -257,7 +258,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             self.stateMachine.notify(action: .processedEvent)
         }
     }
-
+    
 }
 
 @available(iOS 13.0, *)

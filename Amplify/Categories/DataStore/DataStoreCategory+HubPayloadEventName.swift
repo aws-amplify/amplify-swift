@@ -30,7 +30,7 @@ public extension HubPayload.EventName.DataStore {
 
     /// Dispatched on DataStore start and also every time a local mutation is enqueued in the outbox
     /// The HubPayload will be a boolean value `isEmpty` to notify if there are mutations in the outbox
-    static let outboxStatusChanged = "DataStore.outboxStatusChanged"
+    static let outboxStatus = "DataStore.outboxStatus"
 
     /// Dispatched when all the graphql subscriptions estabilished
     static let subscriptionEstablished = "DataStore.subscriptionEstablished"
