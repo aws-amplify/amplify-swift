@@ -106,7 +106,7 @@ Not all APIs map neatly to the `resultPublisher` pattern. While this asymmetry i
 
 #### `API.subscribe()`
 
-The `API.subscribe()` method exposes a `subscriptionDataPublisher` for the stream of subscription data, and a `connectionStatePublisher` for the status of the underlying connection. Many apps will only need to use the `connectionStatePublisher`, since a closed GraphQL subscription will be reported as a completion on that publisher. The `connectionStatePublisher` exists for apps that need to inspect when the connection initially begins, even if data has not yet been received by that subscription.
+The `API.subscribe()` method exposes a `subscriptionDataPublisher` for the stream of subscription data, and a `connectionStatePublisher` for the status of the underlying connection. Many apps will only need to use the `subscriptionDataPublisher`, since a closed GraphQL subscription will be reported as a completion on that publisher. The `connectionStatePublisher` exists for apps that need to inspect when the connection initially begins, even if data has not yet been received by that subscription.
 
 #### `Hub.publisher(for:)`
 
