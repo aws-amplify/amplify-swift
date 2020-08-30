@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.2 (2020-08-30)
+
+### Bug Fixes
+
+- typo in iOS Combine docs (#747)
+
 ## 1.1.1 (2020-08-18)
 
 ### Bug Fixes

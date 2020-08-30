@@ -1,19 +1,19 @@
 PODS:
-  - Amplify (1.1.1):
-    - Amplify/Default (= 1.1.1)
-  - Amplify/Default (1.1.1)
-  - AmplifyPlugins/AWSCognitoAuthPlugin (1.1.1):
+  - Amplify (1.1.2):
+    - Amplify/Default (= 1.1.2)
+  - Amplify/Default (1.1.2)
+  - AmplifyPlugins/AWSCognitoAuthPlugin (1.1.2):
     - AWSAuthCore (~> 2.15.0)
     - AWSCore (~> 2.15.0)
     - AWSMobileClient (~> 2.15.0)
-    - AWSPluginsCore (= 1.1.1)
-  - AmplifyTestCommon (1.1.1):
-    - Amplify (= 1.1.1)
-    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.1.1)
-  - AmplifyTestCommon/AWSPluginsTestCommon (1.1.1):
-    - Amplify (= 1.1.1)
+    - AWSPluginsCore (= 1.1.2)
+  - AmplifyTestCommon (1.1.2):
+    - Amplify (= 1.1.2)
+    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.1.2)
+  - AmplifyTestCommon/AWSPluginsTestCommon (1.1.2):
+    - Amplify (= 1.1.2)
     - AWSCore (~> 2.15.0)
-    - AWSPluginsCore (= 1.1.1)
+    - AWSPluginsCore (= 1.1.2)
   - AWSAuthCore (2.15.3):
     - AWSCore (= 2.15.3)
   - AWSCognitoIdentityProvider (2.15.3):
@@ -26,8 +26,8 @@ PODS:
     - AWSCognitoIdentityProvider (= 2.15.3)
   - AWSPinpoint (2.15.3):
     - AWSCore (= 2.15.3)
-  - AWSPluginsCore (1.1.1):
-    - Amplify (= 1.1.1)
+  - AWSPluginsCore (1.1.2):
+    - Amplify (= 1.1.2)
     - AWSCore (~> 2.15.0)
     - AWSMobileClient (~> 2.15.0)
   - CwlCatchException (1.0.2)
@@ -83,16 +83,16 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  Amplify: e23b610dde2539d67ec29843c7f01010b44b98ba
-  AmplifyPlugins: 9e1e1bff2a8b1676307101ca7d768a7be49c0456
-  AmplifyTestCommon: 6c85e20d4d2a7304b4ba0f97868e5a89ff1204d9
+  Amplify: cdb7a7c8b8d4fbd7815e4b25812207516d83416b
+  AmplifyPlugins: 6ee36c02d09f7e848c6b9c6a936328da357761ac
+  AmplifyTestCommon: f1200fd777aba42fc92d63a671cbd5c66edd751a
   AWSAuthCore: 598e8eb56e12799877414d10b04598de12a15992
   AWSCognitoIdentityProvider: 4a721292eda37a8c3ef451e8fec28abe14aff18e
   AWSCognitoIdentityProviderASF: 0fb6ea671c05a63276e320726f680cd880522442
   AWSCore: 5a8f9d7461dbe5ea6a5473c41cf113b687e19136
   AWSMobileClient: 5c29678413764ee3bcd528421331deb0a35b72fb
   AWSPinpoint: 6c17e240a104de90643e0afee5741a7528011800
-  AWSPluginsCore: 4e98e284fff7763470ef94f7538449f20d891f70
+  AWSPluginsCore: fce4a87408b6eba8f060af873c95a0347fbb4f98
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
