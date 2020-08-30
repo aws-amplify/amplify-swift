@@ -4,7 +4,9 @@
 
 ### Bug Fixes
 
-- typo in iOS Combine docs (#747)
+- **Auth**: Updated AWS SDK dependencies to fix crash during `federatedSignIn` (#640)
+- **API**: Add custom 'items' deserialization for List (#711)
+- Fix typo in iOS Combine docs (#747)
 
 ## 1.1.1 (2020-08-18)
 
