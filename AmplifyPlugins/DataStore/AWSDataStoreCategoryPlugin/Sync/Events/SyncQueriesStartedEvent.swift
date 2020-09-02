@@ -8,7 +8,7 @@
 import Foundation
 
 public struct SyncQueriesStartedEvent {
-    var models: [String]
+    let models: [String]
 
     public init(models: [String]) {
         self.models = models

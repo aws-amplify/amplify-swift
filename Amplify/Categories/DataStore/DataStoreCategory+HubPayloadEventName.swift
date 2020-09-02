@@ -29,19 +29,19 @@ public extension HubPayload.EventName.DataStore {
     // TODO: networkStatusChanged to be implemented
     static let networkStatusChanged = "DataStore.networkStatusChanged"
 
-    /// Dispatched on DataStore start and also every time a local mutation is enqueued in the outbox
-    /// The HubPayload will be a boolean value `isEmpty` to notify if there are mutations in the outbox
+    /// Dispatched on DataStore start and also every time a local mutation is enqueued and processed in the outbox
+    /// HubPayload `OutboxStatusEvent` contains a boolean value `isEmpty` to notify if there are mutations in the outbox
     static let outboxStatus = "DataStore.outboxStatus"
 
     /// Dispatched when all the graphql subscriptions estabilished
     static let subscriptionEstablished = "DataStore.subscriptionEstablished"
 
     /// Dispatched when DataStore is about to start sync queries
-    /// The HubPayload will be the `name` of each model
+    /// HubPayload `syncQueriesStartedEvent` contains an array of each model's `name`
     static let syncQueriesStarted = "DataStore.syncQueriesStarted"
 
-    /// Dispatched once for each model when the model instances has been synced (the syncQuery pagination is done)
-    /// `ModelSyncedResult` will be the HubPayload which contains `ModelName`, `isFullSync`,
+    /// Dispatched once for each model when the model instances has been synced and updated locally
+    /// `ModelSyncedEvent` will be the HubPayload which contains `ModelName`, `isFullSync`,
     /// `isDeltaSync` and the count for each `MutationType` (create, update, delete)
     // TODO: modelSynced to be implemented
     static let modelSynced = "DataStore.modelSynced"
@@ -50,7 +50,7 @@ public extension HubPayload.EventName.DataStore {
     // TODO: syncQueriesReady to be implemented
     static let syncQueriesReady = "DataStore.syncQueriesReady"
 
-    /// Dispatched when DataStore is ready
+    /// Dispatched when DataStore is ready, at this point all data is available
     // TODO: ready to be implemented
     static let ready = "DataStore.ready"
 

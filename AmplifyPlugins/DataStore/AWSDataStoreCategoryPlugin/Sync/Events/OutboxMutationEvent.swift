@@ -10,8 +10,8 @@ import AWSPluginsCore
 import Foundation
 
 public struct OutboxMutationEvent {
-    var modelName: String
-    var element: OutboxMutationEventElement
+    let modelName: String
+    let element: OutboxMutationEventElement
 
     public init(modelName: String,
                 element: OutboxMutationEventElement) {

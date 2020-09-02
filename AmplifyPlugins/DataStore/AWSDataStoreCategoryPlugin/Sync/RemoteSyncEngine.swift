@@ -271,8 +271,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
                 self.stateMachine.notify(action: .errored(dataStoreError))
             } else {
-                let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
-                Amplify.Hub.dispatch(to: .dataStore, payload: payload)
                 self.log.info("Successfully finished sync")
 
                 self.remoteSyncTopicPublisher.send(.performedInitialSync)

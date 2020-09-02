@@ -197,17 +197,18 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             localModel = try mutationEvent.decodeModel()
         } catch {
             log.error("Couldn't decode local model")
+//            operationQueue.addOperation(syncMutationToCloudOperation)
+            stateMachine.notify(action: .enqueuedEvent)
             return
         }
 
-        let outboxMutationEnqueuedEvent = OutboxMutationEvent.fromModelWithoutMetadata(modelName: mutationEvent.modelName,
-                                                                                       model: localModel)
-
         operationQueue.addOperation(syncMutationToCloudOperation)
 
-        let payloadOfOutgoingMutation = HubPayload(eventName: HubPayload.EventName.DataStore.outboxMutationEnqueued,
+        let outboxMutationEnqueuedEvent = OutboxMutationEvent.fromModelWithoutMetadata(modelName: mutationEvent.modelName,
+                                                                                       model: localModel)
+        let payloadOfOutboxMutation = HubPayload(eventName: HubPayload.EventName.DataStore.outboxMutationEnqueued,
                                                    data: outboxMutationEnqueuedEvent)
-        Amplify.Hub.dispatch(to: .dataStore, payload: payloadOfOutgoingMutation)
+        Amplify.Hub.dispatch(to: .dataStore, payload: payloadOfOutboxMutation)
 
         let outboxStatusEvent = OutboxStatusEvent(isEmpty: operationQueue.operationCount == 0 ? true : false)
         let payloadOfOutboxStatus = HubPayload(eventName: HubPayload.EventName.DataStore.outboxStatus,
@@ -271,22 +272,31 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                 self.log.verbose("mutationEvent deleted successfully")
             }
 
-            guard let mutationSyncMetadata = mutationSyncMetadata else {
-                return
-            }
-
             let localModel: Model
             do {
                 localModel = try mutationEvent.decodeModel()
             } catch {
                 self.log.error("Couldn't decode local model")
+//                self.stateMachine.notify(action: .processedEvent)
                 return
             }
 
-            let outboxMutationProcessedEvent = OutboxMutationEvent
-                .fromModelWithMetadata(modelName: mutationEvent.modelName,
-                                       model: localModel,
-                                       mutationSync: mutationSyncMetadata)
+            let outboxMutationProcessedEvent: OutboxMutationEvent
+            if mutationSyncMetadata == nil {
+                outboxMutationProcessedEvent = OutboxMutationEvent
+                .fromModelWithoutMetadata(modelName: mutationEvent.modelName,
+                                          model: localModel)
+            } else {
+                guard let mutationSyncMetadata = mutationSyncMetadata else {
+                    self.log.error("Couldn't get mutationSyncMetadata")
+                    self.stateMachine.notify(action: .processedEvent)
+                    return
+                }
+                outboxMutationProcessedEvent = OutboxMutationEvent
+                    .fromModelWithMetadata(modelName: mutationEvent.modelName,
+                                           model: localModel,
+                                           mutationSync: mutationSyncMetadata)
+            }
 
             let payload = HubPayload(eventName: HubPayload.EventName.DataStore.outboxMutationProcessed,
                                      data: outboxMutationProcessedEvent)
