@@ -10,22 +10,10 @@ public extension HubPayload.EventName {
 }
 
 public extension HubPayload.EventName.DataStore {
-    /// Dispatched when DataStore begins syncing to the remote API via the API category
-    static let syncStarted = "DataStore.syncStarted"
-
-    /// Dispatched when DataStore receives a sync response from the remote API via the API category. This event does not
-    /// define the source of the event--it could be in response to either a subscription or a locally-sourced mutation.
-    /// Regardless of source, incoming sync updates always have the possibility of updating local data, so listeners
-    /// who are interested in model updates must be notified in any case of a sync received. The HubPayload will be a
-    /// `MutationEvent` instance containing the newly mutated data from the remote API.
-    static let syncReceived = "DataStore.syncReceived"
-
-    /// Dispatched when DataStore receives a sync response from the remote API via the API category. The Hub Payload
-    /// will be a `MutationEvent` instance that caused the conditional save failed.
-    static let conditionalSaveFailed = "DataStore.conditionalSaveFailed"
 
     /// Dispatched when network status has changed (active or not)
     /// The HubPayload will be a boolean value `isActive` indicating the status of network
+    // TODO: networkStatusChanged to be implemented
     static let networkStatusChanged = "DataStore.networkStatusChanged"
 
     /// Dispatched on DataStore start and also every time a local mutation is enqueued in the outbox
@@ -39,15 +27,18 @@ public extension HubPayload.EventName.DataStore {
     /// The HubPayload will be the `name` of each model
     static let syncQueriesStarted = "DataStore.syncQueriesStarted"
 
-    /// Dispatched once for each model when the model has been synced (the syncQuery pagination is done)
-    /// `InitialSyncOperationResult` will be the HubPayload which contains `ModelName`, `isFullSync`,
+    /// Dispatched once for each model when the model instances has been synced (the syncQuery pagination is done)
+    /// `ModelSyncedResult` will be the HubPayload which contains `ModelName`, `isFullSync`,
     /// `isDeltaSync` and the count for each `MutationType` (create, update, delete)
+    // TODO: modelSynced to be implemented
     static let modelSynced = "DataStore.modelSynced"
 
-    /// Dispatched when all models have been synced
+    /// Dispatched when all model instances have been synced
+    // TODO: syncQueriesReady to be implemented
     static let syncQueriesReady = "DataStore.syncQueriesReady"
 
     /// Dispatched when DataStore is ready
+    // TODO: ready to be implemented
     static let ready = "DataStore.ready"
 
     /// Dispatched when a local mutation is enqueued in the outbox

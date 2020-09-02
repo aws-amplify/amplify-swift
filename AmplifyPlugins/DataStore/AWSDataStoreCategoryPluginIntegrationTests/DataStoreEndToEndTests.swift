@@ -180,31 +180,33 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let conditionalReceived = expectation(description: "Conditional save failed received")
 
         let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
-            guard let mutationEvent = payload.data as? MutationEvent
-                else {
-                    XCTFail("Can't cast payload as mutation event")
-                    return
-            }
+            if payload.eventName == HubPayload.EventName.DataStore.syncReceived || payload.eventName == HubPayload.EventName.DataStore.conditionalSaveFailed {
+                guard let mutationEvent = payload.data as? MutationEvent
+                    else {
+                        XCTFail("Can't cast payload as mutation event")
+                        return
+                }
 
-            // This check is to protect against stray events being processed after the test has completed,
-            // and it shouldn't be construed as a pattern necessary for production applications.
-            guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
-                return
-            }
-
-            if payload.eventName == HubPayload.EventName.DataStore.syncReceived {
-                if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                    XCTAssertEqual(post.content, newPost.content)
-                    XCTAssertEqual(mutationEvent.version, 1)
-                    createReceived.fulfill()
+                // This check is to protect against stray events being processed after the test has completed,
+                // and it shouldn't be construed as a pattern necessary for production applications.
+                guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
                     return
                 }
-            } else if payload.eventName == HubPayload.EventName.DataStore.conditionalSaveFailed {
-                if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
-                    XCTAssertEqual(post.title, updatedPost.title)
-                    XCTAssertEqual(mutationEvent.version, 1)
-                    conditionalReceived.fulfill()
-                    return
+
+                if payload.eventName == HubPayload.EventName.DataStore.syncReceived {
+                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                        XCTAssertEqual(post.content, newPost.content)
+                        XCTAssertEqual(mutationEvent.version, 1)
+                        createReceived.fulfill()
+                        return
+                    }
+                } else if payload.eventName == HubPayload.EventName.DataStore.conditionalSaveFailed {
+                    if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
+                        XCTAssertEqual(post.title, updatedPost.title)
+                        XCTAssertEqual(mutationEvent.version, 1)
+                        conditionalReceived.fulfill()
+                        return
+                    }
                 }
             }
         }

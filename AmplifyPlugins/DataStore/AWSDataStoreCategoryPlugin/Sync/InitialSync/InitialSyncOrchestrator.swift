@@ -9,7 +9,7 @@ import Amplify
 import AWSPluginsCore
 
 protocol InitialSyncOrchestrator {
-    func sync(completion: @escaping (Result<ModelSyncedPayload?, DataStoreError>) -> Void)
+    func sync(completion: @escaping (Result<Void, DataStoreError>) -> Void)
 }
 
 // For testing
@@ -22,7 +22,7 @@ typealias InitialSyncOrchestratorFactory =
 
 @available(iOS 13.0, *)
 final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
-    typealias SyncOperationResult = Result<ModelSyncedPayload?, DataStoreError>
+    typealias SyncOperationResult = Result<Void, DataStoreError>
     typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
 
     private let dataStoreConfiguration: DataStoreConfiguration
@@ -86,17 +86,12 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     /// Enqueues sync operations for models and downstream dependencies
     private func enqueueSyncOperation(for modelType: Model.Type) {
         let syncOperationCompletion: SyncOperationResultHandler = { result in
-            switch result {
-            case .failure(let dataStoreError):
+            if case .failure(let dataStoreError) = result {
                 let syncError = DataStoreError.sync(
                     "An error occurred syncing \(modelType.modelName)",
                     "",
                     dataStoreError)
                 self.syncErrors.append(syncError)
-            case .success(let modelSyncedPayload):
-                let payload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
-                                         data: modelSyncedPayload)
-                Amplify.Hub.dispatch(to: .dataStore, payload: payload)
             }
         }
 
@@ -122,13 +117,15 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
             return
         }
 
-        completion?(.success(nil))
+        completion?(.successfulVoid)
     }
 
     private func dispatchSyncQueriesStarted(_ syncableModels: [Model.Type]) {
         let modelTask = syncableModels.map { $0.modelName }
+
+        let syncQueriesStartedEvent = SyncQueriesStartedEvent(models: modelTask)
         let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesStarted,
-                                 data: ["models": modelTask])
+                                 data: syncQueriesStartedEvent)
         Amplify.Hub.dispatch(to: .dataStore, payload: payload)
     }
 

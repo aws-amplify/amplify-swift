@@ -292,9 +292,9 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 return
         }
 
-        let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncReceived,
-                                 data: mutationEvent)
-        Amplify.Hub.dispatch(to: .dataStore, payload: payload)
+//        let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncReceived,
+//                                 data: mutationEvent)
+//        Amplify.Hub.dispatch(to: .dataStore, payload: payload)
 
         mutationEventPublisher.send(mutationEvent)
 

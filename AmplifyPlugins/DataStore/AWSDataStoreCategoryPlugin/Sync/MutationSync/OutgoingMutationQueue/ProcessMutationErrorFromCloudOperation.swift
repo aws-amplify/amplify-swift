@@ -82,9 +82,6 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             let errorType = AppSyncErrorType(errorTypeValue)
             switch errorType {
             case .conditionalCheck:
-                let payload = HubPayload(eventName: HubPayload.EventName.DataStore.conditionalSaveFailed,
-                                         data: mutationEvent)
-                Amplify.Hub.dispatch(to: .dataStore, payload: payload)
                 finish(result: .success(nil))
             case .conflictUnhandled:
                 processConflictUnhandled(extensions)
@@ -353,10 +350,6 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                 finish(result: .failure(error))
                 return
         }
-
-        let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncReceived,
-                                 data: mutationEvent)
-        Amplify.Hub.dispatch(to: .dataStore, payload: payload)
 
         finish(result: .success(mutationEvent))
     }

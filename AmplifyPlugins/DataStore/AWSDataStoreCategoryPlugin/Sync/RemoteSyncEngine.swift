@@ -322,8 +322,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     private func notifySyncStarted() {
         resetCurrentAttemptNumber()
-        Amplify.Hub.dispatch(to: .dataStore,
-                             payload: HubPayload(eventName: HubPayload.EventName.DataStore.syncStarted))
 
         remoteSyncTopicPublisher.send(.syncStarted)
         stateMachine.notify(action: .notifiedSyncStarted)

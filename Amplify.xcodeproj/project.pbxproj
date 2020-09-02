@@ -353,13 +353,13 @@
 		B9FAA180238FBB5D009414B4 /* Model+Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA17F238FBB5D009414B4 /* Model+Array.swift */; };
 		B9FB05F82383740D00DE1FD4 /* DataStoreStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FB05F72383740D00DE1FD4 /* DataStoreStatement.swift */; };
 		D83C5160248964780091548E /* ModelGraphQLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83C515F248964780091548E /* ModelGraphQLTests.swift */; };
+		D8DD7A1D24A1CCCD001C49FD /* QuerySortInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD7A1C24A1CCCD001C49FD /* QuerySortInput.swift */; };
 		FA00F68824DA37EE003E8A71 /* AuthCategoryBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00F68724DA37EE003E8A71 /* AuthCategoryBehavior+Combine.swift */; };
 		FA00F68A24DA3A43003E8A71 /* AuthCategoryDeviceBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00F68924DA3A43003E8A71 /* AuthCategoryDeviceBehavior+Combine.swift */; };
 		FA00F68C24DA3A8F003E8A71 /* AuthCategoryUserBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00F68B24DA3A8F003E8A71 /* AuthCategoryUserBehavior+Combine.swift */; };
 		FA00F68E24DA3DFF003E8A71 /* HubCategoryBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00F68D24DA3DFE003E8A71 /* HubCategoryBehavior+Combine.swift */; };
 		FA00F69024DA3F95003E8A71 /* HubCombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00F68F24DA3F95003E8A71 /* HubCombineTests.swift */; };
 		FA00F69224DA4087003E8A71 /* PredictionsCategoryBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00F69124DA4087003E8A71 /* PredictionsCategoryBehavior+Combine.swift */; };
-		D8DD7A1D24A1CCCD001C49FD /* QuerySortInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD7A1C24A1CCCD001C49FD /* QuerySortInput.swift */; };
 		FA0173352375F8A5005DDDFC /* LoggingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173342375F8A5005DDDFC /* LoggingError.swift */; };
 		FA0173372375FAA5005DDDFC /* HubError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173362375FAA5005DDDFC /* HubError.swift */; };
 		FA05B83424CE265E0026180B /* StorageCategory+ClientBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA05B83324CE265D0026180B /* StorageCategory+ClientBehavior+Combine.swift */; };
