@@ -107,6 +107,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         switch receiveValue {
         case .mutationEvent(let event):
             eventReconciliationQueueTopic.send(.mutationEvent(event))
+            Amplify.Hub.dispatch(to: .dataStore, payload: HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady))
         case .connected(let modelName):
             connectionStatusSerialQueue.async {
                 self.reconciliationQueueConnectionStatus[modelName] = true

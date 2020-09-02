@@ -47,10 +47,13 @@ typealias ModelReconciliationQueueFactory = (
 ///   event.
 @available(iOS 13.0, *)
 final class AWSModelReconciliationQueue: ModelReconciliationQueue {
+    typealias ReconsileOpResult = Result<MutationEvent, DataStoreError>
+    typealias ReconsileOpResultHandler = (ReconsileOpResult) -> Void
     /// Exposes a publisher for incoming subscription events
     private let incomingSubscriptionEvents: IncomingSubscriptionEventPublisher
 
     weak var storageAdapter: StorageEngineAdapter?
+    private var modelSyncedEvent: ModelSyncedEvent.Builder
 
     /// A buffer queue for incoming subsscription events, waiting for this ReconciliationQueue to be `start`ed. Once
     /// the ReconciliationQueue is started, each event in the `incomingRemoveEventQueue` will be submitted to the
@@ -62,6 +65,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     private let reconcileAndSaveQueue: OperationQueue
 
     private let modelName: String
+    private let modelType: Model.Type
 
     private var incomingEventsSink: AnyCancellable?
     private var reconcileAndLocalSaveOperationSinks: Set<AnyCancellable?>
@@ -77,7 +81,12 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
          auth: AuthCategoryBehavior?,
          incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
 
+        self.modelType = modelType
         self.modelName = modelType.modelName
+        self.modelSyncedEvent = ModelSyncedEvent.Builder()
+        modelSyncedEvent.modelName = modelName
+//        modelSyncedEvent.isFullSync = getLastSyncTime() == nil
+//        modelSyncedEvent.isDeltaSync = getLastSyncTime() != nil
 
         self.storageAdapter = storageAdapter
 
@@ -131,7 +140,27 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     }
 
     func enqueue(_ remoteModel: MutationSync<AnyModel>) {
+        let reconsileOpCompletion: ReconsileOpResultHandler = { result in
+            switch result {
+            case .failure(let error):
+                self.log.error("Error reconcile and local save: \(error)")
+            case .success(let mutationEvent):
+
+                switch mutationEvent.mutationType {
+                case "create":
+                    self.modelSyncedEvent.createCount += 1
+                case "update":
+                    self.modelSyncedEvent.updateCount += 1
+                case "delete":
+                    self.modelSyncedEvent.deleteCount += 1
+                default:
+                    print("something")
+                }
+                self.log.info("Received mutation event: \(mutationEvent)")
+            }
+        }
         let reconcileOp = ReconcileAndLocalSaveOperation(remoteModel: remoteModel,
+<<<<<<< HEAD
                                                          storageAdapter: storageAdapter)
         var reconcileAndLocalSaveOperationSink: AnyCancellable?
 
@@ -140,8 +169,18 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             if case .failure = completion {
                 self.modelReconciliationQueueSubject.send(completion: completion)
             }
+=======
+                                                         storageAdapter: storageAdapter,
+                                                         completion: reconsileOpCompletion)
+        reconcileAndLocalSaveOperationSink = reconcileOp.publisher.sink(receiveCompletion: { error in
+            self.modelReconciliationQueueSubject.send(completion: error)
+>>>>>>> switching branch
         }, receiveValue: { mutationEvent in
             self.modelReconciliationQueueSubject.send(.mutationEvent(mutationEvent))
+            let payload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
+                                     data: self.modelSyncedEvent)
+            Amplify.Hub.dispatch(to: .dataStore, payload: payload)
+
         })
         reconcileAndLocalSaveOperationSinks.insert(reconcileAndLocalSaveOperationSink)
         reconcileAndSaveQueue.addOperation(reconcileOp)
@@ -168,6 +207,40 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             modelReconciliationQueueSubject.send(completion: .failure(dataStoreError))
         }
     }
+//    private func getLastSyncTime() -> Int? {
+//        let lastSyncMetadata = getLastSyncMetadata()
+//        guard let lastSync = lastSyncMetadata?.lastSync else {
+//            return nil
+//        }
+//
+//        //TODO: Update to use TimeInterval.milliseconds when it is pushed to main branch
+//        // https://github.com/aws-amplify/amplify-ios/issues/398
+//        let lastSyncDate = Date(timeIntervalSince1970: TimeInterval(lastSync) / 1_000)
+//        let secondsSinceLastSync = (lastSyncDate.timeIntervalSinceNow * -1)
+//        if secondsSinceLastSync < 0 {
+//            log.info("lastSyncTime was in the future, assuming base query")
+//            return nil
+//        }
+//
+//        let shouldDoDeltaQuery = secondsSinceLastSync < dataStoreConfiguration.syncInterval
+//        return shouldDoDeltaQuery ? lastSync : nil
+//    }
+//
+//    private func getLastSyncMetadata() -> ModelSyncMetadata? {
+//        guard let storageAdapter = storageAdapter else {
+//            log.error(error: DataStoreError.nilStorageAdapter())
+//            return nil
+//        }
+//
+//        do {
+//            let modelSyncMetadata = try storageAdapter.queryModelSyncMetadata(for: self.modelType)
+//            return modelSyncMetadata
+//        } catch {
+//            log.error(error: error)
+//            return nil
+//        }
+//
+//    }
 }
 
 @available(iOS 13.0, *)

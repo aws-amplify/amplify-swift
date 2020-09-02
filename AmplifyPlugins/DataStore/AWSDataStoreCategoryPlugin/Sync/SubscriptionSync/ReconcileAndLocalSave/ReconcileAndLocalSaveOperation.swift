@@ -14,6 +14,9 @@ import AWSPluginsCore
 /// a later version than the stored model), then write the new data to the store.
 @available(iOS 13.0, *)
 class ReconcileAndLocalSaveOperation: AsynchronousOperation {
+
+    private var completion: AWSModelReconciliationQueue.ReconsileOpResultHandler
+
     /// Disambiguation for the version of the model incoming from the remote API
     typealias RemoteModel = MutationSync<AnyModel>
 
@@ -40,12 +43,15 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
     init(remoteModel: RemoteModel,
          storageAdapter: StorageEngineAdapter?,
-         stateMachine: StateMachine<State, Action>? = nil) {
+         stateMachine: StateMachine<State, Action>? = nil,
+         completion: @escaping AWSModelReconciliationQueue.ReconsileOpResultHandler) {
         self.remoteModel = remoteModel
         self.storageAdapter = storageAdapter
         self.stateMachine = stateMachine ?? StateMachine(initialState: .waiting,
                                                          resolver: Resolver.resolve(currentState:action:))
         self.mutationEventPublisher = PassthroughSubject<MutationEvent, DataStoreError>()
+
+        self.completion = completion
 
         super.init()
 
@@ -60,7 +66,6 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                     self.respond(to: newState)
                 }
         }
-
     }
 
     override func main() {
@@ -301,6 +306,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         mutationEventPublisher.send(mutationEvent)
 
         stateMachine.notify(action: .notified)
+        completion(.success(mutationEvent))
     }
 
     private func notifyFinished() {
