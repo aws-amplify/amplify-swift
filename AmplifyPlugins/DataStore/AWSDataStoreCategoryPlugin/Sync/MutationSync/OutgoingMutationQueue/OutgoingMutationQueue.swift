@@ -71,7 +71,6 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         }
 
         log.verbose("Initialized")
-
         self.stateMachine.notify(action: .initialized)
     }
 
@@ -302,11 +301,6 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         }
     }
 
-}
-
-struct OutboxMutationProcessedEvent {
-    let model: String
-    let mutationSync: MutationSync<AnyModel>
 }
 
 @available(iOS 13.0, *)
