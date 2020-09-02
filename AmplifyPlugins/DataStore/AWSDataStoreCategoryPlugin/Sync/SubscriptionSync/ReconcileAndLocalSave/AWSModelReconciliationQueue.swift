@@ -85,6 +85,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         self.modelName = modelType.modelName
         self.modelSyncedEvent = ModelSyncedEvent.Builder()
         modelSyncedEvent.modelName = modelName
+        
 //        modelSyncedEvent.isFullSync = getLastSyncTime() == nil
 //        modelSyncedEvent.isDeltaSync = getLastSyncTime() != nil
 
@@ -156,6 +157,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 default:
                     print("something")
                 }
+                
                 self.log.info("Received mutation event: \(mutationEvent)")
             }
         }

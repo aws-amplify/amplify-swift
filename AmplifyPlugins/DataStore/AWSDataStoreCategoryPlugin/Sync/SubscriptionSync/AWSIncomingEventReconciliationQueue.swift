@@ -108,17 +108,18 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         case .mutationEvent(let event):
             eventReconciliationQueueTopic.send(.mutationEvent(event))
             Amplify.Hub.dispatch(to: .dataStore, payload: HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady))
+        }
         case .connected(let modelName):
-            connectionStatusSerialQueue.async {
-                self.reconciliationQueueConnectionStatus[modelName] = true
-                if self.reconciliationQueueConnectionStatus.count == self.reconciliationQueues.count {
-                    self.eventReconciliationQueueTopic.send(.initialized)
-                }
+        connectionStatusSerialQueue.async {
+            self.reconciliationQueueConnectionStatus[modelName] = true
+            if self.reconciliationQueueConnectionStatus.count == self.reconciliationQueues.count {
+                self.eventReconciliationQueueTopic.send(.initialized)
             }
-        default:
+        }
+            default:
             break
         }
-    }
+}
 
     func cancel() {
         modelReconciliationQueueSinks.values.forEach { $0.cancel() }

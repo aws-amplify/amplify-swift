@@ -156,7 +156,10 @@ final class InitialSyncOperation: AsynchronousOperation {
 
         let items = syncQueryResult.items
         recordsReceived += UInt(items.count)
-
+        
+        let isFullSync = lastSyncTime == nil
+        reconciliationQueue.setReconciliationType(modelType, isFullSync: isFullSync)
+        
         for item in items {
             reconciliationQueue.offer(item)
         }
