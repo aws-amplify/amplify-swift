@@ -20,10 +20,10 @@ extension Model {
         schema.fields.forEach {
             let field = $0.value
             let name = field.graphQLName
-            let fieldValue = self[field.name]
+            let fieldValue = self[field.name] ?? nil
 
             // swiftlint:disable:next syntactic_sugar
-            guard case .some(Optional<Any>.some(let value)) = fieldValue ?? nil else {
+            guard case .some(Optional<Any>.some(let value)) = fieldValue else {
                 input.updateValue(nil, forKey: name)
                 return
             }
