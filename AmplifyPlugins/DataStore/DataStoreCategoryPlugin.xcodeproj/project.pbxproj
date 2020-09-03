@@ -98,7 +98,6 @@
 		D80064F62499297800935DA3 /* MockFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80064F52499297800935DA3 /* MockFileManager.swift */; };
 		D838AB4424FF264600BF4940 /* OutboxStatusEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D838AB4324FF264600BF4940 /* OutboxStatusEvent.swift */; };
 		D838AB4624FF268400BF4940 /* SyncQueriesStartedEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D838AB4524FF268400BF4940 /* SyncQueriesStartedEvent.swift */; };
-		D838AB4A25000E3900BF4940 /* OutboxMutationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D838AB4925000E3900BF4940 /* OutboxMutationEvent.swift */; };
 		D888E80A24A65B3800F4CE3E /* DataStoreLocalStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D888E80924A65B3800F4CE3E /* DataStoreLocalStoreTests.swift */; };
 		D888E80C24A65DC200F4CE3E /* LocalStoreIntegrationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D888E80B24A65DC200F4CE3E /* LocalStoreIntegrationTestBase.swift */; };
 		D8B90862249839D4002593F5 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21233DD7247591D100039337 /* amplifyconfiguration.json */; };
@@ -316,7 +315,6 @@
 		D80064F52499297800935DA3 /* MockFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFileManager.swift; sourceTree = "<group>"; };
 		D838AB4324FF264600BF4940 /* OutboxStatusEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutboxStatusEvent.swift; sourceTree = "<group>"; };
 		D838AB4524FF268400BF4940 /* SyncQueriesStartedEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncQueriesStartedEvent.swift; sourceTree = "<group>"; };
-		D838AB4925000E3900BF4940 /* OutboxMutationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutboxMutationEvent.swift; sourceTree = "<group>"; };
 		D888E80924A65B3800F4CE3E /* DataStoreLocalStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreLocalStoreTests.swift; sourceTree = "<group>"; };
 		D888E80B24A65DC200F4CE3E /* LocalStoreIntegrationTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStoreIntegrationTestBase.swift; sourceTree = "<group>"; };
 		D8C5BA58249815A6007C3A68 /* DataStoreConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConfigurationTests.swift; sourceTree = "<group>"; };
@@ -661,7 +659,6 @@
 			isa = PBXGroup;
 			children = (
 				D838AB4524FF268400BF4940 /* SyncQueriesStartedEvent.swift */,
-				D838AB4925000E3900BF4940 /* OutboxMutationEvent.swift */,
 				D838AB4324FF264600BF4940 /* OutboxStatusEvent.swift */,
 			);
 			path = Events;
@@ -1475,7 +1472,6 @@
 				FA6C3FEE239890B500A73110 /* AWSMutationEventPublisher.swift in Sources */,
 				2149E5D02388684F00873955 /* QueryPredicate+SQLite.swift in Sources */,
 				FA55A54B2391EAB5002AFF2D /* MutationEventSubscriber.swift in Sources */,
-				D838AB4A25000E3900BF4940 /* OutboxMutationEvent.swift in Sources */,
 				FA3B3F07238F23CA002EFDB3 /* OutgoingMutationQueue+Resolver.swift in Sources */,
 				2149E5D22388684F00873955 /* SQLStatement+Condition.swift in Sources */,
 				6B3CC61123F5E6210008ECBC /* RemoteSyncEngine+Action.swift in Sources */,
