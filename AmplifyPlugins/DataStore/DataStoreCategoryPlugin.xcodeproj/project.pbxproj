@@ -103,6 +103,8 @@
 		D8B90862249839D4002593F5 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21233DD7247591D100039337 /* amplifyconfiguration.json */; };
 		D8C5BA59249815A6007C3A68 /* DataStoreConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C5BA58249815A6007C3A68 /* DataStoreConfigurationTests.swift */; };
 		D8D900A4249DB599004042E7 /* QuerySort+SQLite.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D900A3249DB599004042E7 /* QuerySort+SQLite.swift */; };
+		D8E9992425013C2F0006170A /* DataStoreHubEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E9992325013C2F0006170A /* DataStoreHubEventsTests.swift */; };
+		D8E99926250142790006170A /* HubEventsIntegrationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E99925250142790006170A /* HubEventsIntegrationTestBase.swift */; };
 		FA0427C82396C27400D25AB0 /* SyncEngineStartupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0427C72396C27400D25AB0 /* SyncEngineStartupTests.swift */; };
 		FA0427CA2396C35500D25AB0 /* InitialSyncOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0427C92396C35500D25AB0 /* InitialSyncOrchestrator.swift */; };
 		FA0427CC2396C7E400D25AB0 /* InitialSyncOrchestratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0427CB2396C7E400D25AB0 /* InitialSyncOrchestratorTests.swift */; };
@@ -319,6 +321,8 @@
 		D888E80B24A65DC200F4CE3E /* LocalStoreIntegrationTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStoreIntegrationTestBase.swift; sourceTree = "<group>"; };
 		D8C5BA58249815A6007C3A68 /* DataStoreConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConfigurationTests.swift; sourceTree = "<group>"; };
 		D8D900A3249DB599004042E7 /* QuerySort+SQLite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QuerySort+SQLite.swift"; sourceTree = "<group>"; };
+		D8E9992325013C2F0006170A /* DataStoreHubEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreHubEventsTests.swift; sourceTree = "<group>"; };
+		D8E99925250142790006170A /* HubEventsIntegrationTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubEventsIntegrationTestBase.swift; sourceTree = "<group>"; };
 		DCC3AA75D77D0DB916EC42DB /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
 		EA320D973669D3843FDF755E /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA53DF78CC578B7C81E72D83 /* Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -604,6 +608,7 @@
 			children = (
 				21233DD7247591D100039337 /* amplifyconfiguration.json */,
 				FA6B0EA9249445D50062AA59 /* AWSDataStorePluginConfigurationTests.swift */,
+				D8E9992325013C2F0006170A /* DataStoreHubEventsTests.swift */,
 				FAB571412395A3E80006A5F8 /* DataStoreEndToEndTests.swift */,
 				D888E80924A65B3800F4CE3E /* DataStoreLocalStoreTests.swift */,
 				D8C5BA58249815A6007C3A68 /* DataStoreConfigurationTests.swift */,
@@ -780,6 +785,7 @@
 			isa = PBXGroup;
 			children = (
 				FAB5713F23958C210006A5F8 /* SyncEngineIntegrationTestBase.swift */,
+				D8E99925250142790006170A /* HubEventsIntegrationTestBase.swift */,
 				D888E80B24A65DC200F4CE3E /* LocalStoreIntegrationTestBase.swift */,
 				FAD2BDF5239583B2006EB065 /* TestModelRegistration.swift */,
 			);
@@ -1600,6 +1606,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8E9992425013C2F0006170A /* DataStoreHubEventsTests.swift in Sources */,
 				D8C5BA59249815A6007C3A68 /* DataStoreConfigurationTests.swift in Sources */,
 				2149E62D23886D3900873955 /* SyncMetadataTests.swift in Sources */,
 				FAD2BDF6239583B2006EB065 /* TestModelRegistration.swift in Sources */,
@@ -1607,6 +1614,7 @@
 				D888E80C24A65DC200F4CE3E /* LocalStoreIntegrationTestBase.swift in Sources */,
 				FA3841EB23889D6C0070AD5B /* SubscriptionEndToEndTests.swift in Sources */,
 				FAB571422395A3E80006A5F8 /* DataStoreEndToEndTests.swift in Sources */,
+				D8E99926250142790006170A /* HubEventsIntegrationTestBase.swift in Sources */,
 				FAB5714023958C210006A5F8 /* SyncEngineIntegrationTestBase.swift in Sources */,
 				FA2E6B8D2497C17500779D2F /* AWSDataStorePluginConfigurationTests.swift in Sources */,
 			);

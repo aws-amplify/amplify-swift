@@ -138,7 +138,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                        mutationEventPublisher: MutationEventPublisher) {
         log.verbose(#function)
         self.api = api
-        dispatchOutboxStatusEvent(isEmpty: operationQueue.operationCount == 0)
+
+        dispatchOutboxStatusEvent(isEmpty: checkStatus())
         operationQueue.isSuspended = false
 
         // State machine notification to ".receivedSubscription" will be handled in `receive(subscription:)`
@@ -188,7 +189,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                     "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent.id); result: \(result)")
                 self.processSyncMutationToCloudResult(result, mutationEvent: mutationEvent, api: api)
         }
-        
+
         dispatchOutboxStatusEvent(isEmpty: false)
         operationQueue.addOperation(syncMutationToCloudOperation)
         stateMachine.notify(action: .enqueuedEvent)
@@ -249,10 +250,29 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         }
     }
 
+    private func checkStatus() -> Bool {
+        var isEmpty = true
+        let fields = MutationEvent.keys
+        let predicate = fields.inProcess == false || fields.inProcess == nil
+
+        storageAdapter.query(MutationEvent.self,
+                             predicate: predicate,
+                             sort: nil,
+                             paginationInput: nil) { result in
+            switch result {
+            case .success(let events):
+                isEmpty = events.isEmpty
+            case .failure(let error):
+                log.error("Error quering mutation events: \(error)")
+            }
+        }
+        return isEmpty
+    }
+
     private func dispatchOutboxStatusEvent(isEmpty: Bool) {
         let outboxStatusEvent = OutboxStatusEvent(isEmpty: isEmpty)
         let outboxStatusEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.outboxStatus,
-                                               data: outboxStatusEvent)
+                                                  data: outboxStatusEvent)
         Amplify.Hub.dispatch(to: .dataStore, payload: outboxStatusEventPayload)
     }
 

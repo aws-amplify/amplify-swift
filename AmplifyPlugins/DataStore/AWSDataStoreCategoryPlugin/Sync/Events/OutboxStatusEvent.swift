@@ -7,8 +7,9 @@
 
 import Foundation
 
+/// Used as HubPayload for the `OutboxStatus`
 public struct OutboxStatusEvent {
-    let isEmpty: Bool
+    public let isEmpty: Bool /// status of outbox: empty or not
 
     public init(isEmpty: Bool) {
         self.isEmpty = isEmpty

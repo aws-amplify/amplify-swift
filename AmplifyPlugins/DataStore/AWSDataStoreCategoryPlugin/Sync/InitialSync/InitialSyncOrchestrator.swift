@@ -71,7 +71,8 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
             self.resolveCompletion()
         }
 
-        dispatchSyncQueriesStarted(syncableModels)
+        let modelNames = syncableModels.map { $0.modelName }
+        dispatchSyncQueriesStarted(for: modelNames)
         syncOperationQueue.isSuspended = false
     }
 
@@ -119,12 +120,10 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         completion?(.successfulVoid)
     }
 
-    private func dispatchSyncQueriesStarted(_ syncableModels: [Model.Type]) {
-        let modelNames = syncableModels.map { $0.modelName }
-
+    private func dispatchSyncQueriesStarted(for modelNames: [String]) {
         let syncQueriesStartedEvent = SyncQueriesStartedEvent(models: modelNames)
         let syncQueriesStartedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesStarted,
-                                                   data: syncQueriesStartedEvent)
+                                                        data: syncQueriesStartedEvent)
         Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesStartedEventPayload)
     }
 
