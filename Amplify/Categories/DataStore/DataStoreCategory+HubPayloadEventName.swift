@@ -33,7 +33,7 @@ public extension HubPayload.EventName.DataStore {
     /// HubPayload `OutboxStatusEvent` contains a boolean value `isEmpty` to notify if there are mutations in the outbox
     static let outboxStatus = "DataStore.outboxStatus"
 
-    /// Dispatched when all the graphql subscriptions estabilished
+    /// Dispatched when all of the subscriptions to syncable models have been established
     static let subscriptionsEstablished = "DataStore.subscriptionEstablished"
 
     /// Dispatched when DataStore is about to start sync queries

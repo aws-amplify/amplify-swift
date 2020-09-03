@@ -79,10 +79,6 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     func startSyncingToCloud(api: APICategoryGraphQLBehavior,
                              mutationEventPublisher: MutationEventPublisher) {
         log.verbose(#function)
-        let outboxStatusEvent = OutboxStatusEvent(isEmpty: operationQueue.operationCount == 0 ? true : false)
-        let outboxStatusEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.outboxStatus,
-                                             data: outboxStatusEvent)
-        Amplify.Hub.dispatch(to: .dataStore, payload: outboxStatusEventPayload)
         stateMachine.notify(action: .receivedStart(api, mutationEventPublisher))
     }
 
@@ -142,6 +138,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                        mutationEventPublisher: MutationEventPublisher) {
         log.verbose(#function)
         self.api = api
+        dispatchOutboxStatusEvent(isEmpty: operationQueue.operationCount == 0)
         operationQueue.isSuspended = false
 
         // State machine notification to ".receivedSubscription" will be handled in `receive(subscription:)`
@@ -191,13 +188,9 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                     "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent.id); result: \(result)")
                 self.processSyncMutationToCloudResult(result, mutationEvent: mutationEvent, api: api)
         }
+        
+        dispatchOutboxStatusEvent(isEmpty: false)
         operationQueue.addOperation(syncMutationToCloudOperation)
-
-        let outboxStatusEvent = OutboxStatusEvent(isEmpty: operationQueue.operationCount == 0 ? true : false)
-        let outboxStatusEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.outboxStatus,
-                                               data: outboxStatusEvent)
-        Amplify.Hub.dispatch(to: .dataStore, payload: outboxStatusEventPayload)
-
         stateMachine.notify(action: .enqueuedEvent)
     }
 
@@ -251,13 +244,16 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                 self.log.verbose("mutationEvent deleted successfully")
             }
 
-            let outboxStatusEvent = OutboxStatusEvent(isEmpty: self.operationQueue.operationCount == 0 ? true : false)
-            let outboxStatusEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.outboxStatus,
-                                                   data: outboxStatusEvent)
-            Amplify.Hub.dispatch(to: .dataStore, payload: outboxStatusEventPayload)
-
+            self.dispatchOutboxStatusEvent(isEmpty: true)
             self.stateMachine.notify(action: .processedEvent)
         }
+    }
+
+    private func dispatchOutboxStatusEvent(isEmpty: Bool) {
+        let outboxStatusEvent = OutboxStatusEvent(isEmpty: isEmpty)
+        let outboxStatusEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.outboxStatus,
+                                               data: outboxStatusEvent)
+        Amplify.Hub.dispatch(to: .dataStore, payload: outboxStatusEventPayload)
     }
 
 }
