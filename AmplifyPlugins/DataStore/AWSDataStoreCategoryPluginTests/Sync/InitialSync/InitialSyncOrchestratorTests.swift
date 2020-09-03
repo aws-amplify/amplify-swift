@@ -51,16 +51,14 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
         let syncQueriesStartedReceived = expectation(description: "syncQueriesStarted received")
 
-        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
-            if payload.eventName == HubPayload.EventName.DataStore.syncQueriesStarted {
-                XCTAssertNotNil(payload.data)
-                guard let syncQueriesStartedEvent = payload.data as? SyncQueriesStartedEvent else {
-                    XCTFail("Failed to cast payload data as SyncQueriesStartedEvent")
-                    return
-                }
-                XCTAssertEqual(syncQueriesStartedEvent.models.count, 2)
-                syncQueriesStartedReceived.fulfill()
+        let filter = HubFilters.forEventName(HubPayload.EventName.DataStore.syncQueriesStarted)
+        let hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { payload in
+            guard let syncQueriesStartedEvent = payload.data as? SyncQueriesStartedEvent else {
+                XCTFail("Failed to cast payload data as SyncQueriesStartedEvent")
+                return
             }
+            XCTAssertEqual(syncQueriesStartedEvent.models.count, 2)
+            syncQueriesStartedReceived.fulfill()
         }
 
         guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {

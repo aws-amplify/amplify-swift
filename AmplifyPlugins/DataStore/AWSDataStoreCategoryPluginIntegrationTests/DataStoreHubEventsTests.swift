@@ -39,7 +39,6 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
             }
 
             if payload.eventName == HubPayload.EventName.DataStore.syncQueriesStarted {
-                XCTAssertNotNil(payload.data)
                 guard let syncQueriesStartedEvent = payload.data as? SyncQueriesStartedEvent else {
                     XCTFail("Failed to cast payload data as SyncQueriesStartedEvent")
                     return
@@ -49,12 +48,11 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
             }
 
             if payload.eventName == HubPayload.EventName.DataStore.outboxStatus {
-                XCTAssertNotNil(payload.data)
                 guard let outboxStatusEvent = payload.data as? OutboxStatusEvent else {
                     XCTFail("Failed to cast payload data as OutboxStatusEvent")
                     return
                 }
-                XCTAssertEqual(outboxStatusEvent.isEmpty, true)
+                XCTAssertTrue(outboxStatusEvent.isEmpty)
                 outboxStatusReceived.fulfill()
             }
         }

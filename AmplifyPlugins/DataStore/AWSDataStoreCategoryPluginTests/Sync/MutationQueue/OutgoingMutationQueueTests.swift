@@ -26,7 +26,6 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
             try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
                                                                     dataStoreConfiguration: .default))
         }
-
         let post = Post(title: "Post title",
                         content: "Post content",
                         createdAt: .now())
@@ -35,22 +34,20 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         let outboxStatusOnStart = expectation(description: "On DataStore start, outboxStatus received")
         let outboxStatusOnMutationEnqueued = expectation(description: "Mutation enqueued, outboxStatus received")
 
-        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
-            if payload.eventName == HubPayload.EventName.DataStore.outboxStatus {
-                outboxStatusReceivedCurrentCount += 1
-                XCTAssertNotNil(payload.data)
-                guard let outboxStatusEvent = payload.data as? OutboxStatusEvent else {
-                    XCTFail("Failed to cast payload data as OutboxStatusEvent")
-                    return
-                }
+        let filter = HubFilters.forEventName(HubPayload.EventName.DataStore.outboxStatus)
+        let hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { payload in
+            outboxStatusReceivedCurrentCount += 1
+            guard let outboxStatusEvent = payload.data as? OutboxStatusEvent else {
+                XCTFail("Failed to cast payload data as OutboxStatusEvent")
+                return
+            }
 
-                if outboxStatusReceivedCurrentCount == 1 {
-                    XCTAssertEqual(outboxStatusEvent.isEmpty, true)
-                    outboxStatusOnStart.fulfill()
-                } else {
-                    XCTAssertEqual(outboxStatusEvent.isEmpty, false)
-                    outboxStatusOnMutationEnqueued.fulfill()
-                }
+            if outboxStatusReceivedCurrentCount == 1 {
+                XCTAssertTrue(outboxStatusEvent.isEmpty)
+                outboxStatusOnStart.fulfill()
+            } else {
+                XCTAssertFalse(outboxStatusEvent.isEmpty)
+                outboxStatusOnMutationEnqueued.fulfill()
             }
         }
 
@@ -128,22 +125,20 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         let outboxStatusOnStart = expectation(description: "On DataStore start, outboxStatus received")
         let outboxStatusOnMutationEnqueued = expectation(description: "Mutation enqueued, outboxStatus received")
 
-        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
-            if payload.eventName == HubPayload.EventName.DataStore.outboxStatus {
-                outboxStatusReceivedCurrentCount += 1
-                XCTAssertNotNil(payload.data)
-                guard let outboxStatusEvent = payload.data as? OutboxStatusEvent else {
-                    XCTFail("Failed to cast payload data as OutboxStatusEvent")
-                    return
-                }
+        let filter = HubFilters.forEventName(HubPayload.EventName.DataStore.outboxStatus)
+        let hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { payload in
+            outboxStatusReceivedCurrentCount += 1
+            guard let outboxStatusEvent = payload.data as? OutboxStatusEvent else {
+                XCTFail("Failed to cast payload data as OutboxStatusEvent")
+                return
+            }
 
-                if outboxStatusReceivedCurrentCount == 1 {
-                    XCTAssertEqual(outboxStatusEvent.isEmpty, false)
-                    outboxStatusOnStart.fulfill()
-                } else {
-                    XCTAssertEqual(outboxStatusEvent.isEmpty, false)
-                    outboxStatusOnMutationEnqueued.fulfill()
-                }
+            if outboxStatusReceivedCurrentCount == 1 {
+                XCTAssertFalse(outboxStatusEvent.isEmpty)
+                outboxStatusOnStart.fulfill()
+            } else {
+                XCTAssertFalse(outboxStatusEvent.isEmpty)
+                outboxStatusOnMutationEnqueued.fulfill()
             }
         }
 
