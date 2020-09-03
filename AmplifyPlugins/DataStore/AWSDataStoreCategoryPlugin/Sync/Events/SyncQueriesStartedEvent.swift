@@ -9,7 +9,8 @@ import Foundation
 
 /// Used as HubPayload for the `SyncQueriesStarted`
 public struct SyncQueriesStartedEvent {
-    public let models: [String] /// list of model names
+    /// list of model names
+    public let models: [String]
 
     public init(models: [String]) {
         self.models = models

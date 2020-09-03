@@ -139,8 +139,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         log.verbose(#function)
         self.api = api
 
-        dispatchOutboxStatusEvent(isEmpty: checkStatus())
-        operationQueue.isSuspended = false
+        checkMutationEventDatabaseStatus()
 
         // State machine notification to ".receivedSubscription" will be handled in `receive(subscription:)`
         mutationEventPublisher.publisher.subscribe(self)
@@ -250,8 +249,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         }
     }
 
-    private func checkStatus() -> Bool {
-        var isEmpty = true
+    private func checkMutationEventDatabaseStatus() {
         let fields = MutationEvent.keys
         let predicate = fields.inProcess == false || fields.inProcess == nil
 
@@ -261,12 +259,12 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                              paginationInput: nil) { result in
             switch result {
             case .success(let events):
-                isEmpty = events.isEmpty
+                self.dispatchOutboxStatusEvent(isEmpty: events.isEmpty)
             case .failure(let error):
                 log.error("Error quering mutation events: \(error)")
             }
+            self.operationQueue.isSuspended = false
         }
-        return isEmpty
     }
 
     private func dispatchOutboxStatusEvent(isEmpty: Bool) {
