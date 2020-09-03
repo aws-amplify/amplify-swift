@@ -34,7 +34,7 @@ public extension HubPayload.EventName.DataStore {
     static let outboxStatus = "DataStore.outboxStatus"
 
     /// Dispatched when all the graphql subscriptions estabilished
-    static let subscriptionEstablished = "DataStore.subscriptionEstablished"
+    static let subscriptionsEstablished = "DataStore.subscriptionEstablished"
 
     /// Dispatched when DataStore is about to start sync queries
     /// HubPayload `syncQueriesStartedEvent` contains an array of each model's `name`

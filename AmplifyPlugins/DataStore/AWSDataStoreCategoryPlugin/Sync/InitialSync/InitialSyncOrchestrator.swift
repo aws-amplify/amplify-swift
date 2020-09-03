@@ -70,7 +70,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         syncOperationQueue.addOperation {
             self.resolveCompletion()
         }
-        
+
         dispatchSyncQueriesStarted(syncableModels)
         syncOperationQueue.isSuspended = false
     }
