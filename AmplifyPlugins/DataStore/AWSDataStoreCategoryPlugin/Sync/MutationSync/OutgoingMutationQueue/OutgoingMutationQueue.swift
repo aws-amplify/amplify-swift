@@ -139,10 +139,11 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         log.verbose(#function)
         self.api = api
 
-        checkMutationEventDatabaseStatus()
-
-        // State machine notification to ".receivedSubscription" will be handled in `receive(subscription:)`
-        mutationEventPublisher.publisher.subscribe(self)
+        queryMutationEventsFromStorage(onComplete: {
+            self.operationQueue.isSuspended = false
+            // State machine notification to ".receivedSubscription" will be handled in `receive(subscription:)`
+            mutationEventPublisher.publisher.subscribe(self)
+        })
     }
 
     // MARK: - Event loop processing
@@ -249,7 +250,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         }
     }
 
-    private func checkMutationEventDatabaseStatus() {
+    private func queryMutationEventsFromStorage(onComplete: @escaping (() -> Void)) {
         let fields = MutationEvent.keys
         let predicate = fields.inProcess == false || fields.inProcess == nil
 
@@ -263,7 +264,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             case .failure(let error):
                 log.error("Error quering mutation events: \(error)")
             }
-            self.operationQueue.isSuspended = false
+            onComplete()
         }
     }
 

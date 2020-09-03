@@ -18,10 +18,10 @@ import AWSPluginsCore
 class DataStoreHubEventTests: HubEventsIntegrationTestBase {
 
     /// - Given:
-    ///    - two models: Post, Comment
+    ///    - registered two models from `TestModelRegistration`
     ///    - no pending MutationEvents in MutationEvent database
     /// - When:
-    ///    - DataStore starts booting up
+    ///    - DataStore's remote sync engine is initialized
     /// - Then:
     ///    - subscriptionEstablished received, payload should be nil
     ///    - syncQueriesStarted received, payload should be: {models: ["Post", "Comment"]}
@@ -64,7 +64,6 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
             return
         }
 
-        wait(for: [outboxStatusReceived, subscriptionsEstablishedReceived, syncQueriesStartedReceived],
-             timeout: networkTimeout)
+        waitForExpectations(timeout: networkTimeout, handler: nil)
     }
 }
