@@ -124,9 +124,9 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         let modelTask = syncableModels.map { $0.modelName }
 
         let syncQueriesStartedEvent = SyncQueriesStartedEvent(models: modelTask)
-        let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesStarted,
-                                 data: syncQueriesStartedEvent)
-        Amplify.Hub.dispatch(to: .dataStore, payload: payload)
+        let syncQueriesStartedpayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesStarted,
+                                                   data: syncQueriesStartedEvent)
+        Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesStartedpayload)
     }
 
 }

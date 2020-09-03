@@ -56,9 +56,11 @@ public extension HubPayload.EventName.DataStore {
 
     /// Dispatched when a local mutation is enqueued in the outbox
     /// The HubPayload will be a `MutationEvent` instance about to send to remote API.
+    // TODO: outboxMutationEnqueued to be implemented
     static let outboxMutationEnqueued = "DataStore.outboxMutationEnqueued"
 
     /// Dispatched when a mutation in the outbox is sent to backend successfully and has been merged locally
     /// The HubPayload will be a `MutationEvent` instance containing the newly mutated data from the remote API.
+    // TODO: outboxMutationProcessed to be implemented
     static let outboxMutationProcessed = "DataStore.outboxMutationProcessed"
 }

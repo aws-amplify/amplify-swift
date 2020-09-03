@@ -71,12 +71,11 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedSubscription)
             semaphore.signal()
         }
-        let json =    "{\"id\":\"1\",\"title\":\"t\",\"content\":\"c\",\"createdAt\":\"2020-09-02T17:17:01.824Z\"}"
         stateMachine.state = .starting(apiBehavior, publisher)
         semaphore.wait()
         let futureResult = MutationEvent(modelId: "1",
                                          modelName: "Post",
-                                         json: json,
+                                         json: "{}",
                                          mutationType: MutationEvent.MutationType.create)
         eventSource.pushMutationEvent(futureResult: .success(futureResult))
 
