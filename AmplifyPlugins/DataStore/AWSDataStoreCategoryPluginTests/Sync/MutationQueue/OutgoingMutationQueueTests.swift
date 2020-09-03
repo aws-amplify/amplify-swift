@@ -70,6 +70,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         Amplify.DataStore.save(post) { _ in }
         waitForExpectations(timeout: 5.0, handler: nil)
+        Amplify.Hub.removeListener(hubListener)
     }
 
     /// - Given: A sync-configured DataStore
@@ -169,6 +170,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         }
 
         waitForExpectations(timeout: 5.0, handler: nil)
+        Amplify.Hub.removeListener(hubListener)
     }
 
     /// - Given: A sync-configured DataStore

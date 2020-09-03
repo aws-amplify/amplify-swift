@@ -73,6 +73,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         wait(for: [syncQueriesStartedReceived], timeout: 1.0)
         wait(for: [syncCallbackReceived], timeout: 1.0)
+        Amplify.Hub.removeListener(hubListener)
     }
 
     /// - Given: An InitialSyncOrchestrator with a model dependency graph
