@@ -24,8 +24,8 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
     ///    - DataStore starts booting up
     /// - Then:
     ///    - subscriptionEstablished received, payload should be nil
-    ///    - syncQueriesStarted received, payload should be: {models:  ["Post", "Comment"]}
-    ///    - outboxStatus received, payload should be {isEmpty:  true}
+    ///    - syncQueriesStarted received, payload should be: {models: ["Post", "Comment"]}
+    ///    - outboxStatus received, payload should be {isEmpty: true}
     func testDataStoreConfiguredDispatchesHubEvents() throws {
 
         let subscriptionsEstablishedReceived = expectation(description: "subscriptionsEstablished received")
@@ -41,7 +41,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
             if payload.eventName == HubPayload.EventName.DataStore.syncQueriesStarted {
                 XCTAssertNotNil(payload.data)
                 guard let syncQueriesStartedEvent = payload.data as? SyncQueriesStartedEvent else {
-                    XCTFail("Failed to case payload data as SyncQueriesStartedEvent")
+                    XCTFail("Failed to cast payload data as SyncQueriesStartedEvent")
                     return
                 }
                 XCTAssertEqual(syncQueriesStartedEvent.models.count, 2)
@@ -51,7 +51,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
             if payload.eventName == HubPayload.EventName.DataStore.outboxStatus {
                 XCTAssertNotNil(payload.data)
                 guard let outboxStatusEvent = payload.data as? OutboxStatusEvent else {
-                    XCTFail("Failed to case payload data as OutboxStatusEvent")
+                    XCTFail("Failed to cast payload data as OutboxStatusEvent")
                     return
                 }
                 XCTAssertEqual(outboxStatusEvent.isEmpty, true)
