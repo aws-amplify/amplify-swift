@@ -70,10 +70,9 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         syncOperationQueue.addOperation {
             self.resolveCompletion()
         }
-
-        syncOperationQueue.isSuspended = false
-
+        
         dispatchSyncQueriesStarted(syncableModels)
+        syncOperationQueue.isSuspended = false
     }
 
     private func enqueueSyncableModels(_ syncableModels: [Model.Type]) {
