@@ -306,7 +306,6 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
             }
         })
 
-
         let model = try MockSynced(id: "id-3").eraseToAnyModel()
         let syncMetadata = MutationSyncMetadata(id: model.id,
                                                 deleted: false,
