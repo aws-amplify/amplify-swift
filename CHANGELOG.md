@@ -1,4 +1,7 @@
 # Changelog
+## Unreleased
+- **DataStore**
+  - Fix publishing events from model reconciliation queue ([#756](https://github.com/aws-amplify/amplify-ios/pull/756))
 
 ## 1.1.2 (2020-08-30)
 
