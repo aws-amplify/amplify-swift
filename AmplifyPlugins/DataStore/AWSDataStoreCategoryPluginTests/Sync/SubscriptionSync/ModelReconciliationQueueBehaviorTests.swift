@@ -156,9 +156,33 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
             subscriptionEventsSubject.send(.mutationEvent(mutationSync))
         }
 
+        let eventsSentViaPublisher1 = expectation(description: "id-1 sent via publisher")
+        let eventsSentViaPublisher2 = expectation(description: "id-2 sent via publisher")
+        let eventsSentViaPublisher3 = expectation(description: "id-3 sent via publisher")
+
+        let queueSink = queue.publisher.sink(receiveCompletion: { _ in
+            XCTFail("Not expecting a call to completion")
+        }, receiveValue: { event in
+            if case let .mutationEvent(mutationEvent) = event {
+                switch mutationEvent.modelId {
+                case "id-1":
+                    eventsSentViaPublisher1.fulfill()
+                case "id-2":
+                    eventsSentViaPublisher2.fulfill()
+                case "id-3":
+                    eventsSentViaPublisher3.fulfill()
+                default:
+                    break
+                }
+            }
+        })
+
         queue.start()
 
-        wait(for: [allEventsProcessed], timeout: 5.0)
+        wait(for: [allEventsProcessed,
+                   eventsSentViaPublisher1,
+                   eventsSentViaPublisher2,
+                   eventsSentViaPublisher3], timeout: 5.0)
     }
 
     /// - Given: A started AWSModelReconciliationQueue with no pending events
