@@ -245,8 +245,9 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                 self.log.verbose("mutationEvent deleted successfully")
             }
 
-            self.dispatchOutboxStatusEvent(isEmpty: true)
-            self.stateMachine.notify(action: .processedEvent)
+            self.queryMutationEventsFromStorage {
+                self.stateMachine.notify(action: .processedEvent)
+            }
         }
     }
 
@@ -262,7 +263,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             case .success(let events):
                 self.dispatchOutboxStatusEvent(isEmpty: events.isEmpty)
             case .failure(let error):
-                log.error("Error quering mutation events: \(error)")
+                log.error("Error querying mutation events: \(error)")
             }
             onComplete()
         }

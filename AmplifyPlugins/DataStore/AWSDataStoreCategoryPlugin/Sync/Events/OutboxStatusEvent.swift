@@ -5,11 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 /// Used as HubPayload for the `OutboxStatus`
 public struct OutboxStatusEvent {
-    /// status of outbox: empty or not
+    /// status of outbox: true if there are no events in the outbox at the time the event was dispatched
     public let isEmpty: Bool
 
     public init(isEmpty: Bool) {

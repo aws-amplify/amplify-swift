@@ -5,11 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 /// Used as HubPayload for the `SyncQueriesStarted`
 public struct SyncQueriesStartedEvent {
-    /// list of model names
+    /// A list of all model names for which DataStore has started establishing subscriptions
     public let models: [String]
 
     public init(models: [String]) {

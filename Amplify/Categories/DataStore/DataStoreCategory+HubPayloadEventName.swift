@@ -24,11 +24,14 @@ public extension HubPayload.EventName.DataStore {
     /// will be a `MutationEvent` instance that caused the conditional save failed.
     static let conditionalSaveFailed = "DataStore.conditionalSaveFailed"
 
-    /// Dispatched on DataStore start and also every time a local mutation is enqueued and processed in the outbox
+    /// Dispatched when:
+    /// - the DataStore starts
+    /// - each time a local mutation is enqueued into the outbox
+    /// - each time a local mutation is finished processing
     /// HubPayload `OutboxStatusEvent` contains a boolean value `isEmpty` to notify if there are mutations in the outbox
     static let outboxStatus = "DataStore.outboxStatus"
 
-    /// Dispatched when all of the subscriptions to syncable models have been established
+    /// Dispatched when DataStore has finished establishing its subscriptions to all syncable models
     static let subscriptionsEstablished = "DataStore.subscriptionEstablished"
 
     /// Dispatched when DataStore is about to start sync queries
