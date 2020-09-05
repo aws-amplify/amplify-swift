@@ -23,6 +23,7 @@ typealias IncomingEventReconciliationQueueFactory =
 @available(iOS 13.0, *)
 final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
 
+    private var receivedCount = 0
     static let factory: IncomingEventReconciliationQueueFactory = { modelTypes, api, storageAdapter, auth, _ in
         AWSIncomingEventReconciliationQueue(modelTypes: modelTypes,
                                             api: api,
@@ -82,13 +83,15 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         eventReconciliationQueueTopic.send(.paused)
     }
 
-    func offer(_ remoteModel: MutationSync<AnyModel>) {
-        guard let queue = reconciliationQueues[remoteModel.model.modelName] else {
+    func offer(_ remoteModel: MutationSync<AnyModel>, isFullSync: Bool) {
+        guard var queue = reconciliationQueues[remoteModel.model.modelName] else {
             // TODO: Error handling
             return
         }
 
         queue.enqueue(remoteModel)
+        queue.isFullSync = isFullSync
+        queue.count += 1
     }
 
     private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
@@ -105,21 +108,24 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 
     private func onReceiveValue(receiveValue: ModelReconciliationQueueEvent) {
         switch receiveValue {
+        case .finished:
+            receivedCount += 1
+            if receivedCount == reconciliationQueues.count {
+                dispatchSyncQueriesReady()
+            }
         case .mutationEvent(let event):
             eventReconciliationQueueTopic.send(.mutationEvent(event))
-            Amplify.Hub.dispatch(to: .dataStore, payload: HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady))
-        }
         case .connected(let modelName):
-        connectionStatusSerialQueue.async {
-            self.reconciliationQueueConnectionStatus[modelName] = true
-            if self.reconciliationQueueConnectionStatus.count == self.reconciliationQueues.count {
-                self.eventReconciliationQueueTopic.send(.initialized)
+            connectionStatusSerialQueue.async {
+                self.reconciliationQueueConnectionStatus[modelName] = true
+                if self.reconciliationQueueConnectionStatus.count == self.reconciliationQueues.count {
+                    self.eventReconciliationQueueTopic.send(.initialized)
+                }
             }
-        }
-            default:
+        default:
             break
         }
-}
+    }
 
     func cancel() {
         modelReconciliationQueueSinks.values.forEach { $0.cancel() }
@@ -128,6 +134,11 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
             self.reconciliationQueues = [:]
             self.modelReconciliationQueueSinks = [:]
         }
+    }
+
+    private func dispatchSyncQueriesReady() {
+        let syncQueriesReadyPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
+        Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesReadyPayload)
     }
 }
 

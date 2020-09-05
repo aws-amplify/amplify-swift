@@ -53,6 +53,10 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     private let incomingSubscriptionEvents: IncomingSubscriptionEventPublisher
 
     weak var storageAdapter: StorageEngineAdapter?
+
+    internal var isFullSync: Bool
+    internal var count: Int
+    var receivedCount: Int = 0
     private var modelSyncedEvent: ModelSyncedEvent.Builder
 
     /// A buffer queue for incoming subsscription events, waiting for this ReconciliationQueue to be `start`ed. Once
@@ -81,13 +85,15 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
          auth: AuthCategoryBehavior?,
          incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
 
+        self.count = 0
+        self.isFullSync = false
         self.modelType = modelType
         self.modelName = modelType.modelName
         self.modelSyncedEvent = ModelSyncedEvent.Builder()
         modelSyncedEvent.modelName = modelName
-        
-//        modelSyncedEvent.isFullSync = getLastSyncTime() == nil
-//        modelSyncedEvent.isDeltaSync = getLastSyncTime() != nil
+
+        modelSyncedEvent.isFullSync = isFullSync
+        modelSyncedEvent.isDeltaSync = !isFullSync
 
         self.storageAdapter = storageAdapter
 
@@ -146,7 +152,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             case .failure(let error):
                 self.log.error("Error reconcile and local save: \(error)")
             case .success(let mutationEvent):
-
+                self.receivedCount += 1
                 switch mutationEvent.mutationType {
                 case "create":
                     self.modelSyncedEvent.createCount += 1
@@ -157,8 +163,10 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 default:
                     print("something")
                 }
-                
                 self.log.info("Received mutation event: \(mutationEvent)")
+                if self.receivedCount == self.count {
+                    self.dispatchModelSyncedEvent()
+                }
             }
         }
         let reconcileOp = ReconcileAndLocalSaveOperation(remoteModel: remoteModel,
@@ -179,10 +187,6 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 >>>>>>> switching branch
         }, receiveValue: { mutationEvent in
             self.modelReconciliationQueueSubject.send(.mutationEvent(mutationEvent))
-            let payload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
-                                     data: self.modelSyncedEvent)
-            Amplify.Hub.dispatch(to: .dataStore, payload: payload)
-
         })
         reconcileAndLocalSaveOperationSinks.insert(reconcileAndLocalSaveOperationSink)
         reconcileAndSaveQueue.addOperation(reconcileOp)
@@ -209,40 +213,13 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             modelReconciliationQueueSubject.send(completion: .failure(dataStoreError))
         }
     }
-//    private func getLastSyncTime() -> Int? {
-//        let lastSyncMetadata = getLastSyncMetadata()
-//        guard let lastSync = lastSyncMetadata?.lastSync else {
-//            return nil
-//        }
-//
-//        //TODO: Update to use TimeInterval.milliseconds when it is pushed to main branch
-//        // https://github.com/aws-amplify/amplify-ios/issues/398
-//        let lastSyncDate = Date(timeIntervalSince1970: TimeInterval(lastSync) / 1_000)
-//        let secondsSinceLastSync = (lastSyncDate.timeIntervalSinceNow * -1)
-//        if secondsSinceLastSync < 0 {
-//            log.info("lastSyncTime was in the future, assuming base query")
-//            return nil
-//        }
-//
-//        let shouldDoDeltaQuery = secondsSinceLastSync < dataStoreConfiguration.syncInterval
-//        return shouldDoDeltaQuery ? lastSync : nil
-//    }
-//
-//    private func getLastSyncMetadata() -> ModelSyncMetadata? {
-//        guard let storageAdapter = storageAdapter else {
-//            log.error(error: DataStoreError.nilStorageAdapter())
-//            return nil
-//        }
-//
-//        do {
-//            let modelSyncMetadata = try storageAdapter.queryModelSyncMetadata(for: self.modelType)
-//            return modelSyncMetadata
-//        } catch {
-//            log.error(error: error)
-//            return nil
-//        }
-//
-//    }
+
+    private func dispatchModelSyncedEvent() {
+        let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
+                                                 data: modelSyncedEvent.build())
+        Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
+        modelReconciliationQueueSubject.send(.finished)
+    }
 }
 
 @available(iOS 13.0, *)
