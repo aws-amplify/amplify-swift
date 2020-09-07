@@ -138,10 +138,12 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                        mutationEventPublisher: MutationEventPublisher) {
         log.verbose(#function)
         self.api = api
-        operationQueue.isSuspended = false
 
-        // State machine notification to ".receivedSubscription" will be handled in `receive(subscription:)`
-        mutationEventPublisher.publisher.subscribe(self)
+        queryMutationEventsFromStorage(onComplete: {
+            self.operationQueue.isSuspended = false
+            // State machine notification to ".receivedSubscription" will be handled in `receive(subscription:)`
+            mutationEventPublisher.publisher.subscribe(self)
+        })
     }
 
     // MARK: - Event loop processing
@@ -187,6 +189,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                     "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent.id); result: \(result)")
                 self.processSyncMutationToCloudResult(result, mutationEvent: mutationEvent, api: api)
         }
+
+        dispatchOutboxStatusEvent(isEmpty: false)
         operationQueue.addOperation(syncMutationToCloudOperation)
         stateMachine.notify(action: .enqueuedEvent)
     }
@@ -241,8 +245,35 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                 self.log.verbose("mutationEvent deleted successfully")
             }
 
-            self.stateMachine.notify(action: .processedEvent)
+            self.queryMutationEventsFromStorage {
+                self.stateMachine.notify(action: .processedEvent)
+            }
         }
+    }
+
+    private func queryMutationEventsFromStorage(onComplete: @escaping (() -> Void)) {
+        let fields = MutationEvent.keys
+        let predicate = fields.inProcess == false || fields.inProcess == nil
+
+        storageAdapter.query(MutationEvent.self,
+                             predicate: predicate,
+                             sort: nil,
+                             paginationInput: nil) { result in
+            switch result {
+            case .success(let events):
+                self.dispatchOutboxStatusEvent(isEmpty: events.isEmpty)
+            case .failure(let error):
+                log.error("Error querying mutation events: \(error)")
+            }
+            onComplete()
+        }
+    }
+
+    private func dispatchOutboxStatusEvent(isEmpty: Bool) {
+        let outboxStatusEvent = OutboxStatusEvent(isEmpty: isEmpty)
+        let outboxStatusEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.outboxStatus,
+                                                  data: outboxStatusEvent)
+        Amplify.Hub.dispatch(to: .dataStore, payload: outboxStatusEventPayload)
     }
 
 }

@@ -49,11 +49,29 @@ class InitialSyncOrchestratorTests: XCTestCase {
                                        storageAdapter: storageAdapter)
 
         let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
+        let syncQueriesStartedReceived = expectation(description: "syncQueriesStarted received")
+
+        let filter = HubFilters.forEventName(HubPayload.EventName.DataStore.syncQueriesStarted)
+        let hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { payload in
+            guard let syncQueriesStartedEvent = payload.data as? SyncQueriesStartedEvent else {
+                XCTFail("Failed to cast payload data as SyncQueriesStartedEvent")
+                return
+            }
+            XCTAssertEqual(syncQueriesStartedEvent.models.count, 2)
+            syncQueriesStartedReceived.fulfill()
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
         orchestrator.sync { _ in
             syncCallbackReceived.fulfill()
         }
 
+        wait(for: [syncQueriesStartedReceived], timeout: 1.0)
         wait(for: [syncCallbackReceived], timeout: 1.0)
+        Amplify.Hub.removeListener(hubListener)
     }
 
     /// - Given: An InitialSyncOrchestrator with a model dependency graph
