@@ -21,7 +21,7 @@ final class MockReconciliationQueue: MessageReporter, IncomingEventReconciliatio
         notify()
     }
 
-    func offer(_ remoteModel: MutationSync<AnyModel>) {
+    func offer(_ remoteModel: MutationSync<AnyModel>, isFullSync: Bool) {
         notify("offer(_:) remoteModel: \(remoteModel)")
     }
 

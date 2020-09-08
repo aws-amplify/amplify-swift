@@ -56,7 +56,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
     internal var isFullSync: Bool
     internal var count: Int
-    var receivedCount: Int = 0
+    var completionCount: Int = 0
     private var modelSyncedEvent: ModelSyncedEvent.Builder
 
     /// A buffer queue for incoming subsscription events, waiting for this ReconciliationQueue to be `start`ed. Once
@@ -147,45 +147,35 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     }
 
     func enqueue(_ remoteModel: MutationSync<AnyModel>) {
-        let reconsileOpCompletion: ReconsileOpResultHandler = { result in
-            switch result {
-            case .failure(let error):
-                self.log.error("Error reconcile and local save: \(error)")
-            case .success(let mutationEvent):
-                self.receivedCount += 1
-                switch mutationEvent.mutationType {
-                case "create":
-                    self.modelSyncedEvent.createCount += 1
-                case "update":
-                    self.modelSyncedEvent.updateCount += 1
-                case "delete":
-                    self.modelSyncedEvent.deleteCount += 1
-                default:
-                    print("something")
-                }
-                self.log.info("Received mutation event: \(mutationEvent)")
-                if self.receivedCount == self.count {
-                    self.dispatchModelSyncedEvent()
-                }
-            }
-        }
         let reconcileOp = ReconcileAndLocalSaveOperation(remoteModel: remoteModel,
-<<<<<<< HEAD
                                                          storageAdapter: storageAdapter)
         var reconcileAndLocalSaveOperationSink: AnyCancellable?
 
         reconcileAndLocalSaveOperationSink = reconcileOp.publisher.sink(receiveCompletion: { completion in
             self.reconcileAndLocalSaveOperationSinks.remove(reconcileAndLocalSaveOperationSink)
+            self.log.info("In AWSModelReconciliationQueue: received completion signal")
+            self.completionCount += 1
+            if self.completionCount == self.count {
+                let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
+                                                         data: self.modelSyncedEvent)
+                Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
+                self.modelReconciliationQueueSubject.send(.finished)
+            }
             if case .failure = completion {
                 self.modelReconciliationQueueSubject.send(completion: completion)
             }
-=======
-                                                         storageAdapter: storageAdapter,
-                                                         completion: reconsileOpCompletion)
-        reconcileAndLocalSaveOperationSink = reconcileOp.publisher.sink(receiveCompletion: { error in
-            self.modelReconciliationQueueSubject.send(completion: error)
->>>>>>> switching branch
         }, receiveValue: { mutationEvent in
+            self.log.info("In AWSModelReconciliationQueue: received mutationEvent \(mutationEvent)")
+            switch mutationEvent.mutationType {
+            case "create":
+                self.modelSyncedEvent.createCount += 1
+            case "update":
+                self.modelSyncedEvent.updateCount += 1
+            case "delete":
+                self.modelSyncedEvent.deleteCount += 1
+            default:
+                print("")
+            }
             self.modelReconciliationQueueSubject.send(.mutationEvent(mutationEvent))
         })
         reconcileAndLocalSaveOperationSinks.insert(reconcileAndLocalSaveOperationSink)
