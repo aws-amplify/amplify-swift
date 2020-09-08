@@ -37,4 +37,12 @@ public extension HubPayload.EventName.DataStore {
     /// Dispatched when DataStore is about to start sync queries
     /// HubPayload `syncQueriesStartedEvent` contains an array of each model's `name`
     static let syncQueriesStarted = "DataStore.syncQueriesStarted"
+
+    /// Dispatched when a local mutation is enqueued into the outbox. (Doesn't matter if while online or offline)
+    /// Hubpayload `outboxMutationEvent` contains modelName `model` and instance of model `element`
+    static let outboxMutationEnqueued = "DataStore.outboxMutationEnqueued"
+
+    /// Dispatched when a mutation from outbox is sent to backend and updated locally.
+    /// Hubpayload `outboxMutationEvent` contains modelName `model` and instance of model `element`
+    static let outboxMutationProcessed = "DataStore.outboxMutationProcessed"
 }

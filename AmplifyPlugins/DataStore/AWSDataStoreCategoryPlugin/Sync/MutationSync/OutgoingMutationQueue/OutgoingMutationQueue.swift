@@ -190,26 +190,45 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                 self.processSyncMutationToCloudResult(result, mutationEvent: mutationEvent, api: api)
         }
 
-        dispatchOutboxStatusEvent(isEmpty: false)
-        operationQueue.addOperation(syncMutationToCloudOperation)
-        stateMachine.notify(action: .enqueuedEvent)
+        let localModel: Model
+        do {
+            localModel = try mutationEvent.decodeModel()
+
+            let outboxMutationEnqueuedEvent = OutboxMutationEvent.fromModelWithoutMetadata(modelName: mutationEvent.modelName,
+                                                                                           model: localModel)
+            let payloadOfOutboxMutation = HubPayload(eventName: HubPayload.EventName.DataStore.outboxMutationEnqueued,
+                                                     data: outboxMutationEnqueuedEvent)
+            Amplify.Hub.dispatch(to: .dataStore, payload: payloadOfOutboxMutation)
+
+            dispatchOutboxStatusEvent(isEmpty: false)
+            operationQueue.addOperation(syncMutationToCloudOperation)
+            stateMachine.notify(action: .enqueuedEvent)
+        } catch {
+            log.error("Couldn't decode local model")
+//            operationQueue.addOperation(syncMutationToCloudOperation)
+//            stateMachine.notify(action: .enqueuedEvent)
+            return
+        }
     }
 
     private func processSyncMutationToCloudResult(_ result: GraphQLOperation<MutationSync<AnyModel>>.OperationResult,
                                                   mutationEvent: MutationEvent,
                                                   api: APICategoryGraphQLBehavior) {
-        if case let .success(graphQLResponse) = result, case let .failure(graphQLResponseError) = graphQLResponse {
-            processMutationErrorFromCloud(mutationEvent: mutationEvent,
-                                          api: api,
-                                          apiError: nil,
-                                          graphQLResponseError: graphQLResponseError)
+        if case let .success(graphQLResponse) = result {
+            if case let .success(graphQLResult) = graphQLResponse {
+                completeProcessingEvent(mutationEvent,
+                                        mutationSyncMetadata: graphQLResult)
+            } else if case let .failure(graphQLResponseError) = graphQLResponse {
+                processMutationErrorFromCloud(mutationEvent: mutationEvent,
+                api: api,
+                apiError: nil,
+                graphQLResponseError: graphQLResponseError)
+            }
         } else if case let .failure(apiError) = result {
             processMutationErrorFromCloud(mutationEvent: mutationEvent,
                                           api: api,
                                           apiError: apiError,
                                           graphQLResponseError: nil)
-        } else {
-            completeProcessingEvent(mutationEvent)
         }
     }
 
@@ -229,12 +248,14 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                     let outgoingMutationEvent = mutationEventOptional {
                     self.outgoingMutationQueueSubject.send(outgoingMutationEvent)
                 }
-                self.completeProcessingEvent(mutationEvent)
+                self.completeProcessingEvent(mutationEvent,
+                                             mutationSyncMetadata: nil)
         }
         operationQueue.addOperation(processMutationErrorFromCloudOperation)
     }
 
-    private func completeProcessingEvent(_ mutationEvent: MutationEvent) {
+    private func completeProcessingEvent(_ mutationEvent: MutationEvent,
+                                         mutationSyncMetadata: MutationSync<AnyModel>?) {
         // This doesn't belong here--need to add a `delete` API to the MutationEventSource and pass a
         // reference into the mutation queue.
         Amplify.DataStore.delete(mutationEvent) { result in
@@ -244,6 +265,36 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             case .success:
                 self.log.verbose("mutationEvent deleted successfully")
             }
+
+            let localModel: Model
+            do {
+                localModel = try mutationEvent.decodeModel()
+            } catch {
+                self.log.error("Couldn't decode local model")
+                self.stateMachine.notify(action: .processedEvent)
+                return
+            }
+
+            let outboxMutationProcessedEvent: OutboxMutationEvent
+            if mutationSyncMetadata == nil {
+                outboxMutationProcessedEvent = OutboxMutationEvent
+                .fromModelWithoutMetadata(modelName: mutationEvent.modelName,
+                                          model: localModel)
+            } else {
+                guard let mutationSyncMetadata = mutationSyncMetadata else {
+                    self.log.error("Couldn't get mutationSyncMetadata")
+                    self.stateMachine.notify(action: .processedEvent)
+                    return
+                }
+                outboxMutationProcessedEvent = OutboxMutationEvent
+                    .fromModelWithMetadata(modelName: mutationEvent.modelName,
+                                           model: localModel,
+                                           mutationSync: mutationSyncMetadata)
+            }
+
+            let payload = HubPayload(eventName: HubPayload.EventName.DataStore.outboxMutationProcessed,
+                                     data: outboxMutationProcessedEvent)
+            Amplify.Hub.dispatch(to: .dataStore, payload: payload)
 
             self.queryMutationEventsFromStorage {
                 self.stateMachine.notify(action: .processedEvent)
