@@ -157,7 +157,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             self.completionCount += 1
             if self.completionCount == self.count {
                 let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
-                                                         data: self.modelSyncedEvent)
+                                                         data: self.modelSyncedEvent.build())
                 Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
                 self.modelReconciliationQueueSubject.send(.finished)
             }
