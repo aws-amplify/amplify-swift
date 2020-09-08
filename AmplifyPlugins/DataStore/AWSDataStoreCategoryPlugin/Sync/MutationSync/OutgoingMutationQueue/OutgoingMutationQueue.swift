@@ -205,8 +205,6 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             stateMachine.notify(action: .enqueuedEvent)
         } catch {
             log.error("Couldn't decode local model")
-//            operationQueue.addOperation(syncMutationToCloudOperation)
-//            stateMachine.notify(action: .enqueuedEvent)
             return
         }
     }

@@ -10,12 +10,12 @@ import AWSPluginsCore
 
 public struct OutboxMutationEvent {
     public var modelName: String
-    public var element: OutboxMutationEventMetadata
+    public var element: OutboxMutationEventElement
 
     public static func fromModelWithMetadata(modelName: String,
                                              model: Model,
                                              mutationSync: MutationSync<AnyModel>) -> OutboxMutationEvent {
-        let element = OutboxMutationEventMetadata(model: model,
+        let element = OutboxMutationEventElement(model: model,
                                                   version: mutationSync.syncMetadata.version,
                                                   lastChangedAt: mutationSync.syncMetadata.lastChangedAt,
                                                   deleted: mutationSync.syncMetadata.deleted)
@@ -24,16 +24,16 @@ public struct OutboxMutationEvent {
 
     public static func fromModelWithoutMetadata(modelName: String,
                                                 model: Model) -> OutboxMutationEvent {
-        let element = OutboxMutationEventMetadata(model: model)
+        let element = OutboxMutationEventElement(model: model)
         return fromModel(modelName: modelName, element: element)
     }
 
-    public static func fromModel(modelName: String, element: OutboxMutationEventMetadata) -> OutboxMutationEvent {
+    public static func fromModel(modelName: String, element: OutboxMutationEventElement) -> OutboxMutationEvent {
         return OutboxMutationEvent(modelName: modelName, element: element)
     }
 }
 
-public struct OutboxMutationEventMetadata {
+public struct OutboxMutationEventElement {
     public let model: Model
     public var version: Int?
     public var lastChangedAt: Int?
