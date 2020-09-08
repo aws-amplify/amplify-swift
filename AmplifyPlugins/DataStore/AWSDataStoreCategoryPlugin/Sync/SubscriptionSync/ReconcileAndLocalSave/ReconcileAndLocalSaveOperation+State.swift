@@ -25,7 +25,7 @@ extension ReconcileAndLocalSaveOperation {
         case executing(RemoteSyncReconciler.Disposition)
 
         /// Notifying listeners and callbacks of completion
-        case notifying(AppliedModel)
+        case notifying(AppliedModel, Bool)
 
         /// Operation has successfully completed
         case finished

@@ -154,6 +154,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         reconcileAndLocalSaveOperationSink = reconcileOp.publisher.sink(receiveCompletion: { completion in
             self.reconcileAndLocalSaveOperationSinks.remove(reconcileAndLocalSaveOperationSink)
             self.log.info("In AWSModelReconciliationQueue: received completion signal")
+
             self.completionCount += 1
             if self.completionCount == self.count {
                 let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,

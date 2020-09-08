@@ -90,8 +90,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         case .executing(let disposition):
             execute(disposition: disposition)
 
-        case .notifying(let savedModel):
-            notify(savedModel: savedModel)
+        case .notifying(let savedModel, let isCreated):
+            notify(savedModel: savedModel, isCreated: isCreated)
 
         case .inError(let error):
             // Maybe we have to notify the Hub?
@@ -252,6 +252,16 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     private func saveMetadata(storageAdapter: StorageEngineAdapter,
                               inProcessModel: AppliedModel) {
         log.verbose(#function)
+
+        /// Do a local metadata query to check if the `AppliedModel` is create or update in local store's perspective
+        var isCreated: Bool
+        do {
+            let localMetadata = try storageAdapter.queryMutationSyncMetadata(for: remoteModel.model.id)
+            isCreated = localMetadata == nil
+        } catch {
+            log.error("Failed to query for sync metadata")
+            return
+        }
         storageAdapter.save(remoteModel.syncMetadata, condition: nil) { result in
             switch result {
             case .failure(let dataStoreError):
@@ -259,14 +269,15 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 self.stateMachine.notify(action: errorAction)
             case .success(let syncMetadata):
                 let appliedModel = MutationSync(model: inProcessModel.model, syncMetadata: syncMetadata)
-                self.stateMachine.notify(action: .applied(appliedModel))
+                self.stateMachine.notify(action: .applied(appliedModel, isCreated))
             }
         }
     }
 
     /// Responder method for `notifying`. Notify actions:
     /// - notified
-    func notify(savedModel: AppliedModel) {
+    func notify(savedModel: AppliedModel,
+                isCreated: Bool) {
         log.verbose(#function)
 
         guard !isCancelled else {
@@ -278,7 +289,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         let version = savedModel.syncMetadata.version
         if savedModel.syncMetadata.deleted {
             mutationType = .delete
-        } else if version == 1 {
+        } else if version == 1 || isCreated {
             mutationType = .create
         } else {
             mutationType = .update

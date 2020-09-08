@@ -146,7 +146,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync)
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostMutationSync.model))
         stateMachine.pushExpectActionCriteria { action in
-            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostMutationSync))
+            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostMutationSync, false))
             expect.fulfill()
         }
 
@@ -189,7 +189,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostDeletedMutationSync)
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostDeletedMutationSync.model))
         stateMachine.pushExpectActionCriteria { action in
-            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostDeletedMutationSync))
+            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostDeletedMutationSync, false))
             expect.fulfill()
         }
 
@@ -267,7 +267,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             notifyExpect.fulfill()
         }
 
-        stateMachine.state = .notifying(anyPostMutationSync)
+        stateMachine.state = .notifying(anyPostMutationSync, false)
 
         waitForExpectations(timeout: 1)
         Amplify.Hub.removeListener(hubListener)
