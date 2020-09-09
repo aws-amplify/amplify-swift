@@ -56,7 +56,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
     internal var isFullSync: Bool
     internal var count: Int
-    var completionCount: Int = 0
+    var completionCount = AtomicValue.init(initialValue: 0)
     private var modelSyncedEvent: ModelSyncedEvent.Builder
 
     /// A buffer queue for incoming subsscription events, waiting for this ReconciliationQueue to be `start`ed. Once
@@ -155,8 +155,8 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             self.reconcileAndLocalSaveOperationSinks.remove(reconcileAndLocalSaveOperationSink)
             self.log.info("In AWSModelReconciliationQueue: received completion signal")
 
-            self.completionCount += 1
-            if self.completionCount == self.count {
+            _ = self.completionCount.increment()
+            if self.completionCount.get() == AtomicValue.init(initialValue: self.count).get() {
                 let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
                                                          data: self.modelSyncedEvent.build())
                 Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)

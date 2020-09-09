@@ -63,5 +63,25 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
         }
 
         waitForExpectations(timeout: networkTimeout, handler: nil)
+        Amplify.DataStore.clear { _ in }
+    }
+
+    func testModelSynced() throws {
+        let modelSyncedReceived = expectation(description: "modelSynced received")
+
+        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
+            if payload.eventName == HubPayload.EventName.DataStore.modelSynced {
+                XCTAssertNotNil(payload.data)
+                modelSyncedReceived.fulfill()
+            }
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+
+        waitForExpectations(timeout: networkTimeout, handler: nil)
+        Amplify.DataStore.clear { _ in }
     }
 }

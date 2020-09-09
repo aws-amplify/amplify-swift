@@ -23,7 +23,7 @@ typealias IncomingEventReconciliationQueueFactory =
 @available(iOS 13.0, *)
 final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
 
-    private var receivedCount = 0
+    private var receivedCount = AtomicValue.init(initialValue: 0)
     static let factory: IncomingEventReconciliationQueueFactory = { modelTypes, api, storageAdapter, auth, _ in
         AWSIncomingEventReconciliationQueue(modelTypes: modelTypes,
                                             api: api,
@@ -109,8 +109,8 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     private func onReceiveValue(receiveValue: ModelReconciliationQueueEvent) {
         switch receiveValue {
         case .finished:
-            receivedCount += 1
-            if receivedCount == reconciliationQueues.count {
+            _ = receivedCount.increment()
+            if receivedCount.get() == AtomicValue.init(initialValue: reconciliationQueues.count).get() {
                 dispatchSyncQueriesReady()
             }
         case .mutationEvent(let event):

@@ -101,8 +101,8 @@
 		D838AB4C2500330000BF4940 /* ModelSyncedEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D838AB4B2500330000BF4940 /* ModelSyncedEvent.swift */; };
 		D888E80A24A65B3800F4CE3E /* DataStoreLocalStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D888E80924A65B3800F4CE3E /* DataStoreLocalStoreTests.swift */; };
 		D888E80C24A65DC200F4CE3E /* LocalStoreIntegrationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D888E80B24A65DC200F4CE3E /* LocalStoreIntegrationTestBase.swift */; };
-		D8B90862249839D4002593F5 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21233DD7247591D100039337 /* amplifyconfiguration.json */; };
 		D8C5BA59249815A6007C3A68 /* DataStoreConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C5BA58249815A6007C3A68 /* DataStoreConfigurationTests.swift */; };
+		D8D2EF6A25088FE700127C52 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21233DD7247591D100039337 /* amplifyconfiguration.json */; };
 		D8D900A4249DB599004042E7 /* QuerySort+SQLite.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D900A3249DB599004042E7 /* QuerySort+SQLite.swift */; };
 		D8E9992425013C2F0006170A /* DataStoreHubEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E9992325013C2F0006170A /* DataStoreHubEventsTests.swift */; };
 		D8E99926250142790006170A /* HubEventsIntegrationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E99925250142790006170A /* HubEventsIntegrationTestBase.swift */; };
@@ -1096,7 +1096,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2149E61423886C7F00873955 /* LaunchScreen.storyboard in Resources */,
-				D8B90862249839D4002593F5 /* amplifyconfiguration.json in Resources */,
+				D8D2EF6A25088FE700127C52 /* amplifyconfiguration.json in Resources */,
 				2149E61123886C7F00873955 /* Assets.xcassets in Resources */,
 				2149E60F23886C7B00873955 /* Main.storyboard in Resources */,
 				21233DF72475BD4F00039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests-amplifyconfiguration.json in Resources */,
