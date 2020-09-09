@@ -169,13 +169,13 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             self.log.info("In AWSModelReconciliationQueue: received mutationEvent \(mutationEvent)")
             switch mutationEvent.mutationType {
             case "create":
-                self.modelSyncedEvent.createCount += 1
+                _ = self.modelSyncedEvent.createCount.increment()
             case "update":
-                self.modelSyncedEvent.updateCount += 1
+                _ = self.modelSyncedEvent.updateCount.increment()
             case "delete":
-                self.modelSyncedEvent.deleteCount += 1
+                _ = self.modelSyncedEvent.deleteCount.increment()
             default:
-                print("")
+                break
             }
             self.modelReconciliationQueueSubject.send(.mutationEvent(mutationEvent))
         })

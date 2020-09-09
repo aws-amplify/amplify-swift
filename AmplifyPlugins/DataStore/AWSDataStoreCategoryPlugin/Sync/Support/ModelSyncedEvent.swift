@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
+import Amplify
 
 public struct ModelSyncedEvent {
     let modelName: String
@@ -35,17 +35,17 @@ extension ModelSyncedEvent {
         var modelName: String
         var isFullSync: Bool
         var isDeltaSync: Bool
-        var createCount: Int
-        var updateCount: Int
-        var deleteCount: Int
+        var createCount: AtomicValue<Int>
+        var updateCount: AtomicValue<Int>
+        var deleteCount: AtomicValue<Int>
 
         init() {
             self.modelName = ""
             self.isFullSync = false
             self.isDeltaSync = false
-            self.createCount = 0
-            self.updateCount = 0
-            self.deleteCount = 0
+            self.createCount = AtomicValue.init(initialValue: 0)
+            self.updateCount = AtomicValue.init(initialValue: 0)
+            self.deleteCount = AtomicValue.init(initialValue: 0)
         }
 
         func build() -> ModelSyncedEvent {
@@ -53,9 +53,9 @@ extension ModelSyncedEvent {
                 modelName: modelName,
                 isFullSync: isFullSync,
                 isDeltaSync: isDeltaSync,
-                createCount: createCount,
-                updateCount: updateCount,
-                deleteCount: deleteCount
+                createCount: createCount.get(),
+                updateCount: updateCount.get(),
+                deleteCount: deleteCount.get()
             )
         }
     }
