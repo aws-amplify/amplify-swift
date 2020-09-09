@@ -81,12 +81,12 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         return documentsPath.appendingPathComponent("\(databaseName).db")
     }
 
-    func setUp(models: [Model.Type]) throws {
-        log.debug("Setting up \(models.count) models")
+    func setUp(modelSchemas: [ModelSchema]) throws {
+        log.debug("Setting up \(modelSchemas.count) models")
 
-        let createTableStatements = models
+        let createTableStatements = modelSchemas
             .sortByDependencyOrder()
-            .map { CreateTableStatement(modelSchema: $0.schema).stringValue }
+            .map { CreateTableStatement(modelSchema: $0).stringValue }
             .joined(separator: "\n")
 
         do {
