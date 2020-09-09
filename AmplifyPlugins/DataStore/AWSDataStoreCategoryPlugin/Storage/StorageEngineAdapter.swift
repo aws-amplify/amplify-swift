@@ -38,7 +38,7 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
     // MARK: - Synchronous APIs
 
-    func exists(_ modelType: Model.Type,
+    func exists(_ modelSchema: ModelSchema,
                 withId id: Model.Identifier,
                 predicate: QueryPredicate?) throws -> Bool
 
