@@ -99,7 +99,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: DataStoreCallback<M>) {
         do {
             let modelType = type(of: model)
-            let modelExists = try exists(modelType, withId: model.id)
+            let modelExists = try exists(modelType.schema, withId: model.id)
 
             if !modelExists {
                 if condition != nil {
@@ -116,7 +116,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
             if modelExists {
                 if condition != nil {
-                    let modelExistsWithCondition = try exists(modelType, withId: model.id, predicate: condition)
+                    let modelExistsWithCondition = try exists(modelType.schema, withId: model.id, predicate: condition)
                     if !modelExistsWithCondition {
                         let dataStoreError = DataStoreError.invalidCondition(
                         "Save failed due to condition did not match existing model instance.",
@@ -206,16 +206,14 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
-    func exists(_ modelType: Model.Type,
+    func exists(_ modelSchema: ModelSchema,
                 withId id: Model.Identifier,
                 predicate: QueryPredicate? = nil) throws -> Bool {
-        let schema = modelType.schema
-        let primaryKey = schema.primaryKey.sqlName
-        var sql = "select count(\(primaryKey)) from \(schema.name) where \(primaryKey) = ?"
+        let primaryKey = modelSchema.primaryKey.sqlName
+        var sql = "select count(\(primaryKey)) from \(modelSchema.name) where \(primaryKey) = ?"
         var variables: [Binding?] = [id]
         if let predicate = predicate {
-            let conditionStatement = ConditionStatement(modelSchema: modelType.schema,
-                                                        predicate: predicate)
+            let conditionStatement = ConditionStatement(modelSchema: modelSchema, predicate: predicate)
             sql = """
             \(sql)
             \(conditionStatement.stringValue)
@@ -227,8 +225,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let result = try connection.scalar(sql, variables)
         if let count = result as? Int64 {
             if count > 1 {
-                throw DataStoreError.nonUniqueResult(model: modelType.modelName,
-                                                     count: Int(count))
+                throw DataStoreError.nonUniqueResult(model: modelSchema.name, count: Int(count))
             }
             return count == 1
         }
