@@ -153,7 +153,6 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
         reconcileAndLocalSaveOperationSink = reconcileOp.publisher.sink(receiveCompletion: { completion in
             self.reconcileAndLocalSaveOperationSinks.remove(reconcileAndLocalSaveOperationSink)
-            self.log.info("In AWSModelReconciliationQueue: received completion signal")
 
             _ = self.completionCount.increment()
             if self.completionCount.get() == self.count {
@@ -166,7 +165,6 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 self.modelReconciliationQueueSubject.send(completion: completion)
             }
         }, receiveValue: { mutationEvent in
-            self.log.info("In AWSModelReconciliationQueue: received mutationEvent \(mutationEvent)")
             switch mutationEvent.mutationType {
             case "create":
                 _ = self.modelSyncedEvent.createCount.increment()

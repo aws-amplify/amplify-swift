@@ -7,20 +7,21 @@
 
 import Amplify
 
+/// Used as HubPayload for the `ModelSynced`
 public struct ModelSyncedEvent {
-    let modelName: String
-    var isFullSync: Bool
-    var isDeltaSync: Bool
-    let createCount: Int
-    let updateCount: Int
-    let deleteCount: Int
+    public let modelName: String
+    public var isFullSync: Bool
+    public var isDeltaSync: Bool
+    public let createCount: Int
+    public let updateCount: Int
+    public let deleteCount: Int
 
     public init(modelName: String,
-                isFullSync: Bool = false,
-                isDeltaSync: Bool = false,
-                createCount: Int = 0,
-                updateCount: Int = 0,
-                deleteCount: Int = 0) {
+                isFullSync: Bool,
+                isDeltaSync: Bool,
+                createCount: Int,
+                updateCount: Int,
+                deleteCount: Int) {
         self.modelName = modelName
         self.isFullSync = isFullSync
         self.isDeltaSync = isDeltaSync

@@ -667,6 +667,7 @@
 			children = (
 				D838AB4524FF268400BF4940 /* SyncQueriesStartedEvent.swift */,
 				D838AB4324FF264600BF4940 /* OutboxStatusEvent.swift */,
+				D838AB4B2500330000BF4940 /* ModelSyncedEvent.swift */,
 			);
 			path = Events;
 			sourceTree = "<group>";
@@ -726,7 +727,6 @@
 				FA8F4D212395B11700861D91 /* MutationEvent+Query.swift */,
 				FA3841E823889D440070AD5B /* StateMachine.swift */,
 				6B3CC68123F89EE30008ECBC /* Cancellable.swift */,
-				D838AB4B2500330000BF4940 /* ModelSyncedEvent.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";

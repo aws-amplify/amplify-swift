@@ -31,6 +31,9 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
         let subscriptionsEstablishedReceived = expectation(description: "subscriptionsEstablished received")
         let syncQueriesStartedReceived = expectation(description: "syncQueriesStarted received")
         let outboxStatusReceived = expectation(description: "outboxStatus received")
+        let modelSyncedReceived = expectation(description: "modelSynced received")
+        modelSyncedReceived.assertForOverFulfill = false
+        let syncQueriesReadyReceived = expectation(description: "syncQueriesReady received")
 
         let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
             if payload.eventName == HubPayload.EventName.DataStore.subscriptionsEstablished {
@@ -55,25 +58,19 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
                 XCTAssertTrue(outboxStatusEvent.isEmpty)
                 outboxStatusReceived.fulfill()
             }
-        }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
-            XCTFail("Listener not registered for hub")
-            return
-        }
-
-        waitForExpectations(timeout: networkTimeout, handler: nil)
-        Amplify.DataStore.clear { _ in }
-    }
-
-    func testModelSynced() throws {
-        let modelSyncedReceived = expectation(description: "modelSynced received")
-
-        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
             if payload.eventName == HubPayload.EventName.DataStore.modelSynced {
-                XCTAssertNotNil(payload.data)
+                guard let modelSyncedEvent = payload.data as? ModelSyncedEvent else {
+                    XCTFail("Failed to cast payload data as ModelSyncedEvent")
+                    return
+                }
                 modelSyncedReceived.fulfill()
             }
+
+            if payload.eventName == HubPayload.EventName.DataStore.syncQueriesReady {
+                syncQueriesReadyReceived.fulfill()
+            }
+
         }
 
         guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
@@ -82,6 +79,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
         }
 
         waitForExpectations(timeout: networkTimeout, handler: nil)
-        Amplify.DataStore.clear { _ in }
+        Amplify.Hub.removeListener(hubListener)
     }
+
 }
