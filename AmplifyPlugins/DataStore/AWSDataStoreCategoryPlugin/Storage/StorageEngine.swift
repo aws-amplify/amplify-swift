@@ -54,11 +54,11 @@ final class StorageEngine: StorageEngineBehavior {
         return storageEnginePublisher.eraseToAnyPublisher()
     }
 
-    static var systemModels: [Model.Type] {
+    static var systemModelSchemas: [ModelSchema] {
         return [
-            ModelSyncMetadata.self,
-            MutationEvent.self,
-            MutationSyncMetadata.self
+            ModelSyncMetadata.schema,
+            MutationEvent.schema,
+            MutationSyncMetadata.schema
         ]
     }
 
@@ -88,7 +88,7 @@ final class StorageEngine: StorageEngineBehavior {
 
         let storageAdapter = try SQLiteStorageEngineAdapter(version: modelRegistryVersion, databaseName: databaseName)
 
-        try storageAdapter.setUp(models: StorageEngine.systemModels)
+        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
         if #available(iOS 13.0, *) {
             let syncEngine = isSyncEnabled ? try? RemoteSyncEngine(storageAdapter: storageAdapter,
                                                                    dataStoreConfiguration: dataStoreConfiguration) : nil
@@ -126,8 +126,8 @@ final class StorageEngine: StorageEngineBehavior {
         }
     }
 
-    func setUp(models: [Model.Type]) throws {
-        try storageAdapter.setUp(models: models)
+    func setUp(modelSchemas: [ModelSchema]) throws {
+        try storageAdapter.setUp(modelSchemas: modelSchemas)
     }
 
     func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: @escaping DataStoreCallback<M>) {
