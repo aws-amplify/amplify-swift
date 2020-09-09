@@ -26,6 +26,9 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
     ///    - subscriptionEstablished received, payload should be nil
     ///    - syncQueriesStarted received, payload should be: {models: ["Post", "Comment"]}
     ///    - outboxStatus received, payload should be {isEmpty: true}
+    ///    - modelSynced received, payload should be:
+    ///      {modelName: "Some Model name", isFullSync: true/false, isDeltaSync: false/true, createCount: #, updateCount: #, deleteCount: #}
+    ///    - syncQueriesReady received, payload should be nil
     func testDataStoreConfiguredDispatchesHubEvents() throws {
 
         let subscriptionsEstablishedReceived = expectation(description: "subscriptionsEstablished received")
