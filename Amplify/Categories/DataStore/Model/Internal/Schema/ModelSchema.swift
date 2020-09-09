@@ -61,6 +61,10 @@ public typealias ModelFields = [String: ModelField]
 
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
+public typealias ModelName = String
+
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public struct ModelSchema {
 
     public let name: String

@@ -8,7 +8,7 @@
 import Amplify
 
 protocol ModelStorageBehavior {
-    func setUp(models: [Model.Type]) throws
+    func setUp(modelSchemas: [ModelSchema]) throws
 
     func save<M: Model>(_ model: M,
                         condition: QueryPredicate?,
