@@ -47,8 +47,6 @@ typealias ModelReconciliationQueueFactory = (
 ///   event.
 @available(iOS 13.0, *)
 final class AWSModelReconciliationQueue: ModelReconciliationQueue {
-    typealias ReconsileOpResult = Result<MutationEvent, DataStoreError>
-    typealias ReconsileOpResultHandler = (ReconsileOpResult) -> Void
     /// Exposes a publisher for incoming subscription events
     private let incomingSubscriptionEvents: IncomingSubscriptionEventPublisher
 
@@ -69,7 +67,6 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     private let reconcileAndSaveQueue: OperationQueue
 
     private let modelName: String
-    private let modelType: Model.Type
 
     private var incomingEventsSink: AnyCancellable?
     private var reconcileAndLocalSaveOperationSinks: Set<AnyCancellable?>
@@ -87,13 +84,10 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
         self.count = 0
         self.isFullSync = false
-        self.modelType = modelType
         self.modelName = modelType.modelName
         self.modelSyncedEvent = ModelSyncedEvent.Builder()
-        modelSyncedEvent.modelName = modelName
 
-        modelSyncedEvent.isFullSync = isFullSync
-        modelSyncedEvent.isDeltaSync = !isFullSync
+        modelSyncedEvent.modelName = modelName
 
         self.storageAdapter = storageAdapter
 
@@ -156,10 +150,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
             _ = self.completionCount.increment()
             if self.completionCount.get() == self.count {
-                let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
-                                                         data: self.modelSyncedEvent.build())
-                Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
-                self.modelReconciliationQueueSubject.send(.finished)
+                self.dispatchModelSyncedEvent()
             }
             if case .failure = completion {
                 self.modelReconciliationQueueSubject.send(completion: completion)
@@ -204,6 +195,8 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     }
 
     private func dispatchModelSyncedEvent() {
+        modelSyncedEvent.isFullSync = isFullSync
+        modelSyncedEvent.isDeltaSync = !isFullSync
         let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
                                                  data: modelSyncedEvent.build())
         Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)

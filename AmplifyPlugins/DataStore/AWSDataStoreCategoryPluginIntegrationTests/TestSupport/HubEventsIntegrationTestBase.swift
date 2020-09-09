@@ -47,20 +47,4 @@ class HubEventsIntegrationTestBase: XCTestCase {
         print("Amplify reset")
         Amplify.reset()
     }
-
-//    func saveSomeItemsToBackend() {
-//        let semaphore = DispatchSemaphore(value: 0)
-//
-//        let post = Post(title: "1", content: "content", createdAt: .now())
-//        Amplify.DataStore.save(post) { _ in
-//            semaphore.signal()
-//        }
-//        semaphore.wait()
-//
-//        let comment = Comment(content: "2", createdAt: .now(), post: post)
-//        Amplify.DataStore.save(comment) { _ in
-//            semaphore.signal()
-//        }
-//        semaphore.wait()
-//    }
 }

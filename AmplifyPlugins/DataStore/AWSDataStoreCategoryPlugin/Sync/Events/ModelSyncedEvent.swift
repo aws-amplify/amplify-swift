@@ -9,9 +9,12 @@ import Amplify
 
 /// Used as HubPayload for the `ModelSynced`
 public struct ModelSyncedEvent {
+    /// Name of model that have been synced
     public let modelName: String
+    /// Notify the type of sync: `full` or `delta`
     public var isFullSync: Bool
     public var isDeltaSync: Bool
+    /// Count of mutationType of model instances that have been synced: `create`, `update`, `delete`
     public let createCount: Int
     public let updateCount: Int
     public let deleteCount: Int

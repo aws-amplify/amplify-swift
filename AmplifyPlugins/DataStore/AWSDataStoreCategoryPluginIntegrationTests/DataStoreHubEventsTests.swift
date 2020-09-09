@@ -64,6 +64,8 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
                     XCTFail("Failed to cast payload data as ModelSyncedEvent")
                     return
                 }
+                XCTAssertNotEqual(modelSyncedEvent.modelName, "")
+                XCTAssertNotEqual(modelSyncedEvent.isFullSync, modelSyncedEvent.isDeltaSync)
                 modelSyncedReceived.fulfill()
             }
 

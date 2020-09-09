@@ -42,7 +42,8 @@ public extension HubPayload.EventName.DataStore {
     /// HubPayload `modelSyncedEvent` contains:
     /// - a String value `modelName` to notify name of model to be synced
     /// - two Boolean values `isFullSync` and `isDeltaSync` to notify the sync type
-    /// - three Int values to notify the count of instance's mutationType: `count`, `update` and `delete`
+    /// - three Int values to notify the count of mutationType of model instances that have been
+    ///   synced: `createCount`, `updateCount` or `deleteCount`
     static let modelSynced = "DataStore.modelSynced"
 
     /// Dispatched when every model instances have been synced
