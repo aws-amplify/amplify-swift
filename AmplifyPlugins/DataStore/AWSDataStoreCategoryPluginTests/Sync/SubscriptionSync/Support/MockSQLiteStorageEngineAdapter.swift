@@ -99,7 +99,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         return []
     }
 
-    func exists(_ modelType: Model.Type, withId id: Model.Identifier, predicate: QueryPredicate?) throws -> Bool {
+    func exists(_ modelSchema: ModelSchema, withId id: Model.Identifier, predicate: QueryPredicate?) throws -> Bool {
         XCTFail("Not expected to execute")
         return true
     }
