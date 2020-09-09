@@ -369,7 +369,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
 
     func checkIfPostIsDeleted(id: String) {
         do {
-            let exists = try storageAdapter.exists(Post.self, withId: id)
+            let exists = try storageAdapter.exists(Post.schema, withId: id)
             XCTAssertFalse(exists, "ID \(id) should not exist")
         } catch {
             XCTFail(String(describing: error))
