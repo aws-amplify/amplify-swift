@@ -110,7 +110,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         switch receiveValue {
         case .finished:
             _ = receivedCount.increment()
-            if receivedCount.get() == AtomicValue.init(initialValue: reconciliationQueues.count).get() {
+            if receivedCount.get() == reconciliationQueues.count {
                 dispatchSyncQueriesReady()
             }
         case .mutationEvent(let event):

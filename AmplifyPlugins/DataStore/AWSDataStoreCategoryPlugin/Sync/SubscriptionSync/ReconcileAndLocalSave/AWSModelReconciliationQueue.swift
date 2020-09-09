@@ -156,7 +156,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             self.log.info("In AWSModelReconciliationQueue: received completion signal")
 
             _ = self.completionCount.increment()
-            if self.completionCount.get() == AtomicValue.init(initialValue: self.count).get() {
+            if self.completionCount.get() == self.count {
                 let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
                                                          data: self.modelSyncedEvent.build())
                 Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
