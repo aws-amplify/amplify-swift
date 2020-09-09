@@ -78,14 +78,14 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     /// By the time this method gets called, DataStore will already have invoked
     /// `AmplifyModelRegistration.registerModels`, so we can inspect those models to derive isSyncEnabled, and pass
-    /// them to `StorageEngine.setUp(models:)`
+    /// them to `StorageEngine.setUp(modelSchemas:)`
     public func configure(using amplifyConfiguration: Any?) throws {
         modelRegistration.registerModels(registry: ModelRegistry.self)
         resolveSyncEnabled()
 
         try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
 
-        try storageEngine.setUp(models: ModelRegistry.models)
+        try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
 
         let filter = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
         var token: UnsubscribeToken?
@@ -106,7 +106,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
                 self.dataStorePublisher = DataStorePublisher()
             }
             try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
-            try storageEngine.setUp(models: ModelRegistry.models)
+            try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
             storageEngine.startSync()
         } catch {
             log.error(error: error)

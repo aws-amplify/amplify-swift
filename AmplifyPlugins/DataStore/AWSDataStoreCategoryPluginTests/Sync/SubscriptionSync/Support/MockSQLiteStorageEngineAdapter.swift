@@ -32,7 +32,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         self.shouldReturnErrorOnDeleteMutation = false
     }
 
-    func setUp(models: [Model.Type]) throws {
+    func setUp(modelSchemas: [ModelSchema]) throws {
         XCTFail("Not expected to execute")
     }
 
@@ -183,7 +183,7 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     func startSync() {
     }
 
-    func setUp(models: [Model.Type]) throws {
+    func setUp(modelSchemas: [ModelSchema]) throws {
     }
 
     func save<M: Model>(_ model: M, condition: QueryPredicate?, completion: @escaping DataStoreCallback<M>) {
