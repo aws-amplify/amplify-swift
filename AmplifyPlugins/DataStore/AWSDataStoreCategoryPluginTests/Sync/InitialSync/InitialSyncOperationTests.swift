@@ -331,7 +331,7 @@ class InitialSyncOperationTests: XCTestCase {
         apiPlugin.responders[.queryRequestListener] = responder
 
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
-        try storageAdapter.setUp(models: StorageEngine.systemModels + [MockSynced.self])
+        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + [MockSynced.schema])
 
         let reconciliationQueue = MockReconciliationQueue()
         let operation = InitialSyncOperation(
@@ -456,7 +456,7 @@ class InitialSyncOperationTests: XCTestCase {
         let startDateMilliseconds = (Int(Date().timeIntervalSince1970) - 100) * 1_000
 
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
-        try storageAdapter.setUp(models: StorageEngine.systemModels + [MockSynced.self])
+        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + [MockSynced.schema])
 
         let syncMetadata = ModelSyncMetadata(id: MockSynced.modelName, lastSync: startDateMilliseconds)
         let syncMetadataSaved = expectation(description: "Sync metadata saved")
@@ -525,7 +525,7 @@ class InitialSyncOperationTests: XCTestCase {
         let startDateMilliSeconds = (Int(Date().timeIntervalSince1970) - 100) * 1_000
 
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
-        try storageAdapter.setUp(models: StorageEngine.systemModels + [MockSynced.self])
+        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + [MockSynced.schema])
 
         let syncMetadata = ModelSyncMetadata(id: MockSynced.modelName, lastSync: startDateMilliSeconds)
         let syncMetadataSaved = expectation(description: "Sync metadata saved")
@@ -592,7 +592,7 @@ class InitialSyncOperationTests: XCTestCase {
 
     func testBaseQueryWithCustomSyncPageSize() throws {
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
-        try storageAdapter.setUp(models: StorageEngine.systemModels + [MockSynced.self])
+        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + [MockSynced.schema])
 
         let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
