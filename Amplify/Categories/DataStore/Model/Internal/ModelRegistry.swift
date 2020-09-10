@@ -30,11 +30,7 @@ public struct ModelRegistry {
 
     public static var modelSchemas: [ModelSchema] {
         concurrencyQueue.sync {
-<<<<<<< HEAD
-            Array(modelTypes.values.map { $0.schema })
-=======
             Array(modelSchemaMapping.values)
->>>>>>> refactor(datastore): Remove dependency on Model.Type from registeration
         }
     }
 
