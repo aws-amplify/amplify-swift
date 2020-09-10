@@ -31,6 +31,10 @@ protocol ModelGraphQLRequestFactory {
     static func list<M: Model>(_ modelType: M.Type,
                                where predicate: QueryPredicate?) -> GraphQLRequest<[M]>
 
+    static func paginatedList<M: Model>(_ modelType: M.Type,
+                                      where predicate: QueryPredicate?,
+                                      limit: Int?) -> GraphQLRequest<AppSyncList<M>>
+
     /// Creates a `GraphQLRequest` that represents a query that expects a single value as a result.
     /// The request will be created with the correct correct document based on the `ModelSchema` and
     /// variables based on given `id`.
@@ -184,6 +188,25 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                    variables: document.variables,
                                    responseType: [M].self,
                                    decodePath: document.name + ".items")
+    }
+
+    public static func paginatedList<M: Model>(_ modelType: M.Type,
+                                               where predicate: QueryPredicate? = nil,
+                                               limit: Int? = nil) -> GraphQLRequest<AppSyncList<M>> {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
+
+        if let predicate = predicate {
+            documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
+        }
+
+        documentBuilder.add(decorator: PaginationDecorator(limit: limit))
+        let document = documentBuilder.build()
+
+        return GraphQLRequest<AppSyncList<M>>(document: document.stringValue,
+                                              variables: document.variables,
+                                              responseType: AppSyncList<M>.self,
+                                              decodePath: document.name)
     }
 
     public static func subscription<M: Model>(of modelType: M.Type,

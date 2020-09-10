@@ -7,6 +7,7 @@
 
 import XCTest
 import AWSMobileClient
+import AWSPluginsCore
 @testable import AWSAPICategoryPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -187,6 +188,63 @@ class GraphQLModelBasedTests: XCTestCase {
         }
 
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    /// Test paginated list query contains next GraphQLRequest to continue pagination
+    ///
+    /// - Given: Two posts, and a query with a limit of 1
+    /// - When:
+    ///    - query returns successful paginated results
+    /// - Then:
+    ///    - paginated result can be used for subsequential queries
+    ///
+    func testPaginatedListQuery() {
+        let uuid1 = UUID().uuidString
+        let uuid2 = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let title = testMethodName + "Title"
+        guard createPost(id: uuid1, title: title) != nil,
+              createPost(id: uuid2, title: title) != nil else {
+            XCTFail("Failed to ensure at least two Posts to be retrieved on the listQuery")
+            return
+        }
+
+        let firstQueryCompleted = expectation(description: "first query completed")
+        let post = Post.keys
+        let predicate = post.id == uuid1 || post.id == uuid2
+        var results: AppSyncList<Post>?
+        _ = Amplify.API.query(request: .paginatedList(Post.self, where: predicate, limit: 1)) { event in
+            switch event {
+            case .success(let response):
+                guard case let .success(graphQLResponse) = response else {
+                    XCTFail("Missing successful response")
+                    return
+                }
+
+                XCTAssertTrue(graphQLResponse.hasNext())
+                results = graphQLResponse
+                firstQueryCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected .failure event: \(error)")
+            }
+        }
+
+        wait(for: [firstQueryCompleted], timeout: TestCommonConstants.networkTimeout)
+        let secondQueryCompleted = expectation(description: "second query completed")
+        guard let firstResults = results else {
+            XCTFail("Could not get first results")
+            return
+        }
+        firstResults.next { result in
+            switch result {
+            case .success(let list):
+                XCTAssertFalse(list.hasNext())
+                secondQueryCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected .failure event: \(error)")
+            }
+        }
+        wait(for: [secondQueryCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testListQueryWithPredicate() {

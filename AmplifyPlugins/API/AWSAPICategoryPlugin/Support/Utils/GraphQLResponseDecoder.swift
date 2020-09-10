@@ -15,7 +15,9 @@ struct GraphQLResponseDecoder {
     static func decode<R: Decodable>(graphQLServiceResponse: AWSAppSyncGraphQLResponse,
                                      responseType: R.Type,
                                      decodePath: String?,
-                                     rawGraphQLResponse: Data) throws -> GraphQLResponse<R> {
+                                     rawGraphQLResponse: Data,
+                                     document: String? = nil,
+                                     variables: [String: Any]? = nil) throws -> GraphQLResponse<R> {
 
         switch (graphQLServiceResponse.data, graphQLServiceResponse.errors) {
         case (nil, nil):
@@ -33,9 +35,14 @@ struct GraphQLResponseDecoder {
         case (.some(let data), .none):
             do {
                 let jsonValue = JSONValue.object(data)
-                let responseData = try decode(graphQLData: jsonValue,
-                                              into: responseType,
-                                              at: decodePath)
+                let graphQLData = try getModelJSONValue(from: jsonValue, at: decodePath)
+                var responseData = try decode(graphQLData: graphQLData,
+                                              into: responseType)
+                responseData = try decodeToAppSyncList(responseData: responseData,
+                                                           responseType: responseType,
+                                                           graphQLData: graphQLData,
+                                                           document: document,
+                                                           variables: variables)
                 return GraphQLResponse<R>.success(responseData)
             } catch let decodingError as DecodingError {
                 let error = APIError(error: decodingError)
@@ -60,9 +67,12 @@ struct GraphQLResponseDecoder {
                 }
 
                 let jsonValue = JSONValue.object(data)
-                let responseData = try decode(graphQLData: jsonValue,
-                                              into: responseType,
-                                              at: decodePath)
+                let graphQLData = try getModelJSONValue(from: jsonValue, at: decodePath)
+                var responseData = try decode(graphQLData: graphQLData,
+                                              into: responseType)
+                responseData = try decodeToAppSyncList(responseData: responseData,
+                                                       responseType: responseType,
+                                                       graphQLData: graphQLData)
                 let responseErrors = try decodeErrors(graphQLErrors: errors)
                 return GraphQLResponse<R>.failure(.partial(responseData, responseErrors))
             } catch let decodingError as DecodingError {
@@ -139,14 +149,13 @@ struct GraphQLResponseDecoder {
     }
 
     private static func decode<R: Decodable>(graphQLData: JSONValue,
-                                             into responseType: R.Type,
-                                             at decodePath: String?) throws -> R {
+                                             into responseType: R.Type) throws -> R {
 
         let isAnyModel = responseType == AnyModel.self
 
         let serializedJSON = isAnyModel ?
-            try serializeAnyModel(from: graphQLData, at: decodePath) :
-            try serialize(graphQLData: graphQLData, at: decodePath)
+            try serializeAnyModel(from: graphQLData) :
+            try serialize(graphQLData: graphQLData)
 
         if responseType == String.self {
 
@@ -166,18 +175,14 @@ struct GraphQLResponseDecoder {
         return try decoder.decode(responseType, from: serializedJSON)
     }
 
-    private static func serialize(graphQLData: JSONValue,
-                                  at decodePath: String?) throws -> Data {
-        let modelJSON = try getModelJSONValue(from: graphQLData, at: decodePath)
+    private static func serialize(graphQLData: JSONValue) throws -> Data {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
-        return try encoder.encode(modelJSON)
+        return try encoder.encode(graphQLData)
     }
 
-    private static func serializeAnyModel(from graphQLData: JSONValue,
-                                          at decodePath: String?) throws -> Data {
-        let modelJSON = try getModelJSONValue(from: graphQLData, at: decodePath)
-        let anyModel = try AnyModel(modelJSON: modelJSON)
+    private static func serializeAnyModel(from graphQLData: JSONValue) throws -> Data {
+        let anyModel = try AnyModel(modelJSON: graphQLData)
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
         return try encoder.encode(anyModel)
