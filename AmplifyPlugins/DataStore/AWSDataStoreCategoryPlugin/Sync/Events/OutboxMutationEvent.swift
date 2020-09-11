@@ -16,9 +16,9 @@ public struct OutboxMutationEvent {
                                              model: Model,
                                              mutationSync: MutationSync<AnyModel>) -> OutboxMutationEvent {
         let element = OutboxMutationEventElement(model: model,
-                                                  version: mutationSync.syncMetadata.version,
-                                                  lastChangedAt: mutationSync.syncMetadata.lastChangedAt,
-                                                  deleted: mutationSync.syncMetadata.deleted)
+                                                 version: mutationSync.syncMetadata.version,
+                                                 lastChangedAt: mutationSync.syncMetadata.lastChangedAt,
+                                                 deleted: mutationSync.syncMetadata.deleted)
         return fromModel(modelName: modelName, element: element)
     }
 

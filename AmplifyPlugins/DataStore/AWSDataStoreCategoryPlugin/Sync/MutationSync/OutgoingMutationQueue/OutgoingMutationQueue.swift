@@ -193,13 +193,12 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         let localModel: Model
         do {
             localModel = try mutationEvent.decodeModel()
+            let outboxMutationEnqueuedEvent = OutboxMutationEvent
+                .fromModelWithoutMetadata(modelName: mutationEvent.modelName,
+                                          model: localModel)
 
-            let outboxMutationEnqueuedEvent = OutboxMutationEvent.fromModelWithoutMetadata(modelName: mutationEvent.modelName,
-                                                                                           model: localModel)
-            let payloadOfOutboxMutation = HubPayload(eventName: HubPayload.EventName.DataStore.outboxMutationEnqueued,
-                                                     data: outboxMutationEnqueuedEvent)
-            Amplify.Hub.dispatch(to: .dataStore, payload: payloadOfOutboxMutation)
-
+            dispatchOutboxMutationEvent(eventName: HubPayload.EventName.DataStore.outboxMutationEnqueued,
+                                        outboxMutationEvent: outboxMutationEnqueuedEvent)
             dispatchOutboxStatusEvent(isEmpty: false)
             operationQueue.addOperation(syncMutationToCloudOperation)
             stateMachine.notify(action: .enqueuedEvent)
@@ -290,9 +289,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                                            mutationSync: mutationSyncMetadata)
             }
 
-            let payload = HubPayload(eventName: HubPayload.EventName.DataStore.outboxMutationProcessed,
-                                     data: outboxMutationProcessedEvent)
-            Amplify.Hub.dispatch(to: .dataStore, payload: payload)
+            self.dispatchOutboxMutationEvent(eventName: HubPayload.EventName.DataStore.outboxMutationProcessed,
+                                             outboxMutationEvent: outboxMutationProcessedEvent)
 
             self.queryMutationEventsFromStorage {
                 self.stateMachine.notify(action: .processedEvent)
@@ -316,6 +314,12 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             }
             onComplete()
         }
+    }
+
+    private func dispatchOutboxMutationEvent(eventName: String, outboxMutationEvent: OutboxMutationEvent) {
+        let payload = HubPayload(eventName: eventName,
+                                 data: outboxMutationEvent)
+        Amplify.Hub.dispatch(to: .dataStore, payload: payload)
     }
 
     private func dispatchOutboxStatusEvent(isEmpty: Bool) {
