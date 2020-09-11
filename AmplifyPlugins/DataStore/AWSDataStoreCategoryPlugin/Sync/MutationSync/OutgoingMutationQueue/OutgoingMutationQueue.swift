@@ -272,22 +272,15 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                 return
             }
 
-            let outboxMutationProcessedEvent: OutboxMutationEvent
-            if mutationSyncMetadata == nil {
-                outboxMutationProcessedEvent = OutboxMutationEvent
-                .fromModelWithoutMetadata(modelName: mutationEvent.modelName,
-                                          model: localModel)
-            } else {
-                guard let mutationSyncMetadata = mutationSyncMetadata else {
-                    self.log.error("Couldn't get mutationSyncMetadata")
-                    self.stateMachine.notify(action: .processedEvent)
-                    return
-                }
-                outboxMutationProcessedEvent = OutboxMutationEvent
-                    .fromModelWithMetadata(modelName: mutationEvent.modelName,
-                                           model: localModel,
-                                           mutationSync: mutationSyncMetadata)
+            /// Only emit `outboxMutationProcessed` when a successful response returns
+            guard let mutationSyncMetadata = mutationSyncMetadata else {
+                self.stateMachine.notify(action: .processedEvent)
+                return
             }
+            let outboxMutationProcessedEvent = OutboxMutationEvent
+                .fromModelWithMetadata(modelName: mutationEvent.modelName,
+                                       model: localModel,
+                                       mutationSync: mutationSyncMetadata)
 
             self.dispatchOutboxMutationEvent(eventName: HubPayload.EventName.DataStore.outboxMutationProcessed,
                                              outboxMutationEvent: outboxMutationProcessedEvent)
