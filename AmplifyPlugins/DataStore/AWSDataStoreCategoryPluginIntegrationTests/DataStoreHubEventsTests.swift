@@ -102,7 +102,6 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
                     return
                 }
                 XCTAssertEqual(outboxMutationProcessedEvent.modelName, "Post")
-                XCTAssertEqual(outboxMutationProcessedEvent.modelName, "Post")
                 XCTAssertEqual(outboxMutationProcessedEvent.element.model.modelName, "Post")
                 XCTAssertEqual(outboxMutationProcessedEvent.element.version, 1)
                 XCTAssertNotNil(outboxMutationProcessedEvent.element.lastChangedAt)
