@@ -6,7 +6,7 @@
 
 set -e +o pipefail
 
-VERSION="20200728-9fb7d93"
+VERSION="20200910-5a68dc2"
 
 codecov_flags=( )
 url="https://codecov.io"
@@ -216,7 +216,8 @@ swiftcov() {
       then
         say "    $g+$x Building reports for $_proj $_type"
         dest=$([ -f "$f/$_proj" ] && echo "$f/$_proj" || echo "$f/Contents/MacOS/$_proj")
-        _proj_name="${_proj//[[:space:]]//g}"
+        # shellcheck disable=SC2001
+        _proj_name=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
         # shellcheck disable=SC2086
         xcrun llvm-cov show $beta_xcode_partials -instr-profile "$1" "$dest" > "$_proj_name.$_type.coverage.txt" \
          || say "    ${r}x>${x} llvm-cov failed to produce results for $dest"
@@ -661,11 +662,11 @@ then
 elif [ "$CI" = "true" ] && [ "$SEMAPHORE" = "true" ];
 then
   say "$e==>$x Semaphore CI detected."
-  # https://semaphoreapp.com/docs/available-environment-variables.html
+# https://docs.semaphoreci.com/ci-cd-environment/environment-variables/#semaphore-related
   service="semaphore"
-  branch="$BRANCH_NAME"
-  build="$SEMAPHORE_BUILD_NUMBER"
-  job="$SEMAPHORE_CURRENT_THREAD"
+  branch="$SEMAPHORE_GIT_BRANCH"
+  build="$SEMAPHORE_WORKFLOW_NUMBER"
+  job="$SEMAPHORE_JOB_ID"
   pr="$PULL_REQUEST_NUMBER"
   slug="$SEMAPHORE_REPO_SLUG"
   commit="$REVISION"
@@ -787,7 +788,7 @@ then
   commit="${CI_BUILD_REF:-$CI_COMMIT_SHA}"
   slug="${CI_PROJECT_PATH}"
 
-elif [ "$GITHUB_ACTION" != "" ];
+elif [ "$GITHUB_ACTIONS" != "" ];
 then
   say "$e==>$x GitHub Actions detected."
 
