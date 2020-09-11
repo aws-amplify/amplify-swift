@@ -116,7 +116,7 @@ jobs:
           command: xcodebuild test -enableThreadSanitizer NO -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}" | xcpretty --simple --color --report junit
       - run:
           name: Upload coverage report to Codecov
-          command: bash <(curl -s https://codecov.io/bash) -F $CIRCLE_JOB
+          command: .circleci/codecov.sh -F $CIRCLE_JOB # From https://codecov.io/bash 
       - store_test_results:
           path: build/reports
 
@@ -149,7 +149,7 @@ jobs:
           command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | xcpretty --simple --color --report junit
       - run:
           name: Upload << parameters.path >> coverage report to Codecov
-          command: bash <(curl -s https://codecov.io/bash) -F << parameters.path >>_plugin_unit_test
+          command: .circleci/codecov.sh -F << parameters.path >>_plugin_unit_test # From https://codecov.io/bash 
       - store_test_results:
           path: build/reports
 
