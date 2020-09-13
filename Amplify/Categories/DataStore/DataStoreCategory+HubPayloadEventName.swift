@@ -37,4 +37,8 @@ public extension HubPayload.EventName.DataStore {
     /// Dispatched when DataStore is about to start sync queries
     /// HubPayload `syncQueriesStartedEvent` contains an array of each model's `name`
     static let syncQueriesStarted = "DataStore.syncQueriesStarted"
+
+    /// Dispatched when DataStore starts and everytime network status changes
+    /// HubPayload `NetworkStatusEvent` contains a boolean value `active` to norify network staus
+    static let networkStatus = "DataStore.networkStatus"
 }

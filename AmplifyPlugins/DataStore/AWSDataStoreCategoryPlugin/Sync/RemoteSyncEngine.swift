@@ -48,6 +48,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private var stateMachineSink: AnyCancellable?
 
     var networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?
+    private var networkReachabilitySink: AnyCancellable?
     var mutationRetryNotifier: MutationRetryNotifier?
     let requestRetryablePolicy: RequestRetryablePolicy
     var currentAttemptNumber: Int
@@ -183,6 +184,18 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         }
         self.api = api
         self.auth = auth
+
+        if networkReachabilityPublisher == nil {
+            if let reachability = api as? APICategoryReachabilityBehavior {
+                do {
+                    networkReachabilityPublisher = try reachability.reachabilityPublisher()
+                    networkReachabilitySink = networkReachabilityPublisher?
+                        .sink(receiveValue: onReceiveNetworkStatus(networkStatus:))
+                } catch {
+                    log.error("\(#function): Unable to listen on reachability: \(error)")
+                }
+            }
+        }
 
         remoteSyncTopicPublisher.send(.storageAdapterAvailable)
         stateMachine.notify(action: .receivedStart)
@@ -325,6 +338,13 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
         remoteSyncTopicPublisher.send(.syncStarted)
         stateMachine.notify(action: .notifiedSyncStarted)
+    }
+
+    private func onReceiveNetworkStatus(networkStatus: ReachabilityUpdate) {
+        let networkStatusEvent = NetworkStatusEvent(active: networkStatus.isOnline)
+        let networkStatusEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.networkStatus,
+                                 data: networkStatusEvent)
+        Amplify.Hub.dispatch(to: .dataStore, payload: networkStatusEventPayload)
     }
 
     func reset(onComplete: () -> Void) {
