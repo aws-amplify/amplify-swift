@@ -343,7 +343,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private func onReceiveNetworkStatus(networkStatus: ReachabilityUpdate) {
         let networkStatusEvent = NetworkStatusEvent(active: networkStatus.isOnline)
         let networkStatusEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.networkStatus,
-                                 data: networkStatusEvent)
+                                                   data: networkStatusEvent)
         Amplify.Hub.dispatch(to: .dataStore, payload: networkStatusEventPayload)
     }
 
