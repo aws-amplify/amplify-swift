@@ -185,15 +185,14 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         self.api = api
         self.auth = auth
 
-        if networkReachabilityPublisher == nil {
-            if let reachability = api as? APICategoryReachabilityBehavior {
-                do {
-                    networkReachabilityPublisher = try reachability.reachabilityPublisher()
-                    networkReachabilitySink = networkReachabilityPublisher?
-                        .sink(receiveValue: onReceiveNetworkStatus(networkStatus:))
-                } catch {
-                    log.error("\(#function): Unable to listen on reachability: \(error)")
-                }
+        if networkReachabilityPublisher == nil,
+            let reachability = api as? APICategoryReachabilityBehavior {
+            do {
+                networkReachabilityPublisher = try reachability.reachabilityPublisher()
+                networkReachabilitySink = networkReachabilityPublisher?
+                    .sink(receiveValue: onReceiveNetworkStatus(networkStatus:))
+            } catch {
+                log.error("\(#function): Unable to listen on reachability: \(error)")
             }
         }
 

@@ -9,7 +9,7 @@ import Amplify
 import Combine
 import Foundation
 
-class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
+class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin, APICategoryReachabilityBehavior {
     var responders = [ResponderKeys: Any]()
 
     // MARK: - Properties
@@ -27,6 +27,9 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         listeners = []
         onComplete()
     }
+    
+//    func reachabilityPublisher() throws -> AnyPublisher<ReachabilityUpdate, Never>?
+
 
     // MARK: - Request-based GraphQL methods
 
