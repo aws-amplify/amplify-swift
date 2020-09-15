@@ -28,11 +28,20 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
     ///    - outboxStatus received, payload should be {isEmpty: true}
     func testDataStoreConfiguredDispatchesHubEvents() throws {
 
+        let networkStatusReceived = expectation(description: "networkStatus received")
         let subscriptionsEstablishedReceived = expectation(description: "subscriptionsEstablished received")
         let syncQueriesStartedReceived = expectation(description: "syncQueriesStarted received")
         let outboxStatusReceived = expectation(description: "outboxStatus received")
 
         let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
+            if payload.eventName == HubPayload.EventName.DataStore.networkStatus {
+                guard let networkStatusEvent = payload.data as? NetworkStatusEvent else {
+                    XCTFail("Failed to cast payload data as NetworkStatusEvent")
+                    return
+                }
+                XCTAssertEqual(networkStatusEvent.active, true)
+            }
+            
             if payload.eventName == HubPayload.EventName.DataStore.subscriptionsEstablished {
                 XCTAssertNil(payload.data)
                 subscriptionsEstablishedReceived.fulfill()
