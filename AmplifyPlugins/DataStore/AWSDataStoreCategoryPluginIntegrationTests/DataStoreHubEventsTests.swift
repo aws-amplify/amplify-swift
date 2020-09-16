@@ -63,6 +63,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
         }
 
         waitForExpectations(timeout: networkTimeout, handler: nil)
+        Amplify.Hub.removeListener(hubListener)
     }
 
     /// - Given:
@@ -72,13 +73,13 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
     ///    - Call `Amplify.DataStore.save()` to save a Post model
     /// - Then:
     ///    - outboxMutationEnqueued received, payload should be:
-    ///      {modelName: "Post", element: {id: #, content: "some content}}
+    ///      {modelName: "Post", element: {id: #, content: "some content"}}
     ///    - outboxMutationProcessed received, payload should be:
-    ///      {modelName: "Post", element: {model: {id: #, content: "some content}, version: 1, deleted: false, lastChangedAt: "some time"}}
+    ///      {modelName: "Post", element: {model: {id: #, content: "some content"}, version: 1, deleted: false, lastChangedAt: "some time"}}
     func testOutboxMutationEvents() throws {
 
         let post = Post(title: "title", content: "content", createdAt: .now())
-        
+
         let outboxMutationEnqueuedReceived = expectation(description: "outboxMutationEnqueued received")
         let outboxMutationProcessedReceived = expectation(description: "outboxMutationProcessed received")
 
@@ -115,9 +116,9 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
             return
         }
 
-        
         Amplify.DataStore.save(post) { _ in }
 
         waitForExpectations(timeout: networkTimeout, handler: nil)
+        Amplify.Hub.removeListener(hubListener)
     }
 }

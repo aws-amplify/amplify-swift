@@ -10,8 +10,8 @@ import AWSPluginsCore
 
 /// Used as HubPayload for `OutboxMutationEnqueued` and `OutboxMutationProcessed`
 public struct OutboxMutationEvent {
-    public var modelName: String
-    public var element: OutboxMutationEventElement
+    public let modelName: String
+    public let element: OutboxMutationEventElement
 
     public init(modelName: String, element: OutboxMutationEventElement) {
         self.modelName = modelName
