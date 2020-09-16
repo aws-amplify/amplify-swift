@@ -27,6 +27,6 @@ The following steps demonstrate how to set up DataStore with a conflict resoluti
 
 4. `amplify push`
 
-5. Copy `awsconfiguration.json` over to the Config folder
+5. Copy `amplifyconfiguration.json` over to the Config folder
 
 You should now be able to run all of the tests 

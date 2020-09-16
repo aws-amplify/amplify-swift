@@ -65,7 +65,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    func testRequestingEvent_subscriptionSetup() {
+    func testRequestingEvent_subscriptionSetup() throws {
         let semaphore = DispatchSemaphore(value: 0)
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedSubscription)
@@ -73,25 +73,50 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         }
         stateMachine.state = .starting(apiBehavior, publisher)
         semaphore.wait()
+
+        let json = "{\"id\":\"1234\",\"title\":\"t\",\"content\":\"c\",\"createdAt\":\"2020-09-03T22:55:13.424Z\"}"
         let futureResult = MutationEvent(modelId: "1",
                                          modelName: "Post",
-                                         json: "{}",
+                                         json: json,
                                          mutationType: MutationEvent.MutationType.create)
         eventSource.pushMutationEvent(futureResult: .success(futureResult))
 
         let enqueueEvent = expectation(description: "state requestingEvent, enqueueEvent")
         let processEvent = expectation(description: "state requestingEvent, processedEvent")
+
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, OutgoingMutationQueue.Action.enqueuedEvent)
             enqueueEvent.fulfill()
         }
+
+        let mutateAPICallExpecation = expectation(description: "Call to api category for mutate")
+        var listenerFromRequest: GraphQLOperation<MutationSync<AnyModel>>.ResultListener!
+        let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
+            mutateAPICallExpecation.fulfill()
+            listenerFromRequest = eventListener
+            return nil
+        }
+        apiBehavior.responders[.mutateRequestListener] = responder
+
+        stateMachine.state = .requestingEvent
+
+        wait(for: [enqueueEvent, mutateAPICallExpecation], timeout: 1)
+
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, OutgoingMutationQueue.Action.processedEvent)
             processEvent.fulfill()
         }
-        stateMachine.state = .requestingEvent
 
-        waitForExpectations(timeout: 1)
+        let model = MockSynced(id: "id-1")
+        let anyModel = try model.eraseToAnyModel()
+        let remoteSyncMetadata = MutationSyncMetadata(id: model.id,
+                                                      deleted: false,
+                                                      lastChangedAt: Date().unixSeconds,
+                                                      version: 2)
+        let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
+        listenerFromRequest(.success(.success(remoteMutationSync)))
+
+        wait(for: [processEvent], timeout: 1)
     }
 
     func testRequestingEvent_nosubscription() {

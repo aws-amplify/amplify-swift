@@ -63,5 +63,62 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
         }
 
         waitForExpectations(timeout: networkTimeout, handler: nil)
+        Amplify.Hub.removeListener(hubListener)
+    }
+
+    /// - Given:
+    ///    - registered two models from `TestModelRegistration`
+    ///    - no pending MutationEvents in MutationEvent database
+    /// - When:
+    ///    - Call `Amplify.DataStore.save()` to save a Post model
+    /// - Then:
+    ///    - outboxMutationEnqueued received, payload should be:
+    ///      {modelName: "Post", element: {id: #, content: "some content"}}
+    ///    - outboxMutationProcessed received, payload should be:
+    ///      {modelName: "Post", element: {model: {id: #, content: "some content"}, version: 1, deleted: false, lastChangedAt: "some time"}}
+    func testOutboxMutationEvents() throws {
+
+        let post = Post(title: "title", content: "content", createdAt: .now())
+
+        let outboxMutationEnqueuedReceived = expectation(description: "outboxMutationEnqueued received")
+        let outboxMutationProcessedReceived = expectation(description: "outboxMutationProcessed received")
+
+        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
+            if payload.eventName == HubPayload.EventName.DataStore.outboxMutationEnqueued {
+                guard let outboxMutationEnqueuedEvent = payload.data as? OutboxMutationEvent else {
+                    XCTFail("Failed to cast payload data as OutboxMutationEvent")
+                    return
+                }
+                XCTAssertEqual(outboxMutationEnqueuedEvent.modelName, "Post")
+                XCTAssertEqual(outboxMutationEnqueuedEvent.element.model.modelName, "Post")
+                XCTAssertNil(outboxMutationEnqueuedEvent.element.version)
+                XCTAssertNil(outboxMutationEnqueuedEvent.element.lastChangedAt)
+                XCTAssertNil(outboxMutationEnqueuedEvent.element.deleted)
+                outboxMutationEnqueuedReceived.fulfill()
+            }
+
+            if payload.eventName == HubPayload.EventName.DataStore.outboxMutationProcessed {
+                guard let outboxMutationProcessedEvent = payload.data as? OutboxMutationEvent else {
+                    XCTFail("Failed to cast payload data as OutboxMutationEvent")
+                    return
+                }
+                XCTAssertEqual(outboxMutationProcessedEvent.modelName, "Post")
+                XCTAssertEqual(outboxMutationProcessedEvent.element.model.modelName, "Post")
+                XCTAssertEqual(outboxMutationProcessedEvent.element.version, 1)
+                XCTAssertNotNil(outboxMutationProcessedEvent.element.lastChangedAt)
+                XCTAssertEqual(outboxMutationProcessedEvent.element.deleted, false)
+                outboxMutationProcessedReceived.fulfill()
+            }
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+
+        Amplify.DataStore.save(post) { _ in }
+
+        waitForExpectations(timeout: networkTimeout, handler: nil)
+        Amplify.Hub.removeListener(hubListener)
     }
 }
