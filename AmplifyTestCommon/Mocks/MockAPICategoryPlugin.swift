@@ -27,9 +27,6 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin, APICategoryReac
         listeners = []
         onComplete()
     }
-    
-//    func reachabilityPublisher() throws -> AnyPublisher<ReachabilityUpdate, Never>?
-
 
     // MARK: - Request-based GraphQL methods
 

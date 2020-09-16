@@ -41,7 +41,4 @@ public extension HubPayload.EventName.DataStore {
     /// Dispatched when DataStore starts and everytime network status changes
     /// HubPayload `NetworkStatusEvent` contains a boolean value `active` to norify network staus
     static let networkStatus = "DataStore.networkStatus"
-
-    /// Dispatched when DataStore is ready, at this point, all data is available
-    static let ready = "DataStore.ready"
 }

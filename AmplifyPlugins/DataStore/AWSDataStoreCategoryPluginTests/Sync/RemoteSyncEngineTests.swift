@@ -21,6 +21,11 @@ class RemoteSyncEngineTests: XCTestCase {
     var remoteSyncEngine: RemoteSyncEngine!
     var mockRequestRetryablePolicy: MockRequestRetryablePolicy!
 
+    var reachabilityPublisher: PassthroughSubject<ReachabilityUpdate, Never>!
+    var publisher: AnyPublisher<ReachabilityUpdate, Never> {
+        return reachabilityPublisher.eraseToAnyPublisher()
+    }
+
     let defaultAsyncWaitTimeout = 2.0
 
     override func setUp() {
