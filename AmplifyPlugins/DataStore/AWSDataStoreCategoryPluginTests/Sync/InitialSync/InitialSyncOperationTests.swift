@@ -38,6 +38,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         let storageAdapter = MockSQLiteStorageEngineAdapter()
         let metadataQueryReceived = expectation(description: "Metadata query received by storage adapter")
+        metadataQueryReceived.assertForOverFulfill = false
         storageAdapter.returnOnQueryModelSyncMetadata(nil) {
             metadataQueryReceived.fulfill()
         }

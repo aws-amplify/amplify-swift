@@ -133,6 +133,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         let syncQueriesReadyPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
         Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesReadyPayload)
     }
+
 }
 
 @available(iOS 13.0, *)

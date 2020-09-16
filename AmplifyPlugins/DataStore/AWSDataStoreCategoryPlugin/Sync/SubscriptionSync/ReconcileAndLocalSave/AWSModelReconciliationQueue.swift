@@ -137,7 +137,6 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
         reconcileAndLocalSaveOperationSink = reconcileOp.publisher.sink(receiveCompletion: { completion in
             self.reconcileAndLocalSaveOperationSinks.remove(reconcileAndLocalSaveOperationSink)
-
             if case .failure = completion {
                 self.modelReconciliationQueueSubject.send(completion: completion)
             }
@@ -169,7 +168,6 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             modelReconciliationQueueSubject.send(completion: .failure(dataStoreError))
         }
     }
-
 }
 
 @available(iOS 13.0, *)
