@@ -253,7 +253,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
             if let mutationSyncMetadata = mutationSyncMetadata {
                 self.dispatchOutboxMutationProcessedEvent(mutationEvent: mutationEvent,
-                                                          mutationSyncMetadata: mutationSyncMetadata)
+                                                          mutationSync: mutationSyncMetadata)
             }
             self.queryMutationEventsFromStorage {
                 self.stateMachine.notify(action: .processedEvent)
@@ -280,18 +280,18 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     }
 
     private func dispatchOutboxMutationProcessedEvent(mutationEvent: MutationEvent,
-                                                      mutationSyncMetadata: MutationSync<AnyModel>) {
+                                                      mutationSync: MutationSync<AnyModel>) {
         do {
             let localModel = try mutationEvent.decodeModel()
             let outboxMutationProcessedEvent = OutboxMutationEvent
                 .fromModelWithMetadata(modelName: mutationEvent.modelName,
                                        model: localModel,
-                                       mutationSync: mutationSyncMetadata)
+                                       mutationSync: mutationSync)
             let payload = HubPayload(eventName: HubPayload.EventName.DataStore.outboxMutationProcessed,
                                      data: outboxMutationProcessedEvent)
             Amplify.Hub.dispatch(to: .dataStore, payload: payload)
         } catch {
-            log.error("Couldn't decode local model")
+            log.error("\(#function) Couldn't decode local model as \(mutationEvent.modelName)")
             return
         }
     }
@@ -306,7 +306,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                                      data: outboxMutationEnqueuedEvent)
             Amplify.Hub.dispatch(to: .dataStore, payload: payload)
         } catch {
-            log.error("Couldn't decode local model")
+            log.error("\(#function) Couldn't decode local model as \(mutationEvent.modelName)")
             return
         }
     }
