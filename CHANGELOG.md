@@ -1,5 +1,16 @@
 # Changelog
 ## Unreleased
+## 1.2.0 (2020-09-16)
+
+### Features
+
+- **datastore**: Dispatch outboxStatus, subscriptionsEstablished, syncQueriesStarted events (#721)
+
+### Bug Fixes
+
+- **DataStore**: model reconciliation queue publisher (#756)
+- move default operator outside of guard statement (#752)
+
 - **DataStore**
   - Fix publishing events from model reconciliation queue ([#756](https://github.com/aws-amplify/amplify-ios/pull/756))
   - Dispatch outboxStatus, subscriptionsEstablished, syncQueriesStarted as hub events ([#721](https://github.com/aws-amplify/amplify-ios/pull/721))
