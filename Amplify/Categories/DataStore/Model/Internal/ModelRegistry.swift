@@ -55,6 +55,13 @@ public struct ModelRegistry {
         }
     }
 
+    @available(*, deprecated, message: """
+    Retrieving model schema using Model.Type is deprecated, instead retrieve using model name.
+    """)
+    public static func modelSchema(from modelType: Model.Type) -> ModelSchema? {
+        return modelSchema(from: modelType.modelName)
+    }
+
     public static func modelSchema(from name: ModelName) -> ModelSchema? {
         concurrencyQueue.sync {
             modelSchemaMapping[name]

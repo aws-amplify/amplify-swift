@@ -94,8 +94,13 @@ struct SelectStatementMetadata {
         func visitAssociations(node: ModelSchema, namespace: String = "root") {
             for foreignKey in node.foreignKeys {
                 let associatedModelName = foreignKey.requiredAssociatedModel
-                // TODO: Handle force unwrap
-                let associatedSchema = ModelRegistry.modelSchema(from: associatedModelName)!
+
+                guard let associatedSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
+                    preconditionFailure("""
+                    Could not retrieve schema for the model \(associatedModelName), verify that datastore is
+                    initialized.
+                    """)
+                }
                 let associatedTableName = associatedSchema.name
 
                 // columns

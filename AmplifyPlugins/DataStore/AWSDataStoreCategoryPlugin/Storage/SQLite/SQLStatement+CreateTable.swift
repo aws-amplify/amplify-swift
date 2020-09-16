@@ -50,7 +50,11 @@ struct CreateTableStatement: SQLStatement {
         for (index, foreignKey) in foreignKeys.enumerated() {
             statement += "  foreign key(\"\(foreignKey.sqlName)\") "
             let associatedModel = foreignKey.requiredAssociatedModel
-            let schema = ModelRegistry.modelSchema(from: associatedModel)!
+            guard let schema = ModelRegistry.modelSchema(from: associatedModel) else {
+                preconditionFailure("""
+                Could not retrieve schema for the model \(associatedModel), verify that datastore is initialized.
+                """)
+            }
             let associatedId = schema.primaryKey
             let associatedModelName = schema.name
             statement += "references \(associatedModelName)(\"\(associatedId.sqlName)\")\n"
