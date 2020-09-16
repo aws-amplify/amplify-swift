@@ -146,7 +146,6 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             case .mutationEvent(let event):
                 self.modelReconciliationQueueSubject.send(.mutationEvent(event))
             }
-//            self.modelReconciliationQueueSubject.send(.mutationEvent(mutationEvent))
         })
         reconcileAndLocalSaveOperationSinks.insert(reconcileAndLocalSaveOperationSink)
         reconcileAndSaveQueue.addOperation(reconcileOp)
