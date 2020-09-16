@@ -4,7 +4,7 @@
 
 ### Features
 
-- **datastore**: Dispatch outboxStatus, subscriptionsEstablished, syncQueriesStarted events ([#721](https://github.com/aws-amplify/amplify-ios/pull/721))
+- **DataStore**: Dispatch outboxStatus, subscriptionsEstablished, syncQueriesStarted events ([#721](https://github.com/aws-amplify/amplify-ios/pull/721))
 
 ### Bug Fixes
 
