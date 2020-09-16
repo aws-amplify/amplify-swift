@@ -243,6 +243,11 @@ final class InitialSyncOperation: AsynchronousOperation {
             if reconciledReceived == recordsReceived {
                 dispatchModelSyncedEvent()
             }
+        case .mutationEventDropped(let name):
+            guard name == modelType.modelName else {
+                return
+            }
+            reconciledReceived += 1
         default:
             return
         }

@@ -14,6 +14,7 @@ enum ModelReconciliationQueueEvent {
     case paused
     case connected(String)
     case mutationEvent(MutationEvent)
+    case mutationEventDropped(String)
 }
 
 @available(iOS 13.0, *)

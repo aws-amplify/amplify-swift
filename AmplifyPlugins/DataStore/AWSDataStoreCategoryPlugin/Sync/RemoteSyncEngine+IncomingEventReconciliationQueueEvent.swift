@@ -48,6 +48,8 @@ extension RemoteSyncEngine {
             remoteSyncTopicPublisher.send(.subscriptionsPaused)
         case .mutationEvent(let mutationEvent):
             remoteSyncTopicPublisher.send(.mutationEvent(mutationEvent))
+        case .mutationEventDropped:
+            break
         }
     }
 }

@@ -34,8 +34,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     private let remoteModel: RemoteModel
     private var stateMachineSink: AnyCancellable?
 
-    private let mutationEventPublisher: PassthroughSubject<MutationEvent, DataStoreError>
-    public var publisher: AnyPublisher<MutationEvent, DataStoreError> {
+    private let mutationEventPublisher: PassthroughSubject<ReconcileAndLocalSaveOperationEvent, DataStoreError>
+    public var publisher: AnyPublisher<ReconcileAndLocalSaveOperationEvent, DataStoreError> {
         return mutationEventPublisher.eraseToAnyPublisher()
     }
 
@@ -46,7 +46,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         self.storageAdapter = storageAdapter
         self.stateMachine = stateMachine ?? StateMachine(initialState: .waiting,
                                                          resolver: Resolver.resolve(currentState:action:))
-        self.mutationEventPublisher = PassthroughSubject<MutationEvent, DataStoreError>()
+        self.mutationEventPublisher = PassthroughSubject<ReconcileAndLocalSaveOperationEvent, DataStoreError>()
 
         super.init()
 
@@ -89,6 +89,9 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
         case .executing(let disposition):
             execute(disposition: disposition)
+
+        case .notifyingDropped(let modelName):
+            notifyDropped(modelName: modelName)
 
         case .notifying(let savedModel, let isCreated):
             notify(savedModel: savedModel, isCreated: isCreated)
@@ -171,8 +174,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         switch disposition {
         case .applyRemoteModel(let remoteModel):
             apply(remoteModel: remoteModel)
-        case .dropRemoteModel:
-            stateMachine.notify(action: .dropped)
+        case .dropRemoteModel(let modelName):
+            stateMachine.notify(action: .dropped(modelName))
         case .error(let dataStoreError):
             stateMachine.notify(action: .errored(dataStoreError))
         }
@@ -274,6 +277,11 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         }
     }
 
+    func notifyDropped(modelName: String) {
+        mutationEventPublisher.send(.mutationEventDropped(modelName))
+        stateMachine.notify(action: .notified)
+    }
+
     /// Responder method for `notifying`. Notify actions:
     /// - notified
     func notify(savedModel: AppliedModel,
@@ -309,7 +317,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                                  data: mutationEvent)
         Amplify.Hub.dispatch(to: .dataStore, payload: payload)
 
-        mutationEventPublisher.send(mutationEvent)
+        mutationEventPublisher.send(.mutationEvent(mutationEvent))
 
         stateMachine.notify(action: .notified)
     }
@@ -345,3 +353,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
 @available(iOS 13.0, *)
 extension ReconcileAndLocalSaveOperation: DefaultLogger { }
+
+enum ReconcileAndLocalSaveOperationEvent {
+    case mutationEvent(MutationEvent)
+    case mutationEventDropped(String)
+}

@@ -16,7 +16,7 @@ struct RemoteSyncReconciler {
 
     enum Disposition {
         case applyRemoteModel(RemoteModel)
-        case dropRemoteModel
+        case dropRemoteModel(String)
         case error(DataStoreError)
     }
 
@@ -25,7 +25,7 @@ struct RemoteSyncReconciler {
                           pendingMutations: [MutationEvent]) -> Disposition {
 
         guard pendingMutations.isEmpty else {
-            return .dropRemoteModel
+            return .dropRemoteModel(remoteModel.model.modelName)
         }
 
         guard let localMetadata = localMetadata else {
@@ -38,6 +38,6 @@ struct RemoteSyncReconciler {
             return .applyRemoteModel(remoteModel)
         }
 
-        return .dropRemoteModel
+        return .dropRemoteModel(remoteModel.model.modelName)
     }
 }
