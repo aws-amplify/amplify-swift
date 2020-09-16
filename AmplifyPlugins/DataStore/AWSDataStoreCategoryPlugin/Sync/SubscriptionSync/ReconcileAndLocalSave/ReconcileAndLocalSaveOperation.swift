@@ -103,7 +103,6 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             // Maybe we have to notify the Hub?
             notifyFinished()
             finish()
-
         }
 
     }

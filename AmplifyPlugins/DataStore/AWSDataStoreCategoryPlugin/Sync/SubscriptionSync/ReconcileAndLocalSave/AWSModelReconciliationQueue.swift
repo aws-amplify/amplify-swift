@@ -52,11 +52,6 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
     weak var storageAdapter: StorageEngineAdapter?
 
-    internal var isFullSync: Bool
-    internal var count: Int
-    var completionCount = AtomicValue.init(initialValue: 0)
-    private var modelSyncedEvent: ModelSyncedEvent.Builder
-
     /// A buffer queue for incoming subsscription events, waiting for this ReconciliationQueue to be `start`ed. Once
     /// the ReconciliationQueue is started, each event in the `incomingRemoveEventQueue` will be submitted to the
     /// `reconcileAndSaveQueue`.
@@ -82,12 +77,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
          auth: AuthCategoryBehavior?,
          incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
 
-        self.count = 0
-        self.isFullSync = false
         self.modelName = modelType.modelName
-        self.modelSyncedEvent = ModelSyncedEvent.Builder()
-
-        modelSyncedEvent.modelName = modelName
 
         self.storageAdapter = storageAdapter
 
@@ -115,7 +105,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 self?.receiveCompletion(completion)
                 }, receiveValue: { [weak self] receiveValue in
                     self?.receive(receiveValue)
-                })
+            })
     }
 
     /// (Re)starts the incoming subscription event queue.
@@ -148,24 +138,10 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         reconcileAndLocalSaveOperationSink = reconcileOp.publisher.sink(receiveCompletion: { completion in
             self.reconcileAndLocalSaveOperationSinks.remove(reconcileAndLocalSaveOperationSink)
 
-            _ = self.completionCount.increment()
-            if self.completionCount.get() == self.count {
-                self.dispatchModelSyncedEvent()
-            }
             if case .failure = completion {
                 self.modelReconciliationQueueSubject.send(completion: completion)
             }
         }, receiveValue: { mutationEvent in
-            switch mutationEvent.mutationType {
-            case "create":
-                _ = self.modelSyncedEvent.createCount.increment()
-            case "update":
-                _ = self.modelSyncedEvent.updateCount.increment()
-            case "delete":
-                _ = self.modelSyncedEvent.deleteCount.increment()
-            default:
-                break
-            }
             self.modelReconciliationQueueSubject.send(.mutationEvent(mutationEvent))
         })
         reconcileAndLocalSaveOperationSinks.insert(reconcileAndLocalSaveOperationSink)
@@ -194,14 +170,6 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         }
     }
 
-    private func dispatchModelSyncedEvent() {
-        modelSyncedEvent.isFullSync = isFullSync
-        modelSyncedEvent.isDeltaSync = !isFullSync
-        let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
-                                                 data: modelSyncedEvent.build())
-        Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
-        modelReconciliationQueueSubject.send(.finished)
-    }
 }
 
 @available(iOS 13.0, *)

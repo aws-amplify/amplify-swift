@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSPluginsCore
+import Combine
 
 @available(iOS 13.0, *)
 final class InitialSyncOperation: AsynchronousOperation {
@@ -14,13 +15,19 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     private weak var api: APICategoryGraphQLBehavior?
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
+    private var reconciliationQueueSink: AnyCancellable?
     private weak var storageAdapter: StorageEngineAdapter?
     private let dataStoreConfiguration: DataStoreConfiguration
 
     private let modelType: Model.Type
     private let completion: AWSInitialSyncOrchestrator.SyncOperationResultHandler
 
+    private var items = [MutationSync<AnyModel>]()
     private var recordsReceived: UInt
+    private var reconciledReceived = 0
+    private var startedAt: Int? = 0
+
+    private var modelSyncedEventBuilder: ModelSyncedEvent.Builder
 
     private var syncMaxRecords: UInt {
         return dataStoreConfiguration.syncMaxRecords
@@ -42,6 +49,12 @@ final class InitialSyncOperation: AsynchronousOperation {
         self.dataStoreConfiguration = dataStoreConfiguration
         self.completion = completion
         self.recordsReceived = 0
+        self.modelSyncedEventBuilder = ModelSyncedEvent.Builder()
+        super.init()
+        self.reconciliationQueueSink = reconciliationQueue?
+            .publisher
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: onReceiveMutationEvent(value:))
     }
 
     override func main() {
@@ -152,23 +165,25 @@ final class InitialSyncOperation: AsynchronousOperation {
             return
         case .success(let queryResult):
             syncQueryResult = queryResult
+            startedAt = syncQueryResult.startedAt
         }
 
-        let items = syncQueryResult.items
+        items.append(contentsOf: syncQueryResult.items)
         recordsReceived += UInt(items.count)
-
-        for item in items {
-            reconciliationQueue.offer(item, isFullSync: lastSyncTime == nil)
-        }
 
         if let nextToken = syncQueryResult.nextToken, recordsReceived < syncMaxRecords {
             DispatchQueue.global().async {
                 self.query(lastSyncTime: lastSyncTime, nextToken: nextToken)
             }
         } else {
-            updateModelSyncMetadata(lastSyncTime: syncQueryResult.startedAt)
+            if items.isEmpty {
+                dispatchModelSyncedEvent()
+            } else {
+                for item in items {
+                    reconciliationQueue.offer(item)
+                }
+            }
         }
-
     }
 
     private func updateModelSyncMetadata(lastSyncTime: Int?) {
@@ -206,6 +221,41 @@ final class InitialSyncOperation: AsynchronousOperation {
     private func finish(result: AWSInitialSyncOrchestrator.SyncOperationResult) {
         completion(result)
         super.finish()
+    }
+
+    private func onReceiveMutationEvent(value: IncomingEventReconciliationQueueEvent) {
+        switch value {
+        case .mutationEvent(let event):
+            guard event.modelName == modelType.modelName else {
+                return
+            }
+            reconciledReceived += 1
+            switch event.mutationType {
+            case "create":
+                _ = modelSyncedEventBuilder.createCount.increment()
+            case "update":
+                _ = modelSyncedEventBuilder.updateCount.increment()
+            case "delete":
+                _ = modelSyncedEventBuilder.deleteCount.increment()
+            default:
+                break
+            }
+            if reconciledReceived == recordsReceived {
+                dispatchModelSyncedEvent()
+            }
+        default:
+            return
+        }
+    }
+
+    private func dispatchModelSyncedEvent() {
+        modelSyncedEventBuilder.modelName = modelType.modelName
+        modelSyncedEventBuilder.isFullSync = getLastSyncTime() == nil
+        modelSyncedEventBuilder.isDeltaSync = !modelSyncedEventBuilder.isFullSync
+        let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
+                                                 data: modelSyncedEventBuilder.build())
+        Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
+        updateModelSyncMetadata(lastSyncTime: startedAt)
     }
 
 }

@@ -12,7 +12,6 @@ import Combine
 enum ModelReconciliationQueueEvent {
     case started
     case paused
-    case finished
     case connected(String)
     case mutationEvent(MutationEvent)
 }
@@ -23,7 +22,5 @@ protocol ModelReconciliationQueue {
     func pause()
     func cancel()
     func enqueue(_ remoteModel: MutationSync<AnyModel>)
-    var isFullSync: Bool { get set }
-    var count: Int { get set }
     var publisher: AnyPublisher<ModelReconciliationQueueEvent, DataStoreError> { get }
 }

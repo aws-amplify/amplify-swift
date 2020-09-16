@@ -83,15 +83,13 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         eventReconciliationQueueTopic.send(.paused)
     }
 
-    func offer(_ remoteModel: MutationSync<AnyModel>, isFullSync: Bool) {
-        guard var queue = reconciliationQueues[remoteModel.model.modelName] else {
+    func offer(_ remoteModel: MutationSync<AnyModel>) {
+        guard let queue = reconciliationQueues[remoteModel.model.modelName] else {
             // TODO: Error handling
             return
         }
 
         queue.enqueue(remoteModel)
-        queue.isFullSync = isFullSync
-        queue.count += 1
     }
 
     private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
@@ -108,11 +106,6 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 
     private func onReceiveValue(receiveValue: ModelReconciliationQueueEvent) {
         switch receiveValue {
-        case .finished:
-            _ = receivedCount.increment()
-            if receivedCount.get() == reconciliationQueues.count {
-                dispatchSyncQueriesReady()
-            }
         case .mutationEvent(let event):
             eventReconciliationQueueTopic.send(.mutationEvent(event))
         case .connected(let modelName):

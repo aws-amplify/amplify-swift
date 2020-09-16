@@ -116,7 +116,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
             completion?(.failure(syncError))
             return
         }
-
+        dispatchSyncQueriesReady()
         completion?(.successfulVoid)
     }
 
@@ -125,6 +125,11 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         let syncQueriesStartedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesStarted,
                                                         data: syncQueriesStartedEvent)
         Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesStartedEventPayload)
+    }
+
+    private func dispatchSyncQueriesReady() {
+        let syncQueriesReadyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
+        Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesReadyEventPayload)
     }
 
 }
