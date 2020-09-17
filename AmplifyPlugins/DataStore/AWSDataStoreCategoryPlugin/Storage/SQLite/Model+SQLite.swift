@@ -142,7 +142,15 @@ extension Array where Element == Model.Type {
             if !sortedKeys.contains(modelType.schema.name) {
                 let associatedModels = modelType.schema.sortedFields
                     .filter { $0.isForeignKey }
-                    .map { $0.requiredAssociatedModel }
+                    .map { (model) -> Model.Type in
+                        guard let modelType = ModelRegistry.modelType(from: model.requiredAssociatedModel) else {
+                            preconditionFailure("""
+                            Could not retrieve modelType for the model \(model.requiredAssociatedModel), verify that
+                            datastore is initialized.
+                            """)
+                        }
+                        return modelType
+                }
                 associatedModels.forEach(walkAssociatedModels(of:))
 
                 let key = modelType.schema.name
@@ -166,10 +174,19 @@ extension Array where Element == ModelSchema {
 
         func walkAssociatedModels(of schema: ModelSchema) {
             if !sortedKeys.contains(schema.name) {
-                let associatedModels = schema.sortedFields
+                let associatedModelSchemas = schema.sortedFields
                     .filter { $0.isForeignKey }
-                    .map { ModelRegistry.modelSchema(from: $0.requiredAssociatedModel )! }
-                associatedModels.forEach(walkAssociatedModels(of:))
+                    .map { (schema) -> ModelSchema in
+                        guard let associatedSchema = ModelRegistry.modelSchema(from: schema.requiredAssociatedModel)
+                            else {
+                            preconditionFailure("""
+                            Could not retrieve schema for the model \(schema.requiredAssociatedModel), verify that
+                            datastore is initialized.
+                            """)
+                        }
+                        return associatedSchema
+                    }
+                associatedModelSchemas.forEach(walkAssociatedModels(of:))
 
                 let key = schema.name
                 sortedKeys.append(key)
