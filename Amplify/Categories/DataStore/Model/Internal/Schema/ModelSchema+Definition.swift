@@ -23,8 +23,8 @@ public enum ModelFieldType {
     case `enum`(type: EnumPersistable.Type)
     case embedded(type: Codable.Type)
     case embeddedCollection(of: Codable.Type)
-    case model(type: Model.Type)
-    case collection(of: Model.Type)
+    case model(name: ModelName)
+    case collection(of: ModelName)
 
     public var isArray: Bool {
         switch self {
@@ -72,7 +72,7 @@ public enum ModelFieldType {
             return .enum(type: enumType)
         }
         if let modelType = type as? Model.Type {
-            return .model(type: modelType)
+            return .model(name: modelType.modelName)
         }
         if let embeddedType = type as? Codable.Type {
             return .embedded(type: embeddedType)
@@ -182,8 +182,8 @@ public enum ModelFieldDefinition {
                                associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
-                      ofType: .collection(of: type),
-                      association: .hasMany(associatedWith: associatedKey))
+                      ofType: .collection(of: type.modelName),
+                      association: .hasMany(associatedWith: associatedKey.stringValue))
     }
 
     public static func hasOne(_ key: CodingKey,
@@ -192,8 +192,8 @@ public enum ModelFieldDefinition {
                               associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
-                      ofType: .model(type: type),
-                      association: .hasOne(associatedWith: associatedKey))
+                      ofType: .model(name: type.modelName),
+                      association: .hasOne(associatedWith: associatedKey.stringValue))
     }
 
     public static func belongsTo(_ key: CodingKey,
@@ -203,8 +203,8 @@ public enum ModelFieldDefinition {
                                  targetName: String? = nil) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
-                      ofType: .model(type: type),
-                      association: .belongsTo(associatedWith: associatedKey, targetName: targetName))
+                      ofType: .model(name: type.modelName),
+                      association: .belongsTo(associatedWith: associatedKey?.stringValue, targetName: targetName))
     }
 
     public var modelField: ModelField {
