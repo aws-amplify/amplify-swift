@@ -50,8 +50,13 @@ struct CreateTableStatement: SQLStatement {
         for (index, foreignKey) in foreignKeys.enumerated() {
             statement += "  foreign key(\"\(foreignKey.sqlName)\") "
             let associatedModel = foreignKey.requiredAssociatedModel
-            let associatedId = associatedModel.schema.primaryKey
-            let associatedModelName = associatedModel.schema.name
+            guard let schema = ModelRegistry.modelSchema(from: associatedModel) else {
+                preconditionFailure("""
+                Could not retrieve schema for the model \(associatedModel), verify that datastore is initialized.
+                """)
+            }
+            let associatedId = schema.primaryKey
+            let associatedModelName = schema.name
             statement += "references \(associatedModelName)(\"\(associatedId.sqlName)\")\n"
             statement += "    on delete cascade"
             let isNotLastKey = index < foreignKeys.endIndex - 1
