@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSPluginsCore
+import Combine
 
 protocol InitialSyncOrchestrator {
     func sync(completion: @escaping (Result<Void, DataStoreError>) -> Void)
@@ -25,6 +26,8 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     typealias SyncOperationResult = Result<Void, DataStoreError>
     typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
 
+    private var initialSyncOperationSinks: [String: AnyCancellable]
+
     private let dataStoreConfiguration: DataStoreConfiguration
     private weak var api: APICategoryGraphQLBehavior?
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
@@ -38,10 +41,16 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     // interdependencies
     private let syncOperationQueue: OperationQueue
 
+    private let initialSyncOrchestratorTopic: PassthroughSubject<InitialSyncOperationEvent, DataStoreError>
+    var publisher: AnyPublisher<InitialSyncOperationEvent, DataStoreError> {
+        return initialSyncOrchestratorTopic.eraseToAnyPublisher()
+    }
+
     init(dataStoreConfiguration: DataStoreConfiguration,
          api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?) {
+        self.initialSyncOperationSinks = [:]
         self.dataStoreConfiguration = dataStoreConfiguration
         self.api = api
         self.reconciliationQueue = reconciliationQueue
@@ -54,6 +63,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         self.syncOperationQueue = syncOperationQueue
 
         self.syncErrors = []
+        self.initialSyncOrchestratorTopic = PassthroughSubject<InitialSyncOperationEvent, DataStoreError>()
     }
 
     /// Performs an initial sync on all models
@@ -102,7 +112,25 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
                                                        dataStoreConfiguration: dataStoreConfiguration,
                                                        completion: syncOperationCompletion)
 
+        initialSyncOperationSinks[modelType.modelName] = initialSyncForModel
+            .publisher
+            .sink(receiveCompletion: onReceiveCompletion(completed:),
+                  receiveValue: onReceiveValue(receiveValue:))
+
         syncOperationQueue.addOperation(initialSyncForModel)
+    }
+
+    private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
+        switch completed {
+        case .finished:
+            initialSyncOrchestratorTopic.send(completion: .finished)
+        case .failure(let error):
+            initialSyncOrchestratorTopic.send(completion: .failure(error))
+        }
+    }
+
+    private func onReceiveValue(receiveValue: InitialSyncOperationEvent) {
+        initialSyncOrchestratorTopic.send(receiveValue)
     }
 
     private func resolveCompletion() {
@@ -116,7 +144,6 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
             completion?(.failure(syncError))
             return
         }
-        dispatchSyncQueriesReady()
         completion?(.successfulVoid)
     }
 
@@ -125,11 +152,6 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         let syncQueriesStartedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesStarted,
                                                         data: syncQueriesStartedEvent)
         Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesStartedEventPayload)
-    }
-
-    private func dispatchSyncQueriesReady() {
-        let syncQueriesReadyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
-        Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesReadyEventPayload)
     }
 
 }

@@ -22,18 +22,18 @@ final class InitialSyncOperation: AsynchronousOperation {
     private let modelType: Model.Type
     private let completion: AWSInitialSyncOrchestrator.SyncOperationResultHandler
 
-    private var items = [MutationSync<AnyModel>]()
     private var recordsReceived: UInt
-    private var reconciledReceived = 0
-    private var startedAt: Int? = 0
-
-    private var modelSyncedEventBuilder: ModelSyncedEvent.Builder
 
     private var syncMaxRecords: UInt {
         return dataStoreConfiguration.syncMaxRecords
     }
     private var syncPageSize: UInt {
         return dataStoreConfiguration.syncPageSize
+    }
+
+    private let initialSyncOperationTopic: PassthroughSubject<InitialSyncOperationEvent, DataStoreError>
+    var publisher: AnyPublisher<InitialSyncOperationEvent, DataStoreError> {
+        return initialSyncOperationTopic.eraseToAnyPublisher()
     }
 
     init(modelType: Model.Type,
@@ -49,12 +49,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         self.dataStoreConfiguration = dataStoreConfiguration
         self.completion = completion
         self.recordsReceived = 0
-        self.modelSyncedEventBuilder = ModelSyncedEvent.Builder()
-        super.init()
-        self.reconciliationQueueSink = reconciliationQueue?
-            .publisher
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: onReceiveMutationEvent(value:))
+        self.initialSyncOperationTopic = PassthroughSubject<InitialSyncOperationEvent, DataStoreError>()
     }
 
     override func main() {
@@ -65,6 +60,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
         log.info("Beginning sync for \(modelType.modelName)")
         let lastSyncTime = getLastSyncTime()
+        initialSyncOperationTopic.send(.isFullSync(modelType, lastSyncTime == nil))
         query(lastSyncTime: lastSyncTime)
     }
 
@@ -165,24 +161,23 @@ final class InitialSyncOperation: AsynchronousOperation {
             return
         case .success(let queryResult):
             syncQueryResult = queryResult
-            startedAt = syncQueryResult.startedAt
         }
 
-        items.append(contentsOf: syncQueryResult.items)
+        let items = syncQueryResult.items
         recordsReceived += UInt(items.count)
+
+        for item in items {
+            reconciliationQueue.offer(item)
+            initialSyncOperationTopic.send(.mutationSync(item))
+        }
 
         if let nextToken = syncQueryResult.nextToken, recordsReceived < syncMaxRecords {
             DispatchQueue.global().async {
                 self.query(lastSyncTime: lastSyncTime, nextToken: nextToken)
             }
         } else {
-            if items.isEmpty {
-                dispatchModelSyncedEvent()
-            } else {
-                for item in items {
-                    reconciliationQueue.offer(item)
-                }
-            }
+            initialSyncOperationTopic.send(.finishedOffering(modelType.modelName))
+            updateModelSyncMetadata(lastSyncTime: lastSyncTime)
         }
     }
 
@@ -223,47 +218,13 @@ final class InitialSyncOperation: AsynchronousOperation {
         super.finish()
     }
 
-    private func onReceiveMutationEvent(value: IncomingEventReconciliationQueueEvent) {
-        switch value {
-        case .mutationEvent(let event):
-            guard event.modelName == modelType.modelName else {
-                return
-            }
-            reconciledReceived += 1
-            switch event.mutationType {
-            case "create":
-                _ = modelSyncedEventBuilder.createCount.increment()
-            case "update":
-                _ = modelSyncedEventBuilder.updateCount.increment()
-            case "delete":
-                _ = modelSyncedEventBuilder.deleteCount.increment()
-            default:
-                break
-            }
-            if reconciledReceived == recordsReceived {
-                dispatchModelSyncedEvent()
-            }
-        case .mutationEventDropped(let name):
-            guard name == modelType.modelName else {
-                return
-            }
-            reconciledReceived += 1
-        default:
-            return
-        }
-    }
-
-    private func dispatchModelSyncedEvent() {
-        modelSyncedEventBuilder.modelName = modelType.modelName
-        modelSyncedEventBuilder.isFullSync = getLastSyncTime() == nil
-        modelSyncedEventBuilder.isDeltaSync = !modelSyncedEventBuilder.isFullSync
-        let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
-                                                 data: modelSyncedEventBuilder.build())
-        Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
-        updateModelSyncMetadata(lastSyncTime: startedAt)
-    }
-
 }
 
 @available(iOS 13.0, *)
 extension InitialSyncOperation: DefaultLogger { }
+
+enum InitialSyncOperationEvent {
+    case isFullSync(Model.Type, Bool)
+    case mutationSync(MutationSync<AnyModel>)
+    case finishedOffering(String)
+}
