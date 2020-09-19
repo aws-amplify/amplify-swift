@@ -11,12 +11,8 @@ import Combine
 
 @available(iOS 13.0, *)
 final class SyncEventEmitter {
-    var syncOrchestratorSink: AnyCancellable?
-    var reconciliationQueueSink: AnyCancellable?
-
     var modelSyncedEventEmitters: [String: ModelSyncedEventEmitter]
-//    let downstream: Publishers.MergeMany<AnyPublisher<Never, Never>>
-    var downstream: AnyCancellable?
+    var initialSyncCompleted: AnyCancellable?
 
     init(initialSyncOrchestrator: AWSInitialSyncOrchestrator?,
          reconciliationQueue: IncomingEventReconciliationQueue?) {
@@ -34,7 +30,9 @@ final class SyncEventEmitter {
             publishers.append(modelSyncedEventEmitter.publisher)
         }
 
-        self.downstream = Publishers.MergeMany(publishers).sink(receiveCompletion: { [weak self] _ in
+        self.initialSyncCompleted = Publishers
+            .MergeMany(publishers)
+            .sink(receiveCompletion: { [weak self] _ in
             self?.dispatchSyncQueriesReady()
         }, receiveValue: { _ in })
     }
@@ -43,6 +41,7 @@ final class SyncEventEmitter {
         let syncQueriesReadyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
         Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesReadyEventPayload)
     }
+
 }
 
 @available(iOS 13.0, *)

@@ -61,7 +61,6 @@ final class ModelSyncedEventEmitter {
             guard self.modelType == modelType else {
                 return
             }
-            log.info("\(#function): \(value)")
             modelSyncedEventBuilder.isFullSync = isFullSync
             modelSyncedEventBuilder.isDeltaSync = !isFullSync
         case .mutationSync(let mutationSync):
@@ -70,11 +69,10 @@ final class ModelSyncedEventEmitter {
             }
             log.info("\(#function): \(value)")
             recordsReceived += 1
-        case .finishedOffering(let modelName):
-            guard modelType.modelName == modelName else {
+        case .finishedOffering(let modelType):
+            guard self.modelType == modelType else {
                 return
             }
-            log.info("\(#function): \(value)")
             initialSyncOpFinished = true
         }
     }
@@ -86,7 +84,6 @@ final class ModelSyncedEventEmitter {
             guard event.modelName == modelType.modelName else {
                 return
             }
-            log.info("\(#function): \(value)")
             reconciledReceived += 1
             switch event.mutationType {
             case "create":
@@ -102,10 +99,9 @@ final class ModelSyncedEventEmitter {
                 dispatchModelSyncedEvent()
             }
         case .mutationEventDropped(let name):
-            guard name == modelType.modelName else {
+            guard modelType.modelName == name else {
                 return
             }
-            log.info("\(#function): \(value)")
             reconciledReceived += 1
         default:
             return

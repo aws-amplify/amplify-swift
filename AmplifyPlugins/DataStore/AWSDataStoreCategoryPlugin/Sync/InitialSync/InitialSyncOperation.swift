@@ -15,7 +15,6 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     private weak var api: APICategoryGraphQLBehavior?
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
-    private var reconciliationQueueSink: AnyCancellable?
     private weak var storageAdapter: StorageEngineAdapter?
     private let dataStoreConfiguration: DataStoreConfiguration
 
@@ -106,7 +105,6 @@ final class InitialSyncOperation: AsynchronousOperation {
             log.error(error: error)
             return nil
         }
-
     }
 
     private func query(lastSyncTime: Int?, nextToken: String? = nil) {
@@ -176,8 +174,8 @@ final class InitialSyncOperation: AsynchronousOperation {
                 self.query(lastSyncTime: lastSyncTime, nextToken: nextToken)
             }
         } else {
-            initialSyncOperationTopic.send(.finishedOffering(modelType.modelName))
-            updateModelSyncMetadata(lastSyncTime: lastSyncTime)
+            initialSyncOperationTopic.send(.finishedOffering(modelType))
+            updateModelSyncMetadata(lastSyncTime: syncQueryResult.startedAt)
         }
     }
 
@@ -226,5 +224,5 @@ extension InitialSyncOperation: DefaultLogger { }
 enum InitialSyncOperationEvent {
     case isFullSync(Model.Type, Bool)
     case mutationSync(MutationSync<AnyModel>)
-    case finishedOffering(String)
+    case finishedOffering(Model.Type)
 }
