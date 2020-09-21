@@ -41,4 +41,12 @@ public extension HubPayload.EventName.DataStore {
     /// Dispatched when DataStore starts and everytime network status changes
     /// HubPayload `NetworkStatusEvent` contains a boolean value `active` to notify network staus
     static let networkStatus = "DataStore.networkStatus"
+
+    /// Dispatched when a local mutation is enqueued into the outgoing mutation queue `outbox`
+    /// HubPayload `outboxMutationEvent` contains the name and instance of the model
+    static let outboxMutationEnqueued = "DataStore.outboxMutationEnqueued"
+
+    /// Dispatched when a mutation from outgoing mutation queue `outbox` is sent to backend and updated locally.
+    /// HubPayload `outboxMutationEvent` contains the name and instance of the model
+    static let outboxMutationProcessed = "DataStore.outboxMutationProcessed"
 }
