@@ -40,8 +40,9 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
                     return
                 }
                 XCTAssertEqual(networkStatusEvent.active, true)
+                networkStatusReceived.fulfill()
             }
-            
+
             if payload.eventName == HubPayload.EventName.DataStore.subscriptionsEstablished {
                 XCTAssertNil(payload.data)
                 subscriptionsEstablishedReceived.fulfill()
@@ -71,6 +72,9 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
             return
         }
 
-        waitForExpectations(timeout: networkTimeout, handler: nil)
+        startAmplify()
+
+        waitForExpectations(timeout: 10, handler: nil)
+        Amplify.Hub.removeListener(hubListener)
     }
 }

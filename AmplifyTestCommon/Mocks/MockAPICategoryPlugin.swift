@@ -109,7 +109,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin, APICategoryReac
 
     @available(iOS 13.0, *)
     public func reachabilityPublisher() -> AnyPublisher<ReachabilityUpdate, Never>? {
-        return nil
+        return Just(ReachabilityUpdate(isOnline: true)).eraseToAnyPublisher()
     }
 
     // MARK: - REST methods
