@@ -33,8 +33,8 @@ final class SyncEventEmitter {
         self.initialSyncCompleted = Publishers
             .MergeMany(publishers)
             .sink(receiveCompletion: { [weak self] _ in
-            self?.dispatchSyncQueriesReady()
-        }, receiveValue: { _ in })
+                self?.dispatchSyncQueriesReady()
+            }, receiveValue: { _ in })
     }
 
     private func dispatchSyncQueriesReady() {

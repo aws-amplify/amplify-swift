@@ -257,7 +257,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
         /// Do a local metadata query before saving to check if the `AppliedModel` is of `create` or
         /// `update` MutationType in perspective of local store
-        var isCreated: Bool
+        let isCreated: Bool
         do {
             let localMetadata = try storageAdapter.queryMutationSyncMetadata(for: remoteModel.model.id)
             isCreated = localMetadata == nil

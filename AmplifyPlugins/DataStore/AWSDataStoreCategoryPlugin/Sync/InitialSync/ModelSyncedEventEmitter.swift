@@ -15,8 +15,8 @@ final class ModelSyncedEventEmitter {
     var reconciliationQueueSink: AnyCancellable?
 
     let modelType: Model.Type
-    var recordsReceived: Int
-    var reconciledReceived: Int
+    var recordsReceived: AtomicValue<Int>
+    var reconciledReceived: AtomicValue<Int>
     var initialSyncOpFinished: Bool
 
     private var modelSyncedEventBuilder: ModelSyncedEvent.Builder
@@ -30,8 +30,8 @@ final class ModelSyncedEventEmitter {
          initialSyncOrchestrator: AWSInitialSyncOrchestrator?,
          reconciliationQueue: IncomingEventReconciliationQueue?) {
         self.modelType = modelType
-        self.recordsReceived = 0
-        self.reconciledReceived = 0
+        self.recordsReceived = AtomicValue(initialValue: 0)
+        self.reconciledReceived = AtomicValue(initialValue: 0)
         self.initialSyncOpFinished = false
 
         self.modelSyncedEventBuilder = ModelSyncedEvent.Builder()
@@ -68,7 +68,7 @@ final class ModelSyncedEventEmitter {
                 return
             }
             log.info("\(#function): \(value)")
-            recordsReceived += 1
+            _ = recordsReceived.increment()
         case .finishedOffering(let modelType):
             guard self.modelType == modelType else {
                 return
@@ -84,7 +84,7 @@ final class ModelSyncedEventEmitter {
             guard event.modelName == modelType.modelName else {
                 return
             }
-            reconciledReceived += 1
+            _ = reconciledReceived.increment()
             switch event.mutationType {
             case "create":
                 _ = modelSyncedEventBuilder.createCount.increment()
@@ -95,14 +95,14 @@ final class ModelSyncedEventEmitter {
             default:
                 break
             }
-            if initialSyncOpFinished == true && reconciledReceived == recordsReceived {
+            if initialSyncOpFinished == true && reconciledReceived.get() == recordsReceived.get() {
                 dispatchModelSyncedEvent()
             }
         case .mutationEventDropped(let name):
             guard modelType.modelName == name else {
                 return
             }
-            reconciledReceived += 1
+            _ = reconciledReceived.increment()
         default:
             return
         }

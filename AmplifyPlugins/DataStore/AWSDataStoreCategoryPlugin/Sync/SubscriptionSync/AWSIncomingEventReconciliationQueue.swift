@@ -23,7 +23,6 @@ typealias IncomingEventReconciliationQueueFactory =
 @available(iOS 13.0, *)
 final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
 
-    private var receivedCount = AtomicValue.init(initialValue: 0)
     static let factory: IncomingEventReconciliationQueueFactory = { modelTypes, api, storageAdapter, auth, _ in
         AWSIncomingEventReconciliationQueue(modelTypes: modelTypes,
                                             api: api,

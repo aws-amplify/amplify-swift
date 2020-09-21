@@ -47,9 +47,9 @@ extension ModelSyncedEvent {
             self.modelName = ""
             self.isFullSync = false
             self.isDeltaSync = false
-            self.createCount = AtomicValue.init(initialValue: 0)
-            self.updateCount = AtomicValue.init(initialValue: 0)
-            self.deleteCount = AtomicValue.init(initialValue: 0)
+            self.createCount = AtomicValue(initialValue: 0)
+            self.updateCount = AtomicValue(initialValue: 0)
+            self.deleteCount = AtomicValue(initialValue: 0)
         }
 
         func build() -> ModelSyncedEvent {
