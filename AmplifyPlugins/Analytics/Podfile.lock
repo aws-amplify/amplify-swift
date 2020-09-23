@@ -3,44 +3,44 @@ PODS:
     - Amplify/Default (= 1.2.0)
   - Amplify/Default (1.2.0)
   - AmplifyPlugins/AWSCognitoAuthPlugin (1.2.0):
-    - AWSAuthCore (~> 2.15.0)
-    - AWSCore (~> 2.15.0)
-    - AWSMobileClient (~> 2.15.0)
+    - AWSAuthCore (~> 2.16.0)
+    - AWSCore (~> 2.16.0)
+    - AWSMobileClient (~> 2.16.0)
     - AWSPluginsCore (= 1.2.0)
   - AmplifyTestCommon (1.2.0):
     - Amplify (= 1.2.0)
     - AmplifyTestCommon/AWSPluginsTestCommon (= 1.2.0)
   - AmplifyTestCommon/AWSPluginsTestCommon (1.2.0):
     - Amplify (= 1.2.0)
-    - AWSCore (~> 2.15.0)
+    - AWSCore (~> 2.16.0)
     - AWSPluginsCore (= 1.2.0)
-  - AWSAuthCore (2.15.3):
-    - AWSCore (= 2.15.3)
-  - AWSCognitoIdentityProvider (2.15.3):
-    - AWSCognitoIdentityProviderASF (= 1.0.2)
-    - AWSCore (= 2.15.3)
-  - AWSCognitoIdentityProviderASF (1.0.2)
-  - AWSCore (2.15.3)
-  - AWSMobileClient (2.15.3):
-    - AWSAuthCore (= 2.15.3)
-    - AWSCognitoIdentityProvider (= 2.15.3)
-  - AWSPinpoint (2.15.3):
-    - AWSCore (= 2.15.3)
+  - AWSAuthCore (2.16.0):
+    - AWSCore (= 2.16.0)
+  - AWSCognitoIdentityProvider (2.16.0):
+    - AWSCognitoIdentityProviderASF (= 1.1.0)
+    - AWSCore (= 2.16.0)
+  - AWSCognitoIdentityProviderASF (1.1.0)
+  - AWSCore (2.16.0)
+  - AWSMobileClient (2.16.0):
+    - AWSAuthCore (= 2.16.0)
+    - AWSCognitoIdentityProvider (= 2.16.0)
+  - AWSPinpoint (2.16.0):
+    - AWSCore (= 2.16.0)
   - AWSPluginsCore (1.2.0):
     - Amplify (= 1.2.0)
-    - AWSCore (~> 2.15.0)
-    - AWSMobileClient (~> 2.15.0)
+    - AWSCore (~> 2.16.0)
+    - AWSMobileClient (~> 2.16.0)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
   - SwiftFormat/CLI (0.44.17)
-  - SwiftLint (0.40.2)
+  - SwiftLint (0.40.1)
 
 DEPENDENCIES:
   - Amplify (from `../../`)
   - AmplifyPlugins/AWSCognitoAuthPlugin (from `../../`)
   - AmplifyTestCommon (from `../../`)
-  - AWSPinpoint (~> 2.15.0)
+  - AWSPinpoint (~> 2.16.0)
   - AWSPluginsCore (from `../../`)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
@@ -48,13 +48,14 @@ DEPENDENCIES:
   - SwiftLint
 
 SPEC REPOS:
-  trunk:
-    - AWSAuthCore
+  "/Users/schmelte/.aws-amplify/aws-sdk-ios/aws-sdk-ios-podspecs.git":
     - AWSCognitoIdentityProvider
     - AWSCognitoIdentityProviderASF
-    - AWSCore
     - AWSMobileClient
     - AWSPinpoint
+  trunk:
+    - AWSAuthCore
+    - AWSCore
     - SwiftFormat
     - SwiftLint
 
@@ -84,20 +85,20 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Amplify: 936bb160a853e94be153c2f3f8a250f7090c9ee0
-  AmplifyPlugins: dda20f2503c4a9e7175fd3d91223113f802f9526
-  AmplifyTestCommon: 36e282bbc6579e007ffbfe6cbd149f3da9bdd5eb
-  AWSAuthCore: 598e8eb56e12799877414d10b04598de12a15992
-  AWSCognitoIdentityProvider: 4a721292eda37a8c3ef451e8fec28abe14aff18e
-  AWSCognitoIdentityProviderASF: 0fb6ea671c05a63276e320726f680cd880522442
-  AWSCore: 5a8f9d7461dbe5ea6a5473c41cf113b687e19136
-  AWSMobileClient: 5c29678413764ee3bcd528421331deb0a35b72fb
-  AWSPinpoint: 6c17e240a104de90643e0afee5741a7528011800
-  AWSPluginsCore: c413c27dece5dbf0e9530ae6c01a804998205eb7
+  AmplifyPlugins: c264378bd02ad572ad6b7e1a026c316fa4f0730a
+  AmplifyTestCommon: de0332375a42e9557db8865c5ce3d9577e2c9f4a
+  AWSAuthCore: a1eeb349be90c77f4b867fb919461ee0a493395c
+  AWSCognitoIdentityProvider: fac9e673c18ed5d5f1a9a81480ed18c041b5c6c1
+  AWSCognitoIdentityProviderASF: f38d9aee6f7dd9609c7e30dbfd7ade79fca855f2
+  AWSCore: 439de29e3423c637a0c475f9ea329262fd2acc67
+  AWSMobileClient: 9bda4b4f1850574fe8e4801ad1f727073398e048
+  AWSPinpoint: 635e2b6d6d6e5a5ea49305bcabcfd4369b8036f6
+  AWSPluginsCore: b341a1fd19c91f213c0a409c4811b7c96b0b2e36
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
-  SwiftLint: 1216c910d27c2633ade33b4f071bb6b930982e62
+  SwiftLint: bbfed21bf4451dcbd0f5cdbee44a18e06cf91b12
 
-PODFILE CHECKSUM: 48d1574dddce5cef7bdb7b05b06fc588ee22956e
+PODFILE CHECKSUM: 31331fbc0899dcbab54aae10064cc77074c877d2
 
 COCOAPODS: 1.9.3
