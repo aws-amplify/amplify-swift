@@ -7,7 +7,7 @@
 
 import Amplify
 
-struct DynamicModel: JsonModel {
+struct DynamicModel: JSONModel {
 
     public let id: String
     public let values: [String: JSONValue]
@@ -31,7 +31,7 @@ struct DynamicModel: JsonModel {
         try container.encode(values)
     }
 
-    public func internal_value(for key: String) -> Any? {
+    public func internalValue(for key: String) -> Any? {
         if key == "id" {
             return id
         }

@@ -22,7 +22,7 @@ extension SQLiteStorageEngineAdapter {
             // TODO serialize result and create a new instance of the model
             // (some columns might be auto-generated after DB insert/update)
             if shouldUpdate {
-                let statement = UpdateStatement(model: untypedModel, modelSchema: modelType.schema)
+                let statement = UpdateStatement(model: untypedModel, modelSchema: untypedModel.schema)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             } else {
                 let statement = InsertStatement(model: untypedModel, modelSchema: untypedModel.schema)

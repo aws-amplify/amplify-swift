@@ -31,15 +31,15 @@ public protocol Model: Codable {
 
 }
 
-public protocol JsonModel: Model {
+public protocol JSONModel: Model {
 
     /// Return the value for key
-    func internal_value(for key: String) -> Any?
+    func internalValue(for key: String) -> Any?
 }
 
-extension JsonModel {
+extension JSONModel {
 
-    public func internal_value(for key: String) -> Any? {
+    public func internalValue(for key: String) -> Any? {
         return nil
     }
 }

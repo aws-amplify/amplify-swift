@@ -149,7 +149,7 @@ extension Array where Element == Model.Type {
                             """)
                         }
                         return modelType
-                }
+                    }
                 associatedModels.forEach(walkAssociatedModels(of:))
 
                 let key = modelType.schema.name
@@ -177,7 +177,7 @@ extension Array where Element == ModelSchema {
                     .filter { $0.isForeignKey }
                     .map { (schema) -> ModelSchema in
                         guard let associatedSchema = ModelRegistry.modelSchema(from: schema.requiredAssociatedModel)
-                            else {
+                        else {
                             preconditionFailure("""
                             Could not retrieve schema for the model \(schema.requiredAssociatedModel), verify that
                             datastore is initialized.
