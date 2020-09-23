@@ -100,7 +100,7 @@ extension Model {
                 return binding
             } catch {
                 logger.warn("""
-                    Error converting \(modelSchema.name).\(field.name) to the proper SQLite Binding.
+                Error converting \(modelSchema.name).\(field.name) to the proper SQLite Binding.
                 Root cause is: \(String(describing: error))
                 """)
                 return nil
