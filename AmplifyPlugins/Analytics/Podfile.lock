@@ -3,44 +3,44 @@ PODS:
     - Amplify/Default (= 1.2.0)
   - Amplify/Default (1.2.0)
   - AmplifyPlugins/AWSCognitoAuthPlugin (1.2.0):
-    - AWSAuthCore (~> 2.16.0)
-    - AWSCore (~> 2.16.0)
-    - AWSMobileClient (~> 2.16.0)
+    - AWSAuthCore (~> 2.17.0)
+    - AWSCore (~> 2.17.0)
+    - AWSMobileClient (~> 2.17.0)
     - AWSPluginsCore (= 1.2.0)
   - AmplifyTestCommon (1.2.0):
     - Amplify (= 1.2.0)
     - AmplifyTestCommon/AWSPluginsTestCommon (= 1.2.0)
   - AmplifyTestCommon/AWSPluginsTestCommon (1.2.0):
     - Amplify (= 1.2.0)
-    - AWSCore (~> 2.16.0)
+    - AWSCore (~> 2.17.0)
     - AWSPluginsCore (= 1.2.0)
-  - AWSAuthCore (2.16.0):
-    - AWSCore (= 2.16.0)
-  - AWSCognitoIdentityProvider (2.16.0):
+  - AWSAuthCore (2.17.0):
+    - AWSCore (= 2.17.0)
+  - AWSCognitoIdentityProvider (2.17.0):
     - AWSCognitoIdentityProviderASF (= 1.1.0)
-    - AWSCore (= 2.16.0)
+    - AWSCore (= 2.17.0)
   - AWSCognitoIdentityProviderASF (1.1.0)
-  - AWSCore (2.16.0)
-  - AWSMobileClient (2.16.0):
-    - AWSAuthCore (= 2.16.0)
-    - AWSCognitoIdentityProvider (= 2.16.0)
-  - AWSPinpoint (2.16.0):
-    - AWSCore (= 2.16.0)
+  - AWSCore (2.17.0)
+  - AWSMobileClient (2.17.0):
+    - AWSAuthCore (= 2.17.0)
+    - AWSCognitoIdentityProvider (= 2.17.0)
+  - AWSPinpoint (2.17.0):
+    - AWSCore (= 2.17.0)
   - AWSPluginsCore (1.2.0):
     - Amplify (= 1.2.0)
-    - AWSCore (~> 2.16.0)
-    - AWSMobileClient (~> 2.16.0)
+    - AWSCore (~> 2.17.0)
+    - AWSMobileClient (~> 2.17.0)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
   - SwiftFormat/CLI (0.44.17)
-  - SwiftLint (0.40.1)
+  - SwiftLint (0.40.3)
 
 DEPENDENCIES:
   - Amplify (from `../../`)
   - AmplifyPlugins/AWSCognitoAuthPlugin (from `../../`)
   - AmplifyTestCommon (from `../../`)
-  - AWSPinpoint (~> 2.16.0)
+  - AWSPinpoint (~> 2.17.0)
   - AWSPluginsCore (from `../../`)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
@@ -49,13 +49,13 @@ DEPENDENCIES:
 
 SPEC REPOS:
   "/Users/schmelte/.aws-amplify/aws-sdk-ios/aws-sdk-ios-podspecs.git":
+    - AWSAuthCore
     - AWSCognitoIdentityProvider
     - AWSCognitoIdentityProviderASF
+    - AWSCore
     - AWSMobileClient
     - AWSPinpoint
   trunk:
-    - AWSAuthCore
-    - AWSCore
     - SwiftFormat
     - SwiftLint
 
@@ -85,19 +85,19 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Amplify: 936bb160a853e94be153c2f3f8a250f7090c9ee0
-  AmplifyPlugins: c264378bd02ad572ad6b7e1a026c316fa4f0730a
-  AmplifyTestCommon: de0332375a42e9557db8865c5ce3d9577e2c9f4a
-  AWSAuthCore: a1eeb349be90c77f4b867fb919461ee0a493395c
-  AWSCognitoIdentityProvider: fac9e673c18ed5d5f1a9a81480ed18c041b5c6c1
+  AmplifyPlugins: a2115abb7665a371105a9045f0ca282938bdf5c4
+  AmplifyTestCommon: bb160ee220ebf5c4da1ba9c2ae44f2069886862f
+  AWSAuthCore: 5e030956e5d63bb8efe7cff095ff095743c24aea
+  AWSCognitoIdentityProvider: 28aea7f96b8a5888ebf0fbd05a483419643d3a28
   AWSCognitoIdentityProviderASF: f38d9aee6f7dd9609c7e30dbfd7ade79fca855f2
-  AWSCore: 439de29e3423c637a0c475f9ea329262fd2acc67
-  AWSMobileClient: 9bda4b4f1850574fe8e4801ad1f727073398e048
-  AWSPinpoint: 635e2b6d6d6e5a5ea49305bcabcfd4369b8036f6
-  AWSPluginsCore: b341a1fd19c91f213c0a409c4811b7c96b0b2e36
+  AWSCore: 2738db4086364b1a982a37212db7927ee9a97078
+  AWSMobileClient: 80c04d4c6ed17c042b985046d120b0508a2093a0
+  AWSPinpoint: 5f3efbfd89cc7dcf96b3421fb05d4235a0a42a62
+  AWSPluginsCore: bfe5b9cb0b464bd18509d885ff8f81501acfa2c0
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
-  SwiftLint: bbfed21bf4451dcbd0f5cdbee44a18e06cf91b12
+  SwiftLint: dfd554ff0dff17288ee574814ccdd5cea85d76f7
 
 PODFILE CHECKSUM: 31331fbc0899dcbab54aae10064cc77074c877d2
 
