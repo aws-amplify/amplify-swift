@@ -7,7 +7,7 @@
 
 import Amplify
 
-struct DynamicModel: JSONModel {
+struct DynamicModel: Model, JSONValueHolder {
 
     public let id: String
     public let values: [String: JSONValue]
@@ -31,7 +31,7 @@ struct DynamicModel: JSONModel {
         try container.encode(values)
     }
 
-    public func internalValue(for key: String) -> Any? {
+    public func jsonValue(for key: String) -> Any?? {
         if key == "id" {
             return id
         }
@@ -47,7 +47,7 @@ struct DynamicModel: JSONModel {
         case .some(.string(let deserializedValue)):
             return deserializedValue
         case .some(.null):
-            return nil
+            return .some(nil)
         case .none:
             return nil
         }

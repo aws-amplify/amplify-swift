@@ -28,18 +28,4 @@ public protocol Model: Codable {
 
     /// The Model identifier (aka primary key)
     var id: Identifier { get }
-
-}
-
-public protocol JSONModel: Model {
-
-    /// Return the value for key
-    func internalValue(for key: String) -> Any?
-}
-
-extension JSONModel {
-
-    public func internalValue(for key: String) -> Any? {
-        return nil
-    }
 }

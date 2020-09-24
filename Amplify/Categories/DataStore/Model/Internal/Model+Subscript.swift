@@ -16,8 +16,8 @@ extension Model {
     ///   by host applications. The behavior of this may change without warning.
     public subscript(_ key: String) -> Any?? {
 
-        if let jsonModel = self as? JSONModel {
-            let value = jsonModel.internalValue(for: key)
+        if let jsonModel = self as? JSONValueHolder {
+            let value = jsonModel.jsonValue(for: key)
             return value
         }
 
