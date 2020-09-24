@@ -27,7 +27,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         storageAdapter.save(post) { saveResult in
             switch saveResult {
             case .success:
-                storageAdapter.query(Post.self) { queryResult in
+                self.storageAdapter.query(Post.self) { queryResult in
                     switch queryResult {
                     case .success(let posts):
                         XCTAssert(posts.count == 1)
@@ -68,7 +68,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             switch saveResult {
             case .success:
                 let predicate = Post.keys.title == post.title
-                storageAdapter.query(Post.self, predicate: predicate) { queryResult in
+                self.storageAdapter.query(Post.self, predicate: predicate) { queryResult in
                     switch queryResult {
                     case .success(let posts):
                         XCTAssertEqual(posts.count, 1)
@@ -126,7 +126,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             switch insertResult {
             case .success:
                 post.title = "title updated"
-                storageAdapter.save(post) { updateResult in
+                self.storageAdapter.save(post) { updateResult in
                     switch updateResult {
                     case .success:
                         checkSavedPost(id: post.id)
@@ -177,7 +177,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             case .success:
                 post.title = "title updated"
                 let condition = Post.keys.content == post.content
-                storageAdapter.save(post, condition: condition) { updateResult in
+                self.storageAdapter.save(post, condition: condition) { updateResult in
                     switch updateResult {
                     case .success:
                         checkSavedPost(id: post.id)
@@ -237,7 +237,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             case .success:
                 post.title = "title updated"
                 let condition = Post.keys.content == "content 2 does not match previous content"
-                storageAdapter.save(post, condition: condition) { updateResult in
+                self.storageAdapter.save(post, condition: condition) { updateResult in
                     switch updateResult {
                     case .success:
                         XCTFail("Update should not be successful")
@@ -274,11 +274,11 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             switch insertResult {
             case .success:
                 saveExpectation.fulfill()
-                storageAdapter.delete(Post.self, withId: post.id) {
+                self.storageAdapter.delete(Post.self, withId: post.id) {
                     switch $0 {
                     case .success:
                         deleteExpectation.fulfill()
-                        checkIfPostIsDeleted(id: post.id)
+                        self.checkIfPostIsDeleted(id: post.id)
                         queryExpectation.fulfill()
                     case .failure(let error):
                         XCTFail(error.errorDescription)
@@ -306,11 +306,11 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                 saveExpectation.fulfill()
                 let postKeys = Post.keys
                 let predicate = postKeys.createdAt.gt(dateTestStart)
-                storageAdapter.delete(Post.self, predicate: predicate) { result in
+                self.storageAdapter.delete(Post.self, predicate: predicate) { result in
                     switch result {
                     case .success:
                         deleteExpectation.fulfill()
-                        checkIfPostIsDeleted(id: post.id)
+                        self.checkIfPostIsDeleted(id: post.id)
                         queryExpectation.fulfill()
                     case .failure(let error):
                         XCTFail(error.errorDescription)
@@ -345,12 +345,12 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                     postsAdded.append(post.id)
                     if counter == maxCount - 1 {
                         saveExpectation.fulfill()
-                        storageAdapter.delete(Post.self, predicate: QueryPredicateConstant.all) { result in
+                        self.storageAdapter.delete(Post.self, predicate: QueryPredicateConstant.all) { result in
                             switch result {
                             case .success:
                                 deleteExpectation.fulfill()
                                 for postId in postsAdded {
-                                    checkIfPostIsDeleted(id: postId)
+                                    self.checkIfPostIsDeleted(id: postId)
                                 }
                                 queryExpectation.fulfill()
                             case .failure(let error):
