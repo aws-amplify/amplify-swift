@@ -55,7 +55,7 @@ class SQLModelValueConverterTests: BaseDataStoreTests {
         let example = exampleModel
 
         // convert model to SQLite Bindings
-        let bindings = example.sqlValues()
+        let bindings = example.sqlValues(modelSchema: example.schema)
 
         // columns are ordered, so check if the values are correct and in the right index
         XCTAssertEqual(bindings.count, ExampleWithEveryType.schema.columns.count)
