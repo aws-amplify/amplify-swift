@@ -106,10 +106,12 @@ done < <( find "${src_dir}" -maxdepth 1 -mindepth 1 -name "*.podspec" | sort --i
 
 update_spec_repo
 
-echo "Done. You may now validate podspec files by running:"
+echo "Done. Make sure your changes are committed locally."
+
 echo
-echo "pod cache clean --all"
-echo -n "pod lib lint --sources=${LOCAL_SPEC_REPO_NAME},trunk"
+echo "To validate podspec files, issue the command:"
+echo "    pod cache clean --all"
+echo -n "    pod lib lint --sources=${LOCAL_SPEC_REPO_NAME},trunk"
 for podspec_file_name in "${podspec_file_names[@]}" ; do
   echo -n " ${podspec_file_name}"
 done
@@ -120,5 +122,7 @@ echo "To use the private specs in a local project, add the following lines to yo
 echo "source '${LOCAL_SPEC_GIT_ROOT}'"
 echo "source 'https://cdn.cocoapods.org'"
 echo
-echo "Then do a 'pod cache clean --all && pod install' to install from the private repo"
+echo "Then issue the command:"
+echo "    pod cache clean --all && pod install"
+echo "to install from the private repo"
 
