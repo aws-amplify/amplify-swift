@@ -11,6 +11,11 @@ protocol ModelStorageBehavior {
     func setUp(modelSchemas: [ModelSchema]) throws
 
     func save<M: Model>(_ model: M,
+                        modelSchema: ModelSchema,
+                        where condition: QueryPredicate?,
+                        completion: @escaping DataStoreCallback<M>)
+
+    func save<M: Model>(_ model: M,
                         condition: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>)
 
@@ -23,6 +28,13 @@ protocol ModelStorageBehavior {
                           completion: @escaping DataStoreCallback<[M]>)
 
     func query<M: Model>(_ modelType: M.Type,
+                         predicate: QueryPredicate?,
+                         sort: QuerySortInput?,
+                         paginationInput: QueryPaginationInput?,
+                         completion: DataStoreCallback<[M]>)
+
+    func query<M: Model>(_ modelType: M.Type,
+                         modelSchema: ModelSchema,
                          predicate: QueryPredicate?,
                          sort: QuerySortInput?,
                          paginationInput: QueryPaginationInput?,
