@@ -28,5 +28,4 @@ public protocol Model: Codable {
 
     /// The Model identifier (aka primary key)
     var id: Identifier { get }
-
 }

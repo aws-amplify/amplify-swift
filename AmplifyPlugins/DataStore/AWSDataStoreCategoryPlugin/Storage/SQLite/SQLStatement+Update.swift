@@ -19,7 +19,7 @@ struct UpdateStatement: SQLStatement {
 
     init(model: Model, modelSchema: ModelSchema, condition: QueryPredicate? = nil) {
         self.model = model
-        self.modelSchema = model.schema
+        self.modelSchema = modelSchema
 
         var conditionStatement: ConditionStatement?
         if let condition = condition {
@@ -56,7 +56,7 @@ struct UpdateStatement: SQLStatement {
     }
 
     var variables: [Binding?] {
-        var bindings = model.sqlValues(for: updateColumns)
+        var bindings = model.sqlValues(for: updateColumns, modelSchema: modelSchema)
         bindings.append(model.id)
         if let conditionStatement = conditionStatement {
             bindings.append(contentsOf: conditionStatement.variables)
