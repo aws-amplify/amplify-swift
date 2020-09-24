@@ -286,6 +286,8 @@
 		B493E69E245394E200D9E521 /* AuthSignUpStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E69D245394E200D9E521 /* AuthSignUpStep.swift */; };
 		B493E6A22453A29C00D9E521 /* AuthSignInStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E6A12453A29C00D9E521 /* AuthSignInStep.swift */; };
 		B493E6A42453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E6A32453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift */; };
+		B4944D21251C06EA00BF0BFE /* JSONValueHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4944D20251C06EA00BF0BFE /* JSONValueHolder.swift */; };
+		B4944D52251C141200BF0BFE /* JSONValueHolderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4944D51251C141200BF0BFE /* JSONValueHolderTest.swift */; };
 		B49A02F92410BEBE00B42A25 /* AuthCategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49A02F82410BEBD00B42A25 /* AuthCategory+CategoryConfigurable.swift */; };
 		B49A02FB2410BEDF00B42A25 /* AuthCategory+Resettable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49A02FA2410BEDF00B42A25 /* AuthCategory+Resettable.swift */; };
 		B4A19DAB24101EEB00DE2E55 /* AuthCategoryBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4A19DAA24101EEB00DE2E55 /* AuthCategoryBehavior.swift */; };
@@ -1098,6 +1100,8 @@
 		B493E69D245394E200D9E521 /* AuthSignUpStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignUpStep.swift; sourceTree = "<group>"; };
 		B493E6A12453A29C00D9E521 /* AuthSignInStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignInStep.swift; sourceTree = "<group>"; };
 		B493E6A32453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSocialWebUISignInOperation.swift; sourceTree = "<group>"; };
+		B4944D20251C06EA00BF0BFE /* JSONValueHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValueHolder.swift; sourceTree = "<group>"; };
+		B4944D51251C141200BF0BFE /* JSONValueHolderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValueHolderTest.swift; sourceTree = "<group>"; };
 		B49A02F82410BEBD00B42A25 /* AuthCategory+CategoryConfigurable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AuthCategory+CategoryConfigurable.swift"; sourceTree = "<group>"; };
 		B49A02FA2410BEDF00B42A25 /* AuthCategory+Resettable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthCategory+Resettable.swift"; sourceTree = "<group>"; };
 		B4A19DAA24101EEB00DE2E55 /* AuthCategoryBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCategoryBehavior.swift; sourceTree = "<group>"; };
@@ -2249,6 +2253,14 @@
 			path = AuthPluginBehavior;
 			sourceTree = "<group>";
 		};
+		B4944D1F251C06D300BF0BFE /* JSONHelper */ = {
+			isa = PBXGroup;
+			children = (
+				B4944D20251C06EA00BF0BFE /* JSONValueHolder.swift */,
+			);
+			path = JSONHelper;
+			sourceTree = "<group>";
+		};
 		B49A02F72410BEBD00B42A25 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
@@ -2489,6 +2501,7 @@
 		B92E03A62367CE7A006CEB8D /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B4944D1F251C06D300BF0BFE /* JSONHelper */,
 				B92E03A72367CE7A006CEB8D /* Model.swift */,
 				FA8EE778238627040097E4F1 /* Model+ModelName.swift */,
 				2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */,
@@ -3386,6 +3399,7 @@
 				B9AF547D23F37DF20059E6C4 /* TemporalOperationTests.swift */,
 				B91A87A323D64B0F0049A12F /* TemporalTests.swift */,
 				213481D7242AFA58001966DE /* Support */,
+				B4944D51251C141200BF0BFE /* JSONValueHolderTest.swift */,
 			);
 			path = DataStore;
 			sourceTree = "<group>";
@@ -4449,6 +4463,7 @@
 				95DAAB21237E63370028544F /* LanguageDetectionResult.swift in Sources */,
 				FAC2351E227A053D00424678 /* APICategory.swift in Sources */,
 				B9B50DC223D9179F0086F1E1 /* TemporalFormat+DateTime.swift in Sources */,
+				B4944D21251C06EA00BF0BFE /* JSONValueHolder.swift in Sources */,
 				FAC2351B227A053D00424678 /* APICategoryBehavior.swift in Sources */,
 				B473B540245DE93100C45C72 /* AuthConfirmSignInRequest.swift in Sources */,
 				B46884102460A85200221268 /* AuthDevice.swift in Sources */,
@@ -4792,6 +4807,7 @@
 				B9AF547E23F37DF20059E6C4 /* TemporalOperationTests.swift in Sources */,
 				FAD3937D23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift in Sources */,
 				FA607FE2233D131B00DFEA24 /* AmplifyOperationHubTests.swift in Sources */,
+				B4944D52251C141200BF0BFE /* JSONValueHolderTest.swift in Sources */,
 				FAC2356A227A056600424678 /* LoggingCategoryConfigurationTests.swift in Sources */,
 				B91A87A423D64B0F0049A12F /* TemporalTests.swift in Sources */,
 				FA00F69024DA3F95003E8A71 /* HubCombineTests.swift in Sources */,

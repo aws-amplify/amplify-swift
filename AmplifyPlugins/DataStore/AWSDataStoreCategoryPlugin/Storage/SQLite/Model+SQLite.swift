@@ -57,9 +57,8 @@ extension Model {
     ///
     /// - Parameter fields: an optional subset of fields
     /// - Returns: an array of SQLite's `Binding` compatible type
-    internal func sqlValues(for fields: [ModelField]? = nil) -> [Binding?] {
-        let modelType = type(of: self)
-        let modelFields = fields ?? modelType.schema.sortedFields
+    internal func sqlValues(for fields: [ModelField]? = nil, modelSchema: ModelSchema) -> [Binding?] {
+        let modelFields = fields ?? modelSchema.sortedFields
         let values: [Binding?] = modelFields.map { field in
 
             // self[field.name] subscript accessor returns an Any??, we need to do a few things:
@@ -101,7 +100,7 @@ extension Model {
                 return binding
             } catch {
                 logger.warn("""
-                Error converting \(modelType.modelName).\(field.name) to the proper SQLite Binding.
+                Error converting \(modelSchema.name).\(field.name) to the proper SQLite Binding.
                 Root cause is: \(String(describing: error))
                 """)
                 return nil
@@ -150,7 +149,7 @@ extension Array where Element == Model.Type {
                             """)
                         }
                         return modelType
-                }
+                    }
                 associatedModels.forEach(walkAssociatedModels(of:))
 
                 let key = modelType.schema.name
@@ -178,7 +177,7 @@ extension Array where Element == ModelSchema {
                     .filter { $0.isForeignKey }
                     .map { (schema) -> ModelSchema in
                         guard let associatedSchema = ModelRegistry.modelSchema(from: schema.requiredAssociatedModel)
-                            else {
+                        else {
                             preconditionFailure("""
                             Could not retrieve schema for the model \(schema.requiredAssociatedModel), verify that
                             datastore is initialized.

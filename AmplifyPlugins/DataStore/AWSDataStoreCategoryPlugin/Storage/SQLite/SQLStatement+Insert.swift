@@ -16,7 +16,7 @@ struct InsertStatement: SQLStatement {
 
     init(model: Model, modelSchema: ModelSchema) {
         self.modelSchema = modelSchema
-        self.variables = model.sqlValues(for: modelSchema.columns)
+        self.variables = model.sqlValues(for: modelSchema.columns, modelSchema: modelSchema)
     }
 
     var stringValue: String {
