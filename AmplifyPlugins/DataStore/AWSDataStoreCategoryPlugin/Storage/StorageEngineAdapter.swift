@@ -31,6 +31,7 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
                completion: DataStoreCallback<[Model]>)
 
     func query<M: Model>(_ modelType: M.Type,
+                         modelSchema: ModelSchema,
                          predicate: QueryPredicate?,
                          sort: QuerySortInput?,
                          paginationInput: QueryPaginationInput?,

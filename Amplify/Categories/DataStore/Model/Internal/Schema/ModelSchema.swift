@@ -38,7 +38,7 @@ public struct ModelField {
         return name == "id"
     }
 
-    init(name: String,
+    public init(name: String,
          type: ModelFieldType,
          isRequired: Bool = false,
          isArray: Bool = false,
@@ -82,7 +82,7 @@ public struct ModelSchema {
         return primaryKey.value
     }
 
-    init(name: String,
+    public init(name: String,
          pluralName: String? = nil,
          authRules: AuthRules = [],
          attributes: [ModelAttribute] = [],
