@@ -7,7 +7,7 @@
 #
 
 # Version definitions
-$AMPLIFY_VERSION = '1.2.0'
+$AMPLIFY_VERSION = '1.2.1'
 $AMPLIFY_RELEASE_TAG = "v#{$AMPLIFY_VERSION}"
 
 $AWS_SDK_VERSION = '2.17.0'
@@ -48,6 +48,7 @@ Pod::Spec.new do |s|
     # during initial indexing and prevent build errors after a fresh install
     ss.dependency 'AWSAuthCore', $OPTIMISTIC_AWS_SDK_VERSION
     ss.dependency 'AWSCognitoIdentityProvider', $OPTIMISTIC_AWS_SDK_VERSION
+    ss.dependency 'AWSCognitoIdentityProviderASF', '1.1.0'
   end
 
   s.subspec 'AWSDataStorePlugin' do |ss|
