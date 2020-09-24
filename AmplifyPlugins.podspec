@@ -46,8 +46,8 @@ Pod::Spec.new do |s|
 
     # This is technically redundant, but adding it here allows Xcode to find it
     # during initial indexing and prevent build errors after a fresh install
-    s.dependency 'AWSAuthCore', $OPTIMISTIC_AWS_SDK_VERSION
-
+    ss.dependency 'AWSAuthCore', $OPTIMISTIC_AWS_SDK_VERSION
+    ss.dependency 'AWSCognitoIdentityProvider', $OPTIMISTIC_AWS_SDK_VERSION
   end
 
   s.subspec 'AWSDataStorePlugin' do |ss|
