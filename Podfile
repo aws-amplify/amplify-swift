@@ -1,6 +1,3 @@
-source '/Users/schmelte/.aws-amplify/aws-sdk-ios/aws-sdk-ios-podspecs.git'
-source 'https://cdn.cocoapods.org'
-
 load 'build-support/dependencies.rb'
 
 platform :ios, "11.0"
