@@ -31,7 +31,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
 
     func testWifiConnectivity() {
         MockReachability.iConnection = .wifi
-        let expect = expectation(description: ".sink receives value")
+        let expect = expectation(description: ".sink receives values")
         var values = [Bool]()
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             XCTFail("Not expecting any error")
@@ -52,7 +52,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
 
     func testCellularConnectivity() {
         MockReachability.iConnection = .wifi
-        let expect = expectation(description: ".sink receives value")
+        let expect = expectation(description: ".sink receives values")
         var values = [Bool]()
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             XCTFail("Not expecting any error")
@@ -74,7 +74,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
 
     func testNoConnectivity() {
         MockReachability.iConnection = .unavailable
-        let expect = expectation(description: ".sink receives value")
+        let expect = expectation(description: ".sink receives values")
         var values = [Bool]()
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             XCTFail("Not expecting any error")
@@ -96,8 +96,8 @@ class NetworkReachabilityNotifierTests: XCTestCase {
 
     func testWifiConnectivity_publisherGoesOutOfScope() {
         MockReachability.iConnection = .wifi
-        let defaultValueExpect = expectation(description: ".sink receives value")
-        let completeExpect = expectation(description: ".sink receives value")
+        let defaultValueExpect = expectation(description: ".sink receives default value")
+        let completeExpect = expectation(description: ".sink receives completion")
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             completeExpect.fulfill()
         }, receiveValue: { value in
