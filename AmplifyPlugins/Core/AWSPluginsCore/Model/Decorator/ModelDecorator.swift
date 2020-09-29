@@ -20,6 +20,11 @@ public struct ModelDecorator: ModelBasedGraphQLDocumentDecorator {
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
+                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
+        decorate(document, modelSchema: modelType.schema)
+    }
+    
+    public func decorate(_ document: SingleDirectiveGraphQLDocument,
                          modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
         var inputs = document.inputs
         var graphQLInput = model.graphQLInput

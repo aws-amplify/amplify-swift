@@ -17,6 +17,11 @@ public struct FilterDecorator: ModelBasedGraphQLDocumentDecorator {
     public init(filter: GraphQLFilter) {
         self.filter = filter
     }
+    
+    public func decorate(_ document: SingleDirectiveGraphQLDocument,
+                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
+        decorate(document, modelSchema: modelType.schema)
+    }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
                          modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {

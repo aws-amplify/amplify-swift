@@ -33,6 +33,11 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
     public init(_ authRuleDecoratorInput: AuthRuleDecoratorInput) {
         self.input = authRuleDecoratorInput
     }
+    
+    public func decorate(_ document: SingleDirectiveGraphQLDocument,
+                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
+        decorate(document, modelSchema: modelType.schema)
+    }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
                          modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
