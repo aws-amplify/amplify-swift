@@ -14,31 +14,14 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
     // MARK: - Async APIs
     func save(untypedModel: Model, completion: @escaping DataStoreCallback<Model>)
 
-    func delete<M: Model>(_ modelType: M.Type,
-                          modelSchema: ModelSchema,
-                          withId id: Model.Identifier,
-                          completion: DataStoreCallback<M?>)
-
     func delete(untypedModelType modelType: Model.Type,
                 modelSchema: ModelSchema,
                 withId id: Model.Identifier,
                 completion: DataStoreCallback<Void>)
 
-    func delete<M: Model>(_ modelType: M.Type,
-                          modelSchema: ModelSchema,
-                          predicate: QueryPredicate,
-                          completion: @escaping DataStoreCallback<[M]>)
-
     func query(untypedModel modelType: Model.Type,
                predicate: QueryPredicate?,
                completion: DataStoreCallback<[Model]>)
-
-    func query<M: Model>(_ modelType: M.Type,
-                         modelSchema: ModelSchema,
-                         predicate: QueryPredicate?,
-                         sort: QuerySortInput?,
-                         paginationInput: QueryPaginationInput?,
-                         completion: DataStoreCallback<[M]>)
 
     // MARK: - Synchronous APIs
 
