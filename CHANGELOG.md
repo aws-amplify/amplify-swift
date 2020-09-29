@@ -1,5 +1,17 @@
 # Changelog
 ## Unreleased
+## 1.3.0 (2020-09-29)
+
+### Features
+
+- Support Xcode 12 (#779)
+- **datastore**: Dispatch outboxMutationEnqueued, outboxMutationProcessed events (#759)
+
+### Bug Fixes
+
+- Remove enableThreadSanitizer flag from test invocation (#783)
+- Add #if swift check for Combine publishers (#775)
+
 ## 1.2.0 (2020-09-16)
 
 ### Features
