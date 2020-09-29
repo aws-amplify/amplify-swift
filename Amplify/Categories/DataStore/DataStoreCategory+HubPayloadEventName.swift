@@ -39,7 +39,7 @@ public extension HubPayload.EventName.DataStore {
     static let syncQueriesStarted = "DataStore.syncQueriesStarted"
 
     /// Dispatched when DataStore starts and everytime network status changes
-    /// HubPayload `NetworkStatusEvent` contains a boolean value `active` to notify network staus
+    /// HubPayload `NetworkStatusEvent` contains a boolean value `active` to notify network status
     static let networkStatus = "DataStore.networkStatus"
 
     /// Dispatched when a local mutation is enqueued into the outgoing mutation queue `outbox`
