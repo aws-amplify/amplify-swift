@@ -21,7 +21,7 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
         self.version = version
         self.lastSync = lastSync
     }
-    
+
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
                          modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
         decorate(document, modelSchema: modelType.schema)

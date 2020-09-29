@@ -34,7 +34,7 @@ public struct DirectiveNameDecorator: ModelBasedGraphQLDocumentDecorator {
         self.mutationType = nil
         self.subscriptionType = type
     }
-    
+
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
                          modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
         decorate(document, modelSchema: modelType.schema)
