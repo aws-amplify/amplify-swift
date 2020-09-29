@@ -25,6 +25,7 @@ class RemoteSyncEngineTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        apiPlugin = MockAPICategoryPlugin()
         MockAWSInitialSyncOrchestrator.reset()
         storageAdapter = MockSQLiteStorageEngineAdapter()
         let mockOutgoingMutationQueue = MockOutgoingMutationQueue()
@@ -118,7 +119,7 @@ class RemoteSyncEngineTests: XCTestCase {
         MockAWSInitialSyncOrchestrator.setResponseOnSync(result:
             .failure(DataStoreError.internalOperation("forceError", "none", nil)))
 
-        remoteSyncEngine.start()
+        remoteSyncEngine.start(api: apiPlugin)
 
         wait(for: [storageAdapterAvailable,
                    subscriptionsPaused,
@@ -177,7 +178,7 @@ class RemoteSyncEngineTests: XCTestCase {
                 }
             })
 
-        remoteSyncEngine.start()
+        remoteSyncEngine.start(api: apiPlugin)
 
         wait(for: [storageAdapterAvailable,
                    subscriptionsPaused,
@@ -248,7 +249,7 @@ class RemoteSyncEngineTests: XCTestCase {
                 }
             })
 
-        remoteSyncEngine.start()
+        remoteSyncEngine.start(api: apiPlugin)
 
         wait(for: [storageAdapterAvailable,
                    subscriptionsPaused,
@@ -325,7 +326,7 @@ class RemoteSyncEngineTests: XCTestCase {
                 }
             })
 
-        remoteSyncEngine.start()
+        remoteSyncEngine.start(api: apiPlugin)
 
         wait(for: [storageAdapterAvailable,
                    subscriptionsPaused,
