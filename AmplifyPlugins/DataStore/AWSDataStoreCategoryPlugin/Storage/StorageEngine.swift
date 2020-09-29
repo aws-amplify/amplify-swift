@@ -193,7 +193,9 @@ final class StorageEngine: StorageEngineBehavior {
                           modelSchema: ModelSchema,
                           withId id: Model.Identifier,
                           completion: @escaping (DataStoreResult<M?>) -> Void) {
-        let transactionResult = queryAndDeleteTransaction(modelType, modelSchema: modelSchema, predicate: field("id").eq(id))
+        let transactionResult = queryAndDeleteTransaction(modelType,
+                                                          modelSchema: modelSchema,
+                                                          predicate: field("id").eq(id))
 
         let deletedModel: M
         switch transactionResult {
