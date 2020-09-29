@@ -21,9 +21,11 @@ class HubEventsIntegrationTestBase: XCTestCase {
 
     override func setUp() {
         super.setUp()
-
         continueAfterFailure = false
+        Amplify.reset()
+    }
 
+    func startAmplify() {
         let bundle = Bundle(for: type(of: self))
         guard let configFile = bundle.url(forResource: "amplifyconfiguration", withExtension: "json") else {
             XCTFail("Could not get URL for amplifyconfiguration.json from \(bundle)")
@@ -33,8 +35,8 @@ class HubEventsIntegrationTestBase: XCTestCase {
         do {
             let configData = try Data(contentsOf: configFile)
             let amplifyConfig = try JSONDecoder().decode(AmplifyConfiguration.self, from: configData)
-            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: TestModelRegistration()))
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: TestModelRegistration()))
+            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: TestModelRegistration()))
             try Amplify.configure(amplifyConfig)
         } catch {
             XCTFail(String(describing: error))

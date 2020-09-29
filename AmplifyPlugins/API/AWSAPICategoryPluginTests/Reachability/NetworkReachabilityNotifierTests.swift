@@ -31,12 +31,17 @@ class NetworkReachabilityNotifierTests: XCTestCase {
 
     func testWifiConnectivity() {
         MockReachability.iConnection = .wifi
-        let expect = expectation(description: ".sink receives value")
+        let expect = expectation(description: ".sink receives values")
+        var values = [Bool]()
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             XCTFail("Not expecting any error")
         }, receiveValue: { value in
-            XCTAssert(value.isOnline)
-            expect.fulfill()
+            values.append(value.isOnline)
+            if values.count == 2 {
+                XCTAssertFalse(values[0])
+                XCTAssertTrue(values[1])
+                expect.fulfill()
+            }
         })
         notification = Notification.init(name: .reachabilityChanged)
         NotificationCenter.default.post(notification)
@@ -44,14 +49,20 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
         cancellable.cancel()
     }
+
     func testCellularConnectivity() {
         MockReachability.iConnection = .wifi
-        let expect = expectation(description: ".sink receives value")
+        let expect = expectation(description: ".sink receives values")
+        var values = [Bool]()
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             XCTFail("Not expecting any error")
         }, receiveValue: { value in
-            XCTAssert(value.isOnline)
-            expect.fulfill()
+            values.append(value.isOnline)
+            if values.count == 2 {
+                XCTAssertFalse(values[0])
+                XCTAssertTrue(values[1])
+                expect.fulfill()
+            }
         })
 
         notification = Notification.init(name: .reachabilityChanged)
@@ -59,17 +70,21 @@ class NetworkReachabilityNotifierTests: XCTestCase {
 
         waitForExpectations(timeout: 1.0)
         cancellable.cancel()
-
     }
 
     func testNoConnectivity() {
         MockReachability.iConnection = .unavailable
-        let expect = expectation(description: ".sink receives value")
+        let expect = expectation(description: ".sink receives values")
+        var values = [Bool]()
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             XCTFail("Not expecting any error")
         }, receiveValue: { value in
-            XCTAssertFalse(value.isOnline)
-            expect.fulfill()
+            values.append(value.isOnline)
+            if values.count == 2 {
+                XCTAssertFalse(values[0])
+                XCTAssertFalse(values[1])
+                expect.fulfill()
+            }
         })
 
         notification = Notification.init(name: .reachabilityChanged)
@@ -81,18 +96,21 @@ class NetworkReachabilityNotifierTests: XCTestCase {
 
     func testWifiConnectivity_publisherGoesOutOfScope() {
         MockReachability.iConnection = .wifi
-        let expect = expectation(description: ".sink receives value")
+        let defaultValueExpect = expectation(description: ".sink receives default value")
+        let completeExpect = expectation(description: ".sink receives completion")
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
-            expect.fulfill()
-        }, receiveValue: { _ in
-            XCTAssertFalse(true)
+            completeExpect.fulfill()
+        }, receiveValue: { value in
+            XCTAssertFalse(value.isOnline)
+            defaultValueExpect.fulfill()
         })
 
+        wait(for: [defaultValueExpect], timeout: 1.0)
         notifier = nil
         notification = Notification.init(name: .reachabilityChanged)
         NotificationCenter.default.post(notification)
 
-        waitForExpectations(timeout: 1.0)
+        wait(for: [completeExpect], timeout: 1.0)
         cancellable.cancel()
     }
 }
