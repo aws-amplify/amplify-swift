@@ -191,7 +191,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                 networkReachabilityPublisher = try reachability.reachabilityPublisher()
                 networkReachabilitySink = networkReachabilityPublisher?
                     .sink(receiveValue: onReceiveNetworkStatus(networkStatus:))
-                log.info("reachability sink got set up")
             } catch {
                 log.error("\(#function): Unable to listen on reachability: \(error)")
             }
