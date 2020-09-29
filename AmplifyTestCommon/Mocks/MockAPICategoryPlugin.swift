@@ -49,7 +49,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
                                                  responseType: request.responseType,
                                                  options: options)
         let operation = MockGraphQLOperation(request: request, responseType: request.responseType)
-        
+
         return operation
     }
 
