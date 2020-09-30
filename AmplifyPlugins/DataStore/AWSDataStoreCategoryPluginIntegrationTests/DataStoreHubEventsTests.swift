@@ -23,6 +23,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
     /// - When:
     ///    - DataStore's remote sync engine is initialized
     /// - Then:
+    ///    - networkStatus received, payload should be: {active: true}
     ///    - subscriptionEstablished received, payload should be nil
     ///    - syncQueriesStarted received, payload should be: {models: ["Post", "Comment"]}
     ///    - outboxStatus received, payload should be {isEmpty: true}
@@ -31,6 +32,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
     ///    - syncQueriesReady received, payload should be nil
     func testDataStoreConfiguredDispatchesHubEvents() throws {
 
+        let networkStatusReceived = expectation(description: "networkStatus received")
         let subscriptionsEstablishedReceived = expectation(description: "subscriptionsEstablished received")
         let syncQueriesStartedReceived = expectation(description: "syncQueriesStarted received")
         let outboxStatusReceived = expectation(description: "outboxStatus received")
@@ -38,7 +40,16 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
         modelSyncedReceived.assertForOverFulfill = false
         let syncQueriesReadyReceived = expectation(description: "syncQueriesReady received")
 
-        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
+        let hubListener = Amplify.Hub.publisher(for: .dataStore).sink { payload in
+            if payload.eventName == HubPayload.EventName.DataStore.networkStatus {
+                guard let networkStatusEvent = payload.data as? NetworkStatusEvent else {
+                    XCTFail("Failed to cast payload data as NetworkStatusEvent")
+                    return
+                }
+                XCTAssertEqual(networkStatusEvent.active, true)
+                networkStatusReceived.fulfill()
+            }
+
             if payload.eventName == HubPayload.EventName.DataStore.subscriptionsEstablished {
                 XCTAssertNil(payload.data)
                 subscriptionsEstablishedReceived.fulfill()
@@ -78,13 +89,10 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
 
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
-            XCTFail("Listener not registered for hub")
-            return
-        }
+        startAmplify()
 
         waitForExpectations(timeout: networkTimeout, handler: nil)
-        Amplify.Hub.removeListener(hubListener)
+        hubListener.cancel()
     }
 
     /// - Given:
@@ -104,7 +112,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
         let outboxMutationEnqueuedReceived = expectation(description: "outboxMutationEnqueued received")
         let outboxMutationProcessedReceived = expectation(description: "outboxMutationProcessed received")
 
-        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
+        let hubListener = Amplify.Hub.publisher(for: .dataStore).sink { payload in
             if payload.eventName == HubPayload.EventName.DataStore.outboxMutationEnqueued {
                 guard let outboxMutationEnqueuedEvent = payload.data as? OutboxMutationEvent else {
                     XCTFail("Failed to cast payload data as OutboxMutationEvent")
@@ -131,16 +139,12 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
                 outboxMutationProcessedReceived.fulfill()
             }
         }
-
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
-            XCTFail("Listener not registered for hub")
-            return
-        }
-
+        
+        startAmplify()
         Amplify.DataStore.save(post) { _ in }
 
         waitForExpectations(timeout: networkTimeout, handler: nil)
-        Amplify.Hub.removeListener(hubListener)
+        hubListener.cancel()
     }
 
 }
