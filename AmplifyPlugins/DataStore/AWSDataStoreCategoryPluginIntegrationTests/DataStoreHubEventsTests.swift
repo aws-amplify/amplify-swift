@@ -36,9 +36,6 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
         let subscriptionsEstablishedReceived = expectation(description: "subscriptionsEstablished received")
         let syncQueriesStartedReceived = expectation(description: "syncQueriesStarted received")
         let outboxStatusReceived = expectation(description: "outboxStatus received")
-        let modelSyncedReceived = expectation(description: "modelSynced received")
-        modelSyncedReceived.assertForOverFulfill = false
-        let syncQueriesReadyReceived = expectation(description: "syncQueriesReady received")
 
         let hubListener = Amplify.Hub.publisher(for: .dataStore).sink { payload in
             if payload.eventName == HubPayload.EventName.DataStore.networkStatus {
@@ -72,21 +69,6 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
                 XCTAssertTrue(outboxStatusEvent.isEmpty)
                 outboxStatusReceived.fulfill()
             }
-
-            if payload.eventName == HubPayload.EventName.DataStore.modelSynced {
-                guard let modelSyncedEvent = payload.data as? ModelSyncedEvent else {
-                    XCTFail("Failed to cast payload data as ModelSyncedEvent")
-                    return
-                }
-                XCTAssertNotEqual(modelSyncedEvent.modelName, "")
-                XCTAssertNotEqual(modelSyncedEvent.isFullSync, modelSyncedEvent.isDeltaSync)
-                modelSyncedReceived.fulfill()
-            }
-
-            if payload.eventName == HubPayload.EventName.DataStore.syncQueriesReady {
-                syncQueriesReadyReceived.fulfill()
-            }
-
         }
 
         startAmplify()
@@ -139,7 +121,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
                 outboxMutationProcessedReceived.fulfill()
             }
         }
-        
+
         startAmplify()
         Amplify.DataStore.save(post) { _ in }
 
