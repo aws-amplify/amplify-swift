@@ -97,12 +97,12 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: @escaping DataStoreCallback<M>) {
-         save(model, modelSchema: model.schema, where: condition, completion: completion)
+         save(model, modelSchema: model.schema, condition: condition, completion: completion)
      }
 
     func save<M: Model>(_ model: M,
                         modelSchema: ModelSchema,
-                        where condition: QueryPredicate? = nil,
+                        condition: QueryPredicate? = nil,
                         completion: DataStoreCallback<M>) {
         do {
             let modelType = type(of: model)
@@ -159,10 +159,11 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           predicate: QueryPredicate,
                           completion: (DataStoreResult<[M]>) -> Void) {
         do {
-            let statement = DeleteStatement(modelSchema: modelType.schema, predicate: predicate)
+            let statement = DeleteStatement(modelSchema: modelSchema, predicate: predicate)
             _ = try connection.prepare(statement.stringValue).run(statement.variables)
             completion(.success([]))
         } catch {
@@ -171,9 +172,10 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           withId id: Model.Identifier,
                           completion: (DataStoreResult<M?>) -> Void) {
-        delete(untypedModelType: modelType, withId: id) { result in
+        delete(untypedModelType: modelType, modelSchema: modelSchema, withId: id) { result in
             switch result {
             case .success:
                 completion(.success(nil))
@@ -184,10 +186,11 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func delete(untypedModelType modelType: Model.Type,
+                modelSchema: ModelSchema,
                 withId id: Model.Identifier,
                 completion: DataStoreCallback<Void>) {
         do {
-            let statement = DeleteStatement(modelSchema: modelType.schema, withId: id)
+            let statement = DeleteStatement(modelSchema: modelSchema, withId: id)
             _ = try connection.prepare(statement.stringValue).run(statement.variables)
             completion(.emptyResult)
         } catch {

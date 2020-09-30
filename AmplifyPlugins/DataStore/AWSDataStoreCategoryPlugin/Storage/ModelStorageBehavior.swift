@@ -12,7 +12,7 @@ protocol ModelStorageBehavior {
 
     func save<M: Model>(_ model: M,
                         modelSchema: ModelSchema,
-                        where condition: QueryPredicate?,
+                        condition: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>)
 
     func save<M: Model>(_ model: M,
@@ -20,10 +20,12 @@ protocol ModelStorageBehavior {
                         completion: @escaping DataStoreCallback<M>)
 
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           withId id: Model.Identifier,
                           completion: @escaping DataStoreCallback<M?>)
 
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           predicate: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>)
 

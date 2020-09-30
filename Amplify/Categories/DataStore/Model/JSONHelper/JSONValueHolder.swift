@@ -18,7 +18,7 @@ import Foundation
 ///             let values: [String: Any]
 ///
 ///             public func internalValue(for key: String) -> Any? {
-///                 return values[key] 
+///                 return values[key]
 ///             }
 ///          }
 public protocol JSONValueHolder {
