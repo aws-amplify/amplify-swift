@@ -15,21 +15,19 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
     func save(untypedModel: Model, completion: @escaping DataStoreCallback<Model>)
 
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           withId id: Model.Identifier,
                           completion: @escaping DataStoreCallback<M?>)
-
-    func delete(untypedModelType modelType: Model.Type,
-                withId id: Model.Identifier,
-                completion: DataStoreCallback<Void>)
-
-    func delete<M: Model>(_ modelType: M.Type,
-                          predicate: QueryPredicate,
-                          completion: @escaping DataStoreCallback<[M]>)
 
     func delete(untypedModelType modelType: Model.Type,
                 modelSchema: ModelSchema,
                 withId id: Model.Identifier,
                 completion: DataStoreCallback<Void>)
+
+    func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
+                          predicate: QueryPredicate,
+                          completion: @escaping DataStoreCallback<[M]>)
 
     func query(untypedModel modelType: Model.Type,
                predicate: QueryPredicate?,
