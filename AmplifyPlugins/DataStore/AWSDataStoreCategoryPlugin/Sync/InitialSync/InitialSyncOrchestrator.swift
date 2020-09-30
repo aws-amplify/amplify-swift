@@ -9,7 +9,9 @@ import Amplify
 import AWSPluginsCore
 import Combine
 
+@available(iOS 13.0, *)
 protocol InitialSyncOrchestrator {
+    var publisher: AnyPublisher<InitialSyncOperationEvent, DataStoreError> { get }
     func sync(completion: @escaping (Result<Void, DataStoreError>) -> Void)
 }
 

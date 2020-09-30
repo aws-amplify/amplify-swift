@@ -260,8 +260,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         // Hold a reference so we can `reset` while initial sync is in process
         self.initialSyncOrchestrator = initialSyncOrchestrator
 
-        syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator
-                                                as? AWSInitialSyncOrchestrator,
+        syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
                                             reconciliationQueue: reconciliationQueue ?? nil)
 
         // TODO: This should be an AsynchronousOperation, not a semaphore-waited block

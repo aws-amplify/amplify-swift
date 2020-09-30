@@ -14,7 +14,7 @@ final class SyncEventEmitter {
     var modelSyncedEventEmitters: [String: ModelSyncedEventEmitter]
     var initialSyncCompleted: AnyCancellable?
 
-    init(initialSyncOrchestrator: AWSInitialSyncOrchestrator?,
+    init(initialSyncOrchestrator: InitialSyncOrchestrator?,
          reconciliationQueue: IncomingEventReconciliationQueue?) {
         self.modelSyncedEventEmitters = [String: ModelSyncedEventEmitter]()
 

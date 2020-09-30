@@ -106,9 +106,9 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     private func onReceiveValue(receiveValue: ModelReconciliationQueueEvent) {
         switch receiveValue {
         case .mutationEvent(let event):
-            eventReconciliationQueueTopic.send(.mutationEvent(event))
-        case .mutationEventDropped(let name):
-            eventReconciliationQueueTopic.send(.mutationEventDropped(name))
+            eventReconciliationQueueTopic.send(.mutationEventApplied(event))
+        case .mutationEventDropped(let modelName):
+            eventReconciliationQueueTopic.send(.mutationEventDropped(modelName: modelName))
         case .connected(let modelName):
             connectionStatusSerialQueue.async {
                 self.reconciliationQueueConnectionStatus[modelName] = true

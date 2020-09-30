@@ -13,8 +13,8 @@ enum IncomingEventReconciliationQueueEvent {
     case initialized
     case started
     case paused
-    case mutationEvent(MutationEvent)
-    case mutationEventDropped(String)
+    case mutationEventApplied(MutationEvent)
+    case mutationEventDropped(modelName: String)
 }
 
 /// A queue that reconciles all incoming events for a model: responses from locally-sourced mutations, and subscription

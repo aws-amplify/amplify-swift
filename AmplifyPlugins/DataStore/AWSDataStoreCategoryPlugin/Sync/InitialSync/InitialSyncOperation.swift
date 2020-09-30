@@ -59,7 +59,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
         log.info("Beginning sync for \(modelType.modelName)")
         let lastSyncTime = getLastSyncTime()
-        initialSyncOperationTopic.send(.isFullSync(modelType, lastSyncTime == nil))
+        initialSyncOperationTopic.send(.hasLastSyncTime(modelType: modelType, hasLastSyncTime: lastSyncTime == nil))
         query(lastSyncTime: lastSyncTime)
     }
 
@@ -174,7 +174,7 @@ final class InitialSyncOperation: AsynchronousOperation {
                 self.query(lastSyncTime: lastSyncTime, nextToken: nextToken)
             }
         } else {
-            initialSyncOperationTopic.send(.finishedOffering(modelType))
+            initialSyncOperationTopic.send(.finishedOffering(modelType: modelType))
             updateModelSyncMetadata(lastSyncTime: syncQueryResult.startedAt)
         }
     }
@@ -222,7 +222,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 extension InitialSyncOperation: DefaultLogger { }
 
 enum InitialSyncOperationEvent {
-    case isFullSync(Model.Type, Bool)
+    case hasLastSyncTime(modelType: Model.Type, hasLastSyncTime: Bool)
     case mutationSync(MutationSync<AnyModel>)
-    case finishedOffering(Model.Type)
+    case finishedOffering(modelType: Model.Type)
 }

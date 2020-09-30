@@ -175,7 +175,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         case .applyRemoteModel(let remoteModel):
             apply(remoteModel: remoteModel)
         case .dropRemoteModel(let modelName):
-            stateMachine.notify(action: .dropped(modelName))
+            stateMachine.notify(action: .dropped(modelName: modelName))
         case .error(let dataStoreError):
             stateMachine.notify(action: .errored(dataStoreError))
         }

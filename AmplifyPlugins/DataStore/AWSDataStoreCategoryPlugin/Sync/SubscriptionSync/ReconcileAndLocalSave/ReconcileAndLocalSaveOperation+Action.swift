@@ -26,7 +26,7 @@ extension ReconcileAndLocalSaveOperation {
         case applied(AppliedModel, Bool)
 
         /// Operation dropped the remote model per the reconciled disposition.
-        case dropped(String)
+        case dropped(modelName: String)
 
         case notifyingDropped
 
