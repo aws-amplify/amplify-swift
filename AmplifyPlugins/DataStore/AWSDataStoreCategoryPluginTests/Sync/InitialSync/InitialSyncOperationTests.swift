@@ -44,7 +44,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -79,7 +79,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -113,7 +113,7 @@ class InitialSyncOperationTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
         let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -155,7 +155,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -204,7 +204,7 @@ class InitialSyncOperationTests: XCTestCase {
         }
 
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -239,7 +239,7 @@ class InitialSyncOperationTests: XCTestCase {
         let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
         let reconciliationQueue = MockReconciliationQueue()
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -251,7 +251,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         wait(for: [syncCallbackReceived], timeout: 1.0)
 
-        guard let syncMetadata = try storageAdapter.queryModelSyncMetadata(for: MockSynced.self) else {
+        guard let syncMetadata = try storageAdapter.queryModelSyncMetadata(for: MockSynced.schema) else {
             XCTFail("syncMetadata is nil")
             return
         }
@@ -298,7 +298,7 @@ class InitialSyncOperationTests: XCTestCase {
             XCTAssertNil(mutationEventOptional)
         })
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -359,7 +359,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -407,7 +407,7 @@ class InitialSyncOperationTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
         let configuration  = DataStoreConfiguration.custom(syncInterval: 60)
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -443,7 +443,7 @@ class InitialSyncOperationTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
         let configuration  = DataStoreConfiguration.custom(syncPageSize: 10)
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
