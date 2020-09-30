@@ -79,8 +79,10 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             description: "it should save and select a Post from the database")
 
         // insert a post
-        let post = ["title": "title",
-                    "content": "content information"] as [String: JSONValue]
+        let title = "a title"
+        let content = "some content"
+        let post = ["title": .string(title),
+                    "content": .string(content)] as [String: JSONValue]
         let model = DynamicModel(values: post)
         storageAdapter.save(model, modelSchema: ModelRegistry.modelSchema(from: "Post")!) { saveResult in
             switch saveResult {
@@ -92,7 +94,9 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                         case .success(let posts):
                             XCTAssert(posts.count == 1)
                             if let savedPost = posts.first {
-                                XCTAssert(model.id == savedPost.id)
+                                XCTAssertEqual(model.id, savedPost.id)
+                                XCTAssertEqual(model.jsonValue(for: "title") as? String, title)
+                                XCTAssertEqual(model.jsonValue(for: "content") as? String, content)
                             }
                             expectation.fulfill()
                         case .failure(let error):
@@ -106,5 +110,54 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             }
         }
         wait(for: [expectation], timeout: 5)
+    }
+
+    /// - Given: a list a `Post` instance
+    /// - When:
+    ///   - the `save(post)` is called
+    /// - Then:
+    ///   - call `delete(Post, id)` and check if `query(Post)` is empty
+    ///   - check if `storageAdapter.exists(Post, id)` returns `false`
+    func testInsertPostAndThenDeleteIt() {
+        let saveExpectation = expectation(description: "Saved")
+        let deleteExpectation = expectation(description: "Deleted")
+        let queryExpectation = expectation(description: "Queried")
+
+        // insert a post
+        let title = "a title"
+        let content = "some content"
+        let post = ["title": .string(title),
+                    "content": .string(content)] as [String: JSONValue]
+        let model = DynamicModel(values: post)
+        let schema = ModelRegistry.modelSchema(from: "Post")!
+        storageAdapter.save(model, modelSchema: schema) { insertResult in
+            switch insertResult {
+            case .success:
+                saveExpectation.fulfill()
+                self.storageAdapter.delete(DynamicModel.self, modelSchema: schema, withId: model.id) {
+                    switch $0 {
+                    case .success:
+                        deleteExpectation.fulfill()
+                        self.checkIfPostIsDeleted(id: model.id)
+                        queryExpectation.fulfill()
+                    case .failure(let error):
+                        XCTFail(error.errorDescription)
+                    }
+                }
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            }
+        }
+
+        wait(for: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
+    }
+
+    func checkIfPostIsDeleted(id: String) {
+        do {
+            let exists = try storageAdapter.exists(ModelRegistry.modelSchema(from: "Post")!, withId: id)
+            XCTAssertFalse(exists, "ID \(id) should not exist")
+        } catch {
+            XCTFail(String(describing: error))
+        }
     }
 }
