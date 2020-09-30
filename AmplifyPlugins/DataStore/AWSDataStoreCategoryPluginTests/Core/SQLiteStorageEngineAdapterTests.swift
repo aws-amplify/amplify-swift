@@ -274,7 +274,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             switch insertResult {
             case .success:
                 saveExpectation.fulfill()
-                self.storageAdapter.delete(Post.self, modelSchema: Post.schema, withId: post.id) {
+                self.storageAdapter.delete(Post.self, withId: post.id) {
                     switch $0 {
                     case .success:
                         deleteExpectation.fulfill()
@@ -306,7 +306,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                 saveExpectation.fulfill()
                 let postKeys = Post.keys
                 let predicate = postKeys.createdAt.gt(dateTestStart)
-                self.storageAdapter.delete(Post.self, modelSchema: Post.schema, predicate: predicate) { result in
+                self.storageAdapter.delete(Post.self, predicate: predicate) { result in
                     switch result {
                     case .success:
                         deleteExpectation.fulfill()
@@ -345,7 +345,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                     postsAdded.append(post.id)
                     if counter == maxCount - 1 {
                         saveExpectation.fulfill()
-                        self.storageAdapter.delete(Post.self, modelSchema: Post.schema, predicate: QueryPredicateConstant.all) { result in
+                        self.storageAdapter.delete(Post.self, predicate: QueryPredicateConstant.all) { result in
                             switch result {
                             case .success:
                                 deleteExpectation.fulfill()
