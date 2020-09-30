@@ -11,7 +11,7 @@ public extension ModelRegistry {
     ///   by host applications. The behavior of this may change without warning.
     static var hasSyncableModels: Bool {
         if #available(iOS 13.0, *) {
-            return models.contains { !$0.schema.isSystem }
+            return modelSchemas.contains { !$0.isSystem }
         } else {
             return false
         }
