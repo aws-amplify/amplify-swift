@@ -228,8 +228,8 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, "111")))
         let document = documentBuilder.build()
         let documentStringValue = """
-        subscription OnUpdateArticle {
-          onUpdateArticle {
+        subscription OnUpdateArticle($owner: String!) {
+          onUpdateArticle(owner: $owner) {
             id
             authorNotes
             content
@@ -249,7 +249,11 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
-        XCTAssertNil(request.variables)
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertEqual(variables["owner"] as? String, "111")
     }
 
     func testOnDeleteSubscriptionGraphQLRequest() throws {
@@ -260,8 +264,8 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, "111")))
         let document = documentBuilder.build()
         let documentStringValue = """
-        subscription OnDeleteArticle {
-          onDeleteArticle {
+        subscription OnDeleteArticle($owner: String!) {
+          onDeleteArticle(owner: $owner) {
             id
             authorNotes
             content
@@ -281,7 +285,11 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
-        XCTAssertNil(request.variables)
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertEqual(variables["owner"] as? String, "111")
     }
 
     func testSyncQueryGraphQLRequest() throws {

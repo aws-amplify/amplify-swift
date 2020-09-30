@@ -60,12 +60,11 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         let ownerField = authRule.getOwnerFieldOrDefault()
         selectionSet = appendOwnerFieldToSelectionSetIfNeeded(selectionSet: selectionSet, ownerField: ownerField)
 
-        guard case let .subscription(subscriptionType, ownerId) = input else {
+        guard case let .subscription(_, ownerId) = input else {
             return document.copy(selectionSet: selectionSet)
         }
 
-        let operations = authRule.getModelOperationsOrDefault()
-        if isOwnerInputRequiredOnSubscription(subscriptionType, operations: operations) {
+        if isOwnerInputRequiredOnSubscription(authRule) {
             var inputs = document.inputs
             inputs[ownerField] = GraphQLDocumentInput(type: "String!", value: .scalar(ownerId))
             return document.copy(inputs: inputs, selectionSet: selectionSet)
@@ -73,24 +72,8 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         return document.copy(selectionSet: selectionSet)
     }
 
-    private func isOwnerInputRequiredOnSubscription(_ subscriptionType: GraphQLSubscriptionType,
-                                                    operations: [ModelOperation]) -> Bool {
-        var isOwnerInputRequired = false
-        switch subscriptionType {
-        case .onCreate:
-            if operations.contains(.create) {
-                isOwnerInputRequired = true
-            }
-        case .onUpdate:
-            if operations.contains(.update) {
-                isOwnerInputRequired = true
-            }
-        case .onDelete:
-            if operations.contains(.delete) {
-                isOwnerInputRequired = true
-            }
-        }
-        return isOwnerInputRequired
+    private func isOwnerInputRequiredOnSubscription(_ authRule: AuthRule) -> Bool {
+        return authRule.allow == .owner && authRule.getModelOperationsOrDefault().contains(.read)
     }
 
     /// First finds the first `model` SelectionSet. Then, only append it when the `ownerField` does not exist.
