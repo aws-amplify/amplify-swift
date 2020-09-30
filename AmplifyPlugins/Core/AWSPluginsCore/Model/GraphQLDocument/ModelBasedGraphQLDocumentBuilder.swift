@@ -42,7 +42,7 @@ public struct ModelBasedGraphQLDocumentBuilder {
     public mutating func build() -> SingleDirectiveGraphQLDocument {
 
         let decoratedDocument = decorators.reduce(document) { doc, decorator in
-            decorator.decorate(doc, modelType: self.modelType)
+            decorator.decorate(doc, modelSchema: self.modelType.schema)
         }
 
         return decoratedDocument
