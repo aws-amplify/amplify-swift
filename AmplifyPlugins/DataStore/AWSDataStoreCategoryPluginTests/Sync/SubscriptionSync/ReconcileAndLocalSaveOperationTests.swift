@@ -231,7 +231,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let expect = expectation(description: "action .execute dropRemoteModel")
         let disposition = RemoteSyncReconciler.Disposition.dropRemoteModel
         stateMachine.pushExpectActionCriteria { action in
-            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.dropped("Post"))
+            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.dropped(modelName: "Post"))
             expect.fulfill()
         }
 
