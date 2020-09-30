@@ -1636,13 +1636,6 @@
 			path = Decorator;
 			sourceTree = "<group>";
 		};
-		213481D7242AFA58001966DE /* Support */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Support;
-			sourceTree = "<group>";
-		};
 		21409C562384C57D000A53C9 /* GraphQL */ = {
 			isa = PBXGroup;
 			children = (
@@ -3163,7 +3156,6 @@
 				B99EF4B423DB020C00D821BC /* TemporalComparableTests.swift */,
 				B9AF547D23F37DF20059E6C4 /* TemporalOperationTests.swift */,
 				B91A87A323D64B0F0049A12F /* TemporalTests.swift */,
-				213481D7242AFA58001966DE /* Support */,
 				B4944D51251C141200BF0BFE /* JSONValueHolderTest.swift */,
 			);
 			path = DataStore;

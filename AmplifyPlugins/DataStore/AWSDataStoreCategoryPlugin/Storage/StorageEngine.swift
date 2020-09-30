@@ -133,7 +133,7 @@ final class StorageEngine: StorageEngineBehavior {
 
     public func save<M: Model>(_ model: M,
                                modelSchema: ModelSchema,
-                               where condition: QueryPredicate? = nil,
+                               condition: QueryPredicate? = nil,
                                completion: @escaping DataStoreCallback<M>) {
 
         // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
@@ -181,18 +181,19 @@ final class StorageEngine: StorageEngineBehavior {
 
         storageAdapter.save(model,
                             modelSchema: modelSchema,
-                            where: condition,
+                            condition: condition,
                             completion: wrappedCompletion)
     }
 
     func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: @escaping DataStoreCallback<M>) {
-        save(model, modelSchema: model.schema, where: condition, completion: completion)
+        save(model, modelSchema: model.schema, condition: condition, completion: completion)
     }
 
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           withId id: Model.Identifier,
                           completion: @escaping (DataStoreResult<M?>) -> Void) {
-        let transactionResult = queryAndDeleteTransaction(modelType, predicate: field("id").eq(id))
+        let transactionResult = queryAndDeleteTransaction(modelType, modelSchema: modelSchema, predicate: field("id").eq(id))
 
         let deletedModel: M
         switch transactionResult {
@@ -243,9 +244,10 @@ final class StorageEngine: StorageEngineBehavior {
     }
 
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           predicate: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>) {
-        let transactionResult = queryAndDeleteTransaction(modelType, predicate: predicate)
+        let transactionResult = queryAndDeleteTransaction(modelType, modelSchema: modelSchema, predicate: predicate)
 
         guard modelType.schema.isSyncable, let syncEngine = self.syncEngine else {
             if !modelType.schema.isSystem {
@@ -287,6 +289,7 @@ final class StorageEngine: StorageEngineBehavior {
     }
 
     private func queryAndDeleteTransaction<M: Model>(_ modelType: M.Type,
+                                                     modelSchema: ModelSchema,
                                                      predicate: QueryPredicate) -> DataStoreResult<[M]> {
         var queriedResult: DataStoreResult<[M]>?
         var deletedResult: DataStoreResult<[M]>?
@@ -297,13 +300,17 @@ final class StorageEngine: StorageEngineBehavior {
                 let deleteCompletionWrapper: DataStoreCallback<[M]> = { deleteResult in
                     deletedResult = deleteResult
                 }
-                self.storageAdapter.delete(modelType, predicate: predicate, completion: deleteCompletionWrapper)
+                self.storageAdapter.delete(modelType,
+                                           modelSchema: modelSchema,
+                                           predicate: predicate,
+                                           completion: deleteCompletionWrapper)
             }
         }
 
         do {
             try storageAdapter.transaction {
                 storageAdapter.query(modelType,
+                                     modelSchema: modelSchema,
                                      predicate: predicate,
                                      sort: nil,
                                      paginationInput: nil,
@@ -358,12 +365,12 @@ final class StorageEngine: StorageEngineBehavior {
                          sort: QuerySortInput? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          completion: DataStoreCallback<[M]>) {
-        return storageAdapter.query(modelType,
-                                    modelSchema: modelType.schema,
-                                    predicate: predicate,
-                                    sort: sort,
-                                    paginationInput: paginationInput,
-                                    completion: completion)
+        query(modelType,
+              modelSchema: modelType.schema,
+              predicate: predicate,
+              sort: sort,
+              paginationInput: paginationInput,
+              completion: completion)
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {
