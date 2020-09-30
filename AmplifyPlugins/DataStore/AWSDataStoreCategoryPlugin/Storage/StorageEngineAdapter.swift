@@ -16,7 +16,7 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: Model.Identifier,
-                          completion: DataStoreCallback<M?>)
+                          completion: @escaping DataStoreCallback<M?>)
 
     func delete(untypedModelType modelType: Model.Type,
                 withId id: Model.Identifier,
@@ -26,16 +26,14 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
                           predicate: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>)
 
+    func delete(untypedModelType modelType: Model.Type,
+                modelSchema: ModelSchema,
+                withId id: Model.Identifier,
+                completion: DataStoreCallback<Void>)
+
     func query(untypedModel modelType: Model.Type,
                predicate: QueryPredicate?,
                completion: DataStoreCallback<[Model]>)
-
-    func query<M: Model>(_ modelType: M.Type,
-                         modelSchema: ModelSchema,
-                         predicate: QueryPredicate?,
-                         sort: QuerySortInput?,
-                         paginationInput: QueryPaginationInput?,
-                         completion: DataStoreCallback<[M]>)
 
     // MARK: - Synchronous APIs
 
@@ -54,4 +52,25 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
     func transaction(_ basicClosure: BasicThrowableClosure) throws
 
     func clear(completion: @escaping DataStoreCallback<Void>)
+}
+
+extension StorageEngineAdapter {
+
+    func delete<M: Model>(_ modelType: M.Type,
+                          predicate: QueryPredicate,
+                          completion: @escaping DataStoreCallback<[M]>) {
+        delete(modelType, modelSchema: modelType.schema, predicate: predicate, completion: completion)
+    }
+
+    func delete<M: Model>(_ modelType: M.Type,
+                          withId id: Model.Identifier,
+                          completion: @escaping DataStoreCallback<M?>) {
+        delete(modelType, modelSchema: modelType.schema, withId: id, completion: completion)
+    }
+
+    func delete(untypedModelType modelType: Model.Type,
+                withId id: Model.Identifier,
+                completion: DataStoreCallback<Void>) {
+        delete(untypedModelType: modelType, modelSchema: modelType.schema, withId: id, completion: completion)
+    }
 }

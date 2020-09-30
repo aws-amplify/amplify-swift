@@ -63,18 +63,21 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     // MARK: - StorageEngineAdapter
 
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           withId id: Model.Identifier,
                           completion: DataStoreCallback<M?>) {
         XCTFail("Not expected to execute")
     }
 
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           predicate: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>) {
         XCTFail("Not expected to execute")
     }
 
     func delete(untypedModelType modelType: Model.Type,
+                modelSchema: ModelSchema,
                 withId id: String,
                 completion: (Result<Void, DataStoreError>) -> Void) {
         if let responder = responders[.deleteUntypedModel] as? DeleteUntypedModelCompletionResponder {
@@ -145,7 +148,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func save<M: Model>(_ model: M,
                         modelSchema: ModelSchema,
-                        where: QueryPredicate?,
+                        condition where: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>) {
         if let responder = responders[.saveModelCompletion] as? SaveModelCompletionResponder<M> {
             responder.callback((model, completion))
@@ -224,18 +227,20 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
 
     func save<M: Model>(_ model: M,
                         modelSchema: ModelSchema,
-                        where: QueryPredicate?,
+                        condition where: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>) {
         XCTFail("Not expected to execute")
     }
 
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           withId id: Model.Identifier,
                           completion: DataStoreCallback<M?>) {
         completion(.success(nil))
     }
 
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           predicate: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>) {
         XCTFail("Not expected to execute")
