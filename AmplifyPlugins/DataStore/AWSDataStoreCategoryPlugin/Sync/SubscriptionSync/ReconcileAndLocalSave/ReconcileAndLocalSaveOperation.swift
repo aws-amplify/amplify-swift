@@ -219,7 +219,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             return
         }
 
-        storageAdapter.delete(untypedModelType: modelType, withId: remoteModel.model.id) { response in
+        storageAdapter.delete(untypedModelType: modelType, modelSchema: modelType.schema, withId: remoteModel.model.id) { response in
             switch response {
             case .failure(let dataStoreError):
                 let errorAction = Action.errored(dataStoreError)
