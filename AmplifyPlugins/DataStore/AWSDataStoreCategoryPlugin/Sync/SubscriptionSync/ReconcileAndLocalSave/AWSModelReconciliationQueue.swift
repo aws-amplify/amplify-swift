@@ -64,7 +64,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     private let modelName: String
 
     private var incomingEventsSink: AnyCancellable?
-    private var reconcileAndLocalSaveOperationSinks: Set<AnyCancellable?>
+    private var reconcileAndLocalSaveOperationSinks: AtomicValue<Set<AnyCancellable?>>
 
     private let modelReconciliationQueueSubject: PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>
     var publisher: AnyPublisher<ModelReconciliationQueueEvent, DataStoreError> {
@@ -98,7 +98,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         let resolvedIncomingSubscriptionEvents = incomingSubscriptionEvents ??
             AWSIncomingSubscriptionEventPublisher(modelType: modelType, api: api, auth: auth)
         self.incomingSubscriptionEvents = resolvedIncomingSubscriptionEvents
-        self.reconcileAndLocalSaveOperationSinks = Set<AnyCancellable?>()
+        self.reconcileAndLocalSaveOperationSinks = AtomicValue(initialValue: Set<AnyCancellable?>())
         self.incomingEventsSink = resolvedIncomingSubscriptionEvents
             .publisher
             .sink(receiveCompletion: { [weak self] completion in
@@ -136,14 +136,14 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         var reconcileAndLocalSaveOperationSink: AnyCancellable?
 
         reconcileAndLocalSaveOperationSink = reconcileOp.publisher.sink(receiveCompletion: { completion in
-            self.reconcileAndLocalSaveOperationSinks.remove(reconcileAndLocalSaveOperationSink)
+            self.reconcileAndLocalSaveOperationSinks.with { $0.remove(reconcileAndLocalSaveOperationSink) }
             if case .failure = completion {
                 self.modelReconciliationQueueSubject.send(completion: completion)
             }
         }, receiveValue: { mutationEvent in
             self.modelReconciliationQueueSubject.send(.mutationEvent(mutationEvent))
         })
-        reconcileAndLocalSaveOperationSinks.insert(reconcileAndLocalSaveOperationSink)
+        reconcileAndLocalSaveOperationSinks.with { $0.insert(reconcileAndLocalSaveOperationSink) }
         reconcileAndSaveQueue.addOperation(reconcileOp)
     }
 
