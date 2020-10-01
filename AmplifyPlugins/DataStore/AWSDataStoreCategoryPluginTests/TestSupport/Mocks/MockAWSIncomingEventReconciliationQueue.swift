@@ -24,7 +24,7 @@ class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue 
         return incomingEventSubject.eraseToAnyPublisher()
     }
 
-    static var lastInstance: MockAWSIncomingEventReconciliationQueue?
+    static var lastInstance = AtomicValue<MockAWSIncomingEventReconciliationQueue?>(initialValue: nil)
     init(modelSchemas: [ModelSchema],
          api: APICategoryGraphQLBehavior,
          storageAdapter: StorageEngineAdapter,
