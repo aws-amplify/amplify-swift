@@ -62,8 +62,8 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
         log.info("Beginning initial sync")
 
-        let syncableModels = ModelRegistry.models.filter { $0.schema.isSyncable }
-        enqueueSyncableModels(syncableModels)
+        let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
+        enqueueSyncableModels(syncableModelSchemas)
 
         // This operation is intentionally not cancel-aware; we always want resolveCompletion to execute
         // as the last item
@@ -71,31 +71,31 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
             self.resolveCompletion()
         }
 
-        let modelNames = syncableModels.map { $0.modelName }
+        let modelNames = syncableModelSchemas.map { $0.name }
         dispatchSyncQueriesStarted(for: modelNames)
         syncOperationQueue.isSuspended = false
     }
 
-    private func enqueueSyncableModels(_ syncableModels: [Model.Type]) {
-        let sortedModels = syncableModels.sortByDependencyOrder()
-        for model in sortedModels {
-            enqueueSyncOperation(for: model)
+    private func enqueueSyncableModels(_ syncableModelSchemas: [ModelSchema]) {
+        let sortedModelSchemas = syncableModelSchemas.sortByDependencyOrder()
+        for modelSchema in sortedModelSchemas {
+            enqueueSyncOperation(for: modelSchema)
         }
     }
 
     /// Enqueues sync operations for models and downstream dependencies
-    private func enqueueSyncOperation(for modelType: Model.Type) {
+    private func enqueueSyncOperation(for modelSchema: ModelSchema) {
         let syncOperationCompletion: SyncOperationResultHandler = { result in
             if case .failure(let dataStoreError) = result {
                 let syncError = DataStoreError.sync(
-                    "An error occurred syncing \(modelType.modelName)",
+                    "An error occurred syncing \(modelSchema.name)",
                     "",
                     dataStoreError)
                 self.syncErrors.append(syncError)
             }
         }
 
-        let initialSyncForModel = InitialSyncOperation(modelType: modelType,
+        let initialSyncForModel = InitialSyncOperation(modelSchema: modelSchema,
                                                        api: api,
                                                        reconciliationQueue: reconciliationQueue,
                                                        storageAdapter: storageAdapter,
