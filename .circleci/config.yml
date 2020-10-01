@@ -53,6 +53,12 @@ commands:
           name: Check bundle
           command: bundle check --path $BUNDLE_PATH || bundle install --path $BUNDLE_PATH
 
+  make_artifacts_directory:
+    steps:
+      - run:
+          name: Make artifacts directory
+          command: mkdir -p "artifacts"
+
   save_plugin_pods:
     parameters:
       prefix:
@@ -72,6 +78,11 @@ commands:
           keys:
             - v1-<< parameters.prefix >>-dependency-pods-{{ checksum "Podfile" }}
             - v1-<< parameters.prefix >>-dependency-pods
+
+  upload_artifacts:
+    steps:
+      - store_artifacts:
+          path: artifacts
 
 jobs:
   checkout_code:
@@ -108,14 +119,16 @@ jobs:
       - run: pod install
       - restore_gems
       - check_bundle
+      - make_artifacts_directory
       - run:
           name: Build amplify
-          command: xcodebuild build-for-testing -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}" | xcpretty
+          command: xcodebuild build-for-testing -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}" | tee "artifacts/build-Amplify.log" | xcpretty
       - run:
           name: Test amplify
-          command: xcodebuild test -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}" | xcpretty --simple --color --report junit
+          command: xcodebuild test -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}" | tee "artifacts/test-Amplify.log" | xcpretty --simple --color --report junit
       - store_test_results:
           path: build/reports
+      - upload_artifacts
 
   plugin_unit_test:
     <<: *defaults
@@ -138,14 +151,16 @@ jobs:
           prefix: << parameters.path >>
       - restore_gems
       - check_bundle
+      - make_artifacts_directory
       - run:
           name: Build << parameters.path >>
-          command: xcodebuild build-for-testing -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | xcpretty
+          command: xcodebuild build-for-testing -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | tee "artifacts/build-<< parameters.scheme >>.log" | xcpretty
       - run:
           name: Test << parameters.path >>
-          command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | xcpretty --simple --color --report junit
+          command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | tee "artifacts/test-<< parameters.scheme >>.log" | xcpretty --simple --color --report junit
       - store_test_results:
           path: build/reports
+      - upload_artifacts
 
   deploy:
     <<: *defaults
