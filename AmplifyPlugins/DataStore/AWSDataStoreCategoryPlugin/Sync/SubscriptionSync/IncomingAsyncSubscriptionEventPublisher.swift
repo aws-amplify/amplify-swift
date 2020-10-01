@@ -41,13 +41,13 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
 
     private let incomingSubscriptionEvents: PassthroughSubject<Event, DataStoreError>
 
-    init(modelType: Model.Type, api: APICategoryGraphQLBehavior, auth: AuthCategoryBehavior?) {
+    init(modelSchema: ModelSchema, api: APICategoryGraphQLBehavior, auth: AuthCategoryBehavior?) {
         self.onCreateConnected = false
         self.onUpdateConnected = false
         self.onDeleteConnected = false
         self.connectionStatusQueue = OperationQueue()
         connectionStatusQueue.name
-            = "com.amazonaws.Amplify.RemoteSyncEngine.\(modelType.modelName).IncomingAsyncSubscriptionEventPublisher"
+            = "com.amazonaws.Amplify.RemoteSyncEngine.\(modelSchema.name).IncomingAsyncSubscriptionEventPublisher"
         connectionStatusQueue.maxConcurrentOperationCount = 1
         connectionStatusQueue.isSuspended = false
 
@@ -57,7 +57,7 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
         let onCreateValueListener = onCreateValueListenerHandler(event:)
         self.onCreateValueListener = onCreateValueListener
         self.onCreateOperation = IncomingAsyncSubscriptionEventPublisher.apiSubscription(
-            for: modelType,
+            for: modelSchema,
             subscriptionType: .onCreate,
             api: api,
             auth: auth,
@@ -68,7 +68,7 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
         let onUpdateValueListener = onUpdateValueListenerHandler(event:)
         self.onUpdateValueListener = onUpdateValueListener
         self.onUpdateOperation = IncomingAsyncSubscriptionEventPublisher.apiSubscription(
-            for: modelType,
+            for: modelSchema,
             subscriptionType: .onUpdate,
             api: api,
             auth: auth,
@@ -79,7 +79,7 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
         let onDeleteValueListener = onDeleteValueListenerHandler(event:)
         self.onDeleteValueListener = onDeleteValueListener
         self.onDeleteOperation = IncomingAsyncSubscriptionEventPublisher.apiSubscription(
-            for: modelType,
+            for: modelSchema,
             subscriptionType: .onDelete,
             api: api,
             auth: auth,
@@ -147,7 +147,7 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
     }
 
     static func apiSubscription(
-        for modelType: Model.Type,
+        for modelSchema: ModelSchema,
         subscriptionType: GraphQLSubscriptionType,
         api: APICategoryGraphQLBehavior,
         auth: AuthCategoryBehavior?,
@@ -156,14 +156,14 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
     ) -> GraphQLSubscriptionOperation<Payload> {
 
         let request: GraphQLRequest<Payload>
-        if let auth = auth, modelType.schema.hasAuthenticationRules, let authUser = auth.getCurrentUser() {
+        if let auth = auth, modelSchema.hasAuthenticationRules, let authUser = auth.getCurrentUser() {
             // TODO: check model schema for identityClaim to figure out which is the ownerId field coming from
             // https://github.com/aws-amplify/amplify-ios/issues/485
-            request = GraphQLRequest<Payload>.subscription(to: modelType.schema,
+            request = GraphQLRequest<Payload>.subscription(to: modelSchema,
                                                            subscriptionType: subscriptionType,
                                                            authUser: authUser)
         } else {
-            request = GraphQLRequest<Payload>.subscription(to: modelType.schema, subscriptionType: subscriptionType)
+            request = GraphQLRequest<Payload>.subscription(to: modelSchema, subscriptionType: subscriptionType)
         }
 
         let operation = api.subscribe(request: request,
