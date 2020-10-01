@@ -33,7 +33,7 @@ class GraphQLRequestModelTests: XCTestCase {
     ///     - the `variables` is non-nil
     func testCreateMutationGraphQLRequest() {
         let post = Post(title: "title", content: "content", createdAt: .now())
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: post))
         let document = documentBuilder.build()
@@ -47,7 +47,7 @@ class GraphQLRequestModelTests: XCTestCase {
 
     func testUpdateMutationGraphQLRequest() {
         let post = Post(title: "title", content: "content", createdAt: .now())
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: post))
         let document = documentBuilder.build()
@@ -61,7 +61,7 @@ class GraphQLRequestModelTests: XCTestCase {
 
     func testDeleteMutationGraphQLRequest() {
         let post = Post(title: "title", content: "content", createdAt: .now())
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelDecorator(model: post))
         let document = documentBuilder.build()
@@ -74,7 +74,7 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testQueryByIdGraphQLRequest() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
         let document = documentBuilder.build()
@@ -90,7 +90,7 @@ class GraphQLRequestModelTests: XCTestCase {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
 
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
         documentBuilder.add(decorator: PaginationDecorator())
@@ -104,7 +104,7 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testOnCreateSubscriptionGraphQLRequest() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         let document = documentBuilder.build()
 
@@ -116,7 +116,7 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testOnUpdateSubscriptionGraphQLRequest() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         let document = documentBuilder.build()
 
@@ -127,7 +127,7 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testOnDeleteSubscriptionGraphQLRequest() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         let document = documentBuilder.build()
 
