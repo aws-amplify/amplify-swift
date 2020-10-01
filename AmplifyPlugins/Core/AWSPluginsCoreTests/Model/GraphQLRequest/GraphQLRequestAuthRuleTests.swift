@@ -181,11 +181,11 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
 
     func testOnCreateSubscriptionGraphQLRequest() throws {
         let modelType = Article.self as Model.Type
-        let ownerId = "111"
+        let authUser = MockAWSAuthUser(username: "user1", userId: "123e4567-dead-beef-a456-426614174000")
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, ownerId)))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, authUser)))
         let document = documentBuilder.build()
         let documentStringValue = """
         subscription OnCreateArticle($owner: String!) {
@@ -204,7 +204,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         """
         let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType,
                                                                       subscriptionType: .onCreate,
-                                                                      ownerId: ownerId)
+                                                                      authUser: authUser)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
@@ -217,15 +217,16 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
             XCTFail("The document variables property doesn't contain a valid input")
             return
         }
-        XCTAssertEqual(input, ownerId)
+        XCTAssertEqual(input, "user1")
     }
 
     func testOnUpdateSubscriptionGraphQLRequest() throws {
         let modelType = Article.self as Model.Type
+        let authUser = MockAWSAuthUser(username: "user1", userId: "123e4567-dead-beef-a456-426614174000")
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, "111")))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, authUser)))
         let document = documentBuilder.build()
         let documentStringValue = """
         subscription OnUpdateArticle($owner: String!) {
@@ -244,7 +245,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         """
         let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType,
                                                                       subscriptionType: .onUpdate,
-                                                                      ownerId: "111")
+                                                                      authUser: authUser)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
@@ -253,15 +254,16 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
             XCTFail("The document doesn't contain variables")
             return
         }
-        XCTAssertEqual(variables["owner"] as? String, "111")
+        XCTAssertEqual(variables["owner"] as? String, "user1")
     }
 
     func testOnDeleteSubscriptionGraphQLRequest() throws {
         let modelType = Article.self as Model.Type
+        let authUser = MockAWSAuthUser(username: "user1", userId: "123e4567-dead-beef-a456-426614174000")
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, "111")))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, authUser)))
         let document = documentBuilder.build()
         let documentStringValue = """
         subscription OnDeleteArticle($owner: String!) {
@@ -280,7 +282,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         """
         let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType,
                                                                       subscriptionType: .onDelete,
-                                                                      ownerId: "111")
+                                                                      authUser: authUser)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
@@ -289,7 +291,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
             XCTFail("The document doesn't contain variables")
             return
         }
-        XCTAssertEqual(variables["owner"] as? String, "111")
+        XCTAssertEqual(variables["owner"] as? String, "user1")
     }
 
     func testSyncQueryGraphQLRequest() throws {
