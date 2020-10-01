@@ -173,11 +173,11 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
                     claimsStrings[key] = value
                 }
             }
-            request = GraphQLRequest<Payload>.subscription(to: modelType,
+            request = GraphQLRequest<Payload>.subscription(to: modelType.schema,
                                                            subscriptionType: subscriptionType,
                                                            claims: claimsStrings)
         } else {
-            request = GraphQLRequest<Payload>.subscription(to: modelType, subscriptionType: subscriptionType)
+            request = GraphQLRequest<Payload>.subscription(to: modelType.schema, subscriptionType: subscriptionType)
         }
 
         let operation = api.subscribe(request: request,

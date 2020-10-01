@@ -130,7 +130,8 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                           type: GraphQLMutationType) -> GraphQLRequest<M> {
         let modelType = ModelRegistry.modelType(from: model.modelName) ?? Swift.type(of: model)
 
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
+                                                               operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
 
         switch type {
@@ -157,7 +158,8 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
 
     public static func get<M: Model>(_ modelType: M.Type,
                                      byId id: String) -> GraphQLRequest<M?> {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
+                                                               operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: id))
         let document = documentBuilder.build()
@@ -170,7 +172,8 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
 
     public static func list<M: Model>(_ modelType: M.Type,
                                       where predicate: QueryPredicate? = nil) -> GraphQLRequest<[M]> {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
+                                                               operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
 
         if let predicate = predicate {
@@ -188,7 +191,8 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
 
     public static func subscription<M: Model>(of modelType: M.Type,
                                               type: GraphQLSubscriptionType) -> GraphQLRequest<M> {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
+                                                               operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
         let document = documentBuilder.build()
 
