@@ -113,9 +113,9 @@ extension Model {
 
 }
 
-extension Array where Element == Model.Type {
+extension Array where Element == ModelSchema {
 
-    /// Sort the [Model.Type] array based on the associations between them.
+    /// Sort the [ModelSchema] array based on the associations between them.
     ///
     /// The order the tables are created for each model depends on their relationships.
     /// The tables for the models that own the `foreign key` of the relationship can only
@@ -130,43 +130,9 @@ extension Array where Element == Model.Type {
     /// created after `Blog`. Therefore:
     ///
     /// ```
-    /// let models = [Comment.self, Post.self, Blog.self]
-    /// models.sortedByDependencyOrder() == [Blog.self, Post.self, Comment.self]
+    /// let modelSchemas = [Comment.schema, Post.schema, Blog.schema]
+    /// modelSchemas.sortedByDependencyOrder() == [Blog.schema, Post.schema, Comment.schema]
     /// ```
-    func sortByDependencyOrder() -> Self {
-        var sortedKeys: [String] = []
-        var sortMap: [String: Model.Type] = [:]
-
-        func walkAssociatedModels(of modelType: Model.Type) {
-            if !sortedKeys.contains(modelType.schema.name) {
-                let associatedModels = modelType.schema.sortedFields
-                    .filter { $0.isForeignKey }
-                    .map { (model) -> Model.Type in
-                        guard let modelType = ModelRegistry.modelType(from: model.requiredAssociatedModel) else {
-                            preconditionFailure("""
-                            Could not retrieve modelType for the model \(model.requiredAssociatedModel), verify that
-                            datastore is initialized.
-                            """)
-                        }
-                        return modelType
-                    }
-                associatedModels.forEach(walkAssociatedModels(of:))
-
-                let key = modelType.schema.name
-                sortedKeys.append(key)
-                sortMap[key] = modelType
-            }
-        }
-
-        let sortedStartList = sorted { $0.modelName < $1.modelName }
-        sortedStartList.forEach(walkAssociatedModels(of:))
-        return sortedKeys.map { sortMap[$0]! }
-    }
-
-}
-
-extension Array where Element == ModelSchema {
-
     func sortByDependencyOrder() -> Self {
         var sortedKeys: [String] = []
         var sortMap: [String: ModelSchema] = [:]

@@ -79,42 +79,42 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
             self.log.info("Beginning initial sync")
 
-            let syncableModels = ModelRegistry.models.filter { $0.schema.isSyncable }
-            self.enqueueSyncableModels(syncableModels)
+            let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
+            self.enqueueSyncableModels(syncableModelSchemas)
 
-            let modelNames = syncableModels.map { $0.modelName }
+            let modelNames = syncableModelSchemas.map { $0.name }
             self.dispatchSyncQueriesStarted(for: modelNames)
             self.syncOperationQueue.isSuspended = false
         }
     }
 
-    private func enqueueSyncableModels(_ syncableModels: [Model.Type]) {
-        let sortedModels = syncableModels.sortByDependencyOrder()
-        for model in sortedModels {
-            enqueueSyncOperation(for: model)
+    private func enqueueSyncableModels(_ syncableModelSchemas: [ModelSchema]) {
+        let sortedModelSchemas = syncableModelSchemas.sortByDependencyOrder()
+        for modelSchema in sortedModelSchemas {
+            enqueueSyncOperation(for: modelSchema)
         }
     }
 
     /// Enqueues sync operations for models and downstream dependencies
-    private func enqueueSyncOperation(for modelType: Model.Type) {
-        let initialSyncForModel = InitialSyncOperation(modelType: modelType,
+    private func enqueueSyncOperation(for modelSchema: ModelSchema) {
+        let initialSyncForModel = InitialSyncOperation(modelSchema: modelSchema,
                                                        api: api,
                                                        reconciliationQueue: reconciliationQueue,
                                                        storageAdapter: storageAdapter,
                                                        dataStoreConfiguration: dataStoreConfiguration)
 
-        initialSyncOperationSinks[modelType.modelName] = initialSyncForModel
+        initialSyncOperationSinks[modelSchema.name] = initialSyncForModel
             .publisher
             .receive(on: concurrencyQueue)
             .sink(receiveCompletion: { result in
                 if case .failure(let dataStoreError) = result {
                     let syncError = DataStoreError.sync(
-                        "An error occurred syncing \(modelType.modelName)",
+                        "An error occurred syncing \(modelSchema.name)",
                         "",
                         dataStoreError)
                     self.syncErrors.append(syncError)
                 }
-                self.initialSyncOperationSinks.removeValue(forKey: modelType.modelName)
+                self.initialSyncOperationSinks.removeValue(forKey: modelSchema.name)
                 self.onReceiveCompletion()
             }, receiveValue: onReceiveValue(_:))
 
