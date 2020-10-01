@@ -1,5 +1,12 @@
 # Changelog
 ## Unreleased
+## 1.3.1 (2020-10-01)
+
+### Bug Fixes
+
+- Data race in AWSModelReconciliationQueue (#790)
+- Remove unused RepeatingTimer (#786)
+
 ## 1.3.0 (2020-09-29)
 
 ### Features
