@@ -168,7 +168,7 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
             case .success(let tokenString) = awsAuthService.getToken(),
             case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
 
-            request = GraphQLRequest<Payload>.subscription(to: modelType,
+            request = GraphQLRequest<Payload>.subscription(to: modelType.schema,
                                                            subscriptionType: subscriptionType,
                                                            claims: claims)
         } else if modelType.schema.hasAuthenticationRules,
@@ -179,7 +179,7 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
                                                            subscriptionType: subscriptionType,
                                                            claims: claims)
         } else {
-            request = GraphQLRequest<Payload>.subscription(to: modelType, subscriptionType: subscriptionType)
+            request = GraphQLRequest<Payload>.subscription(to: modelType.schema, subscriptionType: subscriptionType)
         }
 
         let operation = api.subscribe(request: request,

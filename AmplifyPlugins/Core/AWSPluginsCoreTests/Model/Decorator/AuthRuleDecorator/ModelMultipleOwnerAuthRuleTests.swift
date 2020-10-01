@@ -98,7 +98,7 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
 /*
     // Ensure that the `owner` field is added to the model fields
     func testModelMultipleOwner_CreateMutation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelMultipleOwner.schema,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
@@ -121,7 +121,7 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
 
     // Ensure that the `owner` field is added to the model fields
     func testModelMultipleOwner_DeleteMutation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelMultipleOwner.schema,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
@@ -144,7 +144,7 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
 
     // Ensure that the `owner` field is added to the model fields
     func testModelMultipleOwner_UpdateMutation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelMultipleOwner.schema,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
@@ -167,7 +167,7 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
 
     // Ensure that the `owner` field is added to the model fields
     func testModelMultipleOwner_GetQuery() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelMultipleOwner.schema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
@@ -190,7 +190,7 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
 
     // A List query is a paginated selection set, make sure the `owner` field is added to the model fields
     func testModelMultipleOwner_ListQuery() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelMultipleOwner.schema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         documentBuilder.add(decorator: PaginationDecorator())
@@ -215,7 +215,7 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
     }
 
     func testModelMultipleOwner_SyncQuery() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelMultipleOwner.schema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator())
@@ -248,7 +248,7 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
     func testModelMultipleOwner_OnCreateSubscription() {
         let claims = ["username": "user1",
                       "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelMultipleOwner.schema,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
@@ -277,7 +277,7 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
     func testModelMultipleOwner_OnUpdateSubscription() {
         let claims = ["username": "user1",
                       "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelMultipleOwner.schema,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, claims)))
@@ -307,7 +307,7 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
     func testModelMultipleOwner_OnDeleteSubscription() {
         let claims = ["username": "user1",
                       "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelMultipleOwner.schema,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, claims)))
