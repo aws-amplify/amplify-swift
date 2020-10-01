@@ -296,9 +296,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         return try result.unique()
     }
 
-    func queryModelSyncMetadata(for modelType: Model.Type) throws -> ModelSyncMetadata? {
+    func queryModelSyncMetadata(for modelSchema: ModelSchema) throws -> ModelSyncMetadata? {
         let statement = SelectStatement(from: ModelSyncMetadata.schema,
-                                        predicate: field("id").eq(modelType.modelName))
+                                        predicate: field("id").eq(modelSchema.name))
         let rows = try connection.prepare(statement.stringValue).run(statement.variables)
         let result = try rows.convert(to: ModelSyncMetadata.self,
                                       using: statement)

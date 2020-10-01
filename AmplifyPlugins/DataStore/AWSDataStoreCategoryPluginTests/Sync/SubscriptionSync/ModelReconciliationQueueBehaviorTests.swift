@@ -26,7 +26,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
             eventsNotSaved.fulfill()
         }
 
-        let queue = AWSModelReconciliationQueue(modelType: MockSynced.self,
+        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
                                                 auth: authPlugin,
@@ -73,7 +73,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
             completion(.success(model))
         }
 
-        let queue = AWSModelReconciliationQueue(modelType: MockSynced.self,
+        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
                                                 auth: authPlugin,
@@ -166,7 +166,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 completion(.success(model))
         }
 
-        let queue = AWSModelReconciliationQueue(modelType: MockSynced.self,
+        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
                                                 auth: authPlugin,
@@ -236,7 +236,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 completion(.success(model))
         }
 
-        let queue = AWSModelReconciliationQueue(modelType: MockSynced.self,
+        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
                                                 auth: authPlugin,
