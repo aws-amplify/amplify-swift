@@ -192,7 +192,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         return resultForQueryMutationSyncMetadata
     }
 
-    func queryModelSyncMetadata(for modelType: Model.Type) throws -> ModelSyncMetadata? {
+    func queryModelSyncMetadata(for modelSchema: ModelSchema) throws -> ModelSyncMetadata? {
         listenerForModelSyncMetadata?()
         return resultForQueryModelSyncMetadata
     }

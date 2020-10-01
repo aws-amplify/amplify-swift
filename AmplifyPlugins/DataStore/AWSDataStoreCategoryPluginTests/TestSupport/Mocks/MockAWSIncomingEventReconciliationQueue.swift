@@ -13,8 +13,8 @@ import Combine
 @testable import AWSDataStoreCategoryPlugin
 
 class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
-    static let factory: IncomingEventReconciliationQueueFactory = { modelTypes, api, storageAdapter, auth, _ in
-        MockAWSIncomingEventReconciliationQueue(modelTypes: modelTypes,
+    static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, auth, _ in
+        MockAWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
                                                 api: api,
                                                 storageAdapter: storageAdapter,
                                                 auth: auth)
@@ -25,7 +25,7 @@ class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue 
     }
 
     static var lastInstance = AtomicValue<MockAWSIncomingEventReconciliationQueue?>(initialValue: nil)
-    init(modelTypes: [Model.Type],
+    init(modelSchemas: [ModelSchema],
          api: APICategoryGraphQLBehavior,
          storageAdapter: StorageEngineAdapter,
          auth: AuthCategoryBehavior?) {

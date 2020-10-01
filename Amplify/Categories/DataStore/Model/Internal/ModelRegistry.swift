@@ -98,6 +98,7 @@ extension ModelRegistry {
         concurrencyQueue.sync {
             modelTypes = [:]
             modelDecoders = [:]
+            modelSchemaMapping = [:]
         }
     }
 }
