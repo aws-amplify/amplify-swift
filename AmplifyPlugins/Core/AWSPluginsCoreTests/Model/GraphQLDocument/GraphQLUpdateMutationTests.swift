@@ -34,7 +34,7 @@ class GraphQLUpdateMutationTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testUpdateGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content", createdAt: .now())
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: post))
         let document = documentBuilder.build()
@@ -82,7 +82,7 @@ class GraphQLUpdateMutationTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testUpdateGraphQLMutationFromSimpleModelWithVersion() {
         let post = Post(title: "title", content: "content", createdAt: .now())
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: post))
         documentBuilder.add(decorator: ConflictResolutionDecorator(version: 5))

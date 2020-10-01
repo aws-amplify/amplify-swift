@@ -39,12 +39,12 @@ public struct ModelField {
     }
 
     public init(name: String,
-         type: ModelFieldType,
-         isRequired: Bool = false,
-         isArray: Bool = false,
-         attributes: [ModelFieldAttribute] = [],
-         association: ModelAssociation? = nil,
-         authRules: AuthRules = []) {
+                type: ModelFieldType,
+                isRequired: Bool = false,
+                isArray: Bool = false,
+                attributes: [ModelFieldAttribute] = [],
+                association: ModelAssociation? = nil,
+                authRules: AuthRules = []) {
         self.name = name
         self.type = type
         self.isRequired = isRequired
@@ -83,10 +83,10 @@ public struct ModelSchema {
     }
 
     public init(name: String,
-         pluralName: String? = nil,
-         authRules: AuthRules = [],
-         attributes: [ModelAttribute] = [],
-         fields: ModelFields = [:]) {
+                pluralName: String? = nil,
+                authRules: AuthRules = [],
+                attributes: [ModelAttribute] = [],
+                fields: ModelFields = [:]) {
         self.name = name
         self.pluralName = pluralName
         self.authRules = authRules

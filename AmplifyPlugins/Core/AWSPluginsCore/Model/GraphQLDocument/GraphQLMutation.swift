@@ -21,8 +21,15 @@ public struct GraphQLMutation: SingleDirectiveGraphQLDocument {
         self.selectionSet = selectionSet
     }
 
+    @available(*, deprecated, message: """
+    Init with modelType is deprecated, use init with modelSchema instead.
+    """)
     public init(modelType: Model.Type) {
-        self.selectionSet = SelectionSet(fields: modelType.schema.graphQLFields)
+        self.init(modelSchema: modelType.schema)
+    }
+
+    public init(modelSchema: ModelSchema) {
+        self.selectionSet = SelectionSet(fields: modelSchema.graphQLFields)
     }
 
     public var name: String = ""
