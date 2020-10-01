@@ -182,7 +182,8 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
     func testOnCreateSubscriptionGraphQLRequest() throws {
         let modelType = Article.self as Model.Type
         let ownerId = "111"
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
+                                                               operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, ownerId)))
@@ -202,7 +203,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType,
+        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
                                                                       subscriptionType: .onCreate,
                                                                       ownerId: ownerId)
 
@@ -222,7 +223,8 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
 
     func testOnUpdateSubscriptionGraphQLRequest() throws {
         let modelType = Article.self as Model.Type
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
+                                                               operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, "111")))
@@ -242,7 +244,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType,
+        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
                                                                       subscriptionType: .onUpdate,
                                                                       ownerId: "111")
 
@@ -254,7 +256,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
 
     func testOnDeleteSubscriptionGraphQLRequest() throws {
         let modelType = Article.self as Model.Type
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, "111")))
@@ -274,7 +276,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType,
+        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
                                                                       subscriptionType: .onDelete,
                                                                       ownerId: "111")
 
@@ -289,7 +291,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         let nextToken = "nextToken"
         let limit = 100
         let lastSync = 123
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
         documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync))
@@ -315,7 +317,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         }
         """
 
-        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: modelType,
+        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: modelType.schema,
                                                                 limit: limit,
                                                                 nextToken: nextToken,
                                                                 lastSync: lastSync)
