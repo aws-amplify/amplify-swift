@@ -30,7 +30,7 @@ class GraphQLGetQueryTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     ///     - it has variables containing `id`
     func testGetGraphQLQueryFromSimpleModel() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
         let document = documentBuilder.build()
@@ -59,7 +59,7 @@ class GraphQLGetQueryTests: XCTestCase {
     }
 
     func testGetGraphQLQueryFromSimpleModelWithSyncEnabled() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
@@ -102,7 +102,7 @@ class GraphQLGetQueryTests: XCTestCase {
     ///     - it is named `getComment`
     ///     - it has a list of fields with a nested `post`
     func testGetGraphQLQueryFromModelWithAssociation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Comment.self, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
         let document = documentBuilder.build()
@@ -137,7 +137,7 @@ class GraphQLGetQueryTests: XCTestCase {
     }
 
     func testGetGraphQLQueryFromModelWithAssociationAndSyncEnabled() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Comment.self, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
