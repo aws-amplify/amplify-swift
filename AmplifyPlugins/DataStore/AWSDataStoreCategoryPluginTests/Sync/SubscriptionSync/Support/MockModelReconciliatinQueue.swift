@@ -16,20 +16,20 @@ class MockModelReconciliationQueue: ModelReconciliationQueue {
 
     public static var mockModelReconciliationQueues: [String: MockModelReconciliationQueue] = [:]
 
-    private let modelType: Model.Type
+    private let modelSchema: ModelSchema
     let modelReconciliationQueueSubject: PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>
     var publisher: AnyPublisher<ModelReconciliationQueueEvent, DataStoreError> {
         return modelReconciliationQueueSubject.eraseToAnyPublisher()
     }
 
-    init(modelType: Model.Type,
+    init(modelSchema: ModelSchema,
          storageAdapter: StorageEngineAdapter?,
          api: APICategoryGraphQLBehavior,
          auth: AuthCategoryBehavior?,
          incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
         self.modelReconciliationQueueSubject = PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>()
-        self.modelType = modelType
-        MockModelReconciliationQueue.mockModelReconciliationQueues[modelType.modelName] = self
+        self.modelSchema = modelSchema
+        MockModelReconciliationQueue.mockModelReconciliationQueues[modelSchema.name] = self
     }
 
     func start() {
