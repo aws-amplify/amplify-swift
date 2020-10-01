@@ -57,7 +57,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
 
     // Ensure that the `owner` field is added to the model fields
     func testModelReadUpdateField_CreateMutation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
@@ -79,7 +79,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
 
     // Ensure that the `owner` field is added to the model fields
     func testModelReadUpdateField_DeleteMutation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
@@ -101,7 +101,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
 
     // Ensure that the `owner` field is added to the model fields
     func testModelReadUpdateField_UpdateMutation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
@@ -123,7 +123,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
 
     // Ensure that the `owner` field is added to the model fields
     func testModelReadUpdateField_GetQuery() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
@@ -145,7 +145,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
 
     // A List query is a paginated selection set, make sure the `owner` field is added to the model fields
     func testModelReadUpdateField_ListQuery() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         documentBuilder.add(decorator: PaginationDecorator())
@@ -169,7 +169,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
     }
 
     func testModelReadUpdateField_SyncQuery() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator())
@@ -200,7 +200,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
     // The owner auth rule contains `.create` operation, requiring the subscription operation to contain the input
     func testModelReadUpdateField_OnCreateSubscription() {
         let authUser = MockAWSAuthUser(username: "user1", userId: "123e4567-dead-beef-a456-426614174000")
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, authUser)))
@@ -223,7 +223,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
     // Others can `.update` this model, which means the update subscription does not require owner input
     func testModelReadUpdateField_OnUpdateSubscription() {
         let authUser = MockAWSAuthUser(username: "user1", userId: "123e4567-dead-beef-a456-426614174000")
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, authUser)))
@@ -245,7 +245,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
     // The owner auth rule contains `.delete` operation, requiring the subscription operation to contain the input
     func testModelReadUpdateField_OnDeleteSubscription() {
         let authUser = MockAWSAuthUser(username: "user1", userId: "123e4567-dead-beef-a456-426614174000")
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, authUser)))
