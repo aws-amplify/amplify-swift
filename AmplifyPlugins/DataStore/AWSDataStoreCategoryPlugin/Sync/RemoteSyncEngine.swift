@@ -69,17 +69,23 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                      stateMachine: StateMachine<State, Action>? = nil,
                      networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
                      requestRetryablePolicy: RequestRetryablePolicy? = nil) throws {
+
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
+
         let outgoingMutationQueue = outgoingMutationQueue ??
             OutgoingMutationQueue(storageAdapter: storageAdapter, dataStoreConfiguration: dataStoreConfiguration)
+
         let reconciliationQueueFactory = reconciliationQueueFactory ??
-            AWSIncomingEventReconciliationQueue.init(modelTypes:api:storageAdapter:auth:modelReconciliationQueueFactory:)
+            AWSIncomingEventReconciliationQueue.init(modelSchemas:api:storageAdapter:auth:modelReconciliationQueueFactory:)
+
         let initialSyncOrchestratorFactory = initialSyncOrchestratorFactory ??
             AWSInitialSyncOrchestrator.init(dataStoreConfiguration:api:reconciliationQueue:storageAdapter:)
+
         let resolver = RemoteSyncEngine.Resolver.resolve(currentState:action:)
         let stateMachine = stateMachine ?? StateMachine(initialState: .notStarted,
                                                         resolver: resolver)
+
         let requestRetryablePolicy = requestRetryablePolicy ?? RequestRetryablePolicy()
 
         self.init(storageAdapter: storageAdapter,
@@ -255,8 +261,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private func initializeSubscriptions(api: APICategoryGraphQLBehavior,
                                          storageAdapter: StorageEngineAdapter) {
         log.debug(#function)
-        let syncableModelTypes = ModelRegistry.models.filter { $0.schema.isSyncable }
-        reconciliationQueue = reconciliationQueueFactory(syncableModelTypes, api, storageAdapter, auth, nil)
+        let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
+        reconciliationQueue = reconciliationQueueFactory(syncableModelSchemas, api, storageAdapter, auth, nil)
         reconciliationQueueSink = reconciliationQueue?.publisher.sink(
             receiveCompletion: onReceiveCompletion(receiveCompletion:),
             receiveValue: onReceive(receiveValue:))

@@ -18,7 +18,7 @@ final class InitialSyncOperation: AsynchronousOperation {
     private weak var storageAdapter: StorageEngineAdapter?
     private let dataStoreConfiguration: DataStoreConfiguration
 
-    private let modelType: Model.Type
+    private let modelSchema: ModelSchema
 
     private var recordsReceived: UInt
 
@@ -34,12 +34,12 @@ final class InitialSyncOperation: AsynchronousOperation {
         return initialSyncOperationTopic.eraseToAnyPublisher()
     }
 
-    init(modelType: Model.Type,
+    init(modelSchema: ModelSchema,
          api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?,
          dataStoreConfiguration: DataStoreConfiguration) {
-        self.modelType = modelType
+        self.modelSchema = modelSchema
         self.api = api
         self.reconciliationQueue = reconciliationQueue
         self.storageAdapter = storageAdapter
@@ -54,7 +54,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             return
         }
 
-        log.info("Beginning sync for \(modelType.modelName)")
+        log.info("Beginning sync for \(modelSchema.name)")
         let lastSyncTime = getLastSyncTime()
         let syncType: SyncType = lastSyncTime == nil ? .fullSync : .deltaSync
         initialSyncOperationTopic.send(.started(modelType: modelType, syncType: syncType))
@@ -97,7 +97,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
 
         do {
-            let modelSyncMetadata = try storageAdapter.queryModelSyncMetadata(for: modelType)
+            let modelSyncMetadata = try storageAdapter.queryModelSyncMetadata(for: modelSchema)
             return modelSyncMetadata
         } catch {
             log.error(error: error)
@@ -117,7 +117,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
         let minSyncPageSize = Int(min(syncMaxRecords - recordsReceived, syncPageSize))
         let limit = minSyncPageSize < 0 ? Int(syncPageSize) : minSyncPageSize
-        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: modelType.schema,
+        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: modelSchema,
                                                                 limit: limit,
                                                                 nextToken: nextToken,
                                                                 lastSync: lastSyncTime)
@@ -188,7 +188,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             return
         }
 
-        let syncMetadata = ModelSyncMetadata(id: modelType.modelName, lastSync: lastSyncTime)
+        let syncMetadata = ModelSyncMetadata(id: modelSchema.name, lastSync: lastSyncTime)
         storageAdapter.save(syncMetadata, condition: nil) { result in
             switch result {
             case .failure(let dataStoreError):
