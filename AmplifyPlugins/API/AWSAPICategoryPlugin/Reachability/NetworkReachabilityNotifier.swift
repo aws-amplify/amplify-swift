@@ -15,7 +15,7 @@ class NetworkReachabilityNotifier {
     private var reachability: NetworkReachabilityProviding?
     private var allowsCellularAccess = true
 
-    let reachabilityPublisher = CurrentValueSubject<ReachabilityUpdate, Never>(ReachabilityUpdate(isOnline: false))
+    let reachabilityPublisher: CurrentValueSubject<ReachabilityUpdate, Never>
     var publisher: AnyPublisher<ReachabilityUpdate, Never> {
         return reachabilityPublisher.eraseToAnyPublisher()
     }
@@ -26,6 +26,18 @@ class NetworkReachabilityNotifier {
         self.reachability = reachabilityFactory.make(for: host)
         self.allowsCellularAccess = allowsCellularAccess
 
+        let isReachable: Bool
+        switch reachability?.connection {
+        case .wifi:
+            isReachable = true
+        case .cellular:
+            isReachable = allowsCellularAccess
+        case .none, .unavailable, .some(.none):
+            isReachable = false
+        }
+
+        self.reachabilityPublisher =
+            CurrentValueSubject<ReachabilityUpdate, Never>(ReachabilityUpdate(isOnline: isReachable))
         // Add listener for Reachability and start its notifier
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(respondToReachabilityChange),
@@ -40,7 +52,6 @@ class NetworkReachabilityNotifier {
 
     deinit {
         reachability?.stopNotifier()
-        NotificationCenter.default.removeObserver(self)
         reachabilityPublisher.send(completion: Subscribers.Completion<Never>.finished)
     }
 
@@ -60,8 +71,10 @@ class NetworkReachabilityNotifier {
             isReachable = false
         }
 
-        let reachabilityMessageUpdate = ReachabilityUpdate(isOnline: isReachable)
-        reachabilityPublisher.send(reachabilityMessageUpdate)
+        if isReachable != reachabilityPublisher.value.isOnline {
+            let reachabilityMessageUpdate = ReachabilityUpdate(isOnline: isReachable)
+            reachabilityPublisher.send(reachabilityMessageUpdate)
+        }
     }
 
 }

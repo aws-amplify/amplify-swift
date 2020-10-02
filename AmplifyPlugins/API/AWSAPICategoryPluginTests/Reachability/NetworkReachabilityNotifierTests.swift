@@ -53,16 +53,11 @@ class NetworkReachabilityNotifierTests: XCTestCase {
     func testCellularConnectivity() {
         MockReachability.iConnection = .wifi
         let expect = expectation(description: ".sink receives values")
-        var values = [Bool]()
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             XCTFail("Not expecting any error")
         }, receiveValue: { value in
-            values.append(value.isOnline)
-            if values.count == 2 {
-                XCTAssertFalse(values[0])
-                XCTAssertTrue(values[1])
-                expect.fulfill()
-            }
+            XCTAssertTrue(value.isOnline)
+            expect.fulfill()
         })
 
         notification = Notification.init(name: .reachabilityChanged)
@@ -81,7 +76,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         }, receiveValue: { value in
             values.append(value.isOnline)
             if values.count == 2 {
-                XCTAssertFalse(values[0])
+                XCTAssertTrue(values[0])
                 XCTAssertFalse(values[1])
                 expect.fulfill()
             }
@@ -96,16 +91,16 @@ class NetworkReachabilityNotifierTests: XCTestCase {
 
     func testWifiConnectivity_publisherGoesOutOfScope() {
         MockReachability.iConnection = .wifi
-        let defaultValueExpect = expectation(description: ".sink receives default value")
+        let initialValueExpect = expectation(description: ".sink receives default value")
         let completeExpect = expectation(description: ".sink receives completion")
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             completeExpect.fulfill()
         }, receiveValue: { value in
-            XCTAssertFalse(value.isOnline)
-            defaultValueExpect.fulfill()
+            XCTAssertTrue(value.isOnline)
+            initialValueExpect.fulfill()
         })
 
-        wait(for: [defaultValueExpect], timeout: 1.0)
+        wait(for: [initialValueExpect], timeout: 1.0)
         notifier = nil
         notification = Notification.init(name: .reachabilityChanged)
         NotificationCenter.default.post(notification)
