@@ -310,8 +310,16 @@ class InitialSyncOperationTests: XCTestCase {
                 case .failure:
                     syncCallbackReceived.fulfill()
                 }
-
         }
+
+        _ = operation.publisher.sink(receiveCompletion: { result in
+            switch result {
+            case .finished:
+                XCTFail("Should have failed")
+            case .failure:
+                syncCallbackReceived.fulfill()
+            }
+        }, receiveValue: { _ in })
 
         operation.main()
 
@@ -364,7 +372,7 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default) {_ in }
+            dataStoreConfiguration: .default) { _ in }
 
         operation.main()
 

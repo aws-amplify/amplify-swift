@@ -687,8 +687,8 @@
 			children = (
 				FA60461223980A75009E4B97 /* InitialSyncOperation.swift */,
 				FA0427C92396C35500D25AB0 /* InitialSyncOrchestrator.swift */,
-				D8079A72251656A200826E8F /* SyncEventEmitter.swift */,
 				D86B6F7D25167F3A008AC948 /* ModelSyncedEventEmitter.swift */,
+				D8079A72251656A200826E8F /* SyncEventEmitter.swift */,
 			);
 			path = InitialSync;
 			sourceTree = "<group>";

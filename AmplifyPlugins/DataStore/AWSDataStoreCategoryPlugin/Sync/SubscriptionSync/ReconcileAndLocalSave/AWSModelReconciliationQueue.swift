@@ -141,8 +141,8 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             }
         }, receiveValue: { value in
             switch value {
-            case .mutationEventDropped(let name):
-                self.modelReconciliationQueueSubject.send(.mutationEventDropped(name))
+            case .mutationEventDropped(let modelName):
+                self.modelReconciliationQueueSubject.send(.mutationEventDropped(modelName: modelName))
             case .mutationEvent(let event):
                 self.modelReconciliationQueueSubject.send(.mutationEvent(event))
             }
@@ -158,7 +158,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 self.enqueue(remoteModel)
             })
         case .connectionConnected:
-            modelReconciliationQueueSubject.send(.connected(modelName))
+            modelReconciliationQueueSubject.send(.connected(modelName: modelName))
         }
     }
 

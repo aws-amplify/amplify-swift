@@ -12,9 +12,9 @@ import Combine
 enum ModelReconciliationQueueEvent {
     case started
     case paused
-    case connected(String)
+    case connected(modelName: String)
     case mutationEvent(MutationEvent)
-    case mutationEventDropped(String)
+    case mutationEventDropped(modelName: String)
 }
 
 @available(iOS 13.0, *)

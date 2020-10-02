@@ -39,13 +39,7 @@ public extension HubPayload.EventName.DataStore {
     static let syncQueriesStarted = "DataStore.syncQueriesStarted"
 
     /// Dispatched once for each model after the model instances have been synced from the cloud.
-    /// HubPayload `modelSyncedEvent` contains:
-    /// - `modelName` (String): the name of the model that was synced
-    /// - `isFullSync` (Bool): `true` if the model was synced with a "full" query to retrieve all models
-    /// - `isDeltaSync` (Bool): `true` if the model was synced with a "delta" query to retrieve only changes since the last sync
-    /// - `createCount` (Int): the number of new model instances added to the local store
-    /// - `updateCount` (Int): the number of existing model instances updated in the local store
-    /// - `deleteCount` (Int): the number of model instances deleted from the local store
+    /// HubPayload `modelSyncedEvent` contains: name of model, sync type (full/delta), count of instances' mutation type
     static let modelSynced = "DataStore.modelSynced"
 
     /// Dispatched when all models have been synced

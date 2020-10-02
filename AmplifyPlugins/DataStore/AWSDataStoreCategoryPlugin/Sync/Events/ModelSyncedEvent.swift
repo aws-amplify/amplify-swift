@@ -8,13 +8,16 @@
 import Amplify
 
 /// Used as HubPayload for the `ModelSynced`
+/// - `modelName` (String): the name of the model that was synced
+/// - `isFullSync` (Bool): `true` if the model was synced with a "full" query to retrieve all models
+/// - `isDeltaSync` (Bool): `true` if the model was synced with a "delta" query to retrieve changes since the last sync
+/// - `createCount` (Int): the number of new model instances added to the local store
+/// - `updateCount` (Int): the number of existing model instances updated in the local store
+/// - `deleteCount` (Int): the number of model instances deleted from the local store
 public struct ModelSyncedEvent {
-    /// Name of model that have been synced
     public let modelName: String
-    /// Notify the type of sync: `full` or `delta`
     public let isFullSync: Bool
     public let isDeltaSync: Bool
-    /// Count of mutationType of model instances that have been synced: `create`, `update`, `delete`
     public let createCount: Int
     public let updateCount: Int
     public let deleteCount: Int

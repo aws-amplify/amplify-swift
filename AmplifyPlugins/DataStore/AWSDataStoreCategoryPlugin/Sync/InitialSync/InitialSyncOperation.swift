@@ -59,7 +59,8 @@ final class InitialSyncOperation: AsynchronousOperation {
 
         log.info("Beginning sync for \(modelType.modelName)")
         let lastSyncTime = getLastSyncTime()
-        initialSyncOperationTopic.send(.hasLastSyncTime(modelType: modelType, hasLastSyncTime: lastSyncTime == nil))
+        let syncType: SyncType = lastSyncTime == nil ? .fullSync : .deltaSync
+        initialSyncOperationTopic.send(.started(modelType: modelType, syncType: syncType))
         query(lastSyncTime: lastSyncTime)
     }
 
@@ -174,7 +175,7 @@ final class InitialSyncOperation: AsynchronousOperation {
                 self.query(lastSyncTime: lastSyncTime, nextToken: nextToken)
             }
         } else {
-            initialSyncOperationTopic.send(.finishedOffering(modelType: modelType))
+            initialSyncOperationTopic.send(.finished(modelType: modelType))
             updateModelSyncMetadata(lastSyncTime: syncQueryResult.startedAt)
         }
     }
@@ -213,6 +214,12 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     private func finish(result: AWSInitialSyncOrchestrator.SyncOperationResult) {
         completion(result)
+        switch result {
+        case .failure(let error):
+            initialSyncOperationTopic.send(completion: .failure(error))
+        case .success:
+            initialSyncOperationTopic.send(completion: .finished)
+        }
         super.finish()
     }
 
@@ -222,7 +229,12 @@ final class InitialSyncOperation: AsynchronousOperation {
 extension InitialSyncOperation: DefaultLogger { }
 
 enum InitialSyncOperationEvent {
-    case hasLastSyncTime(modelType: Model.Type, hasLastSyncTime: Bool)
+    case started(modelType: Model.Type, syncType: SyncType)
     case mutationSync(MutationSync<AnyModel>)
-    case finishedOffering(modelType: Model.Type)
+    case finished(modelType: Model.Type)
+}
+
+enum SyncType {
+   case fullSync
+   case deltaSync
 }

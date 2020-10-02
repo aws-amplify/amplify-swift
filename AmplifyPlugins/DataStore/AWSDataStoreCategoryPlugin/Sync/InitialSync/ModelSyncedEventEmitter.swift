@@ -40,35 +40,33 @@ final class ModelSyncedEventEmitter {
 
         self.syncOrchestratorSink = initialSyncOrchestrator?
             .publisher
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.onReceiveCompletion(completion: completion)
-            }, receiveValue: { [weak self] value in
-                self?.onReceiveSyncOperationEvent(value: value)
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: { [weak self] value in
+                    self?.onReceiveSyncOperationEvent(value: value)
             })
 
         self.reconciliationQueueSink = reconciliationQueue?
             .publisher
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.onReceiveCompletion(completion: completion)
-            }, receiveValue: { [weak self] value in
-                self?.onReceiveReconciliationEvent(value: value)
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: { [weak self] value in
+                    self?.onReceiveReconciliationEvent(value: value)
             })
     }
 
     private func onReceiveSyncOperationEvent(value: InitialSyncOperationEvent) {
         switch value {
-        case .hasLastSyncTime(let modelType, let hasLastSyncTime):
+        case .started(let modelType, let syncType):
             guard self.modelType == modelType else {
                 return
             }
-            modelSyncedEventBuilder.isFullSync = hasLastSyncTime
-            modelSyncedEventBuilder.isDeltaSync = !hasLastSyncTime
+            modelSyncedEventBuilder.isFullSync = syncType == .fullSync ? true : false
+            modelSyncedEventBuilder.isDeltaSync = !modelSyncedEventBuilder.isFullSync
         case .mutationSync(let mutationSync):
             guard modelType.modelName == mutationSync.model.modelName else {
                 return
             }
             _ = recordsReceived.increment()
-        case .finishedOffering(let modelType):
+        case .finished(let modelType):
             guard self.modelType == modelType else {
                 return
             }
@@ -106,11 +104,8 @@ final class ModelSyncedEventEmitter {
         }
     }
 
-    private func onReceiveCompletion(completion: Subscribers.Completion<DataStoreError>) {
-        log.verbose("\(#function): \(completion)")
-    }
-
     private func dispatchModelSyncedEvent() {
+        log.verbose("\(#function): Dispatching ModelSyncedEvent to datastore channel")
         modelSyncedEventBuilder.modelName = modelType.modelName
         let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
                                                  data: modelSyncedEventBuilder.build())

@@ -116,19 +116,10 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
         initialSyncOperationSinks[modelType.modelName] = initialSyncForModel
             .publisher
-            .sink(receiveCompletion: onReceiveCompletion(completed:),
+            .sink(receiveCompletion: { _ in },
                   receiveValue: onReceiveValue(receiveValue:))
 
         syncOperationQueue.addOperation(initialSyncForModel)
-    }
-
-    private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
-        switch completed {
-        case .finished:
-            initialSyncOrchestratorTopic.send(completion: .finished)
-        case .failure(let error):
-            initialSyncOrchestratorTopic.send(completion: .failure(error))
-        }
     }
 
     private func onReceiveValue(receiveValue: InitialSyncOperationEvent) {
@@ -155,7 +146,6 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
                                                         data: syncQueriesStartedEvent)
         Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesStartedEventPayload)
     }
-
 }
 
 @available(iOS 13.0, *)
