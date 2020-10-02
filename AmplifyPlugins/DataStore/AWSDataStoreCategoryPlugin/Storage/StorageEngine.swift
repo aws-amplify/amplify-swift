@@ -170,6 +170,7 @@ final class StorageEngine: StorageEngineBehavior {
             if #available(iOS 13.0, *) {
                 self.log.verbose("\(#function) syncing mutation for \(savedModel)")
                 self.syncMutation(of: savedModel,
+                                  modelSchema: modelSchema,
                                   mutationType: mutationType,
                                   predicate: condition,
                                   syncEngine: syncEngine,
@@ -213,8 +214,8 @@ final class StorageEngine: StorageEngineBehavior {
             return
         }
 
-        guard modelType.schema.isSyncable, let syncEngine = self.syncEngine else {
-            if !modelType.schema.isSystem {
+        guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
+            if !modelSchema.isSystem {
                 log.error("Unable to sync modelType (\(modelType)) where isSyncable is false")
             }
             if self.syncEngine == nil {
@@ -235,6 +236,7 @@ final class StorageEngine: StorageEngineBehavior {
             }
 
             self.syncDeletion(with: deletedModel,
+                              modelSchema: modelSchema,
                               syncEngine: syncEngine,
                               completion: syncCompletionWrapper)
 
@@ -249,7 +251,7 @@ final class StorageEngine: StorageEngineBehavior {
                           completion: @escaping DataStoreCallback<[M]>) {
         let transactionResult = queryAndDeleteTransaction(modelType, modelSchema: modelSchema, predicate: predicate)
 
-        guard modelType.schema.isSyncable, let syncEngine = self.syncEngine else {
+        guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
             if !modelType.schema.isSystem {
                 log.error("Unable to sync modelType (\(modelType)) where isSyncable is false")
             }
@@ -278,6 +280,7 @@ final class StorageEngine: StorageEngineBehavior {
                 completion(transactionResult)
             } else {
                 self.syncDeletions(of: modelType,
+                                   modelSchema: modelSchema,
                                    withModels: queriedModels,
                                    predicate: predicate,
                                    syncEngine: syncEngine,
@@ -403,12 +406,14 @@ final class StorageEngine: StorageEngineBehavior {
 
     @available(iOS 13.0, *)
     private func syncDeletion<M: Model>(with model: M,
+                                        modelSchema: ModelSchema,
                                         syncEngine: RemoteSyncEngineBehavior,
                                         completion: @escaping DataStoreCallback<Void>) {
 
         let mutationEvent: MutationEvent
         do {
             mutationEvent = try MutationEvent(model: model,
+                                              modelSchema: modelSchema,
                                               mutationType: .delete)
         } catch {
             let dataStoreError = DataStoreError(error: error)
@@ -435,6 +440,7 @@ final class StorageEngine: StorageEngineBehavior {
     //Note: this function looks a lot like syncDeletion, but will change when
     // we start to pass in the predicate
     private func syncDeletions<M: Model>(of modelType: M.Type,
+                                         modelSchema: ModelSchema,
                                          withModels models: [M],
                                          predicate: QueryPredicate? = nil,
                                          syncEngine: RemoteSyncEngineBehavior,
@@ -456,6 +462,7 @@ final class StorageEngine: StorageEngineBehavior {
             let mutationEvent: MutationEvent
             do {
                 mutationEvent = try  MutationEvent(model: model,
+                                                   modelSchema: modelSchema,
                                                    mutationType: .delete,
                                                    graphQLFilterJSON: graphQLFilterJSON)
             } catch {
@@ -485,6 +492,7 @@ final class StorageEngine: StorageEngineBehavior {
 
     @available(iOS 13.0, *)
     private func syncMutation<M: Model>(of savedModel: M,
+                                        modelSchema: ModelSchema,
                                         mutationType: MutationEvent.MutationType,
                                         predicate: QueryPredicate? = nil,
                                         syncEngine: RemoteSyncEngineBehavior,
@@ -497,6 +505,7 @@ final class StorageEngine: StorageEngineBehavior {
             }
 
             mutationEvent = try MutationEvent(model: savedModel,
+                                              modelSchema: modelSchema,
                                               mutationType: mutationType,
                                               graphQLFilterJSON: graphQLFilterJSON)
 

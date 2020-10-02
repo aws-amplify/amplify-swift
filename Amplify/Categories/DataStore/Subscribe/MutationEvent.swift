@@ -39,13 +39,13 @@ public struct MutationEvent: Model {
     }
 
     public init<M: Model>(model: M,
+                          modelSchema: ModelSchema,
                           mutationType: MutationType,
                           version: Int? = nil,
                           graphQLFilterJSON: String? = nil) throws {
-        let modelType = type(of: model)
         let json = try model.toJSON()
         self.init(modelId: model.id,
-                  modelName: modelType.schema.name,
+                  modelName: modelSchema.name,
                   json: json,
                   mutationType: mutationType,
                   version: version,
