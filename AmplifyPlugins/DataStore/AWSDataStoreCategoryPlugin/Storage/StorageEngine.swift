@@ -213,8 +213,8 @@ final class StorageEngine: StorageEngineBehavior {
             return
         }
 
-        guard modelType.schema.isSyncable, let syncEngine = self.syncEngine else {
-            if !modelType.schema.isSystem {
+        guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
+            if !modelSchema.isSystem {
                 log.error("Unable to sync modelType (\(modelType)) where isSyncable is false")
             }
             if self.syncEngine == nil {
@@ -249,7 +249,7 @@ final class StorageEngine: StorageEngineBehavior {
                           completion: @escaping DataStoreCallback<[M]>) {
         let transactionResult = queryAndDeleteTransaction(modelType, modelSchema: modelSchema, predicate: predicate)
 
-        guard modelType.schema.isSyncable, let syncEngine = self.syncEngine else {
+        guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
             if !modelType.schema.isSystem {
                 log.error("Unable to sync modelType (\(modelType)) where isSyncable is false")
             }
