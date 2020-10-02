@@ -80,7 +80,7 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         guard let identityClaim = authRule.identityClaim else {
             return authUser.username
         }
-        if identityClaim == "username" {
+        if identityClaim == "cognito:username" {
             return authUser.username
         } else if identityClaim == "sub" {
             return authUser.userId
