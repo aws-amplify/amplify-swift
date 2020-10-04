@@ -83,11 +83,11 @@ final class ModelSyncedEventEmitter {
             _ = reconciledReceived.increment()
             switch GraphQLMutationType(rawValue: event.mutationType) {
             case .create:
-                _ = modelSyncedEventBuilder.createCount.increment()
+                _ = modelSyncedEventBuilder.added.increment()
             case .update:
-                _ = modelSyncedEventBuilder.updateCount.increment()
+                _ = modelSyncedEventBuilder.updated.increment()
             case .delete:
-                _ = modelSyncedEventBuilder.deleteCount.increment()
+                _ = modelSyncedEventBuilder.deleted.increment()
             default:
                 break
             }

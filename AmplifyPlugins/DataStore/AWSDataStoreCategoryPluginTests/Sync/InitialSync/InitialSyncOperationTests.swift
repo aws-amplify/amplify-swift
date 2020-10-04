@@ -7,6 +7,7 @@
 
 import XCTest
 import SQLite
+import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -49,7 +50,7 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default) { _ in }
+            dataStoreConfiguration: .default)
 
         operation.main()
 
@@ -84,7 +85,7 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default) { _ in }
+            dataStoreConfiguration: .default)
 
         operation.main()
 
@@ -113,18 +114,22 @@ class InitialSyncOperationTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
         let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
+
         let operation = InitialSyncOperation(
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default) { _ in
-                syncCallbackReceived.fulfill()
-        }
+            dataStoreConfiguration: .default)
+
+        let sink = operation.publisher.sink(receiveCompletion: { _ in
+           syncCallbackReceived.fulfill()
+        }, receiveValue: { _ in })
 
         operation.main()
 
         wait(for: [syncCallbackReceived], timeout: 1.0)
+        sink.cancel()
     }
 
     /// - Given: An InitialSyncOperation
@@ -160,7 +165,7 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default) { _ in }
+            dataStoreConfiguration: .default)
 
         operation.main()
 
@@ -209,7 +214,7 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default) { _ in }
+            dataStoreConfiguration: .default)
 
         operation.main()
 
@@ -244,9 +249,11 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default) { _ in
-                syncCallbackReceived.fulfill()
-        }
+            dataStoreConfiguration: .default)
+
+        let sink = operation.publisher.sink(receiveCompletion: { _ in
+           syncCallbackReceived.fulfill()
+        }, receiveValue: { _ in })
 
         operation.main()
 
@@ -258,6 +265,7 @@ class InitialSyncOperationTests: XCTestCase {
         }
 
         XCTAssertEqual(syncMetadata.lastSync, startDateMilliseconds)
+        sink.cancel()
     }
 
     /// - Given: An InitialSyncOperation
@@ -303,16 +311,9 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: configuration) { result in
-                switch result {
-                case .success:
-                    XCTFail("Should have failed")
-                case .failure:
-                    syncCallbackReceived.fulfill()
-                }
-        }
+            dataStoreConfiguration: configuration)
 
-        _ = operation.publisher.sink(receiveCompletion: { result in
+        let sink = operation.publisher.sink(receiveCompletion: { result in
             switch result {
             case .finished:
                 XCTFail("Should have failed")
@@ -325,6 +326,8 @@ class InitialSyncOperationTests: XCTestCase {
 
         wait(for: [expectErrorHandlerCalled], timeout: 1.0)
         wait(for: [syncCallbackReceived], timeout: 1.0)
+
+        sink.cancel()
     }
 
     /// - Given: An InitialSyncOperation in a system with previous sync metadata
@@ -372,7 +375,7 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default) { _ in }
+            dataStoreConfiguration: .default)
 
         operation.main()
 
@@ -420,7 +423,7 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: configuration) {_ in }
+            dataStoreConfiguration: configuration)
 
         operation.main()
 
@@ -456,7 +459,7 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: configuration) {_ in }
+            dataStoreConfiguration: configuration)
 
         operation.main()
 

@@ -45,6 +45,11 @@ public extension HubPayload.EventName.DataStore {
     /// Dispatched when all models have been synced
     static let syncQueriesReady = "DataStore.syncQueriesReady"
 
+    /// Dispatched when:
+    /// - local store is loaded up from the disk if device is offline:
+    /// - all data finish syncing with cloud and every functional pieces are ready if device is online:
+    static let ready = "DataStore.ready"
+
     /// Dispatched when DataStore starts and everytime network status changes
     /// HubPayload `NetworkStatusEvent` contains a boolean value `active` to notify network status
     static let networkStatus = "DataStore.networkStatus"

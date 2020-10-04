@@ -19,7 +19,6 @@ final class InitialSyncOperation: AsynchronousOperation {
     private let dataStoreConfiguration: DataStoreConfiguration
 
     private let modelType: Model.Type
-    private let completion: AWSInitialSyncOrchestrator.SyncOperationResultHandler
 
     private var recordsReceived: UInt
 
@@ -39,14 +38,12 @@ final class InitialSyncOperation: AsynchronousOperation {
          api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?,
-         dataStoreConfiguration: DataStoreConfiguration,
-         completion: @escaping AWSInitialSyncOrchestrator.SyncOperationResultHandler) {
+         dataStoreConfiguration: DataStoreConfiguration) {
         self.modelType = modelType
         self.api = api
         self.reconciliationQueue = reconciliationQueue
         self.storageAdapter = storageAdapter
         self.dataStoreConfiguration = dataStoreConfiguration
-        self.completion = completion
         self.recordsReceived = 0
         self.initialSyncOperationTopic = PassthroughSubject<InitialSyncOperationEvent, DataStoreError>()
     }
@@ -213,7 +210,6 @@ final class InitialSyncOperation: AsynchronousOperation {
     }
 
     private func finish(result: AWSInitialSyncOrchestrator.SyncOperationResult) {
-        completion(result)
         switch result {
         case .failure(let error):
             initialSyncOperationTopic.send(completion: .failure(error))

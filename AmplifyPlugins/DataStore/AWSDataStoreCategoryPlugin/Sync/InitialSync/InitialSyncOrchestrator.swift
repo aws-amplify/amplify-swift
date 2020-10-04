@@ -97,27 +97,23 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
     /// Enqueues sync operations for models and downstream dependencies
     private func enqueueSyncOperation(for modelType: Model.Type) {
-        let syncOperationCompletion: SyncOperationResultHandler = { result in
-            if case .failure(let dataStoreError) = result {
-                let syncError = DataStoreError.sync(
-                    "An error occurred syncing \(modelType.modelName)",
-                    "",
-                    dataStoreError)
-                self.syncErrors.append(syncError)
-            }
-        }
-
         let initialSyncForModel = InitialSyncOperation(modelType: modelType,
                                                        api: api,
                                                        reconciliationQueue: reconciliationQueue,
                                                        storageAdapter: storageAdapter,
-                                                       dataStoreConfiguration: dataStoreConfiguration,
-                                                       completion: syncOperationCompletion)
+                                                       dataStoreConfiguration: dataStoreConfiguration)
 
         initialSyncOperationSinks[modelType.modelName] = initialSyncForModel
             .publisher
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: onReceiveValue(receiveValue:))
+            .sink(receiveCompletion: { result in
+                if case .failure(let dataStoreError) = result {
+                    let syncError = DataStoreError.sync(
+                        "An error occurred syncing \(modelType.modelName)",
+                        "",
+                        dataStoreError)
+                    self.syncErrors.append(syncError)
+                }
+            }, receiveValue: onReceiveValue(receiveValue:))
 
         syncOperationQueue.addOperation(initialSyncForModel)
     }
