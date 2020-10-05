@@ -135,7 +135,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             self.remoteSyncTopicPublisher.send(.mutationEvent(mutationEvent))
         }
 
-        DispatchQueue.main.async {
+        DispatchQueue.global().async {
             self.dispatchReady()
         }
     }
