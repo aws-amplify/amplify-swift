@@ -55,8 +55,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     let requestRetryablePolicy: RequestRetryablePolicy
     var currentAttemptNumber: Int
 
-    let readySemaphore = DispatchSemaphore(value: 0)
-
     var finishedCompletionBlock: DataStoreCallback<Void>?
 
     /// Initializes the CloudSyncEngine with the specified storageAdapter as the provider for persistence of
@@ -134,10 +132,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         self.outgoingMutationQueueSink = self.outgoingMutationQueue.publisher.sink { mutationEvent in
             self.remoteSyncTopicPublisher.send(.mutationEvent(mutationEvent))
         }
-
-        DispatchQueue.global().async {
-            self.dispatchReady()
-        }
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -167,7 +161,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             notifySyncStarted()
 
         case .syncEngineActive:
-            readySemaphore.signal()
+            break
 
         case .cleaningUp(let error):
             cleanup(error: error)
@@ -284,15 +278,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         // TODO: This should be an AsynchronousOperation, not a semaphore-waited block
         let semaphore = DispatchSemaphore(value: 0)
 
-        let filter = HubFilters.forEventName(HubPayload.EventName.DataStore.syncQueriesReady)
-        var token: UnsubscribeToken?
-        token = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { _ in
-            self.readySemaphore.signal()
-            if let token = token {
-                Amplify.Hub.removeListener(token)
-            }
-        }
-
         initialSyncOrchestrator.sync { result in
             if case .failure(let dataStoreError) = result {
                 self.log.error(dataStoreError.errorDescription)
@@ -328,13 +313,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
         remoteSyncTopicPublisher.send(.mutationQueueStarted)
         stateMachine.notify(action: .activatedMutationQueue)
-    }
-
-    private func dispatchReady() {
-        readySemaphore.wait()
-        readySemaphore.wait()
-        let readyPayload = HubPayload(eventName: HubPayload.EventName.DataStore.ready)
-        Amplify.Hub.dispatch(to: .dataStore, payload: readyPayload)
     }
 
     private func cleanup(error: AmplifyError) {
