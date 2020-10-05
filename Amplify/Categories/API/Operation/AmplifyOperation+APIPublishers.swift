@@ -10,6 +10,9 @@ import Foundation
 
 // MARK: - GraphQLOperation
 
+// The overrides require a feature and bugfix introduced in Swift 5.2
+#if swift(>=5.2)
+
 @available(iOS 13.0, *)
 public extension GraphQLOperation {
     /// Publishes the final result of the operation
@@ -104,3 +107,5 @@ public extension AmplifyOperation
         internalResultPublisher
     }
 }
+
+#endif

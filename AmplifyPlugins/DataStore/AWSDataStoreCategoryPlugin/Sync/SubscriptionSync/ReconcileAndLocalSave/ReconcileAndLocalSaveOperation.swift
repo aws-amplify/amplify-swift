@@ -96,10 +96,12 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         case .inError(let error):
             // Maybe we have to notify the Hub?
             log.error(error: error)
+            notifyFinished()
             finish()
 
         case .finished:
             // Maybe we have to notify the Hub?
+            notifyFinished()
             finish()
 
         }
@@ -299,6 +301,10 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         mutationEventPublisher.send(mutationEvent)
 
         stateMachine.notify(action: .notified)
+    }
+
+    private func notifyFinished() {
+        mutationEventPublisher.send(completion: .finished)
     }
 
     private func getPendingMutations(forModelId modelId: Model.Identifier) -> DataStoreResult<[MutationEvent]> {

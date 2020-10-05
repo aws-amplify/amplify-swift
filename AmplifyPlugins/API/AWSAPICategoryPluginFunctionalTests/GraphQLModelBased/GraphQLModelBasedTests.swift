@@ -73,6 +73,93 @@ class GraphQLModelBasedTests: XCTestCase {
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
+    /// Test custom GraphQLRequest with nested list deserializes to generated Post Model
+    ///
+    /// - Given: A post containing a single comment
+    /// - When:
+    ///    - Query for the post with nested selection set containing list of comments
+    /// - Then:
+    ///    - The resulting post object contains the list of comments
+    ///
+    func testCustomQueryPostWithComments() {
+        let uuid = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let title = testMethodName + "Title"
+        guard let post = createPost(id: uuid, title: title) else {
+            XCTFail("Failed to set up test")
+            return
+        }
+        guard createComment(content: "content", post: post) != nil else {
+            XCTFail("Failed to create comment with post")
+            return
+        }
+
+        let completeInvoked = expectation(description: "request completed")
+        let document = """
+        query getPost($id: ID!) {
+          getPost(id: $id){
+            id
+            title
+            content
+            createdAt
+            updatedAt
+            draft
+            rating
+            status
+            comments {
+              items {
+                id
+                content
+                createdAt
+                updatedAt
+                post {
+                  id
+                  title
+                  content
+                  createdAt
+                  updatedAt
+                  draft
+                  rating
+                  status
+                }
+              }
+              nextToken
+            }
+          }
+        }
+        """
+        let graphQLRequest = GraphQLRequest(document: document,
+                                            variables: ["id": uuid],
+                                            responseType: Post?.self,
+                                            decodePath: "getPost")
+        _ = Amplify.API.query(request: graphQLRequest) { event in
+            switch event {
+            case .success(let graphQLResponse):
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
+                    return
+                }
+                guard let resultPost = data else {
+                    XCTFail("Missing post from querySingle")
+                    return
+                }
+
+                XCTAssertEqual(resultPost.id, post.id)
+                XCTAssertEqual(resultPost.title, title)
+                guard let comments = resultPost.comments else {
+                    XCTFail("Missing comments from post")
+                    return
+                }
+                XCTAssertEqual(comments.count, 1)
+                completeInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            }
+        }
+
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+
     func testListQueryWithModel() {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -185,8 +272,8 @@ class GraphQLModelBasedTests: XCTestCase {
 
         let completeInvoked = expectation(description: "request completed")
         let comment = Comment(content: "commentContent",
-                                                createdAt: .now(),
-                                                post: createdPost)
+                              createdAt: .now(),
+                              post: createdPost)
         _ = Amplify.API.mutate(request: .create(comment)) { event in
             switch event {
             case .success(let data):

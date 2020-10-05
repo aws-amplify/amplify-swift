@@ -10,6 +10,9 @@ import Foundation
 
 // MARK: - StorageDownloadDataOperation
 
+// The overrides require a feature and bugfix introduced in Swift 5.2
+#if swift(>=5.2)
+
 @available(iOS 13.0, *)
 public extension AmplifyInProcessReportingOperation
     where
@@ -145,3 +148,5 @@ public extension AmplifyInProcessReportingOperation
         internalInProcessPublisher
     }
 }
+
+#endif

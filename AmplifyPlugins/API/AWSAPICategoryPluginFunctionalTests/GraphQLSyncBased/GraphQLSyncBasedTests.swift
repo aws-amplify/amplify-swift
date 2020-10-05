@@ -81,6 +81,8 @@ class GraphQLSyncBasedTests: XCTestCase {
                     XCTFail("partial: \(String(describing: model)), \(errors)")
                 case .transformationError(let rawResponse, let apiError):
                     XCTFail("transformationError: \(rawResponse), \(apiError)")
+                case .unknown(let errorDescription, let recoverySuggestion, _):
+                    XCTFail("UnknownError: \(errorDescription), \(recoverySuggestion)")
                 }
             }
             return
@@ -137,6 +139,8 @@ class GraphQLSyncBasedTests: XCTestCase {
                     XCTFail("partial: \(String(describing: model)), \(errors)")
                 case .transformationError(let rawResponse, let apiError):
                     XCTFail("transformationError: \(rawResponse), \(apiError)")
+                case .unknown(let errorDescription, let recoverySuggestion, _):
+                    XCTFail("UnknownError: \(errorDescription), \(recoverySuggestion)")
                 }
             }
             return
@@ -208,6 +212,8 @@ class GraphQLSyncBasedTests: XCTestCase {
                     XCTFail("partial: \(model), \(errors)")
                 case .transformationError(let rawResponse, let apiError):
                     XCTFail("transformationError: \(rawResponse), \(apiError)")
+                case .unknown(let errorDescription, let recoverySuggestion, _):
+                    XCTFail("UnknownError: \(errorDescription), \(recoverySuggestion)")
                 }
             }
             return
@@ -287,6 +293,8 @@ class GraphQLSyncBasedTests: XCTestCase {
                 XCTFail("partial: \(model), \(errors)")
             case .transformationError(let rawResponse, let apiError):
                 XCTFail("transformationError: \(rawResponse), \(apiError)")
+            case .unknown(let errorDescription, let recoverySuggestion, _):
+                XCTFail("UnknownError: \(errorDescription), \(recoverySuggestion)")
             }
         }
 
@@ -381,6 +389,8 @@ class GraphQLSyncBasedTests: XCTestCase {
                 XCTFail("partial: \(model), \(errors)")
             case .transformationError(let rawResponse, let apiError):
                 XCTFail("transformationError: \(rawResponse), \(apiError)")
+            case .unknown(let errorDescription, let recoverySuggestion, _):
+                XCTFail("UnknownError: \(errorDescription), \(recoverySuggestion)")
             }
         }
 
@@ -444,6 +454,8 @@ class GraphQLSyncBasedTests: XCTestCase {
                     XCTFail("partial: \(model), \(errors)")
                 case .transformationError(let rawResponse, let apiError):
                     XCTFail("transformationError: \(rawResponse), \(apiError)")
+                case .unknown(let errorDescription, let recoverySuggestion, _):
+                    XCTFail("UnknownError: \(errorDescription), \(recoverySuggestion)")
                 }
             }
             return

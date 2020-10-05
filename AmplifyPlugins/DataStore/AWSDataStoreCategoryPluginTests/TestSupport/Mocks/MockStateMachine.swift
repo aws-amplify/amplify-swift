@@ -6,20 +6,21 @@
 //
 
 import Foundation
+import Amplify
 @testable import AWSDataStoreCategoryPlugin
 
 class MockStateMachine<S, A>: StateMachine<S, A> {
     typealias ExpectActionCriteria = (_ action: A) -> Void
-    var expectActionCriteriaQueue: [ExpectActionCriteria]
+    var expectActionCriteriaQueue: AtomicValue<[ExpectActionCriteria]>
 
     override init(initialState: S, resolver: @escaping Reducer) {
-        self.expectActionCriteriaQueue = []
+        self.expectActionCriteriaQueue = AtomicValue(initialValue: [])
         super.init(initialState: initialState, resolver: resolver)
     }
     override func notify(action: A) {
-        if let expectActionCriteria = expectActionCriteriaQueue.first {
+        if let expectActionCriteria = expectActionCriteriaQueue.get().first {
             expectActionCriteria(action)
-            expectActionCriteriaQueue.removeFirst(1)
+            expectActionCriteriaQueue.with { $0.removeFirst(1) }
         }
     }
     func pushExpectActionCriteria(expectActionCriteria: @escaping ExpectActionCriteria) {

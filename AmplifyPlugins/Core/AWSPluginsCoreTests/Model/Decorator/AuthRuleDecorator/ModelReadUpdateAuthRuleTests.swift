@@ -205,8 +205,8 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, "111")))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
-        subscription OnCreateModelReadUpdateField($owner: String!) {
-          onCreateModelReadUpdateField(owner: $owner) {
+        subscription OnCreateModelReadUpdateField {
+          onCreateModelReadUpdateField {
             id
             content
             __typename
@@ -216,11 +216,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "onCreateModelReadUpdateField")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        guard let variables = document.variables else {
-            XCTFail("The document doesn't contain variables")
-            return
-        }
-        XCTAssertEqual(variables["owner"] as? String, "111")
+        XCTAssert(document.variables.isEmpty)
     }
 
     // Others can `.update` this model, which means the update subscription does not require owner input
@@ -252,8 +248,8 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, "111")))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
-        subscription OnDeleteModelReadUpdateField($owner: String!) {
-          onDeleteModelReadUpdateField(owner: $owner) {
+        subscription OnDeleteModelReadUpdateField {
+          onDeleteModelReadUpdateField {
             id
             content
             __typename
@@ -263,11 +259,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "onDeleteModelReadUpdateField")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        guard let variables = document.variables else {
-            XCTFail("The document doesn't contain variables")
-            return
-        }
-        XCTAssertEqual(variables["owner"] as? String, "111")
+        XCTAssert(document.variables.isEmpty)
     }
 
 }

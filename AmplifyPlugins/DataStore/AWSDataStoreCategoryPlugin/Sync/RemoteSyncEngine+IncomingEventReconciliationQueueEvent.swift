@@ -34,6 +34,8 @@ extension RemoteSyncEngine {
     func onReceive(receiveValue: IncomingEventReconciliationQueueEvent) {
         switch receiveValue {
         case .initialized:
+            let payload = HubPayload(eventName: HubPayload.EventName.DataStore.subscriptionsEstablished)
+            Amplify.Hub.dispatch(to: .dataStore, payload: payload)
             remoteSyncTopicPublisher.send(.subscriptionsInitialized)
             stateMachine.notify(action: .initializedSubscriptions)
         case .started:

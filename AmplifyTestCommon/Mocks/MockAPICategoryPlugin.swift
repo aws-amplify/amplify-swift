@@ -24,7 +24,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     func reset(onComplete: @escaping BasicClosure) {
         notify("reset")
-        listeners = []
+        listeners.set([])
         onComplete()
     }
 
@@ -49,6 +49,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
                                                  responseType: request.responseType,
                                                  options: options)
         let operation = MockGraphQLOperation(request: request, responseType: request.responseType)
+
         return operation
     }
 

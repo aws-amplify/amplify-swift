@@ -1,4 +1,48 @@
 # Changelog
+## Unreleased
+## 1.3.1 (2020-10-01)
+
+### Bug Fixes
+
+- Data race in AWSModelReconciliationQueue (#790)
+- Remove unused RepeatingTimer (#786)
+
+## 1.3.0 (2020-09-29)
+
+### Features
+
+- Support Xcode 12 (#779)
+- **datastore**: Dispatch outboxMutationEnqueued, outboxMutationProcessed events (#759)
+
+### Bug Fixes
+
+- Remove enableThreadSanitizer flag from test invocation (#783)
+- Add #if swift check for Combine publishers (#775)
+
+## 1.2.0 (2020-09-16)
+
+### Features
+
+- **DataStore**: Dispatch outboxStatus, subscriptionsEstablished, syncQueriesStarted events ([#721](https://github.com/aws-amplify/amplify-ios/pull/721))
+
+### Bug Fixes
+
+- **DataStore**: Fix publishing events from model reconciliation queue ([#756](https://github.com/aws-amplify/amplify-ios/pull/756))
+- **Core**: Fix default operator outside of guard statement ([#752](https://github.com/aws-amplify/amplify-ios/pull/752))
+
+## 1.1.2 (2020-08-30)
+
+### Bug Fixes
+
+- **Auth**: Updated AWS SDK dependencies to fix crash during `federatedSignIn` (#640)
+- **API**: Add custom 'items' deserialization for List (#711)
+- Fix typo in iOS Combine docs (#747)
+
+## 1.1.1 (2020-08-18)
+
+### Bug Fixes
+
+- Propagate @discardableResult to implementations (#719)
 
 ## 1.1.0 (2020-08-12)
 
@@ -14,12 +58,6 @@
 - **Predictions**: rowIndex and columnIndex for cell (#704)
 - **predictions**: TABLE, CELL & KEY_VALUE_SET blocks are not properly processed (#660)
 - **api**: cognito user pool intercept with accessToken (#690)
-
-## Unreleased
-
-### Bug Fixes
-
-- **Predictions**: Add rowIndex and columnIndex to Cell struct ([#704](https://github.com/aws-amplify/amplify-ios/pull/704))
 
 ## 1.0.6 (2020-08-03)
 

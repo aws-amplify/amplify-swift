@@ -26,10 +26,49 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
             try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
                                                                     dataStoreConfiguration: .default))
         }
-
         let post = Post(title: "Post title",
                         content: "Post content",
                         createdAt: .now())
+
+        var outboxStatusReceivedCurrentCount = 0
+        let outboxStatusOnStart = expectation(description: "On DataStore start, outboxStatus received")
+        let outboxStatusOnMutationEnqueued = expectation(description: "Mutation enqueued, outboxStatus received")
+        let outboxMutationEnqueued = expectation(description: "Mutation enqueued, outboxMutationEnqueued received")
+
+        let outboxStatusFilter = HubFilters.forEventName(HubPayload.EventName.DataStore.outboxStatus)
+        let outboxMutationEnqueuedFilter = HubFilters.forEventName(HubPayload.EventName.DataStore.outboxMutationEnqueued)
+        let filters = HubFilters.any(filters: outboxStatusFilter, outboxMutationEnqueuedFilter)
+        let hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filters) { payload in
+            if payload.eventName == HubPayload.EventName.DataStore.outboxStatus {
+                outboxStatusReceivedCurrentCount += 1
+                guard let outboxStatusEvent = payload.data as? OutboxStatusEvent else {
+                    XCTFail("Failed to cast payload data as OutboxStatusEvent")
+                    return
+                }
+
+                if outboxStatusReceivedCurrentCount == 1 {
+                    XCTAssertTrue(outboxStatusEvent.isEmpty)
+                    outboxStatusOnStart.fulfill()
+                } else {
+                    XCTAssertFalse(outboxStatusEvent.isEmpty)
+                    outboxStatusOnMutationEnqueued.fulfill()
+                }
+            }
+
+            if payload.eventName == HubPayload.EventName.DataStore.outboxMutationEnqueued {
+                guard let outboxStatusEvent = payload.data as? OutboxMutationEvent else {
+                    XCTFail("Failed to cast payload data as OutboxMutationEvent")
+                    return
+                }
+                XCTAssertEqual(outboxStatusEvent.modelName, "Post")
+                outboxMutationEnqueued.fulfill()
+            }
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
 
         let createMutationSent = expectation(description: "Create mutation sent to API category")
         apiPlugin.listeners.append { message in
@@ -41,7 +80,8 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         try startAmplifyAndWaitForSync()
 
         Amplify.DataStore.save(post) { _ in }
-        wait(for: [createMutationSent], timeout: 5.0)
+        waitForExpectations(timeout: 5.0, handler: nil)
+        Amplify.Hub.removeListener(hubListener)
     }
 
     /// - Given: A sync-configured DataStore
@@ -95,6 +135,32 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         wait(for: [mutationEventSaved], timeout: 1.0)
 
+        var outboxStatusReceivedCurrentCount = 0
+        let outboxStatusOnStart = expectation(description: "On DataStore start, outboxStatus received")
+        let outboxStatusOnMutationEnqueued = expectation(description: "Mutation enqueued, outboxStatus received")
+
+        let filter = HubFilters.forEventName(HubPayload.EventName.DataStore.outboxStatus)
+        let hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { payload in
+            outboxStatusReceivedCurrentCount += 1
+            guard let outboxStatusEvent = payload.data as? OutboxStatusEvent else {
+                XCTFail("Failed to cast payload data as OutboxStatusEvent")
+                return
+            }
+
+            if outboxStatusReceivedCurrentCount == 1 {
+                XCTAssertFalse(outboxStatusEvent.isEmpty)
+                outboxStatusOnStart.fulfill()
+            } else {
+                XCTAssertFalse(outboxStatusEvent.isEmpty)
+                outboxStatusOnMutationEnqueued.fulfill()
+            }
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+
         let mutation1Sent = expectation(description: "Create mutation 1 sent to API category")
         let mutation2Sent = expectation(description: "Create mutation 2 sent to API category")
         mutation2Sent.isInverted = true
@@ -113,6 +179,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         }
 
         waitForExpectations(timeout: 5.0, handler: nil)
+        Amplify.Hub.removeListener(hubListener)
     }
 
     /// - Given: A sync-configured DataStore
