@@ -37,9 +37,10 @@ extension ReconcileAndLocalSaveOperation.Action: Equatable {
                 && model1.model.modelName == model2.model.modelName
         case (.reconciled(let disposition1), .reconciled(let disposition2)):
             return disposition1 == disposition2
-        case (.applied(let model1, _), .applied(let model2, _)):
+        case (.applied(let model1, let existsLocally1), .applied(let model2, let existsLocally2)):
             return model1.model.id == model2.model.id
                 && model1.model.modelName == model2.model.modelName
+                && existsLocally1 == existsLocally2
         case (.dropped, dropped):
             return true
         case (.notified, .notified):

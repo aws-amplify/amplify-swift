@@ -106,7 +106,6 @@ final class StorageEngine: StorageEngineBehavior {
                       syncEngine: nil,
                       validAPIPluginKey: validAPIPluginKey,
                       validAuthPluginKey: validAuthPluginKey)
-            dispatchReady()
         }
     }
 
@@ -125,11 +124,6 @@ final class StorageEngine: StorageEngineBehavior {
         if case .mutationEvent(let mutationEvent) = receiveValue {
             self.storageEnginePublisher.send(.mutationEvent(mutationEvent))
         }
-    }
-
-    private func dispatchReady() {
-        let readyPayload = HubPayload(eventName: HubPayload.EventName.DataStore.ready)
-        Amplify.Hub.dispatch(to: .dataStore, payload: readyPayload)
     }
 
     func setUp(models: [Model.Type]) throws {

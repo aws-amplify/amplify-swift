@@ -146,7 +146,8 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync)
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostMutationSync.model))
         stateMachine.pushExpectActionCriteria { action in
-            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostMutationSync, false))
+            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostMutationSync,
+                                                                                 existsLocally: true))
             expect.fulfill()
         }
 
@@ -189,7 +190,8 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostDeletedMutationSync)
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostDeletedMutationSync.model))
         stateMachine.pushExpectActionCriteria { action in
-            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostDeletedMutationSync, false))
+            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostDeletedMutationSync,
+                                                                                 existsLocally: true))
             expect.fulfill()
         }
 

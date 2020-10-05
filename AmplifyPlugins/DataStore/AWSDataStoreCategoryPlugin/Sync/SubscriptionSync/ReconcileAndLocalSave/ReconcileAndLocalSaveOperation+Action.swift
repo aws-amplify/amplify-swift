@@ -23,7 +23,7 @@ extension ReconcileAndLocalSaveOperation {
 
         /// Operation has applied the incoming RemoteModel to the local database per the reconciled disposition. This
         /// could result in either a save to the local database, or a delete from the local database.
-        case applied(AppliedModel, Bool)
+        case applied(AppliedModel, existsLocally: Bool)
 
         /// Operation dropped the remote model per the reconciled disposition.
         case dropped(modelName: String)

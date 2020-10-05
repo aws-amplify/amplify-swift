@@ -257,10 +257,10 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
         /// Do a local metadata query before saving to check if the `AppliedModel` is of `create` or
         /// `update` MutationType in perspective of local store
-        let isCreated: Bool
+        let existsLocally: Bool
         do {
             let localMetadata = try storageAdapter.queryMutationSyncMetadata(for: remoteModel.model.id)
-            isCreated = localMetadata == nil
+            existsLocally = localMetadata == nil
         } catch {
             log.error("Failed to query for sync metadata")
             return
@@ -272,7 +272,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 self.stateMachine.notify(action: errorAction)
             case .success(let syncMetadata):
                 let appliedModel = MutationSync(model: inProcessModel.model, syncMetadata: syncMetadata)
-                self.stateMachine.notify(action: .applied(appliedModel, isCreated))
+                self.stateMachine.notify(action: .applied(appliedModel, existsLocally: existsLocally))
             }
         }
     }
