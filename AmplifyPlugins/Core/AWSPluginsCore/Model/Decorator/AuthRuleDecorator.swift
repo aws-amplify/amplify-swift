@@ -9,8 +9,7 @@ import Foundation
 import Amplify
 
 public enum AuthRuleDecoratorInput {
-    public typealias OwnerId = String
-    case subscription(GraphQLSubscriptionType, OwnerId)
+    case subscription(GraphQLSubscriptionType, AuthUser)
     case mutation
     case query
 }
@@ -60,13 +59,14 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         let ownerField = authRule.getOwnerFieldOrDefault()
         selectionSet = appendOwnerFieldToSelectionSetIfNeeded(selectionSet: selectionSet, ownerField: ownerField)
 
-        guard case let .subscription(_, ownerId) = input else {
+        guard case let .subscription(_, authUser) = input else {
             return document.copy(selectionSet: selectionSet)
         }
 
         if isOwnerInputRequiredOnSubscription(authRule) {
             var inputs = document.inputs
-            inputs[ownerField] = GraphQLDocumentInput(type: "String!", value: .scalar(ownerId))
+            let identityClaimValue = resolveIdentityClaimValue(authRule, authUser)
+            inputs[ownerField] = GraphQLDocumentInput(type: "String!", value: .scalar(identityClaimValue))
             return document.copy(inputs: inputs, selectionSet: selectionSet)
         }
         return document.copy(selectionSet: selectionSet)
@@ -74,6 +74,19 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
 
     private func isOwnerInputRequiredOnSubscription(_ authRule: AuthRule) -> Bool {
         return authRule.allow == .owner && authRule.getModelOperationsOrDefault().contains(.read)
+    }
+
+    private func resolveIdentityClaimValue(_ authRule: AuthRule, _ authUser: AuthUser) -> String {
+        guard let identityClaim = authRule.identityClaim else {
+            return authUser.username
+        }
+        if identityClaim == "cognito:username" {
+            return authUser.username
+        } else if identityClaim == "sub" {
+            return authUser.userId
+        }
+        //TODO: Resolve other identityClaim types
+        return authUser.username
     }
 
     /// First finds the first `model` SelectionSet. Then, only append it when the `ownerField` does not exist.

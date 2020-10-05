@@ -214,10 +214,11 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
 
     // Only the 'owner' inherently has `.create` operation, requiring the subscription operation to contain the input
     func testModelMultipleOwner_OnCreateSubscription() {
+        let authUser = MockAWSAuthUser(username: "user1", userId: "123e4567-dead-beef-a456-426614174000")
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, "111")))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, authUser)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnCreateModelMultipleOwner($editors: String!, $owner: String!) {
@@ -236,15 +237,16 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
             XCTFail("The document doesn't contain variables")
             return
         }
-        XCTAssertEqual(variables["owner"] as? String, "111")
+        XCTAssertEqual(variables["owner"] as? String, "user1")
     }
 
     // Each owner with `.update` operation requires the ownerField on the corresponding subscription operation
     func testModelMultipleOwner_OnUpdateSubscription() {
+        let authUser = MockAWSAuthUser(username: "user1", userId: "123e4567-dead-beef-a456-426614174000")
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, "111")))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, authUser)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnUpdateModelMultipleOwner($editors: String!, $owner: String!) {
@@ -263,16 +265,17 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
             XCTFail("The document doesn't contain variables")
             return
         }
-        XCTAssertEqual(variables["owner"] as? String, "111")
-        XCTAssertEqual(variables["editors"] as? String, "111")
+        XCTAssertEqual(variables["owner"] as? String, "user1")
+        XCTAssertEqual(variables["editors"] as? String, "user1")
     }
 
     // Only the 'owner' inherently has `.delete` operation, requiring the subscription operation to contain the input
     func testModelMultipleOwner_OnDeleteSubscription() {
+        let authUser = MockAWSAuthUser(username: "user1", userId: "123e4567-dead-beef-a456-426614174000")
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, "111")))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, authUser)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnDeleteModelMultipleOwner($editors: String!, $owner: String!) {
@@ -291,6 +294,6 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
             XCTFail("The document doesn't contain variables")
             return
         }
-        XCTAssertEqual(variables["owner"] as? String, "111")
+        XCTAssertEqual(variables["owner"] as? String, "user1")
     }
 }
