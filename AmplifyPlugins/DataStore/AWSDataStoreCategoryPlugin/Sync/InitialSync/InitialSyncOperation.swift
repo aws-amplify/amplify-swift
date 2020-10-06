@@ -158,7 +158,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         recordsReceived += UInt(items.count)
 
         for item in items {
-            reconciliationQueue.offer(item)
+            reconciliationQueue.offer(item, modelSchema: modelSchema)
         }
 
         if let nextToken = syncQueryResult.nextToken, recordsReceived < syncMaxRecords {

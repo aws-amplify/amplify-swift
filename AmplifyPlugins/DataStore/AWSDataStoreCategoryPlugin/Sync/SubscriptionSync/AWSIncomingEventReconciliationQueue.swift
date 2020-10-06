@@ -38,8 +38,8 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     }
 
     private let connectionStatusSerialQueue: DispatchQueue
-    private var reconciliationQueues: [String: ModelReconciliationQueue]
-    private var reconciliationQueueConnectionStatus: [String: Bool]
+    private var reconciliationQueues: [ModelName: ModelReconciliationQueue]
+    private var reconciliationQueueConnectionStatus: [ModelName: Bool]
     private var modelReconciliationQueueFactory: ModelReconciliationQueueFactory
 
     init(modelSchemas: [ModelSchema],
@@ -82,8 +82,8 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         eventReconciliationQueueTopic.send(.paused)
     }
 
-    func offer(_ remoteModel: MutationSync<AnyModel>) {
-        guard let queue = reconciliationQueues[remoteModel.model.modelName] else {
+    func offer(_ remoteModel: MutationSync<AnyModel>, modelSchema: ModelSchema) {
+        guard let queue = reconciliationQueues[modelSchema.name] else {
             // TODO: Error handling
             return
         }

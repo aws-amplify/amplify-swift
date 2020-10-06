@@ -39,17 +39,33 @@ public struct MutationEvent: Model {
     }
 
     public init<M: Model>(model: M,
+                          modelSchema: ModelSchema,
                           mutationType: MutationType,
                           version: Int? = nil,
                           graphQLFilterJSON: String? = nil) throws {
-        let modelType = type(of: model)
         let json = try model.toJSON()
         self.init(modelId: model.id,
-                  modelName: modelType.schema.name,
+                  modelName: modelSchema.name,
                   json: json,
                   mutationType: mutationType,
                   version: version,
                   graphQLFilterJSON: graphQLFilterJSON)
+
+    }
+
+    @available(*, deprecated, message: """
+    Initializing from a model without a ModelSchema is deprecated.
+    Use init(model:modelSchema:mutationType:version:graphQLFilterJSON:) instead.
+    """)
+    public init<M: Model>(model: M,
+                          mutationType: MutationType,
+                          version: Int? = nil,
+                          graphQLFilterJSON: String? = nil) throws {
+        try self.init(model: model,
+                      modelSchema: model.schema,
+                      mutationType: mutationType,
+                      version: version,
+                      graphQLFilterJSON: graphQLFilterJSON)
 
     }
 
