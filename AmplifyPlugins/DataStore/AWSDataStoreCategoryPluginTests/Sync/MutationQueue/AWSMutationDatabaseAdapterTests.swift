@@ -29,8 +29,12 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
 
     func test_replaceLocal_localCreateCandidateUpdate() throws {
-        let localCreate = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.create)
-        let candidateUpdate = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.update)
+        let localCreate = try MutationEvent(model: model1,
+                                            modelSchema: model1.schema,
+                                            mutationType: MutationEvent.MutationType.create)
+        let candidateUpdate = try MutationEvent(model: model1,
+                                                modelSchema: model1.schema,
+                                                mutationType: MutationEvent.MutationType.update)
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [localCreate])
 
@@ -38,10 +42,13 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
 
     func test_saveCandidate_CanadidateUpdateWithCondition() throws {
-        let anyLocal = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.create)
+        let anyLocal = try MutationEvent(model: model1,
+                                         modelSchema: model1.schema,
+                                         mutationType: MutationEvent.MutationType.create)
         let queryPredicate = post.title == model1.title
         let graphQLFilterJSON = try GraphQLFilterConverter.toJSON(queryPredicate)
         let candidateUpdate = try MutationEvent(model: model1,
+                                                modelSchema: model1.schema,
                                                 mutationType: MutationEvent.MutationType.update,
                                                 graphQLFilterJSON: graphQLFilterJSON)
 
@@ -50,10 +57,13 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
 
     func test_saveCandidate_CanadidateDeleteWithCondition() throws {
-        let anyLocal = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.create)
+        let anyLocal = try MutationEvent(model: model1,
+                                         modelSchema: model1.schema,
+                                         mutationType: MutationEvent.MutationType.create)
         let queryPredicate = post.title == model1.title
         let graphQLFilterJSON = try GraphQLFilterConverter.toJSON(queryPredicate)
         let candidateUpdate = try MutationEvent(model: model1,
+                                                modelSchema: model1.schema,
                                                 mutationType: MutationEvent.MutationType.delete,
                                                 graphQLFilterJSON: graphQLFilterJSON)
 
@@ -62,8 +72,12 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
 
     func test_replaceLocal_BothUpdate() throws {
-        let localCreate = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.update)
-        let candidateUpdate = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.update)
+        let localCreate = try MutationEvent(model: model1,
+                                            modelSchema: model1.schema,
+                                            mutationType: MutationEvent.MutationType.update)
+        let candidateUpdate = try MutationEvent(model: model1,
+                                                modelSchema: model1.schema,
+                                                mutationType: MutationEvent.MutationType.update)
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [localCreate])
 
@@ -71,8 +85,12 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
 
     func test_replaceLocal_localUpdateCandidateDelete() throws {
-        let localCreate = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.update)
-        let candidateUpdate = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.delete)
+        let localCreate = try MutationEvent(model: model1,
+                                            modelSchema: model1.schema,
+                                            mutationType: MutationEvent.MutationType.update)
+        let candidateUpdate = try MutationEvent(model: model1,
+                                                modelSchema: model1.schema,
+                                                mutationType: MutationEvent.MutationType.delete)
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [localCreate])
 
@@ -80,8 +98,12 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
 
     func test_replaceLocal_BothDelete() throws {
-        let localCreate = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.delete)
-        let candidateUpdate = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.delete)
+        let localCreate = try MutationEvent(model: model1,
+                                            modelSchema: model1.schema,
+                                            mutationType: MutationEvent.MutationType.delete)
+        let candidateUpdate = try MutationEvent(model: model1,
+                                                modelSchema: model1.schema,
+                                                mutationType: MutationEvent.MutationType.delete)
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [localCreate])
 
@@ -89,8 +111,12 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
 
     func test_dropCandidate_localCreateCandidateDelete() throws {
-        let localCreate = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.create)
-        let candidateUpdate = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.delete)
+        let localCreate = try MutationEvent(model: model1,
+                                            modelSchema: model1.schema,
+                                            mutationType: MutationEvent.MutationType.create)
+        let candidateUpdate = try MutationEvent(model: model1,
+                                                modelSchema: model1.schema,
+                                                mutationType: MutationEvent.MutationType.delete)
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [localCreate])
 
@@ -98,8 +124,12 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
 
     func test_dropCandidateWithError_localItemExistsAlreadyCandidateCreates() throws {
-        let localCreate = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.create)
-        let candidateUpdate = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.create)
+        let localCreate = try MutationEvent(model: model1,
+                                            modelSchema: model1.schema,
+                                            mutationType: MutationEvent.MutationType.create)
+        let candidateUpdate = try MutationEvent(model: model1,
+                                                modelSchema: model1.schema,
+                                                mutationType: MutationEvent.MutationType.create)
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [localCreate])
 
@@ -107,8 +137,12 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
 
     func test_dropCandidateWithError_updateMutationForItemMarkedDeleted() throws {
-        let localCreate = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.delete)
-        let candidateUpdate = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.update)
+        let localCreate = try MutationEvent(model: model1,
+                                            modelSchema: model1.schema,
+                                            mutationType: MutationEvent.MutationType.delete)
+        let candidateUpdate = try MutationEvent(model: model1,
+                                                modelSchema: model1.schema,
+                                                mutationType: MutationEvent.MutationType.update)
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [localCreate])
 

@@ -163,7 +163,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         recordsReceived += UInt(items.count)
 
         for item in items {
-            reconciliationQueue.offer(item)
+            reconciliationQueue.offer(item, modelSchema: modelSchema)
             initialSyncOperationTopic.send(.enqueued(item))
         }
 
