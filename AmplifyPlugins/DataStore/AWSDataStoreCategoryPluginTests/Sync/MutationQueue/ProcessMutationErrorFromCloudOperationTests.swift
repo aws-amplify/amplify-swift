@@ -40,7 +40,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     ///    - `DataStoreErrorHandler` is called
     func testProcessMutationErrorFromCloudOperationSuccessForAuthErroor() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: localPost, mutationType: .update)
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .update)
         let authError = AuthError.signedOut("User is not authenticated", "Authenticate user", nil)
         let apiError = APIError.operationError("not signed in", "Sign In User", authError)
         let expectCompletion = expectation(description: "Expect to complete error processing")
@@ -92,7 +92,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     func testProcessMutationErrorFromCloudOperationSuccessForUnknownError() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: localPost, mutationType: .delete)
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
         guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
                                                                      deleted: true,
                                                                      version: 1,
@@ -122,7 +122,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     func testProcessMutationErrorFromCloudOperationSuccessForMissingErrorType() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: localPost, mutationType: .delete)
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
         guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
                                                                      deleted: true,
                                                                      version: 1,
@@ -163,7 +163,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             expectCompletion.fulfill()
         }
         let post1 = Post(title: "post1", content: "content1", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: post1, mutationType: .create)
+        let mutationEvent = try MutationEvent(model: post1, modelSchema: post1.schema, mutationType: .create)
         let graphQLError = GraphQLError(message: "conditional request failed",
                                         locations: nil,
                                         path: nil,
@@ -191,7 +191,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     ///    - Unexpected scenario, there should never be an conflict unhandled error without error.data
     func testConflictUnhandledReturnsErrorForMissingRemoteModel() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: localPost, mutationType: .create)
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .create)
         let graphQLError = GraphQLError(message: "conflict unhandled",
                                         extensions: ["errorType": .string(AppSyncErrorType.conflictUnhandled.rawValue)])
         let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError])
@@ -225,7 +225,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     ///    - Unexpected scenario, there should never get a conflict for create mutations
     func testConflictUnhandledReturnsErrorForCreateMutation() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: localPost, mutationType: .create)
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .create)
         let remotePost = Post(title: "remoteTitle", content: "remoteContent", createdAt: .now())
         guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
                                                                      deleted: false,
@@ -264,7 +264,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     func testConflictUnhandledForDeleteMutationAndDeletedRemoteModel() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: localPost, mutationType: .delete)
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
         guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
                                                                      deleted: true,
                                                                      version: 1) else {
@@ -298,7 +298,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     func testConflictUnhandledForDeleteMutationAndUpdatedRemoteModelReturnsRetryLocal() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: localPost, mutationType: .delete)
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
         guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
                                                                      deleted: false,
                                                                      version: 2) else {
@@ -375,7 +375,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     func testConflictUnhandledForDeleteMutationAndUpdatedRemoteModelReturnsRetryModel() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: localPost, mutationType: .delete)
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
         guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
                                                                      deleted: false,
                                                                      version: 2) else {
@@ -453,7 +453,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     func testConflictUnhandledForDeleteMutationAndUpdatedRemoteModelReturnsApplyRemote() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: localPost, mutationType: .delete)
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
         guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
                                                                      deleted: false,
                                                                      version: 2) else {
@@ -523,7 +523,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     func testConflictUnhandledForUpdateMutationAndDeletedRemoteModel() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: localPost, mutationType: .update)
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .update)
         guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
                                                                      deleted: true,
                                                                      version: 2) else {
@@ -588,7 +588,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     func testConflictUnhandledUpdateMutationAndUpdatedRemoteReturnsApplyRemote() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: localPost, mutationType: .update)
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .update)
         guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
                                                                      deleted: false,
                                                                      version: 2) else {
@@ -672,7 +672,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     func testConflictUnhandledUpdateMutationAndUpdatedRemoteReturnsRetryLocal() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: localPost, mutationType: .update)
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .update)
         guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
                                                                      deleted: false,
                                                                      version: 2) else {
@@ -747,7 +747,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     func testConflictUnhandledUpdateMutationAndUpdatedRemoteReturnsRetryModel() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: localPost, mutationType: .update)
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .update)
         guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
                                                                      deleted: false,
                                                                      version: 2) else {
@@ -824,7 +824,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     func testConflictUnhandledSyncToCloudReturnsError() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: localPost, mutationType: .update)
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .update)
         guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
                                                                      deleted: false,
                                                                      version: 2) else {
