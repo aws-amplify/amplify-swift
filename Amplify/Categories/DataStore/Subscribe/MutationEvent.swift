@@ -53,6 +53,21 @@ public struct MutationEvent: Model {
 
     }
 
+    @available(*, deprecated, message: """
+    Init method without ModelSchema is deprecated, use the other init methods.
+    """)
+    public init<M: Model>(model: M,
+                          mutationType: MutationType,
+                          version: Int? = nil,
+                          graphQLFilterJSON: String? = nil) throws {
+        try self.init(model: model,
+                      modelSchema: model.schema,
+                      mutationType: mutationType,
+                      version: version,
+                      graphQLFilterJSON: graphQLFilterJSON)
+
+    }
+
     public func decodeModel() throws -> Model {
         let model = try ModelRegistry.decode(modelName: modelName, from: json)
         return model
