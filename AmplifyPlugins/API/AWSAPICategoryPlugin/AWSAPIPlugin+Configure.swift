@@ -35,6 +35,8 @@ public extension AWSAPIPlugin {
 
         configure(using: dependencies)
 
+        ModelListDecoderRegistry.registerDecoder(AppSyncList<AnyModel>.self)
+
         log.info("Configure finished")
     }
 }

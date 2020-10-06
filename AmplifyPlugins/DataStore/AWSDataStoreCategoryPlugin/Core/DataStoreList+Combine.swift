@@ -5,10 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Combine
 
 @available(iOS 13.0, *)
-extension List {
+extension DataStoreList {
 
     public typealias LazyListPublisher = AnyPublisher<Elements, DataStoreError>
 

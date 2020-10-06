@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import Amplify
 
 /// This extension adds lazy load logic to the `List<ModelType>`. Lazy loading means
 /// the contents of a list that represents an association between two models will only be
 /// loaded when it's needed.
-extension List {
+extension DataStoreList {
 
     /// Represents the data state of the `List`.
     internal enum LoadState {

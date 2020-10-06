@@ -7,6 +7,7 @@
 
 import Amplify
 import Combine
+import AWSPluginsCore
 
 final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
@@ -95,6 +96,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
                 Amplify.Hub.removeListener(token)
             }
         }
+
+        ModelListDecoderRegistry.registerDecoder(DataStoreList<AnyModel>.self)
     }
 
     func reinitStorageEngineIfNeeded() {
