@@ -19,7 +19,7 @@ extension SQLiteStorageEngineAdapter {
             } else {
                 modelName = untypedModel.modelName
             }
-            
+
             guard let modelSchema = ModelRegistry.modelSchema(from: modelName) else {
                 let error = DataStoreError.invalidModelName(modelName)
                 throw error
