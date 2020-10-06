@@ -146,6 +146,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
                         content: "content",
                         createdAt: .now())
         let futureResult = try MutationEvent(model: post,
+                                             modelSchema: post.schema,
                                              mutationType: .create)
         eventSource.pushMutationEvent(futureResult: .success(futureResult))
 
