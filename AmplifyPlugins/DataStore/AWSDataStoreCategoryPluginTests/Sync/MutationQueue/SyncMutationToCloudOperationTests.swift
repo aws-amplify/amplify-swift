@@ -40,7 +40,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         let expectSecondCallToAPIMutate = expectation(description: "Second call to API.mutate")
 
         let post1 = Post(title: "post1", content: "content1", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: post1, mutationType: .create)
+        let mutationEvent = try MutationEvent(model: post1, modelSchema: post1.schema, mutationType: .create)
 
         var listenerFromFirstRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
         var listenerFromSecondRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
@@ -111,7 +111,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         let expectFirstCallToAPIMutate = expectation(description: "First call to API.mutate")
         let expectSecondCallToAPIMutate = expectation(description: "Second call to API.mutate")
         let post1 = Post(title: "post1", content: "content1", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: post1, mutationType: .create)
+        let mutationEvent = try MutationEvent(model: post1, modelSchema: post1.schema, mutationType: .create)
 
         var listenerFromFirstRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
         var listenerFromSecondRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
@@ -181,7 +181,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         let expectMutationRequestFailed = expectation(description: "Expect to fail mutation request")
         let expectFirstCallToAPIMutate = expectation(description: "First call to API.mutate")
         let post1 = Post(title: "post1", content: "content1", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: post1, mutationType: .create)
+        let mutationEvent = try MutationEvent(model: post1, modelSchema: post1.schema, mutationType: .create)
 
         var listenerFromFirstRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
 
