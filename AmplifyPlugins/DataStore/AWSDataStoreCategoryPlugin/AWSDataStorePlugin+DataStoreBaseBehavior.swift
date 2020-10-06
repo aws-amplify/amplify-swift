@@ -50,7 +50,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
             case .success(let model):
                 // TODO: Differentiate between save & update
                 // TODO: Handle errors from mutation event creation
-                self.publishMutationEvent(from: model, mutationType: mutationType)
+                self.publishMutationEvent(from: model, modelSchema: modelSchema, mutationType: mutationType)
             case .failure:
                 break
             }
@@ -113,7 +113,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  completion: @escaping DataStoreCallback<Void>) {
         reinitStorageEngineIfNeeded()
         storageEngine.delete(modelType, modelSchema: modelType.schema, withId: id) { result in
-            self.onDeleteCompletion(result: result, completion: completion)
+            self.onDeleteCompletion(result: result, modelSchema: modelType.schema, completion: completion)
         }
     }
 
@@ -123,7 +123,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         reinitStorageEngineIfNeeded()
         // TODO: handle query predicate like in the update flow
         storageEngine.delete(type(of: model), modelSchema: model.schema, withId: model.id) { result in
-            self.onDeleteCompletion(result: result, completion: completion)
+            self.onDeleteCompletion(result: result, modelSchema: model.schema, completion: completion)
         }
     }
 
@@ -142,7 +142,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
             switch result {
             case .success(let models):
                 for model in models {
-                    self.publishMutationEvent(from: model, mutationType: .delete)
+                    self.publishMutationEvent(from: model, modelSchema: modelSchema, mutationType: .delete)
                 }
                 completion(.emptyResult)
             case .failure(let error):
@@ -175,11 +175,12 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     // MARK: Private
 
     private func onDeleteCompletion<M: Model>(result: DataStoreResult<M?>,
+                                              modelSchema: ModelSchema,
                                               completion: @escaping DataStoreCallback<Void>) {
         switch result {
         case .success(let modelOptional):
             if let model = modelOptional {
-                publishMutationEvent(from: model, mutationType: .delete)
+                publishMutationEvent(from: model, modelSchema: modelSchema, mutationType: .delete)
             }
             completion(.emptyResult)
         case .failure(let error):
@@ -188,6 +189,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     }
 
     private func publishMutationEvent<M: Model>(from model: M,
+                                                modelSchema: ModelSchema,
                                                 mutationType: MutationEvent.MutationType) {
 
         guard #available(iOS 13.0, *) else {
@@ -202,6 +204,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 let result = try $0.get()
                 let syncMetadata = try result.unique()
                 let mutationEvent = try MutationEvent(model: model,
+                                                      modelSchema: modelSchema,
                                                       mutationType: mutationType,
                                                       version: syncMetadata?.version)
                 if let publisher = self.dataStorePublisher as? DataStorePublisher {

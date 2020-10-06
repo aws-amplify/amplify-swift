@@ -134,7 +134,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                 }
 
                 let statement = UpdateStatement(model: model,
-                                                modelSchema: modelType.schema,
+                                                modelSchema: modelSchema,
                                                 condition: condition)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
