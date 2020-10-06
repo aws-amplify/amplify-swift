@@ -54,7 +54,8 @@ public struct MutationEvent: Model {
     }
 
     @available(*, deprecated, message: """
-    Init method without ModelSchema is deprecated, use the other init methods.
+    Initializing from a model without a ModelSchema is deprecated.
+    Use init(model:modelSchema:mutationType:version:graphQLFilterJSON:) instead.
     """)
     public init<M: Model>(model: M,
                           mutationType: MutationType,
