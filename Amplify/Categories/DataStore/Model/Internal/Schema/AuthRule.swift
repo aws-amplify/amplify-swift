@@ -53,4 +53,14 @@ public struct AuthRule {
         self.groupsField = groupsField
         self.operations = operations
     }
+
+    public func identityClaimOrDefault() -> String {
+        guard let identityClaim = self.identityClaim else {
+            return "username"
+        }
+        if identityClaim == "cognito:username" {
+            return "username"
+        }
+        return identityClaim
+    }
 }

@@ -42,6 +42,40 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         return validResult
     }
 
+    public func getTokenClaims() -> Result<[String: AnyObject], AuthError> {
+        let result = getToken()
+        switch result {
+        case .success(let tokenString):
+            let tokenSplit = tokenString.split(separator: ".")
+            guard tokenSplit.count > 2 else {
+                return .failure(.validation("", "Token is not valid base64 encoded string.", "", nil))
+            }
+            let claims = tokenSplit[1]
+
+            let paddedLength = claims.count + (4 - (claims.count % 4)) % 4
+            //JWT is not padded with =, pad it if necessary
+            let updatedClaims = claims.padding(toLength: paddedLength, withPad: "=", startingAt: 0)
+            let claimsData = Data.init(base64Encoded: updatedClaims, options: .ignoreUnknownCharacters)
+
+            guard claimsData != nil else {
+                return .failure(
+                    .validation("", "Cannot get claims in `Data` form. Token is not valid base64 encoded string.",
+                                "", nil))
+            }
+            let jsonObject = try? JSONSerialization.jsonObject(with: claimsData!, options: [])
+            guard jsonObject != nil,
+                let convertedDictionary = jsonObject as? [String: AnyObject] else {
+                    return .failure(
+                        .validation("", "Cannot get claims in `Data` form. Token is not valid JSON string.",
+                                    "", nil))
+            }
+            return .success(convertedDictionary)
+
+        case .failure(let error):
+            return .failure(error)
+        }
+    }
+
     public func getToken() -> Result<String, AuthError> {
         var result: Result<String, AuthError>?
         let semaphore = DispatchSemaphore(value: 0)
