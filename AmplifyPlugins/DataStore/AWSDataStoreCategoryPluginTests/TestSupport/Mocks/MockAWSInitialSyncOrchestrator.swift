@@ -28,7 +28,7 @@ class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     private static var instance: MockAWSInitialSyncOrchestrator?
     private static var mockedResponse: SyncOperationResult?
 
-    private let initialSyncOrchestratorTopic: PassthroughSubject<InitialSyncOperationEvent, DataStoreError>
+    let initialSyncOrchestratorTopic: PassthroughSubject<InitialSyncOperationEvent, DataStoreError>
     var publisher: AnyPublisher<InitialSyncOperationEvent, DataStoreError> {
         return initialSyncOrchestratorTopic.eraseToAnyPublisher()
     }
