@@ -26,6 +26,7 @@ class ReadyEventEmitterTests: XCTestCase {
 
     func testReadyEventReceived() throws {
         let readyReceived = expectation(description: "ready received")
+        readyReceived.assertForOverFulfill = false
 
         readyEventSink = Amplify.Hub.publisher(for: .dataStore).sink { payload in
             switch payload.eventName {
