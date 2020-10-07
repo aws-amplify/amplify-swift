@@ -11,8 +11,11 @@ import Combine
 
 @available(iOS 13.0, *)
 final class ReadyEventEmitter {
-    let dispatchReadyGroup = DispatchGroup()
-    let publisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError>
+    /// Two conditions should be met to emit one `ready` event:
+    /// - receive one `syncQueriesReady` event
+    /// - the state of remoteSyncEngine move to `syncStarted`
+    let conditionCount = AtomicValue(initialValue: 0)
+    let remoteSyncEnginePublisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError>
     var remoteEngineSink: AnyCancellable?
     var syncQueriesReadyEventSink: AnyCancellable?
 
@@ -23,27 +26,28 @@ final class ReadyEventEmitter {
     func configure() {
         syncQueriesReadyEventSink = Amplify.Hub.publisher(for: .dataStore).sink { event in
             if case HubPayload.EventName.DataStore.syncQueriesReady = event.eventName {
-                self.dispatchReadyGroup.leave()
+                _ = self.conditionCount.increment()
+                guard self.conditionCount.get() == 2 else {
+                    return
+                }
+                self.dispatchReady()
             }
         }
 
-        remoteEngineSink = publisher
+        remoteEngineSink = remoteSyncEnginePublisher
             .sink(receiveCompletion: { _ in },
                   receiveValue: { value in
                     switch value {
                     case .syncStarted:
-                        self.dispatchReadyGroup.leave()
+                        _ = self.conditionCount.increment()
+                        guard self.conditionCount.get() == 2 else {
+                            return
+                        }
+                        self.dispatchReady()
                     default:
                         break
                     }
             })
-
-        dispatchReadyGroup.enter()
-        dispatchReadyGroup.enter()
-
-        dispatchReadyGroup.notify(queue: .global()) {
-            self.dispatchReady()
-        }
     }
 
     private func dispatchReady() {
