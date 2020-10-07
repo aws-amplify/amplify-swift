@@ -128,7 +128,7 @@ jobs:
           command: xcodebuild test -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}" | tee "artifacts/test-Amplify.log" | xcpretty --simple --color --report junit
       - run:
           name: Upload coverage report to Codecov
-          command: bash ~/amplify-ios/build-support/codecov.sh -F $CIRCLE_JOB -d # From https://codecov.io/bash 
+          command: bash ~/amplify-ios/build-support/codecov.sh -F $CIRCLE_JOB -d | tee "build_test_amplify_coverage.log" # From https://codecov.io/bash 
       - store_test_results:
           path: build/reports
       - upload_artifacts
