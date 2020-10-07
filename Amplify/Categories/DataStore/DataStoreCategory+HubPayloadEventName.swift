@@ -42,6 +42,11 @@ public extension HubPayload.EventName.DataStore {
     /// HubPayload `modelSyncedEvent` contains: name of model, sync type (full/delta), count of instances' mutation type
     static let modelSynced = "DataStore.modelSynced"
 
+    /// Dispatched when:
+    /// - local store is loaded up from the disk if device is offline:
+    /// - all data finish syncing with cloud and every functional pieces are ready if device is online:
+    static let ready = "DataStore.ready"
+
     /// Dispatched when all models have been synced
     static let syncQueriesReady = "DataStore.syncQueriesReady"
 
