@@ -18,9 +18,11 @@ protocol ModelSyncGraphQLRequestFactory {
     static func query(modelName: String, byId id: String) -> GraphQLRequest<MutationSyncResult?>
 
     static func createMutation(of model: Model,
+                               modelSchema: ModelSchema,
                                version: Int?) -> GraphQLRequest<MutationSyncResult>
 
     static func updateMutation(of model: Model,
+                               modelSchema: ModelSchema,
                                where filter: GraphQLFilter?,
                                version: Int?) -> GraphQLRequest<MutationSyncResult>
 
@@ -63,14 +65,16 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
     }
 
     public static func createMutation(of model: Model,
+                                      modelSchema: ModelSchema,
                                       version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        createOrUpdateMutation(of: model, type: .create, version: version)
+        createOrUpdateMutation(of: model, modelSchema: modelSchema, type: .create, version: version)
     }
 
     public static func updateMutation(of model: Model,
+                                      modelSchema: ModelSchema,
                                       where filter: GraphQLFilter? = nil,
                                       version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        createOrUpdateMutation(of: model, where: filter, type: .update, version: version)
+        createOrUpdateMutation(of: model, modelSchema: modelSchema, where: filter, type: .update, version: version)
     }
 
     public static func deleteMutation(modelName: String,
@@ -150,10 +154,11 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
     // MARK: Private methods
 
     private static func createOrUpdateMutation(of model: Model,
+                                               modelSchema: ModelSchema,
                                                where filter: GraphQLFilter? = nil,
                                                type: GraphQLMutationType,
                                                version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: model.modelName,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelSchema.name,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
         documentBuilder.add(decorator: ModelDecorator(model: model))

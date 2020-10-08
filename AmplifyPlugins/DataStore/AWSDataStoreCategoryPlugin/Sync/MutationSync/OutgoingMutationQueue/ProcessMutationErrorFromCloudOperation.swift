@@ -189,7 +189,14 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                                                                                 version: latestVersion)
                 self.makeAPIRequest(request)
             case .retry(let model):
+                guard let modelSchema = ModelRegistry.modelSchema(from: self.mutationEvent.modelName) else {
+                    preconditionFailure("""
+                    Could not retrieve schema for the model \(self.mutationEvent.modelName), verify that datastore is
+                    initialized.
+                    """)
+                }
                 let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
+                                                                                modelSchema: modelSchema,
                                                                                 version: latestVersion)
                 self.makeAPIRequest(request)
             }
@@ -210,11 +217,25 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             case .applyRemote:
                 self.saveCreateOrUpdateMutation(remoteModel: remoteModel)
             case .retryLocal:
+                guard let modelSchema = ModelRegistry.modelSchema(from: self.mutationEvent.modelName) else {
+                    preconditionFailure("""
+                    Could not retrieve schema for the model \(self.mutationEvent.modelName), verify that datastore is
+                    initialized.
+                    """)
+                }
                 let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: localModel,
+                                                                                modelSchema: modelSchema,
                                                                                 version: latestVersion)
                 self.makeAPIRequest(request)
             case .retry(let model):
+                guard let modelSchema = ModelRegistry.modelSchema(from: self.mutationEvent.modelName) else {
+                    preconditionFailure("""
+                    Could not retrieve schema for the model \(self.mutationEvent.modelName), verify that datastore is
+                    initialized.
+                    """)
+                }
                 let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
+                                                                                modelSchema: modelSchema,
                                                                                 version: latestVersion)
                 self.makeAPIRequest(request)
             }
