@@ -81,7 +81,7 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         return authRule.allow == .owner && authRule.getModelOperationsOrDefault().contains(.read)
     }
 
-    private func resolveIdentityClaimValue(identityClaim: String, claims: [String: String]) -> String? {
+    private func resolveIdentityClaimValue(identityClaim: String, claims: IdentityClaimsDictionary) -> String? {
         guard let identityValue = claims[identityClaim] as? String else {
             log.error("""
                 Attempted to subscribe to a model with owner based authorization without \(identityClaim)
