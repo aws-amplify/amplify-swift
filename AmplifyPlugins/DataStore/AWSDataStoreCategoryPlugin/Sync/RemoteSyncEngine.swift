@@ -276,7 +276,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
                                             reconciliationQueue: reconciliationQueue ?? nil)
 
-        readyEventEmitter = ReadyEventEmitter(remoteSyncEnginePublisher: publisher)
+        readyEventEmitter = ReadyEventEmitter(publisher: publisher)
         readyEventEmitter?.configure()
 
         // TODO: This should be an AsynchronousOperation, not a semaphore-waited block

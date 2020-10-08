@@ -19,8 +19,8 @@ final class ReadyEventEmitter {
     var remoteEngineSink: AnyCancellable?
     var syncQueriesReadyEventSink: AnyCancellable?
 
-    init(remoteSyncEnginePublisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError>) {
-        self.remoteSyncEnginePublisher = remoteSyncEnginePublisher
+    init(publisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError>) {
+        self.publisher = publisher
     }
 
     func configure() {
