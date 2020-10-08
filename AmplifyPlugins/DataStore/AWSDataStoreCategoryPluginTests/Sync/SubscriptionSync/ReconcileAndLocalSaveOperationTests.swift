@@ -141,7 +141,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    func testExecuteApplyRemoteModel() throws {
+    func testExecuteApplyRemoteModelThatDoesNotExistLocally() throws {
         let expect = expectation(description: "action .execute applyRemoteModel")
         let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync)
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostMutationSync.model))
@@ -152,6 +152,22 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         }
 
         stateMachine.state = .executing(disposition)
+        waitForExpectations(timeout: 1)
+    }
+
+    func testExecuteApplyRemoteModelThatExistsLocally() throws {
+        let expect = expectation(description: "action .execute applyRemoteModel")
+        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync)
+
+        storageAdapter.returnOnSave(dataStoreResult: .success(anyPostMutationSync.model))
+        storageAdapter.returnOnQueryMutationSyncMetadata(.some(anyPostMetadata))
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostMutationSync,
+                                                                                 existsLocally: false))
+            expect.fulfill()
+        }
+        stateMachine.state = .executing(disposition)
+
         waitForExpectations(timeout: 1)
     }
 
