@@ -65,13 +65,23 @@ class InitialSyncOrchestratorTests: XCTestCase {
             XCTFail("Listener not registered for hub")
             return
         }
+
+        let orchestratorPublisherValueReceived = expectation(description: "Received publisher value from orchestrator")
+        orchestratorPublisherValueReceived.assertForOverFulfill = false
+        let sink = orchestrator
+            .publisher
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: { _ in
+                    orchestratorPublisherValueReceived.fulfill()
+            })
+
         orchestrator.sync { _ in
             syncCallbackReceived.fulfill()
         }
 
-        wait(for: [syncQueriesStartedReceived], timeout: 1.0)
-        wait(for: [syncCallbackReceived], timeout: 1.0)
+        waitForExpectations(timeout: 1, handler: nil)
         Amplify.Hub.removeListener(hubListener)
+        sink.cancel()
     }
 
     /// - Given: An InitialSyncOrchestrator with a model dependency graph
@@ -112,9 +122,19 @@ class InitialSyncOrchestratorTests: XCTestCase {
                                        reconciliationQueue: reconciliationQueue,
                                        storageAdapter: storageAdapter)
 
+        let orchestratorPublisherValueReceived = expectation(description: "Received publisher value from orchestrator")
+        orchestratorPublisherValueReceived.assertForOverFulfill = false
+        let sink = orchestrator
+            .publisher
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: { _ in
+                    orchestratorPublisherValueReceived.fulfill()
+            })
+
         orchestrator.sync { _ in }
 
-        wait(for: [postWasQueried, commentWasQueried], timeout: 1.0, enforceOrder: true)
+        waitForExpectations(timeout: 1, handler: nil)
+        sink.cancel()
     }
 
     /// - Given: An InitialSyncOrchestrator with a model dependency graph
@@ -163,10 +183,20 @@ class InitialSyncOrchestratorTests: XCTestCase {
                                        api: apiPlugin,
                                        reconciliationQueue: reconciliationQueue,
                                        storageAdapter: storageAdapter)
+        
+        let orchestratorPublisherValueReceived = expectation(description: "Received publisher value from orchestrator")
+        orchestratorPublisherValueReceived.assertForOverFulfill = false
+        let sink = orchestrator
+            .publisher
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: { _ in
+                    orchestratorPublisherValueReceived.fulfill()
+            })
 
         orchestrator.sync { _ in }
 
-        wait(for: [postWasQueried, commentWasQueried], timeout: 1.0, enforceOrder: true)
+        waitForExpectations(timeout: 1, handler: nil)
+        sink.cancel()
     }
 
 }
