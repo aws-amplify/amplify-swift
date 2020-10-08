@@ -183,7 +183,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
                                        api: apiPlugin,
                                        reconciliationQueue: reconciliationQueue,
                                        storageAdapter: storageAdapter)
-        
+
         let orchestratorPublisherValueReceived = expectation(description: "Received publisher value from orchestrator")
         orchestratorPublisherValueReceived.assertForOverFulfill = false
         let sink = orchestrator

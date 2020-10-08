@@ -38,8 +38,7 @@ class ReadyEventEmitterTests: XCTestCase {
         }
 
         let remoteSyncTopicPublisher = PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>()
-        readyEventEmitter = ReadyEventEmitter(publisher: remoteSyncTopicPublisher.eraseToAnyPublisher())
-        readyEventEmitter?.configure()
+        readyEventEmitter = ReadyEventEmitter(remoteSyncEnginePublisher: remoteSyncTopicPublisher.eraseToAnyPublisher())
 
         remoteSyncTopicPublisher.send(.syncStarted)
         let syncQueriesReadyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)

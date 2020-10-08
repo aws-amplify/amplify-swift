@@ -19,12 +19,10 @@ final class ReadyEventEmitter {
     var remoteEngineSink: AnyCancellable?
     var syncQueriesReadyEventSink: AnyCancellable?
 
-    init(publisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError>) {
-        self.publisher = publisher
-    }
+    init(remoteSyncEnginePublisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError>) {
+        self.remoteSyncEnginePublisher = remoteSyncEnginePublisher
 
-    func configure() {
-        syncQueriesReadyEventSink = Amplify.Hub.publisher(for: .dataStore).sink { event in
+        self.syncQueriesReadyEventSink = Amplify.Hub.publisher(for: .dataStore).sink { event in
             if case HubPayload.EventName.DataStore.syncQueriesReady = event.eventName {
                 _ = self.conditionCount.increment()
                 guard self.conditionCount.get() == 2 else {
@@ -34,7 +32,7 @@ final class ReadyEventEmitter {
             }
         }
 
-        remoteEngineSink = remoteSyncEnginePublisher
+        self.remoteEngineSink = remoteSyncEnginePublisher
             .sink(receiveCompletion: { _ in },
                   receiveValue: { value in
                     switch value {
