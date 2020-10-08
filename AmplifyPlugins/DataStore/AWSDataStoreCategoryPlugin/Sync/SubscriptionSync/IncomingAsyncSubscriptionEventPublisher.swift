@@ -156,12 +156,18 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
     ) -> GraphQLSubscriptionOperation<Payload> {
 
         let request: GraphQLRequest<Payload>
-        if let auth = auth, modelType.schema.hasAuthenticationRules, let authUser = auth.getCurrentUser() {
-            // TODO: check model schema for identityClaim to figure out which is the ownerId field coming from
-            // https://github.com/aws-amplify/amplify-ios/issues/485
+        if modelType.schema.hasAuthenticationRules,
+            case .success(let claims) = AWSAuthService().getTokenClaims() {
+
+            var claimsStrings =  [String: String]()
+            for (key, value) in claims {
+                if let value = value as? String {
+                    claimsStrings[key] = value
+                }
+            }
             request = GraphQLRequest<Payload>.subscription(to: modelType,
                                                            subscriptionType: subscriptionType,
-                                                           authUser: authUser)
+                                                           claims: claimsStrings)
         } else {
             request = GraphQLRequest<Payload>.subscription(to: modelType, subscriptionType: subscriptionType)
         }

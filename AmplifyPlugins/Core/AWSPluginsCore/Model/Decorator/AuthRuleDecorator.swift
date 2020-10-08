@@ -8,8 +8,10 @@
 import Foundation
 import Amplify
 
+public typealias IdentityClaimsDictionary = [String: String]
+
 public enum AuthRuleDecoratorInput {
-    case subscription(GraphQLSubscriptionType, AuthUser)
+    case subscription(GraphQLSubscriptionType, IdentityClaimsDictionary)
     case mutation
     case query
 }
@@ -59,13 +61,14 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         let ownerField = authRule.getOwnerFieldOrDefault()
         selectionSet = appendOwnerFieldToSelectionSetIfNeeded(selectionSet: selectionSet, ownerField: ownerField)
 
-        guard case .subscription = input else {
+        guard case let .subscription(_, claims) = input else {
             return document.copy(selectionSet: selectionSet)
         }
 
         if isOwnerInputRequiredOnSubscription(authRule) {
             var inputs = document.inputs
-            let identityClaimValue = resolveIdentityClaimValue(identityClaim: authRule.identityClaimOrDefault())
+            let identityClaimValue = resolveIdentityClaimValue(identityClaim: authRule.identityClaimOrDefault(),
+                                                               claims: claims)
             if let identityClaimValue = identityClaimValue {
                 inputs[ownerField] = GraphQLDocumentInput(type: "String!", value: .scalar(identityClaimValue))
             }
@@ -78,23 +81,15 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         return authRule.allow == .owner && authRule.getModelOperationsOrDefault().contains(.read)
     }
 
-    private func resolveIdentityClaimValue(identityClaim: String) -> String? {
-        let authService = AWSAuthService()
-        let result = authService.getTokenClaims()
-        switch(result) {
-        case .success(let tokenClaims):
-            guard let identityValue = tokenClaims[identityClaim] as? String else {
-                log.error("""
-Attempted to subscribe to a model with owner based authorization without \(identityClaim)
-which was specified (or defaulted to) as the identity claim.
-""")
-                return nil
-            }
-            return identityValue
-        case .failure(let error):
-            log.error(error: error)
+    private func resolveIdentityClaimValue(identityClaim: String, claims: [String: String]) -> String? {
+        guard let identityValue = claims[identityClaim] as? String else {
+            log.error("""
+                Attempted to subscribe to a model with owner based authorization without \(identityClaim)
+                which was specified (or defaulted to) as the identity claim.
+                """)
+            return nil
         }
-        return nil
+        return identityValue
     }
 
     /// First finds the first `model` SelectionSet. Then, only append it when the `ownerField` does not exist.
