@@ -17,6 +17,7 @@ class SyncEventEmitterTests: XCTestCase {
     var initialSyncOrchestrator: MockAWSInitialSyncOrchestrator?
     var reconciliationQueue: MockAWSIncomingEventReconciliationQueue?
     var syncEventEmitter: SyncEventEmitter?
+    var expectedModelSyncedEventPayloads: [ModelSyncedEvent]!
 
     override func setUp() {
         super.setUp()
@@ -24,6 +25,13 @@ class SyncEventEmitterTests: XCTestCase {
         ModelRegistry.reset()
         MockModelReconciliationQueue.reset()
         MockAWSInitialSyncOrchestrator.reset()
+
+        expectedModelSyncedEventPayloads = [ModelSyncedEvent(modelName: "Post",
+                                                             isFullSync: true, isDeltaSync: false,
+                                                             added: 1, updated: 0, deleted: 0),
+                                            ModelSyncedEvent(modelName: "Comment",
+                                                             isFullSync: true, isDeltaSync: false,
+                                                             added: 1, updated: 0, deleted: 0)]
     }
 
     /// - Given: A SyncEventEmitter
@@ -54,12 +62,7 @@ class SyncEventEmitterTests: XCTestCase {
                     XCTFail("Couldn't cast payload data as ModelSyncedEvent")
                     return
                 }
-                XCTAssertEqual(modelSyncedEventPayload.modelName, "Post")
-                XCTAssertTrue(modelSyncedEventPayload.isFullSync)
-                XCTAssertFalse(modelSyncedEventPayload.isDeltaSync)
-                XCTAssertEqual(modelSyncedEventPayload.added, 1)
-                XCTAssertEqual(modelSyncedEventPayload.updated, 0)
-                XCTAssertEqual(modelSyncedEventPayload.deleted, 0)
+                XCTAssertTrue(modelSyncedEventPayload == self.expectedModelSyncedEventPayloads[0])
                 modelSyncedReceived.fulfill()
             case HubPayload.EventName.DataStore.syncQueriesReady:
                 syncQueriesReadyReceived.fulfill()
@@ -134,18 +137,8 @@ class SyncEventEmitterTests: XCTestCase {
                 modelSyncedEventPayloads.append(modelSyncedEventPayload)
 
                 if modelSyncedEventPayloads.count == 2 {
-                    XCTAssertEqual(modelSyncedEventPayloads[0].modelName, "Post")
-                    XCTAssertEqual(modelSyncedEventPayloads[1].modelName, "Comment")
-                    XCTAssertTrue(modelSyncedEventPayloads[0].isFullSync)
-                    XCTAssertTrue(modelSyncedEventPayloads[1].isFullSync)
-                    XCTAssertFalse(modelSyncedEventPayloads[0].isDeltaSync)
-                    XCTAssertFalse(modelSyncedEventPayloads[1].isDeltaSync)
-                    XCTAssertEqual(modelSyncedEventPayloads[0].added, 1)
-                    XCTAssertEqual(modelSyncedEventPayloads[1].added, 1)
-                    XCTAssertEqual(modelSyncedEventPayloads[0].updated, 0)
-                    XCTAssertEqual(modelSyncedEventPayloads[1].updated, 0)
-                    XCTAssertEqual(modelSyncedEventPayloads[0].deleted, 0)
-                    XCTAssertEqual(modelSyncedEventPayloads[1].deleted, 0)
+                    XCTAssertTrue(modelSyncedEventPayloads[0] == self.expectedModelSyncedEventPayloads[0])
+                    XCTAssertTrue(modelSyncedEventPayloads[1] == self.expectedModelSyncedEventPayloads[1])
                     modelSyncedReceived.fulfill()
                 }
             case HubPayload.EventName.DataStore.syncQueriesReady:
@@ -184,5 +177,16 @@ class SyncEventEmitterTests: XCTestCase {
         waitForExpectations(timeout: 1)
         syncEventEmitter = nil
         listener.cancel()
+    }
+}
+
+extension ModelSyncedEvent {
+    static func == (lhs: ModelSyncedEvent, rhs: ModelSyncedEvent) -> Bool {
+        return lhs.modelName == rhs.modelName &&
+            lhs.isFullSync == rhs.isFullSync &&
+            lhs.isDeltaSync == rhs.isDeltaSync &&
+            lhs.added == rhs.added &&
+            lhs.updated == rhs.updated &&
+            lhs.deleted == rhs.deleted
     }
 }
