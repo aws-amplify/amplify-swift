@@ -223,14 +223,3 @@ final class InitialSyncOperation: AsynchronousOperation {
 
 @available(iOS 13.0, *)
 extension InitialSyncOperation: DefaultLogger { }
-
-enum InitialSyncOperationEvent {
-    case started(modelType: Model.Type, syncType: SyncType)
-    case mutationSync(MutationSync<AnyModel>)
-    case finished(modelType: Model.Type)
-}
-
-enum SyncType {
-   case fullSync
-   case deltaSync
-}

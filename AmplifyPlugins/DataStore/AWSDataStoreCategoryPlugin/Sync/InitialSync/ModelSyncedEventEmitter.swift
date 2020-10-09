@@ -105,7 +105,6 @@ final class ModelSyncedEventEmitter {
     }
 
     private func dispatchModelSyncedEvent() {
-        log.verbose("\(#function): Dispatching ModelSyncedEvent to datastore channel")
         modelSyncedEventBuilder.modelName = modelType.modelName
         let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
                                                  data: modelSyncedEventBuilder.build())

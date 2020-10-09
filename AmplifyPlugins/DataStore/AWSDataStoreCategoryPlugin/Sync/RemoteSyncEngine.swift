@@ -273,7 +273,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         self.initialSyncOrchestrator = initialSyncOrchestrator
 
         syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
-                                            reconciliationQueue: reconciliationQueue ?? nil)
+                                            reconciliationQueue: reconciliationQueue)
 
         // TODO: This should be an AsynchronousOperation, not a semaphore-waited block
         let semaphore = DispatchSemaphore(value: 0)

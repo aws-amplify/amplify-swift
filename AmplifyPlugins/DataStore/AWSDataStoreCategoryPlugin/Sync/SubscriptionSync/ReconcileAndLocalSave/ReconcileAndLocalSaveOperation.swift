@@ -93,8 +93,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         case .notifyingDropped(let modelName):
             notifyDropped(modelName: modelName)
 
-        case .notifying(let savedModel, let isCreated):
-            notify(savedModel: savedModel, isCreated: isCreated)
+        case .notifying(let savedModel, let existsLocally):
+            notify(savedModel: savedModel, existsLocally: existsLocally)
 
         case .inError(let error):
             // Maybe we have to notify the Hub?
@@ -285,7 +285,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     /// Responder method for `notifying`. Notify actions:
     /// - notified
     func notify(savedModel: AppliedModel,
-                isCreated: Bool) {
+                existsLocally: Bool) {
         log.verbose(#function)
 
         guard !isCancelled else {
@@ -297,7 +297,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         let version = savedModel.syncMetadata.version
         if savedModel.syncMetadata.deleted {
             mutationType = .delete
-        } else if version == 1 || isCreated {
+        } else if version == 1 || existsLocally {
             mutationType = .create
         } else {
             mutationType = .update
