@@ -18,4 +18,14 @@ extension AuthRule {
     func getModelOperationsOrDefault() -> [ModelOperation] {
         return operations.isEmpty ? [.create, .update, .delete, .read] : operations
     }
+
+    public func identityClaimOrDefault() -> String {
+        guard let identityClaim = self.identityClaim else {
+            return "username"
+        }
+        if identityClaim == "cognito:username" {
+            return "username"
+        }
+        return identityClaim
+    }
 }

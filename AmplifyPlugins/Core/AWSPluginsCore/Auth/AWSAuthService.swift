@@ -42,6 +42,8 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         return validResult
     }
 
+    // This algorithm was heavily based on the implementation here:
+    // https://github.com/aws-amplify/aws-sdk-ios/blob/main/AWSAuthSDK/Sources/AWSMobileClient/AWSMobileClientExtensions.swift#L29
     public func getTokenClaims() -> Result<[String: AnyObject], AuthError> {
         let result = getToken()
         switch result {
@@ -55,18 +57,26 @@ public class AWSAuthService: AWSAuthServiceBehavior {
             let paddedLength = claims.count + (4 - (claims.count % 4)) % 4
             //JWT is not padded with =, pad it if necessary
             let updatedClaims = claims.padding(toLength: paddedLength, withPad: "=", startingAt: 0)
-            let claimsData = Data.init(base64Encoded: updatedClaims, options: .ignoreUnknownCharacters)
+            let encodedData = Data.init(base64Encoded: updatedClaims, options: .ignoreUnknownCharacters)
 
-            guard claimsData != nil else {
+            guard let claimsData = encodedData else {
                 return .failure(
                     .validation("", "Cannot get claims in `Data` form. Token is not valid base64 encoded string.",
                                 "", nil))
             }
-            let jsonObject = try? JSONSerialization.jsonObject(with: claimsData!, options: [])
-            guard jsonObject != nil,
-                let convertedDictionary = jsonObject as? [String: AnyObject] else {
+
+            let jsonObject: Any?
+            do {
+                jsonObject = try JSONSerialization.jsonObject(with: claimsData, options: [])
+            } catch {
+                return .failure(
+                    .validation("", "Cannot get claims in `Data` form. Token is not valid JSON string.",
+                                "", error))
+            }
+
+            guard let convertedDictionary = jsonObject as? [String: AnyObject] else {
                     return .failure(
-                        .validation("", "Cannot get claims in `Data` form. Token is not valid JSON string.",
+                        .validation("", "Cannot get claims in `Data` form. Unable to convert to [String: AnyObject].",
                                     "", nil))
             }
             return .success(convertedDictionary)

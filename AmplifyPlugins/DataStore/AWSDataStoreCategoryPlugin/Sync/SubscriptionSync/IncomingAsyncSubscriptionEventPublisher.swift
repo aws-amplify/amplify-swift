@@ -40,8 +40,10 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
     }
 
     private let incomingSubscriptionEvents: PassthroughSubject<Event, DataStoreError>
+    private let awsAuthService: AWSAuthServiceBehavior
 
-    init(modelType: Model.Type, api: APICategoryGraphQLBehavior, auth: AuthCategoryBehavior?) {
+    init(modelType: Model.Type, api: APICategoryGraphQLBehavior, auth: AuthCategoryBehavior?,
+         awsAuthService: AWSAuthServiceBehavior? = nil) {
         self.onCreateConnected = false
         self.onUpdateConnected = false
         self.onDeleteConnected = false
@@ -53,6 +55,7 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
 
         let incomingSubscriptionEvents = PassthroughSubject<Event, DataStoreError>()
         self.incomingSubscriptionEvents = incomingSubscriptionEvents
+        self.awsAuthService = awsAuthService ?? AWSAuthService()
 
         let onCreateValueListener = onCreateValueListenerHandler(event:)
         self.onCreateValueListener = onCreateValueListener
@@ -61,6 +64,7 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
             subscriptionType: .onCreate,
             api: api,
             auth: auth,
+            awsAuthService: self.awsAuthService,
             valueListener: onCreateValueListener,
             completionListener: genericCompletionListenerHandler(result:)
         )
@@ -72,6 +76,7 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
             subscriptionType: .onUpdate,
             api: api,
             auth: auth,
+            awsAuthService: self.awsAuthService,
             valueListener: onUpdateValueListener,
             completionListener: genericCompletionListenerHandler(result:)
         )
@@ -83,6 +88,7 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
             subscriptionType: .onDelete,
             api: api,
             auth: auth,
+            awsAuthService: self.awsAuthService,
             valueListener: onDeleteValueListener,
             completionListener: genericCompletionListenerHandler(result:)
         )
@@ -151,13 +157,14 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
         subscriptionType: GraphQLSubscriptionType,
         api: APICategoryGraphQLBehavior,
         auth: AuthCategoryBehavior?,
+        awsAuthService: AWSAuthServiceBehavior,
         valueListener: @escaping GraphQLSubscriptionOperation<Payload>.InProcessListener,
         completionListener: @escaping GraphQLSubscriptionOperation<Payload>.ResultListener
     ) -> GraphQLSubscriptionOperation<Payload> {
 
         let request: GraphQLRequest<Payload>
         if modelType.schema.hasAuthenticationRules,
-            case .success(let claims) = AWSAuthService().getTokenClaims() {
+            case .success(let claims) = awsAuthService.getTokenClaims() {
 
             var claimsStrings =  [String: String]()
             for (key, value) in claims {
