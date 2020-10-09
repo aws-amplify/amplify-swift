@@ -153,8 +153,11 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             incomingSubscriptionEventQueue.addOperation(CancelAwareBlockOperation {
                 self.enqueue(remoteModel)
             })
+        case .connectionDisconnected(reason: .unauthorized):
+            modelReconciliationQueueSubject.send(.connectionUpdated(modelName, .disconnected))
+
         case .connectionConnected:
-            modelReconciliationQueueSubject.send(.connected(modelName))
+            modelReconciliationQueueSubject.send(.connectionUpdated(modelName, .connected))
         }
     }
 

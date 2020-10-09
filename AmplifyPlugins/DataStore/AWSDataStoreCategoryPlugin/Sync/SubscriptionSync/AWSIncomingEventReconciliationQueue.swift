@@ -39,7 +39,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 
     private let connectionStatusSerialQueue: DispatchQueue
     private var reconciliationQueues: [String: ModelReconciliationQueue]
-    private var reconciliationQueueConnectionStatus: [String: Bool]
+    private var reconciliationQueueConnectionStatus: [String: ModelConnectionStatus]
     private var modelReconciliationQueueFactory: ModelReconciliationQueueFactory
 
     init(modelTypes: [Model.Type],
@@ -107,9 +107,9 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         switch receiveValue {
         case .mutationEvent(let event):
             eventReconciliationQueueTopic.send(.mutationEvent(event))
-        case .connected(let modelName):
+        case .connectionUpdated(let modelName, let status):
             connectionStatusSerialQueue.async {
-                self.reconciliationQueueConnectionStatus[modelName] = true
+                self.reconciliationQueueConnectionStatus[modelName] = status
                 if self.reconciliationQueueConnectionStatus.count == self.reconciliationQueues.count {
                     self.eventReconciliationQueueTopic.send(.initialized)
                 }

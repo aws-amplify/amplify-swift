@@ -9,8 +9,13 @@ import Amplify
 import AWSPluginsCore
 import Combine
 
+enum ConnectionFailedReason {
+    case unauthorized
+}
+
 enum IncomingSubscriptionEventPublisherEvent {
     case connectionConnected
+    case connectionDisconnected(reason: ConnectionFailedReason)
     case mutationEvent(MutationSync<AnyModel>)
 }
 
