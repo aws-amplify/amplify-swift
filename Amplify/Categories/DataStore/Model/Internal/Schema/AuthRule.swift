@@ -53,5 +53,4 @@ public struct AuthRule {
         self.groupsField = groupsField
         self.operations = operations
     }
-
 }
