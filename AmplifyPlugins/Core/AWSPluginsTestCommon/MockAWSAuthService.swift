@@ -45,7 +45,7 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
         return .success(token ?? "token")
     }
 
-    public func getTokenClaims() -> Result<[String : AnyObject], AuthError> {
+    public func getTokenClaims(tokenString: String) -> Result<[String : AnyObject], AuthError> {
         if let error = getTokenClaimsError {
             return .failure(error)
         }

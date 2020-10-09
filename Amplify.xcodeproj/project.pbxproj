@@ -143,6 +143,7 @@
 		6BB7441023A9954900B0EB6C /* DispatchSource+MakeOneOff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB7440F23A9954900B0EB6C /* DispatchSource+MakeOneOff.swift */; };
 		6BBECD7123ADA7E100C8DFBE /* AmplifyAWSServiceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBECD7023ADA7E100C8DFBE /* AmplifyAWSServiceConfiguration.swift */; };
 		6BBECD7423ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBECD7323ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift */; };
+		6BEE0817253114FD00133961 /* AWSAuthServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE0816253114FD00133961 /* AWSAuthServiceTests.swift */; };
 		7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */; platformFilter = ios; };
 		7F27B1DCE59C1E674172CCD6 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */; };
 		881246F5DCC59436DC932469 /* Pods_Amplify_AWSPluginsCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35D92182B8445C8F9B0FAE94 /* Pods_Amplify_AWSPluginsCore.framework */; };
@@ -857,6 +858,7 @@
 		6BB7440F23A9954900B0EB6C /* DispatchSource+MakeOneOff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DispatchSource+MakeOneOff.swift"; sourceTree = "<group>"; };
 		6BBECD7023ADA7E100C8DFBE /* AmplifyAWSServiceConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyAWSServiceConfiguration.swift; sourceTree = "<group>"; };
 		6BBECD7323ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyAWSServiceConfigurationTests.swift; sourceTree = "<group>"; };
+		6BEE0816253114FD00133961 /* AWSAuthServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthServiceTests.swift; sourceTree = "<group>"; };
 		6C41D3730B7ED4FD62A43E40 /* Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6D51240C78418B733FFA6829 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6D62C9C57736C3BEADEB1E30 /* Pods-AWSPinpointAnalyticsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPlugin/Pods-AWSPinpointAnalyticsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1970,6 +1972,14 @@
 			path = ServiceConfiguration;
 			sourceTree = "<group>";
 		};
+		6BEE0815253114E600133961 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				6BEE0816253114FD00133961 /* AWSAuthServiceTests.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
 		95DAAB00237E63370028544F /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -2534,6 +2544,7 @@
 		FA131AB82360FE070008381C /* AWSPluginsCoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				6BEE0815253114E600133961 /* Auth */,
 				FA131ABB2360FE070008381C /* Info.plist */,
 				2129BE2223948085006363A1 /* Model */,
 				2129BE4523948975006363A1 /* Sync */,
@@ -4098,6 +4109,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6BEE0817253114FD00133961 /* AWSAuthServiceTests.swift in Sources */,
 				6B9F7C59252687CC00F1F71C /* GraphQLRequestAuthIdentityClaimTests.swift in Sources */,
 				2183A56923EA4A9100232880 /* GraphQLUpdateMutationTests.swift in Sources */,
 				21A3FDB9246494CD00E76120 /* GraphQLRequestAuthRuleTests.swift in Sources */,
