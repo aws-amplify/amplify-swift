@@ -62,7 +62,8 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
         log.info("Beginning initial sync")
 
-        enqueueSyncableModels()
+        let syncableModels = ModelRegistry.models.filter { $0.schema.isSyncable }
+        enqueueSyncableModels(syncableModels)
 
         // This operation is intentionally not cancel-aware; we always want resolveCompletion to execute
         // as the last item
@@ -70,11 +71,12 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
             self.resolveCompletion()
         }
 
+        let modelNames = syncableModels.map { $0.modelName }
+        dispatchSyncQueriesStarted(for: modelNames)
         syncOperationQueue.isSuspended = false
     }
 
-    private func enqueueSyncableModels() {
-        let syncableModels = ModelRegistry.models.filter { $0.schema.isSyncable }
+    private func enqueueSyncableModels(_ syncableModels: [Model.Type]) {
         let sortedModels = syncableModels.sortByDependencyOrder()
         for model in sortedModels {
             enqueueSyncOperation(for: model)
@@ -116,6 +118,13 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         }
 
         completion?(.successfulVoid)
+    }
+
+    private func dispatchSyncQueriesStarted(for modelNames: [String]) {
+        let syncQueriesStartedEvent = SyncQueriesStartedEvent(models: modelNames)
+        let syncQueriesStartedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesStarted,
+                                                        data: syncQueriesStartedEvent)
+        Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesStartedEventPayload)
     }
 
 }

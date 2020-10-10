@@ -16,6 +16,9 @@ public enum PluginError {
 
     /// The plugin encountered an error during configuration
     case pluginConfigurationError(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// An unknown error occurred
+    case unknown(ErrorDescription, RecoverySuggestion, Error?)
 }
 
 extension PluginError: AmplifyError {
@@ -23,7 +26,8 @@ extension PluginError: AmplifyError {
         switch self {
         case .mismatchedPlugin(let description, _, _),
              .noSuchPlugin(let description, _, _),
-             .pluginConfigurationError(let description, _, _):
+             .pluginConfigurationError(let description, _, _),
+             .unknown(let description, _, _):
             return description
         }
     }
@@ -32,7 +36,8 @@ extension PluginError: AmplifyError {
         switch self {
         case .mismatchedPlugin(_, let recoverySuggestion, _),
              .noSuchPlugin(_, let recoverySuggestion, _),
-             .pluginConfigurationError(_, let recoverySuggestion, _):
+             .pluginConfigurationError(_, let recoverySuggestion, _),
+             .unknown(_, let recoverySuggestion, _):
             return recoverySuggestion
         }
     }
@@ -41,8 +46,22 @@ extension PluginError: AmplifyError {
         switch self {
         case .mismatchedPlugin(_, _, let underlyingError),
              .noSuchPlugin(_, _, let underlyingError),
-             .pluginConfigurationError(_, _, let underlyingError):
+             .pluginConfigurationError(_, _, let underlyingError),
+             .unknown(_, _, let underlyingError):
             return underlyingError
         }
     }
+
+    public init(
+        errorDescription: ErrorDescription = "An unknown error occurred",
+        recoverySuggestion: RecoverySuggestion = "See `underlyingError` for more details",
+        error: Error
+    ) {
+        if let error = error as? Self {
+            self = error
+        } else {
+            self = .unknown(errorDescription, recoverySuggestion, error)
+        }
+    }
+
 }

@@ -89,9 +89,34 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
             subscriptionEventsSubject.send(.mutationEvent(mutationSync))
         }
 
+        let eventsSentViaPublisher1 = expectation(description: "id-1 sent via publisher")
+        let eventsSentViaPublisher2 = expectation(description: "id-2 sent via publisher")
+        let eventsSentViaPublisher3 = expectation(description: "id-3 sent via publisher")
+        let queueSink = queue.publisher.sink(receiveCompletion: { _ in
+            XCTFail("Not expecting a call to completion")
+        }, receiveValue: { event in
+            if case let .mutationEvent(mutationEvent) = event {
+                switch mutationEvent.modelId {
+                case "id-1":
+                    eventsSentViaPublisher1.fulfill()
+                case "id-2":
+                    eventsSentViaPublisher2.fulfill()
+                case "id-3":
+                    eventsSentViaPublisher3.fulfill()
+                default:
+                    XCTFail("Not expecting a call to default")
+                }
+            }
+        })
+
         queue.start()
 
-        wait(for: [event1Saved, event2Saved, event3Saved], timeout: 5.0, enforceOrder: true)
+        wait(for: [event1Saved,
+                   event2Saved,
+                   event3Saved], timeout: 5.0, enforceOrder: true)
+        wait(for: [eventsSentViaPublisher1,
+            eventsSentViaPublisher2,
+            eventsSentViaPublisher3], timeout: 2.0)
     }
 
     /// - Given: An AWSModelReconciliationQueue that has been buffering events
@@ -156,9 +181,33 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
             subscriptionEventsSubject.send(.mutationEvent(mutationSync))
         }
 
+        let eventsSentViaPublisher1 = expectation(description: "id-1 sent via publisher")
+        let eventsSentViaPublisher2 = expectation(description: "id-2 sent via publisher")
+        let eventsSentViaPublisher3 = expectation(description: "id-3 sent via publisher")
+
+        let queueSink = queue.publisher.sink(receiveCompletion: { _ in
+            XCTFail("Not expecting a call to completion")
+        }, receiveValue: { event in
+            if case let .mutationEvent(mutationEvent) = event {
+                switch mutationEvent.modelId {
+                case "id-1":
+                    eventsSentViaPublisher1.fulfill()
+                case "id-2":
+                    eventsSentViaPublisher2.fulfill()
+                case "id-3":
+                    eventsSentViaPublisher3.fulfill()
+                default:
+                    break
+                }
+            }
+        })
+
         queue.start()
 
-        wait(for: [allEventsProcessed], timeout: 5.0)
+        wait(for: [allEventsProcessed,
+                   eventsSentViaPublisher1,
+                   eventsSentViaPublisher2,
+                   eventsSentViaPublisher3], timeout: 5.0)
     }
 
     /// - Given: A started AWSModelReconciliationQueue with no pending events
@@ -202,15 +251,35 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
             subscriptionEventsSubject.send(.mutationEvent(mutationSync))
         }
 
+        let eventsSentViaPublisher1 = expectation(description: "id-1 sent via publisher")
+        let eventsSentViaPublisher2 = expectation(description: "id-2 sent via publisher")
+        var queueSink = queue.publisher.sink(receiveCompletion: { _ in
+            XCTFail("Not expecting a call to completion")
+        }, receiveValue: { event in
+            if case let .mutationEvent(mutationEvent) = event {
+                switch mutationEvent.modelId {
+                case "id-1":
+                    eventsSentViaPublisher1.fulfill()
+                case "id-2":
+                    eventsSentViaPublisher2.fulfill()
+                default:
+                    XCTFail("Not expecting a call to default")
+                }
+            }
+        })
+
         queue.start()
 
-        wait(for: [event1ShouldBeProcessed, event2ShouldBeProcessed], timeout: 1.0)
+        wait(for: [event1ShouldBeProcessed,
+                   event2ShouldBeProcessed,
+                   eventsSentViaPublisher1,
+                   eventsSentViaPublisher2], timeout: 1.0)
 
         let event1ShouldNotBeProcessed = expectation(description: "Event 1 should not be processed")
         event1ShouldNotBeProcessed.isInverted = true
         let event2ShouldNotBeProcessed = expectation(description: "Event 2 should not be processed")
         event2ShouldNotBeProcessed.isInverted = true
-        let event3ShouldBeProcessed = expectation(description: "Event 3 should not be processed")
+        let event3ShouldBeProcessed = expectation(description: "Event 3 should be processed")
         storageAdapter.responders[.saveModelCompletion] =
             SaveModelCompletionResponder<MutationSyncMetadata> { model, completion in
                 switch model.id {
@@ -226,6 +295,17 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 completion(.success(model))
         }
 
+        let eventsSentViaPublisher3 = expectation(description: "id-3 sent via publisher")
+        queueSink = queue.publisher.sink(receiveCompletion: { _ in
+            XCTFail("Not expecting a call to completion")
+        }, receiveValue: { event in
+            if case let .mutationEvent(mutationEvent) = event {
+                if mutationEvent.modelId == "id-3" {
+                    eventsSentViaPublisher3.fulfill()
+                }
+            }
+        })
+
         let model = try MockSynced(id: "id-3").eraseToAnyModel()
         let syncMetadata = MutationSyncMetadata(id: model.id,
                                                 deleted: false,
@@ -234,8 +314,10 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let mutationSync = MutationSync(model: model, syncMetadata: syncMetadata)
         subscriptionEventsSubject.send(.mutationEvent(mutationSync))
 
-        wait(for: [event1ShouldNotBeProcessed, event2ShouldNotBeProcessed, event3ShouldBeProcessed], timeout: 1.0)
-
+        wait(for: [event1ShouldNotBeProcessed,
+                   event2ShouldNotBeProcessed,
+                   event3ShouldBeProcessed,
+                   eventsSentViaPublisher3], timeout: 1.0)
     }
 
 }

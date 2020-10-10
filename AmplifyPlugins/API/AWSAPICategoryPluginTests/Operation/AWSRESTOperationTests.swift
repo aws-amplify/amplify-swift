@@ -10,13 +10,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSAPICategoryPlugin
 
-class AWSRESTOperationTests: XCTestCase {
-
-    override func setUp() {
-    }
-
-    override func tearDown() {
-    }
+class AWSRESTOperationTests: OperationTestBase {
 
     func testRESTOperationSuccess() {
         XCTFail("Not yet implemented.")
@@ -38,14 +32,13 @@ class AWSRESTOperationTests: XCTestCase {
         XCTFail("Not yet implemented.")
     }
 
-    // TODO: Move over to operation test
+    func testGetReturnsOperation() throws {
+        try setUpPlugin(endpointType: .rest)
 
-    func testGetReturnsOperation() {
-        Amplify.reset()
-        setUpPlugin()
-
+        // Use this as a semaphore to ensure the task is cleaned up before proceeding to the next test
+        let listenerWasInvoked = expectation(description: "Listener was invoked")
         let request = RESTRequest(apiName: "Valid", path: "/path")
-        let operation = Amplify.API.get(request: request, listener: nil)
+        let operation = Amplify.API.get(request: request) { _ in listenerWasInvoked.fulfill() }
 
         XCTAssertNotNil(operation)
 
@@ -55,84 +48,37 @@ class AWSRESTOperationTests: XCTestCase {
         }
 
         XCTAssertNotNil(operation.request)
+
+        waitForExpectations(timeout: 1.00)
     }
 
-    func testGetFailsWithBadAPIName() {
-        Amplify.reset()
-
+    func testGetFailsWithBadAPIName() throws {
         let sentData = Data([0x00, 0x01, 0x02, 0x03])
+        try setUpPluginForSingleResponse(sending: sentData, for: .rest)
 
-        var mockTask: MockURLSessionTask?
-        mockTask = MockURLSessionTask(onResume: {
-            guard let mockTask = mockTask,
-                let mockSession = mockTask.mockSession,
-                let delegate = mockSession.sessionBehaviorDelegate else {
-                    return
-            }
-            delegate.urlSessionBehavior(mockSession,
-                                        dataTaskBehavior: mockTask,
-                                        didReceive: sentData)
-            delegate.urlSessionBehavior(mockSession,
-                                        dataTaskBehavior: mockTask,
-                                        didCompleteWithError: nil)
-        })
+        let receivedSuccess = expectation(description: "Received success")
+        receivedSuccess.isInverted = true
+        let receivedFailure = expectation(description: "Received failed")
 
-        guard let task = mockTask else {
-            XCTFail("mockTask unexpectedly nil")
-            return
-        }
-
-        let mockSession = MockURLSession(onTaskForRequest: { _ in task })
-        let factory = MockSessionFactory(returning: mockSession)
-        setUpPlugin(with: factory)
-
-        let callbackInvoked = expectation(description: "Callback was invoked")
         let request = RESTRequest(apiName: "INVALID_API_NAME", path: "/path")
         _ = Amplify.API.get(request: request) { event in
             switch event {
-            case .success(let data):
-                XCTFail("Unexpected completed event: \(data)")
+            case .success:
+                receivedSuccess.fulfill()
             case .failure:
-                // Expected failure
-                break
+                receivedFailure.fulfill()
             }
-            callbackInvoked.fulfill()
         }
 
-        wait(for: [callbackInvoked], timeout: 1.0)
+        waitForExpectations(timeout: 1.00)
     }
 
     /// - Given: A configured plugin
     /// - When: I invoke `APICategory.get(apiName:path:listener:)`
     /// - Then: The listener is invoked with the successful value
-    func testGetReturnsValue() {
-        Amplify.reset()
-
+    func testGetReturnsValue() throws {
         let sentData = Data([0x00, 0x01, 0x02, 0x03])
-
-        var mockTask: MockURLSessionTask?
-        mockTask = MockURLSessionTask(onResume: {
-            guard let mockTask = mockTask,
-                let mockSession = mockTask.mockSession,
-                let delegate = mockSession.sessionBehaviorDelegate else {
-                    return
-            }
-            delegate.urlSessionBehavior(mockSession,
-                                        dataTaskBehavior: mockTask,
-                                        didReceive: sentData)
-            delegate.urlSessionBehavior(mockSession,
-                                        dataTaskBehavior: mockTask,
-                                        didCompleteWithError: nil)
-        })
-
-        guard let task = mockTask else {
-            XCTFail("mockTask unexpectedly nil")
-            return
-        }
-
-        let mockSession = MockURLSession(onTaskForRequest: { _ in task })
-        let factory = MockSessionFactory(returning: mockSession)
-        setUpPlugin(with: factory)
+        try setUpPluginForSingleResponse(sending: sentData, for: .rest)
 
         let callbackInvoked = expectation(description: "Callback was invoked")
         let request = RESTRequest(apiName: "Valid", path: "/path")
@@ -149,35 +95,4 @@ class AWSRESTOperationTests: XCTestCase {
         wait(for: [callbackInvoked], timeout: 1.0)
     }
 
-    // MARK: - Utilities
-
-    func setUpPlugin(with factory: URLSessionBehaviorFactory? = nil) {
-        let apiPlugin: AWSAPIPlugin
-
-        if let factory = factory {
-            apiPlugin = AWSAPIPlugin(sessionFactory: factory)
-        } else {
-            apiPlugin = AWSAPIPlugin()
-        }
-
-        let apiConfig = APICategoryConfiguration(plugins: [
-            "awsAPIPlugin": [
-                "Valid": [
-                    "endpoint": "http://www.example.com",
-                    "authorizationType": "API_KEY",
-                    "apiKey": "SpecialApiKey33"
-                ]
-            ]
-        ])
-
-        let amplifyConfig = AmplifyConfiguration(api: apiConfig)
-
-        do {
-            try Amplify.add(plugin: apiPlugin)
-            try Amplify.configure(amplifyConfig)
-        } catch {
-            continueAfterFailure = false
-            XCTFail("Error during setup: \(error)")
-        }
-    }
 }

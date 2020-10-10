@@ -47,7 +47,8 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
                          completionHandler: @escaping UpdateUserAttributeCompletion) {
 
         let attribuetList = [request.userAttribute]
-        updateAttributes(attributeList: attribuetList) { result in
+        let clientMetaData = (request.options.pluginOptions as? AWSUpdateUserAttributeOptions)?.metadata ?? [:]
+        updateAttributes(attributeList: attribuetList, clientMetaData: clientMetaData) { result in
             switch result {
             case .success(let updateAttributeResultDict):
                 guard let updateResult = updateAttributeResultDict[request.userAttribute.key] else {
@@ -66,13 +67,20 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
 
     func updateAttributes(request: AuthUpdateUserAttributesRequest,
                           completionHandler: @escaping UpdateUserAttributesCompletion) {
-        updateAttributes(attributeList: request.userAttributes, completionHandler: completionHandler)
+        let clientMetaData = (request.options.pluginOptions as? AWSUpdateUserAttributesOptions)?.metadata ?? [:]
+        updateAttributes(attributeList: request.userAttributes,
+                         clientMetaData: clientMetaData,
+                         completionHandler: completionHandler)
     }
 
     func resendAttributeConfirmationCode(request: AuthAttributeResendConfirmationCodeRequest,
                                          completionHandler: @escaping ResendAttributeConfirmationCodeCompletion) {
 
-        awsMobileClient.verifyUserAttribute(attributeName: request.attributeKey.rawValue) { result, error in
+        let clientMetaData = (request.options.pluginOptions
+                                as? AWSAttributeResendConfirmationCodeOptions)?.metadata ?? [:]
+
+        awsMobileClient.verifyUserAttribute(attributeName: request.attributeKey.rawValue,
+                                            clientMetaData: clientMetaData) { result, error in
 
             guard error == nil else {
                 if let awsMobileClientError = error as? AWSMobileClientError,
@@ -149,12 +157,14 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
     }
 
     private func updateAttributes(attributeList: [AuthUserAttribute],
+                                  clientMetaData: [String: String],
                                   completionHandler: @escaping UpdateUserAttributesCompletion) {
 
         let attributeMap = attributeList.reduce(into: [String: String]()) {
             $0[$1.key.rawValue] = $1.value
         }
-        awsMobileClient.updateUserAttributes(attributeMap: attributeMap) { result, error in
+        awsMobileClient.updateUserAttributes(attributeMap: attributeMap,
+                                             clientMetaData: clientMetaData) { result, error in
             guard error == nil else {
                 if let awsMobileClientError = error as? AWSMobileClientError,
                     case .notSignedIn = awsMobileClientError {

@@ -39,4 +39,13 @@ public final class AtomicValue<Value> {
             block(value)
         }
     }
+
+    /// Performs `block` with an `inout` value, preventing other access until the block exits,
+    /// and enabling the block to mutate the value
+    public func with(block: (inout Value) -> Void) {
+        queue.sync {
+            block(&value)
+        }
+    }
+
 }

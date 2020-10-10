@@ -47,7 +47,6 @@ class IdentifyResultTransformers {
             points.append(point)
         }
         return Polygon(points: points)
-
     }
 
     static func processPolygon(_ textractPolygonPoints: [AWSTextractPoint]?) -> Polygon? {
@@ -64,7 +63,6 @@ class IdentifyResultTransformers {
             points.append(point)
         }
         return Polygon(points: points)
-
     }
 
     // swiftlint:disable cyclomatic_complexity

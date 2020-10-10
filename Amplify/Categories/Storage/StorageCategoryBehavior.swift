@@ -16,6 +16,7 @@ public protocol StorageCategoryBehavior {
     ///   - options: Parameters to specific plugin behavior
     ///   - resultListener: Triggered when the operation is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
+    @discardableResult
     func getURL(key: String,
                 options: StorageGetURLOperation.Request.Options?,
                 resultListener: StorageGetURLOperation.ResultListener?) -> StorageGetURLOperation
@@ -28,6 +29,7 @@ public protocol StorageCategoryBehavior {
     ///   - progressListener: Triggered intermittently to represent the ongoing progress of this operation
     ///   - resultListener: Triggered when the download is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
+    @discardableResult
     func downloadData(key: String,
                       options: StorageDownloadDataOperation.Request.Options?,
                       progressListener: ProgressListener?,
@@ -42,6 +44,7 @@ public protocol StorageCategoryBehavior {
     ///   - progressListener: Triggered intermittently to represent the ongoing progress of this operation
     ///   - resultListener: Triggered when the download is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
+    @discardableResult
     func downloadFile(key: String,
                       local: URL,
                       options: StorageDownloadFileOperation.Request.Options?,
@@ -57,6 +60,7 @@ public protocol StorageCategoryBehavior {
     ///   - progressListener: Triggered intermittently to represent the ongoing progress of this operation
     ///   - resultListener: Triggered when the upload is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
+    @discardableResult
     func uploadData(key: String,
                     data: Data,
                     options: StorageUploadDataOperation.Request.Options?,
@@ -72,6 +76,7 @@ public protocol StorageCategoryBehavior {
     ///   - progressListener: Triggered intermittently to represent the ongoing progress of this operation
     ///   - resultListener: Triggered when the upload is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
+    @discardableResult
     func uploadFile(key: String,
                     local: URL,
                     options: StorageUploadFileOperation.Request.Options?,
@@ -85,6 +90,7 @@ public protocol StorageCategoryBehavior {
     ///   - options: Parameters to specific plugin behavior
     ///   - resultListener: Triggered when the remove is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
+    @discardableResult
     func remove(key: String,
                 options: StorageRemoveOperation.Request.Options?,
                 resultListener: StorageRemoveOperation.ResultListener?) -> StorageRemoveOperation
@@ -95,6 +101,7 @@ public protocol StorageCategoryBehavior {
     ///   - options: Parameters to specific plugin behavior
     ///   - resultListener: Triggered when the list is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
+    @discardableResult
     func list(options: StorageListOperation.Request.Options?,
               resultListener: StorageListOperation.ResultListener?) -> StorageListOperation
 }

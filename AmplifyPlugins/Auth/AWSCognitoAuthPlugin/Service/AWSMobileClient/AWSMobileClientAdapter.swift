@@ -61,17 +61,23 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
                                       completionHandler: completionHandler)
     }
 
-    func resendSignUpCode(username: String, completionHandler: @escaping ((SignUpResult?, Error?) -> Void)) {
-        awsMobileClient.resendSignUpCode(username: username, completionHandler: completionHandler)
+    func resendSignUpCode(username: String,
+                          clientMetaData: [String: String],
+                          completionHandler: @escaping ((SignUpResult?, Error?) -> Void)) {
+        awsMobileClient.resendSignUpCode(username: username,
+                                         clientMetaData: clientMetaData,
+                                         completionHandler: completionHandler)
     }
 
     func signIn(username: String,
                 password: String,
                 validationData: [String: String]? = nil,
+                clientMetaData: [String: String] = [:],
                 completionHandler: @escaping ((SignInResult?, Error?) -> Void)) {
         awsMobileClient.signIn(username: username,
                                password: password,
                                validationData: validationData,
+                               clientMetaData: clientMetaData,
                                completionHandler: completionHandler)
     }
 
@@ -121,14 +127,18 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
     }
 
     func verifyUserAttribute(attributeName: String,
+                             clientMetaData: [String: String] = [:],
                              completionHandler: @escaping ((UserCodeDeliveryDetails?, Error?) -> Void)) {
         awsMobileClient.verifyUserAttribute(attributeName: attributeName,
+                                            clientMetaData: clientMetaData,
                                             completionHandler: completionHandler)
     }
 
     func updateUserAttributes(attributeMap: [String: String],
+                              clientMetaData: [String: String] = [:],
                               completionHandler: @escaping (([UserCodeDeliveryDetails]?, Error?) -> Void)) {
         awsMobileClient.updateUserAttributes(attributeMap: attributeMap,
+                                             clientMetaData: clientMetaData,
                                              completionHandler: completionHandler)
     }
 

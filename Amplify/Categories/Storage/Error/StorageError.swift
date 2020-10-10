@@ -78,4 +78,17 @@ extension StorageError: AmplifyError {
             return underlyingError
         }
     }
+
+    public init(
+        errorDescription: ErrorDescription = "An unknown error occurred",
+        recoverySuggestion: RecoverySuggestion = "(Ignored)",
+        error: Error
+    ) {
+        if let error = error as? Self {
+            self = error
+        } else {
+            self = .unknown(errorDescription, error)
+        }
+    }
+
 }

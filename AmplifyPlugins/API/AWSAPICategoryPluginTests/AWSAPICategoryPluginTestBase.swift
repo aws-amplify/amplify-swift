@@ -31,7 +31,10 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
 
     override func setUp() {
         apiPlugin = AWSAPIPlugin()
-        authService = MockAWSAuthService()
+
+        let authService = MockAWSAuthService()
+        self.authService = authService
+
         do {
             let endpointConfig = [apiName: try AWSAPICategoryPluginConfiguration.EndpointConfig(
                 name: apiName,
@@ -40,9 +43,15 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
                 authorizationType: AWSAuthorizationType.none,
                 authorizationConfiguration: AWSAuthorizationConfiguration.none,
                 endpointType: .graphQL)]
-            pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig)
-            apiPlugin.configure(authService: authService,
-                                pluginConfig: pluginConfig)
+            let pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig)
+            self.pluginConfig = pluginConfig
+
+            let dependencies = AWSAPIPlugin.ConfigurationDependencies(
+                pluginConfig: pluginConfig,
+                authService: authService,
+                subscriptionConnectionFactory: AWSSubscriptionConnectionFactory()
+            )
+            apiPlugin.configure(using: dependencies)
         } catch {
             XCTFail("Failed to create endpoint config")
         }

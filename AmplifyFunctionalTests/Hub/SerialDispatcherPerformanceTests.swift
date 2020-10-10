@@ -12,6 +12,14 @@ class SerialDispatcherPerformanceTests: XCTestCase {
 
     let dispatcherTypeUnderTest = SerialDispatcher.self
 
+    override static func setUp() {
+        Amplify.reset()
+    }
+
+    override static func tearDown() {
+        Amplify.reset()
+    }
+
     override func setUp() {
         Amplify.reset()
         let config = AmplifyConfiguration()

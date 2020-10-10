@@ -28,10 +28,6 @@ extension AmplifyConfiguration {
         self = try AmplifyConfiguration.loadAmplifyConfiguration(from: url)
     }
 
-    init(configurationFile url: URL) throws {
-        self = try AmplifyConfiguration.loadAmplifyConfiguration(from: url)
-    }
-
     static func loadAmplifyConfiguration(from url: URL) throws -> AmplifyConfiguration {
         let fileData: Data
         do {

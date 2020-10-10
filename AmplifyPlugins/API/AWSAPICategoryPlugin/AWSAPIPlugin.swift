@@ -54,21 +54,27 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin {
         }
     }
 
-    public init(modelRegistration: AmplifyModelRegistration? = nil,
-                sessionFactory: URLSessionBehaviorFactory? = nil) {
-
+    public init(
+        modelRegistration: AmplifyModelRegistration? = nil,
+        sessionFactory: URLSessionBehaviorFactory? = nil
+    ) {
         self.mapper = OperationTaskMapper()
         self.queue = OperationQueue()
-        modelRegistration?.registerModels(registry: ModelRegistry.self)
 
         super.init()
 
-        if let sessionFactory = sessionFactory {
-            self.session = sessionFactory.makeSession(withDelegate: self)
-        } else {
-            let configuration = URLSessionConfiguration.default
-            let factory = URLSessionFactory(configuration: configuration, delegateQueue: nil)
-            self.session = factory.makeSession(withDelegate: self)
-        }
+        modelRegistration?.registerModels(registry: ModelRegistry.self)
+
+        let sessionFactory = sessionFactory
+            ?? URLSessionFactory.makeDefault()
+        self.session = sessionFactory.makeSession(withDelegate: self)
+    }
+}
+
+extension URLSessionFactory {
+    static func makeDefault() -> URLSessionFactory {
+        let configuration = URLSessionConfiguration.default
+        let factory = URLSessionFactory(configuration: configuration, delegateQueue: nil)
+        return factory
     }
 }

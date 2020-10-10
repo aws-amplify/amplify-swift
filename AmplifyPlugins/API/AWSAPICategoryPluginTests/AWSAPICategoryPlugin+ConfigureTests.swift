@@ -46,7 +46,7 @@ class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
             XCTFail("Api configuration should not succeed")
         } catch {
             guard let apiError = error as? PluginError,
-                case .pluginConfigurationError(_, _, _) = apiError else {
+                case .pluginConfigurationError = apiError else {
                     XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
                     return
             }

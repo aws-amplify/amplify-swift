@@ -12,10 +12,15 @@ import AWSCognitoAuthPlugin
 class AWSAuthBaseTest: XCTestCase {
 
     let networkTimeout = TimeInterval(10)
+    var email = UUID().uuidString + "@" + UUID().uuidString + ".com"
 
-     func initializeAmplify() {
-
+    func initializeAmplify() {
         do {
+            let credentialsConfiguration = try AuthConfigurationHelper.credentialsConfiguration()
+            if let emailJSONValue = credentialsConfiguration.value(at: "email"),
+               case let .string(emailValue) = emailJSONValue {
+                email = emailValue
+            }
             let configuration = try AuthConfigurationHelper.amplifyConfiguration()
             let authPlugin = AWSCognitoAuthPlugin()
             try Amplify.add(plugin: authPlugin)

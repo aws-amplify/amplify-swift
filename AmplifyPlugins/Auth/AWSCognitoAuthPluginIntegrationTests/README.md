@@ -45,32 +45,49 @@ amplify add auth
     No
  
  What attributes are required for signing up? 
-    NA
+   (Press Space to deselect Email, if selected, then press Enter with none selected)
  Specify the app's refresh token expiration period (in days): 
     30
  Do you want to specify the user attributes this app can read and write? 
     No
  Do you want to enable any of the following capabilities?
-    NA
+    (press Enter with none selected)
  Do you want to use an OAuth flow? 
     No
 ? Do you want to configure Lambda Triggers for Cognito? 
     Yes
-? Which triggers do you want to enable for Cognito 
+? Which triggers do you want to enable for Cognito
+    Custom Message
     Pre Sign-up
+    [Choose as many that you would like to manually verify later]
+? What functionality do you want to use for Custom Message
+    Create your own module
 ? What functionality do you want to use for Pre Sign-up 
     Create your own module
 Succesfully added the Lambda function locally
 ? Do you want to edit your custom function now? Yes
 Please edit the file in your editor: 
 
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = async (event) => {
+For Pre Sign-up lambda
+```
+exports.handler = (event, context, callback) => {
     event.response.autoConfirmUser = true;
-    return event;
+    console.log(event);
+    console.log(context);
+    callback(null, event);
 };
+```
 
+For Custom Message and any other lambdas
+```
+// you can simply set them to log the input so you can verify valid and correct validationData/clientMetadata
+exports.handler = (event, context, callback) => {
+    event.response.autoConfirmUser = true;
+    console.log(event);
+    console.log(context);
+    callback(null, event);
+};
+```
 ? Press enter to continue
 Successfully added resource amplifyintegtest locally
 
@@ -78,3 +95,13 @@ amplify push
 ```
 This will create a amplifyconfiguration.json file in your local, drag that into the folder path AWSCognitoAuthPluginIntegrationTests/Configuration and give `AWSCognitoAuthPluginIntegrationTests` as the target.
 
+Next create `credentials.json` and add it to the same folder path, with the following values
+```
+{
+    "email": [YOUR_EMAIL]
+}
+```
+
+The email should be a valid email you can use for testing, for example for making sure you receive a confirmation code when updating user's attributes with an email.
+
+After running tests pass that in `metadata`, you can verify the corresponding lambdas have been trigger with payloads containing this data.

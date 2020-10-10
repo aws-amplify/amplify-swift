@@ -1,4 +1,36 @@
 # Changelog
+## Unreleased
+- **DataStore**
+  - Fix publishing events from model reconciliation queue ([#756](https://github.com/aws-amplify/amplify-ios/pull/756))
+
+## 1.1.2 (2020-08-30)
+
+### Bug Fixes
+
+- **Auth**: Updated AWS SDK dependencies to fix crash during `federatedSignIn` (#640)
+- **API**: Add custom 'items' deserialization for List (#711)
+- Fix typo in iOS Combine docs (#747)
+
+## 1.1.1 (2020-08-18)
+
+### Bug Fixes
+
+- Propagate @discardableResult to implementations (#719)
+
+## 1.1.0 (2020-08-12)
+
+### Features
+
+- **auth**: Add metadata options for passing clientMetadata to APIs (#700)
+- Add Combine support (#667)
+- Mark APIs that return operations with @discardableResult (#633)
+- Add AmplifyConfiguration file-based initializer (#707)
+
+### Bug Fixes
+
+- **Predictions**: rowIndex and columnIndex for cell (#704)
+- **predictions**: TABLE, CELL & KEY_VALUE_SET blocks are not properly processed (#660)
+- **api**: cognito user pool intercept with accessToken (#690)
 
 ## 1.0.6 (2020-08-03)
 

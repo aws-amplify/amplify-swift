@@ -27,7 +27,6 @@ public enum DataStoreError: Error {
 // MARK: - AmplifyError
 
 extension DataStoreError: AmplifyError {
-
     public var errorDescription: ErrorDescription {
         switch self {
         case .api(let error, _):
@@ -99,23 +98,19 @@ extension DataStoreError: AmplifyError {
             return nil
         }
     }
-}
 
-public extension DataStoreError {
-    init(error: Error) {
-        if let dataStoreError = error as? DataStoreError {
-            self = dataStoreError
+    public init(
+        errorDescription: ErrorDescription = "An unknown error occurred",
+        recoverySuggestion: RecoverySuggestion = "See `underlyingError` for more details",
+        error: Error
+    ) {
+        if let error = error as? Self {
+            self = error
         } else if let amplifyError = error as? AmplifyError {
-            let dataStoreError = DataStoreError.api(amplifyError)
-            self = dataStoreError
+            self = .api(amplifyError)
         } else {
-            let dataStoreError = DataStoreError.unknown(
-                "An unknown error occurred",
-                """
-                See underlying error for details
-                """,
-                error)
-            self = dataStoreError
+            self = .unknown(errorDescription, recoverySuggestion, error)
         }
     }
+
 }

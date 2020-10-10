@@ -181,7 +181,7 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
             XCTFail("Auth configuration should not succeed")
         } catch {
             guard let pluginError = error as? PluginError,
-                case .pluginConfigurationError(_, _, _) = pluginError else {
+                case .pluginConfigurationError = pluginError else {
                     XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
                     return
             }

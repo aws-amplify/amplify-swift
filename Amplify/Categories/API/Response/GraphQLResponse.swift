@@ -28,6 +28,9 @@ public enum GraphQLResponseError<ResponseType: Decodable>: AmplifyError {
     /// response type. The RawGraphQLResponse contains the entire response from the service, including data and errors.
     case transformationError(RawGraphQLResponse, APIError)
 
+    /// An unknown error occurred
+    case unknown(ErrorDescription, RecoverySuggestion, Error?)
+
     public var errorDescription: ErrorDescription {
         switch self {
         case .error(let errors):
@@ -36,6 +39,8 @@ public enum GraphQLResponseError<ResponseType: Decodable>: AmplifyError {
             return "GraphQL service returned a partially-successful response containing errors: \(errors)"
         case .transformationError:
             return "Failed to decode GraphQL response to the `ResponseType` \(String(describing: ResponseType.self))"
+        case .unknown(let errorDescription, _, _):
+            return errorDescription
         }
     }
 
@@ -50,6 +55,8 @@ public enum GraphQLResponseError<ResponseType: Decodable>: AmplifyError {
             Failed to transform to `ResponseType`.
             Take a look at the `RawGraphQLResponse` and underlying error to see where it failed to decode.
             """
+        case .unknown(_, let recoverySuggestion, _):
+            return recoverySuggestion
         }
     }
 
@@ -61,6 +68,21 @@ public enum GraphQLResponseError<ResponseType: Decodable>: AmplifyError {
             return nil
         case .transformationError(_, let error):
             return error
+        case .unknown(_, _, let error):
+            return error
         }
     }
+
+    public init(
+        errorDescription: ErrorDescription = "An unknown error occurred",
+        recoverySuggestion: RecoverySuggestion = "See `underlyingError` for more details",
+        error: Error
+    ) {
+        if let error = error as? Self {
+            self = error
+        } else {
+            self = .unknown(errorDescription, recoverySuggestion, error)
+        }
+    }
+
 }

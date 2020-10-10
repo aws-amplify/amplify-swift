@@ -8,7 +8,6 @@
 import XCTest
 
 import AmplifyPlugins
-import AWSMobileClient
 import AWSPluginsCore
 
 @testable import Amplify
@@ -65,8 +64,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 }
 
                 if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                    deleteReceived.fulfill()
                     XCTAssertEqual(mutationEvent.version, 3)
+                    deleteReceived.fulfill()
                     return
                 }
         }
@@ -174,13 +173,16 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             createdAt: date)
 
         var updatedPost = newPost
-            updatedPost.content = "UPDATED CONTENT from DataStoreEndToEndTests at \(Date())"
+        updatedPost.content = "UPDATED CONTENT from DataStoreEndToEndTests at \(Date())"
 
         let createReceived = expectation(description: "Create notification received")
         let updateLocalSuccess = expectation(description: "Update local successful")
         let conditionalReceived = expectation(description: "Conditional save failed received")
 
-        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
+        let syncReceivedFilter = HubFilters.forEventName(HubPayload.EventName.DataStore.syncReceived)
+        let conditionalSaveFailedFilter = HubFilters.forEventName(HubPayload.EventName.DataStore.conditionalSaveFailed)
+        let filters = HubFilters.any(filters: syncReceivedFilter, conditionalSaveFailedFilter)
+        let hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filters) { payload in
             guard let mutationEvent = payload.data as? MutationEvent
                 else {
                     XCTFail("Can't cast payload as mutation event")

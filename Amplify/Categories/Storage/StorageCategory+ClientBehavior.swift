@@ -8,12 +8,14 @@
 import Foundation
 
 extension StorageCategory: StorageCategoryBehavior {
+    @discardableResult
     public func getURL(key: String,
                        options: StorageGetURLRequest.Options? = nil,
                        resultListener: StorageGetURLOperation.ResultListener?) -> StorageGetURLOperation {
         return plugin.getURL(key: key, options: options, resultListener: resultListener)
     }
 
+    @discardableResult
     public func downloadData(key: String,
                              options: StorageDownloadDataRequest.Options? = nil,
                              progressListener: ProgressListener? = nil,
@@ -25,6 +27,7 @@ extension StorageCategory: StorageCategoryBehavior {
                                    resultListener: resultListener)
     }
 
+    @discardableResult
     public func downloadFile(key: String,
                              local: URL,
                              options: StorageDownloadFileRequest.Options? = nil,
@@ -38,6 +41,7 @@ extension StorageCategory: StorageCategoryBehavior {
                                    resultListener: resultListener)
     }
 
+    @discardableResult
     public func uploadData(key: String,
                            data: Data,
                            options: StorageUploadDataRequest.Options? = nil,
@@ -51,6 +55,7 @@ extension StorageCategory: StorageCategoryBehavior {
                                  resultListener: resultListener)
     }
 
+    @discardableResult
     public func uploadFile(key: String,
                            local: URL,
                            options: StorageUploadFileRequest.Options? = nil,
@@ -64,12 +69,14 @@ extension StorageCategory: StorageCategoryBehavior {
                                  resultListener: resultListener)
     }
 
+    @discardableResult
     public func remove(key: String,
                        options: StorageRemoveRequest.Options? = nil,
                        resultListener: StorageRemoveOperation.ResultListener?) -> StorageRemoveOperation {
         return plugin.remove(key: key, options: options, resultListener: resultListener)
     }
 
+    @discardableResult
     public func list(options: StorageListRequest.Options? = nil,
                      resultListener: StorageListOperation.ResultListener?) -> StorageListOperation {
         return plugin.list(options: options, resultListener: resultListener)

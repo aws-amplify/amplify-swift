@@ -19,11 +19,10 @@ struct SelectStatementMetadata {
     let columnMapping: ColumnMapping
     let bindings: [Binding?]
 
-    // TODO remove additionalStatements once sorting support is added to DataStore
     static func metadata(from modelType: Model.Type,
                          predicate: QueryPredicate? = nil,
-                         paginationInput: QueryPaginationInput? = nil,
-                         additionalStatements: String? = nil) -> SelectStatementMetadata {
+                         sort: QuerySortInput? = nil,
+                         paginationInput: QueryPaginationInput? = nil) -> SelectStatementMetadata {
         let rootNamespace = "root"
         let schema = modelType.schema
         let fields = schema.columns
@@ -59,10 +58,10 @@ struct SelectStatementMetadata {
             """
         }
 
-        if let additionalStatements = additionalStatements {
+        if let sort = sort, !sort.inputs.isEmpty {
             sql = """
             \(sql)
-            \(additionalStatements)
+            order by \(sort.sortStatement(namespace: rootNamespace))
             """
         }
 
@@ -72,6 +71,7 @@ struct SelectStatementMetadata {
             \(paginationInput.sqlStatement)
             """
         }
+
         return SelectStatementMetadata(statement: sql,
                                        columnMapping: columnMapping,
                                        bindings: bindings)
@@ -137,13 +137,13 @@ struct SelectStatement: SQLStatement {
 
     init(from modelType: Model.Type,
          predicate: QueryPredicate? = nil,
-         paginationInput: QueryPaginationInput? = nil,
-         additionalStatements: String? = nil) {
+         sort: QuerySortInput? = nil,
+         paginationInput: QueryPaginationInput? = nil) {
         self.modelType = modelType
         self.metadata = .metadata(from: modelType,
                                   predicate: predicate,
-                                  paginationInput: paginationInput,
-                                  additionalStatements: additionalStatements)
+                                  sort: sort,
+                                  paginationInput: paginationInput)
     }
 
     var stringValue: String {

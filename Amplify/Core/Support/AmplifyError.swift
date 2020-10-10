@@ -30,6 +30,14 @@ public protocol AmplifyError: Error, CustomDebugStringConvertible {
 
     /// The underlying error that caused the error condition
     var underlyingError: Error? { get }
+
+    /// AmplifyErrors must be able to be initialized from an underlying error. If an AmplifyError is created
+    /// with this initializer, it must store the underlying error in the `underlyingError` property so it can be
+    /// inspected later.
+    ///
+    /// Implementations of this method should handle the case where `error` is already an instance of `Self`, and simply
+    /// return `self` as the incoming `error`.
+    init(errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion, error: Error)
 }
 
 public extension AmplifyError {

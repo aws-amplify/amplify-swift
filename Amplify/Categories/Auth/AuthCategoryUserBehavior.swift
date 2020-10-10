@@ -18,6 +18,7 @@ public protocol AuthCategoryUserBehavior: class {
     /// - Parameters:
     ///   - options: Parameters specific to plugin behavior
     ///   - listener: Triggered when the operation completes.
+    @discardableResult
     func fetchUserAttributes(options: AuthFetchUserAttributeOperation.Request.Options?,
                              listener: AuthFetchUserAttributeOperation.ResultListener?)
         -> AuthFetchUserAttributeOperation
@@ -28,6 +29,7 @@ public protocol AuthCategoryUserBehavior: class {
     ///   - userAttribute: Attribute that need to be updated
     ///   - options: Parameters specific to plugin behavior
     ///   - listener: Triggered when the operation completes.
+    @discardableResult
     func update(userAttribute: AuthUserAttribute,
                 options: AuthUpdateUserAttributeOperation.Request.Options?,
                 listener: AuthUpdateUserAttributeOperation.ResultListener?) -> AuthUpdateUserAttributeOperation
@@ -38,6 +40,7 @@ public protocol AuthCategoryUserBehavior: class {
     ///   - userAttributes: List of attribtues that need ot be updated
     ///   - options: Parameters specific to plugin behavior
     ///   - listener: Triggered when the operation completes.
+    @discardableResult
     func update(userAttributes: [AuthUserAttribute],
                 options: AuthUpdateUserAttributesOperation.Request.Options?,
                 listener: AuthUpdateUserAttributesOperation.ResultListener?) -> AuthUpdateUserAttributesOperation
@@ -48,6 +51,7 @@ public protocol AuthCategoryUserBehavior: class {
     ///   - attributeKey: Attribute to be verified
     ///   - options: Parameters specific to plugin behavior
     ///   - listener: Triggered when the operation completes.
+    @discardableResult
     func resendConfirmationCode(for attributeKey: AuthUserAttributeKey,
                                 options: AuthAttributeResendConfirmationCodeOperation.Request.Options?,
                                 listener: AuthAttributeResendConfirmationCodeOperation.ResultListener?)
@@ -60,6 +64,7 @@ public protocol AuthCategoryUserBehavior: class {
     ///   - confirmationCode: Confirmation code received
     ///   - options: Parameters specific to plugin behavior
     ///   - listener: Triggered when the operation completes.
+    @discardableResult
     func confirm(userAttribute: AuthUserAttributeKey,
                  confirmationCode: String,
                  options: AuthConfirmUserAttributeOperation.Request.Options?,
@@ -73,6 +78,7 @@ public protocol AuthCategoryUserBehavior: class {
     ///   - newPassword: New password to be updated
     ///   - options: Parameters specific to plugin behavior
     ///   - listener: Triggered when the operation completes.
+    @discardableResult
     func update(oldPassword: String,
                 to newPassword: String,
                 options: AuthChangePasswordOperation.Request.Options?,
