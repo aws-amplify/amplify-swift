@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-public typealias IdentityClaimsDictionary = [String: String]
+public typealias IdentityClaimsDictionary = [String: AnyObject]
 
 public enum AuthRuleDecoratorInput {
     case subscription(GraphQLSubscriptionType, IdentityClaimsDictionary)
@@ -42,14 +42,46 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
             return document
         }
         var decorateDocument = document
+        let readRestrictingOwnerRules = authRules.filter { isReadRestrictingOwner($0) }
+        if readRestrictingOwnerRules.count > 1 {
+            log.error("""
+            Detected multiple owner type auth rules \
+            with a READ operation. We currently do not support this use case. Please \
+            limit your type to just one owner auth rule with a READ operation restriction.
+            """)
+            return decorateDocument
+        }
+
+        let readAuthorizedGroups = collectReadAuthorizedGroups(authRules: authRules)
+
         authRules.forEach { authRule in
-            decorateDocument = decorateIfOwnerAuthStrategy(document: decorateDocument, authRule: authRule)
+            decorateDocument = decorateAuthStrategy(document: decorateDocument,
+                                                    authRule: authRule,
+                                                    readAuthorizedGroups: readAuthorizedGroups)
         }
         return decorateDocument
     }
 
-    func decorateIfOwnerAuthStrategy(document: SingleDirectiveGraphQLDocument,
-                                     authRule: AuthRule) -> SingleDirectiveGraphQLDocument {
+    private func collectReadAuthorizedGroups(authRules: AuthRules) -> Set<String> {
+        var readAuthorizedGroups = Set<String>()
+        let readRestrictingGroupRules = authRules.filter { isReadRestrictingStaticGroup($0) }
+        for groupRules in readRestrictingGroupRules {
+            groupRules.groups.forEach { group in
+                readAuthorizedGroups.insert(group)
+            }
+        }
+        return readAuthorizedGroups
+    }
+
+    private func isReadRestrictingStaticGroup(_ authRule: AuthRule) -> Bool {
+        return authRule.allow == .groups &&
+            !authRule.groups.isEmpty &&
+            authRule.getModelOperationsOrDefault().contains(.read)
+    }
+
+    private func decorateAuthStrategy(document: SingleDirectiveGraphQLDocument,
+                                      authRule: AuthRule,
+                                      readAuthorizedGroups: Set<String>) -> SingleDirectiveGraphQLDocument {
         guard authRule.allow == .owner else {
             return document
         }
@@ -65,7 +97,8 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
             return document.copy(selectionSet: selectionSet)
         }
 
-        if isOwnerInputRequiredOnSubscription(authRule) {
+        if isReadRestrictingOwner(authRule) && isNotInReadAuthorizedGroup(readAuthorizedGroups,
+                                                                          cognitoGroupsFrom(claims: claims)) {
             var inputs = document.inputs
             let identityClaimValue = resolveIdentityClaimValue(identityClaim: authRule.identityClaimOrDefault(),
                                                                claims: claims)
@@ -77,8 +110,26 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         return document.copy(selectionSet: selectionSet)
     }
 
-    private func isOwnerInputRequiredOnSubscription(_ authRule: AuthRule) -> Bool {
+    private func isReadRestrictingOwner(_ authRule: AuthRule) -> Bool {
         return authRule.allow == .owner && authRule.getModelOperationsOrDefault().contains(.read)
+    }
+
+    private func isNotInReadAuthorizedGroup(_ readAuthorizedGroups: Set<String>,
+                                            _ cognitoGroupsFromClaims: Set<String>) -> Bool {
+        return (readAuthorizedGroups.isEmpty ||
+            readAuthorizedGroups.isDisjoint(with: cognitoGroupsFromClaims))
+    }
+
+    private func cognitoGroupsFrom(claims: IdentityClaimsDictionary) -> Set<String> {
+        var groupSet = Set<String>()
+        if let groups = (claims["cognito:groups"] as? NSArray) as Array? {
+            for group in groups {
+                if let groupString = group as? String {
+                    groupSet.insert(groupString)
+                }
+            }
+        }
+        return groupSet
     }
 
     private func resolveIdentityClaimValue(identityClaim: String, claims: IdentityClaimsDictionary) -> String? {
