@@ -205,11 +205,12 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // The owner auth rule contains `.create` operation, requiring the subscription operation to contain the input
     func testModelWithOwnerField_OnCreateSubscription() {
-        let authUser = MockAWSAuthUser(username: "user1", userId: "123e4567-dead-beef-a456-426614174000")
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000"]
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelWithOwnerField.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, authUser)))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnCreateModelWithOwnerField($author: String!) {
@@ -232,11 +233,12 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // The owner auth rule contains `.update` operation, requiring the subscription operation to contain the input
     func testModelWithOwnerField_OnUpdateSubscription() {
-        let authUser = MockAWSAuthUser(username: "user1", userId: "123e4567-dead-beef-a456-426614174000")
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000"]
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelWithOwnerField.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, authUser)))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, claims)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnUpdateModelWithOwnerField($author: String!) {
@@ -259,11 +261,12 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // The owner auth rule contains `.delete` operation, requiring the subscription operation to contain the input
     func testModelWithOwnerField_OnDeleteSubscription() {
-        let authUser = MockAWSAuthUser(username: "user1", userId: "123e4567-dead-beef-a456-426614174000")
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000"]
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelWithOwnerField.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, authUser)))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, claims)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnDeleteModelWithOwnerField($author: String!) {

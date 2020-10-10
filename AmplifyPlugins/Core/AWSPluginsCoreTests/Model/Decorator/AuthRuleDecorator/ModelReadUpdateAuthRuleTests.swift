@@ -199,11 +199,12 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
 
     // The owner auth rule contains `.create` operation, requiring the subscription operation to contain the input
     func testModelReadUpdateField_OnCreateSubscription() {
-        let authUser = MockAWSAuthUser(username: "user1", userId: "123e4567-dead-beef-a456-426614174000")
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000"]
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, authUser)))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnCreateModelReadUpdateField {
@@ -222,11 +223,12 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
 
     // Others can `.update` this model, which means the update subscription does not require owner input
     func testModelReadUpdateField_OnUpdateSubscription() {
-        let authUser = MockAWSAuthUser(username: "user1", userId: "123e4567-dead-beef-a456-426614174000")
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000"]
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, authUser)))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, claims)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnUpdateModelReadUpdateField {
@@ -244,11 +246,12 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
 
     // The owner auth rule contains `.delete` operation, requiring the subscription operation to contain the input
     func testModelReadUpdateField_OnDeleteSubscription() {
-        let authUser = MockAWSAuthUser(username: "user1", userId: "123e4567-dead-beef-a456-426614174000")
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000"]
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, authUser)))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, claims)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnDeleteModelReadUpdateField {
