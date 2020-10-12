@@ -93,6 +93,7 @@ extension Model {
                case let .model(modelName) = field.type,
                let modelSchema = ModelRegistry.modelSchema(from: modelName) {
 
+                // Check if it is a Model or json object.
                 if let value = value as? Model {
                     let associatedModel: Model.Type = type(of: value)
                     return value[associatedModel.schema.primaryKey.name] as? String
