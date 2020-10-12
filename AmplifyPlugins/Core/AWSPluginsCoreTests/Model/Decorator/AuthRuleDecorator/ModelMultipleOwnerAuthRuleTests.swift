@@ -54,6 +54,14 @@ public struct ModelMultipleOwner: Model {
     }
 }
 
+/*
+ * AppSync service currently supports only one owner rule with a single read at this time
+ * therefore, we will have a single test which test that we do not support this.
+ *
+ * When we do support this feature, we will delete test case "testUnsupportedModelMultipleOwner_CreateMutation",
+ * and uncomment the other tests.
+*/
+
 class ModelMultipleOwnerAuthRuleTests: XCTestCase {
 
     override func setUp() {
@@ -63,9 +71,30 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
     override func tearDown() {
         ModelRegistry.reset()
     }
-/* AppSync service currently supports only one owner rule with a single read at this time
- * therefore, we are commenting out these tests until we add support
- */
+    // This is a test case to demostrate if we attempt to use a model with multiple auth rules
+    // with a read operation, we effectively create a subscription without decorating it with auth.
+    // We should delete this use case when the AppSync service supports this use case.
+    func testUnsupportedModelMultipleOwner_CreateMutation() {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
+                                                               operationType: .mutation)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
+        documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
+        let document = documentBuilder.build()
+        let expectedQueryDocument = """
+        mutation CreateModelMultipleOwner {
+          createModelMultipleOwner {
+            id
+            content
+            editors
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "createModelMultipleOwner")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertTrue(document.variables.isEmpty)
+    }
+
 /*
     // Ensure that the `owner` field is added to the model fields
     func testModelMultipleOwner_CreateMutation() {
