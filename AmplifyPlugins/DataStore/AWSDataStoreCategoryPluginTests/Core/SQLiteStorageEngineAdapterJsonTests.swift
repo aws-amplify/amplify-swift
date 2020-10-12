@@ -81,9 +81,15 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
         // insert a post
         let title = "a title"
         let content = "some content"
+
+
+
         let post = ["title": .string(title),
                     "content": .string(content)] as [String: JSONValue]
         let model = DynamicModel(values: post)
+
+
+
         storageAdapter.save(model, modelSchema: ModelRegistry.modelSchema(from: "Post")!) { saveResult in
             switch saveResult {
             case .success:
@@ -109,6 +115,63 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                 expectation.fulfill()
             }
         }
+        wait(for: [expectation], timeout: 5)
+    }
+
+    /// - Given: a list a `Post` instance
+    /// - When:
+    ///   - the `save(post)` is called
+    /// - Then:
+    ///   - call `save(post)` again with an updated title
+    ///   - check if the `query(Post)` returns only 1 post
+    ///   - the post has the updated title
+    func testInsertPostAndThenUpdateIt() {
+        let expectation = self.expectation(
+            description: "it should insert and update a Post")
+
+        // insert a post
+        let title = "a title"
+        let content = "some content"
+        let post = ["title": .string(title),
+                    "content": .string(content)] as [String: JSONValue]
+        let model = DynamicModel(values: post)
+
+        func checkSavedPost(id: String) {
+            storageAdapter.query(DynamicModel.self, modelSchema: ModelRegistry.modelSchema(from: "Post")!) {
+                switch $0 {
+                case .success(let posts):
+                    XCTAssertEqual(posts.count, 1)
+                    if let post = posts.first {
+                        XCTAssertEqual(post.id, id)
+                        XCTAssertEqual(post.jsonValue(for: "title") as? String, "title updated")
+                    }
+                    expectation.fulfill()
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                    expectation.fulfill()
+                }
+            }
+        }
+
+        storageAdapter.save(model, modelSchema: ModelRegistry.modelSchema(from: "Post")!) { insertResult in
+            switch insertResult {
+            case .success:
+                let updatedPost = ["title": .string("title updated"), "content": .string(content)] as [String: JSONValue]
+                let model = DynamicModel(id: model.id, values: updatedPost)
+                self.storageAdapter.save(model, modelSchema: ModelRegistry.modelSchema(from: "Post")!) { updateResult in
+                    switch updateResult {
+                    case .success:
+                        checkSavedPost(id: model.id)
+                    case .failure(let error):
+                        XCTFail(error.errorDescription)
+                    }
+                }
+            case .failure(let error):
+                XCTFail(String(describing: error))
+                expectation.fulfill()
+            }
+        }
+
         wait(for: [expectation], timeout: 5)
     }
 

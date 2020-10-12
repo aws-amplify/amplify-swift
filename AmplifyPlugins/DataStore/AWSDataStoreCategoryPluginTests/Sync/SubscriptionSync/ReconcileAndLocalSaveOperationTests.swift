@@ -50,7 +50,8 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         stateMachine = MockStateMachine(initialState: .waiting,
                                         resolver: ReconcileAndLocalSaveOperation.Resolver.resolve(currentState:action:))
 
-        operation = ReconcileAndLocalSaveOperation(remoteModel: anyPostMutationSync,
+        operation = ReconcileAndLocalSaveOperation(modelSchema: anyPostMutationSync.model.schema,
+                                                   remoteModel: anyPostMutationSync,
                                                    storageAdapter: storageAdapter,
                                                    stateMachine: stateMachine)
     }
