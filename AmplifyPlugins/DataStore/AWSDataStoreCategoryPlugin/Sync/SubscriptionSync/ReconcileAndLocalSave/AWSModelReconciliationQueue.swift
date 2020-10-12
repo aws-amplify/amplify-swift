@@ -61,7 +61,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     /// is always active.
     private let reconcileAndSaveQueue: OperationQueue
 
-    private let modelName: String
+    private let modelSchema: ModelSchema
 
     private var incomingEventsSink: AnyCancellable?
     private var reconcileAndLocalSaveOperationSinks: AtomicValue<Set<AnyCancellable?>>
@@ -77,20 +77,20 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
          auth: AuthCategoryBehavior?,
          incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
 
-        self.modelName = modelSchema.name
+        self.modelSchema = modelSchema
 
         self.storageAdapter = storageAdapter
 
         self.modelReconciliationQueueSubject = PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>()
 
         self.reconcileAndSaveQueue = OperationQueue()
-        reconcileAndSaveQueue.name = "com.amazonaws.DataStore.\(modelName).reconcile"
+        reconcileAndSaveQueue.name = "com.amazonaws.DataStore.\(modelSchema.name).reconcile"
         reconcileAndSaveQueue.maxConcurrentOperationCount = 1
         reconcileAndSaveQueue.underlyingQueue = DispatchQueue.global()
         reconcileAndSaveQueue.isSuspended = false
 
         self.incomingSubscriptionEventQueue = OperationQueue()
-        incomingSubscriptionEventQueue.name = "com.amazonaws.DataStore.\(modelName).remoteEvent"
+        incomingSubscriptionEventQueue.name = "com.amazonaws.DataStore.\(modelSchema.name).remoteEvent"
         incomingSubscriptionEventQueue.maxConcurrentOperationCount = 1
         incomingSubscriptionEventQueue.underlyingQueue = DispatchQueue.global()
         incomingSubscriptionEventQueue.isSuspended = true
@@ -131,7 +131,8 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     }
 
     func enqueue(_ remoteModel: MutationSync<AnyModel>) {
-        let reconcileOp = ReconcileAndLocalSaveOperation(remoteModel: remoteModel,
+        let reconcileOp = ReconcileAndLocalSaveOperation(modelSchema: modelSchema,
+                                                         remoteModel: remoteModel,
                                                          storageAdapter: storageAdapter)
         var reconcileAndLocalSaveOperationSink: AnyCancellable?
         reconcileAndLocalSaveOperationSink = reconcileOp.publisher.sink(receiveCompletion: { completion in
@@ -158,7 +159,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 self.enqueue(remoteModel)
             })
         case .connectionConnected:
-            modelReconciliationQueueSubject.send(.connected(modelName: modelName))
+            modelReconciliationQueueSubject.send(.connected(modelSchema.name))
         }
     }
 
