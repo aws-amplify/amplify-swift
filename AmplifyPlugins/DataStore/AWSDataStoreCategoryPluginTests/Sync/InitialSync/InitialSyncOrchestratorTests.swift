@@ -82,7 +82,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
                     default:
                         break
                     }
-            })
+                  })
 
         orchestrator.sync { _ in
             syncCallbackReceived.fulfill()
@@ -137,7 +137,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         finishedReceived.expectedFulfillmentCount = 2
         let sink = orchestrator
             .publisher
-            .sink(receiveCompletion: { _ in},
+            .sink(receiveCompletion: { _ in },
                   receiveValue: { value in
                     switch value {
                     case .started:
@@ -147,7 +147,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
                     default:
                         break
                     }
-            })
+                  })
 
         orchestrator.sync { _ in }
 
@@ -208,7 +208,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         finishedReceived.expectedFulfillmentCount = 2
         let sink = orchestrator
             .publisher
-            .sink(receiveCompletion: { _ in},
+            .sink(receiveCompletion: { _ in },
                   receiveValue: { value in
                     switch value {
                     case .started:
@@ -218,7 +218,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
                     default:
                         break
                     }
-            })
+                  })
 
         orchestrator.sync { _ in }
 
