@@ -145,23 +145,23 @@ extension AuthenticationProviderAdapter {
         }
 
         parentViewController?.present(navController, animated: false, completion: {
-            
+
             self.awsMobileClient.showSignIn(navigationController: navController,
                                             signInUIOptions: SignInUIOptions(),
                                             hostedUIOptions: hostedUIOptions) { [weak self] state, error in
-                
+
                 DispatchQueue.main.async {
                     navController.dismiss(animated: false) {
                         guard let self = self else { return }
-                        
+
                         if let error = error {
                             let authError = self.convertSignUIErrorToAuthError(error)
                             completionHandler(.failure(authError))
                             return
                         }
-                        
+
                         guard let state = state, state == .signedIn else {
-                            
+
                             let error = AuthError.unknown("signInWithWebUI did not produce a valid result.")
                             completionHandler(.failure(error))
                             return
@@ -171,7 +171,7 @@ extension AuthenticationProviderAdapter {
                     }
                 }
             }
-            
+
         })
     }
 
