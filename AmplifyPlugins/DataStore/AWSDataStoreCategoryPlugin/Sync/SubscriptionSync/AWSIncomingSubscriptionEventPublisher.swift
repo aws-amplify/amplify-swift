@@ -37,11 +37,6 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
     }
 
     private func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
-        if case let .failure(.api(error, _)) = receiveCompletion,
-           case let APIError.operationError(_, _, underlyingError) = error, isAuthError(underlyingError) {
-            subscriptionEventSubject.send(.connectionDisconnected(reason: .unauthorized))
-            return
-        }
         subscriptionEventSubject.send(completion: receiveCompletion)
     }
 
@@ -60,29 +55,6 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
         asyncEvents.cancel()
         mapper?.cancel()
         mapper = nil
-    }
-}
-
-// MARK: Auth errors handling
-@available(iOS 13.0, *)
-extension AWSIncomingSubscriptionEventPublisher {
-    private typealias ResponseType = MutationSync<AnyModel>
-    private func graphqlErrors(from error: GraphQLResponseError<ResponseType>?) -> [GraphQLError]? {
-        if case let .error(errors) = error {
-            return errors
-        }
-        return nil
-    }
-
-    private func isAuthError(_ error: Error?) -> Bool {
-        if let responseError = error as? GraphQLResponseError<ResponseType>,
-           let graphQLError = graphqlErrors(from: responseError)?.first,
-           let extensions = graphQLError.extensions,
-           case let .string(errorTypeValue) = extensions["errorType"],
-           case .unauthorized = AppSyncErrorType(errorTypeValue) {
-            return true
-        }
-        return false
     }
 }
 

@@ -9,15 +9,15 @@ import Amplify
 import AWSPluginsCore
 import Combine
 
-enum ModelConnectionStatus {
-    case connected
-    case disconnected
+enum ModelConnectionDisconnectedReason {
+    case unauthorized
 }
 
 enum ModelReconciliationQueueEvent {
     case started
     case paused
-    case connectionUpdated(String, ModelConnectionStatus)
+    case connected(modelName: String)
+    case disconnected(modelName: String, reason: ModelConnectionDisconnectedReason)
     case mutationEvent(MutationEvent)
 }
 

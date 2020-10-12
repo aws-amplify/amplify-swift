@@ -39,8 +39,12 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 
     private let connectionStatusSerialQueue: DispatchQueue
     private var reconciliationQueues: [String: ModelReconciliationQueue]
-    private var reconciliationQueueConnectionStatus: [String: ModelConnectionStatus]
+    private var reconciliationQueueConnectionStatus: [String: Bool]
     private var modelReconciliationQueueFactory: ModelReconciliationQueueFactory
+    
+    private var isInitialized: Bool {
+        self.reconciliationQueueConnectionStatus.count == self.reconciliationQueues.count
+    }
 
     init(modelTypes: [Model.Type],
          api: APICategoryGraphQLBehavior,
@@ -107,10 +111,18 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         switch receiveValue {
         case .mutationEvent(let event):
             eventReconciliationQueueTopic.send(.mutationEvent(event))
-        case .connectionUpdated(let modelName, let status):
+        case .connected(modelName: let modelName):
             connectionStatusSerialQueue.async {
-                self.reconciliationQueueConnectionStatus[modelName] = status
-                if self.reconciliationQueueConnectionStatus.count == self.reconciliationQueues.count {
+                self.reconciliationQueueConnectionStatus[modelName] = true
+                if self.isInitialized {
+                    self.eventReconciliationQueueTopic.send(.initialized)
+                }
+            }
+        case .disconnected(modelName: let modelName, reason: .unauthorized):
+            connectionStatusSerialQueue.async {
+                self.reconciliationQueues[modelName]?.cancel()
+                self.reconciliationQueueConnectionStatus[modelName] = false
+                if self.isInitialized {
                     self.eventReconciliationQueueTopic.send(.initialized)
                 }
             }
