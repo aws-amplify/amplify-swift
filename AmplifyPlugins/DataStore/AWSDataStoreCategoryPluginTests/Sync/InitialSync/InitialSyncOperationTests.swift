@@ -298,7 +298,10 @@ class InitialSyncOperationTests: XCTestCase {
                     XCTAssertEqual(syncType, .fullSync)
                     syncStartedReceived.fulfill()
                 case .enqueued(let returnedValue):
-                    XCTAssertTrue(returnedValue == mutationSync)
+                    XCTAssertEqual(returnedValue.syncMetadata.id, mutationSync.syncMetadata.id)
+                    XCTAssertEqual(returnedValue.syncMetadata.deleted, mutationSync.syncMetadata.deleted)
+                    XCTAssertEqual(returnedValue.syncMetadata.lastChangedAt, mutationSync.syncMetadata.lastChangedAt)
+                    XCTAssertEqual(returnedValue.syncMetadata.version, mutationSync.syncMetadata.version)
                     offeredValueReceived.fulfill()
                 case .finished(modelType: let modelType):
                     XCTAssertEqual(modelType.modelName, "MockSynced")

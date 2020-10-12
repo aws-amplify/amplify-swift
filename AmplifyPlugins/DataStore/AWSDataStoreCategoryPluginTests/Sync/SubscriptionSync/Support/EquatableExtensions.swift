@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import AWSPluginsCore
 @testable import AWSDataStoreCategoryPlugin
 
@@ -93,14 +94,5 @@ extension ModelSyncedEvent: Equatable {
             && lhs.added == rhs.added
             && lhs.updated == rhs.updated
             && lhs.deleted == rhs.deleted
-    }
-}
-
-extension MutationSync: Equatable {
-    public static func == (lhs: MutationSync, rhs: MutationSync) -> Bool {
-        return lhs.id == rhs.id
-            && lhs.deleted == rhs.deleted
-            && lhs.lastChangedAt == rhs.lastChangedAt
-            && lhs.version == rhs.version
     }
 }
