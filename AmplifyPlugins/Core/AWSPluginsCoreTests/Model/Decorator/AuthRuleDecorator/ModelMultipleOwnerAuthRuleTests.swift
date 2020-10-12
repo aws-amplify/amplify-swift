@@ -220,8 +220,8 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, "111")))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
-        subscription OnCreateModelMultipleOwner($owner: String!) {
-          onCreateModelMultipleOwner(owner: $owner) {
+        subscription OnCreateModelMultipleOwner($editors: String!, $owner: String!) {
+          onCreateModelMultipleOwner(editors: $editors, owner: $owner) {
             id
             content
             editors
@@ -275,8 +275,8 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, "111")))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
-        subscription OnDeleteModelMultipleOwner($owner: String!) {
-          onDeleteModelMultipleOwner(owner: $owner) {
+        subscription OnDeleteModelMultipleOwner($editors: String!, $owner: String!) {
+          onDeleteModelMultipleOwner(editors: $editors, owner: $owner) {
             id
             content
             editors
