@@ -10,13 +10,20 @@ import AWSPluginsCore
 import Combine
 
 @available(iOS 13.0, *)
+/// Listens to events published by both the `InitialSyncOrchestrator` and `IncomingEventReconciliationQueue`,
+/// and emits a `ModelSyncedEvent` when the initial sync is complete. This class expects
+/// `InitialSyncOrchestrator` and `IncomingEventReconciliationQueue` to have matching counts
+/// for the events they enqueue and process, respectively.
 final class ModelSyncedEventEmitter {
+    private let queue = DispatchQueue(label: "com.amazonaws.ModelSyncedEventEmitterQueue",
+                                      target: DispatchQueue.global())
+
     var syncOrchestratorSink: AnyCancellable?
     var reconciliationQueueSink: AnyCancellable?
 
     let modelType: Model.Type
-    var recordsReceived: AtomicValue<Int>
-    var reconciledReceived: AtomicValue<Int>
+    var recordsReceived: Int
+    var reconciledReceived: Int
     var initialSyncOperationFinished: Bool
 
     private var modelSyncedEventBuilder: ModelSyncedEvent.Builder
@@ -30,8 +37,8 @@ final class ModelSyncedEventEmitter {
          initialSyncOrchestrator: InitialSyncOrchestrator?,
          reconciliationQueue: IncomingEventReconciliationQueue?) {
         self.modelType = modelType
-        self.recordsReceived = AtomicValue(initialValue: 0)
-        self.reconciledReceived = AtomicValue(initialValue: 0)
+        self.recordsReceived = 0
+        self.reconciledReceived = 0
         self.initialSyncOperationFinished = false
 
         self.modelSyncedEventBuilder = ModelSyncedEvent.Builder()
@@ -40,6 +47,8 @@ final class ModelSyncedEventEmitter {
 
         self.syncOrchestratorSink = initialSyncOrchestrator?
             .publisher
+            .receive(on: queue)
+            .filter(filterSyncOperationEvent(_:))
             .sink(receiveCompletion: { _ in },
                   receiveValue: { [weak self] value in
                     self?.onReceiveSyncOperationEvent(value: value)
@@ -47,29 +56,47 @@ final class ModelSyncedEventEmitter {
 
         self.reconciliationQueueSink = reconciliationQueue?
             .publisher
+            .receive(on: queue)
+            .filter(filterReconciliationQueueEvent(_:))
             .sink(receiveCompletion: { _ in },
                   receiveValue: { [weak self] value in
                     self?.onReceiveReconciliationEvent(value: value)
             })
     }
 
+    /// Filtering `InitialSyncOperationEvent`s that come from `InitialSyncOperation` of the same ModelType
+    private func filterSyncOperationEvent(_ value: InitialSyncOperationEvent) -> Bool {
+        switch value {
+        case .started(let modelType, _):
+            return self.modelType == modelType
+        case .enqueued(let mutationSync):
+            return modelType.modelName == mutationSync.model.modelName
+        case .finished(let modelType):
+            return self.modelType == modelType
+        }
+    }
+
+    /// Filtering `IncomingEventReconciliationQueueEvent`s that come from `ReconciliationAndLocalSaveOperation`
+    /// of the same ModelType
+    private func filterReconciliationQueueEvent(_ value: IncomingEventReconciliationQueueEvent) -> Bool {
+        switch value {
+        case .mutationEventApplied(let event):
+            return event.modelName == modelType.modelName
+        case .mutationEventDropped(let modelName):
+            return modelType.modelName == modelName
+        default:
+            return true
+        }
+    }
+
     private func onReceiveSyncOperationEvent(value: InitialSyncOperationEvent) {
         switch value {
-        case .started(let modelType, let syncType):
-            guard self.modelType == modelType else {
-                return
-            }
+        case .started(_, let syncType):
             modelSyncedEventBuilder.isFullSync = syncType == .fullSync ? true : false
             modelSyncedEventBuilder.isDeltaSync = !modelSyncedEventBuilder.isFullSync
-        case .mutationSync(let mutationSync):
-            guard modelType.modelName == mutationSync.model.modelName else {
-                return
-            }
-            _ = recordsReceived.increment()
-        case .finished(let modelType):
-            guard self.modelType == modelType else {
-                return
-            }
+        case .enqueued:
+            recordsReceived += 1
+        case .finished:
             initialSyncOperationFinished = true
         }
     }
@@ -77,28 +104,22 @@ final class ModelSyncedEventEmitter {
     private func onReceiveReconciliationEvent(value: IncomingEventReconciliationQueueEvent) {
         switch value {
         case .mutationEventApplied(let event):
-            guard event.modelName == modelType.modelName else {
-                return
-            }
-            _ = reconciledReceived.increment()
+            reconciledReceived += 1
             switch GraphQLMutationType(rawValue: event.mutationType) {
             case .create:
-                _ = modelSyncedEventBuilder.added.increment()
+                modelSyncedEventBuilder.added += 1
             case .update:
-                _ = modelSyncedEventBuilder.updated.increment()
+                modelSyncedEventBuilder.updated += 1
             case .delete:
-                _ = modelSyncedEventBuilder.deleted.increment()
+                modelSyncedEventBuilder.deleted += 1
             default:
                 break
             }
-            if initialSyncOperationFinished && reconciledReceived.get() == recordsReceived.get() {
+            if initialSyncOperationFinished && reconciledReceived == recordsReceived {
                 dispatchModelSyncedEvent()
             }
-        case .mutationEventDropped(let name):
-            guard modelType.modelName == name else {
-                return
-            }
-            _ = reconciledReceived.increment()
+        case .mutationEventDropped:
+            reconciledReceived += 1
         default:
             return
         }

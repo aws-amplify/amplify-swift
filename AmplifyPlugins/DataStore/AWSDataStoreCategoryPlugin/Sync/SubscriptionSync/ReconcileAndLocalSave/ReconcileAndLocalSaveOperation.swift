@@ -260,7 +260,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         let existsLocally: Bool
         do {
             let localMetadata = try storageAdapter.queryMutationSyncMetadata(for: remoteModel.model.id)
-            existsLocally = localMetadata == nil
+            existsLocally = localMetadata != nil
         } catch {
             log.error("Failed to query for sync metadata")
             return
@@ -278,7 +278,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     }
 
     func notifyDropped(modelName: String) {
-        mutationEventPublisher.send(.mutationEventDropped(modelName))
+        mutationEventPublisher.send(.mutationEventDropped(modelName: modelName))
         stateMachine.notify(action: .notified)
     }
 
@@ -297,7 +297,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         let version = savedModel.syncMetadata.version
         if savedModel.syncMetadata.deleted {
             mutationType = .delete
-        } else if version == 1 || existsLocally {
+        } else if version == 1 || !existsLocally {
             mutationType = .create
         } else {
             mutationType = .update
@@ -356,5 +356,5 @@ extension ReconcileAndLocalSaveOperation: DefaultLogger { }
 
 enum ReconcileAndLocalSaveOperationEvent {
     case mutationEvent(MutationEvent)
-    case mutationEventDropped(String)
+    case mutationEventDropped(modelName: String)
 }

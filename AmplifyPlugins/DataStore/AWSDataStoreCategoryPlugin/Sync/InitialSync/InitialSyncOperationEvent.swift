@@ -5,19 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-//
-//  InitialSyncOperationEvent.swift
-//  AWSDataStoreCategoryPlugin
-//
-//  Created by Guo, Rui on 10/8/20.
-//  Copyright © 2020 Amazon Web Services. All rights reserved.
-//
 import Amplify
 import AWSPluginsCore
 
 enum InitialSyncOperationEvent {
+    /// This event is used to notify `ModelSyncedEventEmitter` the `SyncType` of `ModelType`
     case started(modelType: Model.Type, syncType: SyncType)
-    case mutationSync(MutationSync<AnyModel>)
+    /// Each time an item is enqueued into `ReconciliationAndLocalSaveOperationQueue`, send the event
+    /// to `ModelSyncedEventEmitter` to let it do the `recordReceived` incrementing.
+    case enqueued(MutationSync<AnyModel>)
+    /// `finished` value is used to notify `ModelSyncedEventEmitter` that the `InitialSyncOperation`
+    /// of `ModelType` has finished offering items to `ReconciliationAndLocalSaveOperationQueue`
     case finished(modelType: Model.Type)
 }
 

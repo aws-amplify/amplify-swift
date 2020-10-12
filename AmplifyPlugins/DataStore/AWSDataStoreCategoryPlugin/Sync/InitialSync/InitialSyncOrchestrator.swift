@@ -28,7 +28,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     typealias SyncOperationResult = Result<Void, DataStoreError>
     typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
 
-    private var initialSyncOperationSinks: [String: AnyCancellable]
+    private var initialSyncOperationSinks: AtomicValue<[String: AnyCancellable]>
 
     private let dataStoreConfiguration: DataStoreConfiguration
     private weak var api: APICategoryGraphQLBehavior?
@@ -52,7 +52,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
          api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?) {
-        self.initialSyncOperationSinks = [:]
+        self.initialSyncOperationSinks = AtomicValue(initialValue: [:])
         self.dataStoreConfiguration = dataStoreConfiguration
         self.api = api
         self.reconciliationQueue = reconciliationQueue
@@ -77,12 +77,6 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         let syncableModels = ModelRegistry.models.filter { $0.schema.isSyncable }
         enqueueSyncableModels(syncableModels)
 
-        // This operation is intentionally not cancel-aware; we always want resolveCompletion to execute
-        // as the last item
-        syncOperationQueue.addOperation {
-            self.resolveCompletion()
-        }
-
         let modelNames = syncableModels.map { $0.modelName }
         dispatchSyncQueriesStarted(for: modelNames)
         syncOperationQueue.isSuspended = false
@@ -103,7 +97,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
                                                        storageAdapter: storageAdapter,
                                                        dataStoreConfiguration: dataStoreConfiguration)
 
-        initialSyncOperationSinks[modelType.modelName] = initialSyncForModel
+        initialSyncOperationSinks.with { $0[modelType.modelName] = initialSyncForModel
             .publisher
             .sink(receiveCompletion: { result in
                 if case .failure(let dataStoreError) = result {
@@ -113,27 +107,40 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
                         dataStoreError)
                     self.syncErrors.append(syncError)
                 }
-            }, receiveValue: onReceiveValue(receiveValue:))
+                self.initialSyncOperationSinks.with { $0.removeValue(forKey: modelType.modelName)}
+                self.onReceiveCompletion()
+            }, receiveValue: onReceiveValue(_:))
+        }
 
         syncOperationQueue.addOperation(initialSyncForModel)
     }
 
-    private func onReceiveValue(receiveValue: InitialSyncOperationEvent) {
-        initialSyncOrchestratorTopic.send(receiveValue)
+    private func onReceiveValue(_ value: InitialSyncOperationEvent) {
+        initialSyncOrchestratorTopic.send(value)
     }
 
-    private func resolveCompletion() {
-        // TODO: Invoke error callback for sync errors
+    private func onReceiveCompletion() {
+        guard initialSyncOperationSinks.get().isEmpty else {
+            return
+        }
+
+        let completionResult = makeCompletionResult()
+        if case .success = completionResult {
+            initialSyncOrchestratorTopic.send(completion: .finished)
+        }
+        completion?(makeCompletionResult())
+    }
+
+    private func makeCompletionResult() -> Result<Void, DataStoreError> {
         guard syncErrors.isEmpty else {
             let allMessages = syncErrors.map { String(describing: $0) }
             let syncError = DataStoreError.sync(
                 "One or more errors occurred syncing models. See below for detailed error description.",
                 allMessages.joined(separator: "\n")
             )
-            completion?(.failure(syncError))
-            return
+            return .failure(syncError)
         }
-        completion?(.successfulVoid)
+        return .successfulVoid
     }
 
     private func dispatchSyncQueriesStarted(for modelNames: [String]) {

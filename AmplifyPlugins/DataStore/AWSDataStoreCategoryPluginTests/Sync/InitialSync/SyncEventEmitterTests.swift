@@ -36,8 +36,8 @@ class SyncEventEmitterTests: XCTestCase {
 
     /// - Given: A SyncEventEmitter
     /// - When:
-    ///    - One model is registered
-    ///    - Perform an initial sync
+    ///    - Initial sync occured
+    ///    - model reconcillation occured
     /// - Then:
     ///    - One modelSynced event should be received
     ///    - One syncQueriesReady event should be received
@@ -49,9 +49,9 @@ class SyncEventEmitterTests: XCTestCase {
         let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
         let anyPost = AnyModel(testPost)
         let anyPostMetadata = MutationSyncMetadata(id: "1",
-                                               deleted: false,
-                                               lastChangedAt: Int(Date().timeIntervalSince1970),
-                                               version: 1)
+                                                   deleted: false,
+                                                   lastChangedAt: Int(Date().timeIntervalSince1970),
+                                                   version: 1)
         let anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
         let postMutationEvent = try MutationEvent(untypedModel: testPost, mutationType: .create)
 
@@ -72,9 +72,9 @@ class SyncEventEmitterTests: XCTestCase {
         }
 
         reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelTypes: [Post.self],
-                                                                          api: nil,
-                                                                          storageAdapter: nil,
-                                                                          auth: nil)
+                                                                      api: nil,
+                                                                      storageAdapter: nil,
+                                                                      auth: nil)
 
         initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
                                                                  api: nil,
@@ -82,10 +82,10 @@ class SyncEventEmitterTests: XCTestCase {
                                                                  storageAdapter: nil)
 
         syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
-                                                reconciliationQueue: reconciliationQueue)
+                                            reconciliationQueue: reconciliationQueue)
 
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelType: Post.self, syncType: .fullSync))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.mutationSync(anyPostMutationSync))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync))
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelType: Post.self))
 
         reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))
@@ -99,6 +99,7 @@ class SyncEventEmitterTests: XCTestCase {
     /// - When:
     ///    - Two model are registered
     ///    - Perform an initial sync
+    ///    - Reconcillation of the models occurred
     /// - Then:
     ///    - Two modelSynced event should be received
     ///    - One syncQueriesReady event should be received
@@ -111,18 +112,18 @@ class SyncEventEmitterTests: XCTestCase {
         let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
         let anyPost = AnyModel(testPost)
         let anyPostMetadata = MutationSyncMetadata(id: "1",
-                                               deleted: false,
-                                               lastChangedAt: Int(Date().timeIntervalSince1970),
-                                               version: 1)
+                                                   deleted: false,
+                                                   lastChangedAt: Int(Date().timeIntervalSince1970),
+                                                   version: 1)
         let anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
         let postMutationEvent = try MutationEvent(untypedModel: testPost, mutationType: .create)
 
         let testComment = Comment(id: "1", content: "content", createdAt: .now(), post: testPost)
         let anyComment = AnyModel(testComment)
         let anyCommentMetadata = MutationSyncMetadata(id: "1",
-                                               deleted: false,
-                                               lastChangedAt: Int(Date().timeIntervalSince1970),
-                                               version: 1)
+                                                      deleted: false,
+                                                      lastChangedAt: Int(Date().timeIntervalSince1970),
+                                                      version: 1)
         let anyCommentMutationSync = MutationSync<AnyModel>(model: anyComment, syncMetadata: anyCommentMetadata)
         let commentMutationEvent = try MutationEvent(untypedModel: testComment, mutationType: .create)
 
@@ -151,9 +152,9 @@ class SyncEventEmitterTests: XCTestCase {
         let syncableModelTypes = ModelRegistry.models.filter { $0.schema.isSyncable }
 
         reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelTypes: syncableModelTypes,
-                                                                          api: nil,
-                                                                          storageAdapter: nil,
-                                                                          auth: nil)
+                                                                      api: nil,
+                                                                      storageAdapter: nil,
+                                                                      auth: nil)
 
         initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
                                                                  api: nil,
@@ -161,14 +162,14 @@ class SyncEventEmitterTests: XCTestCase {
                                                                  storageAdapter: nil)
 
         syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
-                                                reconciliationQueue: reconciliationQueue)
+                                            reconciliationQueue: reconciliationQueue)
 
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelType: Post.self, syncType: .fullSync))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.mutationSync(anyPostMutationSync))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync))
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelType: Post.self))
 
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelType: Comment.self, syncType: .fullSync))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.mutationSync(anyCommentMutationSync))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyCommentMutationSync))
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelType: Comment.self))
 
         reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))
@@ -177,16 +178,5 @@ class SyncEventEmitterTests: XCTestCase {
         waitForExpectations(timeout: 1)
         syncEventEmitter = nil
         listener.cancel()
-    }
-}
-
-extension ModelSyncedEvent {
-    static func == (lhs: ModelSyncedEvent, rhs: ModelSyncedEvent) -> Bool {
-        return lhs.modelName == rhs.modelName &&
-            lhs.isFullSync == rhs.isFullSync &&
-            lhs.isDeltaSync == rhs.isDeltaSync &&
-            lhs.added == rhs.added &&
-            lhs.updated == rhs.updated &&
-            lhs.deleted == rhs.deleted
     }
 }

@@ -164,7 +164,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
         for item in items {
             reconciliationQueue.offer(item)
-            initialSyncOperationTopic.send(.mutationSync(item))
+            initialSyncOperationTopic.send(.enqueued(item))
         }
 
         if let nextToken = syncQueryResult.nextToken, recordsReceived < syncMaxRecords {
