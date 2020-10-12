@@ -108,12 +108,27 @@ class SyncMutationToCloudOperation: Operation {
                                                                             version: mutationEvent.version)
             case .update:
                 let model = try mutationEvent.decodeModel()
+                guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {
+                    preconditionFailure("""
+                    Could not retrieve schema for the model \(mutationEvent.modelName), verify that datastore is
+                    initialized.
+                    """)
+                }
                 request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
+                                                                            modelSchema: modelSchema,
                                                                             where: graphQLFilter,
                                                                             version: mutationEvent.version)
             case .create:
                 let model = try mutationEvent.decodeModel()
-                request = GraphQLRequest<MutationSyncResult>.createMutation(of: model, version: mutationEvent.version)
+                guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {
+                    preconditionFailure("""
+                    Could not retrieve schema for the model \(mutationEvent.modelName), verify that datastore is
+                    initialized.
+                    """)
+                }
+                request = GraphQLRequest<MutationSyncResult>.createMutation(of: model,
+                                                                            modelSchema: modelSchema,
+                                                                            version: mutationEvent.version)
             }
         } catch {
             let apiError = APIError.unknown("Couldn't decode model", "", error)
