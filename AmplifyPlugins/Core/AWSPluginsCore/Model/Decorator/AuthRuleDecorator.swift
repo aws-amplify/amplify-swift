@@ -8,8 +8,10 @@
 import Foundation
 import Amplify
 
+public typealias IdentityClaimsDictionary = [String: String]
+
 public enum AuthRuleDecoratorInput {
-    case subscription(GraphQLSubscriptionType, AuthUser)
+    case subscription(GraphQLSubscriptionType, IdentityClaimsDictionary)
     case mutation
     case query
 }
@@ -59,14 +61,17 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         let ownerField = authRule.getOwnerFieldOrDefault()
         selectionSet = appendOwnerFieldToSelectionSetIfNeeded(selectionSet: selectionSet, ownerField: ownerField)
 
-        guard case let .subscription(_, authUser) = input else {
+        guard case let .subscription(_, claims) = input else {
             return document.copy(selectionSet: selectionSet)
         }
 
         if isOwnerInputRequiredOnSubscription(authRule) {
             var inputs = document.inputs
-            let identityClaimValue = resolveIdentityClaimValue(authRule, authUser)
-            inputs[ownerField] = GraphQLDocumentInput(type: "String!", value: .scalar(identityClaimValue))
+            let identityClaimValue = resolveIdentityClaimValue(identityClaim: authRule.identityClaimOrDefault(),
+                                                               claims: claims)
+            if let identityClaimValue = identityClaimValue {
+                inputs[ownerField] = GraphQLDocumentInput(type: "String!", value: .scalar(identityClaimValue))
+            }
             return document.copy(inputs: inputs, selectionSet: selectionSet)
         }
         return document.copy(selectionSet: selectionSet)
@@ -76,17 +81,15 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         return authRule.allow == .owner && authRule.getModelOperationsOrDefault().contains(.read)
     }
 
-    private func resolveIdentityClaimValue(_ authRule: AuthRule, _ authUser: AuthUser) -> String {
-        guard let identityClaim = authRule.identityClaim else {
-            return authUser.username
+    private func resolveIdentityClaimValue(identityClaim: String, claims: IdentityClaimsDictionary) -> String? {
+        guard let identityValue = claims[identityClaim] as? String else {
+            log.error("""
+                Attempted to subscribe to a model with owner based authorization without \(identityClaim)
+                which was specified (or defaulted to) as the identity claim.
+                """)
+            return nil
         }
-        if identityClaim == "cognito:username" {
-            return authUser.username
-        } else if identityClaim == "sub" {
-            return authUser.userId
-        }
-        //TODO: Resolve other identityClaim types
-        return authUser.username
+        return identityValue
     }
 
     /// First finds the first `model` SelectionSet. Then, only append it when the `ownerField` does not exist.
@@ -116,3 +119,5 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         return selectionSet
     }
 }
+
+extension AuthRuleDecorator: DefaultLogger { }
