@@ -42,6 +42,8 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     // Future optimization: can perform sync on each root in parallel, since we know they won't have any
     // interdependencies
     private let syncOperationQueue: OperationQueue
+    private let concurrencyQueue = DispatchQueue(label: "com.amazonaws.InitialSyncOrchestrator.concurrencyQueue",
+                                                 target: DispatchQueue.global())
 
     private let initialSyncOrchestratorTopic: PassthroughSubject<InitialSyncOperationEvent, DataStoreError>
     var publisher: AnyPublisher<InitialSyncOperationEvent, DataStoreError> {
@@ -59,7 +61,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         self.storageAdapter = storageAdapter
 
         let syncOperationQueue = OperationQueue()
-        syncOperationQueue.name = "com.amazon.InitialSyncOrchestrator"
+        syncOperationQueue.name = "com.amazon.InitialSyncOrchestrator.syncOperationQueue"
         syncOperationQueue.maxConcurrentOperationCount = 1
         syncOperationQueue.isSuspended = true
         self.syncOperationQueue = syncOperationQueue
@@ -68,9 +70,11 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         self.initialSyncOrchestratorTopic = PassthroughSubject<InitialSyncOperationEvent, DataStoreError>()
     }
 
-    /// Performs an initial sync on all models
+    /// Performs an initial sync on all models. This should only be called by the
+    /// RemoteSyncEngine during startup. Calling this multiple times will result in
+    /// undefined behavior.
     func sync(completion: @escaping SyncOperationResultHandler) {
-        syncOperationQueue.addOperation {
+        concurrencyQueue.async {
             self.completion = completion
 
             self.log.info("Beginning initial sync")
@@ -80,8 +84,8 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
             let modelNames = syncableModels.map { $0.modelName }
             self.dispatchSyncQueriesStarted(for: modelNames)
+            self.syncOperationQueue.isSuspended = false
         }
-        syncOperationQueue.isSuspended = false
     }
 
     private func enqueueSyncableModels(_ syncableModels: [Model.Type]) {
@@ -101,7 +105,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
         initialSyncOperationSinks[modelType.modelName] = initialSyncForModel
             .publisher
-            .receive(on: syncOperationQueue)
+            .receive(on: concurrencyQueue)
             .sink(receiveCompletion: { result in
                 if case .failure(let dataStoreError) = result {
                     let syncError = DataStoreError.sync(
