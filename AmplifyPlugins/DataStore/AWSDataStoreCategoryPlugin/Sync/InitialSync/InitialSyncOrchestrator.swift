@@ -131,8 +131,11 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         }
 
         let completionResult = makeCompletionResult()
-        if case .success = completionResult {
+        switch completionResult {
+        case .success:
             initialSyncOrchestratorTopic.send(completion: .finished)
+        case .failure(let error):
+            initialSyncOrchestratorTopic.send(completion: .failure(error))
         }
         completion?(completionResult)
     }

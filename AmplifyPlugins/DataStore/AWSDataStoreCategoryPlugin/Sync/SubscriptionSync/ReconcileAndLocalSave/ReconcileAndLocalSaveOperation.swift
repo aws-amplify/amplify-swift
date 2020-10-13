@@ -256,7 +256,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         log.verbose(#function)
 
         /// Do a local metadata query before saving to check if the `AppliedModel` is of `create` or
-        /// `update` MutationType in perspective of local store
+        /// `update` MutationType from the perspective of the local store
         let existsLocally: Bool
         do {
             let localMetadata = try storageAdapter.queryMutationSyncMetadata(for: remoteModel.model.id)
