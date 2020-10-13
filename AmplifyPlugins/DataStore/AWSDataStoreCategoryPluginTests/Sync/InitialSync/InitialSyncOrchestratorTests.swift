@@ -88,7 +88,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
             syncCallbackReceived.fulfill()
         }
 
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 1)
         Amplify.Hub.removeListener(hubListener)
         sink.cancel()
     }
@@ -151,7 +151,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         orchestrator.sync { _ in }
 
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 1)
         sink.cancel()
     }
 
@@ -222,7 +222,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         orchestrator.sync { _ in }
 
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 1)
         sink.cancel()
     }
 

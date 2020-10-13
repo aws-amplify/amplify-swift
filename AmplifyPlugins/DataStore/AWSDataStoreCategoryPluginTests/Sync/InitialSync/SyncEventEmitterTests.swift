@@ -17,7 +17,13 @@ class SyncEventEmitterTests: XCTestCase {
     var initialSyncOrchestrator: MockAWSInitialSyncOrchestrator?
     var reconciliationQueue: MockAWSIncomingEventReconciliationQueue?
     var syncEventEmitter: SyncEventEmitter?
-    var expectedModelSyncedEventPayloads: [ModelSyncedEvent]!
+    var expectedModelSyncedEventPayloads: [ModelSyncedEvent]
+        = [ModelSyncedEvent(modelName: "Post",
+                            isFullSync: true, isDeltaSync: false,
+                            added: 1, updated: 0, deleted: 0),
+           ModelSyncedEvent(modelName: "Comment",
+                            isFullSync: true, isDeltaSync: false,
+                            added: 1, updated: 0, deleted: 0)]
 
     override func setUp() {
         super.setUp()
@@ -25,17 +31,11 @@ class SyncEventEmitterTests: XCTestCase {
         ModelRegistry.reset()
         MockModelReconciliationQueue.reset()
         MockAWSInitialSyncOrchestrator.reset()
-
-        expectedModelSyncedEventPayloads = [ModelSyncedEvent(modelName: "Post",
-                                                             isFullSync: true, isDeltaSync: false,
-                                                             added: 1, updated: 0, deleted: 0),
-                                            ModelSyncedEvent(modelName: "Comment",
-                                                             isFullSync: true, isDeltaSync: false,
-                                                             added: 1, updated: 0, deleted: 0)]
     }
 
     /// - Given: A SyncEventEmitter
     /// - When:
+    ///    - One model is registered
     ///    - Initial sync occured
     ///    - model reconcillation occured
     /// - Then:

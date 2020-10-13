@@ -297,7 +297,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         let version = savedModel.syncMetadata.version
         if savedModel.syncMetadata.deleted {
             mutationType = .delete
-        } else if version == 1 || !existsLocally {
+        } else if !existsLocally {
             mutationType = .create
         } else {
             mutationType = .update

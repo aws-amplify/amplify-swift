@@ -96,3 +96,12 @@ extension ModelSyncedEvent: Equatable {
             && lhs.deleted == rhs.deleted
     }
 }
+
+extension MutationSyncMetadata: Equatable {
+    public static func == (lhs: MutationSyncMetadata, rhs: MutationSyncMetadata) -> Bool {
+        return lhs.id == rhs.id
+            && lhs.deleted == rhs.deleted
+            && lhs.lastChangedAt == rhs.lastChangedAt
+            && lhs.version == rhs.version
+    }
+}

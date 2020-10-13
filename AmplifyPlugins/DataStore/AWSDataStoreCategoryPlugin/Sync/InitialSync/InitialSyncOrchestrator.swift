@@ -28,7 +28,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     typealias SyncOperationResult = Result<Void, DataStoreError>
     typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
 
-    private var initialSyncOperationSinks: AtomicValue<[String: AnyCancellable]>
+    private var initialSyncOperationSinks: [String: AnyCancellable]
 
     private let dataStoreConfiguration: DataStoreConfiguration
     private weak var api: APICategoryGraphQLBehavior?
@@ -52,7 +52,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
          api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?) {
-        self.initialSyncOperationSinks = AtomicValue(initialValue: [:])
+        self.initialSyncOperationSinks = [:]
         self.dataStoreConfiguration = dataStoreConfiguration
         self.api = api
         self.reconciliationQueue = reconciliationQueue
@@ -70,15 +70,17 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
     /// Performs an initial sync on all models
     func sync(completion: @escaping SyncOperationResultHandler) {
-        self.completion = completion
+        syncOperationQueue.addOperation {
+            self.completion = completion
 
-        log.info("Beginning initial sync")
+            self.log.info("Beginning initial sync")
 
-        let syncableModels = ModelRegistry.models.filter { $0.schema.isSyncable }
-        enqueueSyncableModels(syncableModels)
+            let syncableModels = ModelRegistry.models.filter { $0.schema.isSyncable }
+            self.enqueueSyncableModels(syncableModels)
 
-        let modelNames = syncableModels.map { $0.modelName }
-        dispatchSyncQueriesStarted(for: modelNames)
+            let modelNames = syncableModels.map { $0.modelName }
+            self.dispatchSyncQueriesStarted(for: modelNames)
+        }
         syncOperationQueue.isSuspended = false
     }
 
@@ -97,8 +99,9 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
                                                        storageAdapter: storageAdapter,
                                                        dataStoreConfiguration: dataStoreConfiguration)
 
-        initialSyncOperationSinks.with { $0[modelType.modelName] = initialSyncForModel
+        initialSyncOperationSinks[modelType.modelName] = initialSyncForModel
             .publisher
+            .receive(on: syncOperationQueue)
             .sink(receiveCompletion: { result in
                 if case .failure(let dataStoreError) = result {
                     let syncError = DataStoreError.sync(
@@ -107,10 +110,9 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
                         dataStoreError)
                     self.syncErrors.append(syncError)
                 }
-                self.initialSyncOperationSinks.with { $0.removeValue(forKey: modelType.modelName)}
+                self.initialSyncOperationSinks.removeValue(forKey: modelType.modelName)
                 self.onReceiveCompletion()
             }, receiveValue: onReceiveValue(_:))
-        }
 
         syncOperationQueue.addOperation(initialSyncForModel)
     }
@@ -120,7 +122,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     }
 
     private func onReceiveCompletion() {
-        guard initialSyncOperationSinks.get().isEmpty else {
+        guard initialSyncOperationSinks.isEmpty else {
             return
         }
 
@@ -128,7 +130,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         if case .success = completionResult {
             initialSyncOrchestratorTopic.send(completion: .finished)
         }
-        completion?(makeCompletionResult())
+        completion?(completionResult)
     }
 
     private func makeCompletionResult() -> Result<Void, DataStoreError> {

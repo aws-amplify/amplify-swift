@@ -50,7 +50,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     override func main() {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return
         }
 
@@ -63,7 +63,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     private func getLastSyncTime() -> Int? {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return nil
         }
 

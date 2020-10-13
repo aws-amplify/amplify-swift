@@ -18,13 +18,13 @@ final class ModelSyncedEventEmitter {
     private let queue = DispatchQueue(label: "com.amazonaws.ModelSyncedEventEmitterQueue",
                                       target: DispatchQueue.global())
 
-    var syncOrchestratorSink: AnyCancellable?
-    var reconciliationQueueSink: AnyCancellable?
+    private var syncOrchestratorSink: AnyCancellable?
+    private var reconciliationQueueSink: AnyCancellable?
 
-    let modelType: Model.Type
-    var recordsReceived: Int
-    var reconciledReceived: Int
-    var initialSyncOperationFinished: Bool
+    private let modelType: Model.Type
+    private var recordsReceived: Int
+    private var reconciledReceived: Int
+    private var initialSyncOperationFinished: Bool
 
     private var modelSyncedEventBuilder: ModelSyncedEvent.Builder
 

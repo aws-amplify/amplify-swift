@@ -18,6 +18,13 @@ class HubEventsIntegrationTestBase: XCTestCase {
 
     static let networkTimeout = TimeInterval(180)
     let networkTimeout = HubEventsIntegrationTestBase.networkTimeout
+    
+    var storageAdapter: SQLiteStorageEngineAdapter {
+        let plugin = try! Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
+        let storageEngine = plugin.storageEngine as! StorageEngine
+        let storageAdapter = storageEngine.storageAdapter as! SQLiteStorageEngineAdapter
+        return storageAdapter
+    }
 
     override func setUp() {
         super.setUp()
