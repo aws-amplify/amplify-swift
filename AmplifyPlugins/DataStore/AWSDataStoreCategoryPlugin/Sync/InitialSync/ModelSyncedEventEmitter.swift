@@ -98,6 +98,9 @@ final class ModelSyncedEventEmitter {
             recordsReceived += 1
         case .finished:
             initialSyncOperationFinished = true
+            if recordsReceived == 0 {
+                dispatchModelSyncedEvent()
+            }
         }
     }
 

@@ -87,7 +87,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     private func getLastSyncMetadata() -> ModelSyncMetadata? {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return nil
         }
 
@@ -107,7 +107,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     private func query(lastSyncTime: Int?, nextToken: String? = nil) {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return
         }
 
@@ -141,7 +141,7 @@ final class InitialSyncOperation: AsynchronousOperation {
     private func handleQueryResults(lastSyncTime: Int?,
                                     graphQLResult: Result<SyncQueryResult, GraphQLResponseError<SyncQueryResult>>) {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return
         }
 
@@ -179,7 +179,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     private func updateModelSyncMetadata(lastSyncTime: Int?) {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return
         }
 

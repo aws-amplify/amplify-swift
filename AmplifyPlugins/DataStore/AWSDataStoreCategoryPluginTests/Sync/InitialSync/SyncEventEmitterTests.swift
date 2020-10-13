@@ -17,6 +17,12 @@ class SyncEventEmitterTests: XCTestCase {
     var initialSyncOrchestrator: MockAWSInitialSyncOrchestrator?
     var reconciliationQueue: MockAWSIncomingEventReconciliationQueue?
     var syncEventEmitter: SyncEventEmitter?
+
+    var anyPostMutationSync: MutationSync<AnyModel>!
+    var postMutationEvent: MutationEvent!
+    var anyCommentMutationSync: MutationSync<AnyModel>!
+    var commentMutationEvent: MutationEvent!
+
     var expectedModelSyncedEventPayloads: [ModelSyncedEvent]
         = [ModelSyncedEvent(modelName: "Post",
                             isFullSync: true, isDeltaSync: false,
@@ -36,8 +42,8 @@ class SyncEventEmitterTests: XCTestCase {
     /// - Given: A SyncEventEmitter
     /// - When:
     ///    - One model is registered
-    ///    - Initial sync occured
-    ///    - model reconcillation occured
+    ///    - Perform an initial sync
+    ///    - Reconcillation of the models occurred
     /// - Then:
     ///    - One modelSynced event should be received
     ///    - One syncQueriesReady event should be received
@@ -116,6 +122,7 @@ class SyncEventEmitterTests: XCTestCase {
                                                    lastChangedAt: Int(Date().timeIntervalSince1970),
                                                    version: 1)
         let anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
+
         let postMutationEvent = try MutationEvent(untypedModel: testPost, mutationType: .create)
 
         let testComment = Comment(id: "1", content: "content", createdAt: .now(), post: testPost)
