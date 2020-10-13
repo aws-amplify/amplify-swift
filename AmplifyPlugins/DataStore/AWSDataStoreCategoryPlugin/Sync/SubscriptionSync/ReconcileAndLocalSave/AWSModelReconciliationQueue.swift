@@ -154,7 +154,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 self.enqueue(remoteModel)
             })
         case .connectionConnected:
-            modelReconciliationQueueSubject.send(.connected(modelName))
+            modelReconciliationQueueSubject.send(.connected(modelName: modelName))
         }
     }
 
@@ -164,6 +164,11 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             log.info("receivedCompletion: finished")
             modelReconciliationQueueSubject.send(completion: .finished)
         case .failure(let dataStoreError):
+            if case let .api(error, _) = dataStoreError,
+               case let APIError.operationError(_, _, underlyingError) = error, isUnauthorizedError(underlyingError) {
+                modelReconciliationQueueSubject.send(.disconnected(modelName: modelName, reason: .unauthorized))
+                return
+            }
             log.error("receiveCompletion: error: \(dataStoreError)")
             modelReconciliationQueueSubject.send(completion: .failure(dataStoreError))
         }
@@ -173,6 +178,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 @available(iOS 13.0, *)
 extension AWSModelReconciliationQueue: DefaultLogger { }
 
+// MARK: Resettable
 @available(iOS 13.0, *)
 extension AWSModelReconciliationQueue: Resettable {
 
@@ -207,4 +213,27 @@ extension AWSModelReconciliationQueue: Resettable {
         onComplete()
     }
 
+}
+
+// MARK: Auth errors handling
+@available(iOS 13.0, *)
+extension AWSModelReconciliationQueue {
+    private typealias ResponseType = MutationSync<AnyModel>
+    private func graphqlErrors(from error: GraphQLResponseError<ResponseType>?) -> [GraphQLError]? {
+        if case let .error(errors) = error {
+            return errors
+        }
+        return nil
+    }
+
+    private func isUnauthorizedError(_ error: Error?) -> Bool {
+        if let responseError = error as? GraphQLResponseError<ResponseType>,
+           let graphQLError = graphqlErrors(from: responseError)?.first,
+           let extensions = graphQLError.extensions,
+           case let .string(errorTypeValue) = extensions["errorType"],
+           case .unauthorized = AppSyncErrorType(errorTypeValue) {
+            return true
+        }
+        return false
+    }
 }
