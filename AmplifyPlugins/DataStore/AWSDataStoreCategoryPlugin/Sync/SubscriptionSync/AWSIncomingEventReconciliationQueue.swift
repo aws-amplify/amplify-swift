@@ -43,7 +43,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     private var modelReconciliationQueueFactory: ModelReconciliationQueueFactory
     
     private var isInitialized: Bool {
-        self.reconciliationQueueConnectionStatus.count == self.reconciliationQueues.count
+        reconciliationQueueConnectionStatus.count == reconciliationQueues.count
     }
 
     init(modelTypes: [Model.Type],
@@ -121,6 +121,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         case .disconnected(modelName: let modelName, reason: .unauthorized):
             connectionStatusSerialQueue.async {
                 self.reconciliationQueues[modelName]?.cancel()
+                self.modelReconciliationQueueSinks[modelName]?.cancel()
                 self.reconciliationQueueConnectionStatus[modelName] = false
                 if self.isInitialized {
                     self.eventReconciliationQueueTopic.send(.initialized)
