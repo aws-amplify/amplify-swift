@@ -129,7 +129,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
         hubListener.cancel()
     }
 
-    func testModelSyncedEventsSyncQueriesReady() throws {
+    func testModelSyncedAndSyncQueriesReady() throws {
         let modelSyncedReceived = expectation(description: "outboxMutationEnqueued received")
         let syncQueriesReadyReceived = expectation(description: "outboxMutationProcessed received")
 
