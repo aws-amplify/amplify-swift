@@ -43,8 +43,8 @@ class ReadyEventEmitterTests: XCTestCase {
         remoteSyncTopicPublisher.send(.syncStarted)
         let syncQueriesReadyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
         Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesReadyEventPayload)
+        
         wait(for: [readyReceived], timeout: 1)
-
         readyEventSink?.cancel()
     }
 

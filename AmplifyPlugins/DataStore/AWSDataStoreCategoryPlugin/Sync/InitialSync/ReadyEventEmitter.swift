@@ -11,41 +11,42 @@ import Combine
 
 @available(iOS 13.0, *)
 final class ReadyEventEmitter {
-    /// Two conditions should be met to emit one `ready` event:
-    /// - receive one `syncQueriesReady` event
-    /// - the state of remoteSyncEngine move to `syncStarted`
-    let conditionCount = AtomicValue(initialValue: 0)
-    let remoteSyncEnginePublisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError>
-    var remoteEngineSink: AnyCancellable?
-    var syncQueriesReadyEventSink: AnyCancellable?
-
+    var readySink: AnyCancellable?
     init(remoteSyncEnginePublisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError>) {
-        self.remoteSyncEnginePublisher = remoteSyncEnginePublisher
-
-        self.syncQueriesReadyEventSink = Amplify.Hub.publisher(for: .dataStore).sink { event in
-            if case HubPayload.EventName.DataStore.syncQueriesReady = event.eventName {
-                _ = self.conditionCount.increment()
-                guard self.conditionCount.get() == 2 else {
-                    return
+        let queriesReadyPublisher = ReadyEventEmitter.makeSyncQueriesReadyPublisher()
+        let syncEngineStartedPublisher = ReadyEventEmitter.makeRemoteSyncEngineStartedPublisher(
+            remoteSyncEnginePublisher: remoteSyncEnginePublisher
+        )
+        readySink = Publishers
+            .Merge(queriesReadyPublisher, syncEngineStartedPublisher)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    self.dispatchReady()
+                case .failure(let dataStoreError):
+                    self.log.error("Failed to emit ready event, error: \(dataStoreError)")
                 }
-                self.dispatchReady()
-            }
-        }
+            }, receiveValue: { _ in })
+    }
 
-        self.remoteEngineSink = remoteSyncEnginePublisher
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: { value in
-                    switch value {
-                    case .syncStarted:
-                        _ = self.conditionCount.increment()
-                        guard self.conditionCount.get() == 2 else {
-                            return
-                        }
-                        self.dispatchReady()
-                    default:
-                        break
-                    }
-            })
+    private static func makeSyncQueriesReadyPublisher() -> AnyPublisher<Void, DataStoreError> {
+        Amplify.Hub
+            .publisher(for: .dataStore)
+            .filter { $0.eventName == HubPayload.EventName.DataStore.syncQueriesReady }
+            .first()
+            .map { _ in () }
+            .setFailureType(to: DataStoreError.self)
+            .eraseToAnyPublisher()
+    }
+
+    private static func makeRemoteSyncEngineStartedPublisher(
+        remoteSyncEnginePublisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError>
+    ) -> AnyPublisher<Void, DataStoreError> {
+        remoteSyncEnginePublisher
+            .filter { if case .syncStarted = $0 { return true } else { return false } }
+            .first()
+            .map { _ in () }
+            .eraseToAnyPublisher()
     }
 
     private func dispatchReady() {
@@ -54,3 +55,6 @@ final class ReadyEventEmitter {
     }
 
 }
+
+@available(iOS 13.0, *)
+extension ReadyEventEmitter: DefaultLogger { }

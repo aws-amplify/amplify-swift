@@ -43,8 +43,9 @@ public extension HubPayload.EventName.DataStore {
     static let modelSynced = "DataStore.modelSynced"
 
     /// Dispatched when:
-    /// - local store is loaded up from the disk if device is offline:
-    /// - all data finish syncing with cloud and every functional pieces are ready if device is online:
+    /// - local store has loaded outgoing mutations from local storage
+    /// - if online, all data has finished syncing with cloud
+    /// When this event is emitted, DataStore is ready to sync changes between the local device and the cloud
     static let ready = "DataStore.ready"
 
     /// Dispatched when all models have been synced
