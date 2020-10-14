@@ -147,7 +147,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostMutationSync.model))
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostMutationSync,
-                                                                                 existsLocally: true))
+                                                                                 existsLocally: false))
             expect.fulfill()
         }
 
@@ -163,7 +163,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         storageAdapter.returnOnQueryMutationSyncMetadata(.some(anyPostMetadata))
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostMutationSync,
-                                                                                 existsLocally: false))
+                                                                                 existsLocally: true))
             expect.fulfill()
         }
         stateMachine.state = .executing(disposition)
@@ -207,7 +207,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostDeletedMutationSync.model))
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostDeletedMutationSync,
-                                                                                 existsLocally: true))
+                                                                                 existsLocally: false))
             expect.fulfill()
         }
 

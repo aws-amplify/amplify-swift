@@ -50,7 +50,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     override func main() {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return
         }
 
@@ -63,7 +63,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     private func getLastSyncTime() -> Int? {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return nil
         }
 
@@ -87,7 +87,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     private func getLastSyncMetadata() -> ModelSyncMetadata? {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return nil
         }
 
@@ -107,7 +107,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     private func query(lastSyncTime: Int?, nextToken: String? = nil) {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return
         }
 
@@ -141,7 +141,7 @@ final class InitialSyncOperation: AsynchronousOperation {
     private func handleQueryResults(lastSyncTime: Int?,
                                     graphQLResult: Result<SyncQueryResult, GraphQLResponseError<SyncQueryResult>>) {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return
         }
 
@@ -164,7 +164,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
         for item in items {
             reconciliationQueue.offer(item)
-            initialSyncOperationTopic.send(.mutationSync(item))
+            initialSyncOperationTopic.send(.enqueued(item))
         }
 
         if let nextToken = syncQueryResult.nextToken, recordsReceived < syncMaxRecords {
@@ -179,7 +179,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     private func updateModelSyncMetadata(lastSyncTime: Int?) {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return
         }
 
@@ -223,14 +223,3 @@ final class InitialSyncOperation: AsynchronousOperation {
 
 @available(iOS 13.0, *)
 extension InitialSyncOperation: DefaultLogger { }
-
-enum InitialSyncOperationEvent {
-    case started(modelType: Model.Type, syncType: SyncType)
-    case mutationSync(MutationSync<AnyModel>)
-    case finished(modelType: Model.Type)
-}
-
-enum SyncType {
-   case fullSync
-   case deltaSync
-}

@@ -66,20 +66,29 @@ class InitialSyncOrchestratorTests: XCTestCase {
             return
         }
 
-        let orchestratorPublisherValueReceived = expectation(description: "Received publisher value from orchestrator")
-        orchestratorPublisherValueReceived.assertForOverFulfill = false
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        syncStartedReceived.expectedFulfillmentCount = 2
+        let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
+        finishedReceived.expectedFulfillmentCount = 2
         let sink = orchestrator
             .publisher
             .sink(receiveCompletion: { _ in },
-                  receiveValue: { _ in
-                    orchestratorPublisherValueReceived.fulfill()
-            })
+                  receiveValue: { value in
+                    switch value {
+                    case .started:
+                        syncStartedReceived.fulfill()
+                    case .finished:
+                        finishedReceived.fulfill()
+                    default:
+                        break
+                    }
+                  })
 
         orchestrator.sync { _ in
             syncCallbackReceived.fulfill()
         }
 
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 1)
         Amplify.Hub.removeListener(hubListener)
         sink.cancel()
     }
@@ -122,18 +131,27 @@ class InitialSyncOrchestratorTests: XCTestCase {
                                        reconciliationQueue: reconciliationQueue,
                                        storageAdapter: storageAdapter)
 
-        let orchestratorPublisherValueReceived = expectation(description: "Received publisher value from orchestrator")
-        orchestratorPublisherValueReceived.assertForOverFulfill = false
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        syncStartedReceived.expectedFulfillmentCount = 2
+        let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
+        finishedReceived.expectedFulfillmentCount = 2
         let sink = orchestrator
             .publisher
             .sink(receiveCompletion: { _ in },
-                  receiveValue: { _ in
-                    orchestratorPublisherValueReceived.fulfill()
-            })
+                  receiveValue: { value in
+                    switch value {
+                    case .started:
+                        syncStartedReceived.fulfill()
+                    case .finished:
+                        finishedReceived.fulfill()
+                    default:
+                        break
+                    }
+                  })
 
         orchestrator.sync { _ in }
 
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 1)
         sink.cancel()
     }
 
@@ -184,18 +202,27 @@ class InitialSyncOrchestratorTests: XCTestCase {
                                        reconciliationQueue: reconciliationQueue,
                                        storageAdapter: storageAdapter)
 
-        let orchestratorPublisherValueReceived = expectation(description: "Received publisher value from orchestrator")
-        orchestratorPublisherValueReceived.assertForOverFulfill = false
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        syncStartedReceived.expectedFulfillmentCount = 2
+        let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
+        finishedReceived.expectedFulfillmentCount = 2
         let sink = orchestrator
             .publisher
             .sink(receiveCompletion: { _ in },
-                  receiveValue: { _ in
-                    orchestratorPublisherValueReceived.fulfill()
-            })
+                  receiveValue: { value in
+                    switch value {
+                    case .started:
+                        syncStartedReceived.fulfill()
+                    case .finished:
+                        finishedReceived.fulfill()
+                    default:
+                        break
+                    }
+                  })
 
         orchestrator.sync { _ in }
 
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 1)
         sink.cancel()
     }
 

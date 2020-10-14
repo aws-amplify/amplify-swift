@@ -15,8 +15,6 @@ import Combine
 class MockModelReconciliationQueue: ModelReconciliationQueue {
 
     public static var mockModelReconciliationQueues: [String: MockModelReconciliationQueue] = [:]
-    internal var count: Int
-    internal var isFullSync: Bool
     private let modelType: Model.Type
     let modelReconciliationQueueSubject: PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>
     var publisher: AnyPublisher<ModelReconciliationQueueEvent, DataStoreError> {
@@ -29,8 +27,6 @@ class MockModelReconciliationQueue: ModelReconciliationQueue {
          auth: AuthCategoryBehavior?,
          incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
         self.modelReconciliationQueueSubject = PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>()
-        self.count = 0
-        self.isFullSync = false
         self.modelType = modelType
         MockModelReconciliationQueue.mockModelReconciliationQueues[modelType.modelName] = self
     }

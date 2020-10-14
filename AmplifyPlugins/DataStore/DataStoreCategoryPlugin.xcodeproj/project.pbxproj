@@ -105,6 +105,7 @@
 		D888602C252BAD5800A38208 /* SyncEventEmitterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D888602B252BAD5800A38208 /* SyncEventEmitterTests.swift */; };
 		D888E80A24A65B3800F4CE3E /* DataStoreLocalStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D888E80924A65B3800F4CE3E /* DataStoreLocalStoreTests.swift */; };
 		D888E80C24A65DC200F4CE3E /* LocalStoreIntegrationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D888E80B24A65DC200F4CE3E /* LocalStoreIntegrationTestBase.swift */; };
+		D8C3182225302B790032FA44 /* InitialSyncOperationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C3182125302B790032FA44 /* InitialSyncOperationEvent.swift */; };
 		D8C5BA59249815A6007C3A68 /* DataStoreConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C5BA58249815A6007C3A68 /* DataStoreConfigurationTests.swift */; };
 		D8D1DED4252E2CB400681DA8 /* ReadyEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D1DED3252E2CB400681DA8 /* ReadyEventEmitter.swift */; };
 		D8D1DED6252E30F800681DA8 /* ReadyEventEmitterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D1DED5252E30F800681DA8 /* ReadyEventEmitterTests.swift */; };
@@ -332,6 +333,7 @@
 		D888602B252BAD5800A38208 /* SyncEventEmitterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncEventEmitterTests.swift; path = AWSDataStoreCategoryPluginTests/Sync/InitialSync/SyncEventEmitterTests.swift; sourceTree = SOURCE_ROOT; };
 		D888E80924A65B3800F4CE3E /* DataStoreLocalStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreLocalStoreTests.swift; sourceTree = "<group>"; };
 		D888E80B24A65DC200F4CE3E /* LocalStoreIntegrationTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStoreIntegrationTestBase.swift; sourceTree = "<group>"; };
+		D8C3182125302B790032FA44 /* InitialSyncOperationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialSyncOperationEvent.swift; sourceTree = "<group>"; };
 		D8C5BA58249815A6007C3A68 /* DataStoreConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConfigurationTests.swift; sourceTree = "<group>"; };
 		D8D1DED3252E2CB400681DA8 /* ReadyEventEmitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadyEventEmitter.swift; sourceTree = "<group>"; };
 		D8D1DED5252E30F800681DA8 /* ReadyEventEmitterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadyEventEmitterTests.swift; sourceTree = "<group>"; };
@@ -692,6 +694,7 @@
 			isa = PBXGroup;
 			children = (
 				FA60461223980A75009E4B97 /* InitialSyncOperation.swift */,
+				D8C3182125302B790032FA44 /* InitialSyncOperationEvent.swift */,
 				FA0427C92396C35500D25AB0 /* InitialSyncOrchestrator.swift */,
 				D86B6F7D25167F3A008AC948 /* ModelSyncedEventEmitter.swift */,
 				D8D1DED3252E2CB400681DA8 /* ReadyEventEmitter.swift */,
@@ -1494,6 +1497,7 @@
 				FAC010EE23956DDE00FCE7BB /* RemoteSyncReconciler.swift in Sources */,
 				FA3841E523889D280070AD5B /* IncomingEventReconciliationQueue.swift in Sources */,
 				213481D4242ABA86001966DE /* ProcessMutationErrorFromCloudOperation.swift in Sources */,
+				D8C3182225302B790032FA44 /* InitialSyncOperationEvent.swift in Sources */,
 				2149E5D12388684F00873955 /* StorageEngineAdapter+SQLite.swift in Sources */,
 				FA5D4CED238AFC4D00D2F54A /* AWSDataStorePlugin+DefaultLogger.swift in Sources */,
 				2149E5CA2388684F00873955 /* ModelSchema+SQLite.swift in Sources */,

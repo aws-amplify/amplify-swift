@@ -7,19 +7,19 @@
 
 import Amplify
 
-/// Used as HubPayload for the `ModelSynced`
+/// Hub payload for the `ModelSynced` event.
 public struct ModelSyncedEvent {
-    /// the name of the model that was synced
+    /// Name of the model that was synced
     public let modelName: String
-    /// `true` if the model was synced with a "full" query to retrieve all models
+    /// True when a full sync query was performed for this event.
     public let isFullSync: Bool
-    /// `true` if the model was synced with a "delta" query to retrieve changes since the last sync
+    /// True when a delta sync query was performed for this event.
     public let isDeltaSync: Bool
-    /// the number of new model instances added to the local store
+    /// Number of model instances added to the local store
     public let added: Int
-    /// the number of existing model instances updated in the local store
+    /// Number of existing model instances updated in the local store
     public let updated: Int
-    /// the number of model instances deleted from the local store
+    /// Number of existing model instances deleted from the local store
     public let deleted: Int
 
     public init(modelName: String,
@@ -42,17 +42,17 @@ extension ModelSyncedEvent {
         var modelName: String
         var isFullSync: Bool
         var isDeltaSync: Bool
-        var added: AtomicValue<Int>
-        var updated: AtomicValue<Int>
-        var deleted: AtomicValue<Int>
+        var added: Int
+        var updated: Int
+        var deleted: Int
 
         init() {
             self.modelName = ""
             self.isFullSync = false
             self.isDeltaSync = false
-            self.added = AtomicValue(initialValue: 0)
-            self.updated = AtomicValue(initialValue: 0)
-            self.deleted = AtomicValue(initialValue: 0)
+            self.added = 0
+            self.updated = 0
+            self.deleted = 0
         }
 
         func build() -> ModelSyncedEvent {
@@ -60,9 +60,9 @@ extension ModelSyncedEvent {
                 modelName: modelName,
                 isFullSync: isFullSync,
                 isDeltaSync: isDeltaSync,
-                added: added.get(),
-                updated: updated.get(),
-                deleted: deleted.get()
+                added: added,
+                updated: updated,
+                deleted: deleted
             )
         }
     }

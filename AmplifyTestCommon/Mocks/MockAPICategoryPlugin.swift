@@ -24,7 +24,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin, APICategoryReac
 
     func reset(onComplete: @escaping BasicClosure) {
         notify("reset")
-        listeners = []
+        listeners.set([])
         onComplete()
     }
 

@@ -274,7 +274,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         self.initialSyncOrchestrator = initialSyncOrchestrator
 
         syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
-                                            reconciliationQueue: reconciliationQueue ?? nil)
+                                            reconciliationQueue: reconciliationQueue)
 
         readyEventEmitter = ReadyEventEmitter(remoteSyncEnginePublisher: publisher)
 
