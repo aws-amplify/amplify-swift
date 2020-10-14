@@ -83,6 +83,8 @@ extension AWSCognitoAuthPlugin {
                                 options: AuthSocialWebUISignInOperation.Request.Options?,
                                 listener: AuthSocialWebUISignInOperation.ResultListener?)
         -> AuthSocialWebUISignInOperation {
+        
+        
             let options = options ?? AuthWebUISignInRequest.Options()
             let request = AuthWebUISignInRequest(presentationAnchor: presentationAnchor,
                                                  authProvider: authProvider,

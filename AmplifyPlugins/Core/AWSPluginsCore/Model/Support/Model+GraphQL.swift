@@ -44,7 +44,16 @@ extension Model {
                 if case let .belongsTo(_, targetName) = field.association {
                     fieldName = targetName ?? fieldName
                 }
-                input[fieldName] = (value as? Model)?.id
+                if let modelValue = value as? Model {
+                    input[fieldName] = modelValue.id
+
+                } else if let value = value as? [String: JSONValue],
+                   case let .string(primaryKeyValue) = value[modelSchema.primaryKey.name] {
+                    input[fieldName] = primaryKeyValue
+                } else {
+                    input[fieldName] = nil
+                }
+                
             case .collection:
                 // TODO how to handle associations of type "many" (i.e. cascade save)?
                 // This is not supported right now and might be added as a future feature
