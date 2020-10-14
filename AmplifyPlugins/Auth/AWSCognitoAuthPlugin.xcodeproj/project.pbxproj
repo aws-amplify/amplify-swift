@@ -58,7 +58,7 @@
 		B41D0FA52475A3960049D08D /* AWSAuthDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D0F4B2475A3960049D08D /* AWSAuthDevice.swift */; };
 		B41D0FA62475A3960049D08D /* AWSAuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D0F4C2475A3960049D08D /* AWSAuthUser.swift */; };
 		B41D0FA72475A3960049D08D /* SignInResult+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D0F4D2475A3960049D08D /* SignInResult+Extension.swift */; };
-		B41D0FA82475A3960049D08D /* AWSAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D0F4E2475A3960049D08D /* AWSAuthService.swift */; };
+		B41D0FA82475A3960049D08D /* AWSCognitoAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D0F4E2475A3960049D08D /* AWSCognitoAuthService.swift */; };
 		B41D0FA92475A3960049D08D /* AWSAuthCognitoSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D0F4F2475A3960049D08D /* AWSAuthCognitoSession.swift */; };
 		B41D0FAA2475A3960049D08D /* AWSCognitoAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D0F512475A3960049D08D /* AWSCognitoAuthError.swift */; };
 		B41D0FAC2475A3960049D08D /* AWSAuthSignOutOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D0F542475A3960049D08D /* AWSAuthSignOutOperation.swift */; };
@@ -214,7 +214,7 @@
 		B41D0F4B2475A3960049D08D /* AWSAuthDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthDevice.swift; sourceTree = "<group>"; };
 		B41D0F4C2475A3960049D08D /* AWSAuthUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthUser.swift; sourceTree = "<group>"; };
 		B41D0F4D2475A3960049D08D /* SignInResult+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SignInResult+Extension.swift"; sourceTree = "<group>"; };
-		B41D0F4E2475A3960049D08D /* AWSAuthService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthService.swift; sourceTree = "<group>"; };
+		B41D0F4E2475A3960049D08D /* AWSCognitoAuthService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSCognitoAuthService.swift; sourceTree = "<group>"; };
 		B41D0F4F2475A3960049D08D /* AWSAuthCognitoSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthCognitoSession.swift; sourceTree = "<group>"; };
 		B41D0F512475A3960049D08D /* AWSCognitoAuthError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSCognitoAuthError.swift; sourceTree = "<group>"; };
 		B41D0F542475A3960049D08D /* AWSAuthSignOutOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthSignOutOperation.swift; sourceTree = "<group>"; };
@@ -493,7 +493,7 @@
 			children = (
 				B41D0F4F2475A3960049D08D /* AWSAuthCognitoSession.swift */,
 				B41D0F4B2475A3960049D08D /* AWSAuthDevice.swift */,
-				B41D0F4E2475A3960049D08D /* AWSAuthService.swift */,
+				B41D0F4E2475A3960049D08D /* AWSCognitoAuthService.swift */,
 				B41D0F4C2475A3960049D08D /* AWSAuthUser.swift */,
 				B41D0F4A2475A3960049D08D /* AWSCognitoUserPoolTokens.swift */,
 				B41D0F502475A3960049D08D /* Error */,
@@ -1341,7 +1341,7 @@
 				B41D10042475AB7E0049D08D /* AWSCognitoAuthPlugin+Reset.swift in Sources */,
 				B41D0F982475A3960049D08D /* AuthenticationProviderBehavior.swift in Sources */,
 				B41D0FB02475A3960049D08D /* AWSAuthConfirmUserAttributeOperation.swift in Sources */,
-				B41D0FA82475A3960049D08D /* AWSAuthService.swift in Sources */,
+				B41D0FA82475A3960049D08D /* AWSCognitoAuthService.swift in Sources */,
 				B41D0FCC2475A3960049D08D /* AuthCognitoSignedInSessionHelper.swift in Sources */,
 				B41D100A2475AB7E0049D08D /* AWSCognitoAuthPlugin+UserBehavior.swift in Sources */,
 				B41D0F8A2475A3960049D08D /* AuthHubEventHandler.swift in Sources */,
