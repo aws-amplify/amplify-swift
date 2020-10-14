@@ -22,6 +22,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                      databaseName: String = "database",
                      userDefaults: UserDefaults = UserDefaults.standard) throws {
         var dbFilePath = SQLiteStorageEngineAdapter.getDbFilePath(databaseName: databaseName)
+        print(dbFilePath)
         try SQLiteStorageEngineAdapter.clearIfNewVersion(version: version,
                                                          dbFilePath: dbFilePath)
 

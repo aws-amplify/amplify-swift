@@ -274,6 +274,8 @@
 		B4EBEB64246204D000D06375 /* AuthAWSCredentialsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EBEB62246204AB00D06375 /* AuthAWSCredentialsProvider.swift */; };
 		B4EBEB66246204E400D06375 /* AuthCognitoTokensProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EBEB65246204E400D06375 /* AuthCognitoTokensProvider.swift */; };
 		B4EBEB682462050B00D06375 /* AuthCognitoIdentityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EBEB672462050B00D06375 /* AuthCognitoIdentityProvider.swift */; };
+		B4F3542C25361BC80050FEE0 /* DynamicEmbedded.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3542B25361BC80050FEE0 /* DynamicEmbedded.swift */; };
+		B4F3543525361E0E0050FEE0 /* DynamicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3543425361E0E0050FEE0 /* DynamicModel.swift */; };
 		B4F3E9F824314E2B00F23296 /* AuthCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3E9F724314E2B00F23296 /* AuthCategoryConfigurationTests.swift */; };
 		B4F3E9FA24314ECC00F23296 /* MockAuthCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3E9F924314ECC00F23296 /* MockAuthCategoryPlugin.swift */; };
 		B4F7F3E624621E4F00544B04 /* AuthAttributeResendConfirmationCodeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F7F3E524621E4F00544B04 /* AuthAttributeResendConfirmationCodeOperation.swift */; };
@@ -1036,6 +1038,8 @@
 		B4EBEB62246204AB00D06375 /* AuthAWSCredentialsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAWSCredentialsProvider.swift; sourceTree = "<group>"; };
 		B4EBEB65246204E400D06375 /* AuthCognitoTokensProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCognitoTokensProvider.swift; sourceTree = "<group>"; };
 		B4EBEB672462050B00D06375 /* AuthCognitoIdentityProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCognitoIdentityProvider.swift; sourceTree = "<group>"; };
+		B4F3542B25361BC80050FEE0 /* DynamicEmbedded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicEmbedded.swift; sourceTree = "<group>"; };
+		B4F3543425361E0E0050FEE0 /* DynamicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicModel.swift; sourceTree = "<group>"; };
 		B4F3E9F724314E2B00F23296 /* AuthCategoryConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCategoryConfigurationTests.swift; sourceTree = "<group>"; };
 		B4F3E9F924314ECC00F23296 /* MockAuthCategoryPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAuthCategoryPlugin.swift; sourceTree = "<group>"; };
 		B4F7F3E524621E4F00544B04 /* AuthAttributeResendConfirmationCodeOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthAttributeResendConfirmationCodeOperation.swift; sourceTree = "<group>"; };
@@ -1700,6 +1704,8 @@
 				216E45EB248E914F0035E3CE /* Todo.swift */,
 				216E45EC248E914F0035E3CE /* Todo+Schema.swift */,
 				216E4609249183230035E3CE /* Section.swift */,
+				B4F3542B25361BC80050FEE0 /* DynamicEmbedded.swift */,
+				B4F3543425361E0E0050FEE0 /* DynamicModel.swift */,
 			);
 			path = NonModel;
 			sourceTree = "<group>";
@@ -4590,8 +4596,10 @@
 				B9521833237E21BA00F53237 /* Comment+Schema.swift in Sources */,
 				FA176ED7238503C200C5C5F9 /* HubListenerTestUtilities.swift in Sources */,
 				216E45EE248E914F0035E3CE /* Todo.swift in Sources */,
+				B4F3543525361E0E0050FEE0 /* DynamicModel.swift in Sources */,
 				21F40A3A23A294770074678E /* TestConfigHelper.swift in Sources */,
 				B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */,
+				B4F3542C25361BC80050FEE0 /* DynamicEmbedded.swift in Sources */,
 				FACA361C2327FC7D000E74F6 /* MockHubCategoryPlugin.swift in Sources */,
 				FAD3937F23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift in Sources */,
 				FACA361A2327FC69000E74F6 /* MockStorageCategoryPlugin.swift in Sources */,

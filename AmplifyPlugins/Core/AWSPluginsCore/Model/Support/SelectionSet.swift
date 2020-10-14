@@ -36,9 +36,9 @@ extension SelectionSet {
 
     func withModelFields(_ fields: [ModelField]) {
         fields.forEach { field in
-            if field.isEmbeddedType, let embeddedType = field.embeddedType {
+            if field.isEmbeddedType, let embeddedTypeSchema = field.embeddedTypeSchema {
                 let child = SelectionSet(value: .init(name: field.name, fieldType: .embedded))
-                child.withCodableFields(embeddedType.schema.sortedFields)
+                child.withCodableFields(embeddedTypeSchema.sortedFields)
                 self.addChild(settingParentOf: child)
             } else if field.isAssociationOwner,
                 let associatedModelName = field.associatedModelName,
@@ -56,9 +56,9 @@ extension SelectionSet {
 
     func withCodableFields(_ fields: [ModelField]) {
         fields.forEach { field in
-            if field.isEmbeddedType, let embeddedType = field.embeddedType {
+            if field.isEmbeddedType, let embeddedTypeSchema = field.embeddedTypeSchema {
                 let child = SelectionSet(value: .init(name: field.name, fieldType: .embedded))
-                child.withCodableFields(embeddedType.schema.sortedFields)
+                child.withCodableFields(embeddedTypeSchema.sortedFields)
                 self.addChild(settingParentOf: child)
             } else {
                 self.addChild(settingParentOf: .init(value: .init(name: field.name, fieldType: .value)))
