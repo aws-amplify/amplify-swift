@@ -21,8 +21,8 @@ public enum ModelFieldType {
     case timestamp
     case bool
     case `enum`(type: EnumPersistable.Type)
-    case embedded(type: Codable.Type)
-    case embeddedCollection(of: Codable.Type)
+    case embedded(type: Codable.Type, schema: ModelSchema? = nil)
+    case embeddedCollection(of: Codable.Type, schema: ModelSchema? = nil)
     case model(name: ModelName)
     case collection(of: ModelName)
 
@@ -40,7 +40,7 @@ public enum ModelFieldType {
         Please use Amplify CLI 4.21.4 or newer to re-generate your Models to conform to Embeddable type.
     """)
     public static func customType(_ type: Codable.Type) -> ModelFieldType {
-        return .embedded(type: type)
+        return .embedded(type: type, schema: nil)
     }
 
     public static func from(type: Any.Type) -> ModelFieldType {
@@ -75,7 +75,7 @@ public enum ModelFieldType {
             return .model(name: modelType.modelName)
         }
         if let embeddedType = type as? Codable.Type {
-            return .embedded(type: embeddedType)
+            return .embedded(type: embeddedType, schema: nil)
         }
         preconditionFailure("Could not create a ModelFieldType from \(String(describing: type)) MetaType")
     }
@@ -155,8 +155,21 @@ public enum ModelFieldDefinition {
                              attributes: [ModelFieldAttribute] = [],
                              association: ModelAssociation? = nil,
                              authRules: AuthRules = []) -> ModelFieldDefinition {
+        var modifiedType: ModelFieldType = type
+        switch type {
+        case .embedded(let codable, let schema):
+            if schema == nil, let embeddedType = codable as? Embeddable.Type {
+                modifiedType = .embedded(type: codable, schema: embeddedType.schema)
+            }
+        case .embeddedCollection(let codable, let schema):
+            if schema == nil, let embeddedType = codable as? Embeddable.Type {
+                modifiedType = .embeddedCollection(of: codable, schema: embeddedType.schema)
+            }
+        default:
+            modifiedType = type
+        }
         return .field(name: key.stringValue,
-                      type: type,
+                      type: modifiedType,
                       nullability: nullability,
                       association: association,
                       attributes: attributes,

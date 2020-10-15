@@ -11,7 +11,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 
-class GraphQLRequestNonModelTests: XCTestCase {
+class GraphQLRequestEmbeddableTypeTests: XCTestCase {
 
     override func setUp() {
         ModelRegistry.register(modelType: Todo.self)
