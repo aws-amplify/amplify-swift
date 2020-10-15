@@ -85,7 +85,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.createMutation(of: post)
+        let request = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: post.schema)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
@@ -128,7 +128,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: post)
+        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: post, modelSchema: post.schema)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
