@@ -9,13 +9,14 @@ import Amplify
 import AWSPluginsCore
 
 enum InitialSyncOperationEvent {
-    /// This event is used to notify `ModelSyncedEventEmitter` the `SyncType` of `ModelType`
+    /// Published at the start of sync query (full or delta) for a particular Model
+    /// Used by `SyncEventEmitter` and `ModelSyncedEmitted`
     case started(modelType: Model.Type, syncType: SyncType)
-    /// Each time an item is enqueued into `ReconciliationAndLocalSaveOperationQueue`, send the event
-    /// to `ModelSyncedEventEmitter` to let it do the `recordReceived` incrementing.
+    /// Published when a remote model is enqueued for local store reconcillation.
+    /// Used by `ModelSyncedEventEmitter` for record counting.
     case enqueued(MutationSync<AnyModel>)
-    /// `finished` value is used to notify `ModelSyncedEventEmitter` that the `InitialSyncOperation`
-    /// of `ModelType` has finished offering items to `ReconciliationAndLocalSaveOperationQueue`
+    /// Published when the sync operation has completed and all remote models have been enqueued for reconcillation.
+    /// Used by `ModelSyncedEventEmitter` to determine when to send `ModelSyncedEvent`
     case finished(modelType: Model.Type)
 }
 
