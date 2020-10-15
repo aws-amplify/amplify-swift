@@ -144,6 +144,11 @@
 		6BBECD7123ADA7E100C8DFBE /* AmplifyAWSServiceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBECD7023ADA7E100C8DFBE /* AmplifyAWSServiceConfiguration.swift */; };
 		6BBECD7423ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBECD7323ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift */; };
 		6BEE0817253114FD00133961 /* AWSAuthServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE0816253114FD00133961 /* AWSAuthServiceTests.swift */; };
+		6BEE08192533CAA600133961 /* GraphQLRequestOwnerAndGroupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE08182533CAA600133961 /* GraphQLRequestOwnerAndGroupTests.swift */; };
+		6BEE081C2533CCFA00133961 /* OGCScenarioBPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE081A2533CCFA00133961 /* OGCScenarioBPost+Schema.swift */; };
+		6BEE081D2533CCFA00133961 /* OGCScenarioBPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE081B2533CCFA00133961 /* OGCScenarioBPost.swift */; };
+		6BEE08242533D30800133961 /* OGCScenarioBMGroupPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE08222533D30800133961 /* OGCScenarioBMGroupPost.swift */; };
+		6BEE08252533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE08232533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift */; };
 		7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */; platformFilter = ios; };
 		7F27B1DCE59C1E674172CCD6 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */; };
 		881246F5DCC59436DC932469 /* Pods_Amplify_AWSPluginsCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35D92182B8445C8F9B0FAE94 /* Pods_Amplify_AWSPluginsCore.framework */; };
@@ -859,6 +864,11 @@
 		6BBECD7023ADA7E100C8DFBE /* AmplifyAWSServiceConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyAWSServiceConfiguration.swift; sourceTree = "<group>"; };
 		6BBECD7323ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyAWSServiceConfigurationTests.swift; sourceTree = "<group>"; };
 		6BEE0816253114FD00133961 /* AWSAuthServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthServiceTests.swift; sourceTree = "<group>"; };
+		6BEE08182533CAA600133961 /* GraphQLRequestOwnerAndGroupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestOwnerAndGroupTests.swift; sourceTree = "<group>"; };
+		6BEE081A2533CCFA00133961 /* OGCScenarioBPost+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OGCScenarioBPost+Schema.swift"; sourceTree = "<group>"; };
+		6BEE081B2533CCFA00133961 /* OGCScenarioBPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OGCScenarioBPost.swift; sourceTree = "<group>"; };
+		6BEE08222533D30800133961 /* OGCScenarioBMGroupPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OGCScenarioBMGroupPost.swift; sourceTree = "<group>"; };
+		6BEE08232533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OGCScenarioBMGroupPost+Schema.swift"; sourceTree = "<group>"; };
 		6C41D3730B7ED4FD62A43E40 /* Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6D51240C78418B733FFA6829 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6D62C9C57736C3BEADEB1E30 /* Pods-AWSPinpointAnalyticsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPlugin/Pods-AWSPinpointAnalyticsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1588,6 +1598,7 @@
 				2129BE322394828B006363A1 /* GraphQLRequestModelTests.swift */,
 				216E45F0248E971E0035E3CE /* GraphQLRequestNonModelTests.swift */,
 				214F497D2486DA5000DA616C /* GraphQLRequestOptionalAssociationTests.swift */,
+				6BEE08182533CAA600133961 /* GraphQLRequestOwnerAndGroupTests.swift */,
 				6B9F7C5125267E1500F1F71C /* MockAWSAuthUser.swift */,
 			);
 			path = GraphQLRequest;
@@ -2327,6 +2338,10 @@
 				B9521831237E21B900F53237 /* Post+Schema.swift */,
 				2129BE002394627B006363A1 /* PostCommentModelRegistration.swift */,
 				B9AA09F02473CA29000E6FBB /* PostStatus.swift */,
+				6BEE08222533D30800133961 /* OGCScenarioBMGroupPost.swift */,
+				6BEE08232533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift */,
+				6BEE081B2533CCFA00133961 /* OGCScenarioBPost.swift */,
+				6BEE081A2533CCFA00133961 /* OGCScenarioBPost+Schema.swift */,
 				B952182F237E21B900F53237 /* schema.graphql */,
 				6B9F7C542526864800F1F71C /* ScenarioATest6Post.swift */,
 				6B9F7C532526864800F1F71C /* ScenarioATest6Post+Schema.swift */,
@@ -4132,6 +4147,7 @@
 				21AD425A249C0D910016FE95 /* AnyModelTester.swift in Sources */,
 				2129BE3C2394828B006363A1 /* GraphQLRequestModelTests.swift in Sources */,
 				2183A56523EA4A8400232880 /* GraphQLListQueryTests.swift in Sources */,
+				6BEE08192533CAA600133961 /* GraphQLRequestOwnerAndGroupTests.swift in Sources */,
 				21AD425B249C0DBE0016FE95 /* AnyModelTests.swift in Sources */,
 				D83C5160248964780091548E /* ModelGraphQLTests.swift in Sources */,
 			);
@@ -4582,10 +4598,12 @@
 				B9521833237E21BA00F53237 /* Comment+Schema.swift in Sources */,
 				FA176ED7238503C200C5C5F9 /* HubListenerTestUtilities.swift in Sources */,
 				216E45EE248E914F0035E3CE /* Todo.swift in Sources */,
+				6BEE081D2533CCFA00133961 /* OGCScenarioBPost.swift in Sources */,
 				21F40A3A23A294770074678E /* TestConfigHelper.swift in Sources */,
 				B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */,
 				FACA361C2327FC7D000E74F6 /* MockHubCategoryPlugin.swift in Sources */,
 				FAD3937F23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift in Sources */,
+				6BEE08252533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift in Sources */,
 				FACA361A2327FC69000E74F6 /* MockStorageCategoryPlugin.swift in Sources */,
 				B9521837237E21BA00F53237 /* Post.swift in Sources */,
 				B9FAA11A23879AC8009414B4 /* BookAuthor.swift in Sources */,
@@ -4610,6 +4628,7 @@
 				FACA361D2327FC84000E74F6 /* MockAPICategoryPlugin.swift in Sources */,
 				B9FAA11023878C5E009414B4 /* UserProfile.swift in Sources */,
 				B9AA09F12473CA29000E6FBB /* PostStatus.swift in Sources */,
+				6BEE081C2533CCFA00133961 /* OGCScenarioBPost+Schema.swift in Sources */,
 				214F497B2486D8A200DA616C /* User+Schema.swift in Sources */,
 				6B9F7C562526864800F1F71C /* ScenarioATest6Post.swift in Sources */,
 				B9FAA12023879BD0009414B4 /* BookAuthor+Schema.swift in Sources */,
@@ -4623,6 +4642,7 @@
 				B9FAA10E23878BF3009414B4 /* UserAccount.swift in Sources */,
 				214F49782486D8A200DA616C /* UserFollowing.swift in Sources */,
 				21F40A3C23A2952C0074678E /* AuthHelper.swift in Sources */,
+				6BEE08242533D30800133961 /* OGCScenarioBMGroupPost.swift in Sources */,
 				B4F3E9FA24314ECC00F23296 /* MockAuthCategoryPlugin.swift in Sources */,
 				214F49CE24898E8500DA616C /* Article+Schema.swift in Sources */,
 				216E460A249183230035E3CE /* Section.swift in Sources */,

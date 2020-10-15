@@ -200,7 +200,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
     // The owner auth rule contains `.create` operation, requiring the subscription operation to contain the input
     func testModelReadUpdateField_OnCreateSubscription() {
         let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000"]
+                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
@@ -224,7 +224,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
     // Others can `.update` this model, which means the update subscription does not require owner input
     func testModelReadUpdateField_OnUpdateSubscription() {
         let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000"]
+                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
@@ -247,7 +247,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
     // The owner auth rule contains `.delete` operation, requiring the subscription operation to contain the input
     func testModelReadUpdateField_OnDeleteSubscription() {
         let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000"]
+                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))

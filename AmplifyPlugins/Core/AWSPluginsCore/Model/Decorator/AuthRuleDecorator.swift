@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-public typealias IdentityClaimsDictionary = [String: String]
+public typealias IdentityClaimsDictionary = [String: AnyObject]
 
 public enum AuthRuleDecoratorInput {
     case subscription(GraphQLSubscriptionType, IdentityClaimsDictionary)
@@ -42,30 +42,39 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
             return document
         }
         var decorateDocument = document
+        if authRules.readRestrictingOwnerRules().count > 1 {
+            log.error("""
+            Detected multiple owner type auth rules \
+            with a READ operation. We currently do not support this use case. Please \
+            limit your type to just one owner auth rule with a READ operation restriction.
+            """)
+            return decorateDocument
+        }
+
+        let readRestrictingStaticGroups = authRules.readRestrictingStaticGroups()
         authRules.forEach { authRule in
-            decorateDocument = decorateIfOwnerAuthStrategy(document: decorateDocument, authRule: authRule)
+            decorateDocument = decorateAuthStrategy(document: decorateDocument,
+                                                    authRule: authRule,
+                                                    readRestrictingStaticGroups: readRestrictingStaticGroups)
         }
         return decorateDocument
     }
 
-    func decorateIfOwnerAuthStrategy(document: SingleDirectiveGraphQLDocument,
-                                     authRule: AuthRule) -> SingleDirectiveGraphQLDocument {
-        guard authRule.allow == .owner else {
-            return document
-        }
-
-        guard var selectionSet = document.selectionSet else {
+    private func decorateAuthStrategy(document: SingleDirectiveGraphQLDocument,
+                                      authRule: AuthRule,
+                                      readRestrictingStaticGroups: Set<String>) -> SingleDirectiveGraphQLDocument {
+        guard authRule.allow == .owner,
+            var selectionSet = document.selectionSet else {
             return document
         }
 
         let ownerField = authRule.getOwnerFieldOrDefault()
         selectionSet = appendOwnerFieldToSelectionSetIfNeeded(selectionSet: selectionSet, ownerField: ownerField)
 
-        guard case let .subscription(_, claims) = input else {
-            return document.copy(selectionSet: selectionSet)
-        }
-
-        if isOwnerInputRequiredOnSubscription(authRule) {
+       if case let .subscription(_, claims) = input,
+            authRule.isReadRestrictingOwner() &&
+                isNotInReadRestrictingStaticGroup(readRestrictingStaticGroups,
+                                                  cognitoGroupsFrom(claims: claims)) {
             var inputs = document.inputs
             let identityClaimValue = resolveIdentityClaimValue(identityClaim: authRule.identityClaimOrDefault(),
                                                                claims: claims)
@@ -77,8 +86,22 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         return document.copy(selectionSet: selectionSet)
     }
 
-    private func isOwnerInputRequiredOnSubscription(_ authRule: AuthRule) -> Bool {
-        return authRule.allow == .owner && authRule.getModelOperationsOrDefault().contains(.read)
+    private func isNotInReadRestrictingStaticGroup(_ readRestrictingStaticGroups: Set<String>,
+                                                   _ cognitoGroupsFromClaims: Set<String>) -> Bool {
+        return (readRestrictingStaticGroups.isEmpty ||
+            readRestrictingStaticGroups.isDisjoint(with: cognitoGroupsFromClaims))
+    }
+
+    private func cognitoGroupsFrom(claims: IdentityClaimsDictionary) -> Set<String> {
+        var groupSet = Set<String>()
+        if let groups = (claims["cognito:groups"] as? NSArray) as Array? {
+            for group in groups {
+                if let groupString = group as? String {
+                    groupSet.insert(groupString)
+                }
+            }
+        }
+        return groupSet
     }
 
     private func resolveIdentityClaimValue(identityClaim: String, claims: IdentityClaimsDictionary) -> String? {

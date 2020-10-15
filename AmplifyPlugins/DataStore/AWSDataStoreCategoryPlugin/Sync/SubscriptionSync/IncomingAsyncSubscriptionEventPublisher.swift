@@ -167,15 +167,9 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
             case .success(let tokenString) = awsAuthService.getToken(),
             case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
 
-            var claimsStrings =  [String: String]()
-            for (key, value) in claims {
-                if let value = value as? String {
-                    claimsStrings[key] = value
-                }
-            }
             request = GraphQLRequest<Payload>.subscription(to: modelType,
                                                            subscriptionType: subscriptionType,
-                                                           claims: claimsStrings)
+                                                           claims: claims)
         } else {
             request = GraphQLRequest<Payload>.subscription(to: modelType, subscriptionType: subscriptionType)
         }
