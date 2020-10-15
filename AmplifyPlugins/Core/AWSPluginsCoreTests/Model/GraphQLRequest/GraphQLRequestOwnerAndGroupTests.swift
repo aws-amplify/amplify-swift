@@ -25,9 +25,9 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnCreateSubscriptionScenarioBInAdmins() {
         let modelType = OGCScenarioBPost.self as Model.Type
-        let claims = ["username": "user1" as AnyObject,
-                      "sub": "123e4567-dead-beef-a456-426614174000" as AnyObject,
-                      "cognito:groups": ["Admins"] as AnyObject]
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000",
+                      "cognito:groups": ["Admins"]] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
@@ -58,9 +58,9 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnUpdateSubscriptionScenarioBInAdmins() {
         let modelType = OGCScenarioBPost.self as Model.Type
-        let claims = ["username": "user1" as AnyObject,
-                      "sub": "123e4567-dead-beef-a456-426614174000" as AnyObject,
-                      "cognito:groups": ["Admins"] as AnyObject]
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000",
+                      "cognito:groups": ["Admins"]] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
@@ -91,9 +91,9 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnDeleteSubscriptionScenarioBInAdmins() {
         let modelType = OGCScenarioBPost.self as Model.Type
-        let claims = ["username": "user1" as AnyObject,
-                      "sub": "123e4567-dead-beef-a456-426614174000" as AnyObject,
-                      "cognito:groups": ["Admins"] as AnyObject]
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000",
+                      "cognito:groups": ["Admins"]] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
@@ -124,9 +124,9 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnCreateSubscriptionScenarioBInAdminsAndAnotherGroup() {
         let modelType = OGCScenarioBPost.self as Model.Type
-        let claims = ["username": "user1" as AnyObject,
-                      "sub": "123e4567-dead-beef-a456-426614174000" as AnyObject,
-                      "cognito:groups": ["Admins", "GroupX"] as AnyObject]
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000",
+                      "cognito:groups": ["Admins", "GroupX"]] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
@@ -157,9 +157,9 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnCreateSubscriptionScenarioBNotInAdmins() {
         let modelType = OGCScenarioBPost.self as Model.Type
-        let claims = ["username": "user1" as AnyObject,
-                      "sub": "123e4567-dead-beef-a456-426614174000" as AnyObject,
-                      "cognito:groups": ["GroupX"] as AnyObject]
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000",
+                      "cognito:groups": ["GroupX"]] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
@@ -198,9 +198,9 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnUpdateSubscriptionScenarioBNotInAdmins() {
         let modelType = OGCScenarioBPost.self as Model.Type
-        let claims = ["username": "user1" as AnyObject,
-                      "sub": "123e4567-dead-beef-a456-426614174000" as AnyObject,
-                      "cognito:groups": ["GroupX"] as AnyObject]
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000",
+                      "cognito:groups": ["GroupX"]] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
@@ -239,9 +239,9 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnDeleteSubscriptionScenarioBNotInAdmins() {
         let modelType = OGCScenarioBPost.self as Model.Type
-        let claims = ["username": "user1" as AnyObject,
-                      "sub": "123e4567-dead-beef-a456-426614174000" as AnyObject,
-                      "cognito:groups": ["GroupX"] as AnyObject]
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000",
+                      "cognito:groups": ["GroupX"]] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
@@ -280,10 +280,10 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnDeleteSubscriptionScenarioBNoGroupClaim() {
         let modelType = OGCScenarioBPost.self as Model.Type
-        let claims = ["username": "user1" as AnyObject,
-                      "sub": "123e4567-dead-beef-a456-426614174000" as AnyObject]
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
         //Specifically, leave this out:
-        //                     "cognito:groups": ["GroupX"] as AnyObject]
+        //                     "cognito:groups": ["GroupX"]]
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
@@ -322,9 +322,9 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnCreateSubscriptionScenarioBMGroupInAdmins() {
         let modelType = OGCScenarioBMGroupPost.self as Model.Type
-        let claims = ["username": "user1" as AnyObject,
-                      "sub": "123e4567-dead-beef-a456-426614174000" as AnyObject,
-                      "cognito:groups": ["Admins"] as AnyObject]
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000",
+                      "cognito:groups": ["Admins"]] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
@@ -355,9 +355,9 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     func testOnCreateSubscriptionScenarioBMGroupInAdminsAndAnotherGroup() {
         let modelType = OGCScenarioBMGroupPost.self as Model.Type
-        let claims = ["username": "user1" as AnyObject,
-                      "sub": "123e4567-dead-beef-a456-426614174000" as AnyObject,
-                      "cognito:groups": ["Admins", "GroupX"] as AnyObject]
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000",
+                      "cognito:groups": ["Admins", "GroupX"]] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())

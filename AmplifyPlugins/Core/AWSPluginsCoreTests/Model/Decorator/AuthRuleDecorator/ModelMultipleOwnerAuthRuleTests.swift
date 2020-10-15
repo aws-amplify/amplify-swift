@@ -246,8 +246,8 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
 
     // Only the 'owner' inherently has `.create` operation, requiring the subscription operation to contain the input
     func testModelMultipleOwner_OnCreateSubscription() {
-        let claims = ["username": "user1" as AnyObject,
-                      "sub": "123e4567-dead-beef-a456-426614174000" as AnyObject]
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
@@ -275,8 +275,8 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
 
     // Each owner with `.update` operation requires the ownerField on the corresponding subscription operation
     func testModelMultipleOwner_OnUpdateSubscription() {
-        let claims = ["username": "user1" as AnyObject,
-                      "sub": "123e4567-dead-beef-a456-426614174000" as AnyObject]
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
@@ -305,8 +305,8 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
 
     // Only the 'owner' inherently has `.delete` operation, requiring the subscription operation to contain the input
     func testModelMultipleOwner_OnDeleteSubscription() {
-        let claims = ["username": "user1" as AnyObject,
-                      "sub": "123e4567-dead-beef-a456-426614174000" as AnyObject]
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))

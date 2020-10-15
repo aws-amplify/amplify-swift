@@ -42,8 +42,7 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
             return document
         }
         var decorateDocument = document
-        let readRestrictingOwnerRules = authRules.filter { isReadRestrictingOwner($0) }
-        if readRestrictingOwnerRules.count > 1 {
+        if authRules.readRestrictingOwnerRules().count > 1 {
             log.error("""
             Detected multiple owner type auth rules \
             with a READ operation. We currently do not support this use case. Please \
@@ -52,53 +51,30 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
             return decorateDocument
         }
 
-        let readAuthorizedGroups = collectReadAuthorizedGroups(authRules: authRules)
-
+        let readRestrictingStaticGroups = authRules.readRestrictingStaticGroups()
         authRules.forEach { authRule in
             decorateDocument = decorateAuthStrategy(document: decorateDocument,
                                                     authRule: authRule,
-                                                    readAuthorizedGroups: readAuthorizedGroups)
+                                                    readRestrictingStaticGroups: readRestrictingStaticGroups)
         }
         return decorateDocument
     }
 
-    private func collectReadAuthorizedGroups(authRules: AuthRules) -> Set<String> {
-        var readAuthorizedGroups = Set<String>()
-        let readRestrictingGroupRules = authRules.filter { isReadRestrictingStaticGroup($0) }
-        for groupRules in readRestrictingGroupRules {
-            groupRules.groups.forEach { group in
-                readAuthorizedGroups.insert(group)
-            }
-        }
-        return readAuthorizedGroups
-    }
-
-    private func isReadRestrictingStaticGroup(_ authRule: AuthRule) -> Bool {
-        return authRule.allow == .groups &&
-            !authRule.groups.isEmpty &&
-            authRule.getModelOperationsOrDefault().contains(.read)
-    }
-
     private func decorateAuthStrategy(document: SingleDirectiveGraphQLDocument,
                                       authRule: AuthRule,
-                                      readAuthorizedGroups: Set<String>) -> SingleDirectiveGraphQLDocument {
-        guard authRule.allow == .owner else {
-            return document
-        }
-
-        guard var selectionSet = document.selectionSet else {
+                                      readRestrictingStaticGroups: Set<String>) -> SingleDirectiveGraphQLDocument {
+        guard authRule.allow == .owner,
+            var selectionSet = document.selectionSet else {
             return document
         }
 
         let ownerField = authRule.getOwnerFieldOrDefault()
         selectionSet = appendOwnerFieldToSelectionSetIfNeeded(selectionSet: selectionSet, ownerField: ownerField)
 
-        guard case let .subscription(_, claims) = input else {
-            return document.copy(selectionSet: selectionSet)
-        }
-
-        if isReadRestrictingOwner(authRule) && isNotInReadAuthorizedGroup(readAuthorizedGroups,
-                                                                          cognitoGroupsFrom(claims: claims)) {
+       if case let .subscription(_, claims) = input,
+            authRule.isReadRestrictingOwner() &&
+                isNotInReadRestrictingStaticGroup(readRestrictingStaticGroups,
+                                                  cognitoGroupsFrom(claims: claims)) {
             var inputs = document.inputs
             let identityClaimValue = resolveIdentityClaimValue(identityClaim: authRule.identityClaimOrDefault(),
                                                                claims: claims)
@@ -110,14 +86,10 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         return document.copy(selectionSet: selectionSet)
     }
 
-    private func isReadRestrictingOwner(_ authRule: AuthRule) -> Bool {
-        return authRule.allow == .owner && authRule.getModelOperationsOrDefault().contains(.read)
-    }
-
-    private func isNotInReadAuthorizedGroup(_ readAuthorizedGroups: Set<String>,
-                                            _ cognitoGroupsFromClaims: Set<String>) -> Bool {
-        return (readAuthorizedGroups.isEmpty ||
-            readAuthorizedGroups.isDisjoint(with: cognitoGroupsFromClaims))
+    private func isNotInReadRestrictingStaticGroup(_ readRestrictingStaticGroups: Set<String>,
+                                                   _ cognitoGroupsFromClaims: Set<String>) -> Bool {
+        return (readRestrictingStaticGroups.isEmpty ||
+            readRestrictingStaticGroups.isDisjoint(with: cognitoGroupsFromClaims))
     }
 
     private func cognitoGroupsFrom(claims: IdentityClaimsDictionary) -> Set<String> {
