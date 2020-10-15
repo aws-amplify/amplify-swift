@@ -15,4 +15,6 @@ public protocol AWSAuthServiceBehavior: class {
     func getIdentityId() -> Result<String, AuthError>
 
     func getToken() -> Result<String, AuthError>
+
+    func getTokenClaims(tokenString: String) -> Result<[String: AnyObject], AuthError>
 }

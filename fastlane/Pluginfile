@@ -2,4 +2,4 @@
 #
 # Ensure this file is checked in to source control!
 
-gem 'fastlane-plugin-release_actions', git: 'https://github.com/aws-amplify/amplify-ci-support', branch: 'master', glob: 'src/fastlane/release_actions/*.gemspec'
+gem 'fastlane-plugin-release_actions', git: 'https://github.com/aws-amplify/amplify-ci-support', branch: 'main', glob: 'src/fastlane/release_actions/*.gemspec'
