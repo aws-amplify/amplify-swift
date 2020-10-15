@@ -205,13 +205,10 @@ extension ModelField {
 
     /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
     ///   by host applications. The behavior of this may change without warning.
-    public var embeddedType: Embeddable.Type? {
+    public var embeddedTypeSchema: ModelSchema? {
         switch type {
-        case .embedded(let type), .embeddedCollection(let type):
-            if let embeddedType = type as? Embeddable.Type {
-                return embeddedType
-            }
-            return nil
+        case .embedded(_, let modelSchema), .embeddedCollection(_, let modelSchema):
+            return modelSchema
         default:
             return nil
         }
