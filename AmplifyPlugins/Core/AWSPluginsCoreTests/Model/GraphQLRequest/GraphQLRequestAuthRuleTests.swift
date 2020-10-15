@@ -79,7 +79,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.createMutation(of: article)
+        let request = GraphQLRequest<MutationSyncResult>.createMutation(of: article, modelSchema: article.schema)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
@@ -120,7 +120,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: article)
+        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: article, modelSchema: article.schema)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
