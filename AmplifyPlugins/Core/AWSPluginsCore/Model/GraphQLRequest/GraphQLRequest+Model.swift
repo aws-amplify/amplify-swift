@@ -115,19 +115,22 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
 
     public static func create<M: Model>(_ model: M) -> GraphQLRequest<M> {
         let modelType = ModelRegistry.modelType(from: model.modelName) ?? Swift.type(of: model)
-        return mutation(of: model, modelSchema: modelType.schema, type: .create)
+        let modelSchema = modelType.schema
+        return create(model, modelSchema: modelSchema)
     }
 
     public static func update<M: Model>(_ model: M,
                                         where predicate: QueryPredicate? = nil) -> GraphQLRequest<M> {
         let modelType = ModelRegistry.modelType(from: model.modelName) ?? Swift.type(of: model)
-        return mutation(of: model, modelSchema: modelType.schema, where: predicate, type: .update)
+        let modelSchema = modelType.schema
+        return update(model, modelSchema: modelSchema, where: predicate)
     }
 
     public static func delete<M: Model>(_ model: M,
                                         where predicate: QueryPredicate? = nil) -> GraphQLRequest<M> {
         let modelType = ModelRegistry.modelType(from: model.modelName) ?? Swift.type(of: model)
-        return mutation(of: model, modelSchema: modelType.schema, where: predicate, type: .delete)
+        let modelSchema = modelType.schema
+        return delete(model, modelSchema: modelSchema, where: predicate)
     }
 
     public static func create<M: Model>(_ model: M, modelSchema: ModelSchema) -> GraphQLRequest<M> {
