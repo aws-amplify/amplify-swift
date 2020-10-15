@@ -164,12 +164,14 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
 
         let request: GraphQLRequest<Payload>
         if modelType.schema.hasAuthenticationRules,
+            let _ = auth,
             case .success(let tokenString) = awsAuthService.getToken(),
             case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
 
             request = GraphQLRequest<Payload>.subscription(to: modelType,
                                                            subscriptionType: subscriptionType,
                                                            claims: claims)
+//todo, we need to get a hold of the apiAuthProvider, and decorate the document with `owner` field etc
         } else {
             request = GraphQLRequest<Payload>.subscription(to: modelType, subscriptionType: subscriptionType)
         }

@@ -9,7 +9,7 @@ import Foundation
 import AWSPluginsCore
 import AppSyncRealTimeClient
 
-class AWSOIDCAuthProvider: OIDCAuthProvider {
+class AWSOIDCAuthProvider: AppSyncRealTimeClient.OIDCAuthProvider {
 
     var authService: AWSAuthServiceBehavior
 

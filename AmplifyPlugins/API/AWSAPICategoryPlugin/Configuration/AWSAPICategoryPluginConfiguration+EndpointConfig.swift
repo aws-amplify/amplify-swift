@@ -25,7 +25,10 @@ public extension AWSAPICategoryPluginConfiguration {
         // https://github.com/aws-amplify/amplify-ios/issues/73
         var interceptors = [URLRequestInterceptor]()
 
-        public init(name: String, jsonValue: JSONValue, authService: AWSAuthServiceBehavior? = nil) throws {
+        public init(name: String,
+                    jsonValue: JSONValue,
+                    apiAuthProviders: APIAuthProviders?,
+                    authService: AWSAuthServiceBehavior? = nil) throws {
 
             guard case .object(let endpointJSON) = jsonValue else {
                 throw PluginError.pluginConfigurationError(
@@ -45,6 +48,7 @@ public extension AWSAPICategoryPluginConfiguration {
                           authorizationType: EndpointConfig.getAuthorizationType(from: endpointJSON),
                           authorizationConfiguration: EndpointConfig.getAuthorizationConfiguration(from: endpointJSON),
                           endpointType: EndpointConfig.getEndpointType(from: endpointJSON),
+                          apiAuthProviders: apiAuthProviders,
                           authService: authService)
         }
 
@@ -54,6 +58,7 @@ public extension AWSAPICategoryPluginConfiguration {
              authorizationType: AWSAuthorizationType,
              authorizationConfiguration: AWSAuthorizationConfiguration,
              endpointType: AWSAPICategoryPluginEndpointType,
+             apiAuthProviders: APIAuthProviders?,
              authService: AWSAuthServiceBehavior? = nil) throws {
             self.name = name
             self.baseURL = baseURL
@@ -61,7 +66,7 @@ public extension AWSAPICategoryPluginConfiguration {
             self.authorizationType = authorizationType
             self.authorizationConfiguration = authorizationConfiguration
             self.endpointType = endpointType
-            try addInterceptors(authService: authService)
+            try addInterceptors(authService: authService, apiAuthProviders: apiAuthProviders)
         }
 
         public mutating func addInterceptor(interceptor: URLRequestInterceptor) {
@@ -71,7 +76,8 @@ public extension AWSAPICategoryPluginConfiguration {
         // MARK: Private
 
         /// Adds auto-discovered interceptors. Currently only works for authorization interceptors
-        private mutating func addInterceptors(authService: AWSAuthServiceBehavior? = nil) throws {
+        private mutating func addInterceptors(authService: AWSAuthServiceBehavior? = nil,
+                                              apiAuthProviders: APIAuthProviders?) throws {
             switch authorizationConfiguration {
             case .none:
                 // No interceptors needed
@@ -99,7 +105,13 @@ public extension AWSAPICategoryPluginConfiguration {
                 let interceptor = UserPoolURLRequestInterceptor(userPoolTokenProvider: provider)
                 addInterceptor(interceptor: interceptor)
             case .openIDConnect:
-                break
+                guard let apiAuthProviders = apiAuthProviders else {
+                    return
+                }
+                let oidcAuthProvider = apiAuthProviders.oidcAuthProvider()
+                let wrappedAuthProvider = AuthTokenProviderWrapper(oidcAuthProvider: oidcAuthProvider)
+                let interceptor = UserPoolURLRequestInterceptor(userPoolTokenProvider: wrappedAuthProvider)
+                addInterceptor(interceptor: interceptor)
             }
         }
 
