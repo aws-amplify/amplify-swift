@@ -41,7 +41,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     private var reconciliationQueues: [String: ModelReconciliationQueue]
     private var reconciliationQueueConnectionStatus: [String: Bool]
     private var modelReconciliationQueueFactory: ModelReconciliationQueueFactory
-    
+
     private var isInitialized: Bool {
         reconciliationQueueConnectionStatus.count == reconciliationQueues.count
     }

@@ -41,6 +41,8 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin {
     /// to work around @available for use on stored properties
     var iReachabilityMap: [String: Any]?
 
+    var authProviders: APIAuthProviders?
+
     @available(iOS 13.0, *)
     var reachabilityMap: [String: NetworkReachabilityNotifier] {
         get {
@@ -56,11 +58,12 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin {
 
     public init(
         modelRegistration: AmplifyModelRegistration? = nil,
-        sessionFactory: URLSessionBehaviorFactory? = nil
+        sessionFactory: URLSessionBehaviorFactory? = nil,
+        apiAuthProviders: APIAuthProviders? = nil
     ) {
         self.mapper = OperationTaskMapper()
         self.queue = OperationQueue()
-
+        self.authProviders =  apiAuthProviders
         super.init()
 
         modelRegistration?.registerModels(registry: ModelRegistry.self)

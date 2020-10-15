@@ -50,11 +50,13 @@ public class AWSAuthService: AWSAuthServiceBehavior {
             return .failure(.validation("", "Token is not valid base64 encoded string.", "", nil))
         }
         let claims = tokenSplit[1]
+            .replacingOccurrences(of: "-", with: "+")
+            .replacingOccurrences(of: "_", with: "/")
 
         let paddedLength = claims.count + (4 - (claims.count % 4)) % 4
         //JWT is not padded with =, pad it if necessary
         let updatedClaims = claims.padding(toLength: paddedLength, withPad: "=", startingAt: 0)
-        let encodedData = Data.init(base64Encoded: updatedClaims, options: .ignoreUnknownCharacters)
+        let encodedData = Data(base64Encoded: updatedClaims, options: .ignoreUnknownCharacters)
 
         guard let claimsData = encodedData else {
             return .failure(

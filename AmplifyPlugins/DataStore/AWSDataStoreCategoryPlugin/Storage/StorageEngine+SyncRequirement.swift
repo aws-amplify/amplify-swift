@@ -18,7 +18,7 @@ extension StorageEngine {
             return
         }
 
-        let authPluginRequired = requiresAuthPlugin()
+        let authPluginRequired = requiresAuthPlugin(api: api)
 
         guard authPluginRequired else {
             syncEngine?.start(api: api, auth: nil)
@@ -49,9 +49,15 @@ extension StorageEngine {
         }
     }
 
-    private func requiresAuthPlugin() -> Bool {
+    private func requiresAuthPlugin(api: APICategoryGraphQLBehavior?) -> Bool {
         let containsAuthEnabledSyncableModels = ModelRegistry.models.contains {
             $0.schema.isSyncable && $0.schema.hasAuthenticationRules
+        }
+
+        if containsAuthEnabledSyncableModels,
+            let apiCategoryAuthProviderBehavior = api as? APICategoryAuthProviderBehavior,
+            apiCategoryAuthProviderBehavior.apiAuthProviders()?.oidcAuthProvider() != nil {
+            return false
         }
 
         return containsAuthEnabledSyncableModels
