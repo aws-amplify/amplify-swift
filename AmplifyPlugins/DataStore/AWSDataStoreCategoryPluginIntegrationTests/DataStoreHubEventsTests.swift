@@ -27,6 +27,9 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
     ///    - subscriptionEstablished received, payload should be nil
     ///    - syncQueriesStarted received, payload should be: {models: ["Post", "Comment"]}
     ///    - outboxStatus received, payload should be {isEmpty: true}
+    ///    - modelSynced received, payload should be:
+    ///      {modelName: "Some Model name", isFullSync: true/false, isDeltaSync: false/true, createCount: #, updateCount: #, deleteCount: #}
+    ///    - syncQueriesReady received, payload should be nil
     func testDataStoreConfiguredDispatchesHubEvents() throws {
 
         let networkStatusReceived = expectation(description: "networkStatus received")
@@ -70,7 +73,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
 
         startAmplify()
 
-        waitForExpectations(timeout: networkTimeout, handler: nil)
+        waitForExpectations(timeout: networkTimeout)
         hubListener.cancel()
     }
 
@@ -118,11 +121,47 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
                 outboxMutationProcessedReceived.fulfill()
             }
         }
-        
+
         startAmplify()
         Amplify.DataStore.save(post) { _ in }
 
-        waitForExpectations(timeout: networkTimeout, handler: nil)
+        waitForExpectations(timeout: networkTimeout)
+        hubListener.cancel()
+    }
+
+    func testModelSyncedAndSyncQueriesReady() throws {
+        let modelSyncedReceived = expectation(description: "outboxMutationEnqueued received")
+        let syncQueriesReadyReceived = expectation(description: "outboxMutationProcessed received")
+
+        let expectedSyncedModelNames = ["Post", "Comment"]
+        var modelSyncedEvents = [ModelSyncedEvent]()
+
+        let hubListener = Amplify.Hub.publisher(for: .dataStore).sink { payload in
+            if payload.eventName == HubPayload.EventName.DataStore.modelSynced {
+                guard let modelSyncedEvent = payload.data as? ModelSyncedEvent else {
+                    XCTFail("Failed to cast payload data as ModelSyncedEvent")
+                    return
+                }
+                modelSyncedEvents.append(modelSyncedEvent)
+                if modelSyncedEvents.count == 2 {
+                    XCTAssertEqual(modelSyncedEvents[0].modelName, expectedSyncedModelNames[0])
+                    XCTAssertTrue(modelSyncedEvents[0].isFullSync)
+                    XCTAssertFalse(modelSyncedEvents[0].isDeltaSync)
+                    XCTAssertEqual(modelSyncedEvents[1].modelName, expectedSyncedModelNames[1])
+                    XCTAssertTrue(modelSyncedEvents[1].isFullSync)
+                    XCTAssertFalse(modelSyncedEvents[1].isDeltaSync)
+                    modelSyncedReceived.fulfill()
+                }
+            }
+
+            if payload.eventName == HubPayload.EventName.DataStore.syncQueriesReady {
+                syncQueriesReadyReceived.fulfill()
+            }
+        }
+
+        startAmplify()
+
+        waitForExpectations(timeout: networkTimeout)
         hubListener.cancel()
     }
 }

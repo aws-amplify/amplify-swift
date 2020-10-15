@@ -38,6 +38,13 @@ public extension HubPayload.EventName.DataStore {
     /// HubPayload `syncQueriesStartedEvent` contains an array of each model's `name`
     static let syncQueriesStarted = "DataStore.syncQueriesStarted"
 
+    /// Dispatched once for each model after the model instances have been synced from the cloud.
+    /// HubPayload `modelSyncedEvent` contains: name of model, sync type (full/delta), count of instances' mutation type
+    static let modelSynced = "DataStore.modelSynced"
+
+    /// Dispatched when all models have been synced
+    static let syncQueriesReady = "DataStore.syncQueriesReady"
+
     /// Dispatched when DataStore starts and everytime network status changes
     /// HubPayload `NetworkStatusEvent` contains a boolean value `active` to notify network status
     static let networkStatus = "DataStore.networkStatus"

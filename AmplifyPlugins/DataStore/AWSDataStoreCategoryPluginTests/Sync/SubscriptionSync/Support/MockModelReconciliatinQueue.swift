@@ -15,7 +15,6 @@ import Combine
 class MockModelReconciliationQueue: ModelReconciliationQueue {
 
     public static var mockModelReconciliationQueues: [String: MockModelReconciliationQueue] = [:]
-
     private let modelType: Model.Type
     let modelReconciliationQueueSubject: PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>
     var publisher: AnyPublisher<ModelReconciliationQueueEvent, DataStoreError> {

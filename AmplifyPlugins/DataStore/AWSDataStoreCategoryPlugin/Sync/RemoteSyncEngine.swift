@@ -24,6 +24,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private var initialSyncOrchestrator: InitialSyncOrchestrator?
     private let initialSyncOrchestratorFactory: InitialSyncOrchestratorFactory
 
+    private var syncEventEmitter: SyncEventEmitter?
+
     private let mutationEventIngester: MutationEventIngester
     let mutationEventPublisher: MutationEventPublisher
     private let outgoingMutationQueue: OutgoingMutationQueueBehavior
@@ -269,6 +271,9 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
         // Hold a reference so we can `reset` while initial sync is in process
         self.initialSyncOrchestrator = initialSyncOrchestrator
+
+        syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
+                                            reconciliationQueue: reconciliationQueue)
 
         // TODO: This should be an AsynchronousOperation, not a semaphore-waited block
         let semaphore = DispatchSemaphore(value: 0)

@@ -28,10 +28,16 @@ class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     private static var instance: MockAWSInitialSyncOrchestrator?
     private static var mockedResponse: SyncOperationResult?
 
+    let initialSyncOrchestratorTopic: PassthroughSubject<InitialSyncOperationEvent, DataStoreError>
+    var publisher: AnyPublisher<InitialSyncOperationEvent, DataStoreError> {
+        return initialSyncOrchestratorTopic.eraseToAnyPublisher()
+    }
+
     init(dataStoreConfiguration: DataStoreConfiguration,
          api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?) {
+        self.initialSyncOrchestratorTopic = PassthroughSubject<InitialSyncOperationEvent, DataStoreError>()
     }
 
     static func reset() {

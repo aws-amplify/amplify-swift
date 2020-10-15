@@ -106,7 +106,9 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     private func onReceiveValue(receiveValue: ModelReconciliationQueueEvent) {
         switch receiveValue {
         case .mutationEvent(let event):
-            eventReconciliationQueueTopic.send(.mutationEvent(event))
+            eventReconciliationQueueTopic.send(.mutationEventApplied(event))
+        case .mutationEventDropped(let modelName):
+            eventReconciliationQueueTopic.send(.mutationEventDropped(modelName: modelName))
         case .connected(let modelName):
             connectionStatusSerialQueue.async {
                 self.reconciliationQueueConnectionStatus[modelName] = true
@@ -127,6 +129,12 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
             self.modelReconciliationQueueSinks = [:]
         }
     }
+
+    private func dispatchSyncQueriesReady() {
+        let syncQueriesReadyPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
+        Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesReadyPayload)
+    }
+
 }
 
 @available(iOS 13.0, *)

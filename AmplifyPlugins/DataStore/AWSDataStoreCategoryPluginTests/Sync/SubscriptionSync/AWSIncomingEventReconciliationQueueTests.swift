@@ -63,7 +63,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
         let reconciliationQueues = MockModelReconciliationQueue.mockModelReconciliationQueues
         for (queueName, queue) in reconciliationQueues {
             let cancellableOperation = CancelAwareBlockOperation {
-                queue.modelReconciliationQueueSubject.send(.connected(queueName))
+                queue.modelReconciliationQueueSubject.send(.connected(modelName: queueName))
             }
             operationQueue.addOperation(cancellableOperation)
         }

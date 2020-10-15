@@ -65,13 +65,32 @@ class InitialSyncOrchestratorTests: XCTestCase {
             XCTFail("Listener not registered for hub")
             return
         }
+
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        syncStartedReceived.expectedFulfillmentCount = 2
+        let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
+        finishedReceived.expectedFulfillmentCount = 2
+        let sink = orchestrator
+            .publisher
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: { value in
+                    switch value {
+                    case .started:
+                        syncStartedReceived.fulfill()
+                    case .finished:
+                        finishedReceived.fulfill()
+                    default:
+                        break
+                    }
+                  })
+
         orchestrator.sync { _ in
             syncCallbackReceived.fulfill()
         }
 
-        wait(for: [syncQueriesStartedReceived], timeout: 1.0)
-        wait(for: [syncCallbackReceived], timeout: 1.0)
+        waitForExpectations(timeout: 1)
         Amplify.Hub.removeListener(hubListener)
+        sink.cancel()
     }
 
     /// - Given: An InitialSyncOrchestrator with a model dependency graph
@@ -112,9 +131,28 @@ class InitialSyncOrchestratorTests: XCTestCase {
                                        reconciliationQueue: reconciliationQueue,
                                        storageAdapter: storageAdapter)
 
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        syncStartedReceived.expectedFulfillmentCount = 2
+        let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
+        finishedReceived.expectedFulfillmentCount = 2
+        let sink = orchestrator
+            .publisher
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: { value in
+                    switch value {
+                    case .started:
+                        syncStartedReceived.fulfill()
+                    case .finished:
+                        finishedReceived.fulfill()
+                    default:
+                        break
+                    }
+                  })
+
         orchestrator.sync { _ in }
 
-        wait(for: [postWasQueried, commentWasQueried], timeout: 1.0, enforceOrder: true)
+        waitForExpectations(timeout: 1)
+        sink.cancel()
     }
 
     /// - Given: An InitialSyncOrchestrator with a model dependency graph
@@ -164,9 +202,28 @@ class InitialSyncOrchestratorTests: XCTestCase {
                                        reconciliationQueue: reconciliationQueue,
                                        storageAdapter: storageAdapter)
 
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        syncStartedReceived.expectedFulfillmentCount = 2
+        let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
+        finishedReceived.expectedFulfillmentCount = 2
+        let sink = orchestrator
+            .publisher
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: { value in
+                    switch value {
+                    case .started:
+                        syncStartedReceived.fulfill()
+                    case .finished:
+                        finishedReceived.fulfill()
+                    default:
+                        break
+                    }
+                  })
+
         orchestrator.sync { _ in }
 
-        wait(for: [postWasQueried, commentWasQueried], timeout: 1.0, enforceOrder: true)
+        waitForExpectations(timeout: 1)
+        sink.cancel()
     }
 
 }
