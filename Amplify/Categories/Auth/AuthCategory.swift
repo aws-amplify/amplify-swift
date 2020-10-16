@@ -51,7 +51,7 @@ final public class AuthCategory: Category {
         let key = plugin.key
         guard !key.isEmpty else {
             let pluginDescription = String(describing: plugin)
-            let error = PredictionsError.configuration("Plugin \(pluginDescription) has an empty `key`.",
+            let error = AuthError.configuration("Plugin \(pluginDescription) has an empty `key`.",
                 "Set the `key` property for \(String(describing: plugin))")
             throw error
         }

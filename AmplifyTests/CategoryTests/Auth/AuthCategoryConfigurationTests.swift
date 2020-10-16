@@ -392,4 +392,18 @@ class AuthCategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 0.1)
     }
 
+    /// Test that Amplify throws an `AuthError` if it encounters a plugin without a key
+    ///
+    /// - Given: Unconfigured Amplify Framework
+    /// - When:
+    ///     - I add an Auth plugin without a key
+    /// - Then:
+    ///     - An `AuthError` is thrown
+    ///
+    func testThrowsPluginWithoutKey() {
+        let plugin = MockAuthCategoryPluginWithoutKey()
+        XCTAssertThrowsError(try Amplify.add(plugin: plugin)) { error in
+            XCTAssertNotNil(error as? AuthError)
+        }
+    }
 }
