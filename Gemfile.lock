@@ -1,10 +1,10 @@
 GIT
   remote: https://github.com/aws-amplify/amplify-ci-support
-  revision: 461957333f68b2486e4389ef8d2898fc41fd4b16
-  branch: master
+  revision: 6834d2f713813fd069061fea4c48b558924fdb60
+  branch: main
   glob: src/fastlane/release_actions/*.gemspec
   specs:
-    fastlane-plugin-release_actions (1.0.4)
+    fastlane-plugin-release_actions (1.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -250,4 +250,4 @@ DEPENDENCIES
   xcpretty
 
 BUNDLED WITH
-   2.1.2
+   2.1.4
