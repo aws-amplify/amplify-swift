@@ -68,6 +68,7 @@
 		21420AA0237222A900FA140C /* AWSAuthorizationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420A8D237222A900FA140C /* AWSAuthorizationType.swift */; };
 		2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2144226B234BDD9B009357F7 /* StorageUploadFileRequest.swift */; };
 		2144226E234BDE23009357F7 /* StorageUploadFileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2144226D234BDE23009357F7 /* StorageUploadFileOperation.swift */; };
+		214C6226253A414E0041E96D /* AmplifyAWSServiceConfiguration+Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214C6225253A414E0041E96D /* AmplifyAWSServiceConfiguration+Platform.swift */; };
 		214F49772486D8A200DA616C /* UserFollowers+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49712486D8A100DA616C /* UserFollowers+Schema.swift */; };
 		214F49782486D8A200DA616C /* UserFollowing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49722486D8A200DA616C /* UserFollowing.swift */; };
 		214F49792486D8A200DA616C /* UserFollowing+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49732486D8A200DA616C /* UserFollowing+Schema.swift */; };
@@ -750,6 +751,7 @@
 		21420A8D237222A900FA140C /* AWSAuthorizationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthorizationType.swift; sourceTree = "<group>"; };
 		2144226B234BDD9B009357F7 /* StorageUploadFileRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageUploadFileRequest.swift; sourceTree = "<group>"; };
 		2144226D234BDE23009357F7 /* StorageUploadFileOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageUploadFileOperation.swift; sourceTree = "<group>"; };
+		214C6225253A414E0041E96D /* AmplifyAWSServiceConfiguration+Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AmplifyAWSServiceConfiguration+Platform.swift"; sourceTree = "<group>"; };
 		214F49712486D8A100DA616C /* UserFollowers+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserFollowers+Schema.swift"; sourceTree = "<group>"; };
 		214F49722486D8A200DA616C /* UserFollowing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFollowing.swift; sourceTree = "<group>"; };
 		214F49732486D8A200DA616C /* UserFollowing+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserFollowing+Schema.swift"; sourceTree = "<group>"; };
@@ -1971,6 +1973,7 @@
 			isa = PBXGroup;
 			children = (
 				6BBECD7023ADA7E100C8DFBE /* AmplifyAWSServiceConfiguration.swift */,
+				214C6225253A414E0041E96D /* AmplifyAWSServiceConfiguration+Platform.swift */,
 			);
 			path = ServiceConfiguration;
 			sourceTree = "<group>";
@@ -4090,6 +4093,7 @@
 				21420A92237222A900FA140C /* OIDCConfiguration.swift in Sources */,
 				21420A95237222A900FA140C /* AWSAuthServiceBehavior.swift in Sources */,
 				21420A98237222A900FA140C /* AuthTokenProvider.swift in Sources */,
+				214C6226253A414E0041E96D /* AmplifyAWSServiceConfiguration+Platform.swift in Sources */,
 				21420A91237222A900FA140C /* AWSAuthorizationConfiguration.swift in Sources */,
 				212CE70F23E9E991007D8E71 /* ModelDecorator.swift in Sources */,
 				21420A97237222A900FA140C /* IAMCredentialProvider.swift in Sources */,

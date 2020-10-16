@@ -42,22 +42,3 @@ public class AmplifyAWSServiceConfiguration: AWSServiceConfiguration {
         super.init(region: regionType, credentialsProvider: nil)
     }
 }
-
-extension AmplifyAWSServiceConfiguration {
-
-    static var platformMapping: [Platform: String] = [:]
-
-    public static func addUserAgentPlatform(_ platform: Platform, version: String) {
-        platformMapping[platform] = version
-    }
-
-    public enum Platform: String {
-        case flutter = "amplify-flutter"
-    }
-
-    static func platformInformation() -> String {
-        var platformTokens = platformMapping.map { "\($0.rawValue)/\($1)" }
-        platformTokens.append("amplify-iOS/\(version)")
-        return platformTokens.joined(separator: " ")
-    }
-}
