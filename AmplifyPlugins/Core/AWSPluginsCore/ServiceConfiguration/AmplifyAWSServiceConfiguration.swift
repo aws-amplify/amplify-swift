@@ -9,7 +9,7 @@ import Foundation
 import AWSCore
 
 public class AmplifyAWSServiceConfiguration: AWSServiceConfiguration {
-    private static let version = "1.3.2"
+    private static let version = "1.3.1"
 
     override public class func baseUserAgent() -> String! {
         //TODO: Retrieve this version from a centralized location:
@@ -47,7 +47,7 @@ extension AmplifyAWSServiceConfiguration {
 
     static var platformMapping: [Platform: String] = [:]
 
-    public static func addUserAgentPlatform(_ platform: Platform, version: 1.3.2) {
+    public static func addUserAgentPlatform(_ platform: Platform, version: String) {
         platformMapping[platform] = version
     }
 
