@@ -1,5 +1,20 @@
 # Changelog
 ## Unreleased
+## 1.3.2 (2020-10-16)
+
+### Bug Fixes
+
+- move AWSServiceConfiguration Platform extension (#832)
+- auth category should throw AuthError instead of PredictionsError (#830)
+- **DataStore**: Owner and Group Combined @auth (#817)
+- **auth**: rename conflicting name AWSAuthService to AWSCognitoAuthService (#824)
+- **datastore**: Keep DataStore sync engine running even if models subscriptions fail (#815)
+- **auth**: Dismiss UI first before sending callback for HostedUI (#820)
+- **Core**: support for custom identity claim (#813)
+- Parse and surface returned subscription @auth errors (#810)
+- **Core**: support identityClaim "sub" (#794)
+- **DataStore**: owner based auth, read operations (#788)
+
 ## 1.3.1 (2020-10-01)
 
 ### Bug Fixes
