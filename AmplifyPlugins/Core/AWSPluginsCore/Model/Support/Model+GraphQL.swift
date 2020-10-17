@@ -19,6 +19,13 @@ extension Model {
         var input: GraphQLInput = [:]
         schema.fields.forEach {
             let field = $0.value
+
+            // TODO how to handle associations of type "many" (i.e. cascade save)?
+            // This is not supported right now and might be added as a future feature
+            if case .collection = field.type {
+                return
+            }
+
             let name = field.graphQLName
             let fieldValue = self[field.name] ?? nil
 
@@ -45,10 +52,6 @@ extension Model {
                     fieldName = targetName ?? fieldName
                 }
                 input[fieldName] = (value as? Model)?.id
-            case .collection:
-                // TODO how to handle associations of type "many" (i.e. cascade save)?
-                // This is not supported right now and might be added as a future feature
-                break
             case .embedded, .embeddedCollection:
                 if let encodable = value as? Encodable {
                     let jsonEncoder = JSONEncoder(dateEncodingStrategy: ModelDateFormatting.encodingStrategy)
