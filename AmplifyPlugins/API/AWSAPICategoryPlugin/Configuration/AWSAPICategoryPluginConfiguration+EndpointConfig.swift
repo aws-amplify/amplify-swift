@@ -27,7 +27,7 @@ public extension AWSAPICategoryPluginConfiguration {
 
         public init(name: String,
                     jsonValue: JSONValue,
-                    apiAuthProviders: APIAuthProviders?,
+                    apiAuthProviders: APIAuthProviders? = nil,
                     authService: AWSAuthServiceBehavior? = nil) throws {
 
             guard case .object(let endpointJSON) = jsonValue else {
@@ -58,7 +58,7 @@ public extension AWSAPICategoryPluginConfiguration {
              authorizationType: AWSAuthorizationType,
              authorizationConfiguration: AWSAuthorizationConfiguration,
              endpointType: AWSAPICategoryPluginEndpointType,
-             apiAuthProviders: APIAuthProviders?,
+             apiAuthProviders: APIAuthProviders? = nil,
              authService: AWSAuthServiceBehavior? = nil) throws {
             self.name = name
             self.baseURL = baseURL

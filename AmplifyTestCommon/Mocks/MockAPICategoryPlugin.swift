@@ -190,6 +190,10 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     func add(interceptor: URLRequestInterceptor, for apiName: String) {
         notify("addInterceptor")
     }
+
+    func apiAuthProviders() -> APIAuthProviders? {
+        return nil
+    }
 }
 
 class MockSecondAPICategoryPlugin: MockAPICategoryPlugin {

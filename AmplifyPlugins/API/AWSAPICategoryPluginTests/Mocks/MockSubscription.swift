@@ -25,7 +25,8 @@ struct MockSubscriptionConnectionFactory: SubscriptionConnectionFactory {
 
     func getOrCreateConnection(
         for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
-        authService: AWSAuthServiceBehavior
+        authService: AWSAuthServiceBehavior,
+        apiAuthProviders: APIAuthProviders?
     ) throws -> SubscriptionConnection {
         try onGetOrCreateConnection(endpointConfig, authService)
     }
