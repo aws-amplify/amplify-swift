@@ -14,6 +14,7 @@ import AWSPluginsCore
 /// a later version than the stored model), then write the new data to the store.
 @available(iOS 13.0, *)
 class ReconcileAndLocalSaveOperation: AsynchronousOperation {
+
     /// Disambiguation for the version of the model incoming from the remote API
     typealias RemoteModel = MutationSync<AnyModel>
 
@@ -33,8 +34,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     private let remoteModel: RemoteModel
     private var stateMachineSink: AnyCancellable?
 
-    private let mutationEventPublisher: PassthroughSubject<MutationEvent, DataStoreError>
-    public var publisher: AnyPublisher<MutationEvent, DataStoreError> {
+    private let mutationEventPublisher: PassthroughSubject<ReconcileAndLocalSaveOperationEvent, DataStoreError>
+    public var publisher: AnyPublisher<ReconcileAndLocalSaveOperationEvent, DataStoreError> {
         return mutationEventPublisher.eraseToAnyPublisher()
     }
 
@@ -45,7 +46,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         self.storageAdapter = storageAdapter
         self.stateMachine = stateMachine ?? StateMachine(initialState: .waiting,
                                                          resolver: Resolver.resolve(currentState:action:))
-        self.mutationEventPublisher = PassthroughSubject<MutationEvent, DataStoreError>()
+        self.mutationEventPublisher = PassthroughSubject<ReconcileAndLocalSaveOperationEvent, DataStoreError>()
 
         super.init()
 
@@ -60,7 +61,6 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                     self.respond(to: newState)
                 }
         }
-
     }
 
     override func main() {
@@ -90,8 +90,11 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         case .executing(let disposition):
             execute(disposition: disposition)
 
-        case .notifying(let savedModel):
-            notify(savedModel: savedModel)
+        case .notifyingDropped(let modelName):
+            notifyDropped(modelName: modelName)
+
+        case .notifying(let savedModel, let existsLocally):
+            notify(savedModel: savedModel, existsLocally: existsLocally)
 
         case .inError(let error):
             // Maybe we have to notify the Hub?
@@ -103,7 +106,6 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             // Maybe we have to notify the Hub?
             notifyFinished()
             finish()
-
         }
 
     }
@@ -172,8 +174,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         switch disposition {
         case .applyRemoteModel(let remoteModel):
             apply(remoteModel: remoteModel)
-        case .dropRemoteModel:
-            stateMachine.notify(action: .dropped)
+        case .dropRemoteModel(let modelName):
+            stateMachine.notify(action: .dropped(modelName: modelName))
         case .error(let dataStoreError):
             stateMachine.notify(action: .errored(dataStoreError))
         }
@@ -252,6 +254,17 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     private func saveMetadata(storageAdapter: StorageEngineAdapter,
                               inProcessModel: AppliedModel) {
         log.verbose(#function)
+
+        /// Do a local metadata query before saving to check if the `AppliedModel` is of `create` or
+        /// `update` MutationType from the perspective of the local store
+        let existsLocally: Bool
+        do {
+            let localMetadata = try storageAdapter.queryMutationSyncMetadata(for: remoteModel.model.id)
+            existsLocally = localMetadata != nil
+        } catch {
+            log.error("Failed to query for sync metadata")
+            return
+        }
         storageAdapter.save(remoteModel.syncMetadata, condition: nil) { result in
             switch result {
             case .failure(let dataStoreError):
@@ -259,14 +272,20 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 self.stateMachine.notify(action: errorAction)
             case .success(let syncMetadata):
                 let appliedModel = MutationSync(model: inProcessModel.model, syncMetadata: syncMetadata)
-                self.stateMachine.notify(action: .applied(appliedModel))
+                self.stateMachine.notify(action: .applied(appliedModel, existsLocally: existsLocally))
             }
         }
     }
 
+    func notifyDropped(modelName: String) {
+        mutationEventPublisher.send(.mutationEventDropped(modelName: modelName))
+        stateMachine.notify(action: .notified)
+    }
+
     /// Responder method for `notifying`. Notify actions:
     /// - notified
-    func notify(savedModel: AppliedModel) {
+    func notify(savedModel: AppliedModel,
+                existsLocally: Bool) {
         log.verbose(#function)
 
         guard !isCancelled else {
@@ -278,7 +297,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         let version = savedModel.syncMetadata.version
         if savedModel.syncMetadata.deleted {
             mutationType = .delete
-        } else if version == 1 {
+        } else if !existsLocally {
             mutationType = .create
         } else {
             mutationType = .update
@@ -298,7 +317,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                                  data: mutationEvent)
         Amplify.Hub.dispatch(to: .dataStore, payload: payload)
 
-        mutationEventPublisher.send(mutationEvent)
+        mutationEventPublisher.send(.mutationEvent(mutationEvent))
 
         stateMachine.notify(action: .notified)
     }
@@ -334,3 +353,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
 @available(iOS 13.0, *)
 extension ReconcileAndLocalSaveOperation: DefaultLogger { }
+
+enum ReconcileAndLocalSaveOperationEvent {
+    case mutationEvent(MutationEvent)
+    case mutationEventDropped(modelName: String)
+}

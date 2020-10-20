@@ -26,8 +26,8 @@ class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue 
 
     static var lastInstance = AtomicValue<MockAWSIncomingEventReconciliationQueue?>(initialValue: nil)
     init(modelTypes: [Model.Type],
-         api: APICategoryGraphQLBehavior,
-         storageAdapter: StorageEngineAdapter,
+         api: APICategoryGraphQLBehavior?,
+         storageAdapter: StorageEngineAdapter?,
          auth: AuthCategoryBehavior?) {
         self.incomingEventSubject = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
         updateLastInstance(instance: self)

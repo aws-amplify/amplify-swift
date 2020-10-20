@@ -24,6 +24,9 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private var initialSyncOrchestrator: InitialSyncOrchestrator?
     private let initialSyncOrchestratorFactory: InitialSyncOrchestratorFactory
 
+    private var syncEventEmitter: SyncEventEmitter?
+    private var readyEventEmitter: ReadyEventEmitter?
+
     private let mutationEventIngester: MutationEventIngester
     let mutationEventPublisher: MutationEventPublisher
     private let outgoingMutationQueue: OutgoingMutationQueueBehavior
@@ -48,6 +51,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private var stateMachineSink: AnyCancellable?
 
     var networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?
+    private var networkReachabilitySink: AnyCancellable?
     var mutationRetryNotifier: MutationRetryNotifier?
     let requestRetryablePolicy: RequestRetryablePolicy
     var currentAttemptNumber: Int
@@ -184,6 +188,17 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         self.api = api
         self.auth = auth
 
+        if networkReachabilityPublisher == nil,
+            let reachability = api as? APICategoryReachabilityBehavior {
+            do {
+                networkReachabilityPublisher = try reachability.reachabilityPublisher()
+                networkReachabilitySink = networkReachabilityPublisher?
+                    .sink(receiveValue: onReceiveNetworkStatus(networkStatus:))
+            } catch {
+                log.error("\(#function): Unable to listen on reachability: \(error)")
+            }
+        }
+
         remoteSyncTopicPublisher.send(.storageAdapterAvailable)
         stateMachine.notify(action: .receivedStart)
     }
@@ -258,6 +273,11 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         // Hold a reference so we can `reset` while initial sync is in process
         self.initialSyncOrchestrator = initialSyncOrchestrator
 
+        syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
+                                            reconciliationQueue: reconciliationQueue)
+
+        readyEventEmitter = ReadyEventEmitter(remoteSyncEnginePublisher: publisher)
+
         // TODO: This should be an AsynchronousOperation, not a semaphore-waited block
         let semaphore = DispatchSemaphore(value: 0)
 
@@ -325,6 +345,13 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
         remoteSyncTopicPublisher.send(.syncStarted)
         stateMachine.notify(action: .notifiedSyncStarted)
+    }
+
+    private func onReceiveNetworkStatus(networkStatus: ReachabilityUpdate) {
+        let networkStatusEvent = NetworkStatusEvent(active: networkStatus.isOnline)
+        let networkStatusEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.networkStatus,
+                                                   data: networkStatusEvent)
+        Amplify.Hub.dispatch(to: .dataStore, payload: networkStatusEventPayload)
     }
 
     func reset(onComplete: () -> Void) {

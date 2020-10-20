@@ -105,7 +105,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 self?.receiveCompletion(completion)
                 }, receiveValue: { [weak self] receiveValue in
                     self?.receive(receiveValue)
-                })
+            })
     }
 
     /// (Re)starts the incoming subscription event queue.
@@ -134,14 +134,18 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         let reconcileOp = ReconcileAndLocalSaveOperation(remoteModel: remoteModel,
                                                          storageAdapter: storageAdapter)
         var reconcileAndLocalSaveOperationSink: AnyCancellable?
-
         reconcileAndLocalSaveOperationSink = reconcileOp.publisher.sink(receiveCompletion: { completion in
             self.reconcileAndLocalSaveOperationSinks.with { $0.remove(reconcileAndLocalSaveOperationSink) }
             if case .failure = completion {
                 self.modelReconciliationQueueSubject.send(completion: completion)
             }
-        }, receiveValue: { mutationEvent in
-            self.modelReconciliationQueueSubject.send(.mutationEvent(mutationEvent))
+        }, receiveValue: { value in
+            switch value {
+            case .mutationEventDropped(let modelName):
+                self.modelReconciliationQueueSubject.send(.mutationEventDropped(modelName: modelName))
+            case .mutationEvent(let event):
+                self.modelReconciliationQueueSubject.send(.mutationEvent(event))
+            }
         })
         reconcileAndLocalSaveOperationSinks.with { $0.insert(reconcileAndLocalSaveOperationSink) }
         reconcileAndSaveQueue.addOperation(reconcileOp)

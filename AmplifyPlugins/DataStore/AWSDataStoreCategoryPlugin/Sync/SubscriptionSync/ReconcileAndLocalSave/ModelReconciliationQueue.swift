@@ -19,6 +19,7 @@ enum ModelReconciliationQueueEvent {
     case connected(modelName: String)
     case disconnected(modelName: String, reason: ModelConnectionDisconnectedReason)
     case mutationEvent(MutationEvent)
+    case mutationEventDropped(modelName: String)
 }
 
 @available(iOS 13.0, *)

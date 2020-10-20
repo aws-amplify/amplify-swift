@@ -28,11 +28,14 @@ extension ReconcileAndLocalSaveOperation {
             case (.reconciling, .reconciled(let disposition)):
                 return .executing(disposition)
 
-            case (.executing, .dropped):
+            case (.executing, .dropped(let modelName)):
+                return .notifyingDropped(modelName)
+
+            case (.notifyingDropped, .notified):
                 return .finished
 
-            case (.executing, .applied(let savedModel)):
-                return .notifying(savedModel)
+            case (.executing, .applied(let savedModel, let existsLocally)):
+                return .notifying(savedModel, existsLocally)
 
             case (.notifying, .notified):
                 return .finished

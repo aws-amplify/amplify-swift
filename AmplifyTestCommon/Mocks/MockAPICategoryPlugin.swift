@@ -9,7 +9,7 @@ import Amplify
 import Combine
 import Foundation
 
-class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
+class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin, APICategoryReachabilityBehavior {
     var responders = [ResponderKeys: Any]()
 
     // MARK: - Properties
@@ -110,7 +110,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     @available(iOS 13.0, *)
     public func reachabilityPublisher() -> AnyPublisher<ReachabilityUpdate, Never>? {
-        return nil
+        return Just(ReachabilityUpdate(isOnline: true)).eraseToAnyPublisher()
     }
 
     // MARK: - REST methods
