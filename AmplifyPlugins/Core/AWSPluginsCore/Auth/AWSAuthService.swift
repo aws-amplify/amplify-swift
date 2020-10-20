@@ -49,6 +49,9 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         guard tokenSplit.count > 2 else {
             return .failure(.validation("", "Token is not valid base64 encoded string.", "", nil))
         }
+
+        //Add ability to do URL decoding
+        //https://stackoverflow.com/questions/40915607/how-can-i-decode-jwt-json-web-token-token-in-swift
         let claims = tokenSplit[1]
             .replacingOccurrences(of: "-", with: "+")
             .replacingOccurrences(of: "_", with: "/")
