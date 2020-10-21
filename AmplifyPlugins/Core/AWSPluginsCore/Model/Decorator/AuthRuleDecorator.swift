@@ -51,7 +51,7 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
             return decorateDocument
         }
 
-        let readRestrictingStaticGroups = authRules.readRestrictingStaticGroups()
+        let readRestrictingStaticGroups = authRules.groupClaimsToReadRestrictingStaticGroups()
         authRules.forEach { authRule in
             decorateDocument = decorateAuthStrategy(document: decorateDocument,
                                                     authRule: authRule,
@@ -62,7 +62,7 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
 
     private func decorateAuthStrategy(document: SingleDirectiveGraphQLDocument,
                                       authRule: AuthRule,
-                                      readRestrictingStaticGroups: Set<String>) -> SingleDirectiveGraphQLDocument {
+                                      readRestrictingStaticGroups: [String: Set<String>]) -> SingleDirectiveGraphQLDocument {
         guard authRule.allow == .owner,
             var selectionSet = document.selectionSet else {
             return document
@@ -71,10 +71,10 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         let ownerField = authRule.getOwnerFieldOrDefault()
         selectionSet = appendOwnerFieldToSelectionSetIfNeeded(selectionSet: selectionSet, ownerField: ownerField)
 
-       if case let .subscription(_, claims) = input,
+        if case let .subscription(_, claims) = input,
             authRule.isReadRestrictingOwner() &&
-                isNotInReadRestrictingStaticGroup(readRestrictingStaticGroups,
-                                                  cognitoGroupsFrom(claims: claims)) {
+                isNotInReadRestrictingStaticGroup(jwtTokenClaims: claims,
+                                                  readRestrictingStaticGroups: readRestrictingStaticGroups) {
             var inputs = document.inputs
             let identityClaimValue = resolveIdentityClaimValue(identityClaim: authRule.identityClaimOrDefault(),
                                                                claims: claims)
@@ -86,15 +86,25 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         return document.copy(selectionSet: selectionSet)
     }
 
-    private func isNotInReadRestrictingStaticGroup(_ readRestrictingStaticGroups: Set<String>,
-                                                   _ cognitoGroupsFromClaims: Set<String>) -> Bool {
-        return (readRestrictingStaticGroups.isEmpty ||
-            readRestrictingStaticGroups.isDisjoint(with: cognitoGroupsFromClaims))
+    private func isNotInReadRestrictingStaticGroup(jwtTokenClaims: IdentityClaimsDictionary,
+                                                   readRestrictingStaticGroups: [String: Set<String>]) -> Bool {
+        for (groupClaim, readRestrictingStaticGroupsPerClaim) in readRestrictingStaticGroups {
+            let groupsFromClaim = groupsFrom(jwtTokenClaims: jwtTokenClaims, groupClaim: groupClaim)
+            let doesNotBelongToGroupsFromClaim = readRestrictingStaticGroupsPerClaim.isEmpty ||
+                readRestrictingStaticGroupsPerClaim.isDisjoint(with: groupsFromClaim)
+            if doesNotBelongToGroupsFromClaim {
+                continue
+            } else {
+                return false
+            }
+        }
+        return true
     }
 
-    private func cognitoGroupsFrom(claims: IdentityClaimsDictionary) -> Set<String> {
+    private func groupsFrom(jwtTokenClaims: IdentityClaimsDictionary,
+                            groupClaim: String) -> Set<String> {
         var groupSet = Set<String>()
-        if let groups = (claims["cognito:groups"] as? NSArray) as Array? {
+        if let groups = (jwtTokenClaims[groupClaim] as? NSArray) as Array? {
             for group in groups {
                 if let groupString = group as? String {
                     groupSet.insert(groupString)

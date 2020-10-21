@@ -42,15 +42,47 @@ extension AuthRule {
 }
 
 extension Array where Element == AuthRule {
-    func readRestrictingStaticGroups() -> Set<String> {
-        var readRestrictingStaticGroups = Set<String>()
+
+    // This function returns a map of all of the read restricting static groups defined for your app's schema
+    // Example 1: Single group with implicit read restriction
+    // {allow: groups, groups: ["Admins"]}
+    // Returns:
+    // {
+    //     "cognito:groups" : ["Admins"]
+    // }
+    //
+    // Example 2: Multiple groups with only one having read restriction
+    // {allow: groups, groups: ["Admins"], operations: [read, update, delete], groupClaim: "https://app1.com/claims/groups"}
+    // {allow: groups, groups: ["Users"], operations: [create]}
+    // Returns:
+    // {
+    //     "https://app1.com/claims/groups" : ["Admins"]
+    // }
+    //
+    // Example 3: Multiple groups with multiple group claims
+    // {allow: groups, provider: oidc, groups: ["Admins"], groupClaim: "https://app1.com/claims/groups"}
+    // {allow: groups, provider: oidc, groups: ["Moderators", "Editors"], groupClaim: "https://app2.com/claims/groups"}
+    // Returns:
+    // {
+    //     "https://app1.com/claims/groups" : ["Admins"],
+    //     "https://app2.com/claims/groups" : ["Moderators", "Editors"]
+    // }
+    //
+    func groupClaimsToReadRestrictingStaticGroups() -> [String: Set<String>] {
+        var readRestrictingStaticGroupsMap = [String: Set<String>]()
         let readRestrictingGroupRules = filter { $0.isReadRestrictingStaticGroup() }
-        for groupRules in readRestrictingGroupRules {
-            groupRules.groups.forEach { group in
-                readRestrictingStaticGroups.insert(group)
+        for groupRule in readRestrictingGroupRules {
+            let groupClaim = groupRule.groupClaim ?? "cognito:groups"
+            groupRule.groups.forEach { group in
+                if var existingSet = readRestrictingStaticGroupsMap[groupClaim] {
+                    existingSet.insert(group)
+                    readRestrictingStaticGroupsMap[groupClaim] = existingSet
+                } else {
+                    readRestrictingStaticGroupsMap[groupClaim] = [group]
+                }
             }
         }
-        return readRestrictingStaticGroups
+        return readRestrictingStaticGroupsMap
     }
 
     func readRestrictingOwnerRules() -> [AuthRule] {
