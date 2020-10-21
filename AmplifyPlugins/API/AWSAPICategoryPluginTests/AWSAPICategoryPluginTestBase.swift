@@ -42,7 +42,8 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
                 region: region,
                 authorizationType: AWSAuthorizationType.none,
                 authorizationConfiguration: AWSAuthorizationConfiguration.none,
-                endpointType: .graphQL)]
+                endpointType: .graphQL,
+                apiAuthProviderFactory: APIAuthProviderFactory())]
             let pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig)
             self.pluginConfig = pluginConfig
 

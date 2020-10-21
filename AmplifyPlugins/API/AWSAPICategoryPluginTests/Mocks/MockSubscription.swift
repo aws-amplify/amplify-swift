@@ -14,7 +14,8 @@ import AppSyncRealTimeClient
 struct MockSubscriptionConnectionFactory: SubscriptionConnectionFactory {
     typealias OnGetOrCreateConnection = (
         AWSAPICategoryPluginConfiguration.EndpointConfig,
-        AWSAuthServiceBehavior
+        AWSAuthServiceBehavior,
+        APIAuthProviderFactory
     ) throws -> SubscriptionConnection
 
     let onGetOrCreateConnection: OnGetOrCreateConnection
@@ -26,7 +27,7 @@ struct MockSubscriptionConnectionFactory: SubscriptionConnectionFactory {
     func getOrCreateConnection(
         for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
         authService: AWSAuthServiceBehavior,
-        apiAuthProviderFactory: APIAuthProviderFactory?
+        apiAuthProviderFactory: APIAuthProviderFactory
     ) throws -> SubscriptionConnection {
         try onGetOrCreateConnection(endpointConfig, authService, apiAuthProviderFactory)
     }
