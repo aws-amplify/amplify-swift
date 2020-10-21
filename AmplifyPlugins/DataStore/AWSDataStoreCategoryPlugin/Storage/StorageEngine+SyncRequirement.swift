@@ -57,6 +57,12 @@ extension StorageEngine {
         if containsAuthEnabledSyncableModels,
             let apiCategoryAuthProviderBehavior = api as? APICategoryAuthProviderFactoryBehavior,
             apiCategoryAuthProviderBehavior.apiAuthProviderFactory().oidcAuthProvider() != nil {
+            if tryGetAuthPlugin() != nil {
+                log.warn("""
+Detected OIDC Auth Provider & Auth Plugin Category available.
+This is not a supported use case.
+""")
+            }
             return false
         }
 
