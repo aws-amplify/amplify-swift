@@ -352,7 +352,7 @@ final class StorageEngine: StorageEngineBehavior {
     func query<M: Model>(_ modelType: M.Type,
                          modelSchema: ModelSchema,
                          predicate: QueryPredicate?,
-                         sort: QuerySortInput?,
+                         sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
                          completion: (DataStoreResult<[M]>) -> Void) {
         return storageAdapter.query(modelType,
@@ -365,7 +365,7 @@ final class StorageEngine: StorageEngineBehavior {
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate? = nil,
-                         sort: QuerySortInput? = nil,
+                         sort: [QuerySortDescriptor]? = nil,
                          paginationInput: QueryPaginationInput? = nil,
                          completion: DataStoreCallback<[M]>) {
         query(modelType,
