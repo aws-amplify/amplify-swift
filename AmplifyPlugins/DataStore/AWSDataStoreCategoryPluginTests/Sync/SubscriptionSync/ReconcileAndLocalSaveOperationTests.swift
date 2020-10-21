@@ -141,16 +141,33 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    func testExecuteApplyRemoteModel() throws {
+    func testExecuteApplyRemoteModelThatDoesNotExistLocally() throws {
         let expect = expectation(description: "action .execute applyRemoteModel")
         let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync)
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostMutationSync.model))
         stateMachine.pushExpectActionCriteria { action in
-            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostMutationSync))
+            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostMutationSync,
+                                                                                 existsLocally: false))
             expect.fulfill()
         }
 
         stateMachine.state = .executing(disposition)
+        waitForExpectations(timeout: 1)
+    }
+
+    func testExecuteApplyRemoteModelThatExistsLocally() throws {
+        let expect = expectation(description: "action .execute applyRemoteModel")
+        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync)
+
+        storageAdapter.returnOnSave(dataStoreResult: .success(anyPostMutationSync.model))
+        storageAdapter.returnOnQueryMutationSyncMetadata(.some(anyPostMetadata))
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostMutationSync,
+                                                                                 existsLocally: true))
+            expect.fulfill()
+        }
+        stateMachine.state = .executing(disposition)
+
         waitForExpectations(timeout: 1)
     }
 
@@ -189,7 +206,8 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostDeletedMutationSync)
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostDeletedMutationSync.model))
         stateMachine.pushExpectActionCriteria { action in
-            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostDeletedMutationSync))
+            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostDeletedMutationSync,
+                                                                                 existsLocally: false))
             expect.fulfill()
         }
 
@@ -231,11 +249,11 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let expect = expectation(description: "action .execute dropRemoteModel")
         let disposition = RemoteSyncReconciler.Disposition.dropRemoteModel
         stateMachine.pushExpectActionCriteria { action in
-            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.dropped)
+            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.dropped(modelName: "Post"))
             expect.fulfill()
         }
 
-        stateMachine.state = .executing(disposition)
+        stateMachine.state = .executing(disposition("Post"))
 
         waitForExpectations(timeout: 1)
     }
@@ -267,7 +285,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             notifyExpect.fulfill()
         }
 
-        stateMachine.state = .notifying(anyPostMutationSync)
+        stateMachine.state = .notifying(anyPostMutationSync, false)
 
         waitForExpectations(timeout: 1)
         Amplify.Hub.removeListener(hubListener)

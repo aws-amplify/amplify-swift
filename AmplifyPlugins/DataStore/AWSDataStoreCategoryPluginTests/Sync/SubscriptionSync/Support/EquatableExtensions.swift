@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
+import AWSPluginsCore
 @testable import AWSDataStoreCategoryPlugin
 
 extension RemoteSyncReconciler.Disposition: Equatable {
@@ -37,9 +39,10 @@ extension ReconcileAndLocalSaveOperation.Action: Equatable {
                 && model1.model.modelName == model2.model.modelName
         case (.reconciled(let disposition1), .reconciled(let disposition2)):
             return disposition1 == disposition2
-        case (.applied(let model1), .applied(let model2)):
+        case (.applied(let model1, let existsLocally1), .applied(let model2, let existsLocally2)):
             return model1.model.id == model2.model.id
                 && model1.model.modelName == model2.model.modelName
+                && existsLocally1 == existsLocally2
         case (.dropped, dropped):
             return true
         case (.notified, .notified):
@@ -69,9 +72,10 @@ extension ReconcileAndLocalSaveOperation.State: Equatable {
                 && model1.model.modelName == model2.model.modelName
         case (.executing(let disposition1), .executing(let disposition2)):
             return disposition1 == disposition2
-        case (.notifying(let model1), .notifying(let model2)):
+        case (.notifying(let model1, let existsLocally1), .notifying(let model2, let existsLocally2)):
             return model1.model.id == model2.model.id
                 && model1.model.modelName == model2.model.modelName
+                && existsLocally1 == existsLocally2
         case (.finished, .finished):
             return true
         case (.inError(let error1), .inError(let error2)):
@@ -79,5 +83,25 @@ extension ReconcileAndLocalSaveOperation.State: Equatable {
         default:
             return false
         }
+    }
+}
+
+extension ModelSyncedEvent: Equatable {
+    public static func == (lhs: ModelSyncedEvent, rhs: ModelSyncedEvent) -> Bool {
+        return lhs.modelName == rhs.modelName
+            && lhs.isFullSync == rhs.isFullSync
+            && lhs.isDeltaSync == rhs.isDeltaSync
+            && lhs.added == rhs.added
+            && lhs.updated == rhs.updated
+            && lhs.deleted == rhs.deleted
+    }
+}
+
+extension MutationSyncMetadata: Equatable {
+    public static func == (lhs: MutationSyncMetadata, rhs: MutationSyncMetadata) -> Bool {
+        return lhs.id == rhs.id
+            && lhs.deleted == rhs.deleted
+            && lhs.lastChangedAt == rhs.lastChangedAt
+            && lhs.version == rhs.version
     }
 }

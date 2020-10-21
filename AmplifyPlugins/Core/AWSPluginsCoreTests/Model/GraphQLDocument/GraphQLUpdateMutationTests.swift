@@ -67,6 +67,7 @@ class GraphQLUpdateMutationTests: XCTestCase {
         }
         XCTAssert(input["title"] as? String == post.title)
         XCTAssert(input["content"] as? String == post.content)
+        XCTAssertFalse(input.keys.contains("comments"))
     }
 
     /// - Given: a `Model` instance
@@ -119,5 +120,6 @@ class GraphQLUpdateMutationTests: XCTestCase {
         XCTAssert(input["title"] as? String == post.title)
         XCTAssert(input["content"] as? String == post.content)
         XCTAssert(input["_version"] as? Int == 5)
+        XCTAssertFalse(input.keys.contains("comments"))
     }
 }

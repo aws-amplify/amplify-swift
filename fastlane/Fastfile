@@ -112,7 +112,7 @@ platform :ios do
           pod_push(path: pod[:spec], allow_warnings: true, synchronous: true)
         rescue StandardError => e
           raise e unless e.message =~ /Unable to accept duplicate entry/i
-          UI.warn("Version already exists. Ignoring")
+          UI.important("Version already exists. Ignoring")
         end
       end
 

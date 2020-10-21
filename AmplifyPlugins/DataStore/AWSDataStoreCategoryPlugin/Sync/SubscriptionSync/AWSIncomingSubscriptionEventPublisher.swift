@@ -58,6 +58,7 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
     }
 }
 
+// MARK: Resettable
 @available(iOS 13.0, *)
 extension AWSIncomingSubscriptionEventPublisher: Resettable {
 

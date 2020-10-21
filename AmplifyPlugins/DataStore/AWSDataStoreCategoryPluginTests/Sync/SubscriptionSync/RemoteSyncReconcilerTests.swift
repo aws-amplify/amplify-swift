@@ -76,7 +76,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
                                                          to: nil,
                                                          pendingMutations: pendingMutations)
 
-        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel)
+        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel("MockSynced"))
     }
 
     func testUpdatedOnRemote_noLocal_withPendingMutations() throws {
@@ -87,7 +87,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
                                                          to: nil,
                                                          pendingMutations: pendingMutations)
 
-        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel)
+        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel("MockSynced"))
     }
 
     func testDeletedOnRemote_noLocal_withPendingMutations() throws {
@@ -98,7 +98,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
                                                          to: nil,
                                                          pendingMutations: pendingMutations)
 
-        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel)
+        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel("MockSynced"))
     }
 
     // MARK: - With local model having lower version, no pending mutations
@@ -152,7 +152,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
                                                          to: localSyncMetadata,
                                                          pendingMutations: pendingMutations)
 
-        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel)
+        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel("MockSynced"))
     }
 
     // This shouldn't be possible except in case of an error (either the service side did not properly resolve a
@@ -166,7 +166,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
                                                          to: localSyncMetadata,
                                                          pendingMutations: pendingMutations)
 
-        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel)
+        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel("MockSynced"))
     }
 
     // MARK: - With local model having lower version, with pending mutations
@@ -181,7 +181,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
                                                          to: localSyncMetadata,
                                                          pendingMutations: pendingMutations)
 
-        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel)
+        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel("MockSynced"))
     }
 
     func testDeletedOnRemote_withLocalLowerVersion_withPendingMutations() throws {
@@ -193,7 +193,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
                                                          to: localSyncMetadata,
                                                          pendingMutations: pendingMutations)
 
-        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel)
+        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel("MockSynced"))
     }
 
     // MARK: - With local model having higher version, with pending mutations
@@ -208,7 +208,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
                                                          to: localSyncMetadata,
                                                          pendingMutations: pendingMutations)
 
-        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel)
+        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel("MockSynced"))
     }
 
     func testDeletedOnRemote_withLocalHigherVersion_withPendingMutations() throws {
@@ -220,7 +220,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
                                                          to: localSyncMetadata,
                                                          pendingMutations: pendingMutations)
 
-        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel)
+        XCTAssertEqual(disposition, RemoteSyncReconciler.Disposition.dropRemoteModel("MockSynced"))
     }
 
     // MARK: - Utilities

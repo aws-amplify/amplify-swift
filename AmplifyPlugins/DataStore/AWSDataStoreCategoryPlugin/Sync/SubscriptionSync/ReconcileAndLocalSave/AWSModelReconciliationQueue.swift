@@ -64,7 +64,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     private let modelName: String
 
     private var incomingEventsSink: AnyCancellable?
-    private var reconcileAndLocalSaveOperationSinks: Set<AnyCancellable?>
+    private var reconcileAndLocalSaveOperationSinks: AtomicValue<Set<AnyCancellable?>>
 
     private let modelReconciliationQueueSubject: PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>
     var publisher: AnyPublisher<ModelReconciliationQueueEvent, DataStoreError> {
@@ -98,14 +98,14 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         let resolvedIncomingSubscriptionEvents = incomingSubscriptionEvents ??
             AWSIncomingSubscriptionEventPublisher(modelType: modelType, api: api, auth: auth)
         self.incomingSubscriptionEvents = resolvedIncomingSubscriptionEvents
-        self.reconcileAndLocalSaveOperationSinks = Set<AnyCancellable?>()
+        self.reconcileAndLocalSaveOperationSinks = AtomicValue(initialValue: Set<AnyCancellable?>())
         self.incomingEventsSink = resolvedIncomingSubscriptionEvents
             .publisher
             .sink(receiveCompletion: { [weak self] completion in
                 self?.receiveCompletion(completion)
                 }, receiveValue: { [weak self] receiveValue in
                     self?.receive(receiveValue)
-                })
+            })
     }
 
     /// (Re)starts the incoming subscription event queue.
@@ -134,16 +134,20 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         let reconcileOp = ReconcileAndLocalSaveOperation(remoteModel: remoteModel,
                                                          storageAdapter: storageAdapter)
         var reconcileAndLocalSaveOperationSink: AnyCancellable?
-
         reconcileAndLocalSaveOperationSink = reconcileOp.publisher.sink(receiveCompletion: { completion in
-            self.reconcileAndLocalSaveOperationSinks.remove(reconcileAndLocalSaveOperationSink)
+            self.reconcileAndLocalSaveOperationSinks.with { $0.remove(reconcileAndLocalSaveOperationSink) }
             if case .failure = completion {
                 self.modelReconciliationQueueSubject.send(completion: completion)
             }
-        }, receiveValue: { mutationEvent in
-            self.modelReconciliationQueueSubject.send(.mutationEvent(mutationEvent))
+        }, receiveValue: { value in
+            switch value {
+            case .mutationEventDropped(let modelName):
+                self.modelReconciliationQueueSubject.send(.mutationEventDropped(modelName: modelName))
+            case .mutationEvent(let event):
+                self.modelReconciliationQueueSubject.send(.mutationEvent(event))
+            }
         })
-        reconcileAndLocalSaveOperationSinks.insert(reconcileAndLocalSaveOperationSink)
+        reconcileAndLocalSaveOperationSinks.with { $0.insert(reconcileAndLocalSaveOperationSink) }
         reconcileAndSaveQueue.addOperation(reconcileOp)
     }
 
@@ -154,7 +158,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 self.enqueue(remoteModel)
             })
         case .connectionConnected:
-            modelReconciliationQueueSubject.send(.connected(modelName))
+            modelReconciliationQueueSubject.send(.connected(modelName: modelName))
         }
     }
 
@@ -164,6 +168,11 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             log.info("receivedCompletion: finished")
             modelReconciliationQueueSubject.send(completion: .finished)
         case .failure(let dataStoreError):
+            if case let .api(error, _) = dataStoreError,
+               case let APIError.operationError(_, _, underlyingError) = error, isUnauthorizedError(underlyingError) {
+                modelReconciliationQueueSubject.send(.disconnected(modelName: modelName, reason: .unauthorized))
+                return
+            }
             log.error("receiveCompletion: error: \(dataStoreError)")
             modelReconciliationQueueSubject.send(completion: .failure(dataStoreError))
         }
@@ -173,6 +182,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 @available(iOS 13.0, *)
 extension AWSModelReconciliationQueue: DefaultLogger { }
 
+// MARK: Resettable
 @available(iOS 13.0, *)
 extension AWSModelReconciliationQueue: Resettable {
 
@@ -207,4 +217,27 @@ extension AWSModelReconciliationQueue: Resettable {
         onComplete()
     }
 
+}
+
+// MARK: Auth errors handling
+@available(iOS 13.0, *)
+extension AWSModelReconciliationQueue {
+    private typealias ResponseType = MutationSync<AnyModel>
+    private func graphqlErrors(from error: GraphQLResponseError<ResponseType>?) -> [GraphQLError]? {
+        if case let .error(errors) = error {
+            return errors
+        }
+        return nil
+    }
+
+    private func isUnauthorizedError(_ error: Error?) -> Bool {
+        if let responseError = error as? GraphQLResponseError<ResponseType>,
+           let graphQLError = graphqlErrors(from: responseError)?.first,
+           let extensions = graphQLError.extensions,
+           case let .string(errorTypeValue) = extensions["errorType"],
+           case .unauthorized = AppSyncErrorType(errorTypeValue) {
+            return true
+        }
+        return false
+    }
 }

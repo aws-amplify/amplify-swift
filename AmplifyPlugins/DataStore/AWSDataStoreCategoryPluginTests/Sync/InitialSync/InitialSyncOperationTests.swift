@@ -7,12 +7,14 @@
 
 import XCTest
 import SQLite
+import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 @testable import AWSPluginsCore
 
+// swiftlint:disable type_body_length
 class InitialSyncOperationTests: XCTestCase {
 
     override func setUp() {
@@ -48,11 +50,33 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default) { _ in }
+            dataStoreConfiguration: .default)
+
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
+        let finishedReceived = expectation(description: "InitialSyncOperation finishe offering items")
+        let sink = operation
+            .publisher
+            .sink(receiveCompletion: { _ in
+                syncCompletionReceived.fulfill()
+            }, receiveValue: { value in
+                switch value {
+                case .started(modelType: let modelType, syncType: let syncType):
+                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                    XCTAssertEqual(syncType, .fullSync)
+                    syncStartedReceived.fulfill()
+                case .finished(modelType: let modelType):
+                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                    finishedReceived.fulfill()
+                default:
+                    break
+                }
+            })
 
         operation.main()
 
-        wait(for: [metadataQueryReceived], timeout: 1.0)
+        waitForExpectations(timeout: 1)
+        sink.cancel()
     }
 
     /// - Given: An InitialSyncOperation
@@ -83,11 +107,33 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default) { _ in }
+            dataStoreConfiguration: .default)
+
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
+        let finishedReceived = expectation(description: "InitialSyncOperation finishe offering items")
+        let sink = operation
+            .publisher
+            .sink(receiveCompletion: { _ in
+                syncCompletionReceived.fulfill()
+            }, receiveValue: { value in
+                switch value {
+                case .started(modelType: let modelType, syncType: let syncType):
+                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                    XCTAssertEqual(syncType, .fullSync)
+                    syncStartedReceived.fulfill()
+                case .finished(modelType: let modelType):
+                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                    finishedReceived.fulfill()
+                default:
+                    break
+                }
+            })
 
         operation.main()
 
-        wait(for: [apiWasQueried], timeout: 1.0)
+        waitForExpectations(timeout: 1)
+        sink.cancel()
     }
 
     /// - Given: An InitialSyncOperation
@@ -95,7 +141,7 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - I invoke main()
     /// - Then:
     ///    - The method invokes a completion callback when complete
-    func testInvokesCompletionCallback() {
+    func testInvokesPublisherCompletion() {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
             let startDateMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startDateMilliseconds)
@@ -111,19 +157,31 @@ class InitialSyncOperationTests: XCTestCase {
         storageAdapter.returnOnQueryModelSyncMetadata(nil)
 
         let reconciliationQueue = MockReconciliationQueue()
-        let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
         let operation = InitialSyncOperation(
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default) { _ in
-                syncCallbackReceived.fulfill()
-        }
+            dataStoreConfiguration: .default)
+
+        let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
+        let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
+        let sink = operation.publisher.sink(receiveCompletion: { _ in
+            syncCompletionReceived.fulfill()
+        }, receiveValue: { value in
+            switch value {
+            case .finished(modelType: let modelType):
+                XCTAssertEqual(modelType.modelName, "MockSynced")
+                finishedReceived.fulfill()
+            default:
+                break
+            }
+        })
 
         operation.main()
 
-        wait(for: [syncCallbackReceived], timeout: 1.0)
+        wait(for: [syncCompletionReceived, finishedReceived], timeout: 1.0)
+        sink.cancel()
     }
 
     /// - Given: An InitialSyncOperation
@@ -159,11 +217,26 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default) { _ in }
+            dataStoreConfiguration: .default)
+
+        let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
+        let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
+        let sink = operation.publisher.sink(receiveCompletion: { _ in
+            syncCompletionReceived.fulfill()
+        }, receiveValue: { value in
+            switch value {
+            case .finished(modelType: let modelType):
+                XCTAssertEqual(modelType.modelName, "MockSynced")
+                finishedReceived.fulfill()
+            default:
+                break
+            }
+        })
 
         operation.main()
 
-        wait(for: [apiWasQueried], timeout: 1.0)
+        waitForExpectations(timeout: 1)
+        sink.cancel()
     }
 
     /// - Given: An InitialSyncOperation
@@ -172,15 +245,15 @@ class InitialSyncOperationTests: XCTestCase {
     /// - Then:
     ///    - The method submits the returned data to the reconciliation queue
     func testSubmitsToReconciliationQueue() {
+        let startedAtMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
+        let model = MockSynced(id: "1")
+        let anyModel = AnyModel(model)
+        let metadata = MutationSyncMetadata(id: "1",
+                                            deleted: false,
+                                            lastChangedAt: Int(Date().timeIntervalSince1970),
+                                            version: 1)
+        let mutationSync = MutationSync(model: anyModel, syncMetadata: metadata)
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startedAtMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
-            let model = MockSynced(id: "1")
-            let anyModel = AnyModel(model)
-            let metadata = MutationSyncMetadata(id: "1",
-                                                deleted: false,
-                                                lastChangedAt: Int(Date().timeIntervalSince1970),
-                                                version: 1)
-            let mutationSync = MutationSync(model: anyModel, syncMetadata: metadata)
             let list = PaginatedList<AnyModel>(items: [mutationSync], nextToken: nil, startedAt: startedAtMilliseconds)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
@@ -208,11 +281,35 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default) { _ in }
+            dataStoreConfiguration: .default)
+
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
+        let offeredValueReceived = expectation(description: "mutationSync received, item is offered")
+        let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
+        let sink = operation
+            .publisher
+            .sink(receiveCompletion: { _ in
+                syncCompletionReceived.fulfill()
+            }, receiveValue: { value in
+                switch value {
+                case .started(modelType: let modelType, syncType: let syncType):
+                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                    XCTAssertEqual(syncType, .fullSync)
+                    syncStartedReceived.fulfill()
+                case .enqueued(let returnedValue):
+                    XCTAssertTrue(returnedValue.syncMetadata == mutationSync.syncMetadata)
+                    offeredValueReceived.fulfill()
+                case .finished(modelType: let modelType):
+                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                    finishedReceived.fulfill()
+                }
+            })
 
         operation.main()
 
-        wait(for: [itemSubmitted], timeout: 1.0)
+        waitForExpectations(timeout: 1)
+        sink.cancel()
     }
 
     /// - Given: An InitialSyncOperation
@@ -236,20 +333,39 @@ class InitialSyncOperationTests: XCTestCase {
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
         try storageAdapter.setUp(models: StorageEngine.systemModels + [MockSynced.self])
 
-        let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
         let reconciliationQueue = MockReconciliationQueue()
         let operation = InitialSyncOperation(
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default) { _ in
-                syncCallbackReceived.fulfill()
-        }
+            dataStoreConfiguration: .default)
+
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
+        let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
+        let sink = operation
+            .publisher
+            .sink(receiveCompletion: { _ in
+                syncCompletionReceived.fulfill()
+            }, receiveValue: { value in
+                switch value {
+                case .started(modelType: let modelType, syncType: let syncType):
+                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                    XCTAssertEqual(syncType, .fullSync)
+                    syncStartedReceived.fulfill()
+                case .finished(modelType: let modelType):
+                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                    finishedReceived.fulfill()
+                default:
+                    break
+                }
+            })
 
         operation.main()
 
-        wait(for: [syncCallbackReceived], timeout: 1.0)
+        waitForExpectations(timeout: 1)
+        sink.cancel()
 
         guard let syncMetadata = try storageAdapter.queryModelSyncMetadata(for: MockSynced.self) else {
             XCTFail("syncMetadata is nil")
@@ -278,7 +394,6 @@ class InitialSyncOperationTests: XCTestCase {
 
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
 
-        let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
         let reconciliationQueue = MockReconciliationQueue()
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
         let configuration = DataStoreConfiguration.custom(errorHandler: { error in
@@ -302,20 +417,33 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: configuration) { result in
-                switch result {
-                case .success:
-                    XCTFail("Should have failed")
-                case .failure:
-                    syncCallbackReceived.fulfill()
-                }
+            dataStoreConfiguration: configuration)
 
-        }
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
+        let sink = operation.publisher.sink(receiveCompletion: { result in
+            switch result {
+            case .finished:
+                XCTFail("Should have failed")
+            case .failure:
+                syncCompletionReceived.fulfill()
+            }
+        }, receiveValue: { value in
+            switch value {
+            case .started(modelType: let modelType, syncType: let syncType):
+                XCTAssertEqual(modelType.modelName, "MockSynced")
+                XCTAssertEqual(syncType, .fullSync)
+                syncStartedReceived.fulfill()
+            default:
+                break
+            }
+        })
 
         operation.main()
 
-        wait(for: [expectErrorHandlerCalled], timeout: 1.0)
-        wait(for: [syncCallbackReceived], timeout: 1.0)
+        waitForExpectations(timeout: 1)
+
+        sink.cancel()
     }
 
     /// - Given: An InitialSyncOperation in a system with previous sync metadata
@@ -363,11 +491,33 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default) {_ in }
+            dataStoreConfiguration: .default)
+
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
+        let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
+        let sink = operation
+            .publisher
+            .sink(receiveCompletion: { _ in
+                syncCompletionReceived.fulfill()
+            }, receiveValue: { value in
+                switch value {
+                case .started(modelType: let modelType, syncType: let syncType):
+                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                    XCTAssertEqual(syncType, .deltaSync)
+                    syncStartedReceived.fulfill()
+                case .finished(modelType: let modelType):
+                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                    finishedReceived.fulfill()
+                default:
+                    break
+                }
+            })
 
         operation.main()
 
-        wait(for: [apiWasQueried], timeout: 1.0)
+        waitForExpectations(timeout: 1)
+        sink.cancel()
     }
 
     func testBaseQueryWhenExpiredLastSync() throws {
@@ -411,11 +561,33 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: configuration) {_ in }
+            dataStoreConfiguration: configuration)
+
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
+        let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
+        let sink = operation
+            .publisher
+            .sink(receiveCompletion: { _ in
+                syncCompletionReceived.fulfill()
+            }, receiveValue: { value in
+                switch value {
+                case .started(modelType: let modelType, syncType: let syncType):
+                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                    XCTAssertEqual(syncType, .fullSync)
+                    syncStartedReceived.fulfill()
+                case .finished(modelType: let modelType):
+                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                    finishedReceived.fulfill()
+                default:
+                    break
+                }
+            })
 
         operation.main()
 
-        wait(for: [apiWasQueried], timeout: 1.0)
+        waitForExpectations(timeout: 1)
+        sink.cancel()
     }
 
     func testBaseQueryWithCustomSyncPageSize() throws {
@@ -447,10 +619,32 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: configuration) {_ in }
+            dataStoreConfiguration: configuration)
+
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
+        let finishedReceived = expectation(description: "InitialSyncOperation finishe offering items")
+        let sink = operation
+            .publisher
+            .sink(receiveCompletion: { _ in
+                syncCompletionReceived.fulfill()
+            }, receiveValue: { value in
+                switch value {
+                case .started(modelType: let modelType, syncType: let syncType):
+                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                    XCTAssertEqual(syncType, .fullSync)
+                    syncStartedReceived.fulfill()
+                case .finished(modelType: let modelType):
+                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                    finishedReceived.fulfill()
+                default:
+                    break
+                }
+            })
 
         operation.main()
 
-        wait(for: [apiWasQueried], timeout: 1.0)
+        waitForExpectations(timeout: 1)
+        sink.cancel()
     }
 }

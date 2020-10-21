@@ -205,10 +205,12 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // The owner auth rule contains `.create` operation, requiring the subscription operation to contain the input
     func testModelWithOwnerField_OnCreateSubscription() {
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelWithOwnerField.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, "111")))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnCreateModelWithOwnerField($author: String!) {
@@ -226,15 +228,17 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
             XCTFail("The document doesn't contain variables")
             return
         }
-        XCTAssertEqual(variables["author"] as? String, "111")
+        XCTAssertEqual(variables["author"] as? String, "user1")
     }
 
     // The owner auth rule contains `.update` operation, requiring the subscription operation to contain the input
     func testModelWithOwnerField_OnUpdateSubscription() {
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelWithOwnerField.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, "111")))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, claims)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnUpdateModelWithOwnerField($author: String!) {
@@ -252,15 +256,17 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
             XCTFail("The document doesn't contain variables")
             return
         }
-        XCTAssertEqual(variables["author"] as? String, "111")
+        XCTAssertEqual(variables["author"] as? String, "user1")
     }
 
     // The owner auth rule contains `.delete` operation, requiring the subscription operation to contain the input
     func testModelWithOwnerField_OnDeleteSubscription() {
+        let claims = ["username": "user1",
+                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelWithOwnerField.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, "111")))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, claims)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnDeleteModelWithOwnerField($author: String!) {
@@ -278,6 +284,6 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
             XCTFail("The document doesn't contain variables")
             return
         }
-        XCTAssertEqual(variables["author"] as? String, "111")
+        XCTAssertEqual(variables["author"] as? String, "user1")
     }
 }

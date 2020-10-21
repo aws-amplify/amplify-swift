@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSPluginsCore
+import Combine
 
 @available(iOS 13.0, *)
 final class InitialSyncOperation: AsynchronousOperation {
@@ -18,7 +19,6 @@ final class InitialSyncOperation: AsynchronousOperation {
     private let dataStoreConfiguration: DataStoreConfiguration
 
     private let modelType: Model.Type
-    private let completion: AWSInitialSyncOrchestrator.SyncOperationResultHandler
 
     private var recordsReceived: UInt
 
@@ -29,35 +29,41 @@ final class InitialSyncOperation: AsynchronousOperation {
         return dataStoreConfiguration.syncPageSize
     }
 
+    private let initialSyncOperationTopic: PassthroughSubject<InitialSyncOperationEvent, DataStoreError>
+    var publisher: AnyPublisher<InitialSyncOperationEvent, DataStoreError> {
+        return initialSyncOperationTopic.eraseToAnyPublisher()
+    }
+
     init(modelType: Model.Type,
          api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?,
-         dataStoreConfiguration: DataStoreConfiguration,
-         completion: @escaping AWSInitialSyncOrchestrator.SyncOperationResultHandler) {
+         dataStoreConfiguration: DataStoreConfiguration) {
         self.modelType = modelType
         self.api = api
         self.reconciliationQueue = reconciliationQueue
         self.storageAdapter = storageAdapter
         self.dataStoreConfiguration = dataStoreConfiguration
-        self.completion = completion
         self.recordsReceived = 0
+        self.initialSyncOperationTopic = PassthroughSubject<InitialSyncOperationEvent, DataStoreError>()
     }
 
     override func main() {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return
         }
 
         log.info("Beginning sync for \(modelType.modelName)")
         let lastSyncTime = getLastSyncTime()
+        let syncType: SyncType = lastSyncTime == nil ? .fullSync : .deltaSync
+        initialSyncOperationTopic.send(.started(modelType: modelType, syncType: syncType))
         query(lastSyncTime: lastSyncTime)
     }
 
     private func getLastSyncTime() -> Int? {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return nil
         }
 
@@ -81,7 +87,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     private func getLastSyncMetadata() -> ModelSyncMetadata? {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return nil
         }
 
@@ -97,12 +103,11 @@ final class InitialSyncOperation: AsynchronousOperation {
             log.error(error: error)
             return nil
         }
-
     }
 
     private func query(lastSyncTime: Int?, nextToken: String? = nil) {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return
         }
 
@@ -136,7 +141,7 @@ final class InitialSyncOperation: AsynchronousOperation {
     private func handleQueryResults(lastSyncTime: Int?,
                                     graphQLResult: Result<SyncQueryResult, GraphQLResponseError<SyncQueryResult>>) {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return
         }
 
@@ -159,6 +164,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
         for item in items {
             reconciliationQueue.offer(item)
+            initialSyncOperationTopic.send(.enqueued(item))
         }
 
         if let nextToken = syncQueryResult.nextToken, recordsReceived < syncMaxRecords {
@@ -166,14 +172,14 @@ final class InitialSyncOperation: AsynchronousOperation {
                 self.query(lastSyncTime: lastSyncTime, nextToken: nextToken)
             }
         } else {
+            initialSyncOperationTopic.send(.finished(modelType: modelType))
             updateModelSyncMetadata(lastSyncTime: syncQueryResult.startedAt)
         }
-
     }
 
     private func updateModelSyncMetadata(lastSyncTime: Int?) {
         guard !isCancelled else {
-            super.finish()
+            finish(result: .successfulVoid)
             return
         }
 
@@ -204,7 +210,12 @@ final class InitialSyncOperation: AsynchronousOperation {
     }
 
     private func finish(result: AWSInitialSyncOrchestrator.SyncOperationResult) {
-        completion(result)
+        switch result {
+        case .failure(let error):
+            initialSyncOperationTopic.send(completion: .failure(error))
+        case .success:
+            initialSyncOperationTopic.send(completion: .finished)
+        }
         super.finish()
     }
 

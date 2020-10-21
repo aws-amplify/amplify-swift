@@ -24,17 +24,17 @@ class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue 
         return incomingEventSubject.eraseToAnyPublisher()
     }
 
-    static var lastInstance: MockAWSIncomingEventReconciliationQueue?
+    static var lastInstance = AtomicValue<MockAWSIncomingEventReconciliationQueue?>(initialValue: nil)
     init(modelTypes: [Model.Type],
-         api: APICategoryGraphQLBehavior,
-         storageAdapter: StorageEngineAdapter,
+         api: APICategoryGraphQLBehavior?,
+         storageAdapter: StorageEngineAdapter?,
          auth: AuthCategoryBehavior?) {
         self.incomingEventSubject = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
         updateLastInstance(instance: self)
     }
 
     func updateLastInstance(instance: MockAWSIncomingEventReconciliationQueue) {
-        MockAWSIncomingEventReconciliationQueue.lastInstance = instance
+        MockAWSIncomingEventReconciliationQueue.lastInstance.set(instance)
     }
 
     func start() {
@@ -50,11 +50,11 @@ class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue 
     }
 
     static func mockSendCompletion(completion: Subscribers.Completion<DataStoreError>) {
-        lastInstance?.incomingEventSubject.send(completion: completion)
+        lastInstance.get()?.incomingEventSubject.send(completion: completion)
     }
 
     static func mockSend(event: IncomingEventReconciliationQueueEvent) {
-        lastInstance?.incomingEventSubject.send(event)
+        lastInstance.get()?.incomingEventSubject.send(event)
     }
 
     func cancel() {

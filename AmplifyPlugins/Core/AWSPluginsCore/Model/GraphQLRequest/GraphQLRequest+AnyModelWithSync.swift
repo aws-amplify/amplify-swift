@@ -34,7 +34,7 @@ protocol ModelSyncGraphQLRequestFactory {
 
     static func subscription(to modelType: Model.Type,
                              subscriptionType: GraphQLSubscriptionType,
-                             ownerId: String) -> GraphQLRequest<MutationSyncResult>
+                             claims: IdentityClaimsDictionary) -> GraphQLRequest<MutationSyncResult>
 
     static func syncQuery(modelType: Model.Type,
                           where predicate: QueryPredicate?,
@@ -109,12 +109,12 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
     public static func subscription(to modelType: Model.Type,
                                     subscriptionType: GraphQLSubscriptionType,
-                                    ownerId: String) -> GraphQLRequest<MutationSyncResult> {
+                                    claims: IdentityClaimsDictionary) -> GraphQLRequest<MutationSyncResult> {
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: subscriptionType))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(subscriptionType, ownerId)))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(subscriptionType, claims)))
         let document = documentBuilder.build()
 
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,

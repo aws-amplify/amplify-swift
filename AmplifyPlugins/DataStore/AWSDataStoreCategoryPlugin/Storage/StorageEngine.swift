@@ -22,7 +22,7 @@ final class StorageEngine: StorageEngineBehavior {
 
     var iSyncEngineSink: Any?
     @available(iOS 13.0, *)
-    var sinkEngineSink: AnyCancellable? {
+    var syncEngineSink: AnyCancellable? {
         get {
             if let iSyncEngineSink = iSyncEngineSink as? AnyCancellable {
                 return iSyncEngineSink
@@ -98,7 +98,7 @@ final class StorageEngine: StorageEngineBehavior {
                       validAPIPluginKey: validAPIPluginKey,
                       validAuthPluginKey: validAuthPluginKey)
             self.storageEnginePublisher = PassthroughSubject<StorageEngineEvent, DataStoreError>()
-            sinkEngineSink = syncEngine?.publisher.sink(receiveCompletion: onReceiveCompletion(receiveCompletion:),
+            syncEngineSink = syncEngine?.publisher.sink(receiveCompletion: onReceiveCompletion(receiveCompletion:),
                                                         receiveValue: onReceive(receiveValue:))
         } else {
             self.init(storageAdapter: storageAdapter,

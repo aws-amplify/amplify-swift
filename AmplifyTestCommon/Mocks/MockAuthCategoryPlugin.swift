@@ -181,6 +181,12 @@ class MockSecondAuthCategoryPlugin: MockAuthCategoryPlugin {
     }
 }
 
+class MockAuthCategoryPluginWithoutKey: MockAuthCategoryPlugin {
+    override var key: String {
+        return ""
+    }
+}
+
 class MockAuthChangePasswordOperation: AmplifyOperation<AuthChangePasswordRequest, Void, AuthError>,
 AuthChangePasswordOperation {
 

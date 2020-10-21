@@ -9,7 +9,7 @@ import Foundation
 import AWSCore
 
 public class AmplifyAWSServiceConfiguration: AWSServiceConfiguration {
-    private static let version = "1.1.2"
+    private static let version = "1.3.2"
 
     override public class func baseUserAgent() -> String! {
         //TODO: Retrieve this version from a centralized location:
@@ -40,24 +40,5 @@ public class AmplifyAWSServiceConfiguration: AWSServiceConfiguration {
 
     public init(region regionType: AWSRegionType) {
         super.init(region: regionType, credentialsProvider: nil)
-    }
-}
-
-extension AmplifyAWSServiceConfiguration {
-
-    static var platformMapping: [Platform: String] = [:]
-
-    public static func addUserAgentPlatform(_ platform: Platform, version: String) {
-        platformMapping[platform] = version
-    }
-
-    public enum Platform: String {
-        case flutter = "amplify-flutter"
-    }
-
-    static func platformInformation() -> String {
-        var platformTokens = platformMapping.map { "\($0.rawValue)/\($1)" }
-        platformTokens.append("amplify-iOS/\(version)")
-        return platformTokens.joined(separator: " ")
     }
 }
