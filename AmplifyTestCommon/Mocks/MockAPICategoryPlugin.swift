@@ -191,8 +191,8 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         notify("addInterceptor")
     }
 
-    func apiAuthProviders() -> APIAuthProviders? {
-        return nil
+    func apiAuthProviderFactory() -> APIAuthProviderFactory {
+        return APIAuthProviderFactory()
     }
 }
 
