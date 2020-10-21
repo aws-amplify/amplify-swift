@@ -7,9 +7,12 @@
 
 import Foundation
 
-public protocol APIAuthProviders {
-    func oidcAuthProvider() -> AmplifyOIDCAuthProvider?
-
+open class APIAuthProviderFactory {
+    public init() {
+    }
+    open func oidcAuthProvider() -> AmplifyOIDCAuthProvider? {
+        return nil
+    }
 }
 
 public protocol AmplifyOIDCAuthProvider {

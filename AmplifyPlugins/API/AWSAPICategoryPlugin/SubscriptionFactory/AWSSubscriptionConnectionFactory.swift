@@ -20,14 +20,14 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
 
     func getOrCreateConnection(for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
                                authService: AWSAuthServiceBehavior,
-                               apiAuthProviders: APIAuthProviders?) throws -> SubscriptionConnection {
+                               apiAuthProviderFactory: APIAuthProviderFactory) throws -> SubscriptionConnection {
         return try concurrencyQueue.sync {
             let apiName = endpointConfig.name
 
             let url = endpointConfig.baseURL
             let authInterceptor = try getInterceptor(for: endpointConfig.authorizationConfiguration,
                                                      authService: authService,
-                                                     apiAuthProviders: apiAuthProviders)
+                                                     apiAuthProviderFactory: apiAuthProviderFactory)
 
             // create or retrieve the connection provider. If creating, add interceptors onto the provider.
             let connectionProvider = apiToConnectionProvider[apiName] ??
@@ -47,7 +47,7 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
 
     private func getInterceptor(for authorizationConfiguration: AWSAuthorizationConfiguration,
                                 authService: AWSAuthServiceBehavior,
-                                apiAuthProviders: APIAuthProviders?) throws -> AuthInterceptor {
+                                apiAuthProviderFactory: APIAuthProviderFactory) throws -> AuthInterceptor {
         let authInterceptor: AuthInterceptor
 
         switch authorizationConfiguration {
@@ -60,7 +60,7 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
             authInterceptor = IAMAuthInterceptor(authService.getCredentialsProvider(),
                                                  region: awsIAMConfiguration.region)
         case .openIDConnect:
-            guard let oidcAuthProvider = apiAuthProviders?.oidcAuthProvider() else {
+            guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
                 throw APIError.invalidConfiguration("Using openIDConnect requires passing in an APIAuthProvider with an OIDC AuthProvider",
                                                     "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider",
                                                     nil)

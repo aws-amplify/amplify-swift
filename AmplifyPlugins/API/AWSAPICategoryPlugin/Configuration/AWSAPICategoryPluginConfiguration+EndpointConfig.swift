@@ -27,7 +27,7 @@ public extension AWSAPICategoryPluginConfiguration {
 
         public init(name: String,
                     jsonValue: JSONValue,
-                    apiAuthProviders: APIAuthProviders? = nil,
+                    apiAuthProviderFactory: APIAuthProviderFactory,
                     authService: AWSAuthServiceBehavior? = nil) throws {
 
             guard case .object(let endpointJSON) = jsonValue else {
@@ -48,7 +48,7 @@ public extension AWSAPICategoryPluginConfiguration {
                           authorizationType: EndpointConfig.getAuthorizationType(from: endpointJSON),
                           authorizationConfiguration: EndpointConfig.getAuthorizationConfiguration(from: endpointJSON),
                           endpointType: EndpointConfig.getEndpointType(from: endpointJSON),
-                          apiAuthProviders: apiAuthProviders,
+                          apiAuthProviderFactory: apiAuthProviderFactory,
                           authService: authService)
         }
 
@@ -58,7 +58,7 @@ public extension AWSAPICategoryPluginConfiguration {
              authorizationType: AWSAuthorizationType,
              authorizationConfiguration: AWSAuthorizationConfiguration,
              endpointType: AWSAPICategoryPluginEndpointType,
-             apiAuthProviders: APIAuthProviders? = nil,
+             apiAuthProviderFactory: APIAuthProviderFactory,
              authService: AWSAuthServiceBehavior? = nil) throws {
             self.name = name
             self.baseURL = baseURL
@@ -66,7 +66,7 @@ public extension AWSAPICategoryPluginConfiguration {
             self.authorizationType = authorizationType
             self.authorizationConfiguration = authorizationConfiguration
             self.endpointType = endpointType
-            try addInterceptors(authService: authService, apiAuthProviders: apiAuthProviders)
+            try addInterceptors(authService: authService, apiAuthProviderFactory: apiAuthProviderFactory)
         }
 
         public mutating func addInterceptor(interceptor: URLRequestInterceptor) {
@@ -77,7 +77,7 @@ public extension AWSAPICategoryPluginConfiguration {
 
         /// Adds auto-discovered interceptors. Currently only works for authorization interceptors
         private mutating func addInterceptors(authService: AWSAuthServiceBehavior? = nil,
-                                              apiAuthProviders: APIAuthProviders?) throws {
+                                              apiAuthProviderFactory: APIAuthProviderFactory) throws {
             switch authorizationConfiguration {
             case .none:
                 // No interceptors needed
@@ -105,7 +105,7 @@ public extension AWSAPICategoryPluginConfiguration {
                 let interceptor = UserPoolURLRequestInterceptor(userPoolTokenProvider: provider)
                 addInterceptor(interceptor: interceptor)
             case .openIDConnect:
-                guard let oidcAuthProvider = apiAuthProviders?.oidcAuthProvider() else {
+                guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
                     return
                 }
                 let wrappedAuthProvider = AuthTokenProviderWrapper(oidcAuthProvider: oidcAuthProvider)

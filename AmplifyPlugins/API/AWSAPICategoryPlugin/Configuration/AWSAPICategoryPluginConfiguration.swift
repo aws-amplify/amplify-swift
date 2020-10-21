@@ -17,7 +17,7 @@ public struct AWSAPICategoryPluginConfiguration {
     }
 
     init(jsonValue: JSONValue,
-         apiAuthProviders: APIAuthProviders?,
+         apiAuthProviderFactory: APIAuthProviderFactory,
          authService: AWSAuthServiceBehavior) throws {
         guard case .object(let config) = jsonValue else {
             throw PluginError.pluginConfigurationError(
@@ -32,14 +32,14 @@ public struct AWSAPICategoryPluginConfiguration {
         }
 
         let endpoints = try AWSAPICategoryPluginConfiguration.endpointsFromConfig(config: config,
-                                                                                  apiAuthProviders: apiAuthProviders,
+                                                                                  apiAuthProviderFactory: apiAuthProviderFactory,
                                                                                   authService: authService)
         self.init(endpoints: endpoints)
     }
 
     private static func endpointsFromConfig(
         config: [String: JSONValue],
-        apiAuthProviders: APIAuthProviders?,
+        apiAuthProviderFactory: APIAuthProviderFactory,
         authService: AWSAuthServiceBehavior
     ) throws -> [String: EndpointConfig] {
         var endpoints = [String: EndpointConfig]()
@@ -48,7 +48,7 @@ public struct AWSAPICategoryPluginConfiguration {
             let name = key
             let endpointConfig = try EndpointConfig(name: name,
                                                     jsonValue: jsonValue,
-                                                    apiAuthProviders: apiAuthProviders,
+                                                    apiAuthProviderFactory: apiAuthProviderFactory,
                                                     authService: authService)
             endpoints[name] = endpointConfig
         }

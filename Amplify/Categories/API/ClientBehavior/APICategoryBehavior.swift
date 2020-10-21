@@ -11,4 +11,4 @@ public typealias APICategoryBehavior =
     APICategoryGraphQLBehavior &
     APICategoryInterceptorBehavior &
     APICategoryReachabilityBehavior &
-    APICategoryAuthProviderBehavior
+    APICategoryAuthProviderFactoryBehavior

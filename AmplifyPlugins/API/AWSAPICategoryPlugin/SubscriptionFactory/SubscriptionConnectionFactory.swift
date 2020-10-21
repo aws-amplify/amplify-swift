@@ -15,5 +15,5 @@ protocol SubscriptionConnectionFactory {
     /// Get connection based on the connection type
     func getOrCreateConnection(for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
                                authService: AWSAuthServiceBehavior,
-                               apiAuthProviders: APIAuthProviders?) throws -> SubscriptionConnection
+                               apiAuthProviderFactory: APIAuthProviderFactory) throws -> SubscriptionConnection
 }

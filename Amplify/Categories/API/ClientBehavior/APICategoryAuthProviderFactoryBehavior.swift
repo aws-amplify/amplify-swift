@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol APICategoryAuthProviderBehavior {
-    func apiAuthProviders() -> APIAuthProviders?
+public protocol APICategoryAuthProviderFactoryBehavior {
+    func apiAuthProviderFactory() -> APIAuthProviderFactory
 }

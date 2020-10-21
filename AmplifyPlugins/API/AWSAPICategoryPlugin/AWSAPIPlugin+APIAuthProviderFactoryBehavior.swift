@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 
 extension AWSAPIPlugin {
-    public func apiAuthProviders() -> APIAuthProviders? {
-        return authProviders
+    public func apiAuthProviderFactory() -> APIAuthProviderFactory {
+        return authProviderFactory
     }
 }

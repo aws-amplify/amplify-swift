@@ -55,8 +55,8 @@ extension StorageEngine {
         }
 
         if containsAuthEnabledSyncableModels,
-            let apiCategoryAuthProviderBehavior = api as? APICategoryAuthProviderBehavior,
-            apiCategoryAuthProviderBehavior.apiAuthProviders()?.oidcAuthProvider() != nil {
+            let apiCategoryAuthProviderBehavior = api as? APICategoryAuthProviderFactoryBehavior,
+            apiCategoryAuthProviderBehavior.apiAuthProviderFactory().oidcAuthProvider() != nil {
             return false
         }
 

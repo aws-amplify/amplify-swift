@@ -19,20 +19,20 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
     var subscriptionConnection: SubscriptionConnection?
     var subscriptionItem: SubscriptionItem?
-    var apiAuthProviders: APIAuthProviders?
+    var apiAuthProviderFactory: APIAuthProviderFactory
 
     init(request: GraphQLOperationRequest<R>,
          pluginConfig: AWSAPICategoryPluginConfiguration,
          subscriptionConnectionFactory: SubscriptionConnectionFactory,
          authService: AWSAuthServiceBehavior,
-         apiAuthProviders: APIAuthProviders? = nil,
+         apiAuthProviderFactory: APIAuthProviderFactory,
          inProcessListener: AWSGraphQLSubscriptionOperation.InProcessListener?,
          resultListener: AWSGraphQLSubscriptionOperation.ResultListener?) {
 
         self.pluginConfig = pluginConfig
         self.subscriptionConnectionFactory = subscriptionConnectionFactory
         self.authService = authService
-        self.apiAuthProviders = apiAuthProviders
+        self.apiAuthProviderFactory = apiAuthProviderFactory
 
         super.init(categoryType: .api,
                    eventName: HubPayload.EventName.API.subscribe,
@@ -90,7 +90,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             subscriptionConnection = try subscriptionConnectionFactory
                 .getOrCreateConnection(for: endpointConfig,
                                        authService: authService,
-                                       apiAuthProviders: apiAuthProviders)
+                                       apiAuthProviderFactory: apiAuthProviderFactory)
         } catch {
             let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
             dispatch(result: .failure(error))

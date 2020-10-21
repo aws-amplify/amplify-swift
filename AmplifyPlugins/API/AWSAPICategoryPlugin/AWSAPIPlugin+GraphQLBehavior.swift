@@ -50,7 +50,7 @@ public extension AWSAPIPlugin {
                 pluginConfig: pluginConfig,
                 subscriptionConnectionFactory: subscriptionConnectionFactory,
                 authService: authService,
-                apiAuthProviders: authProviders,
+                apiAuthProviderFactory: authProviderFactory,
                 inProcessListener: valueListener,
                 resultListener: completionListener)
             queue.addOperation(operation)
