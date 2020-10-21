@@ -113,14 +113,14 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  completion: @escaping DataStoreCallback<Void>) {
         delete(modelType, modelSchema: modelType.schema, withId: id, completion: completion)
     }
-    
+
     public func delete<M: Model>(_ modelType: M.Type,
                                  modelSchema: ModelSchema,
                                  withId id: String,
                                  completion: @escaping DataStoreCallback<Void>) {
         reinitStorageEngineIfNeeded()
         storageEngine.delete(modelType, modelSchema: modelSchema, withId: id) { result in
-            self.onDeleteCompletion(result: result, modelSchema: modelType.schema, completion: completion)
+            self.onDeleteCompletion(result: result, modelSchema: modelSchema, completion: completion)
         }
     }
 

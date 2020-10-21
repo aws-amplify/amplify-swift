@@ -48,7 +48,7 @@ extension Model {
                     input[fieldName] = modelValue.id
 
                 } else if let value = value as? [String: JSONValue],
-                   case let .string(primaryKeyValue) = value[modelSchema.primaryKey.name] {
+                          case .string(let primaryKeyValue) = value[modelSchema.primaryKey.name] {
                     input[fieldName] = primaryKeyValue
                 } else {
                     input[fieldName] = nil
