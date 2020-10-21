@@ -13,8 +13,15 @@ open class APIAuthProviderFactory {
     open func oidcAuthProvider() -> AmplifyOIDCAuthProvider? {
         return nil
     }
+    open func apiKeyAuthProvider() -> AmplifyAPIAuthProvider? {
+        return nil
+    }
 }
 
 public protocol AmplifyOIDCAuthProvider {
     func getLatestAuthToken() -> Result<String, Error>
+}
+
+public protocol AmplifyAPIAuthProvider {
+    func getAPIKey() -> Result<String, Error>
 }
