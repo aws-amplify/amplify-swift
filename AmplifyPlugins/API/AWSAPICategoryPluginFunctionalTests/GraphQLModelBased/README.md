@@ -44,7 +44,7 @@ type Comment @model {
     id: ID!
     content: String!
     createdAt: AWSDateTime!
-    post: Post @connection(name: "PostComment")
+    post: Post! @connection(name: "PostComment")
 }
 
 ## These are examples from https://docs.amplify.aws/cli/graphql-transformer/connection

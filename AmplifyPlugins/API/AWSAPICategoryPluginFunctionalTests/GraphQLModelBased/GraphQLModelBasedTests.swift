@@ -7,6 +7,7 @@
 
 import XCTest
 import AWSMobileClient
+import AWSPluginsCore
 @testable import AWSAPICategoryPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -30,7 +31,6 @@ class GraphQLModelBasedTests: XCTestCase {
 
             ModelRegistry.register(modelType: Comment.self)
             ModelRegistry.register(modelType: Post.self)
-
         } catch {
             XCTFail("Error during setup: \(error)")
         }

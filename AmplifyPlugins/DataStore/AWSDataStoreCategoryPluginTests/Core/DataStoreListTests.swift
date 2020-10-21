@@ -7,12 +7,13 @@
 
 import Combine
 import XCTest
+@testable import AWSPluginsCore
 
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
-class ListTests: BaseDataStoreTests {
+class DataStoreListTests: BaseDataStoreTests {
 
     /// - Given: a list a `Post` and a few comments associated with it
     /// - When:
@@ -27,13 +28,13 @@ class ListTests: BaseDataStoreTests {
         Amplify.DataStore.query(Post.self, byId: postId) {
             switch $0 {
             case .success(let result):
-                if let post = result {
-                    if let comments = post.comments {
+                if let post = result, let postComments = post.comments {
+                    if let comments = postComments as? DataStoreList<Comment> {
                         XCTAssert(comments.state == .pending)
                         XCTAssertEqual(comments.count, 2)
                         XCTAssert(comments.state == .loaded)
                     } else {
-                        XCTFail("post.comments should not be nil")
+                        XCTFail("Failed to cast to DataStoreList")
                     }
                 } else {
                     XCTFail("Failed to query recently saved post by id")
@@ -58,7 +59,7 @@ class ListTests: BaseDataStoreTests {
 
         let postId = preparePostDataForTest()
 
-        func checkComments(_ comments: List<Comment>) {
+        func checkComments(_ comments: DataStoreList<Comment>) {
             XCTAssert(comments.state == .pending)
             comments.load {
                 switch $0 {
@@ -76,7 +77,9 @@ class ListTests: BaseDataStoreTests {
         Amplify.DataStore.query(Post.self, byId: postId) {
             switch $0 {
             case .success(let result):
-                if let post = result, let comments = post.comments {
+                if let post = result,
+                   let postComments = post.comments,
+                   let comments = postComments as? DataStoreList<Comment> {
                     checkComments(comments)
                 } else {
                     XCTFail("Failed to query recently saved post by id")
@@ -100,7 +103,7 @@ class ListTests: BaseDataStoreTests {
 
         let postId = preparePostDataForTest()
 
-        func checkComments(_ comments: List<Comment>) {
+        func checkComments(_ comments: DataStoreList<Comment>) {
             XCTAssert(comments.state == .pending)
             _ = comments.loadAsPublisher().sink(
                 receiveCompletion: {
@@ -122,7 +125,9 @@ class ListTests: BaseDataStoreTests {
         Amplify.DataStore.query(Post.self, byId: postId) {
             switch $0 {
             case .success(let result):
-                if let post = result, let comments = post.comments {
+                if let post = result,
+                   let postComments = post.comments,
+                   let comments = postComments as? DataStoreList<Comment> {
                     checkComments(comments)
                 } else {
                     XCTFail("Failed to query recently saved post by id")

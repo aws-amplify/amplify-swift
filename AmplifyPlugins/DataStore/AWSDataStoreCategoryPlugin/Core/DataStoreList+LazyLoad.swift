@@ -6,26 +6,17 @@
 //
 
 import Foundation
+import Amplify
 
 /// This extension adds lazy load logic to the `List<ModelType>`. Lazy loading means
 /// the contents of a list that represents an association between two models will only be
 /// loaded when it's needed.
-extension List {
+extension DataStoreList {
 
     /// Represents the data state of the `List`.
     internal enum LoadState {
         case pending
         case loaded
-    }
-
-    // MARK: - Asynchronous API
-
-    /// Trigger `DataStore` query to initialize the collection. This function always
-    /// fetches data from the `DataStore.query`.
-    ///
-    /// - seealso: `load()`
-    public func load(_ completion: DataStoreCallback<Elements>) {
-        lazyLoad(completion)
     }
 
     internal func lazyLoad(_ completion: DataStoreCallback<Elements>) {
@@ -56,21 +47,6 @@ extension List {
                 completion(.failure(causedBy: error))
             }
         }
-    }
-
-    // MARK: - Synchronous API
-
-    /// Trigger `DataStore` query to initialize the collection. This function always
-    /// fetches data from the `DataStore.query`. However, consumers must be aware of
-    /// the internal behavior which relies on `DispatchSemaphore` and will block the
-    /// current `DispatchQueue` until data is ready. When operating on large result
-    /// sets, prefer using the asynchronous `load(completion:)` instead.
-    ///
-    /// - Returns: the current instance after data was loaded.
-    /// - seealso: `load(completion:)`
-    public func load() -> Self {
-        lazyLoad()
-        return self
     }
 
     /// Internal function that only calls `lazyLoad()` if the `state` is not `.loaded`.
