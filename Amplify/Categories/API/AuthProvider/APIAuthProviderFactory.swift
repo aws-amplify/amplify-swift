@@ -7,21 +7,11 @@
 
 import Foundation
 
-open class APIAuthProviderFactory {
-    public init() {
-    }
-    open func oidcAuthProvider() -> AmplifyOIDCAuthProvider? {
-        return nil
-    }
-    open func apiKeyAuthProvider() -> AmplifyAPIAuthProvider? {
-        return nil
-    }
+public enum APIAuthProviderFactory {
+    case oidc(() -> AmplifyOIDCAuthProvider)
+    case none
 }
 
 public protocol AmplifyOIDCAuthProvider {
     func getLatestAuthToken() -> Result<String, Error>
-}
-
-public protocol AmplifyAPIAuthProvider {
-    func getAPIKey() -> Result<String, Error>
 }

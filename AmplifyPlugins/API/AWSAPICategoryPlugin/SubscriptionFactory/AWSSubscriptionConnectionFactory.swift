@@ -60,12 +60,13 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
             authInterceptor = IAMAuthInterceptor(authService.getCredentialsProvider(),
                                                  region: awsIAMConfiguration.region)
         case .openIDConnect:
-            guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
+            guard case .oidc(let oidcAuthProvider) = apiAuthProviderFactory else {
+//            guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
                 throw APIError.invalidConfiguration("Using openIDConnect requires passing in an APIAuthProvider with an OIDC AuthProvider",
                                                     "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider",
                                                     nil)
             }
-            let wrappedProvider = OIDCAuthProviderWrapper(oidcAuthProvider: oidcAuthProvider)
+            let wrappedProvider = OIDCAuthProviderWrapper(oidcAuthProvider: oidcAuthProvider())
             authInterceptor = OIDCAuthInterceptor(wrappedProvider)
         case .none:
             throw APIError.unknown("Cannot create AppSync subscription for none auth mode", "")

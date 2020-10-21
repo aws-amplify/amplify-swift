@@ -105,10 +105,11 @@ public extension AWSAPICategoryPluginConfiguration {
                 let interceptor = UserPoolURLRequestInterceptor(userPoolTokenProvider: provider)
                 addInterceptor(interceptor: interceptor)
             case .openIDConnect:
-                guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
+                guard case .oidc(let oidcAuthProvider) = apiAuthProviderFactory else {
+//                guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
                     return
                 }
-                let wrappedAuthProvider = AuthTokenProviderWrapper(oidcAuthProvider: oidcAuthProvider)
+                let wrappedAuthProvider = AuthTokenProviderWrapper(oidcAuthProvider: oidcAuthProvider())
                 let interceptor = UserPoolURLRequestInterceptor(userPoolTokenProvider: wrappedAuthProvider)
                 addInterceptor(interceptor: interceptor)
             }

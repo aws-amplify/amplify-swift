@@ -63,7 +63,7 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin {
     ) {
         self.mapper = OperationTaskMapper()
         self.queue = OperationQueue()
-        self.authProviderFactory =  apiAuthProviderFactory ?? APIAuthProviderFactory()
+        self.authProviderFactory =  apiAuthProviderFactory ?? .none
         super.init()
 
         modelRegistration?.registerModels(registry: ModelRegistry.self)
