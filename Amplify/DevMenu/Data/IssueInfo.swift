@@ -13,25 +13,21 @@ struct IssueInfo {
 
     private var includeEnvironmentInfo: Bool
     private var includeDeviceInfo: Bool
-    private var includeLogs: Bool
 
     private var issueDescription: String
     private var environmentInfoItems: [EnvironmentInfoItem] = []
     private var pluginInfoItems: [PluginInfoItem] = []
     private var deviceInfoItems: [DeviceInfoItem] = []
-    private var logEntryItems: [LogEntryItem] = []
 
     private let infoNotAvailable = "Information not available"
 
-    init(issueDescription: String, includeEnvInfo: Bool, includeDeviceInfo: Bool, includeLogs: Bool) {
+    init(issueDescription: String, includeEnvInfo: Bool, includeDeviceInfo: Bool) {
         self.issueDescription = issueDescription.isEmpty ? infoNotAvailable : issueDescription
         self.includeEnvironmentInfo = includeEnvInfo
         self.includeDeviceInfo = includeDeviceInfo
-        self.includeLogs = includeLogs
         initializeEnvironmentInfo()
         initializePluginInfo()
         initializeDeviceInfo()
-        initializeLogEntryInfo()
     }
 
     private mutating func initializeEnvironmentInfo() {
@@ -50,12 +46,6 @@ struct IssueInfo {
     private mutating func initializeDeviceInfo() {
         if includeDeviceInfo {
             deviceInfoItems = DeviceInfoHelper.getDeviceInformation()
-        }
-    }
-
-    private mutating func initializeLogEntryInfo() {
-        if includeLogs {
-            logEntryItems = LogEntryHelper.getLogHistory()
         }
     }
 
@@ -78,21 +68,6 @@ struct IssueInfo {
     func getDeviceInfoDescription() -> String {
         return getItemsDescription(items: deviceInfoItems)
     }
-
-    /// Returns logs information in the form of text
-    func getLogEntryDescription() -> String {
-
-        guard !logEntryItems.isEmpty else {
-           return infoNotAvailable
-        }
-
-        return logEntryItems.reduce("") {(description, item) -> String in
-            return ("\(description)"
-            + "\(LogEntryHelper.dateString(from: item.timeStamp)) "
-            + "\(item.logLevelString) "
-            + "\(item.message) \n")
-        }
-     }
 
     private func getItemsDescription(items: [InfoItemProvider]) -> String {
 

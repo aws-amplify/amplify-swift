@@ -52,10 +52,6 @@ struct IssueReporter: View {
                     Text(includeDeviceInfoText).bold()
                 }.padding(.bottom)
 
-                Toggle(isOn: $includeLogs) {
-                    Text(includeLogsText).bold()
-                }.padding(.bottom)
-
                 Spacer()
 
                 Button(reportOnGithubButtonText, action: reportToGithub)
@@ -99,8 +95,7 @@ struct IssueReporter: View {
             IssueInfoHelper.generateMarkdownForIssue(
                 issue: IssueInfo(issueDescription: issueDescription,
                          includeEnvInfo: includeEnvInfo,
-                         includeDeviceInfo: includeDeviceInfo,
-                         includeLogs: includeLogs))
+                         includeDeviceInfo: includeDeviceInfo))
 
         let urlString = amplifyIosNewIssueUrl + issueDescriptionMarkdown
         guard let url = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
@@ -119,10 +114,10 @@ struct IssueReporter: View {
     private func copyToClipboard() {
         UIPasteboard.general.string =
             IssueInfoHelper.generateMarkdownForIssue(
-            issue: IssueInfo(issueDescription: issueDescription,
-                             includeEnvInfo: includeEnvInfo,
-                             includeDeviceInfo: includeDeviceInfo,
-                             includeLogs: includeLogs))
+                issue: IssueInfo(issueDescription: issueDescription,
+                                 includeEnvInfo: includeEnvInfo,
+                                 includeDeviceInfo: includeDeviceInfo)
+            )
     }
 }
 

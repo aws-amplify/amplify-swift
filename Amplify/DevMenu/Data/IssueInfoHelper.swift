@@ -31,8 +31,6 @@ struct IssueInfoHelper {
         **\(deviceDescTitle)**
         \(issue.getDeviceInfoDescription())
 
-        **\(logEntryTitle)**
-        \(issue.getLogEntryDescription())
         """
     }
 
