@@ -147,6 +147,8 @@
 		6BB7441023A9954900B0EB6C /* DispatchSource+MakeOneOff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB7440F23A9954900B0EB6C /* DispatchSource+MakeOneOff.swift */; };
 		6BBECD7123ADA7E100C8DFBE /* AmplifyAWSServiceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBECD7023ADA7E100C8DFBE /* AmplifyAWSServiceConfiguration.swift */; };
 		6BBECD7423ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBECD7323ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift */; };
+		6BDF15B62541262000B5BE69 /* ModelWithOwnerAuthAndGroupWithGroupClaim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDF15B52541262000B5BE69 /* ModelWithOwnerAuthAndGroupWithGroupClaim.swift */; };
+		6BDF15B825412DE600B5BE69 /* ModelWithOwnerAuthAndMultiGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDF15B725412DE600B5BE69 /* ModelWithOwnerAuthAndMultiGroup.swift */; };
 		6BEE0817253114FD00133961 /* AWSAuthServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE0816253114FD00133961 /* AWSAuthServiceTests.swift */; };
 		6BEE08192533CAA600133961 /* GraphQLRequestOwnerAndGroupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE08182533CAA600133961 /* GraphQLRequestOwnerAndGroupTests.swift */; };
 		6BEE081C2533CCFA00133961 /* OGCScenarioBPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE081A2533CCFA00133961 /* OGCScenarioBPost+Schema.swift */; };
@@ -912,6 +914,8 @@
 		6BB7440F23A9954900B0EB6C /* DispatchSource+MakeOneOff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DispatchSource+MakeOneOff.swift"; sourceTree = "<group>"; };
 		6BBECD7023ADA7E100C8DFBE /* AmplifyAWSServiceConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyAWSServiceConfiguration.swift; sourceTree = "<group>"; };
 		6BBECD7323ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyAWSServiceConfigurationTests.swift; sourceTree = "<group>"; };
+		6BDF15B52541262000B5BE69 /* ModelWithOwnerAuthAndGroupWithGroupClaim.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelWithOwnerAuthAndGroupWithGroupClaim.swift; sourceTree = "<group>"; };
+		6BDF15B725412DE600B5BE69 /* ModelWithOwnerAuthAndMultiGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelWithOwnerAuthAndMultiGroup.swift; sourceTree = "<group>"; };
 		6BEE0816253114FD00133961 /* AWSAuthServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthServiceTests.swift; sourceTree = "<group>"; };
 		6BEE08182533CAA600133961 /* GraphQLRequestOwnerAndGroupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestOwnerAndGroupTests.swift; sourceTree = "<group>"; };
 		6BEE081A2533CCFA00133961 /* OGCScenarioBPost+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OGCScenarioBPost+Schema.swift"; sourceTree = "<group>"; };
@@ -1822,6 +1826,8 @@
 				21A3FDAE24630D7F00E76120 /* ModelWithOwnerFieldAuthRuleTests.swift */,
 				21A3FDB32463C49F00E76120 /* ModelReadUpdateAuthRuleTests.swift */,
 				21A3FDB52464590600E76120 /* ModelMultipleOwnerAuthRuleTests.swift */,
+				6BDF15B52541262000B5BE69 /* ModelWithOwnerAuthAndGroupWithGroupClaim.swift */,
+				6BDF15B725412DE600B5BE69 /* ModelWithOwnerAuthAndMultiGroup.swift */,
 			);
 			path = AuthRuleDecorator;
 			sourceTree = "<group>";
@@ -4325,6 +4331,7 @@
 				2129BE48239489AC006363A1 /* MutationSyncMetadataTests.swift in Sources */,
 				216E45F1248E971E0035E3CE /* GraphQLRequestNonModelTests.swift in Sources */,
 				21A3FDAF24630D7F00E76120 /* ModelWithOwnerFieldAuthRuleTests.swift in Sources */,
+				6BDF15B825412DE600B5BE69 /* ModelWithOwnerAuthAndMultiGroup.swift in Sources */,
 				2183A56823EA4A8E00232880 /* GraphQLDeleteMutationTests.swift in Sources */,
 				21A3FDB42463C49F00E76120 /* ModelReadUpdateAuthRuleTests.swift in Sources */,
 				2183A56323EA4A7800232880 /* GraphQLSubscriptionTests.swift in Sources */,
@@ -4337,6 +4344,7 @@
 				6BBECD7423ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift in Sources */,
 				6B9F7C5225267E1500F1F71C /* MockAWSAuthUser.swift in Sources */,
 				21AD425A249C0D910016FE95 /* AnyModelTester.swift in Sources */,
+				6BDF15B62541262000B5BE69 /* ModelWithOwnerAuthAndGroupWithGroupClaim.swift in Sources */,
 				2129BE3C2394828B006363A1 /* GraphQLRequestModelTests.swift in Sources */,
 				2183A56523EA4A8400232880 /* GraphQLListQueryTests.swift in Sources */,
 				6BEE08192533CAA600133961 /* GraphQLRequestOwnerAndGroupTests.swift in Sources */,
