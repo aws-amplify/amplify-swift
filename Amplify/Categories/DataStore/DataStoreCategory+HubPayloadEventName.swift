@@ -44,7 +44,7 @@ public extension HubPayload.EventName.DataStore {
 
     /// Dispatched when all models have been synced
     static let syncQueriesReady = "DataStore.syncQueriesReady"
-  
+
     /// Dispatched when:
     /// - local store has loaded outgoing mutations from local storage
     /// - if online, all data has finished syncing with cloud

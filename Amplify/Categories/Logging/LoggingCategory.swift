@@ -49,7 +49,7 @@ final public class LoggingCategory: Category {
     /// Returns the plugin added to the category. Upon creation, the LoggingCategory will have a default plugin and a
     /// configuration state reflecting that. Customers can still add custom plugins; doing so will remove the default
     /// plugin.
-    var plugin: LoggingCategoryPlugin = AWSUnifiedLoggingPlugin()
+    var plugin: LoggingCategoryPlugin = Amplify.getLoggingCategoryPlugin(loggingPlugin: AWSUnifiedLoggingPlugin())
 
     // MARK: - Plugin handling
 
@@ -77,7 +77,7 @@ final public class LoggingCategory: Category {
                 throw error
             }
 
-            configurationState = .pendingConfiguration(plugin)
+            configurationState = .pendingConfiguration(Amplify.getLoggingCategoryPlugin(loggingPlugin: plugin))
         }
     }
 
@@ -103,7 +103,7 @@ final public class LoggingCategory: Category {
             guard plugin.key == key else {
                 return
             }
-            plugin = AWSUnifiedLoggingPlugin()
+            plugin = Amplify.getLoggingCategoryPlugin(loggingPlugin: AWSUnifiedLoggingPlugin())
         }
     }
 
