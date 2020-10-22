@@ -88,7 +88,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         query(modelType,
               modelSchema: modelType.schema,
               where: predicate,
-              sort: sortInput?.covertToSortDescriptor(),
+              sort: sortInput?.asSortDescriptors(),
               paginate: paginationInput,
               completion: completion)
     }

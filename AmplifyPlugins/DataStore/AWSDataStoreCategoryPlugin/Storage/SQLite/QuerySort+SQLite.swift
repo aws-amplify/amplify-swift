@@ -30,7 +30,7 @@ extension QuerySortBy {
 
 extension QuerySortInput {
 
-    func covertToSortDescriptor() -> [QuerySortDescriptor]? {
+    func asSortDescriptors() -> [QuerySortDescriptor]? {
         return inputs.map { QuerySortDescriptor(fieldName: $0.fieldName, order: $0.fieldOrder) }
     }
 }
