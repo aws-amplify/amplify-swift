@@ -31,8 +31,8 @@ public extension AWSAPIPlugin {
             )
         }
 
-        let dependencies = try ConfigurationDependencies(configurationValues: jsonValue)
-
+        let dependencies = try ConfigurationDependencies(configurationValues: jsonValue,
+                                                         apiAuthProviderFactory: authProviderFactory)
         configure(using: dependencies)
 
         log.info("Configure finished")
@@ -52,6 +52,7 @@ extension AWSAPIPlugin {
 
         init(
             configurationValues: JSONValue,
+            apiAuthProviderFactory: APIAuthProviderFactory,
             authService: AWSAuthServiceBehavior? = nil,
             subscriptionConnectionFactory: SubscriptionConnectionFactory? = nil
         ) throws {
@@ -60,6 +61,7 @@ extension AWSAPIPlugin {
 
             let pluginConfig = try AWSAPICategoryPluginConfiguration(
                 jsonValue: configurationValues,
+                apiAuthProviderFactory: apiAuthProviderFactory,
                 authService: authService
             )
 

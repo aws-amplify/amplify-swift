@@ -164,9 +164,17 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
 
         let request: GraphQLRequest<Payload>
         if modelType.schema.hasAuthenticationRules,
+            let _ = auth,
             case .success(let tokenString) = awsAuthService.getToken(),
             case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
 
+            request = GraphQLRequest<Payload>.subscription(to: modelType,
+                                                           subscriptionType: subscriptionType,
+                                                           claims: claims)
+        } else if modelType.schema.hasAuthenticationRules,
+            let oidcAuthProvider = hasOIDCAuthProviderAvailable(api: api),
+            case .success(let tokenString) = oidcAuthProvider.getLatestAuthToken(),
+            case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
             request = GraphQLRequest<Payload>.subscription(to: modelType,
                                                            subscriptionType: subscriptionType,
                                                            claims: claims)
@@ -178,6 +186,14 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
                                       valueListener: valueListener,
                                       completionListener: completionListener)
         return operation
+    }
+
+    static func hasOIDCAuthProviderAvailable(api: APICategoryGraphQLBehavior) -> AmplifyOIDCAuthProvider? {
+        if let apiPlugin = api as? APICategoryAuthProviderFactoryBehavior,
+            let oidcAuthProvider = apiPlugin.apiAuthProviderFactory().oidcAuthProvider() {
+            return oidcAuthProvider
+        }
+        return nil
     }
 
     func subscribe<S: Subscriber>(subscriber: S) where S.Input == Event, S.Failure == DataStoreError {

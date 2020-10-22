@@ -19,13 +19,15 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
     var apiToConnectionProvider: [String: ConnectionProvider] = [:]
 
     func getOrCreateConnection(for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
-                               authService: AWSAuthServiceBehavior) throws -> SubscriptionConnection {
+                               authService: AWSAuthServiceBehavior,
+                               apiAuthProviderFactory: APIAuthProviderFactory) throws -> SubscriptionConnection {
         return try concurrencyQueue.sync {
             let apiName = endpointConfig.name
 
             let url = endpointConfig.baseURL
             let authInterceptor = try getInterceptor(for: endpointConfig.authorizationConfiguration,
-                                                     authService: authService)
+                                                     authService: authService,
+                                                     apiAuthProviderFactory: apiAuthProviderFactory)
 
             // create or retrieve the connection provider. If creating, add interceptors onto the provider.
             let connectionProvider = apiToConnectionProvider[apiName] ??
@@ -44,7 +46,8 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
     // MARK: Private methods
 
     private func getInterceptor(for authorizationConfiguration: AWSAuthorizationConfiguration,
-                                authService: AWSAuthServiceBehavior) throws -> AuthInterceptor {
+                                authService: AWSAuthServiceBehavior,
+                                apiAuthProviderFactory: APIAuthProviderFactory) throws -> AuthInterceptor {
         let authInterceptor: AuthInterceptor
 
         switch authorizationConfiguration {
@@ -57,9 +60,13 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
             authInterceptor = IAMAuthInterceptor(authService.getCredentialsProvider(),
                                                  region: awsIAMConfiguration.region)
         case .openIDConnect:
-            // TODO: retrieve OIDC Token Provider from somewhere else that the developer added.
-            let tokenProvider = AWSOIDCAuthProvider(authService: authService)
-            authInterceptor = OIDCAuthInterceptor(tokenProvider)
+            guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
+                throw APIError.invalidConfiguration("Using openIDConnect requires passing in an APIAuthProvider with an OIDC AuthProvider",
+                                                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider",
+                                                    nil)
+            }
+            let wrappedProvider = OIDCAuthProviderWrapper(oidcAuthProvider: oidcAuthProvider)
+            authInterceptor = OIDCAuthInterceptor(wrappedProvider)
         case .none:
             throw APIError.unknown("Cannot create AppSync subscription for none auth mode", "")
         }

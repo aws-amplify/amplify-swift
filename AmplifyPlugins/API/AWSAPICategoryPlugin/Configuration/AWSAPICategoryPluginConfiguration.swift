@@ -16,7 +16,9 @@ public struct AWSAPICategoryPluginConfiguration {
         self.endpoints = endpoints
     }
 
-    init(jsonValue: JSONValue, authService: AWSAuthServiceBehavior) throws {
+    init(jsonValue: JSONValue,
+         apiAuthProviderFactory: APIAuthProviderFactory,
+         authService: AWSAuthServiceBehavior) throws {
         guard case .object(let config) = jsonValue else {
             throw PluginError.pluginConfigurationError(
                 "Could not cast incoming configuration to a JSONValue `.object`",
@@ -30,12 +32,14 @@ public struct AWSAPICategoryPluginConfiguration {
         }
 
         let endpoints = try AWSAPICategoryPluginConfiguration.endpointsFromConfig(config: config,
-                                                                           authService: authService)
+                                                                                  apiAuthProviderFactory: apiAuthProviderFactory,
+                                                                                  authService: authService)
         self.init(endpoints: endpoints)
     }
 
     private static func endpointsFromConfig(
         config: [String: JSONValue],
+        apiAuthProviderFactory: APIAuthProviderFactory,
         authService: AWSAuthServiceBehavior
     ) throws -> [String: EndpointConfig] {
         var endpoints = [String: EndpointConfig]()
@@ -44,6 +48,7 @@ public struct AWSAPICategoryPluginConfiguration {
             let name = key
             let endpointConfig = try EndpointConfig(name: name,
                                                     jsonValue: jsonValue,
+                                                    apiAuthProviderFactory: apiAuthProviderFactory,
                                                     authService: authService)
             endpoints[name] = endpointConfig
         }

@@ -39,6 +39,7 @@ class OperationTestBase: XCTestCase {
 
         let dependencies = try AWSAPIPlugin.ConfigurationDependencies(
             configurationValues: configurationValues,
+            apiAuthProviderFactory: APIAuthProviderFactory(),
             authService: MockAWSAuthService(),
             subscriptionConnectionFactory: subscriptionConnectionFactory
         )

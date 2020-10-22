@@ -18,7 +18,7 @@ extension StorageEngine {
             return
         }
 
-        let authPluginRequired = requiresAuthPlugin()
+        let authPluginRequired = requiresAuthPlugin(api: api)
 
         guard authPluginRequired else {
             syncEngine?.start(api: api, auth: nil)
@@ -49,9 +49,21 @@ extension StorageEngine {
         }
     }
 
-    private func requiresAuthPlugin() -> Bool {
+    private func requiresAuthPlugin(api: APICategoryGraphQLBehavior?) -> Bool {
         let containsAuthEnabledSyncableModels = ModelRegistry.models.contains {
             $0.schema.isSyncable && $0.schema.hasAuthenticationRules
+        }
+
+        if containsAuthEnabledSyncableModels,
+            let apiCategoryAuthProviderBehavior = api as? APICategoryAuthProviderFactoryBehavior,
+            apiCategoryAuthProviderBehavior.apiAuthProviderFactory().oidcAuthProvider() != nil {
+            if tryGetAuthPlugin() != nil {
+                log.warn("""
+Detected OIDC Auth Provider & Auth Plugin Category available.
+This is not a supported use case.
+""")
+            }
+            return false
         }
 
         return containsAuthEnabledSyncableModels
