@@ -21,7 +21,7 @@ final class ModelSyncedEventEmitter {
     private var syncOrchestratorSink: AnyCancellable?
     private var reconciliationQueueSink: AnyCancellable?
 
-    private let modelType: Model.Type
+    private let modelSchema: ModelSchema
     private var recordsReceived: Int
     private var reconciledReceived: Int
     private var initialSyncOperationFinished: Bool
@@ -33,10 +33,10 @@ final class ModelSyncedEventEmitter {
         return modelSyncedEventTopic.eraseToAnyPublisher()
     }
 
-    init(modelType: Model.Type,
+    init(modelSchema: ModelSchema,
          initialSyncOrchestrator: InitialSyncOrchestrator?,
          reconciliationQueue: IncomingEventReconciliationQueue?) {
-        self.modelType = modelType
+        self.modelSchema = modelSchema
         self.recordsReceived = 0
         self.reconciledReceived = 0
         self.initialSyncOperationFinished = false
@@ -67,12 +67,12 @@ final class ModelSyncedEventEmitter {
     /// Filtering `InitialSyncOperationEvent`s that come from `InitialSyncOperation` of the same ModelType
     private func filterSyncOperationEvent(_ value: InitialSyncOperationEvent) -> Bool {
         switch value {
-        case .started(let modelType, _):
-            return self.modelType == modelType
+        case .started(let modelName, _):
+            return modelSchema.name == modelName
         case .enqueued(let mutationSync):
-            return modelType.modelName == mutationSync.model.modelName
-        case .finished(let modelType):
-            return self.modelType == modelType
+            return modelSchema.name == mutationSync.model.modelName
+        case .finished(let modelName):
+            return modelSchema.name == modelName
         }
     }
 
@@ -81,9 +81,9 @@ final class ModelSyncedEventEmitter {
     private func filterReconciliationQueueEvent(_ value: IncomingEventReconciliationQueueEvent) -> Bool {
         switch value {
         case .mutationEventApplied(let event):
-            return event.modelName == modelType.modelName
+            return modelSchema.name == event.modelName
         case .mutationEventDropped(let modelName):
-            return modelType.modelName == modelName
+            return modelSchema.name == modelName
         default:
             return true
         }
@@ -129,7 +129,7 @@ final class ModelSyncedEventEmitter {
     }
 
     private func dispatchModelSyncedEvent() {
-        modelSyncedEventBuilder.modelName = modelType.modelName
+        modelSyncedEventBuilder.modelName = modelSchema.name
         let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
                                                  data: modelSyncedEventBuilder.build())
         Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
