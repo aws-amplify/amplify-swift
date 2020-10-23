@@ -253,7 +253,7 @@ final class StorageEngine: StorageEngineBehavior {
 
         guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
             if !modelSchema.isSystem {
-                log.error("Unable to sync mdoel (\(modelSchema.name)) where isSyncable is false")
+                log.error("Unable to sync model (\(modelSchema.name)) where isSyncable is false")
             }
             if self.syncEngine == nil {
                 log.error("Unable to sync because syncEngine is nil")

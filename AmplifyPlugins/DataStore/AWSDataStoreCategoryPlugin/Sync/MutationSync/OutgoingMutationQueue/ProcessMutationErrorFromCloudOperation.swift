@@ -295,13 +295,13 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         let id = remoteModel.model.id
 
         guard let modelType = ModelRegistry.modelType(from: modelName) else {
-            let error = DataStoreError.unknown("Invalid Model \(modelName)", "")
+            let error = DataStoreError.invalidModelName("Invalid Model \(modelName)")
             finish(result: .failure(error))
             return
         }
 
         guard let modelSchema = ModelRegistry.modelSchema(from: modelName) else {
-            let error = DataStoreError.unknown("Invalid Model \(modelName)", "")
+            let error = DataStoreError.invalidModelName("Invalid Model \(modelName)")
             finish(result: .failure(error))
             return
         }
