@@ -111,19 +111,33 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     public func delete<M: Model>(_ modelType: M.Type,
                                  withId id: String,
                                  completion: @escaping DataStoreCallback<Void>) {
+        delete(modelType, modelSchema: modelType.schema, withId: id, completion: completion)
+    }
+
+    public func delete<M: Model>(_ modelType: M.Type,
+                                 modelSchema: ModelSchema,
+                                 withId id: String,
+                                 completion: @escaping DataStoreCallback<Void>) {
         reinitStorageEngineIfNeeded()
-        storageEngine.delete(modelType, modelSchema: modelType.schema, withId: id) { result in
-            self.onDeleteCompletion(result: result, modelSchema: modelType.schema, completion: completion)
+        storageEngine.delete(modelType, modelSchema: modelSchema, withId: id) { result in
+            self.onDeleteCompletion(result: result, modelSchema: modelSchema, completion: completion)
         }
     }
 
     public func delete<M: Model>(_ model: M,
                                  where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) {
+        delete(model, modelSchema: model.schema, where: predicate, completion: completion)
+    }
+
+    public func delete<M: Model>(_ model: M,
+                                 modelSchema: ModelSchema,
+                                 where predicate: QueryPredicate? = nil,
+                                 completion: @escaping DataStoreCallback<Void>) {
         reinitStorageEngineIfNeeded()
         // TODO: handle query predicate like in the update flow
-        storageEngine.delete(type(of: model), modelSchema: model.schema, withId: model.id) { result in
-            self.onDeleteCompletion(result: result, modelSchema: model.schema, completion: completion)
+        storageEngine.delete(type(of: model), modelSchema: modelSchema, withId: model.id) { result in
+            self.onDeleteCompletion(result: result, modelSchema: modelSchema, completion: completion)
         }
     }
 

@@ -252,8 +252,8 @@ final class StorageEngine: StorageEngineBehavior {
         let transactionResult = queryAndDeleteTransaction(modelType, modelSchema: modelSchema, predicate: predicate)
 
         guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
-            if !modelType.schema.isSystem {
-                log.error("Unable to sync modelType (\(modelType)) where isSyncable is false")
+            if !modelSchema.isSystem {
+                log.error("Unable to sync model (\(modelSchema.name)) where isSyncable is false")
             }
             if self.syncEngine == nil {
                 log.error("Unable to sync because syncEngine is nil")
