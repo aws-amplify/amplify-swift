@@ -1,5 +1,19 @@
 # Changelog
 ## Unreleased
+## 1.4.0 (2020-10-23)
+
+### Features
+
+- **dev-menu**: add the Developer Menu to Amplify (#844)
+- **datastore**: DataStore Hub events (#766) (#795)
+
+### Bug Fixes
+
+- **Core**: use groupClaim in @auth rule for oidc (#847)
+- **API**: Support for auth api oidc provider (#842)
+- **api**: make sure collections are not in the gql input - fixes #828 (#837)
+- replace fastlane warn method (#835)
+
 ## 1.3.2 (2020-10-16)
 
 ### Bug Fixes
