@@ -362,7 +362,8 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the generated SQL statement is valid
     ///   - check if the statement contains the correct `order by` and `ascending`
     func testSelectStatementWithOneSort() {
-        let statement = SelectStatement(from: Post.schema, sort: .ascending(Post.keys.id))
+        let ascSort = QuerySortDescriptor(fieldName: Post.keys.id.stringValue, order: .ascending)
+        let statement = SelectStatement(from: Post.schema, sort: [ascSort])
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
@@ -382,9 +383,10 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the generated SQL statement is valid
     ///   - check if the statement contains the correct `order by` and `ascending`
     func testSelectStatementWithTwoFieldsSort() {
+        let ascSort = QuerySortDescriptor(fieldName: Post.keys.id.stringValue, order: .ascending)
+        let dscSort = QuerySortDescriptor(fieldName: Post.keys.createdAt.stringValue, order: .descending)
         let statement = SelectStatement(from: Post.schema,
-                                        sort: .by(.ascending(Post.keys.id),
-                                                  .descending(Post.keys.createdAt)))
+                                        sort: [ascSort, dscSort])
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
@@ -404,9 +406,10 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the generated SQL statement is valid
     ///   - check if the statement contains the correct `where` statement, `order by` and `ascending`
     func testSelectStatementWithPredicateAndSort() {
+        let sort = QuerySortDescriptor(fieldName: Post.keys.id.stringValue, order: .descending)
         let statement = SelectStatement(from: Post.schema,
                                         predicate: Post.keys.rating > 4,
-                                        sort: .descending(Post.keys.id))
+                                        sort: [sort])
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
@@ -429,8 +432,9 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the generated SQL statement is valid
     ///   - check if the statement contains the correct `where` statement, `order by` and `ascending`
     func testSelectStatementWithSortAndPaginationInfo() {
+        let sort = QuerySortDescriptor(fieldName: Post.keys.id.stringValue, order: .descending)
         let statement = SelectStatement(from: Post.schema,
-                                        sort: .descending(Post.keys.id),
+                                        sort: [sort],
                                         paginationInput: .page(0, limit: 5))
         let expectedStatement = """
         select
@@ -454,9 +458,10 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the generated SQL statement is valid
     ///   - check if the statement contains the correct `where` statement, `order by` and `ascending`
     func testSelectStatementWithPredicateAndSortAndPaginationInfo() {
+        let sort = QuerySortDescriptor(fieldName: Post.keys.id.stringValue, order: .descending)
         let statement = SelectStatement(from: Post.schema,
                                         predicate: Post.keys.rating > 4,
-                                        sort: .descending(Post.keys.id),
+                                        sort: [sort],
                                         paginationInput: .page(0, limit: 5))
         let expectedStatement = """
         select

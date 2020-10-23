@@ -21,7 +21,7 @@ struct SelectStatementMetadata {
 
     static func metadata(from modelSchema: ModelSchema,
                          predicate: QueryPredicate? = nil,
-                         sort: QuerySortInput? = nil,
+                         sort: [QuerySortDescriptor]? = nil,
                          paginationInput: QueryPaginationInput? = nil) -> SelectStatementMetadata {
         let rootNamespace = "root"
         let fields = modelSchema.columns
@@ -57,7 +57,7 @@ struct SelectStatementMetadata {
             """
         }
 
-        if let sort = sort, !sort.inputs.isEmpty {
+        if let sort = sort, !sort.isEmpty {
             sql = """
             \(sql)
             order by \(sort.sortStatement(namespace: rootNamespace))
@@ -141,7 +141,7 @@ struct SelectStatement: SQLStatement {
 
     init(from modelSchema: ModelSchema,
          predicate: QueryPredicate? = nil,
-         sort: QuerySortInput? = nil,
+         sort: [QuerySortDescriptor]? = nil,
          paginationInput: QueryPaginationInput? = nil) {
         self.modelSchema = modelSchema
         self.metadata = .metadata(from: modelSchema,
