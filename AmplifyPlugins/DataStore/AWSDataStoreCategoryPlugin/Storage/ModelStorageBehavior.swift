@@ -31,14 +31,14 @@ protocol ModelStorageBehavior {
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate?,
-                         sort: QuerySortInput?,
+                         sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>)
 
     func query<M: Model>(_ modelType: M.Type,
                          modelSchema: ModelSchema,
                          predicate: QueryPredicate?,
-                         sort: QuerySortInput?,
+                         sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>)
 

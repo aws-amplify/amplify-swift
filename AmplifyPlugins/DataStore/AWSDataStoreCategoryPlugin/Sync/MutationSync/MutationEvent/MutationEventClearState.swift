@@ -18,10 +18,10 @@ final class MutationEventClearState {
     func clearStateOutgoingMutations(completion: @escaping BasicClosure) {
         let fields = MutationEvent.keys
         let predicate = fields.inProcess == true
-
+        let sort = QuerySortDescriptor(fieldName: fields.createdAt.stringValue, order: .ascending)
         storageAdapter.query(MutationEvent.self,
                              predicate: predicate,
-                             sort: .ascending(fields.createdAt),
+                             sort: [sort],
                              paginationInput: nil) { result in
                                 switch result {
                                 case .failure(let dataStoreError):
