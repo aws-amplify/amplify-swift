@@ -295,12 +295,18 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         let id = remoteModel.model.id
 
         guard let modelType = ModelRegistry.modelType(from: modelName) else {
-            let error = DataStoreError.unknown("Invalid Model \(modelName)", "")
+            let error = DataStoreError.invalidModelName("Invalid Model \(modelName)")
             finish(result: .failure(error))
             return
         }
 
-        storageAdapter.delete(untypedModelType: modelType, modelSchema: modelType.schema, withId: id) { response in
+        guard let modelSchema = ModelRegistry.modelSchema(from: modelName) else {
+            let error = DataStoreError.invalidModelName("Invalid Model \(modelName)")
+            finish(result: .failure(error))
+            return
+        }
+
+        storageAdapter.delete(untypedModelType: modelType, modelSchema: modelSchema, withId: id) { response in
             switch response {
             case .failure(let dataStoreError):
                 let error = DataStoreError.unknown("Delete failed \(dataStoreError)", "")
