@@ -88,7 +88,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         query(modelType,
               modelSchema: modelType.schema,
               where: predicate,
-              sort: sortInput,
+              sort: sortInput?.asSortDescriptors(),
               paginate: paginationInput,
               completion: completion)
     }
@@ -96,7 +96,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     public func query<M: Model>(_ modelType: M.Type,
                                 modelSchema: ModelSchema,
                                 where predicate: QueryPredicate? = nil,
-                                sort sortInput: QuerySortInput? = nil,
+                                sort sortInput: [QuerySortDescriptor]? = nil,
                                 paginate paginationInput: QueryPaginationInput? = nil,
                                 completion: DataStoreCallback<[M]>) {
         reinitStorageEngineIfNeeded()

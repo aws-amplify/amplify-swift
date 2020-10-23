@@ -10,6 +10,7 @@ import Foundation
 import SQLite
 
 extension QuerySortBy {
+
     var fieldName: String {
         switch self {
         case .ascending(let key), .descending(let key):
@@ -17,30 +18,19 @@ extension QuerySortBy {
         }
     }
 
-    var fieldOrder: String {
+    var fieldOrder: QuerySortOrder {
         switch self {
         case .ascending:
-            return "asc"
+            return QuerySortOrder.ascending
         case .descending:
-            return "desc"
+            return QuerySortOrder.descending
         }
     }
 }
 
 extension QuerySortInput {
-    func sortStatement(namespace: String) -> String {
-        let sqlResult = inputs
-            .map { QuerySortInput.columnFor(field: $0.fieldName,
-                                            order: $0.fieldOrder,
-                                            namespace: namespace) }
 
-        return sqlResult.joined(separator: ", ")
-    }
-
-    static func columnFor(field: String,
-                          order: String,
-                          namespace: String) -> String {
-        return namespace.quoted() + "." + field.quoted() + " " + order
-
+    func asSortDescriptors() -> [QuerySortDescriptor]? {
+        return inputs.map { QuerySortDescriptor(fieldName: $0.fieldName, order: $0.fieldOrder) }
     }
 }

@@ -13,10 +13,10 @@ extension MutationEvent {
                                       completion: DataStoreCallback<[MutationEvent]>) {
         let fields = MutationEvent.keys
         let predicate = fields.modelId == modelId && (fields.inProcess == false || fields.inProcess == nil)
-
+        let sort = QuerySortDescriptor(fieldName: fields.createdAt.stringValue, order: .ascending)
         storageAdapter.query(MutationEvent.self,
                              predicate: predicate,
-                             sort: .ascending(fields.createdAt),
+                             sort: [sort],
                              paginationInput: nil) { completion($0) }
     }
 }
