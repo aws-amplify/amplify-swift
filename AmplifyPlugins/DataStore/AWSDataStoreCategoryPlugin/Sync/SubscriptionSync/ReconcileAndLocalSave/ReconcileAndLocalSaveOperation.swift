@@ -214,22 +214,16 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
     private func saveDeleteMutation(storageAdapter: StorageEngineAdapter, remoteModel: RemoteModel) {
         log.verbose(#function)
-        let modelInstance = remoteModel.model.instance
-        let modelName: String
-        if let jsonModel = modelInstance as? JSONValueHolder,
-           let modelNameFromJson = jsonModel.jsonValue(for: "__typename") as? String {
-            modelName = modelNameFromJson
-        } else {
-            modelName = remoteModel.model.modelName
-        }
 
-        guard let modelType = ModelRegistry.modelType(from: modelName) else {
-            let error = DataStoreError.invalidModelName(modelName)
+        guard let modelType = ModelRegistry.modelType(from: modelSchema.name) else {
+            let error = DataStoreError.invalidModelName(modelSchema.name)
             stateMachine.notify(action: .errored(error))
             return
         }
 
-        storageAdapter.delete(untypedModelType: modelType, modelSchema: modelSchema, withId: remoteModel.model.id) { response in
+        storageAdapter.delete(untypedModelType: modelType,
+                              modelSchema: modelSchema,
+                              withId: remoteModel.model.id) { response in
             switch response {
             case .failure(let dataStoreError):
                 let errorAction = Action.errored(dataStoreError)
