@@ -159,7 +159,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 self.enqueue(remoteModel)
             })
         case .connectionConnected:
-            modelReconciliationQueueSubject.send(.connected(modelSchema.name))
+            modelReconciliationQueueSubject.send(.connected(modelName: modelSchema.name))
         }
     }
 
@@ -171,7 +171,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         case .failure(let dataStoreError):
             if case let .api(error, _) = dataStoreError,
                case let APIError.operationError(_, _, underlyingError) = error, isUnauthorizedError(underlyingError) {
-                modelReconciliationQueueSubject.send(.disconnected(modelName: modelName, reason: .unauthorized))
+                modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name, reason: .unauthorized))
                 return
             }
             log.error("receiveCompletion: error: \(dataStoreError)")
