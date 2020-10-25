@@ -57,7 +57,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         log.info("Beginning sync for \(modelSchema.name)")
         let lastSyncTime = getLastSyncTime()
         let syncType: SyncType = lastSyncTime == nil ? .fullSync : .deltaSync
-        initialSyncOperationTopic.send(.started(modelType: modelType, syncType: syncType))
+        initialSyncOperationTopic.send(.started(modelName: modelSchema.name, syncType: syncType))
         query(lastSyncTime: lastSyncTime)
     }
 
@@ -172,7 +172,7 @@ final class InitialSyncOperation: AsynchronousOperation {
                 self.query(lastSyncTime: lastSyncTime, nextToken: nextToken)
             }
         } else {
-            initialSyncOperationTopic.send(.finished(modelType: modelType))
+            initialSyncOperationTopic.send(.finished(modelName: modelSchema.name))
             updateModelSyncMetadata(lastSyncTime: syncQueryResult.startedAt)
         }
     }
