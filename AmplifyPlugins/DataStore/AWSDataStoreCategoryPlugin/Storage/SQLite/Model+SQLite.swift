@@ -61,7 +61,7 @@ extension Model {
         let modelFields = fields ?? modelSchema.sortedFields
         let values: [Binding?] = modelFields.map { field in
 
-            let optionalExistinFieldValue: Any??
+            let existingFieldOptionalValue: Any??
 
             // self[field.name] subscript accessor or jsonValue() returns an Any??, we need to do a few things:
             // - `guard` to make sure the field name exists on the model
@@ -69,12 +69,12 @@ extension Model {
             // - Attempt to cast to Persistable to ensure the model value isn't incorrectly assigned to a type we
             //   can't handle
             if let jsonModel = self as? JSONValueHolder {
-                optionalExistinFieldValue = jsonModel.jsonValue(for: field.name, modelSchema: modelSchema)
+                existingFieldOptionalValue = jsonModel.jsonValue(for: field.name, modelSchema: modelSchema)
             } else {
-                optionalExistinFieldValue = self[field.name]
+                existingFieldOptionalValue = self[field.name]
             }
 
-            guard let existingFieldValue = optionalExistinFieldValue else {
+            guard let existingFieldValue = existingFieldOptionalValue else {
                 return nil
             }
 
