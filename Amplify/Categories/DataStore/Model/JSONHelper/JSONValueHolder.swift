@@ -27,7 +27,7 @@ public protocol JSONValueHolder {
     ///
     /// If a particular key has nil as it value, this method should return .some(nil) as the value.
     func jsonValue(for key: String) -> Any??
-    
+
     /// Return the value for the given key.
     ///
     /// If a particular key has nil as it value, this method should return .some(nil) as the value.
@@ -39,7 +39,7 @@ extension JSONValueHolder {
     func jsonValue(for key: String) -> Any?? {
         return nil
     }
-    
+
     public func jsonValue(for key: String, modelSchema: ModelSchema) -> Any?? {
         return nil
     }
