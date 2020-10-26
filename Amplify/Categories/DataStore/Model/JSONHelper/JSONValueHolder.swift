@@ -36,7 +36,7 @@ public protocol JSONValueHolder {
 
 extension JSONValueHolder {
 
-    func jsonValue(for key: String) -> Any?? {
+    public func jsonValue(for key: String) -> Any?? {
         return nil
     }
 

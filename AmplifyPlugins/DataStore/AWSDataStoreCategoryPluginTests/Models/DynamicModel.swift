@@ -47,7 +47,7 @@ struct DynamicModel: Model, JSONValueHolder {
         case .some(.string(let deserializedValue)):
             return deserializedValue
         case .some(.null):
-            return nil
+            return .some(nil)
         case .none:
             return nil
         }
