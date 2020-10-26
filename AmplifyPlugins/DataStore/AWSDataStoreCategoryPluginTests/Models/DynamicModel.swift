@@ -31,7 +31,7 @@ struct DynamicModel: Model, JSONValueHolder {
         try container.encode(values)
     }
 
-    public func jsonValue(for key: String) -> Any?? {
+    public func jsonValue(for key: String, modelSchema: ModelSchema? = nil) -> Any?? {
         if key == "id" {
             return id
         }

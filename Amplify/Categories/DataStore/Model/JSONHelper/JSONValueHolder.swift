@@ -26,12 +26,12 @@ public protocol JSONValueHolder {
     /// Return the value for the given key.
     ///
     /// If a particular key has nil as it value, this method should return .some(nil) as the value.
-    func jsonValue(for key: String) -> Any??
+    func jsonValue(for key: String, modelSchema: ModelSchema?) -> Any??
 }
 
 extension JSONValueHolder {
 
-    public func jsonValue(for key: String) -> Any?? {
+    public func jsonValue(for key: String, modelSchema: ModelSchema? = nil) -> Any?? {
         return nil
     }
 }

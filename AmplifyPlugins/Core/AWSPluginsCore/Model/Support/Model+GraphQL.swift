@@ -27,7 +27,13 @@ extension Model {
             }
 
             let name = field.graphQLName
-            let fieldValue = self[field.name] ?? nil
+            let fieldValue: Any??
+            
+            if let jsonModel = self as? JSONValueHolder {
+                fieldValue = jsonModel.jsonValue(for: field.name, modelSchema: modelSchema) ?? nil
+            } else {
+                fieldValue = self[field.name] ?? nil
+            }
 
             // swiftlint:disable:next syntactic_sugar
             guard case .some(Optional<Any>.some(let value)) = fieldValue else {
