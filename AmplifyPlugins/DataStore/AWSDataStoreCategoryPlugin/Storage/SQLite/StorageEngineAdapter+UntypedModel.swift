@@ -14,7 +14,7 @@ extension SQLiteStorageEngineAdapter {
         do {
             let modelName: ModelName
             if let jsonModel = untypedModel as? JSONValueHolder,
-               let modelNameFromJson = jsonModel.jsonValue(for: "__typename", modelSchema: nil) as? String {
+               let modelNameFromJson = jsonModel.jsonValue(for: "__typename") as? String {
                 modelName = modelNameFromJson
             } else {
                 modelName = untypedModel.modelName
