@@ -27,12 +27,20 @@ extension Model {
             }
 
             let name = field.graphQLName
-            let fieldValue: Any??
-
+            let fieldOptionalValue: Any??
+            
             if let jsonModel = self as? JSONValueHolder {
-                fieldValue = jsonModel.jsonValue(for: field.name, modelSchema: modelSchema) ?? nil
+                fieldOptionalValue = jsonModel.jsonValue(for: field.name, modelSchema: modelSchema) ?? nil
             } else {
-                fieldValue = self[field.name] ?? nil
+                fieldOptionalValue = self[field.name] ?? nil
+            }
+            
+            // Since the returned value is Any?? we need to do the following:
+            // - `guard` to make sure the field name exists on the model
+            // - `guard` to ensure the returned value isn't nil
+            guard let fieldValue = fieldOptionalValue else {
+                input.updateValue(nil, forKey: name)
+                return
             }
 
             // swiftlint:disable:next syntactic_sugar
