@@ -133,6 +133,25 @@ jobs:
           path: build/reports
       - upload_artifacts
 
+  build_test_aws_plugins_core:
+    <<: *defaults
+    steps:
+      - *restore_repo
+      - pre_start_simulator
+      - run: pod install
+      - restore_gems
+      - check_bundle
+      - make_artifacts_directory
+      - run:
+          name: Build AWS plugins core
+          command: xcodebuild build-for-testing -workspace Amplify.xcworkspace -scheme AWSPluginsCore -sdk iphonesimulator -destination "${destination}" | tee "artifacts/build-AWSPluginsCore.log" | xcpretty
+      - run:
+          name: Test AWS plugins core
+          command: xcodebuild test -workspace Amplify.xcworkspace -scheme AWSPluginsCore -sdk iphonesimulator -destination "${destination}" | tee "artifacts/test-AWSPluginsCore.log" | xcpretty --simple --color --report junit
+      - store_test_results:
+          path: build/reports
+      - upload_artifacts
+
   plugin_unit_test:
     <<: *defaults
     parameters:
@@ -190,6 +209,7 @@ jobs:
 deploy_requires: &deploy_requires
   requires:
     - build_test_amplify
+    - build_test_aws_plugins_core
     - unit_test_analytics
     - unit_test_api
     - unit_test_auth
@@ -206,6 +226,9 @@ workflows:
           requires:
             - checkout_code
       - build_test_amplify:
+          requires:
+            - install_gems
+      - build_test_aws_plugins_core:
           requires:
             - install_gems
       - plugin_unit_test:
