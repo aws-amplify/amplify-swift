@@ -52,6 +52,15 @@ struct DynamicModel: Model, JSONValueHolder {
             return nil
         }
     }
+
+    public func jsonValue(for key: String, modelSchema: ModelSchema) -> Any?? {
+        let field = modelSchema.field(withName: key)
+        if case .int = field?.type,
+           case .some(.number(let deserializedValue)) = values[key] {
+            return Int(deserializedValue)
+        }
+        return jsonValue(for: key)
+    }
 }
 
 extension DynamicModel {

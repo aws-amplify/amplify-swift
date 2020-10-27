@@ -61,12 +61,20 @@ extension Model {
         let modelFields = fields ?? modelSchema.sortedFields
         let values: [Binding?] = modelFields.map { field in
 
-            // self[field.name] subscript accessor returns an Any??, we need to do a few things:
+            let existingFieldOptionalValue: Any??
+
+            // self[field.name] subscript accessor or jsonValue() returns an Any??, we need to do a few things:
             // - `guard` to make sure the field name exists on the model
             // - `guard` to ensure the returned value isn't nil
             // - Attempt to cast to Persistable to ensure the model value isn't incorrectly assigned to a type we
             //   can't handle
-            guard let existingFieldValue = self[field.name] else {
+            if let jsonModel = self as? JSONValueHolder {
+                existingFieldOptionalValue = jsonModel.jsonValue(for: field.name, modelSchema: modelSchema)
+            } else {
+                existingFieldOptionalValue = self[field.name]
+            }
+
+            guard let existingFieldValue = existingFieldOptionalValue else {
                 return nil
             }
 
@@ -99,7 +107,7 @@ extension Model {
                     return value[associatedModel.schema.primaryKey.name] as? String
 
                 } else if let value = value as? [String: JSONValue],
-                   case let .string(primaryKeyValue) = value[modelSchema.primaryKey.name] {
+                   case .string(let primaryKeyValue) = value[modelSchema.primaryKey.name] {
                     return primaryKeyValue
                 }
             }
