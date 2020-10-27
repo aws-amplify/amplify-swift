@@ -28,7 +28,7 @@ extension Model {
 
             let name = field.graphQLName
             let fieldValue: Any??
-            
+
             if let jsonModel = self as? JSONValueHolder {
                 fieldValue = jsonModel.jsonValue(for: field.name, modelSchema: modelSchema) ?? nil
             } else {
