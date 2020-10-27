@@ -82,13 +82,9 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
         let title = "a title"
         let content = "some content"
 
-
-
         let post = ["title": .string(title),
                     "content": .string(content)] as [String: JSONValue]
         let model = DynamicModel(values: post)
-
-
 
         storageAdapter.save(model, modelSchema: ModelRegistry.modelSchema(from: "Post")!) { saveResult in
             switch saveResult {
