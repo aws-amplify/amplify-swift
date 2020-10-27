@@ -8,15 +8,15 @@
 import Foundation
 
 /// Struct used by the Datastore plugin to decide on how to order a query.
-public struct QuerySortDescriptor {
+public struct QuerySortDescriptor: Equatable {
 
     /// String representation of the CodingKey value of the field to be sorted.
     ///
     /// fieldName for a field createdBy inside Post model can be retreived by `Post.keys.createdBy.stringValue`.
-    let fieldName: String
+    public let fieldName: String
 
     /// Sorting order for the field
-    let order: QuerySortOrder
+    public let order: QuerySortOrder
 
     public init(fieldName: String, order: QuerySortOrder) {
         self.fieldName = fieldName
