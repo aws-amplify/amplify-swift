@@ -17,7 +17,7 @@ import Foundation
 ///         struct DynamicModel: JSONValueHolder {
 ///             let values: [String: Any]
 ///
-///             public func internalValue(for key: String) -> Any? {
+///             public func jsonValue(for key: String) -> Any??  {
 ///                 return values[key]
 ///             }
 ///          }
@@ -32,15 +32,4 @@ public protocol JSONValueHolder {
     ///
     /// If a particular key has nil as it value, this method should return .some(nil) as the value.
     func jsonValue(for key: String, modelSchema: ModelSchema) -> Any??
-}
-
-extension JSONValueHolder {
-
-    public func jsonValue(for key: String) -> Any?? {
-        return nil
-    }
-
-    public func jsonValue(for key: String, modelSchema: ModelSchema) -> Any?? {
-        return nil
-    }
 }
