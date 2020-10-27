@@ -111,10 +111,10 @@ class SyncEventEmitterTests: XCTestCase {
 
         var modelSyncedEventPayloads = [ModelSyncedEvent]()
         let expectedModelSyncedEventPayloads: [ModelSyncedEvent]
-            = [ModelSyncedEvent(modelName: "Post",
+            = [ModelSyncedEvent(modelName: "Comment",
                                 isFullSync: true, isDeltaSync: false,
                                 added: 0, updated: 0, deleted: 0),
-               ModelSyncedEvent(modelName: "Comment",
+               ModelSyncedEvent(modelName: "Post",
                                 isFullSync: true, isDeltaSync: false,
                                 added: 0, updated: 0, deleted: 0)]
         let listener = Amplify.Hub.publisher(for: .dataStore).sink { payload in
@@ -126,6 +126,9 @@ class SyncEventEmitterTests: XCTestCase {
                 }
                 modelSyncedEventPayloads.append(modelSyncedEventPayload)
                 if modelSyncedEventPayloads.count == 2 {
+                    modelSyncedEventPayloads.sort {
+                        $0.modelName < $1.modelName
+                    }
                     XCTAssertEqual(modelSyncedEventPayloads[0], expectedModelSyncedEventPayloads[0])
                     XCTAssertEqual(modelSyncedEventPayloads[1], expectedModelSyncedEventPayloads[1])
                     modelSyncedReceived.fulfill()
@@ -200,12 +203,12 @@ class SyncEventEmitterTests: XCTestCase {
         let commentMutationEvent = try MutationEvent(untypedModel: testComment, mutationType: .delete)
 
         let expectedModelSyncedEventPayloads: [ModelSyncedEvent]
-            = [ModelSyncedEvent(modelName: "Post",
+            = [ModelSyncedEvent(modelName: "Comment",
                                 isFullSync: true, isDeltaSync: false,
-                                added: 1, updated: 0, deleted: 0),
-               ModelSyncedEvent(modelName: "Comment",
+                                added: 0, updated: 0, deleted: 1),
+               ModelSyncedEvent(modelName: "Post",
                                 isFullSync: true, isDeltaSync: false,
-                                added: 0, updated: 0, deleted: 1)]
+                                added: 1, updated: 0, deleted: 0)]
         var modelSyncedEventPayloads = [ModelSyncedEvent]()
         let listener = Amplify.Hub.publisher(for: .dataStore).sink { payload in
             switch payload.eventName {
@@ -217,6 +220,9 @@ class SyncEventEmitterTests: XCTestCase {
                 modelSyncedEventPayloads.append(modelSyncedEventPayload)
 
                 if modelSyncedEventPayloads.count == 2 {
+                    modelSyncedEventPayloads.sort {
+                        $0.modelName < $1.modelName
+                    }
                     XCTAssertTrue(modelSyncedEventPayloads[0] == expectedModelSyncedEventPayloads[0])
                     XCTAssertTrue(modelSyncedEventPayloads[1] == expectedModelSyncedEventPayloads[1])
                     modelSyncedReceived.fulfill()
