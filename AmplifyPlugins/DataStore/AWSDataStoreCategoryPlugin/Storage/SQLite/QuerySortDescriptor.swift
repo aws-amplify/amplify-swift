@@ -17,6 +17,11 @@ public struct QuerySortDescriptor {
 
     /// Sorting order for the field
     let order: QuerySortOrder
+
+    public init(fieldName: String, order: QuerySortOrder) {
+        self.fieldName = fieldName
+        self.order = order
+    }
 }
 
 public enum QuerySortOrder: String {
