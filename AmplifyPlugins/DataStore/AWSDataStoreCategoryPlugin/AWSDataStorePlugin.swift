@@ -16,7 +16,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     var isSyncEnabled: Bool
 
     /// The Publisher that sends mutation events to subscribers
-    var dataStorePublisher: DataStoreSubscribeBehavior?
+    var dataStorePublisher: ModelSubcriptionBehavior?
 
     let modelRegistration: AmplifyModelRegistration
 
@@ -64,7 +64,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     init(modelRegistration: AmplifyModelRegistration,
          configuration dataStoreConfiguration: DataStoreConfiguration = .default,
          storageEngine: StorageEngineBehavior,
-         dataStorePublisher: DataStoreSubscribeBehavior,
+         dataStorePublisher: ModelSubcriptionBehavior,
          validAPIPluginKey: String,
          validAuthPluginKey: String) {
         self.modelRegistration = modelRegistration

@@ -10,13 +10,13 @@ import Combine
 
 // TODO: Should this be a multicast publisher?
 @available(iOS 13.0, *)
-struct DataStorePublisher: DataStoreSubscribeBehavior {
+struct DataStorePublisher: ModelSubcriptionBehavior {
 
     private let subject = PassthroughSubject<MutationEvent, DataStoreError>()
 
-    func publisher<M: Model>(for modelType: M.Type) -> AnyPublisher<MutationEvent, DataStoreError> {
+    func publisher(for modelName: ModelName) -> AnyPublisher<MutationEvent, DataStoreError> {
         return subject
-            .filter { $0.modelName == modelType.modelName }
+            .filter { $0.modelName == modelName }
             .eraseToAnyPublisher()
     }
 
@@ -31,4 +31,16 @@ struct DataStorePublisher: DataStoreSubscribeBehavior {
     func sendFinished() {
         subject.send(completion: .finished)
     }
+}
+
+protocol ModelSubcriptionBehavior {
+
+    @available(iOS 13.0, *)
+    func publisher(for modelName: ModelName) -> AnyPublisher<MutationEvent, DataStoreError>
+
+    func send(input: MutationEvent)
+
+    func send(dataStoreError: DataStoreError)
+
+    func sendFinished()
 }
