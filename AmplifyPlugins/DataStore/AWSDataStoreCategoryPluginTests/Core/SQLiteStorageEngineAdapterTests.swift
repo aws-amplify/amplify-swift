@@ -11,6 +11,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
+// swiftlint:disable type_body_length
 class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
 
     /// - Given: a list a `Post` instance
@@ -345,7 +346,9 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                     postsAdded.append(post.id)
                     if counter == maxCount - 1 {
                         saveExpectation.fulfill()
-                        self.storageAdapter.delete(Post.self, modelSchema: Post.schema, predicate: QueryPredicateConstant.all) { result in
+                        self.storageAdapter.delete(Post.self,
+                                                   modelSchema: Post.schema,
+                                                   predicate: QueryPredicateConstant.all) { result in
                             switch result {
                             case .success:
                                 deleteExpectation.fulfill()
