@@ -36,21 +36,25 @@ struct TestJsonModelRegistration: AmplifyModelRegistration {
         let id = ModelFieldDefinition.id("id").modelField
         let title = ModelField(name: "title", type: .string, isRequired: true)
         let content = ModelField(name: "content", type: .string, isRequired: true)
-        let updatedAt = ModelField(name: "updatedAt", type: .dateTime, isRequired: false)
+        let createdAt = ModelField(name: "createdAt", type: .string, isRequired: true)
+        let updatedAt = ModelField(name: "updatedAt", type: .string)
         let draft = ModelField(name: "draft", type: .bool, isRequired: false)
         let rating = ModelField(name: "rating", type: .double, isRequired: false)
+        let status = ModelField(name: "status", type: .string, isRequired: false)
         let comments = ModelField(name: "comments",
                                   type: .collection(of: "Comment"),
                                   isRequired: false,
-                                  association: .hasMany(associatedWith: "Comment.keys.post"))
+                                  association: .hasMany(associatedWith: "post"))
         let postSchema = ModelSchema(name: "Post",
                                      pluralName: "Posts",
                                      fields: [id.name: id,
                                               title.name: title,
                                               content.name: content,
+                                              createdAt.name: createdAt,
                                               updatedAt.name: updatedAt,
                                               draft.name: draft,
                                               rating.name: rating,
+                                              status.name: status,
                                               comments.name: comments])
 
         ModelRegistry.register(modelType: DynamicModel.self, modelSchema: postSchema) { (_, _) -> Model in
