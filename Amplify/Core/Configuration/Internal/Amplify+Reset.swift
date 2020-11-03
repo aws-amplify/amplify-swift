@@ -22,7 +22,10 @@ extension Amplify {
 
         let group = DispatchGroup()
 
-        for categoryType in CategoryType.allCases {
+        let manuallyResetCategories = [CategoryType.logging, .hub]
+        let remainingCategories = CategoryType.allCases.filter { !manuallyResetCategories.contains($0) }
+
+        for categoryType in remainingCategories {
             switch categoryType {
             case .analytics:
                 reset(Analytics, in: group) { group.leave() }
@@ -32,15 +35,18 @@ extension Amplify {
                 reset(Auth, in: group) { group.leave() }
             case .dataStore:
                 reset(DataStore, in: group) { group.leave() }
-            case .hub:
-                reset(Hub, in: group) { group.leave() }
-            case .logging:
-                reset(Logging, in: group) { group.leave() }
             case .storage:
                 reset(Storage, in: group) { group.leave() }
             case .predictions:
                 reset(Predictions, in: group) { group.leave() }
+            case .hub, .logging:
+                // Need to be reset at the last
+                break
             }
+        }
+
+        for categoryType in manuallyResetCategories {
+            reset(categoryType, in: group) { group.leave() }
         }
 
         if #available(iOS 13.0.0, *) {
