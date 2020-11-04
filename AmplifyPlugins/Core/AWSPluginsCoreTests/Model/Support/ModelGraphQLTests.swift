@@ -31,7 +31,7 @@ class ModelGraphQLTests: XCTestCase {
                         rating: 5.0,
                         status: status)
 
-        let graphQLInput = post.graphQLInput
+        let graphQLInput = post.graphQLInput(Post.schema)
 
         XCTAssertEqual(graphQLInput["title"] as? String, post.title)
         XCTAssertEqual(graphQLInput["content"] as? String, post.content)
@@ -52,7 +52,7 @@ class ModelGraphQLTests: XCTestCase {
                         categories: [category],
                         stickies: ["stickie1"])
 
-        let graphQLInput = todo.graphQLInput
+        let graphQLInput = todo.graphQLInput(Todo.schema)
 
         XCTAssertEqual(graphQLInput["id"] as? String, todo.id)
         XCTAssertEqual(graphQLInput["name"] as? String, todo.name)

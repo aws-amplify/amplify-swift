@@ -12,20 +12,28 @@ extension SQLiteStorageEngineAdapter {
 
     func save(untypedModel: Model, completion: DataStoreCallback<Model>) {
         do {
-            guard let modelType = ModelRegistry.modelType(from: untypedModel.modelName) else {
-                let error = DataStoreError.invalidModelName(untypedModel.modelName)
+            let modelName: ModelName
+            if let jsonModel = untypedModel as? JSONValueHolder,
+               let modelNameFromJson = jsonModel.jsonValue(for: "__typename") as? String {
+                modelName = modelNameFromJson
+            } else {
+                modelName = untypedModel.modelName
+            }
+
+            guard let modelSchema = ModelRegistry.modelSchema(from: modelName) else {
+                let error = DataStoreError.invalidModelName(modelName)
                 throw error
             }
 
-            let shouldUpdate = try exists(modelType, withId: untypedModel.id)
+            let shouldUpdate = try exists(modelSchema, withId: untypedModel.id)
 
             // TODO serialize result and create a new instance of the model
             // (some columns might be auto-generated after DB insert/update)
             if shouldUpdate {
-                let statement = UpdateStatement(model: untypedModel)
+                let statement = UpdateStatement(model: untypedModel, modelSchema: modelSchema)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             } else {
-                let statement = InsertStatement(model: untypedModel)
+                let statement = InsertStatement(model: untypedModel, modelSchema: modelSchema)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
 
@@ -39,7 +47,7 @@ extension SQLiteStorageEngineAdapter {
                predicate: QueryPredicate? = nil,
                completion: DataStoreCallback<[Model]>) {
         do {
-            let statement = SelectStatement(from: modelType, predicate: predicate)
+            let statement = SelectStatement(from: modelType.schema, predicate: predicate)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result: [Model] = try rows.convert(toUntypedModel: modelType, using: statement)
             completion(.success(result))

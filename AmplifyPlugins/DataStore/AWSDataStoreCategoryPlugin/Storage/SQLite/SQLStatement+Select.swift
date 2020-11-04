@@ -19,22 +19,21 @@ struct SelectStatementMetadata {
     let columnMapping: ColumnMapping
     let bindings: [Binding?]
 
-    static func metadata(from modelType: Model.Type,
+    static func metadata(from modelSchema: ModelSchema,
                          predicate: QueryPredicate? = nil,
-                         sort: QuerySortInput? = nil,
+                         sort: [QuerySortDescriptor]? = nil,
                          paginationInput: QueryPaginationInput? = nil) -> SelectStatementMetadata {
         let rootNamespace = "root"
-        let schema = modelType.schema
-        let fields = schema.columns
-        let tableName = schema.name
+        let fields = modelSchema.columns
+        let tableName = modelSchema.name
         var columnMapping: ColumnMapping = [:]
         var columns = fields.map { field -> String in
-            columnMapping.updateValue((schema, field), forKey: field.name)
+            columnMapping.updateValue((modelSchema, field), forKey: field.name)
             return field.columnName(forNamespace: rootNamespace) + " as " + field.columnAlias()
         }
 
         // eager load many-to-one/one-to-one relationships
-        let joinStatements = joins(from: schema)
+        let joinStatements = joins(from: modelSchema)
         columns += joinStatements.columns
         columnMapping.merge(joinStatements.columnMapping) { _, new in new }
 
@@ -47,7 +46,7 @@ struct SelectStatementMetadata {
 
         var bindings: [Binding?] = []
         if let predicate = predicate {
-            let conditionStatement = ConditionStatement(modelType: modelType,
+            let conditionStatement = ConditionStatement(modelSchema: modelSchema,
                                                         predicate: predicate,
                                                         namespace: rootNamespace[...])
             bindings.append(contentsOf: conditionStatement.variables)
@@ -58,7 +57,7 @@ struct SelectStatementMetadata {
             """
         }
 
-        if let sort = sort, !sort.inputs.isEmpty {
+        if let sort = sort, !sort.isEmpty {
             sql = """
             \(sql)
             order by \(sort.sortStatement(namespace: rootNamespace))
@@ -94,9 +93,15 @@ struct SelectStatementMetadata {
 
         func visitAssociations(node: ModelSchema, namespace: String = "root") {
             for foreignKey in node.foreignKeys {
-                let associatedModelType = foreignKey.requiredAssociatedModel
-                let associatedSchema = associatedModelType.schema
-                let associatedTableName = associatedModelType.schema.name
+                let associatedModelName = foreignKey.requiredAssociatedModel
+
+                guard let associatedSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
+                    preconditionFailure("""
+                    Could not retrieve schema for the model \(associatedModelName), verify that datastore is
+                    initialized.
+                    """)
+                }
+                let associatedTableName = associatedSchema.name
 
                 // columns
                 let alias = namespace == "root" ? foreignKey.name : "\(namespace).\(foreignKey.name)"
@@ -115,8 +120,7 @@ struct SelectStatementMetadata {
                 \(joinType) join \(associatedTableName) as "\(alias)"
                   on \(associatedColumn) = \(foreignKeyName)
                 """)
-                visitAssociations(node: associatedModelType.schema,
-                                  namespace: alias)
+                visitAssociations(node: associatedSchema, namespace: alias)
             }
         }
         visitAssociations(node: schema)
@@ -132,15 +136,15 @@ struct SelectStatementMetadata {
 /// optionally composed by a `ConditionStatement`.
 struct SelectStatement: SQLStatement {
 
-    let modelType: Model.Type
+    let modelSchema: ModelSchema
     let metadata: SelectStatementMetadata
 
-    init(from modelType: Model.Type,
+    init(from modelSchema: ModelSchema,
          predicate: QueryPredicate? = nil,
-         sort: QuerySortInput? = nil,
+         sort: [QuerySortDescriptor]? = nil,
          paginationInput: QueryPaginationInput? = nil) {
-        self.modelType = modelType
-        self.metadata = .metadata(from: modelType,
+        self.modelSchema = modelSchema
+        self.metadata = .metadata(from: modelSchema,
                                   predicate: predicate,
                                   sort: sort,
                                   paginationInput: paginationInput)

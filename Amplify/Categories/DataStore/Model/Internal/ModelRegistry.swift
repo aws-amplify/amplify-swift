@@ -16,9 +16,11 @@ public struct ModelRegistry {
     /// ModelDecoders are used to decode untyped model data, looking up by model name
     private typealias ModelDecoder = (String, JSONDecoder?) throws -> Model
 
-    private static var modelTypes = [String: Model.Type]()
+    private static var modelTypes = [ModelName: Model.Type]()
 
-    private static var modelDecoders = [String: ModelDecoder]()
+    private static var modelDecoders = [ModelName: ModelDecoder]()
+
+    private static var modelSchemaMapping = [ModelName: ModelSchema]()
 
     public static var models: [Model.Type] {
         concurrencyQueue.sync {
@@ -26,26 +28,54 @@ public struct ModelRegistry {
         }
     }
 
-    public static func register(modelType: Model.Type) {
+    public static var modelSchemas: [ModelSchema] {
         concurrencyQueue.sync {
-            let modelDecoder: ModelDecoder = { jsonString, jsonDecoder in
-                let model = try modelType.from(json: jsonString, decoder: jsonDecoder)
-                return model
-            }
-
-            modelDecoders[modelType.modelName] = modelDecoder
-
-            modelTypes[modelType.modelName] = modelType
+            Array(modelSchemaMapping.values)
         }
     }
 
-    public static func modelType(from name: String) -> Model.Type? {
+    public static func register(modelType: Model.Type) {
+        register(modelType: modelType,
+                 modelSchema: modelType.schema) { (jsonString, jsonDecoder) -> Model in
+            let model = try modelType.from(json: jsonString, decoder: jsonDecoder)
+            return model
+        }
+    }
+
+    public static func register(modelType: Model.Type,
+                                modelSchema: ModelSchema,
+                                jsonDecoder: @escaping (String, JSONDecoder?) throws -> Model) {
+        concurrencyQueue.sync {
+            let modelDecoder: ModelDecoder = { jsonString, decoder in
+                return try jsonDecoder(jsonString, decoder)
+            }
+            let modelName = modelSchema.name
+            modelSchemaMapping[modelName] = modelSchema
+            modelTypes[modelName] = modelType
+            modelDecoders[modelName] = modelDecoder
+        }
+    }
+
+    public static func modelType(from name: ModelName) -> Model.Type? {
         concurrencyQueue.sync {
             modelTypes[name]
         }
     }
 
-    public static func decode(modelName: String,
+    @available(*, deprecated, message: """
+    Retrieving model schema using Model.Type is deprecated, instead retrieve using model name.
+    """)
+    public static func modelSchema(from modelType: Model.Type) -> ModelSchema? {
+        return modelSchema(from: modelType.modelName)
+    }
+
+    public static func modelSchema(from name: ModelName) -> ModelSchema? {
+        concurrencyQueue.sync {
+            modelSchemaMapping[name]
+        }
+    }
+
+    public static func decode(modelName: ModelName,
                               from jsonString: String,
                               jsonDecoder: JSONDecoder? = nil) throws -> Model {
         try concurrencyQueue.sync {
@@ -68,6 +98,7 @@ extension ModelRegistry {
         concurrencyQueue.sync {
             modelTypes = [:]
             modelDecoders = [:]
+            modelSchemaMapping = [:]
         }
     }
 }

@@ -12,18 +12,18 @@ import SQLite
 /// Represents a `update` SQL statement.
 struct UpdateStatement: SQLStatement {
 
-    let modelType: Model.Type
+    let modelSchema: ModelSchema
     let conditionStatement: ConditionStatement?
 
     private let model: Model
 
-    init(model: Model, condition: QueryPredicate? = nil) {
-        self.modelType = type(of: model)
+    init(model: Model, modelSchema: ModelSchema, condition: QueryPredicate? = nil) {
         self.model = model
+        self.modelSchema = modelSchema
 
         var conditionStatement: ConditionStatement?
         if let condition = condition {
-            let statement = ConditionStatement(modelType: modelType,
+            let statement = ConditionStatement(modelSchema: modelSchema,
                                                predicate: condition)
             conditionStatement = statement
         }
@@ -32,7 +32,6 @@ struct UpdateStatement: SQLStatement {
     }
 
     var stringValue: String {
-        let schema = modelType.schema
         let columns = updateColumns.map { $0.columnName() }
 
         let columnsStatement = columns.map { column in
@@ -40,10 +39,10 @@ struct UpdateStatement: SQLStatement {
         }
 
         var sql = """
-        update \(schema.name)
+        update \(modelSchema.name)
         set
         \(columnsStatement.joined(separator: ",\n"))
-        where \(schema.primaryKey.columnName()) = ?
+        where \(modelSchema.primaryKey.columnName()) = ?
         """
 
         if let conditionStatement = conditionStatement {
@@ -57,7 +56,7 @@ struct UpdateStatement: SQLStatement {
     }
 
     var variables: [Binding?] {
-        var bindings = model.sqlValues(for: updateColumns)
+        var bindings = model.sqlValues(for: updateColumns, modelSchema: modelSchema)
         bindings.append(model.id)
         if let conditionStatement = conditionStatement {
             bindings.append(contentsOf: conditionStatement.variables)
@@ -66,6 +65,6 @@ struct UpdateStatement: SQLStatement {
     }
 
     private var updateColumns: [ModelField] {
-        modelType.schema.columns.filter { !$0.isPrimaryKey }
+        modelSchema.columns.filter { !$0.isPrimaryKey }
     }
 }

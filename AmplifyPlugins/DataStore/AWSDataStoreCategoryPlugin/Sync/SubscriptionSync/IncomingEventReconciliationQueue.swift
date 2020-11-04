@@ -25,6 +25,6 @@ enum IncomingEventReconciliationQueueEvent {
 protocol IncomingEventReconciliationQueue: class, Cancellable {
     func start()
     func pause()
-    func offer(_ remoteModel: MutationSync<AnyModel>)
+    func offer(_ remoteModel: MutationSync<AnyModel>, modelSchema: ModelSchema)
     var publisher: AnyPublisher<IncomingEventReconciliationQueueEvent, DataStoreError> { get }
 }

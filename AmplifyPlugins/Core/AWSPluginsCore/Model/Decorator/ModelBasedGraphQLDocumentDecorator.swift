@@ -9,5 +9,13 @@ import Foundation
 import Amplify
 
 public protocol ModelBasedGraphQLDocumentDecorator {
-    func decorate(_ document: SingleDirectiveGraphQLDocument, modelType: Model.Type) -> SingleDirectiveGraphQLDocument
+
+    @available(*, deprecated, message: """
+    Decorating using Model.Type is deprecated, instead use modelSchema method.
+    """)
+    func decorate(_ document: SingleDirectiveGraphQLDocument,
+                  modelType: Model.Type) -> SingleDirectiveGraphQLDocument
+
+    func decorate(_ document: SingleDirectiveGraphQLDocument,
+                  modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument
 }

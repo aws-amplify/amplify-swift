@@ -21,10 +21,10 @@ public enum ModelFieldType {
     case timestamp
     case bool
     case `enum`(type: EnumPersistable.Type)
-    case embedded(type: Codable.Type)
-    case embeddedCollection(of: Codable.Type)
-    case model(type: Model.Type)
-    case collection(of: Model.Type)
+    case embedded(type: Codable.Type, schema: ModelSchema? = nil)
+    case embeddedCollection(of: Codable.Type, schema: ModelSchema? = nil)
+    case model(name: ModelName)
+    case collection(of: ModelName)
 
     public var isArray: Bool {
         switch self {
@@ -40,7 +40,7 @@ public enum ModelFieldType {
         Please use Amplify CLI 4.21.4 or newer to re-generate your Models to conform to Embeddable type.
     """)
     public static func customType(_ type: Codable.Type) -> ModelFieldType {
-        return .embedded(type: type)
+        return .embedded(type: type, schema: nil)
     }
 
     public static func from(type: Any.Type) -> ModelFieldType {
@@ -72,10 +72,10 @@ public enum ModelFieldType {
             return .enum(type: enumType)
         }
         if let modelType = type as? Model.Type {
-            return .model(type: modelType)
+            return .model(name: modelType.modelName)
         }
         if let embeddedType = type as? Codable.Type {
-            return .embedded(type: embeddedType)
+            return .embedded(type: embeddedType, schema: nil)
         }
         preconditionFailure("Could not create a ModelFieldType from \(String(describing: type)) MetaType")
     }
@@ -155,8 +155,21 @@ public enum ModelFieldDefinition {
                              attributes: [ModelFieldAttribute] = [],
                              association: ModelAssociation? = nil,
                              authRules: AuthRules = []) -> ModelFieldDefinition {
+        var modifiedType: ModelFieldType = type
+        switch type {
+        case .embedded(let codable, let schema):
+            if schema == nil, let embeddedType = codable as? Embeddable.Type {
+                modifiedType = .embedded(type: codable, schema: embeddedType.schema)
+            }
+        case .embeddedCollection(let codable, let schema):
+            if schema == nil, let embeddedType = codable as? Embeddable.Type {
+                modifiedType = .embeddedCollection(of: codable, schema: embeddedType.schema)
+            }
+        default:
+            modifiedType = type
+        }
         return .field(name: key.stringValue,
-                      type: type,
+                      type: modifiedType,
                       nullability: nullability,
                       association: association,
                       attributes: attributes,
@@ -182,8 +195,8 @@ public enum ModelFieldDefinition {
                                associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
-                      ofType: .collection(of: type),
-                      association: .hasMany(associatedWith: associatedKey))
+                      ofType: .collection(of: type.modelName),
+                      association: .hasMany(associatedWith: associatedKey.stringValue))
     }
 
     public static func hasOne(_ key: CodingKey,
@@ -192,8 +205,8 @@ public enum ModelFieldDefinition {
                               associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
-                      ofType: .model(type: type),
-                      association: .hasOne(associatedWith: associatedKey))
+                      ofType: .model(name: type.modelName),
+                      association: .hasOne(associatedWith: associatedKey.stringValue))
     }
 
     public static func belongsTo(_ key: CodingKey,
@@ -203,8 +216,8 @@ public enum ModelFieldDefinition {
                                  targetName: String? = nil) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
-                      ofType: .model(type: type),
-                      association: .belongsTo(associatedWith: associatedKey, targetName: targetName))
+                      ofType: .model(name: type.modelName),
+                      association: .belongsTo(associatedWith: associatedKey?.stringValue, targetName: targetName))
     }
 
     public var modelField: ModelField {
