@@ -37,7 +37,7 @@ extension Amplify {
             case .predictions:
                 reset(Predictions, in: group) { group.leave() }
             case .hub, .logging:
-                // should be waited until other finish resetting
+                // Hub and Logging should be reset after all other categories
                 break
             }
         }
