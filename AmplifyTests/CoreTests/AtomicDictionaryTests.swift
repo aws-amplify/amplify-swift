@@ -10,6 +10,15 @@ import XCTest
 
 class AtomicDictionaryTests: XCTestCase {
 
+    func testPerformance() {
+        let atomicDictionary = AtomicDictionary(initialValue: [Int: Int]())
+        measure {
+            DispatchQueue.concurrentPerform(iterations: 10_000) { iteration in
+                atomicDictionary.set(value: iteration, forKey: iteration)
+            }
+        }
+    }
+
     /// Given: An AtomicDictionary
     /// When:
     /// - I `get` a nonexistent key
