@@ -16,10 +16,12 @@ extension AtomicValue where Value == Bool {
     /// print(atomicBool.get()) // prints "false"
     /// ```
     public func getAndToggle() -> Value {
-        queue.sync {
-            let oldValue = value
-            value.toggle()
-            return oldValue
+        lock.lock()
+        defer {
+            lock.unlock()
         }
+        let oldValue = value
+        value.toggle()
+        return oldValue
     }
 }

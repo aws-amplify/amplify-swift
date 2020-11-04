@@ -11,11 +11,20 @@ import XCTest
 // These tests must be run with ThreadSanitizer enabled
 class AtomicValueTests: XCTestCase {
 
+    func testPerformance() {
+        let atomicInt = AtomicValue(initialValue: 0)
+        measure {
+            DispatchQueue.concurrentPerform(iterations: 10_000) { _ in
+                _ = atomicInt.increment()
+            }
+        }
+    }
+
     func testSimpleSet() {
         let atomicInt = AtomicValue(initialValue: -1)
 
         DispatchQueue.concurrentPerform(iterations: 10_000) { iteration in
-            _ = atomicInt.set(iteration)
+            atomicInt.set(iteration)
         }
 
         XCTAssertNotEqual(atomicInt.get(), -1)
