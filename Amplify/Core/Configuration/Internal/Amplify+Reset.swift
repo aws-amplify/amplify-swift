@@ -32,14 +32,26 @@ extension Amplify {
                 reset(Auth, in: group) { group.leave() }
             case .dataStore:
                 reset(DataStore, in: group) { group.leave() }
-            case .hub:
-                reset(Hub, in: group) { group.leave() }
-            case .logging:
-                reset(Logging, in: group) { group.leave() }
             case .storage:
                 reset(Storage, in: group) { group.leave() }
             case .predictions:
                 reset(Predictions, in: group) { group.leave() }
+            case .hub, .logging:
+                // Hub and Logging should be reset after all other categories
+                break
+            }
+        }
+
+        group.wait()
+
+        for categoryType in CategoryType.allCases {
+            switch categoryType {
+            case .hub:
+                reset(Hub, in: group) { group.leave() }
+            case .logging:
+                reset(Logging, in: group) { group.leave() }
+            default:
+                break
             }
         }
 
