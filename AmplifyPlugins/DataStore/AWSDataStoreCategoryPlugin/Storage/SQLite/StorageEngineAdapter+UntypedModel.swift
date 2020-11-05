@@ -42,4 +42,18 @@ extension SQLiteStorageEngineAdapter {
             completion(.failure(causedBy: error))
         }
     }
+
+    func query(untypedModel modelType: Model.Type,
+               predicate: QueryPredicate? = nil,
+               completion: DataStoreCallback<[Model]>) {
+        do {
+            let statement = SelectStatement(from: modelType.schema, predicate: predicate)
+            let rows = try connection.prepare(statement.stringValue).run(statement.variables)
+            let result: [Model] = try rows.convert(toUntypedModel: modelType, using: statement)
+            completion(.success(result))
+        } catch {
+            completion(.failure(causedBy: error))
+        }
+    }
+
 }

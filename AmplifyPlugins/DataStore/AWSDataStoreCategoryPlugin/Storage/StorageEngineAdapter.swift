@@ -29,6 +29,10 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
                           predicate: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>)
 
+    func query(untypedModel modelType: Model.Type,
+                predicate: QueryPredicate?,
+                completion: DataStoreCallback<[Model]>)
+
     // MARK: - Synchronous APIs
 
     func exists(_ modelSchema: ModelSchema,
