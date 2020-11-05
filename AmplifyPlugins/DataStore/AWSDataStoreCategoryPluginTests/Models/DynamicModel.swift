@@ -10,7 +10,7 @@ import Amplify
 struct DynamicModel: Model, JSONValueHolder {
 
     public let id: String
-    public let values: [String: JSONValue]
+    public var values: [String: JSONValue]
 
     public init(id: String = UUID().uuidString, values: [String: JSONValue]) {
         self.id = id
