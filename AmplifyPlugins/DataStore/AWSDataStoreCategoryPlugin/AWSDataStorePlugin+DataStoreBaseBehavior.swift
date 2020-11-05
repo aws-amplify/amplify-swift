@@ -177,9 +177,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         storageEngine.clear { result in
             self.storageEngine = nil
             if #available(iOS 13.0, *) {
-                if let publisher = self.dataStorePublisher as? DataStorePublisher {
-                    publisher.sendFinished()
-                }
+                self.dataStorePublisher?.sendFinished()
             }
             self.dataStorePublisher = nil
             completion(result)
@@ -221,9 +219,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                                       modelSchema: modelSchema,
                                                       mutationType: mutationType,
                                                       version: syncMetadata?.version)
-                if let publisher = self.dataStorePublisher as? DataStorePublisher {
-                    publisher.send(input: mutationEvent)
-                }
+                self.dataStorePublisher?.send(input: mutationEvent)
             } catch {
                 self.log.error(error: error)
             }

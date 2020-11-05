@@ -144,7 +144,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     @available(iOS 13.0, *)
     private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
-        guard let dataStorePublisher = self.dataStorePublisher as? DataStorePublisher else {
+        guard let dataStorePublisher = self.dataStorePublisher else {
             log.error("Data store publisher not initalized")
             return
         }
@@ -158,7 +158,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     @available(iOS 13.0, *)
     private func onRecieveValue(receiveValue: StorageEngineEvent) {
-        guard let dataStorePublisher = self.dataStorePublisher as? DataStorePublisher else {
+        guard let dataStorePublisher = self.dataStorePublisher else {
             log.error("Data store publisher not initalized")
             return
         }
