@@ -13,7 +13,7 @@ struct DataStorePublisher: ModelSubcriptionBehavior {
 
     private let subject = PassthroughSubject<MutationEvent, DataStoreError>()
 
-    func publisher() -> AnyPublisher<MutationEvent, DataStoreError> {
+    var publisher: AnyPublisher<MutationEvent, DataStoreError> {
         return subject.eraseToAnyPublisher()
     }
 
@@ -33,7 +33,7 @@ struct DataStorePublisher: ModelSubcriptionBehavior {
 protocol ModelSubcriptionBehavior {
 
     @available(iOS 13.0, *)
-    func publisher() -> AnyPublisher<MutationEvent, DataStoreError>
+    var publisher: AnyPublisher<MutationEvent, DataStoreError> { get }
 
     func send(input: MutationEvent)
 

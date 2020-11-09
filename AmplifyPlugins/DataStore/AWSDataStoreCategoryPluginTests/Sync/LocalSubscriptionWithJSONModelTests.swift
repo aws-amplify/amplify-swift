@@ -138,7 +138,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
         let receivedPostMutationEvent = expectation(description: "Received post mutation event")
         let receivedCommentMutationEvent = expectation(description: "Received Comment mutation event")
 
-        let subscription = dataStorePlugin.publisher().sink(
+        let subscription = dataStorePlugin.publisher.sink(
             receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
