@@ -23,4 +23,13 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
             // to exist for deployment targets >=iOS13.0
             return dataStorePublisher!.publisher(for: modelName)
     }
+
+    @available(iOS 13.0, *)
+    public func publisher()
+        -> AnyPublisher<MutationEvent, DataStoreError> {
+            reinitStorageEngineIfNeeded()
+            // Force-unwrapping: The optional 'dataStorePublisher' is expected
+            // to exist for deployment targets >=iOS13.0
+            return dataStorePublisher!.publisher()
+    }
 }

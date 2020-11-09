@@ -66,10 +66,10 @@ struct TestJsonModelRegistration: AmplifyModelRegistration {
         let commentId = ModelFieldDefinition.id().modelField
         let commentContent = ModelField(name: "content", type: .string, isRequired: true)
         let commentCreatedAt = ModelField(name: "createdAt", type: .dateTime, isRequired: true)
-        let belongsTo = ModelField(name: "comment.post",
+        let belongsTo = ModelField(name: "post",
                                    type: .model(name: "Post"),
                                    isRequired: true,
-                                   association: .belongsTo(associatedWith: nil, targetName: "commentPostId"))
+                                   association: .belongsTo(associatedWith: nil, targetName: "postId"))
         let commentSchema = ModelSchema(name: "Comment",
                                         pluralName: "Comments",
                                         fields: [

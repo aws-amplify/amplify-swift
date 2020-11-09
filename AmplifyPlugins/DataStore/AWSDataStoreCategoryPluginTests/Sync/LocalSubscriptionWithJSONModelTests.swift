@@ -127,6 +127,68 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
         subscription.cancel()
     }
 
+    /// - Given: A configured Amplify system on iOS 13 or higher
+    /// - When:
+    ///    - I get a publisher observing all models
+    ///    - I perform mutation for Post and Comment
+    /// - Then:
+    ///    - I receive notifications for updates to both Post and Comment
+    func testPublisherWithMultipleCreate() {
+
+        let receivedPostMutationEvent = expectation(description: "Received post mutation event")
+        let receivedCommentMutationEvent = expectation(description: "Received Comment mutation event")
+
+        let subscription = dataStorePlugin.publisher().sink(
+            receiveCompletion: { completion in
+                switch completion {
+                case .failure(let error):
+                    XCTFail("Unexpected error: \(error)")
+                case .finished:
+                    break
+                }
+            }, receiveValue: { event in
+                switch event.modelName {
+                case "Post":
+                    receivedPostMutationEvent.fulfill()
+                case "Comment":
+                    receivedCommentMutationEvent.fulfill()
+                default:
+                    print("Ignore")
+                }
+
+            })
+
+        // insert a post
+        let title = "a title"
+        let content = "some content"
+        let createdAt = Temporal.DateTime.now().iso8601String
+        let post = ["title": .string(title),
+                    "content": .string(content),
+                    "createdAt": .string(createdAt)] as [String: JSONValue]
+        let model = DynamicModel(values: post)
+        let postSchema = ModelRegistry.modelSchema(from: "Post")!
+        dataStorePlugin.save(model, modelSchema: postSchema) { _ in }
+
+        // insert a comment
+        let commentContent = "some content"
+        let comment = ["content": .string(commentContent),
+                    "createdAt": .string(createdAt),
+                    "post": .object(model.values)] as [String: JSONValue]
+        let commentModel = DynamicModel(values: comment)
+        let commentSchema = ModelRegistry.modelSchema(from: "Comment")!
+        dataStorePlugin.save(commentModel, modelSchema: commentSchema) { result in
+            switch result {
+            case .failure(let error):
+                print(error)
+            case .success(let model):
+                print(model)
+            }
+        }
+
+        wait(for: [receivedPostMutationEvent, receivedCommentMutationEvent], timeout: 3.0)
+        subscription.cancel()
+    }
+
     /// - Given: A configured DataStore
     /// - When:
     ///    - I subscribe to model events
