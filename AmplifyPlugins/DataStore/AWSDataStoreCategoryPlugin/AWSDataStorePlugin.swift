@@ -16,7 +16,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     var isSyncEnabled: Bool
 
     /// The Publisher that sends mutation events to subscribers
-    var dataStorePublisher: DataStoreSubscribeBehavior?
+    var dataStorePublisher: ModelSubcriptionBehavior?
 
     let modelRegistration: AmplifyModelRegistration
 
@@ -64,7 +64,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     init(modelRegistration: AmplifyModelRegistration,
          configuration dataStoreConfiguration: DataStoreConfiguration = .default,
          storageEngine: StorageEngineBehavior,
-         dataStorePublisher: DataStoreSubscribeBehavior,
+         dataStorePublisher: ModelSubcriptionBehavior,
          validAPIPluginKey: String,
          validAuthPluginKey: String) {
         self.modelRegistration = modelRegistration
@@ -144,7 +144,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     @available(iOS 13.0, *)
     private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
-        guard let dataStorePublisher = self.dataStorePublisher as? DataStorePublisher else {
+        guard let dataStorePublisher = self.dataStorePublisher else {
             log.error("Data store publisher not initalized")
             return
         }
@@ -158,7 +158,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     @available(iOS 13.0, *)
     private func onRecieveValue(receiveValue: StorageEngineEvent) {
-        guard let dataStorePublisher = self.dataStorePublisher as? DataStorePublisher else {
+        guard let dataStorePublisher = self.dataStorePublisher else {
             log.error("Data store publisher not initalized")
             return
         }

@@ -8,16 +8,13 @@
 import Amplify
 import Combine
 
-// TODO: Should this be a multicast publisher?
 @available(iOS 13.0, *)
-struct DataStorePublisher: DataStoreSubscribeBehavior {
+struct DataStorePublisher: ModelSubcriptionBehavior {
 
     private let subject = PassthroughSubject<MutationEvent, DataStoreError>()
 
-    func publisher<M: Model>(for modelType: M.Type) -> AnyPublisher<MutationEvent, DataStoreError> {
-        return subject
-            .filter { $0.modelName == modelType.modelName }
-            .eraseToAnyPublisher()
+    var publisher: AnyPublisher<MutationEvent, DataStoreError> {
+        return subject.eraseToAnyPublisher()
     }
 
     func send(input: MutationEvent) {
@@ -31,4 +28,16 @@ struct DataStorePublisher: DataStoreSubscribeBehavior {
     func sendFinished() {
         subject.send(completion: .finished)
     }
+}
+
+protocol ModelSubcriptionBehavior {
+
+    @available(iOS 13.0, *)
+    var publisher: AnyPublisher<MutationEvent, DataStoreError> { get }
+
+    func send(input: MutationEvent)
+
+    func send(dataStoreError: DataStoreError)
+
+    func sendFinished()
 }

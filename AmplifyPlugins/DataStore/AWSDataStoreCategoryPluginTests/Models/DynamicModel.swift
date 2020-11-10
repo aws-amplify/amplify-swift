@@ -10,23 +10,23 @@ import Amplify
 struct DynamicModel: Model, JSONValueHolder {
 
     public let id: String
-    public let values: [String: JSONValue]
+    public var values: [String: JSONValue]
 
-    public init(id: String = UUID().uuidString, values: [String: JSONValue]) {
+    public init(id: String = UUID().uuidString,
+                values: [String: JSONValue]) {
         self.id = id
-        self.values = values
+        var valueWIthId = values
+        valueWIthId["id"] = .string(id)
+        self.values = valueWIthId
     }
 
     public init(from decoder: Decoder) throws {
-
-        print("DEncode \(decoder)")
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
         values = try decoder.singleValueContainer().decode([String: JSONValue].self)
     }
 
     public func encode(to encoder: Encoder) throws {
-        print("Encode")
         var container = encoder.unkeyedContainer()
         try container.encode(values)
     }
@@ -58,6 +58,20 @@ struct DynamicModel: Model, JSONValueHolder {
         if case .int = field?.type,
            case .some(.number(let deserializedValue)) = values[key] {
             return Int(deserializedValue)
+
+        } else if case .dateTime = field?.type,
+                  case .some(.string(let deserializedValue)) = values[key] {
+
+            return try? Temporal.DateTime(iso8601String: deserializedValue)
+
+        } else if case .date = field?.type,
+                  case .some(.string(let deserializedValue)) = values[key] {
+            return try? Temporal.Date(iso8601String: deserializedValue)
+
+        } else if case .time = field?.type,
+                  case .some(.string(let deserializedValue)) = values[key] {
+            return try? Temporal.Time(iso8601String: deserializedValue)
+
         }
         return jsonValue(for: key)
     }

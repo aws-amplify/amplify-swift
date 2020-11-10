@@ -87,6 +87,7 @@
 		B40EF02824BF68C900F2264C /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40EF02724BF68C900F2264C /* ConfigurationTests.swift */; };
 		B47532F02540DF640032098E /* QuerySortDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B47532EF2540DF640032098E /* QuerySortDescriptor.swift */; };
 		B4B3794B2551CF87007781D6 /* QuerySortDescriptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B3794A2551CF87007781D6 /* QuerySortDescriptorTests.swift */; };
+		B4D59DDD2554BBE7009B9235 /* LocalSubscriptionWithJSONModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D59DDC2554BBE7009B9235 /* LocalSubscriptionWithJSONModelTests.swift */; };
 		B4D9B9E224DF85580049484F /* SQLiteStorageEngineAdapterJsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D9B9E124DF85580049484F /* SQLiteStorageEngineAdapterJsonTests.swift */; };
 		B4D9B9E424DF90CD0049484F /* DynamicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D9B9E324DF90CD0049484F /* DynamicModel.swift */; };
 		B912D1B824296F1E0028F05C /* QueryPaginationInput+SQLite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B912D1B724296F1E0028F05C /* QueryPaginationInput+SQLite.swift */; };
@@ -316,6 +317,7 @@
 		B40EF02724BF68C900F2264C /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
 		B47532EF2540DF640032098E /* QuerySortDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuerySortDescriptor.swift; sourceTree = "<group>"; };
 		B4B3794A2551CF87007781D6 /* QuerySortDescriptorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuerySortDescriptorTests.swift; sourceTree = "<group>"; };
+		B4D59DDC2554BBE7009B9235 /* LocalSubscriptionWithJSONModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalSubscriptionWithJSONModelTests.swift; sourceTree = "<group>"; };
 		B4D9B9E124DF85580049484F /* SQLiteStorageEngineAdapterJsonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteStorageEngineAdapterJsonTests.swift; sourceTree = "<group>"; };
 		B4D9B9E324DF90CD0049484F /* DynamicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicModel.swift; sourceTree = "<group>"; };
 		B912D1B724296F1E0028F05C /* QueryPaginationInput+SQLite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QueryPaginationInput+SQLite.swift"; sourceTree = "<group>"; };
@@ -790,6 +792,7 @@
 				2149E5F1238869CF00873955 /* APICategoryDependencyTests.swift */,
 				FA0427CF2396CDD800D25AB0 /* DataStoreHubTests.swift */,
 				2149E5F3238869CF00873955 /* LocalSubscriptionTests.swift */,
+				B4D59DDC2554BBE7009B9235 /* LocalSubscriptionWithJSONModelTests.swift */,
 				6BDC223F23E21A4E007C8410 /* RemoteSyncEngineTests.swift */,
 				6BC4FDA723A899180027D20C /* RequestRetryablePolicyTests.swift */,
 				FAE01F9923997BD900B468DA /* InitialSync */,
@@ -1599,6 +1602,7 @@
 				FA23345C23955CEF009BEFE9 /* NoOpMutationQueue.swift in Sources */,
 				B996FC4923FF3E92006D0F68 /* ExampleWithEveryType+Schema.swift in Sources */,
 				2129BE4A23948A97006363A1 /* StorageAdapterMutationSyncTests.swift in Sources */,
+				B4D59DDD2554BBE7009B9235 /* LocalSubscriptionWithJSONModelTests.swift in Sources */,
 				FAABC227239B1B9100740F9F /* ReconciliationQueueTestBase.swift in Sources */,
 				FA0427CC2396C7E400D25AB0 /* InitialSyncOrchestratorTests.swift in Sources */,
 				FAE4146F239AA71300CE94C2 /* EquatableExtensions.swift in Sources */,
