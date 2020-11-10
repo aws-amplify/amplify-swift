@@ -44,7 +44,7 @@ struct TestJsonModelRegistration: AmplifyModelRegistration {
         let comments = ModelField(name: "comments",
                                   type: .collection(of: "Comment"),
                                   isRequired: false,
-                                  association: .hasMany(associatedWith: "post"))
+                                  association: .hasMany(associatedFieldName: "post"))
         let postSchema = ModelSchema(name: "Post",
                                      pluralName: "Posts",
                                      fields: [id.name: id,

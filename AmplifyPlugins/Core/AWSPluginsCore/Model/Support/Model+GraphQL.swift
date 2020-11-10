@@ -28,13 +28,13 @@ extension Model {
 
             let name = field.graphQLName
             let fieldOptionalValue: Any??
-            
+
             if let jsonModel = self as? JSONValueHolder {
                 fieldOptionalValue = jsonModel.jsonValue(for: field.name, modelSchema: modelSchema) ?? nil
             } else {
                 fieldOptionalValue = self[field.name] ?? nil
             }
-            
+
             // Since the returned value is Any?? we need to do the following:
             // - `guard` to make sure the field name exists on the model
             // - `guard` to ensure the returned value isn't nil

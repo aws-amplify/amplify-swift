@@ -87,14 +87,26 @@ import Foundation
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public enum ModelAssociation {
-    case hasMany(associatedWith: String?)
-    case hasOne(associatedWith: String?)
-    case belongsTo(associatedWith: String?, targetName: String?)
+    case hasMany(associatedFieldName: String?)
+    case hasOne(associatedFieldName: String?)
+    case belongsTo(associatedFieldName: String?, targetName: String?)
 
-    public static let belongsTo: ModelAssociation = .belongsTo(associatedWith: nil, targetName: nil)
+    public static let belongsTo: ModelAssociation = .belongsTo(associatedFieldName: nil, targetName: nil)
 
     public static func belongsTo(targetName: String? = nil) -> ModelAssociation {
-        return .belongsTo(associatedWith: nil, targetName: nil)
+        return .belongsTo(associatedFieldName: nil, targetName: nil)
+    }
+
+    public static func hasMany(associatedWith: CodingKey?) -> ModelAssociation {
+        return .hasMany(associatedFieldName: associatedWith?.stringValue)
+    }
+
+    public static func hasOne(associatedWith: CodingKey?) -> ModelAssociation {
+        return .hasOne(associatedFieldName: associatedWith?.stringValue)
+    }
+
+    public static func belongsTo(associatedWith: CodingKey?, targetName: String?) -> ModelAssociation {
+        return .belongsTo(associatedFieldName: associatedWith?.stringValue, targetName: targetName)
     }
 
 }
