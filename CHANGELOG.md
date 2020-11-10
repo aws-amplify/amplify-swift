@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.4.1 (2020-11-05)
+
+### Bug Fixes
+
+- **amplify**: change reset method (#866)
+
 ## 1.4.0 (2020-10-23)
 
 ### Features

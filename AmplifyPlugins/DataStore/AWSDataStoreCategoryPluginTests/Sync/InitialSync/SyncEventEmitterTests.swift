@@ -67,7 +67,7 @@ class SyncEventEmitterTests: XCTestCase {
             }
         }
 
-        reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelTypes: [Post.self],
+        reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelSchemas: [Post.schema],
                                                                       api: nil,
                                                                       storageAdapter: nil,
                                                                       auth: nil)
@@ -80,9 +80,10 @@ class SyncEventEmitterTests: XCTestCase {
         syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
                                             reconciliationQueue: reconciliationQueue)
 
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelType: Post.self, syncType: .fullSync))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Post.modelName,
+                                                                            syncType: .fullSync))
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelType: Post.self))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelName: Post.modelName))
 
         reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))
 
@@ -140,9 +141,9 @@ class SyncEventEmitterTests: XCTestCase {
             }
         }
 
-        let syncableModelTypes = ModelRegistry.models.filter { $0.schema.isSyncable }
+        let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
 
-        reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelTypes: syncableModelTypes,
+        reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelSchemas: syncableModelSchemas,
                                                                       api: nil,
                                                                       storageAdapter: nil,
                                                                       auth: nil)
@@ -155,11 +156,11 @@ class SyncEventEmitterTests: XCTestCase {
         syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
                                             reconciliationQueue: reconciliationQueue)
 
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelType: Post.self, syncType: .fullSync))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelType: Post.self))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Post.modelName, syncType: .fullSync))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelName: Post.modelName))
 
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelType: Comment.self, syncType: .fullSync))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelType: Comment.self))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Comment.modelName, syncType: .fullSync))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelName: Comment.modelName))
 
         waitForExpectations(timeout: 1)
         syncEventEmitter = nil
@@ -234,9 +235,9 @@ class SyncEventEmitterTests: XCTestCase {
             }
         }
 
-        let syncableModelTypes = ModelRegistry.models.filter { $0.schema.isSyncable }
+        let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
 
-        reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelTypes: syncableModelTypes,
+        reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelSchemas: syncableModelSchemas,
                                                                       api: nil,
                                                                       storageAdapter: nil,
                                                                       auth: nil)
@@ -249,13 +250,15 @@ class SyncEventEmitterTests: XCTestCase {
         syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
                                             reconciliationQueue: reconciliationQueue)
 
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelType: Post.self, syncType: .fullSync))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Post.modelName,
+                                                                            syncType: .fullSync))
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelType: Post.self))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelName: Post.modelName))
 
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelType: Comment.self, syncType: .fullSync))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Comment.modelName,
+                                                                            syncType: .fullSync))
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyCommentMutationSync))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelType: Comment.self))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelName: Comment.modelName))
 
         reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))
         reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(commentMutationEvent))

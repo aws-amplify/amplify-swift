@@ -46,7 +46,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -61,12 +61,12 @@ class InitialSyncOperationTests: XCTestCase {
                 syncCompletionReceived.fulfill()
             }, receiveValue: { value in
                 switch value {
-                case .started(modelType: let modelType, syncType: let syncType):
-                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                case .started(modelName: let modelName, syncType: let syncType):
+                    XCTAssertEqual(modelName, "MockSynced")
                     XCTAssertEqual(syncType, .fullSync)
                     syncStartedReceived.fulfill()
-                case .finished(modelType: let modelType):
-                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                case .finished(modelName: let modelName):
+                    XCTAssertEqual(modelName, "MockSynced")
                     finishedReceived.fulfill()
                 default:
                     break
@@ -103,7 +103,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -118,12 +118,12 @@ class InitialSyncOperationTests: XCTestCase {
                 syncCompletionReceived.fulfill()
             }, receiveValue: { value in
                 switch value {
-                case .started(modelType: let modelType, syncType: let syncType):
-                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                case .started(modelName: let modelName, syncType: let syncType):
+                    XCTAssertEqual(modelName, "MockSynced")
                     XCTAssertEqual(syncType, .fullSync)
                     syncStartedReceived.fulfill()
-                case .finished(modelType: let modelType):
-                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                case .finished(modelName: let modelName):
+                    XCTAssertEqual(modelName, "MockSynced")
                     finishedReceived.fulfill()
                 default:
                     break
@@ -158,7 +158,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -170,8 +170,8 @@ class InitialSyncOperationTests: XCTestCase {
             syncCompletionReceived.fulfill()
         }, receiveValue: { value in
             switch value {
-            case .finished(modelType: let modelType):
-                XCTAssertEqual(modelType.modelName, "MockSynced")
+            case .finished(modelName: let modelName):
+                XCTAssertEqual(modelName, "MockSynced")
                 finishedReceived.fulfill()
             default:
                 break
@@ -213,7 +213,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -225,8 +225,8 @@ class InitialSyncOperationTests: XCTestCase {
             syncCompletionReceived.fulfill()
         }, receiveValue: { value in
             switch value {
-            case .finished(modelType: let modelType):
-                XCTAssertEqual(modelType.modelName, "MockSynced")
+            case .finished(modelName: let modelName):
+                XCTAssertEqual(modelName, "MockSynced")
                 finishedReceived.fulfill()
             default:
                 break
@@ -277,7 +277,7 @@ class InitialSyncOperationTests: XCTestCase {
         }
 
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -293,15 +293,15 @@ class InitialSyncOperationTests: XCTestCase {
                 syncCompletionReceived.fulfill()
             }, receiveValue: { value in
                 switch value {
-                case .started(modelType: let modelType, syncType: let syncType):
-                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                case .started(modelName: let modelName, syncType: let syncType):
+                    XCTAssertEqual(modelName, "MockSynced")
                     XCTAssertEqual(syncType, .fullSync)
                     syncStartedReceived.fulfill()
                 case .enqueued(let returnedValue):
                     XCTAssertTrue(returnedValue.syncMetadata == mutationSync.syncMetadata)
                     offeredValueReceived.fulfill()
-                case .finished(modelType: let modelType):
-                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                case .finished(modelName: let modelName):
+                    XCTAssertEqual(modelName, "MockSynced")
                     finishedReceived.fulfill()
                 }
             })
@@ -331,11 +331,11 @@ class InitialSyncOperationTests: XCTestCase {
         apiPlugin.responders[.queryRequestListener] = responder
 
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
-        try storageAdapter.setUp(models: StorageEngine.systemModels + [MockSynced.self])
+        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + [MockSynced.schema])
 
         let reconciliationQueue = MockReconciliationQueue()
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -350,12 +350,12 @@ class InitialSyncOperationTests: XCTestCase {
                 syncCompletionReceived.fulfill()
             }, receiveValue: { value in
                 switch value {
-                case .started(modelType: let modelType, syncType: let syncType):
-                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                case .started(modelName: let modelName, syncType: let syncType):
+                    XCTAssertEqual(modelName, "MockSynced")
                     XCTAssertEqual(syncType, .fullSync)
                     syncStartedReceived.fulfill()
-                case .finished(modelType: let modelType):
-                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                case .finished(modelName: let modelName):
+                    XCTAssertEqual(modelName, "MockSynced")
                     finishedReceived.fulfill()
                 default:
                     break
@@ -367,7 +367,7 @@ class InitialSyncOperationTests: XCTestCase {
         waitForExpectations(timeout: 1)
         sink.cancel()
 
-        guard let syncMetadata = try storageAdapter.queryModelSyncMetadata(for: MockSynced.self) else {
+        guard let syncMetadata = try storageAdapter.queryModelSyncMetadata(for: MockSynced.schema) else {
             XCTFail("syncMetadata is nil")
             return
         }
@@ -413,7 +413,7 @@ class InitialSyncOperationTests: XCTestCase {
             XCTAssertNil(mutationEventOptional)
         })
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -430,8 +430,8 @@ class InitialSyncOperationTests: XCTestCase {
             }
         }, receiveValue: { value in
             switch value {
-            case .started(modelType: let modelType, syncType: let syncType):
-                XCTAssertEqual(modelType.modelName, "MockSynced")
+            case .started(modelName: let modelName, syncType: let syncType):
+                XCTAssertEqual(modelName, "MockSynced")
                 XCTAssertEqual(syncType, .fullSync)
                 syncStartedReceived.fulfill()
             default:
@@ -456,7 +456,7 @@ class InitialSyncOperationTests: XCTestCase {
         let startDateMilliseconds = (Int(Date().timeIntervalSince1970) - 100) * 1_000
 
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
-        try storageAdapter.setUp(models: StorageEngine.systemModels + [MockSynced.self])
+        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + [MockSynced.schema])
 
         let syncMetadata = ModelSyncMetadata(id: MockSynced.modelName, lastSync: startDateMilliseconds)
         let syncMetadataSaved = expectation(description: "Sync metadata saved")
@@ -487,7 +487,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -502,12 +502,12 @@ class InitialSyncOperationTests: XCTestCase {
                 syncCompletionReceived.fulfill()
             }, receiveValue: { value in
                 switch value {
-                case .started(modelType: let modelType, syncType: let syncType):
-                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                case .started(modelName: let modelName, syncType: let syncType):
+                    XCTAssertEqual(modelName, "MockSynced")
                     XCTAssertEqual(syncType, .deltaSync)
                     syncStartedReceived.fulfill()
-                case .finished(modelType: let modelType):
-                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                case .finished(modelName: let modelName):
+                    XCTAssertEqual(modelName, "MockSynced")
                     finishedReceived.fulfill()
                 default:
                     break
@@ -525,7 +525,7 @@ class InitialSyncOperationTests: XCTestCase {
         let startDateMilliSeconds = (Int(Date().timeIntervalSince1970) - 100) * 1_000
 
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
-        try storageAdapter.setUp(models: StorageEngine.systemModels + [MockSynced.self])
+        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + [MockSynced.schema])
 
         let syncMetadata = ModelSyncMetadata(id: MockSynced.modelName, lastSync: startDateMilliSeconds)
         let syncMetadataSaved = expectation(description: "Sync metadata saved")
@@ -557,7 +557,7 @@ class InitialSyncOperationTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
         let configuration  = DataStoreConfiguration.custom(syncInterval: 60)
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -572,12 +572,12 @@ class InitialSyncOperationTests: XCTestCase {
                 syncCompletionReceived.fulfill()
             }, receiveValue: { value in
                 switch value {
-                case .started(modelType: let modelType, syncType: let syncType):
-                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                case .started(modelName: let modelName, syncType: let syncType):
+                    XCTAssertEqual(modelName, "MockSynced")
                     XCTAssertEqual(syncType, .fullSync)
                     syncStartedReceived.fulfill()
-                case .finished(modelType: let modelType):
-                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                case .finished(modelName: let modelName):
+                    XCTAssertEqual(modelName, "MockSynced")
                     finishedReceived.fulfill()
                 default:
                     break
@@ -592,7 +592,7 @@ class InitialSyncOperationTests: XCTestCase {
 
     func testBaseQueryWithCustomSyncPageSize() throws {
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
-        try storageAdapter.setUp(models: StorageEngine.systemModels + [MockSynced.self])
+        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + [MockSynced.schema])
 
         let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
@@ -615,7 +615,7 @@ class InitialSyncOperationTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
         let configuration  = DataStoreConfiguration.custom(syncPageSize: 10)
         let operation = InitialSyncOperation(
-            modelType: MockSynced.self,
+            modelSchema: MockSynced.schema,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
@@ -630,12 +630,12 @@ class InitialSyncOperationTests: XCTestCase {
                 syncCompletionReceived.fulfill()
             }, receiveValue: { value in
                 switch value {
-                case .started(modelType: let modelType, syncType: let syncType):
-                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                case .started(modelName: let modelName, syncType: let syncType):
+                    XCTAssertEqual(modelName, "MockSynced")
                     XCTAssertEqual(syncType, .fullSync)
                     syncStartedReceived.fulfill()
-                case .finished(modelType: let modelType):
-                    XCTAssertEqual(modelType.modelName, "MockSynced")
+                case .finished(modelName: let modelName):
+                    XCTAssertEqual(modelName, "MockSynced")
                     finishedReceived.fulfill()
                 default:
                     break

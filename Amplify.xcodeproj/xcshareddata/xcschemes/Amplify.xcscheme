@@ -47,13 +47,6 @@
             BlueprintName = "Amplify"
             ReferencedContainer = "container:Amplify.xcodeproj">
          </BuildableReference>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "21265DA32307389A004CCE39"
-            BuildableName = "AWSS3StoragePlugin.framework"
-            BlueprintName = "AWSS3StoragePlugin"
-            ReferencedContainer = "container:Amplify.xcodeproj">
-         </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
          <TestableReference

@@ -16,7 +16,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     var isSyncEnabled: Bool
 
     /// The Publisher that sends mutation events to subscribers
-    var dataStorePublisher: DataStoreSubscribeBehavior?
+    var dataStorePublisher: ModelSubcriptionBehavior?
 
     let modelRegistration: AmplifyModelRegistration
 
@@ -64,7 +64,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     init(modelRegistration: AmplifyModelRegistration,
          configuration dataStoreConfiguration: DataStoreConfiguration = .default,
          storageEngine: StorageEngineBehavior,
-         dataStorePublisher: DataStoreSubscribeBehavior,
+         dataStorePublisher: ModelSubcriptionBehavior,
          validAPIPluginKey: String,
          validAuthPluginKey: String) {
         self.modelRegistration = modelRegistration
@@ -78,14 +78,14 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     /// By the time this method gets called, DataStore will already have invoked
     /// `AmplifyModelRegistration.registerModels`, so we can inspect those models to derive isSyncEnabled, and pass
-    /// them to `StorageEngine.setUp(models:)`
+    /// them to `StorageEngine.setUp(modelSchemas:)`
     public func configure(using amplifyConfiguration: Any?) throws {
         modelRegistration.registerModels(registry: ModelRegistry.self)
         resolveSyncEnabled()
 
         try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
 
-        try storageEngine.setUp(models: ModelRegistry.models)
+        try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
 
         let filter = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
         var token: UnsubscribeToken?
@@ -106,7 +106,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
                 self.dataStorePublisher = DataStorePublisher()
             }
             try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
-            try storageEngine.setUp(models: ModelRegistry.models)
+            try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
             storageEngine.startSync()
         } catch {
             log.error(error: error)
@@ -144,7 +144,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     @available(iOS 13.0, *)
     private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
-        guard let dataStorePublisher = self.dataStorePublisher as? DataStorePublisher else {
+        guard let dataStorePublisher = self.dataStorePublisher else {
             log.error("Data store publisher not initalized")
             return
         }
@@ -158,7 +158,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     @available(iOS 13.0, *)
     private func onRecieveValue(receiveValue: StorageEngineEvent) {
-        guard let dataStorePublisher = self.dataStorePublisher as? DataStorePublisher else {
+        guard let dataStorePublisher = self.dataStorePublisher else {
             log.error("Data store publisher not initalized")
             return
         }

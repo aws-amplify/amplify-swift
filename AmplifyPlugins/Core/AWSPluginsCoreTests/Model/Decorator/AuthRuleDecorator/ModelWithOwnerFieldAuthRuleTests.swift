@@ -63,7 +63,7 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // Since the owner field already exists on the model, ensure that it is not added again
     func testModelWithOwnerField_CreateMutation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelWithOwnerField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
@@ -85,7 +85,7 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // Since the owner field already exists on the model, ensure that it is not added again
     func testModelWithOwnerField_DeleteMutation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelWithOwnerField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
@@ -107,7 +107,7 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // Since the owner field already exists on the model, ensure that it is not added again
     func testModelWithOwnerField_UpdateMutation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelWithOwnerField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
@@ -129,7 +129,7 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // Since the owner field already exists on the model, ensure that it is not added again
     func testModelWithOwnerField_GetQuery() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelWithOwnerField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
@@ -151,7 +151,7 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // Since the owner field already exists on the model, ensure that it is not added again
     func testModelWithOwnerField_ListQuery() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelWithOwnerField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         documentBuilder.add(decorator: PaginationDecorator())
@@ -175,7 +175,7 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
     }
 
     func testModelWithOwnerField_SyncQuery() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelWithOwnerField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator())
@@ -207,7 +207,7 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
     func testModelWithOwnerField_OnCreateSubscription() {
         let claims = ["username": "user1",
                       "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelWithOwnerField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
@@ -235,7 +235,7 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
     func testModelWithOwnerField_OnUpdateSubscription() {
         let claims = ["username": "user1",
                       "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelWithOwnerField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, claims)))
@@ -263,7 +263,7 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
     func testModelWithOwnerField_OnDeleteSubscription() {
         let claims = ["username": "user1",
                       "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelWithOwnerField.self,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, claims)))

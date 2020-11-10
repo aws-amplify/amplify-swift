@@ -37,17 +37,22 @@ public struct DirectiveNameDecorator: ModelBasedGraphQLDocumentDecorator {
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
                          modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
+        decorate(document, modelSchema: modelType.schema)
+    }
+
+    public func decorate(_ document: SingleDirectiveGraphQLDocument,
+                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
 
         if let queryType = queryType {
-            return document.copy(name: modelType.schema.graphQLName(queryType: queryType))
+            return document.copy(name: modelSchema.graphQLName(queryType: queryType))
         }
 
         if let mutationType = mutationType {
-            return document.copy(name: modelType.schema.graphQLName(mutationType: mutationType))
+            return document.copy(name: modelSchema.graphQLName(mutationType: mutationType))
         }
 
         if let subscriptionType = subscriptionType {
-            return document.copy(name: modelType.schema.graphQLName(subscriptionType: subscriptionType))
+            return document.copy(name: modelSchema.graphQLName(subscriptionType: subscriptionType))
         }
 
         return document

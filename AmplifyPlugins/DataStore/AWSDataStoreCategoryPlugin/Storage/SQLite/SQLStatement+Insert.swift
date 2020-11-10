@@ -11,20 +11,18 @@ import SQLite
 
 /// Represents a `insert` SQL statement associated with a `Model` instance.
 struct InsertStatement: SQLStatement {
-
-    let modelType: Model.Type
+    let modelSchema: ModelSchema
     let variables: [Binding?]
 
-    init(model: Model) {
-        self.modelType = type(of: model)
-        self.variables = model.sqlValues(for: modelType.schema.columns)
+    init(model: Model, modelSchema: ModelSchema) {
+        self.modelSchema = modelSchema
+        self.variables = model.sqlValues(for: modelSchema.columns, modelSchema: modelSchema)
     }
 
     var stringValue: String {
-        let schema = modelType.schema
-        let fields = schema.columns
+        let fields = modelSchema.columns
         let columns = fields.map { $0.columnName() }
-        var statement = "insert into \(schema.name) "
+        var statement = "insert into \(modelSchema.name) "
         statement += "(\(columns.joined(separator: ", ")))\n"
 
         let variablePlaceholders = Array(repeating: "?", count: columns.count).joined(separator: ", ")

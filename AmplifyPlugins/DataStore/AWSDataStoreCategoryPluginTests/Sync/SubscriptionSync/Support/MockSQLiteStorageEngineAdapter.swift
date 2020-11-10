@@ -13,6 +13,7 @@ import Combine
 @testable import AWSDataStoreCategoryPlugin
 
 class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
+
     var responders = [ResponderKeys: Any]()
 
     var resultForQuery: DataStoreResult<[Model]>?
@@ -32,7 +33,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         self.shouldReturnErrorOnDeleteMutation = false
     }
 
-    func setUp(models: [Model.Type]) throws {
+    func setUp(modelSchemas: [ModelSchema]) throws {
         XCTFail("Not expected to execute")
     }
 
@@ -62,18 +63,21 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     // MARK: - StorageEngineAdapter
 
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           withId id: Model.Identifier,
                           completion: DataStoreCallback<M?>) {
         XCTFail("Not expected to execute")
     }
 
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           predicate: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>) {
         XCTFail("Not expected to execute")
     }
 
     func delete(untypedModelType modelType: Model.Type,
+                modelSchema: ModelSchema,
                 withId id: String,
                 completion: (Result<Void, DataStoreError>) -> Void) {
         if let responder = responders[.deleteUntypedModel] as? DeleteUntypedModelCompletionResponder {
@@ -94,12 +98,28 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         completion(result)
     }
 
+    func query<M: Model>(_ modelType: M.Type,
+                         predicate: QueryPredicate?,
+                         paginationInput: QueryPaginationInput?,
+                         completion: DataStoreCallback<[M]>) {
+        XCTFail("Not expected to execute")
+    }
+
+    func query<M: Model>(_ modelType: M.Type,
+                         modelSchema: ModelSchema,
+                         predicate: QueryPredicate?,
+                         sort: [QuerySortDescriptor]?,
+                         paginationInput: QueryPaginationInput?,
+                         completion: (DataStoreResult<[M]>) -> Void) {
+        XCTFail("Not expected to execute")
+    }
+
     func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>] {
         XCTFail("Not expected to execute")
         return []
     }
 
-    func exists(_ modelType: Model.Type, withId id: Model.Identifier, predicate: QueryPredicate?) throws -> Bool {
+    func exists(_ modelSchema: ModelSchema, withId id: Model.Identifier, predicate: QueryPredicate?) throws -> Bool {
         XCTFail("Not expected to execute")
         return true
     }
@@ -126,6 +146,20 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
             : completion(.success(model))
     }
 
+    func save<M: Model>(_ model: M,
+                        modelSchema: ModelSchema,
+                        condition where: QueryPredicate?,
+                        completion: @escaping DataStoreCallback<M>) {
+        if let responder = responders[.saveModelCompletion] as? SaveModelCompletionResponder<M> {
+            responder.callback((model, completion))
+            return
+        }
+
+        return shouldReturnErrorOnSaveMetadata
+            ? completion(.failure(DataStoreError.invalidModelName("forceError")))
+            : completion(.success(model))
+    }
+
     func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>? {
         XCTFail("Not expected to execute")
         return nil
@@ -133,7 +167,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate?,
-                         sort: QuerySortInput?,
+                         sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>) {
         if let responder = responders[.queryModelTypePredicate]
@@ -158,7 +192,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         return resultForQueryMutationSyncMetadata
     }
 
-    func queryModelSyncMetadata(for modelType: Model.Type) throws -> ModelSyncMetadata? {
+    func queryModelSyncMetadata(for modelSchema: ModelSchema) throws -> ModelSyncMetadata? {
         listenerForModelSyncMetadata?()
         return resultForQueryModelSyncMetadata
     }
@@ -172,6 +206,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 }
 
 class MockStorageEngineBehavior: StorageEngineBehavior {
+
     func setupPublisher() {
 
     }
@@ -183,20 +218,29 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     func startSync() {
     }
 
-    func setUp(models: [Model.Type]) throws {
+    func setUp(modelSchemas: [ModelSchema]) throws {
     }
 
     func save<M: Model>(_ model: M, condition: QueryPredicate?, completion: @escaping DataStoreCallback<M>) {
         XCTFail("Not expected to execute")
     }
 
+    func save<M: Model>(_ model: M,
+                        modelSchema: ModelSchema,
+                        condition where: QueryPredicate?,
+                        completion: @escaping DataStoreCallback<M>) {
+        XCTFail("Not expected to execute")
+    }
+
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           withId id: Model.Identifier,
                           completion: DataStoreCallback<M?>) {
         completion(.success(nil))
     }
 
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           predicate: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>) {
         XCTFail("Not expected to execute")
@@ -204,9 +248,18 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate?,
-                         sort: QuerySortInput?,
+                         sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>) {
+        //TODO: Find way to mock this
+    }
+
+    func query<M: Model>(_ modelType: M.Type,
+                         modelSchema: ModelSchema,
+                         predicate: QueryPredicate?,
+                         sort: [QuerySortDescriptor]?,
+                         paginationInput: QueryPaginationInput?,
+                         completion: (DataStoreResult<[M]>) -> Void) {
         //TODO: Find way to mock this
     }
 

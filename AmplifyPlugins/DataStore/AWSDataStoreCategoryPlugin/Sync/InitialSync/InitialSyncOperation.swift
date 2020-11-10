@@ -18,7 +18,7 @@ final class InitialSyncOperation: AsynchronousOperation {
     private weak var storageAdapter: StorageEngineAdapter?
     private let dataStoreConfiguration: DataStoreConfiguration
 
-    private let modelType: Model.Type
+    private let modelSchema: ModelSchema
 
     private var recordsReceived: UInt
 
@@ -34,12 +34,12 @@ final class InitialSyncOperation: AsynchronousOperation {
         return initialSyncOperationTopic.eraseToAnyPublisher()
     }
 
-    init(modelType: Model.Type,
+    init(modelSchema: ModelSchema,
          api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?,
          dataStoreConfiguration: DataStoreConfiguration) {
-        self.modelType = modelType
+        self.modelSchema = modelSchema
         self.api = api
         self.reconciliationQueue = reconciliationQueue
         self.storageAdapter = storageAdapter
@@ -54,10 +54,10 @@ final class InitialSyncOperation: AsynchronousOperation {
             return
         }
 
-        log.info("Beginning sync for \(modelType.modelName)")
+        log.info("Beginning sync for \(modelSchema.name)")
         let lastSyncTime = getLastSyncTime()
         let syncType: SyncType = lastSyncTime == nil ? .fullSync : .deltaSync
-        initialSyncOperationTopic.send(.started(modelType: modelType, syncType: syncType))
+        initialSyncOperationTopic.send(.started(modelName: modelSchema.name, syncType: syncType))
         query(lastSyncTime: lastSyncTime)
     }
 
@@ -97,7 +97,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
 
         do {
-            let modelSyncMetadata = try storageAdapter.queryModelSyncMetadata(for: modelType)
+            let modelSyncMetadata = try storageAdapter.queryModelSyncMetadata(for: modelSchema)
             return modelSyncMetadata
         } catch {
             log.error(error: error)
@@ -117,7 +117,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
         let minSyncPageSize = Int(min(syncMaxRecords - recordsReceived, syncPageSize))
         let limit = minSyncPageSize < 0 ? Int(syncPageSize) : minSyncPageSize
-        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: modelType,
+        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: modelSchema,
                                                                 limit: limit,
                                                                 nextToken: nextToken,
                                                                 lastSync: lastSyncTime)
@@ -163,7 +163,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         recordsReceived += UInt(items.count)
 
         for item in items {
-            reconciliationQueue.offer(item)
+            reconciliationQueue.offer(item, modelSchema: modelSchema)
             initialSyncOperationTopic.send(.enqueued(item))
         }
 
@@ -172,7 +172,7 @@ final class InitialSyncOperation: AsynchronousOperation {
                 self.query(lastSyncTime: lastSyncTime, nextToken: nextToken)
             }
         } else {
-            initialSyncOperationTopic.send(.finished(modelType: modelType))
+            initialSyncOperationTopic.send(.finished(modelName: modelSchema.name))
             updateModelSyncMetadata(lastSyncTime: syncQueryResult.startedAt)
         }
     }
@@ -188,7 +188,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             return
         }
 
-        let syncMetadata = ModelSyncMetadata(id: modelType.modelName, lastSync: lastSyncTime)
+        let syncMetadata = ModelSyncMetadata(id: modelSchema.name, lastSync: lastSyncTime)
         storageAdapter.save(syncMetadata, condition: nil) { result in
             switch result {
             case .failure(let dataStoreError):

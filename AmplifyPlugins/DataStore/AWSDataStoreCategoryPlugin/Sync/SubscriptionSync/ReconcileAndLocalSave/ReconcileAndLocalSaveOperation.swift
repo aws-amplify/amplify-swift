@@ -32,6 +32,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     private weak var storageAdapter: StorageEngineAdapter?
     private let stateMachine: StateMachine<State, Action>
     private let remoteModel: RemoteModel
+    private let modelSchema: ModelSchema
     private var stateMachineSink: AnyCancellable?
 
     private let mutationEventPublisher: PassthroughSubject<ReconcileAndLocalSaveOperationEvent, DataStoreError>
@@ -39,9 +40,11 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         return mutationEventPublisher.eraseToAnyPublisher()
     }
 
-    init(remoteModel: RemoteModel,
+    init(modelSchema: ModelSchema,
+         remoteModel: RemoteModel,
          storageAdapter: StorageEngineAdapter?,
          stateMachine: StateMachine<State, Action>? = nil) {
+        self.modelSchema = modelSchema
         self.remoteModel = remoteModel
         self.storageAdapter = storageAdapter
         self.stateMachine = stateMachine ?? StateMachine(initialState: .waiting,
@@ -213,13 +216,16 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
     private func saveDeleteMutation(storageAdapter: StorageEngineAdapter, remoteModel: RemoteModel) {
         log.verbose(#function)
-        guard let modelType = ModelRegistry.modelType(from: remoteModel.model.modelName) else {
-            let error = DataStoreError.invalidModelName(remoteModel.model.modelName)
+
+        guard let modelType = ModelRegistry.modelType(from: modelSchema.name) else {
+            let error = DataStoreError.invalidModelName(modelSchema.name)
             stateMachine.notify(action: .errored(error))
             return
         }
 
-        storageAdapter.delete(untypedModelType: modelType, withId: remoteModel.model.id) { response in
+        storageAdapter.delete(untypedModelType: modelType,
+                              modelSchema: modelSchema,
+                              withId: remoteModel.model.id) { response in
             switch response {
             case .failure(let dataStoreError):
                 let errorAction = Action.errored(dataStoreError)
@@ -305,13 +311,15 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
         // TODO: Dispatch/notify error if we can't erase to any model? Would imply an error in JSON decoding,
         // which shouldn't be possible this late in the process. Possibly notify global conflict/error handler?
-        guard let mutationEvent = try? MutationEvent(untypedModel: savedModel.model.instance,
-                                                     mutationType: mutationType,
-                                                     version: version)
-            else {
-                log.error("Could not notify mutation event")
-                return
+        guard let json = try? savedModel.model.instance.toJSON() else {
+            log.error("Could not notify mutation event")
+            return
         }
+        let mutationEvent = MutationEvent(modelId: savedModel.model.instance.id,
+                                          modelName: modelSchema.name,
+                                          json: json,
+                                          mutationType: mutationType,
+                                          version: version)
 
         let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncReceived,
                                  data: mutationEvent)
@@ -335,8 +343,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         var pendingMutationResultFromQuery: DataStoreResult<[MutationEvent]>?
         MutationEvent.pendingMutationEvents(forModelId: modelId,
                                             storageAdapter: storageAdapter) {
-                                                pendingMutationResultFromQuery = $0
-                                                semaphore.signal()
+            pendingMutationResultFromQuery = $0
+            semaphore.signal()
         }
         semaphore.wait()
 

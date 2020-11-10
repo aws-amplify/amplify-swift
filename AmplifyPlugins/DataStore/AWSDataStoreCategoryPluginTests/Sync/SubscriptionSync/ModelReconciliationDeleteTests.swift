@@ -100,7 +100,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
                         //Assume AWSIncomingEventReconciliationQueue succeeds in establishing connections
                         DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
                             let request = GraphQLRequest<MutationSync<AnyModel>>
-                                .subscription(to: MockSynced.self, subscriptionType: .onUpdate)
+                                .subscription(to: MockSynced.schema, subscriptionType: .onUpdate)
                             let onUpdateListener: MutationSyncInProcessListener = { event in
                                 print("emptyListener")
                             }
@@ -201,7 +201,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
                         //Assume AWSIncomingEventReconciliationQueue succeeds in establishing connections
                         DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
                             let request = GraphQLRequest<MutationSync<AnyModel>>
-                                .subscription(to: MockSynced.self, subscriptionType: .onUpdate)
+                                .subscription(to: MockSynced.schema, subscriptionType: .onUpdate)
                             let onUpdateListener: MutationSyncInProcessListener = { event in
                                 switch event {
                                 case .data(.success(let mutationEvent)):

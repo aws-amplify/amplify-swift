@@ -57,17 +57,24 @@ extension Model {
     ///
     /// - Parameter fields: an optional subset of fields
     /// - Returns: an array of SQLite's `Binding` compatible type
-    internal func sqlValues(for fields: [ModelField]? = nil) -> [Binding?] {
-        let modelType = type(of: self)
-        let modelFields = fields ?? modelType.schema.sortedFields
+    internal func sqlValues(for fields: [ModelField]? = nil, modelSchema: ModelSchema) -> [Binding?] {
+        let modelFields = fields ?? modelSchema.sortedFields
         let values: [Binding?] = modelFields.map { field in
 
-            // self[field.name] subscript accessor returns an Any??, we need to do a few things:
+            let existingFieldOptionalValue: Any??
+
+            // self[field.name] subscript accessor or jsonValue() returns an Any??, we need to do a few things:
             // - `guard` to make sure the field name exists on the model
             // - `guard` to ensure the returned value isn't nil
             // - Attempt to cast to Persistable to ensure the model value isn't incorrectly assigned to a type we
             //   can't handle
-            guard let existingFieldValue = self[field.name] else {
+            if let jsonModel = self as? JSONValueHolder {
+                existingFieldOptionalValue = jsonModel.jsonValue(for: field.name, modelSchema: modelSchema)
+            } else {
+                existingFieldOptionalValue = self[field.name]
+            }
+
+            guard let existingFieldValue = existingFieldOptionalValue else {
                 return nil
             }
 
@@ -90,9 +97,19 @@ extension Model {
             // safely attempt a cast to Persistable below.
 
             // if value is an associated model, get its id
-            if let value = value as? Model, field.isForeignKey {
-                let associatedModel: Model.Type = type(of: value)
-                return value[associatedModel.schema.primaryKey.name] as? String
+            if field.isForeignKey,
+               case let .model(modelName) = field.type,
+               let modelSchema = ModelRegistry.modelSchema(from: modelName) {
+
+                // Check if it is a Model or json object.
+                if let value = value as? Model {
+                    let associatedModel: Model.Type = type(of: value)
+                    return value[associatedModel.schema.primaryKey.name] as? String
+
+                } else if let value = value as? [String: JSONValue],
+                   case .string(let primaryKeyValue) = value[modelSchema.primaryKey.name] {
+                    return primaryKeyValue
+                }
             }
 
             // otherwise, delegate to the value converter
@@ -101,7 +118,7 @@ extension Model {
                 return binding
             } catch {
                 logger.warn("""
-                Error converting \(modelType.modelName).\(field.name) to the proper SQLite Binding.
+                Error converting \(modelSchema.name).\(field.name) to the proper SQLite Binding.
                 Root cause is: \(String(describing: error))
                 """)
                 return nil
@@ -114,9 +131,9 @@ extension Model {
 
 }
 
-extension Array where Element == Model.Type {
+extension Array where Element == ModelSchema {
 
-    /// Sort the [Model.Type] array based on the associations between them.
+    /// Sort the [ModelSchema] array based on the associations between them.
     ///
     /// The order the tables are created for each model depends on their relationships.
     /// The tables for the models that own the `foreign key` of the relationship can only
@@ -131,27 +148,36 @@ extension Array where Element == Model.Type {
     /// created after `Blog`. Therefore:
     ///
     /// ```
-    /// let models = [Comment.self, Post.self, Blog.self]
-    /// models.sortedByDependencyOrder() == [Blog.self, Post.self, Comment.self]
+    /// let modelSchemas = [Comment.schema, Post.schema, Blog.schema]
+    /// modelSchemas.sortedByDependencyOrder() == [Blog.schema, Post.schema, Comment.schema]
     /// ```
     func sortByDependencyOrder() -> Self {
         var sortedKeys: [String] = []
-        var sortMap: [String: Model.Type] = [:]
+        var sortMap: [String: ModelSchema] = [:]
 
-        func walkAssociatedModels(of modelType: Model.Type) {
-            if !sortedKeys.contains(modelType.schema.name) {
-                let associatedModels = modelType.schema.sortedFields
+        func walkAssociatedModels(of schema: ModelSchema) {
+            if !sortedKeys.contains(schema.name) {
+                let associatedModelSchemas = schema.sortedFields
                     .filter { $0.isForeignKey }
-                    .map { $0.requiredAssociatedModel }
-                associatedModels.forEach(walkAssociatedModels(of:))
+                    .map { (schema) -> ModelSchema in
+                        guard let associatedSchema = ModelRegistry.modelSchema(from: schema.requiredAssociatedModel)
+                        else {
+                            preconditionFailure("""
+                            Could not retrieve schema for the model \(schema.requiredAssociatedModel), verify that
+                            datastore is initialized.
+                            """)
+                        }
+                        return associatedSchema
+                    }
+                associatedModelSchemas.forEach(walkAssociatedModels(of:))
 
-                let key = modelType.schema.name
+                let key = schema.name
                 sortedKeys.append(key)
-                sortMap[key] = modelType
+                sortMap[key] = schema
             }
         }
 
-        let sortedStartList = sorted { $0.modelName < $1.modelName }
+        let sortedStartList = sorted { $0.name < $1.name }
         sortedStartList.forEach(walkAssociatedModels(of:))
         return sortedKeys.map { sortMap[$0]! }
     }

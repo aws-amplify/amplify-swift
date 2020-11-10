@@ -36,7 +36,7 @@ class GraphQLSyncQueryTests: XCTestCase {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
 
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
         documentBuilder.add(decorator: PaginationDecorator(limit: 100, nextToken: "token"))
@@ -81,7 +81,7 @@ class GraphQLSyncQueryTests: XCTestCase {
     }
 
     func testSyncGraphQLQueryForComment() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Comment.self, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator(limit: 100, nextToken: "token"))
         documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: 123))

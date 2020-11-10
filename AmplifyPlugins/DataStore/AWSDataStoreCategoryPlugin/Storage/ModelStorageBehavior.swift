@@ -8,23 +8,37 @@
 import Amplify
 
 protocol ModelStorageBehavior {
-    func setUp(models: [Model.Type]) throws
+    func setUp(modelSchemas: [ModelSchema]) throws
+
+    func save<M: Model>(_ model: M,
+                        modelSchema: ModelSchema,
+                        condition: QueryPredicate?,
+                        completion: @escaping DataStoreCallback<M>)
 
     func save<M: Model>(_ model: M,
                         condition: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>)
 
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           withId id: Model.Identifier,
                           completion: @escaping DataStoreCallback<M?>)
 
     func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           predicate: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>)
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate?,
-                         sort: QuerySortInput?,
+                         sort: [QuerySortDescriptor]?,
+                         paginationInput: QueryPaginationInput?,
+                         completion: DataStoreCallback<[M]>)
+
+    func query<M: Model>(_ modelType: M.Type,
+                         modelSchema: ModelSchema,
+                         predicate: QueryPredicate?,
+                         sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>)
 

@@ -85,7 +85,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.createMutation(of: post)
+        let request = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: post.schema)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
@@ -128,7 +128,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: post)
+        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: post, modelSchema: post.schema)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
@@ -190,7 +190,8 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
 
     func testCreateSubscriptionGraphQLRequest() throws {
         let modelType = Post.self as Model.Type
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
+                                                               operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
@@ -212,7 +213,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType,
+        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
                                                                       subscriptionType: .onCreate)
 
         XCTAssertEqual(document.stringValue, request.document)
@@ -226,7 +227,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         let nextToken = "nextToken"
         let limit = 100
         let lastSync = 123
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
         documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync))
@@ -254,7 +255,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         }
         """
 
-        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: modelType,
+        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: modelType.schema,
                                                                 limit: limit,
                                                                 nextToken: nextToken,
                                                                 lastSync: lastSync)

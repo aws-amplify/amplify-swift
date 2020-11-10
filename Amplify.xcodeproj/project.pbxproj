@@ -85,7 +85,7 @@
 		216E45ED248E914F0035E3CE /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E45EA248E914E0035E3CE /* Category.swift */; };
 		216E45EE248E914F0035E3CE /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E45EB248E914F0035E3CE /* Todo.swift */; };
 		216E45EF248E914F0035E3CE /* Todo+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E45EC248E914F0035E3CE /* Todo+Schema.swift */; };
-		216E45F1248E971E0035E3CE /* GraphQLRequestNonModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E45F0248E971E0035E3CE /* GraphQLRequestNonModelTests.swift */; };
+		216E45F1248E971E0035E3CE /* GraphQLRequestEmbeddableTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E45F0248E971E0035E3CE /* GraphQLRequestEmbeddableTypeTests.swift */; };
 		216E460824913D430035E3CE /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E460724913D430035E3CE /* Color.swift */; };
 		216E460A249183230035E3CE /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E4609249183230035E3CE /* Section.swift */; };
 		216E461A249189050035E3CE /* Embedded.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E4619249189050035E3CE /* Embedded.swift */; };
@@ -257,6 +257,7 @@
 		B43CD8542411469D00BF5A60 /* AuthConfirmSignUpRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43CD8532411469D00BF5A60 /* AuthConfirmSignUpRequest.swift */; };
 		B43CD8562411472300BF5A60 /* AuthSignUpResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43CD8552411472300BF5A60 /* AuthSignUpResult.swift */; };
 		B43CD858241147F900BF5A60 /* AuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43CD857241147F900BF5A60 /* AuthUser.swift */; };
+		B43D7C392538B532002659DB /* GraphQLRequestEmbeddableTypeJSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43D7C382538B532002659DB /* GraphQLRequestEmbeddableTypeJSONTests.swift */; };
 		B43DC738241051A200D40275 /* AuthSignUpRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43DC737241051A200D40275 /* AuthSignUpRequest.swift */; };
 		B43DC73A2410526C00D40275 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43DC7392410526C00D40275 /* AuthError.swift */; };
 		B450740D2411553D0098F02D /* AuthConfirmSignUpOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B450740C2411553D0098F02D /* AuthConfirmSignUpOperation.swift */; };
@@ -286,6 +287,8 @@
 		B493E69E245394E200D9E521 /* AuthSignUpStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E69D245394E200D9E521 /* AuthSignUpStep.swift */; };
 		B493E6A22453A29C00D9E521 /* AuthSignInStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E6A12453A29C00D9E521 /* AuthSignInStep.swift */; };
 		B493E6A42453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E6A32453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift */; };
+		B4944D21251C06EA00BF0BFE /* JSONValueHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4944D20251C06EA00BF0BFE /* JSONValueHolder.swift */; };
+		B4944D52251C141200BF0BFE /* JSONValueHolderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4944D51251C141200BF0BFE /* JSONValueHolderTest.swift */; };
 		B49A02F92410BEBE00B42A25 /* AuthCategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49A02F82410BEBD00B42A25 /* AuthCategory+CategoryConfigurable.swift */; };
 		B49A02FB2410BEDF00B42A25 /* AuthCategory+Resettable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49A02FA2410BEDF00B42A25 /* AuthCategory+Resettable.swift */; };
 		B4A19DAB24101EEB00DE2E55 /* AuthCategoryBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4A19DAA24101EEB00DE2E55 /* AuthCategoryBehavior.swift */; };
@@ -324,6 +327,8 @@
 		B4EBEB64246204D000D06375 /* AuthAWSCredentialsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EBEB62246204AB00D06375 /* AuthAWSCredentialsProvider.swift */; };
 		B4EBEB66246204E400D06375 /* AuthCognitoTokensProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EBEB65246204E400D06375 /* AuthCognitoTokensProvider.swift */; };
 		B4EBEB682462050B00D06375 /* AuthCognitoIdentityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EBEB672462050B00D06375 /* AuthCognitoIdentityProvider.swift */; };
+		B4F3542C25361BC80050FEE0 /* DynamicEmbedded.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3542B25361BC80050FEE0 /* DynamicEmbedded.swift */; };
+		B4F3543525361E0E0050FEE0 /* DynamicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3543425361E0E0050FEE0 /* DynamicModel.swift */; };
 		B4F3E9F824314E2B00F23296 /* AuthCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3E9F724314E2B00F23296 /* AuthCategoryConfigurationTests.swift */; };
 		B4F3E9FA24314ECC00F23296 /* MockAuthCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3E9F924314ECC00F23296 /* MockAuthCategoryPlugin.swift */; };
 		B4F7F3E624621E4F00544B04 /* AuthAttributeResendConfirmationCodeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F7F3E524621E4F00544B04 /* AuthAttributeResendConfirmationCodeOperation.swift */; };
@@ -815,7 +820,7 @@
 		216E45EA248E914E0035E3CE /* Category.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		216E45EB248E914F0035E3CE /* Todo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
 		216E45EC248E914F0035E3CE /* Todo+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Todo+Schema.swift"; sourceTree = "<group>"; };
-		216E45F0248E971E0035E3CE /* GraphQLRequestNonModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestNonModelTests.swift; sourceTree = "<group>"; };
+		216E45F0248E971E0035E3CE /* GraphQLRequestEmbeddableTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestEmbeddableTypeTests.swift; sourceTree = "<group>"; };
 		216E460724913D430035E3CE /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		216E4609249183230035E3CE /* Section.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Section.swift; sourceTree = "<group>"; };
 		216E4619249189050035E3CE /* Embedded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Embedded.swift; sourceTree = "<group>"; };
@@ -1069,6 +1074,7 @@
 		B43CD8532411469D00BF5A60 /* AuthConfirmSignUpRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmSignUpRequest.swift; sourceTree = "<group>"; };
 		B43CD8552411472300BF5A60 /* AuthSignUpResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignUpResult.swift; sourceTree = "<group>"; };
 		B43CD857241147F900BF5A60 /* AuthUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUser.swift; sourceTree = "<group>"; };
+		B43D7C382538B532002659DB /* GraphQLRequestEmbeddableTypeJSONTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestEmbeddableTypeJSONTests.swift; sourceTree = "<group>"; };
 		B43DC737241051A200D40275 /* AuthSignUpRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignUpRequest.swift; sourceTree = "<group>"; };
 		B43DC7392410526C00D40275 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
 		B450740C2411553D0098F02D /* AuthConfirmSignUpOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmSignUpOperation.swift; sourceTree = "<group>"; };
@@ -1098,6 +1104,8 @@
 		B493E69D245394E200D9E521 /* AuthSignUpStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignUpStep.swift; sourceTree = "<group>"; };
 		B493E6A12453A29C00D9E521 /* AuthSignInStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignInStep.swift; sourceTree = "<group>"; };
 		B493E6A32453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSocialWebUISignInOperation.swift; sourceTree = "<group>"; };
+		B4944D20251C06EA00BF0BFE /* JSONValueHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValueHolder.swift; sourceTree = "<group>"; };
+		B4944D51251C141200BF0BFE /* JSONValueHolderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValueHolderTest.swift; sourceTree = "<group>"; };
 		B49A02F82410BEBD00B42A25 /* AuthCategory+CategoryConfigurable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AuthCategory+CategoryConfigurable.swift"; sourceTree = "<group>"; };
 		B49A02FA2410BEDF00B42A25 /* AuthCategory+Resettable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthCategory+Resettable.swift"; sourceTree = "<group>"; };
 		B4A19DAA24101EEB00DE2E55 /* AuthCategoryBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCategoryBehavior.swift; sourceTree = "<group>"; };
@@ -1136,6 +1144,8 @@
 		B4EBEB62246204AB00D06375 /* AuthAWSCredentialsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAWSCredentialsProvider.swift; sourceTree = "<group>"; };
 		B4EBEB65246204E400D06375 /* AuthCognitoTokensProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCognitoTokensProvider.swift; sourceTree = "<group>"; };
 		B4EBEB672462050B00D06375 /* AuthCognitoIdentityProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCognitoIdentityProvider.swift; sourceTree = "<group>"; };
+		B4F3542B25361BC80050FEE0 /* DynamicEmbedded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicEmbedded.swift; sourceTree = "<group>"; };
+		B4F3543425361E0E0050FEE0 /* DynamicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicModel.swift; sourceTree = "<group>"; };
 		B4F3E9F724314E2B00F23296 /* AuthCategoryConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCategoryConfigurationTests.swift; sourceTree = "<group>"; };
 		B4F3E9F924314ECC00F23296 /* MockAuthCategoryPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAuthCategoryPlugin.swift; sourceTree = "<group>"; };
 		B4F7F3E524621E4F00544B04 /* AuthAttributeResendConfirmationCodeOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthAttributeResendConfirmationCodeOperation.swift; sourceTree = "<group>"; };
@@ -1687,10 +1697,11 @@
 			isa = PBXGroup;
 			children = (
 				219A888623EB89C200BBC5F2 /* GraphQLRequestAnyModelWithSyncTests.swift */,
-				21A3FDB8246494CD00E76120 /* GraphQLRequestAuthRuleTests.swift */,
 				6B9F7C572526875A00F1F71C /* GraphQLRequestAuthIdentityClaimTests.swift */,
+				21A3FDB8246494CD00E76120 /* GraphQLRequestAuthRuleTests.swift */,
+				B43D7C382538B532002659DB /* GraphQLRequestEmbeddableTypeJSONTests.swift */,
+				216E45F0248E971E0035E3CE /* GraphQLRequestEmbeddableTypeTests.swift */,
 				2129BE322394828B006363A1 /* GraphQLRequestModelTests.swift */,
-				216E45F0248E971E0035E3CE /* GraphQLRequestNonModelTests.swift */,
 				214F497D2486DA5000DA616C /* GraphQLRequestOptionalAssociationTests.swift */,
 				6BEE08182533CAA600133961 /* GraphQLRequestOwnerAndGroupTests.swift */,
 				6B9F7C5125267E1500F1F71C /* MockAWSAuthUser.swift */,
@@ -1749,13 +1760,6 @@
 			path = Decorator;
 			sourceTree = "<group>";
 		};
-		213481D7242AFA58001966DE /* Support */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Support;
-			sourceTree = "<group>";
-		};
 		21409C562384C57D000A53C9 /* GraphQL */ = {
 			isa = PBXGroup;
 			children = (
@@ -1808,6 +1812,8 @@
 				216E45EB248E914F0035E3CE /* Todo.swift */,
 				216E45EC248E914F0035E3CE /* Todo+Schema.swift */,
 				216E4609249183230035E3CE /* Section.swift */,
+				B4F3542B25361BC80050FEE0 /* DynamicEmbedded.swift */,
+				B4F3543425361E0E0050FEE0 /* DynamicModel.swift */,
 			);
 			path = NonModel;
 			sourceTree = "<group>";
@@ -2249,6 +2255,14 @@
 			path = AuthPluginBehavior;
 			sourceTree = "<group>";
 		};
+		B4944D1F251C06D300BF0BFE /* JSONHelper */ = {
+			isa = PBXGroup;
+			children = (
+				B4944D20251C06EA00BF0BFE /* JSONValueHolder.swift */,
+			);
+			path = JSONHelper;
+			sourceTree = "<group>";
+		};
 		B49A02F72410BEBD00B42A25 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
@@ -2489,6 +2503,7 @@
 		B92E03A62367CE7A006CEB8D /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B4944D1F251C06D300BF0BFE /* JSONHelper */,
 				B92E03A72367CE7A006CEB8D /* Model.swift */,
 				FA8EE778238627040097E4F1 /* Model+ModelName.swift */,
 				2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */,
@@ -3385,7 +3400,7 @@
 				B99EF4B423DB020C00D821BC /* TemporalComparableTests.swift */,
 				B9AF547D23F37DF20059E6C4 /* TemporalOperationTests.swift */,
 				B91A87A323D64B0F0049A12F /* TemporalTests.swift */,
-				213481D7242AFA58001966DE /* Support */,
+				B4944D51251C141200BF0BFE /* JSONValueHolderTest.swift */,
 			);
 			path = DataStore;
 			sourceTree = "<group>";
@@ -4329,7 +4344,7 @@
 				21A3FDB62464590600E76120 /* ModelMultipleOwnerAuthRuleTests.swift in Sources */,
 				2129BE3A2394828B006363A1 /* QueryPredicateGraphQLTests.swift in Sources */,
 				2129BE48239489AC006363A1 /* MutationSyncMetadataTests.swift in Sources */,
-				216E45F1248E971E0035E3CE /* GraphQLRequestNonModelTests.swift in Sources */,
+				216E45F1248E971E0035E3CE /* GraphQLRequestEmbeddableTypeTests.swift in Sources */,
 				21A3FDAF24630D7F00E76120 /* ModelWithOwnerFieldAuthRuleTests.swift in Sources */,
 				6BDF15B825412DE600B5BE69 /* ModelWithOwnerAuthAndMultiGroup.swift in Sources */,
 				2183A56823EA4A8E00232880 /* GraphQLDeleteMutationTests.swift in Sources */,
@@ -4339,6 +4354,7 @@
 				2129BE562395CAF9006363A1 /* PaginatedListTests.swift in Sources */,
 				2183A56723EA4A8B00232880 /* GraphQLCreateMutationTests.swift in Sources */,
 				2183A56623EA4A8700232880 /* GraphQLSyncQueryTests.swift in Sources */,
+				B43D7C392538B532002659DB /* GraphQLRequestEmbeddableTypeJSONTests.swift in Sources */,
 				219A888723EB89C200BBC5F2 /* GraphQLRequestAnyModelWithSyncTests.swift in Sources */,
 				2183A56423EA4A7F00232880 /* GraphQLGetQueryTests.swift in Sources */,
 				6BBECD7423ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift in Sources */,
@@ -4449,6 +4465,7 @@
 				95DAAB21237E63370028544F /* LanguageDetectionResult.swift in Sources */,
 				FAC2351E227A053D00424678 /* APICategory.swift in Sources */,
 				B9B50DC223D9179F0086F1E1 /* TemporalFormat+DateTime.swift in Sources */,
+				B4944D21251C06EA00BF0BFE /* JSONValueHolder.swift in Sources */,
 				FAC2351B227A053D00424678 /* APICategoryBehavior.swift in Sources */,
 				B473B540245DE93100C45C72 /* AuthConfirmSignInRequest.swift in Sources */,
 				B46884102460A85200221268 /* AuthDevice.swift in Sources */,
@@ -4792,6 +4809,7 @@
 				B9AF547E23F37DF20059E6C4 /* TemporalOperationTests.swift in Sources */,
 				FAD3937D23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift in Sources */,
 				FA607FE2233D131B00DFEA24 /* AmplifyOperationHubTests.swift in Sources */,
+				B4944D52251C141200BF0BFE /* JSONValueHolderTest.swift in Sources */,
 				FAC2356A227A056600424678 /* LoggingCategoryConfigurationTests.swift in Sources */,
 				B91A87A423D64B0F0049A12F /* TemporalTests.swift in Sources */,
 				FA00F69024DA3F95003E8A71 /* HubCombineTests.swift in Sources */,
@@ -4842,8 +4860,10 @@
 				FA176ED7238503C200C5C5F9 /* HubListenerTestUtilities.swift in Sources */,
 				216E45EE248E914F0035E3CE /* Todo.swift in Sources */,
 				6BEE081D2533CCFA00133961 /* OGCScenarioBPost.swift in Sources */,
+				B4F3543525361E0E0050FEE0 /* DynamicModel.swift in Sources */,
 				21F40A3A23A294770074678E /* TestConfigHelper.swift in Sources */,
 				B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */,
+				B4F3542C25361BC80050FEE0 /* DynamicEmbedded.swift in Sources */,
 				FACA361C2327FC7D000E74F6 /* MockHubCategoryPlugin.swift in Sources */,
 				FAD3937F23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift in Sources */,
 				6BEE08252533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift in Sources */,

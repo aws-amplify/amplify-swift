@@ -88,10 +88,6 @@ Amplify requires Xcode 11.4 or higher to build.
 
 Support for SPM coming soon. Follow [#90](https://github.com/aws-amplify/amplify-ios/issues/90) for updates.
 
-### Carthage
-
-Support for Carthage coming soon. Follow [#280](https://github.com/aws-amplify/amplify-ios/issues/280) for updates.
-
 ### Development Pods
 
 You can manually install the library by cloning this repo and creating a Podfile that references your local clone of it like below:

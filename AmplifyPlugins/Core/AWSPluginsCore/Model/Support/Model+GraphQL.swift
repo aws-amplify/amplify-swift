@@ -15,9 +15,9 @@ extension Model {
 
     /// Get the `Model` values as a `Dictionary` of `String` to `Any?` that can be
     /// used as the `input` of GraphQL related operations.
-    var graphQLInput: GraphQLInput {
+    func graphQLInput(_ modelSchema: ModelSchema) -> GraphQLInput {
         var input: GraphQLInput = [:]
-        schema.fields.forEach {
+        modelSchema.fields.forEach {
             let field = $0.value
 
             // TODO how to handle associations of type "many" (i.e. cascade save)?
@@ -27,7 +27,21 @@ extension Model {
             }
 
             let name = field.graphQLName
-            let fieldValue = self[field.name] ?? nil
+            let fieldOptionalValue: Any??
+            
+            if let jsonModel = self as? JSONValueHolder {
+                fieldOptionalValue = jsonModel.jsonValue(for: field.name, modelSchema: modelSchema) ?? nil
+            } else {
+                fieldOptionalValue = self[field.name] ?? nil
+            }
+            
+            // Since the returned value is Any?? we need to do the following:
+            // - `guard` to make sure the field name exists on the model
+            // - `guard` to ensure the returned value isn't nil
+            guard let fieldValue = fieldOptionalValue else {
+                input.updateValue(nil, forKey: name)
+                return
+            }
 
             // swiftlint:disable:next syntactic_sugar
             guard case .some(Optional<Any>.some(let value)) = fieldValue else {
@@ -51,7 +65,15 @@ extension Model {
                 if case let .belongsTo(_, targetName) = field.association {
                     fieldName = targetName ?? fieldName
                 }
-                input[fieldName] = (value as? Model)?.id
+                if let modelValue = value as? Model {
+                    input[fieldName] = modelValue.id
+
+                } else if let value = value as? [String: JSONValue],
+                          case .string(let primaryKeyValue) = value[modelSchema.primaryKey.name] {
+                    input[fieldName] = primaryKeyValue
+                } else {
+                    input[fieldName] = nil
+                }
             case .embedded, .embeddedCollection:
                 if let encodable = value as? Encodable {
                     let jsonEncoder = JSONEncoder(dateEncodingStrategy: ModelDateFormatting.encodingStrategy)

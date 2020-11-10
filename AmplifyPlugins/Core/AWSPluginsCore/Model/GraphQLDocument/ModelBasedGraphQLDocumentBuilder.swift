@@ -13,25 +13,32 @@ import Amplify
 public struct ModelBasedGraphQLDocumentBuilder {
     private var decorators = [ModelBasedGraphQLDocumentDecorator]()
     private var document: SingleDirectiveGraphQLDocument
-    private let modelType: Model.Type
+    private let modelSchema: ModelSchema
 
     public init(modelName: String, operationType: GraphQLOperationType) {
-        guard let modelType = ModelRegistry.modelType(from: modelName) else {
-            preconditionFailure("Missing ModelType in ModelRegistry for model name: \(modelName)")
+        guard let modelSchema = ModelRegistry.modelSchema(from: modelName) else {
+            preconditionFailure("Missing ModelSchema in ModelRegistry for model name: \(modelName)")
         }
 
-        self.init(modelType: modelType, operationType: operationType)
+        self.init(modelSchema: modelSchema, operationType: operationType)
     }
 
+    @available(*, deprecated, message: """
+    Init with modelType is deprecated, use init with modelSchema instead.
+    """)
     public init(modelType: Model.Type, operationType: GraphQLOperationType) {
-        self.modelType = modelType
+        self.init(modelSchema: modelType.schema, operationType: operationType)
+    }
+
+    public init(modelSchema: ModelSchema, operationType: GraphQLOperationType) {
+        self.modelSchema = modelSchema
         switch operationType {
         case .query:
-            self.document = GraphQLQuery(modelType: modelType)
+            self.document = GraphQLQuery(modelSchema: modelSchema)
         case .mutation:
-            self.document = GraphQLMutation(modelType: modelType)
+            self.document = GraphQLMutation(modelSchema: modelSchema)
         case .subscription:
-            self.document = GraphQLSubscription(modelType: modelType)
+            self.document = GraphQLSubscription(modelSchema: modelSchema)
         }
     }
 
@@ -42,7 +49,7 @@ public struct ModelBasedGraphQLDocumentBuilder {
     public mutating func build() -> SingleDirectiveGraphQLDocument {
 
         let decoratedDocument = decorators.reduce(document) { doc, decorator in
-            decorator.decorate(doc, modelType: self.modelType)
+            decorator.decorate(doc, modelSchema: self.modelSchema)
         }
 
         return decoratedDocument

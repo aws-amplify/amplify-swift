@@ -8,7 +8,7 @@
 import Foundation
 
 final class AtomicDictionary<Key: Hashable, Value> {
-    let queue = DispatchQueue(label: "com.amazonaws.AtomicDictionary", target: DispatchQueue.global())
+    let lock = NSLock()
 
     private var value: [Key: Value]
 
@@ -17,48 +17,62 @@ final class AtomicDictionary<Key: Hashable, Value> {
     }
 
     var count: Int {
-        queue.sync {
-            value.count
+        lock.lock()
+        defer {
+            lock.unlock()
         }
+        return value.count
     }
 
     var keys: [Key] {
-        queue.sync {
-            Array(value.keys)
+        lock.lock()
+        defer {
+            lock.unlock()
         }
+        return Array(value.keys)
     }
 
     var values: [Value] {
-        return queue.sync {
-            Array(value.values)
+        lock.lock()
+        defer {
+            lock.unlock()
         }
+        return Array(value.values)
     }
 
     // MARK: - Functions
 
     func getValue(forKey key: Key) -> Value? {
-        queue.sync {
-            value[key]
+        lock.lock()
+        defer {
+            lock.unlock()
         }
+        return value[key]
     }
 
     func removeAll() {
-        queue.sync {
-            value = [:]
+        lock.lock()
+        defer {
+            lock.unlock()
         }
+        value = [:]
     }
 
     @discardableResult
     func removeValue(forKey key: Key) -> Value? {
-        queue.sync {
-            value.removeValue(forKey: key)
+        lock.lock()
+        defer {
+            lock.unlock()
         }
+        return value.removeValue(forKey: key)
     }
 
     func set(value: Value, forKey key: Key) {
-        queue.sync {
-            self.value[key] = value
+        lock.lock()
+        defer {
+            lock.unlock()
         }
+        self.value[key] = value
     }
 
 }

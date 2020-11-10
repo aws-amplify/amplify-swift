@@ -42,14 +42,14 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
     private let incomingSubscriptionEvents: PassthroughSubject<Event, DataStoreError>
     private let awsAuthService: AWSAuthServiceBehavior
 
-    init(modelType: Model.Type, api: APICategoryGraphQLBehavior, auth: AuthCategoryBehavior?,
+    init(modelSchema: ModelSchema, api: APICategoryGraphQLBehavior, auth: AuthCategoryBehavior?,
          awsAuthService: AWSAuthServiceBehavior? = nil) {
         self.onCreateConnected = false
         self.onUpdateConnected = false
         self.onDeleteConnected = false
         self.connectionStatusQueue = OperationQueue()
         connectionStatusQueue.name
-            = "com.amazonaws.Amplify.RemoteSyncEngine.\(modelType.modelName).IncomingAsyncSubscriptionEventPublisher"
+            = "com.amazonaws.Amplify.RemoteSyncEngine.\(modelSchema.name).IncomingAsyncSubscriptionEventPublisher"
         connectionStatusQueue.maxConcurrentOperationCount = 1
         connectionStatusQueue.isSuspended = false
 
@@ -60,7 +60,7 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
         let onCreateValueListener = onCreateValueListenerHandler(event:)
         self.onCreateValueListener = onCreateValueListener
         self.onCreateOperation = IncomingAsyncSubscriptionEventPublisher.apiSubscription(
-            for: modelType,
+            for: modelSchema,
             subscriptionType: .onCreate,
             api: api,
             auth: auth,
@@ -72,7 +72,7 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
         let onUpdateValueListener = onUpdateValueListenerHandler(event:)
         self.onUpdateValueListener = onUpdateValueListener
         self.onUpdateOperation = IncomingAsyncSubscriptionEventPublisher.apiSubscription(
-            for: modelType,
+            for: modelSchema,
             subscriptionType: .onUpdate,
             api: api,
             auth: auth,
@@ -84,7 +84,7 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
         let onDeleteValueListener = onDeleteValueListenerHandler(event:)
         self.onDeleteValueListener = onDeleteValueListener
         self.onDeleteOperation = IncomingAsyncSubscriptionEventPublisher.apiSubscription(
-            for: modelType,
+            for: modelSchema,
             subscriptionType: .onDelete,
             api: api,
             auth: auth,
@@ -153,7 +153,7 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
     }
 
     static func apiSubscription(
-        for modelType: Model.Type,
+        for modelSchema: ModelSchema,
         subscriptionType: GraphQLSubscriptionType,
         api: APICategoryGraphQLBehavior,
         auth: AuthCategoryBehavior?,
@@ -163,23 +163,23 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
     ) -> GraphQLSubscriptionOperation<Payload> {
 
         let request: GraphQLRequest<Payload>
-        if modelType.schema.hasAuthenticationRules,
+        if modelSchema.hasAuthenticationRules,
             let _ = auth,
             case .success(let tokenString) = awsAuthService.getToken(),
             case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
 
-            request = GraphQLRequest<Payload>.subscription(to: modelType,
+            request = GraphQLRequest<Payload>.subscription(to: modelSchema,
                                                            subscriptionType: subscriptionType,
                                                            claims: claims)
-        } else if modelType.schema.hasAuthenticationRules,
+        } else if modelSchema.hasAuthenticationRules,
             let oidcAuthProvider = hasOIDCAuthProviderAvailable(api: api),
             case .success(let tokenString) = oidcAuthProvider.getLatestAuthToken(),
             case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
-            request = GraphQLRequest<Payload>.subscription(to: modelType,
+            request = GraphQLRequest<Payload>.subscription(to: modelSchema,
                                                            subscriptionType: subscriptionType,
                                                            claims: claims)
         } else {
-            request = GraphQLRequest<Payload>.subscription(to: modelType, subscriptionType: subscriptionType)
+            request = GraphQLRequest<Payload>.subscription(to: modelSchema, subscriptionType: subscriptionType)
         }
 
         let operation = api.subscribe(request: request,

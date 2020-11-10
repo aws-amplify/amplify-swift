@@ -13,7 +13,7 @@ import Foundation
 //Used for testing:
 @available(iOS 13.0, *)
 typealias IncomingEventReconciliationQueueFactory =
-    ([Model.Type],
+    ([ModelSchema],
     APICategoryGraphQLBehavior,
     StorageEngineAdapter,
     AuthCategoryBehavior?,
@@ -23,8 +23,8 @@ typealias IncomingEventReconciliationQueueFactory =
 @available(iOS 13.0, *)
 final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
 
-    static let factory: IncomingEventReconciliationQueueFactory = { modelTypes, api, storageAdapter, auth, _ in
-        AWSIncomingEventReconciliationQueue(modelTypes: modelTypes,
+    static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, auth, _ in
+        AWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
                                             api: api,
                                             storageAdapter: storageAdapter,
                                             auth: auth,
@@ -38,15 +38,15 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     }
 
     private let connectionStatusSerialQueue: DispatchQueue
-    private var reconciliationQueues: [String: ModelReconciliationQueue]
-    private var reconciliationQueueConnectionStatus: [String: Bool]
+    private var reconciliationQueues: [ModelName: ModelReconciliationQueue]
+    private var reconciliationQueueConnectionStatus: [ModelName: Bool]
     private var modelReconciliationQueueFactory: ModelReconciliationQueueFactory
 
     private var isInitialized: Bool {
         reconciliationQueueConnectionStatus.count == reconciliationQueues.count
     }
 
-    init(modelTypes: [Model.Type],
+    init(modelSchemas: [ModelSchema],
          api: APICategoryGraphQLBehavior,
          storageAdapter: StorageEngineAdapter,
          auth: AuthCategoryBehavior? = nil,
@@ -56,14 +56,14 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         self.reconciliationQueues = [:]
         self.reconciliationQueueConnectionStatus = [:]
         self.modelReconciliationQueueFactory = modelReconciliationQueueFactory ??
-            AWSModelReconciliationQueue.init(modelType:storageAdapter:api:auth:incomingSubscriptionEvents:)
+            AWSModelReconciliationQueue.init(modelSchema:storageAdapter:api:auth:incomingSubscriptionEvents:)
         //TODO: Add target for SyncEngine system to help prevent thread explosion and increase performance
         // https://github.com/aws-amplify/amplify-ios/issues/399
         self.connectionStatusSerialQueue
             = DispatchQueue(label: "com.amazonaws.DataStore.AWSIncomingEventReconciliationQueue")
-        for modelType in modelTypes {
-            let modelName = modelType.modelName
-            let queue = self.modelReconciliationQueueFactory(modelType, storageAdapter, api, auth, nil)
+        for modelSchema in modelSchemas {
+            let modelName = modelSchema.name
+            let queue = self.modelReconciliationQueueFactory(modelSchema, storageAdapter, api, auth, nil)
             guard reconciliationQueues[modelName] == nil else {
                 Amplify.DataStore.log
                     .warn("Duplicate model name found: \(modelName), not subscribing")
@@ -86,8 +86,8 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         eventReconciliationQueueTopic.send(.paused)
     }
 
-    func offer(_ remoteModel: MutationSync<AnyModel>) {
-        guard let queue = reconciliationQueues[remoteModel.model.modelName] else {
+    func offer(_ remoteModel: MutationSync<AnyModel>, modelSchema: ModelSchema) {
+        guard let queue = reconciliationQueues[modelSchema.name] else {
             // TODO: Error handling
             return
         }

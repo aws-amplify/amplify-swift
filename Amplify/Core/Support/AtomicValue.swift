@@ -8,7 +8,7 @@
 import Foundation
 
 public final class AtomicValue<Value> {
-    let queue = DispatchQueue(label: "com.amazonaws.AtomicValue", target: DispatchQueue.global())
+    let lock = NSLock()
 
     var value: Value
 
@@ -17,35 +17,49 @@ public final class AtomicValue<Value> {
     }
 
     public func get() -> Value {
-        queue.sync { value }
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
+        return value
     }
 
     public func set(_ newValue: Value) {
-        queue.sync { value = newValue }
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
+        value = newValue
     }
 
     /// Sets AtomicValue to `newValue` and returns the old value
     public func getAndSet(_ newValue: Value) -> Value {
-        return queue.sync {
-            let oldValue = value
-            value = newValue
-            return oldValue
+        lock.lock()
+        defer {
+            lock.unlock()
         }
+        let oldValue = value
+        value = newValue
+        return oldValue
     }
 
     /// Performs `block` with the current value, preventing other access until the block exits.
     public func atomicallyPerform(block: (Value) -> Void) {
-        queue.sync {
-            block(value)
+        lock.lock()
+        defer {
+            lock.unlock()
         }
+        block(value)
     }
 
     /// Performs `block` with an `inout` value, preventing other access until the block exits,
     /// and enabling the block to mutate the value
     public func with(block: (inout Value) -> Void) {
-        queue.sync {
-            block(&value)
+        lock.lock()
+        defer {
+            lock.unlock()
         }
+        block(&value)
     }
 
 }

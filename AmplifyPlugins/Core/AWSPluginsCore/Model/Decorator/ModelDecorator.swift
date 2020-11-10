@@ -21,11 +21,16 @@ public struct ModelDecorator: ModelBasedGraphQLDocumentDecorator {
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
                          modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
-        var inputs = document.inputs
-        var graphQLInput = model.graphQLInput
+        decorate(document, modelSchema: modelType.schema)
+    }
 
-        if !modelType.schema.authRules.isEmpty {
-            modelType.schema.authRules.forEach { authRule in
+    public func decorate(_ document: SingleDirectiveGraphQLDocument,
+                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
+        var inputs = document.inputs
+        var graphQLInput = model.graphQLInput(modelSchema)
+
+        if !modelSchema.authRules.isEmpty {
+            modelSchema.authRules.forEach { authRule in
                 if authRule.allow == .owner {
                     let ownerField = authRule.getOwnerFieldOrDefault()
                     graphQLInput = graphQLInput.filter { (field, value) -> Bool in
