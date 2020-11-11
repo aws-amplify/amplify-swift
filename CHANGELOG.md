@@ -4,7 +4,7 @@
 
 ### Bug Fixes
 - **amplify**: change reset method (#866)
-- **datastore**: Regression bug caused by changing the public enum value (#883)
+- **datastore**: Fix regression caused by changing the public enum value (#883)
 
 ## 1.4.1 (2020-11-05)
 
