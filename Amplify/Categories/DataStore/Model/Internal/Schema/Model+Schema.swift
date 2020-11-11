@@ -40,7 +40,7 @@ extension Model {
     ///   - attributes: model attributes (aka "directives" or "annotations")
     ///   - define: the closure used to define the model attributes and fields
     /// - Returns: a valid `ModelSchema` instance
-    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
     ///   by host applications. The behavior of this may change without warning.
     public static func defineSchema(name: String? = nil,
                                     attributes: ModelAttribute...,
@@ -51,7 +51,7 @@ extension Model {
         return definition.build()
     }
 
-    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
     ///   by host applications. The behavior of this may change without warning.
     public static func rule(allow: AuthStrategy,
                             ownerField: String? = nil,

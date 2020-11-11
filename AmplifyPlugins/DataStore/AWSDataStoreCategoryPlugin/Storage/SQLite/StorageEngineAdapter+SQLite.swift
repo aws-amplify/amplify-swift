@@ -127,6 +127,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                         "Save failed due to condition did not match existing model instance.",
                         "The save will continue to fail until the model instance is updated.")
                         completion(.failure(causedBy: dataStoreError))
+
                         return
                     }
                 }

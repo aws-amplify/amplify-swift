@@ -64,6 +64,39 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                    decodePath: document.name)
     }
 
+    public static func createMutation(of model: Model, version: Int?) -> GraphQLRequest<MutationSyncResult> {
+        createMutation(of: model, modelSchema: model.schema, version: version)
+    }
+
+    public static func updateMutation(of model: Model,
+                                      where filter: GraphQLFilter?,
+                                      version: Int?) -> GraphQLRequest<MutationSyncResult> {
+        updateMutation(of: model, modelSchema: model.schema, where: filter, version: version)
+    }
+
+    public static func subscription(to modelType: Model.Type,
+                                    subscriptionType: GraphQLSubscriptionType) -> GraphQLRequest<MutationSyncResult> {
+        subscription(to: modelType.schema, subscriptionType: subscriptionType)
+    }
+
+    public static func subscription(to modelType: Model.Type,
+                                    subscriptionType: GraphQLSubscriptionType,
+                                    claims: IdentityClaimsDictionary) -> GraphQLRequest<MutationSyncResult> {
+        subscription(to: modelType.schema, subscriptionType: subscriptionType, claims: claims)
+    }
+
+    public static func syncQuery(modelType: Model.Type,
+                                 where predicate: QueryPredicate?,
+                                 limit: Int?,
+                                 nextToken: String?,
+                                 lastSync: Int?) -> GraphQLRequest<SyncQueryResult> {
+        syncQuery(modelSchema: modelType.schema,
+                         where: predicate,
+                         limit: limit,
+                         nextToken: nextToken,
+                         lastSync: lastSync)
+    }
+
     public static func createMutation(of model: Model,
                                       modelSchema: ModelSchema,
                                       version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {

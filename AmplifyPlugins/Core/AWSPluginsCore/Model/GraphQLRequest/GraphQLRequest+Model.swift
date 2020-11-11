@@ -150,6 +150,12 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
     }
 
     public static func mutation<M: Model>(of model: M,
+                                          where predicate: QueryPredicate? = nil,
+                                          type: GraphQLMutationType) -> GraphQLRequest<M> {
+        mutation(of: model, modelSchema: model.schema, where: predicate, type: type)
+    }
+
+    public static func mutation<M: Model>(of model: M,
                                           modelSchema: ModelSchema,
                                           where predicate: QueryPredicate? = nil,
                                           type: GraphQLMutationType) -> GraphQLRequest<M> {
