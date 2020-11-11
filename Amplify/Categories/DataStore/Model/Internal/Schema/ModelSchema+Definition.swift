@@ -31,7 +31,7 @@ public enum ModelFieldType {
     }
 
     public static func collection(of type: Model.Type) -> ModelFieldType {
-        return .collection(of: type.modelName)
+        .collection(of: type.modelName)
     }
 
     public var isArray: Bool {
