@@ -8,7 +8,7 @@
 import Foundation
 
 /// Defines the type of a `Model` field.
-/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public enum ModelFieldType {
 
@@ -89,7 +89,7 @@ public enum ModelFieldType {
     }
 }
 
-/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public enum ModelFieldNullability {
     case optional
@@ -105,7 +105,7 @@ public enum ModelFieldNullability {
     }
 }
 
-/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public struct ModelSchemaDefinition {
 
@@ -146,7 +146,7 @@ public struct ModelSchemaDefinition {
     }
 }
 
-/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public enum ModelFieldDefinition {
 

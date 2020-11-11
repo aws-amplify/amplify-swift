@@ -160,10 +160,10 @@ extension Array where Element == ModelSchema {
                 let associatedModelSchemas = schema.sortedFields
                     .filter { $0.isForeignKey }
                     .map { (schema) -> ModelSchema in
-                        guard let associatedSchema = ModelRegistry.modelSchema(from: schema.requiredAssociatedModel)
+                        guard let associatedSchema = ModelRegistry.modelSchema(from: schema.requiredAssociatedModelName)
                         else {
                             preconditionFailure("""
-                            Could not retrieve schema for the model \(schema.requiredAssociatedModel), verify that
+                            Could not retrieve schema for the model \(schema.requiredAssociatedModelName), verify that
                             datastore is initialized.
                             """)
                         }
