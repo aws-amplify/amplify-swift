@@ -84,17 +84,29 @@ import Foundation
 /// }
 /// ```
 ///
-/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public enum ModelAssociation {
-    case hasMany(associatedWith: String?)
-    case hasOne(associatedWith: String?)
-    case belongsTo(associatedWith: String?, targetName: String?)
+    case hasMany(associatedFieldName: String?)
+    case hasOne(associatedFieldName: String?)
+    case belongsTo(associatedFieldName: String?, targetName: String?)
 
-    public static let belongsTo: ModelAssociation = .belongsTo(associatedWith: nil, targetName: nil)
+    public static let belongsTo: ModelAssociation = .belongsTo(associatedFieldName: nil, targetName: nil)
 
     public static func belongsTo(targetName: String? = nil) -> ModelAssociation {
-        return .belongsTo(associatedWith: nil, targetName: nil)
+        return .belongsTo(associatedFieldName: nil, targetName: nil)
+    }
+
+    public static func hasMany(associatedWith: CodingKey?) -> ModelAssociation {
+        return .hasMany(associatedFieldName: associatedWith?.stringValue)
+    }
+
+    public static func hasOne(associatedWith: CodingKey?) -> ModelAssociation {
+        return .hasOne(associatedFieldName: associatedWith?.stringValue)
+    }
+
+    public static func belongsTo(associatedWith: CodingKey?, targetName: String?) -> ModelAssociation {
+        return .belongsTo(associatedFieldName: associatedWith?.stringValue, targetName: targetName)
     }
 
 }
@@ -105,6 +117,23 @@ extension ModelField {
     ///   by host applications. The behavior of this may change without warning.
     public var hasAssociation: Bool {
         return association != nil
+    }
+
+    /// If the field represents an association returns the `Model.Type`.
+    /// - seealso: `ModelFieldType`
+    /// - seealso: `ModelFieldAssociation`
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
+    @available(*, deprecated, message: """
+        Use of associated model type is deprecated, use `associatedModelName` instead.
+        """)
+    public var associatedModel: Model.Type? {
+        switch type {
+        case .model(let modelName), .collection(let modelName):
+            return ModelRegistry.modelType(from: modelName)
+        default:
+            return nil
+        }
     }
 
     /// If the field represents an association returns the `ModelName`.
@@ -130,7 +159,30 @@ extension ModelField {
     /// allows (i.e. the field is a valid relationship, such as foreign keys).
     /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
     ///   by host applications. The behavior of this may change without warning.
-    public var requiredAssociatedModel: ModelName {
+    @available(*, deprecated, message: """
+        Use of requiredAssociatedModel with Model.Type is deprecated, use `requiredAssociatedModelName`
+        that return ModelName instead.
+        """)
+    public var requiredAssociatedModel: Model.Type {
+        guard let modelType = associatedModel else  {
+            preconditionFailure("""
+            Model fields that are foreign keys must be connected to another Model.
+            Check the `ModelSchema` section of your "\(name)+Schema.swift" file.
+            """)
+        }
+        return modelType
+    }
+
+    /// This calls `associatedModelName` but enforces that the field must represent an association.
+    /// In case the field type is not a `Model` it calls `preconditionFailure`. Consumers
+    /// should fix their models in order to recover from it, since associations are only
+    /// possible between two `Model`.
+    ///
+    /// - Note: as a maintainer, make sure you use this computed property only when context
+    /// allows (i.e. the field is a valid relationship, such as foreign keys).
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
+    public var requiredAssociatedModelName: ModelName {
         guard let modelName = associatedModelName else {
             preconditionFailure("""
             Model fields that are foreign keys must be connected to another Model.
@@ -153,7 +205,7 @@ extension ModelField {
     ///   by host applications. The behavior of this may change without warning.
     public var associatedField: ModelField? {
         if hasAssociation {
-            let associatedModel = requiredAssociatedModel
+            let associatedModel = requiredAssociatedModelName
             switch association {
             case .belongsTo(let associatedKey, _):
                 // TODO handle modelName casing (convert to camelCase)
@@ -201,6 +253,23 @@ extension ModelField {
             return true
         }
         return false
+    }
+
+    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning.
+    @available(*, deprecated, message: """
+        Use `embeddedType` is deprecated, use `embeddedTypeSchema` instead.
+        """)
+    public var embeddedType: Embeddable.Type? {
+        switch type {
+        case .embedded(let type, _), .embeddedCollection(let type, _):
+            if let embeddedType = type as? Embeddable.Type {
+                return embeddedType
+            }
+            return nil
+        default:
+            return nil
+        }
     }
 
     /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly

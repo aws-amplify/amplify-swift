@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public enum ModelAttribute {
 
@@ -16,13 +16,13 @@ public enum ModelAttribute {
     case isSystem
 }
 
-/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public enum ModelFieldAttribute {
     case primaryKey
 }
 
-/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public struct ModelField {
 
@@ -55,15 +55,15 @@ public struct ModelField {
     }
 }
 
-/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public typealias ModelFields = [String: ModelField]
 
-/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public typealias ModelName = String
 
-/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public struct ModelSchema {
 

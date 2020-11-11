@@ -93,7 +93,7 @@ struct SelectStatementMetadata {
 
         func visitAssociations(node: ModelSchema, namespace: String = "root") {
             for foreignKey in node.foreignKeys {
-                let associatedModelName = foreignKey.requiredAssociatedModel
+                let associatedModelName = foreignKey.requiredAssociatedModelName
 
                 guard let associatedSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
                     preconditionFailure("""

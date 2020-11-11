@@ -8,7 +8,7 @@
 import Foundation
 
 /// Defines the type of a `Model` field.
-/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public enum ModelFieldType {
 
@@ -21,10 +21,32 @@ public enum ModelFieldType {
     case timestamp
     case bool
     case `enum`(type: EnumPersistable.Type)
-    case embedded(type: Codable.Type, schema: ModelSchema? = nil)
-    case embeddedCollection(of: Codable.Type, schema: ModelSchema? = nil)
+    case embedded(type: Codable.Type, schema: ModelSchema?)
+    case embeddedCollection(of: Codable.Type, schema: ModelSchema?)
     case model(name: ModelName)
     case collection(of: ModelName)
+
+    public static func model(type: Model.Type) -> ModelFieldType {
+        .model(name: type.modelName)
+    }
+
+    public static func collection(of type: Model.Type) -> ModelFieldType {
+        .collection(of: type.modelName)
+    }
+
+    public static func embedded(type: Codable.Type) -> ModelFieldType {
+        guard let embeddedType = type as? Embeddable.Type else {
+            return .embedded(type: type, schema: nil)
+        }
+        return .embedded(type: type, schema: embeddedType.schema)
+    }
+
+    public static func embeddedCollection(of type: Codable.Type) -> ModelFieldType {
+        guard let embeddedType = type as? Embeddable.Type else {
+            return .embedded(type: type, schema: nil)
+        }
+        return .embeddedCollection(of: type, schema: embeddedType.schema)
+    }
 
     public var isArray: Bool {
         switch self {
@@ -72,16 +94,16 @@ public enum ModelFieldType {
             return .enum(type: enumType)
         }
         if let modelType = type as? Model.Type {
-            return .model(name: modelType.modelName)
+            return .model(type: modelType)
         }
         if let embeddedType = type as? Codable.Type {
-            return .embedded(type: embeddedType, schema: nil)
+            return .embedded(type: embeddedType)
         }
         preconditionFailure("Could not create a ModelFieldType from \(String(describing: type)) MetaType")
     }
 }
 
-/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public enum ModelFieldNullability {
     case optional
@@ -97,7 +119,7 @@ public enum ModelFieldNullability {
     }
 }
 
-/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public struct ModelSchemaDefinition {
 
@@ -138,7 +160,7 @@ public struct ModelSchemaDefinition {
     }
 }
 
-/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public enum ModelFieldDefinition {
 
@@ -155,21 +177,8 @@ public enum ModelFieldDefinition {
                              attributes: [ModelFieldAttribute] = [],
                              association: ModelAssociation? = nil,
                              authRules: AuthRules = []) -> ModelFieldDefinition {
-        var modifiedType: ModelFieldType = type
-        switch type {
-        case .embedded(let codable, let schema):
-            if schema == nil, let embeddedType = codable as? Embeddable.Type {
-                modifiedType = .embedded(type: codable, schema: embeddedType.schema)
-            }
-        case .embeddedCollection(let codable, let schema):
-            if schema == nil, let embeddedType = codable as? Embeddable.Type {
-                modifiedType = .embeddedCollection(of: codable, schema: embeddedType.schema)
-            }
-        default:
-            modifiedType = type
-        }
         return .field(name: key.stringValue,
-                      type: modifiedType,
+                      type: type,
                       nullability: nullability,
                       association: association,
                       attributes: attributes,
@@ -195,8 +204,8 @@ public enum ModelFieldDefinition {
                                associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
-                      ofType: .collection(of: type.modelName),
-                      association: .hasMany(associatedWith: associatedKey.stringValue))
+                      ofType: .collection(of: type),
+                      association: .hasMany(associatedWith: associatedKey))
     }
 
     public static func hasOne(_ key: CodingKey,
@@ -205,8 +214,8 @@ public enum ModelFieldDefinition {
                               associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
-                      ofType: .model(name: type.modelName),
-                      association: .hasOne(associatedWith: associatedKey.stringValue))
+                      ofType: .model(type: type),
+                      association: .hasOne(associatedWith: associatedKey))
     }
 
     public static func belongsTo(_ key: CodingKey,
@@ -216,8 +225,8 @@ public enum ModelFieldDefinition {
                                  targetName: String? = nil) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
-                      ofType: .model(name: type.modelName),
-                      association: .belongsTo(associatedWith: associatedKey?.stringValue, targetName: targetName))
+                      ofType: .model(type: type),
+                      association: .belongsTo(associatedWith: associatedKey, targetName: targetName))
     }
 
     public var modelField: ModelField {

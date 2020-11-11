@@ -49,7 +49,7 @@ struct CreateTableStatement: SQLStatement {
 
         for (index, foreignKey) in foreignKeys.enumerated() {
             statement += "  foreign key(\"\(foreignKey.sqlName)\") "
-            let associatedModel = foreignKey.requiredAssociatedModel
+            let associatedModel = foreignKey.requiredAssociatedModelName
             guard let schema = ModelRegistry.modelSchema(from: associatedModel) else {
                 preconditionFailure("""
                 Could not retrieve schema for the model \(associatedModel), verify that datastore is initialized.
