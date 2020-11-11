@@ -14,6 +14,10 @@ extension UserAccount {
     public enum CodingKeys: String, ModelKey {
         case id
         case profile
+
+        public var modelType: Model.Type {
+            return UserAccount.self
+        }
     }
 
     public static let keys = CodingKeys.self

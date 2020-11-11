@@ -10,30 +10,34 @@ import Amplify
 import Foundation
 
 extension OGCScenarioBPost {
-  // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
-    case id
-    case title
-    case owner
-  }
+    // MARK: - CodingKeys
+    public enum CodingKeys: String, ModelKey {
+        case id
+        case title
+        case owner
 
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema
+        public var modelType: Model.Type {
+            return OGCScenarioBPost.self
+        }
+    }
 
-  public static let schema = defineSchema { model in
-    let oGCScenarioBPost = OGCScenarioBPost.keys
+    public static let keys = CodingKeys.self
+    //  MARK: - ModelSchema
 
-    model.authRules = [
-      rule(allow: .owner, ownerField: "owner", identityClaim: "cognito:username", operations: [.create, .update, .delete, .read]),
-      rule(allow: .groups, groupClaim: "cognito:groups", groups: ["Admins"], operations: [.create, .update, .delete, .read])
-    ]
+    public static let schema = defineSchema { model in
+        let oGCScenarioBPost = OGCScenarioBPost.keys
 
-    model.pluralName = "OGCScenarioBPosts"
+        model.authRules = [
+            rule(allow: .owner, ownerField: "owner", identityClaim: "cognito:username", operations: [.create, .update, .delete, .read]),
+            rule(allow: .groups, groupClaim: "cognito:groups", groups: ["Admins"], operations: [.create, .update, .delete, .read])
+        ]
 
-    model.fields(
-      .id(),
-      .field(oGCScenarioBPost.title, is: .required, ofType: .string),
-      .field(oGCScenarioBPost.owner, is: .optional, ofType: .string)
-    )
+        model.pluralName = "OGCScenarioBPosts"
+
+        model.fields(
+            .id(),
+            .field(oGCScenarioBPost.title, is: .required, ofType: .string),
+            .field(oGCScenarioBPost.owner, is: .optional, ofType: .string)
+        )
     }
 }

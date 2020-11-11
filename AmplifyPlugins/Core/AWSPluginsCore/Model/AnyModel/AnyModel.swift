@@ -31,6 +31,10 @@ extension AnyModel {
         case id
         case instance
         case modelName
+
+        public var modelType: Model.Type {
+            return AnyModel.self
+        }
     }
 
     public static let keys = CodingKeys.self

@@ -32,24 +32,35 @@ import Foundation
 ///     post.content != nil
 /// })
 /// ```
-public protocol ModelKey: CodingKey, CaseIterable, QueryFieldOperation {}
+public protocol ModelKey: CodingKey, CaseIterable, QueryFieldOperation {
+    var modelType: Model.Type { get }
+}
 
 extension CodingKey where Self: ModelKey {
 
+    var columnName: String {
+        switch modelType.schema.field(withName: stringValue)?.association {
+        case .belongsTo(_, let targetName):
+            return targetName!
+        default:
+            return stringValue
+        }
+    }
+
     // MARK: - beginsWith
     public func beginsWith(_ value: String) -> QueryPredicateOperation {
-        return field(stringValue).beginsWith(value)
+        return field(columnName).beginsWith(value)
     }
 
     // MARK: - between
     public func between(start: Persistable, end: Persistable) -> QueryPredicateOperation {
-        return field(stringValue).between(start: start, end: end)
+        return field(columnName).between(start: start, end: end)
     }
 
     // MARK: - contains
 
     public func contains(_ value: String) -> QueryPredicateOperation {
-        return field(stringValue).contains(value)
+        return field(columnName).contains(value)
     }
 
     public static func ~= (key: Self, value: String) -> QueryPredicateOperation {
@@ -59,14 +70,15 @@ extension CodingKey where Self: ModelKey {
     // MARK: - eq
 
     public func eq(_ value: Persistable?) -> QueryPredicateOperation {
-        return field(stringValue).eq(value)
+        return field(columnName).eq(value)
     }
 
     public func eq(_ value: EnumPersistable) -> QueryPredicateOperation {
-        return field(stringValue).eq(value)
+        return field(columnName).eq(value)
     }
 
     public static func == (key: Self, value: Persistable?) -> QueryPredicateOperation {
+
         return key.eq(value)
     }
 
@@ -77,7 +89,7 @@ extension CodingKey where Self: ModelKey {
     // MARK: - ge
 
     public func ge(_ value: Persistable) -> QueryPredicateOperation {
-        return field(stringValue).ge(value)
+        return field(columnName).ge(value)
     }
 
     public static func >= (key: Self, value: Persistable) -> QueryPredicateOperation {
@@ -87,7 +99,7 @@ extension CodingKey where Self: ModelKey {
     // MARK: - gt
 
     public func gt(_ value: Persistable) -> QueryPredicateOperation {
-        return field(stringValue).gt(value)
+        return field(columnName).gt(value)
     }
 
     public static func > (key: Self, value: Persistable) -> QueryPredicateOperation {
@@ -97,7 +109,7 @@ extension CodingKey where Self: ModelKey {
     // MARK: - le
 
     public func le(_ value: Persistable) -> QueryPredicateOperation {
-        return field(stringValue).le(value)
+        return field(columnName).le(value)
     }
 
     public static func <= (key: Self, value: Persistable) -> QueryPredicateOperation {
@@ -107,7 +119,7 @@ extension CodingKey where Self: ModelKey {
     // MARK: - lt
 
     public func lt(_ value: Persistable) -> QueryPredicateOperation {
-        return field(stringValue).lt(value)
+        return field(columnName).lt(value)
     }
 
     public static func < (key: Self, value: Persistable) -> QueryPredicateOperation {
@@ -117,11 +129,11 @@ extension CodingKey where Self: ModelKey {
     // MARK: - ne
 
     public func ne(_ value: Persistable?) -> QueryPredicateOperation {
-        return field(stringValue).ne(value)
+        return field(columnName).ne(value)
     }
 
     public func ne(_ value: EnumPersistable) -> QueryPredicateOperation {
-        return field(stringValue).ne(value)
+        return field(columnName).ne(value)
     }
 
     public static func != (key: Self, value: Persistable?) -> QueryPredicateOperation {

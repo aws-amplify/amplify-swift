@@ -82,6 +82,10 @@ extension DynamicModel {
     public enum CodingKeys: String, ModelKey {
         case id
         case values
+
+        public var modelType: Model.Type {
+            return DynamicModel.self
+        }
     }
 
     public static let keys = CodingKeys.self

@@ -20,6 +20,10 @@ public struct MockSynced: Model {
 
     public enum CodingKeys: String, ModelKey {
         case id
+
+        public var modelType: Model.Type {
+            return MockSynced.self
+        }
     }
 
     public static let keys = CodingKeys.self
@@ -46,6 +50,10 @@ public struct MockUnsynced: Model {
 
     public enum CodingKeys: String, ModelKey {
         case id
+
+        public var modelType: Model.Type {
+            return MockUnsynced.self
+        }
     }
 
     public static let keys = CodingKeys.self

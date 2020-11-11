@@ -14,6 +14,10 @@ extension Author {
     public enum CodingKeys: String, ModelKey {
         case id
         case books
+
+        public var modelType: Model.Type {
+            return Author.self
+        }
     }
 
     public static let keys = CodingKeys.self

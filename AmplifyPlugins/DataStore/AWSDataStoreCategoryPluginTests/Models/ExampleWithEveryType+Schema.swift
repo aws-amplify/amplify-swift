@@ -22,6 +22,10 @@ extension ExampleWithEveryType {
         case enumField
         case nonModelField
         case arrayOfStringsField
+
+        public var modelType: Model.Type {
+            return ExampleWithEveryType.self
+        }
     }
 
     public static let keys = CodingKeys.self
