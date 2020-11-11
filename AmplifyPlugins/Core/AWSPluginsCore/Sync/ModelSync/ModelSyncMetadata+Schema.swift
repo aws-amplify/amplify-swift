@@ -15,7 +15,7 @@ extension ModelSyncMetadata {
     public enum CodingKeys: String, ModelKey {
         case id
         case lastSync
-        
+
         public var modelType: Model.Type {
             return ModelSyncMetadata.self
         }

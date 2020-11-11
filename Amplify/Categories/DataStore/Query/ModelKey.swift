@@ -78,7 +78,6 @@ extension CodingKey where Self: ModelKey {
     }
 
     public static func == (key: Self, value: Persistable?) -> QueryPredicateOperation {
-
         return key.eq(value)
     }
 

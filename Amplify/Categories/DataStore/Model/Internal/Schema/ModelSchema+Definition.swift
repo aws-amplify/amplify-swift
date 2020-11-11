@@ -121,16 +121,6 @@ public struct ModelSchemaDefinition {
     public mutating func fields(_ fields: ModelFieldDefinition...) {
         fields.forEach { definition in
             let field = definition.modelField
-//            switch field.association {
-//            case .belongsTo(_, let targetName):
-//                guard let targetName = targetName else {
-//                    return
-//                }
-//                self.fields[targetName] = field
-//                return
-//            default:
-//                break
-//            }
             self.fields[field.name] = field
         }
     }
