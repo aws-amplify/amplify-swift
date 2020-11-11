@@ -27,7 +27,7 @@ public enum ModelFieldType {
     case collection(of: ModelName)
 
     public static func model(type: Model.Type) -> ModelFieldType {
-        return .model(name: type.modelName)
+        .model(name: type.modelName)
     }
 
     public static func collection(of type: Model.Type) -> ModelFieldType {
