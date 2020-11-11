@@ -41,7 +41,7 @@ extension CodingKey where Self: ModelKey {
     var columnName: String {
         switch modelType.schema.field(withName: stringValue)?.association {
         case .belongsTo(_, let targetName):
-            return targetName!
+            return targetName ?? stringValue
         default:
             return stringValue
         }
