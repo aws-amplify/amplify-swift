@@ -21,8 +21,8 @@ public enum ModelFieldType {
     case timestamp
     case bool
     case `enum`(type: EnumPersistable.Type)
-    case embedded(type: Codable.Type, schema: ModelSchema? = nil)
-    case embeddedCollection(of: Codable.Type, schema: ModelSchema? = nil)
+    case embedded(type: Codable.Type, schema: ModelSchema?)
+    case embeddedCollection(of: Codable.Type, schema: ModelSchema?)
     case model(name: ModelName)
     case collection(of: ModelName)
 
@@ -32,6 +32,20 @@ public enum ModelFieldType {
 
     public static func collection(of type: Model.Type) -> ModelFieldType {
         .collection(of: type.modelName)
+    }
+
+    public static func embedded(type: Codable.Type) -> ModelFieldType {
+        guard let embeddedType = type as? Embeddable.Type else {
+            return .embedded(type: type, schema: nil)
+        }
+        return .embedded(type: type, schema: embeddedType.schema)
+    }
+
+    public static func embeddedCollection(of type: Codable.Type) -> ModelFieldType {
+        guard let embeddedType = type as? Embeddable.Type else {
+            return .embedded(type: type, schema: nil)
+        }
+        return .embeddedCollection(of: type, schema: embeddedType.schema)
     }
 
     public var isArray: Bool {
@@ -83,7 +97,7 @@ public enum ModelFieldType {
             return .model(type: modelType)
         }
         if let embeddedType = type as? Codable.Type {
-            return .embedded(type: embeddedType, schema: nil)
+            return .embedded(type: embeddedType)
         }
         preconditionFailure("Could not create a ModelFieldType from \(String(describing: type)) MetaType")
     }
@@ -163,21 +177,8 @@ public enum ModelFieldDefinition {
                              attributes: [ModelFieldAttribute] = [],
                              association: ModelAssociation? = nil,
                              authRules: AuthRules = []) -> ModelFieldDefinition {
-        var modifiedType: ModelFieldType = type
-        switch type {
-        case .embedded(let codable, let schema):
-            if schema == nil, let embeddedType = codable as? Embeddable.Type {
-                modifiedType = .embedded(type: codable, schema: embeddedType.schema)
-            }
-        case .embeddedCollection(let codable, let schema):
-            if schema == nil, let embeddedType = codable as? Embeddable.Type {
-                modifiedType = .embeddedCollection(of: codable, schema: embeddedType.schema)
-            }
-        default:
-            modifiedType = type
-        }
         return .field(name: key.stringValue,
-                      type: modifiedType,
+                      type: type,
                       nullability: nullability,
                       association: association,
                       attributes: attributes,
