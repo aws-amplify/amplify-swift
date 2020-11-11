@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.4.2 (2020-11-11)
+
+### Bug Fixes
+
+- **datastore**: Regression bug caused by changing the public enum value (#883)
+
 ## 1.4.1 (2020-11-05)
 
 ### Bug Fixes
