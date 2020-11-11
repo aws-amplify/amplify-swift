@@ -65,7 +65,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
     }
 
     public static func createMutation(of model: Model, version: Int?) -> GraphQLRequest<MutationSyncResult> {
-        return createMutation(of: model, modelSchema: model.schema, version: version)
+        createMutation(of: model, modelSchema: model.schema, version: version)
     }
 
     public static func updateMutation(of model: Model,
