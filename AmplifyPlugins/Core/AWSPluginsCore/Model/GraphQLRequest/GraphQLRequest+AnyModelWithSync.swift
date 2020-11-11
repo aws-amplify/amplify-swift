@@ -71,7 +71,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
     public static func updateMutation(of model: Model,
                                       where filter: GraphQLFilter?,
                                       version: Int?) -> GraphQLRequest<MutationSyncResult> {
-        return updateMutation(of: model, modelSchema: model.schema, where: filter, version: version)
+        updateMutation(of: model, modelSchema: model.schema, where: filter, version: version)
     }
 
     public static func subscription(to modelType: Model.Type,
