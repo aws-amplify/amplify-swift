@@ -64,32 +64,25 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                    decodePath: document.name)
     }
 
-    public static func createMutation(of model: Model,
-                                      version: Int?) -> GraphQLRequest<MutationSyncResult> {
+    public static func createMutation(of model: Model, version: Int?) -> GraphQLRequest<MutationSyncResult> {
         return createMutation(of: model, modelSchema: model.schema, version: version)
     }
 
     public static func updateMutation(of model: Model,
                                       where filter: GraphQLFilter?,
                                       version: Int?) -> GraphQLRequest<MutationSyncResult> {
-        return updateMutation(of: model,
-                              modelSchema: model.schema,
-                              where: filter,
-                              version: version)
+        return updateMutation(of: model, modelSchema: model.schema, where: filter, version: version)
     }
 
     public static func subscription(to modelType: Model.Type,
                                     subscriptionType: GraphQLSubscriptionType) -> GraphQLRequest<MutationSyncResult> {
-
         return subscription(to: modelType.schema, subscriptionType: subscriptionType)
     }
 
     public static func subscription(to modelType: Model.Type,
                                     subscriptionType: GraphQLSubscriptionType,
                                     claims: IdentityClaimsDictionary) -> GraphQLRequest<MutationSyncResult> {
-        return subscription(to: modelType.schema,
-                            subscriptionType: subscriptionType,
-                            claims: claims)
+        return subscription(to: modelType.schema, subscriptionType: subscriptionType, claims: claims)
     }
 
     public static func syncQuery(modelType: Model.Type,
