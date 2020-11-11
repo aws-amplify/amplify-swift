@@ -76,7 +76,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
     public static func subscription(to modelType: Model.Type,
                                     subscriptionType: GraphQLSubscriptionType) -> GraphQLRequest<MutationSyncResult> {
-        return subscription(to: modelType.schema, subscriptionType: subscriptionType)
+        subscription(to: modelType.schema, subscriptionType: subscriptionType)
     }
 
     public static func subscription(to modelType: Model.Type,
