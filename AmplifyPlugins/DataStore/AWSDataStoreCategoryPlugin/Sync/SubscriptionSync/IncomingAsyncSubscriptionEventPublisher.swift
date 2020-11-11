@@ -42,7 +42,10 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
     private let incomingSubscriptionEvents: PassthroughSubject<Event, DataStoreError>
     private let awsAuthService: AWSAuthServiceBehavior
 
-    init(modelSchema: ModelSchema, api: APICategoryGraphQLBehavior, auth: AuthCategoryBehavior?,
+    init(modelSchema: ModelSchema,
+         api: APICategoryGraphQLBehavior,
+         configuration: DataStoreConfiguration,
+         auth: AuthCategoryBehavior?,
          awsAuthService: AWSAuthServiceBehavior? = nil) {
         self.onCreateConnected = false
         self.onUpdateConnected = false

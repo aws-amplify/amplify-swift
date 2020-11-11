@@ -15,6 +15,7 @@ import Foundation
 typealias ModelReconciliationQueueFactory = (
     ModelSchema,
     StorageEngineAdapter,
+    DataStoreConfiguration,
     APICategoryGraphQLBehavior,
     AuthCategoryBehavior?,
     IncomingSubscriptionEventPublisher?
@@ -73,6 +74,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
     init(modelSchema: ModelSchema,
          storageAdapter: StorageEngineAdapter?,
+         configuration: DataStoreConfiguration,
          api: APICategoryGraphQLBehavior,
          auth: AuthCategoryBehavior?,
          incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
@@ -96,7 +98,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         incomingSubscriptionEventQueue.isSuspended = true
 
         let resolvedIncomingSubscriptionEvents = incomingSubscriptionEvents ??
-            AWSIncomingSubscriptionEventPublisher(modelSchema: modelSchema, api: api, auth: auth)
+            AWSIncomingSubscriptionEventPublisher(modelSchema: modelSchema, api: api, configuration: configuration, auth: auth)
         self.incomingSubscriptionEvents = resolvedIncomingSubscriptionEvents
         self.reconcileAndLocalSaveOperationSinks = AtomicValue(initialValue: Set<AnyCancellable?>())
         self.incomingEventsSink = resolvedIncomingSubscriptionEvents

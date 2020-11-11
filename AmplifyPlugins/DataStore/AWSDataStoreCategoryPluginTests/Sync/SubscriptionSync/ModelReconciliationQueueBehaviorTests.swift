@@ -28,6 +28,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
+                                                configuration: configuration,
                                                 api: apiPlugin,
                                                 auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
@@ -75,6 +76,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
+                                                configuration: configuration,
                                                 api: apiPlugin,
                                                 auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
@@ -168,6 +170,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
+                                                configuration: configuration,
                                                 api: apiPlugin,
                                                 auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
@@ -238,6 +241,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
+                                                configuration: configuration,
                                                 api: apiPlugin,
                                                 auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)

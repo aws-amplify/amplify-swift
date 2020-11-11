@@ -24,6 +24,7 @@ class MockModelReconciliationQueue: ModelReconciliationQueue {
 
     init(modelSchema: ModelSchema,
          storageAdapter: StorageEngineAdapter?,
+         configuration: DataStoreConfiguration,
          api: APICategoryGraphQLBehavior,
          auth: AuthCategoryBehavior?,
          incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
