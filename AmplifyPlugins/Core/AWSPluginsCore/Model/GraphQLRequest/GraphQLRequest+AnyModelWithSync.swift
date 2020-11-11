@@ -90,7 +90,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                  limit: Int?,
                                  nextToken: String?,
                                  lastSync: Int?) -> GraphQLRequest<SyncQueryResult> {
-        return syncQuery(modelSchema: modelType.schema,
+        syncQuery(modelSchema: modelType.schema,
                          where: predicate,
                          limit: limit,
                          nextToken: nextToken,
