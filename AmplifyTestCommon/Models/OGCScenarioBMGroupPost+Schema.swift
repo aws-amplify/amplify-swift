@@ -15,10 +15,6 @@ extension OGCScenarioBMGroupPost {
         case id
         case title
         case owner
-
-        public var modelName: String {
-            return "OGCScenarioBMGroupPost"
-        }
     }
 
     public static let keys = CodingKeys.self

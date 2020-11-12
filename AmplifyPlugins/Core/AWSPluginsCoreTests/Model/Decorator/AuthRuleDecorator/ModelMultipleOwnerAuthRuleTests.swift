@@ -37,10 +37,6 @@ public struct ModelMultipleOwner: Model {
         case id
         case content
         case editors
-
-        public var modelName: String {
-            return "ModelMultipleOwner"
-        }
     }
     public static let keys = CodingKeys.self
 

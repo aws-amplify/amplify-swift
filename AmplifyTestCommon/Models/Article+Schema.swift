@@ -17,10 +17,6 @@ extension Article {
         case createdAt
         case owner
         case authorNotes
-
-        public var modelName: String {
-            return "Article"
-        }
     }
 
     public static let keys = CodingKeys.self

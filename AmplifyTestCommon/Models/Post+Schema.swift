@@ -21,10 +21,6 @@ extension Post {
         case rating
         case status
         case comments
-
-        public var modelName: String {
-            return "Post"
-        }
     }
 
     public static let keys = CodingKeys.self

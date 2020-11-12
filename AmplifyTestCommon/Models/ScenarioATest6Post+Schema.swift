@@ -14,10 +14,6 @@ extension ScenarioATest6Post {
     public enum CodingKeys: String, ModelKey {
         case id
         case title
-
-        public var modelName: String {
-            return "ScenarioATest6Post"
-        }
     }
 
     public static let keys = CodingKeys.self

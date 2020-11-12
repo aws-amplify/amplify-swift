@@ -36,10 +36,6 @@ public struct ModelWithOwnerField: Model {
         case id
         case content
         case author
-
-        public var modelName: String {
-            return "ModelWithOwnerField"
-        }
     }
     public static let keys = CodingKeys.self
 

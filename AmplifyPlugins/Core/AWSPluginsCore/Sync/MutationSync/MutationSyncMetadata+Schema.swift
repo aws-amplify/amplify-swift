@@ -17,10 +17,6 @@ extension MutationSyncMetadata {
         case deleted
         case lastChangedAt
         case version
-
-        public var modelName: String {
-            return "MutationSyncMetadata"
-        }
     }
 
     public static let keys = CodingKeys.self

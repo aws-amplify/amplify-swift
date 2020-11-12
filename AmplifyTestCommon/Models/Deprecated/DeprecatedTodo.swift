@@ -45,10 +45,6 @@ extension DeprecatedTodo {
         case id
         case description
         case note
-
-        public var modelName: String {
-            return "DeprecatedTodo"
-        }
     }
 
     public static let keys = CodingKeys.self

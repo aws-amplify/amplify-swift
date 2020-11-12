@@ -31,10 +31,6 @@ public struct ModelReadUpdateField: Model {
     public enum CodingKeys: String, ModelKey {
         case id
         case content
-
-        public var modelName: String {
-            return "ModelReadUpdateField"
-        }
     }
     public static let keys = CodingKeys.self
 

@@ -18,10 +18,6 @@ extension MutationEvent {
         case version
         case inProcess
         case graphQLFilterJSON
-
-        public var modelName: String {
-            return "MutationEvent"
-        }
     }
 
     public static let keys = CodingKeys.self

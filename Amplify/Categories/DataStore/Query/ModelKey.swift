@@ -36,6 +36,10 @@ public protocol ModelKey: CodingKey, CaseIterable, QueryFieldOperation {
     var modelName: String { get }
 }
 
+extension ModelKey {
+    public var modelName: String { "" }
+}
+
 extension CodingKey where Self: ModelKey {
 
     var columnName: String {

@@ -16,10 +16,6 @@ extension User {
         case name
         case following
         case followers
-
-        public var modelName: String {
-            return "User"
-        }
     }
 
     public static let keys = CodingKeys.self

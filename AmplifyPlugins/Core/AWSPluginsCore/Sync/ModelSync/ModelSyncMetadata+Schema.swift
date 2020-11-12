@@ -15,10 +15,6 @@ extension ModelSyncMetadata {
     public enum CodingKeys: String, ModelKey {
         case id
         case lastSync
-
-        public var modelName: String {
-            return "ModelSyncMetadata"
-        }
     }
 
     public static let keys = CodingKeys.self

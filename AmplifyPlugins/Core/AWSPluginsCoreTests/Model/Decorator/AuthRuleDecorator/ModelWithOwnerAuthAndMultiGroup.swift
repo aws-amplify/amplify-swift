@@ -46,10 +46,6 @@ public struct OIDCMultiGroupPost: Model {
         case id
         case title
         case owner
-
-        public var modelName: String {
-            return "OIDCMultiGroupPost"
-        }
     }
 
     public static let keys = CodingKeys.self

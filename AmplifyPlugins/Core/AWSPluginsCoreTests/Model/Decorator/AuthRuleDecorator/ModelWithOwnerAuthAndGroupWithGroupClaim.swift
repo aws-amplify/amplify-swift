@@ -45,10 +45,6 @@ public struct OIDCGroupPost: Model {
         case id
         case title
         case owner
-
-        public var modelName: String {
-            return "OIDCGroupPost"
-        }
     }
 
     public static let keys = CodingKeys.self
