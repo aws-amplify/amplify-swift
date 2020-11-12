@@ -62,11 +62,6 @@ extension DynamicEmbedded {
 
     public enum CodingKeys: String, ModelKey {
         case values
-
-        public var modelName: String {
-            // swiftlint:disable:next force_cast
-            return "DynamicEmbedded"
-        }
     }
 
     public static let keys = CodingKeys.self

@@ -14,10 +14,6 @@ extension Author {
     public enum CodingKeys: String, ModelKey {
         case id
         case books
-
-        public var modelName: String {
-            return "Author"
-        }
     }
 
     public static let keys = CodingKeys.self
