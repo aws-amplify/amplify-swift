@@ -18,8 +18,8 @@ extension MutationSyncMetadata {
         case lastChangedAt
         case version
 
-        public var modelType: Model.Type {
-            return MutationSyncMetadata.self
+        public var modelName: String {
+            return "MutationSyncMetadata"
         }
     }
 

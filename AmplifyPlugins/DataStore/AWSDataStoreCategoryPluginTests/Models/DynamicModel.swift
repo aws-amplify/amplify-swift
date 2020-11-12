@@ -83,8 +83,8 @@ extension DynamicModel {
         case id
         case values
 
-        public var modelType: Model.Type {
-            return DynamicModel.self
+        public var modelName: String {
+            return "DynamicModel"
         }
     }
 

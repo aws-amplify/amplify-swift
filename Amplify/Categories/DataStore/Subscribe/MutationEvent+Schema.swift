@@ -19,8 +19,8 @@ extension MutationEvent {
         case inProcess
         case graphQLFilterJSON
 
-        public var modelType: Model.Type {
-            return MutationEvent.self
+        public var modelName: String {
+            return "MutationEvent"
         }
     }
 

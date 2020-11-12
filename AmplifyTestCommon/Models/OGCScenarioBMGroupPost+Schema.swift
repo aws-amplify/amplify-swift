@@ -16,8 +16,8 @@ extension OGCScenarioBMGroupPost {
         case title
         case owner
 
-        public var modelType: Model.Type {
-            return OGCScenarioBMGroupPost.self
+        public var modelName: String {
+            return "OGCScenarioBMGroupPost"
         }
     }
 

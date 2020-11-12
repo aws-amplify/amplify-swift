@@ -15,8 +15,8 @@ extension UserProfile {
         case id
         case account
 
-        public var modelType: Model.Type {
-            return UserProfile.self
+        public var modelName: String {
+            return "UserProfile"
         }
     }
 

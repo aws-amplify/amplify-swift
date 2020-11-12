@@ -15,8 +15,8 @@ extension ScenarioATest6Post {
         case id
         case title
 
-        public var modelType: Model.Type {
-            return ScenarioATest6Post.self
+        public var modelName: String {
+            return "ScenarioATest6Post"
         }
     }
 

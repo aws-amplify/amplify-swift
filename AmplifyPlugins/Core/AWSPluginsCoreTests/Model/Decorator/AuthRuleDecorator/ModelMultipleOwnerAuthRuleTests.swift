@@ -38,8 +38,8 @@ public struct ModelMultipleOwner: Model {
         case content
         case editors
 
-        public var modelType: Model.Type {
-            return ModelMultipleOwner.self
+        public var modelName: String {
+            return "ModelMultipleOwner"
         }
     }
     public static let keys = CodingKeys.self

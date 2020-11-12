@@ -21,8 +21,8 @@ public struct MockSynced: Model {
     public enum CodingKeys: String, ModelKey {
         case id
 
-        public var modelType: Model.Type {
-            return MockSynced.self
+        public var modelName: String {
+            return "MockSynced"
         }
     }
 
@@ -51,8 +51,8 @@ public struct MockUnsynced: Model {
     public enum CodingKeys: String, ModelKey {
         case id
 
-        public var modelType: Model.Type {
-            return MockUnsynced.self
+        public var modelName: String {
+            return "MockUnsynced"
         }
     }
 

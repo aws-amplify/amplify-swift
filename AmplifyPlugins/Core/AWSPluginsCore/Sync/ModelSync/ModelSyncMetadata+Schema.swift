@@ -16,8 +16,8 @@ extension ModelSyncMetadata {
         case id
         case lastSync
 
-        public var modelType: Model.Type {
-            return ModelSyncMetadata.self
+        public var modelName: String {
+            return "ModelSyncMetadata"
         }
     }
 

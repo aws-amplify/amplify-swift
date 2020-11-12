@@ -16,8 +16,8 @@ extension UserFollowing {
         case user
         case followingUser
 
-        public var modelType: Model.Type {
-            return UserFollowing.self
+        public var modelName: String {
+            return "UserFollowing"
         }
     }
 

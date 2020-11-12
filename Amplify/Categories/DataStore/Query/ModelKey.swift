@@ -33,13 +33,16 @@ import Foundation
 /// })
 /// ```
 public protocol ModelKey: CodingKey, CaseIterable, QueryFieldOperation {
-    var modelType: Model.Type { get }
+    var modelName: String { get }
 }
 
 extension CodingKey where Self: ModelKey {
 
     var columnName: String {
-        switch modelType.schema.field(withName: stringValue)?.association {
+        guard let modelSchema: ModelSchema = ModelRegistry.modelSchema(from: modelName) else {
+            return stringValue
+        }
+        switch modelSchema.field(withName: stringValue)?.association {
         case .belongsTo(_, let targetName):
             return targetName ?? stringValue
         default:

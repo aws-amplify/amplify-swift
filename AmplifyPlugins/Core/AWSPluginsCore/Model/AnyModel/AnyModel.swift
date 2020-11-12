@@ -32,8 +32,8 @@ extension AnyModel {
         case instance
         case modelName
 
-        public var modelType: Model.Type {
-            return AnyModel.self
+        public var modelName: String {
+            return "AnyModel"
         }
     }
 

@@ -23,8 +23,8 @@ extension ExampleWithEveryType {
         case nonModelField
         case arrayOfStringsField
 
-        public var modelType: Model.Type {
-            return ExampleWithEveryType.self
+        public var modelName: String {
+            return "ExampleWithEveryType"
         }
     }
 

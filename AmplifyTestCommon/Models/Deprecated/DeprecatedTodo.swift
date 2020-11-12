@@ -46,8 +46,8 @@ extension DeprecatedTodo {
         case description
         case note
 
-        public var modelType: Model.Type {
-            return DeprecatedTodo.self
+        public var modelName: String {
+            return "DeprecatedTodo"
         }
     }
 

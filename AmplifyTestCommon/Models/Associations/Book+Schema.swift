@@ -15,8 +15,8 @@ extension Book {
         case id
         case authors
 
-        public var modelType: Model.Type {
-            return Book.self
+        public var modelName: String {
+            return "Book"
         }
     }
 

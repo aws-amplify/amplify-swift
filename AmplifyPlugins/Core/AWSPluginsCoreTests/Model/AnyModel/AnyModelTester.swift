@@ -29,8 +29,8 @@ extension AnyModelTester {
         case stringProperty
         case intProperty
 
-        public var modelType: Model.Type {
-            return AnyModelTester.self
+        public var modelName: String {
+            return "AnyModelTester"
         }
     }
 

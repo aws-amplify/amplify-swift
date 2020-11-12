@@ -17,8 +17,8 @@ extension Comment {
         case createdAt
         case post
 
-        public var modelType: Model.Type {
-            return Comment.self
+        public var modelName: String {
+            return "Comment"
         }
     }
 

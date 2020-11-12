@@ -47,8 +47,8 @@ public struct OIDCMultiGroupPost: Model {
         case title
         case owner
 
-        public var modelType: Model.Type {
-            return OIDCMultiGroupPost.self
+        public var modelName: String {
+            return "OIDCMultiGroupPost"
         }
     }
 

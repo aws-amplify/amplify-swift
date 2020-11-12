@@ -12,11 +12,13 @@ import Amplify
 class CodingKeysTests: XCTestCase {
 
     func testSchemaHasCorrectColumnName() throws {
+        ModelRegistry.register(modelType: Comment.self)
         let commentQPO: QueryPredicateOperation = Comment.keys.id == "1234"
         XCTAssertEqual(commentQPO.field, "id")
     }
 
     func testSchemaWithBelongsToHasCorrectColumnName() throws {
+        ModelRegistry.register(modelType: Comment.self)
         let commentQPO: QueryPredicateOperation = Comment.keys.post == "5678"
         XCTAssertEqual(commentQPO.field, "commentPostId")
     }

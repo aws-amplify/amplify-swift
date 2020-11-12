@@ -37,8 +37,8 @@ public struct ModelWithOwnerField: Model {
         case content
         case author
 
-        public var modelType: Model.Type {
-            return ModelWithOwnerField.self
+        public var modelName: String {
+            return "ModelWithOwnerField"
         }
     }
     public static let keys = CodingKeys.self

@@ -16,8 +16,8 @@ extension OGCScenarioBPost {
         case title
         case owner
 
-        public var modelType: Model.Type {
-            return OGCScenarioBPost.self
+        public var modelName: String {
+            return "OGCScenarioBPost"
         }
     }
 

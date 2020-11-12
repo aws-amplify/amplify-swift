@@ -19,8 +19,8 @@ extension Todo {
         case section
         case stickies
 
-        public var modelType: Model.Type {
-            return Todo.self
+        public var modelName: String {
+            return "Todo"
         }
     }
 

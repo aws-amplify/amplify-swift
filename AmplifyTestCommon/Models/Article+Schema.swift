@@ -18,8 +18,8 @@ extension Article {
         case owner
         case authorNotes
 
-        public var modelType: Model.Type {
-            return Article.self
+        public var modelName: String {
+            return "Article"
         }
     }
 

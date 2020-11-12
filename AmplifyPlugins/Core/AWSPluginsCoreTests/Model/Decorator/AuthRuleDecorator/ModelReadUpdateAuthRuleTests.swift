@@ -32,8 +32,8 @@ public struct ModelReadUpdateField: Model {
         case id
         case content
 
-        public var modelType: Model.Type {
-            return ModelReadUpdateField.self
+        public var modelName: String {
+            return "ModelReadUpdateField"
         }
     }
     public static let keys = CodingKeys.self

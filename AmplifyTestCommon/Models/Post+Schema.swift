@@ -22,8 +22,8 @@ extension Post {
         case status
         case comments
 
-        public var modelType: Model.Type {
-            return Post.self
+        public var modelName: String {
+            return "Post"
         }
     }
 
