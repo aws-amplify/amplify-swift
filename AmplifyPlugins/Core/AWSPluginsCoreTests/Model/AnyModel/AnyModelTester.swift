@@ -28,10 +28,6 @@ extension AnyModelTester {
         case id
         case stringProperty
         case intProperty
-
-        public var modelName: String {
-            return "AnyModelTester"
-        }
     }
 
     public static let keys = CodingKeys.self

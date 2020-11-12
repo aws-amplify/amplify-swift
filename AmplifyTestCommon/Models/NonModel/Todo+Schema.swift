@@ -18,10 +18,6 @@ extension Todo {
         case categories
         case section
         case stickies
-
-        public var modelName: String {
-            return "Todo"
-        }
     }
 
     public static let keys = CodingKeys.self
