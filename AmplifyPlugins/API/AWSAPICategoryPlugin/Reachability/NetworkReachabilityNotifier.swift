@@ -15,6 +15,7 @@ class NetworkReachabilityNotifier {
     private var reachability: NetworkReachabilityProviding?
     private var allowsCellularAccess = true
 
+    // This is a CurrentValueSubject.  Please do not change this unless you talk to wooj2@ or palpatim@ before changing this.
     let reachabilityPublisher = CurrentValueSubject<ReachabilityUpdate, Never>(ReachabilityUpdate(isOnline: false))
     var publisher: AnyPublisher<ReachabilityUpdate, Never> {
         return reachabilityPublisher.eraseToAnyPublisher()
