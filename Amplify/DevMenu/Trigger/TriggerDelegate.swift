@@ -8,7 +8,7 @@
 import Foundation
 
 /// Implement this protocol to get notified of the trigger events recognized by
-/// a  `TriggerRecognizer`
+/// a `TriggerRecognizer`
 public protocol TriggerDelegate: AnyObject {
     func onTrigger(triggerRecognizer: TriggerRecognizer)
 }

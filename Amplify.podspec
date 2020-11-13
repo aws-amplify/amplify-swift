@@ -28,6 +28,12 @@ Pod::Spec.new do |s|
   s.source_files = 'Amplify/**/*.swift'
   s.default_subspec = 'Default'
 
+  # There appears to be a bug in Xcode < 12 where SwiftUI isn't properly
+  # weak-linked even though system frameworks should be weak-linked by default.
+  # Explicitly weak link it here until we upgrade Amplify's platform support
+  # version to >= 13.0. https://github.com/aws-amplify/amplify-ios/issues/878
+  s.weak_frameworks = 'SwiftUI'
+
   s.subspec 'Default' do |default|
     default.preserve_path = 'AmplifyTools'
     default.script_phase = {
