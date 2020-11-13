@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.4.3 (2020-11-13)
+
+### Bug Fixes
+
+- **DataStore**: failed subscriptions lead to instability in sync engine (#889)
+
 ## 1.4.2 (2020-11-11)
 
 ### Bug Fixes
