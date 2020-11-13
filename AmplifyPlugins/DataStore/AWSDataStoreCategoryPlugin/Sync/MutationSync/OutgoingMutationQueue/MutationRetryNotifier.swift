@@ -22,10 +22,10 @@ final class MutationRetryNotifier {
          retryMutationCallback: @escaping BasicClosure) {
         self.retryMutationCallback = retryMutationCallback
 
-        networkReachabilityPublisher?.subscribe(self)
-
         let deadline = DispatchTime.now() + advice.retryInterval
         scheduleTimer(at: deadline)
+
+        networkReachabilityPublisher?.dropFirst().subscribe(self)
     }
 
     deinit {
