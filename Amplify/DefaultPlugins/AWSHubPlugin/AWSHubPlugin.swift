@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 /// The default Hub plugin provided with the Amplify Framework
 ///
 /// **No guaranteed delivery order**
@@ -79,4 +81,12 @@ final public class AWSHubPlugin: HubCategoryPlugin {
         return dispatcher.hasListener(withId: token.id)
     }
 
+}
+
+extension AWSHubPlugin: AmplifyVersionable {
+    public var version: String {
+        let bundle = Bundle(for: type(of: self))
+        let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        return version ?? "Not Available"
+    }
 }

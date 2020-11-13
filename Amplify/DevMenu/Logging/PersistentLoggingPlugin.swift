@@ -45,3 +45,12 @@ public class PersistentLoggingPlugin: LoggingCategoryPlugin {
         return persistentLogWrapper!
     }
 }
+
+@available(iOS 13.0, *)
+extension PersistentLoggingPlugin: AmplifyVersionable {
+    public var version: String {
+        let bundle = Bundle(for: type(of: self))
+        let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        return version ?? "Not Available"
+    }
+}

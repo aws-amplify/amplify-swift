@@ -107,7 +107,7 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  Amplify: 45e6a71e421e454eb075b160a74e67443af11e76
+  Amplify: 932edc0b3bb82f850cbab010cd963cee810871d7
   AmplifyPlugins: 8ca498863cd0c59c96f2c13bc23ddfc431a852c8
   AmplifyTestCommon: 80cafd35d1d6b67dd10688d6892fb9a18cf87074
   AWSAuthCore: 387c5e3482edbbb0fe754fa110a2a0203c783432

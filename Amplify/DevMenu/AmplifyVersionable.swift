@@ -8,6 +8,6 @@
 import Foundation
 
 /// Implement this protocol to support versioning in your plugin
-protocol AmplifyVersionable {
+public protocol AmplifyVersionable {
     var version: String { get }
 }
