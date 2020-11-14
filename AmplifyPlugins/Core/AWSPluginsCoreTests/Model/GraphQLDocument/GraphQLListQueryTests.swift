@@ -115,6 +115,91 @@ class GraphQLListQueryTests: XCTestCase {
         XCTAssertEqual(String(data: filterJSON!, encoding: .utf8), expectedFilterJSON)
     }
 
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `Comment`
+    ///   - the model has no eager loaded connections
+    ///   - the query is of type `.list`
+    /// - Then:
+    ///   - check if the generated GraphQL document is valid query:
+    ///     - it contains an `filter` argument of type `ModelCommentFilterInput`
+    ///     - it is named `listComments`
+    ///     - it has a list of fields, one of which is post that also has a list of fields with no nested models
+    ///     - fields are wrapped with `items`
+    ///   - check if generated GraphQL variables is valid:
+    ///     - it contains the correct columnName `commentPostId`
+    func testListGraphQLQueryFromSimpleModelGivenQueryPredicateOnConnectedField() {
+        let comment = Comment.keys
+        let predicate = comment.id.eq("id")
+            && comment.post.eq("commentPostId")
+
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
+        documentBuilder.add(decorator: PaginationDecorator())
+        documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
+        let document = documentBuilder.build()
+        let expectedQueryDocument = """
+        query ListComments($filter: ModelCommentFilterInput, $limit: Int) {
+          listComments(filter: $filter, limit: $limit) {
+            items {
+              id
+              content
+              createdAt
+              post {
+                id
+                content
+                createdAt
+                draft
+                rating
+                status
+                title
+                updatedAt
+                __typename
+              }
+              __typename
+            }
+            nextToken
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "listComments")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertNotNil(variables["limit"])
+        XCTAssertEqual(variables["limit"] as? Int, 1_000)
+
+        guard let filter = variables["filter"] as? GraphQLFilter else {
+            XCTFail("variables should contain a valid filter")
+            return
+        }
+
+        // Test filter for a valid JSON format
+        let filterJSON = try? JSONSerialization.data(withJSONObject: filter,
+                                                     options: .prettyPrinted)
+        XCTAssertNotNil(filterJSON)
+
+        let expectedFilterJSON = """
+        {
+          "and" : [
+            {
+              "id" : {
+                "eq" : "id"
+              }
+            },
+            {
+              "commentPostId" : {
+                "eq" : "commentPostId"
+              }
+            }
+          ]
+        }
+        """
+        XCTAssertEqual(String(data: filterJSON!, encoding: .utf8), expectedFilterJSON)
+    }
+
     func testListGraphQLQueryFromSimpleModelWithSyncEnabled() {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
