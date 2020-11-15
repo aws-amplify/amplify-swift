@@ -13,17 +13,21 @@ import XCTest
 
 /*
  type OIDCGroupPost
- @model
- @auth(
- rules: [
- { allow: owner, provider: oidc, identityClaim: "sub"},
- { allow: groups, provider: oidc, groups: ["Admins"],
- groupClaim: "https://myapp.com/claims/groups"}
- ]
- ) {
- id: ID!
- title: String!
- owner: String
+   @model
+   @auth(
+     rules: [
+       { allow: owner, provider: oidc, identityClaim: "sub" }
+       {
+         allow: groups
+         provider: oidc
+         groups: ["Admins"]
+         groupClaim: "https://myapp.com/claims/groups"
+       }
+     ]
+   ) {
+   id: ID!
+   title: String!
+   owner: String
  }
  */
 
