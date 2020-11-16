@@ -32,7 +32,7 @@ import Foundation
 ///     post.content != nil
 /// })
 /// ```
-public protocol ModelKey: CodingKey, CaseIterable, QueryFieldOperation {
+public protocol ModelKey: CodingKey, CaseIterable, QueryFieldOperation, DefaultLogger {
     var modelName: String { get }
 }
 
@@ -44,7 +44,7 @@ extension CodingKey where Self: ModelKey {
 
     var columnName: String {
         guard let modelSchema: ModelSchema = ModelRegistry.modelSchema(from: modelName) else {
-            print("Warning: Please upgrade to the latest version of Amplify CLI and rerun `amplify codegen models`")
+            log.warn("Please upgrade to the latest version of Amplify CLI and rerun `amplify codegen models`")
             return stringValue
         }
         switch modelSchema.field(withName: stringValue)?.association {
