@@ -53,6 +53,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
     weak var storageAdapter: StorageEngineAdapter?
 
+    private let configuration: DataStoreConfiguration
     /// A buffer queue for incoming subsscription events, waiting for this ReconciliationQueue to be `start`ed. Once
     /// the ReconciliationQueue is started, each event in the `incomingRemoveEventQueue` will be submitted to the
     /// `reconcileAndSaveQueue`.
@@ -82,7 +83,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         self.modelSchema = modelSchema
 
         self.storageAdapter = storageAdapter
-
+        self.configuration = configuration
         self.modelReconciliationQueueSubject = PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>()
 
         self.reconcileAndSaveQueue = OperationQueue()
@@ -157,6 +158,15 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     private func receive(_ receive: IncomingSubscriptionEventPublisherEvent) {
         switch receive {
         case .mutationEvent(let remoteModel):
+
+            //this is obviously wrong, but whatever, just play aorund with the types
+            guard let syncExpression = configuration.syncExpressions.first else {
+                return
+            }
+            let queryPredicate = syncExpression.modelPredicate()
+            let evaluated = queryPredicate.evaluate(target: remoteModel.model.instance)
+//            print("super hacks... evaluated to: \(evaluated)")
+
             incomingSubscriptionEventQueue.addOperation(CancelAwareBlockOperation {
                 self.enqueue(remoteModel)
             })

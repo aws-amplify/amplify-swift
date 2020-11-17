@@ -11,11 +11,11 @@ import Amplify
 public typealias QueryPredicateResolver = () -> QueryPredicate
 
 public struct DataStoreSyncExpression {
-    let modelType: Model.Type
+    let modelSchema: ModelSchema
     let modelPredicate: QueryPredicateResolver
 
-    static public func syncExpression(_ modelType: Model.Type,
+    static public func syncExpression(_ modelSchema: ModelSchema,
                                       where predicate: @escaping QueryPredicateResolver) -> DataStoreSyncExpression {
-        return DataStoreSyncExpression(modelType: modelType, modelPredicate: predicate)
+        return DataStoreSyncExpression(modelSchema: modelSchema, modelPredicate: predicate)
     }
 }

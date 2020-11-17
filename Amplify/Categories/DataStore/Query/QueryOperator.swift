@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum QueryOperator {
+public enum QueryOperator: Evaluable {
     case notEqual(_ value: Persistable?)
     case equals(_ value: Persistable?)
     case lessOrEqual(_ value: Persistable)
@@ -17,4 +17,16 @@ public enum QueryOperator {
     case contains(_ value: String)
     case between(start: Persistable, end: Persistable)
     case beginsWith(_ value: String)
+
+    public func evaluate(target: Any) -> Bool {
+        switch self {
+        case .equals(let value):
+            if let val = value {
+                return PersistableHelper.isEqual(val, target)
+            }
+        default:
+            print("TODO: FINISH THE REST")
+        }
+        return false
+    }
 }

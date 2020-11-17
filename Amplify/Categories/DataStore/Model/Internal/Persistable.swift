@@ -67,4 +67,28 @@ struct PersistableHelper {
             return false
         }
     }
+    
+    public static func isEqual(_ lhs: Persistable?, _ rhs: Any?) -> Bool {
+        if lhs == nil && rhs == nil {
+            return true
+        }
+        switch (lhs, rhs) {
+        case let (lhs, rhs) as (Bool, Bool):
+            return lhs == rhs
+        case let (lhs, rhs) as (Temporal.Date, Temporal.Date):
+            return lhs == rhs
+        case let (lhs, rhs) as (Temporal.DateTime, Temporal.DateTime):
+            return lhs == rhs
+        case let (lhs, rhs) as (Temporal.Time, Temporal.Time):
+            return lhs == rhs
+        case let (lhs, rhs) as (Double, Double):
+            return lhs == rhs
+        case let (lhs, rhs) as (Int, Int):
+            return lhs == rhs
+        case let (lhs, rhs) as (String, String):
+            return lhs == rhs
+        default:
+            return false
+        }
+    }
 }

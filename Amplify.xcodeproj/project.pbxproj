@@ -147,6 +147,7 @@
 		6BB7441023A9954900B0EB6C /* DispatchSource+MakeOneOff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB7440F23A9954900B0EB6C /* DispatchSource+MakeOneOff.swift */; };
 		6BBECD7123ADA7E100C8DFBE /* AmplifyAWSServiceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBECD7023ADA7E100C8DFBE /* AmplifyAWSServiceConfiguration.swift */; };
 		6BBECD7423ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBECD7323ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift */; };
+		6BDD6320256353F0008D70DF /* Evaluable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDD631F256353F0008D70DF /* Evaluable.swift */; };
 		6BDF15B62541262000B5BE69 /* ModelWithOwnerAuthAndGroupWithGroupClaim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDF15B52541262000B5BE69 /* ModelWithOwnerAuthAndGroupWithGroupClaim.swift */; };
 		6BDF15B825412DE600B5BE69 /* ModelWithOwnerAuthAndMultiGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDF15B725412DE600B5BE69 /* ModelWithOwnerAuthAndMultiGroup.swift */; };
 		6BEE0817253114FD00133961 /* AWSAuthServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE0816253114FD00133961 /* AWSAuthServiceTests.swift */; };
@@ -920,6 +921,7 @@
 		6BB7440F23A9954900B0EB6C /* DispatchSource+MakeOneOff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DispatchSource+MakeOneOff.swift"; sourceTree = "<group>"; };
 		6BBECD7023ADA7E100C8DFBE /* AmplifyAWSServiceConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyAWSServiceConfiguration.swift; sourceTree = "<group>"; };
 		6BBECD7323ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyAWSServiceConfigurationTests.swift; sourceTree = "<group>"; };
+		6BDD631F256353F0008D70DF /* Evaluable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Evaluable.swift; sourceTree = "<group>"; };
 		6BDF15B52541262000B5BE69 /* ModelWithOwnerAuthAndGroupWithGroupClaim.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelWithOwnerAuthAndGroupWithGroupClaim.swift; sourceTree = "<group>"; };
 		6BDF15B725412DE600B5BE69 /* ModelWithOwnerAuthAndMultiGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelWithOwnerAuthAndMultiGroup.swift; sourceTree = "<group>"; };
 		6BEE0816253114FD00133961 /* AWSAuthServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthServiceTests.swift; sourceTree = "<group>"; };
@@ -2582,6 +2584,7 @@
 		B98E9D042372236200934B51 /* Query */ = {
 			isa = PBXGroup;
 			children = (
+				6BDD631F256353F0008D70DF /* Evaluable.swift */,
 				B98E9D062372236200934B51 /* ModelKey.swift */,
 				B98E9D0A2372236200934B51 /* QueryField.swift */,
 				B98E9D072372236200934B51 /* QueryOperator.swift */,
@@ -4715,6 +4718,7 @@
 				FA56F72522B14B6A0039754A /* Resumable.swift in Sources */,
 				B4C498FA2415D24B00067992 /* AuthProvider.swift in Sources */,
 				FAA2E8C023A00C6500E420EA /* AmplifyAPICategory+APICategory.swift in Sources */,
+				6BDD6320256353F0008D70DF /* Evaluable.swift in Sources */,
 				21FFF997230C96CB005878EA /* StorageRemoveOperation.swift in Sources */,
 				FAC2351C227A053D00424678 /* APICategoryPlugin.swift in Sources */,
 				FA176ED52385012000C5C5F9 /* DataStoreCategory+HubPayloadEventName.swift in Sources */,
