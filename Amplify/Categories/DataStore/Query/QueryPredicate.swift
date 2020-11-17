@@ -8,7 +8,7 @@
 import Foundation
 
 /// Protocol that indicates concrete types conforming to it can be used a predicate member.
-public protocol QueryPredicate {}
+public protocol QueryPredicate: Evaluable {}
 
 public enum QueryPredicateGroupType: String {
     case and
@@ -28,6 +28,9 @@ public func not<Predicate: QueryPredicate>(_ predicate: Predicate) -> QueryPredi
 /// specify an action applies to an entire data set.
 public enum QueryPredicateConstant: QueryPredicate {
     case all
+    public func evaluate(target: Model) -> Bool {
+        return true
+    }
 }
 
 public class QueryPredicateGroup: QueryPredicate {
@@ -67,6 +70,28 @@ public class QueryPredicateGroup: QueryPredicate {
     public static prefix func ! (rhs: QueryPredicateGroup) -> QueryPredicateGroup {
         return not(rhs)
     }
+
+    public func evaluate(target: Model) -> Bool {
+        switch type {
+        case .or:
+            for predicate in predicates {
+                if predicate.evaluate(target: target) {
+                    return true
+                }
+            }
+            return false
+        case .and:
+            for predicate in predicates {
+                if !predicate.evaluate(target: target) {
+                    return false
+                }
+            }
+            return true
+        case .not:
+            let predicate = predicates[0]
+            return !predicate.evaluate(target: target)
+        }
+    }
 }
 
 public class QueryPredicateOperation: QueryPredicate {
@@ -99,5 +124,31 @@ public class QueryPredicateOperation: QueryPredicate {
 
     public static prefix func ! (rhs: QueryPredicateOperation) -> QueryPredicateGroup {
         return not(rhs)
+    }
+
+    public func evaluate(target: Model) -> Bool {
+        guard let fieldValue = target[field] else {
+            return false
+        }
+        guard let value = fieldValue else {
+            return false
+        }
+
+        if let booleanValue = value as? Bool {
+            return self.operator.evaluate(target: booleanValue)
+        }
+
+        if let doubleValue = value as? Double {
+            return self.operator.evaluate(target: doubleValue)
+        }
+
+        if let intValue = value as? Int {
+            return self.operator.evaluate(target: intValue)
+        }
+        if let timeValue = value as? Temporal.Time {
+            return self.operator.evaluate(target: timeValue)
+        }
+
+        return self.operator.evaluate(target: value)
     }
 }
