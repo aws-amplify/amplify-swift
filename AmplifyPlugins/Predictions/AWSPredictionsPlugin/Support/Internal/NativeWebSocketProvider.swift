@@ -72,9 +72,14 @@ class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider
             switch result {
             case .failure(let error):
                 let status = AWSTranscribeStreamingClientConnectionStatus.closed
+                let nsError = error as NSError?
 
                 self.callbackQueue.async {
                     self.clientDelegate.connectionStatusDidChange(status, withError: error)
+                }
+
+                guard nsError?.domain != NSURLErrorDomain else {
+                    return
                 }
             case .success(let message):
                 switch message {
