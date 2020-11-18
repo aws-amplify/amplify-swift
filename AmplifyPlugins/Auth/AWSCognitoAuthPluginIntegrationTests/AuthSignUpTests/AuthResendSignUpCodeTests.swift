@@ -38,9 +38,9 @@ class AuthResendSignUpCodeTests: AWSAuthBaseTest {
                 XCTFail("resendSignUpCode with non existing user should not return result")
             case .failure(let error):
                 guard let cognitoError = error.underlyingError as? AWSCognitoAuthError,
-                    case .userNotFound = cognitoError else {
-                        XCTFail("Should return userNotFound")
-                        return
+                      case .userNotFound = cognitoError else {
+                    XCTFail("Should return userNotFound")
+                    return
                 }
 
             }
@@ -63,8 +63,8 @@ class AuthResendSignUpCodeTests: AWSAuthBaseTest {
         let operationExpectation = expectation(description: "Operation should not complete")
         operationExpectation.isInverted = true
         let operation = Amplify.Auth.resendSignUpCode(for: username) { result in
-                                                    operationExpectation.fulfill()
-                                                    XCTFail("Received result \(result)")
+            operationExpectation.fulfill()
+            XCTFail("Received result \(result)")
         }
         XCTAssertNotNil(operation, "resendSignUpCode operations should not be nil")
         operation.cancel()

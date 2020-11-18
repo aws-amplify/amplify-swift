@@ -12,9 +12,7 @@
 		21621E0E24DE1FC300497A24 /* AWSAttributeResendConfirmationCodeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21621E0D24DE1FC300497A24 /* AWSAttributeResendConfirmationCodeOptions.swift */; };
 		21621E1024DE2D5600497A24 /* AWSUpdateUserAttributesOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21621E0F24DE2D5600497A24 /* AWSUpdateUserAttributesOptions.swift */; };
 		21621E1224DE2D6100497A24 /* AWSUpdateUserAttributeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21621E1124DE2D6100497A24 /* AWSUpdateUserAttributeOptions.swift */; };
-		21C2B50F24E1FA3800371597 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21C2B50E24E1FA3800371597 /* amplifyconfiguration.json */; };
 		21C2B51224E3381200371597 /* AuthUserAttributesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C2B51124E3381200371597 /* AuthUserAttributesTests.swift */; };
-		21C2B51424E35C1000371597 /* credentials.json in Resources */ = {isa = PBXBuildFile; fileRef = 21C2B51324E35C1000371597 /* credentials.json */; };
 		3AB72AEC1B90671D652C3F96 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 234C2AFA9205B1766FB8E090 /* Pods_HostApp.framework */; };
 		8337B0CA31C0E650D640B82C /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 242DDB230CE2BA243E395217 /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework */; };
 		B40F165D24784AE300CDB920 /* AWSCognitoAuthPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B43DC7452410572400D40275 /* AWSCognitoAuthPlugin.framework */; };
@@ -111,6 +109,8 @@
 		B41D10082475AB7E0049D08D /* AWSCognitoAuthPlugin+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D10012475AB7E0049D08D /* AWSCognitoAuthPlugin+ClientBehavior.swift */; };
 		B41D10092475AB7E0049D08D /* AWSCognitoAuthPlugin+DeviceBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D10022475AB7E0049D08D /* AWSCognitoAuthPlugin+DeviceBehavior.swift */; };
 		B41D100A2475AB7E0049D08D /* AWSCognitoAuthPlugin+UserBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D10032475AB7E0049D08D /* AWSCognitoAuthPlugin+UserBehavior.swift */; };
+		B43B4DC02565AEFB008F345D /* credentials.json in Resources */ = {isa = PBXBuildFile; fileRef = B43B4DBF2565AEFB008F345D /* credentials.json */; };
+		B43B4DCA2565AFDC008F345D /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = B43B4DC92565AFDC008F345D /* amplifyconfiguration.json */; };
 		B43DC74F2410572400D40275 /* AWSCognitoAuthPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B43DC7452410572400D40275 /* AWSCognitoAuthPlugin.framework */; };
 		B44373A1247C869100DEF43C /* AuthSessionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44373A0247C869100DEF43C /* AuthSessionHelper.swift */; };
 		B44373A4247C8CCE00DEF43C /* AuthSignOutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44373A3247C8CCE00DEF43C /* AuthSignOutTests.swift */; };
@@ -157,9 +157,7 @@
 		21621E0D24DE1FC300497A24 /* AWSAttributeResendConfirmationCodeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAttributeResendConfirmationCodeOptions.swift; sourceTree = "<group>"; };
 		21621E0F24DE2D5600497A24 /* AWSUpdateUserAttributesOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSUpdateUserAttributesOptions.swift; sourceTree = "<group>"; };
 		21621E1124DE2D6100497A24 /* AWSUpdateUserAttributeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSUpdateUserAttributeOptions.swift; sourceTree = "<group>"; };
-		21C2B50E24E1FA3800371597 /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 		21C2B51124E3381200371597 /* AuthUserAttributesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUserAttributesTests.swift; sourceTree = "<group>"; };
-		21C2B51324E35C1000371597 /* credentials.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = credentials.json; sourceTree = "<group>"; };
 		234C2AFA9205B1766FB8E090 /* Pods_HostApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		242DDB230CE2BA243E395217 /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		351EEBA51873352B4E797CE0 /* Pods-HostApp-AWSAuthPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAuthPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAuthPluginIntegrationTests/Pods-HostApp-AWSAuthPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -268,6 +266,8 @@
 		B41D10012475AB7E0049D08D /* AWSCognitoAuthPlugin+ClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSCognitoAuthPlugin+ClientBehavior.swift"; sourceTree = "<group>"; };
 		B41D10022475AB7E0049D08D /* AWSCognitoAuthPlugin+DeviceBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSCognitoAuthPlugin+DeviceBehavior.swift"; sourceTree = "<group>"; };
 		B41D10032475AB7E0049D08D /* AWSCognitoAuthPlugin+UserBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSCognitoAuthPlugin+UserBehavior.swift"; sourceTree = "<group>"; };
+		B43B4DBF2565AEFB008F345D /* credentials.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = credentials.json; sourceTree = "<group>"; };
+		B43B4DC92565AFDC008F345D /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 		B43DC7452410572400D40275 /* AWSCognitoAuthPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSCognitoAuthPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B43DC74E2410572400D40275 /* AWSCognitoAuthPluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSCognitoAuthPluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B44373A0247C869100DEF43C /* AuthSessionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSessionHelper.swift; sourceTree = "<group>"; };
@@ -343,6 +343,7 @@
 		B40F166324784B3400CDB920 /* AWSCognitoAuthPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				B43B4DBE2565AEFB008F345D /* Configuration */,
 				B40F167824784B3400CDB920 /* AuthDeviceTests */,
 				B40F167424784B3400CDB920 /* AuthSessionTests */,
 				B40F167224784B3400CDB920 /* AuthSignInTests */,
@@ -351,21 +352,11 @@
 				21C2B51024E337B700371597 /* AuthUserAttributesTests */,
 				B40F166C24784B3400CDB920 /* AuthUserTests */,
 				B40F167724784B3400CDB920 /* AWSAuthBaseTest.swift */,
-				B40F166424784B3400CDB920 /* Configuration */,
 				B40F166824784B3400CDB920 /* README.md */,
 				B40F166624784B3400CDB920 /* Resources */,
 				B40F166924784B3400CDB920 /* Support */,
 			);
 			path = AWSCognitoAuthPluginIntegrationTests;
-			sourceTree = "<group>";
-		};
-		B40F166424784B3400CDB920 /* Configuration */ = {
-			isa = PBXGroup;
-			children = (
-				21C2B50E24E1FA3800371597 /* amplifyconfiguration.json */,
-				21C2B51324E35C1000371597 /* credentials.json */,
-			);
-			path = Configuration;
 			sourceTree = "<group>";
 		};
 		B40F166624784B3400CDB920 /* Resources */ = {
@@ -667,6 +658,15 @@
 			path = ClientBehavior;
 			sourceTree = "<group>";
 		};
+		B43B4DBE2565AEFB008F345D /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				B43B4DC92565AFDC008F345D /* amplifyconfiguration.json */,
+				B43B4DBF2565AEFB008F345D /* credentials.json */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
 		B43DC73B2410572400D40275 = {
 			isa = PBXGroup;
 			children = (
@@ -921,9 +921,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				21C2B51424E35C1000371597 /* credentials.json in Resources */,
+				B43B4DC02565AEFB008F345D /* credentials.json in Resources */,
+				B43B4DCA2565AFDC008F345D /* amplifyconfiguration.json in Resources */,
 				B40F167C24784B3400CDB920 /* README.md in Resources */,
-				21C2B50F24E1FA3800371597 /* amplifyconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

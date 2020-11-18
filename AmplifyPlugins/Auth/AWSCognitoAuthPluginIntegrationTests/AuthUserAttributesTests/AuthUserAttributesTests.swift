@@ -39,7 +39,9 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         let password = "P123@\(UUID().uuidString)"
 
         let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username, password: password) { didSucceed, error in
+        AuthSignInHelper.registerAndSignInUser(username: username,
+                                               password: password,
+                                               email: email) { didSucceed, error in
             signInExpectation.fulfill()
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
@@ -76,14 +78,17 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         let password = "P123@\(UUID().uuidString)"
 
         let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username, password: password) { didSucceed, error in
+        AuthSignInHelper.registerAndSignInUser(username: username,
+                                               password: password,
+                                               email: email) { didSucceed, error in
             signInExpectation.fulfill()
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
         wait(for: [signInExpectation], timeout: networkTimeout)
 
         let updateExpectation = expectation(description: "Update operation should complete")
-        _ = Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: email)) { result in
+
+        _ = Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: email2)) { result in
             switch result {
             case .success:
                 updateExpectation.fulfill()

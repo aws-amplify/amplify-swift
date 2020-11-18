@@ -38,9 +38,9 @@ class AuthConfirmSignUpTests: AWSAuthBaseTest {
                 XCTFail("Confirm signUp with non existing user should not return result")
             case .failure(let error):
                 guard let cognitoError = error.underlyingError as? AWSCognitoAuthError,
-                    case .userNotFound = cognitoError else {
-                        XCTFail("Should return userNotFound")
-                        return
+                      case .userNotFound = cognitoError else {
+                    XCTFail("Should return userNotFound")
+                    return
                 }
 
             }
@@ -72,7 +72,7 @@ class AuthConfirmSignUpTests: AWSAuthBaseTest {
             confirmSignUp with validation error should not succeed
             """)
             case .failure(let error):
-                guard case .validation(_, _, _, _) = error else {
+                guard case .validation = error else {
                     XCTFail("Should return validation error")
                     return
                 }
@@ -95,10 +95,9 @@ class AuthConfirmSignUpTests: AWSAuthBaseTest {
 
         let operationExpectation = expectation(description: "Operation should not complete")
         operationExpectation.isInverted = true
-        let operation = Amplify.Auth.confirmSignUp(for: username,
-                                                   confirmationCode: "123") { result in
-                                                    operationExpectation.fulfill()
-                                                    XCTFail("Received result \(result)")
+        let operation = Amplify.Auth.confirmSignUp(for: username, confirmationCode: "123") { result in
+            operationExpectation.fulfill()
+            XCTFail("Received result \(result)")
         }
         XCTAssertNotNil(operation, "confirmSignUp operations should not be nil")
         operation.cancel()

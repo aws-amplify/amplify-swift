@@ -36,7 +36,8 @@ class AuthUsernamePasswordSignInTests: AWSAuthBaseTest {
         let password = "P123@\(UUID().uuidString)"
 
         let signUpExpectation = expectation(description: "SignUp operation should complete")
-        AuthSignInHelper.signUpUser(username: username, password: password) { didSucceed, error in
+        AuthSignInHelper.signUpUser(username: username, password: password,
+                                    email: email) { didSucceed, error in
             signUpExpectation.fulfill()
             XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
         }
@@ -84,7 +85,8 @@ class AuthUsernamePasswordSignInTests: AWSAuthBaseTest {
         let password = "P123@\(UUID().uuidString)"
 
         let signUpExpectation = expectation(description: "SignUp operation should complete")
-        AuthSignInHelper.signUpUser(username: username, password: password) { didSucceed, error in
+        AuthSignInHelper.signUpUser(username: username, password: password,
+                                    email: email) { didSucceed, error in
             signUpExpectation.fulfill()
             XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
         }
@@ -127,9 +129,9 @@ class AuthUsernamePasswordSignInTests: AWSAuthBaseTest {
                 XCTFail("SignIn with unknown user should not succeed")
             case .failure(let error):
                 guard let cognitoError = error.underlyingError as? AWSCognitoAuthError,
-                    case .userNotFound = cognitoError else {
-                        XCTFail("Should return userNotFound error")
-                        return
+                      case .userNotFound = cognitoError else {
+                    XCTFail("Should return userNotFound error")
+                    return
                 }
             }
         }
@@ -150,7 +152,8 @@ class AuthUsernamePasswordSignInTests: AWSAuthBaseTest {
         let password = "P123@\(UUID().uuidString)"
 
         let firstSignInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username, password: password) { didSucceed, error in
+        AuthSignInHelper.registerAndSignInUser(username: username, password: password,
+                                               email: email) { didSucceed, error in
             firstSignInExpectation.fulfill()
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
@@ -162,7 +165,7 @@ class AuthUsernamePasswordSignInTests: AWSAuthBaseTest {
                 secondSignInExpectation.fulfill()
             }
             XCTAssertFalse(didSucceed, "Second signIn should fail")
-            guard case .invalidState(_, _, _) = error else {
+            guard case .invalidState = error else {
                 XCTFail("Should return invalid state \(String(describing: error))")
                 return
             }
@@ -189,7 +192,7 @@ class AuthUsernamePasswordSignInTests: AWSAuthBaseTest {
             case .success:
                 XCTFail("SignIn with empty user should not succeed")
             case .failure(let error):
-                guard case .validation(_, _, _, _) = error else {
+                guard case .validation = error else {
                     XCTFail("Should return validation error")
                     return
                 }

@@ -48,7 +48,8 @@ class AuthUserTests: AWSAuthBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username, password: password) { didSucceed, error in
+        AuthSignInHelper.registerAndSignInUser(username: username, password: password,
+                                               email: email) { didSucceed, error in
             signInExpectation.fulfill()
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
@@ -76,7 +77,7 @@ class AuthUserTests: AWSAuthBaseTest {
             case .success:
                 XCTFail("Attribute apis should not succeed on a signedOut state")
             case .failure(let error):
-                guard case .signedOut(_, _, _) = error else {
+                guard case .signedOut = error else {
                     XCTFail("Should return signedOut error")
                     return
                 }
@@ -104,7 +105,7 @@ class AuthUserTests: AWSAuthBaseTest {
             case .success:
                 XCTFail("Attribute apis should not succeed on a signedOut state")
             case .failure(let error):
-                guard case .signedOut(_, _, _) = error else {
+                guard case .signedOut = error else {
                     XCTFail("Should return signedOut error")
                     return
                 }
@@ -124,7 +125,7 @@ class AuthUserTests: AWSAuthBaseTest {
     ///
     func testUpdateUserAttributeListSignedOut() {
         let attributes = [AuthUserAttribute(.email, value: "xc@email.com"),
-                           AuthUserAttribute(.phoneNumber, value: "123")]
+                          AuthUserAttribute(.phoneNumber, value: "123")]
         let operationExpectation = expectation(description: "Operation should complete")
         let operation = Amplify.Auth.update(userAttributes: attributes) { result in
             defer {
@@ -134,7 +135,7 @@ class AuthUserTests: AWSAuthBaseTest {
             case .success:
                 XCTFail("Attribute apis should not succeed on a signedOut state")
             case .failure(let error):
-                guard case .signedOut(_, _, _) = error else {
+                guard case .signedOut = error else {
                     XCTFail("Should return signedOut error")
                     return
                 }
@@ -162,7 +163,7 @@ class AuthUserTests: AWSAuthBaseTest {
             case .success:
                 XCTFail("Attribute apis should not succeed on a signedOut state")
             case .failure(let error):
-                guard case .signedOut(_, _, _) = error else {
+                guard case .signedOut = error else {
                     XCTFail("Should return signedOut error")
                     return
                 }
@@ -190,7 +191,7 @@ class AuthUserTests: AWSAuthBaseTest {
             case .success:
                 XCTFail("Attribute apis should not succeed on a signedOut state")
             case .failure(let error):
-                guard case .signedOut(_, _, _) = error else {
+                guard case .signedOut = error else {
                     XCTFail("Should return signedOut error")
                     return
                 }
@@ -219,7 +220,7 @@ class AuthUserTests: AWSAuthBaseTest {
             case .success:
                 XCTFail("Attribute apis should not succeed on a signedOut state")
             case .failure(let error):
-                guard case .signedOut(_, _, _) = error else {
+                guard case .signedOut = error else {
                     XCTFail("Should return signedOut error")
                     return
                 }
