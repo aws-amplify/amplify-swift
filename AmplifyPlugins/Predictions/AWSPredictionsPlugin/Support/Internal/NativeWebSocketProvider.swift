@@ -79,6 +79,7 @@ class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider
                 }
 
                 guard nsError?.domain != NSURLErrorDomain else {
+                    self.disconnect()
                     return
                 }
             case .success(let message):

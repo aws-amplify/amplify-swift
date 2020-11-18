@@ -78,9 +78,12 @@ extension PredictionsError: AmplifyError {
         recoverySuggestion: RecoverySuggestion = "See `underlyingError` for more details",
         error: Error
     ) {
-        if let error = error as? Self {
-            self = error
-        } else {
+        switch error {
+        case let urlError as URLError:
+            self = .network(errorDescription, recoverySuggestion, urlError)
+        case let selfError as Self:
+            self = selfError
+        default:
             self = .unknown(errorDescription, recoverySuggestion, error)
         }
     }

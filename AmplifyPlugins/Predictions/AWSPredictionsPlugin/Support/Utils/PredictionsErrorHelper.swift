@@ -51,7 +51,8 @@ class PredictionsErrorHelper {
             )
         }
     }
-   // swiftlint:disable cyclomatic_complexity
+
+    // swiftlint:disable cyclomatic_complexity
     static func mapPredictionsServiceError(_ error: NSError) -> PredictionsError {
         let defaultError = PredictionsErrorHelper.getDefaultError(error)
 
@@ -92,6 +93,28 @@ class PredictionsErrorHelper {
                 return defaultError
             }
             return AWSTranscribeStreamingErrorMessage.map(errorType) ?? defaultError
+        default:
+            return defaultError
+        }
+    }
+
+    static func mapUrlError(_ error: NSError) -> PredictionsError {
+        let defaultError = PredictionsErrorHelper.getDefaultError(error)
+
+        let error = error as? URLError
+        guard let urlError = error else {
+            return defaultError
+        }
+
+        switch urlError.code {
+        case .cannotFindHost:
+            let errorDescription = "The host you are trying to reach cannot be found"
+            let recoverySuggestion = "Please check if you are reaching the correct host"
+            return PredictionsError.network(errorDescription, recoverySuggestion, error)
+        case .notConnectedToInternet:
+            let errorDescription = "Your device is not connected to network"
+            let recoverySuggestion = "Please check your network connectivity status"
+            return PredictionsError.network(errorDescription, recoverySuggestion, error)
         default:
             return defaultError
         }
