@@ -14,8 +14,8 @@ class MockTranscribeBehavior: AWSTranscribeStreamingBehavior {
 
     var delegate: AWSTranscribeStreamingClientDelegate?
     var callbackQueue: DispatchQueue?
-    var transcriptionResult: AWSTranscribeStreamingTranscriptResultStream?
     var connectionResult: AWSTranscribeStreamingClientConnectionStatus?
+    var transcriptionResult: AWSTranscribeStreamingTranscriptResultStream?
     var error: Error?
 
     func getTranscribeStreaming() -> AWSTranscribeStreaming {
