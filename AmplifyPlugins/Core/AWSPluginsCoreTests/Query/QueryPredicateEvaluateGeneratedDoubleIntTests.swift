@@ -13,1089 +13,1413 @@ import XCTest
 //swiftlint:disable type_body_length
 //swiftlint:disable file_length
 //swiftlint:disable type_name
-class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
-    func testDouble1_1notEqualDouble1_1() throws {
+class QueryPredicateEvaluateGeneratedDoubleIntTests: XCTestCase {
+    func testDouble1_1notEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.ne(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssertFalse(evaluation)
+       XCTAssert(evaluation)
     }
 
-    func testDouble1_1notEqualDouble2_1() throws {
+    func testDouble1_1notEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.ne(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble1_1notEqualDouble3_1() throws {
+    func testDouble1_1notEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.ne(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble2_1notEqualDouble1_1() throws {
+    func testDouble1_1notEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.ne(1.1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble2_1notEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.ne(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble2_1notEqualDouble2_1() throws {
+    func testDouble2_1notEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.ne(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssertFalse(evaluation)
+       XCTAssert(evaluation)
     }
 
-    func testDouble2_1notEqualDouble3_1() throws {
+    func testDouble2_1notEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.ne(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3_1notEqualDouble1_1() throws {
+    func testDouble2_1notEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.ne(2.1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble3_1notEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.ne(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3_1notEqualDouble2_1() throws {
+    func testDouble3_1notEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.ne(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3_1notEqualDouble3_1() throws {
+    func testDouble3_1notEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.ne(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssert(evaluation)
+    }
+
+    func testDouble3_1notEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.ne(3.1)
+       let instance = QPredGen(name: "test")
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble1notEqualDouble1_1() throws {
+    func testDouble1notEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.ne(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssert(evaluation)
+       XCTAssertFalse(evaluation)
     }
 
-    func testDouble1notEqualDouble2_1() throws {
+    func testDouble1notEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.ne(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble1notEqualDouble3_1() throws {
+    func testDouble1notEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.ne(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble2notEqualDouble1_1() throws {
+    func testDouble1notEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.ne(1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble2notEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.ne(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble2notEqualDouble2_1() throws {
+    func testDouble2notEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.ne(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssert(evaluation)
+       XCTAssertFalse(evaluation)
     }
 
-    func testDouble2notEqualDouble3_1() throws {
+    func testDouble2notEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.ne(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3notEqualDouble1_1() throws {
+    func testDouble2notEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.ne(2)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble3notEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.ne(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3notEqualDouble2_1() throws {
+    func testDouble3notEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.ne(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3notEqualDouble3_1() throws {
+    func testDouble3notEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.ne(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssert(evaluation)
+       XCTAssertFalse(evaluation)
     }
 
-    func testDouble1_1equalsDouble1_1() throws {
+    func testDouble3notEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.ne(3)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble1_1equalsInt1() throws {
        let predicate = QPredGen.keys.myDouble.eq(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssert(evaluation)
+       XCTAssertFalse(evaluation)
     }
 
-    func testDouble1_1equalsDouble2_1() throws {
+    func testDouble1_1equalsInt2() throws {
        let predicate = QPredGen.keys.myDouble.eq(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble1_1equalsDouble3_1() throws {
+    func testDouble1_1equalsInt3() throws {
        let predicate = QPredGen.keys.myDouble.eq(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble2_1equalsDouble1_1() throws {
+    func testDouble1_1equalsInt() throws {
+       let predicate = QPredGen.keys.myDouble.eq(1.1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble2_1equalsInt1() throws {
        let predicate = QPredGen.keys.myDouble.eq(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble2_1equalsDouble2_1() throws {
+    func testDouble2_1equalsInt2() throws {
        let predicate = QPredGen.keys.myDouble.eq(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssert(evaluation)
+       XCTAssertFalse(evaluation)
     }
 
-    func testDouble2_1equalsDouble3_1() throws {
+    func testDouble2_1equalsInt3() throws {
        let predicate = QPredGen.keys.myDouble.eq(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3_1equalsDouble1_1() throws {
+    func testDouble2_1equalsInt() throws {
+       let predicate = QPredGen.keys.myDouble.eq(2.1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble3_1equalsInt1() throws {
        let predicate = QPredGen.keys.myDouble.eq(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3_1equalsDouble2_1() throws {
+    func testDouble3_1equalsInt2() throws {
        let predicate = QPredGen.keys.myDouble.eq(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3_1equalsDouble3_1() throws {
+    func testDouble3_1equalsInt3() throws {
        let predicate = QPredGen.keys.myDouble.eq(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssert(evaluation)
+       XCTAssertFalse(evaluation)
     }
 
-    func testDouble1equalsDouble1_1() throws {
+    func testDouble3_1equalsInt() throws {
+       let predicate = QPredGen.keys.myDouble.eq(3.1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble1equalsInt1() throws {
        let predicate = QPredGen.keys.myDouble.eq(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssertFalse(evaluation)
+       XCTAssert(evaluation)
     }
 
-    func testDouble1equalsDouble2_1() throws {
+    func testDouble1equalsInt2() throws {
        let predicate = QPredGen.keys.myDouble.eq(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble1equalsDouble3_1() throws {
+    func testDouble1equalsInt3() throws {
        let predicate = QPredGen.keys.myDouble.eq(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble2equalsDouble1_1() throws {
+    func testDouble1equalsInt() throws {
+       let predicate = QPredGen.keys.myDouble.eq(1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble2equalsInt1() throws {
        let predicate = QPredGen.keys.myDouble.eq(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble2equalsDouble2_1() throws {
+    func testDouble2equalsInt2() throws {
        let predicate = QPredGen.keys.myDouble.eq(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssertFalse(evaluation)
+       XCTAssert(evaluation)
     }
 
-    func testDouble2equalsDouble3_1() throws {
+    func testDouble2equalsInt3() throws {
        let predicate = QPredGen.keys.myDouble.eq(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3equalsDouble1_1() throws {
+    func testDouble2equalsInt() throws {
+       let predicate = QPredGen.keys.myDouble.eq(2)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble3equalsInt1() throws {
        let predicate = QPredGen.keys.myDouble.eq(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3equalsDouble2_1() throws {
+    func testDouble3equalsInt2() throws {
        let predicate = QPredGen.keys.myDouble.eq(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3equalsDouble3_1() throws {
+    func testDouble3equalsInt3() throws {
        let predicate = QPredGen.keys.myDouble.eq(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssert(evaluation)
+    }
+
+    func testDouble3equalsInt() throws {
+       let predicate = QPredGen.keys.myDouble.eq(3)
+       let instance = QPredGen(name: "test")
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble1_1lessOrEqualDouble1_1() throws {
+    func testDouble1_1lessOrEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.le(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssert(evaluation)
+       XCTAssertFalse(evaluation)
     }
 
-    func testDouble1_1lessOrEqualDouble2_1() throws {
+    func testDouble1_1lessOrEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.le(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble1_1lessOrEqualDouble3_1() throws {
+    func testDouble1_1lessOrEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.le(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble2_1lessOrEqualDouble1_1() throws {
+    func testDouble1_1lessOrEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.le(1.1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble2_1lessOrEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.le(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble2_1lessOrEqualDouble2_1() throws {
+    func testDouble2_1lessOrEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.le(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssert(evaluation)
+       XCTAssertFalse(evaluation)
     }
 
-    func testDouble2_1lessOrEqualDouble3_1() throws {
+    func testDouble2_1lessOrEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.le(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3_1lessOrEqualDouble1_1() throws {
+    func testDouble2_1lessOrEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.le(2.1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble3_1lessOrEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.le(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3_1lessOrEqualDouble2_1() throws {
+    func testDouble3_1lessOrEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.le(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3_1lessOrEqualDouble3_1() throws {
+    func testDouble3_1lessOrEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.le(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssert(evaluation)
+       XCTAssertFalse(evaluation)
     }
 
-    func testDouble1lessOrEqualDouble1_1() throws {
+    func testDouble3_1lessOrEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.le(3.1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble1lessOrEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.le(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble1lessOrEqualDouble2_1() throws {
+    func testDouble1lessOrEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.le(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble1lessOrEqualDouble3_1() throws {
+    func testDouble1lessOrEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.le(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble2lessOrEqualDouble1_1() throws {
+    func testDouble1lessOrEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.le(1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble2lessOrEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.le(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble2lessOrEqualDouble2_1() throws {
+    func testDouble2lessOrEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.le(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble2lessOrEqualDouble3_1() throws {
+    func testDouble2lessOrEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.le(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3lessOrEqualDouble1_1() throws {
+    func testDouble2lessOrEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.le(2)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble3lessOrEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.le(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3lessOrEqualDouble2_1() throws {
+    func testDouble3lessOrEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.le(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3lessOrEqualDouble3_1() throws {
+    func testDouble3lessOrEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.le(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble1_1lessThanDouble1_1() throws {
+    func testDouble3lessOrEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.le(3)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble1_1lessThanInt1() throws {
        let predicate = QPredGen.keys.myDouble.lt(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble1_1lessThanDouble2_1() throws {
+    func testDouble1_1lessThanInt2() throws {
        let predicate = QPredGen.keys.myDouble.lt(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble1_1lessThanDouble3_1() throws {
+    func testDouble1_1lessThanInt3() throws {
        let predicate = QPredGen.keys.myDouble.lt(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble2_1lessThanDouble1_1() throws {
+    func testDouble1_1lessThanInt() throws {
+       let predicate = QPredGen.keys.myDouble.lt(1.1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble2_1lessThanInt1() throws {
        let predicate = QPredGen.keys.myDouble.lt(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble2_1lessThanDouble2_1() throws {
+    func testDouble2_1lessThanInt2() throws {
        let predicate = QPredGen.keys.myDouble.lt(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble2_1lessThanDouble3_1() throws {
+    func testDouble2_1lessThanInt3() throws {
        let predicate = QPredGen.keys.myDouble.lt(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3_1lessThanDouble1_1() throws {
+    func testDouble2_1lessThanInt() throws {
+       let predicate = QPredGen.keys.myDouble.lt(2.1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble3_1lessThanInt1() throws {
        let predicate = QPredGen.keys.myDouble.lt(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3_1lessThanDouble2_1() throws {
+    func testDouble3_1lessThanInt2() throws {
        let predicate = QPredGen.keys.myDouble.lt(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3_1lessThanDouble3_1() throws {
+    func testDouble3_1lessThanInt3() throws {
        let predicate = QPredGen.keys.myDouble.lt(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble1lessThanDouble1_1() throws {
+    func testDouble3_1lessThanInt() throws {
+       let predicate = QPredGen.keys.myDouble.lt(3.1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble1lessThanInt1() throws {
        let predicate = QPredGen.keys.myDouble.lt(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssert(evaluation)
+       XCTAssertFalse(evaluation)
     }
 
-    func testDouble1lessThanDouble2_1() throws {
+    func testDouble1lessThanInt2() throws {
        let predicate = QPredGen.keys.myDouble.lt(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble1lessThanDouble3_1() throws {
+    func testDouble1lessThanInt3() throws {
        let predicate = QPredGen.keys.myDouble.lt(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble2lessThanDouble1_1() throws {
+    func testDouble1lessThanInt() throws {
+       let predicate = QPredGen.keys.myDouble.lt(1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble2lessThanInt1() throws {
        let predicate = QPredGen.keys.myDouble.lt(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble2lessThanDouble2_1() throws {
+    func testDouble2lessThanInt2() throws {
        let predicate = QPredGen.keys.myDouble.lt(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssert(evaluation)
+       XCTAssertFalse(evaluation)
     }
 
-    func testDouble2lessThanDouble3_1() throws {
+    func testDouble2lessThanInt3() throws {
        let predicate = QPredGen.keys.myDouble.lt(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3lessThanDouble1_1() throws {
+    func testDouble2lessThanInt() throws {
+       let predicate = QPredGen.keys.myDouble.lt(2)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble3lessThanInt1() throws {
        let predicate = QPredGen.keys.myDouble.lt(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3lessThanDouble2_1() throws {
+    func testDouble3lessThanInt2() throws {
        let predicate = QPredGen.keys.myDouble.lt(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3lessThanDouble3_1() throws {
+    func testDouble3lessThanInt3() throws {
        let predicate = QPredGen.keys.myDouble.lt(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssert(evaluation)
+       XCTAssertFalse(evaluation)
     }
 
-    func testDouble1_1greaterOrEqualDouble1_1() throws {
+    func testDouble3lessThanInt() throws {
+       let predicate = QPredGen.keys.myDouble.lt(3)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble1_1greaterOrEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.ge(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble1_1greaterOrEqualDouble2_1() throws {
+    func testDouble1_1greaterOrEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.ge(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble1_1greaterOrEqualDouble3_1() throws {
+    func testDouble1_1greaterOrEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.ge(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble2_1greaterOrEqualDouble1_1() throws {
+    func testDouble1_1greaterOrEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.ge(1.1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble2_1greaterOrEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.ge(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble2_1greaterOrEqualDouble2_1() throws {
+    func testDouble2_1greaterOrEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.ge(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble2_1greaterOrEqualDouble3_1() throws {
+    func testDouble2_1greaterOrEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.ge(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3_1greaterOrEqualDouble1_1() throws {
+    func testDouble2_1greaterOrEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.ge(2.1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble3_1greaterOrEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.ge(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3_1greaterOrEqualDouble2_1() throws {
+    func testDouble3_1greaterOrEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.ge(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3_1greaterOrEqualDouble3_1() throws {
+    func testDouble3_1greaterOrEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.ge(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble1greaterOrEqualDouble1_1() throws {
+    func testDouble3_1greaterOrEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.ge(3.1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble1greaterOrEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.ge(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssertFalse(evaluation)
+       XCTAssert(evaluation)
     }
 
-    func testDouble1greaterOrEqualDouble2_1() throws {
+    func testDouble1greaterOrEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.ge(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble1greaterOrEqualDouble3_1() throws {
+    func testDouble1greaterOrEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.ge(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble2greaterOrEqualDouble1_1() throws {
+    func testDouble1greaterOrEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.ge(1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble2greaterOrEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.ge(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble2greaterOrEqualDouble2_1() throws {
+    func testDouble2greaterOrEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.ge(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssertFalse(evaluation)
+       XCTAssert(evaluation)
     }
 
-    func testDouble2greaterOrEqualDouble3_1() throws {
+    func testDouble2greaterOrEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.ge(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3greaterOrEqualDouble1_1() throws {
+    func testDouble2greaterOrEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.ge(2)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble3greaterOrEqualInt1() throws {
        let predicate = QPredGen.keys.myDouble.ge(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3greaterOrEqualDouble2_1() throws {
+    func testDouble3greaterOrEqualInt2() throws {
        let predicate = QPredGen.keys.myDouble.ge(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3greaterOrEqualDouble3_1() throws {
+    func testDouble3greaterOrEqualInt3() throws {
        let predicate = QPredGen.keys.myDouble.ge(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssert(evaluation)
+    }
+
+    func testDouble3greaterOrEqualInt() throws {
+       let predicate = QPredGen.keys.myDouble.ge(3)
+       let instance = QPredGen(name: "test")
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble1_1greaterThanDouble1_1() throws {
+    func testDouble1_1greaterThanInt1() throws {
        let predicate = QPredGen.keys.myDouble.gt(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssertFalse(evaluation)
+       XCTAssert(evaluation)
     }
 
-    func testDouble1_1greaterThanDouble2_1() throws {
+    func testDouble1_1greaterThanInt2() throws {
        let predicate = QPredGen.keys.myDouble.gt(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble1_1greaterThanDouble3_1() throws {
+    func testDouble1_1greaterThanInt3() throws {
        let predicate = QPredGen.keys.myDouble.gt(1.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble2_1greaterThanDouble1_1() throws {
+    func testDouble1_1greaterThanInt() throws {
+       let predicate = QPredGen.keys.myDouble.gt(1.1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble2_1greaterThanInt1() throws {
        let predicate = QPredGen.keys.myDouble.gt(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble2_1greaterThanDouble2_1() throws {
+    func testDouble2_1greaterThanInt2() throws {
        let predicate = QPredGen.keys.myDouble.gt(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssertFalse(evaluation)
+       XCTAssert(evaluation)
     }
 
-    func testDouble2_1greaterThanDouble3_1() throws {
+    func testDouble2_1greaterThanInt3() throws {
        let predicate = QPredGen.keys.myDouble.gt(2.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3_1greaterThanDouble1_1() throws {
+    func testDouble2_1greaterThanInt() throws {
+       let predicate = QPredGen.keys.myDouble.gt(2.1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble3_1greaterThanInt1() throws {
        let predicate = QPredGen.keys.myDouble.gt(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3_1greaterThanDouble2_1() throws {
+    func testDouble3_1greaterThanInt2() throws {
        let predicate = QPredGen.keys.myDouble.gt(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3_1greaterThanDouble3_1() throws {
+    func testDouble3_1greaterThanInt3() throws {
        let predicate = QPredGen.keys.myDouble.gt(3.1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssert(evaluation)
+    }
+
+    func testDouble3_1greaterThanInt() throws {
+       let predicate = QPredGen.keys.myDouble.gt(3.1)
+       let instance = QPredGen(name: "test")
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble1greaterThanDouble1_1() throws {
+    func testDouble1greaterThanInt1() throws {
        let predicate = QPredGen.keys.myDouble.gt(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble1greaterThanDouble2_1() throws {
+    func testDouble1greaterThanInt2() throws {
        let predicate = QPredGen.keys.myDouble.gt(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble1greaterThanDouble3_1() throws {
+    func testDouble1greaterThanInt3() throws {
        let predicate = QPredGen.keys.myDouble.gt(1)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble2greaterThanDouble1_1() throws {
+    func testDouble1greaterThanInt() throws {
+       let predicate = QPredGen.keys.myDouble.gt(1)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble2greaterThanInt1() throws {
        let predicate = QPredGen.keys.myDouble.gt(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble2greaterThanDouble2_1() throws {
+    func testDouble2greaterThanInt2() throws {
        let predicate = QPredGen.keys.myDouble.gt(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble2greaterThanDouble3_1() throws {
+    func testDouble2greaterThanInt3() throws {
        let predicate = QPredGen.keys.myDouble.gt(2)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testDouble3greaterThanDouble1_1() throws {
+    func testDouble2greaterThanInt() throws {
+       let predicate = QPredGen.keys.myDouble.gt(2)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testDouble3greaterThanInt1() throws {
        let predicate = QPredGen.keys.myDouble.gt(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
+       instance.myDouble = 1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3greaterThanDouble2_1() throws {
+    func testDouble3greaterThanInt2() throws {
        let predicate = QPredGen.keys.myDouble.gt(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
+       instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssert(evaluation)
     }
 
-    func testDouble3greaterThanDouble3_1() throws {
+    func testDouble3greaterThanInt3() throws {
        let predicate = QPredGen.keys.myDouble.gt(3)
        var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
+       instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble1_1with1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 1.1)
+    func testDouble3greaterThanInt() throws {
+       let predicate = QPredGen.keys.myDouble.gt(3)
+       let instance = QPredGen(name: "test")
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testbetweenDouble1_1betweenInt2with1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1
 
@@ -1104,8 +1428,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble1_1with1_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 1.1)
+    func testbetweenDouble1_1betweenInt2with1_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1.1
 
@@ -1114,8 +1438,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble1_1with2() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 1.1)
+    func testbetweenDouble1_1betweenInt2with2() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 2
 
@@ -1124,8 +1448,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble1_1with2_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 1.1)
+    func testbetweenDouble1_1betweenInt2with2_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 2.1
 
@@ -1134,8 +1458,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble1_1with3() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 1.1)
+    func testbetweenDouble1_1betweenInt2with3() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3
 
@@ -1144,8 +1468,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble1_1with3_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 1.1)
+    func testbetweenDouble1_1betweenInt2with3_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3.1
 
@@ -1154,8 +1478,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble2_1with1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 2.1)
+    func testbetweenDouble1_1betweenInt3with1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1
 
@@ -1164,8 +1488,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble2_1with1_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 2.1)
+    func testbetweenDouble1_1betweenInt3with1_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1.1
 
@@ -1174,8 +1498,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble2_1with2() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 2.1)
+    func testbetweenDouble1_1betweenInt3with2() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 2
 
@@ -1184,18 +1508,18 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssert(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble2_1with2_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 2.1)
+    func testbetweenDouble1_1betweenInt3with2_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 2.1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssertFalse(evaluation)
+       XCTAssert(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble2_1with3() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 2.1)
+    func testbetweenDouble1_1betweenInt3with3() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3
 
@@ -1204,8 +1528,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble2_1with3_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 2.1)
+    func testbetweenDouble1_1betweenInt3with3_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3.1
 
@@ -1214,8 +1538,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble3_1with1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 3.1)
+    func testbetweenDouble2_1betweenInt3with1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1
 
@@ -1224,8 +1548,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble3_1with1_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 3.1)
+    func testbetweenDouble2_1betweenInt3with1_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1.1
 
@@ -1234,38 +1558,38 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble3_1with2() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 3.1)
+    func testbetweenDouble2_1betweenInt3with2() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssert(evaluation)
+       XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble3_1with2_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 3.1)
+    func testbetweenDouble2_1betweenInt3with2_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 2.1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssert(evaluation)
+       XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble3_1with3() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 3.1)
+    func testbetweenDouble2_1betweenInt3with3() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssert(evaluation)
+       XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1_1betweenDouble3_1with3_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 3.1)
+    func testbetweenDouble2_1betweenInt3with3_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3.1
 
@@ -1274,8 +1598,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble2_1betweenDouble2_1with1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 2.1)
+    func testbetweenDouble1betweenInt1with1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 1)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1
 
@@ -1284,8 +1608,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble2_1betweenDouble2_1with1_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 2.1)
+    func testbetweenDouble1betweenInt1with1_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 1)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1.1
 
@@ -1294,8 +1618,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble2_1betweenDouble2_1with2() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 2.1)
+    func testbetweenDouble1betweenInt1with2() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 1)
        var instance = QPredGen(name: "test")
        instance.myDouble = 2
 
@@ -1304,8 +1628,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble2_1betweenDouble2_1with2_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 2.1)
+    func testbetweenDouble1betweenInt1with2_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 1)
        var instance = QPredGen(name: "test")
        instance.myDouble = 2.1
 
@@ -1314,8 +1638,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble2_1betweenDouble2_1with3() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 2.1)
+    func testbetweenDouble1betweenInt1with3() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 1)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3
 
@@ -1324,8 +1648,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble2_1betweenDouble2_1with3_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 2.1)
+    func testbetweenDouble1betweenInt1with3_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 1)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3.1
 
@@ -1334,8 +1658,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble2_1betweenDouble3_1with1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 3.1)
+    func testbetweenDouble1betweenInt2with1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1
 
@@ -1344,18 +1668,18 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble2_1betweenDouble3_1with1_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 3.1)
+    func testbetweenDouble1betweenInt2with1_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1.1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssertFalse(evaluation)
+       XCTAssert(evaluation)
     }
 
-    func testbetweenDouble2_1betweenDouble3_1with2() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 3.1)
+    func testbetweenDouble1betweenInt2with2() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 2
 
@@ -1364,8 +1688,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble2_1betweenDouble3_1with2_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 3.1)
+    func testbetweenDouble1betweenInt2with2_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 2.1
 
@@ -1374,18 +1698,18 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble2_1betweenDouble3_1with3() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 3.1)
+    func testbetweenDouble1betweenInt2with3() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssert(evaluation)
+       XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble2_1betweenDouble3_1with3_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2.1, end: 3.1)
+    func testbetweenDouble1betweenInt2with3_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3.1
 
@@ -1394,8 +1718,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble3_1betweenDouble3_1with1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 3.1, end: 3.1)
+    func testbetweenDouble1betweenInt3with1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1
 
@@ -1404,38 +1728,38 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble3_1betweenDouble3_1with1_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 3.1, end: 3.1)
+    func testbetweenDouble1betweenInt3with1_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1.1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssertFalse(evaluation)
+       XCTAssert(evaluation)
     }
 
-    func testbetweenDouble3_1betweenDouble3_1with2() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 3.1, end: 3.1)
+    func testbetweenDouble1betweenInt3with2() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 2
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssertFalse(evaluation)
+       XCTAssert(evaluation)
     }
 
-    func testbetweenDouble3_1betweenDouble3_1with2_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 3.1, end: 3.1)
+    func testbetweenDouble1betweenInt3with2_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 2.1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-       XCTAssertFalse(evaluation)
+       XCTAssert(evaluation)
     }
 
-    func testbetweenDouble3_1betweenDouble3_1with3() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 3.1, end: 3.1)
+    func testbetweenDouble1betweenInt3with3() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3
 
@@ -1444,8 +1768,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble3_1betweenDouble3_1with3_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 3.1, end: 3.1)
+    func testbetweenDouble1betweenInt3with3_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3.1
 
@@ -1454,8 +1778,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1betweenDouble1_1with1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 1.1)
+    func testbetweenDouble2betweenInt2with1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1
 
@@ -1464,8 +1788,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1betweenDouble1_1with1_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 1.1)
+    func testbetweenDouble2betweenInt2with1_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1.1
 
@@ -1474,8 +1798,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1betweenDouble1_1with2() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 1.1)
+    func testbetweenDouble2betweenInt2with2() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 2
 
@@ -1484,8 +1808,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1betweenDouble1_1with2_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 1.1)
+    func testbetweenDouble2betweenInt2with2_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 2.1
 
@@ -1494,8 +1818,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1betweenDouble1_1with3() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 1.1)
+    func testbetweenDouble2betweenInt2with3() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3
 
@@ -1504,8 +1828,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1betweenDouble1_1with3_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 1.1)
+    func testbetweenDouble2betweenInt2with3_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 2)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3.1
 
@@ -1514,8 +1838,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1betweenDouble2_1with1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 2.1)
+    func testbetweenDouble2betweenInt3with1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1
 
@@ -1524,38 +1848,38 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1betweenDouble2_1with1_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 2.1)
+    func testbetweenDouble2betweenInt3with1_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1.1
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssert(evaluation)
-    }
-
-    func testbetweenDouble1betweenDouble2_1with2() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 2.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 2
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssert(evaluation)
-    }
-
-    func testbetweenDouble1betweenDouble2_1with2_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 2.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
 
        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1betweenDouble2_1with3() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 2.1)
+    func testbetweenDouble2betweenInt3with2() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 3)
+       var instance = QPredGen(name: "test")
+       instance.myDouble = 2
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssertFalse(evaluation)
+    }
+
+    func testbetweenDouble2betweenInt3with2_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 3)
+       var instance = QPredGen(name: "test")
+       instance.myDouble = 2.1
+
+       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+       XCTAssert(evaluation)
+    }
+
+    func testbetweenDouble2betweenInt3with3() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3
 
@@ -1564,8 +1888,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1betweenDouble2_1with3_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 2.1)
+    func testbetweenDouble2betweenInt3with3_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3.1
 
@@ -1574,8 +1898,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1betweenDouble3_1with1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 3.1)
+    func testbetweenDouble3betweenInt3with1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 3, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1
 
@@ -1584,68 +1908,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble1betweenDouble3_1with1_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 3.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssert(evaluation)
-    }
-
-    func testbetweenDouble1betweenDouble3_1with2() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 3.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 2
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssert(evaluation)
-    }
-
-    func testbetweenDouble1betweenDouble3_1with2_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 3.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssert(evaluation)
-    }
-
-    func testbetweenDouble1betweenDouble3_1with3() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 3.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 3
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssert(evaluation)
-    }
-
-    func testbetweenDouble1betweenDouble3_1with3_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 1, end: 3.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssertFalse(evaluation)
-    }
-
-    func testbetweenDouble2betweenDouble2_1with1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 2.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 1
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssertFalse(evaluation)
-    }
-
-    func testbetweenDouble2betweenDouble2_1with1_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 2.1)
+    func testbetweenDouble3betweenInt3with1_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 3, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 1.1
 
@@ -1654,8 +1918,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble2betweenDouble2_1with2() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 2.1)
+    func testbetweenDouble3betweenInt3with2() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 3, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 2
 
@@ -1664,8 +1928,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble2betweenDouble2_1with2_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 2.1)
+    func testbetweenDouble3betweenInt3with2_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 3, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 2.1
 
@@ -1674,8 +1938,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble2betweenDouble2_1with3() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 2.1)
+    func testbetweenDouble3betweenInt3with3() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 3, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3
 
@@ -1684,128 +1948,8 @@ class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
        XCTAssertFalse(evaluation)
     }
 
-    func testbetweenDouble2betweenDouble2_1with3_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 2.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssertFalse(evaluation)
-    }
-
-    func testbetweenDouble2betweenDouble3_1with1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 3.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 1
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssertFalse(evaluation)
-    }
-
-    func testbetweenDouble2betweenDouble3_1with1_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 3.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssertFalse(evaluation)
-    }
-
-    func testbetweenDouble2betweenDouble3_1with2() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 3.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 2
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssertFalse(evaluation)
-    }
-
-    func testbetweenDouble2betweenDouble3_1with2_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 3.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssert(evaluation)
-    }
-
-    func testbetweenDouble2betweenDouble3_1with3() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 3.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 3
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssert(evaluation)
-    }
-
-    func testbetweenDouble2betweenDouble3_1with3_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 2, end: 3.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 3.1
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssertFalse(evaluation)
-    }
-
-    func testbetweenDouble3betweenDouble3_1with1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 3, end: 3.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 1
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssertFalse(evaluation)
-    }
-
-    func testbetweenDouble3betweenDouble3_1with1_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 3, end: 3.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 1.1
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssertFalse(evaluation)
-    }
-
-    func testbetweenDouble3betweenDouble3_1with2() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 3, end: 3.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 2
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssertFalse(evaluation)
-    }
-
-    func testbetweenDouble3betweenDouble3_1with2_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 3, end: 3.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 2.1
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssertFalse(evaluation)
-    }
-
-    func testbetweenDouble3betweenDouble3_1with3() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 3, end: 3.1)
-       var instance = QPredGen(name: "test")
-       instance.myDouble = 3
-
-       let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
-
-       XCTAssertFalse(evaluation)
-    }
-
-    func testbetweenDouble3betweenDouble3_1with3_1() throws {
-       let predicate = QPredGen.keys.myDouble.between(start: 3, end: 3.1)
+    func testbetweenDouble3betweenInt3with3_1() throws {
+       let predicate = QPredGen.keys.myDouble.between(start: 3, end: 3)
        var instance = QPredGen(name: "test")
        instance.myDouble = 3.1
 

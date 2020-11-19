@@ -216,10 +216,24 @@ struct PersistableHelper {
             return start < rhs && rhs < end
         case let (start, end, rhs) as (Temporal.Time, Temporal.Time, Temporal.Time):
             return start < rhs && rhs < end
-        case let (start, end, rhs) as (Double, Double, Double):
-            return start < rhs && rhs < end
         case let (start, end, rhs) as (Int, Int, Int):
             return start < rhs && rhs < end
+        case let (start, end, rhs) as (Int, Int, Double):
+            return Double(start) < Double(rhs) && Double(rhs) < Double(end)
+        case let (start, end, rhs) as (Int, Double, Int):
+            return Double(start) < Double(rhs) && Double(rhs) < Double(end)
+        case let (start, end, rhs) as (Int, Double, Double):
+            return Double(start) < Double(rhs) && Double(rhs) < Double(end)
+        case let (start, end, rhs) as (Double, Int, Int):
+            return Double(start) < Double(rhs) && Double(rhs) < Double(end)
+        case let (start, end, rhs) as (Double, Int, Double):
+            return Double(start) < Double(rhs) && Double(rhs) < Double(end)
+        case let (start, end, rhs) as (Double, Double, Int):
+            return Double(start) < Double(rhs) && Double(rhs) < Double(end)
+        case let (start, end, rhs) as (Double, Double, Double):
+            return Double(start) < Double(rhs) && Double(rhs) < Double(end)
+
+
         case let (start, end, rhs) as (String, String, String):
             return start < rhs && rhs < end
         default:
