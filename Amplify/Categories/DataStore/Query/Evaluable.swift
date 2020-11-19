@@ -8,5 +8,5 @@
 import Foundation
 
 public protocol Evaluable {
-    func evaluate(target: Any) -> Bool
+    func evaluate(target: Model) -> Bool
 }

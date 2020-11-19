@@ -28,7 +28,7 @@ public func not<Predicate: QueryPredicate>(_ predicate: Predicate) -> QueryPredi
 /// specify an action applies to an entire data set.
 public enum QueryPredicateConstant: QueryPredicate {
     case all
-    public func evaluate(target: Any) -> Bool {
+    public func evaluate(target: Model) -> Bool {
         return true
     }
 }
@@ -74,7 +74,8 @@ public class QueryPredicateGroup: QueryPredicate {
     public static prefix func ! (rhs: QueryPredicateGroup) -> QueryPredicateGroup {
         return not(rhs)
     }
-    public func evaluate(target: Any) -> Bool {
+
+    public func evaluate(target: Model) -> Bool {
         switch type {
         case .or:
             for predicate in predicates {
@@ -128,14 +129,31 @@ public class QueryPredicateOperation: QueryPredicate {
     public static prefix func ! (rhs: QueryPredicateOperation) -> QueryPredicateGroup {
         return not(rhs)
     }
-    public func evaluate(target: Any) -> Bool {
-        guard let model = target as? Model,
-            let fieldValue = model[field] else {
+
+    public func evaluate(target: Model) -> Bool {
+        guard let fieldValue = target[field] else {
+            print("hmm")
             return false
         }
         guard let value = fieldValue else {
             return false
         }
-        return self.`operator`.evaluate(target: value)
+
+        if let booleanValue = value as? Bool {
+            return self.operator.evaluate(target: booleanValue)
+        }
+
+        if let doubleValue = value as? Double {
+            return self.operator.evaluate(target: doubleValue)
+        }
+
+        if let intValue = value as? Int {
+            return self.operator.evaluate(target: intValue)
+        }
+
+        guard let persistable = value as? Any else {
+            return false
+        }
+        return self.operator.evaluate(target: fieldValue)
     }
 }
