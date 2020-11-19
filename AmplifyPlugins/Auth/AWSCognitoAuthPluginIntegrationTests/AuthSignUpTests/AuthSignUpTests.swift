@@ -33,8 +33,11 @@ class AuthSignUpTests: AWSAuthBaseTest {
     func testSuccessfulRegisterUser() {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
+        let options = AuthSignUpRequest.Options(userAttributes: [AuthUserAttribute(.email, value: email)])
         let operationExpectation = expectation(description: "Operation should complete")
-        let operation = Amplify.Auth.signUp(username: username, password: password) { result in
+        let operation = Amplify.Auth.signUp(username: username,
+                                            password: password,
+                                            options: options) { result in
             defer {
                 operationExpectation.fulfill()
             }
@@ -70,7 +73,8 @@ class AuthSignUpTests: AWSAuthBaseTest {
         let operationExpectation = expectation(description: "Operation should complete")
         let awsAuthSignUpOptions = AWSAuthSignUpOptions(validationData: ["myValidationData": "myvalue"],
                                                         metadata: ["myClientMetadata": "myvalue"])
-        let options = AuthSignUpOperation.Request.Options(pluginOptions: awsAuthSignUpOptions)
+        let options = AuthSignUpOperation.Request.Options(userAttributes: [AuthUserAttribute(.email, value: email)],
+                                                          pluginOptions: awsAuthSignUpOptions)
         let operation = Amplify.Auth.signUp(username: username, password: password, options: options) { result in
             defer {
                 operationExpectation.fulfill()
@@ -107,7 +111,7 @@ class AuthSignUpTests: AWSAuthBaseTest {
             case .success:
                 XCTFail("SignUp with validation error should not succeed")
             case .failure(let error):
-                guard case .validation(_, _, _, _) = error else {
+                guard case .validation = error else {
                     XCTFail("Should return validation error")
                     return
                 }
@@ -130,14 +134,15 @@ class AuthSignUpTests: AWSAuthBaseTest {
         let password = "P123@\(UUID().uuidString)"
 
         let firstSignUpOperation = expectation(description: "Operation should complete")
-        AuthSignInHelper.signUpUser(username: username, password: password) { success, error in
+        AuthSignInHelper.signUpUser(username: username, password: password, email: email) { success, error in
             XCTAssertTrue(success, "SignUp operation should succeed. But failed \(String(describing: error))")
             firstSignUpOperation.fulfill()
         }
         wait(for: [firstSignUpOperation], timeout: networkTimeout)
 
         let operationExpectation = expectation(description: "Operation should complete")
-        let operation = Amplify.Auth.signUp(username: username, password: password) { result in
+        let options = AuthSignUpRequest.Options(userAttributes: [AuthUserAttribute(.email, value: email)])
+        let operation = Amplify.Auth.signUp(username: username, password: password, options: options) { result in
             defer {
                 operationExpectation.fulfill()
             }
@@ -146,9 +151,9 @@ class AuthSignUpTests: AWSAuthBaseTest {
                 XCTFail("SignUp with an already registered user should not succeed")
             case .failure(let error):
                 guard let cognitoError = error.underlyingError as? AWSCognitoAuthError,
-                    case .usernameExists = cognitoError else {
-                        XCTFail("Should return usernameExists")
-                        return
+                      case .usernameExists = cognitoError else {
+                    XCTFail("Should return usernameExists")
+                    return
                 }
             }
         }

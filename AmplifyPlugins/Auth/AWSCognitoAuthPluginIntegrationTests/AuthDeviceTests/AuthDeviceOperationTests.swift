@@ -38,9 +38,9 @@ class AuthDeviceOperationTests: AWSAuthBaseTest {
                 XCTFail("Confirm signUp with non existing user should not return result")
             case .failure(let error):
                 guard let cognitoError = error.underlyingError as? AWSCognitoAuthError,
-                    case .deviceNotTracked = cognitoError else {
-                        XCTFail("Should return deviceNotTracked")
-                        return
+                      case .deviceNotTracked = cognitoError else {
+                    XCTFail("Should return deviceNotTracked")
+                    return
                 }
 
             }

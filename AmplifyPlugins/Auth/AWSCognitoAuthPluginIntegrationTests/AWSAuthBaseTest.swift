@@ -13,13 +13,18 @@ class AWSAuthBaseTest: XCTestCase {
 
     let networkTimeout = TimeInterval(10)
     var email = UUID().uuidString + "@" + UUID().uuidString + ".com"
+    var email2 = UUID().uuidString + "@" + UUID().uuidString + ".com"
 
     func initializeAmplify() {
         do {
             let credentialsConfiguration = try AuthConfigurationHelper.credentialsConfiguration()
-            if let emailJSONValue = credentialsConfiguration.value(at: "email"),
+            if let emailJSONValue = credentialsConfiguration.value(at: "test_email_1"),
                case let .string(emailValue) = emailJSONValue {
                 email = emailValue
+            }
+            if let email2JSONValue = credentialsConfiguration.value(at: "test_email_2"),
+               case let .string(emailValue) = email2JSONValue {
+                email2 = emailValue
             }
             let configuration = try AuthConfigurationHelper.amplifyConfiguration()
             let authPlugin = AWSCognitoAuthPlugin()

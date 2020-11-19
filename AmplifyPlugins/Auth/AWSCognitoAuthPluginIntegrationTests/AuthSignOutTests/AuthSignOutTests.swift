@@ -63,7 +63,9 @@ class AuthSignedOutTests: AWSAuthBaseTest {
         let password = "P123@\(UUID().uuidString)"
 
         let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username, password: password) { didSucceed, error in
+        AuthSignInHelper.registerAndSignInUser(username: username,
+                                               password: password,
+                                               email: email) { didSucceed, error in
             signInExpectation.fulfill()
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
@@ -129,7 +131,9 @@ class AuthSignedOutTests: AWSAuthBaseTest {
         let password = "P123@\(UUID().uuidString)"
 
         let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username, password: password) { didSucceed, error in
+        AuthSignInHelper.registerAndSignInUser(username: username,
+                                               password: password,
+                                               email: email) { didSucceed, error in
             signInExpectation.fulfill()
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }

@@ -36,7 +36,8 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username, password: password) { didSucceed, error in
+        AuthSignInHelper.registerAndSignInUser(username: username, password: password,
+                                               email: email) { didSucceed, error in
             signInExpectation.fulfill()
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
@@ -69,7 +70,8 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username, password: password) { didSucceed, error in
+        AuthSignInHelper.registerAndSignInUser(username: username, password: password,
+                                               email: email) { didSucceed, error in
             signInExpectation.fulfill()
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
@@ -104,7 +106,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
                 XCTFail("Should not receive a valid token")
             } catch {
                 guard let authError = error as? AuthError,
-                    case .sessionExpired(_, _, _) = authError else {
+                      case .sessionExpired = authError else {
                     XCTFail("Should receive a session expired error")
                     return
                 }
