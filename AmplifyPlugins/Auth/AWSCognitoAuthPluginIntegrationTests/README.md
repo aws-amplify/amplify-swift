@@ -98,7 +98,8 @@ This will create a amplifyconfiguration.json file in your local, drag that into 
 Next create `credentials.json` and add it to the same folder path, with the following values
 ```
 {
-    "email": [YOUR_EMAIL]
+    "email": [YOUR_EMAIL],
+    "email2": [ANOTHER_EMAIL]
 }
 ```
 

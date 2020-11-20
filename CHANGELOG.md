@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.4.4 (2020-11-19)
+
+### Bug Fixes
+
+- Designate SwiftUI a weak_framework in podspec (#892)
+
 ## 1.4.3 (2020-11-13)
 
 ### Bug Fixes

@@ -28,6 +28,9 @@ public extension AuthChangePasswordRequest {
 
     struct Options {
 
+        // TODO: Move this metadata to plugin options. All other request has the metadata
+        // inside the plugin options.
+
         public let metadata: [String: String]?
 
         public init(metadata: [String: String]? = nil) {
