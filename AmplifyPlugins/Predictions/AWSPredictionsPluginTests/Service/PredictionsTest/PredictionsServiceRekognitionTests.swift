@@ -78,6 +78,8 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyLabelsService() {
         setUpAmplify()
+
+        let resultReceived = expectation(description: "Transcription result should be returned")
         let mockResponse: AWSRekognitionDetectLabelsResponse = AWSRekognitionDetectLabelsResponse()
         mockResponse.labels = [AWSRekognitionLabel]()
 
@@ -94,10 +96,13 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                 let labelResult = result as? IdentifyLabelsResult
                 let labels = IdentifyLabelsResultTransformers.processLabels(mockResponse.labels!)
                 XCTAssertEqual(labelResult?.labels, labels, "Labels should be the same")
+                resultReceived.fulfill()
             case .failed(let error):
                 XCTFail("Should not produce error: \(error)")
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether error is correctly propogated
@@ -110,6 +115,8 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyLabelsServiceWithError() {
         setUpAmplify()
+
+        let errorReceived = expectation(description: "Error should be returned")
         let mockError = NSError(domain: AWSRekognitionErrorDomain,
                                 code: AWSRekognitionErrorType.invalidImageFormat.rawValue,
                                 userInfo: [:])
@@ -122,8 +129,11 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                 XCTFail("Should not produce result: \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether error is correctly propogated
@@ -136,8 +146,9 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyLabelsServiceWithNilResponse() {
         setUpAmplify()
-
         mockRekognition.setLabelsResponse(result: nil)
+
+        let errorReceived = expectation(description: "Error should be returned")
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
             XCTFail("Unable to find image")
@@ -150,8 +161,11 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                 XCTFail("Should not produce result: \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether we can make a successful rekognition call to identify moderation labels
@@ -164,6 +178,8 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyModerationLabelsService() {
         setUpAmplify()
+
+        let resultReceived = expectation(description: "Transcription result should be returned")
         let mockResponse: AWSRekognitionDetectModerationLabelsResponse = AWSRekognitionDetectModerationLabelsResponse()
         mockResponse.moderationLabels = [AWSRekognitionModerationLabel]()
 
@@ -182,10 +198,13 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                 XCTAssertEqual(labelResult?.labels, labels, "Labels should be the same")
                 XCTAssertNotNil(labelResult?.unsafeContent,
                                 "unsafe content should have a boolean in it since we called moderation labels")
+                resultReceived.fulfill()
             case .failed(let error):
                 XCTFail("Should not produce error: \(error)")
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether error is prograted correctly when making a rekognition call to identify moderation labels
@@ -198,6 +217,8 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyModerationLabelsServiceWithError() {
         setUpAmplify()
+
+        let errorReceived = expectation(description: "Error should be returned")
         let mockError = NSError(domain: AWSRekognitionErrorDomain,
                                 code: AWSRekognitionErrorType.invalidImageFormat.rawValue,
                                 userInfo: [:])
@@ -207,11 +228,14 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         predictionsService.detectLabels(image: url, type: .moderation) { event in
             switch event {
             case .completed(let result):
-                  XCTFail("Should not produce result: \(result)")
+                XCTFail("Should not produce result: \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether we can make a successful rekognition call to identify moderation labels but receive a nil response
@@ -224,8 +248,9 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyModerationLabelsServiceWithNilResponse() {
         setUpAmplify()
-
         mockRekognition.setModerationLabelsResponse(result: nil)
+
+        let errorReceived = expectation(description: "Error should be returned")
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
             XCTFail("Unable to find image")
@@ -235,11 +260,14 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         predictionsService.detectLabels(image: url, type: .moderation) { event in
             switch event {
             case .completed(let result):
-                  XCTFail("Should not produce result: \(result)")
+                XCTFail("Should not produce result: \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether we can make a successful rekognition call to identify all labels
@@ -252,6 +280,8 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyAllLabelsService() {
         setUpAmplify()
+
+        let resultReceived = expectation(description: "Transcription result should be returned")
         let mockLabelsResponse: AWSRekognitionDetectLabelsResponse = AWSRekognitionDetectLabelsResponse()
         mockLabelsResponse.labels = [AWSRekognitionLabel]()
 
@@ -274,10 +304,13 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                 XCTAssertEqual(labelResult?.labels, labels, "Labels should be the same")
                 XCTAssertNotNil(labelResult?.unsafeContent,
                                 "unsafe content should have a boolean in it since we called all labels")
+                resultReceived.fulfill()
             case .failed(let error):
                 XCTFail("Should not produce error: \(error)")
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether error is prograted correctly when making a rekognition call to identify all labels
@@ -291,20 +324,27 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     func testIdentifyAllLabelsServiceWithNilResponse() {
         setUpAmplify()
         mockRekognition.setAllLabelsResponse(labelsResult: nil, moderationResult: nil)
+
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
             XCTFail("Unable to find image")
             return
         }
 
+        let errorReceived = expectation(description: "Error should be returned")
+        errorReceived.expectedFulfillmentCount = 2
+
         predictionsService.detectLabels(image: url, type: .all) { event in
             switch event {
             case .completed(let result):
-                  XCTFail("Should not produce result: \(result)")
+                XCTFail("Should not produce result: \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether error is prograted correctly when making a rekognition call to identify all labels
@@ -317,20 +357,25 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyAllLabelsServiceWithError() {
         setUpAmplify()
+
         let mockError = NSError(domain: AWSRekognitionErrorDomain,
                                 code: AWSRekognitionErrorType.invalidImageFormat.rawValue,
                                 userInfo: [:])
         mockRekognition.setError(error: mockError)
         let url = URL(fileURLWithPath: "")
+        let errorReceived = expectation(description: "Error should be returned")
 
         predictionsService.detectLabels(image: url, type: .all) { event in
             switch event {
             case .completed(let result):
-                  XCTFail("Should not produce result: \(result)")
+                XCTFail("Should not produce result: \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether we can make a successfull rekognition call to identify entities
@@ -343,6 +388,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyEntitiesService() {
         setUpAmplify()
+
         let mockResponse: AWSRekognitionDetectFacesResponse = AWSRekognitionDetectFacesResponse()
         mockResponse.faceDetails = [AWSRekognitionFaceDetail]()
 
@@ -353,16 +399,21 @@ class PredictionsServiceRekognitionTests: XCTestCase {
             return
         }
 
+        let resultReceived = expectation(description: "Transcription result should be returned")
+
         predictionsService.detectEntities(image: url) { event in
             switch event {
             case .completed(let result):
                 let entitiesResult = result as? IdentifyEntitiesResult
                 let newFaces = IdentifyEntitiesResultTransformers.processFaces(mockResponse.faceDetails!)
                 XCTAssertEqual(entitiesResult?.entities.count, newFaces.count, "Faces count number should be the same")
+                resultReceived.fulfill()
             case .failed(let error):
                 XCTFail("Should not produce error: \(error)")
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether error is correctly propogated for detecting entities
@@ -375,11 +426,13 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyEntitiesServiceWithError() {
         setUpAmplify()
+
         let mockError = NSError(domain: AWSRekognitionErrorDomain,
                                 code: AWSRekognitionErrorType.invalidImageFormat.rawValue,
                                 userInfo: [:])
         mockRekognition.setError(error: mockError)
         let url = URL(fileURLWithPath: "")
+        let errorReceived = expectation(description: "Error should be returned")
 
         predictionsService.detectEntities(image: url) { event in
             switch event {
@@ -387,8 +440,11 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                 XCTFail("Should not produce result: \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether error is correctly propogated for detecting entities when a nil response is received
@@ -402,11 +458,13 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     func testIdentifyEntitiesServiceWithNilResponse() {
         setUpAmplify()
         mockRekognition.setFacesResponse(result: nil)
+
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageEntities", withExtension: "jpg") else {
             XCTFail("Unable to find image")
             return
         }
+        let errorReceived = expectation(description: "Error should be returned")
 
         predictionsService.detectEntities(image: url) { event in
             switch event {
@@ -414,8 +472,11 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                 XCTFail("Should not produce result: \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether we can make a successfull rekognition call to identify entities from a collection
@@ -428,6 +489,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyEntityMatchesService() {
         setUpAmplify(withCollection: true)
+
         let mockResponse: AWSRekognitionSearchFacesByImageResponse = AWSRekognitionSearchFacesByImageResponse()
         mockResponse.faceMatches = [AWSRekognitionFaceMatch]()
 
@@ -437,6 +499,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
             XCTFail("Unable to find image")
             return
         }
+        let resultReceived = expectation(description: "Transcription result should be returned")
 
         predictionsService.detectEntities(image: url) { event in
             switch event {
@@ -444,10 +507,13 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                 let entitiesResult = result as? IdentifyEntityMatchesResult
                 let newFaces = IdentifyEntitiesResultTransformers.processCollectionFaces(mockResponse.faceMatches!)
                 XCTAssertEqual(entitiesResult?.entities.count, newFaces.count, "Faces count number should be the same")
+                resultReceived.fulfill()
             case .failed(let error):
                 XCTFail("Should not produce error: \(error)")
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether error is correctly propogated for entity matches
@@ -460,11 +526,13 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyEntityMatchesServiceWithError() {
         setUpAmplify(withCollection: true)
+
         let mockError = NSError(domain: AWSRekognitionErrorDomain,
                                 code: AWSRekognitionErrorType.invalidImageFormat.rawValue,
                                 userInfo: [:])
         mockRekognition.setError(error: mockError)
         let url = URL(fileURLWithPath: "")
+        let errorReceived = expectation(description: "Error should be returned")
 
         predictionsService.detectEntities(image: url) { event in
             switch event {
@@ -472,8 +540,11 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                 XCTFail("Should not produce result: \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether error is correctly propogated for entity matches when request is nil
@@ -487,11 +558,13 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     func testIdentifyEntityMatchesServiceWithNilResponse() {
         setUpAmplify(withCollection: true)
         mockRekognition.setFacesFromCollection(result: nil)
+
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageEntities", withExtension: "jpg") else {
             XCTFail("Unable to find image")
             return
         }
+        let errorReceived = expectation(description: "Error should be returned")
 
         predictionsService.detectEntities(image: url) { event in
             switch event {
@@ -499,8 +572,11 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                 XCTFail("Should not produce result: \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether we can make a successfull rekognition call to identify plain text
@@ -513,6 +589,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyPlainTextService() {
         setUpAmplify()
+
         let mockResponse: AWSRekognitionDetectTextResponse = AWSRekognitionDetectTextResponse()
         mockResponse.textDetections = [AWSRekognitionTextDetection]()
 
@@ -522,6 +599,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
             XCTFail("Unable to find image")
             return
         }
+        let resultReceived = expectation(description: "Transcription result should be returned")
 
         predictionsService.detectText(image: url, format: .plain) { event in
             switch event {
@@ -530,10 +608,13 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                 let newText = IdentifyTextResultTransformers.processText(mockResponse.textDetections!)
                 XCTAssertEqual(textResult?.identifiedLines?.count,
                                newText.identifiedLines?.count, "Text line count number should be the same")
+                resultReceived.fulfill()
             case .failed(let error):
                 XCTFail("Should not produce error: \(error)")
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether error is correctly propogated for text matches
@@ -546,11 +627,13 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyPlainTextServiceWithError() {
         setUpAmplify()
+
         let mockError = NSError(domain: AWSRekognitionErrorDomain,
                                 code: AWSRekognitionErrorType.invalidImageFormat.rawValue,
                                 userInfo: [:])
         mockRekognition.setError(error: mockError)
         let url = URL(fileURLWithPath: "")
+        let errorReceived = expectation(description: "Error should be returned")
 
         predictionsService.detectText(image: url, format: .plain) { event in
             switch event {
@@ -558,8 +641,11 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                 XCTFail("Should not produce result: \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether error is correctly propogated for text matches and receive a nil response
@@ -579,6 +665,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
             XCTFail("Unable to find image")
             return
         }
+        let errorReceived = expectation(description: "Error should be returned")
 
         predictionsService.detectText(image: url, format: .plain) { event in
             switch event {
@@ -586,7 +673,10 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                 XCTFail("Should not produce result: \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 }

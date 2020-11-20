@@ -8,6 +8,7 @@
 import XCTest
 import AWSComprehend
 import Amplify
+import Foundation
 @testable import AWSPredictionsPlugin
 
 class PredictionsServiceComprehendTests: XCTestCase {
@@ -59,16 +60,22 @@ class PredictionsServiceComprehendTests: XCTestCase {
         english.languageCode = "en"
         english.score = 0.5
         let mockDominantLanguage = mockDominantLanguageResult([english])
+
+        let resultReceived = expectation(description: "Transcription result should be returned")
+
         mockComprehend.setResult(languageResponse: mockDominantLanguage)
         predictionsService.comprehend(text: inputForTest) { event in
             switch event {
             case .completed(let result):
                 XCTAssertNotNil(result, "Result should be non-nil")
                 XCTAssertEqual(result.language?.languageCode, .english, "Dominant language should match")
+                resultReceived.fulfill()
             case .failed(let error):
                 XCTFail("Should not produce error: \(error)")
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether we get correct dominant language for multiple languages
@@ -89,17 +96,23 @@ class PredictionsServiceComprehendTests: XCTestCase {
         let italian = AWSComprehendDominantLanguage()!
         italian.languageCode = "it"
         italian.score = 0.6
+
         let mockDominantLanguage = mockDominantLanguageResult([english, spanish, italian])
+        let resultReceived = expectation(description: "Transcription result should be returned")
+
         mockComprehend.setResult(languageResponse: mockDominantLanguage)
         predictionsService.comprehend(text: inputForTest) { event in
             switch event {
             case .completed(let result):
                 XCTAssertNotNil(result, "Result should be non-nil")
                 XCTAssertEqual(result.language?.languageCode, .italian, "Dominant language should match")
+                resultReceived.fulfill()
             case .failed(let error):
                 XCTFail("Should not produce error: \(error)")
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether empty result from service gives us error
@@ -112,6 +125,8 @@ class PredictionsServiceComprehendTests: XCTestCase {
     ///
     func testWithEmptyLanguageResult() {
         let mockDominantLanguage = mockDominantLanguageResult()
+        let errorReceived = expectation(description: "Error should be returned")
+
         mockComprehend.setResult(languageResponse: mockDominantLanguage)
         predictionsService.comprehend(text: inputForTest) { event in
             switch event {
@@ -119,8 +134,11 @@ class PredictionsServiceComprehendTests: XCTestCase {
                 XCTFail("Should not produce result if the service cannot find the language. \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should return an error if language is nil. \(error)")
+                errorReceived.fulfill()
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether returninng all nil from service gives us an error
@@ -132,6 +150,8 @@ class PredictionsServiceComprehendTests: XCTestCase {
     ///    - I should get an error
     ///
     func testAllNilResult() {
+        let errorReceived = expectation(description: "Error should be returned")
+
         mockComprehend.setResult()
         predictionsService.comprehend(text: inputForTest) { event in
             switch event {
@@ -139,8 +159,11 @@ class PredictionsServiceComprehendTests: XCTestCase {
                 XCTFail("Should not produce result if the service cannot find the language. \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should return an error if language is nil. \(error)")
+                errorReceived.fulfill()
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether we get an error if service return error for language detection
@@ -155,6 +178,8 @@ class PredictionsServiceComprehendTests: XCTestCase {
         let mockError = NSError(domain: AWSComprehendErrorDomain,
                                 code: AWSComprehendErrorType.internalServer.rawValue,
                                 userInfo: [:])
+        let errorReceived = expectation(description: "Error should be returned")
+
         mockComprehend.setError(error: mockError)
         predictionsService.comprehend(text: inputForTest) { event in
             switch event {
@@ -162,8 +187,11 @@ class PredictionsServiceComprehendTests: XCTestCase {
                 XCTFail("Should not produce result if the service cannot find the language. \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should return an error if server returned an error. \(error)")
+                errorReceived.fulfill()
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test a complete response
@@ -210,7 +238,9 @@ class PredictionsServiceComprehendTests: XCTestCase {
         keyPhrase.endOffset = 3
         keyPhrase.score = 0.8
         keyPhrase.text = "some text"
+
         let mockKeyPhrases = mockKeyPhrasesResult([keyPhrase])
+        let resultReceived = expectation(description: "Transcription result should be returned")
 
         mockComprehend.setResult(sentimentResponse: mockSentiment,
                                  entitiesResponse: mockEntities,
@@ -222,10 +252,13 @@ class PredictionsServiceComprehendTests: XCTestCase {
             case .completed(let result):
                 XCTAssertNotNil(result, "Result should be non-nil")
                 XCTAssertEqual(result.language?.languageCode, .spanish, "Dominant language should match")
+                resultReceived.fulfill()
             case .failed(let error):
                 XCTFail("Should not produce error: \(error)")
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     // MARK: - Helper methods

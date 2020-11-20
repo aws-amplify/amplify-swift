@@ -56,18 +56,23 @@ class PredictionsServiceTranslateTests: XCTestCase {
         mockResponse.translatedText = "translated text here"
         mockTranslate.setResult(result: mockResponse)
 
+        let resultReceived = expectation(description: "Transcription result should be returned")
+
         predictionsService.translateText(text: "Hello there",
                                          language: .english,
                                          targetLanguage: .italian) { event in
-                                            switch event {
-                                            case .completed(let result):
-                                                XCTAssertEqual(result.text,
-                                                               mockResponse.translatedText,
-                                                               "Translated text should be same")
-                                            case .failed(let error):
-                                                XCTFail("Should not produce error: \(error)")
-                                            }
+            switch event {
+            case .completed(let result):
+                XCTAssertEqual(result.text,
+                               mockResponse.translatedText,
+                               "Translated text should be same")
+                resultReceived.fulfill()
+            case .failed(let error):
+                XCTFail("Should not produce error: \(error)")
+            }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test whether error is correctly propogated
@@ -79,22 +84,26 @@ class PredictionsServiceTranslateTests: XCTestCase {
     ///    - I should get back a service error
     ///
     func testTranslateServiceWithError() {
-
         let mockError = NSError(domain: AWSTranslateErrorDomain,
                                 code: AWSTranslateErrorType.invalidRequest.rawValue,
                                 userInfo: [:])
         mockTranslate.setError(error: mockError)
 
+        let errorReceived = expectation(description: "Error should be returned")
+
         predictionsService.translateText(text: "",
                                          language: .english,
                                          targetLanguage: .italian) { event in
-                                            switch event {
-                                            case .completed(let result):
-                                                XCTFail("Should not produce result: \(result)")
-                                            case .failed(let error):
-                                                XCTAssertNotNil(error, "Should produce an error")
-                                            }
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
+            }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test if language from configuration is picked up
@@ -144,18 +153,23 @@ class PredictionsServiceTranslateTests: XCTestCase {
         mockResponse.translatedText = "translated text here"
         mockTranslate.setResult(result: mockResponse)
 
+        let resultReceived = expectation(description: "Transcription result should be returned")
+
         predictionsService.translateText(text: "Hello there",
-                              language: nil,
-                              targetLanguage: nil) { event in
-                                switch event {
-                                case .completed(let result):
-                                    XCTAssertEqual(result.text,
-                                                   mockResponse.translatedText,
-                                                   "Translated text should be same")
-                                case .failed(let error):
-                                    XCTFail("Should not produce error: \(error)")
-                                }
+                                         language: nil,
+                                         targetLanguage: nil) { event in
+            switch event {
+            case .completed(let result):
+                XCTAssertEqual(result.text,
+                               mockResponse.translatedText,
+                               "Translated text should be same")
+                resultReceived.fulfill()
+            case .failed(let error):
+                XCTFail("Should not produce error: \(error)")
+            }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test if the source language is nil error is thrown
@@ -171,16 +185,21 @@ class PredictionsServiceTranslateTests: XCTestCase {
         mockResponse.translatedText = "translated text here"
         mockTranslate.setResult(result: mockResponse)
 
+        let errorReceived = expectation(description: "Error should be returned")
+
         predictionsService.translateText(text: "",
                                          language: nil,
                                          targetLanguage: .italian) { event in
-                                            switch event {
-                                            case .completed(let result):
-                                                XCTFail("Should not produce result: \(result)")
-                                            case .failed(let error):
-                                                XCTAssertNotNil(error, "Should produce an error")
-                                            }
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
+            }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test if the target is nil and configuration is not set
@@ -196,16 +215,21 @@ class PredictionsServiceTranslateTests: XCTestCase {
         mockResponse.translatedText = "translated text here"
         mockTranslate.setResult(result: mockResponse)
 
+        let errorReceived = expectation(description: "Error should be returned")
+
         predictionsService.translateText(text: "",
                                          language: .english,
                                          targetLanguage: nil) { event in
-                                            switch event {
-                                            case .completed(let result):
-                                                XCTFail("Should not produce result: \(result)")
-                                            case .failed(let error):
-                                                XCTAssertNotNil(error, "Should produce an error")
-                                            }
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
+            }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test if the service returns nil, we get an error back
@@ -218,16 +242,22 @@ class PredictionsServiceTranslateTests: XCTestCase {
     ///
     func testNilResult() {
         mockTranslate.setResult(result: nil)
+
+        let errorReceived = expectation(description: "Error should be returned")
+
         predictionsService.translateText(text: "",
                                          language: .english,
                                          targetLanguage: .spanish) { event in
-                                            switch event {
-                                            case .completed(let result):
-                                                XCTFail("Should not produce result: \(result)")
-                                            case .failed(let error):
-                                                XCTAssertNotNil(error, "Should produce an error")
-                                            }
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
+            }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test if the service returns nil for translated text, we get an error back
@@ -241,16 +271,22 @@ class PredictionsServiceTranslateTests: XCTestCase {
     func testNilTranslatedTextResult() {
         let mockResponse = AWSTranslateTranslateTextResponse()!
         mockTranslate.setResult(result: mockResponse)
+
+        let errorReceived = expectation(description: "Error should be returned")
+
         predictionsService.translateText(text: "",
                                          language: .english,
                                          targetLanguage: .spanish) { event in
-                                            switch event {
-                                            case .completed(let result):
-                                                XCTFail("Should not produce result: \(result)")
-                                            case .failed(let error):
-                                                XCTAssertNotNil(error, "Should produce an error")
-                                            }
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
+            }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test if the target language is set
@@ -266,18 +302,23 @@ class PredictionsServiceTranslateTests: XCTestCase {
         mockResponse.translatedText = "translated text here"
         mockTranslate.setResult(result: mockResponse)
 
+        let resultReceived = expectation(description: "Transcription result should be returned")
+
         predictionsService.translateText(text: "Hello there",
                                          language: .english,
                                          targetLanguage: .malayalam) { event in
-                                            switch event {
-                                            case .completed(let result):
-                                                XCTAssertEqual(result.text,
-                                                               mockResponse.translatedText,
-                                                               "Translated text should be same")
-                                                 XCTAssertEqual(result.targetLanguage, .malayalam)
-                                            case .failed(let error):
-                                                XCTFail("Should not produce error: \(error)")
-                                            }
+            switch event {
+            case .completed(let result):
+                XCTAssertEqual(result.text,
+                               mockResponse.translatedText,
+                               "Translated text should be same")
+                XCTAssertEqual(result.targetLanguage, .malayalam)
+                resultReceived.fulfill()
+            case .failed(let error):
+                XCTFail("Should not produce error: \(error)")
+            }
         }
+
+        waitForExpectations(timeout: 1)
     }
 }
