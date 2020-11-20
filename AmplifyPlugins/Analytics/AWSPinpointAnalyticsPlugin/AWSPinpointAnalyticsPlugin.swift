@@ -40,10 +40,3 @@ public final class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
     public init() {}
 }
 
-extension AWSPinpointAnalyticsPlugin: AmplifyVersionable {
-    public var version: String {
-        let bundle = Bundle(for: type(of: self))
-        let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-        return version ?? "Not Available"
-    }
-}

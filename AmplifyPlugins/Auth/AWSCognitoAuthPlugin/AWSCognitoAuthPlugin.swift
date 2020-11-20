@@ -51,10 +51,3 @@ final public class AWSCognitoAuthPlugin: AuthCategoryPlugin {
     }
 }
 
-extension AWSCognitoAuthPlugin: AmplifyVersionable {
-    public var version: String {
-        let bundle = Bundle(for: type(of: self))
-        let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-        return version ?? "Not Available"
-    }
-}

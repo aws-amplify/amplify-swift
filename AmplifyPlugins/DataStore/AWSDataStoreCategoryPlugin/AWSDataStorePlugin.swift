@@ -185,10 +185,3 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
 }
 
-extension AWSDataStorePlugin: AmplifyVersionable {
-    public var version: String {
-        let bundle = Bundle(for: type(of: self))
-        let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-        return version ?? "Not Available"
-    }
-}
