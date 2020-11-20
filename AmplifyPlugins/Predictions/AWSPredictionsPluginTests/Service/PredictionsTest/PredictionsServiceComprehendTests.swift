@@ -8,7 +8,6 @@
 import XCTest
 import AWSComprehend
 import Amplify
-import Foundation
 @testable import AWSPredictionsPlugin
 
 class PredictionsServiceComprehendTests: XCTestCase {
