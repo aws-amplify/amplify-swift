@@ -45,9 +45,7 @@ public class QueryPredicateGroup: QueryPredicate {
             predicates.append(predicate)
             return self
         }
-        let group = QueryPredicateGroup(type: .and, predicates: [predicate])
-        predicates.append(group)
-        return self
+        return QueryPredicateGroup(type: .and, predicates: [self, predicate])
     }
 
     public func or(_ predicate: QueryPredicate) -> QueryPredicateGroup {
@@ -55,9 +53,7 @@ public class QueryPredicateGroup: QueryPredicate {
             predicates.append(predicate)
             return self
         }
-        let group = QueryPredicateGroup(type: .or, predicates: [predicate])
-        predicates.append(group)
-        return self
+        return QueryPredicateGroup(type: .or, predicates: [self, predicate])
     }
 
     public static func && (lhs: QueryPredicateGroup, rhs: QueryPredicate) -> QueryPredicateGroup {
