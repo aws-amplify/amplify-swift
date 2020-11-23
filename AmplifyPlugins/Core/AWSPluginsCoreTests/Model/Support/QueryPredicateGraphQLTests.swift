@@ -151,6 +151,70 @@ class QueryPredicateGraphQLTests: XCTestCase {
         XCTAssertEqual(result, expected)
     }
 
+    func testPredicateWithNestedAndOperator() throws {
+        let post = Post.keys
+        let predicate = (post.title.beginsWith("Title") && post.content.contains("content")) || post.id.eq("id")
+        let expected = """
+        {
+          "or" : [
+            {
+              "and" : [
+                {
+                  "title" : {
+                    "beginsWith" : "Title"
+                  }
+                },
+                {
+                  "content" : {
+                    "contains" : "content"
+                  }
+                }
+              ]
+            },
+            {
+              "id" : {
+                "eq" : "id"
+              }
+            }
+          ]
+        }
+        """
+        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
+        XCTAssertEqual(result, expected)
+    }
+
+    func testPredicateWithNestedOrOperator() throws {
+        let post = Post.keys
+        let predicate = (post.title.beginsWith("Title") || post.content.contains("content")) && post.id.eq("id")
+        let expected = """
+        {
+          "and" : [
+            {
+              "or" : [
+                {
+                  "title" : {
+                    "beginsWith" : "Title"
+                  }
+                },
+                {
+                  "content" : {
+                    "contains" : "content"
+                  }
+                }
+              ]
+            },
+            {
+              "id" : {
+                "eq" : "id"
+              }
+            }
+          ]
+        }
+        """
+        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
+        XCTAssertEqual(result, expected)
+    }
+
     func testJSONSerializationAndDeserialization() throws {
         let post = Post.keys
         let predicate = post.id.eq("id") && post.title.beginsWith("Title")
