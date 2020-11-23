@@ -65,19 +65,8 @@ struct PluginInfoHelper {
         for pluginKey: String,
         versionable: AmplifyVersionable?
     ) -> PluginInfoItem {
-        let pluginInfoItem: PluginInfoItem
-        if let versionable = versionable {
-            pluginInfoItem = PluginInfoItem(
-                displayName: pluginKey,
-                information: versionable.version
-            )
-        } else {
-            pluginInfoItem = PluginInfoItem(
-                displayName: pluginKey,
-                information: DevMenuStringConstants.versionNotAvailable
-            )
-        }
-        return pluginInfoItem
+        let version = versionable?.version ?? DevMenuStringConstants.versionNotAvailable
+        return PluginInfoItem(displayName: pluginKey, information: version)
     }
 
 }
