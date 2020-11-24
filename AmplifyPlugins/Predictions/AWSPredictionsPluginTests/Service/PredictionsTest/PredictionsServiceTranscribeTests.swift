@@ -36,10 +36,12 @@ class PredictionsServiceTranscribeTests: XCTestCase {
                                                        awsTextract: MockTextractBehavior(),
                                                        awsComprehend: MockComprehendBehavior(),
                                                        awsPolly: MockPollyBehavior(),
-                                                       awsTranscribeStreaming: MockTranscribeBehavior(),
+                                                       awsTranscribeStreaming: mockTranscribe,
                                                        nativeWebSocketProvider: nativeWebSocketProvider,
                                                        transcribeClientDelegate: clientDelegate,
                                                        configuration: mockConfiguration)
+
+            mockTranscribe.setDelegate(delegate: clientDelegate, callbackQueue: dispatchQueue)
 
             let testBundle = Bundle(for: type(of: self))
             guard let url = testBundle.url(forResource: "audio", withExtension: "wav") else {
@@ -59,9 +61,11 @@ class PredictionsServiceTranscribeTests: XCTestCase {
         let resultStream = AWSTranscribeStreamingResult()!
         let alternative = AWSTranscribeStreamingAlternative()!
         alternative.transcript = str
+        resultStream.isPartial = false
         resultStream.alternatives = [alternative]
         results.results = [resultStream]
         transcriptEvent.transcript = results
+        mockResponse.transcriptEvent = transcriptEvent
         return mockResponse
     }
 
@@ -74,16 +78,22 @@ class PredictionsServiceTranscribeTests: XCTestCase {
     ///    - I should get back a result
     ///
     func testTranscribeService() {
-         let transcription = "This is a test"
+        let mockResponse = createMockTranscribeResponse()
+        mockTranscribe.setResult(result: mockResponse)
+        let expectedTranscription = "This is a test"
+        let resultReceived = expectation(description: "Transcription result should be returned")
+
         predictionsService.transcribe(speechToText: audioFile, language: .usEnglish) { event in
             switch event {
             case .completed(let result):
-                XCTAssertEqual(result.transcription, transcription, "transcribed text should be the same")
+                XCTAssertEqual(result.transcription, expectedTranscription, "transcribed text should be the same")
+                resultReceived.fulfill()
             case .failed(let error):
                 XCTFail("Should not produce error: \(error)")
             }
-
         }
+
+        waitForExpectations(timeout: 1)
 
     }
 
@@ -101,15 +111,19 @@ class PredictionsServiceTranscribeTests: XCTestCase {
                                 userInfo: [:])
         mockTranscribe.setError(error: mockError)
 
+        let errorReceived = expectation(description: "Error should be returned")
+
         predictionsService.transcribe(speechToText: audioFile, language: .usEnglish) { event in
             switch event {
             case .completed(let result):
                 XCTFail("Should not produce result: \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
             }
-
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test if language from configuration is picked up
@@ -122,16 +136,16 @@ class PredictionsServiceTranscribeTests: XCTestCase {
     ///
     func testLanguageFromConfiguration() {
         let mockConfigurationJSON = """
-        {
-            "defaultRegion": "us-east-1",
-            "convert": {
-                "transcription": {
-                    "region": "us-east-1",
-                    "language": "en-US"
+            {
+                "defaultRegion": "us-east-1",
+                "convert": {
+                    "transcription": {
+                        "region": "us-east-1",
+                        "language": "en-US"
+                    }
                 }
             }
-        }
-        """.data(using: .utf8)!
+            """.data(using: .utf8)!
         do {
             let clientDelegate = NativeWSTranscribeStreamingClientDelegate()
             let dispatchQueue = DispatchQueue(label: "TranscribeStreamingTests")
@@ -149,21 +163,28 @@ class PredictionsServiceTranscribeTests: XCTestCase {
                                                        nativeWebSocketProvider: nativeWebSocketProvider,
                                                        transcribeClientDelegate: clientDelegate,
                                                        configuration: mockConfiguration)
+
+            mockTranscribe.setDelegate(delegate: clientDelegate, callbackQueue: dispatchQueue)
         } catch {
             XCTFail("Initialization of the service failed. \(error)")
         }
 
         let mockResponse = createMockTranscribeResponse()
         mockTranscribe.setResult(result: mockResponse)
+        let expectedTranscription = "This is a test"
+        let resultReceived = expectation(description: "Transcription result should be returned")
 
         predictionsService.transcribe(speechToText: audioFile, language: nil) {event in
             switch event {
             case .completed(let result):
-                XCTAssertEqual(result.transcription, "This is a test", "Transcribed text should be the same")
+                XCTAssertEqual(result.transcription, expectedTranscription, "Transcribed text should be the same")
+                resultReceived.fulfill()
             case .failed(let error):
                 XCTFail("Should not produce error: \(error)")
             }
         }
+
+        waitForExpectations(timeout: 1)
     }
 
     /// Test if the service returns nil, we get an error back
@@ -176,13 +197,19 @@ class PredictionsServiceTranscribeTests: XCTestCase {
     ///
     func testNilResult() {
         mockTranscribe.setResult(result: nil)
+
+        let errorReceived = expectation(description: "Error should be returned")
+
         predictionsService.transcribe(speechToText: audioFile, language: nil) {event in
             switch event {
             case .completed(let result):
-                 XCTFail("Should not produce result: \(result)")
+                XCTFail("Should not produce result: \(result)")
             case .failed(let error):
-                 XCTAssertNotNil(error, "Should produce an error")
-             }
+                XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
+            }
         }
+
+        waitForExpectations(timeout: 1)
     }
 }

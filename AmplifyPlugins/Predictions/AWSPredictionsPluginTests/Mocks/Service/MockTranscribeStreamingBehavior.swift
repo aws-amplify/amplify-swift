@@ -12,6 +12,8 @@ import AWSTranscribeStreaming
 
 class MockTranscribeBehavior: AWSTranscribeStreamingBehavior {
 
+    var delegate: AWSTranscribeStreamingClientDelegate?
+    var callbackQueue: DispatchQueue?
     var transcriptionResult: AWSTranscribeStreamingTranscriptResultStream?
     var error: Error?
 
@@ -26,14 +28,16 @@ class MockTranscribeBehavior: AWSTranscribeStreamingBehavior {
 
     public func setResult(result: AWSTranscribeStreamingTranscriptResultStream?) {
         transcriptionResult = result
+        error = nil
     }
 
     func startTranscriptionWSS(request: AWSTranscribeStreamingStartStreamTranscriptionRequest) {
-
+        delegate?.didReceiveEvent(transcriptionResult, decodingError: error)
     }
 
     func setDelegate(delegate: AWSTranscribeStreamingClientDelegate, callbackQueue: DispatchQueue) {
-
+        self.delegate = delegate
+        self.callbackQueue = callbackQueue
     }
 
     func send(data: Data, headers: [String: String]) {

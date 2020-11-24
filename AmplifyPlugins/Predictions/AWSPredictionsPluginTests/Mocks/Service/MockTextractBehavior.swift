@@ -17,18 +17,18 @@ class MockTextractBehavior: AWSTextractBehavior {
     var error: Error?
 
     func analyzeDocument(request: AWSTextractAnalyzeDocumentRequest) -> AWSTask<AWSTextractAnalyzeDocumentResponse> {
-        if let finalResult = analyzeDocument {
-            return AWSTask(result: finalResult)
+        guard let finalError = error else {
+            return AWSTask(result: analyzeDocument)
         }
-        return AWSTask(error: error!)
+        return AWSTask(error: finalError)
     }
 
     func detectDocumentText(request: AWSTextractDetectDocumentTextRequest)
-        -> AWSTask<AWSTextractDetectDocumentTextResponse> {
-            if let finalResult = detectDocumentText {
-                return AWSTask(result: finalResult)
-            }
-            return AWSTask(error: error!)
+    -> AWSTask<AWSTextractDetectDocumentTextResponse> {
+        guard let finalError = error else {
+            return AWSTask(result: detectDocumentText)
+        }
+        return AWSTask(error: finalError)
     }
 
     func getTextract() -> AWSTextract {
