@@ -332,7 +332,6 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         }
 
         let errorReceived = expectation(description: "Error should be returned")
-        errorReceived.expectedFulfillmentCount = 2
 
         predictionsService.detectLabels(image: url, type: .all) { event in
             switch event {

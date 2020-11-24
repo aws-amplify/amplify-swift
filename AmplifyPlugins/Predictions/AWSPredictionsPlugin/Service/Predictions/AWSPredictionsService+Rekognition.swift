@@ -364,6 +364,10 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             dispatchGroup.leave()
             return nil
         }
+        dispatchGroup.wait()
+        guard !errorOcurred else {
+            return
+        }
         dispatchGroup.enter()
         detectModerationLabels(image: image, onEvent: onEvent).continueWith {(task) -> Any? in
             guard task.error == nil else {
@@ -375,6 +379,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 dispatchGroup.leave()
                 return nil
             }
+
             guard let result = task.result else {
                 onEvent(.failed(.unknown(AWSRekognitionErrorMessage.noResultFound.errorDescription,
                                          AWSRekognitionErrorMessage.noResultFound.recoverySuggestion)))
@@ -382,6 +387,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 dispatchGroup.leave()
                 return nil
             }
+
             guard let moderationRekognitionLabels = result.moderationLabels else {
                 onEvent(.failed(.network(AWSRekognitionErrorMessage.noResultFound.errorDescription,
                                          AWSRekognitionErrorMessage.noResultFound.recoverySuggestion)))
@@ -389,13 +395,15 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 dispatchGroup.leave()
                 return nil
             }
+
             unsafeContent = !moderationRekognitionLabels.isEmpty
             dispatchGroup.leave()
             return nil
         }
         dispatchGroup.wait()
+
         if !errorOcurred {
-        onEvent(.completed(IdentifyLabelsResult(labels: allLabels, unsafeContent: unsafeContent)))
+            onEvent(.completed(IdentifyLabelsResult(labels: allLabels, unsafeContent: unsafeContent)))
         }
     }
 }
