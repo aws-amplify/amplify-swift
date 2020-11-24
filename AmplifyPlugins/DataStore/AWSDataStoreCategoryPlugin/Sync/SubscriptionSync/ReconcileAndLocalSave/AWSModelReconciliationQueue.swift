@@ -51,7 +51,9 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     /// Exposes a publisher for incoming subscription events
     private let incomingSubscriptionEvents: IncomingSubscriptionEventPublisher
 
+    private let modelSchema: ModelSchema
     weak var storageAdapter: StorageEngineAdapter?
+    private let modelPredicate: QueryPredicate?
 
     /// A buffer queue for incoming subsscription events, waiting for this ReconciliationQueue to be `start`ed. Once
     /// the ReconciliationQueue is started, each event in the `incomingRemoveEventQueue` will be submitted to the
@@ -61,8 +63,6 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     /// Applies incoming mutation or subscription events serially to local data store for this model type. This queue
     /// is always active.
     private let reconcileAndSaveQueue: OperationQueue
-
-    private let modelSchema: ModelSchema
 
     private var incomingEventsSink: AnyCancellable?
     private var reconcileAndLocalSaveOperationSinks: AtomicValue<Set<AnyCancellable?>>
@@ -80,8 +80,11 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
          incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
 
         self.modelSchema = modelSchema
-
         self.storageAdapter = storageAdapter
+        let syncExpression = configuration.syncExpressions.first(where: {
+            $0.modelSchema.name == modelSchema.name
+        })
+        self.modelPredicate = syncExpression?.modelPredicate() ?? nil
 
         self.modelReconciliationQueueSubject = PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>()
 
@@ -157,6 +160,12 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     private func receive(_ receive: IncomingSubscriptionEventPublisherEvent) {
         switch receive {
         case .mutationEvent(let remoteModel):
+            if let predicate = modelPredicate {
+                guard predicate.evaluate(target: remoteModel.model.instance) else {
+                    print("AWSModelReconciliationQueue: filtering out:\(remoteModel.model.instance)")
+                    return
+                }
+            }
             incomingSubscriptionEventQueue.addOperation(CancelAwareBlockOperation {
                 self.enqueue(remoteModel)
             })
