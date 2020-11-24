@@ -68,6 +68,7 @@ struct PersistableHelper {
         }
     }
 
+    //We are promoting Int to Double in the case where we are comparing these two types
     public static func isEqual(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return true
@@ -96,6 +97,7 @@ struct PersistableHelper {
         }
     }
 
+    //We are promoting Int to Double in the case where we are comparing these two types
     public static func isLessOrEqual(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return true
@@ -123,6 +125,7 @@ struct PersistableHelper {
         }
     }
 
+    //We are promoting Int to Double in the case where we are comparing these two types
     public static func isLessThan(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return false
@@ -150,6 +153,7 @@ struct PersistableHelper {
         }
     }
 
+    //We are promoting Int to Double in the case where we are comparing these two types
     public static func isGreaterOrEqual(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return true
@@ -177,6 +181,7 @@ struct PersistableHelper {
         }
     }
 
+    //We are promoting Int to Double in the case where we are comparing these two types
     public static func isGreaterThan(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return false
@@ -204,38 +209,10 @@ struct PersistableHelper {
         }
     }
 
-    public static func isBetween(_ start: Persistable, _ end: Persistable, _ rhs: Any?) -> Bool {
-        if rhs == nil {
+    public static func isBetween(_ start: Persistable, _ end: Persistable, _ value: Any?) -> Bool {
+        if value == nil {
             return false
         }
-        switch (start, end, rhs) {
-        //case Bool Removed
-        case let (start, end, rhs) as (Temporal.Date, Temporal.Date, Temporal.Date):
-            return start <= rhs && rhs <= end
-        case let (start, end, rhs) as (Temporal.DateTime, Temporal.DateTime, Temporal.DateTime):
-            return start <= rhs && rhs <= end
-        case let (start, end, rhs) as (Temporal.Time, Temporal.Time, Temporal.Time):
-            return start <= rhs && rhs <= end
-        case let (start, end, rhs) as (Int, Int, Int):
-            return start <= rhs && rhs <= end
-        case let (start, end, rhs) as (Int, Int, Double):
-            return Double(start) <= rhs && rhs <= Double(end)
-        case let (start, end, rhs) as (Int, Double, Int):
-            return start <= rhs && Double(rhs) <= end
-        case let (start, end, rhs) as (Int, Double, Double):
-            return Double(start) <= rhs && rhs <= end
-        case let (start, end, rhs) as (Double, Int, Int):
-            return start <= Double(rhs) && rhs <= end
-        case let (start, end, rhs) as (Double, Int, Double):
-            return start <= rhs && rhs <= Double(end)
-        case let (start, end, rhs) as (Double, Double, Int):
-            return start <= Double(rhs) && Double(rhs) <= end
-        case let (start, end, rhs) as (Double, Double, Double):
-            return start <= rhs && rhs <= end
-        case let (start, end, rhs) as (String, String, String):
-            return start <= rhs && rhs <= end
-        default:
-            return false
-        }
+        return isGreaterOrEqual(value, start) && isLessOrEqual(value, end)
     }
 }
