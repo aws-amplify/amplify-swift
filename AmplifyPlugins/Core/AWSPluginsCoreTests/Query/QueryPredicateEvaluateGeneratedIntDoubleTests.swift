@@ -130,5 +130,4 @@ class QueryPredicateEvaluateGeneratedIntDoubleTests: XCTestCase {
 
         XCTAssertFalse(evaluation)
     }
-
 }

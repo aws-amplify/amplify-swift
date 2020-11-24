@@ -1249,4 +1249,3 @@ class QueryPredicateEvaluateGeneratedDateTests: XCTestCase {
         XCTAssertFalse(evaluation)
     }
 }
-

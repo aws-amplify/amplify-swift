@@ -1375,6 +1375,4 @@ class QueryPredicateEvaluateGeneratedDateTimeTests: XCTestCase {
 
         XCTAssertFalse(evaluation)
     }
-
-
 }

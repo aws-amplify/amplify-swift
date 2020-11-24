@@ -20,28 +20,28 @@ public enum QueryOperator {
 
     public func evaluate(target: Any) -> Bool {
         switch self {
-        case .notEqual(let value):
-            return !PersistableHelper.isEqual(value, target)
-        case .equals(let value):
-            return PersistableHelper.isEqual(value, target)
-        case .lessOrEqual(let value):
-            return PersistableHelper.isLessOrEqual(value, target)
-        case .lessThan(let value):
-            return PersistableHelper.isLessThan(value, target)
-        case .greaterOrEqual(let value):
-            return PersistableHelper.isGreaterOrEqual(value, target)
-        case .greaterThan(let value):
-            return PersistableHelper.isGreaterThan(value, target)
-        case .contains(let value):
+        case .notEqual(let predicateValue):
+            return !PersistableHelper.isEqual(target, predicateValue)
+        case .equals(let predicateValue):
+            return PersistableHelper.isEqual(target, predicateValue)
+        case .lessOrEqual(let predicateValue):
+            return PersistableHelper.isLessOrEqual(target, predicateValue)
+        case .lessThan(let predicateValue):
+            return PersistableHelper.isLessThan(target, predicateValue)
+        case .greaterOrEqual(let predicateValue):
+            return PersistableHelper.isGreaterOrEqual(target, predicateValue)
+        case .greaterThan(let predicateValue):
+            return PersistableHelper.isGreaterThan(target, predicateValue)
+        case .contains(let predicateString):
             if let targetString = target as? String {
-                return targetString.contains(value)
+                return targetString.contains(predicateString)
             }
             return false
         case .between(let start, let end):
             return PersistableHelper.isBetween(start, end, target)
-        case .beginsWith(let value):
+        case .beginsWith(let predicateValue):
             if let targetString = target as? String {
-                return targetString.starts(with: value)
+                return targetString.starts(with: predicateValue)
             }
         }
         return false

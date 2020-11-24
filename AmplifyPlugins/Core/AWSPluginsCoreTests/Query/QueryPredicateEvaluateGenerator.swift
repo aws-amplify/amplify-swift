@@ -29,7 +29,6 @@ let dateNowPlus4day = dateNow.addingTimeInterval(60 * 60 * 4 * 24)
 //swiftlint:disable type_body_length
 //swiftlint:disable file_length
 //swiftlint:disable line_length
-//swiftlint:disable identifier_name
 //swiftlint:disable function_parameter_count
 class QueryPredicateGenerator: XCTestCase {
     func testBoolBool() throws {
@@ -179,17 +178,17 @@ class QueryPredicateGenerator: XCTestCase {
 
     func generate(_ filter: String, printCount: Bool = false) {
         var count = 0
-        for t1 in types {
-            for t2 in types {
+        for type1 in types {
+            for type2 in types {
                 for operation in operations {
-                    let key = "\(t1),\(t2)"
+                    let key = "\(type1),\(type2)"
                     if key != filter {
                         continue
                     }
                     if let requestedOperations = requestedList[key] {
                         for requestedOperation in requestedOperations {
                             if operation.contains(requestedOperation) {
-                                count += performGeneration(t1: t1, t2: t2, operation: operation)
+                                count += performGeneration(type1: type1, type2: type2, operation: operation)
                             }
                         }
                     }
@@ -201,35 +200,35 @@ class QueryPredicateGenerator: XCTestCase {
         }
     }
 
-    func performGeneration(t1: String, t2: String, operation: String) -> Int {
+    func performGeneration(type1: String, type2: String, operation: String) -> Int {
         var count = 0
-        guard let values1 = typeToValuesMap[t1],
-            let values2 = typeToValuesMap[t2] else {
+        guard let values1 = typeToValuesMap[type1],
+            let values2 = typeToValuesMap[type2] else {
                 print("failed to find values map!")
                 exit(1)
         }
         if operation == "between" {
-            let key = "\(t1),\(t2)"
+            let key = "\(type1),\(type2)"
             let v1v2s = typePairTov1v2BetweenTestsMap[key]!
-            let v3s = typePairTov3BetweenTestsMap[key]!
-            for (v1, v2) in v1v2s {
-                for v3 in v3s {
-                    if handleBetween(t1: t1, v1: v1, t2: t2, v2: v2, v3: v3, operation: operation) {
+            let val3s = typePairTov3BetweenTestsMap[key]!
+            for (val1, val2) in v1v2s {
+                for val3 in val3s {
+                    if handleBetween(type1: type1, val1: val1, type2: type2, val2: val2, val3: val3, operation: operation) {
                         count += 1
                     }
                 }
             }
         } else {
-            if t1 == "Int" && t2 == "Double" {
+            if type1 == "Int" && type2 == "Double" {
                 //Unable to assign a double value to a Int Type, so these tests are invalid
                 return 0
             }
-            for v1 in values1 {
-                if v1 == "" {
+            for val1 in values1 {
+                if val1 == "" {
                     continue
                 }
-                for v2 in values2 {
-                    if handleOtherOperations(t1: t1, v1: v1, t2: t2, v2: v2, operation: operation) {
+                for val2 in values2 {
+                    if handleOtherOperations(type1: type1, val1: val1, type2: type2, val2: val2, operation: operation) {
                         count += 1
                     }
                 }
@@ -240,14 +239,15 @@ class QueryPredicateGenerator: XCTestCase {
     }
 
     // handleBetween generates a test to check if v3 (value3) is between v1 and v2
-    func handleBetween(t1: String, v1: String, t2: String, v2: String, v3: String, operation: String) -> Bool {
-        guard let op = operationMap[operation],
-            let fieldName = fieldForType[t1] else {
+    func handleBetween(type1: String, val1: String, type2: String, val2: String, val3: String, operation: String) -> Bool {
+        guard let oper = operationMap[operation],
+            let fieldName = fieldForType[type1] else {
                 print("Failed to look up operation")
                 return false
         }
 
-        let v1FnName = v1.replacingOccurrences(of: ".", with: "_")
+        let v1FnName = val1
+            .replacingOccurrences(of: ".", with: "_")
             .replacingOccurrences(of: "\"", with: "")
             .replacingOccurrences(of: "(", with: "")
             .replacingOccurrences(of: ")", with: "")
@@ -255,22 +255,23 @@ class QueryPredicateGenerator: XCTestCase {
             .replacingOccurrences(of: ",", with: "")
             .replacingOccurrences(of: " ", with: "")
 
-        let v2FnName = v2.replacingOccurrences(of: ".", with: "_")
+        let v2FnName = val2
+            .replacingOccurrences(of: ".", with: "_")
             .replacingOccurrences(of: "\"", with: "")
             .replacingOccurrences(of: "(", with: "")
             .replacingOccurrences(of: ")", with: "")
             .replacingOccurrences(of: ":", with: "")
             .replacingOccurrences(of: ",", with: "")
             .replacingOccurrences(of: " ", with: "")
-        let type1 = t1.replacingOccurrences(of: ".", with: "")
-        let type2 = t2.replacingOccurrences(of: ".", with: "")
+        let type1 = type1.replacingOccurrences(of: ".", with: "")
+        let type2 = type2.replacingOccurrences(of: ".", with: "")
 
         //In cases of between, we should check we have v1, v2 and v3, E.g.: (v1 < v3 && v3 > v2)
-        if v2 == "" {
+        if val2 == "" {
             return false
         }
 
-        let v3FnName = v3.replacingOccurrences(of: ".", with: "_")
+        let v3FnName = val3.replacingOccurrences(of: ".", with: "_")
             .replacingOccurrences(of: "\"", with: "")
             .replacingOccurrences(of: "(", with: "")
             .replacingOccurrences(of: ")", with: "")
@@ -280,26 +281,29 @@ class QueryPredicateGenerator: XCTestCase {
 
         print("func test\(operation)\(type1)\(v1FnName)\(operation)\(type2)\(v2FnName)with\(v3FnName)() throws {")
 
-        if t1 == "Temporal.DateTime" {
+        if type1 == "TemporalDateTime" {
             print("   let dateTimeNow = Temporal.DateTime.now()")
-        } else if t1 == "Temporal.Time" {
+        } else if type1 == "TemporalTime" {
             print("   let timeNow = try Temporal.Time.init(iso8601String: \"10:16:44\")")
         }
-        let v1LocalRef = v1.replacingOccurrences(of: "Temporal.DateTime.now()",
-                                                 with: "dateTimeNow")
+        let v1LocalRef = val1
+            .replacingOccurrences(of: "Temporal.DateTime.now()",
+                                  with: "dateTimeNow")
             .replacingOccurrences(of: "Temporal.Time.now()",
                                   with: "timeNow")
-        let v2LocalRef = v2.replacingOccurrences(of: "Temporal.DateTime.now()",
-                                                 with: "dateTimeNow")
+        let v2LocalRef = val2
+            .replacingOccurrences(of: "Temporal.DateTime.now()",
+                                  with: "dateTimeNow")
             .replacingOccurrences(of: "Temporal.Time.now()",
                                   with: "timeNow")
-        let v3LocalRef = v3.replacingOccurrences(of: "Temporal.DateTime.now()",
-                                                 with: "dateTimeNow")
+        let v3LocalRef = val3
+            .replacingOccurrences(of: "Temporal.DateTime.now()",
+                                  with: "dateTimeNow")
             .replacingOccurrences(of: "Temporal.Time.now()",
                                   with: "timeNow")
 
-        print("   let predicate = QPredGen.keys.\(fieldName).\(op)(start: \(v1LocalRef), end: \(v2LocalRef))")
-        if v3 != "" {
+        print("   let predicate = QPredGen.keys.\(fieldName).\(oper)(start: \(v1LocalRef), end: \(v2LocalRef))")
+        if val3 != "" {
             print("   var instance = QPredGen(name: \"test\")")
             print("   instance.\(fieldName) = \(v3LocalRef)")
         } else {
@@ -309,19 +313,19 @@ class QueryPredicateGenerator: XCTestCase {
         print("   let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)")
         print("")
         if type1 == "String" {
-            if attemptToResolveBetweenString(v1, v2, v3) {
+            if attemptToResolveBetweenString(val1, val2, val3) {
                 print("   XCTAssert(evaluation)")
             } else {
                 print("   XCTAssertFalse(evaluation)")
             }
         } else if type1.contains("Temporal") {
-            if attemptToResolveBetweenTemporal(t1, v1, t2, v2, v3) {
+            if attemptToResolveBetweenTemporal(type1, val1, type2, val2, val3) {
                 print("   XCTAssert(evaluation)")
             } else {
                 print("   XCTAssertFalse(evaluation)")
             }
         } else {
-            if attemptToResolveBetweenDouble(v1, v2, v3) {
+            if attemptToResolveBetweenDouble(val1, val2, val3) {
                 print("   XCTAssert(evaluation)")
             } else {
                 print("   XCTAssertFalse(evaluation)")
@@ -332,14 +336,15 @@ class QueryPredicateGenerator: XCTestCase {
         return true
     }
 
-    func handleOtherOperations(t1: String, v1: String, t2: String, v2: String, operation: String) -> Bool {
-        guard let op = operationMap[operation],
-            let fieldName = fieldForType[t1] else {
+    func handleOtherOperations(type1: String, val1: String, type2: String, val2: String, operation: String) -> Bool {
+        guard let oper = operationMap[operation],
+            let fieldName = fieldForType[type1] else {
                 print("Failed to look up operation")
                 return false
         }
 
-        let v1FnName = v1.replacingOccurrences(of: ".", with: "_")
+        let v1FnName = val1
+            .replacingOccurrences(of: ".", with: "_")
             .replacingOccurrences(of: "\"", with: "")
             .replacingOccurrences(of: "(", with: "")
             .replacingOccurrences(of: ")", with: "")
@@ -347,7 +352,8 @@ class QueryPredicateGenerator: XCTestCase {
             .replacingOccurrences(of: ",", with: "")
             .replacingOccurrences(of: " ", with: "")
 
-        let v2FnName = v2.replacingOccurrences(of: ".", with: "_")
+        let v2FnName = val2
+            .replacingOccurrences(of: ".", with: "_")
             .replacingOccurrences(of: "\"", with: "")
             .replacingOccurrences(of: "(", with: "")
             .replacingOccurrences(of: ")", with: "")
@@ -355,25 +361,27 @@ class QueryPredicateGenerator: XCTestCase {
             .replacingOccurrences(of: ",", with: "")
             .replacingOccurrences(of: " ", with: "")
 
-        let type1 = t1.replacingOccurrences(of: ".", with: "")
-        let type2 = t2.replacingOccurrences(of: ".", with: "")
+        let type1 = type1.replacingOccurrences(of: ".", with: "")
+        let type2 = type2.replacingOccurrences(of: ".", with: "")
 
         print("func test\(type1)\(v1FnName)\(operation)\(type2)\(v2FnName)() throws {")
-        if t1 == "Temporal.DateTime" {
+        if type1 == "TemporalDateTime" {
             print("   let dateTimeNow = Temporal.DateTime.now()")
-        } else if t1 == "Temporal.Time" {
+        } else if type1 == "TemporalTime" {
             print("   let timeNow = try Temporal.Time.init(iso8601String: \"10:16:44\")")
         }
-        let v1LocalRef = v1.replacingOccurrences(of: "Temporal.DateTime.now()",
-                                                 with: "dateTimeNow")
+        let v1LocalRef = val1
+            .replacingOccurrences(of: "Temporal.DateTime.now()",
+                                  with: "dateTimeNow")
             .replacingOccurrences(of: "Temporal.Time.now()",
                                   with: "timeNow")
-        let v2LocalRef = v2.replacingOccurrences(of: "Temporal.DateTime.now()",
+        let v2LocalRef = val2
+            .replacingOccurrences(of: "Temporal.DateTime.now()",
                                                  with: "dateTimeNow")
             .replacingOccurrences(of: "Temporal.Time.now()",
                                   with: "timeNow")
 
-        print("   let predicate = QPredGen.keys.\(fieldName).\(op)(\(v1LocalRef))")
+        print("   let predicate = QPredGen.keys.\(fieldName).\(oper)(\(v1LocalRef))")
 
         if v2LocalRef != "" {
             print("   var instance = QPredGen(name: \"test\")")
@@ -386,8 +394,8 @@ class QueryPredicateGenerator: XCTestCase {
         print("")
 
         if attemptToResolve(type1,
-                            v1.replacingOccurrences(of: "\"", with: ""), type2,
-                            v2.replacingOccurrences(of: "\"", with: ""), op) {
+                            val1.replacingOccurrences(of: "\"", with: ""), type2,
+                            val2.replacingOccurrences(of: "\"", with: ""), oper) {
             print("   XCTAssert(evaluation)")
         } else {
             print("   XCTAssertFalse(evaluation)")
@@ -397,117 +405,114 @@ class QueryPredicateGenerator: XCTestCase {
         return true
     }
 
-    func attemptToResolve(_ t1: String, _ v1: String,
-                          _ t2: String, _ v2: String,
-                          _ op: String) -> Bool {
-        if t1 == "Double" && t2 == "Int" ||
-            t1 == "Int" && t2 == "Double" ||
-            t1 == "Double" && t2 == "Double" ||
-            t1 == "Int" && t2 == "Int" {
-            return attemptToResolveNumeric(t1, v1, t2, v2, op)
-        }
-        if t1.contains("Temporal") {
-            return attemptToResolveTemporal(t1, v1, t2, v2, op)
+    func attemptToResolve(_ type1: String, _ val1: String,
+                          _ type2: String, _ val2: String,
+                          _ operation: String) -> Bool {
+        if val2 == "" {
+            return false
         }
 
-        if v2 == "" {
-            return false
+        if type1 == "Double" && type2 == "Int" ||
+            type1 == "Int" && type2 == "Double" ||
+            type1 == "Double" && type2 == "Double" ||
+            type1 == "Int" && type2 == "Int" {
+            return attemptToResolveNumeric(type1, val1, type2, val2, operation)
+        } else if type1.contains("Temporal") {
+            return attemptToResolveTemporal(type1, val1, type2, val2, operation)
+        } else if (type1 == "String" && type2 == "String") ||
+            (type1 == "Bool" && type2 == "Bool") {
+            return attemptToResolveStringBool(val1, val2, operation)
         }
-        switch op {
+        print("attemptToResolve: FAILED TO DETECT TYPES!")
+        return false
+    }
+
+    func attemptToResolveStringBool(_ val1: String,
+                                    _ val2: String,
+                                    _ operation: String) -> Bool {
+        let rhs = val1
+        let lhs = val2
+        switch operation {
         case "eq":
-            return v2 == v1
+            return lhs == rhs
         case "ne":
-            return v2 != v1
+            return lhs != rhs
         case "le":
-            return v2 <= v1
+            return lhs <= rhs
         case "lt":
-            return v2 < v1
+            return lhs < rhs
         case "ge":
-            return v2 >= v1
+            return lhs >= rhs
         case "gt":
-            return v2 > v1
-        case "between":
-            print("FAILED: THIS FUNCTION SHOULD NOT BE CALLED WITH BETWEEN")
-            return false
+            return lhs > rhs
         case "beginsWith":
-            return v2.starts(with: v1)
+            return lhs.starts(with: rhs)
         case "contains":
-            return v2.contains(v1)
+            return lhs.contains(rhs)
         default:
-            print("FAILED: THIS FUNCTION SHOULD NOT BE CALLED WITH: \(op)")
+            print("FAILED attemptToResolveString: THIS FUNCTION SHOULD NOT BE CALLED WITH: \(operation)")
             return false
         }
     }
 
-    func attemptToResolveNumeric(_ t1: String, _ sv1: String,
-                                 _ t2: String, _ sv2: String,
-                                 _ op: String) -> Bool {
-        if sv2 == "" {
-            return false
-        }
-
-        guard let v1 = Double(sv1),
-            let v2 = Double(sv2) else {
-                print("FAILED NUMERIC!")
+    func attemptToResolveNumeric(_ type1: String, _ sv1: String,
+                                 _ type2: String, _ sv2: String,
+                                 _ operation: String) -> Bool {
+        guard let val1 = Double(sv1),
+            let val2 = Double(sv2) else {
+                print("FAILED attemptToResolveNumeric")
                 return false
         }
 
-        switch op {
+        let rhs = val1
+        let lhs = val2
+        switch operation {
         case "eq":
-            return v2 == v1
+            return lhs == rhs
         case "ne":
-            return v2 != v1
+            return lhs != rhs
         case "le":
-            return v2 <= v1
+            return lhs <= rhs
         case "lt":
-            return v2 < v1
+            return lhs < rhs
         case "ge":
-            return v2 >= v1
+            return lhs >= rhs
         case "gt":
-            return v2 > v1
-        case "between":
-            print("FATAL ERROR DO NOT ENTER!")
+            return lhs > rhs
         case "beginsWith":
             return false
         default:
+            print("FAILED attemptToResolveNumeric: THIS FUNCTION SHOULD NOT BE CALLED WITH: \(operation)")
             return false
         }
-        return false
     }
 
-    func attemptToResolveTemporal(_ t1: String, _ sv1: String,
-                                  _ t2: String, _ sv2: String,
-                                  _ op: String) -> Bool {
-        if sv2 == "" {
-            return false
-        }
-
+    func attemptToResolveTemporal(_ type1: String, _ sv1: String,
+                                  _ type2: String, _ sv2: String,
+                                  _ operation: String) -> Bool {
         //Use built-in Date to determine the assert logic
-        let v1 = temporalToTimeMap[sv1]!
-        let v2 = temporalToTimeMap[sv2]!
+        let val1 = temporalToTimeMap[sv1]!
+        let val2 = temporalToTimeMap[sv2]!
 
-        switch op {
+        let rhs = val1
+        let lhs = val2
+        switch operation {
         case "eq":
-            return v2 == v1
+            return lhs == rhs
         case "ne":
-            return v2 != v1
+            return lhs != rhs
         case "le":
-            return v2 <= v1
+            return lhs <= rhs
         case "lt":
-            return v2 < v1
+            return lhs < rhs
         case "ge":
-            return v2 >= v1
+            return lhs >= rhs
         case "gt":
-            return v2 > v1
-        case "between":
-            print("FATAL: between Temporal")
-        case "beginsWith":
-            print("FATAL: beginsWith Temporal")
-            return false
+            return lhs > rhs
         default:
+            print("FAILED attemptToResolveTemporal: THIS FUNCTION SHOULD NOT BE CALLED WITH: \(operation)")
             return false
         }
-        return false
     }
 
     func attemptToResolveBetweenTemporal(_ st1: String, _ sv1: String,
@@ -517,10 +522,10 @@ class QueryPredicateGenerator: XCTestCase {
             return false
         }
         //Use built-in Date to determine the assert logic
-        let v1 = temporalToTimeMap[sv1]!
-        let v2 = temporalToTimeMap[sv2]!
-        let v3 = temporalToTimeMap[sv3]!
-        return v1 < v3 && v2 > v3
+        let val1 = temporalToTimeMap[sv1]!
+        let val2 = temporalToTimeMap[sv2]!
+        let val3 = temporalToTimeMap[sv3]!
+        return val1 < val3 && val2 > val3
     }
 
     func attemptToResolveBetweenDouble(_ sv1: String,
@@ -530,15 +535,16 @@ class QueryPredicateGenerator: XCTestCase {
             return false
         }
 
-        guard let v1 = Double(sv1),
-            let v2 = Double(sv2),
-            let v3 = Double(sv3) else {
+        guard let val1 = Double(sv1),
+            let val2 = Double(sv2),
+            let val3 = Double(sv3) else {
                 print("FAILED DOUBLE!")
                 return false
         }
-        return v1 < v3 && v2 > v3
+        return val1 < val3 && val2 > val3
 
     }
+
     func attemptToResolveBetweenString(_ sv1: String,
                                        _ sv2: String,
                                        _ sv3: String) -> Bool {
