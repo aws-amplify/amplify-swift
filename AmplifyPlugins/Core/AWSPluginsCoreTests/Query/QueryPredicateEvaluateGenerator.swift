@@ -141,8 +141,8 @@ class QueryPredicateGenerator: XCTestCase {
 
     //the type of v3 is the type of v1 (which is the first part of the key)
     let typePairTov3BetweenTestsMap = [
-        "Double,Double": ["0", "0.0", "1.1", "2", "1.2", "3", "3.1", "3.2", "4", ""],
-        "Double,Int": ["0", "0.0", "1.1", "2", "1.2", "3", "3.1", "3.2", "4", ""],
+        "Double,Double": ["0", "0.0", "1", "1.1", "2", "1.2", "3", "3.1", "3.2", "4", ""],
+        "Double,Int": ["0", "0.0", "1", "1.1", "2", "1.2", "3", "3.1", "3.2", "4", ""],
         "Int,Double": ["0", "1", "2", "3", "4", ""],
         "Int,Int": ["0", "1", "2", "3", "4", ""],
         "String,String": ["\"a\"", "\"bb\"", "\"c\"", "\"dd\"", "\"e\"", ""],
@@ -525,7 +525,7 @@ class QueryPredicateGenerator: XCTestCase {
         let val1 = temporalToTimeMap[sv1]!
         let val2 = temporalToTimeMap[sv2]!
         let val3 = temporalToTimeMap[sv3]!
-        return val1 < val3 && val2 > val3
+        return val1 <= val3 && val2 >= val3
     }
 
     func attemptToResolveBetweenDouble(_ sv1: String,
@@ -541,13 +541,13 @@ class QueryPredicateGenerator: XCTestCase {
                 print("FAILED DOUBLE!")
                 return false
         }
-        return val1 < val3 && val2 > val3
+        return val1 <= val3 && val2 >= val3
 
     }
 
     func attemptToResolveBetweenString(_ sv1: String,
                                        _ sv2: String,
                                        _ sv3: String) -> Bool {
-        return sv1 < sv3 && sv2 > sv3
+        return sv1 <= sv3 && sv2 >= sv3
     }
 }

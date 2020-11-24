@@ -211,30 +211,29 @@ struct PersistableHelper {
         switch (start, end, rhs) {
         //case Bool Removed
         case let (start, end, rhs) as (Temporal.Date, Temporal.Date, Temporal.Date):
-            return start < rhs && rhs < end
+            return start <= rhs && rhs <= end
         case let (start, end, rhs) as (Temporal.DateTime, Temporal.DateTime, Temporal.DateTime):
-            return start < rhs && rhs < end
+            return start <= rhs && rhs <= end
         case let (start, end, rhs) as (Temporal.Time, Temporal.Time, Temporal.Time):
-            return start < rhs && rhs < end
+            return start <= rhs && rhs <= end
         case let (start, end, rhs) as (Int, Int, Int):
-            return start < rhs && rhs < end
+            return start <= rhs && rhs <= end
         case let (start, end, rhs) as (Int, Int, Double):
-            return Double(start) < Double(rhs) && Double(rhs) < Double(end)
+            return Double(start) <= rhs && rhs <= Double(end)
         case let (start, end, rhs) as (Int, Double, Int):
-            return Double(start) < Double(rhs) && Double(rhs) < Double(end)
+            return start <= rhs && Double(rhs) <= end
         case let (start, end, rhs) as (Int, Double, Double):
-            return Double(start) < Double(rhs) && Double(rhs) < Double(end)
+            return Double(start) <= rhs && rhs <= end
         case let (start, end, rhs) as (Double, Int, Int):
-            return Double(start) < Double(rhs) && Double(rhs) < Double(end)
+            return start <= Double(rhs) && rhs <= end
         case let (start, end, rhs) as (Double, Int, Double):
-            return Double(start) < Double(rhs) && Double(rhs) < Double(end)
+            return start <= rhs && rhs <= Double(end)
         case let (start, end, rhs) as (Double, Double, Int):
-            return Double(start) < Double(rhs) && Double(rhs) < Double(end)
+            return start <= Double(rhs) && Double(rhs) <= end
         case let (start, end, rhs) as (Double, Double, Double):
-            return Double(start) < Double(rhs) && Double(rhs) < Double(end)
-
+            return start <= rhs && rhs <= end
         case let (start, end, rhs) as (String, String, String):
-            return start < rhs && rhs < end
+            return start <= rhs && rhs <= end
         default:
             return false
         }

@@ -1403,7 +1403,7 @@ class QueryPredicateEvaluateGeneratedStringTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssert(evaluation)
     }
 
     func testbetweenStringbbbetweenStringddwithc() throws {
@@ -1423,7 +1423,7 @@ class QueryPredicateEvaluateGeneratedStringTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssert(evaluation)
     }
 
     func testbetweenStringbbbetweenStringddwithe() throws {

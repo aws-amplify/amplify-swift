@@ -733,7 +733,7 @@ class QueryPredicateEvaluateGeneratedIntBetweenTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssert(evaluation)
     }
 
     func testbetweenInt1betweenInt3with2() throws {
@@ -753,7 +753,7 @@ class QueryPredicateEvaluateGeneratedIntBetweenTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssert(evaluation)
     }
 
     func testbetweenInt1betweenInt3with4() throws {

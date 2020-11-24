@@ -30,7 +30,7 @@ class QueryPredicateEvaluateGeneratedIntDoubleTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssert(evaluation)
     }
 
     func testbetweenInt1betweenDouble3_1with2() throws {
@@ -89,7 +89,7 @@ class QueryPredicateEvaluateGeneratedIntDoubleTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssert(evaluation)
     }
 
     func testbetweenInt1betweenDouble3with2() throws {
@@ -109,7 +109,7 @@ class QueryPredicateEvaluateGeneratedIntDoubleTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssert(evaluation)
     }
 
     func testbetweenInt1betweenDouble3with4() throws {

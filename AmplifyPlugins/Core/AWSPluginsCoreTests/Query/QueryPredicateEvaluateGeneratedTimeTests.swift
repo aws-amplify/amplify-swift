@@ -1329,7 +1329,7 @@ class QueryPredicateEvaluateGeneratedTimeTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssert(evaluation)
     }
 
     func testbetweenTemporalTimeTemporal_Time_now_addvalue1to_hourbetweenTemporalTimeTemporal_Time_now_addvalue3to_hourwithTemporal_Time_now_addvalue2to_hour() throws {
@@ -1351,7 +1351,7 @@ class QueryPredicateEvaluateGeneratedTimeTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssert(evaluation)
     }
 
     func testbetweenTemporalTimeTemporal_Time_now_addvalue1to_hourbetweenTemporalTimeTemporal_Time_now_addvalue3to_hourwithTemporal_Time_now_addvalue4to_hour() throws {

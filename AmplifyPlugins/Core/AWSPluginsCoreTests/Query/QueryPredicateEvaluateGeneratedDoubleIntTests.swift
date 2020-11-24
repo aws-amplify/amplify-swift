@@ -1438,6 +1438,16 @@ class QueryPredicateEvaluateGeneratedDoubleIntTests: XCTestCase {
         XCTAssertFalse(evaluation)
     }
 
+    func testbetweenDouble1_1betweenInt3with1() throws {
+        let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 3)
+        var instance = QPredGen(name: "test")
+        instance.myDouble = 1
+
+        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+        XCTAssertFalse(evaluation)
+    }
+
     func testbetweenDouble1_1betweenInt3with1_1() throws {
         let predicate = QPredGen.keys.myDouble.between(start: 1.1, end: 3)
         var instance = QPredGen(name: "test")
@@ -1445,7 +1455,7 @@ class QueryPredicateEvaluateGeneratedDoubleIntTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssert(evaluation)
     }
 
     func testbetweenDouble1_1betweenInt3with2() throws {
@@ -1475,7 +1485,7 @@ class QueryPredicateEvaluateGeneratedDoubleIntTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssert(evaluation)
     }
 
     func testbetweenDouble1_1betweenInt3with3_1() throws {
@@ -1537,6 +1547,16 @@ class QueryPredicateEvaluateGeneratedDoubleIntTests: XCTestCase {
         XCTAssertFalse(evaluation)
     }
 
+    func testbetweenDouble1betweenInt3with1() throws {
+        let predicate = QPredGen.keys.myDouble.between(start: 1, end: 3)
+        var instance = QPredGen(name: "test")
+        instance.myDouble = 1
+
+        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+        XCTAssert(evaluation)
+    }
+
     func testbetweenDouble1betweenInt3with1_1() throws {
         let predicate = QPredGen.keys.myDouble.between(start: 1, end: 3)
         var instance = QPredGen(name: "test")
@@ -1574,7 +1594,7 @@ class QueryPredicateEvaluateGeneratedDoubleIntTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssert(evaluation)
     }
 
     func testbetweenDouble1betweenInt3with3_1() throws {

@@ -116,7 +116,33 @@ class QueryPredicateEvaluateTests: XCTestCase {
 
         XCTAssertFalse(evaluation)
     }
+    func testBetweenIntStart() throws {
+        let predicate = QPredGen.keys.myInt.between(start: 1, end: 10)
+        var instance = QPredGen(name: "test")
+        instance.myInt = 1
 
+        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+        XCTAssert(evaluation)
+    }
+    func testBetweenIntBeyondEnd() throws {
+        let predicate = QPredGen.keys.myInt.between(start: 1, end: 10)
+        var instance = QPredGen(name: "test")
+        instance.myInt = 11
+
+        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+        XCTAssertFalse(evaluation)
+    }
+    func testBetweenIntEnd() throws {
+        let predicate = QPredGen.keys.myInt.between(start: 1, end: 10)
+        var instance = QPredGen(name: "test")
+        instance.myInt = 10
+
+        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+        XCTAssert(evaluation)
+    }
     func testConstantall() throws {
         let predicate = QueryPredicateConstant.all
         let instance = QPredGen(name: "test")
