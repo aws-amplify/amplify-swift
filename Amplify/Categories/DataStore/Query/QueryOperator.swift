@@ -17,4 +17,33 @@ public enum QueryOperator {
     case contains(_ value: String)
     case between(start: Persistable, end: Persistable)
     case beginsWith(_ value: String)
+
+    public func evaluate(target: Any) -> Bool {
+        switch self {
+        case .notEqual(let predicateValue):
+            return !PersistableHelper.isEqual(target, predicateValue)
+        case .equals(let predicateValue):
+            return PersistableHelper.isEqual(target, predicateValue)
+        case .lessOrEqual(let predicateValue):
+            return PersistableHelper.isLessOrEqual(target, predicateValue)
+        case .lessThan(let predicateValue):
+            return PersistableHelper.isLessThan(target, predicateValue)
+        case .greaterOrEqual(let predicateValue):
+            return PersistableHelper.isGreaterOrEqual(target, predicateValue)
+        case .greaterThan(let predicateValue):
+            return PersistableHelper.isGreaterThan(target, predicateValue)
+        case .contains(let predicateString):
+            if let targetString = target as? String {
+                return targetString.contains(predicateString)
+            }
+            return false
+        case .between(let start, let end):
+            return PersistableHelper.isBetween(start, end, target)
+        case .beginsWith(let predicateValue):
+            if let targetString = target as? String {
+                return targetString.starts(with: predicateValue)
+            }
+        }
+        return false
+    }
 }
