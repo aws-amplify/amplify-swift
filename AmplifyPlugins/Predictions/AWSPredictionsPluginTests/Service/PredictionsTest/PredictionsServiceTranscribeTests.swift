@@ -61,10 +61,10 @@ class PredictionsServiceTranscribeTests: XCTestCase {
         let resultStream = AWSTranscribeStreamingResult()!
         let alternative = AWSTranscribeStreamingAlternative()!
         alternative.transcript = str
+        resultStream.isPartial = false
         resultStream.alternatives = [alternative]
         results.results = [resultStream]
         transcriptEvent.transcript = results
-        transcriptEvent.transcript?.results?.first?.isPartial = false
         mockResponse.transcriptEvent = transcriptEvent
         return mockResponse
     }
