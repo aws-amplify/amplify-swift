@@ -30,3 +30,4 @@ final public class CoreMLPredictionsPlugin: PredictionsCategoryPlugin {
     public init() {
     }
 }
+

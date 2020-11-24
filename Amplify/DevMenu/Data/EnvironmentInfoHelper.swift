@@ -16,7 +16,7 @@ struct EnvironmentInfoHelper {
 
     static func fetchDeveloperInformationFromJson(filename: String) -> [EnvironmentInfoItem] {
         guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
-            Amplify.Logging.error(DevMenuStringConstants.logTag + "json file doesn't exist")
+            Amplify.Logging.error(DevMenuStringConstants.logTag + " json file doesn't exist")
             return [EnvironmentInfoItem]()
         }
 
@@ -26,7 +26,7 @@ struct EnvironmentInfoHelper {
             let environmentInfo = try decoder.decode(DevEnvironmentInfo.self, from: jsonData)
             return getDeveloperEnvironmentInformation(devEnvInfo: environmentInfo)
         } catch {
-            Amplify.Logging.error(DevMenuStringConstants.logTag + "json file parsing failed")
+            Amplify.Logging.error(DevMenuStringConstants.logTag + " json file parsing failed")
             return [EnvironmentInfoItem]()
         }
     }

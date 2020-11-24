@@ -99,3 +99,4 @@ extension AWSUnifiedLoggingPlugin {
         return wrapper
     }
 }
+

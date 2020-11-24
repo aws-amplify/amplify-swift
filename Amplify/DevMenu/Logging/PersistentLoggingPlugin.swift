@@ -45,3 +45,4 @@ public class PersistentLoggingPlugin: LoggingCategoryPlugin {
         return persistentLogWrapper!
     }
 }
+

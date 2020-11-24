@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 /// The default Hub plugin provided with the Amplify Framework
 ///
 /// **No guaranteed delivery order**
@@ -80,3 +82,4 @@ final public class AWSHubPlugin: HubCategoryPlugin {
     }
 
 }
+

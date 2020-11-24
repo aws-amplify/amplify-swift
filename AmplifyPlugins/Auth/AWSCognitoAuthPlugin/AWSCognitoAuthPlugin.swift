@@ -50,3 +50,4 @@ final public class AWSCognitoAuthPlugin: AuthCategoryPlugin {
     public init() {
     }
 }
+

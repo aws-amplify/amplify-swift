@@ -14,86 +14,59 @@ struct PluginInfoHelper {
     static func getPluginInformation() -> [PluginInfoItem] {
         var pluginList = [PluginInfoItem]()
 
-        // Add Analytics plugins information
-        for pluginKey in Amplify.Analytics.plugins.keys {
-            if let versionable = (try? Amplify.Auth.getPlugin(for: pluginKey)) as? AmplifyVersionable {
-                pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionable.version))
-            } else {
-                pluginList.append(PluginInfoItem(displayName: pluginKey,
-                                                 information: DevMenuStringConstants.versionNotAvailable))
+        pluginList.append(contentsOf: Amplify.Analytics.plugins.map {
+                makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
             }
-        }
+        )
 
-        // Add API plugins information
         if let apiCategoryPlugin = Amplify.API as? AmplifyAPICategory {
-            for pluginKey in apiCategoryPlugin.plugins.keys {
-                if let versionable = (try? Amplify.Auth.getPlugin(for: pluginKey)) as? AmplifyVersionable {
-                    pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionable.version))
-                } else {
-                    pluginList.append(PluginInfoItem(displayName: pluginKey,
-                                                     information: DevMenuStringConstants.versionNotAvailable))
+            pluginList.append(contentsOf: apiCategoryPlugin.plugins.map {
+                    makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
                 }
-            }
+            )
         }
 
-        // Add Auth plugins information
-        for pluginKey in Amplify.Analytics.plugins.keys {
-            if let versionable = (try? Amplify.Auth.getPlugin(for: pluginKey)) as? AmplifyVersionable {
-                pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionable.version))
-            } else {
-                pluginList.append(PluginInfoItem(displayName: pluginKey,
-                                                 information: DevMenuStringConstants.versionNotAvailable))
+        pluginList.append(contentsOf: Amplify.Auth.plugins.map {
+                makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
             }
-        }
+        )
 
-        // Add DataStore plugins information
-        for pluginKey in Amplify.DataStore.plugins.keys {
-            if let versionable = (try? Amplify.DataStore.getPlugin(for: pluginKey)) as? AmplifyVersionable {
-                pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionable.version))
-            } else {
-                pluginList.append(PluginInfoItem(displayName: pluginKey,
-                                                 information: DevMenuStringConstants.versionNotAvailable))
+        pluginList.append(contentsOf: Amplify.DataStore.plugins.map {
+                makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
             }
-        }
+        )
 
-        // Add Hub plugins information
-        for pluginKey in Amplify.Hub.plugins.keys {
-            if let versionable = (try? Amplify.DataStore.getPlugin(for: pluginKey)) as? AmplifyVersionable {
-                pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionable.version))
-            } else {
-                pluginList.append(PluginInfoItem(displayName: pluginKey,
-                                                 information: DevMenuStringConstants.versionNotAvailable))
+        pluginList.append(contentsOf: Amplify.Hub.plugins.map {
+                makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
             }
-        }
+        )
 
-        // Add Logging plugins information
-        if let versionable = Amplify.Logging.plugin as? AmplifyVersionable {
-            pluginList.append(PluginInfoItem(displayName: Amplify.Logging.plugin.key, information: versionable.version))
-        } else {
-            pluginList.append(PluginInfoItem(displayName: Amplify.Logging.plugin.key,
-                                             information: DevMenuStringConstants.versionNotAvailable))
-        }
+        pluginList.append(
+            makePluginInfoItem(
+                for: Amplify.Logging.plugin.key,
+                versionable: Amplify.Logging.plugin as? AmplifyVersionable
+            )
+        )
 
-        // Add Predictions plugins information
-        for pluginKey in Amplify.Predictions.plugins.keys {
-            if let versionable = (try? Amplify.Predictions.getPlugin(for: pluginKey)) as? AmplifyVersionable {
-                pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionable.version))
-            } else {
-                pluginList.append(PluginInfoItem(displayName: pluginKey,
-                                                 information: DevMenuStringConstants.versionNotAvailable))
+        pluginList.append(contentsOf: Amplify.Predictions.plugins.map {
+                makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
             }
-        }
+        )
 
-        // Add Storage plugins information
-        for pluginKey in Amplify.Storage.plugins.keys {
-            if let versionable = (try? Amplify.Predictions.getPlugin(for: pluginKey)) as? AmplifyVersionable {
-                pluginList.append(PluginInfoItem(displayName: pluginKey, information: versionable.version))
-            } else {
-                pluginList.append(PluginInfoItem(displayName: pluginKey,
-                                                 information: DevMenuStringConstants.versionNotAvailable))
+        pluginList.append(contentsOf: Amplify.Storage.plugins.map {
+                makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
             }
-        }
+        )
 
         return pluginList
     }
+
+    private static func makePluginInfoItem(
+        for pluginKey: String,
+        versionable: AmplifyVersionable?
+    ) -> PluginInfoItem {
+        let version = versionable?.version ?? DevMenuStringConstants.versionNotAvailable
+        return PluginInfoItem(displayName: pluginKey, information: version)
+    }
+
 }

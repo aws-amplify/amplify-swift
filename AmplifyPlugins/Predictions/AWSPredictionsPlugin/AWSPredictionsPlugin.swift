@@ -41,3 +41,4 @@ final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
     public init() {
     }
 }
+
