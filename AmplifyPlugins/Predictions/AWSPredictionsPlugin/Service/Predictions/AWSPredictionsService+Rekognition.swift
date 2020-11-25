@@ -368,6 +368,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
         dispatchGroup.wait()
 
+        // No need to execute `detectModerationLabels()` if error occurs on `detectRekognitionLabels()`
         guard !errorOcurred else {
             return
         }
