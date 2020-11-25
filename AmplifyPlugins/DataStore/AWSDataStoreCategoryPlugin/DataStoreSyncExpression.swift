@@ -16,6 +16,6 @@ public struct DataStoreSyncExpression {
 
     static public func syncExpression(_ modelSchema: ModelSchema,
                                       where predicate: @escaping QueryPredicateResolver) -> DataStoreSyncExpression {
-        return DataStoreSyncExpression(modelSchema: modelSchema, modelPredicate: predicate)
+        DataStoreSyncExpression(modelSchema: modelSchema, modelPredicate: predicate)
     }
 }
