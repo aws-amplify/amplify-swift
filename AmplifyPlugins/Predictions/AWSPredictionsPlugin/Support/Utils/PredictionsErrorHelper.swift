@@ -99,6 +99,7 @@ class PredictionsErrorHelper {
     }
 
     static func mapUrlError(_ error: NSError) -> PredictionsError {
+<<<<<<< HEAD
         let defaultError = PredictionsErrorHelper.getDefaultError(error)
 
         let error = error as? URLError
@@ -117,6 +118,31 @@ class PredictionsErrorHelper {
             return PredictionsError.network(errorDescription, recoverySuggestion, error)
         default:
             return defaultError
+=======
+//        let defaultError = PredictionsErrorHelper.getDefaultError(error)
+        let predictionsError = PredictionsError(error: error)
+        let urlError = error as? URLError
+
+        switch urlError?.code {
+        case URLError.Code.cannotFindHost:
+            let errorDescription = "something"
+            let recoverySuggestion = "something"
+
+            let urlError = PredictionsError.init(errorDescription: errorDescription,
+                                                      recoverySuggestion: recoverySuggestion,
+                                                      error: error)
+            return urlError
+        case URLError.Code.notConnectedToInternet:
+            let errorDescription = "something"
+            let recoverySuggestion = "something"
+
+            let urlError = PredictionsError.init(errorDescription: errorDescription,
+                                                      recoverySuggestion: recoverySuggestion,
+                                                      error: error)
+            return urlError
+        default:
+            return predictionsError
+>>>>>>> rebase from main
         }
     }
 

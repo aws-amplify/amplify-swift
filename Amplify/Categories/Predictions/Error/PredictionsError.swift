@@ -81,8 +81,8 @@ extension PredictionsError: AmplifyError {
         switch error {
         case let urlError as URLError:
             self = .network(errorDescription, recoverySuggestion, urlError)
-        case let selfError as Self:
-            self = selfError
+        case let error as Self:
+            self = error
         default:
             self = .unknown(errorDescription, recoverySuggestion, error)
         }
