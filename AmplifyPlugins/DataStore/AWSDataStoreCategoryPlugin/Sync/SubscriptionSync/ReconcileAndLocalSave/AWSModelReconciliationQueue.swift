@@ -162,7 +162,6 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         case .mutationEvent(let remoteModel):
             if let predicate = modelPredicate {
                 guard predicate.evaluate(target: remoteModel.model.instance) else {
-                    print("AWSModelReconciliationQueue: filtering out:\(remoteModel.model.instance)")
                     return
                 }
             }
