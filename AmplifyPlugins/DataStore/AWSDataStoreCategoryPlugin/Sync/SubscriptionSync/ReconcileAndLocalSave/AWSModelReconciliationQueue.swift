@@ -15,8 +15,8 @@ import Foundation
 typealias ModelReconciliationQueueFactory = (
     ModelSchema,
     StorageEngineAdapter,
-    DataStoreConfiguration,
     APICategoryGraphQLBehavior,
+    QueryPredicate?,
     AuthCategoryBehavior?,
     IncomingSubscriptionEventPublisher?
 ) -> ModelReconciliationQueue
@@ -74,18 +74,15 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
     init(modelSchema: ModelSchema,
          storageAdapter: StorageEngineAdapter?,
-         configuration: DataStoreConfiguration,
          api: APICategoryGraphQLBehavior,
+         modelPredicate: QueryPredicate?,
          auth: AuthCategoryBehavior?,
          incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
 
         self.modelSchema = modelSchema
         self.storageAdapter = storageAdapter
-        let syncExpression = configuration.syncExpressions.first(where: {
-            $0.modelSchema.name == modelSchema.name
-        })
-        self.modelPredicate = syncExpression?.modelPredicate() ?? nil
 
+        self.modelPredicate = modelPredicate
         self.modelReconciliationQueueSubject = PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>()
 
         self.reconcileAndSaveQueue = OperationQueue()
@@ -101,7 +98,10 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         incomingSubscriptionEventQueue.isSuspended = true
 
         let resolvedIncomingSubscriptionEvents = incomingSubscriptionEvents ??
-            AWSIncomingSubscriptionEventPublisher(modelSchema: modelSchema, api: api, configuration: configuration, auth: auth)
+            AWSIncomingSubscriptionEventPublisher(modelSchema: modelSchema,
+                                                  api: api,
+                                                  modelPredicate: modelPredicate,
+                                                  auth: auth)
         self.incomingSubscriptionEvents = resolvedIncomingSubscriptionEvents
         self.reconcileAndLocalSaveOperationSinks = AtomicValue(initialValue: Set<AnyCancellable?>())
         self.incomingEventsSink = resolvedIncomingSubscriptionEvents

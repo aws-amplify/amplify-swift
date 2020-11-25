@@ -44,7 +44,7 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
 
     init(modelSchema: ModelSchema,
          api: APICategoryGraphQLBehavior,
-         configuration: DataStoreConfiguration,
+         modelPredicate: QueryPredicate?,
          auth: AuthCategoryBehavior?,
          awsAuthService: AWSAuthServiceBehavior? = nil) {
         self.onCreateConnected = false

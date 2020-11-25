@@ -40,7 +40,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
 
         let modelReconciliationQueueFactory
-            = MockModelReconciliationQueue.init(modelSchema:storageAdapter:configuration:api:auth:incomingSubscriptionEvents:)
+            = MockModelReconciliationQueue.init(modelSchema:storageAdapter:api:modelPredicate:auth:incomingSubscriptionEvents:)
         let eventQueue = AWSIncomingEventReconciliationQueue(
             modelSchemas: [Post.schema, Comment.schema],
             api: apiPlugin,
@@ -78,7 +78,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
     func testSubscriptionFailedWithSingleModelUnauthorizedError() {
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
         let modelReconciliationQueueFactory
-            = MockModelReconciliationQueue.init(modelSchema:storageAdapter:configuration:api:auth:incomingSubscriptionEvents:)
+            = MockModelReconciliationQueue.init(modelSchema:storageAdapter:api:modelPredicate:auth:incomingSubscriptionEvents:)
         let eventQueue = AWSIncomingEventReconciliationQueue(
             modelSchemas: [Post.schema],
             api: apiPlugin,
@@ -116,7 +116,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
     func testSubscriptionFailedWithMultipleModels() {
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
         let modelReconciliationQueueFactory
-            = MockModelReconciliationQueue.init(modelSchema:storageAdapter:configuration:api:auth:incomingSubscriptionEvents:)
+            = MockModelReconciliationQueue.init(modelSchema:storageAdapter:api:modelPredicate:auth:incomingSubscriptionEvents:)
         let eventQueue = AWSIncomingEventReconciliationQueue(
             modelSchemas: [Post.schema, Comment.schema],
             api: apiPlugin,

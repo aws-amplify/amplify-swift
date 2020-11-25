@@ -28,8 +28,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
-                                                configuration: configuration,
                                                 api: apiPlugin,
+                                                modelPredicate: modelPredicate,
                                                 auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
 
@@ -76,8 +76,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
-                                                configuration: configuration,
                                                 api: apiPlugin,
+                                                modelPredicate: modelPredicate,
                                                 auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
 
@@ -146,11 +146,10 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let syncExpression = DataStoreSyncExpression.syncExpression(MockSynced.schema, where: {
             MockSynced.keys.id == "id-1" || MockSynced.keys.id == "id-3"
         })
-        let configWithSyncExpression = DataStoreConfiguration.custom(syncExpressions: [syncExpression])
         let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
-                                                configuration: configWithSyncExpression,
                                                 api: apiPlugin,
+                                                modelPredicate: syncExpression.modelPredicate(),
                                                 auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
 
@@ -240,8 +239,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
-                                                configuration: configuration,
                                                 api: apiPlugin,
+                                                modelPredicate: modelPredicate,
                                                 auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
         for iteration in 1 ... 3 {
@@ -311,8 +310,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
-                                                configuration: configuration,
                                                 api: apiPlugin,
+                                                modelPredicate: modelPredicate,
                                                 auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
         for iteration in 1 ... 2 {

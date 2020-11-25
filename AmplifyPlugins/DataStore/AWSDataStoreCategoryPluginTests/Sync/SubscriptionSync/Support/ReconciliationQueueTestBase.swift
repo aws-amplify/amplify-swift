@@ -20,7 +20,7 @@ class ReconciliationQueueTestBase: XCTestCase {
     var storageAdapter: MockSQLiteStorageEngineAdapter!
     var subscriptionEventsPublisher: MockIncomingSubscriptionEventPublisher!
     var subscriptionEventsSubject: PassthroughSubject<IncomingSubscriptionEventPublisherEvent, DataStoreError>!
-    var configuration: DataStoreConfiguration!
+    var modelPredicate: QueryPredicate?
 
     override func setUp() {
         ModelRegistry.register(modelType: MockSynced.self)
@@ -31,7 +31,6 @@ class ReconciliationQueueTestBase: XCTestCase {
         storageAdapter = MockSQLiteStorageEngineAdapter()
         subscriptionEventsPublisher = MockIncomingSubscriptionEventPublisher()
         subscriptionEventsSubject = subscriptionEventsPublisher.subject
-        configuration = .default
     }
 
 }
