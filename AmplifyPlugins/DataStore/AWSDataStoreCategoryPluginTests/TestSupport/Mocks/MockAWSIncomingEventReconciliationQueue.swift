@@ -13,11 +13,11 @@ import Combine
 @testable import AWSDataStoreCategoryPlugin
 
 class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
-    static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, config, auth, _ in
+    static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, _ in
         MockAWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
                                                 api: api,
                                                 storageAdapter: storageAdapter,
-                                                configuration: config,
+                                                syncExpressions: syncExpressions,
                                                 auth: auth)
     }
     let incomingEventSubject: PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>
@@ -29,7 +29,7 @@ class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue 
     init(modelSchemas: [ModelSchema],
          api: APICategoryGraphQLBehavior?,
          storageAdapter: StorageEngineAdapter?,
-         configuration: DataStoreConfiguration? = nil,
+         syncExpressions: [DataStoreSyncExpression],
          auth: AuthCategoryBehavior?) {
         self.incomingEventSubject = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
         updateLastInstance(instance: self)

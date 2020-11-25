@@ -45,7 +45,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             modelSchemas: [Post.schema, Comment.schema],
             api: apiPlugin,
             storageAdapter: storageAdapter,
-            configuration: .default,
+            syncExpressions: [],
             modelReconciliationQueueFactory: modelReconciliationQueueFactory)
         eventQueue.start()
 
@@ -83,7 +83,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             modelSchemas: [Post.schema],
             api: apiPlugin,
             storageAdapter: storageAdapter,
-            configuration: .default,
+            syncExpressions: [],
             modelReconciliationQueueFactory: modelReconciliationQueueFactory)
         eventQueue.start()
 
@@ -121,7 +121,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             modelSchemas: [Post.schema, Comment.schema],
             api: apiPlugin,
             storageAdapter: storageAdapter,
-            configuration: .default,
+            syncExpressions: [],
             modelReconciliationQueueFactory: modelReconciliationQueueFactory)
         eventQueue.start()
 

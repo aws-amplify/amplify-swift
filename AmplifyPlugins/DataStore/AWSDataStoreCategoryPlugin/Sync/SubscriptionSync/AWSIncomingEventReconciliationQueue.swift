@@ -16,7 +16,7 @@ typealias IncomingEventReconciliationQueueFactory =
     ([ModelSchema],
     APICategoryGraphQLBehavior,
     StorageEngineAdapter,
-    DataStoreConfiguration,
+    [DataStoreSyncExpression],
     AuthCategoryBehavior?,
     ModelReconciliationQueueFactory?
 ) -> IncomingEventReconciliationQueue
@@ -24,11 +24,11 @@ typealias IncomingEventReconciliationQueueFactory =
 @available(iOS 13.0, *)
 final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
 
-    static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, config, auth, _ in
+    static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, _ in
         AWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
                                             api: api,
                                             storageAdapter: storageAdapter,
-                                            configuration: config,
+                                            syncExpressions: syncExpressions,
                                             auth: auth,
                                             modelReconciliationQueueFactory: nil)
     }
@@ -51,7 +51,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     init(modelSchemas: [ModelSchema],
          api: APICategoryGraphQLBehavior,
          storageAdapter: StorageEngineAdapter,
-         configuration: DataStoreConfiguration,
+         syncExpressions: [DataStoreSyncExpression],
          auth: AuthCategoryBehavior? = nil,
          modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil) {
         self.modelReconciliationQueueSinks = [:]
@@ -66,7 +66,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
             = DispatchQueue(label: "com.amazonaws.DataStore.AWSIncomingEventReconciliationQueue")
         for modelSchema in modelSchemas {
             let modelName = modelSchema.name
-            let syncExpression = configuration.syncExpressions.first(where: {
+            let syncExpression = syncExpressions.first(where: {
                 $0.modelSchema.name == modelName
             })
             let modelPredicate = syncExpression?.modelPredicate() ?? nil

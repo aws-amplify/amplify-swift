@@ -70,6 +70,7 @@ class SyncEventEmitterTests: XCTestCase {
         reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelSchemas: [Post.schema],
                                                                       api: nil,
                                                                       storageAdapter: nil,
+                                                                      syncExpressions: [],
                                                                       auth: nil)
 
         initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
@@ -146,6 +147,7 @@ class SyncEventEmitterTests: XCTestCase {
         reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelSchemas: syncableModelSchemas,
                                                                       api: nil,
                                                                       storageAdapter: nil,
+                                                                      syncExpressions: [],
                                                                       auth: nil)
 
         initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
@@ -240,6 +242,7 @@ class SyncEventEmitterTests: XCTestCase {
         reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelSchemas: syncableModelSchemas,
                                                                       api: nil,
                                                                       storageAdapter: nil,
+                                                                      syncExpressions: [],
                                                                       auth: nil)
 
         initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
