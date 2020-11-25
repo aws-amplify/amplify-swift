@@ -323,6 +323,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyAllLabelsServiceWithNilResponse() {
         setUpAmplify()
+
         mockRekognition.setAllLabelsResponse(labelsResult: nil, moderationResult: nil)
 
         let testBundle = Bundle(for: type(of: self))
@@ -332,7 +333,43 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         }
 
         let errorReceived = expectation(description: "Error should be returned")
-        errorReceived.expectedFulfillmentCount = 2
+
+        predictionsService.detectLabels(image: url, type: .all) { event in
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
+            }
+        }
+
+        waitForExpectations(timeout: 1)
+    }
+
+    /// Test whether error is prograted correctly when making a rekognition call to identify all labels
+    ///
+    /// - Given: Predictions service with rekognition behavior
+    /// - When:
+    ///    - I invoke rekognition api in predictions service
+    ///    - Set mockLabelsResponse as labelsResult, set moderationResult to be nil
+    /// - Then:
+    ///    - I should get back a service error because moderation response is nil
+    ///
+    func testIdentifyAllLabelsServiceWithNilModerationResponse() {
+        setUpAmplify()
+
+        let mockLabelsResponse: AWSRekognitionDetectLabelsResponse = AWSRekognitionDetectLabelsResponse()
+        mockLabelsResponse.labels = [AWSRekognitionLabel]()
+
+        mockRekognition.setAllLabelsResponse(labelsResult: mockLabelsResponse, moderationResult: nil)
+
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
+            XCTFail("Unable to find image")
+            return
+        }
+        let errorReceived = expectation(description: "Error should be returned")
 
         predictionsService.detectLabels(image: url, type: .all) { event in
             switch event {
