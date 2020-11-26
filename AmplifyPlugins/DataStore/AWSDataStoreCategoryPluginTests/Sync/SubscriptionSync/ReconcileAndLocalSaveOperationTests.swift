@@ -297,10 +297,9 @@ extension ReconcileAndLocalSaveOperationTests {
     private func setUpCore() throws -> AmplifyConfiguration {
         Amplify.reset()
 
-        let storageEngine = MockStorageEngineBehavior()
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                 storageEngine: storageEngine,
+                                                 storageEngineBehaviorFactory: MockStorageEngineBehavior.mockStorageEngineBehaviorFactory,
                                                  dataStorePublisher: dataStorePublisher,
                                                  validAPIPluginKey: "MockAPICategoryPlugin",
                                                  validAuthPluginKey: "MockAuthCategoryPlugin")

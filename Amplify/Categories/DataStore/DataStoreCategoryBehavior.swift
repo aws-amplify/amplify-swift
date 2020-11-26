@@ -34,6 +34,10 @@ public protocol DataStoreBaseBehavior {
                           withId id: String,
                           completion: @escaping DataStoreCallback<Void>)
 
+    func start(completion: @escaping DataStoreCallback<Void>)
+
+    func stop(completion: @escaping DataStoreCallback<Void>)
+
     func clear(completion: @escaping DataStoreCallback<Void>)
 }
 

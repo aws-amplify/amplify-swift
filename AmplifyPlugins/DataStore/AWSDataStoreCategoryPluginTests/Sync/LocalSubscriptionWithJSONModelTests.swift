@@ -16,7 +16,6 @@ import Combine
 /// Tests behavior of local DataStore subscriptions (as opposed to remote API subscription behaviors)
 /// using serialized JSON models
 class LocalSubscriptionWithJSONModelTests: XCTestCase {
-
     var dataStorePlugin: AWSDataStorePlugin!
 
     override func setUp() {
@@ -64,9 +63,12 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
             return
         }
 
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+            return storageEngine
+        }
         let dataStorePublisher = DataStorePublisher()
         dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestJsonModelRegistration(),
-                                             storageEngine: storageEngine,
+                                             storageEngineBehaviorFactory: storageEngineBehaviorFactory,
                                              dataStorePublisher: dataStorePublisher,
                                              validAPIPluginKey: validAPIPluginKey,
                                              validAuthPluginKey: validAuthPluginKey)
@@ -313,5 +315,4 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
 
         subscription.cancel()
     }
-
 }

@@ -76,10 +76,13 @@ extension APICategoryDependencyTests {
                                           syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+            return storageEngine
+        }
 
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                 storageEngine: storageEngine,
+                                                 storageEngineBehaviorFactory: storageEngineBehaviorFactory,
                                                  dataStorePublisher: dataStorePublisher,
                                                  validAPIPluginKey: validAPIPluginKey,
                                                  validAuthPluginKey: validAuthPluginKey)

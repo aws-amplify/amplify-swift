@@ -10,6 +10,14 @@ import Combine
 import Foundation
 import AWSPluginsCore
 
+typealias StorageEngineBehaviorFactory =
+    (Bool,
+    DataStoreConfiguration,
+    String,
+    String,
+    String,
+    UserDefaults) throws -> StorageEngineBehavior
+
 // swiftlint:disable type_body_length
 final class StorageEngine: StorageEngineBehavior {
 
@@ -383,6 +391,16 @@ final class StorageEngine: StorageEngineBehavior {
             })
         } else {
             storageAdapter.clear(completion: completion)
+        }
+    }
+
+    func stopSync(completion: @escaping DataStoreCallback<Void>) {
+        if let syncEngine = syncEngine {
+            syncEngine.stop { _ in
+                completion(.successfulVoid)
+            }
+        } else {
+            completion(.successfulVoid)
         }
     }
 

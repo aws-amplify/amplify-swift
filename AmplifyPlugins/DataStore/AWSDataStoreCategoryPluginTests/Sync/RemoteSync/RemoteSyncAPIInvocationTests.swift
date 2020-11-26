@@ -53,10 +53,12 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
             XCTFail(String(describing: error))
             return
         }
-
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+            return storageEngine
+        }
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                 storageEngine: storageEngine,
+                                                 storageEngineBehaviorFactory: storageEngineBehaviorFactory,
                                                  dataStorePublisher: dataStorePublisher,
                                                  validAPIPluginKey: validAPIPluginKey,
                                                  validAuthPluginKey: validAuthPluginKey)
@@ -104,7 +106,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
         }
 
         try Amplify.configure(amplifyConfig)
-
+        Amplify.DataStore.start(completion: {_ in})
         waitForExpectations(timeout: 1.0)
     }
     // TODO: Implement the test below

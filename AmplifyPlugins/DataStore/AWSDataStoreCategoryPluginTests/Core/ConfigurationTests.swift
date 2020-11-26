@@ -13,10 +13,9 @@ import XCTest
 class AWSAPICategoryPluginConfigureTests: XCTestCase {
 
     func testConfigureSuccessForNilConfiguration() throws {
-        let storageEngine = MockStorageEngineBehavior()
         let dataStorePublisher = DataStorePublisher()
         let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        storageEngine: storageEngine,
+                                        storageEngineBehaviorFactory: MockStorageEngineBehavior.mockStorageEngineBehaviorFactory,
                                         dataStorePublisher: dataStorePublisher,
                                         validAPIPluginKey: "MockAPICategoryPlugin",
                                         validAuthPluginKey: "MockAuthCategoryPlugin")

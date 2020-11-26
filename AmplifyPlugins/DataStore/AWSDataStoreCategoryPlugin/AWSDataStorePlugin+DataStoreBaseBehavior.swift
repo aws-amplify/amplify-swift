@@ -168,6 +168,24 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                              predicate: predicate,
                              completion: onCompletion)
     }
+    public func start(completion: @escaping DataStoreCallback<Void>) {
+        reinitStorageEngineIfNeeded(completion: completion)
+    }
+
+    public func stop(completion: @escaping DataStoreCallback<Void>) {
+        if storageEngine == nil {
+            completion(.successfulVoid)
+            return
+        }
+        storageEngine.stopSync { result in
+            self.storageEngine = nil
+            if #available(iOS 13.0, *) {
+                self.dataStorePublisher?.sendFinished()
+            }
+            self.dataStorePublisher = nil
+            completion(result)
+        }
+    }
 
     public func clear(completion: @escaping DataStoreCallback<Void>) {
         if storageEngine == nil {
