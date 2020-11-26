@@ -141,6 +141,7 @@
 		B43DC74F2410572400D40275 /* AWSCognitoAuthPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B43DC7452410572400D40275 /* AWSCognitoAuthPlugin.framework */; };
 		B44373A1247C869100DEF43C /* AuthSessionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44373A0247C869100DEF43C /* AuthSessionHelper.swift */; };
 		B44373A4247C8CCE00DEF43C /* AuthSignOutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44373A3247C8CCE00DEF43C /* AuthSignOutTests.swift */; };
+		B4D5411B256F2C8A00436E5C /* BaseAuthorizationProviderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D5411A256F2C8A00436E5C /* BaseAuthorizationProviderTest.swift */; };
 		B4F3EA47243A776800F23296 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B4F3EA41243A776800F23296 /* Assets.xcassets */; };
 		B4F3EA48243A776800F23296 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B4F3EA42243A776800F23296 /* LaunchScreen.storyboard */; };
 		B4F3EA49243A776800F23296 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B4F3EA44243A776800F23296 /* Main.storyboard */; };
@@ -334,6 +335,7 @@
 		B4672B5A24777C7500C83E96 /* AWSCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AWSCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4672B5B24777C7500C83E96 /* AWSMobileClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AWSMobileClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4672B5C24777C7500C83E96 /* AWSPluginsCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AWSPluginsCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B4D5411A256F2C8A00436E5C /* BaseAuthorizationProviderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAuthorizationProviderTest.swift; sourceTree = "<group>"; };
 		B4F3EA20243A65BD00F23296 /* HostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4F3EA41243A776800F23296 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B4F3EA43243A776800F23296 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -503,6 +505,7 @@
 			children = (
 				B4136E5D256D7A690011210B /* AuthorizationProviderSessionSignInTests.swift */,
 				B4136E63256D7A740011210B /* AuthorizationProviderSessionSignoutTests.swift */,
+				B4D5411A256F2C8A00436E5C /* BaseAuthorizationProviderTest.swift */,
 			);
 			path = AuthorizationProviderTests;
 			sourceTree = "<group>";
@@ -1495,6 +1498,7 @@
 				B43B4E1A2565FBFE008F345D /* AWSCognitoAuthDeviceBehaviorTests.swift in Sources */,
 				B43B4E032565E95E008F345D /* MockAuthDeviceServiceBehavior.swift in Sources */,
 				B4136E6C256D7AF30011210B /* UserBehaviorFetchAttributeTests.swift in Sources */,
+				B4D5411B256F2C8A00436E5C /* BaseAuthorizationProviderTest.swift in Sources */,
 				B43B4E102565EA64008F345D /* AWSCognitoAuthClientBehaviorTests.swift in Sources */,
 				B4136E2C256D764B0011210B /* AuthenticationProviderResendSignupCodeTests.swift in Sources */,
 				B41D0FE32475A3A10049D08D /* AuthHubEventHandlerTests.swift in Sources */,
