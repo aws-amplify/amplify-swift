@@ -59,6 +59,14 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("clear")
     }
 
+    func start(completion: @escaping DataStoreCallback<Void>) {
+        notify("start")
+    }
+    
+    func stop(completion: @escaping DataStoreCallback<Void>) {
+        notify("stop")
+    }
+
     @available(iOS 13.0, *)
     func publisher<M: Model>(for modelType: M.Type)
         -> AnyPublisher<MutationEvent, DataStoreError> {

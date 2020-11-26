@@ -135,6 +135,7 @@ class SyncEngineTestBase: XCTestCase {
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`
     func startAmplify() throws {
         try Amplify.configure(amplifyConfig)
+        Amplify.DataStore.start(completion: {_ in})
     }
 
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message

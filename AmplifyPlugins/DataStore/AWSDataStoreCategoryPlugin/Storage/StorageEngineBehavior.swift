@@ -20,7 +20,7 @@ protocol StorageEngineBehavior: class, ModelStorageBehavior {
     var publisher: AnyPublisher<StorageEngineEvent, DataStoreError> { get }
 
     /// start remote sync, based on if sync is enabled and/or authentication is required
-    func startSync()
-
+    func startSync(completion: @escaping DataStoreCallback<Void>)
+    func stopSync(completion: @escaping DataStoreCallback<Void>)
     func clear(completion: @escaping DataStoreCallback<Void>)
 }

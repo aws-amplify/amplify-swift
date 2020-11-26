@@ -386,6 +386,16 @@ final class StorageEngine: StorageEngineBehavior {
         }
     }
 
+    func stopSync(completion: @escaping DataStoreCallback<Void>) {
+        if let syncEngine = syncEngine {
+            syncEngine.stop { _ in
+                completion(.successfulVoid)
+            }
+        } else {
+            completion(.successfulVoid)
+        }
+    }
+
     func reset(onComplete: () -> Void) {
         // TOOD: Perform cleanup on StorageAdapter, including releasing its `Connection` if needed
         let group = DispatchGroup()

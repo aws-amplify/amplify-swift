@@ -104,7 +104,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
         }
 
         try Amplify.configure(amplifyConfig)
-
+        Amplify.DataStore.start(completion: {_ in})
         waitForExpectations(timeout: 1.0)
     }
     // TODO: Implement the test below

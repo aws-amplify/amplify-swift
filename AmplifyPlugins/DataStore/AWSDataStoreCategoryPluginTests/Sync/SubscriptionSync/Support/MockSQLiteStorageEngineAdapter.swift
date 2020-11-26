@@ -215,7 +215,12 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
         return PassthroughSubject<StorageEngineEvent, DataStoreError>().eraseToAnyPublisher()
     }
 
-    func startSync() {
+    func startSync(completion: @escaping DataStoreCallback<Void>) {
+        XCTFail("Not expected to execute")
+    }
+
+    func stopSync(completion: @escaping DataStoreCallback<Void>) {
+        XCTFail("Not expected to execute")
     }
 
     func setUp(modelSchemas: [ModelSchema]) throws {

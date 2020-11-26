@@ -14,7 +14,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     /// `true` if any models are syncable. Resolved during configuration phase
     var isSyncEnabled: Bool
-
+    let configurationSemaphore: DispatchSemaphore
+    var shouldOnlyStartSyncEngineAndInitDataStorePublisher: Bool
     /// The Publisher that sends mutation events to subscribers
     var dataStorePublisher: ModelSubcriptionBehavior?
 
@@ -50,6 +51,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.modelRegistration = modelRegistration
         self.dataStoreConfiguration = dataStoreConfiguration
         self.isSyncEnabled = false
+        self.shouldOnlyStartSyncEngineAndInitDataStorePublisher = false
+        self.configurationSemaphore = DispatchSemaphore(value: 0)
         self.validAPIPluginKey =  "awsAPIPlugin"
         self.validAuthPluginKey = "awsCognitoAuthPlugin"
 
@@ -70,10 +73,12 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.modelRegistration = modelRegistration
         self.dataStoreConfiguration = dataStoreConfiguration
         self.isSyncEnabled = false
+        self.configurationSemaphore = DispatchSemaphore(value: 0)
         self.storageEngine = storageEngine
         self.dataStorePublisher = dataStorePublisher
         self.validAPIPluginKey = validAPIPluginKey
         self.validAuthPluginKey = validAuthPluginKey
+        self.shouldOnlyStartSyncEngineAndInitDataStorePublisher = false
     }
 
     /// By the time this method gets called, DataStore will already have invoked
@@ -84,16 +89,15 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         resolveSyncEnabled()
 
         try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
-
         try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
-
+        shouldOnlyStartSyncEngineAndInitDataStorePublisher = true
         let filter = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
         var token: UnsubscribeToken?
         token = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { _ in
-            self.storageEngine.startSync()
+            self.configurationSemaphore.signal()
             if let token = token {
                 Amplify.Hub.removeListener(token)
-            }
+           }
         }
     }
 
@@ -101,16 +105,25 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         if storageEngine != nil {
             return
         }
+        reinitStorageEngine(completion: {_ in})
+    }
+
+    func reinitStorageEngine(completion: @escaping DataStoreCallback<Void>) {
         do {
-            if #available(iOS 13.0, *) {
-                self.dataStorePublisher = DataStorePublisher()
-            }
             try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
             try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
-            storageEngine.startSync()
+
+            startSyncEngineAndInitDataStorePublisher(completion: completion)
         } catch {
             log.error(error: error)
         }
+    }
+
+    func startSyncEngineAndInitDataStorePublisher(completion: @escaping DataStoreCallback<Void>) {
+        if #available(iOS 13.0, *) {
+            self.dataStorePublisher = DataStorePublisher()
+        }
+        storageEngine.startSync(completion: completion)
     }
 
     func resolveStorageEngine(dataStoreConfiguration: DataStoreConfiguration) throws {
@@ -184,4 +197,3 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
 }
-

@@ -168,8 +168,54 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                              predicate: predicate,
                              completion: onCompletion)
     }
+    public func start(completion: @escaping DataStoreCallback<Void>) {
+        configurationSemaphore.wait()
+        defer {
+            configurationSemaphore.signal()
+        }
+        let lastActionWasStopOrClear = storageEngine == nil
+        let lastActionWasConfigure = storageEngine != nil && shouldOnlyStartSyncEngineAndInitDataStorePublisher
+        if lastActionWasStopOrClear {
+            reinitStorageEngine(completion: completion)
+        } else if lastActionWasConfigure {
+            startSyncEngineAndInitDataStorePublisher(completion: { result in
+                if case .success = result {
+                    self.shouldOnlyStartSyncEngineAndInitDataStorePublisher = false
+                }
+                completion(result)
+            })
+        } else {
+            // start() was called when sync engine is already started
+            completion(.successfulVoid)
+        }
+    }
+
+    public func stop(completion: @escaping DataStoreCallback<Void>) {
+        configurationSemaphore.wait()
+        defer {
+            configurationSemaphore.signal()
+        }
+
+        if storageEngine == nil {
+            completion(.successfulVoid)
+            return
+        }
+        storageEngine.stopSync { result in
+            self.storageEngine = nil
+            if #available(iOS 13.0, *) {
+                self.dataStorePublisher?.sendFinished()
+            }
+            self.dataStorePublisher = nil
+            completion(result)
+        }
+    }
 
     public func clear(completion: @escaping DataStoreCallback<Void>) {
+        configurationSemaphore.wait()
+        defer {
+            configurationSemaphore.signal()
+        }
+
         if storageEngine == nil {
             completion(.successfulVoid)
             return
