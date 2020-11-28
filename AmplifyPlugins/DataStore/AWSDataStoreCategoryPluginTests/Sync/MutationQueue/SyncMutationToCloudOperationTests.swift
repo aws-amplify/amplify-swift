@@ -51,8 +51,8 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                 listenerFromFirstRequestOptional = eventListener
                 expectFirstCallToAPIMutate.fulfill()
             } else if numberOfTimesEntered == 1 {
-                expectSecondCallToAPIMutate.fulfill()
                 listenerFromSecondRequestOptional = eventListener
+                expectSecondCallToAPIMutate.fulfill()
             } else {
                 XCTFail("This should not be called more than once")
             }
