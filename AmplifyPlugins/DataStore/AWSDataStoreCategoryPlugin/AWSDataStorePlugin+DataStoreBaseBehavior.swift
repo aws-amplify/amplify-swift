@@ -169,23 +169,10 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                              completion: onCompletion)
     }
     public func start(completion: @escaping DataStoreCallback<Void>) {
-        configurationSemaphore.wait()
-        defer {
-            configurationSemaphore.signal()
-        }
-        if storageEngine == nil {
-            reinitStorageEngine(completion: completion)
-        } else {
-            startSyncEngine(completion: completion)
-        }
+        reinitStorageEngineIfNeeded(completion: completion)
     }
 
     public func stop(completion: @escaping DataStoreCallback<Void>) {
-        configurationSemaphore.wait()
-        defer {
-            configurationSemaphore.signal()
-        }
-
         if storageEngine == nil {
             completion(.successfulVoid)
             return
@@ -201,11 +188,6 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     }
 
     public func clear(completion: @escaping DataStoreCallback<Void>) {
-        configurationSemaphore.wait()
-        defer {
-            configurationSemaphore.signal()
-        }
-
         if storageEngine == nil {
             completion(.successfulVoid)
             return

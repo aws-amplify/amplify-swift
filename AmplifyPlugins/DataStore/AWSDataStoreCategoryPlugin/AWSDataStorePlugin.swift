@@ -14,7 +14,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     /// `true` if any models are syncable. Resolved during configuration phase
     var isSyncEnabled: Bool
-    let configurationSemaphore: DispatchSemaphore
 
     /// The Publisher that sends mutation events to subscribers
     var dataStorePublisher: ModelSubcriptionBehavior?
@@ -51,7 +50,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.modelRegistration = modelRegistration
         self.dataStoreConfiguration = dataStoreConfiguration
         self.isSyncEnabled = false
-        self.configurationSemaphore = DispatchSemaphore(value: 0)
         self.validAPIPluginKey =  "awsAPIPlugin"
         self.validAuthPluginKey = "awsCognitoAuthPlugin"
 
@@ -72,7 +70,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.modelRegistration = modelRegistration
         self.dataStoreConfiguration = dataStoreConfiguration
         self.isSyncEnabled = false
-        self.configurationSemaphore = DispatchSemaphore(value: 0)
         self.storageEngine = storageEngine
         self.dataStorePublisher = dataStorePublisher
         self.validAPIPluginKey = validAPIPluginKey
@@ -88,22 +85,14 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
         try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
         try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
-
-        let filter = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
-        var token: UnsubscribeToken?
-        token = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { _ in
-            self.configurationSemaphore.signal()
-            if let token = token {
-                Amplify.Hub.removeListener(token)
-           }
-        }
     }
 
-    func reinitStorageEngineIfNeeded() {
-        if storageEngine != nil {
-            return
+    func reinitStorageEngineIfNeeded(completion: @escaping DataStoreCallback<Void> = {_ in}) {
+        if storageEngine == nil {
+            reinitStorageEngine(completion: completion)
+        } else {
+            startSyncEngine(completion: completion)
         }
-        reinitStorageEngine(completion: {_ in})
     }
 
     func reinitStorageEngine(completion: @escaping DataStoreCallback<Void>) {
