@@ -173,20 +173,10 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         defer {
             configurationSemaphore.signal()
         }
-        let lastActionWasStopOrClear = storageEngine == nil
-        let lastActionWasConfigure = storageEngine != nil && shouldOnlyStartSyncEngineAndInitDataStorePublisher
-        if lastActionWasStopOrClear {
+        if storageEngine == nil {
             reinitStorageEngine(completion: completion)
-        } else if lastActionWasConfigure {
-            startSyncEngineAndInitDataStorePublisher(completion: { result in
-                if case .success = result {
-                    self.shouldOnlyStartSyncEngineAndInitDataStorePublisher = false
-                }
-                completion(result)
-            })
         } else {
-            // start() was called when sync engine is already started
-            completion(.successfulVoid)
+            startSyncEngine(completion: completion)
         }
     }
 

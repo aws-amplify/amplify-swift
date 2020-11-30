@@ -17,6 +17,8 @@ final class StorageEngine: StorageEngineBehavior {
     let storageAdapter: StorageEngineAdapter
     private let dataStoreConfiguration: DataStoreConfiguration
     var syncEngine: RemoteSyncEngineBehavior?
+    var syncEngineCalledStart: Bool
+    let syncEngineStartSerialQueue: DispatchQueue
     let validAPIPluginKey: String
     let validAuthPluginKey: String
     var signInListener: UnsubscribeToken?
@@ -75,6 +77,8 @@ final class StorageEngine: StorageEngineBehavior {
         self.syncEngine = syncEngine
         self.validAPIPluginKey = validAPIPluginKey
         self.validAuthPluginKey = validAuthPluginKey
+        self.syncEngineCalledStart = false
+        self.syncEngineStartSerialQueue = DispatchQueue(label: "com.amazonaws.DataStore.StorageEngineStartSerialQueue")
     }
 
     convenience init(isSyncEnabled: Bool,

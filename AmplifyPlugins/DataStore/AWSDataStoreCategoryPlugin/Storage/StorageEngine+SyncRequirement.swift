@@ -13,30 +13,37 @@ import AWSPluginsCore
 extension StorageEngine {
 
     func startSync(completion: @escaping DataStoreCallback<Void>) {
-        guard let api = tryGetAPIPlugin() else {
-            log.info("Unable to find suitable API plugin for syncEngine. syncEngine will not be started")
-            completion(.failure(.configuration("Unable to find suitable API plugin for syncEngine. syncEngine will not be started",
-                                               "Ensure the API category has been setup and configured for your project", nil)))
-            return
-        }
+        syncEngineStartSerialQueue.async {
+            guard let api = self.tryGetAPIPlugin() else {
+                self.log.info("Unable to find suitable API plugin for syncEngine. syncEngine will not be started")
+                completion(.failure(.configuration("Unable to find suitable API plugin for syncEngine. syncEngine will not be started",
+                                                   "Ensure the API category has been setup and configured for your project", nil)))
+                return
+            }
 
-        let authPluginRequired = requiresAuthPlugin(api: api)
+            let authPluginRequired = self.requiresAuthPlugin(api: api)
 
-        guard authPluginRequired else {
-            syncEngine?.start(api: api, auth: nil)
+            guard authPluginRequired else {
+                if !self.syncEngineCalledStart {
+                    self.syncEngineCalledStart = true
+                    self.syncEngine?.start(api: api, auth: nil)
+                }
+                completion(.successfulVoid)
+                return
+            }
+
+            guard let auth = self.tryGetAuthPlugin() else {
+                self.log.warn("Unable to find suitable Auth plugin for syncEngine. Models require auth")
+                completion(.failure(.configuration("Unable to find suitable Auth plugin for syncEngine. Models require auth",
+                                                   "Ensure the Auth category has been setup and configured for your project", nil)))
+                return
+            }
+            if !self.syncEngineCalledStart {
+                self.syncEngineCalledStart = true
+                self.syncEngine?.start(api: api, auth: auth)
+            }
             completion(.successfulVoid)
-            return
         }
-
-        guard let auth = tryGetAuthPlugin() else {
-            log.warn("Unable to find suitable Auth plugin for syncEngine. Models require auth")
-            completion(.failure(.configuration("Unable to find suitable Auth plugin for syncEngine. Models require auth",
-                                               "Ensure the Auth category has been setup and configured for your project", nil)))
-            return
-        }
-
-        syncEngine?.start(api: api, auth: auth)
-        completion(.successfulVoid)
     }
 
     private func tryGetAPIPlugin() -> APICategoryGraphQLBehavior? {
