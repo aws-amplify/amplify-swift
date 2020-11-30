@@ -107,9 +107,9 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  Amplify: 932edc0b3bb82f850cbab010cd963cee810871d7
-  AmplifyPlugins: 8ca498863cd0c59c96f2c13bc23ddfc431a852c8
-  AmplifyTestCommon: 80cafd35d1d6b67dd10688d6892fb9a18cf87074
+  Amplify: c5bc69a3db5c25ae6835dc62c5334dab17ccce21
+  AmplifyPlugins: 6397d3132f3aa082a02a902fe576d051ad837426
+  AmplifyTestCommon: 0287634c9acd9525d6eb99e2671b5813a258c51b
   AWSAuthCore: 387c5e3482edbbb0fe754fa110a2a0203c783432
   AWSCognitoIdentityProvider: e6932c709d3e0b234128aeb5f2052c9bf1032d8d
   AWSCognitoIdentityProviderASF: 749f58b75e69f7f0144b9d38539525562b843d34
