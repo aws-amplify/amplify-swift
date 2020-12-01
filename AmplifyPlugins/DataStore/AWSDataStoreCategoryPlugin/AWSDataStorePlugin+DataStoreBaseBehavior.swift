@@ -168,6 +168,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                              predicate: predicate,
                              completion: onCompletion)
     }
+
     public func start(completion: @escaping DataStoreCallback<Void>) {
         reinitStorageEngineIfNeeded(completion: completion)
     }
