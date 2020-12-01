@@ -38,7 +38,6 @@ typealias DeleteUntypedModelCompletionResponder = MockResponder<(Model.Type, Str
 
 extension MockStorageEngineBehavior {
     enum ResponderKeys {
-        case initConstructor
         case startSync
         case stopSync
         case clear
@@ -46,7 +45,6 @@ extension MockStorageEngineBehavior {
     }
 }
 
-typealias InitResponder = MockResponder<MockStorageEngineBehavior, Void>
 typealias StartSyncResponder = MockResponder<String, Void>
 typealias StopSyncResponder = MockResponder<String, Void>
 typealias ClearResponder = MockResponder<String, Void>
