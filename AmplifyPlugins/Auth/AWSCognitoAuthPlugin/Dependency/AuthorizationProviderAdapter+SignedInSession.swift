@@ -155,12 +155,10 @@ extension AuthorizationProviderAdapter {
             guard task.error == nil else {
                 if let urlError = task.error as NSError?, urlError.domain == NSURLErrorDomain {
                     self.fetchSignedInSessionWithOfflineError(completionHandler)
-                    return nil
 
                 } else if let awsMobileClientError = task.error as? AWSMobileClientError {
                     if case .unableToSignIn = awsMobileClientError {
                         self.fetchSignedInSessionWithSessionExpiredError(completionHandler)
-                        return nil
                     }
                 }
                 let authError = AuthErrorHelper.toAuthError(task.error!)
