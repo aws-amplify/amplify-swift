@@ -64,6 +64,9 @@ extension Model {
                 var fieldName = modelName.camelCased() + name
                 if case let .belongsTo(_, targetName) = field.association {
                     fieldName = targetName ?? fieldName
+                } else if case let .hasOne(_, targetName) = field.association {
+                    fieldName = targetName ?? fieldName
+                    
                 }
                 if let modelValue = value as? Model {
                     input[fieldName] = modelValue.id

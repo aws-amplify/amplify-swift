@@ -211,11 +211,12 @@ public enum ModelFieldDefinition {
     public static func hasOne(_ key: CodingKey,
                               is nullability: ModelFieldNullability = .required,
                               ofType type: Model.Type,
-                              associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
+                              associatedWith associatedKey: CodingKey,
+                              targetName: String? = nil) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
                       ofType: .model(type: type),
-                      association: .hasOne(associatedWith: associatedKey))
+                      association: .hasOne(associatedWith: associatedKey, targetName: targetName))
     }
 
     public static func belongsTo(_ key: CodingKey,
