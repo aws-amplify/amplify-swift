@@ -63,16 +63,20 @@ public struct DataStoreConfiguration {
     /// The page size of each sync execution
     public let syncPageSize: UInt
 
+    public let syncExpressions: [DataStoreSyncExpression]
+
     init(errorHandler: @escaping DataStoreErrorHandler,
          conflictHandler: @escaping DataStoreConflictHandler,
          syncInterval: TimeInterval,
          syncMaxRecords: UInt,
-         syncPageSize: UInt) {
+         syncPageSize: UInt,
+         syncExpressions: [DataStoreSyncExpression]) {
         self.errorHandler = errorHandler
         self.conflictHandler = conflictHandler
         self.syncInterval = syncInterval
         self.syncMaxRecords = syncMaxRecords
         self.syncPageSize = syncPageSize
+        self.syncExpressions = syncExpressions
     }
 
 }
@@ -101,13 +105,15 @@ extension DataStoreConfiguration {
         },
         syncInterval: TimeInterval = DataStoreConfiguration.defaultSyncInterval,
         syncMaxRecords: UInt = DataStoreConfiguration.defaultSyncMaxRecords,
-        syncPageSize: UInt = DataStoreConfiguration.defaultSyncPageSize
+        syncPageSize: UInt = DataStoreConfiguration.defaultSyncPageSize,
+        syncExpressions: [DataStoreSyncExpression] = []
     ) -> DataStoreConfiguration {
         return DataStoreConfiguration(errorHandler: errorHandler,
                                       conflictHandler: conflictHandler,
                                       syncInterval: syncInterval,
                                       syncMaxRecords: syncMaxRecords,
-                                      syncPageSize: syncPageSize)
+                                      syncPageSize: syncPageSize,
+                                      syncExpressions: syncExpressions)
     }
 
     /// The default configuration.

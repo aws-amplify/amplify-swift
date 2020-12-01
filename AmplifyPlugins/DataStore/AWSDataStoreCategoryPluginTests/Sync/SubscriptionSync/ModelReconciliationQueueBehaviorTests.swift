@@ -29,6 +29,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
+                                                modelPredicate: modelPredicate,
                                                 auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
 
@@ -76,6 +77,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
+                                                modelPredicate: modelPredicate,
                                                 auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
 
@@ -117,6 +119,75 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         wait(for: [eventsSentViaPublisher1,
             eventsSentViaPublisher2,
             eventsSentViaPublisher3], timeout: 2.0)
+    }
+
+    /// - Given: An AWSModelReconciliationQueue that has been buffering events with a selective sync configuration
+    /// - When:
+    ///    - I `start()` the queue
+    /// - Then:
+    ///    - It processes buffered events in order, that evaluate true against the predicate
+    func testProcessesEventsWithSelectiveSync() throws {
+        let event1Saved = expectation(description: "Event 1 saved")
+        let event3Saved = expectation(description: "Event 3 saved")
+        storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { model, completion in
+            switch model.id {
+            case "id-1":
+                event1Saved.fulfill()
+            case "id-2":
+                XCTFail("id-2 should not be saved to be saved")
+            case "id-3":
+                event3Saved.fulfill()
+            default:
+                break
+            }
+
+            completion(.success(model))
+        }
+        let syncExpression = DataStoreSyncExpression.syncExpression(MockSynced.schema, where: {
+            MockSynced.keys.id == "id-1" || MockSynced.keys.id == "id-3"
+        })
+        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
+                                                storageAdapter: storageAdapter,
+                                                api: apiPlugin,
+                                                modelPredicate: syncExpression.modelPredicate(),
+                                                auth: authPlugin,
+                                                incomingSubscriptionEvents: subscriptionEventsPublisher)
+
+        for iteration in 1 ... 3 {
+            let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()
+            let syncMetadata = MutationSyncMetadata(id: model.id,
+                                                    deleted: false,
+                                                    lastChangedAt: Date().unixSeconds,
+                                                    version: 1)
+            let mutationSync = MutationSync(model: model, syncMetadata: syncMetadata)
+            subscriptionEventsSubject.send(.mutationEvent(mutationSync))
+        }
+
+        let eventsSentViaPublisher1 = expectation(description: "id-1 sent via publisher")
+        let eventsSentViaPublisher3 = expectation(description: "id-3 sent via publisher")
+        let queueSink = queue.publisher.sink(receiveCompletion: { _ in
+            XCTFail("Not expecting a call to completion")
+        }, receiveValue: { event in
+            if case let .mutationEvent(mutationEvent) = event {
+                switch mutationEvent.modelId {
+                case "id-1":
+                    eventsSentViaPublisher1.fulfill()
+                case "id-2":
+                    XCTFail("id-2 should not be saved to be saved")
+                case "id-3":
+                    eventsSentViaPublisher3.fulfill()
+                default:
+                    XCTFail("Not expecting a call to default")
+                }
+            }
+        })
+
+        queue.start()
+
+        wait(for: [event1Saved,
+                   event3Saved], timeout: 5.0, enforceOrder: true)
+        wait(for: [eventsSentViaPublisher1,
+                   eventsSentViaPublisher3], timeout: 2.0)
     }
 
     /// - Given: An AWSModelReconciliationQueue that has been buffering events
@@ -169,6 +240,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
+                                                modelPredicate: modelPredicate,
                                                 auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
         for iteration in 1 ... 3 {
@@ -239,6 +311,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
+                                                modelPredicate: modelPredicate,
                                                 auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
         for iteration in 1 ... 2 {
