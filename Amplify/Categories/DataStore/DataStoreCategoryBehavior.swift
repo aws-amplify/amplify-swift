@@ -37,7 +37,7 @@ public protocol DataStoreBaseBehavior {
      Synchronization starts automatically whenever you run any DataStore operation (query(), save(), delete())
      however, you can explicitly begin the process with DatasStore.start()
 
-     - parameter completion: callback is executed on completion or failure
+     - parameter completion: callback to be invoked on success or failure
      */
     func start(completion: @escaping DataStoreCallback<Void>)
 
