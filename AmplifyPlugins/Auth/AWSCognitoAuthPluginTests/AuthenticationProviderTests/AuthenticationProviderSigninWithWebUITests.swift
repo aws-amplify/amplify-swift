@@ -12,20 +12,5 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import AWSMobileClient
 
-class AuthenticationProviderSigninWithWebUITests: XCTestCase {
-
-    var authenticationProvider: AuthenticationProviderAdapter!
-    var mockAWSMobileClient: MockAWSMobileClient!
-    var plugin: AWSCognitoAuthPlugin!
-
-    override func setUp() {
-        mockAWSMobileClient = MockAWSMobileClient()
-        authenticationProvider = AuthenticationProviderAdapter(awsMobileClient: mockAWSMobileClient!)
-        plugin = AWSCognitoAuthPlugin()
-        plugin?.configure(authenticationProvider: authenticationProvider,
-                         authorizationProvider: MockAuthorizationProviderBehavior(),
-                         userService: MockAuthUserServiceBehavior(),
-                         deviceService: MockAuthDeviceServiceBehavior(),
-                         hubEventHandler: MockAuthHubEventBehavior())
-    }
+class AuthenticationProviderSigninWithWebUITests: BaseAuthenticationProviderTest {
 }

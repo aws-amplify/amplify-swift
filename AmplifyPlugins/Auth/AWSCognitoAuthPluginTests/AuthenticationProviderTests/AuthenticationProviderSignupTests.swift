@@ -14,28 +14,7 @@ import XCTest
 
 // swiftlint:disable file_length
 // swiftlint:disable type_body_length
-class AuthenticationProviderSignupTests: XCTestCase {
-
-    var authenticationProvider: AuthenticationProviderAdapter!
-    var mockAWSMobileClient: MockAWSMobileClient!
-    var plugin: AWSCognitoAuthPlugin!
-
-    override func setUp() {
-        mockAWSMobileClient = MockAWSMobileClient()
-        authenticationProvider = AuthenticationProviderAdapter(awsMobileClient: mockAWSMobileClient!)
-        plugin = AWSCognitoAuthPlugin()
-        plugin?.configure(authenticationProvider: authenticationProvider,
-                         authorizationProvider: MockAuthorizationProviderBehavior(),
-                         userService: MockAuthUserServiceBehavior(),
-                         deviceService: MockAuthDeviceServiceBehavior(),
-                         hubEventHandler: MockAuthHubEventBehavior())
-    }
-
-    override func tearDown() {
-        plugin = nil
-        mockAWSMobileClient = nil
-        authenticationProvider = nil
-    }
+class AuthenticationProviderSignupTests: BaseAuthenticationProviderTest {
 
     /// Test a successful signup call with .done as next step
     ///
