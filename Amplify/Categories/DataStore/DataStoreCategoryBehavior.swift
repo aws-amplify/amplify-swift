@@ -47,7 +47,7 @@ public protocol DataStoreBaseBehavior {
      This can also be used to modify DataStore sync expressions at runtime by calling stop(), then start()
      to force your sync expressions to be re-evaluated.
 
-     - parameter completion: callback is executed on completion or failure
+     - parameter completion: callback to be invoked on success or failure
      */
     func stop(completion: @escaping DataStoreCallback<Void>)
 
