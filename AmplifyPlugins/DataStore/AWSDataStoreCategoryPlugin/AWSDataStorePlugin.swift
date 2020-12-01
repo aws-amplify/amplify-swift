@@ -28,6 +28,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     let validAuthPluginKey: String
 
     var storageEngine: StorageEngineBehavior!
+    var storageEngineInitSemaphore: DispatchSemaphore
     var storageEngineBehaviorFactory: StorageEngineBehaviorFactory
 
     var iStorageEngineSink: Any?
@@ -59,6 +60,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         } else {
             self.dataStorePublisher = nil
         }
+        self.storageEngineInitSemaphore = DispatchSemaphore(value: 1)
     }
 
     /// Internal initializer for testing
@@ -76,6 +78,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.dataStorePublisher = dataStorePublisher
         self.validAPIPluginKey = validAPIPluginKey
         self.validAuthPluginKey = validAuthPluginKey
+        self.storageEngineInitSemaphore = DispatchSemaphore(value: 1)
     }
 
     /// By the time this method gets called, DataStore will already have invoked
@@ -87,6 +90,10 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     func reinitStorageEngineIfNeeded(completion: @escaping DataStoreCallback<Void> = {_ in}) {
+        storageEngineInitSemaphore.wait()
+        defer {
+            storageEngineInitSemaphore.signal()
+        }
         if storageEngine != nil {
             completion(.successfulVoid)
             return
