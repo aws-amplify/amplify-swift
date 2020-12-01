@@ -6,12 +6,12 @@
 //
 
 import XCTest
-import Foundation
+
 @testable import Amplify
 @testable import AWSAPICategoryPlugin
 @testable import AmplifyTestCommon
 @testable import AppSyncRealTimeClient
-import AWSPluginsCore
+@testable import AWSPluginsCore
 
 // swiftlint:disable:next type_name
 class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
