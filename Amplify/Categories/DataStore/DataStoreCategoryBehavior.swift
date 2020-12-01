@@ -54,7 +54,7 @@ public protocol DataStoreBaseBehavior {
     /**
      To clear local data from DataStore, use the clear method.
 
-     - parameter completion: callback is executed on completion or failure
+     - parameter completion: callback to be invoked on success or failure
      */
     func clear(completion: @escaping DataStoreCallback<Void>)
 }
