@@ -152,19 +152,24 @@ extension AuthorizationProviderAdapter {
                                     completionHandler: @escaping SessionCompletionHandler) {
 
         awsMobileClient.getIdentityId().continueWith { (task) -> Any? in
-            guard task.error == nil else {
-                if let urlError = task.error as NSError?, urlError.domain == NSURLErrorDomain {
-                    self.fetchSignedInSessionWithOfflineError(completionHandler)
 
-                } else if let awsMobileClientError = task.error as? AWSMobileClientError {
-                    if case .unableToSignIn = awsMobileClientError {
-                        self.fetchSignedInSessionWithSessionExpiredError(completionHandler)
-                    }
-                }
-                let authError = AuthErrorHelper.toAuthError(task.error!)
+            if let urlError = task.error as NSError?, urlError.domain == NSURLErrorDomain {
+                self.fetchSignedInSessionWithOfflineError(completionHandler)
+                return nil
+            }
+
+            if let awsMobileClientError = task.error as? AWSMobileClientError,
+               case .unableToSignIn = awsMobileClientError {
+                self.fetchSignedInSessionWithSessionExpiredError(completionHandler)
+                return nil
+            }
+
+            if let error = task.error {
+                let authError = AuthErrorHelper.toAuthError(error)
                 self.fetchSignedInSession(withError: authError, completionHandler)
                 return nil
             }
+
             guard let identityId = task.result as String? else {
                 let error = AuthError.unknown("""
                     Could not fetch Identity Id from Identity Pool, but there was no error reported back from
