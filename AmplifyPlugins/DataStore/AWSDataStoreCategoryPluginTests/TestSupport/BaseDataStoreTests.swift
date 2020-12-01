@@ -46,10 +46,12 @@ class BaseDataStoreTests: XCTestCase {
             XCTFail(String(describing: error))
             return
         }
-
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+            return self.storageEngine
+        }
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                 storageEngine: storageEngine,
+                                                 storageEngineBehaviorFactory: storageEngineBehaviorFactory,
                                                  dataStorePublisher: dataStorePublisher,
                                                  validAPIPluginKey: validAPIPluginKey,
                                                  validAuthPluginKey: validAuthPluginKey)
@@ -68,6 +70,7 @@ class BaseDataStoreTests: XCTestCase {
             try Amplify.add(plugin: apiPlugin)
             try Amplify.add(plugin: dataStorePlugin)
             try Amplify.configure(amplifyConfig)
+            Amplify.DataStore.start(completion: {_ in})
         } catch {
             XCTFail(String(describing: error))
             return

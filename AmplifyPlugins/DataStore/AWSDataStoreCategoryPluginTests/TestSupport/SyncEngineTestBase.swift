@@ -111,7 +111,7 @@ class SyncEngineTestBase: XCTestCase {
                     default:
                         break
                     }
-        })
+            })
 
         let validAPIPluginKey = "MockAPICategoryPlugin"
         let validAuthPluginKey = "MockAuthCategoryPlugin"
@@ -121,10 +121,12 @@ class SyncEngineTestBase: XCTestCase {
                                           syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
-
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+            return storageEngine
+        }
         let publisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: modelRegistration,
-                                                 storageEngine: storageEngine,
+                                                 storageEngineBehaviorFactory: storageEngineBehaviorFactory,
                                                  dataStorePublisher: publisher,
                                                  validAPIPluginKey: validAPIPluginKey,
                                                  validAuthPluginKey: validAuthPluginKey)
@@ -135,6 +137,7 @@ class SyncEngineTestBase: XCTestCase {
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`
     func startAmplify() throws {
         try Amplify.configure(amplifyConfig)
+        Amplify.DataStore.start(completion: {_ in})
     }
 
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message

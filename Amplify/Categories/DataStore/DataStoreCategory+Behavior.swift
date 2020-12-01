@@ -38,6 +38,14 @@ extension DataStoreCategory: DataStoreBaseBehavior {
         plugin.delete(modelType, withId: id, completion: completion)
     }
 
+    public func start(completion: @escaping DataStoreCallback<Void>) {
+        plugin.start(completion: completion)
+    }
+
+    public func stop(completion: @escaping DataStoreCallback<Void>) {
+        plugin.stop(completion: completion)
+    }
+
     public func clear(completion: @escaping DataStoreCallback<Void>) {
         plugin.clear(completion: completion)
     }

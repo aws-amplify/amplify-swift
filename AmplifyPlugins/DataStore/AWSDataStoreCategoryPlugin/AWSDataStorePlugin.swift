@@ -27,8 +27,9 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     let validAuthPluginKey: String
 
-    /// The local storage provider. Resolved during configuration phase
     var storageEngine: StorageEngineBehavior!
+    var storageEngineInitSemaphore: DispatchSemaphore
+    var storageEngineBehaviorFactory: StorageEngineBehaviorFactory
 
     var iStorageEngineSink: Any?
     @available(iOS 13.0, *)
@@ -52,28 +53,32 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.isSyncEnabled = false
         self.validAPIPluginKey =  "awsAPIPlugin"
         self.validAuthPluginKey = "awsCognitoAuthPlugin"
-
+        self.storageEngineBehaviorFactory =
+            StorageEngine.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:)
         if #available(iOS 13.0, *) {
             self.dataStorePublisher = DataStorePublisher()
         } else {
             self.dataStorePublisher = nil
         }
+        self.storageEngineInitSemaphore = DispatchSemaphore(value: 1)
     }
 
     /// Internal initializer for testing
     init(modelRegistration: AmplifyModelRegistration,
          configuration dataStoreConfiguration: DataStoreConfiguration = .default,
-         storageEngine: StorageEngineBehavior,
+         storageEngineBehaviorFactory: StorageEngineBehaviorFactory? = nil,
          dataStorePublisher: ModelSubcriptionBehavior,
          validAPIPluginKey: String,
          validAuthPluginKey: String) {
         self.modelRegistration = modelRegistration
         self.dataStoreConfiguration = dataStoreConfiguration
         self.isSyncEnabled = false
-        self.storageEngine = storageEngine
+        self.storageEngineBehaviorFactory = storageEngineBehaviorFactory ??
+            StorageEngine.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:)
         self.dataStorePublisher = dataStorePublisher
         self.validAPIPluginKey = validAPIPluginKey
         self.validAuthPluginKey = validAuthPluginKey
+        self.storageEngineInitSemaphore = DispatchSemaphore(value: 1)
     }
 
     /// By the time this method gets called, DataStore will already have invoked
@@ -82,33 +87,28 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     public func configure(using amplifyConfiguration: Any?) throws {
         modelRegistration.registerModels(registry: ModelRegistry.self)
         resolveSyncEnabled()
-
-        try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
-
-        try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
-
-        let filter = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
-        var token: UnsubscribeToken?
-        token = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { _ in
-            self.storageEngine.startSync()
-            if let token = token {
-                Amplify.Hub.removeListener(token)
-            }
-        }
     }
 
-    func reinitStorageEngineIfNeeded() {
+    func reinitStorageEngineIfNeeded(completion: @escaping DataStoreCallback<Void> = {_ in}) {
+        storageEngineInitSemaphore.wait()
         if storageEngine != nil {
+            storageEngineInitSemaphore.signal()
+            completion(.successfulVoid)
             return
         }
         do {
             if #available(iOS 13.0, *) {
-                self.dataStorePublisher = DataStorePublisher()
+                if self.dataStorePublisher == nil {
+                    self.dataStorePublisher = DataStorePublisher()
+                }
             }
             try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
             try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
-            storageEngine.startSync()
+            storageEngineInitSemaphore.signal()
+            storageEngine.startSync(completion: completion)
         } catch {
+            storageEngineInitSemaphore.signal()
+            completion(.failure(causedBy: error))
             log.error(error: error)
         }
     }
@@ -118,11 +118,13 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             return
         }
 
-        storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled,
-                                          dataStoreConfiguration: dataStoreConfiguration,
-                                          validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey,
-                                          modelRegistryVersion: modelRegistration.version)
+        storageEngine = try storageEngineBehaviorFactory(isSyncEnabled,
+                                                         dataStoreConfiguration,
+                                                         validAPIPluginKey,
+                                                         validAuthPluginKey,
+                                                         modelRegistration.version,
+                                                         UserDefaults.standard)
+
         if #available(iOS 13.0, *) {
             setupStorageSink()
         }
@@ -184,4 +186,3 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
 }
-
