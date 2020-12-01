@@ -162,7 +162,6 @@ extension AuthorizationProviderAdapter {
                case .unableToSignIn = awsMobileClientError {
                 self.fetchSignedInSessionWithSessionExpiredError(completionHandler)
                 return nil
-
             }
 
             if let error = task.error {
