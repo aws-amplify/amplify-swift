@@ -93,7 +93,9 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
         do {
             if #available(iOS 13.0, *) {
-                self.dataStorePublisher = DataStorePublisher()
+                if self.dataStorePublisher == nil {
+                    self.dataStorePublisher = DataStorePublisher()
+                }
             }
             try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
             try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
