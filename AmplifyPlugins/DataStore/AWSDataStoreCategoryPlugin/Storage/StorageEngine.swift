@@ -10,6 +10,14 @@ import Combine
 import Foundation
 import AWSPluginsCore
 
+typealias StorageEngineBehaviorFactory =
+    (Bool,
+    DataStoreConfiguration,
+    String,
+    String,
+    String,
+    UserDefaults) throws -> StorageEngineBehavior
+
 // swiftlint:disable type_body_length
 final class StorageEngine: StorageEngineBehavior {
 

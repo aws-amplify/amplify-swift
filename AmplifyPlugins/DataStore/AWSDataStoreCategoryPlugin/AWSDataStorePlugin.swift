@@ -29,6 +29,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     /// The local storage provider. Resolved during configuration phase
     var storageEngine: StorageEngineBehavior!
+    var storageEngineBehaviorFactory: StorageEngineBehaviorFactory
 
     var iStorageEngineSink: Any?
     @available(iOS 13.0, *)
@@ -52,7 +53,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.isSyncEnabled = false
         self.validAPIPluginKey =  "awsAPIPlugin"
         self.validAuthPluginKey = "awsCognitoAuthPlugin"
-
+        self.storageEngineBehaviorFactory =
+            StorageEngine.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:)
         if #available(iOS 13.0, *) {
             self.dataStorePublisher = DataStorePublisher()
         } else {
@@ -64,6 +66,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     init(modelRegistration: AmplifyModelRegistration,
          configuration dataStoreConfiguration: DataStoreConfiguration = .default,
          storageEngine: StorageEngineBehavior,
+         storageEngineBehaviorFactory: StorageEngineBehaviorFactory? = nil,
          dataStorePublisher: ModelSubcriptionBehavior,
          validAPIPluginKey: String,
          validAuthPluginKey: String) {
@@ -71,6 +74,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.dataStoreConfiguration = dataStoreConfiguration
         self.isSyncEnabled = false
         self.storageEngine = storageEngine
+        self.storageEngineBehaviorFactory = storageEngineBehaviorFactory ??
+            StorageEngine.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:)
         self.dataStorePublisher = dataStorePublisher
         self.validAPIPluginKey = validAPIPluginKey
         self.validAuthPluginKey = validAuthPluginKey
@@ -117,11 +122,13 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             return
         }
 
-        storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled,
-                                          dataStoreConfiguration: dataStoreConfiguration,
-                                          validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey,
-                                          modelRegistryVersion: modelRegistration.version)
+        storageEngine = try storageEngineBehaviorFactory(isSyncEnabled,
+                                                         dataStoreConfiguration,
+                                                         validAPIPluginKey,
+                                                         validAuthPluginKey,
+                                                         modelRegistration.version,
+                                                         UserDefaults.standard)
+
         if #available(iOS 13.0, *) {
             setupStorageSink()
         }

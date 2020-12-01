@@ -206,6 +206,25 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 }
 
 class MockStorageEngineBehavior: StorageEngineBehavior {
+    var responders = [ResponderKeys: Any]()
+    static var staticResponders = [ResponderKeys: Any]()
+
+    init() {
+        if let responder = MockStorageEngineBehavior.staticResponders[.initConstructor] as? InitResponder {
+            responder.callback(self)
+        }
+    }
+
+    init(isSyncEnabled: Bool,
+         dataStoreConfiguration: DataStoreConfiguration,
+         validAPIPluginKey: String = "awsAPIPlugin",
+         validAuthPluginKey: String = "awsCognitoAuthPlugin",
+         modelRegistryVersion: String,
+         userDefault: UserDefaults = UserDefaults.standard) throws {
+        if let responder = MockStorageEngineBehavior.staticResponders[.initConstructor] as? InitResponder {
+            responder.callback(self)
+        }
+    }
 
     func setupPublisher() {
 
@@ -216,11 +235,17 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     }
 
     func startSync(completion: @escaping DataStoreCallback<Void>) {
-        XCTFail("Not expected to execute")
+        completion(.successfulVoid)
+        if let responder = responders[.startSync] as? StartSyncResponder {
+            return responder.callback("")
+        }
     }
 
     func stopSync(completion: @escaping DataStoreCallback<Void>) {
-        XCTFail("Not expected to execute")
+        completion(.successfulVoid)
+        if let responder = responders[.stopSync] as? StopSyncResponder {
+            return responder.callback("")
+        }
     }
 
     func setUp(modelSchemas: [ModelSchema]) throws {
@@ -256,7 +281,10 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>) {
-        //TODO: Find way to mock this
+        completion(.success([]))
+        if let responder = responders[.query] as? QueryResponder {
+            return responder.callback("")
+        }
     }
 
     func query<M: Model>(_ modelType: M.Type,
@@ -265,10 +293,16 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
                          completion: (DataStoreResult<[M]>) -> Void) {
-        //TODO: Find way to mock this
+        completion(.success([]))
+        if let responder = responders[.query] as? QueryResponder {
+            return responder.callback("")
+        }
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {
-        //TODO: Find way to mock this
+        completion(.successfulVoid)
+        if let responder = responders[.clear] as? ClearResponder {
+            return responder.callback("")
+        }
     }
 }
