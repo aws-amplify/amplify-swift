@@ -31,8 +31,10 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
 
     var getIdentityIdMockResult: AWSTask<NSString>?
     var tokensMockResult: Result<Tokens, Error>?
-    var awsCredentialsMockResult: Result<Tokens, Error>?
+    var awsCredentialsMockResult: Result<AWSCredentials, Error>?
     var getCurrentUserStateMockResult: UserState?
+
+    var mockCurrentUserState: UserState = .unknown
 
     func initialize() throws {
         fatalError()
@@ -151,19 +153,19 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     }
 
     func getIdentityId() -> AWSTask<NSString> {
-        fatalError()
+        return getIdentityIdMockResult!
     }
 
     func getTokens(_ completionHandler: @escaping (Tokens?, Error?) -> Void) {
-        fatalError()
+        prepareResult(mockResult: tokensMockResult, completionHandler: completionHandler)
     }
 
     func getAWSCredentials(_ completionHandler: @escaping (AWSCredentials?, Error?) -> Void) {
-        fatalError()
+        prepareResult(mockResult: awsCredentialsMockResult, completionHandler: completionHandler)
     }
 
     func getCurrentUserState() -> UserState {
-        fatalError()
+        return mockCurrentUserState
     }
 
     func listDevices(completionHandler: @escaping ((ListDevicesResult?, Error?) -> Void)) {
@@ -192,7 +194,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     }
 
     func addUserStateListener(_ object: AnyObject, _ callback: @escaping UserStateChangeCallback) {
-        fatalError()
+
     }
 
     func removeUserStateListener(_ object: AnyObject) {
