@@ -131,15 +131,40 @@ class PredictionsServiceTranscribeTests: XCTestCase {
     ///
     /// - Given: Predictions service with transcribe behavior
     /// - When:
-    ///    - I invoke an invalid request wich Unreachable host
+    ///    - I invoke an invalid request with Unreachable host
     /// - Then:
     ///    - I should get back a connection error
     ///
-    func testTranscribeServiceWithConnectionError() {
-        let mockError = NSError(domain: NSURLErrorDomain,
-                                code: URLError.cannotFindHost.rawValue,
-                                userInfo: [:])
-        mockTranscribe.setConnectionError(error: mockError)
+    func testTranscribeServiceWithCannotFindHostError() {
+        let urlError = URLError(.cannotFindHost)
+        mockTranscribe.setConnectionResult(result: AWSTranscribeStreamingClientConnectionStatus.closed, error: urlError)
+
+        let errorReceived = expectation(description: "Error should be returned")
+
+        predictionsService.transcribe(speechToText: audioFile, language: .usEnglish) { event in
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
+            }
+        }
+
+        waitForExpectations(timeout: 1)
+    }
+
+    /// Test whether error is correctly propogated
+    ///
+    /// - Given: Predictions service with transcribe behavior
+    /// - When:
+    ///    - I invoke an invalid request with not connected to Internet
+    /// - Then:
+    ///    - I should get back a connection error
+    ///
+    func testTranscribeServiceWithNotConnectedToInternetError() {
+        let urlError = URLError(.notConnectedToInternet)
+        mockTranscribe.setConnectionResult(result: AWSTranscribeStreamingClientConnectionStatus.closed, error: urlError)
 
         let errorReceived = expectation(description: "Error should be returned")
 
