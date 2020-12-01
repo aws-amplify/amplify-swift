@@ -174,13 +174,12 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func stop(completion: @escaping DataStoreCallback<Void>) {
         storageEngineInitSemaphore.wait()
-        defer {
-            storageEngineInitSemaphore.signal()
-        }
         if storageEngine == nil {
+            storageEngineInitSemaphore.signal()
             completion(.successfulVoid)
             return
         }
+        storageEngineInitSemaphore.signal()
         storageEngine.stopSync { result in
             self.storageEngine = nil
             if #available(iOS 13.0, *) {
@@ -193,13 +192,12 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func clear(completion: @escaping DataStoreCallback<Void>) {
         storageEngineInitSemaphore.wait()
-        defer {
-            storageEngineInitSemaphore.signal()
-        }
         if storageEngine == nil {
+            storageEngineInitSemaphore.signal()
             completion(.successfulVoid)
             return
         }
+        storageEngineInitSemaphore.signal()
         storageEngine.clear { result in
             self.storageEngine = nil
             if #available(iOS 13.0, *) {

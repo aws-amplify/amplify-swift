@@ -91,10 +91,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     func reinitStorageEngineIfNeeded(completion: @escaping DataStoreCallback<Void> = {_ in}) {
         storageEngineInitSemaphore.wait()
-        defer {
-            storageEngineInitSemaphore.signal()
-        }
         if storageEngine != nil {
+            storageEngineInitSemaphore.signal()
             completion(.successfulVoid)
             return
         }
@@ -106,8 +104,11 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             }
             try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
             try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
+            storageEngineInitSemaphore.signal()
             storageEngine.startSync(completion: completion)
         } catch {
+            storageEngineInitSemaphore.signal()
+            completion(.failure(causedBy: error))
             log.error(error: error)
         }
     }
