@@ -148,7 +148,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
                     return
                 }
                 guard case .aliasExists = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be codeMismatch \(error)")
+                    XCTFail("Underlying error should be aliasExists \(error)")
                     return
                 }
 
@@ -616,12 +616,12 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
     /// Test a confirmSignup call with UserNotFound response from service
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
-    ///   UsernameExistsException response
+    ///   UserNotFoundException response
     ///
     /// - When:
     ///    - I invoke confirmSignup with a valid username and confirmationCode
     /// - Then:
-    ///    - I should get a .userNotFound error with lambda as underlyingError
+    ///    - I should get a .userNotFound error
     ///
     func testConfirmSignUpWithUserNotFoundException() {
 
@@ -644,7 +644,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
                     return
                 }
                 guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be usernameExists \(error)")
+                    XCTFail("Underlying error should be userNotFound \(error)")
                     return
                 }
 
