@@ -64,13 +64,13 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                    decodePath: document.name)
     }
 
-    public static func createMutation(of model: Model, version: Int?) -> GraphQLRequest<MutationSyncResult> {
+    public static func createMutation(of model: Model, version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
         createMutation(of: model, modelSchema: model.schema, version: version)
     }
 
     public static func updateMutation(of model: Model,
-                                      where filter: GraphQLFilter?,
-                                      version: Int?) -> GraphQLRequest<MutationSyncResult> {
+                                      where filter: GraphQLFilter? = nil,
+                                      version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
         updateMutation(of: model, modelSchema: model.schema, where: filter, version: version)
     }
 
@@ -86,10 +86,10 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
     }
 
     public static func syncQuery(modelType: Model.Type,
-                                 where predicate: QueryPredicate?,
-                                 limit: Int?,
-                                 nextToken: String?,
-                                 lastSync: Int?) -> GraphQLRequest<SyncQueryResult> {
+                                 where predicate: QueryPredicate? = nil,
+                                 limit: Int? = nil,
+                                 nextToken: String? = nil,
+                                 lastSync: Int? = nil) -> GraphQLRequest<SyncQueryResult> {
         syncQuery(modelSchema: modelType.schema,
                          where: predicate,
                          limit: limit,

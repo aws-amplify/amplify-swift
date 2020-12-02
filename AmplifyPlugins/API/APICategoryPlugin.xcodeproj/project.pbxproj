@@ -34,6 +34,11 @@
 		217856A423810B9400A30D19 /* AWSAPICategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSAPICategoryPlugin.framework */; };
 		217856B72381F19400A30D19 /* AWSAPICategoryPluginEndpointType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217856B62381F19300A30D19 /* AWSAPICategoryPluginEndpointType.swift */; };
 		217856C22383339D00A30D19 /* GraphQLModelBasedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217856C12383339D00A30D19 /* GraphQLModelBasedTests.swift */; };
+		217D5FE925783559009F0639 /* GraphQLConnectionScenario2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5FE825783559009F0639 /* GraphQLConnectionScenario2Tests.swift */; };
+		217D60002578369F009F0639 /* GraphQLConnectionScenario4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5FFC2578369E009F0639 /* GraphQLConnectionScenario4Tests.swift */; };
+		217D60012578369F009F0639 /* GraphQLConnectionScenario5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5FFD2578369E009F0639 /* GraphQLConnectionScenario5Tests.swift */; };
+		217D60022578369F009F0639 /* GraphQLConnectionScenario1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5FFE2578369E009F0639 /* GraphQLConnectionScenario1Tests.swift */; };
+		217D60032578369F009F0639 /* GraphQLConnectionScenario3Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5FFF2578369F009F0639 /* GraphQLConnectionScenario3Tests.swift */; };
 		219A888F23ECF8A400BBC5F2 /* RESTWithUserPoolIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A888E23ECF8A400BBC5F2 /* RESTWithUserPoolIntegrationTests.swift */; };
 		219A889123ECF8A500BBC5F2 /* AWSAPICategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSAPICategoryPlugin.framework */; };
 		219A88A223EE034F00BBC5F2 /* RESTWithUserPoolIntegrationTests-amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 219A889F23EE01A700BBC5F2 /* RESTWithUserPoolIntegrationTests-amplifyconfiguration.json */; };
@@ -310,6 +315,11 @@
 		217856A323810B9400A30D19 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		217856B62381F19300A30D19 /* AWSAPICategoryPluginEndpointType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginEndpointType.swift; sourceTree = "<group>"; };
 		217856C12383339D00A30D19 /* GraphQLModelBasedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLModelBasedTests.swift; sourceTree = "<group>"; };
+		217D5FE825783559009F0639 /* GraphQLConnectionScenario2Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLConnectionScenario2Tests.swift; sourceTree = "<group>"; };
+		217D5FFC2578369E009F0639 /* GraphQLConnectionScenario4Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLConnectionScenario4Tests.swift; sourceTree = "<group>"; };
+		217D5FFD2578369E009F0639 /* GraphQLConnectionScenario5Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLConnectionScenario5Tests.swift; sourceTree = "<group>"; };
+		217D5FFE2578369E009F0639 /* GraphQLConnectionScenario1Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLConnectionScenario1Tests.swift; sourceTree = "<group>"; };
+		217D5FFF2578369F009F0639 /* GraphQLConnectionScenario3Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLConnectionScenario3Tests.swift; sourceTree = "<group>"; };
 		219A888C23ECF8A400BBC5F2 /* RESTWithUserPoolIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RESTWithUserPoolIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		219A888E23ECF8A400BBC5F2 /* RESTWithUserPoolIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTWithUserPoolIntegrationTests.swift; sourceTree = "<group>"; };
 		219A889023ECF8A500BBC5F2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -634,6 +644,11 @@
 		21598CEC23A008DB00529F29 /* GraphQLModelBased */ = {
 			isa = PBXGroup;
 			children = (
+				217D5FFE2578369E009F0639 /* GraphQLConnectionScenario1Tests.swift */,
+				217D5FE825783559009F0639 /* GraphQLConnectionScenario2Tests.swift */,
+				217D5FFF2578369F009F0639 /* GraphQLConnectionScenario3Tests.swift */,
+				217D5FFC2578369E009F0639 /* GraphQLConnectionScenario4Tests.swift */,
+				217D5FFD2578369E009F0639 /* GraphQLConnectionScenario5Tests.swift */,
 				21F40A2D23A0707E0074678E /* GraphQLModelBasedTests-amplifyconfiguration.json */,
 				217856C12383339D00A30D19 /* GraphQLModelBasedTests.swift */,
 				21598CEF23A00F8400529F29 /* README.md */,
@@ -2111,10 +2126,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				217D60002578369F009F0639 /* GraphQLConnectionScenario4Tests.swift in Sources */,
+				217D60032578369F009F0639 /* GraphQLConnectionScenario3Tests.swift in Sources */,
 				FAC5F9B1238B70EE00F70F02 /* APICategoryPluginConcurrencyTests.swift in Sources */,
 				216201E323920A6200AB2E10 /* GraphQLSyncBasedTests.swift in Sources */,
 				FA97F5532386CCF500EE9EFE /* AnyModelIntegrationTests.swift in Sources */,
+				217D60012578369F009F0639 /* GraphQLConnectionScenario5Tests.swift in Sources */,
+				217D5FE925783559009F0639 /* GraphQLConnectionScenario2Tests.swift in Sources */,
 				217856C22383339D00A30D19 /* GraphQLModelBasedTests.swift in Sources */,
+				217D60022578369F009F0639 /* GraphQLConnectionScenario1Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

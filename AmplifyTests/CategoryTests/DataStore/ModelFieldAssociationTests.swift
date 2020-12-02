@@ -36,12 +36,13 @@ class ModelFieldAssociationTests: XCTestCase {
     }
 
     func testHasOneWithCodingKeys() {
-        let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post)
-        guard case .hasOne(let fieldName) = hasOne else {
+        let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post, targetName: "postID")
+        guard case .hasOne(let fieldName, let target) = hasOne else {
             XCTFail("Should create hasOne association")
             return
         }
         XCTAssertEqual(fieldName, Comment.keys.post.stringValue)
+        XCTAssertEqual(target, "postID")
     }
 
     func testBelongsToWithTargetName() {
@@ -79,7 +80,7 @@ class ModelFieldAssociationTests: XCTestCase {
     }
 
     func testModelFieldWithHasOneAssociation() {
-        let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post)
+        let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post, targetName: "postID")
         let field = ModelField.init(name: "comment",
                                     type: .model(type: Comment.self),
                                     association: hasOne)
