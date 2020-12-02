@@ -18,8 +18,8 @@ public enum SelectionSetFieldType {
 }
 
 public class SelectionSetField {
-    var name: String?
-    var fieldType: SelectionSetFieldType
+    public var name: String?
+    public var fieldType: SelectionSetFieldType
     public init(name: String? = nil, fieldType: SelectionSetFieldType) {
         self.name = name
         self.fieldType = fieldType
