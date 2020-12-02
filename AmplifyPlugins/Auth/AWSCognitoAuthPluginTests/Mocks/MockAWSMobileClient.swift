@@ -17,7 +17,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     var federatedSignInMockResult: Result<UserState, Error>?
     var showSignInMockResult: Result<UserState, Error>?
     var confirmSignInMockResult: Result<SignInResult, Error>?
-    var signOutMockResult: Result<Void, Error>?
+    var signOutMockError: Error?
     var usernameMockResult: String?
     var usersubMockResult: String?
 
@@ -77,8 +77,6 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
         prepareResult(mockResult: federatedSignInMockResult, completionHandler: completionHandler)
     }
 
-
-
     func showSignIn(navigationController: UINavigationController,
                     signInUIOptions: SignInUIOptions,
                     hostedUIOptions: HostedUIOptions?,
@@ -95,11 +93,11 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
 
     func signOut(options: SignOutOptions,
                  completionHandler: @escaping ((Error?) -> Void)) {
-       // prepareResult(mockResult: signOutMockResult, completionHandler: completionHandler)
+       completionHandler(signOutMockError)
     }
 
     func signOutLocally() {
-        fatalError()
+        //Do nothing
     }
 
     func getUsername() -> String? {
