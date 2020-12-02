@@ -14,28 +14,7 @@ import XCTest
 
 // swiftlint:disable file_length
 // swiftlint:disable type_body_length
-class AuthenticationProviderConfirmSignupTests: XCTestCase {
-
-    var authenticationProvider: AuthenticationProviderAdapter!
-    var mockAWSMobileClient: MockAWSMobileClient!
-    var plugin: AWSCognitoAuthPlugin!
-
-    override func setUp() {
-        mockAWSMobileClient = MockAWSMobileClient()
-        authenticationProvider = AuthenticationProviderAdapter(awsMobileClient: mockAWSMobileClient!)
-        plugin = AWSCognitoAuthPlugin()
-        plugin?.configure(authenticationProvider: authenticationProvider,
-                         authorizationProvider: MockAuthorizationProviderBehavior(),
-                         userService: MockAuthUserServiceBehavior(),
-                         deviceService: MockAuthDeviceServiceBehavior(),
-                         hubEventHandler: MockAuthHubEventBehavior())
-    }
-
-    override func tearDown() {
-        plugin = nil
-        mockAWSMobileClient = nil
-        authenticationProvider = nil
-    }
+class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
 
     /// Test a successful confirmSignup call with .done as next step
     ///
@@ -68,7 +47,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
                 XCTFail("Received failure with error \(error)")
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a successful confirmSignup call with an empty username
@@ -101,7 +80,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
                 }
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignup call with invalid response from service
@@ -134,7 +113,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
 
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     // MARK: Service error handling test
@@ -175,7 +154,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
 
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignup call with CodeDeliveryFailureException response from service
@@ -214,7 +193,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
 
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignup call with CodeDeliveryFailureException response from service
@@ -253,7 +232,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
 
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignup call with InternalErrorException response from service
@@ -286,7 +265,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
 
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignup call with InvalidLambdaResponseException response from service
@@ -324,7 +303,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
 
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignup call with InvalidParameterException response from service
@@ -363,7 +342,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
 
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignup call with LimitExceededException response from service
@@ -401,7 +380,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
                 }
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignup call with NotAuthorizedException response from service
@@ -435,7 +414,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
                 }
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignup call with ResourceNotFoundException response from service
@@ -473,7 +452,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
                 }
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignup call with TooManyFailedAttempts response from service
@@ -513,7 +492,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
 
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignup call with TooManyRequestsException response from service
@@ -552,7 +531,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
 
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignup call with UnexpectedLambdaException response from service
@@ -591,7 +570,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
 
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignup call with UserLambdaValidationException response from service
@@ -631,7 +610,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
 
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignup call with UserNotFound response from service
@@ -671,7 +650,7 @@ class AuthenticationProviderConfirmSignupTests: XCTestCase {
 
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
 }
