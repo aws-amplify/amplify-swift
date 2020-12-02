@@ -23,7 +23,7 @@ class MockTranscribeBehavior: AWSTranscribeStreamingBehavior {
     }
 
     public func setConnectionResult(result: AWSTranscribeStreamingClientConnectionStatus,
-                                    error: Error) {
+                                    error: Error? = nil) {
         connectionResult = result
         self.error = error
     }

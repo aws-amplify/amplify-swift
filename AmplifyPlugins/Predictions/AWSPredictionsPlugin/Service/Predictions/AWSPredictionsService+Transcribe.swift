@@ -32,14 +32,15 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
 
         transcribeClientDelegate.connectionStatusCallback = { status, error in
             if status == .closed && error != nil {
-                let nsError = error as NSError?
-                if nsError?.domain == NSURLErrorDomain {
-                    let predictionsErrorString = PredictionsErrorHelper.mapUrlError(nsError!)
-                    onEvent(.failed(.network(predictionsErrorString.errorDescription,
-                                             predictionsErrorString.recoverySuggestion)))
+                guard error != nil else {
                     return
                 }
-                return
+                let nsError = error as NSError?
+                guard nsError?.domain != NSURLErrorDomain else {
+                    let predictionsError = PredictionsErrorHelper.mapError(nsError!)
+                    onEvent(.failed(predictionsError))
+                    return
+                }
             } else if status == .connected {
                 let headers = [
                     ":content-type": "audio/wav",

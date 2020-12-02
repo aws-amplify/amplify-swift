@@ -98,7 +98,7 @@ class PredictionsErrorHelper {
         }
     }
 
-    static func mapUrlError(_ error: NSError) -> PredictionsError {
+    static func mapError(_ error: NSError) -> PredictionsError {
         let defaultError = PredictionsErrorHelper.getDefaultError(error)
 
         let error = error as? URLError
@@ -108,11 +108,12 @@ class PredictionsErrorHelper {
 
         switch urlError.code {
         case .cannotFindHost:
-            let errorDescription = "The host you are trying to reach cannot be found"
-            let recoverySuggestion = "Please check if you are reaching the correct host"
+            let errorDescription = "The host name for a URL couldn’t be resolved."
+            let recoverySuggestion = "Please check if you are reaching the correct host."
             return PredictionsError.network(errorDescription, recoverySuggestion, error)
         case .notConnectedToInternet:
-            let errorDescription = "Your device is not connected to network"
+            // swiftlint:disable:next line_length
+            let errorDescription = "A network resource was requested, but an internet connection hasn’t been established and can’t be established automatically."
             let recoverySuggestion = "Please check your network connectivity status"
             return PredictionsError.network(errorDescription, recoverySuggestion, error)
         default:
