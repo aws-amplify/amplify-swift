@@ -12,20 +12,6 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import AWSMobileClient
 
-class AuthenticationProviderConfirmResetPasswordTests: XCTestCase {
+class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProviderTest {
 
-    var authenticationProvider: AuthenticationProviderAdapter!
-    var mockAWSMobileClient: MockAWSMobileClient!
-    var plugin: AWSCognitoAuthPlugin!
-
-    override func setUp() {
-        mockAWSMobileClient = MockAWSMobileClient()
-        authenticationProvider = AuthenticationProviderAdapter(awsMobileClient: mockAWSMobileClient!)
-        plugin = AWSCognitoAuthPlugin()
-        plugin?.configure(authenticationProvider: authenticationProvider,
-                         authorizationProvider: MockAuthorizationProviderBehavior(),
-                         userService: MockAuthUserServiceBehavior(),
-                         deviceService: MockAuthDeviceServiceBehavior(),
-                         hubEventHandler: MockAuthHubEventBehavior())
-    }
 }
