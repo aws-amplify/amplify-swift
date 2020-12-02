@@ -114,7 +114,7 @@ class PredictionsErrorHelper {
         case .notConnectedToInternet:
             // swiftlint:disable:next line_length
             let errorDescription = "A network resource was requested, but an internet connection hasn’t been established and can’t be established automatically."
-            let recoverySuggestion = "Please check your network connectivity status"
+            let recoverySuggestion = "Please check your network connectivity status."
             return PredictionsError.network(errorDescription, recoverySuggestion, error)
         default:
             return defaultError
