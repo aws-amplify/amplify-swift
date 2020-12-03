@@ -42,14 +42,14 @@ class AuthenticationProviderResendSignupCodeTests: BaseAuthenticationProviderTes
             switch result {
             case .success(let authCodeDeliveryDetails):
                 guard case .email = authCodeDeliveryDetails.destination else {
-                    XCTFail("Result should be .done for next step")
+                    XCTFail("Result should be .email for the destination of AuthCodeDeliveryDetails")
                     return
                 }
             case .failure(let error):
                 XCTFail("Received failure with error \(error)")
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a successful resendSignUpCode call with .email as the destination of AuthCodeDeliveryDetails
@@ -58,7 +58,7 @@ class AuthenticationProviderResendSignupCodeTests: BaseAuthenticationProviderTes
     /// - When:
     ///    - I invoke resendSignUpCode with username
     /// - Then:
-    ///    - I should get a successful result with .email as the destination of AuthCodeDeliveryDetails
+    ///    - I should get a failure with validation error
     ///
     func testResendSignupCodeWithEmptyUsername() {
 
@@ -84,7 +84,7 @@ class AuthenticationProviderResendSignupCodeTests: BaseAuthenticationProviderTes
                 }
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a resendSignUpCode call with invalid response from service
@@ -114,7 +114,7 @@ class AuthenticationProviderResendSignupCodeTests: BaseAuthenticationProviderTes
                 }
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     // MARK: Service error handling test
@@ -153,7 +153,7 @@ class AuthenticationProviderResendSignupCodeTests: BaseAuthenticationProviderTes
 
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a resendSignUpCode call with InternalErrorException response from service
