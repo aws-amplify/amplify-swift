@@ -23,7 +23,7 @@ class AuthenticationProviderSigninTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke signIn with valid values
     /// - Then:
-    ///    - I should get a .valid response
+    ///    - I should get a .done response
     ///
     func testSuccessfulSignIn() {
 
@@ -722,74 +722,6 @@ class AuthenticationProviderSigninTests: BaseAuthenticationProviderTest {
                 guard case .service(_, _, let underlyingError) = error,
                       case .aliasExists = (underlyingError as? AWSCognitoAuthError) else {
                     XCTFail("Should produce aliasExists error but instead produced \(error)")
-                    return
-                }
-            }
-        }
-        wait(for: [resultExpectation], timeout: apiTimeout)
-    }
-
-    /// Test a signIn with `CodeMismatchException` from service
-    ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
-    ///   CodeMismatchException response for signIn
-    ///
-    /// - When:
-    ///    - I invoke signIn
-    /// - Then:
-    ///    - I should get a .service error with .codeMismatch error
-    ///
-    func testSignInWithCodeMismatchException() {
-        let error = AWSMobileClientError.codeMismatch(message: "Error")
-        mockAWSMobileClient.signInMockResult = .failure(error)
-
-        let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-                XCTFail("Should not produce result - \(signinResult)")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .codeMismatch = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce codeMismatch error but instead produced \(error)")
-                    return
-                }
-            }
-        }
-        wait(for: [resultExpectation], timeout: apiTimeout)
-    }
-
-    /// Test a signIn with `ExpiredCodeException` from service
-    ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
-    ///   ExpiredCodeException response for signIn
-    ///
-    /// - When:
-    ///    - I invoke signIn
-    /// - Then:
-    ///    - I should get a .service error with .codeMismatch error
-    ///
-    func testSignInWithExpiredCodeException() {
-        let error = AWSMobileClientError.expiredCode(message: "Error")
-        mockAWSMobileClient.signInMockResult = .failure(error)
-
-        let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-                XCTFail("Should not produce result - \(signinResult)")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .codeExpired = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce codeExpired error but instead produced \(error)")
                     return
                 }
             }

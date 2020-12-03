@@ -138,7 +138,7 @@ class AuthenticationProviderSignoutTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke signOut
     /// - Then:
-    ///    - I should get a .service error with .invalidParameter error
+    ///    - I should get a .service error with .passwordResetRequired error
     ///
     func testSignOutWithPasswordResetRequiredException() {
 
