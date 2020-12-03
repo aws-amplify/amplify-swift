@@ -13,6 +13,17 @@ struct TestModelRegistration: AmplifyModelRegistration {
     func registerModels(registry: ModelRegistry.Type) {
         registry.register(modelType: Post.self)
         registry.register(modelType: Comment.self)
+        registry.register(modelType: Project1.self)
+        registry.register(modelType: Team1.self)
+        registry.register(modelType: Project2.self)
+        registry.register(modelType: Team2.self)
+        registry.register(modelType: Post3.self)
+        registry.register(modelType: Comment3.self)
+        registry.register(modelType: Post4.self)
+        registry.register(modelType: Comment4.self)
+        registry.register(modelType: Post5.self)
+        registry.register(modelType: PostEditor5.self)
+        registry.register(modelType: User5.self)
     }
 
     let version: String = "1"
