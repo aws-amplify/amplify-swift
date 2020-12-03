@@ -78,7 +78,6 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
         })
         setUp(subscriptionConnectionFactory: mockSubscriptionConnectionFactory)
 
-        let connectingSemaphore = DispatchSemaphore(value: 0)
         let request = GraphQLRequest(apiName: apiName,
                                      document: testDocument,
                                      variables: nil,
@@ -96,7 +95,6 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
                 switch state {
                 case .connecting:
                     receivedValueConnecting.fulfill()
-                    connectingSemaphore.signal()
                 case .disconnected:
                     receivedValueDisconnected.fulfill()
                 default:
@@ -121,10 +119,8 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             valueListener: valueListener,
             completionListener: completionListener
         )
-        connectingSemaphore.wait()
-
+        wait(for: [receivedValueConnecting], timeout: 0.3)
         operation.cancel()
-
         XCTAssert(operation.isCancelled)
         waitForExpectations(timeout: 0.3)
     }
@@ -136,7 +132,6 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
 
         setUp(subscriptionConnectionFactory: mockSubscriptionConnectionFactory)
 
-        let failureSemaphore = DispatchSemaphore(value: 0)
         let request = GraphQLRequest(apiName: apiName,
                                      document: testDocument,
                                      variables: nil,
@@ -156,7 +151,6 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             switch result {
             case .failure:
                 receivedFailure.fulfill()
-                failureSemaphore.signal()
             case .success:
                 receivedCompletion.fulfill()
             }
@@ -167,16 +161,15 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             valueListener: valueListener,
             completionListener: completionListener
         )
-        failureSemaphore.wait()
-
+        wait(for: [receivedFailure], timeout: 0.3)
         XCTAssert(operation.isFinished)
         waitForExpectations(timeout: 0.3)
     }
 
     func testCallingCancelWhileCreatingConnectionShouldCallCompletionListener() {
-        let creatingConnectionSemaphore = DispatchSemaphore(value: 0)
+        let connectionCreation = expectation(description: "connection factory called")
         let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _ in
-            creatingConnectionSemaphore.signal()
+            connectionCreation.fulfill()
             sleep(5)
             throw APIError.invalidConfiguration("something went wrong", "", nil)
         })
@@ -187,7 +180,6 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
                                      document: testDocument,
                                      variables: nil,
                                      responseType: JSONValue.self)
-
         let receivedCompletion = expectation(description: "Received completion")
         let receivedFailure = expectation(description: "Received failure")
         receivedFailure.isInverted = true
@@ -212,8 +204,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             valueListener: valueListener,
             completionListener: completionListener
         )
-        creatingConnectionSemaphore.wait()
-
+        wait(for: [connectionCreation], timeout: 0.3)
         operation.cancel()
         XCTAssert(operation.isCancelled)
         waitForExpectations(timeout: 0.3)
