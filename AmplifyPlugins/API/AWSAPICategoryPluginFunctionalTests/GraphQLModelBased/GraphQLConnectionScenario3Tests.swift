@@ -12,6 +12,24 @@ import AWSMobileClient
 @testable import AmplifyTestCommon
 @testable import AWSAPICategoryPluginTestCommon
 
+/*
+ (HasMany) A Post that can have many comments
+ ```
+ type Post3 @model {
+   id: ID!
+   title: String!
+   comments: [Comment3] @connection(keyName: "byPost3", fields: ["id"])
+ }
+
+ type Comment3 @model
+   @key(name: "byPost3", fields: ["postID", "content"]) {
+   id: ID!
+   postID: ID!
+   content: String!
+ }
+ ```
+ See https://docs.amplify.aws/cli/graphql-transformer/connection for more details
+ */
 class GraphQLConnectionScenario3Tests: XCTestCase {
 
     override func setUp() {

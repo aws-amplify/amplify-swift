@@ -12,6 +12,24 @@ import AWSMobileClient
 @testable import AmplifyTestCommon
 @testable import AWSAPICategoryPluginTestCommon
 
+/*
+ A one-to-one connection where a project has one team,
+ with a field you would like to use for the connection.
+ ```
+ type Project2 @model {
+   id: ID!
+   name: String
+   teamID: ID!
+   team: Team2 @connection(fields: ["teamID"])
+ }
+
+ type Team2 @model {
+   id: ID!
+   name: String!
+ }
+ ```
+ See https://docs.amplify.aws/cli/graphql-transformer/connection for more details
+ */
 class GraphQLConnectionScenario2Tests: XCTestCase {
 
     override func setUp() {

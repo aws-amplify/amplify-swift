@@ -12,6 +12,37 @@ import AWSMobileClient
 @testable import AmplifyTestCommon
 @testable import AWSAPICategoryPluginTestCommon
 
+/*
+ (Many-to-many) Using two one-to-many connections, an @key, and a joining @model, you can create a many-to-many
+ connection.
+ ```
+ type Post5 @model {
+   id: ID!
+   title: String!
+   editors: [PostEditor5] @connection(keyName: "byPost5", fields: ["id"])
+ }
+
+ # Create a join model and disable queries as you don't need them
+ # and can query through Post5.editors and User5.posts
+ type PostEditor5
+   @model(queries: null)
+   @key(name: "byPost5", fields: ["postID", "editorID"])
+   @key(name: "byEditor5", fields: ["editorID", "postID"]) {
+   id: ID!
+   postID: ID!
+   editorID: ID!
+   post: Post5! @connection(fields: ["postID"])
+   editor: User5! @connection(fields: ["editorID"])
+ }
+
+ type User5 @model {
+   id: ID!
+   username: String!
+   posts: [PostEditor5] @connection(keyName: "byEditor5", fields: ["id"])
+ }
+ ```
+ See https://docs.amplify.aws/cli/graphql-transformer/connection for more details
+ */
 class GraphQLConnectionScenario5Tests: XCTestCase {
 
     override func setUp() {

@@ -52,7 +52,7 @@ extension Model {
             case .enum:
                 input[modelField.name] = (value as? EnumPersistable)?.rawValue
             case .model:
-                let fieldName = getFieldNameForAssociatedModels(modelField: modelField) ?? modelField.name
+                let fieldName = getFieldNameForAssociatedModels(modelField: modelField)
                 input[fieldName] = getModelId(from: value, modelSchema: modelSchema)
             case .embedded, .embeddedCollection:
                 if let encodable = value as? Encodable {
@@ -79,11 +79,11 @@ extension Model {
         return fixHasOneAssociationsWithExplicitFieldOnModel(input, modelSchema: modelSchema)
     }
 
-    // This is to account for Models with an explicit field on the Model along with an object representing the hasOne
-    // association to another model. See https://github.com/aws-amplify/amplify-ios/issues/920 for more details.
-    // When the associated object is `nil`, remove the key from the GraphQL input to prevent runtime failures.
-    // When the associated object is found, take this value over the explicit field's value by replacing the correct
-    // entry for the field name of the associated model.
+    /// This is to account for Models with an explicit field on the Model along with an object representing the hasOne
+    /// association to another model. See https://github.com/aws-amplify/amplify-ios/issues/920 for more details.
+    /// When the associated object is `nil`, remove the key from the GraphQL input to prevent runtime failures.
+    /// When the associated object is found, take this value over the explicit field's value by replacing the correct
+    /// entry for the field name of the associated model.
     private func fixHasOneAssociationsWithExplicitFieldOnModel(_ input: GraphQLInput,
                                                                modelSchema: ModelSchema) -> GraphQLInput {
         var input = input
@@ -99,8 +99,8 @@ extension Model {
                     input.removeValue(forKey: modelField.name)
                     return
                 }
-                if let modelIdValue = modelIdOrNil as? String,
-                   let fieldName = getFieldNameForAssociatedModels(modelField: modelField) {
+                if let modelIdValue = modelIdOrNil as? String {
+                    let fieldName = getFieldNameForAssociatedModels(modelField: modelField)
                     input[fieldName] = modelIdValue
                 }
             }
@@ -128,11 +128,11 @@ extension Model {
         }
     }
 
-    // Retrieves the GraphQL field name that associates the current model with the target model.
-    // By default, this is the current model + the associated Model + "Id", For example "comment" + "Post" + "Id"
-    // This information is also stored in the schema as `targetName` which is codegenerated to be the same as the
-    // default or an explicit field specified by the developer.
-    private func getFieldNameForAssociatedModels(modelField: ModelField) -> String? {
+    /// Retrieves the GraphQL field name that associates the current model with the target model.
+    /// By default, this is the current model + the associated Model + "Id", For example "comment" + "Post" + "Id"
+    /// This information is also stored in the schema as `targetName` which is codegenerated to be the same as the
+    /// default or an explicit field specified by the developer.
+    private func getFieldNameForAssociatedModels(modelField: ModelField) -> String {
         let defaultFieldName = modelName.camelCased() + modelField.name + "Id"
         if case let .belongsTo(_, targetName) = modelField.association {
             return targetName ?? defaultFieldName
@@ -140,7 +140,7 @@ extension Model {
             return targetName ?? defaultFieldName
         }
 
-        return nil
+        return defaultFieldName
     }
 
 }
