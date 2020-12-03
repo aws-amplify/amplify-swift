@@ -22,7 +22,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke confirmSignup with username and confirmationCode
     /// - Then:
-    ///    - I should get a successful result with .done
+    ///    - I should get a successful result with .done as the next step
     ///
     func testSuccessfulConfirmSignUp() {
 
@@ -56,7 +56,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke confirmSignup with an empty username and confirmationCode
     /// - Then:
-    ///    - I should get an validation error
+    ///    - I should get an .validation error
     ///
     func testConfirmSignUpWithEmptyUserName() {
 
@@ -314,7 +314,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke confirmSignup with a valid username and confirmationCode
     /// - Then:
-    ///    - I should get a .service error with  invalidParameter as underlyingError
+    ///    - I should get a .service error with  .invalidParameter as underlyingError
     ///
     func testConfirmSignUpWithInvalidParameterException() {
 
@@ -355,7 +355,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
     /// - Then:
     ///    - I should get a .requestLimitExceeded error
     ///
-    func testConfirmSignUpWithLimitExceededExceptionException() {
+    func testConfirmSignUpWithLimitExceededException() {
 
         mockAWSMobileClient?.confirmSignUpMockResult = .failure(AWSMobileClientError.limitExceeded(message: "Error"))
         let resultExpectation = expectation(description: "Should receive a result")
@@ -425,7 +425,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke confirmSignup with a valid username and confirmationCode
     /// - Then:
-    ///    - I should get a .service error with resourceNotFound as underlyingError
+    ///    - I should get a .service error with .resourceNotFound as underlyingError
     ///
     func testConfirmSignUpWithResourceNotFoundException() {
 
@@ -463,7 +463,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke confirmSignup with a valid username and confirmationCode
     /// - Then:
-    ///    - I should get a .service error with failedAttemptsLimitExceeded as underlyingError
+    ///    - I should get a .service error with .failedAttemptsLimitExceeded as underlyingError
     ///
     func testConfirmSignUpWithTooManyFailedAttemptsException() {
 
@@ -486,7 +486,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
                     return
                 }
                 guard case .failedAttemptsLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be requestLimitExceeded \(error)")
+                    XCTFail("Underlying error should be failedAttemptsLimitExceeded \(error)")
                     return
                 }
 
@@ -503,7 +503,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke confirmSignup with a valid username and confirmationCode
     /// - Then:
-    ///    - I should get a .service error with requestLimitExceeded as underlyingError
+    ///    - I should get a .service error with .requestLimitExceeded as underlyingError
     ///
     func testConfirmSignUpWithTooManyRequestsException() {
 
@@ -542,7 +542,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke confirmSignup with a valid username and confirmationCode
     /// - Then:
-    ///    - I should get a .service error with lambda as underlyingError
+    ///    - I should get a .service error with .lambda as underlyingError
     ///
     func testConfirmSignUpWithUnexpectedLambdaException() {
 
@@ -581,7 +581,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke confirmSignup with a valid username and confirmationCode
     /// - Then:
-    ///    - I should get a .service error with lambda as underlyingError
+    ///    - I should get a .service error with .lambda as underlyingError
     ///
     func testConfirmSignUpWithUserLambdaValidationException() {
 
