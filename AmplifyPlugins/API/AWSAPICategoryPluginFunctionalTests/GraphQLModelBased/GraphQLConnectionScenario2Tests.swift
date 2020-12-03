@@ -128,8 +128,8 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
             switch result {
             case .success(let result):
                 switch result {
-                case .success(let createdProject):
-                    XCTAssertEqual(createdProject.teamID, anotherTeam.id)
+                case .success(let updatedProject):
+                    XCTAssertEqual(updatedProject.teamID, anotherTeam.id)
                 case .failure(let response):
                     XCTFail("Failed with: \(response)")
                 }

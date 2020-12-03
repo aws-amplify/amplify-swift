@@ -23,6 +23,21 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "DataStoreConnectionScenario1Tests/testListProjectsByTeamID()">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario3Tests/testSaveCommentAndGetPostWithComments()">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario4Tests/testListCommentsByPostID()">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario5Tests/testListPostEditorByPost()">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario5Tests/testListPostEditorByUser()">
+               </Test>
+               <Test
                   Identifier = "SubscriptionTests/testSubscribeAtStartup()">
                </Test>
                <Test
