@@ -126,7 +126,7 @@ class AuthenticationProviderSigninTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke signIn
     /// - Then:
-    ///    - I should get a .unknown
+    ///    - I should get a .unknown error
     ///
     func testSignInWithInvalidResult() {
 
@@ -225,7 +225,7 @@ class AuthenticationProviderSigninTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke signIn
     /// - Then:
-    ///    - I should get a .confirmSignInWithNewPassword
+    ///    - I should get a .confirmSignInWithNewPassword error
     ///
     func testSignInWithNextStepNewPassword() {
 
@@ -259,7 +259,7 @@ class AuthenticationProviderSigninTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke signIn
     /// - Then:
-    ///    - I should get a .unknown
+    ///    - I should get a .unknown error
     ///
     func testSignInWithNextStepUnknown() {
 
@@ -296,7 +296,7 @@ class AuthenticationProviderSigninTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke signIn
     /// - Then:
-    ///    - I should get a .unknown
+    ///    - I should get a .unknown error
     ///
     func testSignInWithInternalErrorException() {
         let error = AWSMobileClientError.internalError(message: "Error")
@@ -397,7 +397,7 @@ class AuthenticationProviderSigninTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke signIn
     /// - Then:
-    ///    - I should get a .configuration
+    ///    - I should get a .configuration error
     ///
     func testSignInWithInvalidUserPoolConfigurationException() {
         let error = AWSMobileClientError.invalidUserPoolConfiguration(message: "Error")
