@@ -12,7 +12,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
 
     var signupMockResult: Result<SignUpResult, Error>?
     var confirmSignUpMockResult: Result<SignUpResult, Error>?
-    var resendSignUpMockResult: Result<SignUpResult, Error>?
+    var resendSignUpCodeMockResult: Result<SignUpResult, Error>?
     var signInMockResult: Result<SignInResult, Error>?
     var federatedSignInMockResult: Result<UserState, Error>?
     var showSignInMockResult: Result<UserState, Error>?
@@ -59,7 +59,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     func resendSignUpCode(username: String,
                           clientMetaData: [String: String],
                           completionHandler: @escaping ((SignUpResult?, Error?) -> Void)) {
-        prepareResult(mockResult: resendSignUpMockResult, completionHandler: completionHandler)
+        prepareResult(mockResult: resendSignUpCodeMockResult, completionHandler: completionHandler)
     }
 
     func signIn(username: String,
