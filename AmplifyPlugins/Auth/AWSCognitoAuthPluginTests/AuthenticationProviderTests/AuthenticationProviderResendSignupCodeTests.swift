@@ -452,7 +452,7 @@ class AuthenticationProviderResendSignupCodeTests: BaseAuthenticationProviderTes
     ///   UnexpectedLambdaException response
     ///
     /// - When:
-    ///    - I invoke resendSignUpCode with a valid username and confirmationCode
+    ///    - I invoke resendSignUpCode with a valid username
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
