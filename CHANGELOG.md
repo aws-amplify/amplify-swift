@@ -1,5 +1,22 @@
 # Changelog
 ## Unreleased
+## 1.5.0 (2020-12-03)
+
+### Features
+
+- **datastore**: selective sync on initial sync & incoming subscription models (#884)
+- **DataStore**: Start/Stop implementation (#919)
+
+### Bug Fixes
+
+- **API**: subscription cancel unit test failing intermittently (#927)
+- **auth**: Fix an issue where the fetchAuthSession callback is called twice (#922)
+- **DataStore**: SyncMutationToCloudOperationTests thread sanitizer bug (#915)
+- **Predictions**: Avoid Multiple Rekognition Error Return (#910)
+- **Predictions**: Fix of PredicationPlugin unit tests (#903)
+- Use correct category plugins to populate dev menu (#897)
+- **DataStore**: Nested query predicates are not stored properly (#905)
+
 ## 1.4.4 (2020-11-19)
 
 ### Bug Fixes
