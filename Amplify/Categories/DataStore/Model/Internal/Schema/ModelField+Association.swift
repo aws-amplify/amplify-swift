@@ -88,7 +88,7 @@ import Foundation
 ///   by host applications. The behavior of this may change without warning.
 public enum ModelAssociation {
     case hasMany(associatedFieldName: String?)
-    case hasOne(associatedFieldName: String?, targetName: String?)
+    case hasOne(associatedFieldName: String?, targetName: String? = nil)
     case belongsTo(associatedFieldName: String?, targetName: String?)
 
     public static let belongsTo: ModelAssociation = .belongsTo(associatedFieldName: nil, targetName: nil)
@@ -101,7 +101,7 @@ public enum ModelAssociation {
         return .hasMany(associatedFieldName: associatedWith?.stringValue)
     }
 
-    public static func hasOne(associatedWith: CodingKey?, targetName: String?) -> ModelAssociation {
+    public static func hasOne(associatedWith: CodingKey?, targetName: String? = nil) -> ModelAssociation {
         return .hasOne(associatedFieldName: associatedWith?.stringValue, targetName: targetName)
     }
 
