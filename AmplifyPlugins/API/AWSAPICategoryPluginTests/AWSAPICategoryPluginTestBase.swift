@@ -65,4 +65,11 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
             XCTFail("Error setting up Amplify: \(error)")
         }
     }
+
+    override func tearDown() {
+        if let api = apiPlugin {
+            api.reset {
+            }
+        }
+    }
 }

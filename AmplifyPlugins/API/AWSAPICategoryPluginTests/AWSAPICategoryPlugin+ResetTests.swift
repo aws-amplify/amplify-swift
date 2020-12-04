@@ -23,6 +23,7 @@ class AWSAPICategoryPluginResetTests: AWSAPICategoryPluginTestBase {
         XCTAssertNil(apiPlugin.session)
         XCTAssertNil(apiPlugin.pluginConfig)
         XCTAssertNil(apiPlugin.authService)
+        apiPlugin = nil
     }
 
 }
