@@ -157,7 +157,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
-    /// Test a confirmSignup call with CodeDeliveryFailureException response from service
+    /// Test a confirmSignup call with CodeMismatchException response from service
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
     ///   CodeDeliveryFailureException response
@@ -196,7 +196,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
-    /// Test a confirmSignup call with CodeDeliveryFailureException response from service
+    /// Test a confirmSignup call with CodeExpiredException response from service
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
     ///   CodeDeliveryFailureException response

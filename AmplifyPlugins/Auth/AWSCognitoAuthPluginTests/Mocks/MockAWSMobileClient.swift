@@ -147,7 +147,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
                                confirmationCode: String,
                                clientMetaData: [String: String],
                                completionHandler: @escaping ((ForgotPasswordResult?, Error?) -> Void)) {
-        fatalError()
+        prepareResult(mockResult: confirmForgotPasswordMockResult, completionHandler: completionHandler)
     }
 
     func getIdentityId() -> AWSTask<NSString> {
