@@ -36,8 +36,8 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
                     return
                 }
                 let nsError = error as NSError?
-                guard nsError?.domain != NSURLErrorDomain else {
-                    let predictionsError = PredictionsErrorHelper.mapError(nsError!)
+                let predictionsError = PredictionsErrorHelper.mapPredictionsServiceError(nsError!)
+                if case .network = predictionsError {
                     onEvent(.failed(predictionsError))
                     return
                 }

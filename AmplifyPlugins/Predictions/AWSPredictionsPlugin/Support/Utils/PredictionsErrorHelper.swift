@@ -93,15 +93,17 @@ class PredictionsErrorHelper {
                 return defaultError
             }
             return AWSTranscribeStreamingErrorMessage.map(errorType) ?? defaultError
+        case NSURLErrorDomain:
+            return mapError(error)
         default:
             return defaultError
         }
     }
 
-    static func mapError(_ error: NSError) -> PredictionsError {
-        let defaultError = PredictionsErrorHelper.getDefaultError(error)
+    static func mapError(_ nsError: NSError) -> PredictionsError {
+        let defaultError = PredictionsErrorHelper.getDefaultError(nsError)
 
-        let error = error as? URLError
+        let error = nsError as? URLError
         guard let urlError = error else {
             return defaultError
         }
@@ -110,14 +112,16 @@ class PredictionsErrorHelper {
         case .cannotFindHost:
             let errorDescription = "The host name for a URL couldn’t be resolved."
             let recoverySuggestion = "Please check if you are reaching the correct host."
-            return PredictionsError.network(errorDescription, recoverySuggestion, error)
+            return PredictionsError.network(errorDescription, recoverySuggestion, urlError)
         case .notConnectedToInternet:
             // swiftlint:disable:next line_length
             let errorDescription = "A network resource was requested, but an internet connection hasn’t been established and can’t be established automatically."
             let recoverySuggestion = "Please check your network connectivity status."
-            return PredictionsError.network(errorDescription, recoverySuggestion, error)
+            return PredictionsError.network(errorDescription, recoverySuggestion, urlError)
         default:
-            return defaultError
+            return PredictionsError.network(nsError.localizedDescription,
+                                            nsError.localizedRecoverySuggestion ?? "",
+                                            urlError)
         }
     }
 
