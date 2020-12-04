@@ -17,13 +17,13 @@ import XCTest
 // swiftlint:disable:next type_name
 class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProviderTest {
 
-    /// Test a successful confirmResetPassword call with .done as next step
+    /// Test a successful confirmResetPassword call
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
     /// - When:
-    ///    - I invoke confirmSignup with usernamea, new password and a confirmation code
+    ///    - I invoke confirmSignup with a valid username, a new password and a confirmation code
     /// - Then:
-    ///    - I should get a successful result with .done as the next step
+    ///    - I should get a successful result
     ///
     func testSuccessfulConfirmResetPassword() {
         let confirmResetPasswordMockResult = ForgotPasswordResult(forgotPasswordState: .done,
@@ -44,9 +44,9 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
-    /// Test a successful confirmResetPassword call with an empty username
+    /// Test a confirmResetPassword call with empty username
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response
     /// - When:
     ///    - I invoke confirmResetPassword with an empty username, a new password and a confirmation code
     /// - Then:
@@ -79,11 +79,11 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
-    /// Test a successful confirmResetPassword call with an empty new password
+    /// Test a confirmResetPassword call with empty new password
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response
     /// - When:
-    ///    - I invoke confirmResetPassword with an empty username, a new password and a confirmation code
+    ///    - I invoke confirmResetPassword with a valid username, an empty new password and a confirmation code
     /// - Then:
     ///    - I should get an .validation error
     ///
@@ -116,8 +116,8 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
 
     /// Test a confirmResetPassword call with CodeMismatchException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
-    ///   CodeDeliveryFailureException response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   CodeMismatchException response
     /// - When:
     ///    - I invoke confirmResetPassword with a valid username, a new password and a confirmation code
     /// - Then:
@@ -155,8 +155,8 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
 
     /// Test a confirmResetPassword call with CodeExpiredException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
-    ///   CodeDeliveryFailureException response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   CodeExpiredException response
     /// - When:
     ///    - I invoke confirmResetPassword with a valid username, a new password and a confirmation code
     /// - Then:
@@ -194,7 +194,7 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
 
     /// Test a confirmResetPassword call with InternalErrorException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a InternalErrorException response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a InternalErrorException response
     /// - When:
     ///    - I invoke confirmResetPassword with a valid username, a new password and a confirmation code
     /// - Then:
@@ -228,7 +228,7 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
 
     /// Test a confirmResetPassword call with InvalidLambdaResponseException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   InvalidLambdaResponseException response
     /// - When:
     ///    - I invoke confirmResetPassword with a valid username, a new password and a confirmation code
@@ -266,7 +266,7 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
 
     /// Test a confirmResetPassword call with InvalidParameterException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   InvalidParameterException response
     ///
     /// - When:
@@ -306,13 +306,13 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
 
     /// Test a confirmResetPassword call with InvalidParameterException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
-    ///   InvalidParameterException response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   InvalidPasswordException response
     ///
     /// - When:
     ///    - I invoke confirmResetPassword with a valid username, a new password and a confirmation code
     /// - Then:
-    ///    - I should get a .service error with  .invalidPassword as underlyingError
+    ///    - I should get a .service error with .invalidPassword as underlyingError
     ///
     func testConfirmResetPasswordWithInvalidPasswordException() {
 
@@ -346,8 +346,8 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
 
     /// Test a confirmResetPassword call with LimitExceededException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
-    ///   NotAuthorizedException response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   LimitExceededException response
     ///
     /// - When:
     ///    - I invoke confirmResetPassword with a valid username, a new password and a confirmation code
@@ -385,7 +385,7 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
 
     /// Test a confirmResetPassword call with NotAuthorizedException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   NotAuthorizedException response
     ///
     /// - When:
@@ -420,8 +420,8 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
 
     /// Test a confirmResetPassword call with TooManyFailedAttempts response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
-    ///   TooManyRequestsException response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   TooManyFailedAttemptsException response
     ///
     /// - When:
     ///    - I invoke confirmResetPassword with a valid username, a new password and a confirmation code
@@ -460,7 +460,7 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
 
     /// Test a confirmResetPassword call with TooManyRequestsException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   TooManyRequestsException response
     ///
     /// - When:
@@ -500,17 +500,18 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
 
     /// Test a confirmResetPassword call with UnexpectedLambdaException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   UnexpectedLambdaException response
     ///
     /// - When:
-    ///    - I invoke confirmResetPassword with a valid username and confirmationCode
+    ///    - I invoke confirmResetPassword with a valid username, a new password and a confirmation code
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
     func testConfirmResetPasswordWithUnexpectedLambdaException() {
 
-        mockAWSMobileClient?.confirmForgotPasswordMockResult = .failure(AWSMobileClientError.unexpectedLambda(message: "Error"))
+        mockAWSMobileClient?.confirmForgotPasswordMockResult =
+            .failure(AWSMobileClientError.unexpectedLambda(message: "Error"))
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.confirmResetPassword(for: "username",
                                         with: "newpassword",
@@ -539,11 +540,11 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
 
     /// Test a confirmResetPassword call with UserLambdaValidationException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   UserLambdaValidationException response
     ///
     /// - When:
-    ///    - I invoke confirmResetPassword with a valid username and confirmationCode
+    ///    - I invoke confirmResetPassword with a valid username, a new password and a confirmation code
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
@@ -579,11 +580,11 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
 
     /// Test a confirmResetPassword call with UserNotFound response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
-    ///   UserNotFoundException response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   UserNotConfirmedException response
     ///
     /// - When:
-    ///    - I invoke confirmResetPassword with a valid username and confirmationCode
+    ///    - I invoke confirmResetPassword with a valid username, a new password and a confirmation code
     /// - Then:
     ///    - I should get a .userNotConfirmed error
     ///
@@ -619,11 +620,11 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
 
     /// Test a confirmResetPassword call with UserNotFound response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   UserNotFoundException response
     ///
     /// - When:
-    ///    - I invoke confirmResetPassword with a valid username and confirmationCode
+    ///    - I invoke confirmResetPassword with a valid username, a new password and a confirmation code
     /// - Then:
     ///    - I should get a .userNotFound error
     ///

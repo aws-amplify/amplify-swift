@@ -50,7 +50,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
-    /// Test a successful confirmSignup call with an empty username
+    /// Test a confirmSignup call with an empty username
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a successul response
     /// - When:
