@@ -26,31 +26,32 @@ extension Model {
                 return
             }
 
+            let name = modelField.graphQLName
             let fieldValueOptional = getFieldValue(for: modelField.name, modelSchema: modelSchema)
 
             // Since the returned value is Any?? we need to do the following:
             // - `guard` to make sure the field name exists on the model
             // - `guard` to ensure the returned value isn't nil
             guard let fieldValue = fieldValueOptional else {
-                input.updateValue(nil, forKey: modelField.name)
+                input.updateValue(nil, forKey: name)
                 return
             }
 
             // swiftlint:disable:next syntactic_sugar
             guard case .some(Optional<Any>.some(let value)) = fieldValue else {
-                input.updateValue(nil, forKey: modelField.name)
+                input.updateValue(nil, forKey: name)
                 return
             }
 
             switch modelField.type {
             case .date, .dateTime, .time:
                 if let date = value as? TemporalSpec {
-                    input[modelField.name] = date.iso8601String
+                    input[name] = date.iso8601String
                 } else {
-                    input[modelField.name] = value
+                    input[name] = value
                 }
             case .enum:
-                input[modelField.name] = (value as? EnumPersistable)?.rawValue
+                input[name] = (value as? EnumPersistable)?.rawValue
             case .model:
                 let fieldName = getFieldNameForAssociatedModels(modelField: modelField)
                 input[fieldName] = getModelId(from: value, modelSchema: modelSchema)
@@ -59,7 +60,7 @@ extension Model {
                     let jsonEncoder = JSONEncoder(dateEncodingStrategy: ModelDateFormatting.encodingStrategy)
                     do {
                         let data = try jsonEncoder.encode(encodable.eraseToAnyEncodable())
-                        input[modelField.name] = try JSONSerialization.jsonObject(with: data)
+                        input[name] = try JSONSerialization.jsonObject(with: data)
                     } catch {
                         preconditionFailure("Could not turn into json object from \(value)")
                     }
@@ -68,11 +69,11 @@ extension Model {
                 // The input may contain the same keys from `.model` case when the `getFieldNameForAssociatedModels`
                 // returns the same value as the `modelField.name`. If this is the case, let the `.model` case take
                 // precedent over the explicit string field on the Model by ignoring the value that is about to be added
-                if !input.keys.contains(modelField.name) {
-                    input[modelField.name] = value
+                if !input.keys.contains(name) {
+                    input[name] = value
                 }
             default:
-                input[modelField.name] = value
+                input[name] = value
             }
         }
 
@@ -109,7 +110,7 @@ extension Model {
         return input
     }
 
-    private func getModelId(from value: Any, modelSchema: ModelSchema) -> String {
+    private func getModelId(from value: Any, modelSchema: ModelSchema) -> String? {
         if let modelValue = value as? Model {
             return modelValue.id
         } else if let value = value as? [String: JSONValue],
@@ -117,7 +118,7 @@ extension Model {
             return primaryKeyValue
         }
 
-        preconditionFailure("Could not retrieve the identifier from associated model: \(value)")
+        return nil
     }
 
     private func getFieldValue(for modelFieldName: String, modelSchema: ModelSchema) -> Any?? {
@@ -133,7 +134,7 @@ extension Model {
     /// This information is also stored in the schema as `targetName` which is codegenerated to be the same as the
     /// default or an explicit field specified by the developer.
     private func getFieldNameForAssociatedModels(modelField: ModelField) -> String {
-        let defaultFieldName = modelName.camelCased() + modelField.name + "Id"
+        let defaultFieldName = modelName.camelCased() + modelField.name.pascalCased() + "Id"
         if case let .belongsTo(_, targetName) = modelField.association {
             return targetName ?? defaultFieldName
         } else if case let .hasOne(_, targetName) = modelField.association {
