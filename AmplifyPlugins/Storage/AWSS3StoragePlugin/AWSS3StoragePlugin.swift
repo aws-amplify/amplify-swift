@@ -34,3 +34,4 @@ final public class AWSS3StoragePlugin: StorageCategoryPlugin {
     }
 }
 
+extension AWSS3StoragePlugin: AmplifyVersionable { }

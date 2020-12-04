@@ -186,3 +186,5 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
 }
+
+extension AWSDataStorePlugin: AmplifyVersionable { }

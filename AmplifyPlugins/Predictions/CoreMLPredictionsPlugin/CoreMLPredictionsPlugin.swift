@@ -31,3 +31,4 @@ final public class CoreMLPredictionsPlugin: PredictionsCategoryPlugin {
     }
 }
 
+extension CoreMLPredictionsPlugin: AmplifyVersionable { }

@@ -51,3 +51,4 @@ final public class AWSCognitoAuthPlugin: AuthCategoryPlugin {
     }
 }
 
+extension AWSCognitoAuthPlugin: AmplifyVersionable { }

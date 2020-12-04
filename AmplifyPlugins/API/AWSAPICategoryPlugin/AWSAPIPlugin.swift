@@ -82,3 +82,4 @@ extension URLSessionFactory {
     }
 }
 
+extension AWSAPIPlugin: AmplifyVersionable { }

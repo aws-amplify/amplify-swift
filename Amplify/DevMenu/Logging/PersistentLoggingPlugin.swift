@@ -46,3 +46,5 @@ public class PersistentLoggingPlugin: LoggingCategoryPlugin {
     }
 }
 
+@available(iOS 13.0, *)
+extension PersistentLoggingPlugin: AmplifyVersionable { }

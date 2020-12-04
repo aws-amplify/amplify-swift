@@ -40,3 +40,4 @@ public final class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
     public init() {}
 }
 
+extension AWSPinpointAnalyticsPlugin: AmplifyVersionable { }
