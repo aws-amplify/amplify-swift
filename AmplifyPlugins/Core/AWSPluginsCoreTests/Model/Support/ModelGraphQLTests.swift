@@ -72,4 +72,57 @@ class ModelGraphQLTests: XCTestCase {
         XCTAssertEqual(expectedColor["green"] as? Int, color.green)
         XCTAssertEqual(expectedColor["blue"] as? Int, color.blue)
     }
+
+
+    // MARK: - `Project1` and `Team1`
+
+    func testProjectBelongsToTeam() {
+        let team1 = Team1(name: "team")
+        let project1 = Project1(team: team1)
+
+        let graphQLInput = project1.graphQLInput(Project1.schema)
+
+        XCTAssertEqual(graphQLInput["id"] as? String, project1.id)
+        XCTAssertTrue(graphQLInput.keys.contains("name"))
+        XCTAssertNil(graphQLInput["name"]!)
+        XCTAssertEqual(graphQLInput["project1TeamId"] as? String, team1.id)
+        XCTAssertFalse(graphQLInput.keys.contains("team"))
+    }
+
+    // MARK: - HasOne `Project2` and `Team2`
+
+    func testProjectHasOneTeamSuccess() {
+        let team2 = Team2(name: "team")
+        let project2 = Project2(teamID: team2.id, team: team2)
+        let graphQLInput = project2.graphQLInput(Project2.schema)
+        XCTAssertEqual(graphQLInput["id"] as? String, project2.id)
+        XCTAssertTrue(graphQLInput.keys.contains("name"))
+        XCTAssertNil(graphQLInput["name"]!)
+        XCTAssertEqual(graphQLInput["teamID"] as? String, team2.id)
+        XCTAssertFalse(graphQLInput.keys.contains("team"))
+    }
+
+    /// The GraphQL input should always take the object over the explicit `teamID` field
+    func testProjectHasOneTeamRandomTeamIDSuccess() {
+        let team2 = Team2(name: "team")
+        let project2 = Project2(teamID: "randomTeamId", team: team2)
+        let graphQLInput = project2.graphQLInput(Project2.schema)
+        XCTAssertEqual(graphQLInput["id"] as? String, project2.id)
+        XCTAssertTrue(graphQLInput.keys.contains("name"))
+        XCTAssertNil(graphQLInput["name"]!)
+        XCTAssertEqual(graphQLInput["teamID"] as? String, team2.id)
+        XCTAssertFalse(graphQLInput.keys.contains("team"))
+    }
+
+    /// The GraphQL input should contain the `teamID` provided if the team object is not passed in.
+    func testProjectHasOneTeamMisingTeamObjectSuccess() {
+        let team2 = Team2(name: "team")
+        let project2 = Project2(teamID: team2.id)
+        let graphQLInput = project2.graphQLInput(Project2.schema)
+        XCTAssertEqual(graphQLInput["id"] as? String, project2.id)
+        XCTAssertTrue(graphQLInput.keys.contains("name"))
+        XCTAssertNil(graphQLInput["name"]!)
+        XCTAssertEqual(graphQLInput["teamID"] as? String, team2.id)
+        XCTAssertFalse(graphQLInput.keys.contains("team"))
+    }
 }

@@ -34,6 +34,18 @@
                <Test
                   Identifier = "BlogPostCommentGraphQLWithAPIKeyTests">
                </Test>
+               <Test
+                  Identifier = "GraphQLConnectionScenario1Tests/testListProjectsByTeamID()">
+               </Test>
+               <Test
+                  Identifier = "GraphQLConnectionScenario4Tests/testListCommentsByPostID()">
+               </Test>
+               <Test
+                  Identifier = "GraphQLConnectionScenario5Tests/testListPostEditorByPost()">
+               </Test>
+               <Test
+                  Identifier = "GraphQLConnectionScenario5Tests/testListPostEditorByUser()">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

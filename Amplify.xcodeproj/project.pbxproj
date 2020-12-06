@@ -46,7 +46,6 @@
 		212CE70D23E9E991007D8E71 /* FilterDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70823E9E990007D8E71 /* FilterDecorator.swift */; };
 		212CE70E23E9E991007D8E71 /* PaginationDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70923E9E991007D8E71 /* PaginationDecorator.swift */; };
 		212CE70F23E9E991007D8E71 /* ModelDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70A23E9E991007D8E71 /* ModelDecorator.swift */; };
-		212CE71123E9EA6A007D8E71 /* ModelField+GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71023E9EA6A007D8E71 /* ModelField+GraphQL.swift */; };
 		212CE71323E9F2ED007D8E71 /* DirectiveNameDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71223E9F2ED007D8E71 /* DirectiveNameDecorator.swift */; };
 		21409C552384C55D000A53C9 /* LabelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C542384C55D000A53C9 /* LabelType.swift */; };
 		21409C5A2384C57D000A53C9 /* GraphQLMutationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C572384C57D000A53C9 /* GraphQLMutationType.swift */; };
@@ -90,6 +89,30 @@
 		216E460A249183230035E3CE /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E4609249183230035E3CE /* Section.swift */; };
 		216E461A249189050035E3CE /* Embedded.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E4619249189050035E3CE /* Embedded.swift */; };
 		217855C3237F84D700A30D19 /* RESTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217855C2237F84D700A30D19 /* RESTRequest.swift */; };
+		217D5EB02577F9DF009F0639 /* Post4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5E9A2577F9DE009F0639 /* Post4.swift */; };
+		217D5EB12577F9DF009F0639 /* Team2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5E9B2577F9DE009F0639 /* Team2+Schema.swift */; };
+		217D5EB22577F9DF009F0639 /* PostEditor5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5E9C2577F9DE009F0639 /* PostEditor5+Schema.swift */; };
+		217D5EB32577F9DF009F0639 /* Comment3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5E9D2577F9DE009F0639 /* Comment3.swift */; };
+		217D5EB42577F9DF009F0639 /* Comment4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5E9E2577F9DE009F0639 /* Comment4+Schema.swift */; };
+		217D5EB52577F9DF009F0639 /* Project1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5E9F2577F9DE009F0639 /* Project1.swift */; };
+		217D5EB62577F9DF009F0639 /* Comment3+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5EA02577F9DE009F0639 /* Comment3+Schema.swift */; };
+		217D5EB72577F9DF009F0639 /* Project1+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5EA12577F9DE009F0639 /* Project1+Schema.swift */; };
+		217D5EB82577F9DF009F0639 /* Project2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5EA22577F9DE009F0639 /* Project2+Schema.swift */; };
+		217D5EB92577F9DF009F0639 /* Post3+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5EA32577F9DE009F0639 /* Post3+Schema.swift */; };
+		217D5EBA2577F9DF009F0639 /* Post4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5EA42577F9DE009F0639 /* Post4+Schema.swift */; };
+		217D5EBB2577F9DF009F0639 /* Team1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5EA52577F9DE009F0639 /* Team1.swift */; };
+		217D5EBC2577F9DF009F0639 /* User5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5EA62577F9DE009F0639 /* User5.swift */; };
+		217D5EBD2577F9DF009F0639 /* Post5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5EA72577F9DF009F0639 /* Post5.swift */; };
+		217D5EBE2577F9DF009F0639 /* Post5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5EA82577F9DF009F0639 /* Post5+Schema.swift */; };
+		217D5EBF2577F9DF009F0639 /* Comment4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5EA92577F9DF009F0639 /* Comment4.swift */; };
+		217D5EC02577F9DF009F0639 /* Post3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5EAA2577F9DF009F0639 /* Post3.swift */; };
+		217D5EC12577F9DF009F0639 /* Team2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5EAB2577F9DF009F0639 /* Team2.swift */; };
+		217D5EC22577F9DF009F0639 /* User5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5EAC2577F9DF009F0639 /* User5+Schema.swift */; };
+		217D5EC32577F9DF009F0639 /* PostEditor5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5EAD2577F9DF009F0639 /* PostEditor5.swift */; };
+		217D5EC42577F9DF009F0639 /* Team1+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5EAE2577F9DF009F0639 /* Team1+Schema.swift */; };
+		217D5EC52577F9DF009F0639 /* Project2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5EAF2577F9DF009F0639 /* Project2.swift */; };
+		217D5ECE2577FA1B009F0639 /* connection-schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 217D5ECD2577FA1B009F0639 /* connection-schema.graphql */; };
+		217D5F7A257830E0009F0639 /* ModelField+GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D5F63257830C2009F0639 /* ModelField+GraphQL.swift */; };
 		2183A56323EA4A7800232880 /* GraphQLSubscriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE72023EA184F007D8E71 /* GraphQLSubscriptionTests.swift */; };
 		2183A56423EA4A7F00232880 /* GraphQLGetQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71A23EA1847007D8E71 /* GraphQLGetQueryTests.swift */; };
 		2183A56523EA4A8400232880 /* GraphQLListQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71B23EA1847007D8E71 /* GraphQLListQueryTests.swift */; };
@@ -786,7 +809,6 @@
 		212CE70823E9E990007D8E71 /* FilterDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterDecorator.swift; sourceTree = "<group>"; };
 		212CE70923E9E991007D8E71 /* PaginationDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaginationDecorator.swift; sourceTree = "<group>"; };
 		212CE70A23E9E991007D8E71 /* ModelDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelDecorator.swift; sourceTree = "<group>"; };
-		212CE71023E9EA6A007D8E71 /* ModelField+GraphQL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelField+GraphQL.swift"; sourceTree = "<group>"; };
 		212CE71223E9F2ED007D8E71 /* DirectiveNameDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectiveNameDecorator.swift; sourceTree = "<group>"; };
 		212CE71423EA1838007D8E71 /* GraphQLDeleteMutationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLDeleteMutationTests.swift; sourceTree = "<group>"; };
 		212CE71523EA1839007D8E71 /* GraphQLUpdateMutationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLUpdateMutationTests.swift; sourceTree = "<group>"; };
@@ -842,6 +864,30 @@
 		217855C2237F84D700A30D19 /* RESTRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTRequest.swift; sourceTree = "<group>"; };
 		217856BA2383320900A30D19 /* GraphQLQueryType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLQueryType.swift; sourceTree = "<group>"; };
 		217856BD2383322700A30D19 /* GraphQLMutationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLMutationType.swift; sourceTree = "<group>"; };
+		217D5E9A2577F9DE009F0639 /* Post4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post4.swift; sourceTree = "<group>"; };
+		217D5E9B2577F9DE009F0639 /* Team2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team2+Schema.swift"; sourceTree = "<group>"; };
+		217D5E9C2577F9DE009F0639 /* PostEditor5+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostEditor5+Schema.swift"; sourceTree = "<group>"; };
+		217D5E9D2577F9DE009F0639 /* Comment3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment3.swift; sourceTree = "<group>"; };
+		217D5E9E2577F9DE009F0639 /* Comment4+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment4+Schema.swift"; sourceTree = "<group>"; };
+		217D5E9F2577F9DE009F0639 /* Project1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project1.swift; sourceTree = "<group>"; };
+		217D5EA02577F9DE009F0639 /* Comment3+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment3+Schema.swift"; sourceTree = "<group>"; };
+		217D5EA12577F9DE009F0639 /* Project1+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project1+Schema.swift"; sourceTree = "<group>"; };
+		217D5EA22577F9DE009F0639 /* Project2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project2+Schema.swift"; sourceTree = "<group>"; };
+		217D5EA32577F9DE009F0639 /* Post3+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post3+Schema.swift"; sourceTree = "<group>"; };
+		217D5EA42577F9DE009F0639 /* Post4+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post4+Schema.swift"; sourceTree = "<group>"; };
+		217D5EA52577F9DE009F0639 /* Team1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team1.swift; sourceTree = "<group>"; };
+		217D5EA62577F9DE009F0639 /* User5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User5.swift; sourceTree = "<group>"; };
+		217D5EA72577F9DF009F0639 /* Post5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post5.swift; sourceTree = "<group>"; };
+		217D5EA82577F9DF009F0639 /* Post5+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post5+Schema.swift"; sourceTree = "<group>"; };
+		217D5EA92577F9DF009F0639 /* Comment4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment4.swift; sourceTree = "<group>"; };
+		217D5EAA2577F9DF009F0639 /* Post3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post3.swift; sourceTree = "<group>"; };
+		217D5EAB2577F9DF009F0639 /* Team2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team2.swift; sourceTree = "<group>"; };
+		217D5EAC2577F9DF009F0639 /* User5+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User5+Schema.swift"; sourceTree = "<group>"; };
+		217D5EAD2577F9DF009F0639 /* PostEditor5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostEditor5.swift; sourceTree = "<group>"; };
+		217D5EAE2577F9DF009F0639 /* Team1+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team1+Schema.swift"; sourceTree = "<group>"; };
+		217D5EAF2577F9DF009F0639 /* Project2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project2.swift; sourceTree = "<group>"; };
+		217D5ECD2577FA1B009F0639 /* connection-schema.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = "connection-schema.graphql"; sourceTree = "<group>"; };
+		217D5F63257830C2009F0639 /* ModelField+GraphQL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelField+GraphQL.swift"; sourceTree = "<group>"; };
 		219A887E23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelBasedGraphQLDocumentBuilder.swift; sourceTree = "<group>"; };
 		219A888023EB629800BBC5F2 /* ModelBasedGraphQLDocumentDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelBasedGraphQLDocumentDecorator.swift; sourceTree = "<group>"; };
 		219A888423EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLRequest+AnyModelWithSync.swift"; sourceTree = "<group>"; };
@@ -1676,14 +1722,14 @@
 		2129BE192394806B006363A1 /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				21A3FDBE2465FA1500E76120 /* AuthRule+Extension.swift */,
 				219A88F023F3379900BBC5F2 /* GraphQLDocumentInput.swift */,
 				212CE6FD23E9E5A2007D8E71 /* GraphQLDocumentnputValue.swift */,
 				2129BE1B2394806B006363A1 /* Model+GraphQL.swift */,
-				212CE71023E9EA6A007D8E71 /* ModelField+GraphQL.swift */,
+				217D5F63257830C2009F0639 /* ModelField+GraphQL.swift */,
 				2129BE1D2394806B006363A1 /* ModelSchema+GraphQL.swift */,
 				2129BE1A2394806B006363A1 /* QueryPredicate+GraphQL.swift */,
 				212CE6FB23E9E523007D8E71 /* SelectionSet.swift */,
-				21A3FDBE2465FA1500E76120 /* AuthRule+Extension.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -1846,6 +1892,76 @@
 				B4F3543425361E0E0050FEE0 /* DynamicModel.swift */,
 			);
 			path = NonModel;
+			sourceTree = "<group>";
+		};
+		217D5E992577F95D009F0639 /* Collection */ = {
+			isa = PBXGroup;
+			children = (
+				217D5EF52578053E009F0639 /* 1 */,
+				217D5EFD25780553009F0639 /* 2 */,
+				217D5F0525780564009F0639 /* 3 */,
+				217D5F0D2578057A009F0639 /* 4 */,
+				217D5F152578058A009F0639 /* 5 */,
+				217D5ECD2577FA1B009F0639 /* connection-schema.graphql */,
+			);
+			path = Collection;
+			sourceTree = "<group>";
+		};
+		217D5EF52578053E009F0639 /* 1 */ = {
+			isa = PBXGroup;
+			children = (
+				217D5E9F2577F9DE009F0639 /* Project1.swift */,
+				217D5EA12577F9DE009F0639 /* Project1+Schema.swift */,
+				217D5EA52577F9DE009F0639 /* Team1.swift */,
+				217D5EAE2577F9DF009F0639 /* Team1+Schema.swift */,
+			);
+			path = 1;
+			sourceTree = "<group>";
+		};
+		217D5EFD25780553009F0639 /* 2 */ = {
+			isa = PBXGroup;
+			children = (
+				217D5EAF2577F9DF009F0639 /* Project2.swift */,
+				217D5EA22577F9DE009F0639 /* Project2+Schema.swift */,
+				217D5EAB2577F9DF009F0639 /* Team2.swift */,
+				217D5E9B2577F9DE009F0639 /* Team2+Schema.swift */,
+			);
+			path = 2;
+			sourceTree = "<group>";
+		};
+		217D5F0525780564009F0639 /* 3 */ = {
+			isa = PBXGroup;
+			children = (
+				217D5E9D2577F9DE009F0639 /* Comment3.swift */,
+				217D5EA02577F9DE009F0639 /* Comment3+Schema.swift */,
+				217D5EAA2577F9DF009F0639 /* Post3.swift */,
+				217D5EA32577F9DE009F0639 /* Post3+Schema.swift */,
+			);
+			path = 3;
+			sourceTree = "<group>";
+		};
+		217D5F0D2578057A009F0639 /* 4 */ = {
+			isa = PBXGroup;
+			children = (
+				217D5EA92577F9DF009F0639 /* Comment4.swift */,
+				217D5E9E2577F9DE009F0639 /* Comment4+Schema.swift */,
+				217D5E9A2577F9DE009F0639 /* Post4.swift */,
+				217D5EA42577F9DE009F0639 /* Post4+Schema.swift */,
+			);
+			path = 4;
+			sourceTree = "<group>";
+		};
+		217D5F152578058A009F0639 /* 5 */ = {
+			isa = PBXGroup;
+			children = (
+				217D5EA72577F9DF009F0639 /* Post5.swift */,
+				217D5EA82577F9DF009F0639 /* Post5+Schema.swift */,
+				217D5EAD2577F9DF009F0639 /* PostEditor5.swift */,
+				217D5E9C2577F9DE009F0639 /* PostEditor5+Schema.swift */,
+				217D5EA62577F9DE009F0639 /* User5.swift */,
+				217D5EAC2577F9DF009F0639 /* User5+Schema.swift */,
+			);
+			path = 5;
 			sourceTree = "<group>";
 		};
 		21A3FDAD24630D4200E76120 /* Decorator */ = {
@@ -2579,28 +2695,29 @@
 		B952182D237E21B900F53237 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				21AD4255249BFFDF0016FE95 /* DeprecatedTodo.swift */,
-				216E45E9248E91420035E3CE /* NonModel */,
 				FAF512AD23986791001ADF4E /* AmplifyModels.swift */,
 				214F49CB24898E8400DA616C /* Article.swift */,
 				214F49CC24898E8500DA616C /* Article+Schema.swift */,
 				B9FAA10C23878BD6009414B4 /* Associations */,
+				217D5E992577F95D009F0639 /* Collection */,
 				B9521830237E21B900F53237 /* Comment.swift */,
 				B952182E237E21B900F53237 /* Comment+Schema.swift */,
+				21AD4255249BFFDF0016FE95 /* DeprecatedTodo.swift */,
 				FAA2E8BB239FFC7700E420EA /* MockModels.swift */,
-				B9521832237E21B900F53237 /* Post.swift */,
-				B9521831237E21B900F53237 /* Post+Schema.swift */,
-				2129BE002394627B006363A1 /* PostCommentModelRegistration.swift */,
-				B9AA09F02473CA29000E6FBB /* PostStatus.swift */,
+				216E45E9248E91420035E3CE /* NonModel */,
 				6BEE08222533D30800133961 /* OGCScenarioBMGroupPost.swift */,
 				6BEE08232533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift */,
 				6BEE081B2533CCFA00133961 /* OGCScenarioBPost.swift */,
 				6BEE081A2533CCFA00133961 /* OGCScenarioBPost+Schema.swift */,
+				B9521832237E21B900F53237 /* Post.swift */,
+				B9521831237E21B900F53237 /* Post+Schema.swift */,
+				2129BE002394627B006363A1 /* PostCommentModelRegistration.swift */,
+				B9AA09F02473CA29000E6FBB /* PostStatus.swift */,
 				6B597A092565D3E50038C3E2 /* QPredGen.swift */,
 				6B597A082565D3E40038C3E2 /* QPredGen+Schema.swift */,
-				B952182F237E21B900F53237 /* schema.graphql */,
 				6B9F7C542526864800F1F71C /* ScenarioATest6Post.swift */,
 				6B9F7C532526864800F1F71C /* ScenarioATest6Post+Schema.swift */,
+				B952182F237E21B900F53237 /* schema.graphql */,
 				214F49742486D8A200DA616C /* User.swift */,
 				214F49752486D8A200DA616C /* User+Schema.swift */,
 				214F49762486D8A200DA616C /* UserFollowers.swift */,
@@ -3814,6 +3931,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				217D5ECE2577FA1B009F0639 /* connection-schema.graphql in Resources */,
 				B9521834237E21BA00F53237 /* schema.graphql in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4347,7 +4465,6 @@
 				212CE70323E9E967007D8E71 /* GraphQLMutation.swift in Sources */,
 				2129BE0F23948005006363A1 /* SingleDirectiveGraphQLDocument.swift in Sources */,
 				21420A93237222A900FA140C /* CognitoUserPoolsConfiguration.swift in Sources */,
-				212CE71123E9EA6A007D8E71 /* ModelField+GraphQL.swift in Sources */,
 				21C395B3245729EC00597EA2 /* AppSyncErrorType.swift in Sources */,
 				212CE70523E9E967007D8E71 /* GraphQLQuery.swift in Sources */,
 				212CE70C23E9E991007D8E71 /* ConflictResolutionDecorator.swift in Sources */,
@@ -4372,6 +4489,7 @@
 				21420A90237222A900FA140C /* APIKeyConfiguration.swift in Sources */,
 				219A887F23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift in Sources */,
 				2129BE552395CAEF006363A1 /* PaginatedList.swift in Sources */,
+				217D5F7A257830E0009F0639 /* ModelField+GraphQL.swift in Sources */,
 				21A3FDBF2465FA1500E76120 /* AuthRule+Extension.swift in Sources */,
 				B42B3D36246ADA42007211E0 /* AmplifyAWSCredentialsProvider.swift in Sources */,
 				2129BE212394806B006363A1 /* ModelSchema+GraphQL.swift in Sources */,
@@ -4926,36 +5044,48 @@
 				FA176ED7238503C200C5C5F9 /* HubListenerTestUtilities.swift in Sources */,
 				216E45EE248E914F0035E3CE /* Todo.swift in Sources */,
 				6BEE081D2533CCFA00133961 /* OGCScenarioBPost.swift in Sources */,
+				217D5EC52577F9DF009F0639 /* Project2.swift in Sources */,
 				B4F3543525361E0E0050FEE0 /* DynamicModel.swift in Sources */,
+				217D5EC02577F9DF009F0639 /* Post3.swift in Sources */,
+				217D5EB02577F9DF009F0639 /* Post4.swift in Sources */,
+				217D5EB22577F9DF009F0639 /* PostEditor5+Schema.swift in Sources */,
 				21F40A3A23A294770074678E /* TestConfigHelper.swift in Sources */,
 				B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */,
 				B4F3542C25361BC80050FEE0 /* DynamicEmbedded.swift in Sources */,
 				FACA361C2327FC7D000E74F6 /* MockHubCategoryPlugin.swift in Sources */,
 				FAD3937F23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift in Sources */,
+				217D5EBB2577F9DF009F0639 /* Team1.swift in Sources */,
 				6BEE08252533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift in Sources */,
 				FACA361A2327FC69000E74F6 /* MockStorageCategoryPlugin.swift in Sources */,
+				217D5EB92577F9DF009F0639 /* Post3+Schema.swift in Sources */,
 				B9521837237E21BA00F53237 /* Post.swift in Sources */,
 				B9FAA11A23879AC8009414B4 /* BookAuthor.swift in Sources */,
+				217D5EBF2577F9DF009F0639 /* Comment4.swift in Sources */,
 				21F40A3E23A295390074678E /* AWSMobileClient+Message.swift in Sources */,
 				FAA2E8BC239FFC7700E420EA /* MockModels.swift in Sources */,
 				B9FAA11E23879B9F009414B4 /* Book+Schema.swift in Sources */,
+				217D5EB52577F9DF009F0639 /* Project1.swift in Sources */,
 				6B9F7C552526864800F1F71C /* ScenarioATest6Post+Schema.swift in Sources */,
 				FACA361B2327FC74000E74F6 /* MockLoggingCategoryPlugin.swift in Sources */,
 				FACF52042329633500646E10 /* TestExtensions.swift in Sources */,
 				216E460824913D430035E3CE /* Color.swift in Sources */,
 				B9FAA11823879A57009414B4 /* Author+Schema.swift in Sources */,
 				B9521836237E21BA00F53237 /* Post+Schema.swift in Sources */,
+				217D5EB72577F9DF009F0639 /* Project1+Schema.swift in Sources */,
 				FA4A955F239ADEBD008E876E /* MockResponder.swift in Sources */,
 				214F497A2486D8A200DA616C /* User.swift in Sources */,
 				B9FAA11223878C96009414B4 /* UserAccount+Schema.swift in Sources */,
 				FACA36152327FC39000E74F6 /* MessageReporter.swift in Sources */,
 				FAF512AE23986791001ADF4E /* AmplifyModels.swift in Sources */,
+				217D5EC42577F9DF009F0639 /* Team1+Schema.swift in Sources */,
 				B9FAA11C23879B35009414B4 /* Book.swift in Sources */,
 				6B597A0B2565D3E50038C3E2 /* QPredGen.swift in Sources */,
 				975751B424D21DE000FA0A6E /* MockDevMenuContextProvider.swift in Sources */,
 				6B597A0A2565D3E50038C3E2 /* QPredGen+Schema.swift in Sources */,
 				214F49772486D8A200DA616C /* UserFollowers+Schema.swift in Sources */,
 				B9FAA11423878CEA009414B4 /* UserProfile+Schema.swift in Sources */,
+				217D5EBC2577F9DF009F0639 /* User5.swift in Sources */,
+				217D5EB82577F9DF009F0639 /* Project2+Schema.swift in Sources */,
 				214F49792486D8A200DA616C /* UserFollowing+Schema.swift in Sources */,
 				FACA361D2327FC84000E74F6 /* MockAPICategoryPlugin.swift in Sources */,
 				B9FAA11023878C5E009414B4 /* UserProfile.swift in Sources */,
@@ -4965,20 +5095,30 @@
 				6B9F7C562526864800F1F71C /* ScenarioATest6Post.swift in Sources */,
 				B9FAA12023879BD0009414B4 /* BookAuthor+Schema.swift in Sources */,
 				21F40A4023A295470074678E /* TestCommonConstants.swift in Sources */,
+				217D5EB32577F9DF009F0639 /* Comment3.swift in Sources */,
 				214F497C2486D8A200DA616C /* UserFollowers.swift in Sources */,
+				217D5EB62577F9DF009F0639 /* Comment3+Schema.swift in Sources */,
 				B9521835237E21BA00F53237 /* Comment.swift in Sources */,
 				21AD4257249BFFE00016FE95 /* DeprecatedTodo.swift in Sources */,
 				216E45EF248E914F0035E3CE /* Todo+Schema.swift in Sources */,
 				FACA361E2327FC8E000E74F6 /* MockAnalyticsCategoryPlugin.swift in Sources */,
 				2129BE012394627B006363A1 /* PostCommentModelRegistration.swift in Sources */,
+				217D5EB42577F9DF009F0639 /* Comment4+Schema.swift in Sources */,
 				B9FAA10E23878BF3009414B4 /* UserAccount.swift in Sources */,
+				217D5EC12577F9DF009F0639 /* Team2.swift in Sources */,
+				217D5EBE2577F9DF009F0639 /* Post5+Schema.swift in Sources */,
 				214F49782486D8A200DA616C /* UserFollowing.swift in Sources */,
 				21F40A3C23A2952C0074678E /* AuthHelper.swift in Sources */,
 				6BEE08242533D30800133961 /* OGCScenarioBMGroupPost.swift in Sources */,
+				217D5EC22577F9DF009F0639 /* User5+Schema.swift in Sources */,
+				217D5EB12577F9DF009F0639 /* Team2+Schema.swift in Sources */,
 				B4F3E9FA24314ECC00F23296 /* MockAuthCategoryPlugin.swift in Sources */,
 				214F49CE24898E8500DA616C /* Article+Schema.swift in Sources */,
 				216E460A249183230035E3CE /* Section.swift in Sources */,
+				217D5EBA2577F9DF009F0639 /* Post4+Schema.swift in Sources */,
+				217D5EBD2577F9DF009F0639 /* Post5.swift in Sources */,
 				FA1846EE23998E44009B9D01 /* MockAPIResponders.swift in Sources */,
+				217D5EC32577F9DF009F0639 /* PostEditor5.swift in Sources */,
 				216E45ED248E914F0035E3CE /* Category.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

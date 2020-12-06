@@ -70,6 +70,12 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         // Prepare request payload
         let queryDocument = GraphQLOperationRequestUtils.getQueryDocument(document: request.document,
                                                                           variables: request.variables)
+        if Amplify.API.log.logLevel == .verbose,
+           let serializedJSON = try? JSONSerialization.data(withJSONObject: queryDocument,
+                                                            options: .prettyPrinted),
+           let prettyPrintedQueryDocument = String(data: serializedJSON, encoding: .utf8) {
+            Amplify.API.log.verbose("\(prettyPrintedQueryDocument)")
+        }
         let requestPayload: Data
         do {
             requestPayload = try JSONSerialization.data(withJSONObject: queryDocument)
