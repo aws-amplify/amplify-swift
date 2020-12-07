@@ -52,7 +52,7 @@ class AuthenticationProviderResendSignupCodeTests: BaseAuthenticationProviderTes
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
-    /// Test a successful resendSignUpCode call with .email as the destination of AuthCodeDeliveryDetails
+    /// Test a resendSignUpCode call with empty username
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service calls should mock a successul response
     /// - When:
