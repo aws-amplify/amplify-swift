@@ -6,6 +6,8 @@
 
 - **datastore**: selective sync on initial sync & incoming subscription models (#884)
 - **DataStore**: Start/Stop implementation (#919)
+  - **Note:** In previous releases, the DataStore sync engine was started automatically on `Amplify.configure()`. With this release, the DataStore sync engine does not start on `Amplify.configure()`.  More information can be found in the documentation [here](https://docs.amplify.aws/lib/datastore/other-methods/q/platform/ios#start).
+
 
 ### Bug Fixes
 
