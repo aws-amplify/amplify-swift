@@ -1,0 +1,80 @@
+//
+// Copyright 2018-2020 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import Foundation
+import PathKit
+import XcodeProj
+
+enum XcodeProjectError: Error {
+    case notFound(path: String)
+    case noPbxProjFound
+    case groupNotFound(group: String)
+    case addFileFailed
+}
+
+enum XcodeProjectFileType {
+    case resource, source
+}
+
+struct XcodeProjectFile {
+    let path: String
+    let type: XcodeProjectFileType
+
+    init(_ path: String, type: XcodeProjectFileType) {
+        self.path = path
+        self.type = type
+    }
+}
+
+struct XcodeProject {
+    let project: XcodeProj
+    let basePath: String
+    let projFilePath: String
+    let pbxProjFilePath: String
+
+    init(at path: String, projPath: String) throws {
+        self.basePath = path
+        self.project = try XcodeProj(pathString: projPath)
+        self.projFilePath = projPath
+        self.pbxProjFilePath = URL(fileURLWithPath: projPath).appendingPathComponent("project.pbxproj").path
+    }
+
+    func update() throws {
+        try project.pbxproj.write(path: Path(pbxProjFilePath), override: true)
+    }
+}
+
+// MARK: Add files
+extension XcodeProject {
+    func add(files: [XcodeProjectFile], toGroup group: String) throws {
+        guard let mainProject = project.mainProject() else {
+            throw XcodeProjectError.noPbxProjFound
+        }
+
+        let sourceRoot = Path(basePath)
+
+        // TODO: unwrap and check targetGroup before proceeding
+        guard let targetGroup = try project.getOrCreateGroup(named: group, in: mainProject.mainGroup) else {
+            throw XcodeProjectError.groupNotFound(group: group)
+        }
+
+        for file in files {
+            let path = Path(file.path)
+
+            guard let buildFile = try? project.add(file: path, to: targetGroup, withRoot: sourceRoot) else {
+                throw XcodeProjectError.addFileFailed
+            }
+
+            switch file.type {
+            case .resource:
+                project.addBuildFileToResources(buildFile)
+            case .source:
+                project.addBuildFileToSources(buildFile)
+            }
+        }
+    }
+}
