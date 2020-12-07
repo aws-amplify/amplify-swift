@@ -134,7 +134,8 @@ extension AuthenticationProviderAdapter {
                                               signOutURIQueryParameters: request.options.signOutQueryParameters)
 
         // Create a navigation controller with an empty UIViewController.
-        let navController = UINavigationController(rootViewController: UIViewController())
+        let uiViewController = UIViewController()
+        let navController = UINavigationController(rootViewController: uiViewController)
         navController.isNavigationBarHidden = true
         navController.modalPresentationStyle = .overCurrentContext
 
@@ -145,7 +146,9 @@ extension AuthenticationProviderAdapter {
         }
 
         parentViewController?.present(navController, animated: false, completion: {
-
+            
+            uiViewController.dismiss(animated: false, completion: {})
+            
             self.awsMobileClient.showSignIn(navigationController: navController,
                                             signInUIOptions: SignInUIOptions(),
                                             hostedUIOptions: hostedUIOptions) { [weak self] state, error in
