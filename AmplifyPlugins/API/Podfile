@@ -8,7 +8,6 @@ include_build_tools!
 target 'AWSAPICategoryPlugin' do
 	pod 'Amplify', :path => '../../'
   pod 'AWSPluginsCore', :path => '../../'
-  pod "ReachabilitySwift", "~> 5.0.0"
   pod "AppSyncRealTimeClient", "~> 1.4.0"
 
   target "AWSAPICategoryPluginTests" do
@@ -16,7 +15,6 @@ target 'AWSAPICategoryPlugin' do
     
     include_test_utilities!
     pod 'AmplifyTestCommon', :path => '../../'
-    pod "ReachabilitySwift", "~> 5.0.0"
   end
 end
 

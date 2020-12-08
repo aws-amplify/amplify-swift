@@ -100,6 +100,7 @@
 		6B33897023AABF1800561E5B /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B33896F23AABF1800561E5B /* NetworkReachability.swift */; };
 		6B33897223AAD94800561E5B /* AWSAPIPlugin+Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B33897123AAD94800561E5B /* AWSAPIPlugin+Reachability.swift */; };
 		6B382B452538E53700906593 /* AWSAPIPlugin+APIAuthProviderFactoryBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B382B442538E53700906593 /* AWSAPIPlugin+APIAuthProviderFactoryBehavior.swift */; };
+		6B8D479D25801DF700E841CB /* AmplifyReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B8D479C25801DF700E841CB /* AmplifyReachability.swift */; };
 		6BD4620625380EA200906831 /* OIDCAuthProviderWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD4620525380EA200906831 /* OIDCAuthProviderWrapper.swift */; };
 		6BD462082538102500906831 /* AuthTokenProviderWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD462072538102500906831 /* AuthTokenProviderWrapper.swift */; };
 		7632AD8A252E1E10009B5BC9 /* AppSyncJSONValue+toJSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7632AD89252E1E10009B5BC9 /* AppSyncJSONValue+toJSONValue.swift */; };
@@ -400,6 +401,7 @@
 		6B33896F23AABF1800561E5B /* NetworkReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
 		6B33897123AAD94800561E5B /* AWSAPIPlugin+Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAPIPlugin+Reachability.swift"; sourceTree = "<group>"; };
 		6B382B442538E53700906593 /* AWSAPIPlugin+APIAuthProviderFactoryBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAPIPlugin+APIAuthProviderFactoryBehavior.swift"; sourceTree = "<group>"; };
+		6B8D479C25801DF700E841CB /* AmplifyReachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyReachability.swift; sourceTree = "<group>"; };
 		6BD4620525380EA200906831 /* OIDCAuthProviderWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OIDCAuthProviderWrapper.swift; sourceTree = "<group>"; };
 		6BD462072538102500906831 /* AuthTokenProviderWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthTokenProviderWrapper.swift; sourceTree = "<group>"; };
 		6DD6386039136045F18D44AC /* Pods_HostApp_AWSAPICategoryPluginTestCommon_RESTWithUserPoolIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSAPICategoryPluginTestCommon_RESTWithUserPoolIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -887,6 +889,7 @@
 		6B2E465323AAA5000066EDCE /* Reachability */ = {
 			isa = PBXGroup;
 			children = (
+				6B8D479C25801DF700E841CB /* AmplifyReachability.swift */,
 				6B33896F23AABF1800561E5B /* NetworkReachability.swift */,
 				6B2E465623AAA69C0066EDCE /* NetworkReachabilityNotifier.swift */,
 			);
@@ -2213,6 +2216,7 @@
 				21D7A0E6237B54D90057D00D /* AWSAPICategoryPluginConfiguration+EndpointConfig.swift in Sources */,
 				21D7A0EB237B54D90057D00D /* AWSAPIPlugin+URLSessionDelegate.swift in Sources */,
 				21D7A0DF237B54D90057D00D /* AWSGraphQLOperation.swift in Sources */,
+				6B8D479D25801DF700E841CB /* AmplifyReachability.swift in Sources */,
 				6B33897223AAD94800561E5B /* AWSAPIPlugin+Reachability.swift in Sources */,
 				FA8EE785238632620097E4F1 /* AWSAPIPlugin+Log.swift in Sources */,
 				21D7A10F237B54D90057D00D /* RESTOperationRequestUtils+Validator.swift in Sources */,

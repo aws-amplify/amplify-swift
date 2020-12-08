@@ -7,7 +7,6 @@
 
 import Amplify
 import Foundation
-import Reachability
 import Combine
 
 @available(iOS 13.0, *)
@@ -68,10 +67,10 @@ class NetworkReachabilityNotifier {
 }
 
 // MARK: - Reachability
-extension Reachability: NetworkReachabilityProvidingFactory {
+extension AmplifyReachability: NetworkReachabilityProvidingFactory {
     public static func make(for hostname: String) -> NetworkReachabilityProviding? {
-        return try? Reachability(hostname: hostname)
+        return try? AmplifyReachability(hostname: hostname)
     }
 }
 
-extension Reachability: NetworkReachabilityProviding { }
+extension AmplifyReachability: NetworkReachabilityProviding { }

@@ -37,7 +37,6 @@ PODS:
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
-  - ReachabilitySwift (5.0.0)
   - Starscream (3.1.1)
   - SwiftFormat/CLI (0.44.17)
   - SwiftLint (0.41.0)
@@ -51,7 +50,6 @@ DEPENDENCIES:
   - AWSPluginsCore (from `../../`)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
-  - ReachabilitySwift (~> 5.0.0)
   - SwiftFormat/CLI (= 0.44.17)
   - SwiftLint
 
@@ -63,7 +61,6 @@ SPEC REPOS:
     - AWSCognitoIdentityProviderASF
     - AWSCore
     - AWSMobileClient
-    - ReachabilitySwift
     - Starscream
     - SwiftFormat
     - SwiftLint
@@ -105,11 +102,10 @@ SPEC CHECKSUMS:
   AWSPluginsCore: 3afe92313f5be7f002a48007e6645b5ab58e05a7
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
-  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
   SwiftLint: c585ebd615d9520d7fbdbe151f527977b0534f1e
 
-PODFILE CHECKSUM: 31880f143dde88382b42400953bbeb67ca4f2ae3
+PODFILE CHECKSUM: 261d73ffe0fe8162456b14fbeb1a6393c50cc34e
 
 COCOAPODS: 1.9.3

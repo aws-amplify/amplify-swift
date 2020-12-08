@@ -8,7 +8,6 @@
 import Amplify
 import Foundation
 import Combine
-import Reachability
 
 extension AWSAPIPlugin {
     @available(iOS 13.0, *)
@@ -25,7 +24,7 @@ extension AWSAPIPlugin {
         do {
             let networkReachability = try NetworkReachabilityNotifier(host: hostName,
                                                                       allowsCellularAccess: true,
-                                                                      reachabilityFactory: Reachability.self)
+                                                                      reachabilityFactory: AmplifyReachability.self)
             reachabilityMap[hostName] = networkReachability
             return networkReachability.publisher
         } catch {
