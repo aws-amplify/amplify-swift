@@ -13,7 +13,6 @@ import XCTest
 @testable import AWSMobileClient
 
 // swiftlint:disable file_length
-// swiftlint:disable type_body_length
 class AuthDeviceFetchDevicesTests: BaseAuthDeviceTest {
 
     /// Test a successful fetchDevices call
@@ -50,7 +49,7 @@ class AuthDeviceFetchDevicesTests: BaseAuthDeviceTest {
 
     /// Test a successful fetchDevices call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a invalid response
     /// - When:
     ///    - I invoke fetchDevices
     /// - Then:
