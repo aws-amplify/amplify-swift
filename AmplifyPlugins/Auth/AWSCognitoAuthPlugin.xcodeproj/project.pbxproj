@@ -149,6 +149,7 @@
 		B4F3EA4F243A782700F23296 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3EA4C243A782700F23296 /* ViewController.swift */; };
 		B4F3EA50243A782700F23296 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3EA4D243A782700F23296 /* AppDelegate.swift */; };
 		B4F3EA51243A782700F23296 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3EA4E243A782700F23296 /* SceneDelegate.swift */; };
+		D87D5864257EF27E004617B3 /* BaseAuthDeviceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87D5863257EF27E004617B3 /* BaseAuthDeviceTest.swift */; };
 		FA6B0EA8249443C90062AA59 /* AWSCognitoAuthPluginConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B0EA7249443C90062AA59 /* AWSCognitoAuthPluginConfigTests.swift */; };
 		FECB988C412E46FD5961894A /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1674B6AE81501F6E278CE00B /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework */; };
 /* End PBXBuildFile section */
@@ -348,6 +349,7 @@
 		B4F3EA4E243A782700F23296 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		C49A4C812B0F973F5536DCC8 /* Pods-AWSAuthPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAuthPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSAuthPlugin/Pods-AWSAuthPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		C5E50D8021B9740CB511898D /* Pods-AWSAuthPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAuthPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSAuthPlugin/Pods-AWSAuthPlugin.debug.xcconfig"; sourceTree = "<group>"; };
+		D87D5863257EF27E004617B3 /* BaseAuthDeviceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAuthDeviceTest.swift; sourceTree = "<group>"; };
 		E9289652B314AA0AA1F31BC8 /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
 		FA6B0EA7249443C90062AA59 /* AWSCognitoAuthPluginConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSCognitoAuthPluginConfigTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -519,6 +521,7 @@
 				B4136E8D256D7B500011210B /* AuthDeviceFetchDevicesTests.swift */,
 				B4136E93256D7B630011210B /* AuthDeviceForgetDeviceTests.swift */,
 				B4136E99256D7B700011210B /* AuthDeviceRememberDeviceTests.swift */,
+				D87D5863257EF27E004617B3 /* BaseAuthDeviceTest.swift */,
 			);
 			path = AuthDeviceBehaviorTests;
 			sourceTree = "<group>";
@@ -1518,6 +1521,7 @@
 				B4060295256C21BC00D23D50 /* AuthenticationProviderSignupTests.swift in Sources */,
 				B41D0FE22475A3A10049D08D /* AuthUserAttributeKeyTests.swift in Sources */,
 				B4136E26256D76300011210B /* AuthenticationProviderConfirmSigninTests.swift in Sources */,
+				D87D5864257EF27E004617B3 /* BaseAuthDeviceTest.swift in Sources */,
 				B4136E20256D757C0011210B /* AuthenticationProviderConfirmSignupTests.swift in Sources */,
 				B4136E3E256D76960011210B /* AuthenticationProviderSignoutTests.swift in Sources */,
 				B4136E5E256D7A690011210B /* AuthorizationProviderSessionSignInTests.swift in Sources */,

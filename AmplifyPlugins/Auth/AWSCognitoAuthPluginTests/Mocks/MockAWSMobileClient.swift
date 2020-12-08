@@ -34,6 +34,8 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     var awsCredentialsMockResult: Result<AWSCredentials, Error>?
     var getCurrentUserStateMockResult: UserState?
 
+    var listDevicesMockResult: Result<ListDevicesResult, Error>?
+
     var mockCurrentUserState: UserState = .unknown
 
     func initialize() throws {
@@ -167,7 +169,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     }
 
     func listDevices(completionHandler: @escaping ((ListDevicesResult?, Error?) -> Void)) {
-        fatalError()
+        prepareResult(mockResult: listDevicesMockResult, completionHandler: completionHandler)
     }
 
     func updateDeviceStatus(remembered: Bool,
