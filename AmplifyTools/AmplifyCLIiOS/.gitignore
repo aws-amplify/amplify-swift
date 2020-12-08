@@ -1,6 +1,7 @@
 .DS_Store
 .build
 /Packages
-/*.xcodeproj
+AmplifyCLIiOS.xcodeproj/xcuserdata
+AmplifyCLIiOS.xcodeproj/*.plist
 xcuserdata/
 
