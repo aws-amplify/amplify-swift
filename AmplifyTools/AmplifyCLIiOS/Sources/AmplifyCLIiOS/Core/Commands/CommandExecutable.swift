@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Provides a default implementation for an executable command
 protocol CommandExecutable where Self: CommandEnvironmentProvider {
     func exec<T: AmplifyCommand>(command: T) -> AmplifyCommandResult
 }
@@ -69,6 +70,7 @@ extension CommandExecutable {
         }
     }
 
+    /// Given a command, executes its underlying tasks and aggregates the final result
     func exec<T: AmplifyCommand>(command: T) -> AmplifyCommandResult {
         var succeeded = false
         let serialQueue = DispatchQueue(label: "com.amazon.amplify")

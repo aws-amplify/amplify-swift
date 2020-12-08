@@ -30,6 +30,8 @@ struct XcodeProjectFile {
     }
 }
 
+/// Wrapper around `XcodeProj` library, provides convenience utilities functions to
+/// access and update an Xcode project.
 struct XcodeProject {
     let project: XcodeProj
     let basePath: String

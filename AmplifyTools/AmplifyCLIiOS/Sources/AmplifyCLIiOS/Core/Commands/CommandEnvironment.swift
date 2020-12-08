@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// AmplifyCommandEnvironment default implementation
 struct CommandEnvironment: Decodable, AmplifyCommandEnvironment {
     internal let basePathURL: URL
     let basePath: String

@@ -37,6 +37,7 @@ func addConfigFilesToXcodeProject(
     }
 }
 
+/// Given an existing Amplify iOS project, adds configuration files to a `AmplifyConfig` group
 struct CommandImportConfig: AmplifyCommand {
     struct CommandImportConfigArgs {
         let configGroup = "AmplifyConfig"

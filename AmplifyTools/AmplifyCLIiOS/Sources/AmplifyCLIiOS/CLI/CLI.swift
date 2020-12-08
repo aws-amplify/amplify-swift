@@ -9,7 +9,7 @@ import Foundation
 
 import ArgumentParser
 
-// MARK: CLICommandInit
+/// CLI interface to `CommandImportConfig` command
 struct CLICommandImportConfig: ParsableCommand, CommandExecutable, CLICommandReportable {
     public static let configuration = CommandConfiguration(
         commandName: "import-config",
@@ -30,6 +30,7 @@ struct CLICommandImportConfig: ParsableCommand, CommandExecutable, CLICommandRep
 
 }
 
+/// CLI main entry point `amplify-ios-cli`
 struct AmplifyIOS: ParsableCommand {
     static let configuration = CommandConfiguration(
         abstract: "Amplify CLI iOS",
