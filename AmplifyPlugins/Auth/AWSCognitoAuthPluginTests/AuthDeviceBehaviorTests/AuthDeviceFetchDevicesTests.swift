@@ -158,7 +158,7 @@ class AuthDeviceFetchDevicesTests: BaseAuthDeviceTest {
     /// - When:
     ///    - I invoke fetchDevices
     /// - Then:
-    ///    - I should get a .service error with  .invalidParameter as underlyingError
+    ///    - I should get a .configuration error
     ///
     func testListDevicesWithInvalidUserPoolConfigurationException() {
 
@@ -224,7 +224,7 @@ class AuthDeviceFetchDevicesTests: BaseAuthDeviceTest {
     /// - When:
     ///    - I invoke fetchDevices
     /// - Then:
-    ///    - I should get a .passwordResetRequired error
+    ///    - I should get a .service error with .passwordResetRequired as underlyingError
     ///
     func testListDevicesWithPasswordResetRequiredException() {
 
@@ -261,7 +261,7 @@ class AuthDeviceFetchDevicesTests: BaseAuthDeviceTest {
     /// - When:
     ///    - I invoke fetchDevices
     /// - Then:
-    ///    - I should get a .resourceNotFound error
+    ///    - I should get a .service error with .resourceNotFound as underlyingError
     ///
     func testListDevicesWithResourceNotFoundException() {
 
@@ -337,7 +337,7 @@ class AuthDeviceFetchDevicesTests: BaseAuthDeviceTest {
     /// - When:
     ///    - I invoke fetchDevices
     /// - Then:
-    ///    - I should get a .userNotConfirmed error
+    ///    - I should get a .service error with .userNotConfirmed as underlyingError
     ///
     func testListDevicesWithUserNotConfirmedException() {
 
@@ -375,7 +375,7 @@ class AuthDeviceFetchDevicesTests: BaseAuthDeviceTest {
     /// - When:
     ///    - I invoke fetchDevices
     /// - Then:
-    ///    - I should get a .userNotFound error
+    ///    - I should get a .service error with .userNotFound as underlyingError
     ///
     func testListDevicesWithUserNotFoundException() {
 
