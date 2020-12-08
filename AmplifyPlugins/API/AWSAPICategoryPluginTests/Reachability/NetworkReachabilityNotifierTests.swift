@@ -7,7 +7,6 @@
 
 import Foundation
 import XCTest
-import Reachability
 import Combine
 @testable import AWSAPICategoryPlugin
 
