@@ -10,25 +10,29 @@ import Amplify
 import Foundation
 
 extension UserFollowing {
-  // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
-    case id
-    case user
-    case followingUser
-  }
+    // MARK: - CodingKeys
+    public enum CodingKeys: String, ModelKey {
+        case id
+        case user
+        case followingUser
 
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema
+        public var modelName: String {
+            return "UserFollowing"
+        }
+    }
 
-  public static let schema = defineSchema { model in
-    let userFollowing = UserFollowing.keys
+    public static let keys = CodingKeys.self
+    //  MARK: - ModelSchema
 
-    model.pluralName = "UserFollowings"
+    public static let schema = defineSchema { model in
+        let userFollowing = UserFollowing.keys
 
-    model.fields(
-      .id(),
-      .belongsTo(userFollowing.user, is: .optional, ofType: User.self, targetName: "userFollowingUserId"),
-      .belongsTo(userFollowing.followingUser, is: .optional, ofType: User.self, targetName: "userFollowingFollowingUserId")
-    )
+        model.pluralName = "UserFollowings"
+
+        model.fields(
+            .id(),
+            .belongsTo(userFollowing.user, is: .optional, ofType: User.self, targetName: "userFollowingUserId"),
+            .belongsTo(userFollowing.followingUser, is: .optional, ofType: User.self, targetName: "userFollowingFollowingUserId")
+        )
     }
 }

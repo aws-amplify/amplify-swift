@@ -15,6 +15,10 @@ extension BookAuthor {
         case id
         case book
         case author
+
+        public var modelName: String {
+            return "BookAuthor"
+        }
     }
 
     public static let keys = CodingKeys.self
