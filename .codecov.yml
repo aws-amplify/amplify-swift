@@ -1,0 +1,6 @@
+coverage:
+  branch: main
+  status:
+    project:
+      default:
+        threshold: 1%
