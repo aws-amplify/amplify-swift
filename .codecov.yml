@@ -3,5 +3,3 @@ coverage:
     project:
       default:
         threshold: 1%
-        branches:
-        - main
