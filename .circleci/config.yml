@@ -148,6 +148,9 @@ jobs:
       - run:
           name: Test AWS plugins core
           command: xcodebuild test -workspace Amplify.xcworkspace -scheme AWSPluginsCore -sdk iphonesimulator -destination "${destination}" | tee "artifacts/test-AWSPluginsCore.log" | xcpretty --simple --color --report junit
+      - run:
+          name: Upload coverage report to Codecov
+          command: bash ~/amplify-ios/build-support/codecov.sh -F 'AWSPluginsCore' -J '^AWSPluginsCore$'
       - store_test_results:
           path: build/reports
       - upload_artifacts
