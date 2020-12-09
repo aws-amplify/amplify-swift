@@ -94,19 +94,16 @@ class PredictionsErrorHelper {
             }
             return AWSTranscribeStreamingErrorMessage.map(errorType) ?? defaultError
         case NSURLErrorDomain:
-            return mapError(error)
+            guard let urlError = error as? URLError else {
+                return defaultError
+            }
+            return mapUrlError(urlError)
         default:
             return defaultError
         }
     }
 
-    static func mapError(_ nsError: NSError) -> PredictionsError {
-        let defaultError = PredictionsErrorHelper.getDefaultError(nsError)
-
-        let error = nsError as? URLError
-        guard let urlError = error else {
-            return defaultError
-        }
+    static func mapUrlError(_ urlError: URLError) -> PredictionsError {
 
         switch urlError.code {
         case .cannotFindHost:
@@ -119,9 +116,7 @@ class PredictionsErrorHelper {
             let recoverySuggestion = "Please check your network connectivity status."
             return PredictionsError.network(errorDescription, recoverySuggestion, urlError)
         default:
-            return PredictionsError.network(nsError.localizedDescription,
-                                            nsError.localizedRecoverySuggestion ?? "",
-                                            urlError)
+            return PredictionsError.network(urlError.localizedDescription, "", urlError)
         }
     }
 
