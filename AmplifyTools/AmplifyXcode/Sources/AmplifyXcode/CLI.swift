@@ -34,10 +34,28 @@ struct CLICommandImportConfig: ParsableCommand, CommandExecutable, CLICommandRep
     }
 }
 
+struct CLICommandImportModels: ParsableCommand, CommandExecutable, CLICommandReportable {
+    public static let configuration = CommandConfiguration(
+        commandName: "import-models",
+        abstract: CommandImportModels.description
+    )
+
+    @Option(name: .shortAndLong, help: "Project base path")
+    private var path: String = Process().currentDirectoryPath
+
+    var environment: AmplifyCommandEnvironment {
+        CommandEnvironment(basePath: path, fileManager: FileManager.default)
+    }
+
+    func run() throws {
+        let output = exec(command: CommandImportModels())
+        report(result: output)
+    }
+}
+
 /// CLI interface entry point `amplify-xcode`
 struct AmplifyXcode: ParsableCommand {
     static let configuration = CommandConfiguration(
         abstract: "Amplify Xcode CLI",
-        subcommands: [CLICommandImportConfig.self]
-    )
+        subcommands: [CLICommandImportConfig.self, CLICommandImportModels.self])
 }
