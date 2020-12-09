@@ -76,6 +76,11 @@ class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider
                 self.callbackQueue.async {
                     self.clientDelegate.connectionStatusDidChange(status, withError: error)
                 }
+
+                if error is URLError {
+                    self.webSocketTask.cancel()
+                    return
+                }
             case .success(let message):
                 switch message {
                 case .data(let data):

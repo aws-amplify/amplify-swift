@@ -31,7 +31,17 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
         request.mediaSampleRateHertz = 8_000
 
         transcribeClientDelegate.connectionStatusCallback = { status, error in
-            if status == .connected {
+            if status == .closed && error != nil {
+                guard error != nil else {
+                    return
+                }
+                let nsError = error as NSError?
+                let predictionsError = PredictionsErrorHelper.mapPredictionsServiceError(nsError!)
+                if case .network = predictionsError {
+                    onEvent(.failed(predictionsError))
+                    return
+                }
+            } else if status == .connected {
                 let headers = [
                     ":content-type": "audio/wav",
                     ":message-type": "event",

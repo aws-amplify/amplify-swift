@@ -51,7 +51,8 @@ class PredictionsErrorHelper {
             )
         }
     }
-   // swiftlint:disable cyclomatic_complexity
+
+    // swiftlint:disable cyclomatic_complexity
     static func mapPredictionsServiceError(_ error: NSError) -> PredictionsError {
         let defaultError = PredictionsErrorHelper.getDefaultError(error)
 
@@ -92,8 +93,30 @@ class PredictionsErrorHelper {
                 return defaultError
             }
             return AWSTranscribeStreamingErrorMessage.map(errorType) ?? defaultError
+        case NSURLErrorDomain:
+            guard let urlError = error as? URLError else {
+                return defaultError
+            }
+            return mapUrlError(urlError)
         default:
             return defaultError
+        }
+    }
+
+    static func mapUrlError(_ urlError: URLError) -> PredictionsError {
+
+        switch urlError.code {
+        case .cannotFindHost:
+            let errorDescription = "The host name for a URL couldn’t be resolved."
+            let recoverySuggestion = "Please check if you are reaching the correct host."
+            return PredictionsError.network(errorDescription, recoverySuggestion, urlError)
+        case .notConnectedToInternet:
+            // swiftlint:disable:next line_length
+            let errorDescription = "A network resource was requested, but an internet connection hasn’t been established and can’t be established automatically."
+            let recoverySuggestion = "Please check your network connectivity status."
+            return PredictionsError.network(errorDescription, recoverySuggestion, urlError)
+        default:
+            return PredictionsError.network(urlError.localizedDescription, "", urlError)
         }
     }
 

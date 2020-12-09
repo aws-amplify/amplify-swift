@@ -79,7 +79,11 @@ class PredictionsServiceTranscribeTests: XCTestCase {
     ///
     func testTranscribeService() {
         let mockResponse = createMockTranscribeResponse()
+
+        mockTranscribe.setConnectionResult(result: AWSTranscribeStreamingClientConnectionStatus.connected, error: nil)
+        mockTranscribe.sendEndFrameExpection = expectation(description: "Sent end frame")
         mockTranscribe.setResult(result: mockResponse)
+
         let expectedTranscription = "This is a test"
         let resultReceived = expectation(description: "Transcription result should be returned")
 
@@ -119,6 +123,36 @@ class PredictionsServiceTranscribeTests: XCTestCase {
                 XCTFail("Should not produce result: \(result)")
             case .failed(let error):
                 XCTAssertNotNil(error, "Should produce an error")
+                errorReceived.fulfill()
+            }
+        }
+
+        waitForExpectations(timeout: 1)
+    }
+
+    /// Test whether error is correctly propogated
+    ///
+    /// - Given: Predictions service with transcribe behavior
+    /// - When:
+    ///    - I invoke an invalid request with Unreachable host
+    /// - Then:
+    ///    - I should get back a connection error
+    ///
+    func testTranscribeServiceWithCannotFindHostError() {
+        let urlError = URLError(.cannotFindHost)
+        mockTranscribe.setConnectionResult(result: AWSTranscribeStreamingClientConnectionStatus.closed, error: urlError)
+
+        let errorReceived = expectation(description: "Error should be returned")
+
+        predictionsService.transcribe(speechToText: audioFile, language: .usEnglish) { event in
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                guard case .network = error else {
+                    XCTFail("Should produce an network error instead of \(error)")
+                    return
+                }
                 errorReceived.fulfill()
             }
         }
