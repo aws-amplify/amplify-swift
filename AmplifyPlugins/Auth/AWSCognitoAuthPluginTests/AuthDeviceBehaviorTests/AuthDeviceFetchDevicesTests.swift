@@ -36,7 +36,7 @@ class AuthDeviceFetchDevicesTests: BaseAuthDeviceTest {
             switch result {
             case .success(let listDevicesResult):
                 guard listDevicesResult.count == 1 else {
-                    XCTFail("Result should be .done for next step")
+                    XCTFail("Result should have device count of 1")
                     return
                 }
             case .failure(let error):
@@ -47,7 +47,7 @@ class AuthDeviceFetchDevicesTests: BaseAuthDeviceTest {
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
-    /// Test a successful fetchDevices call
+    /// Test a fetchDevices call with invalid response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service calls should mock a invalid response
     /// - When:
@@ -77,12 +77,12 @@ class AuthDeviceFetchDevicesTests: BaseAuthDeviceTest {
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
-    // MARK: - Service error for initiateAuth
+    // MARK: - Service error for listDevices
 
     /// Test a fetchDevices with `InternalErrorException` from service
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
-    ///   InternalErrorException response for signIn
+    ///   InternalErrorException response for fetchDevice
     ///
     /// - When:
     ///    - I invoke fetchDevices

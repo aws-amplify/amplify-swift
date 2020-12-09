@@ -69,12 +69,12 @@ class AuthDeviceForgetDeviceTests: BaseAuthDeviceTest {
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
-    // MARK: - Service error for DeviceAttributes
+    // MARK: - Service error for ForgetDevice
 
     /// Test a forgetCurrentDevice with `InternalErrorException` from service
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
-    ///   InternalErrorException response for signIn
+    ///   InternalErrorException response for forgetDevice
     ///
     /// - When:
     ///    - I invoke forgetDevice
@@ -107,7 +107,7 @@ class AuthDeviceForgetDeviceTests: BaseAuthDeviceTest {
     /// Test a forgetDevice with `InternalErrorException` from service
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
-    ///   InternalErrorException response for signIn
+    ///   InternalErrorException response for forgetDevice
     ///
     /// - When:
     ///    - I invoke forgetDevice with an AWSAuthDevice
