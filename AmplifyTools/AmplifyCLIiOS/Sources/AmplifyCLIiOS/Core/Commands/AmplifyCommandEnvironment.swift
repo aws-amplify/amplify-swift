@@ -21,6 +21,8 @@ protocol AmplifyCommandEnvironmentFileManager {
     /// Given an array file names, returns their full path relative to `basePath`
     func path(for components: [String]) -> String
 
+    func glob(pattern: String) -> [String]
+
     /// Creates a directory at path `directory` relative to `basePath`
     func create(directory: String) throws -> String
 

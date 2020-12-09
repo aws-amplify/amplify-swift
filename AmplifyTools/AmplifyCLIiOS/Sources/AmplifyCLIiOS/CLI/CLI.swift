@@ -20,15 +20,16 @@ struct CLICommandImportConfig: ParsableCommand, CommandExecutable, CLICommandRep
     private var path: String = Process().currentDirectoryPath
 
     var environment: AmplifyCommandEnvironment {
-        CommandEnvironment(basePath: URL(fileURLWithPath: path).path)
+        CommandEnvironment(basePath: path)
     }
 
     func run() throws {
         let output = exec(command: CommandImportConfig())
         report(result: output)
     }
-
 }
+
+
 
 /// CLI main entry point `amplify-ios-cli`
 struct AmplifyIOS: ParsableCommand {

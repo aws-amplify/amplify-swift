@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import PathKit
+
 
 /// AmplifyCommandEnvironment default implementation
 struct CommandEnvironment: Decodable, AmplifyCommandEnvironment {
@@ -14,21 +16,25 @@ struct CommandEnvironment: Decodable, AmplifyCommandEnvironment {
     let currentFolder: String
 
     init(basePath: String) {
-        self.basePath = basePath
-        self.basePathURL = URL(fileURLWithPath: basePath)
+        self.basePath = basePath.homeDirectoryResolved()
+        self.basePathURL = URL(fileURLWithPath: self.basePath)
         self.currentFolder = basePathURL.lastPathComponent
     }
 }
 
 // MARK: - AmplifyCommandEnvironmentFileManager
 extension CommandEnvironment {
-   // TODO: resolve home path ~ https://developer.apple.com/documentation/foundation/filemanager/1642853-homedirectory
     func path(for file: String ) -> String {
         return URL(fileURLWithPath: file, relativeTo: basePathURL).path
     }
 
     func path(for components: [String]) -> String {
         return path(for: components.joined(separator: "/"))
+    }
+
+    func glob(pattern: String) -> [String] {
+        let fullPath = path(for: pattern)
+        return Path.glob(fullPath).map { $0.string }
     }
 
     @discardableResult func create(directory: String) throws -> String {
