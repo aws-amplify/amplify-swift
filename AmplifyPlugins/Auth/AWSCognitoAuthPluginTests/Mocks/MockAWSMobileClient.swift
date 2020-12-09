@@ -34,6 +34,11 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     var awsCredentialsMockResult: Result<AWSCredentials, Error>?
     var getCurrentUserStateMockResult: UserState?
 
+    var listDevicesMockResult: Result<ListDevicesResult, Error>?
+    var forgetDeviceMockResult: Error?
+    var forgetCurrentDeviceMockResult: Error?
+    var rememberDeviceMockResult: Result<UpdateDeviceStatusResult, Error>?
+
     var mockCurrentUserState: UserState = .unknown
 
     func initialize() throws {
@@ -167,12 +172,12 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     }
 
     func listDevices(completionHandler: @escaping ((ListDevicesResult?, Error?) -> Void)) {
-        fatalError()
+        prepareResult(mockResult: listDevicesMockResult, completionHandler: completionHandler)
     }
 
     func updateDeviceStatus(remembered: Bool,
                             completionHandler: @escaping ((UpdateDeviceStatusResult?, Error?) -> Void)) {
-        fatalError()
+        prepareResult(mockResult: rememberDeviceMockResult, completionHandler: completionHandler)
     }
 
     func getDevice(_ completionHandler: @escaping ((Device?, Error?) -> Void)) {
@@ -180,11 +185,11 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     }
 
     func forgetDevice(deviceId: String, completionHandler: @escaping ((Error?) -> Void)) {
-        fatalError()
+        completionHandler(forgetDeviceMockResult)
     }
 
     func forgetCurrentDevice(_ completionHandler: @escaping ((Error?) -> Void)) {
-        fatalError()
+        completionHandler(forgetCurrentDeviceMockResult)
     }
 
     func invalidateCachedTemporaryCredentials() {
