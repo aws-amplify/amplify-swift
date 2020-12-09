@@ -39,6 +39,50 @@ class InterpretBasicIntegrationTests: AWSPredictionsPluginTestBase {
         waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Test if we can make successful calls to interpret when different input texts containing one or more emoji ZWJ (zero width joiner)/modifier
+    /// sequences.
+    ///
+    /// - Given: Configured Amplify with prediction added
+    /// - When:
+    ///    - I invoke interpret with text
+    /// - Then:
+    ///    - Should return no empty result
+    ///
+    func testInterpretTextWithEmojisWithMultipleUnicodeScalars() {
+        let inputTexts = [
+            """
+            👇🏾 is a modifier sequence combining 👇 Backhand Index Pointing Down and 🏾 Medium-Dark Skin
+            tone.
+            """,
+            """
+            “Here's to the crazy ones. The misfits. The rebels. The troublemakers 🏴‍☠️“.
+            A pirate flag is ZWJ sequence combining  🏴, Zero Width Joiner and ☠️.
+            """,
+            """
+            👩‍👩‍👧‍👧 family emojii is a ZWJ sequence combining:
+                👩 Woman, Zero Width Joiner,
+                👩 Woman, Zero Width Joiner,
+                👧 Girl, Zero Width Joiner
+                and a 👧 Girl.
+            """
+        ]
+
+        for text in inputTexts {
+            let interpretInvoked = expectation(description: "Interpret invoked")
+            let operation = Amplify.Predictions.interpret(text: text) { event in
+                switch event {
+                case .success(let result):
+                    interpretInvoked.fulfill()
+                    XCTAssertNotNil(result, "Result should contain value")
+                case .failure(let error):
+                    XCTFail("Should not receive error \(error) for text \(text)")
+                }
+            }
+            XCTAssertNotNil(operation)
+            waitForExpectations(timeout: networkTimeout)
+        }
+    }
+
     /// Test if we can make successful call to interpret
     ///
     /// - Given: Configured Amplify with prediction added
