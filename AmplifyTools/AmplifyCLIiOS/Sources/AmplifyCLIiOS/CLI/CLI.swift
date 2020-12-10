@@ -19,7 +19,7 @@ struct CLICommandImportConfig: ParsableCommand, CommandExecutable, CLICommandRep
     private var path: String = Process().currentDirectoryPath
 
     var environment: AmplifyCommandEnvironment {
-        CommandEnvironment(basePath: path)
+        CommandEnvironment(basePath: path, fileManager: FileManager.default)
     }
 
     func run() throws {

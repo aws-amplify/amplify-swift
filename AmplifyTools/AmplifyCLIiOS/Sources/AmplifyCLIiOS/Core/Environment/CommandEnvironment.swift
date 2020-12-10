@@ -6,18 +6,20 @@
 //
 
 import Foundation
-import PathKit
 
 /// AmplifyCommandEnvironment default implementation
-struct CommandEnvironment: Decodable, AmplifyCommandEnvironment {
+struct CommandEnvironment: AmplifyCommandEnvironment {
     internal let basePathURL: URL
     let basePath: String
     let currentFolder: String
+    let fileManager: AmplifyFileManager
 
-    init(basePath: String) {
-        self.basePath = FileManager.default.resolveHomeDirectoryIn(path: basePath)
+    init(basePath: String, fileManager: AmplifyFileManager) {
+        self.basePath = fileManager.resolveHomeDirectoryIn(path: basePath)
         self.basePathURL = URL(fileURLWithPath: self.basePath)
         self.currentFolder = basePathURL.lastPathComponent
+
+        self.fileManager = fileManager
     }
 }
 
@@ -33,13 +35,13 @@ extension CommandEnvironment {
 
     func glob(pattern: String) -> [String] {
         let fullPath = path(for: pattern)
-        return Path.glob(fullPath).map { $0.string }
+        return fileManager.glob(pattern: fullPath).map { $0 }
     }
 
     @discardableResult func createDirectory(atPath path: String) throws -> String {
         let url = URL(fileURLWithPath: path, relativeTo: basePathURL)
         do {
-            try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+            try fileManager.createDirectory(at: url, withIntermediateDirectories: true)
             return url.path
         } catch {
             throw AmplifyCommandError(.unknown, error: error)
@@ -48,7 +50,7 @@ extension CommandEnvironment {
 
     @discardableResult func createFile(atPath filePath: String, content: String) throws -> String {
         let fullPath = path(for: filePath)
-        if FileManager.default.createFile(atPath: fullPath, contents: content.data(using: .utf8)) {
+        if fileManager.createFile(atPath: fullPath, contents: content.data(using: .utf8)) {
             return fullPath
         }
         throw AmplifyCommandError(.unknown, error: nil)
@@ -56,11 +58,11 @@ extension CommandEnvironment {
 
     func contentsOfDirectory(atPath directoryPath: String) throws -> [String] {
         let fullPath = path(for: directoryPath)
-        guard FileManager.default.directoryExists(atPath: fullPath) else {
+        guard fileManager.directoryExists(atPath: fullPath) else {
             throw AmplifyCommandError(.folderNotFound, error: nil, recoverySuggestion: "Folder \(fullPath) not found")
         }
         do {
-            let content = try FileManager.default.contentsOfDirectory(atPath: fullPath)
+            let content = try fileManager.contentsOfDirectory(atPath: fullPath)
             return content
         } catch {
             throw AmplifyCommandError(.unknown, error: error)
@@ -68,7 +70,7 @@ extension CommandEnvironment {
     }
 
     func directoryExists(atPath dirPath: String) -> Bool {
-        FileManager.default.directoryExists(atPath: path(for: dirPath))
+        fileManager.directoryExists(atPath: path(for: dirPath))
     }
 }
 

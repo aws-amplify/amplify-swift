@@ -7,32 +7,34 @@
 
 import Foundation
 
-func amplifyFolderExist(
-    context: AmplifyCommandEnvironment,
-    args: CommandImportConfig.TaskArgs) -> AmplifyCommandTaskResult {
-    if context.directoryExists(atPath: "amplify") {
-        return .success("Amplify project found")
+enum ImportConfigTasks {
+    static func amplifyFolderExist(
+        context: AmplifyCommandEnvironment,
+        args: CommandImportConfig.TaskArgs) -> AmplifyCommandTaskResult {
+        if context.directoryExists(atPath: "amplify") {
+            return .success("Amplify project found")
+        }
+
+        return .failure(AmplifyCommandError(
+                            .folderNotFound,
+                            error: nil,
+                            recoverySuggestion: "Please run `amplify init` to initialize an Amplify project."))
     }
 
-    return .failure(AmplifyCommandError(
-                        .folderNotFound,
-                        error: nil,
-                        recoverySuggestion: "Please run `amplify init` to initialize an Amplify project."))
-}
-
-func addConfigFilesToXcodeProject(
-    context: AmplifyCommandEnvironment,
-    args: CommandImportConfig.TaskArgs) -> AmplifyCommandTaskResult {
-    let configFiles = args.configFiles.map { XcodeProjectFile(context.path(for: $0), type: .resource) }
-    let projectPath = context.basePath
-    do {
-        try context.xcode(project: projectPath, add: configFiles, toGroup: args.configGroup)
-        return .success("Successfully updated project \(projectPath)")
-    } catch {
-        if let underlyingError = error as? AmplifyCommandError {
-            return .failure(underlyingError)
+    static func addConfigFilesToXcodeProject(
+        context: AmplifyCommandEnvironment,
+        args: CommandImportConfig.TaskArgs) -> AmplifyCommandTaskResult {
+        let configFiles = args.configFiles.map { XcodeProjectFile(context.path(for: $0), type: .resource) }
+        let projectPath = context.basePath
+        do {
+            try context.xcode(project: projectPath, add: configFiles, toGroup: args.configGroup)
+            return .success("Successfully updated project \(projectPath)")
+        } catch {
+            if let underlyingError = error as? AmplifyCommandError {
+                return .failure(underlyingError)
+            }
+            return .failure(AmplifyCommandError(.unknown, error: error))
         }
-        return .failure(AmplifyCommandError(.unknown, error: error))
     }
 }
 
@@ -50,8 +52,8 @@ struct CommandImportConfig: AmplifyCommand {
     var taskArgs = CommandImportConfigArgs()
 
     var tasks: [AmplifyCommandTask<CommandImportConfigArgs>] = [
-        .precondition(amplifyFolderExist),
-        .run(addConfigFilesToXcodeProject)
+        .precondition(ImportConfigTasks.amplifyFolderExist),
+        .run(ImportConfigTasks.addConfigFilesToXcodeProject)
     ]
 
     func onFailure() {

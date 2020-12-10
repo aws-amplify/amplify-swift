@@ -12,8 +12,9 @@ protocol AmplifyCommandEnvironmentFileManager {
     var basePathURL: URL { get }
     var basePath: String { get }
     var currentFolder: String { get }
+    var fileManager: AmplifyFileManager { get }
 
-    init(basePath: String)
+    init(basePath: String, fileManager: AmplifyFileManager)
 
     /// Given a file name, returns its full path relative to `basePath`
     func path(for file: String ) -> String
