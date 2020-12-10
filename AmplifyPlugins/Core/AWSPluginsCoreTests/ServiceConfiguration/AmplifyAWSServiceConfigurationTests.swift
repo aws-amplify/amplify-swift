@@ -34,7 +34,7 @@ class AmplifyAWSServiceConfigurationTests: XCTestCase {
         XCTAssertNotNil(configuration.userAgent)
         let userAgentParts = configuration.userAgent.components(separatedBy: " ")
         XCTAssertEqual(3, userAgentParts.count)
-        XCTAssert(userAgentParts[0].starts(with: "amplify-iOS/"))
+        XCTAssertEqual("amplify-iOS/\(AmplifyAWSServiceConfiguration.version)", userAgentParts[0])
         XCTAssertEqual(expectedSystem, userAgentParts[1])
         XCTAssertEqual(expectedLocale, userAgentParts[2])
     }

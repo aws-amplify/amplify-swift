@@ -21,7 +21,7 @@ extension AmplifyAWSServiceConfiguration {
 
     static func platformInformation() -> String {
         var platformTokens = platformMapping.map { "\($0.rawValue)/\($1)" }
-        platformTokens.append("amplify-iOS/\(version)")
+        platformTokens.append("amplify-iOS/\(AmplifyAWSServiceConfiguration.version)")
         return platformTokens.joined(separator: " ")
     }
 }

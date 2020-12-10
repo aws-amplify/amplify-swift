@@ -62,7 +62,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     func start(completion: @escaping DataStoreCallback<Void>) {
         notify("start")
     }
-    
+
     func stop(completion: @escaping DataStoreCallback<Void>) {
         notify("stop")
     }
