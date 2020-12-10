@@ -8,7 +8,6 @@
 import Foundation
 import PathKit
 
-
 /// AmplifyCommandEnvironment default implementation
 struct CommandEnvironment: Decodable, AmplifyCommandEnvironment {
     internal let basePathURL: URL
@@ -16,7 +15,7 @@ struct CommandEnvironment: Decodable, AmplifyCommandEnvironment {
     let currentFolder: String
 
     init(basePath: String) {
-        self.basePath = basePath.homeDirectoryResolved()
+        self.basePath = FileManager.default.resolveHomeDirectoryIn(path: basePath)
         self.basePathURL = URL(fileURLWithPath: self.basePath)
         self.currentFolder = basePathURL.lastPathComponent
     }
@@ -37,8 +36,8 @@ extension CommandEnvironment {
         return Path.glob(fullPath).map { $0.string }
     }
 
-    @discardableResult func create(directory: String) throws -> String {
-        let url = URL(fileURLWithPath: directory, relativeTo: basePathURL)
+    @discardableResult func createDirectory(atPath path: String) throws -> String {
+        let url = URL(fileURLWithPath: path, relativeTo: basePathURL)
         do {
             try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
             return url.path
@@ -47,31 +46,36 @@ extension CommandEnvironment {
         }
     }
 
-    func create(file: String, content: String) {
-        FileManager.default.createFile(atPath: path(for: file), contents: content.data(using: .utf8))
+    @discardableResult func createFile(atPath filePath: String, content: String) throws -> String {
+        let fullPath = path(for: filePath)
+        if FileManager.default.createFile(atPath: fullPath, contents: content.data(using: .utf8)) {
+            return fullPath
+        }
+        throw AmplifyCommandError(.unknown, error: nil)
     }
 
-    func content(of directory: String) throws -> [String] {
-        guard FileManager.default.directoryExists(atPath: directory) else {
-            throw AmplifyCommandError(.folderNotFound, error: nil, recoverySuggestion: "Folder \(directory) not found")
+    func contentsOfDirectory(atPath directoryPath: String) throws -> [String] {
+        let fullPath = path(for: directoryPath)
+        guard FileManager.default.directoryExists(atPath: fullPath) else {
+            throw AmplifyCommandError(.folderNotFound, error: nil, recoverySuggestion: "Folder \(fullPath) not found")
         }
         do {
-            let content = try FileManager.default.contentsOfDirectory(atPath: directory)
+            let content = try FileManager.default.contentsOfDirectory(atPath: fullPath)
             return content
         } catch {
             throw AmplifyCommandError(.unknown, error: error)
         }
     }
 
-    func directoryExists(at path: String) -> Bool {
-        FileManager.default.directoryExists(atPath: path)
+    func directoryExists(atPath dirPath: String) -> Bool {
+        FileManager.default.directoryExists(atPath: path(for: dirPath))
     }
 }
 
 // MARK: - AmplifyCommandEnvironmentXcode
 extension CommandEnvironment {
-    private func loadXcode(project path: String) throws -> XcodeProject {
-        let xcodeProjFiles = try content(of: path).filter {
+    private func loadFirstXcodeProject(fromDirectory path: String) throws -> XcodeProject {
+        let xcodeProjFiles = try contentsOfDirectory(atPath: path).filter {
             $0.hasSuffix("xcodeproj")
         }
 
@@ -87,9 +91,9 @@ extension CommandEnvironment {
 
     func xcode(project path: String, add files: [XcodeProjectFile], toGroup group: String) throws {
         do {
-            let xcodeProject = try loadXcode(project: path)
+            let xcodeProject = try loadFirstXcodeProject(fromDirectory: path)
             try xcodeProject.add(files: files, toGroup: group)
-            try xcodeProject.update()
+            try xcodeProject.synchronize()
         } catch {
             throw AmplifyCommandError(.xcodeProject, error: error)
         }

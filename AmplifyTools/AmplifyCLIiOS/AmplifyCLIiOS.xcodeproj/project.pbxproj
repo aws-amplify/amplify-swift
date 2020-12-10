@@ -23,26 +23,10 @@
 /* Begin PBXBuildFile section */
 		7698FA38257EEC5A0047967C /* CommandEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7698FA37257EEC590047967C /* CommandEnvironment.swift */; };
 		7698FA39257EEC5A0047967C /* CommandEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7698FA37257EEC590047967C /* CommandEnvironment.swift */; };
-		7698FA75257F10F40047967C /* CommandImportModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7698FA74257F10F40047967C /* CommandImportModels.swift */; };
-		7698FA76257F10F40047967C /* CommandImportModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7698FA74257F10F40047967C /* CommandImportModels.swift */; };
-		7698FB6D258057F40047967C /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7698FB6C258057F40047967C /* String+Utils.swift */; };
-		7698FB6E258057F40047967C /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7698FB6C258057F40047967C /* String+Utils.swift */; };
 		76C7F0E725797E7200817F07 /* FileManager+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0D525797E7200817F07 /* FileManager+Utils.swift */; };
 		76C7F0E825797E7200817F07 /* FileManager+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0D525797E7200817F07 /* FileManager+Utils.swift */; };
 		76C7F0E925797E7200817F07 /* XcodeProj+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0D625797E7200817F07 /* XcodeProj+Helpers.swift */; };
 		76C7F0EA25797E7200817F07 /* XcodeProj+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0D625797E7200817F07 /* XcodeProj+Helpers.swift */; };
-		76C7F0EB25797E7200817F07 /* SupportedPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0D825797E7200817F07 /* SupportedPlatform.swift */; };
-		76C7F0EC25797E7200817F07 /* SupportedPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0D825797E7200817F07 /* SupportedPlatform.swift */; };
-		76C7F0ED25797E7200817F07 /* AmplifyProjectTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0D925797E7200817F07 /* AmplifyProjectTemplate.swift */; };
-		76C7F0EE25797E7200817F07 /* AmplifyProjectTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0D925797E7200817F07 /* AmplifyProjectTemplate.swift */; };
-		76C7F0EF25797E7200817F07 /* DependenciesResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0DA25797E7200817F07 /* DependenciesResolver.swift */; };
-		76C7F0F025797E7200817F07 /* DependenciesResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0DA25797E7200817F07 /* DependenciesResolver.swift */; };
-		76C7F0F125797E7200817F07 /* DependencyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0DB25797E7200817F07 /* DependencyManager.swift */; };
-		76C7F0F225797E7200817F07 /* DependencyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0DB25797E7200817F07 /* DependencyManager.swift */; };
-		76C7F0F325797E7200817F07 /* AmplifyTemplateIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0DC25797E7200817F07 /* AmplifyTemplateIdentifier.swift */; };
-		76C7F0F425797E7200817F07 /* AmplifyTemplateIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0DC25797E7200817F07 /* AmplifyTemplateIdentifier.swift */; };
-		76C7F0F525797E7200817F07 /* Dependency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0DD25797E7200817F07 /* Dependency.swift */; };
-		76C7F0F625797E7200817F07 /* Dependency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0DD25797E7200817F07 /* Dependency.swift */; };
 		76C7F0F725797E7200817F07 /* CommandEnvironmentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0DF25797E7200817F07 /* CommandEnvironmentProvider.swift */; };
 		76C7F0F825797E7200817F07 /* CommandEnvironmentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0DF25797E7200817F07 /* CommandEnvironmentProvider.swift */; };
 		76C7F0F925797E7200817F07 /* CommandExecutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0E025797E7200817F07 /* CommandExecutable.swift */; };
@@ -853,16 +837,8 @@
 
 /* Begin PBXFileReference section */
 		7698FA37257EEC590047967C /* CommandEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandEnvironment.swift; sourceTree = "<group>"; };
-		7698FA74257F10F40047967C /* CommandImportModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandImportModels.swift; sourceTree = "<group>"; };
-		7698FB6C258057F40047967C /* String+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
 		76C7F0D525797E7200817F07 /* FileManager+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager+Utils.swift"; sourceTree = "<group>"; };
 		76C7F0D625797E7200817F07 /* XcodeProj+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XcodeProj+Helpers.swift"; sourceTree = "<group>"; };
-		76C7F0D825797E7200817F07 /* SupportedPlatform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SupportedPlatform.swift; sourceTree = "<group>"; };
-		76C7F0D925797E7200817F07 /* AmplifyProjectTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyProjectTemplate.swift; sourceTree = "<group>"; };
-		76C7F0DA25797E7200817F07 /* DependenciesResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependenciesResolver.swift; sourceTree = "<group>"; };
-		76C7F0DB25797E7200817F07 /* DependencyManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependencyManager.swift; sourceTree = "<group>"; };
-		76C7F0DC25797E7200817F07 /* AmplifyTemplateIdentifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyTemplateIdentifier.swift; sourceTree = "<group>"; };
-		76C7F0DD25797E7200817F07 /* Dependency.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dependency.swift; sourceTree = "<group>"; };
 		76C7F0DF25797E7200817F07 /* CommandEnvironmentProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandEnvironmentProvider.swift; sourceTree = "<group>"; };
 		76C7F0E025797E7200817F07 /* CommandExecutable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandExecutable.swift; sourceTree = "<group>"; };
 		76C7F0E125797E7200817F07 /* AmplifyCommandResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyCommandResult.swift; sourceTree = "<group>"; };
@@ -1354,7 +1330,6 @@
 			isa = PBXGroup;
 			children = (
 				76C7F0D425797E7200817F07 /* Support */,
-				76C7F0D725797E7200817F07 /* ProjectTemplates */,
 				76C7F0DE25797E7200817F07 /* Commands */,
 			);
 			path = Core;
@@ -1366,22 +1341,8 @@
 				76C7F0D525797E7200817F07 /* FileManager+Utils.swift */,
 				76C7F0D625797E7200817F07 /* XcodeProj+Helpers.swift */,
 				76FC0FD32579AAE400829A33 /* XcodeProject.swift */,
-				7698FB6C258057F40047967C /* String+Utils.swift */,
 			);
 			path = Support;
-			sourceTree = "<group>";
-		};
-		76C7F0D725797E7200817F07 /* ProjectTemplates */ = {
-			isa = PBXGroup;
-			children = (
-				76C7F0D925797E7200817F07 /* AmplifyProjectTemplate.swift */,
-				76C7F0DC25797E7200817F07 /* AmplifyTemplateIdentifier.swift */,
-				76C7F0DD25797E7200817F07 /* Dependency.swift */,
-				76C7F0DA25797E7200817F07 /* DependenciesResolver.swift */,
-				76C7F0DB25797E7200817F07 /* DependencyManager.swift */,
-				76C7F0D825797E7200817F07 /* SupportedPlatform.swift */,
-			);
-			path = ProjectTemplates;
 			sourceTree = "<group>";
 		};
 		76C7F0DE25797E7200817F07 /* Commands */ = {
@@ -1396,7 +1357,6 @@
 				76C7F0DF25797E7200817F07 /* CommandEnvironmentProvider.swift */,
 				76C7F0E025797E7200817F07 /* CommandExecutable.swift */,
 				76FC0F962579A66900829A33 /* CommandImportConfig.swift */,
-				7698FA74257F10F40047967C /* CommandImportModels.swift */,
 			);
 			path = Commands;
 			sourceTree = "<group>";
@@ -2266,9 +2226,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = OBJ_373 /* Build configuration list for PBXNativeTarget "AmplifyCLIiOS" */;
 			buildPhases = (
-				76C7F13F25797E9B00817F07 /* SwiftFormat */,
-				76C7F19725798A4F00817F07 /* SwiftLint */,
 				OBJ_376 /* Sources */,
+				76C7F19725798A4F00817F07 /* SwiftLint */,
+				76C7F13F25797E9B00817F07 /* SwiftFormat */,
 				OBJ_378 /* Frameworks */,
 			);
 			buildRules = (
@@ -2844,28 +2804,20 @@
 			buildActionMask = 0;
 			files = (
 				76C7F10325797E7200817F07 /* AmplifyCommandEnvironment.swift in Sources */,
-				7698FB6D258057F40047967C /* String+Utils.swift in Sources */,
 				76FC0F972579A66900829A33 /* CommandImportConfig.swift in Sources */,
 				76C7F0F725797E7200817F07 /* CommandEnvironmentProvider.swift in Sources */,
 				76FC0FD42579AAE400829A33 /* XcodeProject.swift in Sources */,
 				76FC10292579D2D800829A33 /* CLICommandReportable.swift in Sources */,
-				76C7F0EF25797E7200817F07 /* DependenciesResolver.swift in Sources */,
 				OBJ_377 /* main.swift in Sources */,
 				76C7F0F925797E7200817F07 /* CommandExecutable.swift in Sources */,
-				7698FA75257F10F40047967C /* CommandImportModels.swift in Sources */,
-				76C7F0EB25797E7200817F07 /* SupportedPlatform.swift in Sources */,
 				76C7F0FF25797E7200817F07 /* AmplifyCommandError.swift in Sources */,
-				76C7F0F525797E7200817F07 /* Dependency.swift in Sources */,
 				7698FA38257EEC5A0047967C /* CommandEnvironment.swift in Sources */,
 				76C7F10125797E7200817F07 /* AmplifyCommand.swift in Sources */,
-				76C7F0F325797E7200817F07 /* AmplifyTemplateIdentifier.swift in Sources */,
-				76C7F0ED25797E7200817F07 /* AmplifyProjectTemplate.swift in Sources */,
 				76C7F0FD25797E7200817F07 /* AmplifyCommandTask.swift in Sources */,
 				76C7F0E925797E7200817F07 /* XcodeProj+Helpers.swift in Sources */,
 				76C7F0FB25797E7200817F07 /* AmplifyCommandResult.swift in Sources */,
 				76FC10092579D23000829A33 /* CLI.swift in Sources */,
 				76C7F0E725797E7200817F07 /* FileManager+Utils.swift in Sources */,
-				76C7F0F125797E7200817F07 /* DependencyManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2884,26 +2836,18 @@
 				76FC0F982579A66900829A33 /* CommandImportConfig.swift in Sources */,
 				7698FA39257EEC5A0047967C /* CommandEnvironment.swift in Sources */,
 				76C7F10225797E7200817F07 /* AmplifyCommand.swift in Sources */,
-				76C7F0EC25797E7200817F07 /* SupportedPlatform.swift in Sources */,
 				76C7F0E825797E7200817F07 /* FileManager+Utils.swift in Sources */,
 				76C7F10025797E7200817F07 /* AmplifyCommandError.swift in Sources */,
-				76C7F0EE25797E7200817F07 /* AmplifyProjectTemplate.swift in Sources */,
-				76C7F0F025797E7200817F07 /* DependenciesResolver.swift in Sources */,
-				7698FB6E258057F40047967C /* String+Utils.swift in Sources */,
 				76FC0FD52579AAE400829A33 /* XcodeProject.swift in Sources */,
-				76C7F0F225797E7200817F07 /* DependencyManager.swift in Sources */,
 				76C7F0FC25797E7200817F07 /* AmplifyCommandResult.swift in Sources */,
 				OBJ_439 /* AmplifyCLIiOSTests.swift in Sources */,
 				76C7F0F825797E7200817F07 /* CommandEnvironmentProvider.swift in Sources */,
 				76FC100A2579D23000829A33 /* CLI.swift in Sources */,
 				76C7F0FA25797E7200817F07 /* CommandExecutable.swift in Sources */,
-				76C7F0F625797E7200817F07 /* Dependency.swift in Sources */,
 				76C7F0EA25797E7200817F07 /* XcodeProj+Helpers.swift in Sources */,
 				76C7F10425797E7200817F07 /* AmplifyCommandEnvironment.swift in Sources */,
 				76FC102A2579D2D800829A33 /* CLICommandReportable.swift in Sources */,
 				76C7F0FE25797E7200817F07 /* AmplifyCommandTask.swift in Sources */,
-				76C7F0F425797E7200817F07 /* AmplifyTemplateIdentifier.swift in Sources */,
-				7698FA76257F10F40047967C /* CommandImportModels.swift in Sources */,
 				OBJ_440 /* XCTestManifests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

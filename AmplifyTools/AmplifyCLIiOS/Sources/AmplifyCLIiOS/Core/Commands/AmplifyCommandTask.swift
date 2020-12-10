@@ -8,18 +8,12 @@
 import Foundation
 
 typealias AmplifyCommandTaskResult = Result<String, AmplifyCommandError>
-typealias AmplifyCommandTaskExecutor<T> = (AmplifyCommandEnvironment, T) -> AmplifyCommandTaskResult
+typealias AmplifyCommandTaskExecutor<TaskArgs> = (AmplifyCommandEnvironment, TaskArgs) -> AmplifyCommandTaskResult
 
-enum AmplifyCommandTask<T> {
+enum AmplifyCommandTask<TaskArgs> {
     // halt command execution if executor fails
-    case precondition(AmplifyCommandTaskExecutor<T>)
+    case precondition(AmplifyCommandTaskExecutor<TaskArgs>)
 
-    // halt command execution if precondition fails
-    case runWithPrecondition(AmplifyCommandTaskExecutor<T>, precondition: AmplifyCommandTaskExecutor<T>)
-
-    // skip command execution if skip fails but let commmand keep going
-    case runOrSkip(AmplifyCommandTaskExecutor<T>, skipIf: AmplifyCommandTaskExecutor<T>)
-
-    // if exeuctor fails, let command keep going
-    case run(AmplifyCommandTaskExecutor<T>)
+    // if executor fails, let command keep going
+    case run(AmplifyCommandTaskExecutor<TaskArgs>)
 }

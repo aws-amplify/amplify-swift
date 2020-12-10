@@ -7,15 +7,18 @@
 
 import Foundation
 
-/// Provides a default implementation for an executable command
+/// Defines requirements needed by a command to be executable.
+/// The executor, a command definition and the entity providing the environment are decoupled in order
+/// to favor re-usability.
 protocol CommandExecutable where Self: CommandEnvironmentProvider {
-    func exec<T: AmplifyCommand>(command: T) -> AmplifyCommandResult
+    func exec<Command: AmplifyCommand>(command: Command) -> AmplifyCommandResult
 }
 
+/// Provides a default implementation for an executable command
 extension CommandExecutable {
-    private func precondition<T>(_ task: AmplifyCommandTaskExecutor<T>,
-                                 args: T,
-                                 prevResults: inout [AmplifyCommandTaskResult]) -> Bool {
+    private func precondition<TaskArgs>(_ task: AmplifyCommandTaskExecutor<TaskArgs>,
+                                        args: TaskArgs,
+                                        prevResults: inout [AmplifyCommandTaskResult]) -> Bool {
         let output = task(environment, args)
         switch output {
         case .failure:
@@ -28,9 +31,9 @@ extension CommandExecutable {
 
     }
 
-    private func exec<T>(_ task: AmplifyCommandTaskExecutor<T>,
-                         args: T,
-                         prevResults: inout [AmplifyCommandTaskResult]) -> Bool {
+    private func exec<TaskArgs>(_ task: AmplifyCommandTaskExecutor<TaskArgs>,
+                                args: TaskArgs,
+                                prevResults: inout [AmplifyCommandTaskResult]) -> Bool {
         let output = task(environment, args)
         switch output {
         case .failure:
@@ -38,64 +41,24 @@ extension CommandExecutable {
             return false
         case .success:
             prevResults.append(output)
-            return true
-        }
-    }
-
-    private func exec<T>(_ task: AmplifyCommandTaskExecutor<T>,
-                         if precondition: AmplifyCommandTaskExecutor<T>,
-                         args: T,
-                         prevResults: inout [AmplifyCommandTaskResult]) -> Bool {
-        let shouldRun = precondition(environment, args)
-        switch shouldRun {
-        case .failure:
-            prevResults.append(shouldRun)
-            return false
-        case .success:
-            return exec(task, args: args, prevResults: &prevResults)
-        }
-    }
-
-    private func exec<T>(_ task: AmplifyCommandTaskExecutor<T>,
-                         skipIf check: AmplifyCommandTaskExecutor<T>,
-                         args: T,
-                         prevResults: inout [AmplifyCommandTaskResult]) -> Bool {
-        let shouldSkip = check(environment, args)
-        switch shouldSkip {
-        case .failure:
-            return exec(task, args: args, prevResults: &prevResults)
-        case .success:
-            prevResults.append(shouldSkip)
             return true
         }
     }
 
     /// Given a command, executes its underlying tasks and aggregates the final result
-    func exec<T: AmplifyCommand>(command: T) -> AmplifyCommandResult {
+    func exec<Command: AmplifyCommand>(command: Command) -> AmplifyCommandResult {
         var succeeded = false
-        let serialQueue = DispatchQueue(label: "com.amazon.amplify")
         var results: [AmplifyCommandTaskResult] = []
 
         for task in command.tasks {
-            serialQueue.sync {
-                switch task {
-                case .precondition(let run):
-                    succeeded = precondition(run, args: command.taskArgs, prevResults: &results)
-                    if !succeeded {
-                        break
-                    }
-                case .runWithPrecondition(let run, precondition: let precondition):
-                    succeeded = exec(run, if: precondition, args: command.taskArgs, prevResults: &results)
-                    if !succeeded {
-                        break
-                    }
-
-                case .runOrSkip(let run, skipIf: let skipIf):
-                    succeeded = exec(run, skipIf: skipIf, args: command.taskArgs, prevResults: &results)
-
-                case .run(let run):
-                    succeeded = exec(run, args: command.taskArgs, prevResults: &results)
+            switch task {
+            case .precondition(let run):
+                succeeded = precondition(run, args: command.taskArgs, prevResults: &results)
+                if !succeeded {
+                    break
                 }
+            case .run(let run):
+                succeeded = exec(run, args: command.taskArgs, prevResults: &results)
             }
         }
 

@@ -10,9 +10,8 @@ import Foundation
 func amplifyFolderExist(
     context: AmplifyCommandEnvironment,
     args: CommandImportConfig.TaskArgs) -> AmplifyCommandTaskResult {
-    let path = context.path(for: "amplify")
-    if context.directoryExists(at: path) {
-        return .success("Amplify project found at \(path)")
+    if context.directoryExists(atPath: "amplify") {
+        return .success("Amplify project found")
     }
 
     return .failure(AmplifyCommandError(

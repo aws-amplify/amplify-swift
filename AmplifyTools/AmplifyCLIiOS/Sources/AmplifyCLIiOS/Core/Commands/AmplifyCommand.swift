@@ -7,6 +7,10 @@
 
 import Foundation
 
+/// Describes a command and its structure.
+/// - `taskArgs`: type defining
+/// - `tasks`: array of tasks whose a command is composed of
+/// - `description`: human-readable description of command purpose
 protocol AmplifyCommand {
     associatedtype TaskArgs
     var taskArgs: TaskArgs { get }

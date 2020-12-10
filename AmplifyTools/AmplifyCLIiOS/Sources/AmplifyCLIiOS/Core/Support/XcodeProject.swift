@@ -45,7 +45,7 @@ struct XcodeProject {
         self.pbxProjFilePath = URL(fileURLWithPath: projPath).appendingPathComponent("project.pbxproj").path
     }
 
-    func update() throws {
+    func synchronize() throws {
         try project.pbxproj.write(path: Path(pbxProjFilePath), override: true)
     }
 }
