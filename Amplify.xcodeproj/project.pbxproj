@@ -452,7 +452,6 @@
 		B9FAA180238FBB5D009414B4 /* Model+Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA17F238FBB5D009414B4 /* Model+Array.swift */; };
 		B9FB05F82383740D00DE1FD4 /* DataStoreStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FB05F72383740D00DE1FD4 /* DataStoreStatement.swift */; };
 		D83C5160248964780091548E /* ModelGraphQLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83C515F248964780091548E /* ModelGraphQLTests.swift */; };
-		D84CF107255C5CA8007B96A9 /* CodingKeysTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D84CF106255C5CA8007B96A9 /* CodingKeysTests.swift */; };
 		D8DD7A1D24A1CCCD001C49FD /* QuerySortInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD7A1C24A1CCCD001C49FD /* QuerySortInput.swift */; };
 		FA00F68824DA37EE003E8A71 /* AuthCategoryBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00F68724DA37EE003E8A71 /* AuthCategoryBehavior+Combine.swift */; };
 		FA00F68A24DA3A43003E8A71 /* AuthCategoryDeviceBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00F68924DA3A43003E8A71 /* AuthCategoryDeviceBehavior+Combine.swift */; };
@@ -1340,7 +1339,6 @@
 		D5363CAF9EFAA822FED56808 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5521D5FA66340943C39C451 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		D83C515F248964780091548E /* ModelGraphQLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelGraphQLTests.swift; sourceTree = "<group>"; };
-		D84CF106255C5CA8007B96A9 /* CodingKeysTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingKeysTests.swift; sourceTree = "<group>"; };
 		D8DD7A1C24A1CCCD001C49FD /* QuerySortInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuerySortInput.swift; sourceTree = "<group>"; };
 		DD2486414D63230FF39130C7 /* Pods-Amplify-AWSPluginsCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore/Pods-Amplify-AWSPluginsCore.debug.xcconfig"; sourceTree = "<group>"; };
 		DEEB82A328223C60557B75C1 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
@@ -3565,7 +3563,6 @@
 		FAD3937B23820CE200463F5E /* DataStore */ = {
 			isa = PBXGroup;
 			children = (
-        D84CF106255C5CA8007B96A9 /* CodingKeysTests.swift */,
 				FAD3937923820CDB00463F5E /* DataStoreCategoryClientAPITests.swift */,
 				FAD3937C23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift */,
 				B4944D51251C141200BF0BFE /* JSONValueHolderTest.swift */,
@@ -5001,7 +4998,6 @@
 				B91A87A423D64B0F0049A12F /* TemporalTests.swift in Sources */,
 				FA00F69024DA3F95003E8A71 /* HubCombineTests.swift in Sources */,
 				FA5D76AF23947E9C00489864 /* Model+CodableTests.swift in Sources */,
-				D84CF107255C5CA8007B96A9 /* CodingKeysTests.swift in Sources */,
 				FA58456B24DA31370028D65A /* AmplifyInProcessReportingOperationChainedTests.swift in Sources */,
 				FA1B964E24BF5FA70002B90A /* AmplifyOperationCombineTests.swift in Sources */,
 				FAAFAF3323904BA4002CF932 /* AtomicValue+NumericTests.swift in Sources */,

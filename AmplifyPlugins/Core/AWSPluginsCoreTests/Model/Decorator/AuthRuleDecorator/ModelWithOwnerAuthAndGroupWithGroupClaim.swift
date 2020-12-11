@@ -16,13 +16,9 @@ import XCTest
    @model
    @auth(
      rules: [
-       { allow: owner, provider: oidc, identityClaim: "sub" }
-       {
-         allow: groups
-         provider: oidc
-         groups: ["Admins"]
-         groupClaim: "https://myapp.com/claims/groups"
-       }
+       { allow: owner, provider: oidc, identityClaim: "sub"},
+       { allow: groups, provider: oidc, groups: ["Admins"],
+                                    groupClaim: "https://myapp.com/claims/groups"}
      ]
    ) {
    id: ID!
@@ -32,48 +28,48 @@ import XCTest
  */
 
 public struct OIDCGroupPost: Model {
-    public let id: String
-    public var title: String
-    public var owner: String?
+  public let id: String
+  public var title: String
+  public var owner: String?
 
-    public init(id: String = UUID().uuidString,
-                title: String,
-                owner: String? = nil) {
-        self.id = id
-        self.title = title
-        self.owner = owner
-    }
+  public init(id: String = UUID().uuidString,
+              title: String,
+              owner: String? = nil) {
+      self.id = id
+      self.title = title
+      self.owner = owner
+  }
 
     // MARK: - CodingKeys
-    public enum CodingKeys: String, ModelKey {
-        case id
-        case title
-        case owner
+     public enum CodingKeys: String, ModelKey {
+      case id
+      case title
+      case owner
     }
 
     public static let keys = CodingKeys.self
     public static let schema = defineSchema { model in
-        let oIDCGroupPost = OIDCGroupPost.keys
+      let oIDCGroupPost = OIDCGroupPost.keys
 
-        model.authRules = [
-            rule(allow: .owner,
-                 ownerField: "owner",
-                 identityClaim: "sub",
-                 operations: [.create, .update, .delete, .read]),
-            rule(allow: .groups,
-                 groupClaim: "https://myapp.com/claims/groups",
-                 groups: ["Admins"],
-                 operations: [.create, .update, .delete, .read])
-        ]
+      model.authRules = [
+        rule(allow: .owner,
+             ownerField: "owner",
+             identityClaim: "sub",
+             operations: [.create, .update, .delete, .read]),
+        rule(allow: .groups,
+             groupClaim: "https://myapp.com/claims/groups",
+             groups: ["Admins"],
+             operations: [.create, .update, .delete, .read])
+      ]
 
-        model.pluralName = "OIDCGroupPosts"
+      model.pluralName = "OIDCGroupPosts"
 
-        model.fields(
-            .id(),
-            .field(oIDCGroupPost.title, is: .required, ofType: .string),
-            .field(oIDCGroupPost.owner, is: .optional, ofType: .string)
-        )
-    }
+      model.fields(
+        .id(),
+        .field(oIDCGroupPost.title, is: .required, ofType: .string),
+        .field(oIDCGroupPost.owner, is: .optional, ofType: .string)
+      )
+      }
 }
 
 class ModelWithOwnerAuthAndGroupWithGroupClaim: XCTestCase {
