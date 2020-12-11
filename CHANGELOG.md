@@ -4,11 +4,9 @@
 
 ### Bug Fixes
 
-- **predictions**: use string's unicode scalars view to compute indexes for Comprehend results (#904)
+- **Predictions**: use string's unicode scalars view to compute indexes for Comprehend results (#904)
 - **Predictions**: Callback is not triggered with URLError (#896)
-- **amplify**: DataStore query fix column missing issue for @connection hasMany schema (#885)
-- add targetName to hasOne relationships (#926)
-- **API**: Fix unstable AWSAPICategoryPluginResetTests.testReset() (#937)
+- **DataStore**: add targetName to hasOne relationships (#926)
 
 ## 1.5.0 (2020-12-03)
 
