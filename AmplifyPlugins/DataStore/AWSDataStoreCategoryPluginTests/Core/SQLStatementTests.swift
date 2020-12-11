@@ -330,31 +330,6 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
-    /// - Given: a `Model` type
-    /// - When:
-    ///   - the model is of type `Comment`
-    ///   - `QueryPredicate` on a connected field is given
-    /// - Then:
-    ///   - check if the generated SQL statement is valid
-    ///   - check if an inner join is added referencing `Post`
-    ///   - check if a where with columnName `commentPostId` is generated
-    func testSelectStatementFromModelWhenQueryPredicateIsGiven() {
-        let statement = SelectStatement(from: Comment.schema, predicate: Comment.keys.post == "commentPostId")
-        let expectedStatement = """
-        select
-          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
-          "root"."commentPostId" as "commentPostId", "post"."id" as "post.id", "post"."content" as "post.content",
-          "post"."createdAt" as "post.createdAt", "post"."draft" as "post.draft", "post"."rating" as "post.rating",
-          "post"."status" as "post.status", "post"."title" as "post.title", "post"."updatedAt" as "post.updatedAt"
-        from Comment as "root"
-        inner join Post as "post"
-          on "post"."id" = "root"."commentPostId"
-        where 1 = 1
-          and "root"."commentPostId" = ?
-        """
-        XCTAssertEqual(statement.stringValue, expectedStatement)
-    }
-
     // MARK: - Select Statements paginated
 
     /// - Given: a `Model` type and a `QueryPaginationInput`
