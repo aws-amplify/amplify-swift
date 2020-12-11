@@ -9,8 +9,8 @@ import Foundation
 import PathKit
 
 extension FileManager: AmplifyFileManager {
-    func createDirectory(at: URL, withIntermediateDirectories: Bool) throws {
-        try createDirectory(at: at, withIntermediateDirectories: withIntermediateDirectories, attributes: nil)
+    func createDirectory(at path: URL, withIntermediateDirectories: Bool) throws {
+        try createDirectory(at: path, withIntermediateDirectories: withIntermediateDirectories, attributes: nil)
     }
 
     func createFile(atPath: String, contents: Data?) -> Bool {

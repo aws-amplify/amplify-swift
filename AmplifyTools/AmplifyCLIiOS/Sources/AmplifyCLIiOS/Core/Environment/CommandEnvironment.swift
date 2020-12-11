@@ -15,6 +15,8 @@ struct CommandEnvironment: AmplifyCommandEnvironment {
     let fileManager: AmplifyFileManager
 
     init(basePath: String, fileManager: AmplifyFileManager) {
+        // TODO: we should fail if basePath is either empty or not a folder
+        // (URL initializer discards last component of paths ending without a /)
         self.basePath = fileManager.resolveHomeDirectoryIn(path: basePath)
         self.basePathURL = URL(fileURLWithPath: self.basePath)
         self.currentFolder = basePathURL.lastPathComponent
@@ -25,8 +27,8 @@ struct CommandEnvironment: AmplifyCommandEnvironment {
 
 // MARK: - AmplifyCommandEnvironmentFileManager
 extension CommandEnvironment {
-    func path(for file: String ) -> String {
-        return URL(fileURLWithPath: file, relativeTo: basePathURL).path
+    func path(for subpath: String) -> String {
+        return URL(fileURLWithPath: subpath, relativeTo: basePathURL).path
     }
 
     func path(for components: [String]) -> String {

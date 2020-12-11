@@ -27,6 +27,9 @@
 		7698FC962581BA470047967C /* AmplifyFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7698FC942581BA470047967C /* AmplifyFileManager.swift */; };
 		7698FCEF2581BE1D0047967C /* FileManager+AmplifyFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7698FCEE2581BE1D0047967C /* FileManager+AmplifyFileManager.swift */; };
 		7698FCF02581BE1D0047967C /* FileManager+AmplifyFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7698FCEE2581BE1D0047967C /* FileManager+AmplifyFileManager.swift */; };
+		7698FF562582F4C90047967C /* Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7698FF512582F4C90047967C /* Mock.swift */; };
+		7698FF582582F4C90047967C /* MockAmplifyFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7698FF522582F4C90047967C /* MockAmplifyFileManager.swift */; };
+		7698FF5A2582F4C90047967C /* AmplifyCommandEnvironmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7698FF542582F4C90047967C /* AmplifyCommandEnvironmentTests.swift */; };
 		76C7F0E725797E7200817F07 /* FileManager+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0D525797E7200817F07 /* FileManager+Utils.swift */; };
 		76C7F0E825797E7200817F07 /* FileManager+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0D525797E7200817F07 /* FileManager+Utils.swift */; };
 		76C7F0E925797E7200817F07 /* XcodeProj+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C7F0D625797E7200817F07 /* XcodeProj+Helpers.swift */; };
@@ -843,6 +846,9 @@
 		7698FA37257EEC590047967C /* CommandEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandEnvironment.swift; sourceTree = "<group>"; };
 		7698FC942581BA470047967C /* AmplifyFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyFileManager.swift; sourceTree = "<group>"; };
 		7698FCEE2581BE1D0047967C /* FileManager+AmplifyFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+AmplifyFileManager.swift"; sourceTree = "<group>"; };
+		7698FF512582F4C90047967C /* Mock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mock.swift; sourceTree = "<group>"; };
+		7698FF522582F4C90047967C /* MockAmplifyFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAmplifyFileManager.swift; sourceTree = "<group>"; };
+		7698FF542582F4C90047967C /* AmplifyCommandEnvironmentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyCommandEnvironmentTests.swift; sourceTree = "<group>"; };
 		76C7F0D525797E7200817F07 /* FileManager+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager+Utils.swift"; sourceTree = "<group>"; };
 		76C7F0D625797E7200817F07 /* XcodeProj+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XcodeProj+Helpers.swift"; sourceTree = "<group>"; };
 		76C7F0DF25797E7200817F07 /* CommandEnvironmentProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandEnvironmentProvider.swift; sourceTree = "<group>"; };
@@ -1343,6 +1349,25 @@
 			path = Environment;
 			sourceTree = "<group>";
 		};
+		7698FF502582F4C90047967C /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				7698FF512582F4C90047967C /* Mock.swift */,
+				7698FF522582F4C90047967C /* MockAmplifyFileManager.swift */,
+			);
+			name = Mocks;
+			path = Tests/Mocks;
+			sourceTree = "<group>";
+		};
+		7698FF532582F4C90047967C /* AmplifyCommandEnvironmentTests */ = {
+			isa = PBXGroup;
+			children = (
+				7698FF542582F4C90047967C /* AmplifyCommandEnvironmentTests.swift */,
+			);
+			name = AmplifyCommandEnvironmentTests;
+			path = Tests/AmplifyCommandEnvironmentTests;
+			sourceTree = "<group>";
+		};
 		76C7F0D325797E7200817F07 /* Core */ = {
 			isa = PBXGroup;
 			children = (
@@ -1389,6 +1414,8 @@
 		OBJ_10 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				7698FF532582F4C90047967C /* AmplifyCommandEnvironmentTests */,
+				7698FF502582F4C90047967C /* Mocks */,
 				OBJ_11 /* AmplifyCLIiOSTests */,
 			);
 			name = Tests;
@@ -2853,6 +2880,7 @@
 			files = (
 				76FC0F982579A66900829A33 /* CommandImportConfig.swift in Sources */,
 				7698FA39257EEC5A0047967C /* CommandEnvironment.swift in Sources */,
+				7698FF582582F4C90047967C /* MockAmplifyFileManager.swift in Sources */,
 				76C7F10225797E7200817F07 /* AmplifyCommand.swift in Sources */,
 				76C7F0E825797E7200817F07 /* FileManager+Utils.swift in Sources */,
 				7698FCF02581BE1D0047967C /* FileManager+AmplifyFileManager.swift in Sources */,
@@ -2862,9 +2890,11 @@
 				OBJ_439 /* AmplifyCLIiOSTests.swift in Sources */,
 				76C7F0F825797E7200817F07 /* CommandEnvironmentProvider.swift in Sources */,
 				76FC100A2579D23000829A33 /* CLI.swift in Sources */,
+				7698FF5A2582F4C90047967C /* AmplifyCommandEnvironmentTests.swift in Sources */,
 				7698FC962581BA470047967C /* AmplifyFileManager.swift in Sources */,
 				76C7F0FA25797E7200817F07 /* CommandExecutable.swift in Sources */,
 				76C7F0EA25797E7200817F07 /* XcodeProj+Helpers.swift in Sources */,
+				7698FF562582F4C90047967C /* Mock.swift in Sources */,
 				76C7F10425797E7200817F07 /* AmplifyCommandEnvironment.swift in Sources */,
 				76FC102A2579D2D800829A33 /* CLICommandReportable.swift in Sources */,
 				76C7F0FE25797E7200817F07 /* AmplifyCommandTask.swift in Sources */,
