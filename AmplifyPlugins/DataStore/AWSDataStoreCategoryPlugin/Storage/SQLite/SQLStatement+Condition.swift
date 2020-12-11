@@ -32,7 +32,7 @@ private func translateQueryPredicate(from modelSchema: ModelSchema,
         let indent = String(repeating: indentPrefix, count: indentSize)
         if let operation = pred as? QueryPredicateOperation {
             let logicalOperator = groupOpened ? "" : "\(groupType.rawValue) "
-            let column = operation.operator.columnFor(field: operation.field,
+            let column = operation.operator.columnFor(field: columnName(operation),
                                                       namespace: namespace)
             sql.append("\(indent)\(logicalOperator)\(column) \(operation.operator.sqlOperation)")
             bindings.append(contentsOf: operation.operator.bindings)
@@ -57,6 +57,20 @@ private func translateQueryPredicate(from modelSchema: ModelSchema,
             }
         }
     }
+
+    func columnName(_ operation: QueryPredicateOperation) -> String {
+        var columnName = ""
+        switch modelSchema.field(withName: operation.field)?.association {
+        case .belongsTo(_, let targetName):
+            if targetName != operation.field {
+                columnName = targetName ?? operation.field
+            }
+        default:
+            columnName = operation.field
+        }
+        return columnName
+    }
+
     translate(predicate)
     return (sql.joined(separator: "\n"), bindings)
 }
