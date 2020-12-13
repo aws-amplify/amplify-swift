@@ -44,7 +44,7 @@ class ModelFieldAssociationTests: XCTestCase {
         XCTAssertEqual(fieldName, Comment.keys.post.stringValue)
         XCTAssertNil(target)
     }
-    
+
     func testHasOneWithCodingKeysWithTargetName() {
         let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post, targetName: "postID")
         guard case .hasOne(let fieldName, let target) = hasOne else {

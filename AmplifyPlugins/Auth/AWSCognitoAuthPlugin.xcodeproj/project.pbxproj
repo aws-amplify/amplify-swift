@@ -150,6 +150,7 @@
 		B4F3EA50243A782700F23296 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3EA4D243A782700F23296 /* AppDelegate.swift */; };
 		B4F3EA51243A782700F23296 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3EA4E243A782700F23296 /* SceneDelegate.swift */; };
 		D87D5864257EF27E004617B3 /* BaseAuthDeviceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87D5863257EF27E004617B3 /* BaseAuthDeviceTest.swift */; };
+		FA1C817D25868C46006160E9 /* AWSCognitoAuthPluginAmplifyVersionableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1C817C25868C46006160E9 /* AWSCognitoAuthPluginAmplifyVersionableTests.swift */; };
 		FA6B0EA8249443C90062AA59 /* AWSCognitoAuthPluginConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B0EA7249443C90062AA59 /* AWSCognitoAuthPluginConfigTests.swift */; };
 		FECB988C412E46FD5961894A /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1674B6AE81501F6E278CE00B /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework */; };
 /* End PBXBuildFile section */
@@ -351,6 +352,7 @@
 		C5E50D8021B9740CB511898D /* Pods-AWSAuthPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAuthPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSAuthPlugin/Pods-AWSAuthPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		D87D5863257EF27E004617B3 /* BaseAuthDeviceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAuthDeviceTest.swift; sourceTree = "<group>"; };
 		E9289652B314AA0AA1F31BC8 /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
+		FA1C817C25868C46006160E9 /* AWSCognitoAuthPluginAmplifyVersionableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSCognitoAuthPluginAmplifyVersionableTests.swift; sourceTree = "<group>"; };
 		FA6B0EA7249443C90062AA59 /* AWSCognitoAuthPluginConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSCognitoAuthPluginConfigTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -501,6 +503,7 @@
 			isa = PBXGroup;
 			children = (
 				FA6B0EA7249443C90062AA59 /* AWSCognitoAuthPluginConfigTests.swift */,
+				FA1C817C25868C46006160E9 /* AWSCognitoAuthPluginAmplifyVersionableTests.swift */,
 			);
 			path = ConfigurationTests;
 			sourceTree = "<group>";
@@ -1493,6 +1496,7 @@
 			files = (
 				B4136E1A256D73D80011210B /* AuthenticationProviderSigninTests.swift in Sources */,
 				B4136E32256D76640011210B /* AuthenticationProviderSigninWithWebUITests.swift in Sources */,
+				FA1C817D25868C46006160E9 /* AWSCognitoAuthPluginAmplifyVersionableTests.swift in Sources */,
 				B4136E9A256D7B700011210B /* AuthDeviceRememberDeviceTests.swift in Sources */,
 				B4136E4E256D79710011210B /* AuthenticationProviderConfirmResetPasswordTests.swift in Sources */,
 				B43B4DE32565E8D7008F345D /* MockAuthorizationProviderBehavior.swift in Sources */,

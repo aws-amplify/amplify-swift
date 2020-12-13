@@ -491,6 +491,9 @@
 		FA176EDD2385943000C5C5F9 /* NotificationListeningAnalyticsPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA176EDC2385943000C5C5F9 /* NotificationListeningAnalyticsPlugin.swift */; };
 		FA1846EE23998E44009B9D01 /* MockAPIResponders.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1846ED23998E43009B9D01 /* MockAPIResponders.swift */; };
 		FA1B964E24BF5FA70002B90A /* AmplifyOperationCombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1B964D24BF5FA70002B90A /* AmplifyOperationCombineTests.swift */; };
+		FA1C80BF258686CC006160E9 /* AWSHubPluginAmplifyVersionableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1C80BE258686CC006160E9 /* AWSHubPluginAmplifyVersionableTests.swift */; };
+		FA1C80D6258688BD006160E9 /* DefaultLoggingPluginAmplifyVersionableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1C80D5258688BD006160E9 /* DefaultLoggingPluginAmplifyVersionableTests.swift */; };
+		FA1C80DF25868917006160E9 /* PersistentLoggingPluginAmplifyVersionableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1C80DE25868917006160E9 /* PersistentLoggingPluginAmplifyVersionableTests.swift */; };
 		FA249EE724C5FA4A009B3CE8 /* AmplifyInProcessReportingOperation+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA249EE624C5FA49009B3CE8 /* AmplifyInProcessReportingOperation+Combine.swift */; };
 		FA249EE924C5FE39009B3CE8 /* AmplifyAPICategory+RESTBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA249EE824C5FE39009B3CE8 /* AmplifyAPICategory+RESTBehavior+Combine.swift */; };
 		FA249EEB24C5FE66009B3CE8 /* AmplifyAPICategory+GraphQLBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA249EEA24C5FE66009B3CE8 /* AmplifyAPICategory+GraphQLBehavior+Combine.swift */; };
@@ -1398,6 +1401,9 @@
 		FA176EDC2385943000C5C5F9 /* NotificationListeningAnalyticsPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListeningAnalyticsPlugin.swift; sourceTree = "<group>"; };
 		FA1846ED23998E43009B9D01 /* MockAPIResponders.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAPIResponders.swift; sourceTree = "<group>"; };
 		FA1B964D24BF5FA70002B90A /* AmplifyOperationCombineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyOperationCombineTests.swift; sourceTree = "<group>"; };
+		FA1C80BE258686CC006160E9 /* AWSHubPluginAmplifyVersionableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSHubPluginAmplifyVersionableTests.swift; sourceTree = "<group>"; };
+		FA1C80D5258688BD006160E9 /* DefaultLoggingPluginAmplifyVersionableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoggingPluginAmplifyVersionableTests.swift; sourceTree = "<group>"; };
+		FA1C80DE25868917006160E9 /* PersistentLoggingPluginAmplifyVersionableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentLoggingPluginAmplifyVersionableTests.swift; sourceTree = "<group>"; };
 		FA2492462391A3BF0004B379 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		FA249EE624C5FA49009B3CE8 /* AmplifyInProcessReportingOperation+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AmplifyInProcessReportingOperation+Combine.swift"; sourceTree = "<group>"; };
 		FA249EE824C5FE39009B3CE8 /* AmplifyAPICategory+RESTBehavior+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AmplifyAPICategory+RESTBehavior+Combine.swift"; sourceTree = "<group>"; };
@@ -2351,6 +2357,7 @@
 				976D4D5024DC8A370083F5AC /* GestureRecognizerTests.swift */,
 				976D4D5224DC90610083F5AC /* PersistentLogWrapperTests.swift */,
 				976D4D5424DCA3F80083F5AC /* PersistentLoggingPluginTests.swift */,
+				FA1C80DE25868917006160E9 /* PersistentLoggingPluginAmplifyVersionableTests.swift */,
 			);
 			path = DevMenuTests;
 			sourceTree = "<group>";
@@ -3362,6 +3369,7 @@
 			isa = PBXGroup;
 			children = (
 				FA4B38AA238482B100E20DAB /* DefaultLoggingPluginTests.swift */,
+				FA1C80D5258688BD006160E9 /* DefaultLoggingPluginAmplifyVersionableTests.swift */,
 				FAC2355C227A056600424678 /* LoggingCategoryClientAPITests.swift */,
 				FAC2355A227A056600424678 /* LoggingCategoryConfigurationTests.swift */,
 			);
@@ -3530,6 +3538,7 @@
 			children = (
 				FA47B8372350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift */,
 				FA47B8352350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift */,
+				FA1C80BE258686CC006160E9 /* AWSHubPluginAmplifyVersionableTests.swift */,
 				FAC235A0227A5D8C00424678 /* DefaultHubPluginConcurrencyTests.swift */,
 				FA9FB781232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift */,
 				FAC23598227A598B00424678 /* DefaultHubPluginTests.swift */,
@@ -5002,9 +5011,11 @@
 				FA1B964E24BF5FA70002B90A /* AmplifyOperationCombineTests.swift in Sources */,
 				FAAFAF3323904BA4002CF932 /* AtomicValue+NumericTests.swift in Sources */,
 				FA176EDD2385943000C5C5F9 /* NotificationListeningAnalyticsPlugin.swift in Sources */,
+				FA1C80BF258686CC006160E9 /* AWSHubPluginAmplifyVersionableTests.swift in Sources */,
 				FA47B8362350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift in Sources */,
 				976D4D5124DC8A370083F5AC /* GestureRecognizerTests.swift in Sources */,
 				B4F3E9F824314E2B00F23296 /* AuthCategoryConfigurationTests.swift in Sources */,
+				FA1C80D6258688BD006160E9 /* DefaultLoggingPluginAmplifyVersionableTests.swift in Sources */,
 				FAC2356E227A056600424678 /* AnalyticsCategoryClientAPITests.swift in Sources */,
 				B4BD6B3323708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift in Sources */,
 				FA47B8382350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift in Sources */,
@@ -5017,6 +5028,7 @@
 				FAC2356C227A056600424678 /* LoggingCategoryClientAPITests.swift in Sources */,
 				FAC23586227A443200424678 /* HubCategoryConfigurationTests.swift in Sources */,
 				B99EF4B523DB020C00D821BC /* TemporalComparableTests.swift in Sources */,
+				FA1C80DF25868917006160E9 /* PersistentLoggingPluginAmplifyVersionableTests.swift in Sources */,
 				976D4D5324DC90610083F5AC /* PersistentLogWrapperTests.swift in Sources */,
 				FA58456924DA29B00028D65A /* AmplifyInProcessReportingOperationCombineTests.swift in Sources */,
 			);

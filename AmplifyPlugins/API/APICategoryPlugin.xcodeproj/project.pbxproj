@@ -138,6 +138,7 @@
 		B4DFA5F6237A611D0013E17B /* IAMURLRequestInterceptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5DC237A611D0013E17B /* IAMURLRequestInterceptorTests.swift */; };
 		B4DFA5F8237A611D0013E17B /* AWSAPICategoryPlugin+ConfigureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5DE237A611D0013E17B /* AWSAPICategoryPlugin+ConfigureTests.swift */; };
 		B4DFA5F9237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5DF237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionDelegateTests.swift */; };
+		FA1C810A25868A4B006160E9 /* AWSAPICategoryPluginAmplifyVersionableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1C810925868A4B006160E9 /* AWSAPICategoryPluginAmplifyVersionableTests.swift */; };
 		FA249EE324C5F7E8009B3CE8 /* GraphQLMutateCombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA249EE224C5F7E8009B3CE8 /* GraphQLMutateCombineTests.swift */; };
 		FA249EE524C5F8CC009B3CE8 /* GraphQLSubscribeCombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA249EE424C5F8CC009B3CE8 /* GraphQLSubscribeCombineTests.swift */; };
 		FA249EEE24C644CA009B3CE8 /* MockSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA249EEC24C64303009B3CE8 /* MockSubscription.swift */; };
@@ -465,6 +466,7 @@
 		E199BA19FD0A130933EDF93F /* Pods-HostApp-AWSAPICategoryPluginTestCommon-AWSAPICategoryPluginFunctionalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginTestCommon-AWSAPICategoryPluginFunctionalTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-AWSAPICategoryPluginFunctionalTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-AWSAPICategoryPluginFunctionalTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E3E855FC9186F25F5FBF8A06 /* Pods_GraphQLWithAPIKeyIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GraphQLWithAPIKeyIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2E34DE129C74003DCC9F6A2 /* Pods-AWSAPICategoryHostAppWithIAM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAPICategoryHostAppWithIAM.release.xcconfig"; path = "Target Support Files/Pods-AWSAPICategoryHostAppWithIAM/Pods-AWSAPICategoryHostAppWithIAM.release.xcconfig"; sourceTree = "<group>"; };
+		FA1C810925868A4B006160E9 /* AWSAPICategoryPluginAmplifyVersionableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginAmplifyVersionableTests.swift; sourceTree = "<group>"; };
 		FA249EE224C5F7E8009B3CE8 /* GraphQLMutateCombineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLMutateCombineTests.swift; sourceTree = "<group>"; };
 		FA249EE424C5F8CC009B3CE8 /* GraphQLSubscribeCombineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLSubscribeCombineTests.swift; sourceTree = "<group>"; };
 		FA249EEC24C64303009B3CE8 /* MockSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSubscription.swift; sourceTree = "<group>"; };
@@ -973,6 +975,7 @@
 				B4DFA5D5237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionBehaviorDelegateTests.swift */,
 				B4DFA5DF237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionDelegateTests.swift */,
 				B4DFA5CB237A611D0013E17B /* AWSAPICategoryPluginTestBase.swift */,
+				FA1C810925868A4B006160E9 /* AWSAPICategoryPluginAmplifyVersionableTests.swift */,
 				B4DFA5C6237A611D0013E17B /* Configuration */,
 				B4DFA5D9237A611D0013E17B /* Interceptor */,
 				B4DFA5BF237A611D0013E17B /* Mocks */,
@@ -2256,6 +2259,7 @@
 				B4DFA5E7237A611D0013E17B /* AWSAPICategoryPlugin+InterceptorBehaviorTests.swift in Sources */,
 				6B33896E23AABEEE00561E5B /* MockReachability.swift in Sources */,
 				B4DFA5E4237A611D0013E17B /* AWSRESTOperationTests.swift in Sources */,
+				FA1C810A25868A4B006160E9 /* AWSAPICategoryPluginAmplifyVersionableTests.swift in Sources */,
 				FADC469524C0E8AF00EF447B /* GraphQLQueryCombineTests.swift in Sources */,
 				B4DFA5E3237A611D0013E17B /* AWSGraphQLOperationTests.swift in Sources */,
 				B4DFA5F9237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionDelegateTests.swift in Sources */,
