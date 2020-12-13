@@ -42,3 +42,4 @@ final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
     }
 }
 
+extension AWSPredictionsPlugin: AmplifyVersionable { }

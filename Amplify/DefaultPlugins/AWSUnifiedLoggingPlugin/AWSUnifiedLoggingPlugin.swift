@@ -100,3 +100,4 @@ extension AWSUnifiedLoggingPlugin {
     }
 }
 
+extension AWSUnifiedLoggingPlugin: AmplifyVersionable { }

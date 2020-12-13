@@ -83,3 +83,4 @@ final public class AWSHubPlugin: HubCategoryPlugin {
 
 }
 
+extension AWSHubPlugin: AmplifyVersionable { }
