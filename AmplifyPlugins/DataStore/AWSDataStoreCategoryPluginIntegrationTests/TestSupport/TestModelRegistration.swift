@@ -24,6 +24,9 @@ struct TestModelRegistration: AmplifyModelRegistration {
         registry.register(modelType: Post5.self)
         registry.register(modelType: PostEditor5.self)
         registry.register(modelType: User5.self)
+        registry.register(modelType: Blog6.self)
+        registry.register(modelType: Post6.self)
+        registry.register(modelType: Comment6.self)
     }
 
     let version: String = "1"
