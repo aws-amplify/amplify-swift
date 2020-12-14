@@ -52,6 +52,7 @@ private func translateQueryPredicate(from modelSchema: ModelSchema,
 
             indentSize += 1
             shouldClose = true
+
             var predicateIndex = 0
             group.predicates.forEach {
                 translate($0, opAhead: predicateIndex != 0, groupType: group.type)

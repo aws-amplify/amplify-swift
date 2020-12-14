@@ -632,10 +632,11 @@ class SQLStatementTests: XCTestCase {
     /// - Given: a `Model` type
     /// - When:
     ///   - the model is of type `Post`
-    ///   - a predicate with a few conditions
+    ///   - a predicate with a few grouped conditions
     /// - Then:
     ///   - check if the generated SQL statement is valid
     ///   - `where` clause is added to the select query
+    ///   - `where` clause is correctly generated
     func testTranslateComplexGroupedQueryPredicateScenario2() {
         let post = Post.keys
         let predicate = (post.id == "postID" && post.draft == false) || post.rating > 3
@@ -666,10 +667,11 @@ class SQLStatementTests: XCTestCase {
     /// - Given: a `Model` type
     /// - When:
     ///   - the model is of type `Post`
-    ///   - a predicate with a few conditions
+    ///   - a predicate with a few grouped conditions
     /// - Then:
     ///   - check if the generated SQL statement is valid
     ///   - `where` clause is added to the select query
+    ///   - `where` clause is correctly generated
     func testTranslateComplexGroupedQueryPredicateScenario3() {
         let post = Post.keys
         let predicate = (post.id == "postID" || post.draft == false) && post.rating > 3
@@ -700,10 +702,11 @@ class SQLStatementTests: XCTestCase {
     /// - Given: a `Model` type
     /// - When:
     ///   - the model is of type `Post`
-    ///   - a predicate with a few conditions
+    ///   - a predicate with a few grouped conditions
     /// - Then:
     ///   - check if the generated SQL statement is valid
     ///   - `where` clause is added to the select query
+    ///   - `where` clause is correctly generated
     func testTranslateComplexGroupedQueryPredicateScenario4() {
         let post = Post.keys
         let predicate = (post.id == "postID" || post.draft == false) && (post.rating > 3 || post.createdAt == "time")
@@ -723,6 +726,45 @@ class SQLStatementTests: XCTestCase {
             and (
               "root"."rating" > ?
               or "root"."createdAt" = ?
+            )
+          )
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+
+        let variables = statement.variables
+        XCTAssertEqual(variables[0] as? String, "postID")
+        XCTAssertEqual(variables[1] as? Int, 0)
+        XCTAssertEqual(variables[2] as? Int, 3)
+        XCTAssertEqual(variables[3] as? String, "time")
+    }
+
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - a predicate with a few grouped conditions
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - `where` clause is added to the select query
+    ///   - `where` clause is correctly generated
+    func testTranslateComplexGroupedQueryPredicateScenario5() {
+        let post = Post.keys
+        let predicate = (post.id == "postID" && post.draft == false) || (post.rating > 3 && post.createdAt == "time")
+        let statement = SelectStatement(from: Post.schema, predicate: predicate)
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
+        from Post as "root"
+        where 1 = 1
+          and (
+            (
+              "root"."id" = ?
+              and "root"."draft" = ?
+            )
+            or (
+              "root"."rating" > ?
+              and "root"."createdAt" = ?
             )
           )
         """
