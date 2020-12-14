@@ -126,31 +126,4 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
-
-    func getAll<M>(list: List<M>?) -> [M] {
-        guard var subsequentResults = list else {
-            XCTFail("Could not get first results")
-            return []
-        }
-        var resultsArray: [M] = []
-        resultsArray.append(contentsOf: subsequentResults)
-        while subsequentResults.hasNextPage() {
-            let semaphore = DispatchSemaphore(value: 0)
-            subsequentResults.getNextPage { result in
-                defer {
-                    semaphore.signal()
-                }
-                switch result {
-                case .success(let listResult):
-                    subsequentResults = listResult
-                    resultsArray.append(contentsOf: subsequentResults)
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-
-            }
-            semaphore.wait()
-        }
-        return resultsArray
-    }
 }
