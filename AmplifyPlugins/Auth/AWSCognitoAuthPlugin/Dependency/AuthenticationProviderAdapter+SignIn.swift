@@ -133,8 +133,7 @@ extension AuthenticationProviderAdapter {
                                               tokenURIQueryParameters: request.options.tokenQueryParameters,
                                               signOutURIQueryParameters: request.options.signOutQueryParameters)
 
-        // Create a navigation controller with an empty UIViewController.
-        let navController = PresentingNavigationController(rootViewController: UIViewController())
+        let navController = ModalPresentingNavigationController(rootViewController: UIViewController())
         navController.isNavigationBarHidden = true
         navController.modalPresentationStyle = .overCurrentContext
 
@@ -219,15 +218,15 @@ extension AuthenticationProviderAdapter {
         let authError = AuthErrorHelper.toAuthError(error)
         return authError
     }
+    
+    private class ModalPresentingNavigationController: UINavigationController {
 
-}
-
-class PresentingNavigationController: UINavigationController {
-
-    override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
-        if #available(iOS 13, *) {
-            viewControllerToPresent.isModalInPresentation = true
+        override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+            if #available(iOS 13, *) {
+                viewControllerToPresent.isModalInPresentation = true
+            }
+            super.present(viewControllerToPresent, animated: flag, completion: completion)
         }
-        super.present(viewControllerToPresent, animated: flag, completion: completion)
     }
+
 }
