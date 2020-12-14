@@ -83,6 +83,8 @@ type User5 @model {
 }
 
 # This is one of the default schemas provided when you run `amplify add api`
+# > Do you have an annotated GraphQL schema? `No`
+# > Choose a schema template: `One-to-many relationship (e.g., “Blogs” with “Posts” and “Comments”)`
 
 # 6 - Blog Post Comment
 type Blog6 @model {
