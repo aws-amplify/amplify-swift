@@ -146,8 +146,6 @@ extension AuthenticationProviderAdapter {
 
         parentViewController?.present(navController, animated: false, completion: {
 
-            navController.dismiss(animated: false, completion: {})
-
             self.awsMobileClient.showSignIn(navigationController: navController,
                                             signInUIOptions: SignInUIOptions(),
                                             hostedUIOptions: hostedUIOptions) { [weak self] state, error in
