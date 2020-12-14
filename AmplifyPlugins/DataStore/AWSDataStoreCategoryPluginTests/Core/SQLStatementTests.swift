@@ -13,6 +13,7 @@ import XCTest
 @testable import AWSDataStoreCategoryPlugin
 
 // swiftlint:disable type_body_length
+// swiftlint:disable file_length
 // TODO: Refactor this into separate test suites
 class SQLStatementTests: XCTestCase {
 

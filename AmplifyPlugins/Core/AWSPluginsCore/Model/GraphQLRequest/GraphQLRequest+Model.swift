@@ -206,7 +206,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
 
         if let predicate = predicate {
-            documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
+            documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(modelType.schema)))
         }
 
         documentBuilder.add(decorator: PaginationDecorator())

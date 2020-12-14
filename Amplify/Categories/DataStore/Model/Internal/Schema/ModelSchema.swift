@@ -100,6 +100,17 @@ public struct ModelSchema {
         return fields[name]
     }
 
+    public func columnName(withName name: String) -> String {
+        switch field(withName: name)?.association {
+        case .belongsTo(_, let targetName):
+            return targetName ?? name
+        case .hasOne(_, let targetName):
+            return targetName ?? name
+        default:
+            return name
+        }
+    }
+
 }
 
 extension Dictionary where Key == String, Value == ModelField {

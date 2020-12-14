@@ -11,6 +11,7 @@ import Amplify
 public typealias GraphQLFilter = [String: Any]
 
 protocol GraphQLFilterConvertible {
+    func graphQLFilter(_ modelSchema: ModelSchema?) -> GraphQLFilter
     var graphQLFilter: GraphQLFilter { get }
 }
 
@@ -47,11 +48,22 @@ public struct GraphQLFilterConverter {
 /// Extension to translate a `QueryPredicate` into a GraphQL query variables object
 extension QueryPredicate {
 
+    public func graphQLFilter(_ modelSchema: ModelSchema? = nil) -> GraphQLFilter {
+        if let operation = self as? QueryPredicateOperation {
+            return operation.graphQLFilter(modelSchema)
+        } else if let group = self as? QueryPredicateGroup {
+            return group.graphQLFilter(modelSchema)
+        }
+
+        preconditionFailure(
+            "Could not find QueryPredicateOperation or QueryPredicateGroup for \(String(describing: self))")
+    }
+
     public var graphQLFilter: GraphQLFilter {
         if let operation = self as? QueryPredicateOperation {
-            return operation.graphQLFilter
+            return operation.graphQLFilter(nil)
         } else if let group = self as? QueryPredicateGroup {
-            return group.graphQLFilter
+            return group.graphQLFilter(nil)
         }
 
         preconditionFailure(
@@ -60,24 +72,49 @@ extension QueryPredicate {
 }
 
 extension QueryPredicateOperation: GraphQLFilterConvertible {
+    func graphQLFilter(_ modelSchema: ModelSchema? = nil) -> GraphQLFilter {
+        guard let modelSchema = modelSchema else {
+            return [field: [self.operator.graphQLOperator: self.operator.value]]
+        }
+        return [modelSchema.columnName(withName: field): [self.operator.graphQLOperator: self.operator.value]]
+    }
+
     var graphQLFilter: GraphQLFilter {
         return [field: [self.operator.graphQLOperator: self.operator.value]]
     }
 }
 
 extension QueryPredicateGroup: GraphQLFilterConvertible {
+    func graphQLFilter(_ modelSchema: ModelSchema? = nil) -> GraphQLFilter {
+        let logicalOperator = type.rawValue
+        switch type {
+        case .and, .or:
+            var graphQLPredicateOperation = [logicalOperator: [Any]()]
+            predicates.forEach { predicate in
+                graphQLPredicateOperation[logicalOperator]?.append(predicate.graphQLFilter(modelSchema))
+            }
+            return graphQLPredicateOperation
+        case .not:
+            if let predicate = predicates.first {
+                return [logicalOperator: predicate.graphQLFilter(modelSchema)]
+            } else {
+                preconditionFailure("Missing predicate for \(String(describing: self)) with type: \(type)")
+            }
+        }
+    }
+
     var graphQLFilter: GraphQLFilter {
         let logicalOperator = type.rawValue
         switch type {
         case .and, .or:
             var graphQLPredicateOperation = [logicalOperator: [Any]()]
             predicates.forEach { predicate in
-                graphQLPredicateOperation[logicalOperator]?.append(predicate.graphQLFilter)
+                graphQLPredicateOperation[logicalOperator]?.append(predicate.graphQLFilter(nil))
             }
             return graphQLPredicateOperation
         case .not:
             if let predicate = predicates.first {
-                return [logicalOperator: predicate.graphQLFilter]
+                return [logicalOperator: predicate.graphQLFilter(nil)]
             } else {
                 preconditionFailure("Missing predicate for \(String(describing: self)) with type: \(type)")
             }
