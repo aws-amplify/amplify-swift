@@ -225,7 +225,6 @@ extension AuthenticationProviderAdapter {
 class PresentingNavigationController: UINavigationController {
 
     override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
-        print("present is being called")
         if #available(iOS 13, *) {
             viewControllerToPresent.isModalInPresentation = true
         }
