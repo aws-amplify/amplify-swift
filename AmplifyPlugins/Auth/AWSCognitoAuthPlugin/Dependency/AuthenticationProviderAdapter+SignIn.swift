@@ -134,8 +134,7 @@ extension AuthenticationProviderAdapter {
                                               signOutURIQueryParameters: request.options.signOutQueryParameters)
 
         // Create a navigation controller with an empty UIViewController.
-        let uiViewController = UIViewController()
-        let navController = UINavigationController(rootViewController: uiViewController)
+        let navController = PresentingNavigationController(rootViewController: UIViewController())
         navController.isNavigationBarHidden = true
         navController.modalPresentationStyle = .overCurrentContext
 
@@ -146,9 +145,9 @@ extension AuthenticationProviderAdapter {
         }
 
         parentViewController?.present(navController, animated: false, completion: {
-            
-            uiViewController.dismiss(animated: false, completion: {})
-            
+
+            navController.dismiss(animated: false, completion: {})
+
             self.awsMobileClient.showSignIn(navigationController: navController,
                                             signInUIOptions: SignInUIOptions(),
                                             hostedUIOptions: hostedUIOptions) { [weak self] state, error in
@@ -223,4 +222,15 @@ extension AuthenticationProviderAdapter {
         return authError
     }
 
+}
+
+class PresentingNavigationController: UINavigationController {
+
+    override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+        print("present is being called")
+        if #available(iOS 13, *) {
+            viewControllerToPresent.isModalInPresentation = true
+        }
+        super.present(viewControllerToPresent, animated: flag, completion: completion)
+    }
 }
