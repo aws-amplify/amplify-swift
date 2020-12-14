@@ -69,6 +69,10 @@ public class DataStoreList<ModelType: Model>: List<ModelType>, ModelListDecoder 
         lazyLoad(completion)
     }
 
+    public override func fetch(_ completion: @escaping ListCallback<Elements>) {
+        fetchLazyLoad(completion)
+    }
+
     // MARK: - Synchronous API
 
     /// Trigger `DataStore` query to initialize the collection. This function always

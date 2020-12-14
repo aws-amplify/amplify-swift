@@ -8,6 +8,9 @@
 import Foundation
 import Combine
 
+public typealias ListCallback<Result> = (ListResult<Result>) -> Void
+public typealias ListResult<Success> = Result<Success, CoreError>
+
 /// `List<ModelType>` provides simple conformance to `Collection` with a backing array of `Model` type elements.
 /// This class acts as an abstract class for plugins to build subclasses that implement their own specific
 /// implementations of a `ModelList`. The decoding logic leverages the `ModelListRegistry` to check for decodability
@@ -17,7 +20,6 @@ open class List<ModelType: Model>: ModelList {
     public typealias LazyListPublisher = AnyPublisher<Elements, DataStoreError>
 
     public typealias ModelListElement = ModelType
-    public typealias Page = List<ModelType>
     public typealias Element = ModelType
     public typealias Elements = [Element]
 
@@ -76,10 +78,18 @@ open class List<ModelType: Model>: ModelList {
     /// fetches data from the `DataStore.query`.
     ///
     /// - seealso: `load()`
+    @available(*, deprecated, message: "Use `fetch` instead.")
     open func load(_ completion: DataStoreCallback<Elements>) {
         fatalError("Not supported")
     }
 
+    /// Trigger a query to initialize the collection. This function always
+    /// fetches data from the backing data store if the collectino has not yet been loaded
+    ///
+    /// - seealso: `load()`
+    open func fetch(_ completion: @escaping ListCallback<Elements>) {
+        fatalError("Not supported")
+    }
     // MARK: - Synchronous API
 
     /// Trigger `DataStore` query to initialize the collection. This function always
@@ -90,6 +100,7 @@ open class List<ModelType: Model>: ModelList {
     ///
     /// - Returns: the current instance after data was loaded.
     /// - seealso: `load(completion:)`
+    @available(*, deprecated, message: "Use `fetch` instead.")
     open func load() -> Self {
         fatalError("Not supported")
     }
@@ -102,6 +113,7 @@ open class List<ModelType: Model>: ModelList {
     ///
     /// - Returns: a type-erased Combine publisher
     @available(iOS 13.0, *)
+    @available(*, deprecated, message: "Use `fetch` instead.")
     open func loadAsPublisher() -> LazyListPublisher {
         fatalError("Not supported")
     }
@@ -112,7 +124,7 @@ open class List<ModelType: Model>: ModelList {
         return false
     }
 
-    open func fetch(completion: @escaping (Result<Page, CoreError>) -> Void) {
+    open func getNextPage(completion: @escaping (Result<List<Element>, CoreError>) -> Void) {
         fatalError("Not supported")
     }
 
@@ -144,6 +156,4 @@ open class List<ModelType: Model>: ModelList {
     public func encode(to encoder: Encoder) throws {
         try elements.encode(to: encoder)
     }
-
-    // MARK:
 }

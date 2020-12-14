@@ -126,6 +126,8 @@ class GraphQLRequestEmbeddableTypeJSONTests: XCTestCase {
             return
         }
         XCTAssertEqual(input["id"] as? String, todoModel.id)
+    }
+
     /// - Given: a `Model` instance
     /// - When:
     ///   - the model is a `Post`

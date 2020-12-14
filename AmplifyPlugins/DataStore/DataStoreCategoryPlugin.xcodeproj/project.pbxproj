@@ -57,6 +57,7 @@
 		2149E61423886C7F00873955 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2149E61223886C7F00873955 /* LaunchScreen.storyboard */; };
 		2149E62223886CEE00873955 /* AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2149E59B238867E100873955 /* AWSDataStoreCategoryPlugin.framework */; };
 		2149E62D23886D3900873955 /* SyncMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E62B23886D3900873955 /* SyncMetadataTests.swift */; };
+		21605DD62581B6790011991F /* DataStoreConnectionScenario6Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21605DD52581B6780011991F /* DataStoreConnectionScenario6Tests.swift */; };
 		217D61752578AF85009F0639 /* DataStoreConnectionScenario2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D61742578AF85009F0639 /* DataStoreConnectionScenario2Tests.swift */; };
 		217D622225798ED3009F0639 /* DataStoreConnectionScenario1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D622125798ED3009F0639 /* DataStoreConnectionScenario1Tests.swift */; };
 		217D622B2579E15F009F0639 /* DataStoreConnectionScenario5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D62282579E15F009F0639 /* DataStoreConnectionScenario5Tests.swift */; };
@@ -297,6 +298,7 @@
 		2149E61D23886CEE00873955 /* AWSDataStoreCategoryPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSDataStoreCategoryPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2149E62123886CEE00873955 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2149E62B23886D3900873955 /* SyncMetadataTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncMetadataTests.swift; sourceTree = "<group>"; };
+		21605DD52581B6780011991F /* DataStoreConnectionScenario6Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario6Tests.swift; sourceTree = "<group>"; };
 		217D61742578AF85009F0639 /* DataStoreConnectionScenario2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario2Tests.swift; sourceTree = "<group>"; };
 		217D622125798ED3009F0639 /* DataStoreConnectionScenario1Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario1Tests.swift; sourceTree = "<group>"; };
 		217D62282579E15F009F0639 /* DataStoreConnectionScenario5Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario5Tests.swift; sourceTree = "<group>"; };

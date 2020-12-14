@@ -22,6 +22,7 @@ class GraphQLModelBasedTests: XCTestCase {
         Amplify.reset()
         let plugin = AWSAPIPlugin(modelRegistration: PostCommentModelRegistration())
 
+        Amplify.Logging.logLevel = .verbose
         do {
             try Amplify.add(plugin: plugin)
 

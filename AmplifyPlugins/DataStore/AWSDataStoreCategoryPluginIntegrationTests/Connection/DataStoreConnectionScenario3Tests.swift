@@ -226,6 +226,48 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
         wait(for: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
+    func testGetPostThenFetchComments() throws {
+        try startAmplifyAndWaitForSync()
+        guard let post = savePost(title: "title") else {
+            XCTFail("Could not create post")
+            return
+        }
+        guard saveComment(postID: post.id, content: "content") != nil else {
+            XCTFail("Could not create comment")
+            return
+        }
+        guard saveComment(postID: post.id, content: "content") != nil else {
+            XCTFail("Could not create comment")
+            return
+        }
+        let getPostCompleted = expectation(description: "get post complete")
+        let getCommentsCompleted = expectation(description: "get comments complete")
+        Amplify.DataStore.query(Post3.self, byId: post.id) { result in
+            switch result {
+            case .success(let queriedPostOptional):
+                guard let queriedPost = queriedPostOptional else {
+                    XCTFail("Could not get post")
+                    return
+                }
+                XCTAssertEqual(queriedPost.id, post.id)
+                getPostCompleted.fulfill()
+                guard let comments = queriedPost.comments else {
+                    XCTFail("Could not get comments")
+                    return
+                }
+                XCTAssertFalse(comments.hasNextPage())
+                XCTAssertEqual(comments.count, 2)
+                for comment in comments {
+                    print(comment)
+                }
+                getCommentsCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [getPostCompleted, getCommentsCompleted], timeout: TestCommonConstants.networkTimeout)
+    }
+
     func savePost(id: String = UUID().uuidString, title: String) -> Post3? {
         let post = Post3(id: id, title: title)
         var result: Post3?

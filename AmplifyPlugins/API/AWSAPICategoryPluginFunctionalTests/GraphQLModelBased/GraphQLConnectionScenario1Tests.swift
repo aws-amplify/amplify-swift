@@ -172,7 +172,8 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    // TODO: This test will fail until https://github.com/aws-amplify/amplify-ios/pull/885 is merged in
+    // TODO: This test will fail until column name fix is merged in
+    // https://github.com/aws-amplify/amplify-ios/pull/885
     func testListProjectsByTeamID() {
         guard let team = createTeam(name: "name") else {
             XCTFail("Could not create team")
@@ -201,6 +202,67 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
             }
         }
         wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    // TODO: This test will retrieve all the projects until
+    // `let predicate = Project1.keys.team.eq(team.id)` is added to the query
+    // Add predicate once column name fix is merged in
+    // https://github.com/aws-amplify/amplify-ios/pull/885
+    func testPaginatedListProjects() {
+        guard let team = createTeam(name: "name") else {
+            XCTFail("Could not create team")
+            return
+        }
+        guard let projecta = createProject(team: team) else {
+            XCTFail("Could not create project")
+            return
+        }
+        guard let projectb = createProject(team: team) else {
+            XCTFail("Could not create project")
+            return
+        }
+        let listProjectByTeamIDCompleted = expectation(description: "list projects completed")
+        // let predicate = Project1.keys.team.eq(team.id)
+        var results: List<Project1>?
+        Amplify.API.query(request: .paginatedList(Project1.self /*, where: predicate */ )) { result in
+            switch result {
+            case .success(let result):
+                switch result {
+                case .success(let projects):
+                    results = projects
+                    listProjectByTeamIDCompleted.fulfill()
+                case .failure(let response):
+                    XCTFail("Failed with: \(response)")
+                }
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
+        guard var subsequentResults = results else {
+            XCTFail("Could not get first results")
+            return
+        }
+        var resultsArray: [Project1] = []
+        resultsArray.append(contentsOf: subsequentResults)
+        while subsequentResults.hasNextPage() {
+            let semaphore = DispatchSemaphore(value: 0)
+            subsequentResults.getNextPage { result in
+                defer {
+                    semaphore.signal()
+                }
+                switch result {
+                case .success(let listResult):
+                    subsequentResults = listResult
+                    resultsArray.append(contentsOf: subsequentResults)
+                case .failure(let coreError):
+                    XCTFail("Unexpected error: \(coreError)")
+                }
+
+            }
+            semaphore.wait()
+        }
+        XCTAssertTrue(resultsArray.count >= 2)
     }
 
     func createTeam(id: String = UUID().uuidString, name: String) -> Team1? {

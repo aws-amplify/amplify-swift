@@ -72,7 +72,7 @@ class AppSyncListTests: XCTestCase {
 
         XCTAssertTrue(list.hasNextPage())
         let fetchCompleted = expectation(description: "Fetch completed")
-        list.fetch(completion: { result in
+        list.getNextPage(completion: { result in
             switch result {
             case .success(let list):
                 XCTAssertNotNil(list)

@@ -61,6 +61,83 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
         Amplify.reset()
     }
 
+<<<<<<< HEAD
+=======
+    func testGetBlogThenFetchPostsThenFetchComments() {
+        guard let blog = createBlog(name: "name"),
+              let post1 = createPost(title: "title", blog: blog),
+              let post2 = createPost(title: "title", blog: blog),
+              let comment1post1 = createComment(post: post1, content: "content"),
+              let comment2post1 = createComment(post: post1, content: "content") else {
+            XCTFail("Could not create blog, posts, and comments")
+            return
+        }
+        let getBlogCompleted = expectation(description: "get blog complete")
+        let fetchPostCompleted = expectation(description: "fetch post complete")
+        var resultPosts: List<Post6>?
+        Amplify.API.query(request: .get(Blog6.self, byId: blog.id)) { result in
+            switch result {
+            case .success(let result):
+                switch result {
+                case .success(let queriedBlogOptional):
+                    guard let queriedBlog = queriedBlogOptional else {
+                        XCTFail("Could not get blog")
+                        return
+                    }
+                    XCTAssertEqual(queriedBlog.id, blog.id)
+                    getBlogCompleted.fulfill()
+                    guard let posts = queriedBlog.posts else {
+                        XCTFail("Could not get comments")
+                        return
+                    }
+                    posts.fetch { fetchResults in
+                        switch fetchResults {
+                        case .success:
+                            resultPosts = posts
+                            fetchPostCompleted.fulfill()
+                        case .failure(let error):
+                            XCTFail("Could not fetch posts \(error)")
+                        }
+                    }
+                case .failure(let response): XCTFail("Failed with: \(response)")
+                }
+            case .failure(let error): XCTFail("\(error)")
+            }
+        }
+        wait(for: [getBlogCompleted, fetchPostCompleted], timeout: TestCommonConstants.networkTimeout)
+
+        let allPosts = getAll(list: resultPosts)
+        XCTAssertEqual(allPosts.count, 2)
+        guard let fetchedPost = allPosts.first(where: { (post) -> Bool in
+            post.id == post1.id
+        }), let comments = fetchedPost.comments else {
+            XCTFail("Could not set up - failed to get a post and its comments")
+            return
+        }
+
+        let fetchCommentsCompleted = expectation(description: "fetch post complete")
+        var resultComments: List<Comment6>?
+        comments.fetch { fetchResults in
+            switch fetchResults {
+            case .success:
+                resultComments = comments
+                fetchCommentsCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("Could not fetch comments \(error)")
+            }
+        }
+        wait(for: [fetchCommentsCompleted], timeout: TestCommonConstants.networkTimeout)
+        let allComments = getAll(list: resultComments)
+        XCTAssertEqual(allComments.count, 2)
+        XCTAssertTrue(allComments.contains(where: { (comment) -> Bool in
+            comment.id == comment1post1.id
+        }))
+        XCTAssertTrue(allComments.contains(where: { (comment) -> Bool in
+            comment.id == comment2post1.id
+        }))
+    }
+
+>>>>>>> temp
     func createBlog(id: String = UUID().uuidString, name: String) -> Blog6? {
         let blog = Blog6(id: id, name: name)
         var result: Blog6?

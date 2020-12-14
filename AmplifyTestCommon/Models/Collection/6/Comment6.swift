@@ -13,7 +13,6 @@ public struct Comment6: Model {
   public let id: String
   public var post: Post6?
   public var content: String
-
   public init(id: String = UUID().uuidString,
       post: Post6? = nil,
       content: String) {

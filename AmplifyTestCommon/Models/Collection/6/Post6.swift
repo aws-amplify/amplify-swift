@@ -14,7 +14,6 @@ public struct Post6: Model {
   public var title: String
   public var blog: Blog6?
   public var comments: List<Comment6>?
-
   public init(id: String = UUID().uuidString,
       title: String,
       blog: Blog6? = nil,

@@ -156,7 +156,6 @@ type Comment6 @model @key(name: "byPost", fields: ["postID", "content"]) {
   post: Post6 @connection(fields: ["postID"])
   content: String!
 }
-
 ```
 
 3.  `amplify push`

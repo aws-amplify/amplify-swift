@@ -65,7 +65,7 @@ extension GraphQLModelBasedTests {
 
         while subsequentResults.hasNextPage() {
             let semaphore = DispatchSemaphore(value: 0)
-            subsequentResults.fetch { result in
+            subsequentResults.getNextPage { result in
                 defer {
                     semaphore.signal()
                 }
@@ -96,7 +96,7 @@ extension GraphQLModelBasedTests {
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
         guard createPost(id: uuid1, title: title) != nil else {
-            XCTFail("Failed to ensure at least two Posts to be retrieved on the listQuery")
+            XCTFail("Failed to create post")
             return
         }
 
@@ -126,7 +126,7 @@ extension GraphQLModelBasedTests {
         }
         while subsequentResults.hasNextPage() {
             let semaphore = DispatchSemaphore(value: 0)
-            subsequentResults.fetch { result in
+            subsequentResults.getNextPage { result in
                 defer {
                     semaphore.signal()
                 }
@@ -136,13 +136,12 @@ extension GraphQLModelBasedTests {
                 case .failure(let coreError):
                     XCTFail("Unexpected error: \(coreError)")
                 }
-
             }
             semaphore.wait()
         }
         XCTAssertFalse(subsequentResults.hasNextPage())
         let invalidFetchCompleted = expectation(description: "fetch completed with validation error")
-        subsequentResults.fetch { result in
+        subsequentResults.getNextPage { result in
 
             switch result {
             case .success(let listResult):
@@ -157,5 +156,60 @@ extension GraphQLModelBasedTests {
         }
 
         wait(for: [invalidFetchCompleted], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    // Create Post and comment with post
+    // Query for the post and try to fetch the comments
+    // This is expected to fail since the fetch for comments performs an API call
+    // to list the comments by postId. The API does not provide a way to filter on
+    // postID, in turn this test is purely to show the limitation with using the
+    // older connection directive. A possible future implementation could involve loading
+    // all of the comments with the predicate that excludes the postId, followed by performing a client predicate matching on the postID
+    func testFetchListOfCommentsFromPostFails() {
+        let uuid1 = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let title = testMethodName + "Title"
+        guard let createdPost = createPost(id: uuid1, title: title) else {
+            XCTFail("Failed to create post")
+            return
+        }
+        guard let createdComment = createComment(content: title, post: createdPost) else {
+            XCTFail("Failed to create comment")
+            return
+        }
+
+        let firstQueryCompleted = expectation(description: "first query completed")
+        var results: Post?
+        _ = Amplify.API.query(request: .get(Post.self, byId: createdPost.id)) { event in
+            switch event {
+            case .success(let response):
+                guard case let .success(graphQLResponse) = response else {
+                    XCTFail("Missing successful response")
+                    return
+                }
+
+                results = graphQLResponse
+                firstQueryCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected .failure event: \(error)")
+            }
+        }
+
+        wait(for: [firstQueryCompleted], timeout: TestCommonConstants.networkTimeout)
+        guard var retrievedPost = results else {
+            XCTFail("Could not get post")
+            return
+        }
+        XCTAssertTrue(retrievedPost.comments.isEmpty)
+        let fetchCommentsFailed = expectation(description: "Fetch comments failed")
+        retrievedPost.comments?.fetch { result in
+            switch result {
+            case .success(let comments):
+                XCTFail("Should have failed to fetch comments \(comments)")
+            case .failure(let coreError):
+                fetchCommentsFailed.fulfill()
+            }
+        }
+        wait(for: [fetchCommentsFailed], timeout: TestCommonConstants.networkTimeout)
     }
 }

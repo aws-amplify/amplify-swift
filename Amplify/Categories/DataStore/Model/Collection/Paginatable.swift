@@ -10,12 +10,12 @@ import Foundation
 /// Provides paging related functionality
 public protocol Paginatable {
 
-    typealias PageResultCallback = (Result<Page, CoreError>) -> Void
-    associatedtype Page
+    typealias PageResultCallback = (Result<List<Element>, CoreError>) -> Void
+    associatedtype Element: Model
 
     /// Checks if there is subsequent data to retrieve. If True, retrieve the next page using `fetch`
     func hasNextPage() -> Bool
 
     /// Retrieves the next page as a new in-memory object asynchronously.
-    func fetch(completion: @escaping PageResultCallback)
+    func getNextPage(completion: @escaping PageResultCallback)
 }

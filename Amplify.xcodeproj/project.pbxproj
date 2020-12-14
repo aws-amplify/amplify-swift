@@ -863,6 +863,11 @@
 		21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequest.swift; sourceTree = "<group>"; };
 		21558E3F237CB8640032A5BB /* GraphQLError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLError.swift; sourceTree = "<group>"; };
 		215F4BCAAB89FA54AA121BDE /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
+		21605D4125802A850011991F /* Comment6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment6+Schema.swift"; sourceTree = "<group>"; };
+		21605D4325802A850011991F /* Blog6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Blog6+Schema.swift"; sourceTree = "<group>"; };
+		21605D4425802A850011991F /* Blog6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog6.swift; sourceTree = "<group>"; };
+		21605D4525802A850011991F /* Comment6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment6.swift; sourceTree = "<group>"; };
+		21605D4625802A850011991F /* Post6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post6+Schema.swift"; sourceTree = "<group>"; };
 		2167C08F253F9424008B5CC3 /* Paginatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paginatable.swift; sourceTree = "<group>"; };
 		2167C098253F9472008B5CC3 /* ModelList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelList.swift; sourceTree = "<group>"; };
 		2167C0A1253F948F008B5CC3 /* ModelListDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelListDecoder.swift; sourceTree = "<group>"; };
@@ -1985,6 +1990,8 @@
 				217D5EAC2577F9DF009F0639 /* User5+Schema.swift */,
 			);
 			path = 5;
+			sourceTree = "<group>";
+		};
 		2190B1A1256D5B8F001EDEA6 /* Error */ = {
 			isa = PBXGroup;
 			children = (
@@ -2784,6 +2791,11 @@
 				217856BD2383322700A30D19 /* GraphQLMutationType.swift */,
 				21409C4C23847E41000A53C9 /* LabelType.swift */,
 				217856BA2383320900A30D19 /* GraphQLQueryType.swift */,
+				21605D4425802A850011991F /* Blog6.swift */,
+				21605D4325802A850011991F /* Blog6+Schema.swift */,
+				21605D4525802A850011991F /* Comment6.swift */,
+				21605D4625802A850011991F /* Post6+Schema.swift */,
+				21605D4125802A850011991F /* Comment6+Schema.swift */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
