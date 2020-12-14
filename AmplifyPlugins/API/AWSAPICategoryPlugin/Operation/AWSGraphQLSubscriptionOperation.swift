@@ -147,11 +147,9 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
     private func onGraphQLResponseData(_ graphQLResponseData: Data) {
         do {
-            let graphQLServiceResponse = try GraphQLResponseDecoder.deserialize(graphQLResponse: graphQLResponseData)
-            let graphQLResponse = try GraphQLResponseDecoder.decode(graphQLServiceResponse: graphQLServiceResponse,
-                                                                    responseType: request.responseType,
-                                                                    decodePath: request.decodePath,
-                                                                    rawGraphQLResponse: graphQLResponseData)
+            let graphQLResponseDecoder = GraphQLResponseDecoder(request: request)
+            graphQLResponseDecoder.appendResponse(graphQLResponseData)
+            let graphQLResponse = try graphQLResponseDecoder.decodeToGraphQLResponse()
             dispatchInProcess(data: .data(graphQLResponse))
         } catch let error as APIError {
             dispatch(result: .failure(error))
@@ -169,7 +167,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         let errorDescription = "Subscription item event failed with error"
         if case let ConnectionProviderError.subscription(_, payload) = error,
            let errors = payload?["errors"] as? AppSyncJSONValue,
-           let graphQLErrors = try? GraphQLResponseDecoder.decodeAppSyncErrors(errors) {
+           let graphQLErrors = try? GraphQLErrorDecoder.decodeAppSyncErrors(errors) {
             let graphQLResponseError = GraphQLResponseError<R>.error(graphQLErrors)
             dispatch(result: .failure(APIError.operationError(errorDescription, "", graphQLResponseError)))
             finish()

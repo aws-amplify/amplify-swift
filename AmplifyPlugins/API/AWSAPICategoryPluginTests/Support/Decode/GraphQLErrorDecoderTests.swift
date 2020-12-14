@@ -9,7 +9,7 @@ import XCTest
 import Amplify
 @testable import AWSAPICategoryPlugin
 
-class GraphQLResponseDecoderDecodeErrorTests: XCTestCase {
+class GraphQLErrorDecoderTests: XCTestCase {
 
     func testDecodeErrors() throws {
         let graphQLErrorJSON: JSONValue = [
@@ -27,7 +27,7 @@ class GraphQLResponseDecoderDecodeErrorTests: XCTestCase {
             ]
         ]
 
-        let graphQLErrors = try GraphQLResponseDecoder
+        let graphQLErrors = try GraphQLErrorDecoder
             .decodeErrors(graphQLErrors: [graphQLErrorJSON, graphQLErrorJSON2])
 
         XCTAssertEqual(graphQLErrors.count, 2)
@@ -73,7 +73,7 @@ class GraphQLResponseDecoderDecodeErrorTests: XCTestCase {
             "errorType": "ConflictUnhandled",
             "code": 123
         ]
-        let graphQLErrors = try GraphQLResponseDecoder.decodeErrors(graphQLErrors: [graphQLErrorJSON])
+        let graphQLErrors = try GraphQLErrorDecoder.decodeErrors(graphQLErrors: [graphQLErrorJSON])
 
         XCTAssertEqual(graphQLErrors.count, 1)
         let result = graphQLErrors[0]
