@@ -36,7 +36,6 @@ Pod::Spec.new do |s|
 
   s.subspec 'AWSAPIPlugin' do |ss|
     ss.source_files = 'AmplifyPlugins/API/AWSAPICategoryPlugin/**/*.swift'
-    ss.dependency 'ReachabilitySwift', '~> 5.0.0'
     ss.dependency 'AppSyncRealTimeClient', "~> 1.4.0"
   end
 
