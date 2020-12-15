@@ -7,6 +7,7 @@
 
 import Amplify
 import Combine
+import AWSPluginsCore
 
 final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
@@ -87,6 +88,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     public func configure(using amplifyConfiguration: Any?) throws {
         modelRegistration.registerModels(registry: ModelRegistry.self)
         resolveSyncEnabled()
+        ModelListDecoderRegistry.registerDecoder(DataStoreList<AnyModel>.self)
     }
 
     func reinitStorageEngineIfNeeded(completion: @escaping DataStoreCallback<Void> = {_ in}) {
