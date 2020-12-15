@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Reachability
 
 /// Defines a factory to return a NetworkReachabilityProviding instance
 public protocol NetworkReachabilityProvidingFactory {
@@ -21,7 +20,7 @@ public protocol NetworkReachabilityProviding: class {
     /// considered reachable if it can be accessed via WiFi
     var allowsCellularConnection: Bool { get set }
 
-    var connection: Reachability.Connection { get }
+    var connection: AmplifyReachability.Connection { get }
 
     /// The notification center on which "reachability changed" events are being posted
     var notificationCenter: NotificationCenter { get set }

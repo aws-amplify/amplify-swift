@@ -7,7 +7,6 @@
 
 import Amplify
 import Foundation
-import Reachability
 import AWSAPICategoryPlugin
 
 class MockNetworkReachabilityProvidingFactory: NetworkReachabilityProvidingFactory {
@@ -18,8 +17,8 @@ class MockNetworkReachabilityProvidingFactory: NetworkReachabilityProvidingFacto
 
 class MockReachability: NetworkReachabilityProviding {
     var allowsCellularConnection = true
-    static var iConnection = Reachability.Connection.wifi
-    var connection: Reachability.Connection {
+    static var iConnection = AmplifyReachability.Connection.wifi
+    var connection: AmplifyReachability.Connection {
         get {
             return MockReachability.iConnection
         }
