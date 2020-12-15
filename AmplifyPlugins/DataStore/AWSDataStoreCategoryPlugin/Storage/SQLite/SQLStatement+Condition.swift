@@ -61,12 +61,23 @@ private func translateQueryPredicate(from modelSchema: ModelSchema,
     return (sql.joined(separator: "\n"), bindings)
 }
 
+private func translateQueryPredicate2(from modelSchema: ModelSchema,
+                                      predicate: QueryPredicate,
+                                      namespace: Substring? = nil) -> SQLPredicate {
+    var sql: [String] = []
+    var bindings: [Binding?] = []
+
+
+    return (predicate.conditionSQL(namespace: namespace), bindings)
+}
+
 /// Represents a partial SQL statement with query conditions. This type can be used to
 /// compose `insert`, `update`, `delete` and `select` statements with conditions.
 struct ConditionStatement: SQLStatement {
 
     let modelSchema: ModelSchema
     let stringValue: String
+    let stringValue2: String
     let variables: [Binding?]
 
     init(modelSchema: ModelSchema, predicate: QueryPredicate, namespace: Substring? = nil) {
@@ -76,7 +87,56 @@ struct ConditionStatement: SQLStatement {
                                                        predicate: predicate,
                                                        namespace: namespace)
         self.stringValue = sql
+        let (sql2, variables2) = translateQueryPredicate2(from: modelSchema,
+                                                          predicate: predicate,
+                                                          namespace: namespace)
+        self.stringValue2 = sql2
         self.variables = variables
     }
+}
+extension QueryPredicate {
+    func conditionSQL(namespace: Substring? = nil,
+                      indentPrefix: String = "  ",
+                      indentSize: Int = 0) -> String {
+        if let group = self as? QueryPredicateGroup {
+            return group.conditionSQL(namespace: namespace,
+                                      indentPrefix: indentPrefix,
+                                      indentSize: indentSize)
+        } else if let operation = self as? QueryPredicateOperation {
+            return operation.conditionSQL(namespace: namespace,
+                                          indentPrefix: indentPrefix,
+                                          indentSize: indentSize)
+        } else if let constant = self as? QueryPredicateConstant,
+                  case .all = constant {
+            return "or 1 = 1"
+        }
+        preconditionFailure("Failed \(String(describing: self))")
+    }
+}
+extension QueryPredicateGroup {
+    func conditionSQL(namespace: Substring? = nil,
+                      indentPrefix: String,
+                      indentSize: Int) -> String {
+        let indent = String(repeating: indentPrefix, count: indentSize)
+        let innerIndent = String(repeating: indentPrefix, count: indentSize + 1)
+        let groupType = "\n\(innerIndent)\(type.rawValue) "
+        let conditionSQL = Array(predicates.map { (predicate) -> String in
+            return predicate.conditionSQL(namespace: namespace,
+                                          indentPrefix: indentPrefix,
+                                          indentSize: indentSize + 1)
+        }).joined(separator: groupType)
+        let condition = "\(indent)(\n\(innerIndent)\(conditionSQL)\n\(indent))"
+        return indentSize == 0 ? condition : "\n\(condition)"
 
+    }
+}
+
+extension QueryPredicateOperation {
+    func conditionSQL(namespace: Substring? = nil,
+                      indentPrefix: String,
+                      indentSize: Int) -> String {
+        let column = self.operator.columnFor(field: field,
+                                             namespace: namespace)
+        return column + " \(self.operator.sqlOperation)"
+    }
 }

@@ -599,6 +599,77 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(variables[6] as? String, "ice cream%")
     }
 
+    func testTranslateComplexGroupedQueryPredicate2() {
+        let post = Post.keys
+
+        let predicate = post.id != nil
+            && post.draft == true
+            && post.rating > 0
+            && post.rating.between(start: 2, end: 4)
+            && post.status != PostStatus.draft
+            && post.updatedAt == nil
+            && (post.content ~= "gelato" || post.title.beginsWith("ice cream"))
+
+        let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate)
+
+        XCTAssertEqual("""
+      (
+        "id" is not null
+        and "draft" = ?
+        and "rating" > ?
+        and "rating" between ? and ?
+        and "status" <> ?
+        and "updatedAt" is null
+        and
+        (
+          "content" like ?
+          or "title" like ?
+        )
+      )
+      """, statement.stringValue2)
+
+        let variables = statement.variables
+        XCTAssertEqual(variables[0] as? Int, 1)
+        XCTAssertEqual(variables[1] as? Int, 0)
+        XCTAssertEqual(variables[2] as? Int, 2)
+        XCTAssertEqual(variables[3] as? Int, 4)
+        XCTAssertEqual(variables[4] as? String, PostStatus.draft.rawValue)
+        XCTAssertEqual(variables[5] as? String, "%gelato%")
+        XCTAssertEqual(variables[6] as? String, "ice cream%")
+    }
+
+
+    /*
+     (1 || (2 & 3)) & (4 & 5)
+     */
+    func testTranslateComplexGroupedQueryPredicate3() {
+        let post = Post.keys
+
+        let predicate = (post.id != nil // 1
+            || (post.draft == true && post.rating > 0) // ||  ( 2 & 3 )
+            && (post.rating.between(start: 2, end: 4) && post.status != PostStatus.draft)) // & (4 & 5)
+
+        let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate)
+
+        let expectedString = """
+          (
+            "id" is not null
+            or
+            (
+              "draft" = ?
+              and "rating" > ?
+              and
+              (
+                "rating" between ? and ?
+                and "status" <> ?
+              )
+            )
+          )
+          """
+        XCTAssertEqual(expectedString, statement.stringValue2)
+        print(statement.stringValue2)
+    }
+
     /// - Given: a grouped predicate and namespace
     /// - When:
     ///   - the predicate contains a set of different operations
