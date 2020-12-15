@@ -26,6 +26,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
+//This code was taken from the 5.0.0 release
+// Commit SHA1: 98e968e7b6c1318fb61df23e347bc319761e8acb
 import SystemConfiguration
 import Foundation
 
@@ -62,17 +64,17 @@ public class AmplifyReachability {
     }
 
     public enum Connection: CustomStringConvertible {
+        @available(*, deprecated, renamed: "unavailable")
+        case none
         case unavailable, wifi, cellular
         public var description: String {
             switch self {
             case .cellular: return "Cellular"
             case .wifi: return "WiFi"
             case .unavailable: return "No Connection"
+            case .none: return "unavailable"
             }
         }
-
-        @available(*, deprecated, renamed: "unavailable")
-        public static let none: Connection = .unavailable
     }
 
     public var whenReachable: NetworkReachable?
@@ -104,6 +106,7 @@ public class AmplifyReachability {
 
         switch flags?.connection {
         case .unavailable?, nil: return .unavailable
+        case .none?: return .unavailable
         case .cellular?: return allowsCellularConnection ? .cellular : .unavailable
         case .wifi?: return .wifi
         }
