@@ -7,8 +7,11 @@
 
 import Foundation
 
-/// Describes a command and its structure.
-/// - `taskArgs`: type defining
+/// An `AmplifyCommand` describes the shape of a command. A command it's just an abstraction and doesn't
+/// make any assumptions about neither the environment in which will be executed or the executor interface.
+/// It's the executor responsibility to provide the necessary arguments to the initializer of a conforming type.
+///
+/// - `taskArgs`: type defining extra arguments that will be passed to each task
 /// - `tasks`: array of tasks whose a command is composed of
 /// - `description`: human-readable description of command purpose
 protocol AmplifyCommand {

@@ -42,7 +42,7 @@ enum ImportConfigTasks {
     }
 }
 
-/// Given an existing Amplify iOS project, adds configuration files to a `AmplifyConfig` group
+/// Given an existing Amplify iOS project, adds amplify configuration files to a `AmplifyConfig` group
 struct CommandImportConfig: AmplifyCommand {
     struct CommandImportConfigArgs {
         let configGroup = "AmplifyConfig"

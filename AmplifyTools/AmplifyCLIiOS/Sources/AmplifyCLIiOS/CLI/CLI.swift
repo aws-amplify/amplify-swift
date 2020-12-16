@@ -8,7 +8,12 @@
 import Foundation
 import ArgumentParser
 
-/// CLI interface to `CommandImportConfig` command
+/// This module defines a CLI (Command Line Interface) to commands defined in `Core/Commands`.
+/// Each "CLI command" defined below is the actual executor of an `AmplifyCommand`, thus it's responsible
+/// for providing an environment, instantiate and execute a command.
+/// The `CommandExecutable` protocol glues an `AmplifyCommand` and the environment provided by the executor.
+
+/// CLI command invoking `CommandImportConfig`.
 struct CLICommandImportConfig: ParsableCommand, CommandExecutable, CLICommandReportable {
     static let configuration = CommandConfiguration(
         commandName: "import-config",
