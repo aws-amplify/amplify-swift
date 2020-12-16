@@ -6,7 +6,6 @@ PODS:
     - AppSyncRealTimeClient (~> 1.4.0)
     - AWSCore (~> 2.20.0)
     - AWSPluginsCore (= 1.5.1)
-    - ReachabilitySwift (~> 5.0.0)
   - AmplifyPlugins/AWSCognitoAuthPlugin (1.5.1):
     - AWSAuthCore (~> 2.20.0)
     - AWSCognitoIdentityProvider (~> 2.20.0)
@@ -42,7 +41,6 @@ PODS:
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
-  - ReachabilitySwift (5.0.0)
   - SQLite.swift (0.12.2):
     - SQLite.swift/standard (= 0.12.2)
   - SQLite.swift/standard (0.12.2)
@@ -71,7 +69,6 @@ SPEC REPOS:
     - AWSCognitoIdentityProviderASF
     - AWSCore
     - AWSMobileClient
-    - ReachabilitySwift
     - SQLite.swift
     - Starscream
     - SwiftFormat
@@ -103,7 +100,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Amplify: c55f7bf2c6ea68891d95579882172c1256f301fc
-  AmplifyPlugins: 78d2e39e1d5db18ae50c215063790f300607d312
+  AmplifyPlugins: 40f1051d1e8313a74c16bafe0618d460bf0479db
   AmplifyTestCommon: 60a44eefba338d8d9809f3d2740422805bfaad9f
   AppSyncRealTimeClient: 7fb160294d067b6c0c4b3c4ab91e953fd4cfba30
   AWSAuthCore: 6a5f0fdbbd65d917deab61e2f5035afecafaa687
@@ -114,7 +111,6 @@ SPEC CHECKSUMS:
   AWSPluginsCore: 3afe92313f5be7f002a48007e6645b5ab58e05a7
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
-  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   SQLite.swift: d2b4642190917051ce6bd1d49aab565fe794eea3
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
