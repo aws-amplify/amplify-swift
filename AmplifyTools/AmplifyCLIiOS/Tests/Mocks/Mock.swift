@@ -6,17 +6,23 @@
 //
 
 import Foundation
+import XCTest
 
 @dynamicMemberLookup
 class Mock {
+    private let calledTimesKey = "CalledTimes"
     var calls: [String: Int] = [:]
-    func methodCalled(_ methodName: String) {
+    func captureCall(_ methodName: String = #function) {
         let currentCalls = calls[methodName] ?? 0
         calls[methodName] = currentCalls + 1
     }
 
     subscript(dynamicMember value: String) -> Int {
-        let key = String(value.dropLast("CalledTimes".count))
+        if !value.contains(calledTimesKey) {
+            XCTFail("[Mock] Invalid key provided \(value)")
+        }
+
+        let key = String(value.dropLast(calledTimesKey.count))
         return calls[key] ?? 0
     }
 

@@ -21,6 +21,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		7698002A25830DFC0047967C /* MockAmplifyCommandEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7698002925830DFB0047967C /* MockAmplifyCommandEnvironment.swift */; };
+		769800662583107C0047967C /* CommandImportConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769800652583107C0047967C /* CommandImportConfigTests.swift */; };
 		7698FA38257EEC5A0047967C /* CommandEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7698FA37257EEC590047967C /* CommandEnvironment.swift */; };
 		7698FA39257EEC5A0047967C /* CommandEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7698FA37257EEC590047967C /* CommandEnvironment.swift */; };
 		7698FC952581BA470047967C /* AmplifyFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7698FC942581BA470047967C /* AmplifyFileManager.swift */; };
@@ -843,6 +845,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		76750A0D25899E1B003CE4FA /* FileManagerUtilsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerUtilsTests.swift; sourceTree = "<group>"; };
+		7698002925830DFB0047967C /* MockAmplifyCommandEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAmplifyCommandEnvironment.swift; sourceTree = "<group>"; };
+		769800652583107C0047967C /* CommandImportConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandImportConfigTests.swift; sourceTree = "<group>"; };
 		7698FA37257EEC590047967C /* CommandEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandEnvironment.swift; sourceTree = "<group>"; };
 		7698FC942581BA470047967C /* AmplifyFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyFileManager.swift; sourceTree = "<group>"; };
 		7698FCEE2581BE1D0047967C /* FileManager+AmplifyFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+AmplifyFileManager.swift"; sourceTree = "<group>"; };
@@ -1338,6 +1343,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		76750A0C25899E1B003CE4FA /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				76750A0D25899E1B003CE4FA /* FileManagerUtilsTests.swift */,
+			);
+			name = Support;
+			path = Tests/Support;
+			sourceTree = "<group>";
+		};
 		7698FC932581B9630047967C /* Environment */ = {
 			isa = PBXGroup;
 			children = (
@@ -1354,6 +1368,7 @@
 			children = (
 				7698FF512582F4C90047967C /* Mock.swift */,
 				7698FF522582F4C90047967C /* MockAmplifyFileManager.swift */,
+				7698002925830DFB0047967C /* MockAmplifyCommandEnvironment.swift */,
 			);
 			name = Mocks;
 			path = Tests/Mocks;
@@ -1366,6 +1381,14 @@
 			);
 			name = AmplifyCommandEnvironmentTests;
 			path = Tests/AmplifyCommandEnvironmentTests;
+			sourceTree = "<group>";
+		};
+		7698FFCF25830BA50047967C /* CommandImportConfigTests */ = {
+			isa = PBXGroup;
+			children = (
+				769800652583107C0047967C /* CommandImportConfigTests.swift */,
+			);
+			path = CommandImportConfigTests;
 			sourceTree = "<group>";
 		};
 		76C7F0D325797E7200817F07 /* Core */ = {
@@ -1414,8 +1437,10 @@
 		OBJ_10 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				7698FF532582F4C90047967C /* AmplifyCommandEnvironmentTests */,
 				7698FF502582F4C90047967C /* Mocks */,
+				76750A0C25899E1B003CE4FA /* Support */,
+				7698FFCF25830BA50047967C /* CommandImportConfigTests */,
+				7698FF532582F4C90047967C /* AmplifyCommandEnvironmentTests */,
 				OBJ_11 /* AmplifyCLIiOSTests */,
 			);
 			name = Tests;
@@ -2887,9 +2912,11 @@
 				76C7F10025797E7200817F07 /* AmplifyCommandError.swift in Sources */,
 				76FC0FD52579AAE400829A33 /* XcodeProject.swift in Sources */,
 				76C7F0FC25797E7200817F07 /* AmplifyCommandResult.swift in Sources */,
+				7698002A25830DFC0047967C /* MockAmplifyCommandEnvironment.swift in Sources */,
 				OBJ_439 /* AmplifyCLIiOSTests.swift in Sources */,
 				76C7F0F825797E7200817F07 /* CommandEnvironmentProvider.swift in Sources */,
 				76FC100A2579D23000829A33 /* CLI.swift in Sources */,
+				769800662583107C0047967C /* CommandImportConfigTests.swift in Sources */,
 				7698FF5A2582F4C90047967C /* AmplifyCommandEnvironmentTests.swift in Sources */,
 				7698FC962581BA470047967C /* AmplifyFileManager.swift in Sources */,
 				76C7F0FA25797E7200817F07 /* CommandExecutable.swift in Sources */,

@@ -93,7 +93,11 @@ extension CommandEnvironment {
         return try XcodeProject(at: path, projPath: self.path(for: projectName))
     }
 
-    func xcode(project path: String, add files: [XcodeProjectFile], toGroup group: String) throws {
+    func createXcodeFile(withPath path: String, ofType type: XcodeProjectFileType) -> XcodeProjectFile {
+        return XcodeProjectFile(path, type: type)
+    }
+
+    func addFilesToXcodeProject(projectPath path: String, files: [XcodeProjectFile], toGroup group: String) throws {
         do {
             let xcodeProject = try loadFirstXcodeProject(fromDirectory: path)
             try xcodeProject.add(files: files, toGroup: group)

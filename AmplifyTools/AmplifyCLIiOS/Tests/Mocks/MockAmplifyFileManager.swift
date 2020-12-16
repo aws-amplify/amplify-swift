@@ -9,31 +9,31 @@ import Foundation
 
 class MockAmplifyFileManager: Mock, AmplifyFileManager {
     func resolveHomeDirectoryIn(path: String) -> String {
-        methodCalled("resolveHomeDirectoryIn")
+        captureCall("resolveHomeDirectoryIn")
         return path
     }
 
     func createDirectory(at url: URL, withIntermediateDirectories: Bool) throws {
-        methodCalled("createDirectory")
+        captureCall("createDirectory")
     }
 
     func createFile(atPath: String, contents: Data?) -> Bool {
-        methodCalled("createFile")
+        captureCall("createFile")
         return true
     }
 
     func directoryExists(atPath: String) -> Bool {
-        methodCalled("directoryExists")
+        captureCall("directoryExists")
         return true
     }
 
     func contentsOfDirectory(atPath: String) throws -> [String] {
-        methodCalled("contentsOfDirectory")
+        captureCall("contentsOfDirectory")
         return [""]
     }
 
     func glob(pattern: String) -> [String] {
-        methodCalled("glob")
+        captureCall("glob")
         return [""]
     }
 }

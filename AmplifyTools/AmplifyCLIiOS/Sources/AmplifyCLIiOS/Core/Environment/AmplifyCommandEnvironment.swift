@@ -40,10 +40,12 @@ protocol AmplifyCommandEnvironmentFileManager {
 
 /// Collection of Xcode utilities
 protocol AmplifyCommandEnvironmentXcode {
+    /// Given a file path, returns an XcodeProjectFile reference
+    func createXcodeFile(withPath path: String, ofType type: XcodeProjectFileType) -> XcodeProjectFile
 
-    /// reads an Xcode project file at `project path`, read or create a group `group` if it doesn't exist
+    /// Reads an Xcode project file at `projectPath`, read or create a group `group` if it doesn't exist
     /// and adds `files` to it
-    func xcode(project path: String, add files: [XcodeProjectFile], toGroup group: String) throws
+    func addFilesToXcodeProject(projectPath: String, files: [XcodeProjectFile], toGroup group: String) throws
 }
 
 typealias AmplifyCommandEnvironment = AmplifyCommandEnvironmentFileManager & AmplifyCommandEnvironmentXcode
