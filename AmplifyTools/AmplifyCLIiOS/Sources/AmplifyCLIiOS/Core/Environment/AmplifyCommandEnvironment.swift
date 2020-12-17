@@ -11,7 +11,6 @@ import Foundation
 protocol AmplifyCommandEnvironmentFileManager {
     var basePathURL: URL { get }
     var basePath: String { get }
-    var currentFolder: String { get }
     var fileManager: AmplifyFileManager { get }
 
     init(basePath: String, fileManager: AmplifyFileManager)

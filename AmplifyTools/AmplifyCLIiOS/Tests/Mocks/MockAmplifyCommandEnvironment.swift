@@ -9,11 +9,7 @@ import Foundation
 
 class MockAmplifyCommandEnvironment: Mock, AmplifyCommandEnvironment {
     var basePathURL: URL
-
     var basePath: String
-
-    var currentFolder: String
-
     var fileManager: AmplifyFileManager
 
     required init(basePath: String, fileManager: AmplifyFileManager) {
@@ -21,8 +17,6 @@ class MockAmplifyCommandEnvironment: Mock, AmplifyCommandEnvironment {
         // maybe a factory method instead of a public initializer?
         self.basePath = fileManager.resolveHomeDirectoryIn(path: basePath)
         self.basePathURL = URL(fileURLWithPath: self.basePath)
-        self.currentFolder = basePathURL.lastPathComponent
-
         self.fileManager = fileManager
     }
 

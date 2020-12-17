@@ -11,16 +11,11 @@ import Foundation
 struct CommandEnvironment: AmplifyCommandEnvironment {
     internal let basePathURL: URL
     let basePath: String
-    let currentFolder: String
     let fileManager: AmplifyFileManager
 
     init(basePath: String, fileManager: AmplifyFileManager) {
-        // TODO: we should fail if basePath is either empty or not a folder
-        // (URL initializer discards last component of paths ending without a /)
         self.basePath = fileManager.resolveHomeDirectoryIn(path: basePath)
-        self.basePathURL = URL(fileURLWithPath: self.basePath)
-        self.currentFolder = basePathURL.lastPathComponent
-
+        self.basePathURL = URL(fileURLWithPath: self.basePath, isDirectory: true)
         self.fileManager = fileManager
     }
 }
