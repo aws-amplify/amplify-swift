@@ -219,7 +219,6 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    // TODO: This test will fail until https://github.com/aws-amplify/amplify-ios/pull/885 is merged in
     func testListProjectsByTeamID() throws {
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name") else {

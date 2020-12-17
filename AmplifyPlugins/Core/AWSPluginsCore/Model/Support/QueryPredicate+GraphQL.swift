@@ -12,6 +12,10 @@ public typealias GraphQLFilter = [String: Any]
 
 protocol GraphQLFilterConvertible {
     func graphQLFilter(_ modelSchema: ModelSchema?) -> GraphQLFilter
+
+    @available(*, deprecated, message: """
+    Computed property use of GraphQLFilter is deprecated, instead use the function one.
+    """)
     var graphQLFilter: GraphQLFilter { get }
 }
 
@@ -21,7 +25,7 @@ public struct GraphQLFilterConverter {
     /// Serialize the translated GraphQL query variable object to JSON string.
     public static func toJSON(_ queryPredicate: QueryPredicate,
                               options: JSONSerialization.WritingOptions = []) throws -> String {
-        let graphQLFilterData = try JSONSerialization.data(withJSONObject: queryPredicate.graphQLFilter,
+        let graphQLFilterData = try JSONSerialization.data(withJSONObject: queryPredicate.graphQLFilter(),
                                                            options: options)
 
         guard let serializedString = String(data: graphQLFilterData, encoding: .utf8) else {
@@ -59,11 +63,14 @@ extension QueryPredicate {
             "Could not find QueryPredicateOperation or QueryPredicateGroup for \(String(describing: self))")
     }
 
+    @available(*, deprecated, message: """
+    Computed property use of GraphQLFilter is deprecated, instead use the function one.
+    """)
     public var graphQLFilter: GraphQLFilter {
         if let operation = self as? QueryPredicateOperation {
-            return operation.graphQLFilter(nil)
+            return operation.graphQLFilter
         } else if let group = self as? QueryPredicateGroup {
-            return group.graphQLFilter(nil)
+            return group.graphQLFilter
         }
 
         preconditionFailure(
@@ -73,12 +80,16 @@ extension QueryPredicate {
 
 extension QueryPredicateOperation: GraphQLFilterConvertible {
     func graphQLFilter(_ modelSchema: ModelSchema? = nil) -> GraphQLFilter {
+        let filterValue = [self.operator.graphQLOperator: self.operator.value]
         guard let modelSchema = modelSchema else {
-            return [field: [self.operator.graphQLOperator: self.operator.value]]
+            return [field: filterValue]
         }
-        return [modelSchema.columnName(withName: field): [self.operator.graphQLOperator: self.operator.value]]
+        return [modelSchema.columnName(forField: field): filterValue]
     }
 
+    @available(*, deprecated, message: """
+    Computed property use of GraphQLFilter is deprecated, instead use the function one.
+    """)
     var graphQLFilter: GraphQLFilter {
         return [field: [self.operator.graphQLOperator: self.operator.value]]
     }
@@ -103,18 +114,21 @@ extension QueryPredicateGroup: GraphQLFilterConvertible {
         }
     }
 
+    @available(*, deprecated, message: """
+    Computed property use of GraphQLFilter is deprecated, instead use the function one.
+    """)
     var graphQLFilter: GraphQLFilter {
         let logicalOperator = type.rawValue
         switch type {
         case .and, .or:
             var graphQLPredicateOperation = [logicalOperator: [Any]()]
             predicates.forEach { predicate in
-                graphQLPredicateOperation[logicalOperator]?.append(predicate.graphQLFilter(nil))
+                graphQLPredicateOperation[logicalOperator]?.append(predicate.graphQLFilter)
             }
             return graphQLPredicateOperation
         case .not:
             if let predicate = predicates.first {
-                return [logicalOperator: predicate.graphQLFilter(nil)]
+                return [logicalOperator: predicate.graphQLFilter]
             } else {
                 preconditionFailure("Missing predicate for \(String(describing: self)) with type: \(type)")
             }

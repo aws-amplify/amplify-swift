@@ -65,7 +65,6 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
         Amplify.reset()
     }
 
-    // TODO: This test will fail until https://github.com/aws-amplify/amplify-ios/pull/885 is merged in
     func testListPostEditorByPost() {
         guard let post = createPost(title: "title") else {
             XCTFail("Could not create post")
@@ -98,7 +97,6 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
         wait(for: [listPostEditorByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    // TODO: This test will fail until https://github.com/aws-amplify/amplify-ios/pull/885 is merged in
     func testListPostEditorByUser() {
         guard let post = createPost(title: "title") else {
             XCTFail("Could not create post")

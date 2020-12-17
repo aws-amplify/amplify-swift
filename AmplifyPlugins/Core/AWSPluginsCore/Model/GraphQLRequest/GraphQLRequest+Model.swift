@@ -169,12 +169,12 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
         case .delete:
             documentBuilder.add(decorator: ModelIdDecorator(id: model.id))
             if let predicate = predicate {
-                documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
+                documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(modelSchema)))
             }
         case .update:
             documentBuilder.add(decorator: ModelDecorator(model: model))
             if let predicate = predicate {
-                documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
+                documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(modelSchema)))
             }
         }
 

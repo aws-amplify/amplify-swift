@@ -10,6 +10,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 
+// swiftlint:disable type_body_length
 class QueryPredicateGraphQLTests: XCTestCase {
 
     func testPredicateToGraphQLValues() throws {

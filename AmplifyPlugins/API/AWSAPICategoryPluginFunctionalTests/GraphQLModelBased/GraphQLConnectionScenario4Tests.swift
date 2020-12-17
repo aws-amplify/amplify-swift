@@ -203,7 +203,6 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
         wait(for: [getCommentAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    // TODO: This test will fail until https://github.com/aws-amplify/amplify-ios/pull/885 is merged in
     func testListCommentsByPostID() {
         guard let post = createPost(title: "title") else {
             XCTFail("Could not create post")

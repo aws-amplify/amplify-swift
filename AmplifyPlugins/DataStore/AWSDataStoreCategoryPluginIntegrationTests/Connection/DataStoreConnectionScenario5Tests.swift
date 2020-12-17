@@ -46,7 +46,6 @@ import AWSMobileClient
 
 class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
 
-    // TODO: This test will fail until https://github.com/aws-amplify/amplify-ios/pull/885 is merged in
     func testListPostEditorByPost() throws {
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
@@ -65,7 +64,7 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
         let predicateByPostId = PostEditor5.keys.post.eq(post.id)
         Amplify.DataStore.query(PostEditor5.self, where: predicateByPostId) { result in
             switch result {
-            case .success(let projects):
+            case .success:
                 listPostEditorByPostIDCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
@@ -74,7 +73,6 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
         wait(for: [listPostEditorByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    // TODO: This test will fail until https://github.com/aws-amplify/amplify-ios/pull/885 is merged in
     func testListPostEditorByUser() throws {
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
