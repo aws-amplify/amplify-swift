@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import AWSMobileClient
 @testable import AWSAPICategoryPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -64,7 +63,7 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
     func createBlog(id: String = UUID().uuidString, name: String) -> Blog6? {
         let blog = Blog6(id: id, name: name)
         var result: Blog6?
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
         Amplify.API.mutate(request: .create(blog)) { event in
             switch event {
             case .success(let data):
@@ -74,19 +73,19 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
                 default:
                     XCTFail("Could not get data back")
                 }
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
                 XCTFail("Failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
     func createPost(id: String = UUID().uuidString, title: String, blog: Blog6) -> Post6? {
         let post = Post6(id: id, title: title, blog: blog)
         var result: Post6?
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
         Amplify.API.mutate(request: .create(post)) { event in
             switch event {
             case .success(let data):
@@ -96,19 +95,19 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
                 default:
                     XCTFail("Could not get data back")
                 }
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
                 XCTFail("Failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
     func createComment(id: String = UUID().uuidString, post: Post6, content: String) -> Comment6? {
         let comment = Comment6(id: id, post: post, content: content)
         var result: Comment6?
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
         Amplify.API.mutate(request: .create(comment)) { event in
             switch event {
             case .success(let data):
@@ -118,12 +117,12 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
                 default:
                     XCTFail("Could not get data back")
                 }
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
                 XCTFail("Failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 }

@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import AWSMobileClient
 @testable import AWSAPICategoryPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -20,6 +19,10 @@ extension GraphQLConnectionScenario3Tests {
         let completedInvoked = expectation(description: "Completed invoked")
         let progressInvoked = expectation(description: "progress invoked")
         progressInvoked.expectedFulfillmentCount = 2
+        let uuid = UUID().uuidString
+        let uuid2 = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let title = testMethodName + "Title"
 
         let operation = Amplify.API.subscribe(
             request: .subscription(of: Post3.self, type: .onCreate),
@@ -34,15 +37,22 @@ extension GraphQLConnectionScenario3Tests {
                     case .disconnected:
                         disconnectedInvoked.fulfill()
                     }
-                case .data:
-                    progressInvoked.fulfill()
+                case .data(let result):
+                    switch result {
+                    case .success(let post):
+                        if post.id == uuid || post.id == uuid2 {
+                            progressInvoked.fulfill()
+                        }
+                    case .failure(let error):
+                        XCTFail("\(error)")
+                    }
                 }
 
         },
             completionListener: { event in
                 switch event {
                 case .failure(let error):
-                    print("Unexpected .failed event: \(error)")
+                    XCTFail("Unexpected .failed event: \(error)")
                 case .success:
                     completedInvoked.fulfill()
                 }
@@ -50,16 +60,12 @@ extension GraphQLConnectionScenario3Tests {
 
         XCTAssertNotNil(operation)
         wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
-        let uuid = UUID().uuidString
-        let testMethodName = String("\(#function)".dropLast(2))
-        let title = testMethodName + "Title"
 
         guard createPost(id: uuid, title: title) != nil else {
             XCTFail("Failed to create post")
             return
         }
 
-        let uuid2 = UUID().uuidString
         guard createPost(id: uuid2, title: title) != nil else {
             XCTFail("Failed to create post")
             return
@@ -97,7 +103,7 @@ extension GraphQLConnectionScenario3Tests {
             completionListener: { event in
                 switch event {
                 case .failure(let error):
-                    print("Unexpected .failed event: \(error)")
+                    XCTFail("Unexpected .failed event: \(error)")
                 case .success:
                     completedInvoked.fulfill()
                 }
@@ -108,12 +114,11 @@ extension GraphQLConnectionScenario3Tests {
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
 
-        guard createPost(id: uuid, title: title) != nil else {
+        guard let createdPost = createPost(id: uuid, title: title) else {
             XCTFail("Failed to create post")
             return
         }
-
-        guard updatePost(id: uuid, title: title) != nil else {
+        guard mutatePost(post: createdPost) != nil else {
             XCTFail("Failed to update post")
             return
         }
@@ -150,7 +155,7 @@ extension GraphQLConnectionScenario3Tests {
             completionListener: { event in
                 switch event {
                 case .failure(let error):
-                    print("Unexpected .failed event: \(error)")
+                    XCTFail("Unexpected .failed event: \(error)")
                 case .success:
                     completedInvoked.fulfill()
                 }
@@ -203,7 +208,7 @@ extension GraphQLConnectionScenario3Tests {
             completionListener: { event in
                 switch event {
                 case .failure(let error):
-                    print("Unexpected .failed event: \(error)")
+                    XCTFail("Unexpected .failed event: \(error)")
                 case .success:
                     completedInvoked.fulfill()
                 }

@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import AWSMobileClient
 @testable import AWSAPICategoryPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -49,7 +48,7 @@ class GraphQLModelBasedTests: XCTestCase {
             return
         }
 
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
         _ = Amplify.API.query(request: .get(Post.self, byId: uuid)) { event in
             switch event {
             case .success(let graphQLResponse):
@@ -58,19 +57,19 @@ class GraphQLModelBasedTests: XCTestCase {
                     return
                 }
                 guard let resultPost = data else {
-                    XCTFail("Missing post from querySingle")
+                    XCTFail("Missing post from query")
                     return
                 }
 
                 XCTAssertEqual(resultPost.id, post.id)
                 XCTAssertEqual(resultPost.title, title)
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
             }
         }
 
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Test custom GraphQLRequest with nested list deserializes to generated Post Model
@@ -94,7 +93,7 @@ class GraphQLModelBasedTests: XCTestCase {
             return
         }
 
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
         let document = """
         query getPost($id: ID!) {
           getPost(id: $id){
@@ -140,7 +139,7 @@ class GraphQLModelBasedTests: XCTestCase {
                     return
                 }
                 guard let resultPost = data else {
-                    XCTFail("Missing post from querySingle")
+                    XCTFail("Missing post from query")
                     return
                 }
 
@@ -151,13 +150,13 @@ class GraphQLModelBasedTests: XCTestCase {
                     return
                 }
                 XCTAssertEqual(comments.count, 1)
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
             }
         }
 
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testListQueryWithModel() {
@@ -169,7 +168,7 @@ class GraphQLModelBasedTests: XCTestCase {
             return
         }
 
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
 
         _ = Amplify.API.query(request: .list(Post.self)) { event in
             switch event {
@@ -179,14 +178,13 @@ class GraphQLModelBasedTests: XCTestCase {
                     return
                 }
                 XCTAssertTrue(!posts.isEmpty)
-                print(posts)
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
             }
         }
 
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testListQueryWithPredicate() {
@@ -204,7 +202,7 @@ class GraphQLModelBasedTests: XCTestCase {
             return
         }
 
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
         let post = Post.keys
         let predicate = post.id == uuid &&
             post.title == uniqueTitle &&
@@ -231,17 +229,17 @@ class GraphQLModelBasedTests: XCTestCase {
                 XCTAssertEqual(singlePost.createdAt.iso8601String, createdPost.createdAt.iso8601String)
                 XCTAssertEqual(singlePost.rating, 12.3)
                 XCTAssertEqual(singlePost.draft, true)
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
             }
         }
 
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testCreatPostWithModel() {
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
 
         let post = Post(title: "title", content: "content", createdAt: .now())
         _ = Amplify.API.mutate(request: .create(post)) { event in
@@ -250,15 +248,15 @@ class GraphQLModelBasedTests: XCTestCase {
                 switch data {
                 case .success(let post):
                     XCTAssertEqual(post.title, "title")
-                    completeInvoked.fulfill()
+                    requestInvokedSuccessfully.fulfill()
                 case .failure(let error):
                     XCTFail("Unexpected response with error \(error)")
                 }
             case .failure(let error):
-                print(error)
+                XCTFail("\(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testCreateCommentWithModel() {
@@ -270,7 +268,7 @@ class GraphQLModelBasedTests: XCTestCase {
             return
         }
 
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
         let comment = Comment(content: "commentContent",
                               createdAt: .now(),
                               post: createdPost)
@@ -282,15 +280,15 @@ class GraphQLModelBasedTests: XCTestCase {
                     XCTAssertEqual(comment.content, "commentContent")
                     XCTAssertNotNil(comment.post)
                     XCTAssertEqual(comment.post.id, uuid)
-                    completeInvoked.fulfill()
+                    requestInvokedSuccessfully.fulfill()
                 case .failure(let error):
                     XCTFail("Unexpected response with error \(error)")
                 }
             case .failure(let error):
-                print(error)
+                XCTFail("\(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeletePostWithModel() {
@@ -302,7 +300,7 @@ class GraphQLModelBasedTests: XCTestCase {
             return
         }
 
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
 
         _ = Amplify.API.mutate(request: .delete(post)) { event in
             switch event {
@@ -311,14 +309,14 @@ class GraphQLModelBasedTests: XCTestCase {
                 case .success(let post):
                     XCTAssertEqual(post.title, title)
                 case .failure(let error):
-                    print(error)
+                    XCTFail("\(error)")
                 }
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
-                print(error)
+                XCTFail("\(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
 
         let queryComplete = expectation(description: "query complete")
 
@@ -349,7 +347,7 @@ class GraphQLModelBasedTests: XCTestCase {
         }
         let updatedTitle = title + "Updated"
         let updatedPost = Post(id: uuid, title: updatedTitle, content: post.content, createdAt: post.createdAt)
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
         _ = Amplify.API.mutate(request: .update(updatedPost)) { event in
             switch event {
             case .success(let data):
@@ -357,14 +355,14 @@ class GraphQLModelBasedTests: XCTestCase {
                 case .success(let post):
                     XCTAssertEqual(post.title, updatedTitle)
                 case .failure(let error):
-                    print(error)
+                    XCTFail("\(error)")
                 }
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
-                print(error)
+                XCTFail("\(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testOnCreatePostSubscriptionWithModel() {
@@ -373,6 +371,10 @@ class GraphQLModelBasedTests: XCTestCase {
         let completedInvoked = expectation(description: "Completed invoked")
         let progressInvoked = expectation(description: "progress invoked")
         progressInvoked.expectedFulfillmentCount = 2
+        let uuid = UUID().uuidString
+        let uuid2 = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let title = testMethodName + "Title"
 
         let operation = Amplify.API.subscribe(
             request: .subscription(of: Post.self, type: .onCreate),
@@ -387,15 +389,22 @@ class GraphQLModelBasedTests: XCTestCase {
                     case .disconnected:
                         disconnectedInvoked.fulfill()
                     }
-                case .data:
-                    progressInvoked.fulfill()
+                case .data(let result):
+                    switch result {
+                    case .success(let post):
+                        if post.id == uuid || post.id == uuid2 {
+                            progressInvoked.fulfill()
+                        }
+                    case .failure(let error):
+                        XCTFail("\(error)")
+                    }
                 }
 
         },
             completionListener: { event in
                 switch event {
                 case .failure(let error):
-                    print("Unexpected .failed event: \(error)")
+                    XCTFail("Unexpected .failed event: \(error)")
                 case .success:
                     completedInvoked.fulfill()
                 }
@@ -403,16 +412,12 @@ class GraphQLModelBasedTests: XCTestCase {
 
         XCTAssertNotNil(operation)
         wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
-        let uuid = UUID().uuidString
-        let testMethodName = String("\(#function)".dropLast(2))
-        let title = testMethodName + "Title"
 
         guard createPost(id: uuid, title: title) != nil else {
             XCTFail("Failed to create post")
             return
         }
 
-        let uuid2 = UUID().uuidString
         guard createPost(id: uuid2, title: title) != nil else {
             XCTFail("Failed to create post")
             return
@@ -450,7 +455,7 @@ class GraphQLModelBasedTests: XCTestCase {
             completionListener: { event in
                 switch event {
                 case .failure(let error):
-                    print("Unexpected .failed event: \(error)")
+                    XCTFail("Unexpected .failed event: \(error)")
                 case .success:
                     completedInvoked.fulfill()
                 }
@@ -461,12 +466,12 @@ class GraphQLModelBasedTests: XCTestCase {
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
 
-        guard createPost(id: uuid, title: title) != nil else {
+        guard let createdPost = createPost(id: uuid, title: title) else {
             XCTFail("Failed to create post")
             return
         }
 
-        guard updatePost(id: uuid, title: title) != nil else {
+        guard mutatePost(createdPost) != nil else {
             XCTFail("Failed to update post")
             return
         }
@@ -503,7 +508,7 @@ class GraphQLModelBasedTests: XCTestCase {
             completionListener: { event in
                 switch event {
                 case .failure(let error):
-                    print("Unexpected .failed event: \(error)")
+                    XCTFail("Unexpected .failed event: \(error)")
                 case .success:
                     completedInvoked.fulfill()
                 }
@@ -556,7 +561,7 @@ class GraphQLModelBasedTests: XCTestCase {
             completionListener: { event in
                 switch event {
                 case .failure(let error):
-                    print("Unexpected .failed event: \(error)")
+                    XCTFail("Unexpected .failed event: \(error)")
                 case .success:
                     completedInvoked.fulfill()
                 }
@@ -597,7 +602,7 @@ class GraphQLModelBasedTests: XCTestCase {
 
     func createPost(post: Post) -> Post? {
         var result: Post?
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
 
         _ = Amplify.API.mutate(request: .create(post)) { event in
             switch event {
@@ -608,18 +613,18 @@ class GraphQLModelBasedTests: XCTestCase {
                 default:
                     XCTFail("Create Post was not successful: \(data)")
                 }
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
-                print(error)
+                XCTFail("\(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
     func createComment(comment: Comment) -> Comment? {
         var result: Comment?
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
 
         _ = Amplify.API.mutate(request: .create(comment)) { event in
             switch event {
@@ -630,20 +635,18 @@ class GraphQLModelBasedTests: XCTestCase {
                 default:
                     XCTFail("Could not get data back")
                 }
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
-                print(error)
+                XCTFail("\(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
-    func updatePost(id: String, title: String) -> Post? {
+    func mutatePost(_ post: Post) -> Post? {
         var result: Post?
-        let completeInvoked = expectation(description: "request completed")
-
-        let post = Post(id: id, title: title, content: "content", createdAt: .now())
+        let requestInvokedSuccessfully = expectation(description: "request completed")
         _ = Amplify.API.mutate(request: .update(post)) { event in
             switch event {
             case .success(let data):
@@ -653,18 +656,18 @@ class GraphQLModelBasedTests: XCTestCase {
                 default:
                     XCTFail("Could not get data back")
                 }
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
-                print(error)
+                XCTFail("\(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
     func deletePost(post: Post) -> Post? {
         var result: Post?
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
 
         _ = Amplify.API.mutate(request: .delete(post)) { event in
             switch event {
@@ -675,12 +678,12 @@ class GraphQLModelBasedTests: XCTestCase {
                 default:
                     XCTFail("Could not get data back")
                 }
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
-                print(error)
+                XCTFail("\(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 }

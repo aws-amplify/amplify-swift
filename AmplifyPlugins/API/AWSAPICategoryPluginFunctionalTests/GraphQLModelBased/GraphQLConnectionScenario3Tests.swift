@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import AWSMobileClient
 @testable import AWSAPICategoryPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -59,7 +58,7 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
             return
         }
 
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
         _ = Amplify.API.query(request: .get(Post3.self, byId: post.id)) { event in
             switch event {
             case .success(let graphQLResponse):
@@ -68,18 +67,18 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
                     return
                 }
                 guard let resultPost = data else {
-                    XCTFail("Missing post from querySingle")
+                    XCTFail("Missing post from query")
                     return
                 }
 
                 XCTAssertEqual(resultPost.id, post.id)
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
             }
         }
 
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
     }
 
     // Create a post and a comment for the post
@@ -163,7 +162,7 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
         }
         let updatedTitle = title + "Updated"
         post.title = updatedTitle
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
         _ = Amplify.API.mutate(request: .update(post)) { event in
             switch event {
             case .success(let data):
@@ -171,14 +170,14 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
                 case .success(let post):
                     XCTAssertEqual(post.title, updatedTitle)
                 case .failure(let error):
-                    print(error)
+                    XCTFail("\(error)")
                 }
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
-                print(error)
+                XCTFail("\(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeleteExistingPost() {
@@ -186,11 +185,11 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
         guard let post = createPost(id: uuid, title: title) else {
-            XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
+            XCTFail("Could not create post")
             return
         }
 
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
 
         _ = Amplify.API.mutate(request: .delete(post)) { event in
             switch event {
@@ -199,14 +198,14 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
                 case .success(let post):
                     XCTAssertEqual(post.title, title)
                 case .failure(let error):
-                    print(error)
+                    XCTFail("\(error)")
                 }
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
-                print(error)
+                XCTFail("\(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
 
         let queryComplete = expectation(description: "query complete")
 
