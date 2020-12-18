@@ -8,7 +8,6 @@
 import Foundation
 import AWSS3
 import Amplify
-import AWSMobileClient
 import AWSPluginsCore
 
 class AWSS3StorageService: AWSS3StorageServiceBehaviour {

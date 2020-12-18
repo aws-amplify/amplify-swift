@@ -7,7 +7,7 @@
 
 import Foundation
 import Amplify
-import AWSMobileClient
+import AWSCore
 
 public class AWSAuthService: AWSAuthServiceBehavior {
 

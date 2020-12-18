@@ -218,7 +218,7 @@ extension AuthenticationProviderAdapter {
         let authError = AuthErrorHelper.toAuthError(error)
         return authError
     }
-    
+
     private class ModalPresentingNavigationController: UINavigationController {
 
         override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
