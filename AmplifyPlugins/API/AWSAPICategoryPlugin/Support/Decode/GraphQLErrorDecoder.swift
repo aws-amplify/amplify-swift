@@ -5,12 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AppSyncRealTimeClient
 
-extension GraphQLResponseDecoder {
-
+struct GraphQLErrorDecoder {
     static func decodeErrors(graphQLErrors: [JSONValue]) throws -> [GraphQLError] {
         var responseErrors = [GraphQLError]()
         for error in graphQLErrors {
@@ -35,7 +33,7 @@ extension GraphQLResponseDecoder {
             throw APIError.unknown("Expected 'errors' field not found in \(String(describing: appSyncJSON))", "", nil)
         }
         let convertedValues = errors.map(AppSyncJSONValue.toJSONValue)
-        return try GraphQLResponseDecoder.decodeErrors(graphQLErrors: convertedValues)
+        return try decodeErrors(graphQLErrors: convertedValues)
     }
 
     static func decode(graphQLErrorJSON: JSONValue) throws -> GraphQLError {

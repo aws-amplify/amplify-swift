@@ -36,7 +36,7 @@ extension AWSGraphQLOperation: APIOperation {
             return
         }
 
-        graphQLResponseData.append(data)
+        graphQLResponseDecoder.appendResponse(data)
     }
 
     func complete(with error: Error?, response: URLResponse?) {
@@ -59,13 +59,7 @@ extension AWSGraphQLOperation: APIOperation {
         }
 
         do {
-            let graphQLServiceResponse = try GraphQLResponseDecoder.deserialize(graphQLResponse: graphQLResponseData)
-
-            let graphQLResponse = try GraphQLResponseDecoder.decode(graphQLServiceResponse: graphQLServiceResponse,
-                                                                    responseType: request.responseType,
-                                                                    decodePath: request.decodePath,
-                                                                    rawGraphQLResponse: graphQLResponseData)
-
+            let graphQLResponse = try graphQLResponseDecoder.decodeToGraphQLResponse()
             dispatch(result: .success(graphQLResponse))
             finish()
         } catch let error as APIError {
