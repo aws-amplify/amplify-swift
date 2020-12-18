@@ -11,9 +11,9 @@ extension AuthConfirmSignInRequest {
 
     func hasError() -> AuthError? {
         guard !challengeResponse.isEmpty else {
-            return AuthError.validation(AuthPluginErrorConstants.confirmSignUpUsernameError.field,
-                                               AuthPluginErrorConstants.confirmSignUpUsernameError.errorDescription,
-                                               AuthPluginErrorConstants.confirmSignUpUsernameError.recoverySuggestion)
+            return AuthError.validation(AuthPluginErrorConstants.confirmSignInChallengeResponseError.field,
+                                               AuthPluginErrorConstants.confirmSignInChallengeResponseError.errorDescription,
+                                               AuthPluginErrorConstants.confirmSignInChallengeResponseError.recoverySuggestion)
         }
         return nil
     }
