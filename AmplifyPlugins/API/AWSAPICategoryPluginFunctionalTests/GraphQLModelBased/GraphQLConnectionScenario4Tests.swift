@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import AWSMobileClient
 @testable import AWSAPICategoryPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -236,7 +235,7 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
     func createPost(id: String = UUID().uuidString, title: String) -> Post4? {
         let post = Post4(id: id, title: title)
         var result: Post4?
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
         Amplify.API.mutate(request: .create(post)) { event in
             switch event {
             case .success(let data):
@@ -246,19 +245,19 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
                 default:
                     XCTFail("Could not get data back")
                 }
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
                 XCTFail("Failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
     func createComment(id: String = UUID().uuidString, content: String, post: Post4) -> Comment4? {
         let comment = Comment4(id: id, content: content, post: post)
         var result: Comment4?
-        let completeInvoked = expectation(description: "request completed")
+        let requestInvokedSuccessfully = expectation(description: "request completed")
         Amplify.API.mutate(request: .create(comment)) { event in
             switch event {
             case .success(let data):
@@ -268,12 +267,12 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
                 default:
                     XCTFail("Could not get data back")
                 }
-                completeInvoked.fulfill()
+                requestInvokedSuccessfully.fulfill()
             case .failure(let error):
                 XCTFail("Failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 }

@@ -78,6 +78,11 @@ class SyncEngineIntegrationTestBase: XCTestCase {
         DispatchQueue.global().async {
             do {
                 try Amplify.configure(amplifyConfig)
+                Amplify.DataStore.start { result in
+                    if case .failure(let error) = result {
+                        XCTFail("\(error)")
+                    }
+                }
             } catch {
                 XCTFail(String(describing: error))
             }

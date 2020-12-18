@@ -51,6 +51,11 @@ class HubEventsIntegrationTestBase: XCTestCase {
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: TestModelRegistration()))
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: TestModelRegistration()))
             try Amplify.configure(amplifyConfig)
+            Amplify.DataStore.start { result in
+                if case .failure(let error) = result {
+                    XCTFail("\(error)")
+                }
+            }
         } catch {
             XCTFail(String(describing: error))
             return

@@ -81,3 +81,29 @@ type User5 @model {
   username: String!
   posts: [PostEditor5] @connection(keyName: "byEditor5", fields: ["id"])
 }
+
+# This is one of the default schemas provided when you run `amplify add api`
+# > Do you have an annotated GraphQL schema? `No`
+# > Choose a schema template: `One-to-many relationship (e.g., “Blogs” with “Posts” and “Comments”)`
+
+# 6 - Blog Post Comment
+type Blog6 @model {
+  id: ID!
+  name: String!
+  posts: [Post6] @connection(keyName: "byBlog", fields: ["id"])
+}
+
+type Post6 @model @key(name: "byBlog", fields: ["blogID"]) {
+  id: ID!
+  title: String!
+  blogID: ID!
+  blog: Blog6 @connection(fields: ["blogID"])
+  comments: [Comment6] @connection(keyName: "byPost", fields: ["id"])
+}
+
+type Comment6 @model @key(name: "byPost", fields: ["postID", "content"]) {
+  id: ID!
+  postID: ID!
+  post: Post6 @connection(fields: ["postID"])
+  content: String!
+}

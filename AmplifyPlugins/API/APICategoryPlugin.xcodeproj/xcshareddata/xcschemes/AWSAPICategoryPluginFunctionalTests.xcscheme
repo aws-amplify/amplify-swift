@@ -46,6 +46,9 @@
                <Test
                   Identifier = "GraphQLConnectionScenario5Tests/testListPostEditorByUser()">
                </Test>
+               <Test
+                  Identifier = "GraphQLSyncBasedTests">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

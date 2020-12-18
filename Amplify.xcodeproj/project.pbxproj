@@ -148,6 +148,12 @@
 		21F40A3C23A2952C0074678E /* AuthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3B23A2952C0074678E /* AuthHelper.swift */; };
 		21F40A3E23A295390074678E /* AWSMobileClient+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3D23A295390074678E /* AWSMobileClient+Message.swift */; };
 		21F40A4023A295470074678E /* TestCommonConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3F23A295470074678E /* TestCommonConstants.swift */; };
+		21FDBB612587D7A30086FCDC /* Blog6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FDBB5B2587D7A30086FCDC /* Blog6.swift */; };
+		21FDBB622587D7A30086FCDC /* Post6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FDBB5C2587D7A30086FCDC /* Post6.swift */; };
+		21FDBB632587D7A30086FCDC /* Comment6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FDBB5D2587D7A30086FCDC /* Comment6.swift */; };
+		21FDBB642587D7A30086FCDC /* Post6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FDBB5E2587D7A30086FCDC /* Post6+Schema.swift */; };
+		21FDBB652587D7A30086FCDC /* Comment6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FDBB5F2587D7A30086FCDC /* Comment6+Schema.swift */; };
+		21FDBB662587D7A30086FCDC /* Blog6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FDBB602587D7A30086FCDC /* Blog6+Schema.swift */; };
 		21FFF988230B7B2C005878EA /* AsychronousOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF986230B7A5D005878EA /* AsychronousOperation.swift */; };
 		21FFF98E230C81E6005878EA /* StorageAccessLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF98D230C81E6005878EA /* StorageAccessLevel.swift */; };
 		21FFF994230C96CB005878EA /* StorageUploadDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF98F230C96CA005878EA /* StorageUploadDataOperation.swift */; };
@@ -912,6 +918,12 @@
 		21F40A3B23A2952C0074678E /* AuthHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthHelper.swift; sourceTree = "<group>"; };
 		21F40A3D23A295390074678E /* AWSMobileClient+Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSMobileClient+Message.swift"; sourceTree = "<group>"; };
 		21F40A3F23A295470074678E /* TestCommonConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestCommonConstants.swift; sourceTree = "<group>"; };
+		21FDBB5B2587D7A30086FCDC /* Blog6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog6.swift; sourceTree = "<group>"; };
+		21FDBB5C2587D7A30086FCDC /* Post6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post6.swift; sourceTree = "<group>"; };
+		21FDBB5D2587D7A30086FCDC /* Comment6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment6.swift; sourceTree = "<group>"; };
+		21FDBB5E2587D7A30086FCDC /* Post6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post6+Schema.swift"; sourceTree = "<group>"; };
+		21FDBB5F2587D7A30086FCDC /* Comment6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment6+Schema.swift"; sourceTree = "<group>"; };
+		21FDBB602587D7A30086FCDC /* Blog6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Blog6+Schema.swift"; sourceTree = "<group>"; };
 		21FFF986230B7A5D005878EA /* AsychronousOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsychronousOperation.swift; sourceTree = "<group>"; };
 		21FFF98D230C81E6005878EA /* StorageAccessLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageAccessLevel.swift; sourceTree = "<group>"; };
 		21FFF98F230C96CA005878EA /* StorageUploadDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageUploadDataOperation.swift; sourceTree = "<group>"; };
@@ -1908,6 +1920,7 @@
 				217D5F0525780564009F0639 /* 3 */,
 				217D5F0D2578057A009F0639 /* 4 */,
 				217D5F152578058A009F0639 /* 5 */,
+				21FDBB5A2587D7A30086FCDC /* 6 */,
 				217D5ECD2577FA1B009F0639 /* connection-schema.graphql */,
 			);
 			path = Collection;
@@ -2023,6 +2036,20 @@
 			);
 			path = API;
 			sourceTree = "<group>";
+		};
+		21FDBB5A2587D7A30086FCDC /* 6 */ = {
+			isa = PBXGroup;
+			children = (
+				21FDBB5B2587D7A30086FCDC /* Blog6.swift */,
+				21FDBB5C2587D7A30086FCDC /* Post6.swift */,
+				21FDBB5D2587D7A30086FCDC /* Comment6.swift */,
+				21FDBB5E2587D7A30086FCDC /* Post6+Schema.swift */,
+				21FDBB5F2587D7A30086FCDC /* Comment6+Schema.swift */,
+				21FDBB602587D7A30086FCDC /* Blog6+Schema.swift */,
+			);
+			name = 6;
+			path = AmplifyTestCommon/Models/Collection/6;
+			sourceTree = SOURCE_ROOT;
 		};
 		21FFF999230C96E0005878EA /* Operation */ = {
 			isa = PBXGroup;
@@ -5056,6 +5083,7 @@
 				FA176ED7238503C200C5C5F9 /* HubListenerTestUtilities.swift in Sources */,
 				216E45EE248E914F0035E3CE /* Todo.swift in Sources */,
 				6BEE081D2533CCFA00133961 /* OGCScenarioBPost.swift in Sources */,
+				21FDBB632587D7A30086FCDC /* Comment6.swift in Sources */,
 				217D5EC52577F9DF009F0639 /* Project2.swift in Sources */,
 				B4F3543525361E0E0050FEE0 /* DynamicModel.swift in Sources */,
 				217D5EC02577F9DF009F0639 /* Post3.swift in Sources */,
@@ -5068,6 +5096,8 @@
 				FAD3937F23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift in Sources */,
 				217D5EBB2577F9DF009F0639 /* Team1.swift in Sources */,
 				6BEE08252533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift in Sources */,
+				21FDBB662587D7A30086FCDC /* Blog6+Schema.swift in Sources */,
+				21FDBB612587D7A30086FCDC /* Blog6.swift in Sources */,
 				FACA361A2327FC69000E74F6 /* MockStorageCategoryPlugin.swift in Sources */,
 				217D5EB92577F9DF009F0639 /* Post3+Schema.swift in Sources */,
 				B9521837237E21BA00F53237 /* Post.swift in Sources */,
@@ -5123,10 +5153,13 @@
 				21F40A3C23A2952C0074678E /* AuthHelper.swift in Sources */,
 				6BEE08242533D30800133961 /* OGCScenarioBMGroupPost.swift in Sources */,
 				217D5EC22577F9DF009F0639 /* User5+Schema.swift in Sources */,
+				21FDBB642587D7A30086FCDC /* Post6+Schema.swift in Sources */,
 				217D5EB12577F9DF009F0639 /* Team2+Schema.swift in Sources */,
 				B4F3E9FA24314ECC00F23296 /* MockAuthCategoryPlugin.swift in Sources */,
+				21FDBB652587D7A30086FCDC /* Comment6+Schema.swift in Sources */,
 				214F49CE24898E8500DA616C /* Article+Schema.swift in Sources */,
 				216E460A249183230035E3CE /* Section.swift in Sources */,
+				21FDBB622587D7A30086FCDC /* Post6.swift in Sources */,
 				217D5EBA2577F9DF009F0639 /* Post4+Schema.swift in Sources */,
 				217D5EBD2577F9DF009F0639 /* Post5.swift in Sources */,
 				FA1846EE23998E44009B9D01 /* MockAPIResponders.swift in Sources */,
