@@ -147,8 +147,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
     private func onGraphQLResponseData(_ graphQLResponseData: Data) {
         do {
-            let graphQLResponseDecoder = GraphQLResponseDecoder(request: request)
-            graphQLResponseDecoder.appendResponse(graphQLResponseData)
+            let graphQLResponseDecoder = GraphQLResponseDecoder(request: request, response: graphQLResponseData)
             let graphQLResponse = try graphQLResponseDecoder.decodeToGraphQLResponse()
             dispatchInProcess(data: .data(graphQLResponse))
         } catch let error as APIError {

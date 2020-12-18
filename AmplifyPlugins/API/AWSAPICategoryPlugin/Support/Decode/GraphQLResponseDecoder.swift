@@ -73,7 +73,7 @@ class GraphQLResponseDecoder<R: Decodable> {
     func decodePartial(graphQLData: [String: JSONValue],
                        graphQLErrors: [JSONValue]) throws -> GraphQLResponse<R> {
         do {
-            if graphQLData.count == 1, let first = graphQLData.first, case .null = first.value {
+            if let first = graphQLData.first, case .null = first.value {
                 let responseErrors = try GraphQLErrorDecoder.decodeErrors(graphQLErrors: graphQLErrors)
                 return GraphQLResponse<R>.failure(.error(responseErrors))
             }
