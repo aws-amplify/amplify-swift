@@ -7,6 +7,7 @@
 
 import Foundation
 
+// swiftlint:disable type_name
 public struct AWSAttributeResendConfirmationCodeOptions {
 
     public let metadata: [String: String]?

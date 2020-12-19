@@ -115,9 +115,9 @@ class AuthenticationProviderSigninWithWebUITests: BaseAuthenticationProviderTest
             case .success(let signinResult):
                 XCTFail("Should throw user cancelled error, instead - \(signinResult)")
             case .failure(let error):
-                guard case .unknown(_, let underlyingError) = error,
-                      case .canceledLogin = (underlyingError as? SFAuthenticationError)?.code else {
-                    XCTFail("Should produce SFAuthenticationError error but instead produced \(error)")
+                guard case .service(_, _, let underlyingError) = error,
+                      case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
+                    XCTFail("Should produce userCancelled error but instead produced \(error)")
                     return
                 }
             }

@@ -7,6 +7,8 @@
 
 import Amplify
 import AWSMobileClient
+import SafariServices
+import AuthenticationServices
 
 struct AuthErrorHelper {
 
@@ -164,5 +166,22 @@ struct AuthErrorHelper {
         }
         return AuthError.unknown("An unknown error occurred", error)
 
+    }
+
+    static func didUserCancelHostedUI(_ error: Error) -> Bool {
+        if let sfAuthError = error as? SFAuthenticationError,
+           case SFAuthenticationError.Code.canceledLogin = sfAuthError.code {
+            return true
+        }
+
+        if #available(iOS 12.0, *) {
+
+            if let asWebAuthError = error as? ASWebAuthenticationSessionError,
+               case ASWebAuthenticationSessionError.Code.canceledLogin = asWebAuthError.code {
+                return true
+            }
+        }
+
+        return false
     }
 }

@@ -293,9 +293,9 @@ class AuthenticationProviderSignoutTests: BaseAuthenticationProviderTest {
             case .success:
                 XCTFail("Should not get success")
             case .failure(let error):
-                guard case .unknown(_, let underlyingError) = error,
-                      case .canceledLogin = (underlyingError as? SFAuthenticationError)?.code else {
-                    XCTFail("Should produce SFAuthenticationError error instead of \(error)")
+                guard case .service(_, _, let underlyingError) = error,
+                      case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
+                    XCTFail("Should produce userCancelled error instead of \(error)")
                     return
                 }
             }
