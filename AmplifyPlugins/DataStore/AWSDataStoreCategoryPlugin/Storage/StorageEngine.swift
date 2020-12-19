@@ -198,10 +198,65 @@ final class StorageEngine: StorageEngineBehavior {
         save(model, modelSchema: model.schema, condition: condition, completion: completion)
     }
 
+    // This function does not currently recurse, and no where close to ready. It is a proof of concept which attemps to use
+    // the untyped model APIs to send mutation events to remove associated fields.  This will need to get wrapped up
+    // in (probably) `queryAndDeleteTransaction`, where we query for the item to be deleted and all
+    // child models, and it returns a list of models that we need to generate mutation events for.
+    // this code will go under significant changes.
+    // That being said -- it does seem to generate mutation events that we can use to remove the child objects
+    @available(iOS 13.0, *)
+    func recurseQuery(modelName: ModelName, associatedField: ModelField, id: Model.Identifier) -> [MutationEvent]? {
+        //Lookup the model schema for this type, and do another iteration. and call this method again.
+        //but for now, lets assume this is the base case and just query for all items
+        print("recurse query on: \(modelName), modelField:\(associatedField.name), id: \(id)")
+        guard let modelType = ModelRegistry.modelType(from: modelName) else {
+            print("unable to get model type")
+            return nil
+        }
+        let queryPredicate = QueryPredicateOperation(field: associatedField.name, operator: .equals(id))
+        storageAdapter.query(untypedModel: modelType, predicate: queryPredicate) { result in
+            switch result {
+            case .success(let models):
+                for model in models {
+                    print("model is: \(model)")
+                    //What if we were to generate a mutation event here?
+                    do {
+                        let mutationEvent = try MutationEvent(untypedModel: model, mutationType: .delete)
+                        submitToSyncEngine(mutationEvent: mutationEvent, syncEngine: syncEngine!) { result in
+                            switch result {
+                            case .success:
+                                print("succeed")
+                            case .failure:
+                                print("failed")
+                            }
+                        }
+                    } catch {
+                        print("failed")
+                    }
+                }
+            case .failure(let error):
+                print("failed to query!!\(error)")
+            }
+        }
+        return nil
+    }
+
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
                           withId id: Model.Identifier,
                           completion: @escaping (DataStoreResult<M?>) -> Void) {
+        //This is a super hack, and will probably need to live inside of queryAndDeleteTransaction
+        if #available(iOS 13.0, *) {
+            for (modelName, modelField) in modelSchema.fields {
+                if modelField.hasAssociation {
+                    guard let associatedModelName = modelField.associatedModelName,
+                        let associatedField = modelField.associatedField else {
+                            continue
+                    }
+                    recurseQuery(modelName: associatedModelName, associatedField: associatedField, id: id)
+                }
+            }
+        }
         let transactionResult = queryAndDeleteTransaction(modelType, modelSchema: modelSchema, predicate: field("id").eq(id))
 
         let deletedModel: M
