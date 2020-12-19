@@ -15,9 +15,11 @@ import XCTest
 
 class StorageEngineTests: XCTestCase {
 
+    let defaultTimeout = 0.3
     var connection: Connection!
     var storageEngine: StorageEngine!
     var storageAdapter: SQLiteStorageEngineAdapter!
+    var syncEngine: MockRemoteSyncEngine!
 
     override func setUp() {
         super.setUp()
@@ -30,8 +32,7 @@ class StorageEngineTests: XCTestCase {
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
-            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
-                                                  dataStoreConfiguration: .default)
+            syncEngine = MockRemoteSyncEngine()
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           dataStoreConfiguration: .default,
                                           syncEngine: syncEngine,
@@ -39,10 +40,6 @@ class StorageEngineTests: XCTestCase {
                                           validAuthPluginKey: validAuthPluginKey)
             ModelRegistry.register(modelType: Post.self)
             ModelRegistry.register(modelType: Comment.self)
-//            guard let postModelSchema = ModelRegistry.modelSchema(from: Post.) else {
-//                XCTFail("Failed to generate model schema")
-//                return
-//            }
             do {
             try storageEngine.setUp(modelSchemas: [Post.schema])
             try storageEngine.setUp(modelSchemas: [Comment.schema])
@@ -56,33 +53,45 @@ class StorageEngineTests: XCTestCase {
         }
     }
 
-    func testCreationQueryDelete_NAME_TBD() {
+    func testDeleteParentEmitsMutationEventsForParentAndChild() {
         let post = Post(title: "post1", content: "content1", createdAt: .now())
         guard case .success(let savedPost1) = saveModelSynchronous(model: post) else {
-                XCTFail("Failed to save")
-                return
+            XCTFail("Failed to save")
+            return
         }
 
         let comment1 = Comment(content: "comment1ForPost1", createdAt: .now() + .weeks(1), post: savedPost1)
         let comment2 = Comment(content: "comment2ForPost1", createdAt: .now() + .days(1), post: savedPost1)
-        guard case .success(let savedComment1) = saveModelSynchronous(model: comment1),
-            case .success(let savedComment2) = saveModelSynchronous(model: comment2) else {
-            XCTFail("Failed to save either comment")
-            return
+        guard case .success = saveModelSynchronous(model: comment1),
+            case .success = saveModelSynchronous(model: comment2) else {
+                XCTFail("Failed to save either comment")
+                return
         }
 
-        guard case .success(let queriedPost) =
+        guard case .success =
             querySingleModelSynchronous(modelType: Post.self, predicate: Post.keys.id == savedPost1.id) else {
-            XCTFail("Failed to query for single post")
-            return
+                XCTFail("Failed to query for single post")
+                return
         }
 
         guard case .success(let comments) =
             queryModelSynchronous(modelType: Comment.self, predicate: Comment.keys.post == savedPost1.id) else {
-            XCTFail("Failed to query comment")
-            return
+                XCTFail("Failed to query comment")
+                return
         }
         XCTAssertEqual(comments.count, 2)
+
+        let recievedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
+        recievedMutationEvent.expectedFulfillmentCount = 3
+        syncEngine.setCallbackOnSubmit(callback: { _ in
+            recievedMutationEvent.fulfill()
+        })
+        guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: Post.self, withId: savedPost1.id) else {
+            XCTFail("Failed to delete post")
+            return
+        }
+
+        wait(for: [recievedMutationEvent], timeout: defaultTimeout)
     }
 
     /**
@@ -97,18 +106,11 @@ class StorageEngineTests: XCTestCase {
             result = sResult
             saveFinished.fulfill()
         }
-
-        wait(for: [saveFinished], timeout: 1)
+        wait(for: [saveFinished], timeout: defaultTimeout)
         guard let saveResult = result else {
             return .failure(causedBy: "Save operation timed out")
         }
-
-        switch saveResult {
-        case .success(let successPost):
-            return .success(successPost)
-        case .failure(let error):
-            return .failure(error)
-        }
+        return saveResult
     }
 
     func querySingleModelSynchronous<M: Model>(modelType: M.Type, predicate: QueryPredicate) -> DataStoreResult<M> {
@@ -136,21 +138,41 @@ class StorageEngineTests: XCTestCase {
             result = qResult
             queryFinished.fulfill()
         }
-        wait(for: [queryFinished], timeout: 1)
 
+        wait(for: [queryFinished], timeout: defaultTimeout)
         guard let queryResult = result else {
             return .failure(causedBy: "Query operation timed out")
         }
+        return queryResult
+    }
 
-        switch queryResult {
-        case .success(let successPost):
-            return .success(successPost)
+    func deleteModelSynchronousOrFailOtherwise<M: Model>(modelType: M.Type, withId id: String) -> DataStoreResult<M> {
+        let result = deleteModelSynchronous(modelType: modelType, withId: id)
+        switch result {
+        case .success(let model):
+            if let model = model {
+                return .success(model)
+            } else {
+                return .failure(causedBy: "")
+            }
         case .failure(let error):
             return .failure(error)
         }
     }
 
-//    func deleteModelSynchronous<M: Model>() -> DataStoreResult<> {
-//
-//    }
+    func deleteModelSynchronous<M: Model>(modelType: M.Type, withId id: String) -> DataStoreResult<M?> {
+        let deleteFinished = expectation(description: "Delete Finished")
+        var result: DataStoreResult<M?>?
+
+        storageEngine.delete(modelType, modelSchema: modelType.schema, withId: id, completion: { dResult in
+            result = dResult
+            deleteFinished.fulfill()
+        })
+
+        wait(for: [deleteFinished], timeout: 1)
+        guard let deleteResult = result else {
+            return .failure(causedBy: "Delete operation timed out")
+        }
+        return deleteResult
+    }
 }
