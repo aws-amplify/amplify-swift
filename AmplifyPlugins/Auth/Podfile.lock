@@ -5,7 +5,6 @@ PODS:
   - AmplifyTestCommon (1.5.1):
     - Amplify (= 1.5.1)
     - AmplifyTestCommon/AWSPluginsTestCommon (= 1.5.1)
-    - AWSMobileClient (~> 2.20.0)
   - AmplifyTestCommon/AWSPluginsTestCommon (1.5.1):
     - Amplify (= 1.5.1)
     - AWSCore (~> 2.20.0)
@@ -76,7 +75,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Amplify: c55f7bf2c6ea68891d95579882172c1256f301fc
-  AmplifyTestCommon: 66ec23a49a2c18c722956782d0fa647f7421417a
+  AmplifyTestCommon: 40a2413a5fba88dd89b99ece6d467ff0951a7c2c
   AWSAuthCore: 6a5f0fdbbd65d917deab61e2f5035afecafaa687
   AWSCognitoIdentityProvider: f9031fc36af73a1e6a3c7476cbd536c1d4f7591c
   AWSCognitoIdentityProviderASF: c126563dd240709a5acf2c15910ea4c872c65df3
