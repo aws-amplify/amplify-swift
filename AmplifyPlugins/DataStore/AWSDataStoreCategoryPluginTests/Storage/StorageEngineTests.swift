@@ -38,11 +38,13 @@ class StorageEngineTests: XCTestCase {
                                           syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
-            ModelRegistry.register(modelType: Post.self)
-            ModelRegistry.register(modelType: Comment.self)
+            ModelRegistry.register(modelType: Restaurant.self)
+            ModelRegistry.register(modelType: Menu.self)
+            ModelRegistry.register(modelType: Dish.self)
             do {
-            try storageEngine.setUp(modelSchemas: [Post.schema])
-            try storageEngine.setUp(modelSchemas: [Comment.schema])
+                try storageEngine.setUp(modelSchemas: [Restaurant.schema])
+                try storageEngine.setUp(modelSchemas: [Menu.schema])
+                try storageEngine.setUp(modelSchemas: [Dish.schema])
 
             } catch {
                 XCTFail("Failed to setup storage engine")
@@ -54,43 +56,63 @@ class StorageEngineTests: XCTestCase {
     }
 
     func testDeleteParentEmitsMutationEventsForParentAndChild() {
-        let post = Post(title: "post1", content: "content1", createdAt: .now())
-        guard case .success(let savedPost1) = saveModelSynchronous(model: post) else {
-            XCTFail("Failed to save")
-            return
-        }
+        let dreamRestaurant = Restaurant(restaurantName: "Dream Cafe")
+        let lunchSpecialMenu = Menu(name: "Specials", menuType: .lunch, restaurant: dreamRestaurant)
+        let lunchStandardMenu = Menu(name: "Standard", menuType: .lunch, restaurant: dreamRestaurant)
+        let oysters = Dish(dishName: "Fried oysters", menu: lunchSpecialMenu)
+        let katsuCurry = Dish(dishName: "Katsu Curry", menu: lunchStandardMenu)
+        let uniPasta = Dish(dishName: "Uni Pasta", menu: lunchStandardMenu)
 
-        let comment1 = Comment(content: "comment1ForPost1", createdAt: .now() + .weeks(1), post: savedPost1)
-        let comment2 = Comment(content: "comment2ForPost1", createdAt: .now() + .days(1), post: savedPost1)
-        guard case .success = saveModelSynchronous(model: comment1),
-            case .success = saveModelSynchronous(model: comment2) else {
-                XCTFail("Failed to save either comment")
+        let smoneysRestaurant = Restaurant(restaurantName: "Smoney's")
+        let smoneysMenu = Menu(name: "official menu", menuType: .breakfast, restaurant: smoneysRestaurant)
+        let eggsAndSausage = Dish(dishName: "Eggs and Sausage", menu: smoneysMenu)
+
+        let mkDonaldsRestaurant = Restaurant(restaurantName: "MkDonald's")
+        let mkDonaldsMenu = Menu(name: "All day", menuType: .lunch, restaurant: mkDonaldsRestaurant)
+        let szechuanSauce = Dish(dishName: "10-piece MkNugget and a bunch of the Szechuan Sauce", menu: mkDonaldsMenu)
+
+        guard case .success(let savedDreamRestaurant) = saveModelSynchronous(model: dreamRestaurant),
+            case .success(let savedLunchSpecialMenu) = saveModelSynchronous(model: lunchSpecialMenu),
+            case .success(let savedLunchStandardMenu) = saveModelSynchronous(model: lunchStandardMenu),
+            case .success(let savedOysters) = saveModelSynchronous(model: oysters),
+            case .success(let savedKatsuCurry) = saveModelSynchronous(model: katsuCurry),
+            case .success(let savedUniPasta) = saveModelSynchronous(model: uniPasta),
+            case .success = saveModelSynchronous(model: smoneysRestaurant),
+            case .success = saveModelSynchronous(model: smoneysMenu),
+            case .success = saveModelSynchronous(model: eggsAndSausage),
+            case .success = saveModelSynchronous(model: mkDonaldsRestaurant),
+            case .success = saveModelSynchronous(model: mkDonaldsMenu),
+            case .success = saveModelSynchronous(model: szechuanSauce) else {
+                XCTFail("Failed to save hierarchy")
                 return
         }
 
         guard case .success =
-            querySingleModelSynchronous(modelType: Post.self, predicate: Post.keys.id == savedPost1.id) else {
-                XCTFail("Failed to query for single post")
+            querySingleModelSynchronous(modelType: Restaurant.self, predicate: Restaurant.keys.id == savedDreamRestaurant.id) else {
+                XCTFail("Failed to query Restaurant")
                 return
         }
-
-        guard case .success(let comments) =
-            queryModelSynchronous(modelType: Comment.self, predicate: Comment.keys.post == savedPost1.id) else {
-                XCTFail("Failed to query comment")
+        guard case .success =
+            queryModelSynchronous(modelType: Menu.self, predicate: Menu.keys.restaurant == savedDreamRestaurant.id) else {
+                XCTFail("Failed to query Menu")
                 return
         }
-        XCTAssertEqual(comments.count, 2)
+        guard case .success(let dishes) =
+            queryModelSynchronous(modelType: Dish.self, predicate: Dish.keys.menu == savedLunchStandardMenu.id) else {
+                XCTFail("Failed to query Dishes")
+                return
+        }
+        XCTAssertEqual(dishes.count, 2)
 
         let recievedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
-        recievedMutationEvent.expectedFulfillmentCount = 3
+        recievedMutationEvent.expectedFulfillmentCount = 6
         syncEngine.setCallbackOnSubmit(callback: { _ in
             recievedMutationEvent.fulfill()
         })
-        guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: Post.self, withId: savedPost1.id) else {
-            XCTFail("Failed to delete post")
+        guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: Restaurant.self, withId: savedDreamRestaurant.id) else {
+            XCTFail("Failed to delete menu")
             return
         }
-
         wait(for: [recievedMutationEvent], timeout: defaultTimeout)
     }
 

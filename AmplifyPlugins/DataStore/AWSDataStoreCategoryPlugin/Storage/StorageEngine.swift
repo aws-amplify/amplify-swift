@@ -198,47 +198,68 @@ final class StorageEngine: StorageEngineBehavior {
         save(model, modelSchema: model.schema, condition: condition, completion: completion)
     }
 
-    // This function does not currently recurse, and no where close to ready. It is a proof of concept which attemps to use
-    // the untyped model APIs to send mutation events to remove associated fields.  This will need to get wrapped up
-    // in (probably) `queryAndDeleteTransaction`, where we query for the item to be deleted and all
-    // child models, and it returns a list of models that we need to generate mutation events for.
-    // this code will go under significant changes.
-    // That being said -- it does seem to generate mutation events that we can use to remove the child objects
+    //UNDER CONSTRUCTION
     @available(iOS 13.0, *)
-    func recurseQuery(modelName: ModelName, associatedField: ModelField, id: Model.Identifier) -> [MutationEvent]? {
-        //Lookup the model schema for this type, and do another iteration. and call this method again.
-        //but for now, lets assume this is the base case and just query for all items
-        print("recurse query on: \(modelName), modelField:\(associatedField.name), id: \(id)")
+    func queryModels(modelName: ModelName, associatedField: ModelField, ids: [Model.Identifier]) -> [Model] {
         guard let modelType = ModelRegistry.modelType(from: modelName) else {
-            print("unable to get model type")
-            return nil
+            log.error("Failed to lookup \(modelName)")
+            return []
         }
-        let queryPredicate = QueryPredicateOperation(field: associatedField.name, operator: .equals(id))
-        storageAdapter.query(untypedModel: modelType, predicate: queryPredicate) { result in
+        
+        //TODO: Add conveinence to queryPredicate where we have a list of items, to be all or'ed
+        var queryPredicates: [QueryPredicateOperation] = []
+        for id in ids {
+            queryPredicates.append(QueryPredicateOperation(field: associatedField.name, operator: .equals(id)))
+        }
+        let groupedQueryPredicates =  QueryPredicateGroup(type: .or, predicates: queryPredicates)
+
+        var queriedModels: [Model] = []
+        let sempahore = DispatchSemaphore(value: 0)
+        storageAdapter.query(untypedModel: modelType, predicate: groupedQueryPredicates) { result in
             switch result {
             case .success(let models):
-                for model in models {
-                    print("model is: \(model)")
-                    //What if we were to generate a mutation event here?
-                    do {
-                        let mutationEvent = try MutationEvent(untypedModel: model, mutationType: .delete)
-                        submitToSyncEngine(mutationEvent: mutationEvent, syncEngine: syncEngine!) { result in
-                            switch result {
-                            case .success:
-                                print("succeed")
-                            case .failure:
-                                print("failed")
-                            }
-                        }
-                    } catch {
-                        print("failed")
-                    }
-                }
+                queriedModels.append(contentsOf: models)
+
             case .failure(let error):
-                print("failed to query!!\(error)")
+                log.error("Failed to query \(modelType) on mutation event generation: \(error)")
+            }
+            sempahore.signal()
+        }
+        sempahore.wait()
+        return queriedModels
+    }
+
+    //UNDER CONSTRUCTION
+    func generateMutationsFromModels(models: [Model]) -> [MutationEvent] {
+        var mutationEvents: [MutationEvent] = []
+        for model in models {
+            do {
+                let mutationEvent = try MutationEvent(untypedModel: model, mutationType: .delete)
+                mutationEvents.append(mutationEvent)
+            } catch {
+                log.error("Failed to generate mutation event. \(model.modelName), \(model.id)")
             }
         }
-        return nil
+        return mutationEvents
+    }
+
+    //UNDER CONSTRUCTION -- not fond of this name.
+    @available(iOS 13.0, *)
+    func recurseQuery(modelSchema: ModelSchema, ids: [Model.Identifier]) -> [MutationEvent] {
+        var mutationEvents: [MutationEvent] = []
+        for (_, modelField) in modelSchema.fields {
+            guard modelField.hasAssociation,
+                let associatedModelName = modelField.associatedModelName,
+                let associatedField = modelField.associatedField,
+                let associatedModelSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
+                    continue
+            }
+            let queriedModels = queryModels(modelName: associatedModelName, associatedField: associatedField, ids: ids)
+            let associatedModelIds = queriedModels.map {$0.id}
+            mutationEvents.append(contentsOf: generateMutationsFromModels(models: queriedModels))
+            mutationEvents.append(contentsOf: recurseQuery(modelSchema: associatedModelSchema, ids: associatedModelIds))
+        }
+        return mutationEvents
     }
 
     func delete<M: Model>(_ modelType: M.Type,
@@ -247,14 +268,9 @@ final class StorageEngine: StorageEngineBehavior {
                           completion: @escaping (DataStoreResult<M?>) -> Void) {
         //This is a super hack, and will probably need to live inside of queryAndDeleteTransaction
         if #available(iOS 13.0, *) {
-            for (modelName, modelField) in modelSchema.fields {
-                if modelField.hasAssociation {
-                    guard let associatedModelName = modelField.associatedModelName,
-                        let associatedField = modelField.associatedField else {
-                            continue
-                    }
-                    recurseQuery(modelName: associatedModelName, associatedField: associatedField, id: id)
-                }
+            let mutationEvents = recurseQuery(modelSchema: modelSchema, ids: [id])
+            for mutationEvent in mutationEvents {
+                syncEngine?.submit(mutationEvent)
             }
         }
         let transactionResult = queryAndDeleteTransaction(modelType, modelSchema: modelSchema, predicate: field("id").eq(id))
