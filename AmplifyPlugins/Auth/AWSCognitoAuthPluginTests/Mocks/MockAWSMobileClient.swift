@@ -102,7 +102,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     }
 
     func signOutLocally() {
-        //Do nothing
+        // Do nothing
     }
 
     func getUsername() -> String? {
