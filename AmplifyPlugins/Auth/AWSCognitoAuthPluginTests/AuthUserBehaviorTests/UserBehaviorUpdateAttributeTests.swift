@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
@@ -44,6 +42,36 @@ class UserBehaviorUpdateAttributesTests: BaseUserBehaviorTest {
                 }
             case .failure(let error):
                 XCTFail("Received failure with error \(error)")
+            }
+        }
+        wait(for: [resultExpectation], timeout: apiTimeout)
+    }
+
+    /// Test a updateUserAttributes call with invalid result
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a invalid response
+    /// - When:
+    ///    - I invoke updateUserAttributes with AuthUserAttribute
+    /// - Then:
+    ///    - I should get an .unknown error
+    ///
+    func testUpdateUserAttributesWithInvalidResult() {
+
+        mockAWSMobileClient?.updateUserAttributesMockResult = nil
+
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+            switch result {
+            case .success:
+                XCTFail("Should return an error if the result from service is invalid")
+            case .failure(let error):
+                guard case .unknown = error else {
+                    XCTFail("Should produce an unknown error")
+                    return
+                }
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -95,7 +123,7 @@ class UserBehaviorUpdateAttributesTests: BaseUserBehaviorTest {
     /// - When:
     ///    - I invoke updateUserAttributes with AuthUserAttribute
     /// - Then:
-    ///    - I should get a .service error with .codeMismatch as underlyingError
+    ///    - I should get a .service error with .codeDelivery as underlyingError
     ///
     func testUpdateUserAttributesWithCodeDeliveryFailureException() {
 
@@ -116,7 +144,7 @@ class UserBehaviorUpdateAttributesTests: BaseUserBehaviorTest {
                     return
                 }
                 guard case .codeDelivery = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be codeMismatch \(error)")
+                    XCTFail("Underlying error should be codeDelivery \(error)")
                     return
                 }
 
@@ -593,7 +621,7 @@ class UserBehaviorUpdateAttributesTests: BaseUserBehaviorTest {
                     return
                 }
                 guard case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be userNotFound \(error)")
+                    XCTFail("Underlying error should be userNotConfirmed \(error)")
                     return
                 }
 

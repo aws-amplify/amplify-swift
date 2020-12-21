@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
@@ -213,7 +211,7 @@ class UserBehaviorConfirmAttributeTests: BaseUserBehaviorTest {
                     return
                 }
                 guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be resourceNotFound \(error)")
+                    XCTFail("Underlying error should be requestLimitExceeded \(error)")
                     return
                 }
             }
@@ -395,7 +393,7 @@ class UserBehaviorConfirmAttributeTests: BaseUserBehaviorTest {
                     return
                 }
                 guard case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be userNotFound \(error)")
+                    XCTFail("Underlying error should be userNotConfirmed \(error)")
                     return
                 }
 

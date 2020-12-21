@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
@@ -33,9 +31,40 @@ class UserBehaviorFetchAttributesTests: BaseUserBehaviorTest {
             }
             switch result {
             case .success(let attributes):
-                print(attributes)
+                XCTAssertEqual(attributes[0].key, AuthUserAttributeKey(rawValue: "email"))
+                XCTAssertEqual(attributes[0].value, "Amplify@amazon.com")
             case .failure(let error):
                 XCTFail("Received failure with error \(error)")
+            }
+        }
+        wait(for: [resultExpectation], timeout: apiTimeout)
+    }
+
+    /// Test a fetchUserAttributes call with invalid result
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock an invalid response
+    /// - When:
+    ///    - I invoke fetchUserAttributes
+    /// - Then:
+    ///    - I should get an .unknown error
+    ///
+    func testFetchUserAttributesWithInvalidResult() {
+
+        mockAWSMobileClient?.getUserAttributeMockResult = nil
+
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.fetchUserAttributes { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+            switch result {
+            case .success:
+                XCTFail("Should return an error if the result from service is invalid")
+            case .failure(let error):
+                guard case .unknown = error else {
+                    XCTFail("Should produce an unknown error")
+                    return
+                }
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -111,11 +140,11 @@ class UserBehaviorFetchAttributesTests: BaseUserBehaviorTest {
 
     /// Test a fetchUserAttributes call with InvalidParameterException response from service
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service should mock a InvalidParameterException response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a NotAuthorizedException response
     /// - When:
     ///    - I invoke fetchUserAttributes
     /// - Then:
-    ///    -  I should get a .service error with  .invalidParameter as underlyingError
+    ///    -  I should get a .service error with  .notAuthorized as underlyingError
     ///
     func testFetchUserAttributesWithNotAuthorizedException() {
 
@@ -243,7 +272,7 @@ class UserBehaviorFetchAttributesTests: BaseUserBehaviorTest {
                     return
                 }
                 guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be passwordResetRequired \(error)")
+                    XCTFail("Underlying error should be requestLimitExceeded \(error)")
                     return
                 }
             }
@@ -280,7 +309,7 @@ class UserBehaviorFetchAttributesTests: BaseUserBehaviorTest {
                     return
                 }
                 guard case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be passwordResetRequired \(error)")
+                    XCTFail("Underlying error should be userNotConfirmed \(error)")
                     return
                 }
             }
@@ -317,7 +346,7 @@ class UserBehaviorFetchAttributesTests: BaseUserBehaviorTest {
                     return
                 }
                 guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be passwordResetRequired \(error)")
+                    XCTFail("Underlying error should be userNotFound \(error)")
                     return
                 }
             }
