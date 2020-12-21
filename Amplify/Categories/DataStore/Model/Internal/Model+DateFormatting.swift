@@ -7,8 +7,9 @@
 
 import Foundation
 
-/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
-///   by host applications. The behavior of this may change without warning.
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
+///   by host applications. The behavior of this may change without warning. Though it is not used by host application making any change
+///   to these `public` types should be backward compatible, otherwise it will be a breaking change.
 public struct ModelDateFormatting {
 
     public static let decodingStrategy: JSONDecoder.DateDecodingStrategy = {
@@ -34,8 +35,9 @@ public struct ModelDateFormatting {
 
 public extension JSONDecoder {
 
-    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
-    ///   by host applications. The behavior of this may change without warning.
+    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning. Though it is not used by host application making any change
+    ///   to these `public` types should be backward compatible, otherwise it will be a breaking change.
     convenience init(dateDecodingStrategy: JSONDecoder.DateDecodingStrategy) {
         self.init()
         self.dateDecodingStrategy = dateDecodingStrategy
@@ -44,8 +46,9 @@ public extension JSONDecoder {
 
 public extension JSONEncoder {
 
-    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
-    ///   by host applications. The behavior of this may change without warning.
+    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning. Though it is not used by host application making any change
+    ///   to these `public` types should be backward compatible, otherwise it will be a breaking change.
     convenience init(dateEncodingStrategy: JSONEncoder.DateEncodingStrategy) {
         self.init()
         self.dateEncodingStrategy = dateEncodingStrategy

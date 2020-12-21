@@ -12,8 +12,9 @@
 /// ```
 extension Model {
 
-    /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
-    ///   by host applications. The behavior of this may change without warning.
+    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
+    ///   by host applications. The behavior of this may change without warning. Though it is not used by host application making any change
+    ///   to these `public` types should be backward compatible, otherwise it will be a breaking change.
     public subscript(_ key: String) -> Any?? {
 
         if let jsonModel = self as? JSONValueHolder {
