@@ -79,6 +79,7 @@
 		6B52DC9624478E75007F5AD3 /* MockModelReconciliationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B52DC9524478E75007F5AD3 /* MockModelReconciliationQueue.swift */; };
 		6B64027923E3584300001FD7 /* MockAWSIncomingEventReconciliationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B64027823E3584300001FD7 /* MockAWSIncomingEventReconciliationQueue.swift */; };
 		6B64027B23E38B9900001FD7 /* MockOutgoingMutationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B64027A23E38B9900001FD7 /* MockOutgoingMutationQueue.swift */; };
+		6B7743D525906B6E001469F5 /* StorageEngine+DeleteTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B7743D425906B6E001469F5 /* StorageEngine+DeleteTransaction.swift */; };
 		6B91DEBF238B9CE0004D6BEE /* ReconcileAndLocalSaveOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B91DEBE238B9CE0004D6BEE /* ReconcileAndLocalSaveOperationTests.swift */; };
 		6BB01630255B1B4D00190897 /* DataStoreSyncExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB0162F255B1B4D00190897 /* DataStoreSyncExpression.swift */; };
 		6BB93F07244BA44B00ED1FC3 /* MutationEventClearState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB93F06244BA44B00ED1FC3 /* MutationEventClearState.swift */; };
@@ -320,6 +321,7 @@
 		6B52DC9524478E75007F5AD3 /* MockModelReconciliationQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockModelReconciliationQueue.swift; sourceTree = "<group>"; };
 		6B64027823E3584300001FD7 /* MockAWSIncomingEventReconciliationQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAWSIncomingEventReconciliationQueue.swift; sourceTree = "<group>"; };
 		6B64027A23E38B9900001FD7 /* MockOutgoingMutationQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOutgoingMutationQueue.swift; sourceTree = "<group>"; };
+		6B7743D425906B6E001469F5 /* StorageEngine+DeleteTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageEngine+DeleteTransaction.swift"; sourceTree = "<group>"; };
 		6B91DEBE238B9CE0004D6BEE /* ReconcileAndLocalSaveOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconcileAndLocalSaveOperationTests.swift; sourceTree = "<group>"; };
 		6BB0162F255B1B4D00190897 /* DataStoreSyncExpression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreSyncExpression.swift; sourceTree = "<group>"; };
 		6BB93F06244BA44B00ED1FC3 /* MutationEventClearState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEventClearState.swift; sourceTree = "<group>"; };
@@ -551,6 +553,7 @@
 			children = (
 				FAED5741238B52CE008EBED8 /* ModelStorageBehavior.swift */,
 				2149E5AA2388684F00873955 /* StorageEngine.swift */,
+				6B7743D425906B6E001469F5 /* StorageEngine+DeleteTransaction.swift */,
 				21233E1224763D0700039337 /* StorageEngine+SyncRequirement.swift */,
 				2149E5A92388684F00873955 /* StorageEngineAdapter.swift */,
 				2149E5A82388684F00873955 /* StorageEngineBehavior.swift */,
@@ -1571,6 +1574,7 @@
 				D8079A73251656A200826E8F /* SyncEventEmitter.swift in Sources */,
 				2149E5D42388684F00873955 /* DataStorePublisher.swift in Sources */,
 				FA3841E723889D340070AD5B /* ReconcileAndLocalSaveOperation.swift in Sources */,
+				6B7743D525906B6E001469F5 /* StorageEngine+DeleteTransaction.swift in Sources */,
 				FADD728F238B0F10005AA69A /* IncomingAsyncSubscriptionEventPublisher.swift in Sources */,
 				6B4693E923A5645F006BE2C5 /* MutationRetryNotifier.swift in Sources */,
 				FACBA78B2394950C006349C8 /* MutationEventSource.swift in Sources */,
