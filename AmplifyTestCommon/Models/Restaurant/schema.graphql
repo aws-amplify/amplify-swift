@@ -1,0 +1,26 @@
+enum MenuType {
+  BREAKFAST
+  LUNCH
+  DINNER
+}
+
+type Restaurant @model {
+  id: ID!
+  restaurantName: String!
+  menus: [Menu] @connection(name: "RestaurantMenu")
+}
+
+type Menu @model {
+  id: ID!
+  name: String!
+  menuType: MenuType
+
+  restaurant: Restaurant @connection(name: "RestaurantMenu")
+  entrees: [Entree] @connection(name: "MenuEntree")
+}
+
+type Entree @model {
+  id: ID!
+  dishName: String
+  menu: Menu @connection(name: "MenuEntree")
+}
