@@ -46,7 +46,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
+        let result = try GraphQLFilterConverter.toJSON(predicate, modelSchema: Post.schema, options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
@@ -116,7 +116,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
+        let result = try GraphQLFilterConverter.toJSON(predicate, modelSchema: Post.schema, options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
@@ -148,7 +148,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
+        let result = try GraphQLFilterConverter.toJSON(predicate, modelSchema: Post.schema, options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
@@ -180,7 +180,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
+        let result = try GraphQLFilterConverter.toJSON(predicate, modelSchema: Post.schema, options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
@@ -212,14 +212,14 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
+        let result = try GraphQLFilterConverter.toJSON(predicate, modelSchema: Post.schema, options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
     func testJSONSerializationAndDeserialization() throws {
         let post = Post.keys
         let predicate = post.id.eq("id") && post.title.beginsWith("Title")
-        let result = try GraphQLFilterConverter.toJSON(predicate)
+        let result = try GraphQLFilterConverter.toJSON(predicate, modelSchema: Post.schema)
         XCTAssertNotNil(result)
         let graphQLFilter = try GraphQLFilterConverter.fromJSON(result)
         guard let filter = graphQLFilter["and"] as? [[String: Any]] else {

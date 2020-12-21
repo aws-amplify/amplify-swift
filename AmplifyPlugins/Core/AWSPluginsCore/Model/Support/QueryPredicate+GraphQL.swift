@@ -11,7 +11,7 @@ import Amplify
 public typealias GraphQLFilter = [String: Any]
 
 protocol GraphQLFilterConvertible {
-    func graphQLFilter(_ modelSchema: ModelSchema?) -> GraphQLFilter
+    func graphQLFilter(_ modelSchema: ModelSchema) -> GraphQLFilter
 
     @available(*, deprecated, message: """
     Computed property use of GraphQLFilter is deprecated, instead use the function one.
@@ -24,8 +24,28 @@ public struct GraphQLFilterConverter {
 
     /// Serialize the translated GraphQL query variable object to JSON string.
     public static func toJSON(_ queryPredicate: QueryPredicate,
+                              modelSchema: ModelSchema,
                               options: JSONSerialization.WritingOptions = []) throws -> String {
-        let graphQLFilterData = try JSONSerialization.data(withJSONObject: queryPredicate.graphQLFilter(),
+        let graphQLFilterData = try JSONSerialization.data(withJSONObject: queryPredicate.graphQLFilter(modelSchema),
+                                                           options: options)
+
+        guard let serializedString = String(data: graphQLFilterData, encoding: .utf8) else {
+            preconditionFailure("""
+                Could not initialize String from the GraphQL representation of QueryPredicate:
+                \(String(describing: graphQLFilterData))
+                """)
+        }
+
+        return serializedString
+    }
+
+    @available(*, deprecated, message: """
+    Use `toJSON(queryPredicate:modelSchema:options)` instead. See https://github.com/aws-amplify/amplify-ios/pull/965 for more details.
+    """)
+    /// Serialize the translated GraphQL query variable object to JSON string.
+    public static func toJSON(_ queryPredicate: QueryPredicate,
+                              options: JSONSerialization.WritingOptions = []) throws -> String {
+        let graphQLFilterData = try JSONSerialization.data(withJSONObject: queryPredicate.graphQLFilter,
                                                            options: options)
 
         guard let serializedString = String(data: graphQLFilterData, encoding: .utf8) else {
@@ -52,7 +72,7 @@ public struct GraphQLFilterConverter {
 /// Extension to translate a `QueryPredicate` into a GraphQL query variables object
 extension QueryPredicate {
 
-    public func graphQLFilter(_ modelSchema: ModelSchema? = nil) -> GraphQLFilter {
+    public func graphQLFilter(_ modelSchema: ModelSchema) -> GraphQLFilter {
         if let operation = self as? QueryPredicateOperation {
             return operation.graphQLFilter(modelSchema)
         } else if let group = self as? QueryPredicateGroup {
@@ -64,7 +84,7 @@ extension QueryPredicate {
     }
 
     @available(*, deprecated, message: """
-    Computed property use of GraphQLFilter is deprecated, instead use the function one.
+    Use `graphQLFilter(_)` instead. See https://github.com/aws-amplify/amplify-ios/pull/965 for more details.
     """)
     public var graphQLFilter: GraphQLFilter {
         if let operation = self as? QueryPredicateOperation {
@@ -79,24 +99,18 @@ extension QueryPredicate {
 }
 
 extension QueryPredicateOperation: GraphQLFilterConvertible {
-    func graphQLFilter(_ modelSchema: ModelSchema? = nil) -> GraphQLFilter {
+    func graphQLFilter(_ modelSchema: ModelSchema) -> GraphQLFilter {
         let filterValue = [self.operator.graphQLOperator: self.operator.value]
-        guard let modelSchema = modelSchema else {
-            return [field: filterValue]
-        }
         return [modelSchema.columnName(forField: field): filterValue]
     }
 
-    @available(*, deprecated, message: """
-    Computed property use of GraphQLFilter is deprecated, instead use the function one.
-    """)
     var graphQLFilter: GraphQLFilter {
         return [field: [self.operator.graphQLOperator: self.operator.value]]
     }
 }
 
 extension QueryPredicateGroup: GraphQLFilterConvertible {
-    func graphQLFilter(_ modelSchema: ModelSchema? = nil) -> GraphQLFilter {
+    func graphQLFilter(_ modelSchema: ModelSchema) -> GraphQLFilter {
         let logicalOperator = type.rawValue
         switch type {
         case .and, .or:
@@ -115,7 +129,7 @@ extension QueryPredicateGroup: GraphQLFilterConvertible {
     }
 
     @available(*, deprecated, message: """
-    Computed property use of GraphQLFilter is deprecated, instead use the function one.
+    Use `graphQLFilter(_)` instead. See https://github.com/aws-amplify/amplify-ios/pull/965 for more details.
     """)
     var graphQLFilter: GraphQLFilter {
         let logicalOperator = type.rawValue
