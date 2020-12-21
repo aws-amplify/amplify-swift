@@ -462,6 +462,10 @@ final class StorageEngine: StorageEngineBehavior {
     private func syncDeletions(of associatedModels: [Model],
                                syncEngine: RemoteSyncEngineBehavior,
                                completion: @escaping DataStoreCallback<Void>) {
+        guard !associatedModels.isEmpty else {
+            completion(.successfulVoid)
+            return
+        }
         var mutationEvents: Set<Model.Identifier> = []
         for associatedModel in associatedModels {
             let mutationEvent: MutationEvent
