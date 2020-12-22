@@ -27,7 +27,7 @@ target "Amplify" do
     inherit! :complete
     use_frameworks!
 
-    pod "AWSMobileClient", $OPTIMISTIC_AWS_SDK_VERSION
+    pod "AWSCore", $OPTIMISTIC_AWS_SDK_VERSION
 
     abstract_target "AWSPluginsTestConfigs" do
       include_test_utilities!

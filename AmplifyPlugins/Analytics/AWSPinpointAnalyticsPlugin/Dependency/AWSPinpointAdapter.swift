@@ -6,7 +6,7 @@
 //
 
 import Amplify
-import AWSMobileClient
+import AWSCore
 import AWSPinpoint
 import AWSPluginsCore
 import Foundation
@@ -14,7 +14,6 @@ import Foundation
 /// Conforms to `AWSPinpointBehavior` by storing an instance of the `AWSPinpoint` to expose AWS Pinpoint functionality
 class AWSPinpointAdapter: AWSPinpointBehavior {
     let pinpoint: AWSPinpoint
-    // let eventRecorder: AWSPinpointEventRecorder
 
     convenience init(pinpointAnalyticsAppId: String,
                      pinpointAnalyticsRegion: AWSRegionType,
@@ -37,7 +36,6 @@ class AWSPinpointAdapter: AWSPinpointBehavior {
 
     init(pinpoint: AWSPinpoint) {
         self.pinpoint = pinpoint
-        // self.eventRecorder = pinpoint.analyticsClient.eventRecorder
     }
 
     func getEscapeHatch() -> AWSPinpoint {
