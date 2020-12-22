@@ -8,8 +8,11 @@
 /// `ModelList` defines conformance to `Collection` for a list of `Model` items.
 public protocol ModelList: Collection,
                            Codable,
-                           ExpressibleByArrayLiteral where Index == Int,
-                                                           ArrayLiteralElement == Element, Element: Model {
+                           ExpressibleByArrayLiteral,
+                           Paginatable,
+                           ModelListMarker where Index == Int,
+                                                 ArrayLiteralElement == Element {
+
     init(factory: () -> Self)
 }
 
@@ -19,3 +22,6 @@ extension ModelList {
         self = factory()
     }
 }
+
+/// Empty protocol used as a marker to detect `ModelList` conformance.
+public protocol ModelListMarker { }

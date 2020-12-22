@@ -74,4 +74,18 @@ extension DataStoreList {
         }
         semaphore.wait()
     }
+
+    func firstPage(_ completion: @escaping (Result<Void, CoreError>) -> Void) {
+        lazyLoad { result in
+            switch result {
+            case .success:
+                completion(.success(()))
+            case .failure(let dataStoreError):
+                completion(.failure(.listOperation(
+                                        "The SQL query failed.",
+                                        "Check the underlying `DataStoreError`",
+                                        dataStoreError)))
+            }
+        }
+    }
 }

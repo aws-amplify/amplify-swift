@@ -122,6 +122,8 @@
 		2183A56723EA4A8B00232880 /* GraphQLCreateMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71623EA1839007D8E71 /* GraphQLCreateMutationTests.swift */; };
 		2183A56823EA4A8E00232880 /* GraphQLDeleteMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71423EA1838007D8E71 /* GraphQLDeleteMutationTests.swift */; };
 		2183A56923EA4A9100232880 /* GraphQLUpdateMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71523EA1839007D8E71 /* GraphQLUpdateMutationTests.swift */; };
+		218DC96A258A73AF00D59FC6 /* CoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218DC969258A73AF00D59FC6 /* CoreError.swift */; };
+		218DC97A258A73CA00D59FC6 /* Paginatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218DC979258A73CA00D59FC6 /* Paginatable.swift */; };
 		219A887F23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A887E23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift */; };
 		219A888123EB629800BBC5F2 /* ModelBasedGraphQLDocumentDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A888023EB629800BBC5F2 /* ModelBasedGraphQLDocumentDecorator.swift */; };
 		219A888523EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A888423EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift */; };
@@ -899,6 +901,8 @@
 		217D5EAF2577F9DF009F0639 /* Project2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project2.swift; sourceTree = "<group>"; };
 		217D5ECD2577FA1B009F0639 /* connection-schema.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = "connection-schema.graphql"; sourceTree = "<group>"; };
 		217D5F63257830C2009F0639 /* ModelField+GraphQL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelField+GraphQL.swift"; sourceTree = "<group>"; };
+		218DC969258A73AF00D59FC6 /* CoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreError.swift; sourceTree = "<group>"; };
+		218DC979258A73CA00D59FC6 /* Paginatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paginatable.swift; sourceTree = "<group>"; };
 		219A887E23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelBasedGraphQLDocumentBuilder.swift; sourceTree = "<group>"; };
 		219A888023EB629800BBC5F2 /* ModelBasedGraphQLDocumentDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelBasedGraphQLDocumentDecorator.swift; sourceTree = "<group>"; };
 		219A888423EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLRequest+AnyModelWithSync.swift"; sourceTree = "<group>"; };
@@ -1983,6 +1987,14 @@
 			path = 5;
 			sourceTree = "<group>";
 		};
+		218DC968258A739E00D59FC6 /* Error */ = {
+			isa = PBXGroup;
+			children = (
+				218DC969258A73AF00D59FC6 /* CoreError.swift */,
+			);
+			path = Error;
+			sourceTree = "<group>";
+		};
 		21A3FDAD24630D4200E76120 /* Decorator */ = {
 			isa = PBXGroup;
 			children = (
@@ -2850,6 +2862,7 @@
 			children = (
 				B9FAA1242388BE48009414B4 /* List+Model.swift */,
 				21644B7B2588258100C548A5 /* ModelList.swift */,
+				218DC979258A73CA00D59FC6 /* Paginatable.swift */,
 			);
 			path = Collection;
 			sourceTree = "<group>";
@@ -3342,6 +3355,7 @@
 			children = (
 				FAC2358C227A4A1D00424678 /* Category */,
 				FAC23582227A3C2E00424678 /* Configuration */,
+				218DC968258A739E00D59FC6 /* Error */,
 				FAC23534227A055200424678 /* Internal */,
 				FAC2358D227A4A2B00424678 /* Plugin */,
 				FA56F72122B14AEB0039754A /* Support */,
@@ -4712,6 +4726,7 @@
 				B9FAA10B23878122009414B4 /* ModelField+Association.swift in Sources */,
 				FAEF832124CF277F0068912D /* DataStoreCategory+Behavior+Combine.swift in Sources */,
 				95DAAB22237E63370028544F /* SpeechType.swift in Sources */,
+				218DC96A258A73AF00D59FC6 /* CoreError.swift in Sources */,
 				95DAAB8C237F13D10028544F /* PredictionsTextToSpeechRequest.swift in Sources */,
 				B493E69124524D3200D9E521 /* DeliveryDestination.swift in Sources */,
 				21644B7D2588258100C548A5 /* ModelList.swift in Sources */,
@@ -4758,6 +4773,7 @@
 				FAC2353F227A055200424678 /* PluginError.swift in Sources */,
 				974FF18724B54E590050D01B /* DeviceInfoItem.swift in Sources */,
 				97CB860624ABA023000C65FB /* LongPressGestureRecognizer.swift in Sources */,
+				218DC97A258A73CA00D59FC6 /* Paginatable.swift in Sources */,
 				FA5704C7245F368200392C19 /* ProgressListener.swift in Sources */,
 				FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */,
 				FA5704C9245F3C6900392C19 /* AmplifyInProcessReportingOperation.swift in Sources */,

@@ -105,8 +105,19 @@ open class List<ModelType: Model>: ModelList {
     /// Use to initialize the collection.
     ///
     /// - seealso: `load()`
+    @available(*, deprecated, message: "Use `fetch(_)` instead.")
     open func load(_ completion: DataStoreCallback<Elements>) {
         fatalError("Not implemented.")
+    }
+
+    /// Trigger a query to initialize the collection. This function always
+    /// fetches data from the backing data store if the collection has not yet been loaded.
+    /// Consumers must be aware of the implementation details that that accessing the collection
+    /// may be blocked on this call until data is ready.
+    ///
+    /// - Returns: result of querying for the data. On `.success` will have loaded the data into the current object.
+    open func fetch(_ completion: @escaping (Result<Void, CoreError>) -> Void) {
+        fatalError("Not implemented")
     }
 
     // MARK: - Synchronous API
@@ -117,6 +128,7 @@ open class List<ModelType: Model>: ModelList {
     ///
     /// - Returns: the current instance after data was loaded.
     /// - seealso: `load(completion:)`
+    @available(*, deprecated, message: "Use `fetch(_)` instead.")
     open func load() -> Self {
         fatalError("Not implemented.")
     }
@@ -129,8 +141,18 @@ open class List<ModelType: Model>: ModelList {
     ///
     /// - Returns: a type-erased Combine publisher
     @available(iOS 13.0, *)
-    @available(*, deprecated, message: "Use `load` instead.")
+    @available(*, deprecated, message: "Use `fetch(_)` instead.")
     open func loadAsPublisher() -> LazyListPublisher {
         fatalError("Not implemented")
+    }
+
+    // MARK: Paginatable
+
+    open func hasNextPage() -> Bool {
+        return false
+    }
+
+    open func getNextPage(completion: @escaping PageResultCallback) {
+        fatalError("Not supported")
     }
 }

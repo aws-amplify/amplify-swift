@@ -129,8 +129,13 @@ public class DataStoreList<ModelType: Model>: List<ModelType>, ModelListDecoder 
     /// fetches data from the `DataStore.query`.
     ///
     /// - seealso: `load()`
+    @available(*, deprecated, message: "Use `fetch(_)` instead.")
     public override func load(_ completion: DataStoreCallback<Elements>) {
         lazyLoad(completion)
+    }
+
+    public override func fetch(_ completion: @escaping (Result<Void, CoreError>) -> Void) {
+        firstPage(completion)
     }
 
     // MARK: - Synchronous API
@@ -143,6 +148,7 @@ public class DataStoreList<ModelType: Model>: List<ModelType>, ModelListDecoder 
     ///
     /// - Returns: the current instance after data was loaded.
     /// - seealso: `load(completion:)`
+    @available(*, deprecated, message: "Use `fetch(_)` instead.")
     public override func load() -> Self {
         lazyLoad()
         return self
