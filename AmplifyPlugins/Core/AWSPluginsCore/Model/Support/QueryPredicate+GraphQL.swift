@@ -14,7 +14,7 @@ protocol GraphQLFilterConvertible {
     func graphQLFilter(_ modelSchema: ModelSchema) -> GraphQLFilter
 
     @available(*, deprecated, message: """
-    Computed property use of GraphQLFilter is deprecated, instead use the function one.
+    Use `graphQLFilter(_)` instead. See https://github.com/aws-amplify/amplify-ios/pull/965 for more details.
     """)
     var graphQLFilter: GraphQLFilter { get }
 }
@@ -40,7 +40,7 @@ public struct GraphQLFilterConverter {
     }
 
     @available(*, deprecated, message: """
-    Use `toJSON(queryPredicate:modelSchema:options)` instead. See https://github.com/aws-amplify/amplify-ios/pull/965 for more details.
+    Use `toJSON(_:modelSchema:options)` instead. See https://github.com/aws-amplify/amplify-ios/pull/965 for more details.
     """)
     /// Serialize the translated GraphQL query variable object to JSON string.
     public static func toJSON(_ queryPredicate: QueryPredicate,

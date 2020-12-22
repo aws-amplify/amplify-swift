@@ -42,6 +42,8 @@ extension ModelField: SQLColumn {
     var sqlName: String {
         if case let .belongsTo(_, targetName) = association {
             return targetName ?? name + "Id"
+        } else if case let .hasOne(_, targetName) = association {
+            return targetName ?? name + "Id"
         }
         return name
     }

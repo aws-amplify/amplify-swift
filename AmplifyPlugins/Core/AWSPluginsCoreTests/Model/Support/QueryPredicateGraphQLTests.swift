@@ -216,6 +216,58 @@ class QueryPredicateGraphQLTests: XCTestCase {
         XCTAssertEqual(result, expected)
     }
 
+    func testPredicateWithBelongsToAssociationToGraphQLOperators() throws {
+        let comment = Comment4.keys
+        let id = "id"
+        let predicate = comment.id == id && comment.post == "postId"
+        let expected = """
+        {
+          "and" : [
+            {
+              "id" : {
+                "eq" : "id"
+              }
+            },
+            {
+              "postID" : {
+                "eq" : "postId"
+              }
+            }
+          ]
+        }
+        """
+        let result = try GraphQLFilterConverter.toJSON(predicate,
+                                                       modelSchema: Comment4.schema,
+                                                       options: [.prettyPrinted])
+        XCTAssertEqual(result, expected)
+    }
+
+    func testPredicateWithHasOneAssociationToGraphQLOperators() throws {
+        let project = Project2.keys
+        let id = "id"
+        let predicate = project.id == id && project.team == "teamId"
+        let expected = """
+        {
+          "and" : [
+            {
+              "id" : {
+                "eq" : "id"
+              }
+            },
+            {
+              "teamID" : {
+                "eq" : "teamId"
+              }
+            }
+          ]
+        }
+        """
+        let result = try GraphQLFilterConverter.toJSON(predicate,
+                                                       modelSchema: Project2.schema,
+                                                       options: [.prettyPrinted])
+        XCTAssertEqual(result, expected)
+    }
+
     func testJSONSerializationAndDeserialization() throws {
         let post = Post.keys
         let predicate = post.id.eq("id") && post.title.beginsWith("Title")

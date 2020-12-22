@@ -230,7 +230,7 @@ class SQLStatementTests: XCTestCase {
           "title" = ?,
           "updatedAt" = ?
         where "id" = ?
-          and "content" = ?
+          and "root"."content" = ?
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
 
@@ -532,7 +532,7 @@ class SQLStatementTests: XCTestCase {
         let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate)
 
         XCTAssertEqual("""
-          and "id" is not null
+          and "root"."id" is not null
         """, statement.stringValue)
         XCTAssert(statement.variables.isEmpty)
     }
@@ -617,15 +617,15 @@ class SQLStatementTests: XCTestCase {
         let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate)
 
         XCTAssertEqual("""
-          and "id" is not null
-          and "draft" = ?
-          and "rating" > ?
-          and "rating" between ? and ?
-          and "status" <> ?
-          and "updatedAt" is null
+          and "root"."id" is not null
+          and "root"."draft" = ?
+          and "root"."rating" > ?
+          and "root"."rating" between ? and ?
+          and "root"."status" <> ?
+          and "root"."updatedAt" is null
           and (
-            "content" like ?
-            or "title" like ?
+            "root"."content" like ?
+            or "root"."title" like ?
           )
         """, statement.stringValue)
 

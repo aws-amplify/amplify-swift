@@ -118,58 +118,6 @@ class GraphQLListQueryTests: XCTestCase {
 
     func testComment4BelongsToPost4Success() {
         let comment4 = Comment4.keys
-        let predicate = comment4.post == "post4Id"
-
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment4.schema,
-                                                               operationType: .query)
-        documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
-        documentBuilder.add(decorator: PaginationDecorator())
-        documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(Comment4.schema)))
-        let document = documentBuilder.build()
-        let expectedQueryDocument = """
-        query ListComment4s($filter: ModelComment4FilterInput, $limit: Int) {
-          listComment4s(filter: $filter, limit: $limit) {
-            items {
-              id
-              content
-              postID
-              __typename
-            }
-            nextToken
-          }
-        }
-        """
-        XCTAssertEqual(document.name, "listComment4s")
-        XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        guard let variables = document.variables else {
-            XCTFail("The document doesn't contain variables")
-            return
-        }
-        XCTAssertNotNil(variables["limit"])
-        XCTAssertEqual(variables["limit"] as? Int, 1_000)
-
-        guard let filter = variables["filter"] as? GraphQLFilter else {
-            XCTFail("variables should contain a valid filter")
-            return
-        }
-
-        // Test filter for a valid JSON format
-        let filterJSON = try? JSONSerialization.data(withJSONObject: filter,
-                                                     options: .prettyPrinted)
-        XCTAssertNotNil(filterJSON)
-
-        let expectedFilterJSON = """
-        {
-          "postID" : {
-            "eq" : "post4Id"
-          }
-        }
-        """
-        XCTAssertEqual(String(data: filterJSON!, encoding: .utf8), expectedFilterJSON)
-    }
-
-    func testComment4BelongsToPost4SuccessScenario2() {
-        let comment4 = Comment4.keys
         let predicate = comment4.id == "comment4Id" && comment4.post == "post4Id"
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment4.schema,
