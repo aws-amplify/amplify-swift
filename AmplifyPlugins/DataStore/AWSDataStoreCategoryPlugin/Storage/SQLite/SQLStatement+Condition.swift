@@ -26,7 +26,7 @@ private func translateQueryPredicate(from modelSchema: ModelSchema,
     let indentPrefix = "  "
     var indentSize = 1
 
-    func translate(_ pred: QueryPredicate, predicateIndex: Int? = nil, groupType: QueryPredicateGroupType) {
+    func translate(_ pred: QueryPredicate, predicateIndex: Int, groupType: QueryPredicateGroupType) {
         let indent = String(repeating: indentPrefix, count: indentSize)
         if let operation = pred as? QueryPredicateOperation {
             let column = operation.operator.columnFor(field: operation.field,
