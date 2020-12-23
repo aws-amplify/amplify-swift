@@ -15,6 +15,7 @@ PODS:
   - AmplifyTestCommon/AWSPluginsTestCommon (1.5.1):
     - Amplify (= 1.5.1)
     - AWSCore (~> 2.20.0)
+    - AWSMobileClient (~> 2.20.0)
     - AWSPluginsCore (= 1.5.1)
   - AWSAuthCore (2.20.0):
     - AWSCore (= 2.20.0)
@@ -33,7 +34,6 @@ PODS:
   - AWSPluginsCore (1.5.1):
     - Amplify (= 1.5.1)
     - AWSCore (~> 2.20.0)
-    - AWSMobileClient (~> 2.20.0)
   - AWSPolly (2.20.0):
     - AWSCore (= 2.20.0)
   - AWSRekognition (2.20.0):
@@ -48,7 +48,7 @@ PODS:
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
   - SwiftFormat/CLI (0.44.17)
-  - SwiftLint (0.41.0)
+  - SwiftLint (0.42.0)
 
 DEPENDENCIES:
   - Amplify (from `../../`)
@@ -108,15 +108,15 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Amplify: c55f7bf2c6ea68891d95579882172c1256f301fc
-  AmplifyPlugins: 78d2e39e1d5db18ae50c215063790f300607d312
-  AmplifyTestCommon: 60a44eefba338d8d9809f3d2740422805bfaad9f
+  AmplifyPlugins: 40f1051d1e8313a74c16bafe0618d460bf0479db
+  AmplifyTestCommon: 40a2413a5fba88dd89b99ece6d467ff0951a7c2c
   AWSAuthCore: 6a5f0fdbbd65d917deab61e2f5035afecafaa687
   AWSCognitoIdentityProvider: f9031fc36af73a1e6a3c7476cbd536c1d4f7591c
   AWSCognitoIdentityProviderASF: c126563dd240709a5acf2c15910ea4c872c65df3
   AWSComprehend: 694b52d7dc4bfd1ffd4467cec3c17186c5a3f52d
   AWSCore: e8748f1d2e97874ff5638fe7c3c31431ad223b4a
   AWSMobileClient: f98f4d3eb4d0f893a128b5546a31fd2cbc88e2ef
-  AWSPluginsCore: 3afe92313f5be7f002a48007e6645b5ab58e05a7
+  AWSPluginsCore: 03651a5904baf7d0e4d79addda7bcd8344d17bec
   AWSPolly: 85134dee8a97c2c84012cd1436ac9a6e0a34602b
   AWSRekognition: b9807a9a019637a15caaaf4c377683f156f3e431
   AWSTextract: f9080ea05cd5319e6de2c10a3db54f5c8f3f6b3c
@@ -125,7 +125,7 @@ SPEC CHECKSUMS:
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
-  SwiftLint: c585ebd615d9520d7fbdbe151f527977b0534f1e
+  SwiftLint: 4fa9579c63416865179bc416f0a92d55f009600d
 
 PODFILE CHECKSUM: 65cca76c6059f8ccc8628936971fb9e4b035fb10
 
