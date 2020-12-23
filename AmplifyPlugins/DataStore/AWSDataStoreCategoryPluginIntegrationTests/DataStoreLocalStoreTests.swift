@@ -14,7 +14,38 @@ import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
+// swfitlint:disable file_length
+// swiftlint:disable type_body_length
 class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
+
+    /// - Given: 4 posts that has been saved
+    /// - When:
+    ///    - query with grouped predicate
+    /// - Then:
+    ///    - 2 post instances will be returned
+    ///    - second page returns the remaining 5 posts
+    ///    - the 15 retrieved posts have unique identifiers
+    func testQueryWithGroupedQueryPredicateInput() throws {
+        setUpLocalStoreForGroupedPredicateTest()
+        var posts = [Post]()
+        let queryFirstTimeSuccess = expectation(description: "Query post completed")
+        let post = Post.keys
+        let predicate = (post.id <= 1 && post.title == "title1")
+            || (post.rating > 2 && post.status == PostStatus.private)
+        Amplify.DataStore.query(Post.self,
+                                where: predicate) { result in
+            switch result {
+            case .success(let returnPosts):
+                posts.append(contentsOf: returnPosts)
+                queryFirstTimeSuccess.fulfill()
+            case .failure(let error):
+                XCTFail("Error querying posts: \(error)")
+            }
+        }
+        wait(for: [queryFirstTimeSuccess], timeout: 10)
+
+        XCTAssertEqual(posts.count, 2)
+    }
 
     /// - Given: 15 posts that has been saved
     /// - When:
@@ -365,5 +396,29 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
             wait(for: [saveSuccess], timeout: 10)
         }
         return savedPosts
+    }
+
+    func setUpLocalStoreForGroupedPredicateTest() {
+        var savedPosts = [Post]()
+        savedPosts.append(Post(id: "1", title: "title1", content: "content1",
+                               createdAt: .now(), rating: 1, status: .draft))
+        savedPosts.append(Post(id: "2", title: "title2", content: "content2",
+                               createdAt: .now(), rating: 2, status: .private))
+        savedPosts.append(Post(id: "3", title: "title3", content: "content3",
+                               createdAt: .now(), rating: 3, status: .draft))
+        savedPosts.append(Post(id: "4", title: "title4", content: "content4",
+                               createdAt: .now(), rating: 4, status: .private))
+        for post in savedPosts {
+            let saveSuccess = expectation(description: "Save post completed")
+            Amplify.DataStore.save(post) { result in
+                switch result {
+                case .success:
+                    saveSuccess.fulfill()
+                case .failure(let error):
+                    XCTFail("Error saving post, \(error)")
+                }
+            }
+            wait(for: [saveSuccess], timeout: 10)
+        }
     }
 }

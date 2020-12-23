@@ -23,30 +23,37 @@ private func translateQueryPredicate(from modelSchema: ModelSchema,
                                      namespace: Substring? = nil) -> SQLPredicate {
     var sql: [String] = []
     var bindings: [Binding?] = []
-    var groupType: QueryPredicateGroupType = .and
     let indentPrefix = "  "
     var indentSize = 1
-    var groupOpened = false
 
-    func translate(_ pred: QueryPredicate) {
+    func translate(_ pred: QueryPredicate, predicateIndex: Int, groupType: QueryPredicateGroupType) {
         let indent = String(repeating: indentPrefix, count: indentSize)
         if let operation = pred as? QueryPredicateOperation {
-            let logicalOperator = groupOpened ? "" : "\(groupType.rawValue) "
             let column = operation.operator.columnFor(field: operation.field,
                                                       namespace: namespace)
-            sql.append("\(indent)\(logicalOperator)\(column) \(operation.operator.sqlOperation)")
+            if predicateIndex == 0 {
+                sql.append("\(indent)\(column) \(operation.operator.sqlOperation)")
+            } else {
+                sql.append("\(indent)\(groupType.rawValue) \(column) \(operation.operator.sqlOperation)")
+            }
+
             bindings.append(contentsOf: operation.operator.bindings)
-            groupOpened = false
         } else if let group = pred as? QueryPredicateGroup {
             var shouldClose = false
-            groupOpened = group.type != groupType
-            if groupOpened {
+
+            if predicateIndex == 0 {
+                sql.append("\(indent)(")
+            } else {
                 sql.append("\(indent)\(groupType.rawValue) (")
-                groupType = group.type
-                indentSize += 1
-                shouldClose = true
             }
-            group.predicates.forEach { translate($0) }
+
+            indentSize += 1
+            shouldClose = true
+
+            for index in 0 ..< group.predicates.count {
+                translate(group.predicates[index], predicateIndex: index, groupType: group.type)
+            }
+
             if shouldClose {
                 indentSize -= 1
                 sql.append("\(indent))")
@@ -57,7 +64,10 @@ private func translateQueryPredicate(from modelSchema: ModelSchema,
             }
         }
     }
-    translate(predicate)
+
+    // the very first `and` is always prepended, using -1 for if statement checking
+    // the very first `and` is to connect `where` clause with translated QueryPredicate
+    translate(predicate, predicateIndex: -1, groupType: .and)
     return (sql.joined(separator: "\n"), bindings)
 }
 

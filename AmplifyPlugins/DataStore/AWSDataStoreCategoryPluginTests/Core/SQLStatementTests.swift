@@ -13,6 +13,7 @@ import XCTest
 @testable import AWSDataStoreCategoryPlugin
 
 // swiftlint:disable type_body_length
+// swiftlint:disable file_length
 // TODO: Refactor this into separate test suites
 class SQLStatementTests: XCTestCase {
 
@@ -299,8 +300,10 @@ class SQLStatementTests: XCTestCase {
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
         from Post as "root"
         where 1 = 1
-          and "root"."draft" = ?
-          and "root"."rating" > ?
+          and (
+            "root"."draft" = ?
+            and "root"."rating" > ?
+          )
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
 
@@ -563,7 +566,7 @@ class SQLStatementTests: XCTestCase {
     ///   - the predicate contains a set of different operations
     /// - Then:
     ///   - it generates a valid series of SQL conditions
-    func testTranslateComplexGroupedQueryPredicate() {
+    func testTranslateComplexGroupedQueryPredicateScenario1() {
         let post = Post.keys
 
         let predicate = post.id != nil
@@ -577,15 +580,17 @@ class SQLStatementTests: XCTestCase {
         let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate)
 
         XCTAssertEqual("""
-          and "id" is not null
-          and "draft" = ?
-          and "rating" > ?
-          and "rating" between ? and ?
-          and "status" <> ?
-          and "updatedAt" is null
           and (
-            "content" like ?
-            or "title" like ?
+            "id" is not null
+            and "draft" = ?
+            and "rating" > ?
+            and "rating" between ? and ?
+            and "status" <> ?
+            and "updatedAt" is null
+            and (
+              "content" like ?
+              or "title" like ?
+            )
           )
         """, statement.stringValue)
 
@@ -597,6 +602,198 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(variables[4] as? String, PostStatus.draft.rawValue)
         XCTAssertEqual(variables[5] as? String, "%gelato%")
         XCTAssertEqual(variables[6] as? String, "ice cream%")
+    }
+
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - a predicate with a few grouped conditions
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - `where` clause is added to the select query
+    ///   - `where` clause is correctly generated
+    func testTranslateComplexGroupedQueryPredicateScenario2() {
+        let post = Post.keys
+        let predicate = (post.id == "postID" && post.draft == false) || post.rating > 3
+        let statement = SelectStatement(from: Post.schema, predicate: predicate)
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
+        from Post as "root"
+        where 1 = 1
+          and (
+            (
+              "root"."id" = ?
+              and "root"."draft" = ?
+            )
+            or "root"."rating" > ?
+          )
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+
+        let variables = statement.variables
+        XCTAssertEqual(variables[0] as? String, "postID")
+        XCTAssertEqual(variables[1] as? Int, 0)
+        XCTAssertEqual(variables[2] as? Int, 3)
+    }
+
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - a predicate with a few grouped conditions
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - `where` clause is added to the select query
+    ///   - `where` clause is correctly generated
+    func testTranslateComplexGroupedQueryPredicateScenario3() {
+        let post = Post.keys
+        let predicate = (post.id == "postID" || post.draft == false) && post.rating > 3
+        let statement = SelectStatement(from: Post.schema, predicate: predicate)
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
+        from Post as "root"
+        where 1 = 1
+          and (
+            (
+              "root"."id" = ?
+              or "root"."draft" = ?
+            )
+            and "root"."rating" > ?
+          )
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+
+        let variables = statement.variables
+        XCTAssertEqual(variables[0] as? String, "postID")
+        XCTAssertEqual(variables[1] as? Int, 0)
+        XCTAssertEqual(variables[2] as? Int, 3)
+    }
+
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - a predicate with a few grouped conditions
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - `where` clause is added to the select query
+    ///   - `where` clause is correctly generated
+    func testTranslateComplexGroupedQueryPredicateScenario4() {
+        let post = Post.keys
+        let predicate = (post.id == "postID" || post.draft == false) && (post.rating > 3 || post.createdAt == "time")
+        let statement = SelectStatement(from: Post.schema, predicate: predicate)
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
+        from Post as "root"
+        where 1 = 1
+          and (
+            (
+              "root"."id" = ?
+              or "root"."draft" = ?
+            )
+            and (
+              "root"."rating" > ?
+              or "root"."createdAt" = ?
+            )
+          )
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+
+        let variables = statement.variables
+        XCTAssertEqual(variables[0] as? String, "postID")
+        XCTAssertEqual(variables[1] as? Int, 0)
+        XCTAssertEqual(variables[2] as? Int, 3)
+        XCTAssertEqual(variables[3] as? String, "time")
+    }
+
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - a predicate with a few grouped conditions
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - `where` clause is added to the select query
+    ///   - `where` clause is correctly generated
+    func testTranslateComplexGroupedQueryPredicateScenario5() {
+        let post = Post.keys
+        let predicate = (post.id == "postID" && post.draft == false) || (post.rating > 3 && post.createdAt == "time")
+        let statement = SelectStatement(from: Post.schema, predicate: predicate)
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
+        from Post as "root"
+        where 1 = 1
+          and (
+            (
+              "root"."id" = ?
+              and "root"."draft" = ?
+            )
+            or (
+              "root"."rating" > ?
+              and "root"."createdAt" = ?
+            )
+          )
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+
+        let variables = statement.variables
+        XCTAssertEqual(variables[0] as? String, "postID")
+        XCTAssertEqual(variables[1] as? Int, 0)
+        XCTAssertEqual(variables[2] as? Int, 3)
+        XCTAssertEqual(variables[3] as? String, "time")
+    }
+
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - a predicate with a few grouped conditions
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - `where` clause is added to the select query
+    ///   - `where` clause is correctly generated
+    func testTranslateComplexGroupedQueryPredicateScenario6() {
+        let post = Post.keys
+        let predicate = (post.id == "postID" || post.draft == false && post.content == "content")
+            && (post.rating > 3 && post.createdAt == "time")
+        let statement = SelectStatement(from: Post.schema, predicate: predicate)
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
+        from Post as "root"
+        where 1 = 1
+          and (
+            (
+              "root"."id" = ?
+              or (
+                "root"."draft" = ?
+                and "root"."content" = ?
+              )
+            )
+            and (
+              "root"."rating" > ?
+              and "root"."createdAt" = ?
+            )
+          )
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+
+        let variables = statement.variables
+        XCTAssertEqual(variables[0] as? String, "postID")
+        XCTAssertEqual(variables[1] as? Int, 0)
+        XCTAssertEqual(variables[2] as? String, "content")
+        XCTAssertEqual(variables[3] as? Int, 3)
+        XCTAssertEqual(variables[4] as? String, "time")
     }
 
     /// - Given: a grouped predicate and namespace
@@ -615,18 +812,21 @@ class SQLStatementTests: XCTestCase {
             && (post.content ~= "gelato" || post.title.beginsWith("ice cream"))
 
         let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate, namespace: "root")
-
-        XCTAssertEqual("""
-          and "root"."id" is not null
-          and "root"."draft" = ?
-          and "root"."rating" > ?
-          and "root"."rating" between ? and ?
-          and "root"."updatedAt" is null
-          and (
-            "root"."content" like ?
-            or "root"."title" like ?
-          )
-        """, statement.stringValue)
+        let expectedStatement =
+            """
+              and (
+                "root"."id" is not null
+                and "root"."draft" = ?
+                and "root"."rating" > ?
+                and "root"."rating" between ? and ?
+                and "root"."updatedAt" is null
+                and (
+                  "root"."content" like ?
+                  or "root"."title" like ?
+                )
+              )
+            """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
 
         let variables = statement.variables
         XCTAssertEqual(variables[0] as? Int, 1)
