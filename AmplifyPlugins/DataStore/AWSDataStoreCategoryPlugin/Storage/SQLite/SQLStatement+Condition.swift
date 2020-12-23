@@ -64,7 +64,10 @@ private func translateQueryPredicate(from modelSchema: ModelSchema,
             }
         }
     }
-    translate(predicate, predicateIndex: -1, groupType: .and) //
+
+    // the very first `and` is always prepended, using -1 for if statement checking
+    // the very first `and` is to connect `where` clause with translated QueryPredicate
+    translate(predicate, predicateIndex: -1, groupType: .and)
     return (sql.joined(separator: "\n"), bindings)
 }
 
