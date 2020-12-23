@@ -24,7 +24,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     var verifyUserAttributeMockResult: Result<UserCodeDeliveryDetails, Error>?
     var updateUserAttributesMockResult: Result<[UserCodeDeliveryDetails], Error>?
     var getUserAttributeMockResult: Result<[String: String], Error>?
-    var confirmUserAttributeMockResult: Result<Void, Error>?
+    var confirmUserAttributeMockResult: Error?
     var changePasswordMockResult: Result<Void, Error>?
     var forgotPasswordMockResult: Result<ForgotPasswordResult, Error>?
     var confirmForgotPasswordMockResult: Result<ForgotPasswordResult, Error>?
@@ -132,7 +132,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     func confirmUpdateUserAttributes(attributeName: String,
                                      code: String,
                                      completionHandler: @escaping ((Error?) -> Void)) {
-        fatalError()
+        completionHandler(confirmUserAttributeMockResult)
     }
 
     func changePassword(currentPassword: String,

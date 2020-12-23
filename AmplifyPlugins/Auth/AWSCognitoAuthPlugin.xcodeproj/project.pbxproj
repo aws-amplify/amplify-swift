@@ -149,6 +149,7 @@
 		B4F3EA4F243A782700F23296 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3EA4C243A782700F23296 /* ViewController.swift */; };
 		B4F3EA50243A782700F23296 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3EA4D243A782700F23296 /* AppDelegate.swift */; };
 		B4F3EA51243A782700F23296 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3EA4E243A782700F23296 /* SceneDelegate.swift */; };
+		D828362C2590527F0016173F /* BaseUserBehaviorTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D828362B2590527F0016173F /* BaseUserBehaviorTest.swift */; };
 		D87D5864257EF27E004617B3 /* BaseAuthDeviceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87D5863257EF27E004617B3 /* BaseAuthDeviceTest.swift */; };
 		FA1C817D25868C46006160E9 /* AWSCognitoAuthPluginAmplifyVersionableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1C817C25868C46006160E9 /* AWSCognitoAuthPluginAmplifyVersionableTests.swift */; };
 		FA6B0EA8249443C90062AA59 /* AWSCognitoAuthPluginConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B0EA7249443C90062AA59 /* AWSCognitoAuthPluginConfigTests.swift */; };
@@ -350,6 +351,7 @@
 		B4F3EA4E243A782700F23296 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		C49A4C812B0F973F5536DCC8 /* Pods-AWSAuthPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAuthPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSAuthPlugin/Pods-AWSAuthPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		C5E50D8021B9740CB511898D /* Pods-AWSAuthPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAuthPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSAuthPlugin/Pods-AWSAuthPlugin.debug.xcconfig"; sourceTree = "<group>"; };
+		D828362B2590527F0016173F /* BaseUserBehaviorTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseUserBehaviorTest.swift; sourceTree = "<group>"; };
 		D87D5863257EF27E004617B3 /* BaseAuthDeviceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAuthDeviceTest.swift; sourceTree = "<group>"; };
 		E9289652B314AA0AA1F31BC8 /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
 		FA1C817C25868C46006160E9 /* AWSCognitoAuthPluginAmplifyVersionableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSCognitoAuthPluginAmplifyVersionableTests.swift; sourceTree = "<group>"; };
@@ -537,6 +539,7 @@
 				B4136E6B256D7AF30011210B /* UserBehaviorFetchAttributeTests.swift */,
 				B4136E7B256D7B240011210B /* UserBehaviorResendCodeTests.swift */,
 				B4136E75256D7B090011210B /* UserBehaviorUpdateAttributeTests.swift */,
+				D828362B2590527F0016173F /* BaseUserBehaviorTest.swift */,
 			);
 			path = AuthUserBehaviorTests;
 			sourceTree = "<group>";
@@ -1529,6 +1532,7 @@
 				B4136E20256D757C0011210B /* AuthenticationProviderConfirmSignupTests.swift in Sources */,
 				B4136E3E256D76960011210B /* AuthenticationProviderSignoutTests.swift in Sources */,
 				B4136E5E256D7A690011210B /* AuthorizationProviderSessionSignInTests.swift in Sources */,
+				D828362C2590527F0016173F /* BaseUserBehaviorTest.swift in Sources */,
 				B43B4E242565FEC3008F345D /* AWSCognitoAuthUserBehaviorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

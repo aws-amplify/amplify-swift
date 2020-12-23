@@ -16,7 +16,7 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
     var getTokenClaimsError: AuthError?
     var identityId: String?
     var token: String?
-    var tokenClaims: [String : AnyObject]?
+    var tokenClaims: [String: AnyObject]?
 
     public func configure() {
     }
@@ -45,10 +45,10 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
         return .success(token ?? "token")
     }
 
-    public func getTokenClaims(tokenString: String) -> Result<[String : AnyObject], AuthError> {
+    public func getTokenClaims(tokenString: String) -> Result<[String: AnyObject], AuthError> {
         if let error = getTokenClaimsError {
             return .failure(error)
         }
-        return .success(tokenClaims ?? ["":"" as AnyObject])
+        return .success(tokenClaims ?? ["": "" as AnyObject])
     }
 }

@@ -9,7 +9,6 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 import AWSCore
-import AWSMobileClient
 
 struct UserPoolURLRequestInterceptor: URLRequestInterceptor {
 
