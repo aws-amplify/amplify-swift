@@ -230,7 +230,7 @@ class SQLStatementTests: XCTestCase {
           "title" = ?,
           "updatedAt" = ?
         where "id" = ?
-          and "root"."content" = ?
+          and "content" = ?
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
 
@@ -532,7 +532,7 @@ class SQLStatementTests: XCTestCase {
         let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate)
 
         XCTAssertEqual("""
-          and "root"."id" is not null
+          and "id" is not null
         """, statement.stringValue)
         XCTAssert(statement.variables.isEmpty)
     }
@@ -617,15 +617,15 @@ class SQLStatementTests: XCTestCase {
         let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate)
 
         XCTAssertEqual("""
-          and "root"."id" is not null
-          and "root"."draft" = ?
-          and "root"."rating" > ?
-          and "root"."rating" between ? and ?
-          and "root"."status" <> ?
-          and "root"."updatedAt" is null
+          and "id" is not null
+          and "draft" = ?
+          and "rating" > ?
+          and "rating" between ? and ?
+          and "status" <> ?
+          and "updatedAt" is null
           and (
-            "root"."content" like ?
-            or "root"."title" like ?
+            "content" like ?
+            or "title" like ?
           )
         """, statement.stringValue)
 
@@ -675,5 +675,19 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(variables[3] as? Int, 4)
         XCTAssertEqual(variables[4] as? String, "%gelato%")
         XCTAssertEqual(variables[5] as? String, "ice cream%")
+    }
+
+    func testTranslateComplexGroupedQueryPredicateWithNamespace2() {
+
+        let predicate = field("commentPostId") == "postID"
+
+        let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate, namespace: "root")
+
+        XCTAssertEqual("""
+          and "root"."commentPostId" = ?
+        """, statement.stringValue)
+
+        let variables = statement.variables
+        XCTAssertEqual(variables[0] as? String, "postID")
     }
 }

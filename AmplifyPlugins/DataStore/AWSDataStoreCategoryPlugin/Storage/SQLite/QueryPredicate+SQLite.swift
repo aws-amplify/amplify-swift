@@ -32,16 +32,6 @@ extension QueryOperator {
         }
     }
 
-    func columnFor(field: String, namespace: Substring? = nil) -> String {
-        var tokens = field.split(separator: ".")
-        if tokens.count == 1, let namespace = namespace {
-            tokens.insert(namespace, at: 0)
-        }
-        return tokens
-            .map { String($0).quoted() }
-            .joined(separator: ".")
-    }
-
     var bindings: [Binding?] {
         switch self {
         case let .between(start, end):

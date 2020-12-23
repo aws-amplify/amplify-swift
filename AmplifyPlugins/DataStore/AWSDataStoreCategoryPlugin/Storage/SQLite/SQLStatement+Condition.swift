@@ -32,13 +32,8 @@ private func translateQueryPredicate(from modelSchema: ModelSchema,
         let indent = String(repeating: indentPrefix, count: indentSize)
         if let operation = pred as? QueryPredicateOperation {
             let logicalOperator = groupOpened ? "" : "\(groupType.rawValue) "
-            let modelField = modelSchema.field(withName: operation.field)
-            let column = modelField?.columnName(forNamespace: String(namespace ?? "root"))
-//            let column2 = operation.operator.columnFor(field: modelField?.columnName(forNamespace: namespace),
-//                                                      namespace: namespace)
-//            let column1 = operation.operator.columnFor(field: modelSchema.columnName(forField: operation.field),
-//                                                      namespace: namespace)
-            sql.append("\(indent)\(logicalOperator)\(column!) \(operation.operator.sqlOperation)")
+
+            sql.append("\(indent)\(logicalOperator)\(resolveColumn(operation)) \(operation.operator.sqlOperation)")
             bindings.append(contentsOf: operation.operator.bindings)
             groupOpened = false
         } else if let group = pred as? QueryPredicateGroup {
@@ -60,6 +55,21 @@ private func translateQueryPredicate(from modelSchema: ModelSchema,
                 sql.append("or 1 = 1")
             }
         }
+    }
+
+    func resolveColumn(_ operation: QueryPredicateOperation) -> String {
+        var column = operation.field.quoted()
+        if let namespace = namespace {
+           column = String(namespace).quoted() + "." + column
+        }
+        if let modelField = modelSchema.field(withName: operation.field) {
+            if let namespace = namespace {
+                column = modelField.columnName(forNamespace: String(namespace))
+            } else {
+                column = modelField.columnName()
+            }
+        }
+        return column
     }
 
     translate(predicate)

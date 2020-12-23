@@ -31,24 +31,11 @@ extension List {
     internal func lazyLoad(_ completion: DataStoreCallback<Elements>) {
 
         // if the collection has no associated field, return the current elements
-//        guard let associatedId = self.associatedId,
-//              let associatedField = associatedField else {
-//            completion(.success(elements))
-//            return
-//        }
         guard let associatedId = self.associatedId,
               let associatedField = associatedField else {
             completion(.success(elements))
             return
         }
-
-        // TODO: this is currently done by specific plugin implementations (API or DataStore)
-        // How to add this name resolution to Amplify?
-//        let modelName = Element.modelName
-//        let name = modelName.camelCased() + associatedField.name.pascalCased() + "Id"
-//        if case let .belongsTo(_, targetName) = associatedField.association {
-//            name = targetName ?? name
-//        }
 
         let predicate: QueryPredicate = field(associatedField.name) == associatedId
         Amplify.DataStore.query(Element.self, where: predicate) {
