@@ -11,7 +11,7 @@ import Amplify
 public typealias GraphQLFilter = [String: Any]
 
 protocol GraphQLFilterConvertible {
-    func graphQLFilter(_ modelSchema: ModelSchema) -> GraphQLFilter
+    func graphQLFilter(_ modelSchema: ModelSchema?) -> GraphQLFilter
 
     @available(*, deprecated, message: """
     Use `graphQLFilter(_)` instead. See https://github.com/aws-amplify/amplify-ios/pull/965 for more details.
@@ -72,7 +72,7 @@ public struct GraphQLFilterConverter {
 /// Extension to translate a `QueryPredicate` into a GraphQL query variables object
 extension QueryPredicate {
 
-    public func graphQLFilter(_ modelSchema: ModelSchema) -> GraphQLFilter {
+    public func graphQLFilter(_ modelSchema: ModelSchema? = nil) -> GraphQLFilter {
         if let operation = self as? QueryPredicateOperation {
             return operation.graphQLFilter(modelSchema)
         } else if let group = self as? QueryPredicateGroup {
@@ -88,9 +88,9 @@ extension QueryPredicate {
     """)
     public var graphQLFilter: GraphQLFilter {
         if let operation = self as? QueryPredicateOperation {
-            return operation.graphQLFilter
+            return operation.graphQLFilter()
         } else if let group = self as? QueryPredicateGroup {
-            return group.graphQLFilter
+            return group.graphQLFilter()
         }
 
         preconditionFailure(
@@ -99,18 +99,32 @@ extension QueryPredicate {
 }
 
 extension QueryPredicateOperation: GraphQLFilterConvertible {
-    func graphQLFilter(_ modelSchema: ModelSchema) -> GraphQLFilter {
+    func graphQLFilter(_ modelSchema: ModelSchema? = nil) -> GraphQLFilter {
         let filterValue = [self.operator.graphQLOperator: self.operator.value]
-        return [modelSchema.columnName(forField: field): filterValue]
+        guard let modelSchema = modelSchema else {
+            return [field: filterValue]
+        }
+        return [columnName(modelSchema, forField: field): filterValue]
     }
 
-    var graphQLFilter: GraphQLFilter {
-        return [field: [self.operator.graphQLOperator: self.operator.value]]
+    func columnName(_ modelSchema: ModelSchema, forField fieldName: String) -> String {
+        guard let field = modelSchema.field(withName: fieldName) else {
+            return fieldName
+        }
+        let defaultFieldName = modelSchema.name.camelCased() + fieldName.pascalCased() + "Id"
+        switch field.association {
+        case .belongsTo(_, let targetName):
+            return targetName ?? defaultFieldName
+        case .hasOne(_, let targetName):
+            return targetName ?? defaultFieldName
+        default:
+            return fieldName
+        }
     }
 }
 
 extension QueryPredicateGroup: GraphQLFilterConvertible {
-    func graphQLFilter(_ modelSchema: ModelSchema) -> GraphQLFilter {
+    func graphQLFilter(_ modelSchema: ModelSchema? = nil) -> GraphQLFilter {
         let logicalOperator = type.rawValue
         switch type {
         case .and, .or:
@@ -127,28 +141,26 @@ extension QueryPredicateGroup: GraphQLFilterConvertible {
             }
         }
     }
+}
 
-    @available(*, deprecated, message: """
-    Use `graphQLFilter(_)` instead. See https://github.com/aws-amplify/amplify-ios/pull/965 for more details.
-    """)
-    var graphQLFilter: GraphQLFilter {
-        let logicalOperator = type.rawValue
-        switch type {
-        case .and, .or:
-            var graphQLPredicateOperation = [logicalOperator: [Any]()]
-            predicates.forEach { predicate in
-                graphQLPredicateOperation[logicalOperator]?.append(predicate.graphQLFilter)
-            }
-            return graphQLPredicateOperation
-        case .not:
-            if let predicate = predicates.first {
-                return [logicalOperator: predicate.graphQLFilter]
-            } else {
-                preconditionFailure("Missing predicate for \(String(describing: self)) with type: \(type)")
-            }
+extension ModelSchema {
+    public func columnName(forField fieldName: String) -> String {
+        guard let field = field(withName: fieldName) else {
+            return fieldName
+        }
+        let defaultFieldName = name.camelCased() + fieldName.pascalCased() + "Id"
+        switch field.association {
+        case .belongsTo(_, let targetName):
+            return targetName ?? defaultFieldName
+        case .hasOne(_, let targetName):
+            return targetName ?? defaultFieldName
+        default:
+            return fieldName
         }
     }
+
 }
+
 extension QueryOperator {
     var graphQLOperator: String {
         switch self {

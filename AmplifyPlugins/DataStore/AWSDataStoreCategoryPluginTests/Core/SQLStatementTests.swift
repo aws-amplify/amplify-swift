@@ -338,10 +338,12 @@ class SQLStatementTests: XCTestCase {
         inner join Post as "post"
           on "post"."id" = "root"."commentPostId"
         where 1 = 1
-          and "root"."id" = ?
-          and "root"."content" = ?
-          and "root"."createdAt" is null
-          and "root"."commentPostId" = ?
+          and (
+            "root"."id" = ?
+            and "root"."content" = ?
+            and "root"."createdAt" is null
+            and "root"."commentPostId" = ?
+          )
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
 

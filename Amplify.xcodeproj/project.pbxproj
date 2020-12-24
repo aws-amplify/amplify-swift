@@ -457,7 +457,6 @@
 		B9FAA175238EFC5A009414B4 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA174238EFC59009414B4 /* String+Extensions.swift */; };
 		B9FAA180238FBB5D009414B4 /* Model+Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA17F238FBB5D009414B4 /* Model+Array.swift */; };
 		B9FB05F82383740D00DE1FD4 /* DataStoreStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FB05F72383740D00DE1FD4 /* DataStoreStatement.swift */; };
-		D835163B258BD8150036A5F8 /* ModelSchema+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D835163A258BD8150036A5F8 /* ModelSchema+Extension.swift */; };
 		D83C5160248964780091548E /* ModelGraphQLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83C515F248964780091548E /* ModelGraphQLTests.swift */; };
 		D8DD7A1D24A1CCCD001C49FD /* QuerySortInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD7A1C24A1CCCD001C49FD /* QuerySortInput.swift */; };
 		FA00F68824DA37EE003E8A71 /* AuthCategoryBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00F68724DA37EE003E8A71 /* AuthCategoryBehavior+Combine.swift */; };
@@ -1354,7 +1353,6 @@
 		D2A0246D3621B503C915A5D1 /* Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		D5363CAF9EFAA822FED56808 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5521D5FA66340943C39C451 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		D835163A258BD8150036A5F8 /* ModelSchema+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelSchema+Extension.swift"; sourceTree = "<group>"; };
 		D83C515F248964780091548E /* ModelGraphQLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelGraphQLTests.swift; sourceTree = "<group>"; };
 		D8DD7A1C24A1CCCD001C49FD /* QuerySortInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuerySortInput.swift; sourceTree = "<group>"; };
 		DD2486414D63230FF39130C7 /* Pods-Amplify-AWSPluginsCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore/Pods-Amplify-AWSPluginsCore.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1747,7 +1745,6 @@
 				212CE6FD23E9E5A2007D8E71 /* GraphQLDocumentnputValue.swift */,
 				2129BE1B2394806B006363A1 /* Model+GraphQL.swift */,
 				217D5F63257830C2009F0639 /* ModelField+GraphQL.swift */,
-				D835163A258BD8150036A5F8 /* ModelSchema+Extension.swift */,
 				2129BE1D2394806B006363A1 /* ModelSchema+GraphQL.swift */,
 				2129BE1A2394806B006363A1 /* QueryPredicate+GraphQL.swift */,
 				212CE6FB23E9E523007D8E71 /* SelectionSet.swift */,
@@ -4510,7 +4507,6 @@
 				212CE71323E9F2ED007D8E71 /* DirectiveNameDecorator.swift in Sources */,
 				21420A92237222A900FA140C /* OIDCConfiguration.swift in Sources */,
 				21420A95237222A900FA140C /* AWSAuthServiceBehavior.swift in Sources */,
-				D835163B258BD8150036A5F8 /* ModelSchema+Extension.swift in Sources */,
 				21420A98237222A900FA140C /* AuthTokenProvider.swift in Sources */,
 				214C6226253A414E0041E96D /* AmplifyAWSServiceConfiguration+Platform.swift in Sources */,
 				21420A91237222A900FA140C /* AWSAuthorizationConfiguration.swift in Sources */,

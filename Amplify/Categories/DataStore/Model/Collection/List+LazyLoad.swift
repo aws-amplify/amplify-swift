@@ -31,7 +31,7 @@ extension List {
     internal func lazyLoad(_ completion: DataStoreCallback<Elements>) {
 
         // if the collection has no associated field, return the current elements
-        guard let associatedId = self.associatedId,
+        guard let associatedId = associatedId,
               let associatedField = associatedField else {
             completion(.success(elements))
             return
