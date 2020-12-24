@@ -1,5 +1,15 @@
 # Changelog
 ## Unreleased
+## 1.5.2 (2020-12-24)
+
+### Bug Fixes
+
+- **DataStore**: QueryPredicate translation (#961)
+- refactor GraphQL response decoder (#971)
+- add blog post comment schema and tests (#970)
+- **Auth**: Dismiss empty UIViewController (#947)
+- Add plugin conformances to AmplifyVersionable (#941)
+
 ## 1.5.1 (2020-12-11)
 
 ### Bug Fixes
