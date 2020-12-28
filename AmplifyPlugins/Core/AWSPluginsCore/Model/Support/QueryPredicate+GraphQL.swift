@@ -21,7 +21,7 @@ public struct GraphQLFilterConverter {
     public static func toJSON(_ queryPredicate: QueryPredicate,
                               modelSchema: ModelSchema,
                               options: JSONSerialization.WritingOptions = []) throws -> String {
-        let graphQLFilterData = try JSONSerialization.data(withJSONObject: queryPredicate.graphQLFilter(modelSchema),
+        let graphQLFilterData = try JSONSerialization.data(withJSONObject: queryPredicate.getGraphQLFilter(modelSchema),
                                                            options: options)
 
         guard let serializedString = String(data: graphQLFilterData, encoding: .utf8) else {
@@ -66,7 +66,7 @@ public struct GraphQLFilterConverter {
 
 /// Extension to translate a `QueryPredicate` into a GraphQL query variables object
 extension QueryPredicate {
-    public func graphQLFilter(_ modelSchema: ModelSchema) -> GraphQLFilter {
+    public func getGraphQLFilter(_ modelSchema: ModelSchema) -> GraphQLFilter {
         if let operation = self as? QueryPredicateOperation {
             return operation.graphQLFilterInternal(modelSchema)
         } else if let group = self as? QueryPredicateGroup {
@@ -90,7 +90,7 @@ extension QueryPredicate {
         preconditionFailure(
             "Could not find QueryPredicateOperation or QueryPredicateGroup for \(String(describing: self))")
     }
-    
+
     func graphQLFilterInternal(_ modelSchema: ModelSchema? = nil) -> GraphQLFilter {
         if let operation = self as? QueryPredicateOperation {
             return operation.graphQLFilterInternal(modelSchema)
