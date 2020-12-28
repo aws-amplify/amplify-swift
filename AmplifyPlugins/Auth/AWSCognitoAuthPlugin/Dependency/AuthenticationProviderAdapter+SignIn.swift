@@ -26,31 +26,29 @@ extension AuthenticationProviderAdapter {
                                password: password,
                                validationData: nil,
                                clientMetaData: clientMetaData) { [weak self] result, error in
-                                guard let self = self else { return }
+            guard let self = self else { return }
 
-                                guard error == nil else {
-                                    let result = self.convertSignInErrorToResult(error!)
-                                    completionHandler(result)
-                                    return
-                                }
+            guard error == nil else {
+                let result = self.convertSignInErrorToResult(error!)
+                completionHandler(result)
+                return
+            }
 
-                                guard let result = result else {
-                                    // This should not happen, return an unknown error.
-                                    let error = AuthError.unknown("Could not read result from signIn operation")
-                                    completionHandler(.failure(error))
-                                    return
-                                }
+            guard let result = result else {
+                // This should not happen, return an unknown error.
+                let error = AuthError.unknown("Could not read result from signIn operation")
+                completionHandler(.failure(error))
+                return
+            }
 
-                                guard let signInNextStep = try? result.toAmplifyAuthSignInStep() else {
-                                    // Could not find any next step for signIn. This should not happen.
-                                    let error = AuthError.unknown("""
-                                        Invalid state for signIn \(result.signInState)
-                                        """)
-                                    completionHandler(.failure(error))
-                                    return
-                                }
-                                let authResult = AuthSignInResult(nextStep: signInNextStep)
-                                completionHandler(.success(authResult))
+            guard let signInNextStep = try? result.toAmplifyAuthSignInStep() else {
+                // Could not find any next step for signIn. This should not happen.
+                let error = AuthError.unknown("Invalid state for signIn \(result.signInState)")
+                completionHandler(.failure(error))
+                return
+            }
+            let authResult = AuthSignInResult(nextStep: signInNextStep)
+            completionHandler(.success(authResult))
         }
 
     }
@@ -80,33 +78,29 @@ extension AuthenticationProviderAdapter {
         awsMobileClient.confirmSignIn(challengeResponse: request.challengeResponse,
                                       userAttributes: mobileClientUserAttributes,
                                       clientMetaData: clientMetaData ?? [:]) { [weak self] result, error in
-                                        guard let self = self else { return }
+            guard let self = self else { return }
 
-                                        if let error = error {
-                                            let result = self.convertSignInErrorToResult(error)
-                                            completionHandler(result)
-                                            return
-                                        }
+            if let error = error {
+                let result = self.convertSignInErrorToResult(error)
+                completionHandler(result)
+                return
+            }
 
-                                        guard let result = result else {
-                                            // This should not happen, return an unknown error.
-                                            let error = AuthError.unknown("""
-                                            Could not read result from confirmSignIn operation
-                                            """)
-                                            completionHandler(.failure(error))
-                                            return
-                                        }
+            guard let result = result else {
+                // This should not happen, return an unknown error.
+                let error = AuthError.unknown("Could not read result from confirmSignIn operation")
+                completionHandler(.failure(error))
+                return
+            }
 
-                                        guard let nextStep = try? result.toAmplifyAuthSignInStep() else {
-                                            // Could not find any next step for signIn. This should not happen.
-                                            let error = AuthError.unknown("""
-                                                Invalid state for signIn \(result.signInState)
-                                                """)
-                                            completionHandler(.failure(error))
-                                            return
-                                        }
-                                        let authResult = AuthSignInResult(nextStep: nextStep)
-                                        completionHandler(.success(authResult))
+            guard let nextStep = try? result.toAmplifyAuthSignInStep() else {
+                // Could not find any next step for signIn. This should not happen.
+                let error = AuthError.unknown("Invalid state for signIn \(result.signInState)")
+                completionHandler(.failure(error))
+                return
+            }
+            let authResult = AuthSignInResult(nextStep: nextStep)
+            completionHandler(.success(authResult))
         }
 
     }
@@ -221,7 +215,9 @@ extension AuthenticationProviderAdapter {
 
     private class ModalPresentingNavigationController: UINavigationController {
 
-        override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+        override func present(_ viewControllerToPresent: UIViewController,
+                              animated flag: Bool,
+                              completion: (() -> Void)? = nil) {
             if #available(iOS 13, *) {
                 viewControllerToPresent.isModalInPresentation = true
             }

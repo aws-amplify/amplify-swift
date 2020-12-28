@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SafariServices
 
 import XCTest
 @testable import Amplify
@@ -258,7 +259,43 @@ class AuthenticationProviderSignoutTests: BaseAuthenticationProviderTest {
             case .failure(let error):
                 guard case .service(_, _, let underlyingError) = error,
                       case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce unknown error instead of \(error)")
+                    XCTFail("Should produce userNotConfirmed error instead of \(error)")
+                    return
+                }
+            }
+        }
+        wait(for: [resultExpectation], timeout: apiTimeout)
+    }
+
+    /// Test a signOut with userCancelled from service
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    ///   SFAuth UserCancelled response
+    ///
+    /// - When:
+    ///    - I invoke signOut
+    /// - Then:
+    ///    - I should get a SFAuthenticationError.canceledLogin error
+    ///
+    func testSignOutWithUserCancel() {
+        let error = NSError(domain: "com.apple.SafariServices.Authentication",
+                            code: SFAuthenticationError.canceledLogin.rawValue,
+                            userInfo: nil)
+        let options = AuthSignOutRequest.Options()
+        mockAWSMobileClient.signOutMockError = error
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.signOut(options: options) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+
+            switch result {
+            case .success:
+                XCTFail("Should not get success")
+            case .failure(let error):
+                guard case .unknown(_, let underlyingError) = error,
+                      case .canceledLogin = (underlyingError as? SFAuthenticationError)?.code else {
+                    XCTFail("Should produce SFAuthenticationError error instead of \(error)")
                     return
                 }
             }
