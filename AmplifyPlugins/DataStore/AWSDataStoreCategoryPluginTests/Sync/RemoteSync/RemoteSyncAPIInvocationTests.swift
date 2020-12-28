@@ -96,11 +96,11 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
                 return
             }
 
-            if message.contains("onCreatePost") {
+            if message.contains("onCreatePost ") {
                 createSubscriptionStarted.fulfill()
-            } else if message.contains("onUpdatePost") {
+            } else if message.contains("onUpdatePost ") {
                 updateSubscriptionStarted.fulfill()
-            } else if message.contains("onDeletePost") {
+            } else if message.contains("onDeletePost ") {
                 deleteSubscriptionStarted.fulfill()
             }
         }

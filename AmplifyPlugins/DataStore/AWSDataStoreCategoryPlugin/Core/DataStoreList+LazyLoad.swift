@@ -40,7 +40,7 @@ extension DataStoreList {
         Amplify.DataStore.query(Element.self, where: predicate) {
             switch $0 {
             case .success(let elements):
-                self.elements = elements
+                self.storedElements = elements
                 self.state = .loaded
                 completion(.success(elements))
             case .failure(let error):
@@ -64,7 +64,7 @@ extension DataStoreList {
         lazyLoad {
             switch $0 {
             case .success(let elements):
-                self.elements = elements
+                self.storedElements = elements
                 semaphore.signal()
             case .failure(let error):
                 semaphore.signal()

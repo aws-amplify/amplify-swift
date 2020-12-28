@@ -20,31 +20,37 @@ public class DataStoreList<ModelType: Model>: List<ModelType>, ModelListDecoder 
 
     /// If the list represents an association between two models, the `associatedId` will
     /// hold the information necessary to query the associated elements (e.g. comments of a post)
-    internal var associatedId: Model.Identifier?
+    var associatedId: Model.Identifier?
 
     /// The associatedField represents the field to which the owner of the `List` is linked to.
     /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
     /// of `Post` will have a reference to the `post` field in `Comment`.
-    internal var associatedField: ModelField?
+    var associatedField: ModelField?
 
-    internal var limit: Int = 100
+    var storedElements: [Element]
+
+    var limit: Int = 100
 
     /// The current state of lazily loaded list
-    internal var state: LoadState = .pending
+    var state = LoadState.pending
+
+    public override var elements: Elements {
+        storedElements
+    }
 
     // MARK: - Initializers
 
-    public override convenience init(_ elements: Elements) {
-        self.init(elements, associatedId: nil, associatedField: nil)
+    init(_ elements: Elements) {
+        self.storedElements = elements
         self.state = .loaded
     }
 
-    init(_ elements: Elements,
-         associatedId: Model.Identifier? = nil,
+    init(associatedId: Model.Identifier? = nil,
          associatedField: ModelField? = nil) {
-        super.init(elements)
+        self.storedElements = []
         self.associatedId = associatedId
         self.associatedField = associatedField
+        super.init()
     }
 
     // MARK: - ExpressibleByArrayLiteral
@@ -55,12 +61,32 @@ public class DataStoreList<ModelType: Model>: List<ModelType>, ModelListDecoder 
 
     // MARK: - Collection conformance
 
+    /// This method implicitly lazy loads the underlying collection so the runtime of using Collection methods that
+    /// are normally O(1) are decreased to the time it takes to retrieve the data from the underlying SQL data source
+    /// for the initial method call. After the first access, the data will be retrieved and subsequent calls will be
+    /// O(1) runtime.
     public override var startIndex: Index {
         loadIfNeeded()
         return elements.startIndex
     }
 
-    public __consuming override func makeIterator() -> IndexingIterator<Elements> {
+    public override var endIndex: Index {
+        return elements.endIndex
+    }
+
+    public override func index(after index: Index) -> Index {
+        return elements.index(after: index)
+    }
+
+    public override subscript(position: Int) -> Element {
+        return elements[position]
+    }
+
+    /// This method implicitly lazy loads the underlying collection so the runtime of using Collection methods that
+    /// are normally O(1) are decreased to the time it takes to retrieve the data from the underlying SQL data source
+    /// for the initial method call. After the first access, the data will be retrieved and subsequent calls will be
+    /// O(1) runtime.
+    override public __consuming func makeIterator() -> IndexingIterator<Elements> {
         loadIfNeeded()
         return elements.makeIterator()
     }
@@ -89,7 +115,7 @@ public class DataStoreList<ModelType: Model>: List<ModelType>, ModelListDecoder 
                case let .string(associatedField) = list["associatedField"] {
                 let field = Element.schema.field(withName: associatedField)
                 // TODO handle eager loaded associations with elements
-                self.init([], associatedId: associatedId, associatedField: field)
+                self.init(associatedId: associatedId, associatedField: field)
             } else {
                 self.init(Elements())
             }
@@ -101,7 +127,13 @@ public class DataStoreList<ModelType: Model>: List<ModelType>, ModelListDecoder 
     // MARK: ModelListDecoder
 
     public static func shouldDecode(decoder: Decoder) -> Bool {
-        let json = try? JSONValue(from: decoder)
+        guard let json = try? JSONValue(from: decoder) else {
+            return false
+        }
+        return shouldDecode(json: json)
+    }
+
+    static func shouldDecode(json: JSONValue) -> Bool {
         if case let .object(list) = json,
            case .string = list["associatedId"],
            case .string = list["associatedField"] {
@@ -115,12 +147,13 @@ public class DataStoreList<ModelType: Model>: List<ModelType>, ModelListDecoder 
         return false
     }
 
-    public static func decode<ModelType: Model>(decoder: Decoder, modelType: ModelType.Type) -> List<ModelType> {
-        do {
-            return try DataStoreList<ModelType>.init(from: decoder)
-        } catch {
-            return List([ModelType]())
-        }
+    public static func decode<ModelType: Model>(decoder: Decoder,
+                                                modelType: ModelType.Type) throws -> List<ModelType> {
+        try DataStoreList<ModelType>.init(from: decoder)
+    }
+
+    public override func encode(to encoder: Encoder) throws {
+        try elements.encode(to: encoder)
     }
 
     // MARK: - Asynchronous API
@@ -150,8 +183,9 @@ public class DataStoreList<ModelType: Model>: List<ModelType>, ModelListDecoder 
 
     // MARK: Combine
 
-    /// Lazy load the collection and expose the loaded `Elements` as a Combine `Publisher`.
-    /// This is useful for integrating the `List<ModelType>` with existing Combine code
+    /// Lazy load the collection and expose the loaded `Elements` as a Combine `Publisher`. The collection will
+    /// immediately retrieve the data from when the publisher is returned. You can call `sink` to get the reuslts of
+    /// the load in O(1). This is useful for integrating the `List<ModelType>` with existing Combine code
     /// and/or SwiftUI.
     ///
     /// - Returns: a type-erased Combine publisher

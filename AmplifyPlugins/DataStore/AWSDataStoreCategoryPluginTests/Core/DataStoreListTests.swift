@@ -15,6 +15,71 @@ import XCTest
 
 class DataStoreListTests: BaseDataStoreTests {
 
+    func testDataStoreListFromArrayLiteralToJSON() throws {
+        let list = DataStoreList(arrayLiteral:
+                                    Comment4(id: "id", content: "content"),
+                                 Comment4(id: "id", content: "content"))
+        XCTAssertNotNil(list)
+        XCTAssertEqual(list.count, 2)
+        let post = Post4(id: "id", title: "title", comments: list)
+        let json = try post.toJSON()
+        let expectedJSON = """
+        {"id":"id","title":"title","comments":[{"id":"id","content":"content"},{"id":"id","content":"content"}]}
+        """
+        XCTAssertEqual(json, expectedJSON)
+    }
+
+    func testDataStoreListFromJSONPayload() throws {
+        let json: JSONValue = [
+            [
+                "id": "1",
+                "title": JSONValue.init(stringLiteral: "title")
+            ], [
+                "id": "2",
+                "title": JSONValue.init(stringLiteral: "title")
+            ]
+        ]
+        XCTAssertTrue(DataStoreList<Post4>.shouldDecode(json: json))
+        let data = try DataStoreListTests.encode(json: json)
+        var list = try DataStoreListTests.decodeToList(data, responseType: Post4.self)
+        guard let dataStoreList = list as? DataStoreList else {
+            XCTFail("Could not cast to DataStoreList")
+            return
+        }
+        XCTAssertEqual(dataStoreList.count, 2)
+        list = try DataStoreListTests.decodeToDataStoreList(data, responseType: Post4.self)
+        XCTAssertNotNil(list)
+        XCTAssertEqual(list.count, 2)
+        XCTAssertEqual(list.startIndex, 0)
+        XCTAssertEqual(list.endIndex, 2)
+        XCTAssertEqual(list.index(after: 0), 1)
+        XCTAssertEqual(list[0].id, "1")
+        for item in list {
+            XCTAssertEqual(item.title, "title")
+        }
+    }
+
+    func testDataStoreListFromAssociationPayload() throws {
+        let associatedField = "post"
+        let json: JSONValue = [
+            "associatedId": "postId123",
+            "associatedField": JSONValue.init(stringLiteral: associatedField)
+        ]
+        let expectedPostField = Comment4.schema.field(withName: associatedField)
+        XCTAssertTrue(DataStoreList<Comment4>.shouldDecode(json: json))
+        let data = try DataStoreListTests.encode(json: json)
+        var list = try DataStoreListTests.decodeToDataStoreList(data, responseType: Comment4.self)
+        XCTAssertNotNil(list)
+        list = try DataStoreListTests.decodeToList(data, responseType: Comment4.self)
+        guard let dataStoreList = list as? DataStoreList else {
+            XCTFail("Could not cast to DataStoreList")
+            return
+        }
+        XCTAssertEqual(dataStoreList.count, 0)
+        XCTAssertEqual(dataStoreList.associatedId, "postId123")
+        XCTAssertEqual(dataStoreList.associatedField?.name, expectedPostField?.name)
+    }
+
     /// - Given: a list a `Post` and a few comments associated with it
     /// - When:
     ///   - the `post.comments` is accessed synchronously
@@ -32,6 +97,7 @@ class DataStoreListTests: BaseDataStoreTests {
                     if let comments = postComments as? DataStoreList<Comment> {
                         XCTAssert(comments.state == .pending)
                         XCTAssertEqual(comments.count, 2)
+                        XCTAssertNotNil(comments[0])
                         XCTAssert(comments.state == .loaded)
                     } else {
                         XCTFail("Failed to cast to DataStoreList")
@@ -151,5 +217,23 @@ class DataStoreListTests: BaseDataStoreTests {
             Comment(content: "Comment 2", createdAt: .now(), post: post)
         ])
         return post.id
+    }
+
+    private static func encode(json: JSONValue) throws -> Data {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
+        return try encoder.encode(json)
+    }
+
+    private static func decodeToDataStoreList<R: Decodable>(_ data: Data, responseType: R.Type) throws -> List<R> {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
+        return try decoder.decode(DataStoreList<R>.self, from: data)
+    }
+
+    private static func decodeToList<R: Decodable>(_ data: Data, responseType: R.Type) throws -> List<R> {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
+        return try decoder.decode(List<R>.self, from: data)
     }
 }

@@ -10,6 +10,48 @@ import Amplify
 
 public class AppSyncList<ModelType: Model>: List<ModelType>, ModelListDecoder {
 
+    var storedElements: [Element]
+
+    public override
+    var elements: Elements {
+        storedElements
+    }
+
+    // MARK: - Initializers
+
+    init(_ elements: Elements) {
+        self.storedElements = elements
+        super.init()
+    }
+
+    // MARK: - ExpressibleByArrayLiteral
+
+    required convenience init(arrayLiteral elements: List<ModelType>.Element...) {
+        self.init(elements)
+    }
+
+    // MARK: Collection conformance
+
+    public override var startIndex: Index {
+        return elements.startIndex
+    }
+
+    public override var endIndex: Index {
+        return elements.endIndex
+    }
+
+    public override func index(after index: Index) -> Index {
+        return elements.index(after: index)
+    }
+
+    public override subscript(position: Int) -> Element {
+        return elements[position]
+    }
+
+    public override __consuming func makeIterator() -> IndexingIterator<Elements> {
+        return elements.makeIterator()
+    }
+
     // MARK: Codable
 
     required convenience public init(from decoder: Decoder) throws {
@@ -35,11 +77,20 @@ public class AppSyncList<ModelType: Model>: List<ModelType>, ModelListDecoder {
         self.init([ModelType]())
     }
 
+    public override func encode(to encoder: Encoder) throws {
+        try elements.encode(to: encoder)
+    }
+
     // MARK: ModelListDecoder
 
     public static func shouldDecode(decoder: Decoder) -> Bool {
-        let json = try? JSONValue(from: decoder)
+        guard let json = try? JSONValue(from: decoder) else {
+            return false
+        }
+        return shouldDecode(json: json)
+    }
 
+    static func shouldDecode(json: JSONValue) -> Bool {
         if case let .object(jsonObject) = json,
            case .array = jsonObject["items"] {
             return true
@@ -49,11 +100,7 @@ public class AppSyncList<ModelType: Model>: List<ModelType>, ModelListDecoder {
     }
 
     public static func decode<ModelType: Model>(decoder: Decoder,
-                                                modelType: ModelType.Type) -> List<ModelType> {
-        do {
-            return try AppSyncList<ModelType>.init(from: decoder)
-        } catch {
-            return List([ModelType]())
-        }
+                                                modelType: ModelType.Type) throws -> List<ModelType> {
+        try AppSyncList<ModelType>.init(from: decoder)
     }
 }

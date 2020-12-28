@@ -15,7 +15,7 @@ class AppSyncListTests: XCTestCase {
 
     override func setUp() {
         Amplify.reset()
-        ModelRegistry.register(modelType: Post.self)
+        ModelRegistry.register(modelType: Post4.self)
         ModelListDecoderRegistry.registerDecoder(AppSyncList<AnyModel>.self)
         do {
             let configWithAPI = try setUpAPICategory()
@@ -25,34 +25,72 @@ class AppSyncListTests: XCTestCase {
         }
     }
 
-    func testAppSyncListDeserializeFromGraphQLResponse() throws {
+    func testAppSyncListFromArrayLiteralToJSON() throws {
+        let list = AppSyncList(arrayLiteral:
+                                Comment4(id: "id", content: "content"),
+                               Comment4(id: "id", content: "content"))
+        XCTAssertNotNil(list)
+        XCTAssertEqual(list.count, 2)
+        let post = Post4(id: "id", title: "title", comments: list)
+        let json = try post.toJSON()
+        let expectedJSON = """
+        {"id":"id","title":"title","comments":[{"id":"id","content":"content"},{"id":"id","content":"content"}]}
+        """
+        XCTAssertEqual(json, expectedJSON)
+    }
+
+    func testAppSyncListDecodeFromGraphQLResponse() throws {
         let graphQLData: JSONValue = [
             "items": [[
                 "id": "1",
-                "title": JSONValue.init(stringLiteral: "title"),
-                "content": JSONValue.init(stringLiteral: "content"),
-                "createdAt": JSONValue.init(stringLiteral: Temporal.DateTime.now().iso8601String)
+                "title": JSONValue.init(stringLiteral: "title")
             ], [
                 "id": "2",
-                "title": JSONValue.init(stringLiteral: "title"),
-                "content": JSONValue.init(stringLiteral: "content"),
-                "createdAt": JSONValue.init(stringLiteral: Temporal.DateTime.now().iso8601String)
+                "title": JSONValue.init(stringLiteral: "title")
             ]],
             "nextToken": "nextToken"
         ]
-        let serializedData = try AppSyncListTests.serialize(json: graphQLData)
+        XCTAssertTrue(AppSyncList<Post4>.shouldDecode(json: graphQLData))
+        let data = try AppSyncListTests.encode(json: graphQLData)
+        var list = try AppSyncListTests.decodeToList(data, responseType: Post4.self)
+        guard let appsyncList = list as? AppSyncList else {
+            XCTFail("Could not cast to AppSyncList")
+            return
+        }
+        XCTAssertEqual(appsyncList.count, 2)
+        list = try AppSyncListTests.decodeToAppSyncList(data, responseType: Post4.self)
+        XCTAssertNotNil(list)
+        XCTAssertEqual(list.count, 2)
+        XCTAssertEqual(list.startIndex, 0)
+        XCTAssertEqual(list.endIndex, 2)
+        XCTAssertEqual(list.index(after: 0), 1)
+        XCTAssertEqual(list[0].id, "1")
+        for item in list {
+            XCTAssertEqual(item.title, "title")
+        }
+    }
 
-        let list = try AppSyncListTests.deserialize(serializedData, responseType: Post.self)
+    func testAppSyncListDecodeToEmptyListSuccess() throws {
+        let graphQLData: JSONValue = ""
+        XCTAssertFalse(AppSyncList<Post4>.shouldDecode(json: graphQLData))
+        let serializedData = try AppSyncListTests.encode(json: graphQLData)
+        let list = try AppSyncListTests.decodeToAppSyncList(serializedData, responseType: Post.self)
         XCTAssertNotNil(list)
     }
 
-    private static func serialize(json: JSONValue) throws -> Data {
+    private static func encode(json: JSONValue) throws -> Data {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
         return try encoder.encode(json)
     }
 
-    private static func deserialize<R: Decodable>(_ data: Data, responseType: R.Type) throws -> List<R> {
+    private static func decodeToAppSyncList<R: Decodable>(_ data: Data, responseType: R.Type) throws -> List<R> {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
+        return try decoder.decode(AppSyncList<R>.self, from: data)
+    }
+
+    private static func decodeToList<R: Decodable>(_ data: Data, responseType: R.Type) throws -> List<R> {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
         return try decoder.decode(List<R>.self, from: data)

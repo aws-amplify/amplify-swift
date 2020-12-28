@@ -81,6 +81,7 @@
 		21558E40237CB8640032A5BB /* GraphQLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21558E3F237CB8640032A5BB /* GraphQLError.swift */; };
 		21644B7C2588258100C548A5 /* ModelListDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21644B7A2588258100C548A5 /* ModelListDecoder.swift */; };
 		21644B7D2588258100C548A5 /* ModelList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21644B7B2588258100C548A5 /* ModelList.swift */; };
+		21665EF5259A947100841696 /* ModelListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21665EF4259A947100841696 /* ModelListTests.swift */; };
 		21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A3D236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift */; };
 		21687A41236371E1004A056E /* AnalyticsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A40236371E1004A056E /* AnalyticsError.swift */; };
 		216E45ED248E914F0035E3CE /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216E45EA248E914E0035E3CE /* Category.swift */; };
@@ -863,6 +864,7 @@
 		215F4BCAAB89FA54AA121BDE /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		21644B7A2588258100C548A5 /* ModelListDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelListDecoder.swift; sourceTree = "<group>"; };
 		21644B7B2588258100C548A5 /* ModelList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelList.swift; sourceTree = "<group>"; };
+		21665EF4259A947100841696 /* ModelListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelListTests.swift; sourceTree = "<group>"; };
 		21687A3D236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AnalyticsCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		21687A40236371E1004A056E /* AnalyticsError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsError.swift; sourceTree = "<group>"; };
 		216E45EA248E914E0035E3CE /* Category.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
@@ -1888,6 +1890,14 @@
 				21420A84237222A800FA140C /* IAMCredentialProvider.swift */,
 			);
 			path = Provider;
+			sourceTree = "<group>";
+		};
+		21665EF2259A944500841696 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				21665EF4259A947100841696 /* ModelListTests.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		21687A3F236371E1004A056E /* Error */ = {
@@ -3602,6 +3612,7 @@
 				FAD3937923820CDB00463F5E /* DataStoreCategoryClientAPITests.swift */,
 				FAD3937C23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift */,
 				B4944D51251C141200BF0BFE /* JSONValueHolderTest.swift */,
+				21665EF2259A944500841696 /* Model */,
 				B4B34C54255B725F00033033 /* ModelFieldAssociationTests.swift */,
 				FAE414602399A6A500CE94C2 /* ModelRegistryTests.swift */,
 				B99EF4B423DB020C00D821BC /* TemporalComparableTests.swift */,
@@ -5008,6 +5019,7 @@
 				FAA9FC3E236210840012638A /* APICategoryClientInterceptorTests.swift in Sources */,
 				FAE414612399A6A500CE94C2 /* ModelRegistryTests.swift in Sources */,
 				FACF520923298C1200646E10 /* AtomicDictionaryTests.swift in Sources */,
+				21665EF5259A947100841696 /* ModelListTests.swift in Sources */,
 				FA4B38AB238482B100E20DAB /* DefaultLoggingPluginTests.swift in Sources */,
 				FA6BC869235F52740001A882 /* APICategoryClientGraphQLTests.swift in Sources */,
 				FACD264C2386E8F10068FBE6 /* JSONValue+SubscriptTests.swift in Sources */,
