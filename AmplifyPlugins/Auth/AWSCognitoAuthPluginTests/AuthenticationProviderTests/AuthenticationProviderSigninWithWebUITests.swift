@@ -56,7 +56,7 @@ class AuthenticationProviderSigninWithWebUITests: BaseAuthenticationProviderTest
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
-    /// Test a signIn with valid inputs
+    /// Test a signIn that return invalid response
     ///
     /// - Given: Given an auth plugin with mocked service.
     ///
