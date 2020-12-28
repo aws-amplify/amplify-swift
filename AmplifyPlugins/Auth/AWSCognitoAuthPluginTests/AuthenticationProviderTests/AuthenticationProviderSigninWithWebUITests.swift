@@ -62,7 +62,7 @@ class AuthenticationProviderSigninWithWebUITests: BaseAuthenticationProviderTest
     ///
     /// - When:
     ///    - I invoke signIn with valid values
-    ///    - Mock service returns invalid response
+    ///    - Mock service returns invalid response like `signedOut`
     /// - Then:
     ///    - I should get a .unknown response
     ///
