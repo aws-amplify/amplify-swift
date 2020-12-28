@@ -26,8 +26,8 @@ extension AuthorizationProviderAdapter {
     /// - User is signedIn through Cognito User Pool but aws credentials couldnot be refreshed because of network or
     /// service issue
     /// - User is signedIn through Cognito Identity Pool
-    ///- User is signedIn through Cognito Identity Pool but aws credentials couldnot be refreshed because of network or
-    ///service issue
+    /// - User is signedIn through Cognito Identity Pool but aws credentials couldnot be refreshed because of network or
+    /// service issue
     /// - Parameter completionHandler: Completion handler to return the result.
     func fetchSignedInSession( _ completionHandler: @escaping SessionCompletionHandler) {
 
