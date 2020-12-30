@@ -64,6 +64,10 @@ final class ModelSyncedEventEmitter {
             })
     }
 
+    deinit {
+        cancel()
+    }
+
     /// Filtering `InitialSyncOperationEvent`s that come from `InitialSyncOperation` of the same ModelType
     private func filterSyncOperationEvent(_ value: InitialSyncOperationEvent) -> Bool {
         switch value {
@@ -136,6 +140,10 @@ final class ModelSyncedEventEmitter {
         modelSyncedEventTopic.send(completion: .finished)
     }
 
+    func cancel() {
+        syncOrchestratorSink?.cancel()
+        reconciliationQueueSink?.cancel()
+    }
 }
 
 @available(iOS 13.0, *)

@@ -29,6 +29,10 @@ final class ReadyEventEmitter {
             }, receiveValue: { _ in })
     }
 
+    deinit {
+        cancel()
+    }
+
     private static func makeSyncQueriesReadyPublisher() -> AnyPublisher<Void, DataStoreError> {
         Amplify.Hub
             .publisher(for: .dataStore)
@@ -52,6 +56,10 @@ final class ReadyEventEmitter {
     private func dispatchReady() {
         let readyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.ready)
         Amplify.Hub.dispatch(to: .dataStore, payload: readyEventPayload)
+    }
+
+    func cancel() {
+        readySink?.cancel()
     }
 
 }
