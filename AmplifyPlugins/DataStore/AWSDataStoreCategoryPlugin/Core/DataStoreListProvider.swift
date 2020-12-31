@@ -59,7 +59,7 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
                 loadResult = .success(elements)
             case .failure(let error):
                 Amplify.DataStore.log.error(error: error)
-                assert(true, error.errorDescription)
+                assert(false, error.errorDescription)
                 loadResult = .failure(error)
             }
         }

@@ -18,6 +18,7 @@ extension DataStoreCategory: Resettable {
         }
 
         ModelRegistry.reset()
+        ModelListDecoderRegistry.reset()
 
         group.wait()
 

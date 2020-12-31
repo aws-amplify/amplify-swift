@@ -45,7 +45,7 @@ public struct AppSyncListDecoder: ModelListDecoder {
 
         let message = "AppSyncListProvider could not be created from \(String(describing: json))"
         Amplify.DataStore.log.error(message)
-        assert(true, message)
+        assert(false, message)
         return ArrayLiteralListProvider<ModelType>(elements: []).eraseToAnyModelListProvider()
     }
 }

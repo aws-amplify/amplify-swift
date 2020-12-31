@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2020 Amazon.com,
+// Copyright 2018-2021 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -12,6 +12,7 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
+import CwlPreconditionTesting
 
 class DataStoreListDecoderTests: BaseDataStoreTests {
 
@@ -38,8 +39,21 @@ class DataStoreListDecoderTests: BaseDataStoreTests {
         ]
         XCTAssertTrue(DataStoreListDecoder.shouldDecode(json: json))
         let data = try DataStoreListDecoderTests.encode(json: json)
-        let list = try DataStoreListDecoderTests.decodeToList(data, responseType: Post4.self)
+        let list = try DataStoreListDecoderTests.decodeToList(data, responseType: Comment4.self)
         XCTAssertNotNil(list)
+    }
+
+    func testDataStoreListDecoderAssertForMissingAssociationField() throws {
+        let json: JSONValue = [
+            "associatedId": "postId",
+            "associatedField": "invalidField"
+        ]
+        XCTAssertTrue(DataStoreListDecoder.shouldDecode(json: json))
+        let data = try DataStoreListDecoderTests.encode(json: json)
+        let caughtAssert = catchBadInstruction {
+            _ = try? DataStoreListDecoderTests.decodeToList(data, responseType: Comment4.self)
+        }
+        XCTAssertNotNil(caughtAssert)
     }
 
     func testDataStoreListDecoderShouldNotDecodeFromMissingAssociationData() throws {

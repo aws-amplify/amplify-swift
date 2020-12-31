@@ -7,17 +7,17 @@
 
 import Foundation
 
-/// Registry of `ModelListDecoder`'s used to retrieve decoders for checking if decodable `List<ModelType>` subclasses.
+/// Registry of `ModelListDecoder`'s used to retrieve decoders that can create `ModelListProvider`s to perform
+/// List functionality.
 ///
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 /// directly by host applications. The behavior of this may change without warning. Though it is not used by host
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
 public struct ModelListDecoderRegistry {
-    public static var listDecoders: [ModelListDecoder.Type] = []
+    public static var listDecoders = AtomicValue(initialValue: [ModelListDecoder.Type]())
 
-    /// Register a decoder when the plugin is configured to be used for custom decoding to plugin subclasses of
-    /// `List<ModelType>`.
+    /// Register a decoder during plugin configuration time, to allow runtime retrievals of list providers.
     public static func registerDecoder(_ listDecoder: ModelListDecoder.Type) {
         listDecoders.append(listDecoder)
     }
@@ -25,10 +25,10 @@ public struct ModelListDecoderRegistry {
 
 extension ModelListDecoderRegistry {
     static func reset() {
-        listDecoders = []
+        listDecoders.set([ModelListDecoder.Type]())
     }
 }
-/// `ModelListDecoder` provides decodability checking and decoding functionality.
+/// `ModelListDecoder` provides decoding and list functionality.
 ///
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 /// directly by host applications. The behavior of this may change without warning. Though it is not used by host

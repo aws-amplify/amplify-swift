@@ -52,13 +52,13 @@ public struct DataStoreListDecoder: ModelListDecoder {
                 given: \(associationData)
                 """
                 Amplify.DataStore.log.error(message)
-                assert(true, message)
+                assert(false, message)
                 return ArrayLiteralListProvider<ModelType>(elements: []).eraseToAnyModelListProvider()
             }
         default:
             let message = "DataStoreListProvider could not be created from \(String(describing: json))"
             Amplify.DataStore.log.error(message)
-            assert(true, message)
+            assert(false, message)
             return ArrayLiteralListProvider<ModelType>(elements: []).eraseToAnyModelListProvider()
         }
     }

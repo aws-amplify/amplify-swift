@@ -8,13 +8,15 @@
 import Foundation
 import Combine
 
-/// `List<ModelType>` is a custom `Collection` that is capable of loading
-/// records from a data source. This is specially useful when dealing with
-/// Model associations that need to be lazy loaded.
+/// `List<ModelType>` is a custom `Collection` that is capable of loading records from a data source. This is specially
+/// useful when dealing with Model associations that need to be lazy loaded. Lazy loading is performed when you access
+/// the `Collection` methods by retrieving the data from the underlying data source and then stored into this object,
+/// before returning the data to you. Consumers must be aware that multiple calls to the data source and then stored
+/// into this object will happen simultaneously if the object is used from different threads, thus not thread safe.
+/// Lazy loading is idempotent and will return the stored results on subsequent access.
 public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLiteral {
     public typealias Index = Int
     public typealias Element = ModelType
-    public typealias Elements = [Element]
 
     /// Represents the data state of the `List`.
     enum LoadedState {
@@ -29,9 +31,11 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
     let listProvider: AnyModelListProvider<Element>
 
     /// The array of `Element` that backs the custom collection implementation.
+    ///
     /// Attempting to access the list object will attempt to retrieve the elements in memory or retrieve it from the
     /// provider's data source. This is not thread safe as it can be performed from multiple threads, however the
-    /// provider's call to `load` should be idempotent and should result in the final loaded state.
+    /// provider's call to `load` should be idempotent and should result in the final loaded state. An attempt to set
+    /// this again will result in no-op and will not overwrite the existing loaded data.
     var elements: [Element] {
         get {
             switch loadedState {
@@ -52,6 +56,9 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
         set {
             switch loadedState {
             case .loaded:
+                Amplify.log.error("""
+                    There is an attempt to set an already loaded List. The existing data will not be overwritten
+                    """)
                 return
             case .notLoaded:
                 loadedState = .loaded(newValue)
@@ -66,7 +73,7 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
         self.loadedState = .notLoaded
     }
 
-    public convenience init(elements: Elements) {
+    public convenience init(elements: [Element]) {
         let loadProvider = ArrayLiteralListProvider<ModelType>(elements: elements).eraseToAnyModelListProvider()
         self.init(loadProvider: loadProvider)
     }
@@ -95,7 +102,7 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
         elements[position]
     }
 
-    public __consuming func makeIterator() -> IndexingIterator<Elements> {
+    public __consuming func makeIterator() -> IndexingIterator<[Element]> {
         elements.makeIterator()
     }
 
@@ -121,7 +128,7 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
     /// plugin as part of its configuration steps. By delegating responsibility to the `ModelListDecoder`, it is up to
     /// the plugin to successfully return an instance of `ModelListProvider`.
     required convenience public init(from decoder: Decoder) throws {
-        for listDecoder in ModelListDecoderRegistry.listDecoders {
+        for listDecoder in ModelListDecoderRegistry.listDecoders.get() {
             if listDecoder.shouldDecode(decoder: decoder) {
                 let listProvider = try listDecoder.getListProvider(modelType: ModelType.self, decoder: decoder)
                 self.init(loadProvider: listProvider)
@@ -130,7 +137,7 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
         }
         let json = try JSONValue(from: decoder)
         if case .array = json {
-            let elements = try Elements(from: decoder)
+            let elements = try [Element](from: decoder)
             self.init(elements: elements)
         } else {
             self.init()
@@ -140,7 +147,7 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
     public func encode(to encoder: Encoder) throws {
         switch loadedState {
         case .notLoaded:
-            try Elements().encode(to: encoder)
+            try [Element]().encode(to: encoder)
         case .loaded(let elements):
             try elements.encode(to: encoder)
         }

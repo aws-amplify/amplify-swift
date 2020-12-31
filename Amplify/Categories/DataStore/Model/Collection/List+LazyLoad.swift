@@ -26,7 +26,7 @@ extension List {
     ///
     /// If you have directly created this list object (for example, by calling `List(elements:)`) then the collection
     /// has already been initialized and calling this method will have no effect.
-    public func load(_ completion: DataStoreCallback<Elements>) {
+    public func load(_ completion: DataStoreCallback<[Element]>) {
         listProvider.load { result in
             switch result {
             case .success(let elements):
@@ -64,7 +64,7 @@ extension List {
             self.elements = elements
         case .failure(let error):
             Amplify.log.error(error: error)
-            assert(true, error.errorDescription)
+            assert(false, error.errorDescription)
         }
         return self
     }

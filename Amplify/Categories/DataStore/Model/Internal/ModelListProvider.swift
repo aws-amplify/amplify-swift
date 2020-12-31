@@ -21,8 +21,8 @@ public protocol ModelListProvider {
     ///  Retrieve the array of `Element` from the data source asychronously.
     func load(completion: (Result<[Element], CoreError>) -> Void)
 
-    /// Checks if there is subsequent data to retrieve. If True, the next page can be retrieved using.
-    /// `getNextPage(completion)`
+    /// Checks if there is subsequent data to retrieve. If true, the next page can be retrieved using.
+    /// `getNextPage(completion:)`
     func hasNextPage() -> Bool
 
     /// Retrieves the next page as a new in-memory List object asynchronously.

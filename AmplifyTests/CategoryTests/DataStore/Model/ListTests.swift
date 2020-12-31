@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2020 Amazon.com,
+// Copyright 2018-2021 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -7,6 +7,7 @@
 
 import XCTest
 @testable import Amplify
+import CwlPreconditionTesting
 
 class ListTests: XCTestCase {
 
@@ -80,14 +81,14 @@ class ListTests: XCTestCase {
     }
 
     func testModelListDecoderRegistry() throws {
-        XCTAssertEqual(ModelListDecoderRegistry.listDecoders.count, 0)
+        XCTAssertEqual(ModelListDecoderRegistry.listDecoders.get().count, 0)
         ModelListDecoderRegistry.registerDecoder(MockListDecoder.self)
-        XCTAssertEqual(ModelListDecoderRegistry.listDecoders.count, 1)
+        XCTAssertEqual(ModelListDecoderRegistry.listDecoders.get().count, 1)
     }
 
     func testDecodeWithMockListDecoder() throws {
         ModelListDecoderRegistry.registerDecoder(MockListDecoder.self)
-        XCTAssertEqual(ModelListDecoderRegistry.listDecoders.count, 1)
+        XCTAssertEqual(ModelListDecoderRegistry.listDecoders.get().count, 1)
         let data: JSONValue = [
             ["id": "1"],
             ["id": "2"]
@@ -113,7 +114,7 @@ class ListTests: XCTestCase {
     }
 
     func testDecodeToDefaultListWithArrayLiteralListProvider() throws {
-        XCTAssertEqual(ModelListDecoderRegistry.listDecoders.count, 0)
+        XCTAssertEqual(ModelListDecoderRegistry.listDecoders.get().count, 0)
         let data: JSONValue = [
             ["id": "1"],
             ["id": "2"]
@@ -147,7 +148,7 @@ class ListTests: XCTestCase {
     }
 
     func testDecodeToDefaultListWithArrayLiteralListProviderFromInvalidJSON() throws {
-        XCTAssertEqual(ModelListDecoderRegistry.listDecoders.count, 0)
+        XCTAssertEqual(ModelListDecoderRegistry.listDecoders.get().count, 0)
         let data: JSONValue = "NotArray"
         let serializedData = try ListTests.encode(json: data)
         let list = try ListTests.decode(serializedData, responseType: BasicModel.self)
@@ -156,7 +157,7 @@ class ListTests: XCTestCase {
     }
 
     func testListLoadWithDataStoreCompletion() throws {
-        XCTAssertEqual(ModelListDecoderRegistry.listDecoders.count, 0)
+        XCTAssertEqual(ModelListDecoderRegistry.listDecoders.get().count, 0)
         let data: JSONValue = [
             ["id": "1"],
             ["id": "2"]
@@ -278,8 +279,19 @@ class ListTests: XCTestCase {
         }
     }
 
+    func testSynchronousLoadFailWithAssert() {
+        let mockListProvider = MockListProvider<BasicModel>(
+            elements: [BasicModel](),
+            error: .unknown("")).eraseToAnyModelListProvider()
+        let list = List(loadProvider: mockListProvider)
+        let caughtAssert = catchBadInstruction {
+            list.load()
+        }
+        XCTAssertNotNil(caughtAssert)
+    }
+
     func testDecodeAndEncodeEmptyArray() throws {
-        XCTAssertEqual(ModelListDecoderRegistry.listDecoders.count, 0)
+        XCTAssertEqual(ModelListDecoderRegistry.listDecoders.get().count, 0)
         let data: JSONValue = []
         let serializedData = try ListTests.encode(json: data)
         let list = try ListTests.decode(serializedData, responseType: BasicModel.self)
