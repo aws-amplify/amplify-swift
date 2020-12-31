@@ -29,9 +29,15 @@ class ListTests: BaseDataStoreTests {
             case .success(let result):
                 if let post = result {
                     if let comments = post.comments {
-                        XCTAssert(comments.state == .pending)
+                        guard case .notLoaded = comments.loadedState else {
+                            XCTFail("Should not be loaded")
+                            return
+                        }
                         XCTAssertEqual(comments.count, 2)
-                        XCTAssert(comments.state == .loaded)
+                        guard case .loaded = comments.loadedState else {
+                            XCTFail("Should be loaded")
+                            return
+                        }
                     } else {
                         XCTFail("post.comments should not be nil")
                     }
@@ -59,11 +65,17 @@ class ListTests: BaseDataStoreTests {
         let postId = preparePostDataForTest()
 
         func checkComments(_ comments: List<Comment>) {
-            XCTAssert(comments.state == .pending)
+            guard case .notLoaded = comments.loadedState else {
+                XCTFail("Should not be loaded")
+                return
+            }
             comments.load {
                 switch $0 {
                 case .success(let loadedComments):
-                    XCTAssert(comments.state == .loaded)
+                    guard case .loaded = comments.loadedState else {
+                        XCTFail("Should be loaded")
+                        return
+                    }
                     XCTAssertEqual(loadedComments.count, 2)
                     expect.fulfill()
                 case .failure(let error):
@@ -101,7 +113,10 @@ class ListTests: BaseDataStoreTests {
         let postId = preparePostDataForTest()
 
         func checkComments(_ comments: List<Comment>) {
-            XCTAssert(comments.state == .pending)
+            guard case .notLoaded = comments.loadedState else {
+                XCTFail("Should not be loaded")
+                return
+            }
             _ = comments.loadAsPublisher().sink(
                 receiveCompletion: {
                     switch $0 {
@@ -113,7 +128,10 @@ class ListTests: BaseDataStoreTests {
                     }
                 },
                 receiveValue: { loadedComments in
-                    XCTAssert(comments.state == .loaded)
+                    guard case .loaded = comments.loadedState else {
+                        XCTFail("Should be loaded")
+                        return
+                    }
                     XCTAssertEqual(loadedComments.count, 2)
                 }
             )

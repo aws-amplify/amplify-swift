@@ -67,7 +67,7 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin {
         super.init()
 
         modelRegistration?.registerModels(registry: ModelRegistry.self)
-
+        ModelListDecoderRegistry.registerDecoder(AppSyncListDecoder.self)
         let sessionFactory = sessionFactory
             ?? URLSessionFactory.makeDefault()
         self.session = sessionFactory.makeSession(withDelegate: self)

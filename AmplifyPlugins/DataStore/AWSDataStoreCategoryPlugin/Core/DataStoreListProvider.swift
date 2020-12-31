@@ -1,0 +1,105 @@
+//
+// Copyright 2018-2020 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import Foundation
+import Amplify
+import Combine
+
+/// `DataStoreList<ModelType>` is a DataStore-aware custom `Collection` that is capable of loading
+/// records from the `DataStore` on-demand. This is specially useful when dealing with
+/// Model associations that need to be lazy loaded.
+///
+/// When using `DataStore.query(_ modelType:)` some models might contain associations
+/// with other models and those aren't fetched automatically. This collection keeps track
+/// of the associated `id` and `field` and fetches the associated data on demand.
+public class DataStoreListProvider<Element: Model>: ModelListProvider {
+
+    /// The current state of lazily loaded list
+    enum LoadedState {
+        /// If the list represents an association between two models, the `associatedId` will
+        /// hold the information necessary to query the associated elements (e.g. comments of a post)
+        ///
+        /// The associatedField represents the field to which the owner of the `List` is linked to.
+        /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
+        /// of `Post` will have a reference to the `post` field in `Comment`.
+        case notLoaded(associatedId: Model.Identifier, associatedField: ModelField)
+
+        case loaded([Element])
+    }
+
+    var loadedState: LoadedState
+
+    public init(elements: [Element]) {
+        self.loadedState = .loaded(elements)
+    }
+
+    init(associatedId: Model.Identifier,
+         associatedField: ModelField) {
+        self.loadedState = .notLoaded(associatedId: associatedId,
+                                      associatedField: associatedField)
+    }
+
+    init(_ elements: [Element]) {
+        self.loadedState = .loaded(elements)
+    }
+
+    public func load() -> Result<[Element], CoreError> {
+        let semaphore = DispatchSemaphore(value: 0)
+        var loadResult: Result<[Element], CoreError> = .failure(.unknown("DataStore query failed to complete."))
+        load { result in
+            defer {
+                semaphore.signal()
+            }
+            switch result {
+            case .success(let elements):
+                loadResult = .success(elements)
+            case .failure(let error):
+                Amplify.DataStore.log.error(error: error)
+                assert(true, error.errorDescription)
+                loadResult = .failure(error)
+            }
+        }
+        semaphore.wait()
+        return loadResult
+    }
+
+    public func load(completion: (Result<[Element], CoreError>) -> Void) {
+        switch loadedState {
+        case .loaded(let elements):
+            completion(.success(elements))
+        case .notLoaded(let associatedId, let associatedField):
+            // TODO: Rebase from https://github.com/aws-amplify/amplify-ios/pull/965 after it has been
+            // merged to main. The `name` can be set to `Element.modelName` and allow plugin to perform the
+            // target name resolution
+            let modelName = Element.modelName
+            var name = modelName.camelCased() + associatedField.name.pascalCased() + "Id"
+            if case let .belongsTo(_, targetName) = associatedField.association {
+                name = targetName ?? name
+            }
+
+            let predicate: QueryPredicate = field(name) == associatedId
+            Amplify.DataStore.query(Element.self, where: predicate) {
+                switch $0 {
+                case .success(let elements):
+                    self.loadedState = .loaded(elements)
+                    completion(.success(elements))
+                case .failure(let error):
+                    Amplify.DataStore.log.error(error: error)
+                    completion(.failure(CoreError.pluginError(error)))
+                }
+            }
+        }
+    }
+
+    public func hasNextPage() -> Bool {
+        fatalError("Not implemented.")
+    }
+
+    public func getNextPage(completion: (Result<List<Element>, CoreError>) -> Void) {
+        fatalError("Not implemented.")
+    }
+}
