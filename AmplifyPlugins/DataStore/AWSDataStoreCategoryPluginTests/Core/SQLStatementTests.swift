@@ -878,16 +878,15 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(variables[5] as? String, "ice cream%")
     }
 
-    func testTranslateComplexGroupedQueryPredicateWithNamespace2() {
+    func testTranslateQueryPredicateWithNameSpaceWhenFieldNameSpecified() {
 
         let predicate = field("commentPostId") == "postID"
 
         let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate, namespace: "root")
-
         XCTAssertEqual("""
           and "root"."commentPostId" = ?
         """, statement.stringValue)
-
+        
         let variables = statement.variables
         XCTAssertEqual(variables[0] as? String, "postID")
     }

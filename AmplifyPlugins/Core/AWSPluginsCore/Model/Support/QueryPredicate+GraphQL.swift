@@ -67,14 +67,7 @@ public struct GraphQLFilterConverter {
 /// Extension to translate a `QueryPredicate` into a GraphQL query variables object
 extension QueryPredicate {
     public func getGraphQLFilter(_ modelSchema: ModelSchema) -> GraphQLFilter {
-        if let operation = self as? QueryPredicateOperation {
-            return operation.graphQLFilterInternal(modelSchema)
-        } else if let group = self as? QueryPredicateGroup {
-            return group.graphQLFilterInternal(modelSchema)
-        }
-
-        preconditionFailure(
-            "Could not find QueryPredicateOperation or QueryPredicateGroup for \(String(describing: self))")
+        return graphQLFilterInternal(modelSchema)
     }
 
     @available(*, deprecated, message: """
