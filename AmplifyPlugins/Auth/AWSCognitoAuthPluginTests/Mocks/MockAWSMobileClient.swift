@@ -144,7 +144,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     func forgotPassword(username: String,
                         clientMetaData: [String: String],
                         completionHandler: @escaping ((ForgotPasswordResult?, Error?) -> Void)) {
-        fatalError()
+        prepareResult(mockResult: forgotPasswordMockResult, completionHandler: completionHandler)
     }
 
     func confirmForgotPassword(username: String,
