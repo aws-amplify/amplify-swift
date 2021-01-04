@@ -34,8 +34,6 @@ extension List {
                 completion(.success(elements))
             case .failure(let coreError):
                 switch coreError {
-                case .pluginError(let error):
-                    completion(.failure(causedBy: error))
                 case .listOperation(_, _, let error),
                      .clientValidation(_, _, let error),
                      .unknown(_, let error):

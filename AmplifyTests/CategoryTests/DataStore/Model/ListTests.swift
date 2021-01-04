@@ -181,7 +181,7 @@ class ListTests: XCTestCase {
     func testListLoadWithDataStoreError() {
         let mockListProvider = MockListProvider<BasicModel>(
             elements: [BasicModel](),
-            error: .pluginError(DataStoreError.internalOperation("", "", nil))).eraseToAnyModelListProvider()
+            error: .listOperation("", "", DataStoreError.internalOperation("", "", nil))).eraseToAnyModelListProvider()
         let list = List(loadProvider: mockListProvider)
         let loadComplete = expectation(description: "Load completed")
         list.load { result in
@@ -265,7 +265,7 @@ class ListTests: XCTestCase {
     func testListFailedImplicitLoadDoesNotChangeLoadedState() {
         let mockListProvider = MockListProvider<BasicModel>(
             elements: [BasicModel](),
-            error: .pluginError(DataStoreError.internalOperation("", "", nil)))
+            error: .listOperation("", "", DataStoreError.internalOperation("", "", nil)))
             .eraseToAnyModelListProvider()
         let list = List(loadProvider: mockListProvider)
         guard case .notLoaded = list.loadedState else {

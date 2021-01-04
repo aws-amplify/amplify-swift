@@ -89,7 +89,9 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
                     completion(.success(elements))
                 case .failure(let error):
                     Amplify.DataStore.log.error(error: error)
-                    completion(.failure(CoreError.pluginError(error)))
+                    completion(.failure(CoreError.listOperation("Failed to Query DataStore.",
+                                                                "See underlying DataStoreError for more details.",
+                                                                error)))
                 }
             }
         }
