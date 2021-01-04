@@ -50,6 +50,19 @@ class QueryPredicateGraphQLTests: XCTestCase {
         XCTAssertEqual(result, expected)
     }
 
+    func testPredicateWithFieldSpecified() throws {
+        let predicate = field("postUserId") == "id"
+        let expected = """
+        {
+          "postUserId" : {
+            "eq" : "id"
+          }
+        }
+        """
+        let result = try GraphQLFilterConverter.toJSON(predicate, modelSchema: Post.schema, options: [.prettyPrinted])
+        XCTAssertEqual(result, expected)
+    }
+
     func testPredicateToGraphQLOperators() throws {
         let post = Post.keys
         let id = "id"

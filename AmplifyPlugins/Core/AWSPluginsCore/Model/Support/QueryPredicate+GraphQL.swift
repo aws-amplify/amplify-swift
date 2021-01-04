@@ -109,14 +109,14 @@ extension QueryPredicateOperation: GraphQLFilterConvertible {
         guard let modelSchema = modelSchema else {
             return [field: filterValue]
         }
-        return [columnName(modelSchema, forField: field): filterValue]
+        return [columnName(modelSchema): filterValue]
     }
 
-    func columnName(_ modelSchema: ModelSchema, forField fieldName: String) -> String {
-        guard let modelField = modelSchema.field(withName: fieldName) else {
+    func columnName(_ modelSchema: ModelSchema) -> String {
+        guard let modelField = modelSchema.field(withName: field) else {
             return field
         }
-        let defaultFieldName = modelSchema.name.camelCased() + fieldName.pascalCased() + "Id"
+        let defaultFieldName = modelSchema.name.camelCased() + field.pascalCased() + "Id"
         switch modelField.association {
         case .belongsTo(_, let targetName):
             return targetName ?? defaultFieldName
