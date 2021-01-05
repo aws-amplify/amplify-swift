@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2020 Amazon.com,
+// Copyright 2018=2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -886,7 +886,7 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual("""
           and "root"."commentPostId" = ?
         """, statement.stringValue)
-        
+
         let variables = statement.variables
         XCTAssertEqual(variables[0] as? String, "postID")
     }

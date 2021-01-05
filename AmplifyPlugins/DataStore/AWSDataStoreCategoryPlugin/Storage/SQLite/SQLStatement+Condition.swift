@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2020 Amazon.com,
+// Copyright 2018=2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -65,18 +65,15 @@ private func translateQueryPredicate(from modelSchema: ModelSchema,
     }
 
     func resolveColumn(_ operation: QueryPredicateOperation) -> String {
-        var column = operation.field.quoted()
-        if let namespace = namespace {
-           column = String(namespace).quoted() + "." + column
+        let modelField = modelSchema.field(withName: operation.field)
+        if let namespace = namespace, let modelField = modelField {
+            return modelField.columnName(forNamespace: String(namespace))
+        } else if let modelField = modelField {
+            return modelField.columnName()
+        } else if let namespace = namespace {
+            return String(namespace).quoted() + "." + operation.field.quoted()
         }
-        if let modelField = modelSchema.field(withName: operation.field) {
-            if let namespace = namespace {
-                column = modelField.columnName(forNamespace: String(namespace))
-            } else {
-                column = modelField.columnName()
-            }
-        }
-        return column
+        return operation.field.quoted()
     }
 
     // the very first `and` is always prepended, using -1 for if statement checking
