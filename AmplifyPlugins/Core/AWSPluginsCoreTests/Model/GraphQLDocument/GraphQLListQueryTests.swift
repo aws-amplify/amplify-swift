@@ -43,7 +43,7 @@ class GraphQLListQueryTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         documentBuilder.add(decorator: PaginationDecorator())
-        documentBuilder.add(decorator: FilterDecorator(filter: predicate.getGraphQLFilter(Post.schema)))
+        documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: Post.schema)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query ListPosts($filter: ModelPostFilterInput, $limit: Int) {
@@ -123,7 +123,7 @@ class GraphQLListQueryTests: XCTestCase {
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         documentBuilder.add(decorator: PaginationDecorator())
-        documentBuilder.add(decorator: FilterDecorator(filter: predicate.getGraphQLFilter(Comment4.schema)))
+        documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: Comment4.schema)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query ListComment4s($filter: ModelComment4FilterInput, $limit: Int) {
@@ -183,7 +183,7 @@ class GraphQLListQueryTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         documentBuilder.add(decorator: PaginationDecorator())
-        documentBuilder.add(decorator: FilterDecorator(filter: predicate.getGraphQLFilter(Post.schema)))
+        documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: Post.schema)))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let expectedQueryDocument = """
