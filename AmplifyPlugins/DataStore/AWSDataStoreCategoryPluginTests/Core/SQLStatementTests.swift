@@ -879,15 +879,17 @@ class SQLStatementTests: XCTestCase {
     }
 
     func testTranslateQueryPredicateWithNameSpaceWhenFieldNameSpecified() {
-
         let predicate = field("commentPostId") == "postID"
 
         let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate, namespace: "root")
-        XCTAssertEqual("""
-          and "root"."commentPostId" = ?
-        """, statement.stringValue)
-
         let variables = statement.variables
-        XCTAssertEqual(variables[0] as? String, "postID")
+
+        let expectStatement = """
+          and "root"."commentPostId" = ?
+        """
+        let expectedVariable = "postID"
+
+        XCTAssertEqual(statement.stringValue, expectStatement)
+        XCTAssertEqual(variables[0] as? String, expectedVariable)
     }
 }
