@@ -1,6 +1,6 @@
 //
-// Copyright 2018-2021 Amazon.com,
-// Inc. or its affiliates. All Rights Reserved.
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
 //
@@ -272,7 +272,7 @@ class ListTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        XCTAssertEqual(list.elements.count, 0)
+        XCTAssertEqual(list.count, 0)
         guard case .notLoaded = list.loadedState else {
             XCTFail("Should not be loaded")
             return

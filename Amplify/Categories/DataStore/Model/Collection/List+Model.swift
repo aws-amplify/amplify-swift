@@ -106,6 +106,10 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
         elements.makeIterator()
     }
 
+    public var count: Int {
+        elements.count
+    }
+
     // MARK: - Persistent Operations
 
     public var totalCount: Int {
