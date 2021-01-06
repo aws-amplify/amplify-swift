@@ -84,7 +84,7 @@ extension QueryPredicate {
     }
 
     @available(*, deprecated, message: """
-    Use `graphQLFilter(_)` instead. See https://github.com/aws-amplify/amplify-ios/pull/965 for more details.
+    Use `graphQLFilter(for:)` instead. See https://github.com/aws-amplify/amplify-ios/pull/965 for more details.
     """)
     public var graphQLFilter: GraphQLFilter {
         if let operation = self as? QueryPredicateOperation {
