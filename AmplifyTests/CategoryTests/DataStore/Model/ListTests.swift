@@ -20,7 +20,7 @@ class ListTests: XCTestCase {
     }
 
     class MockListDecoder: ModelListDecoder {
-        static func shouldDecode(decoder: Decoder) -> Bool {
+        static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> Bool {
             guard let json = try? JSONValue(from: decoder) else {
                 return false
             }
@@ -182,7 +182,7 @@ class ListTests: XCTestCase {
         let mockListProvider = MockListProvider<BasicModel>(
             elements: [BasicModel](),
             error: .listOperation("", "", DataStoreError.internalOperation("", "", nil))).eraseToAnyModelListProvider()
-        let list = List(loadProvider: mockListProvider)
+        let list = List(listProvider: mockListProvider)
         let loadComplete = expectation(description: "Load completed")
         list.load { result in
             switch result {
@@ -203,7 +203,7 @@ class ListTests: XCTestCase {
         let mockListProvider = MockListProvider<BasicModel>(
             elements: [BasicModel](),
             error: .listOperation("", "", nil)).eraseToAnyModelListProvider()
-        let list = List(loadProvider: mockListProvider)
+        let list = List(listProvider: mockListProvider)
         let loadComplete = expectation(description: "Load completed")
         list.load { result in
             switch result {
@@ -224,7 +224,7 @@ class ListTests: XCTestCase {
         let mockListProvider = MockListProvider<BasicModel>(
             elements: [BasicModel](),
             error: .clientValidation("", "", nil)).eraseToAnyModelListProvider()
-        let list = List(loadProvider: mockListProvider)
+        let list = List(listProvider: mockListProvider)
         let loadComplete = expectation(description: "Load completed")
         list.load { result in
             switch result {
@@ -245,7 +245,7 @@ class ListTests: XCTestCase {
         let mockListProvider = MockListProvider<BasicModel>(
             elements: [BasicModel](),
             error: .unknown("")).eraseToAnyModelListProvider()
-        let list = List(loadProvider: mockListProvider)
+        let list = List(listProvider: mockListProvider)
         let loadComplete = expectation(description: "Load completed")
         list.load { result in
             switch result {
@@ -267,7 +267,7 @@ class ListTests: XCTestCase {
             elements: [BasicModel](),
             error: .listOperation("", "", DataStoreError.internalOperation("", "", nil)))
             .eraseToAnyModelListProvider()
-        let list = List(loadProvider: mockListProvider)
+        let list = List(listProvider: mockListProvider)
         guard case .notLoaded = list.loadedState else {
             XCTFail("Should not be loaded")
             return
@@ -283,7 +283,7 @@ class ListTests: XCTestCase {
         let mockListProvider = MockListProvider<BasicModel>(
             elements: [BasicModel](),
             error: .unknown("")).eraseToAnyModelListProvider()
-        let list = List(loadProvider: mockListProvider)
+        let list = List(listProvider: mockListProvider)
         let caughtAssert = catchBadInstruction {
             list.load()
         }

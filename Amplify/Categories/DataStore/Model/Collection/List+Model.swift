@@ -68,14 +68,14 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
 
     // MARK: - Initializers
 
-    public init(loadProvider: AnyModelListProvider<ModelType>) {
-        self.listProvider = loadProvider
+    public init(listProvider: AnyModelListProvider<ModelType>) {
+        self.listProvider = listProvider
         self.loadedState = .notLoaded
     }
 
     public convenience init(elements: [Element]) {
         let loadProvider = ArrayLiteralListProvider<ModelType>(elements: elements).eraseToAnyModelListProvider()
-        self.init(loadProvider: loadProvider)
+        self.init(listProvider: loadProvider)
     }
 
     // MARK: - ExpressibleByArrayLiteral
@@ -133,9 +133,9 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
     /// the plugin to successfully return an instance of `ModelListProvider`.
     required convenience public init(from decoder: Decoder) throws {
         for listDecoder in ModelListDecoderRegistry.listDecoders.get() {
-            if listDecoder.shouldDecode(decoder: decoder) {
+            if listDecoder.shouldDecode(modelType: ModelType.self, decoder: decoder) {
                 let listProvider = try listDecoder.getListProvider(modelType: ModelType.self, decoder: decoder)
-                self.init(loadProvider: listProvider)
+                self.init(listProvider: listProvider)
                 return
             }
         }

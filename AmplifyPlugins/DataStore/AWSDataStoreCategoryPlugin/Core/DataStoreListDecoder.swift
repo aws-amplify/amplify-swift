@@ -1,6 +1,6 @@
 //
-// Copyright 2018-2020 Amazon.com,
-// Inc. or its affiliates. All Rights Reserved.
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
 //
@@ -11,7 +11,7 @@ import Combine
 
 public struct DataStoreListDecoder: ModelListDecoder {
 
-    public static func shouldDecode(decoder: Decoder) -> Bool {
+    public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> Bool {
         guard let json = try? JSONValue(from: decoder) else {
             return false
         }
