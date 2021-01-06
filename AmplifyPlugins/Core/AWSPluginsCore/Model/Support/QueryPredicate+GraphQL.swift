@@ -15,13 +15,14 @@ protocol GraphQLFilterConvertible {
 }
 
 // Convert QueryPredicate to GraphQLFilter JSON, and GraphQLFilter JSON to GraphQLFilter
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public struct GraphQLFilterConverter {
 
     /// Serialize the translated GraphQL query variable object to JSON string.
     public static func toJSON(_ queryPredicate: QueryPredicate,
                               modelSchema: ModelSchema,
                               options: JSONSerialization.WritingOptions = []) throws -> String {
-        Amplify.log.warn("\(#function) is for internal use only")
         let graphQLFilterData =
             try JSONSerialization.data(withJSONObject: queryPredicate.graphQLFilter(for: modelSchema),
                                        options: options)
@@ -67,10 +68,11 @@ public struct GraphQLFilterConverter {
 }
 
 /// Extension to translate a `QueryPredicate` into a GraphQL query variables object
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 extension QueryPredicate {
 
     public func graphQLFilter(for modelSchema: ModelSchema?) -> GraphQLFilter {
-        Amplify.log.warn("\(#function) is for internal use only")
         if let operation = self as? QueryPredicateOperation {
             return operation.graphQLFilter(for: modelSchema)
         } else if let group = self as? QueryPredicateGroup {
