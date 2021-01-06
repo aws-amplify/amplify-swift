@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2020 Amazon.com,
+// Copyright 2018-2021 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -72,16 +72,7 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
         case .loaded(let elements):
             completion(.success(elements))
         case .notLoaded(let associatedId, let associatedField):
-            // TODO: Rebase from https://github.com/aws-amplify/amplify-ios/pull/965 after it has been
-            // merged to main. The `name` can be set to `Element.modelName` and allow plugin to perform the
-            // target name resolution
-            let modelName = Element.modelName
-            var name = modelName.camelCased() + associatedField.name.pascalCased() + "Id"
-            if case let .belongsTo(_, targetName) = associatedField.association {
-                name = targetName ?? name
-            }
-
-            let predicate: QueryPredicate = field(name) == associatedId
+            let predicate: QueryPredicate = field(associatedField.name) == associatedId
             Amplify.DataStore.query(Element.self, where: predicate) {
                 switch $0 {
                 case .success(let elements):
