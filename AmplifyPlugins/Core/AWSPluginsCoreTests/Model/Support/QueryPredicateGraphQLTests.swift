@@ -10,6 +10,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 
+// swiftlint:disable type_body_length
 class QueryPredicateGraphQLTests: XCTestCase {
 
     func testPredicateToGraphQLValues() throws {
@@ -45,7 +46,35 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
+        let result = try GraphQLFilterConverter.toJSON(predicate, modelSchema: Post.schema, options: [.prettyPrinted])
+        XCTAssertEqual(result, expected)
+    }
+
+    func testPredicateWhenFieldNameSpecified() throws {
+        let predicate = field("postUserId") == "id"
+        let expected = """
+        {
+          "postUserId" : {
+            "eq" : "id"
+          }
+        }
+        """
+        let result = try GraphQLFilterConverter.toJSON(predicate, modelSchema: Post.schema, options: [.prettyPrinted])
+        XCTAssertEqual(result, expected)
+    }
+
+    func testPredicateWithNotQueryPredicateGroupType() throws {
+        let predicate = !(field("postUserId") == "id")
+        let expected = """
+        {
+          "not" : {
+            "postUserId" : {
+              "eq" : "id"
+            }
+          }
+        }
+        """
+        let result = try GraphQLFilterConverter.toJSON(predicate, modelSchema: Post.schema, options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
@@ -115,7 +144,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
+        let result = try GraphQLFilterConverter.toJSON(predicate, modelSchema: Post.schema, options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
@@ -147,7 +176,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
+        let result = try GraphQLFilterConverter.toJSON(predicate, modelSchema: Post.schema, options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
@@ -179,7 +208,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
+        let result = try GraphQLFilterConverter.toJSON(predicate, modelSchema: Post.schema, options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
@@ -211,14 +240,66 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
+        let result = try GraphQLFilterConverter.toJSON(predicate, modelSchema: Post.schema, options: [.prettyPrinted])
+        XCTAssertEqual(result, expected)
+    }
+
+    func testPredicateWithBelongsToAssociationToGraphQLOperators() throws {
+        let comment = Comment4.keys
+        let id = "id"
+        let predicate = comment.id == id && comment.post == "postId"
+        let expected = """
+        {
+          "and" : [
+            {
+              "id" : {
+                "eq" : "id"
+              }
+            },
+            {
+              "postID" : {
+                "eq" : "postId"
+              }
+            }
+          ]
+        }
+        """
+        let result = try GraphQLFilterConverter.toJSON(predicate,
+                                                       modelSchema: Comment4.schema,
+                                                       options: [.prettyPrinted])
+        XCTAssertEqual(result, expected)
+    }
+
+    func testPredicateWithHasOneAssociationToGraphQLOperators() throws {
+        let project = Project2.keys
+        let id = "id"
+        let predicate = project.id == id && project.team == "teamId"
+        let expected = """
+        {
+          "and" : [
+            {
+              "id" : {
+                "eq" : "id"
+              }
+            },
+            {
+              "teamID" : {
+                "eq" : "teamId"
+              }
+            }
+          ]
+        }
+        """
+        let result = try GraphQLFilterConverter.toJSON(predicate,
+                                                       modelSchema: Project2.schema,
+                                                       options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
     func testJSONSerializationAndDeserialization() throws {
         let post = Post.keys
         let predicate = post.id.eq("id") && post.title.beginsWith("Title")
-        let result = try GraphQLFilterConverter.toJSON(predicate)
+        let result = try GraphQLFilterConverter.toJSON(predicate, modelSchema: Post.schema)
         XCTAssertNotNil(result)
         let graphQLFilter = try GraphQLFilterConverter.fromJSON(result)
         guard let filter = graphQLFilter["and"] as? [[String: Any]] else {

@@ -171,7 +171,6 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    // TODO: This test will fail until https://github.com/aws-amplify/amplify-ios/pull/885 is merged in
     func testListProjectsByTeamID() {
         guard let team = createTeam(name: "name") else {
             XCTFail("Could not create team")

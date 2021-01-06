@@ -318,6 +318,47 @@ class SQLStatementTests: XCTestCase {
     /// - Then:
     ///   - check if the generated SQL statement is valid
     ///   - check if an inner join is added referencing `Post`
+    ///   - check if
+    func testSelectStatementFromQueryPredicateWithConnectedField() {
+        let comment = Comment.keys
+
+        let predicate = comment.id == "commentId"
+            && comment.content == "content"
+            && comment.createdAt == nil
+            && comment.post == "PostID"
+
+        let statement = SelectStatement(from: Comment.schema, predicate: predicate)
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."commentPostId" as "commentPostId", "post"."id" as "post.id", "post"."content" as "post.content",
+          "post"."createdAt" as "post.createdAt", "post"."draft" as "post.draft", "post"."rating" as "post.rating",
+          "post"."status" as "post.status", "post"."title" as "post.title", "post"."updatedAt" as "post.updatedAt"
+        from Comment as "root"
+        inner join Post as "post"
+          on "post"."id" = "root"."commentPostId"
+        where 1 = 1
+          and (
+            "root"."id" = ?
+            and "root"."content" = ?
+            and "root"."createdAt" is null
+            and "root"."commentPostId" = ?
+          )
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+
+        let variables = statement.variables
+        XCTAssertEqual(variables[0] as? String, "commentId")
+        XCTAssertEqual(variables[1] as? String, "content")
+        XCTAssertEqual(variables[2] as? String, "PostID")
+    }
+
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `Comment`
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if an inner join is added referencing `Post`
     func testSelectStatementFromModelWithJoin() {
         let statement = SelectStatement(from: Comment.schema)
         let expectedStatement = """
@@ -835,5 +876,20 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(variables[3] as? Int, 4)
         XCTAssertEqual(variables[4] as? String, "%gelato%")
         XCTAssertEqual(variables[5] as? String, "ice cream%")
+    }
+
+    func testTranslateQueryPredicateWithNameSpaceWhenFieldNameSpecified() {
+        let predicate = field("commentPostId") == "postID"
+
+        let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate, namespace: "root")
+        let variables = statement.variables
+
+        let expectStatement = """
+          and "root"."commentPostId" = ?
+        """
+        let expectedVariable = "postID"
+
+        XCTAssertEqual(statement.stringValue, expectStatement)
+        XCTAssertEqual(variables[0] as? String, expectedVariable)
     }
 }

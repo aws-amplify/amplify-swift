@@ -29,8 +29,7 @@ private func translateQueryPredicate(from modelSchema: ModelSchema,
     func translate(_ pred: QueryPredicate, predicateIndex: Int, groupType: QueryPredicateGroupType) {
         let indent = String(repeating: indentPrefix, count: indentSize)
         if let operation = pred as? QueryPredicateOperation {
-            let column = operation.operator.columnFor(field: operation.field,
-                                                      namespace: namespace)
+            let column = resolveColumn(operation)
             if predicateIndex == 0 {
                 sql.append("\(indent)\(column) \(operation.operator.sqlOperation)")
             } else {
@@ -63,6 +62,18 @@ private func translateQueryPredicate(from modelSchema: ModelSchema,
                 sql.append("or 1 = 1")
             }
         }
+    }
+
+    func resolveColumn(_ operation: QueryPredicateOperation) -> String {
+        let modelField = modelSchema.field(withName: operation.field)
+        if let namespace = namespace, let modelField = modelField {
+            return modelField.columnName(forNamespace: String(namespace))
+        } else if let modelField = modelField {
+            return modelField.columnName()
+        } else if let namespace = namespace {
+            return String(namespace).quoted() + "." + operation.field.quoted()
+        }
+        return operation.field.quoted()
     }
 
     // the very first `and` is always prepended, using -1 for if statement checking

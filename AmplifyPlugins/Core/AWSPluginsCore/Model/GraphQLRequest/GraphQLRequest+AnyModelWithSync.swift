@@ -171,7 +171,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         if let predicate = predicate {
-            documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
+            documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: modelSchema)))
         }
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
         documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync))
