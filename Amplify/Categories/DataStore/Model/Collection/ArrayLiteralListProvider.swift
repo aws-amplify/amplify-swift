@@ -18,7 +18,7 @@ public struct ArrayLiteralListProvider<Element: Model>: ModelListProvider {
         .success(elements)
     }
 
-    public func load(completion: (Result<[Element], CoreError>) -> Void) {
+    public func load(completion: @escaping (Result<[Element], CoreError>) -> Void) {
         completion(.success(elements))
     }
 
@@ -26,7 +26,7 @@ public struct ArrayLiteralListProvider<Element: Model>: ModelListProvider {
         false
     }
 
-    public func getNextPage(completion: (Result<List<Element>, CoreError>) -> Void) {
+    public func getNextPage(completion: @escaping (Result<List<Element>, CoreError>) -> Void) {
         completion(.failure(CoreError.clientValidation("No pagination on an array literal",
                                                        "Don't call this method",
                                                        nil)))

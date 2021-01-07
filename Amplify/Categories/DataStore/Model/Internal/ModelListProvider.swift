@@ -19,14 +19,14 @@ public protocol ModelListProvider {
     func load() -> Result<[Element], CoreError>
 
     ///  Retrieve the array of `Element` from the data source asychronously.
-    func load(completion: (Result<[Element], CoreError>) -> Void)
+    func load(completion: @escaping (Result<[Element], CoreError>) -> Void)
 
     /// Checks if there is subsequent data to retrieve. If true, the next page can be retrieved using.
     /// `getNextPage(completion:)`
     func hasNextPage() -> Bool
 
     /// Retrieves the next page as a new in-memory List object asynchronously.
-    func getNextPage(completion: (Result<List<Element>, CoreError>) -> Void)
+    func getNextPage(completion: @escaping (Result<List<Element>, CoreError>) -> Void)
 }
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
@@ -35,9 +35,9 @@ public protocol ModelListProvider {
 /// change.
 public struct AnyModelListProvider<Element: Model>: ModelListProvider {
     private let loadClosure: () -> Result<[Element], CoreError>
-    private let loadWithCompletionClosure: ((Result<[Element], CoreError>) -> Void) -> Void
+    private let loadWithCompletionClosure: (@escaping (Result<[Element], CoreError>) -> Void) -> Void
     private let hasNextPageClosure: () -> Bool
-    private let getNextPageClosure: ((Result<List<Element>, CoreError>) -> Void) -> Void
+    private let getNextPageClosure: (@escaping (Result<List<Element>, CoreError>) -> Void) -> Void
 
     public init<Provider: ModelListProvider>(
         provider: Provider
@@ -52,7 +52,7 @@ public struct AnyModelListProvider<Element: Model>: ModelListProvider {
         loadClosure()
     }
 
-    public func load(completion: (Result<[Element], CoreError>) -> Void) {
+    public func load(completion: @escaping (Result<[Element], CoreError>) -> Void) {
         loadWithCompletionClosure(completion)
     }
 
@@ -60,7 +60,7 @@ public struct AnyModelListProvider<Element: Model>: ModelListProvider {
         hasNextPageClosure()
     }
 
-    public func getNextPage(completion: (Result<List<Element>, CoreError>) -> Void) {
+    public func getNextPage(completion: @escaping (Result<List<Element>, CoreError>) -> Void) {
         getNextPageClosure(completion)
     }
 }

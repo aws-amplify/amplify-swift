@@ -51,12 +51,7 @@ class DataStoreListProviderTests: BaseDataStoreTests {
 
     func testDataStoreListProviderWithAssociationDataShouldLoad() {
         let postId = preparePost4DataForTest()
-        guard let postField = Comment4.schema.field(withName: "post") else {
-            XCTFail("Could not set up associated field")
-            return
-        }
-
-        let listProvider = DataStoreListProvider<Comment4>(associatedId: postId, associatedField: postField)
+        let listProvider = DataStoreListProvider<Comment4>(associatedId: postId, associatedField: "post")
         guard case .notLoaded = listProvider.loadedState else {
             XCTFail("Should not be loaded")
             return
@@ -75,12 +70,7 @@ class DataStoreListProviderTests: BaseDataStoreTests {
 
     func testDataStoreListProviderWithAssociationDataShouldLoadWithCompletion() {
         let postId = preparePost4DataForTest()
-        guard let postField = Comment4.schema.field(withName: "post") else {
-            XCTFail("Could not set up associated field")
-            return
-        }
-
-        let listProvider = DataStoreListProvider<Comment4>(associatedId: postId, associatedField: postField)
+        let listProvider = DataStoreListProvider<Comment4>(associatedId: postId, associatedField: "post")
         guard case .notLoaded = listProvider.loadedState else {
             XCTFail("Should not be loaded")
             return

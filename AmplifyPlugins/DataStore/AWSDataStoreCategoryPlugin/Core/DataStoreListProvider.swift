@@ -26,7 +26,7 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
         /// The associatedField represents the field to which the owner of the `List` is linked to.
         /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
         /// of `Post` will have a reference to the `post` field in `Comment`.
-        case notLoaded(associatedId: Model.Identifier, associatedField: ModelField)
+        case notLoaded(associatedId: Model.Identifier, associatedField: String)
 
         case loaded([Element])
     }
@@ -38,7 +38,7 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
     }
 
     init(associatedId: Model.Identifier,
-         associatedField: ModelField) {
+         associatedField: String) {
         self.loadedState = .notLoaded(associatedId: associatedId,
                                       associatedField: associatedField)
     }
@@ -72,7 +72,7 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
         case .loaded(let elements):
             completion(.success(elements))
         case .notLoaded(let associatedId, let associatedField):
-            let predicate: QueryPredicate = field(associatedField.name) == associatedId
+            let predicate: QueryPredicate = field(associatedField) == associatedId
             Amplify.DataStore.query(Element.self, where: predicate) {
                 switch $0 {
                 case .success(let elements):

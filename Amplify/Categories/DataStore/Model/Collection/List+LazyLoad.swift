@@ -27,18 +27,21 @@ extension List {
     /// If you have directly created this list object (for example, by calling `List(elements:)`) then the collection
     /// has already been initialized and calling this method will have no effect.
     public func load(_ completion: DataStoreCallback<[Element]>) {
-        listProvider.load { result in
-            switch result {
-            case .success(let elements):
-                self.elements = elements
-                completion(.success(elements))
-            case .failure(let coreError):
-                switch coreError {
-                case .listOperation(_, _, let error),
-                     .clientValidation(_, _, let error),
-                     .unknown(_, let error):
-                    completion(.failure(causedBy: error ?? coreError))
-                }
+        if case .loaded(let elements) = loadedState {
+            completion(.success(elements))
+            return
+        }
+        let result = listProvider.load()
+        switch result {
+        case .success(let elements):
+            self.elements = elements
+            completion(.success(elements))
+        case .failure(let coreError):
+            switch coreError {
+            case .listOperation(_, _, let error),
+                 .clientValidation(_, _, let error),
+                 .unknown(_, let error):
+                completion(.failure(causedBy: error ?? coreError))
             }
         }
     }
@@ -56,6 +59,9 @@ extension List {
     /// - seealso: `load(completion:)`
     @available(*, deprecated, message: "Use load(completion:) instead.")
     public func load() -> Self {
+        guard case .notLoaded = loadedState else {
+            return self
+        }
         let result = listProvider.load()
         switch result {
         case .success(let elements):

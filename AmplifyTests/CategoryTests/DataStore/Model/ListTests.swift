@@ -113,7 +113,7 @@ class ListTests: XCTestCase {
             """)
     }
 
-    func testDecodeToDefaultListWithArrayLiteralListProvider() throws {
+    func testDecodeWithArrayLiteralListProvider() throws {
         XCTAssertEqual(ModelListDecoderRegistry.listDecoders.get().count, 0)
         let data: JSONValue = [
             ["id": "1"],
@@ -147,16 +147,18 @@ class ListTests: XCTestCase {
         wait(for: [getNextPageFail], timeout: 1)
     }
 
-    func testDecodeToDefaultListWithArrayLiteralListProviderFromInvalidJSON() throws {
+    func testDecodeAndEncodeEmptyArray() throws {
         XCTAssertEqual(ModelListDecoderRegistry.listDecoders.get().count, 0)
-        let data: JSONValue = "NotArray"
+        let data: JSONValue = []
         let serializedData = try ListTests.encode(json: data)
         let list = try ListTests.decode(serializedData, responseType: BasicModel.self)
         XCTAssertNotNil(list)
         XCTAssertEqual(list.count, 0)
+        let json = try? ListTests.toJSON(list: list)
+        XCTAssertEqual(json, "[]")
     }
 
-    func testListLoadWithDataStoreCompletion() throws {
+    func testLoadWithCompletion() throws {
         XCTAssertEqual(ModelListDecoderRegistry.listDecoders.get().count, 0)
         let data: JSONValue = [
             ["id": "1"],
@@ -165,6 +167,10 @@ class ListTests: XCTestCase {
 
         let serializedData = try ListTests.encode(json: data)
         let list = try ListTests.decode(serializedData, responseType: BasicModel.self)
+        guard case .notLoaded = list.loadedState else {
+            XCTFail("Should not be loaded")
+            return
+        }
         let loadComplete = expectation(description: "Load completed")
         list.load { result in
             switch result {
@@ -176,9 +182,24 @@ class ListTests: XCTestCase {
             }
         }
         wait(for: [loadComplete], timeout: 1)
+        guard case .loaded = list.loadedState else {
+            XCTFail("Should be loaded")
+            return
+        }
+        let loadedStateLoadComplete = expectation(description: "Load when in Loaded state completed")
+        list.load { result in
+            switch result {
+            case .success(let elements):
+                XCTAssertEqual(elements.count, 2)
+                loadedStateLoadComplete.fulfill()
+            case .failure(let dataStoreError):
+                XCTFail("\(dataStoreError)")
+            }
+        }
+        wait(for: [loadedStateLoadComplete], timeout: 1)
     }
 
-    func testListLoadWithDataStoreError() {
+    func testLoadWithCompletionWhenUnderlyingDataStoreError_InternalOperationFailure() {
         let mockListProvider = MockListProvider<BasicModel>(
             elements: [BasicModel](),
             error: .listOperation("", "", DataStoreError.internalOperation("", "", nil))).eraseToAnyModelListProvider()
@@ -199,7 +220,7 @@ class ListTests: XCTestCase {
         wait(for: [loadComplete], timeout: 1)
     }
 
-    func testListLoadWithListOperationError() {
+    func testListLoadWithCompletionWhenListOperationError_InvalidOperationFailure() {
         let mockListProvider = MockListProvider<BasicModel>(
             elements: [BasicModel](),
             error: .listOperation("", "", nil)).eraseToAnyModelListProvider()
@@ -220,7 +241,7 @@ class ListTests: XCTestCase {
         wait(for: [loadComplete], timeout: 1)
     }
 
-    func testListLoadWithClientValidationError() {
+    func testListLoadWithCompletionWhenClientValidationError_InvalidOperationFailure() {
         let mockListProvider = MockListProvider<BasicModel>(
             elements: [BasicModel](),
             error: .clientValidation("", "", nil)).eraseToAnyModelListProvider()
@@ -241,7 +262,7 @@ class ListTests: XCTestCase {
         wait(for: [loadComplete], timeout: 1)
     }
 
-    func testListLoadWithUnknownError() {
+    func testListLoadWithCompletionWhenUnknownError_InvalidOperationFailure() {
         let mockListProvider = MockListProvider<BasicModel>(
             elements: [BasicModel](),
             error: .unknown("")).eraseToAnyModelListProvider()
@@ -262,7 +283,7 @@ class ListTests: XCTestCase {
         wait(for: [loadComplete], timeout: 1)
     }
 
-    func testListFailedImplicitLoadDoesNotChangeLoadedState() {
+    func testImplicitLoadFailure() {
         let mockListProvider = MockListProvider<BasicModel>(
             elements: [BasicModel](),
             error: .listOperation("", "", DataStoreError.internalOperation("", "", nil)))
@@ -279,6 +300,29 @@ class ListTests: XCTestCase {
         }
     }
 
+    func testSynchronousLoadSuccess() throws {
+        XCTAssertEqual(ModelListDecoderRegistry.listDecoders.get().count, 0)
+        let data: JSONValue = [
+            ["id": "1"],
+            ["id": "2"]
+        ]
+
+        let serializedData = try ListTests.encode(json: data)
+        let list = try ListTests.decode(serializedData, responseType: BasicModel.self)
+        guard case .notLoaded = list.loadedState else {
+            XCTFail("Should not be loaded")
+            return
+        }
+        list.load()
+        XCTAssertEqual(list.count, 2)
+        guard case .loaded = list.loadedState else {
+            XCTFail("Should be loaded")
+            return
+        }
+        list.load()
+        XCTAssertEqual(list.count, 2)
+    }
+
     func testSynchronousLoadFailWithAssert() {
         let mockListProvider = MockListProvider<BasicModel>(
             elements: [BasicModel](),
@@ -288,17 +332,6 @@ class ListTests: XCTestCase {
             list.load()
         }
         XCTAssertNotNil(caughtAssert)
-    }
-
-    func testDecodeAndEncodeEmptyArray() throws {
-        XCTAssertEqual(ModelListDecoderRegistry.listDecoders.get().count, 0)
-        let data: JSONValue = []
-        let serializedData = try ListTests.encode(json: data)
-        let list = try ListTests.decode(serializedData, responseType: BasicModel.self)
-        XCTAssertNotNil(list)
-        XCTAssertEqual(list.count, 0)
-        let json = try? ListTests.toJSON(list: list)
-        XCTAssertEqual(json, "[]")
     }
 
     // MARK: - Helpers

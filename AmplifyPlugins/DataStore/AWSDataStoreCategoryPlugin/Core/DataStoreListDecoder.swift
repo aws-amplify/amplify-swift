@@ -35,31 +35,37 @@ public struct DataStoreListDecoder: ModelListDecoder {
 
     public static func getListProvider<ModelType: Model>(modelType: ModelType.Type,
                                                          decoder: Decoder) throws -> AnyModelListProvider<ModelType> {
+        if let provider = try getDataStoreListProvider(modelType: modelType, decoder: decoder) {
+            return provider.eraseToAnyModelListProvider()
+        }
+
+        return ArrayLiteralListProvider<ModelType>(elements: []).eraseToAnyModelListProvider()
+    }
+
+    static func getDataStoreListProvider<ModelType: Model>(
+        modelType: ModelType.Type,
+        decoder: Decoder) throws -> DataStoreListProvider<ModelType>? {
         let json = try? JSONValue(from: decoder)
         switch json {
         case .array:
             let elements = try [ModelType](from: decoder)
-            return DataStoreListProvider<ModelType>(elements: elements).eraseToAnyModelListProvider()
+            return DataStoreListProvider<ModelType>(elements: elements)
         case .object(let associationData):
             if case let .string(associatedId) = associationData["associatedId"],
-               case let .string(associatedField) = associationData["associatedField"],
-               let field = ModelType.schema.field(withName: associatedField) {
+               case let .string(associatedField) = associationData["associatedField"] {
                 return DataStoreListProvider<ModelType>(associatedId: associatedId,
-                                                        associatedField: field).eraseToAnyModelListProvider()
-            } else {
-                let message = """
-                DataStoreListProvider could not be created. Failed to store association data for \(modelType.modelName)
-                given: \(associationData)
-                """
-                Amplify.DataStore.log.error(message)
-                assert(false, message)
-                return ArrayLiteralListProvider<ModelType>(elements: []).eraseToAnyModelListProvider()
+                                                        associatedField: associatedField)
             }
+
+            let message = "DataStoreListProvider could not be created from \(String(describing: json))"
+            Amplify.DataStore.log.error(message)
+            assert(false, message)
+            return nil
         default:
             let message = "DataStoreListProvider could not be created from \(String(describing: json))"
             Amplify.DataStore.log.error(message)
             assert(false, message)
-            return ArrayLiteralListProvider<ModelType>(elements: []).eraseToAnyModelListProvider()
+            return nil
         }
     }
 }
