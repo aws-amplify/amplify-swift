@@ -86,26 +86,38 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
 
     // MARK: - Collection conformance
 
+    /// Accessing the elements on a list that has not been loaded yet will operate slower than O(1) as the data will be
+    /// retrieved synchronously as part of this call.
     public var startIndex: Index {
         elements.startIndex
     }
 
+    /// Accessing the elements on a list that has not been loaded yet will operate slower than O(1) as the data will be
+    /// retrieved synchronously as part of this call.
     public var endIndex: Index {
         elements.endIndex
     }
 
+    /// Accessing the elements on a list that has not been loaded yet will operate slower than O(1) as the data will be
+    /// retrieved synchronously as part of this call.
     public func index(after index: Index) -> Index {
         elements.index(after: index)
     }
 
+    /// Accessing the elements on a list that has not been loaded yet will operate slower than O(1) as the data will be
+    /// retrieved synchronously as part of this call.
     public subscript(position: Int) -> Element {
         elements[position]
     }
 
+    /// Accessing the elements on a list that has not been loaded yet will operate slower than O(1) as the data will be
+    /// retrieved synchronously as part of this call.
     public __consuming func makeIterator() -> IndexingIterator<[Element]> {
         elements.makeIterator()
     }
 
+    /// Accessing the elements on a list that has not been loaded yet will operate slower than O(1) as the data will be
+    /// retrieved synchronously as part of this call.
     public var count: Int {
         elements.count
     }
