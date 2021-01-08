@@ -36,17 +36,9 @@ final class SyncEventEmitter {
             }, receiveValue: { _ in })
     }
 
-    deinit {
-        cancel()
-    }
-
     private func dispatchSyncQueriesReady() {
         let syncQueriesReadyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
         Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesReadyEventPayload)
-    }
-
-    func cancel() {
-        initialSyncCompleted?.cancel()
     }
 
 }

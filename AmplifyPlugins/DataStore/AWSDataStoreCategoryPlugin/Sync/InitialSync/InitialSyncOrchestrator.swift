@@ -70,13 +70,6 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         self.initialSyncOrchestratorTopic = PassthroughSubject<InitialSyncOperationEvent, DataStoreError>()
     }
 
-    deinit {
-        initialSyncOperationSinks.forEach { _, initialSyncOperationSink in
-            initialSyncOperationSink.cancel()
-        }
-        syncOperationQueue.cancelAllOperations()
-    }
-
     /// Performs an initial sync on all models. This should only be called by the
     /// RemoteSyncEngine during startup. Calling this multiple times will result in
     /// undefined behavior.

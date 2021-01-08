@@ -64,10 +64,6 @@ final class ModelSyncedEventEmitter {
             })
     }
 
-    deinit {
-        cancel()
-    }
-
     /// Filtering `InitialSyncOperationEvent`s that come from `InitialSyncOperation` of the same ModelType
     private func filterSyncOperationEvent(_ value: InitialSyncOperationEvent) -> Bool {
         switch value {
@@ -138,6 +134,7 @@ final class ModelSyncedEventEmitter {
                                                  data: modelSyncedEventBuilder.build())
         Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
         modelSyncedEventTopic.send(completion: .finished)
+        cancel()
     }
 
     func cancel() {
