@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.5.3 (2021-01-09)
+
+### Bug Fixes
+
+- **Model**: retrieve correct associated target name (#965)
+
 ## 1.5.2 (2020-12-24)
 
 ### Bug Fixes
