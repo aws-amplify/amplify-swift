@@ -33,10 +33,6 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
 
     var loadedState: LoadedState
 
-    public init(elements: [Element]) {
-        self.loadedState = .loaded(elements)
-    }
-
     init(associatedId: Model.Identifier,
          associatedField: String) {
         self.loadedState = .notLoaded(associatedId: associatedId,
@@ -49,7 +45,10 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
 
     public func load() -> Result<[Element], CoreError> {
         let semaphore = DispatchSemaphore(value: 0)
-        var loadResult: Result<[Element], CoreError> = .failure(.unknown("DataStore query failed to complete."))
+        var loadResult: Result<[Element], CoreError> = .failure(
+            .listOperation("DataStore query failed to complete.",
+                           AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
+                           nil))
         load { result in
             defer {
                 semaphore.signal()

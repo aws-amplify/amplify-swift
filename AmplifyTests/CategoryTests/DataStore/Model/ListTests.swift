@@ -265,7 +265,7 @@ class ListTests: XCTestCase {
     func testListLoadWithCompletionWhenUnknownError_InvalidOperationFailure() {
         let mockListProvider = MockListProvider<BasicModel>(
             elements: [BasicModel](),
-            error: .unknown("")).eraseToAnyModelListProvider()
+            error: .listOperation("", "", nil)).eraseToAnyModelListProvider()
         let list = List(listProvider: mockListProvider)
         let loadComplete = expectation(description: "Load completed")
         list.load { result in
@@ -326,7 +326,7 @@ class ListTests: XCTestCase {
     func testSynchronousLoadFailWithAssert() {
         let mockListProvider = MockListProvider<BasicModel>(
             elements: [BasicModel](),
-            error: .unknown("")).eraseToAnyModelListProvider()
+            error: .listOperation("", "", nil)).eraseToAnyModelListProvider()
         let list = List(listProvider: mockListProvider)
         let caughtAssert = catchBadInstruction {
             list.load()

@@ -140,6 +140,8 @@
 		21A4ED5E259CD7F400E1047D /* CoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A4ED5D259CD7F400E1047D /* CoreError.swift */; };
 		21A4ED6E259CDA4600E1047D /* List+LazyLoad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A4ED6D259CDA4600E1047D /* List+LazyLoad.swift */; };
 		21A4ED77259CDF6800E1047D /* List+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A4ED76259CDF6800E1047D /* List+Combine.swift */; };
+		21A7C8AA25ACB6C8004355D6 /* ArrayLiteralListProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A7C8A925ACB6C8004355D6 /* ArrayLiteralListProviderTests.swift */; };
+		21A7C90225ACC4D1004355D6 /* MockDataStoreResponders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A7C90125ACC4D1004355D6 /* MockDataStoreResponders.swift */; };
 		21AD424B249BF0DA0016FE95 /* AnyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACBAD522386160100E29E56 /* AnyModel.swift */; };
 		21AD424C249BF0DE0016FE95 /* AnyModel+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE776238626D60097E4F1 /* AnyModel+Codable.swift */; };
 		21AD424D249BF0E50016FE95 /* AnyModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE78223862DDB0097E4F1 /* AnyModel+Schema.swift */; };
@@ -922,6 +924,8 @@
 		21A4ED5D259CD7F400E1047D /* CoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreError.swift; sourceTree = "<group>"; };
 		21A4ED6D259CDA4600E1047D /* List+LazyLoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+LazyLoad.swift"; sourceTree = "<group>"; };
 		21A4ED76259CDF6800E1047D /* List+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+Combine.swift"; sourceTree = "<group>"; };
+		21A7C8A925ACB6C8004355D6 /* ArrayLiteralListProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayLiteralListProviderTests.swift; sourceTree = "<group>"; };
+		21A7C90125ACC4D1004355D6 /* MockDataStoreResponders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataStoreResponders.swift; sourceTree = "<group>"; };
 		21AD4255249BFFDF0016FE95 /* DeprecatedTodo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DeprecatedTodo.swift; path = Deprecated/DeprecatedTodo.swift; sourceTree = "<group>"; };
 		21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorType.swift; sourceTree = "<group>"; };
 		21D79FD9237617C60057D00D /* SubscriptionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionEvent.swift; sourceTree = "<group>"; };
@@ -1903,6 +1907,7 @@
 		21665EF2259A944500841696 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				21A7C8A825ACB68C004355D6 /* Collection */,
 				21665EF4259A947100841696 /* ListTests.swift */,
 			);
 			path = Model;
@@ -2027,6 +2032,14 @@
 				21A4ED5D259CD7F400E1047D /* CoreError.swift */,
 			);
 			path = Error;
+			sourceTree = "<group>";
+		};
+		21A7C8A825ACB68C004355D6 /* Collection */ = {
+			isa = PBXGroup;
+			children = (
+				21A7C8A925ACB6C8004355D6 /* ArrayLiteralListProviderTests.swift */,
+			);
+			path = Collection;
 			sourceTree = "<group>";
 		};
 		21AD424A249BEC440016FE95 /* Internal */ = {
@@ -3474,14 +3487,15 @@
 				FAC2355E227A056600424678 /* MockAnalyticsCategoryPlugin.swift */,
 				FAC23557227A056600424678 /* MockAPICategoryPlugin.swift */,
 				FA1846ED23998E43009B9D01 /* MockAPIResponders.swift */,
+				B4F3E9F924314ECC00F23296 /* MockAuthCategoryPlugin.swift */,
 				FAD3937E23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift */,
+				21A7C90125ACC4D1004355D6 /* MockDataStoreResponders.swift */,
+				975751B324D21DE000FA0A6E /* MockDevMenuContextProvider.swift */,
 				FAC23589227A45D500424678 /* MockHubCategoryPlugin.swift */,
 				FAC0A2BB22B4603800B50912 /* MockLoggingCategoryPlugin.swift */,
 				B4BD6B3623708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift */,
 				FA4A955E239ADEBD008E876E /* MockResponder.swift */,
 				FAC23553227A056600424678 /* MockStorageCategoryPlugin.swift */,
-				B4F3E9F924314ECC00F23296 /* MockAuthCategoryPlugin.swift */,
-				975751B324D21DE000FA0A6E /* MockDevMenuContextProvider.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -5069,6 +5083,7 @@
 				FAC2356A227A056600424678 /* LoggingCategoryConfigurationTests.swift in Sources */,
 				B91A87A423D64B0F0049A12F /* TemporalTests.swift in Sources */,
 				FA00F69024DA3F95003E8A71 /* HubCombineTests.swift in Sources */,
+				21A7C8AA25ACB6C8004355D6 /* ArrayLiteralListProviderTests.swift in Sources */,
 				FA5D76AF23947E9C00489864 /* Model+CodableTests.swift in Sources */,
 				FA58456B24DA31370028D65A /* AmplifyInProcessReportingOperationChainedTests.swift in Sources */,
 				FA1B964E24BF5FA70002B90A /* AmplifyOperationCombineTests.swift in Sources */,
@@ -5197,6 +5212,7 @@
 				216E460A249183230035E3CE /* Section.swift in Sources */,
 				21FDBB622587D7A30086FCDC /* Post6.swift in Sources */,
 				217D5EBA2577F9DF009F0639 /* Post4+Schema.swift in Sources */,
+				21A7C90225ACC4D1004355D6 /* MockDataStoreResponders.swift in Sources */,
 				217D5EBD2577F9DF009F0639 /* Post5.swift in Sources */,
 				FA1846EE23998E44009B9D01 /* MockAPIResponders.swift in Sources */,
 				217D5EC32577F9DF009F0639 /* PostEditor5.swift in Sources */,

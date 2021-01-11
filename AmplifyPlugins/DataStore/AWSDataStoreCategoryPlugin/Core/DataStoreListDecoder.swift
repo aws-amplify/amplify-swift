@@ -49,7 +49,7 @@ public struct DataStoreListDecoder: ModelListDecoder {
         switch json {
         case .array:
             let elements = try [ModelType](from: decoder)
-            return DataStoreListProvider<ModelType>(elements: elements)
+            return DataStoreListProvider<ModelType>(elements)
         case .object(let associationData):
             if case let .string(associatedId) = associationData["associatedId"],
                case let .string(associatedField) = associationData["associatedField"] {

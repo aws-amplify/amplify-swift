@@ -13,9 +13,6 @@ public enum CoreError {
 
     /// A client side validation error occured.
     case clientValidation(ErrorDescription, RecoverySuggestion, Error? = nil)
-
-    /// An unknown error occurred
-    case unknown(ErrorDescription, Error? = nil)
 }
 
 extension CoreError: AmplifyError {
@@ -24,8 +21,6 @@ extension CoreError: AmplifyError {
         case .listOperation(let errorDescription, _, _),
              .clientValidation(let errorDescription, _, _):
             return errorDescription
-        case .unknown(let errorDescription, _):
-            return "Unexpected error occurred with message: \(errorDescription)"
         }
     }
 
@@ -34,16 +29,13 @@ extension CoreError: AmplifyError {
         case .listOperation(_, let recoverySuggestion, _),
              .clientValidation(_, let recoverySuggestion, _):
             return recoverySuggestion
-        case .unknown:
-            return AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
         }
     }
 
     public var underlyingError: Error? {
         switch self {
         case .listOperation(_, _, let underlyingError),
-             .clientValidation(_, _, let underlyingError),
-             .unknown(_, let underlyingError):
+             .clientValidation(_, _, let underlyingError):
             return underlyingError
         }
     }
@@ -56,7 +48,7 @@ extension CoreError: AmplifyError {
         if let error = error as? Self {
             self = error
         } else {
-            self = .unknown(errorDescription, error)
+            self = .clientValidation(errorDescription, recoverySuggestion, error)
         }
     }
 
