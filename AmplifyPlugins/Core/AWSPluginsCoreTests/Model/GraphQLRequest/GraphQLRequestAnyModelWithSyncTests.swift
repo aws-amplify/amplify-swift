@@ -274,4 +274,88 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         XCTAssertNotNil(variables["lastSync"])
         XCTAssertEqual(variables["lastSync"] as? Int, lastSync)
     }
+
+    func testUpdateMutationWithEmptyFilter() {
+        let post = Post(title: "title", content: "content", createdAt: .now())
+        let documentStringValue = """
+        mutation UpdatePost($input: UpdatePostInput!) {
+          updatePost(input: $input) {
+            id
+            content
+            createdAt
+            draft
+            rating
+            status
+            title
+            updatedAt
+            __typename
+            _version
+            _deleted
+            _lastChangedAt
+          }
+        }
+        """
+
+        let request = GraphQLRequest<Post>.updateMutation(of: post, where: [:])
+        XCTAssertEqual(documentStringValue, request.document)
+        XCTAssert(request.responseType == MutationSyncResult.self)
+
+        guard let variables = request.variables else {
+            XCTFail("The request doesn't contain variables")
+            return
+        }
+        guard let input = variables["input"] as? [String: Any] else {
+            XCTFail("The document variables property doesn't contain a valid input")
+            return
+        }
+        XCTAssert(input["title"] as? String == post.title)
+        XCTAssert(input["content"] as? String == post.content)
+    }
+
+    func testUpdateMutationWithFilter() {
+        let post = Post(title: "myTitle", content: "content", createdAt: .now())
+        let documentStringValue = """
+        mutation UpdatePost($condition: ModelPostConditionInput, $input: UpdatePostInput!) {
+          updatePost(condition: $condition, input: $input) {
+            id
+            content
+            createdAt
+            draft
+            rating
+            status
+            title
+            updatedAt
+            __typename
+            _version
+            _deleted
+            _lastChangedAt
+          }
+        }
+        """
+        let filter: [String: Any] = ["title": ["eq": "myTitle"]]
+        let request = GraphQLRequest<Post>.updateMutation(of: post, where: filter)
+        XCTAssertEqual(documentStringValue, request.document)
+        XCTAssert(request.responseType == MutationSyncResult.self)
+
+        guard let variables = request.variables else {
+            XCTFail("The request doesn't contain variables")
+            return
+        }
+        guard let input = variables["input"] as? [String: Any] else {
+            XCTFail("The document variables property doesn't contain a valid input")
+            return
+        }
+        XCTAssert(input["title"] as? String == post.title)
+        XCTAssert(input["content"] as? String == post.content)
+
+        guard let condition = variables["condition"] as? [String: Any] else {
+            XCTFail("The document variables property doesn't contain a valid condition")
+            return
+        }
+        guard let conditionValue = condition["title"] as? [String: String] else {
+            XCTFail("Failed to get 'title' from the condition")
+            return
+        }
+        XCTAssertEqual(conditionValue["eq"], "myTitle")
+    }
 }

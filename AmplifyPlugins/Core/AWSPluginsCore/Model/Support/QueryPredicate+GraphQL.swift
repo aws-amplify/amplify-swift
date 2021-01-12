@@ -77,6 +77,8 @@ extension QueryPredicate {
             return operation.graphQLFilter(for: modelSchema)
         } else if let group = self as? QueryPredicateGroup {
             return group.graphQLFilter(for: modelSchema)
+        } else if let constant = self as? QueryPredicateConstant {
+            return constant.graphQLFilter(for: modelSchema)
         }
 
         preconditionFailure(
@@ -95,6 +97,15 @@ extension QueryPredicate {
 
         preconditionFailure(
             "Could not find QueryPredicateOperation or QueryPredicateGroup for \(String(describing: self))")
+    }
+}
+
+extension QueryPredicateConstant: GraphQLFilterConvertible {
+    func graphQLFilter(for modelSchema: ModelSchema?) -> GraphQLFilter {
+        if self == .all {
+            return [:]
+        }
+        preconditionFailure("Could not find QueryPredicateConstant \(self)")
     }
 }
 

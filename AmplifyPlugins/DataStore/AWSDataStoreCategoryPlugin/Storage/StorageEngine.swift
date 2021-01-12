@@ -468,7 +468,8 @@ final class StorageEngine: StorageEngineBehavior {
         var graphQLFilterJSON: String?
         if let predicate = predicate {
             do {
-                graphQLFilterJSON = try GraphQLFilterConverter.toJSON(predicate)
+                graphQLFilterJSON = try GraphQLFilterConverter.toJSON(predicate,
+                                                                      modelSchema: modelSchema)
             } catch {
                 let dataStoreError = DataStoreError(error: error)
                 completion(.failure(dataStoreError))
@@ -519,7 +520,8 @@ final class StorageEngine: StorageEngineBehavior {
         do {
             var graphQLFilterJSON: String?
             if let predicate = predicate {
-                graphQLFilterJSON = try GraphQLFilterConverter.toJSON(predicate)
+                graphQLFilterJSON = try GraphQLFilterConverter.toJSON(predicate,
+                                                                      modelSchema: modelSchema)
             }
 
             mutationEvent = try MutationEvent(model: savedModel,

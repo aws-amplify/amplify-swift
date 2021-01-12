@@ -731,4 +731,76 @@ class InitialSyncOperationTests: XCTestCase {
         waitForExpectations(timeout: 1)
         sink.cancel()
     }
+
+    func testBaseQueryWithSyncExpressionConstantAll() throws {
+        let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
+        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + [MockSynced.schema])
+
+        let apiWasQueried = expectation(description: "API was queried with sync expression")
+        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
+            XCTAssertEqual(request.document, """
+            query SyncMockSynceds($limit: Int) {
+              syncMockSynceds(limit: $limit) {
+                items {
+                  id
+                  __typename
+                  _version
+                  _deleted
+                  _lastChangedAt
+                }
+                nextToken
+                startedAt
+              }
+            }
+            """)
+            XCTAssertNil(request.variables?["filter"])
+
+            let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: nil)
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
+            listener?(event)
+            apiWasQueried.fulfill()
+            return nil
+        }
+
+        let apiPlugin = MockAPICategoryPlugin()
+        apiPlugin.responders[.queryRequestListener] = responder
+
+        let reconciliationQueue = MockReconciliationQueue()
+        let syncExpression = DataStoreSyncExpression.syncExpression(MockSynced.schema, where: {
+            QueryPredicateConstant.all
+        })
+        let configuration  = DataStoreConfiguration.custom(syncPageSize: 10, syncExpressions: [syncExpression])
+        let operation = InitialSyncOperation(
+            modelSchema: MockSynced.schema,
+            api: apiPlugin,
+            reconciliationQueue: reconciliationQueue,
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: configuration)
+
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
+        let finishedReceived = expectation(description: "InitialSyncOperation finishe offering items")
+        let sink = operation
+            .publisher
+            .sink(receiveCompletion: { _ in
+                syncCompletionReceived.fulfill()
+            }, receiveValue: { value in
+                switch value {
+                case .started(modelName: let modelName, syncType: let syncType):
+                    XCTAssertEqual(modelName, "MockSynced")
+                    XCTAssertEqual(syncType, .fullSync)
+                    syncStartedReceived.fulfill()
+                case .finished(modelName: let modelName):
+                    XCTAssertEqual(modelName, "MockSynced")
+                    finishedReceived.fulfill()
+                default:
+                    break
+                }
+            })
+
+        operation.main()
+
+        waitForExpectations(timeout: 1)
+        sink.cancel()
+    }
 }
