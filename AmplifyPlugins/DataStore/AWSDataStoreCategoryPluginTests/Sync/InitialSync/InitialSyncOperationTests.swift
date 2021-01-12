@@ -739,8 +739,8 @@ class InitialSyncOperationTests: XCTestCase {
         let apiWasQueried = expectation(description: "API was queried with sync expression")
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
             XCTAssertEqual(request.document, """
-            query SyncMockSynceds($filter: ModelMockSyncedFilterInput, $limit: Int) {
-              syncMockSynceds(filter: $filter, limit: $limit) {
+            query SyncMockSynceds($limit: Int) {
+              syncMockSynceds(limit: $limit) {
                 items {
                   id
                   __typename
@@ -753,11 +753,7 @@ class InitialSyncOperationTests: XCTestCase {
               }
             }
             """)
-            guard let filter = request.variables?["filter"] as? [String: Any?] else {
-                XCTFail("Unable to get filter")
-                return nil
-            }
-            XCTAssert(filter.isEmpty)
+            XCTAssertNil(request.variables?["filter"])
 
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: nil)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
