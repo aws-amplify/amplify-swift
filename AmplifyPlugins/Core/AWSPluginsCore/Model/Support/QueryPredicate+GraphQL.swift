@@ -102,7 +102,7 @@ extension QueryPredicate {
 
 extension QueryPredicateConstant: GraphQLFilterConvertible {
     func graphQLFilter(for modelSchema: ModelSchema?) -> GraphQLFilter {
-        if (self == .all) {
+        if self == .all {
             return [:]
         }
         preconditionFailure("Could not find QueryPredicateConstant \(self)")
