@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2020 Amazon.com,
+// Copyright 2018-2021 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -16,21 +16,6 @@ protocol CommandExecutable where Self: CommandEnvironmentProvider {
 
 /// Provides a default implementation for an executable command
 extension CommandExecutable {
-    private func precondition<TaskArgs>(_ task: AmplifyCommandTaskExecutor<TaskArgs>,
-                                        args: TaskArgs,
-                                        prevResults: inout [AmplifyCommandTaskResult]) -> Bool {
-        let output = task(environment, args)
-        switch output {
-        case .failure:
-            prevResults.append(output)
-            return false
-        case .success:
-            prevResults.append(output)
-            return true
-        }
-
-    }
-
     private func exec<TaskArgs>(_ task: AmplifyCommandTaskExecutor<TaskArgs>,
                                 args: TaskArgs,
                                 prevResults: inout [AmplifyCommandTaskResult]) -> Bool {
@@ -47,21 +32,18 @@ extension CommandExecutable {
 
     /// Given a command, executes its underlying tasks and aggregates the final result
     func exec<Command: AmplifyCommand>(command: Command) -> AmplifyCommandResult {
-        var succeeded = false
         var results: [AmplifyCommandTaskResult] = []
 
         for task in command.tasks {
             switch task {
-            case .precondition(let run):
-                succeeded = precondition(run, args: command.taskArgs, prevResults: &results)
-                if !succeeded {
-                    break
-                }
             case .run(let run):
-                succeeded = exec(run, args: command.taskArgs, prevResults: &results)
+                let succeeded = exec(run, args: command.taskArgs, prevResults: &results)
+                if !succeeded {
+                    return .failure(AmplifyCommandError(from: results))
+                }
             }
         }
 
-        return succeeded ? .success(results) : .failure(AmplifyCommandError(from: results))
+        return .success(results)
     }
 }

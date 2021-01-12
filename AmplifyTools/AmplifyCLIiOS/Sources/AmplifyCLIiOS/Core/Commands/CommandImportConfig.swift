@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2020 Amazon.com,
+// Copyright 2018-2021 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -56,7 +56,7 @@ struct CommandImportConfig: AmplifyCommand {
     var taskArgs = CommandImportConfigArgs()
 
     var tasks: [AmplifyCommandTask<CommandImportConfigArgs>] = [
-        .precondition(ImportConfigTasks.amplifyFolderExist),
+        .run(ImportConfigTasks.amplifyFolderExist),
         .run(ImportConfigTasks.addConfigFilesToXcodeProject)
     ]
 
