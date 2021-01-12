@@ -45,10 +45,14 @@ class ListTests: XCTestCase {
     class MockListProvider<Element: Model>: ModelListProvider {
         let elements: [Element]
         var error: CoreError?
+        var nextPage: List<Element>?
 
-        public init(elements: [Element], error: CoreError? = nil) {
+        public init(elements: [Element] = [Element](),
+                    error: CoreError? = nil,
+                    nextPage: List<Element>? = nil) {
             self.elements = elements
             self.error = error
+            self.nextPage = nextPage
         }
 
         public func load() -> Result<[Element], CoreError> {
@@ -68,12 +72,14 @@ class ListTests: XCTestCase {
         }
 
         public func hasNextPage() -> Bool {
-            false
+            return nextPage != nil
         }
 
         public func getNextPage(completion: (Result<List<Element>, CoreError>) -> Void) {
             if let error = error {
                 completion(.failure(error))
+            } else if let nextPage = nextPage {
+                completion(.success(nextPage))
             } else {
                 fatalError("Mock not implemented")
             }

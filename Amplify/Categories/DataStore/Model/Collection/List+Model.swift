@@ -14,7 +14,7 @@ import Combine
 /// before returning the data to you. Consumers must be aware that multiple calls to the data source and then stored
 /// into this object will happen simultaneously if the object is used from different threads, thus not thread safe.
 /// Lazy loading is idempotent and will return the stored results on subsequent access.
-public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLiteral {
+public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLiteral, ModelListMarker {
     public typealias Index = Int
     public typealias Element = ModelType
 
@@ -36,7 +36,7 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
     /// provider's data source. This is not thread safe as it can be performed from multiple threads, however the
     /// provider's call to `load` should be idempotent and should result in the final loaded state. An attempt to set
     /// this again will result in no-op and will not overwrite the existing loaded data.
-    var elements: [Element] {
+    public internal(set) var elements: [Element] {
         get {
             switch loadedState {
             case .loaded(let elements):

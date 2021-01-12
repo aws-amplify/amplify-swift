@@ -8,6 +8,14 @@
 import Foundation
 import Combine
 
+/// Empty protocol used as a marker to detect when the type is a `List`
+///
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
+/// directly by host applications. The behavior of this may change without warning. Though it is not used by host
+/// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
+/// change.
+public protocol ModelListMarker { }
+
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 /// directly by host applications. The behavior of this may change without warning. Though it is not used by host
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
@@ -21,11 +29,13 @@ public protocol ModelListProvider {
     ///  Retrieve the array of `Element` from the data source asychronously.
     func load(completion: @escaping (Result<[Element], CoreError>) -> Void)
 
-    /// Checks if there is subsequent data to retrieve. If true, the next page can be retrieved using
-    /// `getNextPage(completion:)`
+    /// Check if there is subsequent data to retrieve. This method always returns false if the underlying provider is
+    /// not loaded. Make sure the underlying data is loaded by calling `load(completion)` before calling this method.
+    /// If true, the next page can be retrieved using `getNextPage(completion:)`.
     func hasNextPage() -> Bool
 
-    /// Retrieves the next page as a new in-memory List object asynchronously.
+    /// Retrieves the next page as a new in-memory List object asynchronously. Make sure the underlying data is loaded
+    /// by calling `load(completion)` and `hasNextPage()` returns true.
     func getNextPage(completion: @escaping (Result<List<Element>, CoreError>) -> Void)
 }
 

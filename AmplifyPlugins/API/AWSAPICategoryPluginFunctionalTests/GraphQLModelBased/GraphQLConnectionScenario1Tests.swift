@@ -201,6 +201,58 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
         wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
+    func testPaginatedListProjects() {
+        guard let team = createTeam(name: "name"),
+              let projecta = createProject(team: team),
+              let projectb = createProject(team: team) else {
+            XCTFail("Could not create team and two projects")
+            return
+        }
+
+        let listProjectByTeamIDCompleted = expectation(description: "list projects completed")
+        var results: List<Project1>?
+        let predicate = Project1.keys.id == projecta.id || Project1.keys.id == projectb.id
+        Amplify.API.query(request: .paginatedList(Project1.self, where: predicate)) { result in
+            switch result {
+            case .success(let result):
+                switch result {
+                case .success(let projects):
+                    results = projects
+                    listProjectByTeamIDCompleted.fulfill()
+                case .failure(let response):
+                    XCTFail("Failed with: \(response)")
+                }
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
+        guard var subsequentResults = results else {
+            XCTFail("Could not get first results")
+            return
+        }
+        var resultsArray: [Project1] = []
+        resultsArray.append(contentsOf: subsequentResults)
+        while subsequentResults.hasNextPage() {
+            let semaphore = DispatchSemaphore(value: 0)
+            subsequentResults.getNextPage { result in
+                defer {
+                    semaphore.signal()
+                }
+                switch result {
+                case .success(let listResult):
+                    subsequentResults = listResult
+                    resultsArray.append(contentsOf: subsequentResults)
+                case .failure(let coreError):
+                    XCTFail("Unexpected error: \(coreError)")
+                }
+
+            }
+            semaphore.wait()
+        }
+        XCTAssertEqual(resultsArray.count, 2)
+    }
+
     func createTeam(id: String = UUID().uuidString, name: String) -> Team1? {
         let team = Team1(id: id, name: name)
         var result: Team1?

@@ -21,16 +21,29 @@ extension GraphQLResponseDecoder {
                 throw APIError.operationError("Not of type \(String(describing: R.self))", "", nil)
             }
             return response
-        } else if request.responseType == AnyModel.self {
-            let anyModel = try AnyModel(modelJSON: graphQLData)
-            let serializedJSON = try encoder.encode(anyModel)
-            return try decoder.decode(request.responseType, from: serializedJSON)
-        } else {
-            let serializedJSON = try encoder.encode(graphQLData)
-            let responseData = try decoder.decode(request.responseType, from: serializedJSON)
-            return responseData
         }
+
+        let serializedJSON: Data
+        if request.responseType == AnyModel.self {
+            let anyModel = try AnyModel(modelJSON: graphQLData)
+            serializedJSON = try encoder.encode(anyModel)
+        } else if request.responseType is ModelListMarker.Type {
+            let payload = AppSyncListPayload(graphQLData: graphQLData,
+                                             apiName: request.apiName,
+                                             variables: try getVariablesJSON())
+            serializedJSON = try encoder.encode(payload)
+        } else if AppSyncModelMetadataUtils.shouldAddMetadata(toModel: graphQLData) {
+            let modelJSON = AppSyncModelMetadataUtils.addMetadata(toModel: graphQLData,
+                                                                  apiName: request.apiName)
+            serializedJSON = try encoder.encode(modelJSON)
+        } else {
+            serializedJSON = try encoder.encode(graphQLData)
+        }
+
+        return try decoder.decode(request.responseType, from: serializedJSON)
     }
+
+    // MARK: - Helper methods
 
     private func valueAtDecodePath(from graphQLData: JSONValue) throws -> JSONValue {
         guard let decodePath = request.decodePath else {
@@ -42,5 +55,13 @@ extension GraphQLResponseDecoder {
         }
 
         return model
+    }
+
+    private func getVariablesJSON() throws -> [String: JSONValue]? {
+        if let variables = request.variables {
+            let variablesData = try JSONSerialization.data(withJSONObject: variables)
+            return try decoder.decode([String: JSONValue].self, from: variablesData)
+        }
+        return nil
     }
 }

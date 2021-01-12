@@ -19,6 +19,35 @@ extension List {
     /// post object and traversing to the comments, the comments are not retrieved from the data source until this
     /// method is called. Data will be retrieved based on the plugin's data source and may have different failure
     /// conditions--for example, a data source that requires network connectivity may fail if the network is
+    /// unavailable. Alternately, you can trigger an implicit `fetch` by invoking the Collection methods (such as using
+    /// `map`, or iterating in a `for/in` loop) on the List, which will retrieve data if it hasn't already been
+    /// retrieved. In such cases, the time to perform that operation will include the time required to request data
+    /// from the underlying data source.
+    ///
+    /// If you have directly created this list object (for example, by calling `List(elements:)`) then the collection
+    /// has already been initialized and calling this method will have no effect.
+    public func fetch(_ completion: @escaping (Result<Void, CoreError>) -> Void) {
+        guard case .notLoaded = loadedState else {
+            completion(.success(()))
+            return
+        }
+
+        listProvider.load { result in
+            switch result {
+            case .success(let elements):
+                self.elements = elements
+                completion(.success(()))
+            case .failure(let coreError):
+                completion(.failure(coreError))
+            }
+        }
+    }
+
+    /// Call this to initialize the collection if you have retrieved the list by traversing from your model objects
+    /// to its associated children objects. For example, a Post model may contain a list of Comments. By retrieving the
+    /// post object and traversing to the comments, the comments are not retrieved from the data source until this
+    /// method is called. Data will be retrieved based on the plugin's data source and may have different failure
+    /// conditions--for example, a data source that requires network connectivity may fail if the network is
     /// unavailable. Alternately, you can trigger an implicit `load` by invoking the Collection methods (such as using
     /// `map`, or iterating in a `for/in` loop) on the List, which will retrieve data if it hasn't already been
     /// retrieved. In such cases, the time to perform that operation will include the time required to request data
@@ -26,11 +55,13 @@ extension List {
     ///
     /// If you have directly created this list object (for example, by calling `List(elements:)`) then the collection
     /// has already been initialized and calling this method will have no effect.
+    @available(*, deprecated, message: "Use fetch(completion:) instead.")
     public func load(_ completion: DataStoreCallback<[Element]>) {
         if case .loaded(let elements) = loadedState {
             completion(.success(elements))
             return
         }
+
         let result = listProvider.load()
         switch result {
         case .success(let elements):
@@ -56,7 +87,7 @@ extension List {
     ///
     /// - Returns: the current instance after data was loaded.
     /// - seealso: `load(completion:)`
-    @available(*, deprecated, message: "Use load(completion:) instead.")
+    @available(*, deprecated, message: "Use fetch(completion:) instead.")
     public func load() -> Self {
         guard case .notLoaded = loadedState else {
             return self
@@ -69,6 +100,7 @@ extension List {
             Amplify.log.error(error: error)
             assert(false, error.errorDescription)
         }
+
         return self
     }
 }
