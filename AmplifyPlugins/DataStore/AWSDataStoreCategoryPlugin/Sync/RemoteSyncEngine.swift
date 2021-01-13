@@ -218,7 +218,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     func terminate() {
         remoteSyncTopicPublisher.send(completion: .finished)
-        cancelEmitter()
+        cancelEmitters()
         if let completionBlock = finishedCompletionBlock {
             completionBlock(.successfulVoid)
             finishedCompletionBlock = nil
@@ -289,7 +289,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                                             reconciliationQueue: reconciliationQueue)
 
         readyEventEmitter = ReadyEventEmitter(remoteSyncEnginePublisher: publisher,
-                                              callBack: { self.cancelEmitter() })
+                                              completion: { self.cancelEmitters() })
 
         // TODO: This should be an AsynchronousOperation, not a semaphore-waited block
         let semaphore = DispatchSemaphore(value: 0)
@@ -367,13 +367,9 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         Amplify.Hub.dispatch(to: .dataStore, payload: networkStatusEventPayload)
     }
 
-    func cancelEmitter() {
-        if syncEventEmitter != nil {
-            syncEventEmitter = nil
-        }
-        if readyEventEmitter != nil {
-            readyEventEmitter = nil
-        }
+    func cancelEmitters() {
+        syncEventEmitter = nil
+        readyEventEmitter = nil
     }
 
     func reset(onComplete: () -> Void) {

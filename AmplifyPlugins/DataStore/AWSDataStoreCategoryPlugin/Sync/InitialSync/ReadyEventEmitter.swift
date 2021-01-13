@@ -12,10 +12,10 @@ import Combine
 @available(iOS 13.0, *)
 final class ReadyEventEmitter {
     var readySink: AnyCancellable?
-    let callBack: () -> Void
+    let completion: BasicClosure
     init(remoteSyncEnginePublisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError>,
-         callBack: @escaping (() -> Void)) {
-        self.callBack = callBack
+         completion: @escaping BasicClosure) {
+        self.completion = completion
         let queriesReadyPublisher = ReadyEventEmitter.makeSyncQueriesReadyPublisher()
         let syncEngineStartedPublisher = ReadyEventEmitter.makeRemoteSyncEngineStartedPublisher(
             remoteSyncEnginePublisher: remoteSyncEnginePublisher
@@ -29,6 +29,7 @@ final class ReadyEventEmitter {
                 case .failure(let dataStoreError):
                     self.log.error("Failed to emit ready event, error: \(dataStoreError)")
                 }
+                self.completion()
             }, receiveValue: { _ in })
     }
 
@@ -55,7 +56,6 @@ final class ReadyEventEmitter {
     private func dispatchReady() {
         let readyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.ready)
         Amplify.Hub.dispatch(to: .dataStore, payload: readyEventPayload)
-        callBack()
     }
 
 }
