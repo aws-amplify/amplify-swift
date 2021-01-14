@@ -1,6 +1,6 @@
 //
-// Copyright Amazon.com,
-// Inc. or its affiliates. All Rights Reserved.
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
 //
@@ -103,5 +103,22 @@ class AmplifyCommandEnvironmentTests: XCTestCase {
         let dirPath = "directory/subPath"
         let environment = CommandEnvironment(basePath: basePath, fileManager: DirNotFoundFileManager())
         XCTAssertThrowsError(try environment.contentsOfDirectory(atPath: dirPath))
+    }
+    
+    //  MARK: - createXcodeFile
+    func testCreateXcodeSourceFiles() {
+        let files = ["File1.swift", "Folder/File2.swift"]
+        for file in files {
+            let xcodeFile = environment?.createXcodeFile(withPath: file, ofType: .source)
+            XCTAssertEqual(xcodeFile, XcodeProjectFile(file, type: .source))
+        }
+    }
+
+    func testCreateXcodeResourceFiles() {
+        let files = ["View.xib", "Folder/File.json"]
+        for file in files {
+            let xcodeFile = environment?.createXcodeFile(withPath: file, ofType: .resource)
+            XCTAssertEqual(xcodeFile, XcodeProjectFile(file, type: .resource))
+        }
     }
 }
