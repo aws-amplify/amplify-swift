@@ -9,6 +9,8 @@ import Amplify
 import AWSPluginsCore
 import Combine
 
+import protocol Amplify.Cancellable // swiftlint:disable:this duplicate_imports
+
 enum IncomingSubscriptionEventPublisherEvent {
     case connectionConnected
     case mutationEvent(MutationSync<AnyModel>)

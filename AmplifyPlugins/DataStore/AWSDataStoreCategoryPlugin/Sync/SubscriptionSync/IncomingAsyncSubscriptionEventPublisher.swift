@@ -9,6 +9,8 @@ import Amplify
 import AWSPluginsCore
 import Combine
 
+import protocol Amplify.Cancellable // swiftlint:disable:this duplicate_imports
+
 /// Collects all subscription types for a given model into a single subscribable publisher.
 ///
 /// The queue "Element" is AnyModel to allow for queues to be collected into an aggregate structure upstream, but each
