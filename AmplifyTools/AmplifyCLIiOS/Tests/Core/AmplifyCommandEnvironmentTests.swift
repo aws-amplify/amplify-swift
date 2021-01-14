@@ -104,7 +104,24 @@ class AmplifyCommandEnvironmentTests: XCTestCase {
         let environment = CommandEnvironment(basePath: basePath, fileManager: DirNotFoundFileManager())
         XCTAssertThrowsError(try environment.contentsOfDirectory(atPath: dirPath))
     }
-    
+
+    func testContentsOfDirectoryThrowsIfFileManagerThrows() {
+        class ThrowingFileManager: MockAmplifyFileManager {
+            override func contentsOfDirectory(atPath: String) throws -> [String] {
+                throw AmplifyCommandError(.unknown, error: nil)
+            }
+        }
+        let dirPath = "directory/subPath"
+        let environment = CommandEnvironment(basePath: basePath, fileManager: ThrowingFileManager())
+        XCTAssertThrowsError(try environment.contentsOfDirectory(atPath: dirPath))
+    }
+
+    // MARK: - directoryExists
+    func testDirectoryExists() {
+        _ = environment?.directoryExists(atPath: "path")
+        XCTAssertEqual(fileManager.directoryExistsCalledTimes, 1)
+    }
+
     //  MARK: - createXcodeFile
     func testCreateXcodeSourceFiles() {
         let files = ["File1.swift", "Folder/File2.swift"]
@@ -120,5 +137,17 @@ class AmplifyCommandEnvironmentTests: XCTestCase {
             let xcodeFile = environment?.createXcodeFile(withPath: file, ofType: .resource)
             XCTAssertEqual(xcodeFile, XcodeProjectFile(file, type: .resource))
         }
+    }
+
+    //  MARK: - addFilesToXcodeProject
+    func testAddFilesToXcodeThrowsIfProjectDoesNotExist() {
+        class DirNotFoundFileManager: MockAmplifyFileManager {
+            override func contentsOfDirectory(atPath: String) throws -> [String] {
+                ["not-an-xcode-project-file.txt"]
+            }
+        }
+        let environment = CommandEnvironment(basePath: basePath, fileManager: DirNotFoundFileManager())
+        let file = environment.createXcodeFile(withPath: "File.swift", ofType: .source)
+        XCTAssertThrowsError(try environment.addFilesToXcodeProject(projectPath: "project", files: [file], toGroup: "group"))
     }
 }
