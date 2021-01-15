@@ -28,7 +28,7 @@ extension PredictionsTextToSpeechRequest {
         /// The default NetworkPolicy for the operation. The default value will be `auto`.
         public let defaultNetworkPolicy: DefaultNetworkPolicy
 
-        ///the voice type selected for synthesizing text to speech
+        /// The voice type selected for synthesizing text to speech
         public let voiceType: VoiceType?
 
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
