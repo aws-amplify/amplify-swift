@@ -7,7 +7,8 @@
 
 import Foundation
 
-typealias AmplifyCommandTaskResult = Result<String, AmplifyCommandError>
+typealias AmplifyCommandTaskSuccess = String
+typealias AmplifyCommandTaskResult = Result<AmplifyCommandTaskSuccess, AmplifyCommandError>
 typealias AmplifyCommandTaskExecutor<TaskArgs> = (AmplifyCommandEnvironment, TaskArgs) -> AmplifyCommandTaskResult
 
 enum AmplifyCommandTask<TaskArgs> {

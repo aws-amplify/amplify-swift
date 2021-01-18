@@ -7,9 +7,9 @@
 
 import Foundation
 
-/// An `AmplifyCommand` describes the shape of a command. A command it's just an abstraction and doesn't
+/// An `AmplifyCommand` describes the shape of a command. A command is just an abstraction and doesn't
 /// make any assumptions about neither the environment in which will be executed or the executor interface.
-/// It's the executor responsibility to provide the necessary arguments to the initializer of a conforming type.
+/// It's the executor's responsibility to provide the necessary arguments to the initializer of a conforming type.
 ///
 /// - `taskArgs`: type defining extra arguments that will be passed to each task
 /// - `tasks`: array of tasks whose a command is composed of
