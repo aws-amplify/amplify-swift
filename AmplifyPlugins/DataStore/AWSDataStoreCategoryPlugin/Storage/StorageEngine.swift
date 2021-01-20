@@ -204,10 +204,11 @@ final class StorageEngine: StorageEngineBehavior {
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
                           withId id: Model.Identifier,
+                          predicate: QueryPredicate? = nil,
                           completion: @escaping (DataStoreResult<M?>) -> Void) {
         let transactionResult = queryAndDeleteTransaction(modelType,
                                                           modelSchema: modelSchema,
-                                                          predicate: field("id").eq(id))
+                                                          deleteInput: .withId(id: id, predicate: predicate))
         let modelsFromTransactionResult = collapseMResult(transactionResult)
         let associatedModelsFromTransactionResult = resolveAssociatedModels(transactionResult)
 
@@ -264,7 +265,9 @@ final class StorageEngine: StorageEngineBehavior {
                           modelSchema: ModelSchema,
                           predicate: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>) {
-        let transactionResult = queryAndDeleteTransaction(modelType, modelSchema: modelSchema, predicate: predicate)
+        let transactionResult = queryAndDeleteTransaction(modelType,
+                                                          modelSchema: modelSchema,
+                                                          deleteInput: .withPredicate(predicate: predicate))
         let modelsFromTransactionResult = collapseMResult(transactionResult)
         let associatedModelsFromTransactionResult = resolveAssociatedModels(transactionResult)
 

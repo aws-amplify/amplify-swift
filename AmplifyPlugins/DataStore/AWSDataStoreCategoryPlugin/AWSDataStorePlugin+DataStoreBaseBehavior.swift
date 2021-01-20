@@ -110,16 +110,18 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func delete<M: Model>(_ modelType: M.Type,
                                  withId id: String,
+                                 where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) {
-        delete(modelType, modelSchema: modelType.schema, withId: id, completion: completion)
+        delete(modelType, modelSchema: modelType.schema, withId: id, where: predicate, completion: completion)
     }
 
     public func delete<M: Model>(_ modelType: M.Type,
                                  modelSchema: ModelSchema,
                                  withId id: String,
+                                 where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) {
         reinitStorageEngineIfNeeded()
-        storageEngine.delete(modelType, modelSchema: modelSchema, withId: id) { result in
+        storageEngine.delete(modelType, modelSchema: modelSchema, withId: id, predicate: predicate) { result in
             self.onDeleteCompletion(result: result, modelSchema: modelSchema, completion: completion)
         }
     }
@@ -135,8 +137,10 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) {
         reinitStorageEngineIfNeeded()
-        // TODO: handle query predicate like in the update flow
-        storageEngine.delete(type(of: model), modelSchema: modelSchema, withId: model.id) { result in
+        storageEngine.delete(type(of: model),
+                             modelSchema: modelSchema,
+                             withId: model.id,
+                             predicate: predicate) { result in
             self.onDeleteCompletion(result: result, modelSchema: modelSchema, completion: completion)
         }
     }

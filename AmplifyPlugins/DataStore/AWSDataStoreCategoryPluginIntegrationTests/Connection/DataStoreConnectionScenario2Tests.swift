@@ -185,12 +185,9 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
 
     func testDeleteAndGetProject() throws {
         try startAmplifyAndWaitForSync()
-        guard let team = saveTeam(name: "name") else {
-            XCTFail("Could not save team")
-            return
-        }
-        guard let project = saveProject(teamID: team.id, team: team) else {
-            XCTFail("Could not save project")
+        guard let team = saveTeam(name: "name"),
+              let project = saveProject(teamID: team.id, team: team) else {
+            XCTFail("Could not save team and project")
             return
         }
 
@@ -215,6 +212,113 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
             }
         }
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    func testDeleteWithValidCondition() throws {
+        try startAmplifyAndWaitForSync()
+        guard let team = saveTeam(name: "name"),
+              let project = saveProject(teamID: team.id, team: team) else {
+            XCTFail("Could not save team and project")
+            return
+        }
+
+        let deleteProjectSuccessful = expectation(description: "delete project")
+        Amplify.DataStore.delete(project, where: Project2.keys.team.eq(team.id)) { result in
+            switch result {
+            case .success:
+                deleteProjectSuccessful.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
+        let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
+        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+            switch result {
+            case .success(let project2):
+                XCTAssertNil(project2)
+                getProjectAfterDeleteCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    func testDeleteWithInvalidCondition() throws {
+        try startAmplifyAndWaitForSync()
+        guard let team = saveTeam(name: "name"),
+              let project = saveProject(teamID: team.id, team: team) else {
+            XCTFail("Could not save team and project")
+            return
+        }
+
+        let deleteProjectFailed = expectation(description: "delete project")
+        Amplify.DataStore.delete(project, where: Project2.keys.team.eq("invalidTeamId")) { result in
+            switch result {
+            case .success:
+                XCTFail("Should have failed")
+            case .failure(let error):
+                guard case .invalidCondition = error else {
+                    XCTFail("\(error)")
+                    return
+                }
+                deleteProjectFailed.fulfill()
+            }
+        }
+        wait(for: [deleteProjectFailed], timeout: TestCommonConstants.networkTimeout)
+        let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
+        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+            switch result {
+            case .success(let project2):
+                XCTAssertNotNil(project2)
+                getProjectAfterDeleteCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    func testDeleteAlreadyDeletedItemWithCondition() throws {
+        try startAmplifyAndWaitForSync()
+        guard let team = saveTeam(name: "name"),
+              let project = saveProject(teamID: team.id, team: team) else {
+            XCTFail("Could not save team and project")
+            return
+        }
+        let deleteProjectSuccessful = expectation(description: "delete project")
+        Amplify.DataStore.delete(project) { result in
+            switch result {
+            case .success:
+                deleteProjectSuccessful.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
+        let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
+        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+            switch result {
+            case .success(let project2):
+                XCTAssertNil(project2)
+                getProjectAfterDeleteCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
+
+        let deleteProjectSuccessful2 = expectation(description: "delete project")
+        Amplify.DataStore.delete(project, where: Project2.keys.teamID == team.id) { result in
+            switch result {
+            case .success:
+                deleteProjectSuccessful2.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [deleteProjectSuccessful2], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testListProjectsByTeamID() throws {

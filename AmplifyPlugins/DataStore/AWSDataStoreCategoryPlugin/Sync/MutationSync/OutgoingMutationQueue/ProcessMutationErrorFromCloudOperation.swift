@@ -306,7 +306,10 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             return
         }
 
-        storageAdapter.delete(untypedModelType: modelType, modelSchema: modelSchema, withId: id) { response in
+        storageAdapter.delete(untypedModelType: modelType,
+                              modelSchema: modelSchema,
+                              withId: id,
+                              predicate: nil) { response in
             switch response {
             case .failure(let dataStoreError):
                 let error = DataStoreError.unknown("Delete failed \(dataStoreError)", "")

@@ -72,8 +72,14 @@ class StorageEngineTestsBase: XCTestCase {
         return queryResult
     }
 
-    func deleteModelSynchronousOrFailOtherwise<M: Model>(modelType: M.Type, withId id: String, timeout: TimeInterval = 1) -> DataStoreResult<M> {
-        let result = deleteModelSynchronous(modelType: modelType, withId: id, timeout: timeout)
+    func deleteModelSynchronousOrFailOtherwise<M: Model>(modelType: M.Type,
+                                                         withId id: String,
+                                                         where predicate: QueryPredicate? = nil,
+                                                         timeout: TimeInterval = 1) -> DataStoreResult<M> {
+        let result = deleteModelSynchronous(modelType: modelType,
+                                            withId: id,
+                                            where: predicate,
+                                            timeout: timeout)
         switch result {
         case .success(let model):
             if let model = model {
@@ -86,11 +92,18 @@ class StorageEngineTestsBase: XCTestCase {
         }
     }
 
-    func deleteModelSynchronous<M: Model>(modelType: M.Type, withId id: String, timeout: TimeInterval = 1) -> DataStoreResult<M?> {
+    func deleteModelSynchronous<M: Model>(modelType: M.Type,
+                                          withId id: String,
+                                          where predicate: QueryPredicate? = nil,
+                                          timeout: TimeInterval = 1) -> DataStoreResult<M?> {
         let deleteFinished = expectation(description: "Delete Finished")
         var result: DataStoreResult<M?>?
 
-        storageEngine.delete(modelType, modelSchema: modelType.schema, withId: id, completion: { dResult in
+        storageEngine.delete(modelType,
+                             modelSchema: modelType.schema,
+                             withId: id,
+                             predicate: predicate,
+                             completion: { dResult in
             result = dResult
             deleteFinished.fulfill()
         })
