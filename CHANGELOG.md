@@ -1,5 +1,12 @@
 # Changelog
 ## Unreleased
+## 1.5.4 (2021-01-21)
+
+### Bug Fixes
+
+- **DataStore**: Generate mutation events for associatedModels (#987)
+- **DataStore**: support for QueryPredicateConstant.all for graphql queries (#1013)
+
 ## 1.5.3 (2021-01-09)
 
 ### Bug Fixes
