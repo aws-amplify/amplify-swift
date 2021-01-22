@@ -13,34 +13,19 @@ import AWSPluginsCore
 extension StorageEngine {
 
     enum DeleteInput {
-        case withId(id: Model.Identifier, predicate: QueryPredicate?)
+        case withId(id: Model.Identifier)
+        case withIdAndPredicate(id: Model.Identifier, predicate: QueryPredicate)
         case withPredicate(predicate: QueryPredicate)
 
         /// Returns a computed predicate based on the type of delete scenario it is.
         var predicate: QueryPredicate {
             switch self {
-            case .withId(let id, let predicate):
-                if let predicate = predicate {
-                    return field("id").eq(id).and(predicate)
-                } else {
-                    return field("id").eq(id)
-                }
+            case .withId(let id):
+                return field("id").eq(id)
+            case .withIdAndPredicate(let id, let predicate):
+                return field("id").eq(id).and(predicate)
             case .withPredicate(let predicate):
                 return predicate
-            }
-        }
-
-        /// Returns the `id` if the delete input is by `id` and contains `predicate`, return `nil` otherwise
-        var isDeleteByIdWithPredicate: Model.Identifier? {
-            switch self {
-            case .withId(let id, let predicate):
-                if predicate != nil {
-                    return id
-                } else {
-                    return nil
-                }
-            case .withPredicate:
-                return nil
             }
         }
     }
@@ -59,7 +44,7 @@ extension StorageEngine {
             }
 
             guard !queriedModels.isEmpty else {
-                guard let id = deleteInput.isDeleteByIdWithPredicate else {
+                guard case .withIdAndPredicate(let id, _) = deleteInput else {
                     // Query did not return any results, treat this as a successful no-op delete.
                     deletedResult = .success([M]())
                     return

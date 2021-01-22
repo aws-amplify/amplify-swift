@@ -206,9 +206,13 @@ final class StorageEngine: StorageEngineBehavior {
                           withId id: Model.Identifier,
                           predicate: QueryPredicate? = nil,
                           completion: @escaping (DataStoreResult<M?>) -> Void) {
+        var deleteInput = DeleteInput.withId(id: id)
+        if let predicate = predicate {
+            deleteInput = .withIdAndPredicate(id: id, predicate: predicate)
+        }
         let transactionResult = queryAndDeleteTransaction(modelType,
                                                           modelSchema: modelSchema,
-                                                          deleteInput: .withId(id: id, predicate: predicate))
+                                                          deleteInput: deleteInput)
         let modelsFromTransactionResult = collapseMResult(transactionResult)
         let associatedModelsFromTransactionResult = resolveAssociatedModels(transactionResult)
 
