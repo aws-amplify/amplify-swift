@@ -24,9 +24,11 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Environment(please complete the following information):**
- - Amplify Framework Version: [e.g. 0.10.0]
+ - Amplify Framework Version: [e.g. 1.5.3]
  - Dependency Manager: [e.g. Cocoapods, Carthage]
- - Swift Version : [e.g. 5.0]
+ - Swift Version: [e.g. 5.0]
+ - CLI Version: [e.g. 4.41.2, Run `amplify version`]
+ - Include any relevant log output under `~/.amplify/logs/amplify-cli-<issue-date>.log`
 
 **Device Information (please complete the following information):**
  - Device: [e.g. iPhone6, Simulator]
