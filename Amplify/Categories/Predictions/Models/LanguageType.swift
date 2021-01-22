@@ -130,7 +130,7 @@ public enum LanguageType: String {
     case taita = "dav"
     case german = "de"
     case delaware = "del"
-    case slave = "den"
+    case slave = "den" // swiftlint:disable:this inclusive_language
     case dogrib = "dgr"
     case dinka = "din"
     case zarma = "dje"

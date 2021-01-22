@@ -42,9 +42,10 @@ struct PersistableHelper {
     ///   - lhs: a reference to a Persistable object
     ///   - rhs: another reference
     /// - Returns: `true` in case both values are equal or `false` otherwise
-    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
-    ///   by host applications. The behavior of this may change without warning. Though it is not used by host application making any change
-    ///   to these `public` types should be backward compatible, otherwise it will be a breaking change.
+    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
+    ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
+    ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
+    ///   breaking change.
     public static func isEqual(_ lhs: Persistable?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return true
@@ -69,7 +70,7 @@ struct PersistableHelper {
         }
     }
 
-    //We are promoting Int to Double in the case where we are comparing these two types
+    // We are promoting Int to Double in the case where we are comparing these two types
     public static func isEqual(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return true
@@ -98,13 +99,13 @@ struct PersistableHelper {
         }
     }
 
-    //We are promoting Int to Double in the case where we are comparing these two types
+    // We are promoting Int to Double in the case where we are comparing these two types
     public static func isLessOrEqual(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return true
         }
         switch (lhs, rhs) {
-        //case Bool Removed
+        // case Bool Removed
         case let (lhs, rhs) as (Temporal.Date, Temporal.Date):
             return lhs <= rhs
         case let (lhs, rhs) as (Temporal.DateTime, Temporal.DateTime):
@@ -126,13 +127,13 @@ struct PersistableHelper {
         }
     }
 
-    //We are promoting Int to Double in the case where we are comparing these two types
+    // We are promoting Int to Double in the case where we are comparing these two types
     public static func isLessThan(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return false
         }
         switch (lhs, rhs) {
-        //case Bool Removed
+        // case Bool Removed
         case let (lhs, rhs) as (Temporal.Date, Temporal.Date):
             return lhs < rhs
         case let (lhs, rhs) as (Temporal.DateTime, Temporal.DateTime):
@@ -154,13 +155,13 @@ struct PersistableHelper {
         }
     }
 
-    //We are promoting Int to Double in the case where we are comparing these two types
+    // We are promoting Int to Double in the case where we are comparing these two types
     public static func isGreaterOrEqual(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return true
         }
         switch (lhs, rhs) {
-        //case Bool Removed
+        // case Bool Removed
         case let (lhs, rhs) as (Temporal.Date, Temporal.Date):
             return lhs >= rhs
         case let (lhs, rhs) as (Temporal.DateTime, Temporal.DateTime):
@@ -182,13 +183,13 @@ struct PersistableHelper {
         }
     }
 
-    //We are promoting Int to Double in the case where we are comparing these two types
+    // We are promoting Int to Double in the case where we are comparing these two types
     public static func isGreaterThan(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return false
         }
         switch (lhs, rhs) {
-        //case Bool Removed
+        // case Bool Removed
         case let (lhs, rhs) as (Temporal.Date, Temporal.Date):
             return lhs > rhs
         case let (lhs, rhs) as (Temporal.DateTime, Temporal.DateTime):
