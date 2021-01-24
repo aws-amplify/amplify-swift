@@ -9,6 +9,10 @@
 import AWSMobileClient
 
 class MockAWSMobileClient: AWSMobileClientBehavior {
+    func signOut(uiwindow: UIWindow, options: SignOutOptions, completionHandler: @escaping ((Error?) -> Void)) {
+
+    }
+
 
     var signupMockResult: Result<SignUpResult, Error>?
     var confirmSignUpMockResult: Result<SignUpResult, Error>?
@@ -85,6 +89,12 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     func showSignIn(navigationController: UINavigationController,
                     signInUIOptions: SignInUIOptions,
                     hostedUIOptions: HostedUIOptions?,
+                    _ completionHandler: @escaping (UserState?, Error?) -> Void) {
+        prepareResult(mockResult: showSignInMockResult, completionHandler: completionHandler)
+    }
+
+    func showSignIn(uiwindow: UIWindow,
+                    hostedUIOptions: HostedUIOptions,
                     _ completionHandler: @escaping (UserState?, Error?) -> Void) {
         prepareResult(mockResult: showSignInMockResult, completionHandler: completionHandler)
     }

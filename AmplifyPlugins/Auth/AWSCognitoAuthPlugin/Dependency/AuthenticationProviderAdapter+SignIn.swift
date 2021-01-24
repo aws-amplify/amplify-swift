@@ -8,10 +8,12 @@
 import Amplify
 import AWSMobileClient
 
+typealias SigInResultCompletion = (Result<AuthSignInResult, AuthError>) -> Void
+
 extension AuthenticationProviderAdapter {
 
     func signIn(request: AuthSignInRequest,
-                completionHandler: @escaping (Result<AuthSignInResult, AuthError>) -> Void) {
+                completionHandler: @escaping SigInResultCompletion) {
 
         // AuthSignInRequest.validate method should have already validated the username and the below line
         // is just to avoid optional unwrapping.
@@ -47,6 +49,7 @@ extension AuthenticationProviderAdapter {
                 completionHandler(.failure(error))
                 return
             }
+            AWSCognitoAuthPluginUserDefaults.storePreferredBrowserSession(privateSessionPrefered: false)
             let authResult = AuthSignInResult(nextStep: signInNextStep)
             completionHandler(.success(authResult))
         }
@@ -54,7 +57,7 @@ extension AuthenticationProviderAdapter {
     }
 
     func signInWithWebUI(request: AuthWebUISignInRequest,
-                         completionHandler: @escaping (Result<AuthSignInResult, AuthError>) -> Void) {
+                         completionHandler: @escaping SigInResultCompletion) {
 
         let window = request.presentationAnchor
         DispatchQueue.main.async { [weak self] in
@@ -67,7 +70,7 @@ extension AuthenticationProviderAdapter {
     }
 
     func confirmSignIn(request: AuthConfirmSignInRequest,
-                       completionHandler: @escaping (Result<AuthSignInResult, AuthError>) -> Void) {
+                       completionHandler: @escaping SigInResultCompletion) {
 
         let userAttributes = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)?.userAttributes ?? []
         let mobileClientUserAttributes = userAttributes.reduce(into: [String: String]()) {
@@ -108,16 +111,17 @@ extension AuthenticationProviderAdapter {
     // MARK: - Internal methods
     private func showSignInWebView(window: UIWindow,
                                    request: AuthWebUISignInRequest,
-                                   completionHandler: @escaping (Result<AuthSignInResult, AuthError>) -> Void) {
+                                   completionHandler: @escaping SigInResultCompletion) {
 
         // Stop the execution here if we are not running on the main thread.
         // There is no point on returning an error back to the developer, because
         // they do not control how the UI is presented.
         dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
 
-        let idpIdentifier = (request.options.pluginOptions as? AWSAuthWebUISignInOptions)?.idpIdentifier
-        let federationProviderName = (request.options.pluginOptions as? AWSAuthWebUISignInOptions)?
-            .federationProviderName
+        let pluginOptions = request.options.pluginOptions as? AWSAuthWebUISignInOptions
+        let idpIdentifier = pluginOptions?.idpIdentifier
+        let federationProviderName = pluginOptions?.federationProviderName
+        let preferPrivateSession = pluginOptions?.preferPrivateSession ?? false
         let hostedUIOptions = HostedUIOptions(disableFederation: false,
                                               scopes: request.options.scopes,
                                               identityProvider: request.authProvider?.toCognitoHostedUIString(),
@@ -125,8 +129,25 @@ extension AuthenticationProviderAdapter {
                                               federationProviderName: federationProviderName,
                                               signInURIQueryParameters: request.options.signInQueryParameters,
                                               tokenURIQueryParameters: request.options.tokenQueryParameters,
-                                              signOutURIQueryParameters: request.options.signOutQueryParameters)
+                                              signOutURIQueryParameters: request.options.signOutQueryParameters,
+                                              signInPrivateSession: preferPrivateSession)
 
+        if #available(iOS 13, *) {
+            launchASWebAuthenticationSession(window: window,
+                                             hostedUIOptions: hostedUIOptions,
+                                             preferPrivateSession: preferPrivateSession,
+                                             completionHandler: completionHandler)
+        } else {
+            launchSFAuthenticationSession(window: window,
+                                          hostedUIOptions: hostedUIOptions,
+                                          completionHandler: completionHandler)
+        }
+
+    }
+
+    private func launchSFAuthenticationSession(window: UIWindow,
+                                               hostedUIOptions: HostedUIOptions,
+                                               completionHandler: @escaping SigInResultCompletion) {
         let navController = ModalPresentingNavigationController(rootViewController: UIViewController())
         navController.isNavigationBarHidden = true
         navController.modalPresentationStyle = .overCurrentContext
@@ -146,26 +167,47 @@ extension AuthenticationProviderAdapter {
                 DispatchQueue.main.async {
                     navController.dismiss(animated: false) {
                         guard let self = self else { return }
-
-                        if let error = error {
-                            let authError = self.convertSignInUIErrorToAuthError(error)
-                            completionHandler(.failure(authError))
-                            return
-                        }
-
-                        guard let state = state, state == .signedIn else {
-
-                            let error = AuthError.unknown("signInWithWebUI did not produce a valid result.")
-                            completionHandler(.failure(error))
-                            return
-                        }
-                        let authResult = AuthSignInResult(nextStep: .done)
-                        completionHandler(.success(authResult))
+                        self.handleHostedUIResult(state: state, error: error, completionHandler: completionHandler)
                     }
                 }
             }
-
         })
+    }
+
+    @available(iOS 13, *)
+    private func launchASWebAuthenticationSession(window: UIWindow,
+                                                  hostedUIOptions: HostedUIOptions,
+                                                  preferPrivateSession: Bool,
+                                                  completionHandler: @escaping SigInResultCompletion) {
+        awsMobileClient.showSignIn(uiwindow: window,
+                                   hostedUIOptions: hostedUIOptions) { [weak self] state, error in
+            guard let self = self else { return }
+            self.handleHostedUIResult(state: state,
+                                      error: error,
+                                      preferPrivateSession: preferPrivateSession,
+                                      completionHandler: completionHandler)
+        }
+    }
+
+    private func handleHostedUIResult(state: UserState?,
+                                      error: Error?,
+                                      preferPrivateSession: Bool = false,
+                                      completionHandler: @escaping SigInResultCompletion) {
+        if let error = error {
+            let authError = convertSignInUIErrorToAuthError(error)
+            completionHandler(.failure(authError))
+            return
+        }
+
+        guard let state = state, state == .signedIn else {
+
+            let error = AuthError.unknown("signInWithWebUI did not produce a valid result.")
+            completionHandler(.failure(error))
+            return
+        }
+        AWSCognitoAuthPluginUserDefaults.storePreferredBrowserSession(privateSessionPrefered: preferPrivateSession)
+        let authResult = AuthSignInResult(nextStep: .done)
+        completionHandler(.success(authResult))
     }
 
     private func convertSignInErrorToResult(_ error: Error) -> Result<AuthSignInResult, AuthError> {

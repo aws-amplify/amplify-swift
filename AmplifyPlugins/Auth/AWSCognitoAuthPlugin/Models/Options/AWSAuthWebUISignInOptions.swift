@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Amplify
 
 public struct AWSAuthWebUISignInOptions {
 
@@ -24,8 +25,28 @@ public struct AWSAuthWebUISignInOptions {
     /// are using Auth0, specify the `federationProviderName` as <your_domain>.auth0.com.
     public let federationProviderName: String?
 
-    public init(idpIdentifier: String? = nil, federationProviderName: String? = nil) {
+    /// Start the webUI signin in a private browser session.
+    ///
+    /// Internally this sets the ASWebAuthentication session's prefersEphemeralWebBrowserSession = true.
+    /// Note that this value internally set `prefersEphemeralWebBrowserSession` in ASWebAuthenticationSession.
+    /// As per Apple documentation, Whether the request is honored depends on the user’s default web browser.
+    /// Safari always honors the request.
+    public let preferPrivateSession: Bool
+
+    public init(idpIdentifier: String? = nil,
+                federationProviderName: String? = nil,
+                preferPrivateSession: Bool = false) {
         self.idpIdentifier = idpIdentifier
         self.federationProviderName = federationProviderName
+        self.preferPrivateSession = preferPrivateSession
+    }
+}
+
+extension AuthWebUISignInRequest {
+
+    public static func optionWithPrivateSession() -> AuthWebUISignInOperation.Request.Options {
+        let pluginOptions = AWSAuthWebUISignInOptions(preferPrivateSession: true)
+        let options = AuthWebUISignInOperation.Request.Options(pluginOptions: pluginOptions)
+        return options
     }
 }
