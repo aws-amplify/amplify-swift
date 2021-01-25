@@ -60,6 +60,7 @@
 		217D622B2579E15F009F0639 /* DataStoreConnectionScenario5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D62282579E15F009F0639 /* DataStoreConnectionScenario5Tests.swift */; };
 		217D622C2579E15F009F0639 /* DataStoreConnectionScenario4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D62292579E15F009F0639 /* DataStoreConnectionScenario4Tests.swift */; };
 		217D622D2579E15F009F0639 /* DataStoreConnectionScenario3Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D622A2579E15F009F0639 /* DataStoreConnectionScenario3Tests.swift */; };
+		219F796A25B8D268007107D3 /* StorageEngineTestsDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219F796925B8D268007107D3 /* StorageEngineTestsDelete.swift */; };
 		21B3AD27242BB58000C7E1DA /* ProcessMutationErrorFromCloudOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B3AD26242BB58000C7E1DA /* ProcessMutationErrorFromCloudOperationTests.swift */; };
 		21FDBBDB2587DB7A0086FCDC /* DataStoreConnectionScenario6Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FDBBDA2587DB7A0086FCDC /* DataStoreConnectionScenario6Tests.swift */; };
 		6B01B71D23A4615900AD0E97 /* SyncMutationToCloudOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B01B71C23A4615900AD0E97 /* SyncMutationToCloudOperationTests.swift */; };
@@ -304,6 +305,7 @@
 		217D62282579E15F009F0639 /* DataStoreConnectionScenario5Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario5Tests.swift; sourceTree = "<group>"; };
 		217D62292579E15F009F0639 /* DataStoreConnectionScenario4Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario4Tests.swift; sourceTree = "<group>"; };
 		217D622A2579E15F009F0639 /* DataStoreConnectionScenario3Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario3Tests.swift; sourceTree = "<group>"; };
+		219F796925B8D268007107D3 /* StorageEngineTestsDelete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEngineTestsDelete.swift; sourceTree = "<group>"; };
 		21B3AD26242BB58000C7E1DA /* ProcessMutationErrorFromCloudOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessMutationErrorFromCloudOperationTests.swift; sourceTree = "<group>"; };
 		21FDBBDA2587DB7A0086FCDC /* DataStoreConnectionScenario6Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario6Tests.swift; sourceTree = "<group>"; };
 		280D7C45F839531215A44B34 /* Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -701,6 +703,7 @@
 			isa = PBXGroup;
 			children = (
 				6BE9D6F225A665EA00AB5C9A /* StorageEngineTestsBase.swift */,
+				219F796925B8D268007107D3 /* StorageEngineTestsDelete.swift */,
 				6B7743E6259071C8001469F5 /* StorageEngineTestsHasMany.swift */,
 				6BE9D6F025A6643100AB5C9A /* StorageEngineTestsHasOne.swift */,
 				6BE9D73D25A6800100AB5C9A /* StorageEngineTestsManyToMany.swift */,
@@ -1691,6 +1694,7 @@
 				2149E5F9238869CF00873955 /* QueryPredicateTests.swift in Sources */,
 				FAC010F2239570D300FCE7BB /* SyncEngineTestBase.swift in Sources */,
 				2149E5FA238869CF00873955 /* APICategoryDependencyTests.swift in Sources */,
+				219F796A25B8D268007107D3 /* StorageEngineTestsDelete.swift in Sources */,
 				FA4B8E942391C2CD009FC10F /* MutationIngesterConflictResolutionTests.swift in Sources */,
 				FA4A9557239ACAD7008E876E /* ModelReconciliationQueueBehaviorTests.swift in Sources */,
 				6BE7431C2575B8B000009FCB /* AWSAPICategoryPluginTests.swift in Sources */,

@@ -1,23 +1,30 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
 extension Restaurant {
-  // MARK: - CodingKeys 
+  // MARK: - CodingKeys
    public enum CodingKeys: String, ModelKey {
     case id
     case restaurantName
     case menus
   }
-  
+
   public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
+  //  MARK: - ModelSchema
+
   public static let schema = defineSchema { model in
     let restaurant = Restaurant.keys
-    
+
     model.pluralName = "Restaurants"
-    
+
     model.fields(
       .id(),
       .field(restaurant.restaurantName, is: .required, ofType: .string),

@@ -22,6 +22,7 @@ protocol ModelStorageBehavior {
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
                           withId id: Model.Identifier,
+                          predicate: QueryPredicate?,
                           completion: @escaping DataStoreCallback<M?>)
 
     func delete<M: Model>(_ modelType: M.Type,

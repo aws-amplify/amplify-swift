@@ -1,9 +1,16 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
 extension Menu {
-  // MARK: - CodingKeys 
+  // MARK: - CodingKeys
    public enum CodingKeys: String, ModelKey {
     case id
     case name
@@ -11,15 +18,15 @@ extension Menu {
     case restaurant
     case dishes
   }
-  
+
   public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
+  //  MARK: - ModelSchema
+
   public static let schema = defineSchema { model in
     let menu = Menu.keys
-    
+
     model.pluralName = "Menus"
-    
+
     model.fields(
       .id(),
       .field(menu.name, is: .required, ofType: .string),

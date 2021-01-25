@@ -11,9 +11,28 @@ import Foundation
 import AWSPluginsCore
 
 extension StorageEngine {
+
+    enum DeleteInput {
+        case withId(id: Model.Identifier)
+        case withIdAndPredicate(id: Model.Identifier, predicate: QueryPredicate)
+        case withPredicate(predicate: QueryPredicate)
+
+        /// Returns a computed predicate based on the type of delete scenario it is.
+        var predicate: QueryPredicate {
+            switch self {
+            case .withId(let id):
+                return field("id").eq(id)
+            case .withIdAndPredicate(let id, let predicate):
+                return field("id").eq(id).and(predicate)
+            case .withPredicate(let predicate):
+                return predicate
+            }
+        }
+    }
+
     func queryAndDeleteTransaction<M: Model>(_ modelType: M.Type,
                                              modelSchema: ModelSchema,
-                                             predicate: QueryPredicate) -> DataStoreResult<([M], [Model])> {
+                                             deleteInput: DeleteInput) -> DataStoreResult<([M], [Model])> {
         var queriedResult: DataStoreResult<[M]>?
         var deletedResult: DataStoreResult<[M]>?
         var associatedModels: [Model] = []
@@ -23,15 +42,39 @@ extension StorageEngine {
             guard case .success(let queriedModels) = queryResult else {
                 return
             }
+
+            guard !queriedModels.isEmpty else {
+                guard case .withIdAndPredicate(let id, _) = deleteInput else {
+                    // Query did not return any results, treat this as a successful no-op delete.
+                    deletedResult = .success([M]())
+                    return
+                }
+
+                // Query using the computed predicate did not return any results, check if model actually exists.
+                do {
+                    if try self.storageAdapter.exists(modelSchema, withId: id, predicate: nil) {
+                        queriedResult = .failure(
+                            DataStoreError.invalidCondition(
+                                "Delete failed due to condition did not match existing model instance.",
+                                "Subsequent deletes will continue to fail until the model instance is updated."))
+                    } else {
+                        deletedResult = .success([M]())
+                    }
+                } catch {
+                    queriedResult = .failure(DataStoreError.invalidOperation(causedBy: error))
+                }
+
+                return
+            }
+
             let modelIds = queriedModels.map {$0.id}
             associatedModels = self.recurseQueryAssociatedModels(modelSchema: modelSchema, ids: modelIds)
-
             let deleteCompletionWrapper: DataStoreCallback<[M]> = { deleteResult in
                 deletedResult = deleteResult
             }
             self.storageAdapter.delete(modelType,
                                        modelSchema: modelSchema,
-                                       predicate: predicate,
+                                       predicate: deleteInput.predicate,
                                        completion: deleteCompletionWrapper)
         }
 
@@ -39,7 +82,7 @@ extension StorageEngine {
             try storageAdapter.transaction {
                 storageAdapter.query(modelType,
                                      modelSchema: modelSchema,
-                                     predicate: predicate,
+                                     predicate: deleteInput.predicate,
                                      sort: nil,
                                      paginationInput: nil,
                                      completion: queryCompletionBlock)
@@ -48,7 +91,9 @@ extension StorageEngine {
             return .failure(causedBy: error)
         }
 
-        return collapseResults(queryResult: queriedResult, deleteResult: deletedResult, associatedModels: associatedModels)
+        return collapseResults(queryResult: queriedResult,
+                               deleteResult: deletedResult,
+                               associatedModels: associatedModels)
     }
 
     func recurseQueryAssociatedModels(modelSchema: ModelSchema, ids: [Model.Identifier]) -> [Model] {

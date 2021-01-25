@@ -29,8 +29,12 @@ struct DeleteStatement: SQLStatement {
         self.conditionStatement = conditionStatement
     }
 
-    init(modelSchema: ModelSchema, withId id: Model.Identifier) {
-        self.init(modelSchema: modelSchema, predicate: field("id") == id)
+    init(modelSchema: ModelSchema, withId id: Model.Identifier, predicate: QueryPredicate? = nil) {
+        var queryPredicate: QueryPredicate = field("id").eq(id)
+        if let predicate = predicate {
+            queryPredicate = field("id").eq(id).and(predicate)
+        }
+        self.init(modelSchema: modelSchema, predicate: queryPredicate)
     }
 
     init(model: Model) {
