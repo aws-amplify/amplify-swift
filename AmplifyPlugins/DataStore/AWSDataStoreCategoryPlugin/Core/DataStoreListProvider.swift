@@ -10,7 +10,7 @@ import Amplify
 import Combine
 
 /// `DataStoreList<ModelType>` is a DataStore-aware custom `Collection` that is capable of loading
-/// records from the `DataStore` on-demand. This is specially useful when dealing with
+/// records from the `DataStore` on-demand. This is especially useful when dealing with
 /// Model associations that need to be lazy loaded.
 ///
 /// When using `DataStore.query(_ modelType:)` some models might contain associations

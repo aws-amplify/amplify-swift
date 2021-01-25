@@ -28,6 +28,7 @@ extension ModelListDecoderRegistry {
         listDecoders.set([ModelListDecoder.Type]())
     }
 }
+
 /// `ModelListDecoder` provides decoding and list functionality.
 ///
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used

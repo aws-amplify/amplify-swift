@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-/// `List<ModelType>` is a custom `Collection` that is capable of loading records from a data source. This is specially
+/// `List<ModelType>` is a custom `Collection` that is capable of loading records from a data source. This is especially
 /// useful when dealing with Model associations that need to be lazy loaded. Lazy loading is performed when you access
 /// the `Collection` methods by retrieving the data from the underlying data source and then stored into this object,
 /// before returning the data to you. Consumers must be aware that multiple calls to the data source and then stored
@@ -132,8 +132,6 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
     /// `limit` is currently not a supported API.
     @available(*, deprecated, message: "Not supported.")
     public func limit(_ limit: Int) -> Self {
-        // TODO handle query with limit
-        loadedState = .notLoaded
         return self
     }
 
