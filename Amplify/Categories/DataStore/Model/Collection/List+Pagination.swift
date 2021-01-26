@@ -10,7 +10,7 @@ import Foundation
 extension List {
 
     /// Check if there is subsequent data to retrieve. If true, the next page can be retrieved using
-    /// `getNextPage(completion:)`. Calling this will load the underlying elements from the data source if not yet
+    /// `getNextPage(completion:)`. Calling `hasNextPage()` will load the underlying elements from the data source if not yet
     /// loaded before.
     public func hasNextPage() -> Bool {
         switch loadedState {
@@ -29,8 +29,8 @@ extension List {
         }
     }
 
-    /// Retrieve the next page as a new in-memory List object. Calling this will load the underlying elements from the
-    /// data source if not yet loaded before
+    /// Retrieve the next page as a new in-memory List object. Calling `getNextPage(completion:)` will load the
+    /// underlying elements of the receiver from the data source if not yet loaded before
     public func getNextPage(completion: @escaping (Result<List<Element>, CoreError>) -> Void) {
         switch loadedState {
         case .loaded:

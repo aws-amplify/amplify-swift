@@ -361,6 +361,7 @@
 		219A889F23EE01A700BBC5F2 /* RESTWithUserPoolIntegrationTests-amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "RESTWithUserPoolIntegrationTests-amplifyconfiguration.json"; sourceTree = "<group>"; };
 		219A88A423EE054000BBC5F2 /* RESTWithUserPoolIntegrationTests-credentials.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "RESTWithUserPoolIntegrationTests-credentials.json"; sourceTree = "<group>"; };
 		219A88A623EE05C200BBC5F2 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		219F7B1B25BF92C6007107D3 /* AWSAPIPlugin.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = AWSAPIPlugin.md; sourceTree = "<group>"; };
 		21A3EFC523A946580095D8E6 /* GraphQLWithUserPoolIntegrationTests-credentials.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "GraphQLWithUserPoolIntegrationTests-credentials.json"; sourceTree = "<group>"; };
 		21A3FDBA2464BB5F00E76120 /* GraphQLAuthDirectiveIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLAuthDirectiveIntegrationTests.swift; sourceTree = "<group>"; };
 		21A4EEF7259E38B500E1047D /* AppSyncListDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncListDecoder.swift; sourceTree = "<group>"; };
@@ -836,6 +837,7 @@
 		21D7A08B237B54D90057D00D /* AWSAPICategoryPlugin */ = {
 			isa = PBXGroup;
 			children = (
+				219F7B1B25BF92C6007107D3 /* AWSAPIPlugin.md */,
 				21D7A09A237B54D90057D00D /* AWSAPIPlugin.swift */,
 				6B382B442538E53700906593 /* AWSAPIPlugin+APIAuthProviderFactoryBehavior.swift */,
 				21D7A098237B54D90057D00D /* AWSAPIPlugin+Configure.swift */,

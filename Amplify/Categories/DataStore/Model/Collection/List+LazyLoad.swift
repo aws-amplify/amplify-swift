@@ -28,7 +28,7 @@ extension List {
     /// has already been initialized and calling this method will have no effect.
     public func fetch(_ completion: @escaping (Result<Void, CoreError>) -> Void) {
         guard case .notLoaded = loadedState else {
-            completion(.success(()))
+            completion(.successfulVoid)
             return
         }
 

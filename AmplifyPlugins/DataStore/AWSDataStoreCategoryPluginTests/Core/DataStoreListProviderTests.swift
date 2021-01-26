@@ -163,4 +163,29 @@ class DataStoreListProviderTests: XCTestCase {
             return
         }
     }
+
+    func testHasNextPageAlwaysReturnsFalse() {
+        let elements = [Post4(title: "title"), Post4(title: "title")]
+        let provider = DataStoreListProvider<Post4>(elements)
+        XCTAssertFalse(provider.hasNextPage())
+    }
+
+    func testGetNextPageAlwaysReturnsFailure() {
+        let elements = [Post4(title: "title"), Post4(title: "title")]
+        let provider = DataStoreListProvider<Post4>(elements)
+        let getNextPageComplete = expectation(description: "getNextPage completed")
+        provider.getNextPage { result in
+            switch result {
+            case .success:
+                XCTFail("Should have failed")
+            case .failure(let coreError):
+                guard case .clientValidation = coreError else {
+                    XCTFail("Should be clientValidation error")
+                    return
+                }
+                getNextPageComplete.fulfill()
+            }
+        }
+        wait(for: [getNextPageComplete], timeout: 1)
+    }
 }

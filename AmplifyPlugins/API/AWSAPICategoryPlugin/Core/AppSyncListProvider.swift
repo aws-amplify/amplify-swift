@@ -164,9 +164,6 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
         }
     }
 
-    /// Check if there is subsequent data to retrieve. This method always returns false if the underlying provider is
-    /// not loaded. Make sure the underlying data is loaded by calling `load(completion)` before calling this method.
-    /// If true, the next page can be retrieved using `getNextPage(completion:)`.
     public func hasNextPage() -> Bool {
         switch loadedState {
         case .loaded(_, let nextToken, _):
@@ -176,8 +173,6 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
         }
     }
 
-    /// Retrieves the next page as a new in-memory List object asynchronously. Make sure the underlying data is loaded
-    /// by calling `load(completion)` and `hasNextPage()` returns true.
     public func getNextPage(completion: @escaping (Result<List<Element>, CoreError>) -> Void) {
         guard case .loaded(_, let nextTokenOptional, let filter) = loadedState else {
             completion(.failure(.clientValidation("""

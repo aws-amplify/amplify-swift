@@ -58,10 +58,11 @@ extension GraphQLResponseDecoder {
     }
 
     private func getVariablesJSON() throws -> [String: JSONValue]? {
-        if let variables = request.variables {
-            let variablesData = try JSONSerialization.data(withJSONObject: variables)
-            return try decoder.decode([String: JSONValue].self, from: variablesData)
+        guard let variables = request.variables else {
+            return nil
         }
-        return nil
+
+        let variablesData = try JSONSerialization.data(withJSONObject: variables)
+        return try decoder.decode([String: JSONValue].self, from: variablesData)
     }
 }

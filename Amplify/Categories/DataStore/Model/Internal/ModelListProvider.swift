@@ -34,8 +34,8 @@ public protocol ModelListProvider {
     /// If true, the next page can be retrieved using `getNextPage(completion:)`.
     func hasNextPage() -> Bool
 
-    /// Retrieves the next page as a new in-memory List object asynchronously. Make sure the underlying data is loaded
-    /// by calling `load(completion)` and `hasNextPage()` returns true.
+    /// Asynchronously retrieve the next page as a new in-memory List object. Returns a failure if there
+    /// is no next page of results. You can validate whether the list has another page with `hasNextPage()`.
     func getNextPage(completion: @escaping (Result<List<Element>, CoreError>) -> Void)
 }
 

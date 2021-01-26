@@ -12,12 +12,6 @@ public struct AppSyncModelMetadata: Codable {
     let appSyncAssociatedId: String
     let appSyncAssociatedField: String
     let apiName: String?
-
-    init(associatedId: String, associatedField: String, apiName: String?) {
-        self.appSyncAssociatedId = associatedId
-        self.appSyncAssociatedField = associatedField
-        self.apiName = apiName
-    }
 }
 
 public struct AppSyncModelMetadataUtils {
@@ -81,9 +75,9 @@ public struct AppSyncModelMetadataUtils {
             if modelField.isArray && modelField.hasAssociation,
                let associatedField = modelField.associatedField,
                modelJSON[modelField.name] == nil {
-                let appSyncModelMetadata = AppSyncModelMetadata(associatedId: id,
-                                                         associatedField: associatedField.name,
-                                                         apiName: apiName)
+                let appSyncModelMetadata = AppSyncModelMetadata(appSyncAssociatedId: id,
+                                                                appSyncAssociatedField: associatedField.name,
+                                                                apiName: apiName)
                 if let serializedMetadata = try? encoder.encode(appSyncModelMetadata),
                    let metadataJSON = try? decoder.decode(JSONValue.self, from: serializedMetadata) {
                     modelJSON.updateValue(metadataJSON, forKey: modelField.name)

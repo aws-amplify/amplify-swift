@@ -93,7 +93,9 @@ class AppSyncListProviderTests: XCTestCase {
     }
 
     func testInitWithModelMetadataShouldBeNotLoadedState() throws {
-        let modelMetadata = AppSyncModelMetadata(associatedId: "postId", associatedField: "post", apiName: "apiName")
+        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
+                                                 appSyncAssociatedField: "post",
+                                                 apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded(let associatedId, let associatedField) = provider.loadedState else {
             XCTFail("Should be in not loaded state")
@@ -133,7 +135,9 @@ class AppSyncListProviderTests: XCTestCase {
                 listener?(event)
                 return nil
         }
-        let modelMetadata = AppSyncModelMetadata(associatedId: "postId", associatedField: "post", apiName: "apiName")
+        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
+                                                 appSyncAssociatedField: "post",
+                                                 apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -167,7 +171,9 @@ class AppSyncListProviderTests: XCTestCase {
                 listener?(event)
                 return nil
         }
-        let modelMetadata = AppSyncModelMetadata(associatedId: "postId", associatedField: "post", apiName: "apiName")
+        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
+                                                 appSyncAssociatedField: "post",
+                                                 apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -229,7 +235,9 @@ class AppSyncListProviderTests: XCTestCase {
                 listener?(event)
                 return nil
         }
-        let modelMetadata = AppSyncModelMetadata(associatedId: "postId", associatedField: "post", apiName: "apiName")
+        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
+                                                 appSyncAssociatedField: "post",
+                                                 apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -268,7 +276,9 @@ class AppSyncListProviderTests: XCTestCase {
                 listener?(event)
                 return nil
         }
-        let modelMetadata = AppSyncModelMetadata(associatedId: "postId", associatedField: "post", apiName: "apiName")
+        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
+                                                 appSyncAssociatedField: "post",
+                                                 apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -303,7 +313,9 @@ class AppSyncListProviderTests: XCTestCase {
                 listener?(event)
                 return nil
         }
-        let modelMetadata = AppSyncModelMetadata(associatedId: "postId", associatedField: "post", apiName: "apiName")
+        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
+                                                 appSyncAssociatedField: "post",
+                                                 apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -349,7 +361,9 @@ class AppSyncListProviderTests: XCTestCase {
                 listener?(event)
                 return nil
         }
-        let modelMetadata = AppSyncModelMetadata(associatedId: "postId", associatedField: "post", apiName: "apiName")
+        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
+                                                 appSyncAssociatedField: "post",
+                                                 apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
