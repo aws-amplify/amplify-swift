@@ -1,5 +1,12 @@
 # Changelog
 ## Unreleased
+## 1.5.5 (2021-01-26)
+
+### Bug Fixes
+
+- **AWSAPIPlugin**: Update dependencies to consume AppSyncRealTimeClient race condition fix (#1038)
+- **datastore**: delete model with predicate (#1030)
+
 ## 1.5.4 (2021-01-21)
 
 ### Bug Fixes
