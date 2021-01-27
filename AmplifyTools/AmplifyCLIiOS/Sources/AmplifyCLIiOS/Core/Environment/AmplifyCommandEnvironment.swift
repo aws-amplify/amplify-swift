@@ -35,6 +35,9 @@ protocol AmplifyCommandEnvironmentFileManager {
 
     /// Returns true if directory at `atPath` relative to `basePath` exists
     func directoryExists(atPath dirPath: String) -> Bool
+
+    /// Returns true if file at `atPath` relative to `basePath` exists
+    func fileExists(atPath filePath: String) -> Bool
 }
 
 /// Collection of Xcode utilities

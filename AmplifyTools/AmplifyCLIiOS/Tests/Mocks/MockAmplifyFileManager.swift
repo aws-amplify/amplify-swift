@@ -8,6 +8,11 @@
 import Foundation
 
 class MockAmplifyFileManager: Mock, AmplifyFileManager {
+    func fileExists(atPath filePath: String) -> Bool {
+        captureCall("fileExists")
+        return true
+    }
+
     func resolveHomeDirectoryIn(path: String) -> String {
         captureCall("resolveHomeDirectoryIn")
         return path

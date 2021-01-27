@@ -14,6 +14,7 @@ protocol AmplifyFileManager {
     func createDirectory(at url: URL, withIntermediateDirectories: Bool) throws
     func createFile(atPath: String, contents: Data?) -> Bool
     func directoryExists(atPath: String) -> Bool
+    func fileExists(atPath filePath: String) -> Bool
     func contentsOfDirectory(atPath: String) throws -> [String]
     func glob(pattern: String) -> [String]
 }

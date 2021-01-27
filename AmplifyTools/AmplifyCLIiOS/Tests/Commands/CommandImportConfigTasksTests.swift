@@ -41,11 +41,35 @@ class CommandImportConfigTasksTests: XCTestCase {
         XCTAssertEqual(environment.directoryExistsCalledTimes, 1)
     }
 
+    func testAmplifyConfigFilesExistTaskSuccess() {
+        let result = ImportConfigTasks.configFilesExist(environment: environment!, args: taskArgs)
+        if case let .failure(error) = result {
+            XCTFail("Task failed with error: \(error)")
+        }
+        XCTAssertEqual(environment?.fileExistsCalledTimes, 2)
+    }
+
+    func testAmplifyConfigFilesExistTaskFailure() {
+        class FailingEnvironment: MockAmplifyCommandEnvironment {
+            override func fileExists(atPath dirPath: String) -> Bool {
+                _ = super.fileExists(atPath: dirPath)
+                return false
+            }
+        }
+        let environment = FailingEnvironment(basePath: basePath, fileManager: fileManager)
+        let result = ImportConfigTasks.configFilesExist(environment: environment, args: taskArgs)
+        if case .success = result {
+            XCTFail()
+        }
+        XCTAssertEqual(environment.fileExistsCalledTimes, 1)
+    }
+
     func testAddConfigFilesToXcodeTask() {
         let result = ImportConfigTasks.addConfigFilesToXcodeProject(environment: environment!, args: taskArgs)
         if case let .failure(error) = result {
             XCTFail("Task failed with error: \(error)")
         }
+        XCTAssertEqual(environment?.pathCalledTimes, 2)
         XCTAssertEqual(environment?.createXcodeFileCalledTimes, 2)
         XCTAssertEqual(environment?.addFilesToXcodeProjectCalledTimes, 1)
     }

@@ -55,6 +55,11 @@ class MockAmplifyCommandEnvironment: Mock, AmplifyCommandEnvironment {
         return true
     }
 
+    func fileExists(atPath dirPath: String) -> Bool {
+        captureCall("fileExists")
+        return true
+    }
+
     func createXcodeFile(withPath path: String, ofType type: XcodeProjectFileType) -> XcodeProjectFile {
         captureCall("createXcodeFile")
         return XcodeProjectFile(path, type: type)

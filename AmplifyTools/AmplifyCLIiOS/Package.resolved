@@ -74,15 +74,6 @@
         }
       },
       {
-        "package": "SwiftFormat",
-        "repositoryURL": "https://github.com/nicklockwood/SwiftFormat",
-        "state": {
-          "branch": null,
-          "revision": "46fe5e49e2efa39dceaf4c78fb04a5e0701073d6",
-          "version": "0.47.5"
-        }
-      },
-      {
         "package": "Version",
         "repositoryURL": "https://github.com/mxcl/Version",
         "state": {

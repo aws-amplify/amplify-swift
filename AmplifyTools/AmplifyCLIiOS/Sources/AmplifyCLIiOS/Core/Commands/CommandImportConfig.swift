@@ -21,11 +21,26 @@ enum ImportConfigTasks {
                             recoverySuggestion: "Please run `amplify init` to initialize an Amplify project."))
     }
 
+    static func configFilesExist(
+        environment: AmplifyCommandEnvironment,
+        args: CommandImportConfig.TaskArgs) -> AmplifyCommandTaskResult {
+        for file in args.configFiles {
+            if !environment.fileExists(atPath: file) {
+                return .failure(AmplifyCommandError(
+                    .fileNotFound,
+                    error: nil,
+                    recoverySuggestion: "\(file) not found."
+                ))
+            }
+        }
+        return .success("Config files found")
+    }
+
     static func addConfigFilesToXcodeProject(
         environment: AmplifyCommandEnvironment,
         args: CommandImportConfig.TaskArgs) -> AmplifyCommandTaskResult {
         let configFiles = args.configFiles.map {
-            environment.createXcodeFile(withPath: $0, ofType: .resource)
+            environment.createXcodeFile(withPath: environment.path(for: $0), ofType: .resource)
         }
         let projectPath = environment.basePath
         do {
@@ -57,6 +72,7 @@ struct CommandImportConfig: AmplifyCommand {
 
     var tasks: [AmplifyCommandTask<CommandImportConfigArgs>] = [
         .run(ImportConfigTasks.amplifyFolderExist),
+        .run(ImportConfigTasks.configFilesExist),
         .run(ImportConfigTasks.addConfigFilesToXcodeProject)
     ]
 

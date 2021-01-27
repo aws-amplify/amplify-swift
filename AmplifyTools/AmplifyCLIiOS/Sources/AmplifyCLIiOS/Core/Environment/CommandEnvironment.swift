@@ -69,6 +69,10 @@ extension CommandEnvironment {
     func directoryExists(atPath dirPath: String) -> Bool {
         fileManager.directoryExists(atPath: path(for: dirPath))
     }
+
+    func fileExists(atPath filePath: String) -> Bool {
+        fileManager.fileExists(atPath: path(for: filePath))
+    }
 }
 
 // MARK: - AmplifyCommandEnvironmentXcode
