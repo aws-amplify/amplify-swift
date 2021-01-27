@@ -11,7 +11,7 @@ import Amplify
 public typealias GraphQLFilter = [String: Any]
 
 protocol GraphQLFilterConvertible {
-    func graphQLFilter(for modelSchema: ModelSchema?) -> GraphQLFilter
+    func graphQLFilter(for modelSchema: ModelSchema?, isSearch: Bool) -> GraphQLFilter
 }
 
 // Convert QueryPredicate to GraphQLFilter JSON, and GraphQLFilter JSON to GraphQLFilter
@@ -72,11 +72,11 @@ extension QueryPredicate {
 
     /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
     ///   by host applications. The behavior of this may change without warning.
-    public func graphQLFilter(for modelSchema: ModelSchema?) -> GraphQLFilter {
+    public func graphQLFilter(for modelSchema: ModelSchema?, isSearch: Bool = false) -> GraphQLFilter {
         if let operation = self as? QueryPredicateOperation {
-            return operation.graphQLFilter(for: modelSchema)
+            return operation.graphQLFilter(for: modelSchema, isSearch: isSearch)
         } else if let group = self as? QueryPredicateGroup {
-            return group.graphQLFilter(for: modelSchema)
+            return group.graphQLFilter(for: modelSchema, isSearch: isSearch)
         } else if let constant = self as? QueryPredicateConstant {
             return constant.graphQLFilter(for: modelSchema)
         }
@@ -111,8 +111,9 @@ extension QueryPredicateConstant: GraphQLFilterConvertible {
 
 extension QueryPredicateOperation: GraphQLFilterConvertible {
 
-    func graphQLFilter(for modelSchema: ModelSchema?) -> GraphQLFilter {
-        let filterValue = [self.operator.graphQLOperator: self.operator.value]
+    func graphQLFilter(for modelSchema: ModelSchema?, isSearch: Bool = false) -> GraphQLFilter {
+        let graphQLOperator = isSearch ? self.operator.graphQLSearchOperator : self.operator.graphQLOperator
+        let filterValue = [graphQLOperator: self.operator.value]
         guard let modelSchema = modelSchema else {
             return [field: filterValue]
         }
@@ -137,18 +138,18 @@ extension QueryPredicateOperation: GraphQLFilterConvertible {
 
 extension QueryPredicateGroup: GraphQLFilterConvertible {
 
-    func graphQLFilter(for modelSchema: ModelSchema?) -> GraphQLFilter {
+    func graphQLFilter(for modelSchema: ModelSchema?, isSearch: Bool = false) -> GraphQLFilter {
         let logicalOperator = type.rawValue
         switch type {
         case .and, .or:
             var graphQLPredicateOperation = [logicalOperator: [Any]()]
             predicates.forEach { predicate in
-                graphQLPredicateOperation[logicalOperator]?.append(predicate.graphQLFilter(for: modelSchema))
+                graphQLPredicateOperation[logicalOperator]?.append(predicate.graphQLFilter(for: modelSchema, isSearch: isSearch))
             }
             return graphQLPredicateOperation
         case .not:
             if let predicate = predicates.first {
-                return [logicalOperator: predicate.graphQLFilter(for: modelSchema)]
+                return [logicalOperator: predicate.graphQLFilter(for: modelSchema, isSearch: isSearch)]
             } else {
                 preconditionFailure("Missing predicate for \(String(describing: self)) with type: \(type)")
             }
@@ -177,6 +178,33 @@ extension QueryOperator {
             return "between"
         case .beginsWith:
             return "beginsWith"
+        case .evaluate(let `operator`, _):
+            return `operator`
+        }
+    }
+
+    var graphQLSearchOperator: String {
+        switch self {
+        case .notEqual:
+            return "ne"
+        case .equals:
+            return "eq"
+        case .lessOrEqual:
+            return "lte"
+        case .lessThan:
+            return "lt"
+        case .greaterOrEqual:
+            return "gte"
+        case .greaterThan:
+            return "gt"
+        case .contains:
+            return "match"
+        case .between:
+            return "range"
+        case .beginsWith:
+            return "matchPhrasePrefix"
+        case .evaluate(let `operator`, _):
+            return `operator`
         }
     }
 
@@ -199,6 +227,8 @@ extension QueryOperator {
         case .between(let start, let end):
             return [start.graphQLValue(), end.graphQLValue()]
         case .beginsWith(let value):
+            return value
+        case .evaluate(_, let value):
             return value
         }
     }

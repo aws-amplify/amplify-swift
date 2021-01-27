@@ -132,4 +132,9 @@ extension CodingKey where Self: ModelKey {
         return key.ne(value)
     }
 
+    // MARK: - custom
+
+    public func evaluate(operator: String, value: Persistable) -> QueryPredicateOperation {
+        return field(stringValue).evaluate(operator: `operator`, value: value)
+    }
 }

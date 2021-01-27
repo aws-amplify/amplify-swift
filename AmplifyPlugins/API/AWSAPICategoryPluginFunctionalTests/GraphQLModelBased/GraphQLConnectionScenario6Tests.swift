@@ -15,13 +15,13 @@ import AWSMobileClient
 /*
  ```
  # 6 - Blog Post Comment
- type Blog6 @model {
+ type Blog6 @model @searchable {
    id: ID!
    name: String!
    posts: [Post6] @connection(keyName: "byBlog", fields: ["id"])
  }
 
- type Post6 @model @key(name: "byBlog", fields: ["blogID"]) {
+ type Post6 @model @key(name: "byBlog", fields: ["blogID"]) @searchable {
    id: ID!
    title: String!
    blogID: ID!
@@ -29,7 +29,7 @@ import AWSMobileClient
    comments: [Comment6] @connection(keyName: "byPost", fields: ["id"])
  }
 
- type Comment6 @model @key(name: "byPost", fields: ["postID", "content"]) {
+ type Comment6 @model @key(name: "byPost", fields: ["postID", "content"]) @searchable {
    id: ID!
    postID: ID!
    post: Post6 @connection(fields: ["postID"])
@@ -59,6 +59,40 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
 
     override func tearDown() {
         Amplify.reset()
+    }
+
+    func testSearchBlogs() {
+        let blogId = UUID().uuidString
+        guard let blog1 = createBlog(id: blogId + "1", name: "name"),
+              let blog2 = createBlog(id: blogId + "2", name: "name") else {
+            XCTFail("Could not create two blogs")
+            return
+        }
+
+        let searchBlogCompleted = expectation(description: "search blog complete")
+        let blog = Blog6.keys
+        let predicate = blog.id.evaluate(operator: "matchPhrasePrefix", value: blogId)
+        Amplify.API.query(request: .search(Blog6.self, where: predicate, limit: 1)) { result in
+            switch result {
+            case .success(let result):
+                switch result {
+                case .success(let blogs):
+                    XCTAssertTrue(blogs.hasNextPage())
+                    blogs.getNextPage { result in
+                        switch result {
+                        case .success:
+                            searchBlogCompleted.fulfill()
+                        case .failure(let error):
+                            XCTFail("\(error)")
+                        }
+                    }
+
+                case .failure(let response): XCTFail("Failed with: \(response)")
+                }
+            case .failure(let error): XCTFail("\(error)")
+            }
+        }
+        wait(for: [searchBlogCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testGetBlogThenFetchPostsThenFetchComments() {

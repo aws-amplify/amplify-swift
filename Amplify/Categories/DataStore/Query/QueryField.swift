@@ -42,6 +42,7 @@ public protocol QueryFieldOperation {
     func lt(_ value: Persistable) -> QueryPredicateOperation
     func ne(_ value: Persistable?) -> QueryPredicateOperation
     func ne(_ value: EnumPersistable) -> QueryPredicateOperation
+    func evaluate(operator: String, value: Persistable) -> QueryPredicateOperation
 
     // MARK: - Operators
 
@@ -158,5 +159,11 @@ public struct QueryField: QueryFieldOperation {
 
     public static func != (key: Self, value: EnumPersistable) -> QueryPredicateOperation {
         return key.ne(value)
+    }
+
+    // MARK: - custom
+
+    public func evaluate(operator: String, value: Persistable) -> QueryPredicateOperation {
+        return QueryPredicateOperation(field: name, operator: .evaluate(operator: `operator`, value: value))
     }
 }

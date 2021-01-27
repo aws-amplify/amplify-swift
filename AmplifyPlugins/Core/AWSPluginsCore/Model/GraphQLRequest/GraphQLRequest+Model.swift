@@ -117,6 +117,21 @@ protocol ModelGraphQLRequestFactory {
     /// - seealso: `GraphQLSubscription`, `GraphQLSubscriptionType`
     static func subscription<M: Model>(of: M.Type,
                                        type: GraphQLSubscriptionType) -> GraphQLRequest<M>
+
+    // MARK: Searchable
+
+    /// Creates a `GraphQLRequest` that represents a search query that expects multiple values as a result.
+    ///
+    /// - Parameters:
+    ///   - modelType: the metatype of the model
+    ///   - predicate: an optional predicate containing the criteria for the query
+    ///   - limit: the maximum number of results to be retrieved. The result list may be less than the `limit`
+    ///   - sort: the sort direction for a field on the model.
+    /// - Returns: a valid `GraphQLRequest` instance
+    static func search<M: Model>(_ modelType: M.Type,
+                                 where predicate: QueryPredicate?,
+                                 limit: Int?,
+                                 sort: QuerySortBy?) -> GraphQLRequest<List<M>>
 }
 
 // MARK: - Extension
@@ -263,5 +278,17 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                  variables: document.variables,
                                  responseType: modelType,
                                  decodePath: document.name)
+    }
+
+    public static func search<M: Model>(_ modelType: M.Type,
+                                        where predicate: QueryPredicate? = nil,
+                                        limit: Int? = nil,
+                                        sort: QuerySortBy? = nil) -> GraphQLRequest<List<M>> {
+        AppSyncGraphQLRequest.searchQuery(responseType: List<M>.self,
+                                          modelSchema: modelType.schema,
+                                          filter: predicate?.graphQLFilter(for: modelType.schema, isSearch: true),
+                                          limit: limit,
+                                          sort: sort)
+
     }
 }

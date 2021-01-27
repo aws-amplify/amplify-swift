@@ -17,6 +17,7 @@ public enum QueryOperator {
     case contains(_ value: String)
     case between(start: Persistable, end: Persistable)
     case beginsWith(_ value: String)
+    case evaluate(operator: String, value: Persistable)
 
     public func evaluate(target: Any) -> Bool {
         switch self {
@@ -43,6 +44,8 @@ public enum QueryOperator {
             if let targetString = target as? String {
                 return targetString.starts(with: predicateValue)
             }
+        case .evaluate:
+            return false
         }
         return false
     }
