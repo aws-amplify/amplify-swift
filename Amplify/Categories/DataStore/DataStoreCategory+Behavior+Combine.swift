@@ -33,10 +33,11 @@ public extension DataStoreBaseBehavior {
     /// - Returns: A DataStorePublisher with the results of the operation
     func delete<M: Model>(
         _ modelType: M.Type,
-        withId id: String
+        withId id: String,
+        where predicate: QueryPredicate? = nil
     ) -> DataStorePublisher<Void> {
         Future { promise in
-            self.delete(modelType, withId: id) { promise($0) }
+            self.delete(modelType, withId: id, where: predicate) { promise($0) }
         }.eraseToAnyPublisher()
     }
 

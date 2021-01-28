@@ -7,7 +7,7 @@
 
 import CoreGraphics
 
-///Struct that holds the result of an entity detected from an image per the Identify method
+/// Struct that holds the result of an entity detected from an image per the Identify method
 public struct Entity {
     public let boundingBox: CGRect
     public let landmarks: [Landmark]

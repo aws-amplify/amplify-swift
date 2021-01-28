@@ -293,6 +293,76 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         wait(for: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
     }
 
+    func testInsertPostAndThenDeleteByIdWithPredicate() {
+        let dateTestStart = Temporal.DateTime.now()
+        let dateInFuture = dateTestStart + .seconds(10)
+        let saveExpectation = expectation(description: "Saved")
+        let deleteExpectation = expectation(description: "Deleted")
+        let queryExpectation = expectation(description: "Queried")
+
+        let post = Post(title: "title1", content: "content1", createdAt: dateInFuture)
+        storageAdapter.save(post) { insertResult in
+            switch insertResult {
+            case .success:
+                saveExpectation.fulfill()
+                let postKeys = Post.keys
+                let predicate = postKeys.createdAt.gt(dateTestStart)
+                self.storageAdapter.delete(Post.self,
+                                           modelSchema: Post.schema,
+                                           withId: post.id,
+                                           predicate: predicate) { result in
+                    switch result {
+                    case .success:
+                        deleteExpectation.fulfill()
+                        self.checkIfPostIsDeleted(id: post.id)
+                        queryExpectation.fulfill()
+                    case .failure(let error):
+                        XCTFail(error.errorDescription)
+                    }
+                }
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            }
+        }
+
+        wait(for: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
+    }
+
+    func testInsertPostAndThenDeleteByIdWithPredicateThatDoesNotMatch() {
+        let dateTestStart = Temporal.DateTime.now()
+        let dateInFuture = dateTestStart + .seconds(10)
+        let saveExpectation = expectation(description: "Saved")
+        let deleteCompleteExpectation = expectation(description: "Delete completed")
+        let queryExpectation = expectation(description: "Queried")
+
+        let post = Post(title: "title1", content: "content1", createdAt: dateInFuture)
+        storageAdapter.save(post) { insertResult in
+            switch insertResult {
+            case .success:
+                saveExpectation.fulfill()
+                let postKeys = Post.keys
+                let predicate = postKeys.createdAt.lt(dateTestStart)
+                self.storageAdapter.delete(Post.self,
+                                           modelSchema: Post.schema,
+                                           withId: post.id,
+                                           predicate: predicate) { result in
+                    switch result {
+                    case .success:
+                        deleteCompleteExpectation.fulfill()
+                        self.checkIfPostExists(id: post.id)
+                        queryExpectation.fulfill()
+                    case .failure(let error):
+                        XCTFail(error.errorDescription)
+                    }
+                }
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            }
+        }
+
+        wait(for: [saveExpectation, deleteCompleteExpectation, queryExpectation], timeout: 2)
+    }
+
     func testInsertSinglePostThenDeleteItByPredicate() {
         let dateTestStart = Temporal.DateTime.now()
         let dateInFuture = dateTestStart + .seconds(10)
@@ -374,6 +444,15 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         do {
             let exists = try storageAdapter.exists(Post.schema, withId: id)
             XCTAssertFalse(exists, "ID \(id) should not exist")
+        } catch {
+            XCTFail(String(describing: error))
+        }
+    }
+
+    func checkIfPostExists(id: String) {
+        do {
+            let exists = try storageAdapter.exists(Post.schema, withId: id)
+            XCTAssertTrue(exists, "ID \(id) should exist")
         } catch {
             XCTFail(String(describing: error))
         }

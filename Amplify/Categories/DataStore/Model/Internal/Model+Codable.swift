@@ -20,9 +20,10 @@ extension Model where Self: Codable {
     /// - Returns: an instance of the concrete type conforming to `Model`
     /// - Throws: `DecodingError.dataCorrupted` in case data is not a valid JSON or any
     /// other decoding specific error that `JSONDecoder.decode()` might throw.
-    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
-    ///   by host applications. The behavior of this may change without warning. Though it is not used by host application making any change
-    ///   to these `public` types should be backward compatible, otherwise it will be a breaking change.
+    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
+    ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
+    ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
+    ///   breaking change.
     public static func from(json: String,
                             decoder: JSONDecoder? = nil) throws -> Self {
         let resolvedDecoder: JSONDecoder
@@ -49,9 +50,10 @@ extension Model where Self: Codable {
     /// - Returns: an instance of the concrete type conforming to `Model`
     /// - Throws: `DecodingError.dataCorrupted` in case data is not a valid JSON or any
     /// other decoding specific error that `JSONDecoder.decode()` might throw.
-    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
-    ///   by host applications. The behavior of this may change without warning. Though it is not used by host application making any change
-    ///   to these `public` types should be backward compatible, otherwise it will be a breaking change.
+    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
+    ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
+    ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
+    ///   breaking change.
     public static func from(dictionary: [String: Any]) throws -> Self {
         let data = try JSONSerialization.data(withJSONObject: dictionary)
         let decoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
@@ -64,9 +66,10 @@ extension Model where Self: Codable {
     ///     custom date formatter that encodes ISO8601 dates with fractional seconds
     /// - Returns: the JSON representation of the `Model`
     /// - seealso: https://developer.apple.com/documentation/foundation/jsonencoder/2895034-encode
-    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used directly
-    ///   by host applications. The behavior of this may change without warning. Though it is not used by host application making any change
-    ///   to these `public` types should be backward compatible, otherwise it will be a breaking change.
+    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
+    ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
+    ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
+    ///   breaking change.
     public func toJSON(encoder: JSONEncoder? = nil) throws -> String {
         let resolvedEncoder: JSONEncoder
         if let encoder = encoder {

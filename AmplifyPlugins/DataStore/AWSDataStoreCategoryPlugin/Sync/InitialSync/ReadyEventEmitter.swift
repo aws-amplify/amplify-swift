@@ -12,7 +12,10 @@ import Combine
 @available(iOS 13.0, *)
 final class ReadyEventEmitter {
     var readySink: AnyCancellable?
-    init(remoteSyncEnginePublisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError>) {
+    let completion: BasicClosure
+    init(remoteSyncEnginePublisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError>,
+         completion: @escaping BasicClosure) {
+        self.completion = completion
         let queriesReadyPublisher = ReadyEventEmitter.makeSyncQueriesReadyPublisher()
         let syncEngineStartedPublisher = ReadyEventEmitter.makeRemoteSyncEngineStartedPublisher(
             remoteSyncEnginePublisher: remoteSyncEnginePublisher
@@ -26,6 +29,7 @@ final class ReadyEventEmitter {
                 case .failure(let dataStoreError):
                     self.log.error("Failed to emit ready event, error: \(dataStoreError)")
                 }
+                self.completion()
             }, receiveValue: { _ in })
     }
 

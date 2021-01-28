@@ -263,6 +263,33 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(variables[0] as? String, id)
     }
 
+    /// - Given: a `Model` type and an `id`
+    /// - When:
+    ///   - the model is of type `Post` with condition
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if the variables match the expected values
+    func testDeleteStatementFromModelWithCondition() {
+        let id = UUID().uuidString
+        let statement = DeleteStatement(modelSchema: Post.schema,
+                                        withId: id,
+                                        predicate: Post.keys.content == "content")
+
+        let expectedStatement = """
+        delete from Post as root
+        where 1 = 1
+          and (
+            "root"."id" = ?
+            and "root"."content" = ?
+          )
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+
+        let variables = statement.variables
+        XCTAssertEqual(variables[0] as? String, id)
+        XCTAssertEqual(variables[1] as? String, "content")
+    }
+
     // MARK: - Select Statements
 
     /// - Given: a `Model` type

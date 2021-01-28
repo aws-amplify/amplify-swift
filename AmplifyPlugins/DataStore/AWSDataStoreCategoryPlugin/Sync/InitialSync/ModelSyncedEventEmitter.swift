@@ -134,8 +134,13 @@ final class ModelSyncedEventEmitter {
                                                  data: modelSyncedEventBuilder.build())
         Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
         modelSyncedEventTopic.send(completion: .finished)
+        cancel()
     }
 
+    func cancel() {
+        syncOrchestratorSink?.cancel()
+        reconciliationQueueSink?.cancel()
+    }
 }
 
 @available(iOS 13.0, *)

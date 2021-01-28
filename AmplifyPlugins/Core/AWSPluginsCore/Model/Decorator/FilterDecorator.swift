@@ -25,6 +25,10 @@ public struct FilterDecorator: ModelBasedGraphQLDocumentDecorator {
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
                          modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
+        guard !filter.isEmpty else {
+            return document.copy(inputs: document.inputs)
+        }
+
         var inputs = document.inputs
         let modelName = modelSchema.name
         if case .mutation = document.operationType {

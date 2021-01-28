@@ -69,6 +69,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
+                          where predicate: QueryPredicate? = nil,
                           completion: (DataStoreResult<Void>) -> Void) {
         notify("deleteById")
 

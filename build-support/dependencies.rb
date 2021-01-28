@@ -1,14 +1,14 @@
 # Version definitions
 
 # Amplify release version
-$AMPLIFY_VERSION = '1.5.2'
+$AMPLIFY_VERSION = '1.5.5'
 
 # GitHub tag name for Amplify releases
 $AMPLIFY_RELEASE_TAG = "v#{$AMPLIFY_VERSION}"
 
 # AWS SDK version
 # http://guides.cocoapods.org/using/the-podfile.html#specifying-pod-versions
-$AWS_SDK_VERSION = '2.21.0'
+$AWS_SDK_VERSION = '2.22.0'
 $OPTIMISTIC_AWS_SDK_VERSION = "~> #{$AWS_SDK_VERSION}"
 
 # Include common tooling
