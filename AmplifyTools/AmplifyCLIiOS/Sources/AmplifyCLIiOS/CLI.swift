@@ -7,6 +7,7 @@
 
 import Foundation
 import ArgumentParser
+import AmplifyXcodeCore
 
 /// This module defines a CLI (Command Line Interface) to commands defined in `Core/Commands`.
 /// Each "CLI command" defined below is the actual executor of an `AmplifyCommand`, thus it's responsible

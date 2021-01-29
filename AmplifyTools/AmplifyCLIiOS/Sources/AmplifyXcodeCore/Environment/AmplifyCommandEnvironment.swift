@@ -8,7 +8,7 @@
 import Foundation
 
 /// Collection of environment functions consumed by commands' tasks
-protocol AmplifyCommandEnvironmentFileManager {
+public protocol AmplifyCommandEnvironmentFileManager {
     var basePathURL: URL { get }
     var basePath: String { get }
     var fileManager: AmplifyFileManager { get }
@@ -41,7 +41,7 @@ protocol AmplifyCommandEnvironmentFileManager {
 }
 
 /// Collection of Xcode utilities
-protocol AmplifyCommandEnvironmentXcode {
+public protocol AmplifyCommandEnvironmentXcode {
     /// Given a file path, returns an XcodeProjectFile reference
     func createXcodeFile(withPath path: String, ofType type: XcodeProjectFileType) -> XcodeProjectFile
 
@@ -50,4 +50,4 @@ protocol AmplifyCommandEnvironmentXcode {
     func addFilesToXcodeProject(projectPath: String, files: [XcodeProjectFile], toGroup group: String) throws
 }
 
-typealias AmplifyCommandEnvironment = AmplifyCommandEnvironmentFileManager & AmplifyCommandEnvironmentXcode
+public typealias AmplifyCommandEnvironment = AmplifyCommandEnvironmentFileManager & AmplifyCommandEnvironmentXcode

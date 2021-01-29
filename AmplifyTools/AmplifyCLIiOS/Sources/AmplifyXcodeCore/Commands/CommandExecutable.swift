@@ -10,12 +10,12 @@ import Foundation
 /// Defines requirements needed by a command to be executable.
 /// The executor, a command definition and the entity providing the environment are decoupled in order
 /// to favor re-usability.
-protocol CommandExecutable where Self: CommandEnvironmentProvider {
+public protocol CommandExecutable where Self: CommandEnvironmentProvider {
     func exec<Command: AmplifyCommand>(command: Command) -> AmplifyCommandResult
 }
 
 /// Provides a default implementation for an executable command
-extension CommandExecutable {
+public extension CommandExecutable {
     private func exec<TaskArgs>(_ task: AmplifyCommandTaskExecutor<TaskArgs>,
                                 args: TaskArgs,
                                 prevResults: inout [AmplifyCommandTaskResult]) -> Bool {

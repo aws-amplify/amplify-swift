@@ -6,6 +6,7 @@
 //
 
 import Foundation
+@testable import AmplifyXcodeCore
 
 class MockAmplifyCommandEnvironment: Mock, AmplifyCommandEnvironment {
     var basePathURL: URL

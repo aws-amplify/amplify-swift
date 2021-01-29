@@ -8,6 +8,6 @@
 import Foundation
 
 /// Defines requirement on an environment object for a command executor
-protocol CommandEnvironmentProvider {
+public protocol CommandEnvironmentProvider {
     var environment: AmplifyCommandEnvironment { get }
 }

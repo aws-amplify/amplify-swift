@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AmplifyXcodeCore
 
 class MockAmplifyFileManager: Mock, AmplifyFileManager {
     func fileExists(atPath filePath: String) -> Bool {

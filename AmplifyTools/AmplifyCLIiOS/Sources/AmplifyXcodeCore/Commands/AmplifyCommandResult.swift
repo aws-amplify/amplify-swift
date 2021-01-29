@@ -9,4 +9,4 @@ import Foundation
 
 /// Command execution result type.
 /// A failure in any underlying task results in the overall command failing.
-typealias AmplifyCommandResult = Result<[AmplifyCommandTaskResult], AmplifyCommandError>
+public typealias AmplifyCommandResult = Result<[AmplifyCommandTaskResult], AmplifyCommandError>

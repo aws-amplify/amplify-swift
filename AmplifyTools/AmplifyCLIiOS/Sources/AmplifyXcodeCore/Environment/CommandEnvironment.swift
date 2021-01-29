@@ -8,12 +8,12 @@
 import Foundation
 
 /// AmplifyCommandEnvironment default implementation
-struct CommandEnvironment: AmplifyCommandEnvironment {
-    internal let basePathURL: URL
-    let basePath: String
-    let fileManager: AmplifyFileManager
+public struct CommandEnvironment: AmplifyCommandEnvironment {
+    public let basePathURL: URL
+    public let basePath: String
+    public let fileManager: AmplifyFileManager
 
-    init(basePath: String, fileManager: AmplifyFileManager) {
+    public init(basePath: String, fileManager: AmplifyFileManager) {
         self.basePath = fileManager.resolveHomeDirectoryIn(path: basePath)
         self.basePathURL = URL(fileURLWithPath: self.basePath, isDirectory: true)
         self.fileManager = fileManager
@@ -22,20 +22,20 @@ struct CommandEnvironment: AmplifyCommandEnvironment {
 
 // MARK: - AmplifyCommandEnvironmentFileManager
 extension CommandEnvironment {
-    func path(for subpath: String) -> String {
+    public func path(for subpath: String) -> String {
         return URL(fileURLWithPath: subpath, relativeTo: basePathURL).path
     }
 
-    func path(for components: [String]) -> String {
+    public func path(for components: [String]) -> String {
         return path(for: components.joined(separator: "/"))
     }
 
-    func glob(pattern: String) -> [String] {
+    public func glob(pattern: String) -> [String] {
         let fullPath = path(for: pattern)
         return fileManager.glob(pattern: fullPath).map { $0 }
     }
 
-    @discardableResult func createDirectory(atPath path: String) throws -> String {
+    @discardableResult public func createDirectory(atPath path: String) throws -> String {
         let url = URL(fileURLWithPath: path, relativeTo: basePathURL)
         do {
             try fileManager.createDirectory(at: url, withIntermediateDirectories: true)
@@ -45,7 +45,7 @@ extension CommandEnvironment {
         }
     }
 
-    @discardableResult func createFile(atPath filePath: String, content: String) throws -> String {
+    @discardableResult public func createFile(atPath filePath: String, content: String) throws -> String {
         let fullPath = path(for: filePath)
         if fileManager.createFile(atPath: fullPath, contents: content.data(using: .utf8)) {
             return fullPath
@@ -53,7 +53,7 @@ extension CommandEnvironment {
         throw AmplifyCommandError(.unknown, error: nil)
     }
 
-    func contentsOfDirectory(atPath directoryPath: String) throws -> [String] {
+    public func contentsOfDirectory(atPath directoryPath: String) throws -> [String] {
         let fullPath = path(for: directoryPath)
         guard fileManager.directoryExists(atPath: fullPath) else {
             throw AmplifyCommandError(.folderNotFound, error: nil, recoverySuggestion: "Folder \(fullPath) not found")
@@ -66,11 +66,11 @@ extension CommandEnvironment {
         }
     }
 
-    func directoryExists(atPath dirPath: String) -> Bool {
+    public func directoryExists(atPath dirPath: String) -> Bool {
         fileManager.directoryExists(atPath: path(for: dirPath))
     }
 
-    func fileExists(atPath filePath: String) -> Bool {
+    public func fileExists(atPath filePath: String) -> Bool {
         fileManager.fileExists(atPath: path(for: filePath))
     }
 }
@@ -92,11 +92,11 @@ extension CommandEnvironment {
         return try XcodeProject(at: path, projPath: self.path(for: projectName))
     }
 
-    func createXcodeFile(withPath path: String, ofType type: XcodeProjectFileType) -> XcodeProjectFile {
+    public func createXcodeFile(withPath path: String, ofType type: XcodeProjectFileType) -> XcodeProjectFile {
         return XcodeProjectFile(path, type: type)
     }
 
-    func addFilesToXcodeProject(projectPath path: String, files: [XcodeProjectFile], toGroup group: String) throws {
+    public func addFilesToXcodeProject(projectPath path: String, files: [XcodeProjectFile], toGroup group: String) throws {
         do {
             let xcodeProject = try loadFirstXcodeProject(fromDirectory: path)
             try xcodeProject.add(files: files, toGroup: group)

@@ -6,6 +6,7 @@
 //
 
 import XCTest
+@testable import AmplifyXcodeCore
 
 class AmplifyCommandEnvironmentTests: XCTestCase {
     var environment: AmplifyCommandEnvironment?

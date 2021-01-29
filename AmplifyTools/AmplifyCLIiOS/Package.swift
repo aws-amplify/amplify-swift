@@ -9,6 +9,7 @@ let package = Package(
         .macOS(.v10_13)
     ],
     products: [
+        .library(name: "AmplifyXcodeCore", targets: ["AmplifyXcodeCore"]),
         .executable(name: "amplify-ios", targets: ["AmplifyCLIiOS"])
     ],
     dependencies: [
@@ -19,12 +20,21 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "AmplifyCLIiOS",
+            name: "AmplifyXcodeCore",
             dependencies: [
                 "XcodeProj",
                 .product(name: "XcodeGenKit", package: "XcodeGen"),
                 .product(name: "ProjectSpec", package: "XcodeGen"),
                 "PathKit",
+            ]),
+        .testTarget(
+            name: "AmplifyXcodeCoreTests",
+            dependencies: ["AmplifyXcodeCore"]),
+
+        .target(
+            name: "AmplifyCLIiOS",
+            dependencies: [
+                "AmplifyXcodeCore",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]),
         .testTarget(

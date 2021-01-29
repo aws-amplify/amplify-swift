@@ -9,18 +9,18 @@ import Foundation
 import PathKit
 import XcodeProj
 
-enum XcodeProjectError: Error {
+public enum XcodeProjectError: Error {
     case notFound(path: String)
     case noPbxProjFound
     case groupNotFound(group: String)
     case addFileFailed
 }
 
-enum XcodeProjectFileType {
+public enum XcodeProjectFileType {
     case resource, source
 }
 
-struct XcodeProjectFile: Equatable {
+public struct XcodeProjectFile: Equatable {
     let path: String
     let type: XcodeProjectFileType
 

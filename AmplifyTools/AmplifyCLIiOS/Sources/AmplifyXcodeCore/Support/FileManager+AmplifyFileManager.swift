@@ -9,15 +9,15 @@ import Foundation
 import PathKit
 
 extension FileManager: AmplifyFileManager {
-    func createDirectory(at path: URL, withIntermediateDirectories: Bool) throws {
+    public func createDirectory(at path: URL, withIntermediateDirectories: Bool) throws {
         try createDirectory(at: path, withIntermediateDirectories: withIntermediateDirectories, attributes: nil)
     }
 
-    func createFile(atPath: String, contents: Data?) -> Bool {
+    public func createFile(atPath: String, contents: Data?) -> Bool {
         createFile(atPath: atPath, contents: contents, attributes: nil)
     }
 
-    func glob(pattern: String) -> [String] {
+    public func glob(pattern: String) -> [String] {
         Path.glob(pattern).map { $0.string }
     }
 }

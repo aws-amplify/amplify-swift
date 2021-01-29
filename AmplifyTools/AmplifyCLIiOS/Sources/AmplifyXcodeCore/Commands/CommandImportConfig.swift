@@ -58,24 +58,26 @@ enum ImportConfigTasks {
 }
 
 /// Given an existing Amplify iOS project, adds amplify configuration files to a `AmplifyConfig` group
-struct CommandImportConfig: AmplifyCommand {
-    struct CommandImportConfigArgs {
+public struct CommandImportConfig: AmplifyCommand {
+    public struct CommandImportConfigArgs {
         let configGroup = "AmplifyConfig"
         let configFiles = ["awsconfiguration.json", "amplifyconfiguration.json"]
     }
 
-    typealias TaskArgs = CommandImportConfigArgs
+    public typealias TaskArgs = CommandImportConfigArgs
 
-    static var description = "Import Amplify configuration files"
+    public static var description = "Import Amplify configuration files"
 
-    var taskArgs = CommandImportConfigArgs()
+    public var taskArgs = CommandImportConfigArgs()
 
-    var tasks: [AmplifyCommandTask<CommandImportConfigArgs>] = [
+    public var tasks: [AmplifyCommandTask<CommandImportConfigArgs>] = [
         .run(ImportConfigTasks.amplifyFolderExist),
         .run(ImportConfigTasks.configFilesExist),
         .run(ImportConfigTasks.addConfigFilesToXcodeProject)
     ]
+    
+    public init() {}
 
-    func onFailure() {
+    public func onFailure() {
     }
 }

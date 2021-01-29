@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct AmplifyCommandError: Error {
-    enum AmplifyCommandErrorType {
+public struct AmplifyCommandError: Error {
+    public enum AmplifyCommandErrorType {
         case unknown
         case fileNotFound
         case folderNotFound
@@ -52,7 +52,7 @@ struct AmplifyCommandError: Error {
 
 }
 
-extension AmplifyCommandError {
+public extension AmplifyCommandError {
     var debugDescription: String {
         var components = ["\(type): "]
 

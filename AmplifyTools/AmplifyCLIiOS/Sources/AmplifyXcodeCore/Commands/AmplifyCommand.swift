@@ -14,7 +14,7 @@ import Foundation
 /// - `taskArgs`: type defining extra arguments that will be passed to each task
 /// - `tasks`: array of tasks whose a command is composed of
 /// - `description`: human-readable description of command purpose
-protocol AmplifyCommand {
+public protocol AmplifyCommand {
     associatedtype TaskArgs
     var taskArgs: TaskArgs { get }
 

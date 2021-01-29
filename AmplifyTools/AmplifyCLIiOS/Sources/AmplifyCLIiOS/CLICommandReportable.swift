@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AmplifyXcodeCore
 
 protocol CLICommandReportable {
     func report(result: AmplifyCommandResult)

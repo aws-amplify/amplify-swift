@@ -8,13 +8,13 @@
 import Foundation
 
 extension FileManager {
-    func directoryExists(atPath path: String) -> Bool {
+    public func directoryExists(atPath path: String) -> Bool {
         var isDirectory = ObjCBool(false)
         let exists = fileExists(atPath: path, isDirectory: &isDirectory)
         return exists && isDirectory.boolValue
     }
 
-    func resolveHomeDirectoryIn(path: String) -> String {
+    public func resolveHomeDirectoryIn(path: String) -> String {
         if let first = path.first, first == "~" {
             return path.replacingCharacters(in: ...path.startIndex,
                                             with: FileManager.default.homeDirectoryForCurrentUser.path)
