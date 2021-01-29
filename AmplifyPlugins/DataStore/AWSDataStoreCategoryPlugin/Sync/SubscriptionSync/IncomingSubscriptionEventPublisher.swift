@@ -15,6 +15,6 @@ enum IncomingSubscriptionEventPublisherEvent {
 }
 
 @available(iOS 13.0, *)
-protocol IncomingSubscriptionEventPublisher: Cancellable {
+protocol IncomingSubscriptionEventPublisher: AmplifyCancellable {
     var publisher: AnyPublisher<IncomingSubscriptionEventPublisherEvent, DataStoreError> { get }
 }
