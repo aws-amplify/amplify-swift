@@ -30,8 +30,8 @@ class ListTests: XCTestCase {
             return false
         }
 
-        static func getListProvider<ModelType: Model>(modelType: ModelType.Type,
-                                                      decoder: Decoder) throws -> AnyModelListProvider<ModelType> {
+        static func makeListProvider<ModelType: Model>(modelType: ModelType.Type,
+                                                       decoder: Decoder) throws -> AnyModelListProvider<ModelType> {
             let json = try JSONValue(from: decoder)
             if case .array = json {
                 let elements = try [ModelType](from: decoder)

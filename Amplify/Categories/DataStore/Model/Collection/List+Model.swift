@@ -144,7 +144,7 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
     required convenience public init(from decoder: Decoder) throws {
         for listDecoder in ModelListDecoderRegistry.listDecoders.get() {
             if listDecoder.shouldDecode(modelType: ModelType.self, decoder: decoder) {
-                let listProvider = try listDecoder.getListProvider(modelType: ModelType.self, decoder: decoder)
+                let listProvider = try listDecoder.makeListProvider(modelType: ModelType.self, decoder: decoder)
                 self.init(listProvider: listProvider)
                 return
             }

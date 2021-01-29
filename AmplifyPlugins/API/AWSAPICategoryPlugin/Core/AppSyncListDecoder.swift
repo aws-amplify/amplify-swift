@@ -26,17 +26,17 @@ public struct AppSyncListDecoder: ModelListDecoder {
         return false
     }
 
-    public static func getListProvider<ModelType: Model>(modelType: ModelType.Type,
-                                                         decoder: Decoder) throws -> AnyModelListProvider<ModelType> {
-        if let appSyncListProvider = try getAppSyncListProvider(modelType: modelType, decoder: decoder) {
+    public static func makeListProvider<ModelType: Model>(modelType: ModelType.Type,
+                                                          decoder: Decoder) throws -> AnyModelListProvider<ModelType> {
+        if let appSyncListProvider = try makeAppSyncListProvider(modelType: modelType, decoder: decoder) {
             return appSyncListProvider.eraseToAnyModelListProvider()
         }
 
         return ArrayLiteralListProvider<ModelType>(elements: []).eraseToAnyModelListProvider()
     }
 
-    static func getAppSyncListProvider<ModelType: Model>(modelType: ModelType.Type,
-                                                         decoder: Decoder) throws -> AppSyncListProvider<ModelType>? {
+    static func makeAppSyncListProvider<ModelType: Model>(modelType: ModelType.Type,
+                                                   decoder: Decoder) throws -> AppSyncListProvider<ModelType>? {
         if let listPayload = try? AppSyncListPayload.init(from: decoder) {
             return try AppSyncListProvider(payload: listPayload)
         } else if let metadata = try? AppSyncModelMetadata.init(from: decoder) {

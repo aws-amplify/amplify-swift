@@ -28,8 +28,8 @@ class AppSyncListDecoderTests: XCTestCase {
 
         required convenience init(from decoder: Decoder) throws {
             let shouldDecode = AppSyncListDecoder.shouldDecode(modelType: ModelType.self, decoder: decoder)
-            let provider = try AppSyncListDecoder.getAppSyncListProvider(modelType: ModelType.self,
-                                                                         decoder: decoder)
+            let provider = try AppSyncListDecoder.makeAppSyncListProvider(modelType: ModelType.self,
+                                                                          decoder: decoder)
             self.init(shouldDecode: shouldDecode, listProvider: provider)
         }
     }

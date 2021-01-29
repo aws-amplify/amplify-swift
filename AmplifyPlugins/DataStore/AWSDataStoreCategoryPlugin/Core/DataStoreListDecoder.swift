@@ -33,7 +33,7 @@ public struct DataStoreListDecoder: ModelListDecoder {
         return false
     }
 
-    public static func getListProvider<ModelType: Model>(modelType: ModelType.Type,
+    public static func makeListProvider<ModelType: Model>(modelType: ModelType.Type,
                                                          decoder: Decoder) throws -> AnyModelListProvider<ModelType> {
         if let provider = try getDataStoreListProvider(modelType: modelType, decoder: decoder) {
             return provider.eraseToAnyModelListProvider()
