@@ -4,13 +4,13 @@
 import PackageDescription
 
 let package = Package(
-    name: "AmplifyCLIiOS",
+    name: "AmplifyXcode",
     platforms: [
         .macOS(.v10_13)
     ],
     products: [
         .library(name: "AmplifyXcodeCore", targets: ["AmplifyXcodeCore"]),
-        .executable(name: "amplify-ios", targets: ["AmplifyCLIiOS"])
+        .executable(name: "amplify-xcode", targets: ["AmplifyXcode"])
     ],
     dependencies: [
         .package(name: "XcodeProj", url: "https://github.com/tuist/xcodeproj", .upToNextMajor(from: "7.13.0")),
@@ -32,13 +32,13 @@ let package = Package(
             dependencies: ["AmplifyXcodeCore"]),
 
         .target(
-            name: "AmplifyCLIiOS",
+            name: "AmplifyXcode",
             dependencies: [
                 "AmplifyXcodeCore",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]),
         .testTarget(
-            name: "AmplifyCLIiOSTests",
-            dependencies: ["AmplifyCLIiOS"]),
+            name: "AmplifyXcodeTests",
+            dependencies: ["AmplifyXcode"]),
     ]
 )

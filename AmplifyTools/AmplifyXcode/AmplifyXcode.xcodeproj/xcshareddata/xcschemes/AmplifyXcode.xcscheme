@@ -5,17 +5,9 @@
       <BuildActionEntry buildForTesting = "YES" buildForRunning = "YES" buildForProfiling = "YES" buildForArchiving = "YES" buildForAnalyzing = "YES">
         <BuildableReference
           BuildableIdentifier = "primary"
-          BuildableName = "'lib$(TARGET_NAME)'"
-          BlueprintName = "AmplifyXcodeCore"
-          ReferencedContainer = "container:AmplifyCLIiOS.xcodeproj">
-        </BuildableReference>
-      </BuildActionEntry>
-      <BuildActionEntry buildForTesting = "YES" buildForRunning = "YES" buildForProfiling = "YES" buildForArchiving = "YES" buildForAnalyzing = "YES">
-        <BuildableReference
-          BuildableIdentifier = "primary"
           BuildableName = "'$(TARGET_NAME)'"
-          BlueprintName = "AmplifyCLIiOS"
-          ReferencedContainer = "container:AmplifyCLIiOS.xcodeproj">
+          BlueprintName = "AmplifyXcode"
+          ReferencedContainer = "container:AmplifyXcode.xcodeproj">
         </BuildableReference>
       </BuildActionEntry>
     </BuildActionEntries>
@@ -33,7 +25,7 @@
             BuildableIdentifier = "primary"
             BuildableName = "'$(TARGET_NAME)'"
             BlueprintName = "AmplifyXcodeCoreTests"
-            ReferencedContainer = "container:AmplifyCLIiOS.xcodeproj">
+            ReferencedContainer = "container:AmplifyXcode.xcodeproj">
           </BuildableReference>
         </TestableReference>
         <TestableReference
@@ -41,10 +33,32 @@
           <BuildableReference
             BuildableIdentifier = "primary"
             BuildableName = "'$(TARGET_NAME)'"
-            BlueprintName = "AmplifyCLIiOSTests"
-            ReferencedContainer = "container:AmplifyCLIiOS.xcodeproj">
+            BlueprintName = "AmplifyXcodeTests"
+            ReferencedContainer = "container:AmplifyXcode.xcodeproj">
           </BuildableReference>
         </TestableReference>
     </Testables>
   </TestAction>
+<LaunchAction
+   buildConfiguration = "Debug"
+   selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+   selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+   launchStyle = "0"
+   useCustomWorkingDirectory = "NO"
+   ignoresPersistentStateOnLaunch = "NO"
+   debugDocumentVersioning = "YES"
+   debugServiceExtension = "internal"
+   allowLocationSimulation = "YES">
+   <BuildableProductRunnable
+      runnableDebuggingMode = "0">
+      <BuildableReference
+         BuildableIdentifier = "primary"
+         BuildableName = "'$(TARGET_NAME)'"
+         BlueprintName = "AmplifyXcode"
+         ReferencedContainer = "container:AmplifyXcode.xcodeproj">
+      </BuildableReference>
+   </BuildableProductRunnable>
+   <AdditionalOptions>
+   </AdditionalOptions>
+</LaunchAction>
 </Scheme>

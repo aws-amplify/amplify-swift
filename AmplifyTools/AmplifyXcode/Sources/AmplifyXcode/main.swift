@@ -7,4 +7,4 @@
 
 import Foundation
 
-AmplifyIOS.main()
+AmplifyXcode.main()

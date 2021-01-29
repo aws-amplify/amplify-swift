@@ -34,7 +34,7 @@
          productName = "AEXMLPackageDescription";
          productType = "com.apple.product-type.framework";
       };
-      "AmplifyCLIiOS::AmplifyCLIiOS" = {
+      "AmplifyXcode::AmplifyXcode" = {
          isa = "PBXNativeTarget";
          buildConfigurationList = "OBJ_409";
          buildPhases = (
@@ -59,36 +59,28 @@
             "OBJ_460",
             "OBJ_462"
          );
-         name = "AmplifyCLIiOS";
-         productName = "AmplifyCLIiOS";
-         productReference = "AmplifyCLIiOS::AmplifyCLIiOS::Product";
+         name = "AmplifyXcode";
+         productName = "AmplifyXcode";
+         productReference = "AmplifyXcode::AmplifyXcode::Product";
          productType = "com.apple.product-type.tool";
       };
-      "AmplifyCLIiOS::AmplifyCLIiOS::Product" = {
+      "AmplifyXcode::AmplifyXcode::Product" = {
          isa = "PBXFileReference";
-         path = "AmplifyCLIiOS";
+         path = "AmplifyXcode";
          sourceTree = "BUILT_PRODUCTS_DIR";
       };
-      "AmplifyCLIiOS::AmplifyCLIiOSPackageTests::ProductTarget" = {
-         isa = "PBXAggregateTarget";
-         buildConfigurationList = "OBJ_471";
-         buildPhases = (
-         );
-         dependencies = (
-            "OBJ_474",
-            "OBJ_476"
-         );
-         name = "AmplifyCLIiOSPackageTests";
-         productName = "AmplifyCLIiOSPackageTests";
-      };
-      "AmplifyCLIiOS::AmplifyCLIiOSTests" = {
+      "AmplifyXcode::AmplifyXcodeCore" = {
          isa = "PBXNativeTarget";
-         buildConfigurationList = "OBJ_478";
+         buildConfigurationList = "OBJ_464";
          buildPhases = (
-            "OBJ_481",
-            "OBJ_484"
+            "OBJ_467",
+            "OBJ_482"
          );
          dependencies = (
+            "OBJ_497",
+            "OBJ_498",
+            "OBJ_499",
+            "OBJ_500",
             "OBJ_501",
             "OBJ_502",
             "OBJ_503",
@@ -98,66 +90,74 @@
             "OBJ_507",
             "OBJ_508",
             "OBJ_509",
-            "OBJ_510",
-            "OBJ_511",
-            "OBJ_512",
-            "OBJ_513",
-            "OBJ_514",
-            "OBJ_515",
-            "OBJ_516",
-            "OBJ_517"
-         );
-         name = "AmplifyCLIiOSTests";
-         productName = "AmplifyCLIiOSTests";
-         productReference = "AmplifyCLIiOS::AmplifyCLIiOSTests::Product";
-         productType = "com.apple.product-type.bundle.unit-test";
-      };
-      "AmplifyCLIiOS::AmplifyCLIiOSTests::Product" = {
-         isa = "PBXFileReference";
-         path = "AmplifyCLIiOSTests.xctest";
-         sourceTree = "BUILT_PRODUCTS_DIR";
-      };
-      "AmplifyCLIiOS::AmplifyXcodeCore" = {
-         isa = "PBXNativeTarget";
-         buildConfigurationList = "OBJ_518";
-         buildPhases = (
-            "OBJ_521",
-            "OBJ_536"
-         );
-         dependencies = (
-            "OBJ_551",
-            "OBJ_552",
-            "OBJ_553",
-            "OBJ_554",
-            "OBJ_555",
-            "OBJ_556",
-            "OBJ_557",
-            "OBJ_558",
-            "OBJ_559",
-            "OBJ_560",
-            "OBJ_561",
-            "OBJ_562",
-            "OBJ_563",
-            "OBJ_564"
+            "OBJ_510"
          );
          name = "AmplifyXcodeCore";
          productName = "AmplifyXcodeCore";
-         productReference = "AmplifyCLIiOS::AmplifyXcodeCore::Product";
+         productReference = "AmplifyXcode::AmplifyXcodeCore::Product";
          productType = "com.apple.product-type.framework";
       };
-      "AmplifyCLIiOS::AmplifyXcodeCore::Product" = {
+      "AmplifyXcode::AmplifyXcodeCore::Product" = {
          isa = "PBXFileReference";
          path = "AmplifyXcodeCore.framework";
          sourceTree = "BUILT_PRODUCTS_DIR";
       };
-      "AmplifyCLIiOS::AmplifyXcodeCoreTests" = {
+      "AmplifyXcode::AmplifyXcodeCoreTests" = {
          isa = "PBXNativeTarget";
-         buildConfigurationList = "OBJ_565";
+         buildConfigurationList = "OBJ_512";
          buildPhases = (
-            "OBJ_568",
-            "OBJ_577"
+            "OBJ_515",
+            "OBJ_524"
          );
          dependencies = (
+            "OBJ_540",
+            "OBJ_541",
+            "OBJ_542",
+            "OBJ_543",
+            "OBJ_544",
+            "OBJ_545",
+            "OBJ_546",
+            "OBJ_547",
+            "OBJ_548",
+            "OBJ_549",
+            "OBJ_550",
+            "OBJ_551",
+            "OBJ_552",
+            "OBJ_553",
+            "OBJ_554"
+         );
+         name = "AmplifyXcodeCoreTests";
+         productName = "AmplifyXcodeCoreTests";
+         productReference = "AmplifyXcode::AmplifyXcodeCoreTests::Product";
+         productType = "com.apple.product-type.bundle.unit-test";
+      };
+      "AmplifyXcode::AmplifyXcodeCoreTests::Product" = {
+         isa = "PBXFileReference";
+         path = "AmplifyXcodeCoreTests.xctest";
+         sourceTree = "BUILT_PRODUCTS_DIR";
+      };
+      "AmplifyXcode::AmplifyXcodePackageTests::ProductTarget" = {
+         isa = "PBXAggregateTarget";
+         buildConfigurationList = "OBJ_562";
+         buildPhases = (
+         );
+         dependencies = (
+            "OBJ_565",
+            "OBJ_566"
+         );
+         name = "AmplifyXcodePackageTests";
+         productName = "AmplifyXcodePackageTests";
+      };
+      "AmplifyXcode::AmplifyXcodeTests" = {
+         isa = "PBXNativeTarget";
+         buildConfigurationList = "OBJ_568";
+         buildPhases = (
+            "OBJ_571",
+            "OBJ_574"
+         );
+         dependencies = (
+            "OBJ_591",
+            "OBJ_592",
             "OBJ_593",
             "OBJ_594",
             "OBJ_595",
@@ -174,29 +174,29 @@
             "OBJ_606",
             "OBJ_607"
          );
-         name = "AmplifyXcodeCoreTests";
-         productName = "AmplifyXcodeCoreTests";
-         productReference = "AmplifyCLIiOS::AmplifyXcodeCoreTests::Product";
+         name = "AmplifyXcodeTests";
+         productName = "AmplifyXcodeTests";
+         productReference = "AmplifyXcode::AmplifyXcodeTests::Product";
          productType = "com.apple.product-type.bundle.unit-test";
       };
-      "AmplifyCLIiOS::AmplifyXcodeCoreTests::Product" = {
+      "AmplifyXcode::AmplifyXcodeTests::Product" = {
          isa = "PBXFileReference";
-         path = "AmplifyXcodeCoreTests.xctest";
+         path = "AmplifyXcodeTests.xctest";
          sourceTree = "BUILT_PRODUCTS_DIR";
       };
-      "AmplifyCLIiOS::SwiftPMPackageDescription" = {
+      "AmplifyXcode::SwiftPMPackageDescription" = {
          isa = "PBXNativeTarget";
-         buildConfigurationList = "OBJ_465";
+         buildConfigurationList = "OBJ_556";
          buildPhases = (
-            "OBJ_468"
+            "OBJ_559"
          );
          dependencies = (
          );
-         name = "AmplifyCLIiOSPackageDescription";
-         productName = "AmplifyCLIiOSPackageDescription";
+         name = "AmplifyXcodePackageDescription";
+         productName = "AmplifyXcodePackageDescription";
          productType = "com.apple.product-type.framework";
       };
-      "AmplifyCLIiOS::amplify-ios::ProductTarget" = {
+      "AmplifyXcode::amplify-xcode::ProductTarget" = {
          isa = "PBXAggregateTarget";
          buildConfigurationList = "OBJ_1045";
          buildPhases = (
@@ -204,8 +204,8 @@
          dependencies = (
             "OBJ_1048"
          );
-         name = "amplify-ios";
-         productName = "amplify-ios";
+         name = "amplify-xcode";
+         productName = "amplify-xcode";
       };
       "GraphViz::DOT" = {
          isa = "PBXNativeTarget";
@@ -329,12 +329,12 @@
          targets = (
             "AEXML::AEXML",
             "AEXML::SwiftPMPackageDescription",
-            "AmplifyCLIiOS::AmplifyCLIiOS",
-            "AmplifyCLIiOS::SwiftPMPackageDescription",
-            "AmplifyCLIiOS::AmplifyCLIiOSPackageTests::ProductTarget",
-            "AmplifyCLIiOS::AmplifyCLIiOSTests",
-            "AmplifyCLIiOS::AmplifyXcodeCore",
-            "AmplifyCLIiOS::AmplifyXcodeCoreTests",
+            "AmplifyXcode::AmplifyXcode",
+            "AmplifyXcode::AmplifyXcodeCore",
+            "AmplifyXcode::AmplifyXcodeCoreTests",
+            "AmplifyXcode::SwiftPMPackageDescription",
+            "AmplifyXcode::AmplifyXcodePackageTests::ProductTarget",
+            "AmplifyXcode::AmplifyXcodeTests",
             "swift-argument-parser::ArgumentParser",
             "Yams::CYaml",
             "XcodeGen::Core",
@@ -357,7 +357,7 @@
             "XcodeProj::SwiftPMPackageDescription",
             "Yams::Yams",
             "Yams::SwiftPMPackageDescription",
-            "AmplifyCLIiOS::amplify-ios::ProductTarget",
+            "AmplifyXcode::amplify-xcode::ProductTarget",
             "swift-argument-parser::SwiftPMPackageDescription"
          );
       };
@@ -530,7 +530,7 @@
                "$(inherited)",
                "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/Yams_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/Yams_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -572,7 +572,7 @@
                "$(inherited)",
                "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/Yams_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/Yams_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -794,7 +794,7 @@
       };
       "OBJ_1048" = {
          isa = "PBXTargetDependency";
-         target = "AmplifyCLIiOS::AmplifyCLIiOS";
+         target = "AmplifyXcode::AmplifyXcode";
       };
       "OBJ_105" = {
          isa = "PBXFileReference";
@@ -1172,7 +1172,7 @@
          isa = "PBXFileReference";
          explicitFileType = "sourcecode.swift";
          name = "Package.swift";
-         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyCLIiOS/.build/checkouts/XcodeGen/Package.swift";
+         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyXcode/.build/checkouts/XcodeGen/Package.swift";
          sourceTree = "<group>";
       };
       "OBJ_157" = {
@@ -1407,7 +1407,7 @@
          isa = "PBXFileReference";
          explicitFileType = "sourcecode.swift";
          name = "Package.swift";
-         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyCLIiOS/.build/checkouts/GraphViz/Package.swift";
+         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyXcode/.build/checkouts/GraphViz/Package.swift";
          sourceTree = "<group>";
       };
       "OBJ_189" = {
@@ -1433,7 +1433,7 @@
          isa = "PBXFileReference";
          explicitFileType = "sourcecode.swift";
          name = "Package.swift";
-         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyCLIiOS/.build/checkouts/Version/Package.swift";
+         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyXcode/.build/checkouts/Version/Package.swift";
          sourceTree = "<group>";
       };
       "OBJ_191" = {
@@ -1558,7 +1558,7 @@
          isa = "PBXFileReference";
          explicitFileType = "sourcecode.swift";
          name = "Package.swift";
-         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyCLIiOS/.build/checkouts/JSONUtilities/Package.swift";
+         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyXcode/.build/checkouts/JSONUtilities/Package.swift";
          sourceTree = "<group>";
       };
       "OBJ_208" = {
@@ -1769,7 +1769,7 @@
          isa = "PBXFileReference";
          explicitFileType = "sourcecode.swift";
          name = "Package.swift";
-         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyCLIiOS/.build/checkouts/Yams/Package.swift";
+         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyXcode/.build/checkouts/Yams/Package.swift";
          sourceTree = "<group>";
       };
       "OBJ_238" = {
@@ -2270,7 +2270,7 @@
          isa = "PBXGroup";
          children = (
             "OBJ_31",
-            "OBJ_34"
+            "OBJ_44"
          );
          name = "Tests";
          path = "";
@@ -2342,10 +2342,12 @@
          isa = "PBXGroup";
          children = (
             "OBJ_32",
-            "OBJ_33"
+            "OBJ_35",
+            "OBJ_38",
+            "OBJ_42"
          );
-         name = "AmplifyCLIiOSTests";
-         path = "Tests/AmplifyCLIiOSTests";
+         name = "AmplifyXcodeCoreTests";
+         path = "Tests/AmplifyXcodeCoreTests";
          sourceTree = "SOURCE_ROOT";
       };
       "OBJ_310" = {
@@ -2423,8 +2425,13 @@
          sourceTree = "<group>";
       };
       "OBJ_32" = {
-         isa = "PBXFileReference";
-         path = "AmplifyCLIiOSTests.swift";
+         isa = "PBXGroup";
+         children = (
+            "OBJ_33",
+            "OBJ_34"
+         );
+         name = "Commands";
+         path = "Commands";
          sourceTree = "<group>";
       };
       "OBJ_320" = {
@@ -2479,7 +2486,7 @@
       };
       "OBJ_33" = {
          isa = "PBXFileReference";
-         path = "XCTestManifests.swift";
+         path = "CommandImportConfigTasksTests.swift";
          sourceTree = "<group>";
       };
       "OBJ_330" = {
@@ -2544,16 +2551,9 @@
          sourceTree = "<group>";
       };
       "OBJ_34" = {
-         isa = "PBXGroup";
-         children = (
-            "OBJ_35",
-            "OBJ_38",
-            "OBJ_41",
-            "OBJ_45"
-         );
-         name = "AmplifyXcodeCoreTests";
-         path = "Tests/AmplifyXcodeCoreTests";
-         sourceTree = "SOURCE_ROOT";
+         isa = "PBXFileReference";
+         path = "CommandImportConfigTests.swift";
+         sourceTree = "<group>";
       };
       "OBJ_340" = {
          isa = "PBXFileReference";
@@ -2608,7 +2608,7 @@
          isa = "PBXFileReference";
          explicitFileType = "sourcecode.swift";
          name = "Package.swift";
-         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyCLIiOS/.build/checkouts/xcodeproj/Package.swift";
+         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyXcode/.build/checkouts/xcodeproj/Package.swift";
          sourceTree = "<group>";
       };
       "OBJ_349" = {
@@ -2627,15 +2627,15 @@
             "OBJ_36",
             "OBJ_37"
          );
-         name = "Commands";
-         path = "Commands";
+         name = "Core";
+         path = "Core";
          sourceTree = "<group>";
       };
       "OBJ_350" = {
          isa = "PBXFileReference";
          explicitFileType = "sourcecode.swift";
          name = "Package.swift";
-         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyCLIiOS/.build/checkouts/PathKit/Package.swift";
+         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyXcode/.build/checkouts/PathKit/Package.swift";
          sourceTree = "<group>";
       };
       "OBJ_351" = {
@@ -2695,12 +2695,12 @@
          isa = "PBXFileReference";
          explicitFileType = "sourcecode.swift";
          name = "Package.swift";
-         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyCLIiOS/.build/checkouts/AEXML/Package.swift";
+         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyXcode/.build/checkouts/AEXML/Package.swift";
          sourceTree = "<group>";
       };
       "OBJ_36" = {
          isa = "PBXFileReference";
-         path = "CommandImportConfigTasksTests.swift";
+         path = "AmplifyCommandEnvironmentTests.swift";
          sourceTree = "<group>";
       };
       "OBJ_360" = {
@@ -2764,31 +2764,31 @@
          isa = "PBXFileReference";
          explicitFileType = "sourcecode.swift";
          name = "Package.swift";
-         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyCLIiOS/.build/checkouts/XcodeProjCExt/Package.swift";
+         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyXcode/.build/checkouts/XcodeProjCExt/Package.swift";
          sourceTree = "<group>";
       };
       "OBJ_369" = {
          isa = "PBXGroup";
          children = (
-            "GraphViz::GraphViz::Product",
-            "Yams::CYaml::Product",
-            "AmplifyCLIiOS::AmplifyXcodeCore::Product",
-            "XcodeGen::Core::Product",
-            "AmplifyCLIiOS::AmplifyCLIiOSTests::Product",
-            "AmplifyCLIiOS::AmplifyCLIiOS::Product",
-            "JSONUtilities::JSONUtilities::Product",
-            "GraphViz::DOT::Product",
-            "GraphViz::Tools::Product",
-            "XcodeProj::XcodeProj::Product",
-            "AEXML::AEXML::Product",
-            "Yams::Yams::Product",
-            "XcodeGen::ProjectSpec::Product",
-            "XcodeGen::XcodeGenKit::Product",
+            "AmplifyXcode::AmplifyXcodeCoreTests::Product",
             "swift-argument-parser::ArgumentParser::Product",
-            "XcodeProjCExt::XcodeProjCExt::Product",
-            "PathKit::PathKit::Product",
+            "JSONUtilities::JSONUtilities::Product",
+            "Yams::CYaml::Product",
+            "XcodeGen::ProjectSpec::Product",
+            "Yams::Yams::Product",
+            "GraphViz::Tools::Product",
+            "AmplifyXcode::AmplifyXcodeTests::Product",
+            "GraphViz::DOT::Product",
+            "XcodeProj::XcodeProj::Product",
+            "GraphViz::GraphViz::Product",
+            "XcodeGen::Core::Product",
+            "XcodeGen::XcodeGenKit::Product",
             "Version::Version::Product",
-            "AmplifyCLIiOS::AmplifyXcodeCoreTests::Product"
+            "PathKit::PathKit::Product",
+            "AEXML::AEXML::Product",
+            "AmplifyXcode::AmplifyXcodeCore::Product",
+            "XcodeProjCExt::XcodeProjCExt::Product",
+            "AmplifyXcode::AmplifyXcode::Product"
          );
          name = "Products";
          path = "";
@@ -2796,17 +2796,18 @@
       };
       "OBJ_37" = {
          isa = "PBXFileReference";
-         path = "CommandImportConfigTests.swift";
+         path = "AmplifyCommandErrorTests.swift";
          sourceTree = "<group>";
       };
       "OBJ_38" = {
          isa = "PBXGroup";
          children = (
             "OBJ_39",
-            "OBJ_40"
+            "OBJ_40",
+            "OBJ_41"
          );
-         name = "Core";
-         path = "Core";
+         name = "Mocks";
+         path = "Mocks";
          sourceTree = "<group>";
       };
       "OBJ_389" = {
@@ -2816,7 +2817,7 @@
       };
       "OBJ_39" = {
          isa = "PBXFileReference";
-         path = "AmplifyCommandEnvironmentTests.swift";
+         path = "Mock.swift";
          sourceTree = "<group>";
       };
       "OBJ_390" = {
@@ -2844,7 +2845,7 @@
             HEADER_SEARCH_PATHS = (
                "$(inherited)"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/AEXML_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/AEXML_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "8.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -2885,7 +2886,7 @@
             HEADER_SEARCH_PATHS = (
                "$(inherited)"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/AEXML_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/AEXML_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "8.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -2981,7 +2982,7 @@
       };
       "OBJ_40" = {
          isa = "PBXFileReference";
-         path = "AmplifyCommandErrorTests.swift";
+         path = "MockAmplifyCommandEnvironment.swift";
          sourceTree = "<group>";
       };
       "OBJ_400" = {
@@ -3058,14 +3059,8 @@
          defaultConfigurationName = "Release";
       };
       "OBJ_41" = {
-         isa = "PBXGroup";
-         children = (
-            "OBJ_42",
-            "OBJ_43",
-            "OBJ_44"
-         );
-         name = "Mocks";
-         path = "Mocks";
+         isa = "PBXFileReference";
+         path = "MockAmplifyFileManager.swift";
          sourceTree = "<group>";
       };
       "OBJ_410" = {
@@ -3080,7 +3075,7 @@
                "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include",
                "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/AmplifyCLIiOS_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/AmplifyXcode_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -3103,7 +3098,7 @@
             SWIFT_FORCE_DYNAMIC_LINK_STDLIB = "YES";
             SWIFT_FORCE_STATIC_LINK_STDLIB = "NO";
             SWIFT_VERSION = "5.0";
-            TARGET_NAME = "AmplifyCLIiOS";
+            TARGET_NAME = "AmplifyXcode";
             TVOS_DEPLOYMENT_TARGET = "9.0";
             WATCHOS_DEPLOYMENT_TARGET = "2.0";
          };
@@ -3121,7 +3116,7 @@
                "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include",
                "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/AmplifyCLIiOS_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/AmplifyXcode_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -3144,7 +3139,7 @@
             SWIFT_FORCE_DYNAMIC_LINK_STDLIB = "YES";
             SWIFT_FORCE_STATIC_LINK_STDLIB = "NO";
             SWIFT_VERSION = "5.0";
-            TARGET_NAME = "AmplifyCLIiOS";
+            TARGET_NAME = "AmplifyXcode";
             TVOS_DEPLOYMENT_TARGET = "9.0";
             WATCHOS_DEPLOYMENT_TARGET = "2.0";
          };
@@ -3197,15 +3192,19 @@
       };
       "OBJ_418" = {
          isa = "PBXBuildFile";
-         fileRef = "AmplifyCLIiOS::AmplifyXcodeCore::Product";
+         fileRef = "AmplifyXcode::AmplifyXcodeCore::Product";
       };
       "OBJ_419" = {
          isa = "PBXBuildFile";
          fileRef = "XcodeGen::XcodeGenKit::Product";
       };
       "OBJ_42" = {
-         isa = "PBXFileReference";
-         path = "Mock.swift";
+         isa = "PBXGroup";
+         children = (
+            "OBJ_43"
+         );
+         name = "Support";
+         path = "Support";
          sourceTree = "<group>";
       };
       "OBJ_420" = {
@@ -3250,7 +3249,7 @@
       };
       "OBJ_43" = {
          isa = "PBXFileReference";
-         path = "MockAmplifyCommandEnvironment.swift";
+         path = "FileManagerUtilsTests.swift";
          sourceTree = "<group>";
       };
       "OBJ_430" = {
@@ -3271,7 +3270,7 @@
       };
       "OBJ_435" = {
          isa = "PBXTargetDependency";
-         target = "AmplifyCLIiOS::AmplifyXcodeCore";
+         target = "AmplifyXcode::AmplifyXcodeCore";
       };
       "OBJ_437" = {
          isa = "PBXTargetDependency";
@@ -3282,9 +3281,14 @@
          target = "GraphViz::Tools";
       };
       "OBJ_44" = {
-         isa = "PBXFileReference";
-         path = "MockAmplifyFileManager.swift";
-         sourceTree = "<group>";
+         isa = "PBXGroup";
+         children = (
+            "OBJ_45",
+            "OBJ_46"
+         );
+         name = "AmplifyXcodeTests";
+         path = "Tests/AmplifyXcodeTests";
+         sourceTree = "SOURCE_ROOT";
       };
       "OBJ_441" = {
          isa = "PBXTargetDependency";
@@ -3307,12 +3311,8 @@
          target = "JSONUtilities::JSONUtilities";
       };
       "OBJ_45" = {
-         isa = "PBXGroup";
-         children = (
-            "OBJ_46"
-         );
-         name = "Support";
-         path = "Support";
+         isa = "PBXFileReference";
+         path = "AmplifyXcodeTests.swift";
          sourceTree = "<group>";
       };
       "OBJ_451" = {
@@ -3337,7 +3337,7 @@
       };
       "OBJ_46" = {
          isa = "PBXFileReference";
-         path = "FileManagerUtilsTests.swift";
+         path = "XCTestManifests.swift";
          sourceTree = "<group>";
       };
       "OBJ_460" = {
@@ -3348,60 +3348,127 @@
          isa = "PBXTargetDependency";
          target = "XcodeProjCExt::XcodeProjCExt";
       };
-      "OBJ_465" = {
+      "OBJ_464" = {
          isa = "XCConfigurationList";
          buildConfigurations = (
-            "OBJ_466",
-            "OBJ_467"
+            "OBJ_465",
+            "OBJ_466"
          );
          defaultConfigurationIsVisible = "0";
          defaultConfigurationName = "Release";
       };
-      "OBJ_466" = {
+      "OBJ_465" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
-            LD = "/usr/bin/true";
+            ENABLE_TESTABILITY = "YES";
+            FRAMEWORK_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
+            );
+            HEADER_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include",
+               "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include"
+            );
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/AmplifyXcodeCore_Info.plist";
+            IPHONEOS_DEPLOYMENT_TARGET = "9.0";
+            LD_RUNPATH_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
+            );
+            MACOSX_DEPLOYMENT_TARGET = "10.13";
+            OTHER_CFLAGS = (
+               "$(inherited)"
+            );
+            OTHER_LDFLAGS = (
+               "$(inherited)"
+            );
             OTHER_SWIFT_FLAGS = (
-               "-swift-version",
-               "5",
-               "-I",
-               "$(TOOLCHAIN_DIR)/usr/lib/swift/pm/4_2",
-               "-sdk",
-               "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk",
-               "-package-description-version",
-               "5.3.0"
+               "$(inherited)"
+            );
+            PRODUCT_BUNDLE_IDENTIFIER = "AmplifyXcodeCore";
+            PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+            PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+            SKIP_INSTALL = "YES";
+            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+               "$(inherited)"
             );
             SWIFT_VERSION = "5.0";
+            TARGET_NAME = "AmplifyXcodeCore";
+            TVOS_DEPLOYMENT_TARGET = "9.0";
+            WATCHOS_DEPLOYMENT_TARGET = "2.0";
          };
          name = "Debug";
       };
-      "OBJ_467" = {
+      "OBJ_466" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
-            LD = "/usr/bin/true";
+            ENABLE_TESTABILITY = "YES";
+            FRAMEWORK_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
+            );
+            HEADER_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include",
+               "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include"
+            );
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/AmplifyXcodeCore_Info.plist";
+            IPHONEOS_DEPLOYMENT_TARGET = "9.0";
+            LD_RUNPATH_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
+            );
+            MACOSX_DEPLOYMENT_TARGET = "10.13";
+            OTHER_CFLAGS = (
+               "$(inherited)"
+            );
+            OTHER_LDFLAGS = (
+               "$(inherited)"
+            );
             OTHER_SWIFT_FLAGS = (
-               "-swift-version",
-               "5",
-               "-I",
-               "$(TOOLCHAIN_DIR)/usr/lib/swift/pm/4_2",
-               "-sdk",
-               "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk",
-               "-package-description-version",
-               "5.3.0"
+               "$(inherited)"
+            );
+            PRODUCT_BUNDLE_IDENTIFIER = "AmplifyXcodeCore";
+            PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+            PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+            SKIP_INSTALL = "YES";
+            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+               "$(inherited)"
             );
             SWIFT_VERSION = "5.0";
+            TARGET_NAME = "AmplifyXcodeCore";
+            TVOS_DEPLOYMENT_TARGET = "9.0";
+            WATCHOS_DEPLOYMENT_TARGET = "2.0";
          };
          name = "Release";
       };
-      "OBJ_468" = {
+      "OBJ_467" = {
          isa = "PBXSourcesBuildPhase";
          files = (
-            "OBJ_469"
+            "OBJ_468",
+            "OBJ_469",
+            "OBJ_470",
+            "OBJ_471",
+            "OBJ_472",
+            "OBJ_473",
+            "OBJ_474",
+            "OBJ_475",
+            "OBJ_476",
+            "OBJ_477",
+            "OBJ_478",
+            "OBJ_479",
+            "OBJ_480",
+            "OBJ_481"
          );
+      };
+      "OBJ_468" = {
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_14";
       };
       "OBJ_469" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_6";
+         fileRef = "OBJ_15";
       };
       "OBJ_47" = {
          isa = "PBXGroup";
@@ -3421,84 +3488,45 @@
          path = "";
          sourceTree = "<group>";
       };
+      "OBJ_470" = {
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_16";
+      };
       "OBJ_471" = {
-         isa = "XCConfigurationList";
-         buildConfigurations = (
-            "OBJ_472",
-            "OBJ_473"
-         );
-         defaultConfigurationIsVisible = "0";
-         defaultConfigurationName = "Release";
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_17";
       };
       "OBJ_472" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-         };
-         name = "Debug";
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_18";
       };
       "OBJ_473" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-         };
-         name = "Release";
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_19";
       };
       "OBJ_474" = {
-         isa = "PBXTargetDependency";
-         target = "AmplifyCLIiOS::AmplifyXcodeCoreTests";
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_21";
+      };
+      "OBJ_475" = {
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_22";
       };
       "OBJ_476" = {
-         isa = "PBXTargetDependency";
-         target = "AmplifyCLIiOS::AmplifyCLIiOSTests";
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_23";
+      };
+      "OBJ_477" = {
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_24";
       };
       "OBJ_478" = {
-         isa = "XCConfigurationList";
-         buildConfigurations = (
-            "OBJ_479",
-            "OBJ_480"
-         );
-         defaultConfigurationIsVisible = "0";
-         defaultConfigurationName = "Release";
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_26";
       };
       "OBJ_479" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            CLANG_ENABLE_MODULES = "YES";
-            EMBEDDED_CONTENT_CONTAINS_SWIFT = "YES";
-            FRAMEWORK_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
-            );
-            HEADER_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include",
-               "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include"
-            );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/AmplifyCLIiOSTests_Info.plist";
-            IPHONEOS_DEPLOYMENT_TARGET = "14.0";
-            LD_RUNPATH_SEARCH_PATHS = (
-               "$(inherited)",
-               "@loader_path/../Frameworks",
-               "@loader_path/Frameworks"
-            );
-            MACOSX_DEPLOYMENT_TARGET = "10.15";
-            OTHER_CFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_LDFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_SWIFT_FLAGS = (
-               "$(inherited)"
-            );
-            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-               "$(inherited)"
-            );
-            SWIFT_VERSION = "5.0";
-            TARGET_NAME = "AmplifyCLIiOSTests";
-            TVOS_DEPLOYMENT_TARGET = "9.0";
-            WATCHOS_DEPLOYMENT_TARGET = "2.0";
-         };
-         name = "Debug";
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_27";
       };
       "OBJ_48" = {
          isa = "PBXGroup";
@@ -3511,64 +3539,18 @@
          sourceTree = "SOURCE_ROOT";
       };
       "OBJ_480" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            CLANG_ENABLE_MODULES = "YES";
-            EMBEDDED_CONTENT_CONTAINS_SWIFT = "YES";
-            FRAMEWORK_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
-            );
-            HEADER_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include",
-               "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include"
-            );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/AmplifyCLIiOSTests_Info.plist";
-            IPHONEOS_DEPLOYMENT_TARGET = "14.0";
-            LD_RUNPATH_SEARCH_PATHS = (
-               "$(inherited)",
-               "@loader_path/../Frameworks",
-               "@loader_path/Frameworks"
-            );
-            MACOSX_DEPLOYMENT_TARGET = "10.15";
-            OTHER_CFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_LDFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_SWIFT_FLAGS = (
-               "$(inherited)"
-            );
-            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-               "$(inherited)"
-            );
-            SWIFT_VERSION = "5.0";
-            TARGET_NAME = "AmplifyCLIiOSTests";
-            TVOS_DEPLOYMENT_TARGET = "9.0";
-            WATCHOS_DEPLOYMENT_TARGET = "2.0";
-         };
-         name = "Release";
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_28";
       };
       "OBJ_481" = {
-         isa = "PBXSourcesBuildPhase";
-         files = (
-            "OBJ_482",
-            "OBJ_483"
-         );
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_29";
       };
       "OBJ_482" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_32";
-      };
-      "OBJ_483" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_33";
-      };
-      "OBJ_484" = {
          isa = "PBXFrameworksBuildPhase";
          files = (
+            "OBJ_483",
+            "OBJ_484",
             "OBJ_485",
             "OBJ_486",
             "OBJ_487",
@@ -3580,32 +3562,36 @@
             "OBJ_493",
             "OBJ_494",
             "OBJ_495",
-            "OBJ_496",
-            "OBJ_497",
-            "OBJ_498",
-            "OBJ_499",
-            "OBJ_500"
+            "OBJ_496"
          );
       };
-      "OBJ_485" = {
-         isa = "PBXBuildFile";
-         fileRef = "swift-argument-parser::ArgumentParser::Product";
-      };
-      "OBJ_486" = {
-         isa = "PBXBuildFile";
-         fileRef = "AmplifyCLIiOS::AmplifyXcodeCore::Product";
-      };
-      "OBJ_487" = {
+      "OBJ_483" = {
          isa = "PBXBuildFile";
          fileRef = "XcodeGen::XcodeGenKit::Product";
       };
-      "OBJ_488" = {
+      "OBJ_484" = {
          isa = "PBXBuildFile";
          fileRef = "GraphViz::Tools::Product";
       };
-      "OBJ_489" = {
+      "OBJ_485" = {
          isa = "PBXBuildFile";
          fileRef = "GraphViz::DOT::Product";
+      };
+      "OBJ_486" = {
+         isa = "PBXBuildFile";
+         fileRef = "GraphViz::GraphViz::Product";
+      };
+      "OBJ_487" = {
+         isa = "PBXBuildFile";
+         fileRef = "XcodeGen::ProjectSpec::Product";
+      };
+      "OBJ_488" = {
+         isa = "PBXBuildFile";
+         fileRef = "Version::Version::Product";
+      };
+      "OBJ_489" = {
+         isa = "PBXBuildFile";
+         fileRef = "JSONUtilities::JSONUtilities::Product";
       };
       "OBJ_49" = {
          isa = "PBXGroup";
@@ -3623,43 +3609,43 @@
       };
       "OBJ_490" = {
          isa = "PBXBuildFile";
-         fileRef = "GraphViz::GraphViz::Product";
+         fileRef = "XcodeGen::Core::Product";
       };
       "OBJ_491" = {
          isa = "PBXBuildFile";
-         fileRef = "XcodeGen::ProjectSpec::Product";
+         fileRef = "Yams::Yams::Product";
       };
       "OBJ_492" = {
          isa = "PBXBuildFile";
-         fileRef = "Version::Version::Product";
+         fileRef = "Yams::CYaml::Product";
       };
       "OBJ_493" = {
          isa = "PBXBuildFile";
-         fileRef = "JSONUtilities::JSONUtilities::Product";
+         fileRef = "XcodeProj::XcodeProj::Product";
       };
       "OBJ_494" = {
          isa = "PBXBuildFile";
-         fileRef = "XcodeGen::Core::Product";
+         fileRef = "AEXML::AEXML::Product";
       };
       "OBJ_495" = {
          isa = "PBXBuildFile";
-         fileRef = "Yams::Yams::Product";
+         fileRef = "PathKit::PathKit::Product";
       };
       "OBJ_496" = {
          isa = "PBXBuildFile";
-         fileRef = "Yams::CYaml::Product";
+         fileRef = "XcodeProjCExt::XcodeProjCExt::Product";
       };
       "OBJ_497" = {
-         isa = "PBXBuildFile";
-         fileRef = "XcodeProj::XcodeProj::Product";
+         isa = "PBXTargetDependency";
+         target = "XcodeGen::XcodeGenKit";
       };
       "OBJ_498" = {
-         isa = "PBXBuildFile";
-         fileRef = "AEXML::AEXML::Product";
+         isa = "PBXTargetDependency";
+         target = "GraphViz::Tools";
       };
       "OBJ_499" = {
-         isa = "PBXBuildFile";
-         fileRef = "PathKit::PathKit::Product";
+         isa = "PBXTargetDependency";
+         target = "GraphViz::DOT";
       };
       "OBJ_5" = {
          isa = "PBXGroup";
@@ -3688,44 +3674,44 @@
          sourceTree = "<group>";
       };
       "OBJ_500" = {
-         isa = "PBXBuildFile";
-         fileRef = "XcodeProjCExt::XcodeProjCExt::Product";
-      };
-      "OBJ_501" = {
-         isa = "PBXTargetDependency";
-         target = "AmplifyCLIiOS::AmplifyCLIiOS";
-      };
-      "OBJ_502" = {
-         isa = "PBXTargetDependency";
-         target = "swift-argument-parser::ArgumentParser";
-      };
-      "OBJ_503" = {
-         isa = "PBXTargetDependency";
-         target = "AmplifyCLIiOS::AmplifyXcodeCore";
-      };
-      "OBJ_504" = {
-         isa = "PBXTargetDependency";
-         target = "XcodeGen::XcodeGenKit";
-      };
-      "OBJ_505" = {
-         isa = "PBXTargetDependency";
-         target = "GraphViz::Tools";
-      };
-      "OBJ_506" = {
-         isa = "PBXTargetDependency";
-         target = "GraphViz::DOT";
-      };
-      "OBJ_507" = {
          isa = "PBXTargetDependency";
          target = "GraphViz::GraphViz";
       };
-      "OBJ_508" = {
+      "OBJ_501" = {
          isa = "PBXTargetDependency";
          target = "XcodeGen::ProjectSpec";
       };
-      "OBJ_509" = {
+      "OBJ_502" = {
          isa = "PBXTargetDependency";
          target = "Version::Version";
+      };
+      "OBJ_503" = {
+         isa = "PBXTargetDependency";
+         target = "JSONUtilities::JSONUtilities";
+      };
+      "OBJ_504" = {
+         isa = "PBXTargetDependency";
+         target = "XcodeGen::Core";
+      };
+      "OBJ_505" = {
+         isa = "PBXTargetDependency";
+         target = "Yams::Yams";
+      };
+      "OBJ_506" = {
+         isa = "PBXTargetDependency";
+         target = "Yams::CYaml";
+      };
+      "OBJ_507" = {
+         isa = "PBXTargetDependency";
+         target = "XcodeProj::XcodeProj";
+      };
+      "OBJ_508" = {
+         isa = "PBXTargetDependency";
+         target = "AEXML::AEXML";
+      };
+      "OBJ_509" = {
+         isa = "PBXTargetDependency";
+         target = "PathKit::PathKit";
       };
       "OBJ_51" = {
          isa = "PBXFileReference";
@@ -3734,49 +3720,22 @@
       };
       "OBJ_510" = {
          isa = "PBXTargetDependency";
-         target = "JSONUtilities::JSONUtilities";
-      };
-      "OBJ_511" = {
-         isa = "PBXTargetDependency";
-         target = "XcodeGen::Core";
-      };
-      "OBJ_512" = {
-         isa = "PBXTargetDependency";
-         target = "Yams::Yams";
-      };
-      "OBJ_513" = {
-         isa = "PBXTargetDependency";
-         target = "Yams::CYaml";
-      };
-      "OBJ_514" = {
-         isa = "PBXTargetDependency";
-         target = "XcodeProj::XcodeProj";
-      };
-      "OBJ_515" = {
-         isa = "PBXTargetDependency";
-         target = "AEXML::AEXML";
-      };
-      "OBJ_516" = {
-         isa = "PBXTargetDependency";
-         target = "PathKit::PathKit";
-      };
-      "OBJ_517" = {
-         isa = "PBXTargetDependency";
          target = "XcodeProjCExt::XcodeProjCExt";
       };
-      "OBJ_518" = {
+      "OBJ_512" = {
          isa = "XCConfigurationList";
          buildConfigurations = (
-            "OBJ_519",
-            "OBJ_520"
+            "OBJ_513",
+            "OBJ_514"
          );
          defaultConfigurationIsVisible = "0";
          defaultConfigurationName = "Release";
       };
-      "OBJ_519" = {
+      "OBJ_513" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
-            ENABLE_TESTABILITY = "YES";
+            CLANG_ENABLE_MODULES = "YES";
+            EMBEDDED_CONTENT_CONTAINS_SWIFT = "YES";
             FRAMEWORK_SEARCH_PATHS = (
                "$(inherited)",
                "$(PLATFORM_DIR)/Developer/Library/Frameworks"
@@ -3786,13 +3745,14 @@
                "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include",
                "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/AmplifyXcodeCore_Info.plist";
-            IPHONEOS_DEPLOYMENT_TARGET = "9.0";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/AmplifyXcodeCoreTests_Info.plist";
+            IPHONEOS_DEPLOYMENT_TARGET = "14.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
-               "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
+               "@loader_path/../Frameworks",
+               "@loader_path/Frameworks"
             );
-            MACOSX_DEPLOYMENT_TARGET = "10.13";
+            MACOSX_DEPLOYMENT_TARGET = "10.15";
             OTHER_CFLAGS = (
                "$(inherited)"
             );
@@ -3802,19 +3762,85 @@
             OTHER_SWIFT_FLAGS = (
                "$(inherited)"
             );
-            PRODUCT_BUNDLE_IDENTIFIER = "AmplifyXcodeCore";
-            PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
-            PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-            SKIP_INSTALL = "YES";
             SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
                "$(inherited)"
             );
             SWIFT_VERSION = "5.0";
-            TARGET_NAME = "AmplifyXcodeCore";
+            TARGET_NAME = "AmplifyXcodeCoreTests";
             TVOS_DEPLOYMENT_TARGET = "9.0";
             WATCHOS_DEPLOYMENT_TARGET = "2.0";
          };
          name = "Debug";
+      };
+      "OBJ_514" = {
+         isa = "XCBuildConfiguration";
+         buildSettings = {
+            CLANG_ENABLE_MODULES = "YES";
+            EMBEDDED_CONTENT_CONTAINS_SWIFT = "YES";
+            FRAMEWORK_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
+            );
+            HEADER_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include",
+               "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include"
+            );
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/AmplifyXcodeCoreTests_Info.plist";
+            IPHONEOS_DEPLOYMENT_TARGET = "14.0";
+            LD_RUNPATH_SEARCH_PATHS = (
+               "$(inherited)",
+               "@loader_path/../Frameworks",
+               "@loader_path/Frameworks"
+            );
+            MACOSX_DEPLOYMENT_TARGET = "10.15";
+            OTHER_CFLAGS = (
+               "$(inherited)"
+            );
+            OTHER_LDFLAGS = (
+               "$(inherited)"
+            );
+            OTHER_SWIFT_FLAGS = (
+               "$(inherited)"
+            );
+            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+               "$(inherited)"
+            );
+            SWIFT_VERSION = "5.0";
+            TARGET_NAME = "AmplifyXcodeCoreTests";
+            TVOS_DEPLOYMENT_TARGET = "9.0";
+            WATCHOS_DEPLOYMENT_TARGET = "2.0";
+         };
+         name = "Release";
+      };
+      "OBJ_515" = {
+         isa = "PBXSourcesBuildPhase";
+         files = (
+            "OBJ_516",
+            "OBJ_517",
+            "OBJ_518",
+            "OBJ_519",
+            "OBJ_520",
+            "OBJ_521",
+            "OBJ_522",
+            "OBJ_523"
+         );
+      };
+      "OBJ_516" = {
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_33";
+      };
+      "OBJ_517" = {
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_34";
+      };
+      "OBJ_518" = {
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_36";
+      };
+      "OBJ_519" = {
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_37";
       };
       "OBJ_52" = {
          isa = "PBXFileReference";
@@ -3822,54 +3848,24 @@
          sourceTree = "<group>";
       };
       "OBJ_520" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            ENABLE_TESTABILITY = "YES";
-            FRAMEWORK_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
-            );
-            HEADER_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include",
-               "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include"
-            );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/AmplifyXcodeCore_Info.plist";
-            IPHONEOS_DEPLOYMENT_TARGET = "9.0";
-            LD_RUNPATH_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
-            );
-            MACOSX_DEPLOYMENT_TARGET = "10.13";
-            OTHER_CFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_LDFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_SWIFT_FLAGS = (
-               "$(inherited)"
-            );
-            PRODUCT_BUNDLE_IDENTIFIER = "AmplifyXcodeCore";
-            PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
-            PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-            SKIP_INSTALL = "YES";
-            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-               "$(inherited)"
-            );
-            SWIFT_VERSION = "5.0";
-            TARGET_NAME = "AmplifyXcodeCore";
-            TVOS_DEPLOYMENT_TARGET = "9.0";
-            WATCHOS_DEPLOYMENT_TARGET = "2.0";
-         };
-         name = "Release";
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_39";
       };
       "OBJ_521" = {
-         isa = "PBXSourcesBuildPhase";
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_40";
+      };
+      "OBJ_522" = {
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_41";
+      };
+      "OBJ_523" = {
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_43";
+      };
+      "OBJ_524" = {
+         isa = "PBXFrameworksBuildPhase";
          files = (
-            "OBJ_522",
-            "OBJ_523",
-            "OBJ_524",
             "OBJ_525",
             "OBJ_526",
             "OBJ_527",
@@ -3880,40 +3876,32 @@
             "OBJ_532",
             "OBJ_533",
             "OBJ_534",
-            "OBJ_535"
+            "OBJ_535",
+            "OBJ_536",
+            "OBJ_537",
+            "OBJ_538",
+            "OBJ_539"
          );
-      };
-      "OBJ_522" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_14";
-      };
-      "OBJ_523" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_15";
-      };
-      "OBJ_524" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_16";
       };
       "OBJ_525" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_17";
+         fileRef = "AmplifyXcode::AmplifyXcodeCore::Product";
       };
       "OBJ_526" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_18";
+         fileRef = "XcodeGen::XcodeGenKit::Product";
       };
       "OBJ_527" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_19";
+         fileRef = "GraphViz::Tools::Product";
       };
       "OBJ_528" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_21";
+         fileRef = "GraphViz::DOT::Product";
       };
       "OBJ_529" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_22";
+         fileRef = "GraphViz::GraphViz::Product";
       };
       "OBJ_53" = {
          isa = "PBXFileReference";
@@ -3922,58 +3910,43 @@
       };
       "OBJ_530" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_23";
+         fileRef = "XcodeGen::ProjectSpec::Product";
       };
       "OBJ_531" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_24";
+         fileRef = "Version::Version::Product";
       };
       "OBJ_532" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_26";
+         fileRef = "JSONUtilities::JSONUtilities::Product";
       };
       "OBJ_533" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_27";
+         fileRef = "XcodeGen::Core::Product";
       };
       "OBJ_534" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_28";
+         fileRef = "Yams::Yams::Product";
       };
       "OBJ_535" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_29";
+         fileRef = "Yams::CYaml::Product";
       };
       "OBJ_536" = {
-         isa = "PBXFrameworksBuildPhase";
-         files = (
-            "OBJ_537",
-            "OBJ_538",
-            "OBJ_539",
-            "OBJ_540",
-            "OBJ_541",
-            "OBJ_542",
-            "OBJ_543",
-            "OBJ_544",
-            "OBJ_545",
-            "OBJ_546",
-            "OBJ_547",
-            "OBJ_548",
-            "OBJ_549",
-            "OBJ_550"
-         );
+         isa = "PBXBuildFile";
+         fileRef = "XcodeProj::XcodeProj::Product";
       };
       "OBJ_537" = {
          isa = "PBXBuildFile";
-         fileRef = "XcodeGen::XcodeGenKit::Product";
+         fileRef = "AEXML::AEXML::Product";
       };
       "OBJ_538" = {
          isa = "PBXBuildFile";
-         fileRef = "GraphViz::Tools::Product";
+         fileRef = "PathKit::PathKit::Product";
       };
       "OBJ_539" = {
          isa = "PBXBuildFile";
-         fileRef = "GraphViz::DOT::Product";
+         fileRef = "XcodeProjCExt::XcodeProjCExt::Product";
       };
       "OBJ_54" = {
          isa = "PBXFileReference";
@@ -3981,44 +3954,44 @@
          sourceTree = "<group>";
       };
       "OBJ_540" = {
-         isa = "PBXBuildFile";
-         fileRef = "GraphViz::GraphViz::Product";
+         isa = "PBXTargetDependency";
+         target = "AmplifyXcode::AmplifyXcodeCore";
       };
       "OBJ_541" = {
-         isa = "PBXBuildFile";
-         fileRef = "XcodeGen::ProjectSpec::Product";
+         isa = "PBXTargetDependency";
+         target = "XcodeGen::XcodeGenKit";
       };
       "OBJ_542" = {
-         isa = "PBXBuildFile";
-         fileRef = "Version::Version::Product";
+         isa = "PBXTargetDependency";
+         target = "GraphViz::Tools";
       };
       "OBJ_543" = {
-         isa = "PBXBuildFile";
-         fileRef = "JSONUtilities::JSONUtilities::Product";
+         isa = "PBXTargetDependency";
+         target = "GraphViz::DOT";
       };
       "OBJ_544" = {
-         isa = "PBXBuildFile";
-         fileRef = "XcodeGen::Core::Product";
+         isa = "PBXTargetDependency";
+         target = "GraphViz::GraphViz";
       };
       "OBJ_545" = {
-         isa = "PBXBuildFile";
-         fileRef = "Yams::Yams::Product";
+         isa = "PBXTargetDependency";
+         target = "XcodeGen::ProjectSpec";
       };
       "OBJ_546" = {
-         isa = "PBXBuildFile";
-         fileRef = "Yams::CYaml::Product";
+         isa = "PBXTargetDependency";
+         target = "Version::Version";
       };
       "OBJ_547" = {
-         isa = "PBXBuildFile";
-         fileRef = "XcodeProj::XcodeProj::Product";
+         isa = "PBXTargetDependency";
+         target = "JSONUtilities::JSONUtilities";
       };
       "OBJ_548" = {
-         isa = "PBXBuildFile";
-         fileRef = "AEXML::AEXML::Product";
+         isa = "PBXTargetDependency";
+         target = "XcodeGen::Core";
       };
       "OBJ_549" = {
-         isa = "PBXBuildFile";
-         fileRef = "PathKit::PathKit::Product";
+         isa = "PBXTargetDependency";
+         target = "Yams::Yams";
       };
       "OBJ_55" = {
          isa = "PBXGroup";
@@ -4037,44 +4010,75 @@
          sourceTree = "<group>";
       };
       "OBJ_550" = {
-         isa = "PBXBuildFile";
-         fileRef = "XcodeProjCExt::XcodeProjCExt::Product";
+         isa = "PBXTargetDependency";
+         target = "Yams::CYaml";
       };
       "OBJ_551" = {
          isa = "PBXTargetDependency";
-         target = "XcodeGen::XcodeGenKit";
+         target = "XcodeProj::XcodeProj";
       };
       "OBJ_552" = {
          isa = "PBXTargetDependency";
-         target = "GraphViz::Tools";
+         target = "AEXML::AEXML";
       };
       "OBJ_553" = {
          isa = "PBXTargetDependency";
-         target = "GraphViz::DOT";
+         target = "PathKit::PathKit";
       };
       "OBJ_554" = {
          isa = "PBXTargetDependency";
-         target = "GraphViz::GraphViz";
-      };
-      "OBJ_555" = {
-         isa = "PBXTargetDependency";
-         target = "XcodeGen::ProjectSpec";
+         target = "XcodeProjCExt::XcodeProjCExt";
       };
       "OBJ_556" = {
-         isa = "PBXTargetDependency";
-         target = "Version::Version";
+         isa = "XCConfigurationList";
+         buildConfigurations = (
+            "OBJ_557",
+            "OBJ_558"
+         );
+         defaultConfigurationIsVisible = "0";
+         defaultConfigurationName = "Release";
       };
       "OBJ_557" = {
-         isa = "PBXTargetDependency";
-         target = "JSONUtilities::JSONUtilities";
+         isa = "XCBuildConfiguration";
+         buildSettings = {
+            LD = "/usr/bin/true";
+            OTHER_SWIFT_FLAGS = (
+               "-swift-version",
+               "5",
+               "-I",
+               "$(TOOLCHAIN_DIR)/usr/lib/swift/pm/4_2",
+               "-sdk",
+               "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk",
+               "-package-description-version",
+               "5.3.0"
+            );
+            SWIFT_VERSION = "5.0";
+         };
+         name = "Debug";
       };
       "OBJ_558" = {
-         isa = "PBXTargetDependency";
-         target = "XcodeGen::Core";
+         isa = "XCBuildConfiguration";
+         buildSettings = {
+            LD = "/usr/bin/true";
+            OTHER_SWIFT_FLAGS = (
+               "-swift-version",
+               "5",
+               "-I",
+               "$(TOOLCHAIN_DIR)/usr/lib/swift/pm/4_2",
+               "-sdk",
+               "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk",
+               "-package-description-version",
+               "5.3.0"
+            );
+            SWIFT_VERSION = "5.0";
+         };
+         name = "Release";
       };
       "OBJ_559" = {
-         isa = "PBXTargetDependency";
-         target = "Yams::Yams";
+         isa = "PBXSourcesBuildPhase";
+         files = (
+            "OBJ_560"
+         );
       };
       "OBJ_56" = {
          isa = "PBXFileReference";
@@ -4082,35 +4086,48 @@
          sourceTree = "<group>";
       };
       "OBJ_560" = {
-         isa = "PBXTargetDependency";
-         target = "Yams::CYaml";
-      };
-      "OBJ_561" = {
-         isa = "PBXTargetDependency";
-         target = "XcodeProj::XcodeProj";
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_6";
       };
       "OBJ_562" = {
-         isa = "PBXTargetDependency";
-         target = "AEXML::AEXML";
-      };
-      "OBJ_563" = {
-         isa = "PBXTargetDependency";
-         target = "PathKit::PathKit";
-      };
-      "OBJ_564" = {
-         isa = "PBXTargetDependency";
-         target = "XcodeProjCExt::XcodeProjCExt";
-      };
-      "OBJ_565" = {
          isa = "XCConfigurationList";
          buildConfigurations = (
-            "OBJ_566",
-            "OBJ_567"
+            "OBJ_563",
+            "OBJ_564"
          );
          defaultConfigurationIsVisible = "0";
          defaultConfigurationName = "Release";
       };
+      "OBJ_563" = {
+         isa = "XCBuildConfiguration";
+         buildSettings = {
+         };
+         name = "Debug";
+      };
+      "OBJ_564" = {
+         isa = "XCBuildConfiguration";
+         buildSettings = {
+         };
+         name = "Release";
+      };
+      "OBJ_565" = {
+         isa = "PBXTargetDependency";
+         target = "AmplifyXcode::AmplifyXcodeCoreTests";
+      };
       "OBJ_566" = {
+         isa = "PBXTargetDependency";
+         target = "AmplifyXcode::AmplifyXcodeTests";
+      };
+      "OBJ_568" = {
+         isa = "XCConfigurationList";
+         buildConfigurations = (
+            "OBJ_569",
+            "OBJ_570"
+         );
+         defaultConfigurationIsVisible = "0";
+         defaultConfigurationName = "Release";
+      };
+      "OBJ_569" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
             CLANG_ENABLE_MODULES = "YES";
@@ -4124,7 +4141,7 @@
                "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include",
                "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/AmplifyXcodeCoreTests_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/AmplifyXcodeTests_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "14.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -4145,69 +4162,11 @@
                "$(inherited)"
             );
             SWIFT_VERSION = "5.0";
-            TARGET_NAME = "AmplifyXcodeCoreTests";
+            TARGET_NAME = "AmplifyXcodeTests";
             TVOS_DEPLOYMENT_TARGET = "9.0";
             WATCHOS_DEPLOYMENT_TARGET = "2.0";
          };
          name = "Debug";
-      };
-      "OBJ_567" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            CLANG_ENABLE_MODULES = "YES";
-            EMBEDDED_CONTENT_CONTAINS_SWIFT = "YES";
-            FRAMEWORK_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
-            );
-            HEADER_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include",
-               "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include"
-            );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/AmplifyXcodeCoreTests_Info.plist";
-            IPHONEOS_DEPLOYMENT_TARGET = "14.0";
-            LD_RUNPATH_SEARCH_PATHS = (
-               "$(inherited)",
-               "@loader_path/../Frameworks",
-               "@loader_path/Frameworks"
-            );
-            MACOSX_DEPLOYMENT_TARGET = "10.15";
-            OTHER_CFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_LDFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_SWIFT_FLAGS = (
-               "$(inherited)"
-            );
-            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-               "$(inherited)"
-            );
-            SWIFT_VERSION = "5.0";
-            TARGET_NAME = "AmplifyXcodeCoreTests";
-            TVOS_DEPLOYMENT_TARGET = "9.0";
-            WATCHOS_DEPLOYMENT_TARGET = "2.0";
-         };
-         name = "Release";
-      };
-      "OBJ_568" = {
-         isa = "PBXSourcesBuildPhase";
-         files = (
-            "OBJ_569",
-            "OBJ_570",
-            "OBJ_571",
-            "OBJ_572",
-            "OBJ_573",
-            "OBJ_574",
-            "OBJ_575",
-            "OBJ_576"
-         );
-      };
-      "OBJ_569" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_36";
       };
       "OBJ_57" = {
          isa = "PBXFileReference";
@@ -4215,36 +4174,67 @@
          sourceTree = "<group>";
       };
       "OBJ_570" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_37";
+         isa = "XCBuildConfiguration";
+         buildSettings = {
+            CLANG_ENABLE_MODULES = "YES";
+            EMBEDDED_CONTENT_CONTAINS_SWIFT = "YES";
+            FRAMEWORK_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
+            );
+            HEADER_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include",
+               "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include"
+            );
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/AmplifyXcodeTests_Info.plist";
+            IPHONEOS_DEPLOYMENT_TARGET = "14.0";
+            LD_RUNPATH_SEARCH_PATHS = (
+               "$(inherited)",
+               "@loader_path/../Frameworks",
+               "@loader_path/Frameworks"
+            );
+            MACOSX_DEPLOYMENT_TARGET = "10.15";
+            OTHER_CFLAGS = (
+               "$(inherited)"
+            );
+            OTHER_LDFLAGS = (
+               "$(inherited)"
+            );
+            OTHER_SWIFT_FLAGS = (
+               "$(inherited)"
+            );
+            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+               "$(inherited)"
+            );
+            SWIFT_VERSION = "5.0";
+            TARGET_NAME = "AmplifyXcodeTests";
+            TVOS_DEPLOYMENT_TARGET = "9.0";
+            WATCHOS_DEPLOYMENT_TARGET = "2.0";
+         };
+         name = "Release";
       };
       "OBJ_571" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_39";
+         isa = "PBXSourcesBuildPhase";
+         files = (
+            "OBJ_572",
+            "OBJ_573"
+         );
       };
       "OBJ_572" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_40";
+         fileRef = "OBJ_45";
       };
       "OBJ_573" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_42";
-      };
-      "OBJ_574" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_43";
-      };
-      "OBJ_575" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_44";
-      };
-      "OBJ_576" = {
-         isa = "PBXBuildFile";
          fileRef = "OBJ_46";
       };
-      "OBJ_577" = {
+      "OBJ_574" = {
          isa = "PBXFrameworksBuildPhase";
          files = (
+            "OBJ_575",
+            "OBJ_576",
+            "OBJ_577",
             "OBJ_578",
             "OBJ_579",
             "OBJ_580",
@@ -4257,18 +4247,28 @@
             "OBJ_587",
             "OBJ_588",
             "OBJ_589",
-            "OBJ_590",
-            "OBJ_591",
-            "OBJ_592"
+            "OBJ_590"
          );
+      };
+      "OBJ_575" = {
+         isa = "PBXBuildFile";
+         fileRef = "swift-argument-parser::ArgumentParser::Product";
+      };
+      "OBJ_576" = {
+         isa = "PBXBuildFile";
+         fileRef = "AmplifyXcode::AmplifyXcodeCore::Product";
+      };
+      "OBJ_577" = {
+         isa = "PBXBuildFile";
+         fileRef = "XcodeGen::XcodeGenKit::Product";
       };
       "OBJ_578" = {
          isa = "PBXBuildFile";
-         fileRef = "AmplifyCLIiOS::AmplifyXcodeCore::Product";
+         fileRef = "GraphViz::Tools::Product";
       };
       "OBJ_579" = {
          isa = "PBXBuildFile";
-         fileRef = "XcodeGen::XcodeGenKit::Product";
+         fileRef = "GraphViz::DOT::Product";
       };
       "OBJ_58" = {
          isa = "PBXFileReference";
@@ -4277,43 +4277,43 @@
       };
       "OBJ_580" = {
          isa = "PBXBuildFile";
-         fileRef = "GraphViz::Tools::Product";
+         fileRef = "GraphViz::GraphViz::Product";
       };
       "OBJ_581" = {
          isa = "PBXBuildFile";
-         fileRef = "GraphViz::DOT::Product";
+         fileRef = "XcodeGen::ProjectSpec::Product";
       };
       "OBJ_582" = {
          isa = "PBXBuildFile";
-         fileRef = "GraphViz::GraphViz::Product";
+         fileRef = "Version::Version::Product";
       };
       "OBJ_583" = {
          isa = "PBXBuildFile";
-         fileRef = "XcodeGen::ProjectSpec::Product";
+         fileRef = "JSONUtilities::JSONUtilities::Product";
       };
       "OBJ_584" = {
          isa = "PBXBuildFile";
-         fileRef = "Version::Version::Product";
+         fileRef = "XcodeGen::Core::Product";
       };
       "OBJ_585" = {
          isa = "PBXBuildFile";
-         fileRef = "JSONUtilities::JSONUtilities::Product";
+         fileRef = "Yams::Yams::Product";
       };
       "OBJ_586" = {
          isa = "PBXBuildFile";
-         fileRef = "XcodeGen::Core::Product";
+         fileRef = "Yams::CYaml::Product";
       };
       "OBJ_587" = {
          isa = "PBXBuildFile";
-         fileRef = "Yams::Yams::Product";
+         fileRef = "XcodeProj::XcodeProj::Product";
       };
       "OBJ_588" = {
          isa = "PBXBuildFile";
-         fileRef = "Yams::CYaml::Product";
+         fileRef = "AEXML::AEXML::Product";
       };
       "OBJ_589" = {
          isa = "PBXBuildFile";
-         fileRef = "XcodeProj::XcodeProj::Product";
+         fileRef = "PathKit::PathKit::Product";
       };
       "OBJ_59" = {
          isa = "PBXFileReference";
@@ -4322,19 +4322,19 @@
       };
       "OBJ_590" = {
          isa = "PBXBuildFile";
-         fileRef = "AEXML::AEXML::Product";
+         fileRef = "XcodeProjCExt::XcodeProjCExt::Product";
       };
       "OBJ_591" = {
-         isa = "PBXBuildFile";
-         fileRef = "PathKit::PathKit::Product";
+         isa = "PBXTargetDependency";
+         target = "AmplifyXcode::AmplifyXcode";
       };
       "OBJ_592" = {
-         isa = "PBXBuildFile";
-         fileRef = "XcodeProjCExt::XcodeProjCExt::Product";
+         isa = "PBXTargetDependency";
+         target = "swift-argument-parser::ArgumentParser";
       };
       "OBJ_593" = {
          isa = "PBXTargetDependency";
-         target = "AmplifyCLIiOS::AmplifyXcodeCore";
+         target = "AmplifyXcode::AmplifyXcodeCore";
       };
       "OBJ_594" = {
          isa = "PBXTargetDependency";
@@ -4423,7 +4423,7 @@
             HEADER_SEARCH_PATHS = (
                "$(inherited)"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/ArgumentParser_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/ArgumentParser_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -4469,7 +4469,7 @@
             HEADER_SEARCH_PATHS = (
                "$(inherited)"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/ArgumentParser_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/ArgumentParser_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -4731,7 +4731,7 @@
                "$(inherited)",
                "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/CYaml_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/CYaml_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -4779,7 +4779,7 @@
                "$(inherited)",
                "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/CYaml_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/CYaml_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -4899,7 +4899,7 @@
                "$(inherited)",
                "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/Core_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/Core_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -4941,7 +4941,7 @@
                "$(inherited)",
                "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/Core_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/Core_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -5053,7 +5053,7 @@
             HEADER_SEARCH_PATHS = (
                "$(inherited)"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/DOT_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/DOT_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -5094,7 +5094,7 @@
             HEADER_SEARCH_PATHS = (
                "$(inherited)"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/DOT_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/DOT_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -5183,7 +5183,7 @@
             HEADER_SEARCH_PATHS = (
                "$(inherited)"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/GraphViz_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/GraphViz_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -5224,7 +5224,7 @@
             HEADER_SEARCH_PATHS = (
                "$(inherited)"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/GraphViz_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/GraphViz_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -5457,7 +5457,7 @@
             HEADER_SEARCH_PATHS = (
                "$(inherited)"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/JSONUtilities_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/JSONUtilities_Info.plist";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
                "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
@@ -5494,7 +5494,7 @@
             HEADER_SEARCH_PATHS = (
                "$(inherited)"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/JSONUtilities_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/JSONUtilities_Info.plist";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
                "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
@@ -5660,7 +5660,7 @@
             HEADER_SEARCH_PATHS = (
                "$(inherited)"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/PathKit_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/PathKit_Info.plist";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
                "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
@@ -5697,7 +5697,7 @@
             HEADER_SEARCH_PATHS = (
                "$(inherited)"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/PathKit_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/PathKit_Info.plist";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
                "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
@@ -5820,7 +5820,7 @@
                "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include",
                "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/ProjectSpec_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/ProjectSpec_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -5863,7 +5863,7 @@
                "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include",
                "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/ProjectSpec_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/ProjectSpec_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -6181,8 +6181,8 @@
             "OBJ_10",
             "OBJ_11"
          );
-         name = "AmplifyCLIiOS";
-         path = "Sources/AmplifyCLIiOS";
+         name = "AmplifyXcode";
+         path = "Sources/AmplifyXcode";
          sourceTree = "SOURCE_ROOT";
       };
       "OBJ_80" = {
@@ -6255,7 +6255,7 @@
             HEADER_SEARCH_PATHS = (
                "$(inherited)"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/Tools_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/Tools_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -6296,7 +6296,7 @@
             HEADER_SEARCH_PATHS = (
                "$(inherited)"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/Tools_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/Tools_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -6401,7 +6401,7 @@
             HEADER_SEARCH_PATHS = (
                "$(inherited)"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/Version_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/Version_Info.plist";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
                "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
@@ -6438,7 +6438,7 @@
             HEADER_SEARCH_PATHS = (
                "$(inherited)"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/Version_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/Version_Info.plist";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
                "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
@@ -6581,7 +6581,7 @@
                "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include",
                "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/XcodeGenKit_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/XcodeGenKit_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -6629,7 +6629,7 @@
                "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include",
                "$(SRCROOT)/.build/checkouts/Yams/Sources/CYaml/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/XcodeGenKit_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/XcodeGenKit_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -6953,7 +6953,7 @@
                "$(inherited)",
                "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/XcodeProj_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/XcodeProj_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -7000,7 +7000,7 @@
                "$(inherited)",
                "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/XcodeProj_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/XcodeProj_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -7214,7 +7214,7 @@
          isa = "PBXFileReference";
          explicitFileType = "sourcecode.swift";
          name = "Package.swift";
-         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyCLIiOS/.build/checkouts/swift-argument-parser/Package.swift";
+         path = "/Volumes/Workspace/amplify/env/amplify-ios/AmplifyTools/AmplifyXcode/.build/checkouts/swift-argument-parser/Package.swift";
          sourceTree = "<group>";
       };
       "OBJ_910" = {
@@ -7672,7 +7672,7 @@
                "$(inherited)",
                "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/XcodeProjCExt_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/XcodeProjCExt_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",
@@ -7715,7 +7715,7 @@
                "$(inherited)",
                "$(SRCROOT)/.build/checkouts/XcodeProjCExt/Sources/XcodeProjCExt/include"
             );
-            INFOPLIST_FILE = "AmplifyCLIiOS.xcodeproj/XcodeProjCExt_Info.plist";
+            INFOPLIST_FILE = "AmplifyXcode.xcodeproj/XcodeProjCExt_Info.plist";
             IPHONEOS_DEPLOYMENT_TARGET = "9.0";
             LD_RUNPATH_SEARCH_PATHS = (
                "$(inherited)",

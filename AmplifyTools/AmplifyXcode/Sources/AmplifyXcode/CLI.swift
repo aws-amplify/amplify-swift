@@ -34,10 +34,10 @@ struct CLICommandImportConfig: ParsableCommand, CommandExecutable, CLICommandRep
     }
 }
 
-/// CLI interface entry point `amplify-ios-cli`
-struct AmplifyIOS: ParsableCommand {
+/// CLI interface entry point `amplify-xcode`
+struct AmplifyXcode: ParsableCommand {
     static let configuration = CommandConfiguration(
-        abstract: "Amplify CLI iOS",
+        abstract: "Amplify Xcode CLI",
         subcommands: [CLICommandImportConfig.self]
     )
 }

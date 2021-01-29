@@ -7,8 +7,8 @@
 
 import XCTest
 
-import AmplifyCLIiOSTests
+import AmplifyXcodeTests
 
 var tests = [XCTestCaseEntry]()
-tests += AmplifyCLIiOSTests.allTests()
+tests += AmplifyXcodeTests.allTests()
 XCTMain(tests)

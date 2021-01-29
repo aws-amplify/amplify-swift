@@ -8,16 +8,16 @@
 import XCTest
 import class Foundation.Bundle
 
-final class AmplifyCLIiOSTests: XCTestCase {
-    func smokeTest() throws {
+final class AmplifyXcodeTests: XCTestCase {
+    func testExecutable() throws {
         guard #available(macOS 10.13, *) else {
             return
         }
 
-        let fooBinary = productsDirectory.appendingPathComponent("AmplifyCLIiOS")
+        let binary = productsDirectory.appendingPathComponent("amplify-xcode")
 
         let process = Process()
-        process.executableURL = fooBinary
+        process.executableURL = binary
 
         let pipe = Pipe()
         process.standardOutput = pipe
@@ -47,6 +47,6 @@ final class AmplifyCLIiOSTests: XCTestCase {
     }
 
     static var allTests = [
-        ("smokeTest", smokeTest),
+        ("smokeTest", testExecutable),
     ]
 }
