@@ -418,6 +418,8 @@
 		21F40A2923A0423C0074678E /* GraphQLSyncBasedTests-amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "GraphQLSyncBasedTests-amplifyconfiguration.json"; sourceTree = "<group>"; };
 		21F40A2D23A0707E0074678E /* GraphQLModelBasedTests-amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "GraphQLModelBasedTests-amplifyconfiguration.json"; sourceTree = "<group>"; };
 		21FDBB752587D9E40086FCDC /* GraphQLConnectionScenario6Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLConnectionScenario6Tests.swift; sourceTree = "<group>"; };
+		21FE04252589295D00B81D72 /* AppSyncListProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncListProvider.swift; sourceTree = "<group>"; };
+		21FE044B25894C5300B81D72 /* ListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTests.swift; sourceTree = "<group>"; };
 		21FE04B825894F8800B81D72 /* GraphQLConnectionScenario3Tests+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLConnectionScenario3Tests+Helpers.swift"; sourceTree = "<group>"; };
 		21FE04BA25894F8800B81D72 /* GraphQLConnectionScenario3Tests+Subscribe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLConnectionScenario3Tests+Subscribe.swift"; sourceTree = "<group>"; };
 		226F79D02FF47C0A8AE75467 /* Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithUserPoolIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithUserPoolIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithUserPoolIntegrationTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithUserPoolIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -813,6 +815,15 @@
 			path = GraphQLWithUserPoolIntegrationTests;
 			sourceTree = "<group>";
 		};
+		2186950825C9E1C00072616C /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				21FE04252589295D00B81D72 /* AppSyncListProvider.swift */,
+				21FE044B25894C5300B81D72 /* ListTests.swift */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		219A888D23ECF8A400BBC5F2 /* RESTWithUserPoolIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -1022,6 +1033,7 @@
 				B478F6BD2374E0B500C4F92B /* HostApp */,
 				B9988EB08EC62C1E57FB295B /* Pods */,
 				B478F5FC2374DBF400C4F92B /* Products */,
+				2186950825C9E1C00072616C /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};

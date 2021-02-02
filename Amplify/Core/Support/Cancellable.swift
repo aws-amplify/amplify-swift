@@ -10,3 +10,6 @@
 public protocol Cancellable {
     func cancel()
 }
+
+/// Unique name for Cancellable which handles a name conflict with the Combine framework.
+public typealias AmplifyCancellable = Cancellable

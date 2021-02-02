@@ -22,7 +22,7 @@ enum IncomingEventReconciliationQueueEvent {
 /// automatically-configured subscriptions for models, the queue provides an `offer` method for submitting events
 /// directly from other network events such as mutation callbacks or from base/initial sync queries.
 @available(iOS 13.0, *)
-protocol IncomingEventReconciliationQueue: class, Cancellable {
+protocol IncomingEventReconciliationQueue: class, AmplifyCancellable {
     func start()
     func pause()
     func offer(_ remoteModel: MutationSync<AnyModel>, modelSchema: ModelSchema)

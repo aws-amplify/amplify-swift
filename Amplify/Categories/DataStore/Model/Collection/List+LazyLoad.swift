@@ -61,7 +61,6 @@ extension List {
             completion(.success(elements))
             return
         }
-
         let result = listProvider.load()
         switch result {
         case .success(let elements):
@@ -100,7 +99,6 @@ extension List {
             Amplify.log.error(error: error)
             assert(false, error.errorDescription)
         }
-
         return self
     }
 }
