@@ -6,82 +6,120 @@
 //
 
 import Foundation
+import Combine
 
-/// `List<ModelType>` is a DataStore-aware custom `Collection` that is capable of loading
-/// records from the `DataStore` on-demand. This is specially useful when dealing with
-/// Model associations that need to be lazy loaded.
-///
-/// When using `DataStore.query(_ modelType:)` some models might contain associations
-/// with other models and those aren't fetched automatically. This collection keeps track
-/// of the associated `id` and `field` and fetches the associated data on demand.
+/// `List<ModelType>` is a custom `Collection` that is capable of loading records from a data source. This is especially
+/// useful when dealing with Model associations that need to be lazy loaded. Lazy loading is performed when you access
+/// the `Collection` methods by retrieving the data from the underlying data source and then stored into this object,
+/// before returning the data to you. Consumers must be aware that multiple calls to the data source and then stored
+/// into this object will happen simultaneously if the object is used from different threads, thus not thread safe.
+/// Lazy loading is idempotent and will return the stored results on subsequent access.
 public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLiteral {
-
     public typealias Index = Int
     public typealias Element = ModelType
-    public typealias Elements = [Element]
 
-    public typealias ArrayLiteralElement = ModelType
-
-    /// The array of `Element` that backs the custom collection implementation.
-    internal var elements: Elements
-
-    /// If the list represents an association between two models, the `associatedId` will
-    /// hold the information necessary to query the associated elements (e.g. comments of a post)
-    internal var associatedId: Model.Identifier?
-
-    /// The associatedField represents the field to which the owner of the `List` is linked to.
-    /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
-    /// of `Post` will have a reference to the `post` field in `Comment`.
-    internal var associatedField: ModelField?
-
-    internal var limit: Int = 100
+    /// Represents the data state of the `List`.
+    enum LoadedState {
+        case notLoaded
+        case loaded([Element])
+    }
 
     /// The current state of lazily loaded list
-    internal var state: LoadState = .pending
+    var loadedState: LoadedState
+
+    /// The provider for fulfilling list behaviors
+    let listProvider: AnyModelListProvider<Element>
+
+    /// The array of `Element` that backs the custom collection implementation.
+    ///
+    /// Attempting to access the list object will attempt to retrieve the elements in memory or retrieve it from the
+    /// provider's data source. This is not thread safe as it can be performed from multiple threads, however the
+    /// provider's call to `load` should be idempotent and should result in the final loaded state. An attempt to set
+    /// this again will result in no-op and will not overwrite the existing loaded data.
+    var elements: [Element] {
+        get {
+            switch loadedState {
+            case .loaded(let elements):
+                return elements
+            case .notLoaded:
+                let result = listProvider.load()
+                switch result {
+                case .success(let elements):
+                    loadedState = .loaded(elements)
+                    return elements
+                case .failure(let error):
+                    Amplify.log.error(error: error)
+                    return []
+                }
+            }
+        }
+        set {
+            switch loadedState {
+            case .loaded:
+                Amplify.log.error("""
+                    There is an attempt to set an already loaded List. The existing data will not be overwritten
+                    """)
+                return
+            case .notLoaded:
+                loadedState = .loaded(newValue)
+            }
+        }
+    }
 
     // MARK: - Initializers
 
-    public convenience init(_ elements: Elements) {
-        self.init(elements, associatedId: nil, associatedField: nil)
-        self.state = .loaded
+    public init(listProvider: AnyModelListProvider<ModelType>) {
+        self.listProvider = listProvider
+        self.loadedState = .notLoaded
     }
 
-    init(_ elements: Elements,
-         associatedId: Model.Identifier? = nil,
-         associatedField: ModelField? = nil) {
-        self.elements = elements
-        self.associatedId = associatedId
-        self.associatedField = associatedField
+    public convenience init(elements: [Element]) {
+        let loadProvider = ArrayLiteralListProvider<ModelType>(elements: elements).eraseToAnyModelListProvider()
+        self.init(listProvider: loadProvider)
     }
 
     // MARK: - ExpressibleByArrayLiteral
 
     required convenience public init(arrayLiteral elements: Element...) {
-        self.init(elements)
+        self.init(elements: elements)
     }
 
     // MARK: - Collection conformance
 
+    /// Accessing the elements on a list that has not been loaded yet will operate slower than O(1) as the data will be
+    /// retrieved synchronously as part of this call.
     public var startIndex: Index {
-        loadIfNeeded()
-        return elements.startIndex
+        elements.startIndex
     }
 
+    /// Accessing the elements on a list that has not been loaded yet will operate slower than O(1) as the data will be
+    /// retrieved synchronously as part of this call.
     public var endIndex: Index {
-        return elements.endIndex
+        elements.endIndex
     }
 
+    /// Accessing the elements on a list that has not been loaded yet will operate slower than O(1) as the data will be
+    /// retrieved synchronously as part of this call.
     public func index(after index: Index) -> Index {
-        return elements.index(after: index)
+        elements.index(after: index)
     }
 
+    /// Accessing the elements on a list that has not been loaded yet will operate slower than O(1) as the data will be
+    /// retrieved synchronously as part of this call.
     public subscript(position: Int) -> Element {
-        return elements[position]
+        elements[position]
     }
 
-    public __consuming func makeIterator() -> IndexingIterator<Elements> {
-        loadIfNeeded()
-        return elements.makeIterator()
+    /// Accessing the elements on a list that has not been loaded yet will operate slower than O(1) as the data will be
+    /// retrieved synchronously as part of this call.
+    public __consuming func makeIterator() -> IndexingIterator<[Element]> {
+        elements.makeIterator()
+    }
+
+    /// Accessing the elements on a list that has not been loaded yet will operate slower than O(1) as the data will be
+    /// retrieved synchronously as part of this call.
+    public var count: Int {
+        elements.count
     }
 
     // MARK: - Persistent Operations
@@ -91,48 +129,41 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
         return 0
     }
 
+    /// `limit` is currently not a supported API.
+    @available(*, deprecated, message: "Not supported.")
     public func limit(_ limit: Int) -> Self {
-        // TODO handle query with limit
-        self.limit = limit
-        state = .pending
         return self
     }
 
     // MARK: - Codable
 
+    /// The decoding logic uses `ModelListDecoderRegistry` to find available decoders to decode to plugin specific
+    /// implementations of a `ModelListProvider` for `List<Model>`. The decoders should be added to the registry by the
+    /// plugin as part of its configuration steps. By delegating responsibility to the `ModelListDecoder`, it is up to
+    /// the plugin to successfully return an instance of `ModelListProvider`.
     required convenience public init(from decoder: Decoder) throws {
-        let json = try JSONValue(from: decoder)
-        switch json {
-        case .array:
-            let elements = try Elements(from: decoder)
-            self.init(elements)
-        case .object(let list):
-            if case let .string(associatedId) = list["associatedId"],
-               case let .string(associatedField) = list["associatedField"] {
-                let field = Element.schema.field(withName: associatedField)
-                // TODO handle eager loaded associations with elements
-                self.init([], associatedId: associatedId, associatedField: field)
-            } else if case let .array(jsonArray) = list["items"] {
-                let encoder = JSONEncoder()
-                encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
-                let decoder = JSONDecoder()
-                decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
-                let elements = try jsonArray.map { (jsonElement) -> Element in
-                    let serializedJSON = try encoder.encode(jsonElement)
-                    return try decoder.decode(Element.self, from: serializedJSON)
-                }
-
-                self.init(elements)
-            } else {
-                self.init(Elements())
+        for listDecoder in ModelListDecoderRegistry.listDecoders.get() {
+            if listDecoder.shouldDecode(modelType: ModelType.self, decoder: decoder) {
+                let listProvider = try listDecoder.getListProvider(modelType: ModelType.self, decoder: decoder)
+                self.init(listProvider: listProvider)
+                return
             }
-        default:
-            self.init(Elements())
+        }
+        let json = try JSONValue(from: decoder)
+        if case .array = json {
+            let elements = try [Element](from: decoder)
+            self.init(elements: elements)
+        } else {
+            self.init()
         }
     }
 
     public func encode(to encoder: Encoder) throws {
-        try elements.encode(to: encoder)
+        switch loadedState {
+        case .notLoaded:
+            try [Element]().encode(to: encoder)
+        case .loaded(let elements):
+            try elements.encode(to: encoder)
+        }
     }
-
 }

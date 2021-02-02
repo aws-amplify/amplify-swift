@@ -10,6 +10,8 @@ import Combine
 
 class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
+    var responders = [ResponderKeys: Any]()
+
     var key: String {
         return "MockDataStoreCategoryPlugin"
     }
@@ -27,12 +29,25 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
                         where condition: QueryPredicate? = nil,
                         completion: (DataStoreResult<M>) -> Void) {
         notify("save")
+
+        if let responder = responders[.saveModelListener] as? SaveModelResponder<M> {
+            if let callback = responder.callback((model: model,
+                                                  where: condition)) {
+                completion(callback)
+            }
+        }
     }
 
     func query<M: Model>(_ modelType: M.Type,
                          byId id: String,
                          completion: (DataStoreResult<M?>) -> Void) {
         notify("queryById")
+
+        if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
+            if let callback = responder.callback((modelType: modelType, id: id)) {
+                completion(callback)
+            }
+        }
     }
 
     func query<M: Model>(_ modelType: M.Type,
@@ -41,6 +56,15 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
                          paginate paginationInput: QueryPaginationInput?,
                          completion: (DataStoreResult<[M]>) -> Void) {
         notify("queryByPredicate")
+
+        if let responder = responders[.queryModelsListener] as? QueryModelsResponder<M> {
+            if let callback = responder.callback((modelType: modelType,
+                                                  where: predicate,
+                                                  sort: sortInput,
+                                                  paginate: paginationInput)) {
+                completion(callback)
+            }
+        }
     }
 
     func delete<M: Model>(_ modelType: M.Type,
@@ -48,37 +72,68 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
                           where predicate: QueryPredicate? = nil,
                           completion: (DataStoreResult<Void>) -> Void) {
         notify("deleteById")
+
+        if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
+            if let callback = responder.callback((modelType: modelType, id: id)) {
+                completion(callback)
+            }
+        }
     }
 
     func delete<M: Model>(_ model: M,
                           where predicate: QueryPredicate? = nil,
                           completion: @escaping DataStoreCallback<Void>) {
         notify("deleteByPredicate")
+
+        if let responder = responders[.deleteModelListener] as? DeleteModelResponder<M> {
+            if let callback = responder.callback((model: model,
+                                                  where: predicate)) {
+                completion(callback)
+            }
+        }
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {
         notify("clear")
+
+        if let responder = responders[.clearListener] as? ClearResponder {
+            if let callback = responder.callback(()) {
+                completion(callback)
+            }
+        }
     }
 
     func start(completion: @escaping DataStoreCallback<Void>) {
         notify("start")
+
+        if let responder = responders[.clearListener] as? ClearResponder {
+            if let callback = responder.callback(()) {
+                completion(callback)
+            }
+        }
     }
 
     func stop(completion: @escaping DataStoreCallback<Void>) {
         notify("stop")
+
+        if let responder = responders[.stopListener] as? StopResponder {
+            if let callback = responder.callback(()) {
+                completion(callback)
+            }
+        }
     }
 
     @available(iOS 13.0, *)
     func publisher<M: Model>(for modelType: M.Type)
-        -> AnyPublisher<MutationEvent, DataStoreError> {
-            let mutationEvent = MutationEvent(id: "testevent",
-                                              modelId: "123",
-                                              modelName: modelType.modelName,
-                                              json: "",
-                                              mutationType: .create,
-                                              createdAt: .now())
-            notify("publisher")
-            return Result.Publisher(mutationEvent).eraseToAnyPublisher()
+    -> AnyPublisher<MutationEvent, DataStoreError> {
+        let mutationEvent = MutationEvent(id: "testevent",
+                                          modelId: "123",
+                                          modelName: modelType.modelName,
+                                          json: "",
+                                          mutationType: .create,
+                                          createdAt: .now())
+        notify("publisher")
+        return Result.Publisher(mutationEvent).eraseToAnyPublisher()
     }
 
 }

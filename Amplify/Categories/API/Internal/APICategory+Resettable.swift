@@ -18,6 +18,7 @@ extension AmplifyAPICategory: Resettable {
         }
 
         ModelRegistry.reset()
+        ModelListDecoderRegistry.reset()
 
         group.wait()
 

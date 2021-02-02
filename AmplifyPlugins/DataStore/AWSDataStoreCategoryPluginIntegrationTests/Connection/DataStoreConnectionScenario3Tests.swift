@@ -92,7 +92,6 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
         wait(for: [queriedCommentCompleted], timeout: networkTimeout)
     }
 
-    // TODO: Issue https://github.com/aws-amplify/amplify-ios/issues/939
     func testSaveCommentAndGetPostWithComments() throws {
         try startAmplifyAndWaitForSync()
 
@@ -124,8 +123,8 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
                     switch result {
                     case .success(let comments):
                         XCTAssertEqual(comments.count, 1)
+                        getCommentsCompleted.fulfill()
                     case .failure(let error):
-                        // TODO: this test is failing "no such column: root.comment3PostIDId (code: 1)"
                         XCTFail("\(error)")
                     }
                 }
