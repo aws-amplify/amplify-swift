@@ -6,6 +6,7 @@
 //
 
 import XCTest
+@testable import AmplifyXcodeCore
 
 class CommandImportModelsTests: XCTestCase {
     let basePath = "/Test/Env/Project"
