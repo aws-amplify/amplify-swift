@@ -16,30 +16,46 @@ class GraphQLResponseDecoderTests: XCTestCase {
     static let encoder = JSONEncoder()
 
     override class func setUp() {
+        Amplify.reset()
+        ModelRegistry.register(modelType: SimpleModel.self)
+        ModelRegistry.register(modelType: Post4.self)
+        ModelRegistry.register(modelType: Comment4.self)
+        ModelListDecoderRegistry.registerDecoder(AppSyncListDecoder.self)
+
         decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
         encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
     }
 
     struct SimpleModel: Model {
-        public let id: String
+        let id: String
 
-        public init(id: String = UUID().uuidString) {
+        init(id: String = UUID().uuidString) {
             self.id = id
         }
 
-        public enum CodingKeys: String, ModelKey {
+        enum CodingKeys: String, ModelKey {
             case id
         }
 
-        public static let keys = CodingKeys.self
+        static let keys = CodingKeys.self
 
-        public static let schema = defineSchema { model in
+        static let schema = defineSchema { model in
             let post = Post.keys
             model.pluralName = "SimpleModels"
             model.fields(
                 .id()
             )
         }
+    }
+
+    struct SimpleCodable: Codable {
+        var myBool: Bool
+        var myDouble: Double
+        var myInt: Int
+        var myString: String
+        var myDate: Temporal.Date
+        var myDateTime: Temporal.DateTime
+        var myTime: Temporal.Time
     }
 
     func testDecodeToGraphQLResponseWhenDataOnly() throws {

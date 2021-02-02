@@ -68,7 +68,80 @@ extension GraphQLResponseDecoderTests {
         XCTAssertEqual(result.id, "id")
     }
 
-    func testDecodeToResponseTypeForCodable() {
+    func testDecodeToResponseTypeForModelWithArrayAssoiation() throws {
+        let request = GraphQLRequest<Post4>(document: "",
+                                            responseType: Post4.self,
+                                            decodePath: "getPost")
+        let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
+        let graphQLData: [String: JSONValue] = [
+            "getPost": [
+                "id": "id",
+                "title": "title",
+                "__typename": "Post4"
+            ]
+        ]
 
+        let post = try decoder.decodeToResponseType(graphQLData)
+        XCTAssertNotNil(post)
+        XCTAssertEqual(post.id, "id")
+        XCTAssertEqual(post.title, "title")
+        XCTAssertNotNil(post.comments)
+    }
+
+    func testDecodeToResponseTypeForList() throws {
+        let request = GraphQLRequest<List<SimpleModel>>(document: "",
+                                                        responseType: List<SimpleModel>.self,
+                                                        decodePath: "listSimpleModel")
+        let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
+        let graphQLData: [String: JSONValue] = [
+            "listSimpleModel": [
+                "items": [
+                    [
+                        "id": "id",
+                        "__typename": "SimpleModel"
+                    ],
+                    [
+                        "id": "id",
+                        "__typename": "SimpleModel"
+                    ]
+                ]
+            ]
+        ]
+
+        let result = try decoder.decodeToResponseType(graphQLData)
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result.count, 2)
+        XCTAssertFalse(result.hasNextPage())
+    }
+
+    func testDecodeToResponseTypeForCodable() throws {
+
+        let request = GraphQLRequest<SimpleCodable>(document: "",
+                                                    responseType: SimpleCodable.self,
+                                                    decodePath: "getSimpleCodable")
+        let graphQLDecoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
+
+        let expectedObject = SimpleCodable(myBool: true,
+                                           myDouble: 1.0,
+                                           myInt: 1,
+                                           myString: "string",
+                                           myDate: .now(),
+                                           myDateTime: .now(),
+                                           myTime: .now())
+
+        let data = try GraphQLResponseDecoderTests.encoder.encode(expectedObject)
+        let objectJSON = try GraphQLResponseDecoderTests.decoder.decode(JSONValue.self, from: data)
+        let graphQLData: [String: JSONValue] = [
+            "getSimpleCodable": objectJSON
+        ]
+        let result = try graphQLDecoder.decodeToResponseType(graphQLData)
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result.myBool, expectedObject.myBool)
+        XCTAssertEqual(result.myDouble, expectedObject.myDouble)
+        XCTAssertEqual(result.myInt, expectedObject.myInt)
+        XCTAssertEqual(result.myString, expectedObject.myString)
+        XCTAssertEqual(result.myDate, expectedObject.myDate)
+        XCTAssertEqual(result.myDateTime, expectedObject.myDateTime)
+        XCTAssertEqual(result.myTime, expectedObject.myTime)
     }
 }

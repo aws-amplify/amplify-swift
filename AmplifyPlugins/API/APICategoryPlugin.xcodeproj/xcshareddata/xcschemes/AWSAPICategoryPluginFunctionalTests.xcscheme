@@ -38,15 +38,6 @@
                   Identifier = "GraphQLConnectionScenario1Tests/testListProjectsByTeamID()">
                </Test>
                <Test
-                  Identifier = "GraphQLConnectionScenario4Tests/testListCommentsByPostID()">
-               </Test>
-               <Test
-                  Identifier = "GraphQLConnectionScenario5Tests/testListPostEditorByPost()">
-               </Test>
-               <Test
-                  Identifier = "GraphQLConnectionScenario5Tests/testListPostEditorByUser()">
-               </Test>
-               <Test
                   Identifier = "GraphQLSyncBasedTests">
                </Test>
             </SkippedTests>

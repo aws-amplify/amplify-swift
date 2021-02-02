@@ -88,10 +88,12 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
     }
 
     public func hasNextPage() -> Bool {
-        fatalError("Not implemented.")
+        false
     }
 
     public func getNextPage(completion: (Result<List<Element>, CoreError>) -> Void) {
-        fatalError("Not implemented.")
+        completion(.failure(CoreError.clientValidation("There is no next page.",
+                                                       "Only call `getNextPage()` when `hasNextPage()` is true.",
+                                                       nil)))
     }
 }

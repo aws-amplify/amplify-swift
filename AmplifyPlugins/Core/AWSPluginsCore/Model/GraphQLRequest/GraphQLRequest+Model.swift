@@ -31,6 +31,21 @@ protocol ModelGraphQLRequestFactory {
     static func list<M: Model>(_ modelType: M.Type,
                                where predicate: QueryPredicate?) -> GraphQLRequest<[M]>
 
+    /// Creates a `GraphQLRequest` that represents a query that expects multiple values as a result.
+    /// The request will be created with the correct document based on the `ModelSchema` and
+    /// variables based on the the predicate.
+    ///
+    /// - Parameters:
+    ///   - modelType: the metatype of the model
+    ///   - predicate: an optional predicate containing the criteria for the query
+    ///   - limit: the maximum number of results to be retrieved. The result list may be less than the `limit`
+    /// - Returns: a valid `GraphQLRequest` instance
+    ///
+    /// - seealso: `GraphQLQuery`, `GraphQLQueryType.list`
+    static func paginatedList<M: Model>(_ modelType: M.Type,
+                                        where predicate: QueryPredicate?,
+                                        limit: Int?) -> GraphQLRequest<List<M>>
+
     /// Creates a `GraphQLRequest` that represents a query that expects a single value as a result.
     /// The request will be created with the correct correct document based on the `ModelSchema` and
     /// variables based on given `id`.
@@ -216,6 +231,25 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                    variables: document.variables,
                                    responseType: [M].self,
                                    decodePath: document.name + ".items")
+    }
+
+    public static func paginatedList<M: Model>(_ modelType: M.Type,
+                                               where predicate: QueryPredicate? = nil,
+                                               limit: Int? = nil) -> GraphQLRequest<List<M>> {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
+
+        if let predicate = predicate {
+            documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: modelType.schema)))
+        }
+
+        documentBuilder.add(decorator: PaginationDecorator(limit: limit))
+        let document = documentBuilder.build()
+
+        return GraphQLRequest<List<M>>(document: document.stringValue,
+                                       variables: document.variables,
+                                       responseType: List<M>.self,
+                                       decodePath: document.name)
     }
 
     public static func subscription<M: Model>(of modelType: M.Type,

@@ -142,6 +142,8 @@
 		21A4ED77259CDF6800E1047D /* List+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A4ED76259CDF6800E1047D /* List+Combine.swift */; };
 		21A7C8AA25ACB6C8004355D6 /* ArrayLiteralListProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A7C8A925ACB6C8004355D6 /* ArrayLiteralListProviderTests.swift */; };
 		21A7C90225ACC4D1004355D6 /* MockDataStoreResponders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A7C90125ACC4D1004355D6 /* MockDataStoreResponders.swift */; };
+		21A4F26325A3CD3D00E1047D /* List+Pagination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A4F26225A3CD3D00E1047D /* List+Pagination.swift */; };
+		21A4F8F325A77D9100E1047D /* ListPaginationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A4F8F225A77D9100E1047D /* ListPaginationTests.swift */; };
 		21AD424B249BF0DA0016FE95 /* AnyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACBAD522386160100E29E56 /* AnyModel.swift */; };
 		21AD424C249BF0DE0016FE95 /* AnyModel+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE776238626D60097E4F1 /* AnyModel+Codable.swift */; };
 		21AD424D249BF0E50016FE95 /* AnyModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE78223862DDB0097E4F1 /* AnyModel+Schema.swift */; };
@@ -924,6 +926,8 @@
 		217D5EAF2577F9DF009F0639 /* Project2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project2.swift; sourceTree = "<group>"; };
 		217D5ECD2577FA1B009F0639 /* connection-schema.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = "connection-schema.graphql"; sourceTree = "<group>"; };
 		217D5F63257830C2009F0639 /* ModelField+GraphQL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelField+GraphQL.swift"; sourceTree = "<group>"; };
+		218DC969258A73AF00D59FC6 /* CoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreError.swift; sourceTree = "<group>"; };
+		218DC979258A73CA00D59FC6 /* Paginatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paginatable.swift; sourceTree = "<group>"; };
 		219A887E23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelBasedGraphQLDocumentBuilder.swift; sourceTree = "<group>"; };
 		219A888023EB629800BBC5F2 /* ModelBasedGraphQLDocumentDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelBasedGraphQLDocumentDecorator.swift; sourceTree = "<group>"; };
 		219A888423EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLRequest+AnyModelWithSync.swift"; sourceTree = "<group>"; };
@@ -944,6 +948,8 @@
 		21A4ED76259CDF6800E1047D /* List+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+Combine.swift"; sourceTree = "<group>"; };
 		21A7C8A925ACB6C8004355D6 /* ArrayLiteralListProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayLiteralListProviderTests.swift; sourceTree = "<group>"; };
 		21A7C90125ACC4D1004355D6 /* MockDataStoreResponders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataStoreResponders.swift; sourceTree = "<group>"; };
+		21A4F26225A3CD3D00E1047D /* List+Pagination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+Pagination.swift"; sourceTree = "<group>"; };
+		21A4F8F225A77D9100E1047D /* ListPaginationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListPaginationTests.swift; sourceTree = "<group>"; };
 		21AD4255249BFFDF0016FE95 /* DeprecatedTodo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DeprecatedTodo.swift; path = Deprecated/DeprecatedTodo.swift; sourceTree = "<group>"; };
 		21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorType.swift; sourceTree = "<group>"; };
 		21D79FD9237617C60057D00D /* SubscriptionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionEvent.swift; sourceTree = "<group>"; };
@@ -1945,6 +1951,7 @@
 			children = (
 				21A7C8A825ACB68C004355D6 /* Collection */,
 				21665EF4259A947100841696 /* ListTests.swift */,
+				21A4F8F225A77D9100E1047D /* ListPaginationTests.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2892,6 +2899,8 @@
 				217856BD2383322700A30D19 /* GraphQLMutationType.swift */,
 				21409C4C23847E41000A53C9 /* LabelType.swift */,
 				217856BA2383320900A30D19 /* GraphQLQueryType.swift */,
+				218DC969258A73AF00D59FC6 /* CoreError.swift */,
+				218DC979258A73CA00D59FC6 /* Paginatable.swift */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -2969,6 +2978,7 @@
 				21A4ED76259CDF6800E1047D /* List+Combine.swift */,
 				21A4ED6D259CDA4600E1047D /* List+LazyLoad.swift */,
 				B9FAA1242388BE48009414B4 /* List+Model.swift */,
+				21A4F26225A3CD3D00E1047D /* List+Pagination.swift */,
 			);
 			path = Collection;
 			sourceTree = "<group>";
@@ -5065,6 +5075,7 @@
 				B9A329CC243559BF00C5B80C /* TimeInterval+Helper.swift in Sources */,
 				950A26DC23D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift in Sources */,
 				21A4ED6E259CDA4600E1047D /* List+LazyLoad.swift in Sources */,
+				21A4F26325A3CD3D00E1047D /* List+Pagination.swift in Sources */,
 				FAC235A3227A5ED000424678 /* HubChannel.swift in Sources */,
 				FAA2E8CE23A02A8100E420EA /* PredictionsCategory+Resettable.swift in Sources */,
 				FAC23516227A053D00424678 /* StorageCategoryBehavior.swift in Sources */,
@@ -5166,6 +5177,7 @@
 				FA5D76AF23947E9C00489864 /* Model+CodableTests.swift in Sources */,
 				FA58456B24DA31370028D65A /* AmplifyInProcessReportingOperationChainedTests.swift in Sources */,
 				FA1B964E24BF5FA70002B90A /* AmplifyOperationCombineTests.swift in Sources */,
+				21A4F8F325A77D9100E1047D /* ListPaginationTests.swift in Sources */,
 				FAAFAF3323904BA4002CF932 /* AtomicValue+NumericTests.swift in Sources */,
 				FA176EDD2385943000C5C5F9 /* NotificationListeningAnalyticsPlugin.swift in Sources */,
 				FA1C80BF258686CC006160E9 /* AWSHubPluginAmplifyVersionableTests.swift in Sources */,
