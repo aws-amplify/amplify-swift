@@ -95,13 +95,49 @@ class AuthenticationProviderSigninWithSocialWebUITests: BaseAuthenticationProvid
     /// - Given: an auth plugin with mocked service.
     ///
     /// - When:
-    ///    - I invoke signInWithWebUI and mock cancel
+    ///    - I invoke signInWithWebUI and mock cancel using SFAuthenticationError
     /// - Then:
-    ///    - I should get a SFAuthenticationError.canceledLogin error
+    ///    - I should get a AWSCognitoAuthError.userCancelled error
     ///
     func testCancelSignIn() {
-        let mockError = NSError(domain: "com.apple.SafariServices.Authentication",
+        let mockError = NSError(domain: SFAuthenticationErrorDomain,
                                 code: SFAuthenticationError.canceledLogin.rawValue,
+                                userInfo: nil)
+        mockAWSMobileClient?.showSignInMockResult = .failure(mockError)
+        let options = AuthWebUISignInRequest.Options()
+
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.signInWithWebUI(for: .amazon, presentationAnchor: window, options: options) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+            switch result {
+            case .success(let signinResult):
+                XCTFail("Should throw user cancelled error, instead - \(signinResult)")
+            case .failure(let error):
+                guard case .service(_, _, let underlyingError) = error,
+                      case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
+                    XCTFail("Should produce SFAuthenticationError error but instead produced \(error)")
+                    return
+                }
+            }
+        }
+        wait(for: [resultExpectation], timeout: apiTimeout)
+    }
+
+    /// Test a signInWithWebUI when the user cancel
+    ///
+    /// - Given: an auth plugin with mocked service.
+    ///
+    /// - When:
+    ///    - I invoke signInWithWebUI and mock cancel using ASWebAuthenticationSessionError
+    /// - Then:
+    ///    - I should get a AWSCognitoAuthError.userCancelled error
+    ///
+    @available(iOS 12.0, *)
+    func testASWebAuthenticationSessionError() {
+        let mockError = NSError(domain: ASWebAuthenticationSessionErrorDomain,
+                                code: ASWebAuthenticationSessionError.canceledLogin.rawValue,
                                 userInfo: nil)
         mockAWSMobileClient?.showSignInMockResult = .failure(mockError)
         let options = AuthWebUISignInRequest.Options()
