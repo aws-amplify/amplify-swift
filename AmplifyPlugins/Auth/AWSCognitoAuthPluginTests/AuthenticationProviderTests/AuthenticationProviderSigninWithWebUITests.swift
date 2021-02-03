@@ -237,10 +237,9 @@ class AuthenticationProviderSigninWithWebUITests: BaseAuthenticationProviderTest
 
         let mockSigninResult = UserState.signedIn
         mockAWSMobileClient?.showSignInMockResult = .success(mockSigninResult)
-        let options = AuthWebUISignInRequest.optionWithPrivateSession()
 
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signInWithWebUI(presentationAnchor: window, options: options) { result in
+        _ = plugin.signInWithWebUI(presentationAnchor: window, options: .preferPrivateSession()) { result in
             defer {
                 resultExpectation.fulfill()
             }
@@ -273,10 +272,9 @@ class AuthenticationProviderSigninWithWebUITests: BaseAuthenticationProviderTest
 
         let error = AWSMobileClientError.securityFailed(message: "")
         mockAWSMobileClient?.showSignInMockResult = .failure(error)
-        let options = AuthWebUISignInRequest.optionWithPrivateSession()
 
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signInWithWebUI(presentationAnchor: window, options: options) { result in
+        _ = plugin.signInWithWebUI(presentationAnchor: window, options: .preferPrivateSession()) { result in
 
             defer {
                 resultExpectation.fulfill()

@@ -47,7 +47,7 @@ class AuthenticationProviderSigninTests: BaseAuthenticationProviderTest {
                 }
                 XCTAssertTrue(signinResult.isSignedIn, "Signin result should be complete")
                 XCTAssertFalse(self.mockUserDefault.isPrivateSessionPreferred(),
-                              "Prefer private session userdefaults should not be set.")
+                               "Prefer private session userdefaults should not be set.")
             case .failure(let error):
                 XCTFail("Received failure with error \(error)")
             }

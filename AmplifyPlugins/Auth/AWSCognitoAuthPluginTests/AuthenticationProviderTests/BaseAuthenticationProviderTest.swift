@@ -34,7 +34,6 @@ class BaseAuthenticationProviderTest: XCTestCase {
     }
 
     override func tearDown() {
-        mockUserDefault.clearDefaults()
         mockUserDefault = nil
         plugin = nil
         mockAWSMobileClient = nil

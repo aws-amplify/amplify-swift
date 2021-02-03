@@ -10,23 +10,19 @@ import Foundation
 
 struct MockUserDefaults: AWSCognitoAuthPluginUserDefaultsBehavior {
 
-    let userDefaults: UserDefaults
-    let suiteName = "AWSCognitoAuthPluginUnitTest"
+    var userDefaultsDict: NSMutableDictionary
+
     let privateSessionKey = "AWSCognitoAuthPluginUnitTest.privateSessionKey"
 
     init() {
-        self.userDefaults = UserDefaults.init(suiteName: suiteName)!
+        self.userDefaultsDict = NSMutableDictionary()
     }
 
     func storePreferredBrowserSession(privateSessionPrefered: Bool) {
-        userDefaults.setValue(privateSessionPrefered, forKey: privateSessionKey)
+        userDefaultsDict.setValue(privateSessionPrefered, forKey: privateSessionKey)
     }
 
     func isPrivateSessionPreferred() -> Bool {
-        return userDefaults.bool(forKey: privateSessionKey)
-    }
-
-    func clearDefaults() {
-        userDefaults.removeObject(forKey: privateSessionKey)
+        return userDefaultsDict[privateSessionKey] as? Bool ?? false
     }
 }
