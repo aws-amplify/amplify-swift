@@ -117,7 +117,7 @@ class AuthenticationProviderSigninWithSocialWebUITests: BaseAuthenticationProvid
             case .failure(let error):
                 guard case .service(_, _, let underlyingError) = error,
                       case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce SFAuthenticationError error but instead produced \(error)")
+                    XCTFail("Should produce AWSCognitoAuthError error but instead produced \(error)")
                     return
                 }
             }
