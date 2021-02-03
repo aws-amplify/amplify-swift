@@ -49,7 +49,7 @@ extension AuthenticationProviderAdapter {
                 completionHandler(.failure(error))
                 return
             }
-            AWSCognitoAuthPluginUserDefaults.storePreferredBrowserSession(privateSessionPrefered: false)
+            self.userdefaults.storePreferredBrowserSession(privateSessionPrefered: false)
             let authResult = AuthSignInResult(nextStep: signInNextStep)
             completionHandler(.success(authResult))
         }
@@ -205,7 +205,7 @@ extension AuthenticationProviderAdapter {
             completionHandler(.failure(error))
             return
         }
-        AWSCognitoAuthPluginUserDefaults.storePreferredBrowserSession(privateSessionPrefered: preferPrivateSession)
+        userdefaults.storePreferredBrowserSession(privateSessionPrefered: preferPrivateSession)
         let authResult = AuthSignInResult(nextStep: .done)
         completionHandler(.success(authResult))
     }

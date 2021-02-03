@@ -7,15 +7,15 @@
 
 import Foundation
 
-struct AWSCognitoAuthPluginUserDefaults {
+struct AWSCognitoAuthPluginUserDefaults: AWSCognitoAuthPluginUserDefaultsBehavior {
 
-    private static let preferPrivateSessionKey = "AWSCognitoAuthPluginUserDefaults.privateSessionKey"
+    private let preferPrivateSessionKey = "AWSCognitoAuthPluginUserDefaults.privateSessionKey"
 
-    static func storePreferredBrowserSession(privateSessionPrefered: Bool) {
+    func storePreferredBrowserSession(privateSessionPrefered: Bool) {
         UserDefaults.standard.setValue(privateSessionPrefered, forKey: preferPrivateSessionKey)
     }
 
-    static func isPrivateSessionPreferred() -> Bool {
+    func isPrivateSessionPreferred() -> Bool {
         return UserDefaults.standard.bool(forKey: preferPrivateSessionKey)
     }
 }

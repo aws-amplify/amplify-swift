@@ -367,7 +367,7 @@ class AuthenticationProviderSignoutTests: BaseAuthenticationProviderTest {
                     return
                 }
                 XCTAssertTrue(signinResult.isSignedIn, "Signin result should be complete")
-                XCTAssertTrue(AWSCognitoAuthPluginUserDefaults.isPrivateSessionPreferred(),
+                XCTAssertTrue(self.mockUserDefault.isPrivateSessionPreferred(),
                               "Prefer private session userdefaults should be set.")
             case .failure(let error):
                 XCTFail("Received failure with error \(error)")
@@ -384,7 +384,7 @@ class AuthenticationProviderSignoutTests: BaseAuthenticationProviderTest {
 
             switch result {
             case .success:
-                XCTAssertFalse(AWSCognitoAuthPluginUserDefaults.isPrivateSessionPreferred(),
+                XCTAssertFalse(self.mockUserDefault.isPrivateSessionPreferred(),
                               "Prefer private session userdefaults should be set to false.")
             case .failure(let error):
                 guard case .unknown(_, let underlyingError) = error,
@@ -402,5 +402,4 @@ class AuthenticationProviderSignoutTests: BaseAuthenticationProviderTest {
         window.rootViewController = MockRootUIViewController()
         return window
     }
-
 }

@@ -251,20 +251,13 @@ class AuthenticationProviderSigninWithWebUITests: BaseAuthenticationProviderTest
                     return
                 }
                 XCTAssertTrue(signinResult.isSignedIn, "Signin result should be complete")
-                XCTAssertTrue(AWSCognitoAuthPluginUserDefaults.isPrivateSessionPreferred(),
+                XCTAssertTrue(self.mockUserDefault.isPrivateSessionPreferred(),
                               "Prefer private session userdefaults should be set.")
             case .failure(let error):
                 XCTFail("Received failure with error \(error)")
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
-
-        // Signout to clear the userdefaults so that this value do not affect other test
-        let signOutResultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signOut(options: AuthSignOutRequest.Options(), listener: { _ in
-            signOutResultExpectation.fulfill()
-        })
-        wait(for: [signOutResultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with error and private session
@@ -296,7 +289,7 @@ class AuthenticationProviderSigninWithWebUITests: BaseAuthenticationProviderTest
                     XCTFail("Should produce service error but instead produced \(error)")
                     return
                 }
-                XCTAssertFalse(AWSCognitoAuthPluginUserDefaults.isPrivateSessionPreferred(),
+                XCTAssertFalse(self.mockUserDefault.isPrivateSessionPreferred(),
                               "Prefer private session userdefaults should not be set.")
             }
         }

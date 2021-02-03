@@ -13,10 +13,10 @@ extension AuthenticationProviderAdapter {
     func signOut(request: AuthSignOutRequest, completionHandler: @escaping (Result<Void, AuthError>) -> Void) {
 
         // If developer had signed in using private session, we just need to signout the user locally.
-        guard AWSCognitoAuthPluginUserDefaults.isPrivateSessionPreferred() == false else {
+        guard userdefaults.isPrivateSessionPreferred() == false else {
             awsMobileClient.signOutLocally()
             // Reset the user defaults.
-            AWSCognitoAuthPluginUserDefaults.storePreferredBrowserSession(privateSessionPrefered: false)
+            userdefaults.storePreferredBrowserSession(privateSessionPrefered: false)
             completionHandler(.success(()))
             return
         }
