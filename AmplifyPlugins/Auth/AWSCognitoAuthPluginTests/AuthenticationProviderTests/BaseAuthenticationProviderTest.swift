@@ -17,11 +17,14 @@ class BaseAuthenticationProviderTest: XCTestCase {
     let apiTimeout = 2.0
     var authenticationProvider: AuthenticationProviderAdapter!
     var mockAWSMobileClient: MockAWSMobileClient!
+    var mockUserDefault: MockUserDefaults!
     var plugin: AWSCognitoAuthPlugin!
 
     override func setUp() {
         mockAWSMobileClient = MockAWSMobileClient()
-        authenticationProvider = AuthenticationProviderAdapter(awsMobileClient: mockAWSMobileClient!)
+        mockUserDefault = MockUserDefaults()
+        authenticationProvider = AuthenticationProviderAdapter(awsMobileClient: mockAWSMobileClient!,
+                                                               userdefaults: mockUserDefault)
         plugin = AWSCognitoAuthPlugin()
         plugin?.configure(authenticationProvider: authenticationProvider,
                          authorizationProvider: MockAuthorizationProviderBehavior(),
@@ -31,6 +34,7 @@ class BaseAuthenticationProviderTest: XCTestCase {
     }
 
     override func tearDown() {
+        mockUserDefault = nil
         plugin = nil
         mockAWSMobileClient = nil
         authenticationProvider = nil

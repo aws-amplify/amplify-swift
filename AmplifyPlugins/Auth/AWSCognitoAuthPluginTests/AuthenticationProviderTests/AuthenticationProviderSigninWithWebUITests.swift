@@ -223,6 +223,76 @@ class AuthenticationProviderSigninWithWebUITests: BaseAuthenticationProviderTest
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
+
+    /// Test a signIn with valid inputs and private session
+    ///
+    /// - Given: Given an auth plugin with mocked service.
+    ///
+    /// - When:
+    ///    - I invoke signIn with valid values and private session as option
+    /// - Then:
+    ///    - I should get a .done response and user defaults should store private session
+    ///
+    func testSuccessfulSignInWithPrivateSession() {
+
+        let mockSigninResult = UserState.signedIn
+        mockAWSMobileClient?.showSignInMockResult = .success(mockSigninResult)
+
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.signInWithWebUI(presentationAnchor: window, options: .preferPrivateSession()) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+            switch result {
+            case .success(let signinResult):
+                guard case .done = signinResult.nextStep else {
+                    XCTFail("Result should be .done for next step")
+                    return
+                }
+                XCTAssertTrue(signinResult.isSignedIn, "Signin result should be complete")
+                XCTAssertTrue(self.mockUserDefault.isPrivateSessionPreferred(),
+                              "Prefer private session userdefaults should be set.")
+            case .failure(let error):
+                XCTFail("Received failure with error \(error)")
+            }
+        }
+        wait(for: [resultExpectation], timeout: apiTimeout)
+    }
+
+    /// Test a signIn with error and private session
+    ///
+    /// - Given: Given an auth plugin with mocked service.
+    ///
+    /// - When:
+    ///    - I invoke signIn and mock securityFailed
+    /// - Then:
+    ///    - I should get a .service error and private session should not be set.
+    ///
+    func testSignInWithPrivateSessionServiceError() {
+
+        let error = AWSMobileClientError.securityFailed(message: "")
+        mockAWSMobileClient?.showSignInMockResult = .failure(error)
+
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.signInWithWebUI(presentationAnchor: window, options: .preferPrivateSession()) { result in
+
+            defer {
+                resultExpectation.fulfill()
+            }
+            switch result {
+            case .success(let signinResult):
+                XCTFail("Should throw user cancelled error, instead - \(signinResult)")
+            case .failure(let error):
+                guard case .service = error else {
+                    XCTFail("Should produce service error but instead produced \(error)")
+                    return
+                }
+                XCTAssertFalse(self.mockUserDefault.isPrivateSessionPreferred(),
+                              "Prefer private session userdefaults should not be set.")
+            }
+        }
+        wait(for: [resultExpectation], timeout: apiTimeout)
+    }
 }
 
 class MockRootUIViewController: UIViewController {

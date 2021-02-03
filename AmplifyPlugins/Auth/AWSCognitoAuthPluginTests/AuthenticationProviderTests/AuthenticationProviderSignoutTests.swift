@@ -340,4 +340,65 @@ class AuthenticationProviderSignoutTests: BaseAuthenticationProviderTest {
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
+    /// Test a signout clears private session after signin via privatesession
+    ///
+    /// - Given: Given an auth plugin with mocked service.
+    ///
+    /// - When:
+    ///    - I invoke signout on a private session
+    /// - Then:
+    ///    - I should get a successful response and user defaults should clear the private session
+    ///
+    func testSuccessfulSignOutWithPrivateSession() {
+
+        let mockSigninResult = UserState.signedIn
+        mockAWSMobileClient?.showSignInMockResult = .success(mockSigninResult)
+
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.signInWithWebUI(presentationAnchor: window, options: .preferPrivateSession()) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+            switch result {
+            case .success(let signinResult):
+                guard case .done = signinResult.nextStep else {
+                    XCTFail("Result should be .done for next step")
+                    return
+                }
+                XCTAssertTrue(signinResult.isSignedIn, "Signin result should be complete")
+                XCTAssertTrue(self.mockUserDefault.isPrivateSessionPreferred(),
+                              "Prefer private session userdefaults should be set.")
+            case .failure(let error):
+                XCTFail("Received failure with error \(error)")
+            }
+        }
+        wait(for: [resultExpectation], timeout: apiTimeout)
+
+        let signOutOptions = AuthSignOutRequest.Options()
+        let signOutResultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.signOut(options: signOutOptions) { result in
+            defer {
+                signOutResultExpectation.fulfill()
+            }
+
+            switch result {
+            case .success:
+                XCTAssertFalse(self.mockUserDefault.isPrivateSessionPreferred(),
+                              "Prefer private session userdefaults should be set to false.")
+            case .failure(let error):
+                guard case .unknown(_, let underlyingError) = error,
+                      case .canceledLogin = (underlyingError as? SFAuthenticationError)?.code else {
+                    XCTFail("Should produce SFAuthenticationError error instead of \(error)")
+                    return
+                }
+            }
+        }
+        wait(for: [signOutResultExpectation], timeout: apiTimeout)
+    }
+
+    var window: UIWindow {
+        let window = UIWindow()
+        window.rootViewController = MockRootUIViewController()
+        return window
+    }
 }
