@@ -25,7 +25,7 @@ public struct AWSAuthWebUISignInOptions {
     /// are using Auth0, specify the `federationProviderName` as <your_domain>.auth0.com.
     public let federationProviderName: String?
 
-    /// Start the webUI signin in a private browser session.
+    /// Starts the webUI signin in a private browser session, if supported by the current browser.
     ///
     /// Internally this sets the ASWebAuthentication session's prefersEphemeralWebBrowserSession = true.
     /// Note that this value internally set `prefersEphemeralWebBrowserSession` in ASWebAuthenticationSession.
