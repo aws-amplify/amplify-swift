@@ -275,10 +275,10 @@ class AuthenticationProviderSignoutTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke signOut
     /// - Then:
-    ///    - I should get a SFAuthenticationError.canceledLogin error
+    ///    - I should get a AWSCognitoAuthError.userCancelled error
     ///
     func testSignOutWithUserCancel() {
-        let error = NSError(domain: "com.apple.SafariServices.Authentication",
+        let error = NSError(domain: SFAuthenticationErrorDomain,
                             code: SFAuthenticationError.canceledLogin.rawValue,
                             userInfo: nil)
         let options = AuthSignOutRequest.Options()
@@ -293,9 +293,46 @@ class AuthenticationProviderSignoutTests: BaseAuthenticationProviderTest {
             case .success:
                 XCTFail("Should not get success")
             case .failure(let error):
-                guard case .unknown(_, let underlyingError) = error,
-                      case .canceledLogin = (underlyingError as? SFAuthenticationError)?.code else {
-                    XCTFail("Should produce SFAuthenticationError error instead of \(error)")
+                guard case .service(_, _, let underlyingError) = error,
+                      case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
+                    XCTFail("Should produce userCancelled error instead of \(error)")
+                    return
+                }
+            }
+        }
+        wait(for: [resultExpectation], timeout: apiTimeout)
+    }
+
+    /// Test a signOut with userCancelled from service
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    ///   ASWeb UserCancelled response
+    ///
+    /// - When:
+    ///    - I invoke signOut
+    /// - Then:
+    ///    - I should get a AWSCognitoAuthError.userCancelled error
+    ///
+    @available(iOS 12.0, *)
+    func testASWebAuthSignOutWithUserCancel() {
+        let mockError = NSError(domain: ASWebAuthenticationSessionErrorDomain,
+                                code: ASWebAuthenticationSessionError.canceledLogin.rawValue,
+                                userInfo: nil)
+        let options = AuthSignOutRequest.Options()
+        mockAWSMobileClient.signOutMockError = mockError
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.signOut(options: options) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+
+            switch result {
+            case .success:
+                XCTFail("Should not get success")
+            case .failure(let error):
+                guard case .service(_, _, let underlyingError) = error,
+                      case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
+                    XCTFail("Should produce userCancelled error instead of \(error)")
                     return
                 }
             }
