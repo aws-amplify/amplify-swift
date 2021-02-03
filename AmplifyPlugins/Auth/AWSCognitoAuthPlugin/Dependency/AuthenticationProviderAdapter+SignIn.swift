@@ -59,11 +59,11 @@ extension AuthenticationProviderAdapter {
     func signInWithWebUI(request: AuthWebUISignInRequest,
                          completionHandler: @escaping SigInResultCompletion) {
 
-        let window = request.presentationAnchor
+        let presentationAnchor = request.presentationAnchor
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 
-            self.showSignInWebView(window: window,
+            self.showSignInWebView(presentationAnchor: presentationAnchor,
                                    request: request,
                                    completionHandler: completionHandler)
         }
@@ -109,7 +109,7 @@ extension AuthenticationProviderAdapter {
     }
 
     // MARK: - Internal methods
-    private func showSignInWebView(window: UIWindow,
+    private func showSignInWebView(presentationAnchor: AuthUIPresentationAnchor,
                                    request: AuthWebUISignInRequest,
                                    completionHandler: @escaping SigInResultCompletion) {
 
@@ -133,19 +133,19 @@ extension AuthenticationProviderAdapter {
                                               signInPrivateSession: preferPrivateSession)
 
         if #available(iOS 13, *) {
-            launchASWebAuthenticationSession(window: window,
+            launchASWebAuthenticationSession(presentationAnchor: presentationAnchor,
                                              hostedUIOptions: hostedUIOptions,
                                              preferPrivateSession: preferPrivateSession,
                                              completionHandler: completionHandler)
         } else {
-            launchSFAuthenticationSession(window: window,
+            launchSFAuthenticationSession(presentationAnchor: presentationAnchor,
                                           hostedUIOptions: hostedUIOptions,
                                           completionHandler: completionHandler)
         }
 
     }
 
-    private func launchSFAuthenticationSession(window: UIWindow,
+    private func launchSFAuthenticationSession(presentationAnchor: AuthUIPresentationAnchor,
                                                hostedUIOptions: HostedUIOptions,
                                                completionHandler: @escaping SigInResultCompletion) {
         let navController = ModalPresentingNavigationController(rootViewController: UIViewController())
@@ -153,7 +153,7 @@ extension AuthenticationProviderAdapter {
         navController.modalPresentationStyle = .overCurrentContext
 
         // Get top most view controller to present a navController
-        var parentViewController = window.rootViewController
+        var parentViewController = presentationAnchor.rootViewController
         while (parentViewController?.presentedViewController) != nil {
             parentViewController = parentViewController?.presentedViewController
         }
@@ -175,11 +175,11 @@ extension AuthenticationProviderAdapter {
     }
 
     @available(iOS 13, *)
-    private func launchASWebAuthenticationSession(window: UIWindow,
+    private func launchASWebAuthenticationSession(presentationAnchor: AuthUIPresentationAnchor,
                                                   hostedUIOptions: HostedUIOptions,
                                                   preferPrivateSession: Bool,
                                                   completionHandler: @escaping SigInResultCompletion) {
-        awsMobileClient.showSignIn(uiwindow: window,
+        awsMobileClient.showSignIn(uiwindow: presentationAnchor,
                                    hostedUIOptions: hostedUIOptions) { [weak self] state, error in
             guard let self = self else { return }
             self.handleHostedUIResult(state: state,
@@ -199,9 +199,9 @@ extension AuthenticationProviderAdapter {
             return
         }
 
-        guard let state = state, state == .signedIn else {
+        guard let signedInState = state, signedInState == .signedIn else {
 
-            let error = AuthError.unknown("signInWithWebUI did not produce a valid result.")
+            let error = AuthError.unknown("signInWithWebUI did not produce a valid result \(state?.rawValue ?? "").")
             completionHandler(.failure(error))
             return
         }
