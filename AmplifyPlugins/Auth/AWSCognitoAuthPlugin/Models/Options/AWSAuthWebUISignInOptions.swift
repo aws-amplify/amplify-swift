@@ -27,8 +27,7 @@ public struct AWSAuthWebUISignInOptions {
 
     /// Starts the webUI signin in a private browser session, if supported by the current browser.
     ///
-    /// Internally this sets the ASWebAuthentication session's prefersEphemeralWebBrowserSession = true.
-    /// Note that this value internally set `prefersEphemeralWebBrowserSession` in ASWebAuthenticationSession.
+    /// Note that this value internally sets `prefersEphemeralWebBrowserSession` in ASWebAuthenticationSession.
     /// As per Apple documentation, Whether the request is honored depends on the user’s default web browser.
     /// Safari always honors the request.
     public let preferPrivateSession: Bool
