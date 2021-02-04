@@ -17,7 +17,7 @@ enum ImportConfigTasks {
 
         return .failure(AmplifyCommandError(
                             .folderNotFound,
-                            error: nil,
+                            errorDescription: "We couldn't find an Amplify project at \(environment.basePath).",
                             recoverySuggestion: "Please run `amplify init` to initialize an Amplify project."))
     }
 
@@ -28,9 +28,8 @@ enum ImportConfigTasks {
             if !environment.fileExists(atPath: file) {
                 return .failure(AmplifyCommandError(
                     .fileNotFound,
-                    error: nil,
-                    recoverySuggestion: "\(file) not found."
-                ))
+                    errorDescription: "\(file) not found.",
+                    recoverySuggestion: "Please verify the current Amplify project has been initialized successfully."))
             }
         }
         return .success("Config files found")

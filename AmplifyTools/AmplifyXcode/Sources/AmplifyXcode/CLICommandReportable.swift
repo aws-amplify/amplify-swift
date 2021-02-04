@@ -25,7 +25,7 @@ extension CLICommandReportable {
     }
 
     private func reportCommandFailure(_ error: AmplifyCommandError) {
-        print(error.debugDescription)
+        print("🚫 \(error.debugDescription)")
     }
 
     func report(result: AmplifyCommandResult) {

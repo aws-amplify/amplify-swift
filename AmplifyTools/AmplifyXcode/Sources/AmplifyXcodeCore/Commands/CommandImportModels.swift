@@ -15,12 +15,11 @@ enum CommandImportModelsTasks {
             return .success("Amplify models folder found at \(modelsPath)")
         }
 
-        let recoveryMsg = "We couldn't find any generated models at \(modelsPath). Please run amplify codegen models."
         return .failure(
             AmplifyCommandError(
                 .folderNotFound,
-                error: nil,
-                recoverySuggestion: recoveryMsg))
+                errorDescription: "We couldn't find any generated models at \(modelsPath)",
+                recoverySuggestion: "Please run amplify codegen models."))
     }
 
     static func addGeneratedModelsToProject(environment: AmplifyCommandEnvironment,
@@ -31,7 +30,7 @@ enum CommandImportModelsTasks {
 
         do {
             try environment.addFilesToXcodeProject(projectPath: environment.basePath, files: models, toGroup: args.modelsGroup)
-            return .success("Successfully added models \(models) to \(args.modelsGroup) group.")
+            return .success("Successfully added models \(models) to '\(args.modelsGroup)' group.")
         } catch {
             return .failure(AmplifyCommandError(.xcodeProject, error: error))
         }
