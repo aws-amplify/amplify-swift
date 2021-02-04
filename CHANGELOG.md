@@ -1,5 +1,13 @@
 # Changelog
 ## Unreleased
+## 1.6.0 (2021-02-04)
+
+### Features
+
+- **auth**: Fix cancelling hostedUI returning a generic error (#982)
+- Support lazy load and pagination for API (#1009)
+- Separate DataStore List logic out to list provider (#1000)
+
 ## 1.5.5 (2021-01-26)
 
 ### Bug Fixes
