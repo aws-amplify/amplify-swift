@@ -41,8 +41,8 @@ class CommandImportModelsTests: XCTestCase {
         XCTAssertEqual(environment?.globCalledTimes, 1)
         XCTAssertEqual(environment?.createXcodeFileCalledTimes, CommandImportModelsTests.modelsFilesCount)
         XCTAssertEqual(environment?.addFilesToXcodeProjectCalledTimes, 1)
-        if case .failure = result {
-            XCTFail()
+        if case let .failure(error) = result {
+            XCTFail("CommandImportModels failed with \(error)")
         }
     }
 

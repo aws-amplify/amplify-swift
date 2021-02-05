@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import PathKit
 
 enum CommandImportModelsTasks {
     static func projectHasGeneratedModels(environment: AmplifyCommandEnvironment,
@@ -29,8 +30,13 @@ enum CommandImportModelsTasks {
         }
 
         do {
-            try environment.addFilesToXcodeProject(projectPath: environment.basePath, files: models, toGroup: args.modelsGroup)
-            return .success("Successfully added models \(models) to '\(args.modelsGroup)' group.")
+            try environment.addFilesToXcodeProject(
+                projectPath: environment.basePath,
+                files: models,
+                toGroup: args.modelsGroup)
+
+            let addedModels = models.map { Path($0.path).lastComponent }
+            return .success("Successfully added models \(addedModels) to '\(args.modelsGroup)' group.")
         } catch {
             return .failure(AmplifyCommandError(.xcodeProject, error: error))
         }
@@ -53,7 +59,7 @@ public struct CommandImportModels: AmplifyCommand {
         .run(CommandImportModelsTasks.projectHasGeneratedModels),
         .run(CommandImportModelsTasks.addGeneratedModelsToProject)
     ]
-    
+
     public init() {}
 
     public func onFailure() {

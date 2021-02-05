@@ -21,8 +21,8 @@ class CommandImportModelsTasksTests: XCTestCase {
 
     func testProjectHasGeneratedModelsSuccess() {
         let result = CommandImportModelsTasks.projectHasGeneratedModels(environment: environment!, args: taskArgs)
-        if case .failure = result {
-            XCTFail()
+        if case let .failure(error) = result {
+            XCTFail("projectHasGeneratedModels failed with error \(error)")
         }
         XCTAssertEqual(environment?.pathCalledTimes, 1)
         XCTAssertEqual(environment?.directoryExistsCalledTimes, 1)
@@ -39,12 +39,16 @@ class CommandImportModelsTasksTests: XCTestCase {
             }
         }
         let environment = CustomEnvironment(basePath: basePath, fileManager: fileManager)
-        if case .failure = CommandImportModelsTasks.projectHasGeneratedModels(environment: environment, args: taskArgs) {
-            XCTFail()
+        if case let .failure(error) = CommandImportModelsTasks.projectHasGeneratedModels(
+            environment: environment,
+            args: taskArgs) {
+            XCTFail("projectHasGeneratedModels failed with error \(error)")
         }
 
-        if case .failure = CommandImportModelsTasks.addGeneratedModelsToProject(environment: environment, args: taskArgs) {
-            XCTFail()
+        if case let .failure(error) = CommandImportModelsTasks.addGeneratedModelsToProject(
+            environment: environment,
+            args: taskArgs) {
+            XCTFail("addGeneratedModelsToProject failed with error \(error)")
         }
         XCTAssertEqual(environment.createXcodeFileCalledTimes, 2) // one call for each model file found
         XCTAssertEqual(environment.addFilesToXcodeProjectCalledTimes, 1)
@@ -61,7 +65,7 @@ class CommandImportModelsTasksTests: XCTestCase {
         let environment = FailingEnvironment(basePath: basePath, fileManager: fileManager)
         let result = CommandImportModelsTasks.projectHasGeneratedModels(environment: environment, args: taskArgs)
         if case .success = result {
-            XCTFail()
+            XCTFail("projectHasGeneratedModels should not have succeeded")
         }
     }
 

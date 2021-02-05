@@ -74,7 +74,7 @@ public struct CommandImportConfig: AmplifyCommand {
         .run(ImportConfigTasks.configFilesExist),
         .run(ImportConfigTasks.addConfigFilesToXcodeProject)
     ]
-    
+
     public init() {}
 
     public func onFailure() {

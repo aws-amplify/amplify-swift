@@ -57,11 +57,11 @@ public struct AmplifyCommandError: Error {
 public extension AmplifyCommandError {
     var debugDescription: String {
         let underlyingErrors = self.underlyingErrors ?? []
-        
+
         if underlyingErrors.count == 1, let error = underlyingErrors.first as? AmplifyCommandError {
             return error.debugDescription
         }
-        
+
         var components = ["\(type): \(errorDescription ?? "")"]
 
         if let recoveryMsg = recoverySuggestion {
