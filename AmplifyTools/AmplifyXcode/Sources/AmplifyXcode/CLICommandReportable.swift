@@ -32,9 +32,11 @@ extension CLICommandReportable {
         switch result {
         case .success(let intermediateRes):
             reportCommandSuccess(for: intermediateRes)
+            exit(EXIT_SUCCESS)
 
         case .failure(let error):
             reportCommandFailure(error)
+            exit(EXIT_FAILURE)
         }
     }
 }
