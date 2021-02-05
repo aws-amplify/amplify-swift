@@ -4,9 +4,18 @@
 
 ### Features
 
-- **auth**: Fix cancelling hostedUI returning a generic error (#982)
+- **auth**: 
 - Support lazy load and pagination for API (#1009)
 - Separate DataStore List logic out to list provider (#1000)
+
+### ⚠ BREAKING CHANGES
+
+- **auth**: Fix cancelling hostedUI returning a generic error (#982). User cancelled error returned from `Amplify.Auth.signInWithWebUI` is changed from `SFAuthenticationError.canceledLogin` to `AuthError.service(_, _, AWSCognitoAuthError.userCancelled)`.
+
+
+### Misc updates
+
+- **auth**: `Amplify.Auth.signInWithWebUI` uses `ASWebAuthenticationSession` internally for iOS 13.0+. For older iOS versions, it will fallback to `SFAuthenticationSession`. You can also make use of `ASWebAuthenticationSession`'s `prefersEphermeralWebBrowserSession` by setting the value `preferPrivateSession` of `AWSAuthWebUISignInOptions` during signIn. If `preferPrivateSession` was set during signIn, the user will not see a `ASWebAuthenticationSession` popup during signOut. 
 
 ## 1.5.5 (2021-01-26)
 
