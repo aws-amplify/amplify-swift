@@ -4,7 +4,6 @@
 
 ### Features
 
-- **auth**: 
 - Support lazy load and pagination for API (#1009)
 - Separate DataStore List logic out to list provider (#1000)
 
