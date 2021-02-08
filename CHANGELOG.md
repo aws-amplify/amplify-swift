@@ -4,9 +4,38 @@
 
 ### Features
 
-- **auth**: Fix cancelling hostedUI returning a generic error (#982)
 - Support lazy load and pagination for API (#1009)
 - Separate DataStore List logic out to list provider (#1000)
+
+### Behavior Change
+
+- **Auth**: Fix cancelling hostedUI returning a generic error (#982).
+
+    When a user cancels the sign in flow from `Amplify.Auth.signInWithWebUI`, the callback will now deliver an error of type `AuthError.service`, with an underlying error of `AWSCognitoAuthError.userCancelled`. Previously, the error was a `SFAuthenticationError.canceledLogin`. The `AuthError.service` error type will be returned regardless of whether the underlying HostedUI operation was performed via an SFAuthenticationSession or an ASWebAuthenticationSession.
+    
+    You can detect the user cancellation case by `switch`ing on the error, as in:
+    
+    ```swift
+    switch result {
+      case .success:
+          print("SignOut")
+      case .failure(let error):
+          if case AuthError.service(_, _, let underlyingError) = error,
+              case .userCancelled = (underlyingError as? AWSCognitoAuthError) {
+              print("User cancelled")
+          }
+    }
+    ```
+
+### Misc updates
+
+- **Auth**: `Amplify.Auth.signInWithWebUI` now automatically uses `ASWebAuthenticationSession` internally for iOS 13.0+. For older iOS versions, it will fall back to `SFAuthenticationSession`.
+    This release also introduces a new `preferPrivateSession` flag to `AWSAuthWebUISignInOptions` during the sign in flow. If `preferPrivateSession` is set to `true` during sign in, and the user's preferred browser supports [`ASWebAuthenticationSession.prefersEphemeralWebBrowserSession`](https://developer.apple.com/documentation/authenticationservices/aswebauthenticationsession/3237231-prefersephemeralwebbrowsersessio), the user will not see a web view displayed when they sign out. 
+
+    ```swift
+    Amplify.Auth.signInWithWebUI(presentationAnchor: self.view.window!, 
+                                options: .preferPrivateSession()) { ... }
+    ```
 
 ## 1.5.5 (2021-01-26)
 
