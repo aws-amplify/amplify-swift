@@ -26,5 +26,8 @@ struct CLICommandImportConfig: ParsableCommand, CommandExecutable, CLICommandRep
     func run() throws {
         let output = exec(command: CommandImportConfig())
         report(result: output)
+        if case .failure = output {
+            throw ExitCode.failure
+        }
     }
 }
