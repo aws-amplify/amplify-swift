@@ -19,7 +19,7 @@ enum CommandImportModelsTasks {
                     errorDescription: "Amplify generated models not found at \(modelsPath)",
                     recoverySuggestion: "Run amplify codegen models."))
         }
-        
+
         return .success("Amplify models folder found at \(modelsPath)")
     }
 
@@ -59,6 +59,6 @@ public struct CommandImportModels: AmplifyCommand {
         .run(CommandImportModelsTasks.projectHasGeneratedModels),
         .run(CommandImportModelsTasks.addGeneratedModelsToProject)
     ]
-    
+
     public init() {}
 }
