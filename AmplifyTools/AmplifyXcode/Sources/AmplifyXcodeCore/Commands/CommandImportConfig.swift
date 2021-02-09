@@ -11,14 +11,13 @@ enum ImportConfigTasks {
     static func amplifyFolderExist(
         environment: AmplifyCommandEnvironment,
         args: CommandImportConfig.TaskArgs) -> AmplifyCommandTaskResult {
-        if environment.directoryExists(atPath: "amplify") {
-            return .success("Amplify project found")
+        guard environment.directoryExists(atPath: "amplify") else {
+            return .failure(AmplifyCommandError(
+                                .folderNotFound,
+                                errorDescription: "Amplify project not found at \(environment.basePath).",
+                                recoverySuggestion: "Run `amplify init` to initialize an Amplify project."))
         }
-
-        return .failure(AmplifyCommandError(
-                            .folderNotFound,
-                            errorDescription: "Amplify project not found at \(environment.basePath).",
-                            recoverySuggestion: "Run `amplify init` to initialize an Amplify project."))
+        return .success("Amplify project found.")
     }
 
     static func configFilesExist(
@@ -32,7 +31,7 @@ enum ImportConfigTasks {
                     recoverySuggestion: "Verify the current Amplify project has been initialized successfully."))
             }
         }
-        return .success("Config files found")
+        return .success("Amplify config files found.")
     }
 
     static func addConfigFilesToXcodeProject(
@@ -46,7 +45,7 @@ enum ImportConfigTasks {
             try environment.addFilesToXcodeProject(projectPath: projectPath,
                                                    files: configFiles,
                                                    toGroup: args.configGroup)
-            return .success("Successfully updated project \(projectPath)")
+            return .success("Successfully updated project \(projectPath).")
         } catch {
             if let underlyingError = error as? AmplifyCommandError {
                 return .failure(underlyingError)

@@ -12,15 +12,15 @@ enum CommandImportModelsTasks {
     static func projectHasGeneratedModels(environment: AmplifyCommandEnvironment,
                                           args: CommandImportModels.TaskArgs) -> AmplifyCommandTaskResult {
         let modelsPath = environment.path(for: args.generatedModelsPath)
-        if environment.directoryExists(atPath: modelsPath) {
-            return .success("Amplify models folder found at \(modelsPath)")
+        guard environment.directoryExists(atPath: modelsPath) else {
+            return .failure(
+                AmplifyCommandError(
+                    .folderNotFound,
+                    errorDescription: "Amplify generated models not found at \(modelsPath)",
+                    recoverySuggestion: "Run amplify codegen models."))
         }
-
-        return .failure(
-            AmplifyCommandError(
-                .folderNotFound,
-                errorDescription: "We couldn't find any generated models at \(modelsPath)",
-                recoverySuggestion: "Please run amplify codegen models."))
+        
+        return .success("Amplify models folder found at \(modelsPath)")
     }
 
     static func addGeneratedModelsToProject(environment: AmplifyCommandEnvironment,
