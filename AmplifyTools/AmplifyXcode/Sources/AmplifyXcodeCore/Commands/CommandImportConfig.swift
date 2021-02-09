@@ -76,7 +76,4 @@ public struct CommandImportConfig: AmplifyCommand {
     ]
 
     public init() {}
-
-    public func onFailure() {
-    }
 }

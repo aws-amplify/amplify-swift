@@ -59,9 +59,6 @@ public struct CommandImportModels: AmplifyCommand {
         .run(CommandImportModelsTasks.projectHasGeneratedModels),
         .run(CommandImportModelsTasks.addGeneratedModelsToProject)
     ]
-
+    
     public init() {}
-
-    public func onFailure() {
-    }
 }
