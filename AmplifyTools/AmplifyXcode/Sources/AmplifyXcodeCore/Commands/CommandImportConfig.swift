@@ -17,8 +17,8 @@ enum ImportConfigTasks {
 
         return .failure(AmplifyCommandError(
                             .folderNotFound,
-                            errorDescription: "We couldn't find an Amplify project at \(environment.basePath).",
-                            recoverySuggestion: "Please run `amplify init` to initialize an Amplify project."))
+                            errorDescription: "Amplify project not found at \(environment.basePath).",
+                            recoverySuggestion: "Run `amplify init` to initialize an Amplify project."))
     }
 
     static func configFilesExist(
@@ -29,7 +29,7 @@ enum ImportConfigTasks {
                 return .failure(AmplifyCommandError(
                     .fileNotFound,
                     errorDescription: "\(file) not found.",
-                    recoverySuggestion: "Please verify the current Amplify project has been initialized successfully."))
+                    recoverySuggestion: "Verify the current Amplify project has been initialized successfully."))
             }
         }
         return .success("Config files found")
@@ -65,7 +65,7 @@ public struct CommandImportConfig: AmplifyCommand {
 
     public typealias TaskArgs = CommandImportConfigArgs
 
-    public static var description = "Import Amplify configuration files"
+    public static let description = "Import Amplify configuration files"
 
     public var taskArgs = CommandImportConfigArgs()
 

@@ -51,7 +51,7 @@ public struct CommandImportModels: AmplifyCommand {
 
     public typealias TaskArgs = CommandImportModelsArgs
 
-    public static var description = "Import Amplify models"
+    public static let description = "Import Amplify models"
 
     public var taskArgs = CommandImportModelsArgs()
 
