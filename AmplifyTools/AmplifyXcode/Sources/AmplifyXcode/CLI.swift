@@ -10,48 +10,9 @@ import ArgumentParser
 import AmplifyXcodeCore
 
 /// This module defines a CLI (Command Line Interface) to commands defined in `Core/Commands`.
-/// Each "CLI command" defined below is the actual executor of an `AmplifyCommand`, thus it's responsible
+/// Each "CLI command"  is the actual executor of an `AmplifyCommand`, thus it's responsible
 /// for providing an environment, instantiate and execute a command.
 /// The `CommandExecutable` protocol glues an `AmplifyCommand` and the environment provided by the executor.
-
-/// CLI command invoking `CommandImportConfig`.
-struct CLICommandImportConfig: ParsableCommand, CommandExecutable, CLICommandReportable {
-    static let configuration = CommandConfiguration(
-        commandName: "import-config",
-        abstract: CommandImportConfig.description
-    )
-
-    @Option(name: .shortAndLong, help: "Project base path")
-    private var path: String = Process().currentDirectoryPath
-
-    var environment: AmplifyCommandEnvironment {
-        CommandEnvironment(basePath: path, fileManager: FileManager.default)
-    }
-
-    func run() throws {
-        let output = exec(command: CommandImportConfig())
-        report(result: output)
-    }
-}
-
-struct CLICommandImportModels: ParsableCommand, CommandExecutable, CLICommandReportable {
-    public static let configuration = CommandConfiguration(
-        commandName: "import-models",
-        abstract: CommandImportModels.description
-    )
-
-    @Option(name: .shortAndLong, help: "Project base path")
-    private var path: String = Process().currentDirectoryPath
-
-    var environment: AmplifyCommandEnvironment {
-        CommandEnvironment(basePath: path, fileManager: FileManager.default)
-    }
-
-    func run() throws {
-        let output = exec(command: CommandImportModels())
-        report(result: output)
-    }
-}
 
 /// CLI interface entry point `amplify-xcode`
 struct AmplifyXcode: ParsableCommand {
