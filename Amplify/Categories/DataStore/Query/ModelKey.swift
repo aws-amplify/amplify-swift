@@ -131,5 +131,5 @@ extension CodingKey where Self: ModelKey {
     public static func != (key: Self, value: EnumPersistable) -> QueryPredicateOperation {
         return key.ne(value)
     }
-
 }
+

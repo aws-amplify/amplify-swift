@@ -47,7 +47,7 @@ class AppSyncListDecoderTests: XCTestCase {
             ],
             "nextToken": "nextToken"
         ]
-        let appSyncPayload = AppSyncListPayload(graphQLData: json, apiName: nil, variables: nil)
+        let appSyncPayload = AppSyncListPayload(graphQLData: json, apiName: nil, variables: nil, documentName: nil)
         let data = try encoder.encode(appSyncPayload)
 
         let harness = try decoder.decode(AppSyncListDecoderHarness<Post4>.self, from: data)
@@ -57,7 +57,7 @@ class AppSyncListDecoderTests: XCTestCase {
             XCTFail("Could get AppSyncListProvider")
             return
         }
-        guard case .loaded(let elements, let nextToken, let filter) = provider.loadedState else {
+        guard case .loaded(let elements, let nextToken, let filter, _, _) = provider.loadedState else {
             XCTFail("Should be in loaded state")
             return
         }
@@ -76,7 +76,7 @@ class AppSyncListDecoderTests: XCTestCase {
             ],
             "nextToken": "nextToken"
         ]
-        let appSyncPayload = AppSyncListPayload(graphQLData: json, apiName: nil, variables: nil)
+        let appSyncPayload = AppSyncListPayload(graphQLData: json, apiName: nil, variables: nil, documentName: nil)
         let data = try encoder.encode(appSyncPayload)
         do {
             _ = try decoder.decode(AppSyncListDecoderHarness<Post4>.self, from: data)
@@ -120,7 +120,7 @@ class AppSyncListDecoderTests: XCTestCase {
             XCTFail("Could get AppSyncListProvider")
             return
         }
-        guard case .loaded(let elements, let nextToken, let filter) = provider.loadedState else {
+        guard case .loaded(let elements, let nextToken, let filter, _, _) = provider.loadedState else {
             XCTFail("Should be in loaded state")
             return
         }

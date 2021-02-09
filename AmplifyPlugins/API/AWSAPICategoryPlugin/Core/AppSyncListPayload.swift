@@ -15,13 +15,16 @@ public struct AppSyncListPayload: Codable {
 
     let graphQLData: JSONValue
     let apiName: String?
+    let documentName: String?
 
     public init(graphQLData: JSONValue,
                 apiName: String?,
-                variables: [String: JSONValue]?) {
+                variables: [String: JSONValue]?,
+                documentName: String?) {
         self.apiName = apiName
         self.variables = variables
         self.graphQLData = graphQLData
+        self.documentName = documentName
     }
 
     /// Extract from the `variables` object the original GraphQL "filter" is required to perform pagination by
@@ -61,5 +64,36 @@ public struct AppSyncListPayload: Codable {
         }
 
         return nil
+    }
+
+    /// Extract `sort`
+    var graphQLSort: [String: Any]? {
+        guard let storedVariables = variables,
+           let sort = storedVariables["sort"],
+           case let .object(sortValue) = sort else {
+            return nil
+        }
+
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
+
+        guard let sortVariablesData = try? encoder.encode(sortValue),
+              let sortVariablesJSON = try? JSONSerialization.jsonObject(with: sortVariablesData)
+                as? GraphQLFilter else {
+
+            assert(false, "Filter variables is not a valid JSON object: \(sortValue)")
+            return nil
+        }
+
+        return sortVariablesJSON
+    }
+
+    /// Extrapolate the original type of operation (list or search) based on the document name
+    var isSearch: Bool {
+        guard let documentName = documentName else {
+            return false
+        }
+
+        return documentName.starts(with: "search") && documentName.hasSuffix("s")
     }
 }

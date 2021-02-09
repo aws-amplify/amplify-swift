@@ -30,7 +30,8 @@ extension GraphQLResponseDecoder {
         } else if request.responseType is ModelListMarker.Type {
             let payload = AppSyncListPayload(graphQLData: graphQLData,
                                              apiName: request.apiName,
-                                             variables: try getVariablesJSON())
+                                             variables: try getVariablesJSON(),
+                                             documentName: request.decodePath)
             serializedJSON = try encoder.encode(payload)
         } else if AppSyncModelMetadataUtils.shouldAddMetadata(toModel: graphQLData) {
             let modelJSON = AppSyncModelMetadataUtils.addMetadata(toModel: graphQLData,

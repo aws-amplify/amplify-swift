@@ -32,7 +32,9 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
         /// the subsequent GraphQL request, and previous filter used to create the loaded list
         case loaded(elements: [Element],
                     nextToken: String?,
-                    filter: [String: Any]?)
+                    filter: [String: Any]?,
+                    sort: [String: Any]?,
+                    isSearch: Bool)
     }
 
     var loadedState: LoadedState
@@ -41,14 +43,16 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     convenience init(payload: AppSyncListPayload) throws {
         let listResponse = try AppSyncListResponse.initWithMetadata(type: Element.self,
-                                                                       graphQLData: payload.graphQLData,
-                                                                       apiName: payload.apiName)
+                                                                    graphQLData: payload.graphQLData,
+                                                                    apiName: payload.apiName)
 
         self.init(elements: listResponse.items,
                   nextToken: listResponse.nextToken,
                   apiName: payload.apiName,
                   limit: payload.limit,
-                  filter: payload.graphQLFilter)
+                  filter: payload.graphQLFilter,
+                  sort: payload.graphQLSort,
+                  isSearch: payload.isSearch)
     }
 
     convenience init(listResponse: AppSyncListResponse<Element>) throws {
@@ -67,8 +71,10 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
          nextToken: String? = nil,
          apiName: String? = nil,
          limit: Int? = nil,
-         filter: [String: Any]? = nil) {
-        self.loadedState = .loaded(elements: elements, nextToken: nextToken, filter: filter)
+         filter: [String: Any]? = nil,
+         sort: [String: Any]? = nil,
+         isSearch: Bool = false) {
+        self.loadedState = .loaded(elements: elements, nextToken: nextToken, filter: filter, sort: sort, isSearch: isSearch)
         self.apiName = apiName
         self.limit = limit
     }
@@ -84,7 +90,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     public func load() -> Result<[Element], CoreError> {
         switch loadedState {
-        case .loaded(let elements, _, _):
+        case .loaded(let elements, _, _, _, _):
             return .success(elements)
         case .notLoaded(let associatedId, let associatedField):
             let semaphore = DispatchSemaphore(value: 0)
@@ -111,7 +117,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     public func load(completion: @escaping (Result<[Element], CoreError>) -> Void) {
         switch loadedState {
-        case .loaded(let elements, _, _):
+        case .loaded(let elements, _, _, _, _):
             completion(.success(elements))
         case .notLoaded(let associatedId, let associatedField):
             load(associatedId: associatedId, associatedField: associatedField, completion: completion)
@@ -146,7 +152,9 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
                     self.loadedState = .loaded(elements: listResponse.items,
                                                nextToken: listResponse.nextToken,
-                                               filter: filter)
+                                               filter: filter,
+                                               sort: nil,
+                                               isSearch: false)
                     completion(.success(listResponse.items))
                 case .failure(let graphQLError):
                     Amplify.API.log.error(error: graphQLError)
@@ -166,7 +174,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     public func hasNextPage() -> Bool {
         switch loadedState {
-        case .loaded(_, let nextToken, _):
+        case .loaded(_, let nextToken, _, _, _):
             return nextToken != nil
         case .notLoaded:
             return false
@@ -174,7 +182,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
     }
 
     public func getNextPage(completion: @escaping (Result<List<Element>, CoreError>) -> Void) {
-        guard case .loaded(_, let nextTokenOptional, let filter) = loadedState else {
+        guard case .loaded(_, let nextTokenOptional, let filter, let sort, let isSearch) = loadedState else {
             completion(.failure(.clientValidation("""
                 Make sure the underlying data is loaded by calling `load(completion)`, then only call this method when
                 `hasNextPage()` is true
@@ -188,19 +196,31 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             return
         }
 
-        getNextPage(nextToken: nextToken, filter: filter, completion: completion)
+        getNextPage(nextToken: nextToken, filter: filter, sort: sort, isSearch: isSearch, completion: completion)
     }
 
     /// Internal `getNextPage` to retrieve the next page and return it as a new List object
     func getNextPage(nextToken: String,
                      filter: [String: Any]?,
+                     sort: [String: Any]?,
+                     isSearch: Bool,
                      completion: @escaping (Result<List<Element>, CoreError>) -> Void) {
-        let request = GraphQLRequest<List<Element>>.listQuery(responseType: List<Element>.self,
+
+        var request = GraphQLRequest<List<Element>>.listQuery(responseType: List<Element>.self,
                                                               modelSchema: Element.schema,
                                                               filter: filter,
                                                               limit: limit,
                                                               nextToken: nextToken,
                                                               apiName: apiName)
+        if isSearch {
+            request = AppSyncGraphQLRequest.searchQuery(responseType: List<Element>.self,
+                                                                       modelSchema: Element.schema,
+                                                                       filter: filter,
+                                                                       limit: limit,
+                                                                       nextToken: nextToken,
+                                                                       apiName: apiName)
+        }
+
         Amplify.API.query(request: request) { result in
             switch result {
             case .success(let graphQLResponse):

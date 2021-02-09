@@ -136,13 +136,13 @@ type User5 @model {
 # > Choose a schema template: `One-to-many relationship (e.g., “Blogs” with “Posts” and “Comments”)`
 
 # 6 - Blog Post Comment
-type Blog6 @model {
+type Blog6 @model @searchable {
   id: ID!
   name: String!
   posts: [Post6] @connection(keyName: "byBlog", fields: ["id"])
 }
 
-type Post6 @model @key(name: "byBlog", fields: ["blogID"]) {
+type Post6 @model @key(name: "byBlog", fields: ["blogID"]) @searchable {
   id: ID!
   title: String!
   blogID: ID!
@@ -150,7 +150,7 @@ type Post6 @model @key(name: "byBlog", fields: ["blogID"]) {
   comments: [Comment6] @connection(keyName: "byPost", fields: ["id"])
 }
 
-type Comment6 @model @key(name: "byPost", fields: ["postID", "content"]) {
+type Comment6 @model @key(name: "byPost", fields: ["postID", "content"]) @searchable {
   id: ID!
   postID: ID!
   post: Post6 @connection(fields: ["postID"])

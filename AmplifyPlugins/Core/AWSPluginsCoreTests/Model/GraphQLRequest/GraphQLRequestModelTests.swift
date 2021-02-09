@@ -144,4 +144,65 @@ class GraphQLRequestModelTest: XCTestCase {
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
     }
+
+    func testSearchGraphQLRequest() {
+        let post = Post.keys
+        let request = GraphQLRequest<Post>.search(Post.self,
+                                                  where: post.title.search(.match("value")) ||
+                                                    post.content.search(.regexp("s.*y")))
+        let expectedDocument =
+        """
+        query searchPosts($filter: SearchablePostFilterInput, $from: Int, $limit: Int, $nextToken: String, $sort: SearchablePostSortInput) {
+          searchPosts(filter: $filter, from: $from, limit: $limit, nextToken: $nextToken, sort: $sort) {
+            items {
+              id
+              content
+              createdAt
+              draft
+              rating
+              status
+              title
+              updatedAt
+              __typename
+            }
+            nextToken
+            total
+          }
+        }
+        """
+        XCTAssertEqual(expectedDocument, request.document)
+        XCTAssert(request.responseType == List<Post>.self)
+        guard let variables = request.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        guard let filter = variables["filter"] as? GraphQLFilter else {
+            XCTFail("variables should contain a valid filter")
+            return
+        }
+
+        // Test filter for a valid JSON format
+        let filterJSON = try? JSONSerialization.data(withJSONObject: filter,
+                                                     options: .prettyPrinted)
+        XCTAssertNotNil(filterJSON)
+
+        let expectedFilterJSON = """
+        {
+          "or" : [
+            {
+              "title" : {
+                "match" : "value"
+              }
+            },
+            {
+              "content" : {
+                "regexp" : "s.*y"
+              }
+            }
+          ]
+        }
+        """
+        XCTAssertEqual(String(data: filterJSON!, encoding: .utf8), expectedFilterJSON)
+
+    }
 }

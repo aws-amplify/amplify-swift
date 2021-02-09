@@ -59,9 +59,12 @@ class AppSyncListProviderTests: XCTestCase {
             ],
             "limit": 500
         ]
-        let appSyncPayload = AppSyncListPayload(graphQLData: json, apiName: "apiName", variables: variables)
+        let appSyncPayload = AppSyncListPayload(graphQLData: json,
+                                                apiName: "apiName",
+                                                variables: variables,
+                                                documentName: nil)
         let provider = try AppSyncListProvider<Post4>(payload: appSyncPayload)
-        guard case .loaded(let elements, let nextToken, let filter) = provider.loadedState else {
+        guard case .loaded(let elements, let nextToken, let filter, _, _) = provider.loadedState else {
             XCTFail("Should be in loaded state")
             return
         }
@@ -82,7 +85,7 @@ class AppSyncListProviderTests: XCTestCase {
             ],
             "nextToken": "nextToken"
         ]
-        let appSyncPayload = AppSyncListPayload(graphQLData: json, apiName: nil, variables: nil)
+        let appSyncPayload = AppSyncListPayload(graphQLData: json, apiName: nil, variables: nil, documentName: nil)
         do {
             _ = try AppSyncListProvider<Post4>(payload: appSyncPayload)
         } catch _ as DecodingError {
@@ -149,7 +152,7 @@ class AppSyncListProviderTests: XCTestCase {
             XCTFail("Should have been success")
             return
         }
-        guard case .loaded(let elements, let nextToken, let filterOptional) = provider.loadedState else {
+        guard case .loaded(let elements, let nextToken, let filterOptional, _, _) = provider.loadedState else {
             XCTFail("Should be loaded")
             return
         }
@@ -254,7 +257,7 @@ class AppSyncListProviderTests: XCTestCase {
             }
         }
         wait(for: [loadComplete], timeout: 1)
-        guard case .loaded(let elements, let nextToken, let filterOptional) = provider.loadedState else {
+        guard case .loaded(let elements, let nextToken, let filterOptional, _, _) = provider.loadedState else {
             XCTFail("Should be loaded")
             return
         }
