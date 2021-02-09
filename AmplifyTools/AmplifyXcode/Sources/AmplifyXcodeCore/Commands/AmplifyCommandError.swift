@@ -12,7 +12,7 @@ public struct AmplifyCommandError: Error {
         case unknown
         case fileNotFound
         case folderNotFound
-        case xcodeProject
+        case xcodeProject /// @see `XcodeProjectError`
     }
 
     let type: AmplifyCommandErrorType
@@ -56,16 +56,17 @@ public struct AmplifyCommandError: Error {
 
 public extension AmplifyCommandError {
     var debugDescription: String {
-        let underlyingErrors = self.underlyingErrors ?? []
+        var components = ["\(type): \(errorDescription ?? "")"]
+        if let recoveryMsg = recoverySuggestion {
+            components.append("-- Recovery suggestion: \(recoveryMsg)")
+        }
+
+        guard let underlyingErrors = self.underlyingErrors else {
+            return components.joined(separator: "\n")
+        }
 
         if underlyingErrors.count == 1, let error = underlyingErrors.first as? AmplifyCommandError {
             return error.debugDescription
-        }
-
-        var components = ["\(type): \(errorDescription ?? "")"]
-
-        if let recoveryMsg = recoverySuggestion {
-            components.append("-- Recovery suggestion: \(recoveryMsg)")
         }
 
         for err in underlyingErrors {
