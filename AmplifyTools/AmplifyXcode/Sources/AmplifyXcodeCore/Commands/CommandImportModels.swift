@@ -53,9 +53,9 @@ public struct CommandImportModels: AmplifyCommand {
 
     public static let description = "Import Amplify models"
 
-    public var taskArgs = CommandImportModelsArgs()
+    public let taskArgs = CommandImportModelsArgs()
 
-    public var tasks: [AmplifyCommandTask<CommandImportModelsArgs>] = [
+    public let tasks: [AmplifyCommandTask<CommandImportModelsArgs>] = [
         .run(CommandImportModelsTasks.projectHasGeneratedModels),
         .run(CommandImportModelsTasks.addGeneratedModelsToProject)
     ]

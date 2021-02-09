@@ -1,8 +1,8 @@
 //
-//  File.swift
-//  
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Costantino, Diego on 2/9/21.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
@@ -11,7 +11,7 @@ import AmplifyXcodeCore
 
 /// CLI command invoking `CommandImportModels`.
 struct CLICommandImportModels: ParsableCommand, CommandExecutable, CLICommandReportable {
-    public static let configuration = CommandConfiguration(
+    static let configuration = CommandConfiguration(
         commandName: "import-models",
         abstract: CommandImportModels.description
     )

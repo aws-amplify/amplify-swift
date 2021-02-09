@@ -46,9 +46,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AmplifyXcode::AmplifyXcodeTests"
-               BuildableName = "AmplifyXcodeTests.xctest"
-               BlueprintName = "AmplifyXcodeTests"
+               BlueprintIdentifier = "AmplifyXcode::AmplifyXcodeCoreTests"
+               BuildableName = "AmplifyXcodeCoreTests.xctest"
+               BlueprintName = "AmplifyXcodeCoreTests"
                ReferencedContainer = "container:AmplifyXcode.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -56,9 +56,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AmplifyXcode::AmplifyXcodeCoreTests"
-               BuildableName = "AmplifyXcodeCoreTests.xctest"
-               BlueprintName = "AmplifyXcodeCoreTests"
+               BlueprintIdentifier = "AmplifyXcode::AmplifyXcodeTests"
+               BuildableName = "AmplifyXcodeTests.xctest"
+               BlueprintName = "AmplifyXcodeTests"
                ReferencedContainer = "container:AmplifyXcode.xcodeproj">
             </BuildableReference>
          </TestableReference>

@@ -67,9 +67,9 @@ public struct CommandImportConfig: AmplifyCommand {
 
     public static let description = "Import Amplify configuration files"
 
-    public var taskArgs = CommandImportConfigArgs()
+    public let taskArgs = CommandImportConfigArgs()
 
-    public var tasks: [AmplifyCommandTask<CommandImportConfigArgs>] = [
+    public let tasks: [AmplifyCommandTask<CommandImportConfigArgs>] = [
         .run(ImportConfigTasks.amplifyFolderExist),
         .run(ImportConfigTasks.configFilesExist),
         .run(ImportConfigTasks.addConfigFilesToXcodeProject)
