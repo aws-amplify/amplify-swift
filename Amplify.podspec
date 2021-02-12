@@ -50,9 +50,6 @@ Pod::Spec.new do |s|
       :script => 'mkdir -p "${PODS_ROOT}/AmplifyTools"; cp -vf "${PODS_TARGET_SRCROOT}/AmplifyTools/amplify-tools.sh" "${PODS_ROOT}/AmplifyTools/."',
       :execution_position => :before_compile
     }
-    def ss.post_install
-      warn "AmplifyTools has been deprecated. More info: https://github.com/aws-amplify/amplify-ios/blob/main/AmplifyTools/README.md"
-    end
   end
 
 end
