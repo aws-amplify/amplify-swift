@@ -29,7 +29,7 @@ final class RESTOperationRequestUtils {
             components.path.append(path)
         }
 
-        if let queryParameters = queryParameters?.sorted(by: { $0.key < $1.key }) {
+        if let queryParameters = queryParameters {
             components.queryItems = queryParameters.map { (name, value) -> URLQueryItem in
                 URLQueryItem(name: name, value: value)
             }
