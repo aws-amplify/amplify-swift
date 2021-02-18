@@ -5,7 +5,7 @@ As of Amplify CLI release **4.40.0**, the functionality provided by the `amplify
 - When running `amplify codegen models`, the `*.swift` files generated under `amplify/generated/models/` are auto-added to the Xcode project in the group called `AmplifyModels`.
 **Notes:**
 - Xcode integration was added to the Amplify CLI on [version `4.40.0`](https://github.com/aws-amplify/amplify-cli/releases/tag/v4.40.0), so make sure you update your CLI to the latest version.
-- The "***Run Amplify Tools***" custom build phase script, it can be safely removed from existing projects.
+- The "***Run Amplify Tools***" custom build phase script can be safely removed from existing projects.
 
 ### Amplify Tools
 
