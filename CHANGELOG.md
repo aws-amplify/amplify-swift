@@ -1,5 +1,7 @@
 # Changelog
 ## Unreleased
+## 1.6.1 (2021-02-19)
+
 ## 1.6.0 (2021-02-04)
 
 ### Features
