@@ -1,6 +1,8 @@
 # Changelog
 ## Unreleased
 ## 1.6.1 (2021-02-19)
+### Misc updates
+- Amplify/Tools pod is currently deprecated and it will be completely removed in a future release. For now, Xcode will emit a deprecation warning if your project invokes AmplifyTools in a custom build phase.
 
 ## 1.6.0 (2021-02-04)
 
