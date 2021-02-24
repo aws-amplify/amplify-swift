@@ -12,7 +12,7 @@ public struct AmplifyCommandError: Error {
         case unknown
         case fileNotFound
         case folderNotFound
-        case xcodeProject /// @see `XcodeProjectError`
+        case xcodeProject
     }
 
     let type: AmplifyCommandErrorType
