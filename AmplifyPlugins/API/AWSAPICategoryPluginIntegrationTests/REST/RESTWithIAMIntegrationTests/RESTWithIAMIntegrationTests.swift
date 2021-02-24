@@ -6,29 +6,21 @@
 //
 
 import XCTest
-@testable import Amplify
 import AWSAPICategoryPlugin
-import AWSMobileClient
+import AmplifyPlugins
+
+@testable import Amplify
 @testable import AmplifyTestCommon
 
 class RESTWithIAMIntegrationTests: XCTestCase {
 
     static let amplifyConfiguration = "RESTWithIAMIntegrationTests-amplifyconfiguration"
-    static let awsconfiguration = "RESTWithIAMIntegrationTests-awsconfiguration"
 
     override func setUp() {
 
         do {
-            let awsConfiguration = try TestConfigHelper.retrieveAWSConfiguration(
-                forResource: RESTWithIAMIntegrationTests.awsconfiguration)
-            AWSInfo.configureDefaultAWSInfo(awsConfiguration)
-
-            AuthHelper.initializeMobileClient()
-
-            Amplify.reset()
-
             try Amplify.add(plugin: AWSAPIPlugin())
-
+            try Amplify.add(plugin: AWSCognitoAuthPlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: RESTWithIAMIntegrationTests.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
@@ -66,11 +58,21 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             case .success(let data):
                 XCTFail("Unexpected .complted event: \(data)")
             case .failure(let error):
-                guard case let .httpStatusError(statusCode, _) = error else {
+                guard case let .httpStatusError(statusCode, response) = error else {
                     XCTFail("Error should be httpStatusError")
                     return
                 }
-
+                XCTAssertNotNil(response.url)
+                XCTAssertEqual(response.mimeType, "application/json")
+                XCTAssertEqual(response.expectedContentLength, 258)
+                XCTAssertEqual(response.statusCode, 403)
+                XCTAssertNotNil(response.allHeaderFields)
+                if let awsResponse = response as? AWSHTTPURLResponse, let data = awsResponse.data {
+                    let dataString = String(decoding: data, as: UTF8.self)
+                    XCTAssertTrue(dataString.contains("not authorized"))
+                } else {
+                    XCTFail("Missing response body")
+                }
                 XCTAssertEqual(statusCode, 403)
                 failedInvoked.fulfill()
             }
