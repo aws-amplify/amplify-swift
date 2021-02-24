@@ -24,3 +24,10 @@ public protocol AmplifyCommand {
 
     func onFailure()
 }
+
+// MARK: onFailure default
+public extension AmplifyCommand {
+    func onFailure() {
+        // no-op by default
+    }
+}
