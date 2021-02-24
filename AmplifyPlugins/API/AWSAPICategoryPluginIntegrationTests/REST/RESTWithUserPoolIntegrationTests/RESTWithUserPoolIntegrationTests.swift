@@ -87,6 +87,28 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
+    func testGetAPIWithEncodedQueryParamsSuccess() {
+        signIn(username: user1.username, password: user1.password)
+        let completeInvoked = expectation(description: "request completed")
+        let request = RESTRequest(path: "/items",
+                                  queryParameters: [
+                                    "user": "hello%40email.com",
+                                    "created": "2021-06-18T09%3A00%3A00Z"
+                                  ])
+        _ = Amplify.API.get(request: request) { event in
+            switch event {
+            case .success(let data):
+                let result = String(decoding: data, as: UTF8.self)
+                print(result)
+                completeInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            }
+        }
+
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+
     func testGetAPIFailedWithSignedOutError() {
         let failedInvoked = expectation(description: "request failed")
         let request = RESTRequest(path: "/items")

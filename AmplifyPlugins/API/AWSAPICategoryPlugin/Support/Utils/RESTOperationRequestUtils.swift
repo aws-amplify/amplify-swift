@@ -30,10 +30,7 @@ final class RESTOperationRequestUtils {
         }
 
         if let queryParameters = queryParameters {
-            components.queryItems = queryParameters.map { (name, value) -> URLQueryItem in
-                URLQueryItem(name: name, value: value)
-            }
-            components.percentEncodeQueryBySigV4Rules()
+            components.queryItemsEncodedPerSigV4Rules(queryParameters)
         }
 
         guard let url = components.url else {

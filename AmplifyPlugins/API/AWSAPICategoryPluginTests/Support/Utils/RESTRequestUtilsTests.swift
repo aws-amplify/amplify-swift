@@ -41,7 +41,7 @@ class RESTRequestUtilsTests: XCTestCase {
                           "Test \(testCase): Unexpected query items found \(queryParams)")
             return
         }
-        XCTAssertEqual(expected, queryParams, "Test \(testCase): query params mismatch")
+        XCTAssertEqual(queryParams, expected, "Test \(testCase): query params mismatch")
     }
 
     func testConstructURL() throws {

@@ -8,7 +8,7 @@
 import Foundation
 
 /// Per AWS reference guide https://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
-/// URL querystring should be encoded according to the following rules::
+/// URL querystring should be encoded according to the following rules:
 /// - percent-encode with %XY (X and Y are hexadecimal characters) all characters
 ///   but any of the __unreserved characters__ defined by `RFC3986` (A-Za-z0-9-_.~)
 /// - encode spaces with %20
@@ -22,15 +22,29 @@ extension URLComponents {
         var sigV4UnreservedCharacters = CharacterSet(charactersIn: "A" ... "Z")
         sigV4UnreservedCharacters = sigV4UnreservedCharacters.union(CharacterSet(charactersIn: "a" ... "z"))
         sigV4UnreservedCharacters = sigV4UnreservedCharacters.union(CharacterSet(charactersIn: "0" ... "9"))
-        sigV4UnreservedCharacters = sigV4UnreservedCharacters.union(CharacterSet(charactersIn: "-_~.%=&"))
+        sigV4UnreservedCharacters = sigV4UnreservedCharacters.union(CharacterSet(charactersIn: "-_~."))
         return sigV4UnreservedCharacters
     }()
 
-    mutating func percentEncodeQueryBySigV4Rules() {
-        guard let percentEncodedQuery = self.percentEncodedQuery else {
+    private func encodeQueryParamValueBySigV4Rules(_ value: String) -> String {
+        /// removingPercentEncoding returns `nil` if called on a value
+        /// that hasn't been prior encoded
+        let unencoded = value.removingPercentEncoding ?? value
+
+        /// apply sigv4 encoding
+        return unencoded.addingPercentEncoding(
+            withAllowedCharacters: Self.sigV4UnreservedCharacters) ?? value
+    }
+
+    mutating func queryItemsEncodedPerSigV4Rules(_ queryItems: [String: String]?) {
+        guard let queryItems = queryItems else {
             return
         }
-        self.percentEncodedQuery = percentEncodedQuery.addingPercentEncoding(
-            withAllowedCharacters: Self.sigV4UnreservedCharacters)
+        percentEncodedQuery = queryItems.map { (name, value) -> String in
+            let encodedName = encodeQueryParamValueBySigV4Rules(name)
+            let encodedValue = encodeQueryParamValueBySigV4Rules(value)
+
+            return [encodedName, encodedValue].joined(separator: "=")
+        }.joined(separator: "&")
     }
 }
