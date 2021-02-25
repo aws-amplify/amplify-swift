@@ -33,6 +33,13 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		76BFF57525E7384B00D00AD6 /* CLICommandEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BFF57425E7384B00D00AD6 /* CLICommandEncodable.swift */; };
+		76BFF59625E7387B00D00AD6 /* CLICommandEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BFF57425E7384B00D00AD6 /* CLICommandEncodable.swift */; };
+		76BFF5DA25E73C7600D00AD6 /* CLICommandGenerateJSONSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BFF5D925E73C7600D00AD6 /* CLICommandGenerateJSONSchema.swift */; };
+		76FA259F25E835FD00290C9F /* ArgumentParser+CLICommandEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FA257D25E835C600290C9F /* ArgumentParser+CLICommandEncodable.swift */; };
+		76FA25E125E8378A00290C9F /* CLICommandEncodableParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FA25E025E8378A00290C9F /* CLICommandEncodableParameter.swift */; };
+		76FA262325E8386D00290C9F /* CLIAnyCommandEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FA262225E8386D00290C9F /* CLIAnyCommandEncodable.swift */; };
+		76FA266525E8396D00290C9F /* CLICommandEncodableParametersRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FA266425E8396D00290C9F /* CLICommandEncodableParametersRegistry.swift */; };
 		OBJ_1006 /* XCPHashing.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_367 /* XCPHashing.c */; };
 		OBJ_1007 /* XCPStringEscape.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_368 /* XCPStringEscape.c */; };
 		OBJ_1009 /* XcodeProjCExt.h in Headers */ = {isa = PBXBuildFile; fileRef = OBJ_370 /* XcodeProjCExt.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1111,6 +1118,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		76BFF57425E7384B00D00AD6 /* CLICommandEncodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLICommandEncodable.swift; sourceTree = "<group>"; };
+		76BFF5D925E73C7600D00AD6 /* CLICommandGenerateJSONSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLICommandGenerateJSONSchema.swift; sourceTree = "<group>"; };
+		76FA257D25E835C600290C9F /* ArgumentParser+CLICommandEncodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ArgumentParser+CLICommandEncodable.swift"; sourceTree = "<group>"; };
+		76FA25E025E8378A00290C9F /* CLICommandEncodableParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLICommandEncodableParameter.swift; sourceTree = "<group>"; };
+		76FA262225E8386D00290C9F /* CLIAnyCommandEncodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLIAnyCommandEncodable.swift; sourceTree = "<group>"; };
+		76FA266425E8396D00290C9F /* CLICommandEncodableParametersRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLICommandEncodableParametersRegistry.swift; sourceTree = "<group>"; };
 		"AEXML::AEXML::Product" /* AEXML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AEXML.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"AmplifyXcode::AmplifyXcode::Product" /* AmplifyXcode */ = {isa = PBXFileReference; lastKnownFileType = text; path = AmplifyXcode; sourceTree = BUILT_PRODUCTS_DIR; };
 		"AmplifyXcode::AmplifyXcodeCore::Product" /* AmplifyXcodeCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AmplifyXcodeCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1664,6 +1677,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		76BFF63B25E8281F00D00AD6 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				76FA257D25E835C600290C9F /* ArgumentParser+CLICommandEncodable.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
 		OBJ_103 /* ProjectSpec */ = {
 			isa = PBXGroup;
 			children = (
@@ -2388,7 +2409,7 @@
 			path = Tests/AmplifyXcodeTests;
 			sourceTree = SOURCE_ROOT;
 		};
-		OBJ_5 /*  */ = {
+		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
 				OBJ_6 /* Package.swift */,
@@ -2399,7 +2420,6 @@
 				OBJ_394 /* BuildTools */,
 				OBJ_395 /* README.md */,
 			);
-			name = "";
 			sourceTree = "<group>";
 		};
 		OBJ_52 /* Dependencies */ = {
@@ -2510,9 +2530,15 @@
 		OBJ_8 /* AmplifyXcode */ = {
 			isa = PBXGroup;
 			children = (
+				76BFF63B25E8281F00D00AD6 /* Support */,
 				OBJ_9 /* CLI.swift */,
 				OBJ_10 /* CLICommandImportConfig.swift */,
 				OBJ_11 /* CLICommandImportModels.swift */,
+				76BFF5D925E73C7600D00AD6 /* CLICommandGenerateJSONSchema.swift */,
+				76BFF57425E7384B00D00AD6 /* CLICommandEncodable.swift */,
+				76FA25E025E8378A00290C9F /* CLICommandEncodableParameter.swift */,
+				76FA266425E8396D00290C9F /* CLICommandEncodableParametersRegistry.swift */,
+				76FA262225E8386D00290C9F /* CLIAnyCommandEncodable.swift */,
 				OBJ_12 /* CLICommandReportable.swift */,
 				OBJ_13 /* main.swift */,
 			);
@@ -3163,7 +3189,7 @@
 			knownRegions = (
 				en,
 			);
-			mainGroup = OBJ_5 /*  */;
+			mainGroup = OBJ_5;
 			productRefGroup = OBJ_374 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -3334,9 +3360,15 @@
 			files = (
 				OBJ_418 /* CLI.swift in Sources */,
 				OBJ_419 /* CLICommandImportConfig.swift in Sources */,
+				76FA259F25E835FD00290C9F /* ArgumentParser+CLICommandEncodable.swift in Sources */,
+				76FA262325E8386D00290C9F /* CLIAnyCommandEncodable.swift in Sources */,
 				OBJ_420 /* CLICommandImportModels.swift in Sources */,
 				OBJ_421 /* CLICommandReportable.swift in Sources */,
+				76BFF57525E7384B00D00AD6 /* CLICommandEncodable.swift in Sources */,
+				76FA25E125E8378A00290C9F /* CLICommandEncodableParameter.swift in Sources */,
 				OBJ_422 /* main.swift in Sources */,
+				76FA266525E8396D00290C9F /* CLICommandEncodableParametersRegistry.swift in Sources */,
+				76BFF5DA25E73C7600D00AD6 /* CLICommandGenerateJSONSchema.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3392,6 +3424,7 @@
 			buildActionMask = 0;
 			files = (
 				OBJ_582 /* AmplifyXcodeTests.swift in Sources */,
+				76BFF59625E7387B00D00AD6 /* CLICommandEncodable.swift in Sources */,
 				OBJ_583 /* XCTestManifests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

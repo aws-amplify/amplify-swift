@@ -18,5 +18,9 @@ import AmplifyXcodeCore
 struct AmplifyXcode: ParsableCommand {
     static let configuration = CommandConfiguration(
         abstract: "Amplify Xcode CLI",
-        subcommands: [CLICommandImportConfig.self, CLICommandImportModels.self])
+        subcommands: [
+            CLICommandImportConfig.self,
+            CLICommandImportModels.self,
+            CLICommandGenerateJSONSchema.self
+        ])
 }
