@@ -30,7 +30,7 @@ final class RESTOperationRequestUtils {
         }
 
         if let queryParameters = queryParameters {
-            components.queryItemsEncodedPerSigV4Rules(queryParameters)
+            components.encodeQueryItemsPerSigV4Rules(queryParameters)
         }
 
         guard let url = components.url else {

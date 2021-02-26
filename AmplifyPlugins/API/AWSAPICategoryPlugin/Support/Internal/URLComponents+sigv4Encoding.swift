@@ -26,23 +26,22 @@ extension URLComponents {
         return sigV4UnreservedCharacters
     }()
 
-    private func encodeQueryParamValueBySigV4Rules(_ value: String) -> String {
-        /// removingPercentEncoding returns `nil` if called on a value
-        /// that hasn't been prior encoded
+    private func encodeQueryParamItemBySigV4Rules(_ value: String) -> String {
+        // removingPercentEncoding returns `nil` if called on a value
+        // that hasn't been prior encoded
         let unencoded = value.removingPercentEncoding ?? value
 
-        /// apply sigv4 encoding
         return unencoded.addingPercentEncoding(
             withAllowedCharacters: Self.sigV4UnreservedCharacters) ?? value
     }
 
-    mutating func queryItemsEncodedPerSigV4Rules(_ queryItems: [String: String]?) {
+    mutating func encodeQueryItemsPerSigV4Rules(_ queryItems: [String: String]?) {
         guard let queryItems = queryItems else {
             return
         }
-        percentEncodedQuery = queryItems.map { (name, value) -> String in
-            let encodedName = encodeQueryParamValueBySigV4Rules(name)
-            let encodedValue = encodeQueryParamValueBySigV4Rules(value)
+        percentEncodedQuery = queryItems.map { name, value in
+            let encodedName = encodeQueryParamItemBySigV4Rules(name)
+            let encodedValue = encodeQueryParamItemBySigV4Rules(value)
 
             return [encodedName, encodedValue].joined(separator: "=")
         }.joined(separator: "&")
