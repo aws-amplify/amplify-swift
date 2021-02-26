@@ -29,8 +29,15 @@ final class RESTOperationRequestUtils {
             components.path.append(path)
         }
 
-        if let queryParameters = queryParameters {
-            components.encodeQueryItemsPerSigV4Rules(queryParameters)
+        do {
+            try components.encodeQueryItemsPerSigV4Rules(queryParameters)
+        } catch {
+            throw APIError.invalidURL(
+                "Invalid query parameters \(error)",
+                """
+                Review your API plugin configuration and make sure to pass valid query parameters in your request.
+                The value passed was '\(String(describing: queryParameters?.debugDescription))'
+                """, error)
         }
 
         guard let url = components.url else {

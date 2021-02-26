@@ -15,8 +15,6 @@ import Foundation
 /// - double encode any equals in params values
 ///
 /// `URLComponents` encodes queryItems values by strictly following `RFC 3986`.
-/// This function encode missing characters needed to make the querystring compliant to AWS guidelines
-/// without double encoding those characters already encoded by `URLComponents`
 extension URLComponents {
     static var sigV4UnreservedCharacters: CharacterSet = {
         var sigV4UnreservedCharacters = CharacterSet(charactersIn: "A" ... "Z")
@@ -26,24 +24,31 @@ extension URLComponents {
         return sigV4UnreservedCharacters
     }()
 
-    private func encodeQueryParamItemBySigV4Rules(_ value: String) -> String {
+    private func encodeQueryParamItemBySigV4Rules(_ value: String) -> String? {
         // removingPercentEncoding returns `nil` if called on a value
         // that hasn't been prior encoded
         let unencoded = value.removingPercentEncoding ?? value
 
         return unencoded.addingPercentEncoding(
-            withAllowedCharacters: Self.sigV4UnreservedCharacters) ?? value
+            withAllowedCharacters: Self.sigV4UnreservedCharacters)
     }
 
-    mutating func encodeQueryItemsPerSigV4Rules(_ queryItems: [String: String]?) {
+    /// Encodes query items per SigV4 rules, no-op for already encoded items.
+    mutating func encodeQueryItemsPerSigV4Rules(_ queryItems: [String: String]?) throws {
         guard let queryItems = queryItems else {
             return
         }
-        percentEncodedQuery = queryItems.map { name, value in
-            let encodedName = encodeQueryParamItemBySigV4Rules(name)
-            let encodedValue = encodeQueryParamItemBySigV4Rules(value)
+        percentEncodedQuery = try queryItems.map { name, value in
+            guard let encodedName = encodeQueryParamItemBySigV4Rules(name),
+                  let encodedValue = encodeQueryParamItemBySigV4Rules(value) else {
+                throw SigV4Error.invalidQueryItem(name, value)
+            }
 
             return [encodedName, encodedValue].joined(separator: "=")
         }.joined(separator: "&")
+    }
+
+    private enum SigV4Error: Error {
+        case invalidQueryItem(String, String)
     }
 }

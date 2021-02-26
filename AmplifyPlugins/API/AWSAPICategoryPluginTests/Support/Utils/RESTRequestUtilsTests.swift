@@ -98,4 +98,15 @@ class RESTRequestUtilsTests: XCTestCase {
         // a REST operation request should always have at least a "content-type" header
         XCTAssertFalse(urlRequest.allHTTPHeaderFields!.isEmpty)
     }
+
+    func testConstructURLRequestFailsWithInvalidQueryParams() throws {
+        let baseURL = URL(string: "https://aws.amazon.com")!
+        let paramValue = String(
+            bytes: [0xd8, 0x00] as [UInt8],
+            encoding: String.Encoding.utf16BigEndian)!
+        let invalidQueryParams: [String: String] = ["param": paramValue]
+        XCTAssertThrowsError(try RESTOperationRequestUtils.constructURL(for: baseURL,
+                                                             with: "/projects",
+                                                             with: invalidQueryParams))
+    }
 }
