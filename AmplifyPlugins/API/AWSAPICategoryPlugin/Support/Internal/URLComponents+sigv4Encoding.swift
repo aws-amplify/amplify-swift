@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Amplify
 
 /// Per AWS reference guide https://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
 /// URL querystring should be encoded according to the following rules:
@@ -41,14 +42,15 @@ extension URLComponents {
         percentEncodedQuery = try queryItems.map { name, value in
             guard let encodedName = encodeQueryParamItemBySigV4Rules(name),
                   let encodedValue = encodeQueryParamItemBySigV4Rules(value) else {
-                throw SigV4Error.invalidQueryItem(name, value)
+                throw APIError.invalidURL(
+                    "Invalid query parameter.",
+                    """
+                    Review your API plugin configuration and make sure to pass valid query parameters in your request.
+                    The value passed was '\(name)=\(value)'
+                    """)
             }
 
             return [encodedName, encodedValue].joined(separator: "=")
         }.joined(separator: "&")
-    }
-
-    private enum SigV4Error: Error {
-        case invalidQueryItem(String, String)
     }
 }
