@@ -27,7 +27,7 @@ private struct CLISchema: Encodable {
 
 struct CLICommandGenerateJSONSchema: ParsableCommand, CommandExecutable {
     static let configuration = CommandConfiguration(
-        commandName: "genenerate-schema",
+        commandName: "generate-schema",
         abstract: "Generates a JSON description of the CLI and its commands"
     )
 
