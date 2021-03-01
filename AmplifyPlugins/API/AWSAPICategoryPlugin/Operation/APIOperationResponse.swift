@@ -34,7 +34,7 @@ extension APIOperationResponse {
 
             let successStatusCodes = 200 ..< 300
             if !successStatusCodes.contains(statusCode) {
-                if let restResponse = AWSHTTPURLResponse.init(response: response, body: responseData) {
+                if let restResponse = AWSHTTPURLResponse(response: response, body: responseData) {
                     throw APIError.httpStatusError(statusCode, restResponse)
                 } else {
                     throw APIError.httpStatusError(statusCode, response)

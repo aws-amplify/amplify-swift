@@ -16,7 +16,7 @@ import Foundation
 /// ```swift
 /// if case let .httpStatusError(statusCode, response) = error, let awsResponse = response as? AWSHTTPURLResponse {
 ///     if let responseBody = awsResponse.body {
-///         print("Response contains a response body")
+///         print("Response contains a \(responseBody.count) byte long response body")
 ///     }
 /// }
 /// ```
@@ -25,7 +25,7 @@ import Foundation
 /// this stored property.
 public class AWSHTTPURLResponse: HTTPURLResponse {
 
-    /// The response body of the response
+    /// The body of the response, if available
     public let body: Data?
 
     private let response: HTTPURLResponse
@@ -42,7 +42,9 @@ public class AWSHTTPURLResponse: HTTPURLResponse {
     }
 
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented and is not expected to be called.")
+        self.body = nil
+        self.response = HTTPURLResponse()
+        super.init(coder: coder)
     }
 
     public override var url: URL? {
