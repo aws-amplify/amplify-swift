@@ -31,6 +31,7 @@ extension CLICommandEncodable {
 }
 
 // MARK: - ParsableCommand + CLICommandEncodable
+
 extension CLICommandEncodable where Self: ParsableCommand {
     static var commandName: String { Self.configuration.commandName! }
     static var abstract: String { Self.configuration.abstract }

@@ -26,6 +26,7 @@ enum CLICommandEncodableParameter: Hashable {
 }
 
 // MARK: - CLICommandEncodableParameter + Encodable
+
 extension CLICommandEncodableParameter: Encodable {
     private enum CodingKeys: CodingKey {
         case kind
@@ -33,6 +34,7 @@ extension CLICommandEncodableParameter: Encodable {
         case type
         case help
     }
+    
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         switch self {

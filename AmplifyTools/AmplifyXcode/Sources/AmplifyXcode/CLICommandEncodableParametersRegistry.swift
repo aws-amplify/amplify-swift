@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 public class CLICommandEncodableParametersRegistry {
     var parameters: Set<CLICommandEncodableParameter> = []
     func register(param: CLICommandEncodableParameter) {
