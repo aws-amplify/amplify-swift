@@ -81,9 +81,10 @@ extension AWSCognitoAuthPlugin {
         let regionKeyPath = "CredentialsProvider.CognitoIdentity.Default.Region"
         guard case .string(let regionString) = authConfiguration.value(at: regionKeyPath) else {
             Amplify.Logging.info("""
-                Cognito identity pool information is missing from the configuration. This is expected if you are not
-                using Cognito identity pool, otherwise check your configuration to make sure you have the region
-                under `CognitoIdentity`.
+                Cognito Identity Pool information is missing from the configuration. This is expected if you are not
+                using an Identity Pool, otherwise check your configuration to make sure you specify a `Region`,
+                `PoolId`, under `CognitoIdentity` > `Default`.
+                See https://docs.amplify.aws/lib/auth/existing-resources/q/platform/ios for more details.
                 """)
             return nil
         }
