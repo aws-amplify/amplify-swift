@@ -9,6 +9,10 @@ import Foundation
 import AmplifyXcodeCore
 import ArgumentParser
 
+/// Encodable representation of the `amplify-xcode` CLI.
+/// In order to get the necessary information to produce a representation of each commands,
+/// we instantiate them to have their params property wrappers initialized and therefore registered
+/// as `CLICommandParameter`s.
 private struct CLISchema: Encodable {
     let abstract = "Auto generated JSON representation of amplify-xcode CLI"
     var commands: [AnyCLICommandEncodable] = []
