@@ -39,7 +39,7 @@ extension CLICommandParameter: Encodable {
         case type
         case help
     }
-    
+
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         switch self {
