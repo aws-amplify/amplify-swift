@@ -45,7 +45,8 @@ extension URLComponents {
                 throw APIError.invalidURL(
                     "Invalid query parameter.",
                     """
-                    Review your API plugin configuration and make sure to pass valid query parameters in your request.
+                    Review your Amplify.API call to make sure you are passing \
+                    valid UTF-8 query parameters in your request.
                     The value passed was '\(name)=\(value)'
                     """)
             }
