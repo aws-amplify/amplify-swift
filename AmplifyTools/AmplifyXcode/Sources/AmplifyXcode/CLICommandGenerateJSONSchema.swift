@@ -14,7 +14,7 @@ private struct CLISchema: Encodable {
     var commands: [AnyCLICommandEncodable] = []
 
     init() {
-        for command in AmplifyXcode.configuration.subcommands where command != CLICommandGenerateJSONSchema.self {
+        for command in AmplifyXcode.configuration.subcommands {
             guard let command = command as? CLICommand.Type else {
                 continue
             }
@@ -26,13 +26,14 @@ private struct CLISchema: Encodable {
     }
 }
 
-struct CLICommandGenerateJSONSchema: ParsableCommand, CommandExecutable {
+struct CLICommandGenerateJSONSchema: ParsableCommand, CommandExecutable, CLICommand {
+    static var parameters: Set<CLICommandParameter> = []
     static let configuration = CommandConfiguration(
         commandName: "generate-schema",
         abstract: "Generates a JSON description of the CLI and its commands"
     )
 
-    @Option(name: .customLong("output-path"), help: "Path to save the output of generated schema file")
+    @Option(name: "output-path", help: "Path to save the output of generated schema file", &parameters)
     private var outputPath: String
 
     var environment: AmplifyCommandEnvironment {
