@@ -15,13 +15,13 @@ private struct CLISchema: Encodable {
 
     init() {
         for command in AmplifyXcode.configuration.subcommands where command != CLICommandGenerateJSONSchema.self {
-            guard let command = command as? CLICommandEncodable.Type else {
+            guard let command = command as? CLICommand.Type else {
                 continue
             }
             _ = command.init()
             commands.append(AnyCLICommandEncodable(name: command.commandName,
                                                    abstract: command.abstract,
-                                                   parameters: command.paramsRegistry.parameters))
+                                                   parameters: command.parameters))
         }
     }
 }

@@ -10,14 +10,14 @@ import ArgumentParser
 import AmplifyXcodeCore
 
 /// CLI command invoking `CommandImportModels`.
-struct CLICommandImportModels: ParsableCommand, CommandExecutable, CLICommandReportable, CLICommandEncodable {
-    static var paramsRegistry = CLICommandEncodableParametersRegistry()
+struct CLICommandImportModels: ParsableCommand, CommandExecutable, CLICommandReportable, CLICommand {
+    static var parameters: Set<CLICommandParameter> = []
     static let configuration = CommandConfiguration(
         commandName: "import-models",
         abstract: CommandImportModels.description
     )
 
-    @Option(name: "path", help: "Project base path", paramsRegistry)
+    @Option(name: "path", help: "Project base path", &parameters)
     private var path: String = Process().currentDirectoryPath
 
     var environment: AmplifyCommandEnvironment {

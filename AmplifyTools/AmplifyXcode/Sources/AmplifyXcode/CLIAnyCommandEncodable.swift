@@ -10,5 +10,5 @@ import Foundation
 struct AnyCLICommandEncodable: Encodable {
     let name: String
     let abstract: String
-    let parameters: Set<CLICommandEncodableParameter>
+    let parameters: Set<CLICommandParameter>
 }

@@ -7,8 +7,13 @@
 
 import Foundation
 
-/// Encodable representation of CLI parameter.
-enum CLICommandEncodableParameter: Hashable {
+/// Encodable representation of a CLI command parameter.
+/// Commands parameters (options, flags, arguments) are declared as properties on the command type
+/// and annotated with `@propertyWrapper`s `@Option`, `@Flag` and `@Argument` provided by `ArgumentParser`.
+/// `ArgumentParser` derives parameters names from property names (i.e.,  an`outputPath` option becomes `--output-path`)
+/// making thus impossible to reliably generate a JSON representation of a command and its parameters.
+/// Therefore we use the following enum to keep track of each parameter and their attributes (name, type and help text).
+enum CLICommandParameter: Hashable {
     case option(name: String, type: String, help: String)
     case argument(name: String, type: String, help: String)
     case flag(name: String, type: String, help: String)
@@ -27,7 +32,7 @@ enum CLICommandEncodableParameter: Hashable {
 
 // MARK: - CLICommandEncodableParameter + Encodable
 
-extension CLICommandEncodableParameter: Encodable {
+extension CLICommandParameter: Encodable {
     private enum CodingKeys: CodingKey {
         case kind
         case name
