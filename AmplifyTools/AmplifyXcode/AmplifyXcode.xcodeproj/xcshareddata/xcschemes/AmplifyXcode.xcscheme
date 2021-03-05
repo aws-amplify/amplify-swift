@@ -26,36 +26,8 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      codeCoverageEnabled = "YES"
-      onlyGenerateCoverageForSpecifiedTargets = "YES">
-      <CodeCoverageTargets>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AmplifyXcode::AmplifyXcodeCore"
-            BuildableName = "AmplifyXcodeCore.framework"
-            BlueprintName = "AmplifyXcodeCore"
-            ReferencedContainer = "container:AmplifyXcode.xcodeproj">
-         </BuildableReference>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AmplifyXcode::AmplifyXcode"
-            BuildableName = "AmplifyXcode"
-            BlueprintName = "AmplifyXcode"
-            ReferencedContainer = "container:AmplifyXcode.xcodeproj">
-         </BuildableReference>
-      </CodeCoverageTargets>
+      shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AmplifyXcode::AmplifyXcodeTests"
-               BuildableName = "AmplifyXcodeTests.xctest"
-               BlueprintName = "AmplifyXcodeTests"
-               ReferencedContainer = "container:AmplifyXcode.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
@@ -63,6 +35,16 @@
                BlueprintIdentifier = "AmplifyXcode::AmplifyXcodeCoreTests"
                BuildableName = "AmplifyXcodeCoreTests.xctest"
                BlueprintName = "AmplifyXcodeCoreTests"
+               ReferencedContainer = "container:AmplifyXcode.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyXcode::AmplifyXcodeTests"
+               BuildableName = "AmplifyXcodeTests.xctest"
+               BlueprintName = "AmplifyXcodeTests"
                ReferencedContainer = "container:AmplifyXcode.xcodeproj">
             </BuildableReference>
          </TestableReference>
