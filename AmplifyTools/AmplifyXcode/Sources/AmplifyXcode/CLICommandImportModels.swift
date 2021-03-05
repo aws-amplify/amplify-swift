@@ -11,7 +11,7 @@ import AmplifyXcodeCore
 
 /// CLI command invoking `CommandImportModels`.
 struct CLICommandImportModels: ParsableCommand, CommandExecutable, CLICommandReportable, CLICommand {
-    static var parameters: Set<CLICommandParameter> = []
+    static var parameters = Set<CLICommandParameter>()
     static let configuration = CommandConfiguration(
         commandName: "import-models",
         abstract: CommandImportModels.description
