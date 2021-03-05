@@ -37,7 +37,7 @@ struct CLICommandGenerateJSONSchema: ParsableCommand, CommandExecutable, CLIComm
         abstract: "Generates a JSON description of the CLI and its commands"
     )
 
-    @Option(name: "output-path", help: "Path to save the output of generated schema file", &parameters)
+    @Option(name: "output-path", help: "Path to save the output of generated schema file", updating: &parameters)
     private var outputPath: String
 
     var environment: AmplifyCommandEnvironment {

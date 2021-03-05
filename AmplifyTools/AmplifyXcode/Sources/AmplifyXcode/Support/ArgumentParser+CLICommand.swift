@@ -15,7 +15,7 @@ import ArgumentParser
 /// `Argument` has been left out on purpose as we'd rather use options and flags for clarity of use.
 /// Also by providing these extra initializers we make parameter name explicit.
 extension Option where Value: ExpressibleByArgument {
-    init(wrappedValue: Value, name: String, help: String, _ parameters: inout Set<CLICommandParameter>) {
+    init(wrappedValue: Value, name: String, help: String, updating parameters: inout Set<CLICommandParameter>) {
         self.init(
             wrappedValue: wrappedValue,
             name: .customLong(name),
@@ -27,7 +27,7 @@ extension Option where Value: ExpressibleByArgument {
         parameters.insert(.option(name: name, type: type, help: help))
     }
 
-    init(name: String, help: String, _ parameters: inout Set<CLICommandParameter>) {
+    init(name: String, help: String, updating parameters: inout Set<CLICommandParameter>) {
         self.init(
             name: .customLong(name),
             parsing: .next,
@@ -40,7 +40,7 @@ extension Option where Value: ExpressibleByArgument {
 }
 
 extension Flag where Value == Bool {
-    init(wrappedValue: Value, name: String, help: String, _ parameters: inout Set<CLICommandParameter>) {
+    init(wrappedValue: Value, name: String, help: String, updating parameters: inout Set<CLICommandParameter>) {
         self.init(wrappedValue: wrappedValue, name: .customLong(name), help: ArgumentHelp(help))
         let type = String(describing: Value.self)
         parameters.insert(.flag(name: name, type: type, help: help))

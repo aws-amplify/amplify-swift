@@ -17,7 +17,7 @@ struct CLICommandImportConfig: ParsableCommand, CommandExecutable, CLICommandRep
         abstract: CommandImportConfig.description
     )
 
-    @Option(name: "path", help: "Project base path", &parameters)
+    @Option(name: "path", help: "Project base path", updating: &parameters)
     private var path: String = Process().currentDirectoryPath
 
     var environment: AmplifyCommandEnvironment {
