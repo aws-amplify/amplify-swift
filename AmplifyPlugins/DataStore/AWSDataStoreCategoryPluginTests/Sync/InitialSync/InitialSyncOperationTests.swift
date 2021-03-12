@@ -673,7 +673,12 @@ class InitialSyncOperationTests: XCTestCase {
                 XCTFail("Unable to get filter")
                 return nil
             }
-            guard let key = filter["id"] as? [String: Any?] else {
+            guard let group = filter["and"] as? [[String: Any?]] else {
+                XCTFail("Unable to find 'and' group")
+                return nil
+            }
+
+            guard let key = group[0]["id"] as? [String: Any?] else {
                 XCTFail("Unable to get id from filter")
                 return nil
             }
