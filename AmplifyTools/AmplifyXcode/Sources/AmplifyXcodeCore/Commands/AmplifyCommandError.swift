@@ -16,12 +16,14 @@ public struct AmplifyCommandError: Error {
     }
 
     let type: AmplifyCommandErrorType
+    let errorDescription: String?
     let recoverySuggestion: String?
 
     var underlyingErrors: [Error]?
 
-    init(_ type: AmplifyCommandErrorType, error: Error?, recoverySuggestion: String?) {
+    init(_ type: AmplifyCommandErrorType, errorDescription: String?, recoverySuggestion: String?, error: Error? = nil) {
         self.type = type
+        self.errorDescription = errorDescription
         self.recoverySuggestion = recoverySuggestion
 
         if let error = error {
@@ -30,11 +32,11 @@ public struct AmplifyCommandError: Error {
     }
 
     init(_ type: AmplifyCommandErrorType, error: Error?) {
-        self.init(type, error: error, recoverySuggestion: nil)
+        self.init(type, errorDescription: nil, recoverySuggestion: nil, error: error)
     }
 
     init(errors: [AmplifyCommandError]) {
-        self.init(.unknown, error: nil, recoverySuggestion: nil)
+        self.init(.unknown, errorDescription: nil, recoverySuggestion: nil, error: nil)
         self.underlyingErrors = errors
     }
 
@@ -54,13 +56,19 @@ public struct AmplifyCommandError: Error {
 
 public extension AmplifyCommandError {
     var debugDescription: String {
-        var components = ["\(type): "]
-
+        var components = ["\(type): \(errorDescription ?? "")"]
         if let recoveryMsg = recoverySuggestion {
             components.append("-- Recovery suggestion: \(recoveryMsg)")
         }
 
-        let underlyingErrors = self.underlyingErrors ?? []
+        guard let underlyingErrors = self.underlyingErrors else {
+            return components.joined(separator: "\n")
+        }
+
+        if underlyingErrors.count == 1, let error = underlyingErrors.first as? AmplifyCommandError {
+            return error.debugDescription
+        }
+
         for err in underlyingErrors {
             if let underlyingAmplifyError = err as? AmplifyCommandError {
                 components.append("-- Caused by: \(underlyingAmplifyError.debugDescription)")

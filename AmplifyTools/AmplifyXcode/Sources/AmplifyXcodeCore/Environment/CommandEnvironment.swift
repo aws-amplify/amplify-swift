@@ -56,7 +56,11 @@ extension CommandEnvironment {
     public func contentsOfDirectory(atPath directoryPath: String) throws -> [String] {
         let fullPath = path(for: directoryPath)
         guard fileManager.directoryExists(atPath: fullPath) else {
-            throw AmplifyCommandError(.folderNotFound, error: nil, recoverySuggestion: "Folder \(fullPath) not found")
+            throw AmplifyCommandError(
+                .folderNotFound,
+                errorDescription: "Folder \(fullPath) not found",
+                recoverySuggestion: nil,
+                error: nil)
         }
         do {
             let content = try fileManager.contentsOfDirectory(atPath: fullPath)
@@ -96,7 +100,10 @@ extension CommandEnvironment {
         return XcodeProjectFile(path, type: type)
     }
 
-    public func addFilesToXcodeProject(projectPath path: String, files: [XcodeProjectFile], toGroup group: String) throws {
+    public func addFilesToXcodeProject(
+        projectPath path: String,
+        files: [XcodeProjectFile],
+        toGroup group: String) throws {
         do {
             let xcodeProject = try loadFirstXcodeProject(fromDirectory: path)
             try xcodeProject.add(files: files, toGroup: group)

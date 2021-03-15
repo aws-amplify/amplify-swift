@@ -123,7 +123,7 @@ class AmplifyCommandEnvironmentTests: XCTestCase {
         XCTAssertEqual(fileManager.directoryExistsCalledTimes, 1)
     }
 
-    //  MARK: - createXcodeFile
+    // MARK: - createXcodeFile
     func testCreateXcodeSourceFiles() {
         let files = ["File1.swift", "Folder/File2.swift"]
         for file in files {
@@ -140,7 +140,7 @@ class AmplifyCommandEnvironmentTests: XCTestCase {
         }
     }
 
-    //  MARK: - addFilesToXcodeProject
+    // MARK: - addFilesToXcodeProject
     func testAddFilesToXcodeThrowsIfProjectDoesNotExist() {
         class DirNotFoundFileManager: MockAmplifyFileManager {
             override func contentsOfDirectory(atPath: String) throws -> [String] {

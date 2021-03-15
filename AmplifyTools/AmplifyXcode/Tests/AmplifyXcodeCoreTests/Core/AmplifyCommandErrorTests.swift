@@ -24,9 +24,14 @@ class AmplifyCommandErrorTests: XCTestCase {
 
     func testInitFromTasksWithFailures() throws {
         let error = TestError.unknown("Test error")
+        let errorDescription = "Error"
         let recoveryMessage = "Recovery message"
         let tasksResults: [AmplifyCommandTaskResult] = [
-            .failure(AmplifyCommandError(.folderNotFound, error: error, recoverySuggestion: recoveryMessage)),
+            .failure(AmplifyCommandError(
+                        .folderNotFound,
+                        errorDescription: errorDescription,
+                        recoverySuggestion: recoveryMessage,
+                        error: error)),
             .success("Task 1 success message"),
             .success("Task 2 success message"),
         ]
