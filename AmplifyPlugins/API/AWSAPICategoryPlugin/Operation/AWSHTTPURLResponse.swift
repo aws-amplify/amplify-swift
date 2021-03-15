@@ -42,9 +42,15 @@ public class AWSHTTPURLResponse: HTTPURLResponse {
     }
 
     required init?(coder: NSCoder) {
-        self.body = nil
-        self.response = HTTPURLResponse()
+        self.body = coder.decodeObject(forKey: "body") as? Data
+        self.response = coder.decodeObject(forKey: "response") as? HTTPURLResponse ?? HTTPURLResponse()
         super.init(coder: coder)
+    }
+
+    public override func encode(with coder: NSCoder) {
+        coder.encode(body, forKey: "body")
+        coder.encode(response, forKey: "response")
+        super.encode(with: coder)
     }
 
     public override var url: URL? {
