@@ -132,7 +132,8 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                     self.eventReconciliationQueueTopic.send(.initialized)
                 }
             }
-        case .disconnected(modelName: let modelName, reason: .unauthorized):
+        case .disconnected(modelName: let modelName, reason: .operationDisabled),
+             .disconnected(modelName: let modelName, reason: .unauthorized):
             connectionStatusSerialQueue.async {
                 self.reconciliationQueues[modelName]?.cancel()
                 self.modelReconciliationQueueSinks[modelName]?.cancel()

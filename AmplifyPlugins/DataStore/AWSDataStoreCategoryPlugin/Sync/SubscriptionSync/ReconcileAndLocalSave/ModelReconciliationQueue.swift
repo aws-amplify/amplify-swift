@@ -11,6 +11,7 @@ import Combine
 
 enum ModelConnectionDisconnectedReason {
     case unauthorized
+    case operationDisabled
 }
 
 enum ModelReconciliationQueueEvent {
