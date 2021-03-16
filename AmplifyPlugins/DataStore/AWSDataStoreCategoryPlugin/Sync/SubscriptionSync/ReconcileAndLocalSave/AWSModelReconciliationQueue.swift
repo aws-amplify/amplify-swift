@@ -245,7 +245,7 @@ extension AWSModelReconciliationQueue {
         }
         return nil
     }
-    
+
     private func errorTypeValueFrom(graphQLError: GraphQLError) -> String? {
         guard case let .string(errorTypeValue) = graphQLError.extensions?["errorType"] else {
             return nil
@@ -262,7 +262,7 @@ extension AWSModelReconciliationQueue {
         }
         return false
     }
-    
+
     private func isOperationDisabledError(_ error: Error?) -> Bool {
         if let responseError = error as? GraphQLResponseError<ResponseType>,
            let graphQLError = graphqlErrors(from: responseError)?.first,
