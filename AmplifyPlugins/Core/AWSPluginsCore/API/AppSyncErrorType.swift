@@ -22,7 +22,7 @@ public enum AppSyncErrorType: Equatable {
     case conditionalCheck
 
     case unauthorized
-    
+
     case operationDisabled
 
     case unknown(String)
