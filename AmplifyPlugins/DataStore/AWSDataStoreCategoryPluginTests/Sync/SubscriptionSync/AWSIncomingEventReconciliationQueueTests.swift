@@ -170,4 +170,41 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
 
         sink.cancel()
     }
+
+    // This test case tests that initialized event is received even if only one
+    // model subscriptions out of two succeeded
+    // Post subscription will fail with a "OperationDisabled",
+    // but Comment subscription will succeed
+    func testSubscriptionFailedBecauseOfOperationDisabledWithMultipleModels() {
+        let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
+        let eventQueue = initEventQueue(modelSchemas: [Post.schema])
+        eventQueue.start()
+
+        let sink = eventQueue.publisher.sink(receiveCompletion: { _ in
+            XCTFail("Not expecting this to call")
+        }, receiveValue: { event  in
+            switch event {
+            case .initialized:
+                expectInitialized.fulfill()
+            default:
+                XCTFail("Should not expect any other state, received: \(event)")
+            }
+        })
+
+        let reconciliationQueues = MockModelReconciliationQueue.mockModelReconciliationQueues
+        for (queueName, queue) in reconciliationQueues {
+            let cancellableOperation = CancelAwareBlockOperation {
+                let event: ModelReconciliationQueueEvent = queueName == Post.modelName ?
+                    .disconnected(modelName: queueName, reason: .operationDisabled) :
+                    .connected(modelName: queueName)
+                queue.modelReconciliationQueueSubject.send(event)
+            }
+            operationQueue.addOperation(cancellableOperation)
+        }
+        operationQueue.isSuspended = false
+        waitForExpectations(timeout: 2)
+
+        sink.cancel()
+
+    }
 }
