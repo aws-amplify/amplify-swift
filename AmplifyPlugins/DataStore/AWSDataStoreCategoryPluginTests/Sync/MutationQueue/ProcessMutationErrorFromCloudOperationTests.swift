@@ -16,6 +16,7 @@ import Combine
 
 // swiftlint:disable type_body_length
 // swiftlint:disable type_name
+// swiftlint:disable file_length
 @available(iOS 13.0, *)
 class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     // swiftlint:enable type_name
