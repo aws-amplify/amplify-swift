@@ -895,6 +895,42 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         wait(for: [expectErrorHandlerCalled], timeout: defaultAsyncWaitTimeout)
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
+
+    /// Given: GraphQL "OperationDisabled" error
+    /// - When:
+    ///    - API is called and response contains an "OperationDisabled" error
+    /// - Then:
+    ///    - Completion handler is successfully called
+    func testProcessOperationDisabledError() throws {
+        let post = Post(title: "localTitle", content: "localContent", createdAt: .now())
+        let mutationEvent = try MutationEvent(model: post, modelSchema: Post.schema, mutationType: .create)
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            if case .success(let mutationEventOptional) = result {
+                XCTAssertNil(mutationEventOptional)
+                expectCompletion.fulfill()
+                return
+            }
+            XCTFail("Should have been successful")
+        }
+
+        let graphQLError = try getGraphQLResponseError(withRemote: post,
+                                                       deleted: false,
+                                                       version: 0,
+                                                       errorType: .operationDisabled)
+
+        let operation = ProcessMutationErrorFromCloudOperation(
+            dataStoreConfiguration: DataStoreConfiguration.default,
+            mutationEvent: mutationEvent,
+            api: mockAPIPlugin,
+            storageAdapter: storageAdapter,
+            graphQLResponseError: graphQLError,
+            completion: completion)
+
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+    }
 }
 
 extension ProcessMutationErrorFromCloudOperationTests {
