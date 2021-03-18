@@ -12,7 +12,7 @@ typealias AWSTranslateErrorMessageString = (errorDescription: ErrorDescription, 
 
 struct AWSTranslateErrorMessage {
     static let accessDenied: AWSTranslateErrorMessageString = (
-        "Access denied! You do not have sufficient access to perform this action.",
+        "Access denied. You do not have sufficient access to perform this action.",
         "Please check that your Cognito IAM role has permissions to access Translate.")
 
     static let sourceLanguageNotProvided: AWSTranslateErrorMessageString = (

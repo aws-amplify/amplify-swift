@@ -14,7 +14,7 @@ typealias AWSRekognitionErrorMessageString = (
 
 struct AWSRekognitionErrorMessage {
     static let accessDenied: AWSRekognitionErrorMessageString = (
-        "Access denied!",
+        "Access denied",
         "Please check that your Cognito IAM role has permissions to access Rekognition.")
 
     static let imageTooLarge: AWSRekognitionErrorMessageString = (

@@ -12,7 +12,7 @@ typealias InterpretMultiServiceErrorString = (errorDescription: ErrorDescription
 
 struct InterpretMultiServiceErrorMessage {
     static let accessDenied: InterpretMultiServiceErrorString = (
-        "Access denied!",
+        "Access denied",
         "")
 
     static let onlineInterpretServiceNotAvailable: InterpretMultiServiceErrorString = (

@@ -27,6 +27,7 @@ public class CoreMLIdentifyOperation: AmplifyOperation<
                    resultListener: resultListener)
     }
 
+    // swiftlint:disable cyclomatic_complexity
     override public func main() {
 
         guard let coreMLVisionAdapter = coreMLVision else {
@@ -77,7 +78,7 @@ public class CoreMLIdentifyOperation: AmplifyOperation<
             dispatch(result: .success(result))
             finish()
         case .detectLabels(let labelType):
-            if labelType == .moderation { //coreml does not have an endpoint to detect moderation labels in images
+            if labelType == .moderation { // coreml does not have an endpoint to detect moderation labels in images
                 let errorDescription = CoreMLPluginErrorString.operationNotSupported.errorDescription
                 let recovery = CoreMLPluginErrorString.operationNotSupported.recoverySuggestion
                 let predictionsError = PredictionsError.service(errorDescription, recovery, nil)

@@ -91,6 +91,7 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
         return IdentifyEntitiesResult(entities: entities)
     }
 
+    // swiftlint:disable cyclomatic_complexity
     private func mapLandmarks(_ coreMLLandmarks: VNFaceLandmarks2D?) -> [Landmark] {
         var finalLandmarks: [Landmark] = []
         guard let landmarks = coreMLLandmarks else {

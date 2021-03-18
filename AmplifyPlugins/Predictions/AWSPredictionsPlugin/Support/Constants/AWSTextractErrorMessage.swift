@@ -12,7 +12,7 @@ typealias AWSTextractErrorString = (errorDescription: ErrorDescription, recovery
 
 struct AWSTextractErrorMessage {
     static let accessDenied: AWSTextractErrorString = (
-        "Access denied!",
+        "Access denied",
         "Please check that your Cognito IAM role has permissions to access Textract.")
 
     static let limitExceeded: AWSTextractErrorString = (

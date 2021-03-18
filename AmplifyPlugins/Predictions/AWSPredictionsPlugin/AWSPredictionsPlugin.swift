@@ -26,7 +26,7 @@ final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
 
     var config: PredictionsPluginConfiguration!
 
-    ///public limit rekognition has on number of faces it can detect.
+    /// public limit rekognition has on number of faces it can detect.
     public static let rekognitionMaxEntitiesLimit = 50
 
     /// The unique key of the plugin within the predictions category.

@@ -10,7 +10,7 @@ import AWSTranscribeStreaming
 
 class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider, URLSessionWebSocketDelegate {
 
-    //swiftlint:disable weak_delegate
+    // swiftlint:disable weak_delegate
     var clientDelegate: AWSTranscribeStreamingClientDelegate
     var webSocketTask: URLSessionWebSocketTask!
     var urlSession: URLSession!
@@ -30,7 +30,7 @@ class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider
             webSocketTask = urlSession.webSocketTask(with: url)
         }
     }
-    //required by protocol but not needed
+    // required by protocol but not needed
     func setDelegate(_ delegate: AWSTranscribeStreamingClientDelegate, dispatchQueue: DispatchQueue) {
 
     }
@@ -119,7 +119,7 @@ class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider
         }
     }
 }
-//swiftlint:disable type_name
+// swiftlint:disable type_name
 class NativeWSTranscribeStreamingClientDelegate: NSObject, AWSTranscribeStreamingClientDelegate {
     var receiveEventCallback: ((AWSTranscribeStreamingTranscriptResultStream?, Error?) -> Void)?
     var connectionStatusCallback: ((AWSTranscribeStreamingClientConnectionStatus, Error?) -> Void)?

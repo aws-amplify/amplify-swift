@@ -80,6 +80,7 @@ extension IdentifyTextResultTransformers {
         return keyText.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    // swiftlint:disable cyclomatic_complexity
     static func processValueOfKeyValueSet(ids: [String],
                                           blockMap: [String: AWSTextractBlock]) -> (String, Bool) {
         var valueText = ""
@@ -112,7 +113,7 @@ extension IdentifyTextResultTransformers {
                     case .selectionElement:
                         if !selectionItemFound {
                             selectionItemFound = true
-                            //TODO: https://github.com/aws-amplify/amplify-ios/issues/695
+                            // TODO: https://github.com/aws-amplify/amplify-ios/issues/695
                             // Support multiple selection items found in a KeyValueSet
                             isSelected = selectionStatus == .selected
                         } else {

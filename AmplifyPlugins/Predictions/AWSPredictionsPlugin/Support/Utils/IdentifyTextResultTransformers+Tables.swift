@@ -100,7 +100,7 @@ extension IdentifyTextResultTransformers {
                 case .selectionElement:
                     if !selectionItemFound {
                         selectionItemFound = true
-                        //TODO: https://github.com/aws-amplify/amplify-ios/issues/695
+                        // TODO: https://github.com/aws-amplify/amplify-ios/issues/695
                         // Support multiple selection items found in a KeyValueSet
                         isSelected = selectionStatus == .selected
                     } else {

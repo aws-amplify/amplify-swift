@@ -12,7 +12,7 @@ typealias ConvertMultiServiceErrorString = (errorDescription: ErrorDescription,
 
 struct ConvertMultiServiceErrorMessage {
     static let accessDenied: ConvertMultiServiceErrorString = (
-        "Access denied!",
+        "Access denied",
         "")
 
     static let onlineConvertServiceNotAvailable: ConvertMultiServiceErrorString = (
