@@ -12,7 +12,7 @@ typealias AWSServiceErrorMessageString = (errorDescription: ErrorDescription, re
 
 struct AWSServiceErrorMessage {
     static let accessDenied: AWSServiceErrorMessageString = (
-        "Access denied!",
+        "Access denied",
         """
         Please check that your Cognito IAM role has permissions to access this service and check to make sure the user
         is authenticated properly.

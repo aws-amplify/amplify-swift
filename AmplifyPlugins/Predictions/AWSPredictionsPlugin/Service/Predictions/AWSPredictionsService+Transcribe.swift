@@ -11,6 +11,7 @@ import AWSPluginsCore
 
 extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
 
+    // swiftlint:disable cyclomatic_complexity
     func transcribe(speechToText: URL, language: LanguageType?, onEvent: @escaping TranscribeServiceEventHandler) {
 
         guard let audioData = try? Data(contentsOf: speechToText) else {

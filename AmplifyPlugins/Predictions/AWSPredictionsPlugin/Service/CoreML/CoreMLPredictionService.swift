@@ -13,7 +13,7 @@ class CoreMLPredictionService: CoreMLPredictionBehavior {
 
     let coreMLPlugin: CoreMLPredictionsPlugin
 
-    init(configuration: Any) throws {
+    init(configuration: Any?) throws {
         self.coreMLPlugin = CoreMLPredictionsPlugin()
         try coreMLPlugin.configure(using: configuration)
     }

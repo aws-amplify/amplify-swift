@@ -110,9 +110,9 @@ class IdentifyMultiService: MultiServiceBehavior {
         let onlineLabelSet = Set<Label>(onlineLabelResult.labels)
         let offlineLabelSet = Set<Label>(offlineLabelResult.labels)
 
-        //first find the labels that are the same
+        // first find the labels that are the same
         let intersectingLabels = onlineLabelSet.intersection(offlineLabelSet)
-        //loop through to find higher confidences and retain those labels and add to final result
+        // loop through to find higher confidences and retain those labels and add to final result
         for label in intersectingLabels {
             let onlineIndex = onlineLabelSet.firstIndex(of: label)!
             let offlineIndex = offlineLabelSet.firstIndex(of: label)!
@@ -122,8 +122,8 @@ class IdentifyMultiService: MultiServiceBehavior {
             combinedLabels.insert(labelWithHigherConfidence)
         }
 
-        //get the differences
-        //leaving here for performance comparison
+        // get the differences
+        // leaving here for performance comparison
         // let differingLabels = Array(onlineLabelSet.symmetricDifference(offlineLabelSet))
         // combinedLabels.append(contentsOf: differingLabels)
         combinedLabels = combinedLabels.union(onlineLabelSet)
@@ -155,8 +155,8 @@ class IdentifyMultiService: MultiServiceBehavior {
         combinedLines = combinedLines.union(offlineLineSet)
         combinedLines = combinedLines.union(onlineLineSet)
 
-        //offline result doesn't return anything except identified lines so
-        //merging them plus the other stuff from online is a merged result
+        // offline result doesn't return anything except identified lines so
+        // merging them plus the other stuff from online is a merged result
         return IdentifyTextResult(fullText: onlineTextResult.fullText,
                                   words: onlineTextResult.words,
                                   rawLineText: onlineTextResult.rawLineText,

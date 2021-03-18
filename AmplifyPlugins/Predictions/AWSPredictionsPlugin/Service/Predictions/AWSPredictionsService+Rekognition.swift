@@ -13,6 +13,7 @@ typealias DetectModerationLabelsCompletedHandler = AWSTask<AWSRekognitionDetectM
 
 typealias DetectLabelsCompletedHandler = AWSTask<AWSRekognitionDetectLabelsResponse>
 
+// swiftlint:disable file_length
 extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
     func detectLabels(image: URL,
@@ -127,7 +128,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
     func detectEntities(image: URL, onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
         if let collectionId = predictionsConfig.identify.identifyEntities?.collectionId {
-            //call detect face from collection if collection id passed in
+            // call detect face from collection if collection id passed in
             return detectFacesFromCollection(image: image, collectionId: collectionId, onEvent: onEvent)
 
         }
@@ -267,8 +268,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             }
             let identifyTextResult = IdentifyTextResultTransformers.processText(rekognitionTextDetections)
 
-            //if limit of words is under 50 return rekognition response
-            //otherwise call textract because their limit is higher
+            // if limit of words is under 50 return rekognition response
+            // otherwise call textract because their limit is higher
             if let words = identifyTextResult.words, words.count < self.rekognitionWordLimit {
                 onEvent(.completed(identifyTextResult))
                 return nil

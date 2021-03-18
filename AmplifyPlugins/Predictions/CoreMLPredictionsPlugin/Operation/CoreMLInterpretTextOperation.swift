@@ -38,11 +38,6 @@ public class CoreMLInterpretTextOperation: AmplifyOperation<
             return
         }
 
-        if isCancelled {
-            finish()
-            return
-        }
-
         var interpretResultBuilder = InterpretResult.Builder()
         if let dominantLanguage = naturalLanguageAdapter.detectDominantLanguage(for: request.textToInterpret) {
             let languageResult = LanguageDetectionResult(languageCode: dominantLanguage, score: nil)
