@@ -449,6 +449,26 @@ extension ModelReconciliationQueueBehaviorTests {
         subscriptionEventsSubject.send(completion: completion)
         wait(for: [eventSentViaPublisher], timeout: 1.0)
     }
+
+    func testProcessingUnhandledErrors() {
+        let eventSentViaPublisher = expectation(description: "Sent via publisher")
+        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
+                                                storageAdapter: storageAdapter,
+                                                api: apiPlugin,
+                                                modelPredicate: modelPredicate,
+                                                auth: authPlugin,
+                                                incomingSubscriptionEvents: subscriptionEventsPublisher)
+        let completion = completionSignalWithAppSyncError(AppSyncErrorType.conflictUnhandled)
+
+        let queueSink = queue.publisher.sink(receiveCompletion: { _ in
+            eventSentViaPublisher.fulfill()
+        }, receiveValue: { value in
+            XCTFail("Not expecting a successful call, received \(value)")
+        })
+
+        subscriptionEventsSubject.send(completion: completion)
+        wait(for: [eventSentViaPublisher], timeout: 1.0)
+    }
 }
 
 enum EventState {
