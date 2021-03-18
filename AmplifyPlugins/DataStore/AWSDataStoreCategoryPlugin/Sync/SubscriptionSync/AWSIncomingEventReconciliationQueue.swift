@@ -10,7 +10,7 @@ import AWSPluginsCore
 import Combine
 import Foundation
 
-//Used for testing:
+// Used for testing:
 @available(iOS 13.0, *)
 typealias IncomingEventReconciliationQueueFactory =
     ([ModelSchema],
@@ -60,7 +60,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         self.reconciliationQueueConnectionStatus = [:]
         self.modelReconciliationQueueFactory = modelReconciliationQueueFactory ??
             AWSModelReconciliationQueue.init(modelSchema:storageAdapter:api:modelPredicate:auth:incomingSubscriptionEvents:)
-        //TODO: Add target for SyncEngine system to help prevent thread explosion and increase performance
+        // TODO: Add target for SyncEngine system to help prevent thread explosion and increase performance
         // https://github.com/aws-amplify/amplify-ios/issues/399
         self.connectionStatusSerialQueue
             = DispatchQueue(label: "com.amazonaws.DataStore.AWSIncomingEventReconciliationQueue")
@@ -132,7 +132,8 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                     self.eventReconciliationQueueTopic.send(.initialized)
                 }
             }
-        case .disconnected(modelName: let modelName, reason: .unauthorized):
+        case .disconnected(modelName: let modelName, reason: .operationDisabled),
+             .disconnected(modelName: let modelName, reason: .unauthorized):
             connectionStatusSerialQueue.async {
                 self.reconciliationQueues[modelName]?.cancel()
                 self.modelReconciliationQueueSinks[modelName]?.cancel()

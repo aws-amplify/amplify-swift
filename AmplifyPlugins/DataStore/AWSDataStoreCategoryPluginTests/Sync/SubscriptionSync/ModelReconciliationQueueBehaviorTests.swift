@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -393,6 +394,81 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                    eventsSentViaPublisher3], timeout: 1.0)
     }
 
+}
+
+extension ModelReconciliationQueueBehaviorTests {
+    private func completionSignalWithAppSyncError(_ error: AppSyncErrorType) -> Subscribers.Completion<DataStoreError> {
+        let appSyncJSONValue: JSONValue = .string(error.rawValue)
+        let graphqlError = GraphQLError.init(message: "",
+                                             locations: nil,
+                                             path: nil,
+                                             extensions: [
+                                                "errorType": appSyncJSONValue])
+        let graphqlResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([graphqlError])
+        let apiError = APIError.operationError("error message", "recovery message", graphqlResponseError)
+        let dataStoreError = DataStoreError.api(apiError, nil)
+        return .failure(dataStoreError)
+    }
+
+    func testProcessingUnauthorizedError() {
+        let eventSentViaPublisher = expectation(description: "Sent via publisher")
+        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
+                                                storageAdapter: storageAdapter,
+                                                api: apiPlugin,
+                                                modelPredicate: modelPredicate,
+                                                auth: authPlugin,
+                                                incomingSubscriptionEvents: subscriptionEventsPublisher)
+        let completion = completionSignalWithAppSyncError(AppSyncErrorType.unauthorized)
+
+        let queueSink = queue.publisher.sink(receiveCompletion: { value in
+            XCTFail("Not expecting a call to completion, received \(value)")
+        }, receiveValue: { _ in
+            eventSentViaPublisher.fulfill()
+        })
+
+        subscriptionEventsSubject.send(completion: completion)
+        wait(for: [eventSentViaPublisher], timeout: 1.0)
+    }
+
+    func testProcessingOperationDisabledError() {
+        let eventSentViaPublisher = expectation(description: "Sent via publisher")
+        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
+                                                storageAdapter: storageAdapter,
+                                                api: apiPlugin,
+                                                modelPredicate: modelPredicate,
+                                                auth: authPlugin,
+                                                incomingSubscriptionEvents: subscriptionEventsPublisher)
+        let completion = completionSignalWithAppSyncError(AppSyncErrorType.operationDisabled)
+
+        let queueSink = queue.publisher.sink(receiveCompletion: { value in
+            XCTFail("Not expecting a call to completion, received \(value)")
+        }, receiveValue: { _ in
+            eventSentViaPublisher.fulfill()
+        })
+
+        subscriptionEventsSubject.send(completion: completion)
+        wait(for: [eventSentViaPublisher], timeout: 1.0)
+    }
+
+    func testProcessingUnhandledErrors() {
+        let eventSentViaPublisher = expectation(description: "Sent via publisher")
+        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
+                                                storageAdapter: storageAdapter,
+                                                api: apiPlugin,
+                                                modelPredicate: modelPredicate,
+                                                auth: authPlugin,
+                                                incomingSubscriptionEvents: subscriptionEventsPublisher)
+        let completion = completionSignalWithAppSyncError(AppSyncErrorType.conflictUnhandled)
+
+        let queueSink = queue.publisher.sink(receiveCompletion: { _ in
+            eventSentViaPublisher.fulfill()
+        }, receiveValue: { value in
+            XCTFail("Not expecting a successful call, received \(value)")
+        })
+
+        subscriptionEventsSubject.send(completion: completion)
+        wait(for: [eventSentViaPublisher], timeout: 1.0)
+    }
 }
 
 enum EventState {

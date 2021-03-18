@@ -92,6 +92,9 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                 // TODO: dispatch Hub event
                 log.debug("Unauthorized mutation \(errorType)")
                 finish(result: .success(nil))
+            case .operationDisabled:
+                log.debug("Operation disabled \(errorType)")
+                finish(result: .success(nil))
             case .unknown(let errorType):
                 log.debug("Unhandled error with errorType \(errorType)")
                 finish(result: .success(nil))

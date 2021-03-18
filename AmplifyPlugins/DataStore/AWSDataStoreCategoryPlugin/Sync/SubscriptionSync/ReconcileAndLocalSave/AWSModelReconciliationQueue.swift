@@ -184,6 +184,11 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name, reason: .unauthorized))
                 return
             }
+            if case let .api(error, _) = dataStoreError,
+               case let APIError.operationError(_, _, underlyingError) = error, isOperationDisabledError(underlyingError) {
+                modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name, reason: .operationDisabled))
+                return
+            }
             log.error("receiveCompletion: error: \(dataStoreError)")
             modelReconciliationQueueSubject.send(completion: .failure(dataStoreError))
         }
@@ -230,7 +235,7 @@ extension AWSModelReconciliationQueue: Resettable {
 
 }
 
-// MARK: Auth errors handling
+// MARK: Errors handling
 @available(iOS 13.0, *)
 extension AWSModelReconciliationQueue {
     private typealias ResponseType = MutationSync<AnyModel>
@@ -241,12 +246,28 @@ extension AWSModelReconciliationQueue {
         return nil
     }
 
+    private func errorTypeValueFrom(graphQLError: GraphQLError) -> String? {
+        guard case let .string(errorTypeValue) = graphQLError.extensions?["errorType"] else {
+            return nil
+        }
+        return errorTypeValue
+    }
+
     private func isUnauthorizedError(_ error: Error?) -> Bool {
         if let responseError = error as? GraphQLResponseError<ResponseType>,
            let graphQLError = graphqlErrors(from: responseError)?.first,
-           let extensions = graphQLError.extensions,
-           case let .string(errorTypeValue) = extensions["errorType"],
+           let errorTypeValue = errorTypeValueFrom(graphQLError: graphQLError),
            case .unauthorized = AppSyncErrorType(errorTypeValue) {
+            return true
+        }
+        return false
+    }
+
+    private func isOperationDisabledError(_ error: Error?) -> Bool {
+        if let responseError = error as? GraphQLResponseError<ResponseType>,
+           let graphQLError = graphqlErrors(from: responseError)?.first,
+           let errorTypeValue = errorTypeValueFrom(graphQLError: graphQLError),
+           case .operationDisabled = AppSyncErrorType(errorTypeValue) {
             return true
         }
         return false
