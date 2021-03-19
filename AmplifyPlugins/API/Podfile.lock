@@ -19,18 +19,18 @@ PODS:
     - AWSPluginsCore (= 1.6.1)
   - AppSyncRealTimeClient (1.4.3):
     - Starscream (~> 3.1.0)
-  - AWSAuthCore (2.23.0):
-    - AWSCore (= 2.23.0)
-  - AWSCognitoIdentityProvider (2.23.0):
-    - AWSCognitoIdentityProviderASF (= 2.23.0)
-    - AWSCore (= 2.23.0)
-  - AWSCognitoIdentityProviderASF (2.23.0)
-  - AWSCore (2.23.0)
-  - AWSMobileClient (2.23.0):
-    - AWSAuthCore (= 2.23.0)
-    - AWSCognitoIdentityProvider (= 2.23.0)
-    - AWSCognitoIdentityProviderASF (= 2.23.0)
-    - AWSCore (= 2.23.0)
+  - AWSAuthCore (2.23.2):
+    - AWSCore (= 2.23.2)
+  - AWSCognitoIdentityProvider (2.23.2):
+    - AWSCognitoIdentityProviderASF (= 2.23.2)
+    - AWSCore (= 2.23.2)
+  - AWSCognitoIdentityProviderASF (2.23.2)
+  - AWSCore (2.23.2)
+  - AWSMobileClient (2.23.2):
+    - AWSAuthCore (= 2.23.2)
+    - AWSCognitoIdentityProvider (= 2.23.2)
+    - AWSCognitoIdentityProviderASF (= 2.23.2)
+    - AWSCore (= 2.23.2)
   - AWSPluginsCore (1.6.1):
     - Amplify (= 1.6.1)
     - AWSCore (~> 2.23.0)
@@ -39,7 +39,7 @@ PODS:
     - CwlCatchException
   - Starscream (3.1.1)
   - SwiftFormat/CLI (0.44.17)
-  - SwiftLint (0.42.0)
+  - SwiftLint (0.43.1)
 
 DEPENDENCIES:
   - Amplify (from `../../`)
@@ -94,17 +94,17 @@ SPEC CHECKSUMS:
   AmplifyPlugins: 51dfaeafe662cd571c4d4dfd3bdc5987fef2d5a7
   AmplifyTestCommon: df44b4bffc133d0ef5abbc14109ba5dd1c7f4cbe
   AppSyncRealTimeClient: 04df4dffe57cfbd06da336d0bfcd5641ba9adcb5
-  AWSAuthCore: 037e5faef3f7a0b4501eddcc382f9c74a22c0a77
-  AWSCognitoIdentityProvider: c078ed88e0f8d2df52850acfa2dae91c451ae47e
-  AWSCognitoIdentityProviderASF: fa862263b46ce6dcd28b85a906d21874fb28b15a
-  AWSCore: 589ad0bd5b72e9a95ce33834f12339b50cfc9f14
-  AWSMobileClient: 5701d5ac51ec0de781d848754f9d9952ead1c639
+  AWSAuthCore: 59770d4c2c1b3dbb183b95d1867e3584b4816e54
+  AWSCognitoIdentityProvider: 5bd6988ea7c8f9ee43151e19bdd8e803558ad45f
+  AWSCognitoIdentityProviderASF: 30ccb19228b6e743805bf15a72278ca9f399bc21
+  AWSCore: 70f79e95ee30f8eefa7122391d76ace516778f22
+  AWSMobileClient: 54fd215e76e34a8edb3cb1199788a69543cebc95
   AWSPluginsCore: f41f8a478fe3fd8839ec16278b86dededefb0628
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
-  SwiftLint: 4fa9579c63416865179bc416f0a92d55f009600d
+  SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
 
 PODFILE CHECKSUM: 857e4ea8246683593b8a7db77014aeb7340c15a5
 
