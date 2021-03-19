@@ -10,7 +10,7 @@ import AWSPluginsCore
 import Combine
 import Foundation
 
-// Used for testing:
+//Used for testing:
 @available(iOS 13.0, *)
 typealias IncomingEventReconciliationQueueFactory =
     ([ModelSchema],
@@ -18,7 +18,7 @@ typealias IncomingEventReconciliationQueueFactory =
     StorageEngineAdapter,
     [DataStoreSyncExpression],
     AuthCategoryBehavior?,
-    ModelReconciliationQueueFactory?
+    ModelGroupReconciliationQueueFactory?
 ) -> IncomingEventReconciliationQueue
 
 @available(iOS 13.0, *)
@@ -30,7 +30,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                                             storageAdapter: storageAdapter,
                                             syncExpressions: syncExpressions,
                                             auth: auth,
-                                            modelReconciliationQueueFactory: nil)
+                                            modelGroupReconciliationQueueFactory: nil)
     }
     private var modelReconciliationQueueSinks: [String: AnyCancellable]
 
@@ -40,12 +40,12 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     }
 
     private let connectionStatusSerialQueue: DispatchQueue
-    private var reconciliationQueues: [ModelName: ModelReconciliationQueue]
+    private var newReconciliationQueues: [ModelName: ModelReconciliationQueue]
     private var reconciliationQueueConnectionStatus: [ModelName: Bool]
-    private var modelReconciliationQueueFactory: ModelReconciliationQueueFactory
+    private var modelGroupReconciliationQueueFactory: ModelGroupReconciliationQueueFactory
 
     private var isInitialized: Bool {
-        reconciliationQueueConnectionStatus.count == reconciliationQueues.count
+        reconciliationQueueConnectionStatus.count == newReconciliationQueues.count
     }
 
     init(modelSchemas: [ModelSchema],
@@ -53,53 +53,50 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
          storageAdapter: StorageEngineAdapter,
          syncExpressions: [DataStoreSyncExpression],
          auth: AuthCategoryBehavior? = nil,
-         modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil) {
+         modelGroupReconciliationQueueFactory: ModelGroupReconciliationQueueFactory? = nil) {
         self.modelReconciliationQueueSinks = [:]
         self.eventReconciliationQueueTopic = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
-        self.reconciliationQueues = [:]
+        self.newReconciliationQueues = [:]
         self.reconciliationQueueConnectionStatus = [:]
-        self.modelReconciliationQueueFactory = modelReconciliationQueueFactory ??
-            AWSModelReconciliationQueue.init(modelSchema:storageAdapter:api:modelPredicate:auth:incomingSubscriptionEvents:)
-        // TODO: Add target for SyncEngine system to help prevent thread explosion and increase performance
+        self.modelGroupReconciliationQueueFactory = modelGroupReconciliationQueueFactory ??
+            AWSModelGroupReconciliationQueue.init(modelSchemas:storageAdapter:syncExpressions:api:auth:incomingSubscriptionEvents:)
+        //TODO: Add target for SyncEngine system to help prevent thread explosion and increase performance
         // https://github.com/aws-amplify/amplify-ios/issues/399
         self.connectionStatusSerialQueue
             = DispatchQueue(label: "com.amazonaws.DataStore.AWSIncomingEventReconciliationQueue")
-        for modelSchema in modelSchemas {
-            let modelName = modelSchema.name
-            let syncExpression = syncExpressions.first(where: {
-                $0.modelSchema.name == modelName
-            })
-            let modelPredicate = syncExpression?.modelPredicate() ?? nil
-            let queue = self.modelReconciliationQueueFactory(modelSchema,
-                                                             storageAdapter,
-                                                             api,
-                                                             modelPredicate,
-                                                             auth,
-                                                             nil)
-            guard reconciliationQueues[modelName] == nil else {
-                Amplify.DataStore.log
-                    .warn("Duplicate model name found: \(modelName), not subscribing")
+        for (modelName, connectedModelGroupSet) in modelSchemas.groupByConnectedModels() {
+            if newReconciliationQueues[modelName] != nil {
                 continue
+            } else {
+                let groupQueue = self.modelGroupReconciliationQueueFactory(modelSchemas,
+                                                                           storageAdapter,
+                                                                           syncExpressions,
+                                                                           api,
+                                                                           auth,
+                                                                           nil)
+                let groupQueueSink = groupQueue.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
+                                                               receiveValue: onReceiveValue(receiveValue:))
+                modelReconciliationQueueSinks[modelName] = groupQueueSink
+//                // for each model in the model group
+                for model in connectedModelGroupSet {
+                    newReconciliationQueues[model] = groupQueue
+                }
             }
-            reconciliationQueues[modelName] = queue
-            let modelReconciliationQueueSink = queue.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
-                                                                    receiveValue: onReceiveValue(receiveValue:))
-            modelReconciliationQueueSinks[modelName] = modelReconciliationQueueSink
         }
     }
 
     func start() {
-        reconciliationQueues.values.forEach { $0.start() }
+        newReconciliationQueues.values.forEach { $0.start() }
         eventReconciliationQueueTopic.send(.started)
     }
 
     func pause() {
-        reconciliationQueues.values.forEach { $0.pause() }
+        newReconciliationQueues.values.forEach { $0.pause() }
         eventReconciliationQueueTopic.send(.paused)
     }
 
     func offer(_ remoteModel: MutationSync<AnyModel>, modelSchema: ModelSchema) {
-        guard let queue = reconciliationQueues[modelSchema.name] else {
+        guard let queue = newReconciliationQueues[modelSchema.name] else {
             // TODO: Error handling
             return
         }
@@ -132,10 +129,9 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                     self.eventReconciliationQueueTopic.send(.initialized)
                 }
             }
-        case .disconnected(modelName: let modelName, reason: .operationDisabled),
-             .disconnected(modelName: let modelName, reason: .unauthorized):
+        case .disconnected(modelName: let modelName, reason: .unauthorized):
             connectionStatusSerialQueue.async {
-                self.reconciliationQueues[modelName]?.cancel()
+                self.newReconciliationQueues[modelName]?.cancel()
                 self.modelReconciliationQueueSinks[modelName]?.cancel()
                 self.reconciliationQueueConnectionStatus[modelName] = false
                 if self.isInitialized {
@@ -149,9 +145,9 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 
     func cancel() {
         modelReconciliationQueueSinks.values.forEach { $0.cancel() }
-        reconciliationQueues.values.forEach { $0.cancel()}
+        newReconciliationQueues.values.forEach { $0.cancel()}
         connectionStatusSerialQueue.async {
-            self.reconciliationQueues = [:]
+            self.newReconciliationQueues = [:]
             self.modelReconciliationQueueSinks = [:]
         }
     }
@@ -168,7 +164,7 @@ extension AWSIncomingEventReconciliationQueue: Resettable {
 
     func reset(onComplete: () -> Void) {
         let group = DispatchGroup()
-        for queue in reconciliationQueues.values {
+        for queue in newReconciliationQueues.values {
             guard let queue = queue as? Resettable else {
                 continue
             }

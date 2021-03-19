@@ -77,7 +77,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             OutgoingMutationQueue(storageAdapter: storageAdapter, dataStoreConfiguration: dataStoreConfiguration)
 
         let reconciliationQueueFactory = reconciliationQueueFactory ??
-            AWSIncomingEventReconciliationQueue.init(modelSchemas:api:storageAdapter:syncExpressions:auth:modelReconciliationQueueFactory:)
+            AWSIncomingEventReconciliationQueue.init(modelSchemas:api:storageAdapter:syncExpressions:auth:modelGroupReconciliationQueueFactory:)
 
         let initialSyncOrchestratorFactory = initialSyncOrchestratorFactory ??
             AWSInitialSyncOrchestrator.init(dataStoreConfiguration:api:reconciliationQueue:storageAdapter:)

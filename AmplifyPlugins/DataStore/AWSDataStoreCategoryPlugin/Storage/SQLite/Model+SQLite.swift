@@ -182,4 +182,55 @@ extension Array where Element == ModelSchema {
         return sortedKeys.map { sortMap[$0]! }
     }
 
+    /// Group the models which contain associations among them.
+    ///
+    /// For example:
+    /// Input: Project, Team, Blog, Post, Comment
+    /// Output:
+    ///     [Project, Team], [Blog, Post, Comment]
+    ///     The reason is because `Project` has one `Team` and neither have an association to `Blog`, `Post`, or `Comment`.
+    ///     `Blog` has a `Post` and `Post` has `Comment` and none of theses have an association to `Project` or `Team`.
+    func groupByConnectedModels() -> [String: Set<String>] {
+        var resultMap = [String: Set<String>]()
+        var groupedKeys: [String] = []
+        var sortedKeys: Set<String> = []
+        var sortMap: [String: ModelSchema] = [:]
+        var depth: Int = 0
+
+        func walkAssociatedModels(of schema: ModelSchema) {
+            depth += 1
+            if !groupedKeys.contains(schema.name) {
+                let associatedModelSchemas = schema.sortedFields
+                    .filter { $0.isForeignKey }
+                    .map { (schema) -> ModelSchema in
+                        guard let associatedSchema = ModelRegistry.modelSchema(from: schema.requiredAssociatedModelName)
+                        else {
+                            preconditionFailure("""
+                            Could not retrieve schema for the model \(schema.requiredAssociatedModelName), verify that
+                            datastore is initialized.
+                            """)
+                        }
+                        return associatedSchema
+                    }
+                associatedModelSchemas.forEach(walkAssociatedModels(of:))
+
+                let key = schema.name
+                groupedKeys.append(key)
+                sortedKeys.insert(key)
+                sortMap[key] = schema
+                depth -= 1
+                if depth == 0 {
+                    for key in sortedKeys {
+                        resultMap.updateValue(sortedKeys, forKey: key)
+                    }
+                    sortedKeys.removeAll()
+                    sortMap.removeAll()
+                }
+            }
+        }
+
+        let sortedStartList = sorted { $0.name < $1.name }
+        sortedStartList.forEach(walkAssociatedModels(of:))
+        return resultMap
+    }
 }
