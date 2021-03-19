@@ -1,5 +1,17 @@
 # Changelog
 ## Unreleased
+## 1.7.0 (2021-03-19)
+
+### Features
+
+- **datastore**: process OperationDisabled error (#1104)
+- **amplify-xcode**: generate JSON schema (#1080)
+
+### Bug Fixes
+
+- **API**: Return response body for non-2xx failure cases (#1076)
+- **auth**: update warn to log for identity pool config (#1081)
+
 ## 1.6.1 (2021-02-19)
 ### Misc updates
 - Amplify/Tools pod is currently deprecated and it will be completely removed in a future release. For now, Xcode will emit a deprecation warning if your project invokes AmplifyTools in a custom build phase.

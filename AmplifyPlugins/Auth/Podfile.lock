@@ -1,15 +1,15 @@
 PODS:
-  - Amplify (1.6.1):
-    - Amplify/Default (= 1.6.1)
-  - Amplify/Default (1.6.1)
-  - AmplifyTestCommon (1.6.1):
-    - Amplify (= 1.6.1)
-    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.6.1)
-  - AmplifyTestCommon/AWSPluginsTestCommon (1.6.1):
-    - Amplify (= 1.6.1)
+  - Amplify (1.7.0):
+    - Amplify/Default (= 1.7.0)
+  - Amplify/Default (1.7.0)
+  - AmplifyTestCommon (1.7.0):
+    - Amplify (= 1.7.0)
+    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.7.0)
+  - AmplifyTestCommon/AWSPluginsTestCommon (1.7.0):
+    - Amplify (= 1.7.0)
     - AWSCore (~> 2.23.0)
     - AWSMobileClient (~> 2.23.0)
-    - AWSPluginsCore (= 1.6.1)
+    - AWSPluginsCore (= 1.7.0)
   - AWSAuthCore (2.23.2):
     - AWSCore (= 2.23.2)
   - AWSCognitoIdentityProvider (2.23.2):
@@ -22,8 +22,8 @@ PODS:
     - AWSCognitoIdentityProvider (= 2.23.2)
     - AWSCognitoIdentityProviderASF (= 2.23.2)
     - AWSCore (= 2.23.2)
-  - AWSPluginsCore (1.6.1):
-    - Amplify (= 1.6.1)
+  - AWSPluginsCore (1.7.0):
+    - Amplify (= 1.7.0)
     - AWSCore (~> 2.23.0)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
@@ -74,14 +74,14 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  Amplify: 4d0c3b0871e1f268c81ce5e9b65532df0a013900
-  AmplifyTestCommon: df44b4bffc133d0ef5abbc14109ba5dd1c7f4cbe
+  Amplify: 4cdf0631faffa42a47dc24affa6d84c555ca2f6a
+  AmplifyTestCommon: fafbb279bb686ef6a14fb22d5b1a5c522c599e26
   AWSAuthCore: 59770d4c2c1b3dbb183b95d1867e3584b4816e54
   AWSCognitoIdentityProvider: 5bd6988ea7c8f9ee43151e19bdd8e803558ad45f
   AWSCognitoIdentityProviderASF: 30ccb19228b6e743805bf15a72278ca9f399bc21
   AWSCore: 70f79e95ee30f8eefa7122391d76ace516778f22
   AWSMobileClient: 54fd215e76e34a8edb3cb1199788a69543cebc95
-  AWSPluginsCore: f41f8a478fe3fd8839ec16278b86dededefb0628
+  AWSPluginsCore: d4593ef79107b15a02597705b63c9c915a946ee9
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
@@ -89,4 +89,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 371cf67fe35ebb5167d0880bad12b01618a0fb0e
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.9.3
