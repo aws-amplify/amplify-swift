@@ -303,7 +303,7 @@ class AuthenticationProviderResetPasswordTests: BaseAuthenticationProviderTest {
     /// - When:
     ///    - I invoke resetPassword with username
     /// - Then:
-    ///    - I should get a .requestLimitExceeded error
+    ///    - I should get a .limitExceeded error
     ///
     func testResetPasswordWithLimitExceededException() {
 
@@ -323,7 +323,7 @@ class AuthenticationProviderResetPasswordTests: BaseAuthenticationProviderTest {
                     XCTFail("Should produce service error instead of \(error)")
                     return
                 }
-                guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                guard case .limitExceeded = (underlyingError as? AWSCognitoAuthError) else {
                     XCTFail("Underlying error should be requestLimitExceeded \(error)")
                     return
                 }
