@@ -229,7 +229,11 @@ extension AuthPluginErrorConstants {
     static let tooManyFailedError: RecoverySuggestion = "User might have tried too many times with failed input"
 
     static let tooManyRequestError: RecoverySuggestion = """
-    Make sure the requests send are controlled and the errors are properlly handled
+    Make sure the requests send are controlled and the errors are properly handled
+    """
+
+    static let limitExceededError: RecoverySuggestion = """
+    User might have exceeded the resource limit of the requested AWS resource
     """
 
     static let configurationError: RecoverySuggestion = """
