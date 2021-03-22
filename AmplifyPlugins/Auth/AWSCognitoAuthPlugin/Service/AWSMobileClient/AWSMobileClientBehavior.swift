@@ -6,7 +6,11 @@
 //
 
 import Foundation
+#if COCOAPODS
 import AWSMobileClient
+#else
+import AWSMobileClientXCF
+#endif
 
 protocol AWSMobileClientBehavior {
 

@@ -7,6 +7,7 @@
 
 import Amplify
 import SQLite
+import Foundation
 
 extension Statement {
     func convert(toUntypedModel modelType: Model.Type,

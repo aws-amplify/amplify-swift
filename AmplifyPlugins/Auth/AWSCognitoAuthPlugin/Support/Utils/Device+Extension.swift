@@ -5,8 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSMobileClient
 import Amplify
+#if COCOAPODS
+import AWSMobileClient
+#else
+import AWSMobileClientXCF
+#endif
 
 extension Device {
 

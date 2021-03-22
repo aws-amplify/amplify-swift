@@ -7,6 +7,7 @@
 
 import Amplify
 import Combine
+import Foundation
 
 @available(iOS 13.0, *)
 extension AWSMutationDatabaseAdapter: MutationEventIngester {

@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 final public class AWSAPIPlugin: NSObject, APICategoryPlugin {
     /// The unique key of the plugin within the API category.

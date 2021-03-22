@@ -5,7 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if COCOAPODS
 import AWSMobileClient
+#else
+import AWSMobileClientXCF
+#endif
 
 extension Tokens {
     func toAWSCognitoUserPoolTokens() -> AWSCognitoUserPoolTokens {

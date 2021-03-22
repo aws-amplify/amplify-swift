@@ -7,8 +7,12 @@
 
 import Amplify
 import AWSCore
-import AWSMobileClient
 import AWSPluginsCore
+#if COCOAPODS
+import AWSMobileClient
+#else
+import AWSMobileClientXCF
+#endif
 
 extension AuthorizationProviderAdapter {
 

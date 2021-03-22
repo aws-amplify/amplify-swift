@@ -7,6 +7,7 @@
 
 import Amplify
 import AppSyncRealTimeClient
+import Foundation
 
 struct GraphQLErrorDecoder {
     static func decodeErrors(graphQLErrors: [JSONValue]) throws -> [GraphQLError] {
