@@ -233,7 +233,7 @@ extension AuthPluginErrorConstants {
     """
 
     static let limitExceededError: RecoverySuggestion = """
-    User might have exceeded the resource limit of the requested AWS resource
+    Make sure that the request made to the particular AWS resources are under the resource quota limits
     """
 
     static let configurationError: RecoverySuggestion = """

@@ -330,7 +330,7 @@ class AuthenticationProviderResendSignupCodeTests: BaseAuthenticationProviderTes
                     return
                 }
                 guard case .limitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be resourceNotFound \(error)")
+                    XCTFail("Underlying error should be limitExceeded \(error)")
                     return
                 }
             }
