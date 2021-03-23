@@ -309,7 +309,7 @@ class AuthenticationProviderResendSignupCodeTests: BaseAuthenticationProviderTes
     /// - When:
     ///    - I invoke resendSignUpCode with a valid username
     /// - Then:
-    ///    - I should get a .requestLimitExceeded error
+    ///    - I should get a .limitExceeded error
     ///
     func testResendSignupCodeWithLimitExceededException() {
 
@@ -329,8 +329,8 @@ class AuthenticationProviderResendSignupCodeTests: BaseAuthenticationProviderTes
                     XCTFail("Should produce service error instead of \(error)")
                     return
                 }
-                guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be resourceNotFound \(error)")
+                guard case .limitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                    XCTFail("Underlying error should be limitExceeded \(error)")
                     return
                 }
             }

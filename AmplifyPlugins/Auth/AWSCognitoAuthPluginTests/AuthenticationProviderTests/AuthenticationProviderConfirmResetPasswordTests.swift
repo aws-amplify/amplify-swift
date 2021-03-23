@@ -352,7 +352,7 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
     /// - When:
     ///    - I invoke confirmResetPassword with a valid username, a new password and a confirmation code
     /// - Then:
-    ///    - I should get a .requestLimitExceeded error
+    ///    - I should get a .limitExceeded error
     ///
     func testConfirmResetPasswordWithLimitExceededException() {
 
@@ -374,8 +374,8 @@ class AuthenticationProviderConfirmResetPasswordTests: BaseAuthenticationProvide
                     XCTFail("Should produce service error instead of \(error)")
                     return
                 }
-                guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be resourceNotFound \(error)")
+                guard case .limitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                    XCTFail("Underlying error should be limitExceeded \(error)")
                     return
                 }
             }

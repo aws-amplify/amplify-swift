@@ -190,7 +190,7 @@ class UserBehaviorConfirmAttributeTests: BaseUserBehaviorTest {
     /// - When:
     ///    - I invoke confirmUpdateUserAttributes with confirmation code
     /// - Then:
-    ///    - I should get a .requestLimitExceeded error
+    ///    - I should get a .limitExceeded error
     ///
     func testConfirmUpdateUserAttributesWithLimitExceededException() {
 
@@ -210,8 +210,8 @@ class UserBehaviorConfirmAttributeTests: BaseUserBehaviorTest {
                     XCTFail("Should produce service error instead of \(error)")
                     return
                 }
-                guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be requestLimitExceeded \(error)")
+                guard case .limitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                    XCTFail("Underlying error should be limitExceeded \(error)")
                     return
                 }
             }

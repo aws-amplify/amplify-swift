@@ -99,11 +99,15 @@ struct AuthErrorHelper {
                                             AuthPluginErrorConstants.tooManyFailedError,
                                             AWSCognitoAuthError.failedAttemptsLimitExceeded)
 
-        case .tooManyRequests(let message),
-             .limitExceeded(let message):
+        case .tooManyRequests(let message):
             return AuthError.service(message,
                                             AuthPluginErrorConstants.tooManyRequestError,
                                             AWSCognitoAuthError.requestLimitExceeded)
+
+        case .limitExceeded(let message):
+            return AuthError.service(message,
+                                     AuthPluginErrorConstants.limitExceededError,
+                                     AWSCognitoAuthError.limitExceeded)
 
         case .errorLoadingPage(let message):
             return AuthError.service(message,

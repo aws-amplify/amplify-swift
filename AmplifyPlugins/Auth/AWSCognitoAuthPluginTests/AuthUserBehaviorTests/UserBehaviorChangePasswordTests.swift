@@ -149,7 +149,7 @@ class UserBehaviorChangePasswordTests: BaseUserBehaviorTest {
     /// - When:
     ///    - I invoke changePassword with old password and new password
     /// - Then:
-    ///    - I should get a .requestLimitExceeded error
+    ///    - I should get a .limitExceeded error
     ///
     func testChangePasswordWithLimitExceededException() {
 
@@ -168,8 +168,8 @@ class UserBehaviorChangePasswordTests: BaseUserBehaviorTest {
                     XCTFail("Should produce service error instead of \(error)")
                     return
                 }
-                guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be requestLimitExceeded \(error)")
+                guard case .limitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                    XCTFail("Underlying error should be limitExceeded \(error)")
                     return
                 }
             }

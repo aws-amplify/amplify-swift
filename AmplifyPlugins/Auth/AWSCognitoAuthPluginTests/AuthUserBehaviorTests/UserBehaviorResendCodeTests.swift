@@ -229,7 +229,7 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
     /// - When:
     ///    - I invoke resendConfirmationCode
     /// - Then:
-    ///    - I should get a .service error with  .requestLimitExceeded as underlyingError
+    ///    - I should get a .service error with .limitExceeded as underlyingError
     ///
     func testResendConfirmationCodeWithLimitExceededException() {
 
@@ -249,8 +249,8 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
                     XCTFail("Should produce service error instead of \(error)")
                     return
                 }
-                guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be requestLimitExceeded \(error)")
+                guard case .limitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                    XCTFail("Underlying error should be limitExceeded \(error)")
                     return
                 }
 

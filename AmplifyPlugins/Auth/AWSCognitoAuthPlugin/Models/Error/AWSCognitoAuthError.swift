@@ -34,7 +34,7 @@ public enum AWSCognitoAuthError: Error {
     /// Password given is invalid.
     case invalidPassword
 
-    /// Number of allowed operation have exceeded.
+    /// Limit exceeded for the requested AWS resource
     case limitExceeded
 
     /// Amazon Cognito cannot find a multi-factor authentication (MFA) method.
