@@ -17,6 +17,7 @@ class ReconciliationQueueTestBase: XCTestCase {
 
     var apiPlugin: MockAPICategoryPlugin!
     var authPlugin: MockAuthCategoryPlugin!
+    var reconcileAndSaveQueue: ReconcileAndSaveQueue!
     var storageAdapter: MockSQLiteStorageEngineAdapter!
     var subscriptionEventsPublisher: MockIncomingSubscriptionEventPublisher!
     var subscriptionEventsSubject: PassthroughSubject<IncomingSubscriptionEventPublisherEvent, DataStoreError>!
@@ -27,7 +28,7 @@ class ReconciliationQueueTestBase: XCTestCase {
 
         apiPlugin = MockAPICategoryPlugin()
         authPlugin = MockAuthCategoryPlugin()
-
+        reconcileAndSaveQueue = ReconcileAndSaveQueue([MockSynced.schema])
         storageAdapter = MockSQLiteStorageEngineAdapter()
         subscriptionEventsPublisher = MockIncomingSubscriptionEventPublisher()
         subscriptionEventsSubject = subscriptionEventsPublisher.subject

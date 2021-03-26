@@ -40,6 +40,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     }
 
     private let connectionStatusSerialQueue: DispatchQueue
+    private var reconcileAndSaveQueue: ReconcileAndSaveOperationQueue
     private var reconciliationQueues: [ModelName: ModelReconciliationQueue]
     private var reconciliationQueueConnectionStatus: [ModelName: Bool]
     private var modelReconciliationQueueFactory: ModelReconciliationQueueFactory
@@ -58,12 +59,14 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         self.eventReconciliationQueueTopic = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
         self.reconciliationQueues = [:]
         self.reconciliationQueueConnectionStatus = [:]
+        self.reconcileAndSaveQueue = ReconcileAndSaveQueue(modelSchemas)
         self.modelReconciliationQueueFactory = modelReconciliationQueueFactory ??
-            AWSModelReconciliationQueue.init(modelSchema:storageAdapter:api:modelPredicate:auth:incomingSubscriptionEvents:)
+            AWSModelReconciliationQueue.init(modelSchema:storageAdapter:api:reconcileAndSaveQueue:modelPredicate:auth:incomingSubscriptionEvents:)
         // TODO: Add target for SyncEngine system to help prevent thread explosion and increase performance
         // https://github.com/aws-amplify/amplify-ios/issues/399
         self.connectionStatusSerialQueue
             = DispatchQueue(label: "com.amazonaws.DataStore.AWSIncomingEventReconciliationQueue")
+
         for modelSchema in modelSchemas {
             let modelName = modelSchema.name
             let syncExpression = syncExpressions.first(where: {
@@ -73,6 +76,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
             let queue = self.modelReconciliationQueueFactory(modelSchema,
                                                              storageAdapter,
                                                              api,
+                                                             reconcileAndSaveQueue,
                                                              modelPredicate,
                                                              auth,
                                                              nil)
@@ -177,6 +181,14 @@ extension AWSIncomingEventReconciliationQueue: Resettable {
                 queue.reset { group.leave() }
             }
         }
+
+        group.enter()
+        DispatchQueue.global().async {
+            self.reconcileAndSaveQueue.cancelAllOperations()
+            self.reconcileAndSaveQueue.waitUntilOperationsAreFinished()
+            group.leave()
+        }
+
         group.wait()
         onComplete()
     }
