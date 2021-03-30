@@ -275,6 +275,65 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         XCTAssertEqual(variables["lastSync"] as? Int, lastSync)
     }
 
+    func testOptimizedSyncQueryGraphQLRequestWithFilter() {
+        let modelType = Post.self as Model.Type
+        let nextToken = "nextToken"
+        let limit = 100
+        let lastSync = 123
+        let postId = "123"
+        let predicate = Post.CodingKeys.id.eq(postId)
+        let request = GraphQLRequest<SyncQueryResult>.syncQuery(
+            modelSchema: modelType.schema,
+            where: predicate,
+            limit: limit,
+            nextToken: nextToken,
+            lastSync: lastSync)
+
+        guard let variables = request.variables else {
+            XCTFail("The request doesn't contain variables")
+            return
+        }
+        guard variables["filter"] != nil, let filter = variables["filter"] as? [String: Any] else {
+            XCTFail("The request doesn't contain a filter")
+            return
+        }
+
+        XCTAssertEqual(variables["limit"] as? Int, limit)
+        XCTAssertEqual(variables["nextToken"] as? String, nextToken)
+        XCTAssertNotNil(filter)
+        XCTAssertNotNil(filter["and"])
+    }
+
+    func testSyncQueryGraphQLRequestWithPredicateGroupFilter() {
+        let modelType = Post.self as Model.Type
+        let nextToken = "nextToken"
+        let limit = 100
+        let lastSync = 123
+        let postId = "123"
+        let altPostId = "456"
+        let predicate = Post.CodingKeys.id.eq(postId) || Post.CodingKeys.id.eq(altPostId)
+        let request = GraphQLRequest<SyncQueryResult>.syncQuery(
+            modelSchema: modelType.schema,
+            where: predicate,
+            limit: limit,
+            nextToken: nextToken,
+            lastSync: lastSync)
+
+        guard let variables = request.variables else {
+            XCTFail("The request doesn't contain variables")
+            return
+        }
+        guard variables["filter"] != nil, let filter = variables["filter"] as? [String: Any] else {
+            XCTFail("The request doesn't contain a filter")
+            return
+        }
+
+        XCTAssertEqual(variables["limit"] as? Int, limit)
+        XCTAssertEqual(variables["nextToken"] as? String, nextToken)
+        XCTAssertNotNil(filter)
+        XCTAssertNotNil(filter["or"])
+    }
+
     func testUpdateMutationWithEmptyFilter() {
         let post = Post(title: "title", content: "content", createdAt: .now())
         let documentStringValue = """
