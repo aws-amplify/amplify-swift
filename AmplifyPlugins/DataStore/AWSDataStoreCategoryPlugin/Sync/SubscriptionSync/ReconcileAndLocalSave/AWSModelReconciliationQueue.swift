@@ -16,6 +16,7 @@ typealias ModelReconciliationQueueFactory = (
     ModelSchema,
     StorageEngineAdapter,
     APICategoryGraphQLBehavior,
+    ReconcileAndSaveOperationQueue,
     QueryPredicate?,
     AuthCategoryBehavior?,
     IncomingSubscriptionEventPublisher?
@@ -27,15 +28,17 @@ typealias ModelReconciliationQueueFactory = (
 /// Although subscriptions are listened to and enqueued at initialization, you must call `start` on a
 /// AWSModelReconciliationQueue to write events to the DataStore.
 ///
-/// Internally, a AWSModelReconciliationQueue manages different operation queues:
-/// - A queue to buffer incoming remote events (e.g., subscriptions, mutation results)
-/// - A queue to reconcile & save mutation sync events to local storage
+/// Internally, a AWSModelReconciliationQueue manages the `incomingSubscriptionEventQueue` to buffer incoming remote
+/// events (e.g., subscriptions, mutation results), and is passed the reference of `ReconcileAndSaveOperationQueue`,
+/// used to reconcile & save mutation sync events to local storage. A reference to the `ReconcileAndSaveOperationQueue`
+/// is used here since some models have to be reconciled in dependency order and `ReconcileAndSaveOperationQueue` is responsible for managing the
+/// ordering of these events.
 /// These queues are required because each of these actions have different points in the sync lifecycle at which they
 /// may be activated.
 ///
 /// Flow:
 /// - `AWSModelReconciliationQueue` init()
-///   - `reconcileAndSaveQueue` created and activated
+///   - `reconcileAndSaveQueue` queue for reconciliation and local save operations, passed in from initializer.
 ///   - `incomingSubscriptionEventQueue` created, but suspended
 ///   - `incomingEventsSink` listener set up for incoming remote events
 ///     - when `incomingEventsSink` listener receives an event, it adds an operation to `incomingSubscriptionEventQueue`
@@ -62,7 +65,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
     /// Applies incoming mutation or subscription events serially to local data store for this model type. This queue
     /// is always active.
-    private let reconcileAndSaveQueue: OperationQueue
+    private let reconcileAndSaveQueue: ReconcileAndSaveOperationQueue
 
     private var incomingEventsSink: AnyCancellable?
     private var reconcileAndLocalSaveOperationSinks: AtomicValue<Set<AnyCancellable?>>
@@ -75,6 +78,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     init(modelSchema: ModelSchema,
          storageAdapter: StorageEngineAdapter?,
          api: APICategoryGraphQLBehavior,
+         reconcileAndSaveQueue: ReconcileAndSaveOperationQueue,
          modelPredicate: QueryPredicate?,
          auth: AuthCategoryBehavior?,
          incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
@@ -85,11 +89,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         self.modelPredicate = modelPredicate
         self.modelReconciliationQueueSubject = PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>()
 
-        self.reconcileAndSaveQueue = OperationQueue()
-        reconcileAndSaveQueue.name = "com.amazonaws.DataStore.\(modelSchema.name).reconcile"
-        reconcileAndSaveQueue.maxConcurrentOperationCount = 1
-        reconcileAndSaveQueue.underlyingQueue = DispatchQueue.global()
-        reconcileAndSaveQueue.isSuspended = false
+        self.reconcileAndSaveQueue = reconcileAndSaveQueue
 
         self.incomingSubscriptionEventQueue = OperationQueue()
         incomingSubscriptionEventQueue.name = "com.amazonaws.DataStore.\(modelSchema.name).remoteEvent"
@@ -131,7 +131,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         incomingEventsSink?.cancel()
         incomingEventsSink = nil
         incomingSubscriptionEvents.cancel()
-        reconcileAndSaveQueue.cancelAllOperations()
+        reconcileAndSaveQueue.cancelOperations(modelName: modelSchema.name)
         incomingSubscriptionEventQueue.cancelAllOperations()
     }
 
@@ -154,7 +154,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             }
         })
         reconcileAndLocalSaveOperationSinks.with { $0.insert(reconcileAndLocalSaveOperationSink) }
-        reconcileAndSaveQueue.addOperation(reconcileOp)
+        reconcileAndSaveQueue.addOperation(reconcileOp, modelName: remoteModel.model.modelName)
     }
 
     private func receive(_ receive: IncomingSubscriptionEventPublisherEvent) {
@@ -212,13 +212,6 @@ extension AWSModelReconciliationQueue: Resettable {
             DispatchQueue.global().async {
                 resettable.reset { group.leave() }
             }
-        }
-
-        group.enter()
-        DispatchQueue.global().async {
-            self.reconcileAndSaveQueue.cancelAllOperations()
-            self.reconcileAndSaveQueue.waitUntilAllOperationsAreFinished()
-            group.leave()
         }
 
         group.enter()

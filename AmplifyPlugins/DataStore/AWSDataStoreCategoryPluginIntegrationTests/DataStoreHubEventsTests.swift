@@ -23,7 +23,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
     /// - When:
     ///    - DataStore's remote sync engine is initialized
     /// - Then:
-    ///    - networkStatus received, payload should be: {active: true}
+    ///    - networkStatus received, payload should be: {active: false}, followed by {active: true}
     ///    - subscriptionEstablished received, payload should be nil
     ///    - syncQueriesStarted received, payload should be: {models: ["Post", "Comment"]}
     ///    - outboxStatus received, payload should be {isEmpty: true}
@@ -33,6 +33,8 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
     func testDataStoreConfiguredDispatchesHubEvents() throws {
 
         let networkStatusReceived = expectation(description: "networkStatus received")
+        networkStatusReceived.expectedFulfillmentCount = 2
+        var networkStatusActive = false
         let subscriptionsEstablishedReceived = expectation(description: "subscriptionsEstablished received")
         let syncQueriesStartedReceived = expectation(description: "syncQueriesStarted received")
         let outboxStatusReceived = expectation(description: "outboxStatus received")
@@ -43,7 +45,10 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
                     XCTFail("Failed to cast payload data as NetworkStatusEvent")
                     return
                 }
-                XCTAssertEqual(networkStatusEvent.active, true)
+                XCTAssertEqual(networkStatusEvent.active, networkStatusActive)
+                if !networkStatusActive {
+                    networkStatusActive = true
+                }
                 networkStatusReceived.fulfill()
             }
 
@@ -57,7 +62,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
                     XCTFail("Failed to cast payload data as SyncQueriesStartedEvent")
                     return
                 }
-                XCTAssertEqual(syncQueriesStartedEvent.models.count, 2)
+                XCTAssertEqual(syncQueriesStartedEvent.models.count, 16)
                 syncQueriesStartedReceived.fulfill()
             }
 
@@ -131,6 +136,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
 
     func testModelSyncedAndSyncQueriesReady() throws {
         let modelSyncedReceived = expectation(description: "outboxMutationEnqueued received")
+        modelSyncedReceived.assertForOverFulfill = false
         let syncQueriesReadyReceived = expectation(description: "outboxMutationProcessed received")
 
         let expectedSyncedModelNames = ["Post", "Comment"]
@@ -142,7 +148,11 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
                     XCTFail("Failed to cast payload data as ModelSyncedEvent")
                     return
                 }
-                modelSyncedEvents.append(modelSyncedEvent)
+
+                if expectedSyncedModelNames.contains(modelSyncedEvent.modelName) {
+                    modelSyncedEvents.append(modelSyncedEvent)
+                }
+
                 if modelSyncedEvents.count == 2 {
                     XCTAssertEqual(modelSyncedEvents[0].modelName, expectedSyncedModelNames[0])
                     XCTAssertTrue(modelSyncedEvents[0].isFullSync)

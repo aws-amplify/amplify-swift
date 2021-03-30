@@ -26,6 +26,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     /// sent from the remote API as part of the mutation.
     typealias AppliedModel = MutationSync<AnyModel>
 
+    let id: UUID = UUID()
     private let workQueue = DispatchQueue(label: "com.amazonaws.ReconcileAndLocalSaveOperation",
                                           target: DispatchQueue.global())
 

@@ -13,11 +13,11 @@ enum InitialSyncOperationEvent {
     /// Used by `SyncEventEmitter` and `ModelSyncedEmitted`
     case started(modelName: ModelName, syncType: SyncType)
 
-    /// Published when a remote model is enqueued for local store reconcillation.
+    /// Published when a remote model is enqueued for local store reconciliation.
     /// Used by `ModelSyncedEventEmitter` for record counting.
     case enqueued(MutationSync<AnyModel>)
 
-    /// Published when the sync operation has completed and all remote models have been enqueued for reconcillation.
+    /// Published when the sync operation has completed and all remote models have been enqueued for reconciliation.
     /// Used by `ModelSyncedEventEmitter` to determine when to send `ModelSyncedEvent`
     case finished(modelName: ModelName)
 }
