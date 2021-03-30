@@ -170,7 +170,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
-        if let predicate = predicate {
+        if let predicate = optimizePredicate(predicate) {
             documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: modelSchema)))
         }
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
@@ -206,5 +206,23 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
                                                   decodePath: document.name)
+    }
+
+    /// This function tries to optimize provided `QueryPredicate` to perform a DynamoDB query instead of a scan.
+    /// Wrapping the predicate with a group AND enables AppSync to perform the optimization.
+    /// If the provided predicate is already a QueryPredicateGroup, this is not needed.
+    /// If the provided group is of type AND, the optimization will occur.
+    /// If the top level group is OR or NOT, the optimization is not possible anyway.
+    private static func optimizePredicate(_ predicate: QueryPredicate?) -> QueryPredicate? {
+        guard let predicate = predicate else {
+            return nil
+        }
+        if predicate as? QueryPredicateGroup != nil {
+            return predicate
+        } else if let predicate = predicate as? QueryPredicateConstant,
+                  predicate == .all {
+            return predicate
+        }
+        return QueryPredicateGroup(type: .and, predicates: [predicate])
     }
 }
