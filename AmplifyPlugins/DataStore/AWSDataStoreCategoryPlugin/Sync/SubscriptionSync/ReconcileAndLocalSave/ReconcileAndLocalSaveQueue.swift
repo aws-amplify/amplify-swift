@@ -23,7 +23,7 @@ protocol ReconcileAndSaveOperationQueue {
     init(_ modelSchemas: [ModelSchema])
 }
 
-enum ReoncileAndSaveQueueEvent {
+enum ReconcileAndSaveQueueEvent {
     case operationAdded(id: UUID)
     case operationRemoved(id: UUID)
     case cancelledOperations(modelName: String)
@@ -33,10 +33,11 @@ enum ReoncileAndSaveQueueEvent {
 /// sync events to local storage for all model types.
 ///
 /// Internally, a `ReconcileAndSaveQueue` will manage an operation queue with concurrency of 1 to perform serial
-/// operations to ensure events are processed in the order in which they are received. For example, an initial sync
+/// operations to ensure models are processed in the order of dependency. For example, an initial sync
 /// will perform sync queries for models based on its dependency order. The results are then processed serially by this
-/// queue to ensure the events are reconciled in the same dependency order in which they are received by the
-/// sync query response.
+/// queue to ensure that a model A that depends on B, and B depends on C, will be reconciled in the order of C then B
+/// then A. This also ensures that reconciliation for individual subscription events are also processed in the order
+/// in which they are received by the system.
 ///
 /// Additionally, this queue allows per model type cancellations on the operations that are enqueued by calling
 /// `cancelOperations(modelName)`. This allows per model type clean up, while allowing other model reconcilliations to
@@ -45,23 +46,24 @@ enum ReoncileAndSaveQueueEvent {
 class ReconcileAndSaveQueue: ReconcileAndSaveOperationQueue {
 
     private let serialQueue = DispatchQueue(label: "com.amazonaws.ReconcileAndSaveQueue.serialQueue",
-                                                 target: DispatchQueue.global())
+                                            target: DispatchQueue.global())
     private let reconcileAndSaveQueue: OperationQueue
-    private var modelReconcileAndSaveOperations = [String: [UUID: ReconcileAndLocalSaveOperation]]()
+    private var modelReconcileAndSaveOperations: [String: [UUID: ReconcileAndLocalSaveOperation]]
     private var reconcileAndLocalSaveOperationSinks: AtomicValue<Set<AnyCancellable?>>
 
-    private let reconcileAndSaveQueueSubject: PassthroughSubject<ReoncileAndSaveQueueEvent, DataStoreError>
-    var publisher: AnyPublisher<ReoncileAndSaveQueueEvent, DataStoreError> {
-        return reconcileAndSaveQueueSubject.eraseToAnyPublisher()
+    private let reconcileAndSaveQueueSubject: PassthroughSubject<ReconcileAndSaveQueueEvent, DataStoreError>
+    var publisher: AnyPublisher<ReconcileAndSaveQueueEvent, DataStoreError> {
+        reconcileAndSaveQueueSubject.eraseToAnyPublisher()
     }
     required init(_ modelSchemas: [ModelSchema]) {
-        self.reconcileAndSaveQueueSubject = PassthroughSubject<ReoncileAndSaveQueueEvent, DataStoreError>()
+        self.reconcileAndSaveQueueSubject = PassthroughSubject<ReconcileAndSaveQueueEvent, DataStoreError>()
         self.reconcileAndSaveQueue = OperationQueue()
         reconcileAndSaveQueue.name = "com.amazonaws.DataStore.reconcile"
         reconcileAndSaveQueue.maxConcurrentOperationCount = 1
         reconcileAndSaveQueue.underlyingQueue = DispatchQueue.global()
         reconcileAndSaveQueue.isSuspended = false
 
+        self.modelReconcileAndSaveOperations = [String: [UUID: ReconcileAndLocalSaveOperation]]()
         for model in modelSchemas {
             modelReconcileAndSaveOperations[model.name] = [UUID: ReconcileAndLocalSaveOperation]()
         }
@@ -72,10 +74,10 @@ class ReconcileAndSaveQueue: ReconcileAndSaveOperationQueue {
         serialQueue.async {
             var reconcileAndLocalSaveOperationSink: AnyCancellable?
 
-            reconcileAndLocalSaveOperationSink = operation.publisher.sink { [weak self] _ in
-                self?.reconcileAndLocalSaveOperationSinks.with { $0.remove(reconcileAndLocalSaveOperationSink) }
-                self?.modelReconcileAndSaveOperations[modelName]?[operation.id] = nil
-                self?.reconcileAndSaveQueueSubject.send(.operationRemoved(id: operation.id))
+            reconcileAndLocalSaveOperationSink = operation.publisher.sink { _ in
+                self.reconcileAndLocalSaveOperationSinks.with { $0.remove(reconcileAndLocalSaveOperationSink) }
+                self.modelReconcileAndSaveOperations[modelName]?[operation.id] = nil
+                self.reconcileAndSaveQueueSubject.send(.operationRemoved(id: operation.id))
             } receiveValue: { _ in }
 
             self.reconcileAndLocalSaveOperationSinks.with { $0.insert(reconcileAndLocalSaveOperationSink) }
@@ -107,8 +109,10 @@ class ReconcileAndSaveQueue: ReconcileAndSaveOperationQueue {
         }
     }
 
-    // This method blocks the current thread by not executing the work on the serial queue since underlying operation
-    // queue's `waitUntilAllOperationsAreFinished()` behaves the same way. See the following link for more details:
+    // This method should only be used in the `reset` chain, which is an internal reset functionality that is used
+    // for resetting the state of the system in testing. It blocks the current thread by not executing the work on
+    // the serial queue since underlying operation queue's `waitUntilAllOperationsAreFinished()` behaves the same way.
+    // See the following link for more details:
     // https://developer.apple.com/documentation/foundation/operationqueue/1407971-waituntilalloperationsarefinishe
     func waitUntilOperationsAreFinished() {
         reconcileAndSaveQueue.waitUntilAllOperationsAreFinished()

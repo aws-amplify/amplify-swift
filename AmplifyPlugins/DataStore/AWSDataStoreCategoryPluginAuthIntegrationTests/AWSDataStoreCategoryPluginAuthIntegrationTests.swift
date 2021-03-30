@@ -64,7 +64,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
     }
 
     /// A user can persist data in the local store without signing in. Once the user signs in,
-    /// the sync engine will start and sync the mutations to the cloud. Once the reconcillation is complete, retrieving
+    /// the sync engine will start and sync the mutations to the cloud. Once the reconciliation is complete, retrieving
     /// the same data will contain ownerId
     ///
     /// - Given: A DataStore plugin configured with SocialNote model containing with auth rules

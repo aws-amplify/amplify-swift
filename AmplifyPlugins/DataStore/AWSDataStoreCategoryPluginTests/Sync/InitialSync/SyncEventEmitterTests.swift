@@ -30,7 +30,7 @@ class SyncEventEmitterTests: XCTestCase {
     /// - When:
     ///    - One model is registered
     ///    - Perform an initial sync
-    ///    - Reconcillation of the models occurred
+    ///    - Reconciliation of the models occurred
     /// - Then:
     ///    - One modelSynced event should be received
     ///    - One syncQueriesReady event should be received
@@ -100,7 +100,7 @@ class SyncEventEmitterTests: XCTestCase {
     ///      - SyncType of DeltaSync on Comment Model should be performed
     ///      - No SyncQueries comming back
     ///    - Perform an initial sync
-    ///    - Reconcillation of the models occurred
+    ///    - Reconciliation of the models occurred
     /// - Then:
     ///    - Two modelSynced event should be received
     ///    - One syncQueriesReady event should be received
@@ -176,7 +176,7 @@ class SyncEventEmitterTests: XCTestCase {
     ///      - SyncType of FullSync, .delete of MutationType on Comment Model would be performed
     ///      - One SyncQueries of each Model comming back
     ///    - Perform an initial sync
-    ///    - Reconcillation of the models occurred
+    ///    - Reconciliation of the models occurred
     /// - Then:
     ///    - Two modelSynced event should be received
     ///    - One syncQueriesReady event should be received

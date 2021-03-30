@@ -28,15 +28,17 @@ typealias ModelReconciliationQueueFactory = (
 /// Although subscriptions are listened to and enqueued at initialization, you must call `start` on a
 /// AWSModelReconciliationQueue to write events to the DataStore.
 ///
-/// Internally, a AWSModelReconciliationQueue manages the `incomingSubscriptionEventQueue` to buffer incoming remote events
-/// (e.g., subscriptions, mutation results), and is passed the reference of `ReconcileAndSaveOperationQueue`, used to reconcile & save mutation sync
-/// events to local storage.
+/// Internally, a AWSModelReconciliationQueue manages the `incomingSubscriptionEventQueue` to buffer incoming remote
+/// events (e.g., subscriptions, mutation results), and is passed the reference of `ReconcileAndSaveOperationQueue`,
+/// used to reconcile & save mutation sync events to local storage. A reference to the `ReconcileAndSaveOperationQueue`
+/// is used here since some models have to be reconciled in dependency order and `ReconcileAndSaveOperationQueue` is responsible for managing the
+/// ordering of these events.
 /// These queues are required because each of these actions have different points in the sync lifecycle at which they
 /// may be activated.
 ///
 /// Flow:
 /// - `AWSModelReconciliationQueue` init()
-///   - `reconcileAndSaveQueue` queue for reconcillation and local save operations, passed in from initializer.
+///   - `reconcileAndSaveQueue` queue for reconciliation and local save operations, passed in from initializer.
 ///   - `incomingSubscriptionEventQueue` created, but suspended
 ///   - `incomingEventsSink` listener set up for incoming remote events
 ///     - when `incomingEventsSink` listener receives an event, it adds an operation to `incomingSubscriptionEventQueue`
