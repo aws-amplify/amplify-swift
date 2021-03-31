@@ -121,6 +121,22 @@ public enum ModelFieldNullability {
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
+public enum ModelFieldWritability {
+    case readOnly
+    case readWrite
+
+    var isReadOnly: Bool {
+        switch self {
+        case .readOnly:
+            return true
+        case .readWrite:
+            return false
+        }
+    }
+}
+
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
+///   directly by host applications. The behavior of this may change without warning.
 public struct ModelSchemaDefinition {
 
     internal let name: String
@@ -167,12 +183,14 @@ public enum ModelFieldDefinition {
     case field(name: String,
                type: ModelFieldType,
                nullability: ModelFieldNullability,
+               writability: ModelFieldWritability,
                association: ModelAssociation?,
                attributes: [ModelFieldAttribute],
                authRules: AuthRules)
 
     public static func field(_ key: CodingKey,
                              is nullability: ModelFieldNullability = .required,
+                             access writability: ModelFieldWritability = .readWrite,
                              ofType type: ModelFieldType = .string,
                              attributes: [ModelFieldAttribute] = [],
                              association: ModelAssociation? = nil,
@@ -180,6 +198,7 @@ public enum ModelFieldDefinition {
         return .field(name: key.stringValue,
                       type: type,
                       nullability: nullability,
+                      writability: writability,
                       association: association,
                       attributes: attributes,
                       authRules: authRules)
@@ -193,6 +212,7 @@ public enum ModelFieldDefinition {
         return .field(name: name,
                       type: .string,
                       nullability: .required,
+                      writability: .readWrite,
                       association: nil,
                       attributes: [.primaryKey],
                       authRules: [])
@@ -200,32 +220,38 @@ public enum ModelFieldDefinition {
 
     public static func hasMany(_ key: CodingKey,
                                is nullability: ModelFieldNullability = .required,
+                               access writability: ModelFieldWritability = .readWrite,
                                ofType type: Model.Type,
                                associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
+                      access: writability,
                       ofType: .collection(of: type),
                       association: .hasMany(associatedWith: associatedKey))
     }
 
     public static func hasOne(_ key: CodingKey,
                               is nullability: ModelFieldNullability = .required,
+                              access writability: ModelFieldWritability = .readWrite,
                               ofType type: Model.Type,
                               associatedWith associatedKey: CodingKey,
                               targetName: String? = nil) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
+                      access: writability,
                       ofType: .model(type: type),
                       association: .hasOne(associatedWith: associatedKey, targetName: targetName))
     }
 
     public static func belongsTo(_ key: CodingKey,
                                  is nullability: ModelFieldNullability = .required,
+                                 access writability: ModelFieldWritability = .readWrite,
                                  ofType type: Model.Type,
                                  associatedWith associatedKey: CodingKey? = nil,
                                  targetName: String? = nil) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
+                      access: writability,
                       ofType: .model(type: type),
                       association: .belongsTo(associatedWith: associatedKey, targetName: targetName))
     }
@@ -234,6 +260,7 @@ public enum ModelFieldDefinition {
         guard case let .field(name,
                               type,
                               nullability,
+                              writability,
                               association,
                               attributes,
                               authRules) = self else {
@@ -242,6 +269,7 @@ public enum ModelFieldDefinition {
         return ModelField(name: name,
                           type: type,
                           isRequired: nullability.isRequired,
+                          isReadOnly: writability.isReadOnly,
                           isArray: type.isArray,
                           attributes: attributes,
                           association: association,

@@ -29,7 +29,8 @@ public struct GraphQLMutation: SingleDirectiveGraphQLDocument {
     }
 
     public init(modelSchema: ModelSchema) {
-        self.selectionSet = SelectionSet(fields: modelSchema.graphQLFields)
+        let fields = modelSchema.graphQLFields.filter { !$0.isReadOnly }
+        self.selectionSet = SelectionSet(fields: fields)
     }
 
     public var name: String = ""

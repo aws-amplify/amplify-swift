@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
+/// - Warning: Although this has `public` access, it is in tended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
 public enum ModelAttribute {
 
@@ -29,6 +29,7 @@ public struct ModelField {
     public let name: String
     public let type: ModelFieldType
     public let isRequired: Bool
+    public let isReadOnly: Bool
     public let isArray: Bool
     public let attributes: [ModelFieldAttribute]
     public let association: ModelAssociation?
@@ -41,6 +42,7 @@ public struct ModelField {
     public init(name: String,
                 type: ModelFieldType,
                 isRequired: Bool = false,
+                isReadOnly: Bool = false,
                 isArray: Bool = false,
                 attributes: [ModelFieldAttribute] = [],
                 association: ModelAssociation? = nil,
@@ -48,6 +50,7 @@ public struct ModelField {
         self.name = name
         self.type = type
         self.isRequired = isRequired
+        self.isReadOnly = isReadOnly
         self.isArray = isArray
         self.attributes = attributes
         self.association = association
