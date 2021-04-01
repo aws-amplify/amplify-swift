@@ -27,6 +27,11 @@ struct TestModelRegistration: AmplifyModelRegistration {
         registry.register(modelType: Blog6.self)
         registry.register(modelType: Post6.self)
         registry.register(modelType: Comment6.self)
+        registry.register(modelType: ScalarContainer.self)
+        registry.register(modelType: ListIntContainer.self)
+        registry.register(modelType: ListStringContainer.self)
+        registry.register(modelType: EnumTestModel.self)
+        registry.register(modelType: NestedTypeTestModel.self)
     }
 
     let version: String = "1"
