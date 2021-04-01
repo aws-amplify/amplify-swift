@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// - Warning: Although this has `public` access, it is in tended for internal & codegen use and should not be used
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
 public enum ModelAttribute {
 
