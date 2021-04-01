@@ -235,4 +235,42 @@ class GraphQLCreateMutationTests: XCTestCase {
         }
         XCTAssertEqual(input["commentPostId"] as? String, post.id)
     }
+
+    func testCreateGraphQLMutationFromModelWithReadonlyFields() {
+        let record = Record(name: "name", description: "description")
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Record.schema,
+                                                               operationType: .mutation)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
+        documentBuilder.add(decorator: ModelDecorator(model: record))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        let document = documentBuilder.build()
+        let expectedQueryDocument = """
+        mutation CreateRecord($input: CreateRecordInput!) {
+          createRecord(input: $input) {
+            id
+            description
+            name
+            __typename
+            _version
+            _deleted
+            _lastChangedAt
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "createRecord")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        guard let input = variables["input"] as? GraphQLInput else {
+            XCTFail("Variables should contain a valid input")
+            return
+        }
+        XCTAssertEqual(input["id"] as? String, record.id)
+        XCTAssertEqual(input["name"] as? String, record.name)
+        XCTAssertEqual(input["description"] as? String, record.description)
+        XCTAssertNil(input["createdAt"]!)
+        XCTAssertNil(input["updatedAt"]!)
+    }
 }

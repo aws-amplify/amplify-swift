@@ -227,6 +227,8 @@
 		6BEE081D2533CCFA00133961 /* OGCScenarioBPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE081B2533CCFA00133961 /* OGCScenarioBPost.swift */; };
 		6BEE08242533D30800133961 /* OGCScenarioBMGroupPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE08222533D30800133961 /* OGCScenarioBMGroupPost.swift */; };
 		6BEE08252533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE08232533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift */; };
+		762167CC261542F70033FCD2 /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762167CB261542F70033FCD2 /* Record.swift */; };
+		762167D52615435C0033FCD2 /* Record+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762167D42615435C0033FCD2 /* Record+Schema.swift */; };
 		7678B38426017D5300B4917F /* AppSyncErrorTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */; };
 		7678B38526017D5300B4917F /* AppSyncErrorTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */; };
 		7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */; platformFilter = ios; };
@@ -1089,6 +1091,8 @@
 		71B6F506E5F3F00B0743A9BF /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig"; sourceTree = "<group>"; };
 		73C2E5FA55C85539AD9E39EE /* Pods_Amplify_AWSPluginsCore_CoreMLPredictionsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_CoreMLPredictionsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7503342A8C13588E2B0DDBDE /* Pods-AmplifyFunctionalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyFunctionalTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyFunctionalTests/Pods-AmplifyFunctionalTests.debug.xcconfig"; sourceTree = "<group>"; };
+		762167CB261542F70033FCD2 /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
+		762167D42615435C0033FCD2 /* Record+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Record+Schema.swift"; sourceTree = "<group>"; };
 		7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorTypeTests.swift; sourceTree = "<group>"; };
 		77A2D125114EA0FFA11A7EFD /* Pods-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7A238096BAB328655B5E388F /* Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin/Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
@@ -2886,6 +2890,8 @@
 				6B7743D625906F7E001469F5 /* Restaurant */,
 				6B9F7C542526864800F1F71C /* ScenarioATest6Post.swift */,
 				6B9F7C532526864800F1F71C /* ScenarioATest6Post+Schema.swift */,
+				762167CB261542F70033FCD2 /* Record.swift */,
+				762167D42615435C0033FCD2 /* Record+Schema.swift */,
 				B952182F237E21B900F53237 /* schema.graphql */,
 				6BE9D6E725A6620B00AB5C9A /* TeamProject */,
 				214F49742486D8A200DA616C /* User.swift */,
@@ -5234,6 +5240,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				214F49CD24898E8500DA616C /* Article.swift in Sources */,
+				762167CC261542F70033FCD2 /* Record.swift in Sources */,
+				762167D52615435C0033FCD2 /* Record+Schema.swift in Sources */,
 				B9FAA116238799D3009414B4 /* Author.swift in Sources */,
 				B9521833237E21BA00F53237 /* Comment+Schema.swift in Sources */,
 				FA176ED7238503C200C5C5F9 /* HubListenerTestUtilities.swift in Sources */,
