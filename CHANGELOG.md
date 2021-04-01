@@ -1,5 +1,13 @@
 # Changelog
 ## Unreleased
+## 1.7.1 (2021-04-01)
+
+### Bug Fixes
+
+- **datastore**: fix selective sync expressions to run DDB query when possible (#1100)
+- **DataStore**: Reconcile and save serially (#1128)
+- **auth**: handle tooManyRequests and limitExceeded separately in AuthErrorHelper (#1122)
+
 ## 1.7.0 (2021-03-19)
 
 ### Features
