@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.7.2 (2021-04-02)
+
+### Bug Fixes
+
+- **DataStore**: remove reconcile operations serially (#1137)
+
 ## 1.7.1 (2021-04-01)
 
 ### Bug Fixes
