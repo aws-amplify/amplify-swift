@@ -47,6 +47,7 @@
 		212CE70E23E9E991007D8E71 /* PaginationDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70923E9E991007D8E71 /* PaginationDecorator.swift */; };
 		212CE70F23E9E991007D8E71 /* ModelDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70A23E9E991007D8E71 /* ModelDecorator.swift */; };
 		212CE71323E9F2ED007D8E71 /* DirectiveNameDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71223E9F2ED007D8E71 /* DirectiveNameDecorator.swift */; };
+		2136FAE72620366700A95F6F /* MockAWSSignatureV4Signer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2136FAE62620366700A95F6F /* MockAWSSignatureV4Signer.swift */; };
 		21409C552384C55D000A53C9 /* LabelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C542384C55D000A53C9 /* LabelType.swift */; };
 		21409C5A2384C57D000A53C9 /* GraphQLMutationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C572384C57D000A53C9 /* GraphQLMutationType.swift */; };
 		21409C5B2384C57D000A53C9 /* GraphQLQueryType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C582384C57D000A53C9 /* GraphQLQueryType.swift */; };
@@ -856,6 +857,7 @@
 		212CE71C23EA1847007D8E71 /* GraphQLSyncQueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLSyncQueryTests.swift; sourceTree = "<group>"; };
 		212CE72023EA184F007D8E71 /* GraphQLSubscriptionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLSubscriptionTests.swift; sourceTree = "<group>"; };
 		213481D8242AFA62001966DE /* AnyModelTester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyModelTester.swift; sourceTree = "<group>"; };
+		2136FAE62620366700A95F6F /* MockAWSSignatureV4Signer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAWSSignatureV4Signer.swift; sourceTree = "<group>"; };
 		21409C4C23847E41000A53C9 /* LabelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelType.swift; sourceTree = "<group>"; };
 		21409C542384C55D000A53C9 /* LabelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelType.swift; sourceTree = "<group>"; };
 		21409C572384C57D000A53C9 /* GraphQLMutationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLMutationType.swift; sourceTree = "<group>"; };
@@ -3147,6 +3149,7 @@
 				FA131AE023610B6A0008381C /* AWSPluginsTestCommon.h */,
 				FA131AE123610B6A0008381C /* Info.plist */,
 				2125E2A72321DCDD00B3DEB5 /* MockAWSAuthService.swift */,
+				2136FAE62620366700A95F6F /* MockAWSSignatureV4Signer.swift */,
 			);
 			path = AWSPluginsTestCommon;
 			sourceTree = "<group>";
@@ -4738,6 +4741,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FAB2C9A52384B21C008EE879 /* MockAWSAuthService.swift in Sources */,
+				2136FAE72620366700A95F6F /* MockAWSSignatureV4Signer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -6,60 +6,47 @@
 //
 
 import XCTest
+import AWSPluginsCore
+import AWSAPICategoryPlugin
+import AmplifyPlugins
+
 @testable import Amplify
 @testable import AmplifyTestCommon
-import AWSMobileClient
-import AWSAPICategoryPlugin
 @testable import AWSAPICategoryPluginTestCommon
 
 class GraphQLWithIAMIntegrationTests: XCTestCase {
+    struct User {
+        let username: String
+        let password: String
+    }
 
-    let user1 = "user1@GraphQLWithIAMIntegrationTests.com"
-    let password = "Abc123@@!!"
+    let amplifyConfigurationFile = "GraphQLWithIAMIntegrationTests-amplifyconfiguration"
+    let credentialsFile = "GraphQLWithIAMIntegrationTests-credentials"
+    var user: User!
 
     override func setUp() {
-        let config = [
-            "CredentialsProvider": [
-                "CognitoIdentity": [
-                    "Default": [
-                        "PoolId": "us-east-1:xxxx",
-                        "Region": "us-east-1"
-                    ]
-                ]
-            ],
-            "CognitoUserPool": [
-                "Default": [
-                    "PoolId": "us-east-1_xxx",
-                    "AppClientId": "xxxx",
-                    "AppClientSecret": "xxxx",
-                    "Region": "us-east-1"
-                ]
-            ]
-        ]
-        AWSInfo.configureDefaultAWSInfo(config)
-
-        AuthHelper.initializeMobileClient()
-
-        Amplify.reset()
-        let plugin = AWSAPIPlugin()
-
-        let apiConfig = APICategoryConfiguration(plugins: [
-            "awsAPIPlugin": [
-                "todoGraphQLWithIAM": [
-                    "endpoint": "https://xxxx.appsync-api.us-east-1.amazonaws.com/graphql",
-                    "region": "us-east-1",
-                    "authorizationType": "AWS_IAM",
-                    "endpointType": "GraphQL"
-                ]
-            ]
-        ])
-
-        let amplifyConfig = AmplifyConfiguration(api: apiConfig)
         do {
-            try Amplify.add(plugin: plugin)
+            let credentials = try TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
+
+            guard let username = credentials["username"],
+                  let password = credentials["password"] else {
+                XCTFail("Missing credentials.json data")
+                return
+            }
+
+            user = User(username: username, password: password)
+
+            try Amplify.add(plugin: AWSAPIPlugin())
+            try Amplify.add(plugin: AWSCognitoAuthPlugin())
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
             try Amplify.configure(amplifyConfig)
+
+            ModelRegistry.register(modelType: Todo.self)
         } catch {
             XCTFail("Error during setup: \(error)")
+        }
+        if isSignedIn() {
+            signOut()
         }
     }
 
@@ -67,23 +54,22 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         Amplify.reset()
     }
 
-    // This is a run once function to set up users then use console to verify and run rest of these tests.
-    func testSetUpOnce() {
-        AuthHelper.signUpUser(username: user1, password: password)
-    }
-
-    /// Given: A CreateTodo mutation request, and user is signed in.
-    /// When: Call mutate API
-    /// Then: The operation completes successfully with no errors and todo in response
-    func testCreateTodoMutationWithIAMWithGuestAccessCompletesSuccessfully() {
-        AuthHelper.signIn(username: user1, password: password)
+    /// Test create mutation with a custom GraphQL Document
+    ///
+    /// - Given:  A custom GraphQL document containing CreateTodo mutation request, and user is signed in.
+    /// - When:
+    ///    - Call mutate API
+    /// - Then:
+    ///    - The operation completes successfully with no errors and todo in response
+    ///
+    func testCreateTodoMutationWithCustomGraphQLDocument() {
+        signIn(username: user.username, password: user.password)
         let completeInvoked = expectation(description: "request completed")
 
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
-        let request = GraphQLRequest(apiName: "todoGraphQLWithIAM",
-                                     document: CreateTodoMutation.document,
+        let request = GraphQLRequest(document: CreateTodoMutation.document,
                                      variables: CreateTodoMutation.variables(id: expectedId,
                                                                              name: expectedName,
                                                                              description: expectedDescription),
@@ -114,16 +100,20 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
-    /// Given: A CreateTodo mutation request, and no user signed in
-    /// When: Call mutate API
-    /// Then: The operation fails and contains UnAuthorized error
+    /// An unauthenticated user should fail with 401
+    ///
+    /// - Given:  A CreateTodo mutation request, and user is not signed in.
+    /// - When:
+    ///    - Call mutate API
+    /// - Then:
+    ///    - The operation fails and contains http status error for 401 (Unauthorized)
+    ///
     func testCreateTodoMutationWithIAMWithNoUserSignedIn() {
         let failedInvoked = expectation(description: "request failed")
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
-        let request = GraphQLRequest(apiName: "todoGraphQLWithIAM",
-                                     document: CreateTodoMutation.document,
+        let request = GraphQLRequest(document: CreateTodoMutation.document,
                                      variables: CreateTodoMutation.variables(id: expectedId,
                                                                              name: expectedName,
                                                                              description: expectedDescription),
@@ -145,5 +135,181 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         }
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+    }
+
+    /// A subscription to onCreate todo should receive an event for each create Todo mutation API called
+    ///
+    /// - Given:  An onCreate Todo subscription established
+    /// - When:
+    ///    - Create todo mutations API called
+    /// - Then:
+    ///    - The subscription should receive mutation events corresponding to the API calls performed.
+    ///
+    func testOnCreateTodo() {
+        signIn(username: user.username, password: user.password)
+        let connectedInvoked = expectation(description: "Connection established")
+        let disconnectedInvoked = expectation(description: "Connection disconnected")
+        let completedInvoked = expectation(description: "Completed invoked")
+        let progressInvoked = expectation(description: "progress invoked")
+        progressInvoked.expectedFulfillmentCount = 2
+        let uuid = UUID().uuidString
+        let uuid2 = UUID().uuidString
+        let name = String("\(#function)".dropLast(2))
+
+        let operation = Amplify.API.subscribe(
+            request: .subscription(of: Todo.self, type: .onCreate),
+            valueListener: { event in
+                switch event {
+                case .connection(let state):
+                    switch state {
+                    case .connecting:
+                        break
+                    case .connected:
+                        connectedInvoked.fulfill()
+                    case .disconnected:
+                        disconnectedInvoked.fulfill()
+                    }
+                case .data(let result):
+                    switch result {
+                    case .success(let todo):
+                        if todo.id == uuid || todo.id == uuid2 {
+                            progressInvoked.fulfill()
+                        }
+                    case .failure(let error):
+                        XCTFail("\(error)")
+                    }
+                }
+
+            },
+            completionListener: { event in
+                switch event {
+                case .failure(let error):
+                    XCTFail("Unexpected .failed event: \(error)")
+                case .success:
+                    completedInvoked.fulfill()
+                }
+            })
+
+        XCTAssertNotNil(operation)
+        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+
+        guard createTodo(id: uuid, name: name) != nil,
+              createTodo(id: uuid2, name: name) != nil else {
+            XCTFail("Failed to create post")
+            return
+        }
+
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        operation.cancel()
+        wait(for: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertTrue(operation.isFinished)
+    }
+
+    // MARK: - Helpers
+
+    func signIn(username: String, password: String) {
+        let signInInvoked = expectation(description: "sign in completed")
+        _ = Amplify.Auth.signIn(username: username, password: password) { event in
+            switch event {
+            case .success:
+                signInInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Failed to Sign in user \(error)")
+            }
+        }
+        wait(for: [signInInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    func isSignedIn() -> Bool {
+        let checkIsSignedInCompleted = expectation(description: "retrieve auth session completed")
+        var resultOptional: Bool?
+        _ = Amplify.Auth.fetchAuthSession { event in
+            switch event {
+            case .success(let authSession):
+                resultOptional = authSession.isSignedIn
+                checkIsSignedInCompleted.fulfill()
+            case .failure(let error):
+                fatalError("Failed to get auth session \(error)")
+            }
+        }
+        wait(for: [checkIsSignedInCompleted], timeout: TestCommonConstants.networkTimeout)
+        guard let result = resultOptional else {
+            fatalError("Could not get isSignedIn for user")
+        }
+
+        return result
+    }
+
+    func signOut() {
+        let signOutCompleted = expectation(description: "sign out completed")
+        _ = Amplify.Auth.signOut { event in
+            switch event {
+            case .success:
+                signOutCompleted.fulfill()
+            case .failure(let error):
+                print("Could not sign out user \(error)")
+                signOutCompleted.fulfill()
+            }
+        }
+        wait(for: [signOutCompleted], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    func createTodo(id: String, name: String) -> Todo? {
+        let todo = Todo(id: id, name: name)
+        var result: Todo?
+        let requestInvokedSuccessfully = expectation(description: "request completed")
+
+        _ = Amplify.API.mutate(request: .create(todo)) { event in
+            switch event {
+            case .success(let data):
+                switch data {
+                case .success(let post):
+                    result = post
+                default:
+                    XCTFail("Create Post was not successful: \(data)")
+                }
+                requestInvokedSuccessfully.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
+        return result
+    }
+
+    // MARK: - Model
+
+    struct Todo: Model {
+        public let id: String
+        public var name: String
+        public var description: String?
+
+        init(id: String = UUID().uuidString,
+             name: String,
+             description: String? = nil) {
+            self.id = id
+            self.name = name
+            self.description = description
+        }
+
+        enum CodingKeys: String, ModelKey {
+            case id
+            case name
+            case description
+        }
+
+        static let keys = CodingKeys.self
+
+        static let schema = defineSchema { model in
+            let todo = Todo.keys
+
+            model.pluralName = "Todos"
+
+            model.fields(
+                .id(),
+                .field(todo.name, is: .required, ofType: .string),
+                .field(todo.description, is: .optional, ofType: .string)
+            )
+        }
     }
 }
