@@ -71,13 +71,15 @@ class ReconcileAndSaveQueue: ReconcileAndSaveOperationQueue {
     }
 
     func addOperation(_ operation: ReconcileAndLocalSaveOperation, modelName: String) {
+
         serialQueue.async {
             var reconcileAndLocalSaveOperationSink: AnyCancellable?
-
             reconcileAndLocalSaveOperationSink = operation.publisher.sink { _ in
-                self.reconcileAndLocalSaveOperationSinks.with { $0.remove(reconcileAndLocalSaveOperationSink) }
-                self.modelReconcileAndSaveOperations[modelName]?[operation.id] = nil
-                self.reconcileAndSaveQueueSubject.send(.operationRemoved(id: operation.id))
+                self.serialQueue.async {
+                    self.reconcileAndLocalSaveOperationSinks.with { $0.remove(reconcileAndLocalSaveOperationSink) }
+                    self.modelReconcileAndSaveOperations[modelName]?[operation.id] = nil
+                    self.reconcileAndSaveQueueSubject.send(.operationRemoved(id: operation.id))
+                }
             } receiveValue: { _ in }
 
             self.reconcileAndLocalSaveOperationSinks.with { $0.insert(reconcileAndLocalSaveOperationSink) }
