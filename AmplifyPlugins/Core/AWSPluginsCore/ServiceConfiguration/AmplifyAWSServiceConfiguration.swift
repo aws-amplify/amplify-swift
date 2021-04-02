@@ -9,7 +9,7 @@ import Foundation
 import AWSCore
 
 public class AmplifyAWSServiceConfiguration: AWSServiceConfiguration {
-    static let version = "1.7.1"
+    static let version = "1.7.2"
 
     override public class func baseUserAgent() -> String! {
         //TODO: Retrieve this version from a centralized location:
