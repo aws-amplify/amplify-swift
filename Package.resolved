@@ -2,6 +2,24 @@
   "object": {
     "pins": [
       {
+        "package": "AppSyncRealTimeClient",
+        "repositoryURL": "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "16c2c3aaf0b0a812dbc2023cecb0dbd433f99810",
+          "version": "1.4.4"
+        }
+      },
+      {
+        "package": "AWSiOSSDKV2",
+        "repositoryURL": "https://github.com/aws-amplify/aws-sdk-ios-spm.git",
+        "state": {
+          "branch": null,
+          "revision": "9057509ddfc1f3ef1c36264e9b8e8173eda634c9",
+          "version": "2.23.3"
+        }
+      },
+      {
         "package": "SQLite.swift",
         "repositoryURL": "https://github.com/stephencelis/SQLite.swift.git",
         "state": {
