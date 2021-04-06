@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Foundation
 
 /// Metadata that contains information about an associated parent object.
 public struct AppSyncModelMetadata: Codable {

@@ -8,6 +8,7 @@
 import Amplify
 import AWSPluginsCore
 import Combine
+import Foundation
 
 /// Facade to hide the AsyncEventQueue/ModelMapper structures from the ModelReconciliationQueue.
 /// Provides a publisher for all incoming subscription types (onCreate, onUpdate, onDelete) for a single Model type.

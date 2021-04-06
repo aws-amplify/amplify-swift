@@ -8,6 +8,7 @@
 import Amplify
 import Combine
 import AWSPluginsCore
+import Foundation
 
 final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 

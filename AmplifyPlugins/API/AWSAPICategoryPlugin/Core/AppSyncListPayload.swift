@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 /// Store metadata about the request alongside AppSync's GraphQL response for a List operation, useful for creating
 /// `AppSyncListProvider` that is capable of performing pagination based on the metadata.

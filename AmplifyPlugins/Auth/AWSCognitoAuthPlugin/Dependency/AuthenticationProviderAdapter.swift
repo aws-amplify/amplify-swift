@@ -6,7 +6,11 @@
 //
 
 import Amplify
+#if COCOAPODS
 import AWSMobileClient
+#else
+import AWSMobileClientXCF
+#endif
 
 class AuthenticationProviderAdapter: AuthenticationProviderBehavior {
 

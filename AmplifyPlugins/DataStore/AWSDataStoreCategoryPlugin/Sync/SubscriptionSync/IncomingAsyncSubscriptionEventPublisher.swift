@@ -8,6 +8,7 @@
 import Amplify
 import AWSPluginsCore
 import Combine
+import Foundation
 
 /// Collects all subscription types for a given model into a single subscribable publisher.
 ///

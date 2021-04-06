@@ -6,9 +6,13 @@
 //
 
 import Amplify
-import AWSMobileClient
 import SafariServices
 import AuthenticationServices
+#if COCOAPODS
+import AWSMobileClient
+#else
+import AWSMobileClientXCF
+#endif
 
 struct AuthErrorHelper {
 

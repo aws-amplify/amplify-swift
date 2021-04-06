@@ -8,8 +8,12 @@
 import Foundation
 import Amplify
 import AWSPluginsCore
-import AWSMobileClient
 import AWSCore
+#if COCOAPODS
+import AWSMobileClient
+#else
+import AWSMobileClientXCF
+#endif
 
 extension AWSCognitoAuthPlugin {
 

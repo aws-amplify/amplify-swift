@@ -6,8 +6,12 @@
 //
 
 import Amplify
-import AWSMobileClient
 import AWSPluginsCore
+#if COCOAPODS
+import AWSMobileClient
+#else
+import AWSMobileClientXCF
+#endif
 
 struct AuthCognitoSignedOutSessionHelper {
 

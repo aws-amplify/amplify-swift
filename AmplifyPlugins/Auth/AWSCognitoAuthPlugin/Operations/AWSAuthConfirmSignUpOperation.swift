@@ -6,7 +6,11 @@
 //
 
 import Amplify
+#if COCOAPODS
 import AWSMobileClient
+#else
+import AWSMobileClientXCF
+#endif
 
 public class AWSAuthConfirmSignUpOperation: AmplifyOperation<
     AuthConfirmSignUpRequest,

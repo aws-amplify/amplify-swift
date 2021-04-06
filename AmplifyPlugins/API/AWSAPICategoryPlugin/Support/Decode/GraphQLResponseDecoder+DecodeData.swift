@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 extension GraphQLResponseDecoder {
 

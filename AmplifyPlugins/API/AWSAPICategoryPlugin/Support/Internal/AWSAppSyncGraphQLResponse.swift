@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Foundation
 
 /// The raw response coming back from the AppSync GraphQL service
 enum AWSAppSyncGraphQLResponse {

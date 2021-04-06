@@ -6,7 +6,11 @@
 //
 
 import Amplify
+#if COCOAPODS
 import AWSMobileClient
+#else
+import AWSMobileClientXCF
+#endif
 
 typealias SessionCompletionHandler = (Result<AuthSession, AuthError>) -> Void
 

@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Foundation
 
 /// Resembles the AppSync's GraphQL response for a list operation.
 struct AppSyncListResponse<Element: Model>: Codable {

@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Foundation
 
 /// Encapsulates the behavior required for a single HTTP operation, including
 /// identifying, pausing/resuming, and cancelling. Behind the scenes, this will be

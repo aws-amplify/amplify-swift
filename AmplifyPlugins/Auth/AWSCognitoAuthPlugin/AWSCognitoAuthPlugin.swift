@@ -6,7 +6,11 @@
 //
 
 import Amplify
+#if COCOAPODS
 import AWSMobileClient
+#else
+import AWSMobileClientXCF
+#endif
 
 /// Auth plugin that uses AWS Cognito UserPool and IdentityPool.
 ///

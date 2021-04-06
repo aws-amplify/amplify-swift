@@ -7,6 +7,7 @@
 
 import Amplify
 import Combine
+import Foundation
 
 /// Note: This publisher accepts only a single subscriber
 @available(iOS 13.0, *)
