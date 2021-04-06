@@ -14,17 +14,17 @@ public struct ListIntContainer: Model {
   public var test: Int
   public var nullableInt: Int?
   public var intList: [Int]
-  public var intNullableList: [Int]
-  public var nullableIntList: [Int]?
-  public var nullableIntNullableList: [Int]?
+  public var intNullableList: [Int]?
+  public var nullableIntList: [Int?]
+  public var nullableIntNullableList: [Int?]?
 
   public init(id: String = UUID().uuidString,
       test: Int,
       nullableInt: Int? = nil,
       intList: [Int] = [],
-      intNullableList: [Int] = [],
-      nullableIntList: [Int]? = [],
-      nullableIntNullableList: [Int]? = []) {
+      intNullableList: [Int]? = [],
+      nullableIntList: [Int?] = [],
+      nullableIntNullableList: [Int?]? = []) {
       self.id = id
       self.test = test
       self.nullableInt = nullableInt

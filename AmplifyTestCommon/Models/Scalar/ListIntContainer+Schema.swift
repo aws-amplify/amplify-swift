@@ -34,8 +34,8 @@ extension ListIntContainer {
       .field(listIntContainer.test, is: .required, ofType: .int),
       .field(listIntContainer.nullableInt, is: .optional, ofType: .int),
       .field(listIntContainer.intList, is: .required, ofType: .embeddedCollection(of: Int.self)),
-      .field(listIntContainer.intNullableList, is: .required, ofType: .embeddedCollection(of: Int.self)),
-      .field(listIntContainer.nullableIntList, is: .optional, ofType: .embeddedCollection(of: Int.self)),
+      .field(listIntContainer.intNullableList, is: .optional, ofType: .embeddedCollection(of: Int.self)),
+      .field(listIntContainer.nullableIntList, is: .required, ofType: .embeddedCollection(of: Int.self)),
       .field(listIntContainer.nullableIntNullableList, is: .optional, ofType: .embeddedCollection(of: Int.self))
     )
     }

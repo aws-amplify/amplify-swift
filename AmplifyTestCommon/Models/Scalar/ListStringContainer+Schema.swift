@@ -34,8 +34,8 @@ extension ListStringContainer {
       .field(listStringContainer.test, is: .required, ofType: .string),
       .field(listStringContainer.nullableString, is: .optional, ofType: .string),
       .field(listStringContainer.stringList, is: .required, ofType: .embeddedCollection(of: String.self)),
-      .field(listStringContainer.stringNullableList, is: .required, ofType: .embeddedCollection(of: String.self)),
-      .field(listStringContainer.nullableStringList, is: .optional, ofType: .embeddedCollection(of: String.self)),
+      .field(listStringContainer.stringNullableList, is: .optional, ofType: .embeddedCollection(of: String.self)),
+      .field(listStringContainer.nullableStringList, is: .required, ofType: .embeddedCollection(of: String.self)),
       .field(listStringContainer.nullableStringNullableList, is: .optional, ofType: .embeddedCollection(of: String.self))
     )
     }

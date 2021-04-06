@@ -34,8 +34,8 @@ extension NestedTypeTestModel {
       .field(nestedTypeTestModel.nestedVal, is: .required, ofType: .embedded(type: Nested.self)),
       .field(nestedTypeTestModel.nullableNestedVal, is: .optional, ofType: .embedded(type: Nested.self)),
       .field(nestedTypeTestModel.nestedList, is: .required, ofType: .embeddedCollection(of: Nested.self)),
-      .field(nestedTypeTestModel.nestedNullableList, is: .required, ofType: .embeddedCollection(of: Nested.self)),
-      .field(nestedTypeTestModel.nullableNestedList, is: .optional, ofType: .embeddedCollection(of: Nested.self)),
+      .field(nestedTypeTestModel.nestedNullableList, is: .optional, ofType: .embeddedCollection(of: Nested.self)),
+      .field(nestedTypeTestModel.nullableNestedList, is: .required, ofType: .embeddedCollection(of: Nested.self)),
       .field(nestedTypeTestModel.nullableNestedNullableList, is: .optional, ofType: .embeddedCollection(of: Nested.self))
     )
     }
