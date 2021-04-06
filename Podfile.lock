@@ -1,16 +1,16 @@
 PODS:
-  - AWSAuthCore (2.23.2):
-    - AWSCore (= 2.23.2)
-  - AWSCognitoIdentityProvider (2.23.2):
-    - AWSCognitoIdentityProviderASF (= 2.23.2)
-    - AWSCore (= 2.23.2)
-  - AWSCognitoIdentityProviderASF (2.23.2)
-  - AWSCore (2.23.2)
-  - AWSMobileClient (2.23.2):
-    - AWSAuthCore (= 2.23.2)
-    - AWSCognitoIdentityProvider (= 2.23.2)
-    - AWSCognitoIdentityProviderASF (= 2.23.2)
-    - AWSCore (= 2.23.2)
+  - AWSAuthCore (2.23.3):
+    - AWSCore (= 2.23.3)
+  - AWSCognitoIdentityProvider (2.23.3):
+    - AWSCognitoIdentityProviderASF (= 2.23.3)
+    - AWSCore (= 2.23.3)
+  - AWSCognitoIdentityProviderASF (2.23.3)
+  - AWSCore (2.23.3)
+  - AWSMobileClient (2.23.3):
+    - AWSAuthCore (= 2.23.3)
+    - AWSCognitoIdentityProvider (= 2.23.3)
+    - AWSCognitoIdentityProviderASF (= 2.23.3)
+    - AWSCore (= 2.23.3)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
@@ -18,8 +18,8 @@ PODS:
   - SwiftLint (0.43.1)
 
 DEPENDENCIES:
-  - AWSCore (~> 2.23.0)
-  - AWSMobileClient (~> 2.23.0)
+  - AWSCore (~> 2.23.3)
+  - AWSMobileClient (~> 2.23.3)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
   - SwiftFormat/CLI (= 0.44.17)
@@ -52,11 +52,11 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  AWSAuthCore: 59770d4c2c1b3dbb183b95d1867e3584b4816e54
-  AWSCognitoIdentityProvider: 5bd6988ea7c8f9ee43151e19bdd8e803558ad45f
-  AWSCognitoIdentityProviderASF: 30ccb19228b6e743805bf15a72278ca9f399bc21
-  AWSCore: 70f79e95ee30f8eefa7122391d76ace516778f22
-  AWSMobileClient: 54fd215e76e34a8edb3cb1199788a69543cebc95
+  AWSAuthCore: 2aaf8dec7f50e3f7606857bdca0db9263faed0c5
+  AWSCognitoIdentityProvider: fcd9b00fec0ef5ac6768548af948ad033b52da98
+  AWSCognitoIdentityProviderASF: 719578cca39b3233bd67e656bdf04d409e8fc255
+  AWSCore: c60e635b1a61cb27b6dfff646ce9f402be870b62
+  AWSMobileClient: bdfc148fc11b846331f2bec4a7063c95e66c329e
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
