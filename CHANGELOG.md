@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.8.0 (2021-04-07)
+
+### Features
+
+- Update dependencies to support installation via Swift Package Manager (#1146)
+
 ## 1.7.2 (2021-04-02)
 
 ### Bug Fixes
