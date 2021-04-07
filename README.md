@@ -48,15 +48,15 @@ Amplify requires Xcode 11.4 or higher to build.
 
 1. Swift Package Manager is distributed with Xcode. To start adding the Amplify Libraries to your iOS project, open your project in Xcode and select **File > Swift Packages > Add Package Dependency**.
 
-    ![Add package dependency](readme-images/add-package-dependency.png)
+    ![Add package dependency](readme-images/spm-setup-01-add-package-dependency.png)
 
 1. Enter the Amplify iOS GitHub repo URL (`https://github.com/aws-amplify/amplify-ios`) into the search bar and click **Next**.
 
-    ![Search for repo](readme-images/search-amplify-repo.png)
+    ![Search for repo](readme-images/spm-setup-02-search-amplify-repo.png)
 
 1. You'll see the Amplify iOS repository rules for which version of Amplify you want Swift Package Manager to install. Choose the first rule, **Version**, as it will use the latest compatible version of the dependency that can be detected from the `main` branch, then click **Next**.
 
-    ![Dependency version options](readme-images/dependency-version-options.png)
+    ![Dependency version options](readme-images/spm-setup-03-dependency-version-options.png)
 
 1. Choose which of the libraries you want added to your project. Always select the **Amplify** library. The "Plugin" to install depends on which categories you are using:
 
@@ -68,7 +68,7 @@ Amplify requires Xcode 11.4 or higher to build.
 
       _Note: AWSPredictionsPlugin is not currently supported through Swift Package Manager due to different minimum iOS version requirements. Support for this will eventually be added._
 
-    ![Select dependencies](readme-images/select-dependencies.png)
+    ![Select dependencies](readme-images/spm-setup-04-select-dependencies.png)
 
     Select all that are appropriate, then click **Finish**.
 
