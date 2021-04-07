@@ -11,9 +11,6 @@ let package = Package(
             name: "Amplify",
             targets: ["Amplify"]),
         
-        .library(name: "AWSPluginsCore",
-                 targets: ["AWSPluginsCore"]),
-        
         .library(name: "AWSAPIPlugin",
                  targets: ["AWSAPIPlugin"]),
         
