@@ -4,7 +4,7 @@
 
 ### Features
 
-- Update dependencies to support installation via Swift Package Manager (#1146)
+- Amplify iOS can now be installed via Swift Package Manager. See the [README](https://github.com/aws-amplify/amplify-ios/blob/main/README.md) for full details. (#1146)
 
 ## 1.7.2 (2021-04-02)
 

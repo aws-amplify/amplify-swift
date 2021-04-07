@@ -41,10 +41,71 @@ This library is licensed under the Apache 2.0 License.
 
 Amplify requires Xcode 11.4 or higher to build.
 
-### CocoaPods
-
 | :information_source: For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/lib/q/platform/ios)   |
 |-------------------------------------------------|
+
+### Swift Package Manager
+
+1. Swift Package Manager is distributed with Xcode. To start adding the Amplify Libraries to your iOS project, open your project in Xcode and select **File > Swift Packages > Add Package Dependency**.
+
+    ![Add package dependency](readme-images/spm-setup-01-add-package-dependency.png)
+
+1. Enter the Amplify iOS GitHub repo URL (`https://github.com/aws-amplify/amplify-ios`) into the search bar and click **Next**.
+
+    ![Search for repo](readme-images/spm-setup-02-search-amplify-repo.png)
+
+1. You'll see the Amplify iOS repository rules for which version of Amplify you want Swift Package Manager to install. Choose the first rule, **Version**, as it will use the latest compatible version of the dependency that can be detected from the `main` branch, then click **Next**.
+
+    ![Dependency version options](readme-images/spm-setup-03-dependency-version-options.png)
+
+1. Choose which of the libraries you want added to your project. Always select the **Amplify** library. The "Plugin" to install depends on which categories you are using:
+
+    - API: **AWSAPIPlugin**
+    - Analytics: **AWSPinpointAnalyticsPlugin**
+    - Auth: **AWSCognitoAuthPlugin**
+    - DataStore: **AWSDataStorePlugin**
+    - Storage: **AWSS3StoragePlugin**
+
+      _Note: AWSPredictionsPlugin is not currently supported through Swift Package Manager due to different minimum iOS version requirements. Support for this will eventually be added._
+
+    ![Select dependencies](readme-images/spm-setup-04-select-dependencies.png)
+
+    Select all that are appropriate, then click **Finish**.
+
+    You can always go back and modify which SPM packages are included in your project by opening the Swift Packages tab for your project: Click on the Project file in the Xcode navigator, then click on your project's icon, then select the **Swift Packages** tab.
+
+1. In your app code, explicitly import a plugin when you need to add a plugin to Amplify, access plugin options, or access a category escape hatch.
+
+    ```swift
+    import Amplify
+    import AWSAPIPlugin
+    import AWSDataStorePlugin
+
+    // ... later
+
+    func initializeAmplify() {
+        do {
+            try Amplify.add(AWSAPIPlugin())
+            // and so on ...
+        } catch {
+            assert(false, "Error initializing Amplify: \(error)")
+        }
+    }
+    ```
+
+    If you're just accessing Amplify category APIs (e.g., `Auth.signIn()` or `Storage.uploadFile()`), you only need to import Amplify:
+
+    ```swift
+    import Amplify
+
+    // ... later
+
+    func doUpload() {
+        Amplify.Storage.uploadFile(...)
+    }
+    ```
+
+### CocoaPods
 
 1. Amplify for iOS is available through [CocoaPods](http://cocoapods.org). If you have not installed CocoaPods, install CocoaPods by running the command:
     ```
@@ -59,7 +120,7 @@ Amplify requires Xcode 11.4 or higher to build.
     $ pod setup
     ```
 
-2. In your project directory (the directory where your `*.xcodeproj` file is), type `pod init` and open the Podfile that was created. Add the `Amplify` pod and any plugins you would like to use. Below is an example of what a podfile might look like if you were going to use the Predictions plugin.
+1. In your project directory (the directory where your `*.xcodeproj` file is), type `pod init` and open the Podfile that was created. Add the `Amplify` pod and any plugins you would like to use. Below is an example of what a podfile might look like if you were going to use the Predictions plugin.
     ```ruby
     source 'https://github.com/CocoaPods/Specs.git'
     
@@ -74,21 +135,47 @@ Amplify requires Xcode 11.4 or higher to build.
     end
     ```
         
-3. Then run the following command:
+1. Then run the following command:
     ```
     $ pod install
     ```
-4. Open up `*.xcworkspace` with Xcode and start using Amplify.
+1. Open up `*.xcworkspace` with Xcode and start using Amplify.
 
     ![image](readme-images/cocoapods-setup-02.png?raw=true)
 
     **Note**: Do **NOT** use `*.xcodeproj`. If you open up a project file instead of a workspace, you will receive an error.
 
-### Swift Package Manager (SPM)
+1. In your app code, import `AmplifyPlugins` when you need to add a plugin to Amplify, access plugin options, or access a category escape hatch.
 
-Support for SPM coming soon. Follow [#90](https://github.com/aws-amplify/amplify-ios/issues/90) for updates.
+    ```swift
+    import Amplify
+    import AmplifyPlugins
 
-### Development Pods
+    // ... later
+
+    func initializeAmplify() {
+        do {
+            try Amplify.add(AWSAPIPlugin())
+            // and so on ...
+        } catch {
+            assert(false, "Error initializing Amplify: \(error)")
+        }
+    }
+    ```
+
+    If you're just accessing Amplify category APIs (e.g., `Auth.signIn()` or `Storage.uploadFile()`), you only need to import Amplify:
+
+    ```swift
+    import Amplify
+
+    // ... later
+
+    func doUpload() {
+        Amplify.Storage.uploadFile(...)
+    }
+    ```
+
+**Development Pods**
 
 You can manually install the library by cloning this repo and creating a Podfile that references your local clone of it like below:
 
