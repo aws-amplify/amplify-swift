@@ -17,7 +17,7 @@ extension Model {
     /// used as the `input` of GraphQL related operations.
     func graphQLInput(_ modelSchema: ModelSchema) -> GraphQLInput {
         var input: GraphQLInput = [:]
-        modelSchema.fields.forEach {
+        modelSchema.fields.filter { !$0.value.isReadOnly }.forEach {
             let modelField = $0.value
 
             // TODO how to handle associations of type "many" (i.e. cascade save)?

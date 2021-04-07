@@ -73,6 +73,15 @@ class ModelGraphQLTests: XCTestCase {
         XCTAssertEqual(expectedColor["blue"] as? Int, color.blue)
     }
 
+    func testRecordModelWithReadOnlyFields() {
+        let record = Record(id: "id", name: "name", description: "description")
+        let graphQLInput = record.graphQLInput(Record.schema)
+        XCTAssertEqual(graphQLInput["id"] as? String, record.id)
+        XCTAssertEqual(graphQLInput["name"] as? String, record.name)
+        XCTAssertEqual(graphQLInput["description"] as? String, record.description)
+        XCTAssertNil(graphQLInput["createdAt"] as? Temporal.DateTime)
+        XCTAssertNil(graphQLInput["updatedAt"] as? Temporal.DateTime)
+    }
 
     // MARK: - `Project1` and `Team1`
 

@@ -248,8 +248,10 @@ class GraphQLCreateMutationTests: XCTestCase {
         mutation CreateRecord($input: CreateRecordInput!) {
           createRecord(input: $input) {
             id
+            createdAt
             description
             name
+            updatedAt
             __typename
             _version
             _deleted
@@ -270,7 +272,7 @@ class GraphQLCreateMutationTests: XCTestCase {
         XCTAssertEqual(input["id"] as? String, record.id)
         XCTAssertEqual(input["name"] as? String, record.name)
         XCTAssertEqual(input["description"] as? String, record.description)
-        XCTAssertNil(input["createdAt"]!)
-        XCTAssertNil(input["updatedAt"]!)
+        XCTAssertNil(input["createdAt"] as? Temporal.DateTime)
+        XCTAssertNil(input["updatedAt"] as? Temporal.DateTime)
     }
 }
