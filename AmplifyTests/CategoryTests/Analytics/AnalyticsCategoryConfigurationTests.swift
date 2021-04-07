@@ -293,4 +293,33 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 0.1)
     }
 
+    /// Test if adding a plugin after configuration throws an error
+    ///
+    /// - Given: Amplify is configured
+    /// - When:
+    ///    - Add  is called for Analytics category
+    /// - Then:
+    ///    - Should throw an exception
+    ///
+    func testAddAfterConfigureThrowsError() throws {
+        let plugin = MockAnalyticsCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let config = AnalyticsCategoryConfiguration(
+            plugins: ["MockAnalyticsCategoryPlugin": true]
+        )
+
+        let amplifyConfig = AmplifyConfiguration(analytics: config)
+
+        try Amplify.configure(amplifyConfig)
+
+        XCTAssertThrowsError(try Amplify.add(plugin: plugin),
+                             "configure() an already configured plugin should throw") { error in
+                                guard case ConfigurationError.amplifyAlreadyConfigured = error else {
+                                    XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
+                                    return
+                                }
+        }
+
+    }
 }

@@ -56,6 +56,15 @@ final public class AuthCategory: Category {
             throw error
         }
 
+        guard !isConfigured else {
+            let pluginDescription = String(describing: plugin)
+            let error = ConfigurationError.amplifyAlreadyConfigured(
+                "\(pluginDescription) has already been configured.",
+                "Remove the duplicate call to `Amplify.configure().`"
+            )
+            throw error
+        }
+
         plugins[plugin.key] = plugin
     }
 
