@@ -22,8 +22,8 @@ extension AmplifyAPICategory: APICategory {
         guard !isConfigured else {
             let pluginDescription = String(describing: plugin)
             let error = ConfigurationError.amplifyAlreadyConfigured(
-                "\(pluginDescription) has already been configured.",
-                "Remove the duplicate call to `Amplify.configure().`"
+                "\(pluginDescription) cannot be added after `Amplify.configure()`.",
+                "Do not add plugins after calling `Amplify.configure()`."
             )
             throw error
         }
