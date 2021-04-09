@@ -126,12 +126,7 @@ public enum ModelFieldWritability {
     case readWrite
 
     var isReadOnly: Bool {
-        switch self {
-        case .readOnly:
-            return true
-        case .readWrite:
-            return false
-        }
+        self == .readOnly
     }
 }
 

@@ -31,8 +31,8 @@ extension Record {
         .id(),
         .field(record.name, is: .required, ofType: .string),
         .field(record.description, is: .optional, ofType: .string),
-        .field(record.createdAt, is: .optional, access: .readOnly, ofType: .date),
-        .field(record.updatedAt, is: .optional, access: .readOnly, ofType: .date)
+        .field(record.createdAt, is: .optional, access: .readOnly, ofType: .dateTime),
+        .field(record.updatedAt, is: .optional, access: .readOnly, ofType: .dateTime)
         )
     }
 }

@@ -10,18 +10,30 @@ import Foundation
 import Amplify
 
 public struct Record: Model {
-  public let id: String
-  public var name: String
-  public var description: String?
-  public var createdAt: Temporal.DateTime?
-  public var updatedAt: Temporal.DateTime?
+    public let id: String
+    public var name: String
+    public var description: String?
+    public let createdAt: Temporal.DateTime?
+    public let updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      name: String,
-      description: String? = nil) {
-      self.id = id
-      self.name = name
-      self.description = description
-  }
+    public init(name: String,
+                description: String? = nil) {
+    self.init(name: name,
+              description: description,
+              createdAt: nil,
+              updatedAt: nil)
+    }
+  
+    internal init(id: String = UUID().uuidString,
+                  name: String,
+                  description: String? = nil,
+                  createdAt: Temporal.DateTime? = nil,
+                  updatedAt: Temporal.DateTime? = nil) {
+        self.id = id
+        self.name = name
+        self.description = description
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+    }
 }
 
