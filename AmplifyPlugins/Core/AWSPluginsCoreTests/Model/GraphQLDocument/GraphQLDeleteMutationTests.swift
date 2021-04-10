@@ -120,7 +120,8 @@ class GraphQLDeleteMutationTests: XCTestCase {
     }
 
     func testDeleteGraphQLMutationModelWithReadOnlyFields() {
-        let record = Record(name: "name", description: "description")
+        let recordCover = RecordCover(artist: "artist")
+        let record = Record(name: "name", description: "description", cover: recordCover)
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Record.schema,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
