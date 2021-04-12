@@ -30,7 +30,7 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
         let timestamp = String(Date().timeIntervalSince1970)
         let key = "testUploadProgressViaListener-\(timestamp)"
 
-        defer {
+        addTeardownBlock {
             removeTestFile(withKey: key)
         }
 
@@ -41,14 +41,10 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
             key: key,
             data: .testDataOfSize(.bytes(100)),
             progressListener: { progress in
-                defer {
-                    progressReceived.fulfill()
-                }
+                progressReceived.fulfill()
                 print("Progress: \(progress.fractionCompleted)")
             }, resultListener: { result in
-                defer {
-                    resultReceived.fulfill()
-                }
+                resultReceived.fulfill()
                 print("Result received: \(result)")
             }
         )
@@ -62,7 +58,7 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
         let timestamp = String(Date().timeIntervalSince1970)
         let key = "testUploadProgressViaPublisher-\(timestamp)"
 
-        defer {
+        addTeardownBlock {
             removeTestFile(withKey: key)
         }
 
@@ -96,7 +92,7 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
         let timestamp = String(Date().timeIntervalSince1970)
         let key = "testUploadProgressDeliveryAfterCompletion-\(timestamp)"
 
-        defer {
+        addTeardownBlock {
             removeTestFile(withKey: key)
         }
 
