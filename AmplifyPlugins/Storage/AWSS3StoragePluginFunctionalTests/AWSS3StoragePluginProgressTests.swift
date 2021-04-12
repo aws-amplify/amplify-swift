@@ -31,7 +31,7 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
         let key = "testUploadProgressViaListener-\(timestamp)"
 
         addTeardownBlock {
-            removeTestFile(withKey: key)
+            self.removeTestFile(withKey: key)
         }
 
         let resultReceived = expectation(description: "resultReceived")
@@ -59,7 +59,7 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
         let key = "testUploadProgressViaPublisher-\(timestamp)"
 
         addTeardownBlock {
-            removeTestFile(withKey: key)
+            self.removeTestFile(withKey: key)
         }
 
         let completionReceived = expectation(description: "resultReceived")
@@ -93,7 +93,7 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
         let key = "testUploadProgressDeliveryAfterCompletion-\(timestamp)"
 
         addTeardownBlock {
-            removeTestFile(withKey: key)
+            self.removeTestFile(withKey: key)
         }
 
         // Wait for the upload to complete
