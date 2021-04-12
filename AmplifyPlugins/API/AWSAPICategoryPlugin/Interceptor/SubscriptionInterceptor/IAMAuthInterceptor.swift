@@ -13,6 +13,13 @@ import AppSyncRealTimeClient
 
 class IAMAuthInterceptor: AuthInterceptor {
 
+    private static let defaultLowercasedHeaderKeys: Set = [SubscriptionConstants.authorizationkey.lowercased(),
+                                                           RealtimeProviderConstants.acceptKey.lowercased(),
+                                                           RealtimeProviderConstants.contentEncodingKey.lowercased(),
+                                                           RealtimeProviderConstants.contentTypeKey.lowercased(),
+                                                           RealtimeProviderConstants.amzDate.lowercased(),
+                                                           RealtimeProviderConstants.iamSecurityTokenKey.lowercased()]
+
     let authProvider: AWSCredentialsProvider
     let region: AWSRegionType
 
@@ -77,12 +84,34 @@ class IAMAuthInterceptor: AuthInterceptor {
         }
         let signer: AWSSignatureV4Signer = AWSSignatureV4Signer(credentialsProvider: authProvider,
                                                                 endpoint: awsEndpoint)
-        let semaphore = DispatchSemaphore(value: 0)
         let mutableRequest = NSMutableURLRequest(url: endpoint)
+        return getAuthHeader(host: host,
+                             mutableRequest: mutableRequest,
+                             signer: signer,
+                             amzDate: date,
+                             payload: payload)
+    }
+
+    /// The process of getting the auth header for an IAM based authencation request is as follows:
+    ///
+    /// 1. A request is created with the IAM based auth headers (date,  accept, content encoding, content type, and
+    /// additional headers from the `mutableRequest`.
+    ///
+    /// 2. The request is SigV4 signed by using all the available headers on the request. By signing the request, the signature is added to
+    /// the request headers as authorization and security token.
+    ///
+    /// 3. The signed request headers are stored in an `IAMAuthenticationHeader` object, used for further encoding to
+    /// be added to the request for establishing the subscription connection.
+    func getAuthHeader(host: String,
+                       mutableRequest: NSMutableURLRequest,
+                       signer: AWSSignatureV4Signer,
+                       amzDate: String,
+                       payload: String) -> IAMAuthenticationHeader {
+        let semaphore = DispatchSemaphore(value: 0)
         mutableRequest.httpMethod = "POST"
         mutableRequest.addValue(RealtimeProviderConstants.iamAccept,
                                 forHTTPHeaderField: RealtimeProviderConstants.acceptKey)
-        mutableRequest.addValue(date, forHTTPHeaderField: RealtimeProviderConstants.amzDate)
+        mutableRequest.addValue(amzDate, forHTTPHeaderField: RealtimeProviderConstants.amzDate)
         mutableRequest.addValue(RealtimeProviderConstants.iamEncoding,
                                 forHTTPHeaderField: RealtimeProviderConstants.contentEncodingKey)
         mutableRequest.addValue(RealtimeProviderConstants.iamConentType,
@@ -94,61 +123,97 @@ class IAMAuthInterceptor: AuthInterceptor {
             return nil
         }
         semaphore.wait()
+
         let authorization = mutableRequest.allHTTPHeaderFields?[SubscriptionConstants.authorizationkey] ?? ""
         let securityToken = mutableRequest.allHTTPHeaderFields?[RealtimeProviderConstants.iamSecurityTokenKey] ?? ""
-        let authHeader = IAMAuthenticationHeader(authorization: authorization,
-                                                 host: host,
-                                                 token: securityToken,
-                                                 date: date,
-                                                 accept: RealtimeProviderConstants.iamAccept,
-                                                 contentEncoding: RealtimeProviderConstants.iamEncoding,
-                                                 contentType: RealtimeProviderConstants.iamConentType)
-        return authHeader
+        let additionalHeaders = mutableRequest.allHTTPHeaderFields?.filter {
+            !Self.defaultLowercasedHeaderKeys.contains($0.key.lowercased())
+        }
+
+        return IAMAuthenticationHeader(host: host,
+                                       authorization: authorization,
+                                       securityToken: securityToken,
+                                       amzDate: amzDate,
+                                       accept: RealtimeProviderConstants.iamAccept,
+                                       contentEncoding: RealtimeProviderConstants.iamEncoding,
+                                       contentType: RealtimeProviderConstants.iamConentType,
+                                       additionalHeaders: additionalHeaders)
     }
 }
 
-/// Authentication header for IAM based auth
-private class IAMAuthenticationHeader: AuthenticationHeader {
+/// Stores the headers for an IAM based authentication. This object can be serialized to a JSON object and passed as the
+/// headers value for establishing subscription connections. This is used as part of the overall interceptor logic
+/// which expects a subclass of `AuthenticationHeader` to be returned.
+/// See `IAMAuthInterceptor.getAuthHeader` for more details.
+class IAMAuthenticationHeader: AuthenticationHeader {
     let authorization: String
     let securityToken: String
-    let date: String
+    let amzDate: String
     let accept: String
     let contentEncoding: String
     let contentType: String
 
-    init(authorization: String,
-         host: String,
-         token: String,
-         date: String,
+    /// Additional headers that are not one of the expected headers in the request, but because additional headers are
+    /// also signed (and added the authorization header), they are required to be stored here to be further encoded.
+    let additionalHeaders: [String: String]?
+
+    init(host: String,
+         authorization: String,
+         securityToken: String,
+         amzDate: String,
          accept: String,
          contentEncoding: String,
-         contentType: String) {
-        self.date = date
+         contentType: String,
+         additionalHeaders: [String: String]?) {
         self.authorization = authorization
-        self.securityToken = token
+        self.securityToken = securityToken
+        self.amzDate = amzDate
         self.accept = accept
         self.contentEncoding = contentEncoding
         self.contentType = contentType
+        self.additionalHeaders = additionalHeaders
         super.init(host: host)
     }
 
-    private enum CodingKeys: String, CodingKey {
-        case authorization = "Authorization"
-        case accept
-        case contentEncoding = "content-encoding"
-        case contentType = "content-type"
-        case date = "x-amz-date"
-        case securityToken = "x-amz-security-token"
+    private struct DynamicCodingKeys: CodingKey {
+        var stringValue: String
+        init?(stringValue: String) {
+            self.stringValue = stringValue
+        }
+        var intValue: Int?
+        init?(intValue: Int) {
+            // We are not using this, thus just return nil. If we don't return nil, then it is expected all of the
+            // stored properties are initialized, forcing the implementation to have logic that maintains the two
+            // properties `stringValue` and `intValue`. Since we don't have a string representation of an int value
+            // and aren't using int values for determining the coding key, then simply return nil since the encoder
+            // will always pass in the header key string.
+            self.intValue = intValue
+            self.stringValue = ""
+
+        }
     }
 
     override func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(authorization, forKey: .authorization)
-        try container.encode(accept, forKey: .accept)
-        try container.encode(contentEncoding, forKey: .contentEncoding)
-        try container.encode(contentType, forKey: .contentType)
-        try container.encode(date, forKey: .date)
-        try container.encode(securityToken, forKey: .securityToken)
+        var container = encoder.container(keyedBy: DynamicCodingKeys.self)
+        // Force unwrapping when creating a `DynamicCodingKeys` will always be successful since the string constructor
+        // will never return nil even though the constructor is optional (conformance to CodingKey).
+        try container.encode(authorization,
+                             forKey: DynamicCodingKeys(stringValue: SubscriptionConstants.authorizationkey)!)
+        try container.encode(securityToken,
+                             forKey: DynamicCodingKeys(stringValue: RealtimeProviderConstants.iamSecurityTokenKey)!)
+        try container.encode(amzDate,
+                             forKey: DynamicCodingKeys(stringValue: RealtimeProviderConstants.amzDate)!)
+        try container.encode(accept,
+                             forKey: DynamicCodingKeys(stringValue: RealtimeProviderConstants.acceptKey)!)
+        try container.encode(contentEncoding,
+                             forKey: DynamicCodingKeys(stringValue: RealtimeProviderConstants.contentEncodingKey)!)
+        try container.encode(contentType,
+                             forKey: DynamicCodingKeys(stringValue: RealtimeProviderConstants.contentTypeKey)!)
+        if let headers = additionalHeaders {
+            for (key, value) in headers {
+                try container.encode(value, forKey: DynamicCodingKeys(stringValue: key)!)
+            }
+        }
         try super.encode(to: encoder)
     }
 }

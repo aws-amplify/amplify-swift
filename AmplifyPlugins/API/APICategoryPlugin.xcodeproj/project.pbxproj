@@ -20,6 +20,9 @@
 		212B29212592454400593ED5 /* AppSyncListPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212B29202592454400593ED5 /* AppSyncListPayload.swift */; };
 		212B298B2592519800593ED5 /* GraphQLConnectionScenario3Tests+List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212B298A2592519800593ED5 /* GraphQLConnectionScenario3Tests+List.swift */; };
 		212B299F259251F100593ED5 /* GraphQLModelBasedTests+List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212B299E259251F100593ED5 /* GraphQLModelBasedTests+List.swift */; };
+		2136FAAE261FF96600A95F6F /* GraphQLWithIAMIntegrationTests-credentials.json in Resources */ = {isa = PBXBuildFile; fileRef = 2136FAAC261FF96400A95F6F /* GraphQLWithIAMIntegrationTests-credentials.json */; };
+		2136FAAF261FF96600A95F6F /* GraphQLWithIAMIntegrationTests-amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 2136FAAD261FF96500A95F6F /* GraphQLWithIAMIntegrationTests-amplifyconfiguration.json */; };
+		2136FABB262022D700A95F6F /* IAMAuthInterceptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2136FABA262022D700A95F6F /* IAMAuthInterceptorTests.swift */; };
 		21409C4F2384BA7E000A53C9 /* APIOperationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C4E2384BA7E000A53C9 /* APIOperationResponse.swift */; };
 		21409C602384DF17000A53C9 /* RESTOperationRequest+RESTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C5F2384DF17000A53C9 /* RESTOperationRequest+RESTRequest.swift */; };
 		21409C7223850BEE000A53C9 /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C7123850BEE000A53C9 /* Todo.swift */; };
@@ -315,6 +318,9 @@
 		212B29202592454400593ED5 /* AppSyncListPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncListPayload.swift; sourceTree = "<group>"; };
 		212B298A2592519800593ED5 /* GraphQLConnectionScenario3Tests+List.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLConnectionScenario3Tests+List.swift"; sourceTree = "<group>"; };
 		212B299E259251F100593ED5 /* GraphQLModelBasedTests+List.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLModelBasedTests+List.swift"; sourceTree = "<group>"; };
+		2136FAAC261FF96400A95F6F /* GraphQLWithIAMIntegrationTests-credentials.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "GraphQLWithIAMIntegrationTests-credentials.json"; sourceTree = "<group>"; };
+		2136FAAD261FF96500A95F6F /* GraphQLWithIAMIntegrationTests-amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "GraphQLWithIAMIntegrationTests-amplifyconfiguration.json"; sourceTree = "<group>"; };
+		2136FABA262022D700A95F6F /* IAMAuthInterceptorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAMAuthInterceptorTests.swift; sourceTree = "<group>"; };
 		21409C4E2384BA7E000A53C9 /* APIOperationResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIOperationResponse.swift; sourceTree = "<group>"; };
 		21409C5F2384DF17000A53C9 /* RESTOperationRequest+RESTRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RESTOperationRequest+RESTRequest.swift"; sourceTree = "<group>"; };
 		21409C6723850A9E000A53C9 /* AWSAPICategoryPluginTestCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSAPICategoryPluginTestCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -650,6 +656,14 @@
 			path = AuthDirective;
 			sourceTree = "<group>";
 		};
+		2136FAB9262022C000A95F6F /* SubscriptionInterceptor */ = {
+			isa = PBXGroup;
+			children = (
+				2136FABA262022D700A95F6F /* IAMAuthInterceptorTests.swift */,
+			);
+			path = SubscriptionInterceptor;
+			sourceTree = "<group>";
+		};
 		21409C612384F7FD000A53C9 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -772,6 +786,8 @@
 		217856612380C60400A30D19 /* GraphQLWithIAMIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				2136FAAD261FF96500A95F6F /* GraphQLWithIAMIntegrationTests-amplifyconfiguration.json */,
+				2136FAAC261FF96400A95F6F /* GraphQLWithIAMIntegrationTests-credentials.json */,
 				217856622380C60400A30D19 /* GraphQLWithIAMIntegrationTests.swift */,
 				217856642380C60400A30D19 /* Info.plist */,
 				21598CE823A0037800529F29 /* README.md */,
@@ -1186,6 +1202,7 @@
 			children = (
 				B4DFA5DB237A611D0013E17B /* APIKeyURLRequestInterceptorTests.swift */,
 				B4DFA5DC237A611D0013E17B /* IAMURLRequestInterceptorTests.swift */,
+				2136FAB9262022C000A95F6F /* SubscriptionInterceptor */,
 				B4DFA5DA237A611D0013E17B /* UserPoolRequestInterceptorTests.swift */,
 			);
 			path = Interceptor;
@@ -1611,10 +1628,12 @@
 				219A88A223EE034F00BBC5F2 /* RESTWithUserPoolIntegrationTests-amplifyconfiguration.json in Resources */,
 				21598CE3239FF54E00529F29 /* RESTWithIAMIntegrationTests-amplifyconfiguration.json in Resources */,
 				21233D0B2469EBA000039337 /* GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration.json in Resources */,
+				2136FAAF261FF96600A95F6F /* GraphQLWithIAMIntegrationTests-amplifyconfiguration.json in Resources */,
 				B478F6E32374E0CF00C4F92B /* Main.storyboard in Resources */,
 				B478F6E12374E0CF00C4F92B /* Assets.xcassets in Resources */,
 				21598CF223A0164A00529F29 /* GraphQLWithUserPoolIntegrationTests-amplifyconfiguration.json in Resources */,
 				21F40A2B23A0423C0074678E /* GraphQLSyncBasedTests-amplifyconfiguration.json in Resources */,
+				2136FAAE261FF96600A95F6F /* GraphQLWithIAMIntegrationTests-credentials.json in Resources */,
 				21F40A2E23A0707E0074678E /* GraphQLModelBasedTests-amplifyconfiguration.json in Resources */,
 				219A88A523EE054000BBC5F2 /* RESTWithUserPoolIntegrationTests-credentials.json in Resources */,
 				21A3EFC623A946590095D8E6 /* GraphQLWithUserPoolIntegrationTests-credentials.json in Resources */,
@@ -2374,6 +2393,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2136FABB262022D700A95F6F /* IAMAuthInterceptorTests.swift in Sources */,
 				B4DFA5EE237A611D0013E17B /* RESTRequestUtilsTests.swift in Sources */,
 				B4DFA5F0237A611D0013E17B /* RESTRequestUtils+ValidatorTests.swift in Sources */,
 				B4DFA5F2237A611D0013E17B /* RESTOperationRequestValidateTests.swift in Sources */,
