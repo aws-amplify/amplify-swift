@@ -25,7 +25,7 @@ class RESTCombineTests: OperationTestBase {
         let receivedFailure = expectation(description: "Received failed")
         receivedFailure.isInverted = true
 
-        let sink = Amplify.API.get(request: request)
+        let sink = apiPlugin.get(request: request)
             .resultPublisher
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -55,7 +55,7 @@ class RESTCombineTests: OperationTestBase {
         receivedFinish.isInverted = true
         let receivedFailure = expectation(description: "Received failed")
 
-        let sink = Amplify.API.get(request: request)
+        let sink = apiPlugin.get(request: request)
             .resultPublisher
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -83,7 +83,7 @@ class RESTCombineTests: OperationTestBase {
         let receivedFailure = expectation(description: "Received failed")
         receivedFailure.isInverted = true
 
-        let operation = Amplify.API.get(request: request)
+        let operation = apiPlugin.get(request: request)
 
         let sink = operation
             .resultPublisher

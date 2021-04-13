@@ -18,8 +18,15 @@ class OperationTestBase: XCTestCase {
     /// of setting up plugins, this base class uses `setUpWithError` instead of `setUp`. (XCTest
     /// lifecycle normally invokes `setUp` after `setUpWithError`, which means that any state config
     /// done inside of a subclass' `setUpWithError` could be erased by this class' call to
-    /// `Amplify.reset` from inside `setUp`.
+    /// `AWSAPIPlugin.reset` from inside `setUp`.
     override func setUpWithError() throws {
+        if apiPlugin != nil {
+            let waitForReset = DispatchSemaphore(value: 0)
+            apiPlugin.reset {
+                waitForReset.signal()
+            }
+            waitForReset.wait()
+        }
         apiPlugin = nil
     }
 

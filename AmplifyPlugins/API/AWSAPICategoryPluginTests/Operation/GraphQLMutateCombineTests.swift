@@ -29,7 +29,7 @@ class GraphQLMutateCombineTests: OperationTestBase {
         let receivedFailure = expectation(description: "Received failed")
         receivedFailure.isInverted = true
 
-        let sink = Amplify.API.mutate(request: request)
+        let sink = apiPlugin.mutate(request: request)
             .resultPublisher
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -65,7 +65,7 @@ class GraphQLMutateCombineTests: OperationTestBase {
         let receivedFailure = expectation(description: "Received failed")
         receivedFailure.isInverted = true
 
-        let sink = Amplify.API.mutate(request: request)
+        let sink = apiPlugin.mutate(request: request)
             .resultPublisher
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -101,7 +101,7 @@ class GraphQLMutateCombineTests: OperationTestBase {
         receivedFinish.isInverted = true
         let receivedFailure = expectation(description: "Received failed")
 
-        let sink = Amplify.API.mutate(request: request)
+        let sink = apiPlugin.mutate(request: request)
             .resultPublisher
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -133,7 +133,7 @@ class GraphQLMutateCombineTests: OperationTestBase {
         let receivedFailure = expectation(description: "Received failed")
         receivedFailure.isInverted = true
 
-        let operation = Amplify.API.mutate(request: request)
+        let operation = apiPlugin.mutate(request: request)
         let sink = operation
             .resultPublisher
             .sink(receiveCompletion: { completion in

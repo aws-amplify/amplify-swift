@@ -260,7 +260,7 @@ class GraphQLSubscribeTests: OperationTestBase {
             responseType: JSONValue.self
         )
 
-        let operation = Amplify.API.subscribe(
+        let operation = apiPlugin.subscribe(
             request: request,
             valueListener: { value in
                 switch value {
