@@ -38,7 +38,7 @@ class AWSRESTOperationTests: OperationTestBase {
         // Use this as a semaphore to ensure the task is cleaned up before proceeding to the next test
         let listenerWasInvoked = expectation(description: "Listener was invoked")
         let request = RESTRequest(apiName: "Valid", path: "/path")
-        let operation = Amplify.API.get(request: request) { _ in listenerWasInvoked.fulfill() }
+        let operation = apiPlugin.get(request: request) { _ in listenerWasInvoked.fulfill() }
 
         XCTAssertNotNil(operation)
 
@@ -61,7 +61,7 @@ class AWSRESTOperationTests: OperationTestBase {
         let receivedFailure = expectation(description: "Received failed")
 
         let request = RESTRequest(apiName: "INVALID_API_NAME", path: "/path")
-        _ = Amplify.API.get(request: request) { event in
+        _ = apiPlugin.get(request: request) { event in
             switch event {
             case .success:
                 receivedSuccess.fulfill()
@@ -82,7 +82,7 @@ class AWSRESTOperationTests: OperationTestBase {
 
         let callbackInvoked = expectation(description: "Callback was invoked")
         let request = RESTRequest(apiName: "Valid", path: "/path")
-        _ = Amplify.API.get(request: request) { event in
+        _ = apiPlugin.get(request: request) { event in
             switch event {
             case .success(let data):
                 XCTAssertEqual(data, sentData)
