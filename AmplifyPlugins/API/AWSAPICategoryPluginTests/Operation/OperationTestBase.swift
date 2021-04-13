@@ -12,13 +12,22 @@ import XCTest
 
 class OperationTestBase: XCTestCase {
 
+    var apiPlugin: AWSAPIPlugin!
+
     /// There are no throwing methods in this, but in order to let subclasses have a predictable way
     /// of setting up plugins, this base class uses `setUpWithError` instead of `setUp`. (XCTest
     /// lifecycle normally invokes `setUp` after `setUpWithError`, which means that any state config
     /// done inside of a subclass' `setUpWithError` could be erased by this class' call to
-    /// `Amplify.reset` from inside `setUp`.
+    /// `AWSAPIPlugin.reset` from inside `setUp`.
     override func setUpWithError() throws {
-        Amplify.reset()
+        if apiPlugin != nil {
+            let waitForReset = DispatchSemaphore(value: 0)
+            apiPlugin.reset {
+                waitForReset.signal()
+            }
+            waitForReset.wait()
+        }
+        apiPlugin = nil
     }
 
     func setUpPlugin(
@@ -26,7 +35,7 @@ class OperationTestBase: XCTestCase {
         subscriptionConnectionFactory: SubscriptionConnectionFactory? = nil,
         endpointType: AWSAPICategoryPluginEndpointType
     ) throws {
-        let apiPlugin = AWSAPIPlugin(sessionFactory: sessionFactory)
+        apiPlugin = AWSAPIPlugin(sessionFactory: sessionFactory)
 
         let configurationValues: JSONValue = [
             "Valid": [
@@ -45,20 +54,6 @@ class OperationTestBase: XCTestCase {
         )
 
         apiPlugin.configure(using: dependencies)
-
-        do {
-            // TODO: Refactor plugin configuration to allow dependencies to be passed in at
-            // plugin init
-
-            // Note that we're configuring Amplify first, then adding the pre-configured plugin.
-            // This is a hack to let us assign the mock dependencies to the plugin without having
-            // it overwritten by a subsequent call to `Amplify.configure()`.
-            try Amplify.configure(AmplifyConfiguration())
-            try Amplify.add(plugin: apiPlugin)
-        } catch {
-            continueAfterFailure = false
-            XCTFail("Error during setup: \(error)")
-        }
     }
 
     func setUpPluginForSingleResponse(
