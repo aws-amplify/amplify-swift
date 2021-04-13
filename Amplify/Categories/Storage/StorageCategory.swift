@@ -57,6 +57,15 @@ final public class StorageCategory: Category {
             throw error
         }
 
+        guard !isConfigured else {
+            let pluginDescription = String(describing: plugin)
+            let error = ConfigurationError.amplifyAlreadyConfigured(
+                "\(pluginDescription) cannot be added after `Amplify.configure()`.",
+                "Do not add plugins after calling `Amplify.configure()`."
+            )
+            throw error
+        }
+
         plugins[plugin.key] = plugin
     }
 

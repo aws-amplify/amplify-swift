@@ -312,4 +312,33 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 0.1)
     }
 
+    /// Test if adding a plugin after configuration throws an error
+    ///
+    /// - Given: Amplify is configured
+    /// - When:
+    ///    - Add  is called for Datastore category
+    /// - Then:
+    ///    - Should throw an exception
+    ///
+    func testAddAfterConfigureThrowsError() throws {
+        let plugin = MockDataStoreCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let config = DataStoreCategoryConfiguration(
+            plugins: ["MockDataStoreCategoryPlugin": true]
+        )
+
+        let amplifyConfig = AmplifyConfiguration(dataStore: config)
+
+        try Amplify.configure(amplifyConfig)
+
+        XCTAssertThrowsError(try Amplify.add(plugin: plugin),
+                             "configure() an already configured plugin should throw") { error in
+                                guard case ConfigurationError.amplifyAlreadyConfigured = error else {
+                                    XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
+                                    return
+                                }
+        }
+
+    }
 }
