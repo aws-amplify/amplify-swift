@@ -38,13 +38,20 @@ let package = Package(
     targets: [
         .target(
             name: "Amplify",
-            path: "Amplify"
+            path: "Amplify",
+            exclude: [
+                "Info.plist",
+                "Categories/DataStore/Model/Temporal/README.md"
+            ]
         ),
         .target(
             name: "AWSPluginsCore",
             dependencies: [.target(name: "Amplify"),
                            .product(name: "AWSCore", package: "AWSiOSSDKV2")],
-            path: "AmplifyPlugins/Core/AWSPluginsCore"
+            path: "AmplifyPlugins/Core/AWSPluginsCore",
+            exclude: [
+                "Info.plist"
+            ]
         ),
         .target(
             name: "AWSAPIPlugin",
@@ -54,7 +61,11 @@ let package = Package(
                 .product(name: "AWSCore", package: "AWSiOSSDKV2"),
                 .product(name: "AppSyncRealTimeClient", package: "AppSyncRealTimeClient")
             ],
-            path: "AmplifyPlugins/API/AWSAPICategoryPlugin"
+            path: "AmplifyPlugins/API/AWSAPICategoryPlugin",
+            exclude: [
+                "Info.plist",
+                "AWSAPIPlugin.md"
+            ]
         ),
         .target(
             name: "AWSCognitoAuthPlugin",
@@ -66,7 +77,10 @@ let package = Package(
                 .product(name: "AWSMobileClientXCF", package: "AWSiOSSDKV2"),
                 .product(name: "AWSCognitoIdentityProvider", package: "AWSiOSSDKV2"),
                 .product(name: "AWSCognitoIdentityProviderASF", package: "AWSiOSSDKV2")],
-            path: "AmplifyPlugins/Auth/AWSCognitoAuthPlugin"
+            path: "AmplifyPlugins/Auth/AWSCognitoAuthPlugin",
+            exclude: [
+                "Resources/Info.plist"
+            ]
         ),
         .target(
             name: "AWSDataStorePlugin",
@@ -74,7 +88,10 @@ let package = Package(
                 .target(name: "Amplify"),
                 .target(name: "AWSPluginsCore"),
                 .product(name: "SQLite", package: "SQLite.swift")],
-            path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin"
+            path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin",
+            exclude: [
+                "Info.plist"
+            ]
         ),
         .target(
             name: "AWSPinpointAnalyticsPlugin",
@@ -84,7 +101,10 @@ let package = Package(
                 .product(name: "AWSCore", package: "AWSiOSSDKV2"),
                 .product(name: "AWSPinpoint", package: "AWSiOSSDKV2")
             ],
-            path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPlugin"
+            path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPlugin",
+            exclude: [
+                "Resources/Info.plist"
+            ]
         ),
         .target(
             name: "AWSS3StoragePlugin",
@@ -94,7 +114,10 @@ let package = Package(
                 .product(name: "AWSCore", package: "AWSiOSSDKV2"),
                 .product(name: "AWSS3", package: "AWSiOSSDKV2")
             ],
-            path: "AmplifyPlugins/Storage/AWSS3StoragePlugin"
+            path: "AmplifyPlugins/Storage/AWSS3StoragePlugin",
+            exclude: [
+                "Resources/Info.plist"
+            ]
         )
     ]
 )
