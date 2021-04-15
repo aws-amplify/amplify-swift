@@ -1,5 +1,12 @@
 # Changelog
 ## Unreleased
+## 1.8.1 (2021-04-15)
+
+### Bug Fixes
+
+- Throw error when plugin added post-configure (#1150)
+- **API**: Subscriptions with IAM match signed headers (#1139)
+
 ## 1.8.0 (2021-04-07)
 
 ### Features
