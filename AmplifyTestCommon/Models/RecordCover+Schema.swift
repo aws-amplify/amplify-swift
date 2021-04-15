@@ -29,8 +29,8 @@ extension RecordCover {
     model.fields(
         .id(),
         .field(recordCover.artist, is: .required, ofType: .string),
-        .field(recordCover.createdAt, is: .optional, access: .readOnly, ofType: .dateTime),
-        .field(recordCover.updatedAt, is: .optional, access: .readOnly, ofType: .dateTime)
+        .field(recordCover.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
+        .field(recordCover.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
         )
     }
 }

@@ -33,16 +33,16 @@ extension Record {
         .id(),
         .field(record.name, is: .required, ofType: .string),
         .field(record.description, is: .optional, ofType: .string),
-        .field(record.coverId, is: .optional, access: .readOnly, ofType: .string),
+        .field(record.coverId, is: .optional, isReadOnly: true, ofType: .string),
         .hasOne(
             record.cover,
             is: .optional,
-            access: .readOnly,
+            isReadOnly: true,
             ofType: RecordCover.self,
             associatedWith: RecordCover.keys.id,
             targetName: "coverId"),
-        .field(record.createdAt, is: .optional, access: .readOnly, ofType: .dateTime),
-        .field(record.updatedAt, is: .optional, access: .readOnly, ofType: .dateTime)
+        .field(record.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
+        .field(record.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
         )
     }
 }
