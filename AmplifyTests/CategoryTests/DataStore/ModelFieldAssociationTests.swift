@@ -97,7 +97,7 @@ class ModelFieldAssociationTests: XCTestCase {
 
         XCTAssertEqual("Comment", field.associatedModelName)
         XCTAssertTrue(field.hasAssociation)
-        XCTAssertFalse(field.isAssociationOwner)
+        XCTAssertTrue(field.isAssociationOwner)
         XCTAssertTrue(field.isOneToOne)
         XCTAssertNotNil(field.associatedField)
     }

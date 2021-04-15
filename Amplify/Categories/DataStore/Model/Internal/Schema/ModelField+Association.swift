@@ -208,7 +208,12 @@ extension ModelField {
     ///   breaking change.
     public var isAssociationOwner: Bool {
         switch association {
-        case .belongsTo, .hasOne:
+        case .belongsTo:
+            return true
+        case .hasOne:
+            if case .belongsTo = associatedField?.association {
+                return false
+            }
             return true
         default:
             return false
