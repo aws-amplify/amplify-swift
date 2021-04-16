@@ -177,4 +177,47 @@ class GraphQLGetQueryTests: XCTestCase {
         }
         XCTAssertEqual(variables["id"] as? String, "id")
     }
+
+    /// - Given: a `model` type
+    /// - When:
+    ///   - the model has read-only fields
+    /// - Then:
+    ///   - the generated query contains read-only fields if requested in selection set
+    ///
+    func testGetGraphQLQueryModelWithReadOnlyFields() {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Record.schema, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
+        documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
+        let document = documentBuilder.build()
+        let expectedQueryDocument = """
+        query GetRecord($id: ID!) {
+          getRecord(id: $id) {
+            id
+            coverId
+            createdAt
+            description
+            name
+            updatedAt
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "getRecord")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertEqual(variables["id"] as? String, "id")
+        XCTAssertNil(variables["createdAt"] as? Temporal.DateTime)
+        XCTAssertNil(variables["updatedAt"] as? Temporal.DateTime)
+
+        guard let selectionSet = document.selectionSet else {
+            XCTFail("The document doesn't contain a selection set")
+            return
+        }
+        let fields = selectionSet.children.map { $0.value.name! }
+        XCTAssertTrue(fields.contains("createdAt"))
+        XCTAssertTrue(fields.contains("updatedAt"))
+    }
 }
