@@ -30,7 +30,7 @@ extension AuthenticationProviderAdapter {
 
         awsMobileClient.signIn(username: username,
                                password: password,
-                               validationData: nil,
+                               validationData: request.options.validationData as! [String:String],
                                clientMetaData: clientMetaData) { [weak self] result, error in
             guard let self = self else { return }
 
