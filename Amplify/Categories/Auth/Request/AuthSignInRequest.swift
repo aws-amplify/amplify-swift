@@ -31,11 +31,8 @@ public extension AuthSignInRequest {
         /// key/values
         public let pluginOptions: Any?
 
-        public let validationData: Dictionary<String, String>?
-
-        public init(pluginOptions: Any? = nil, validationData: Dictionary<String, String>? = nil) {
+        public init(pluginOptions: Any? = nil) {
             self.pluginOptions = pluginOptions
-            self.validationData = validationData
         }
     }
 }

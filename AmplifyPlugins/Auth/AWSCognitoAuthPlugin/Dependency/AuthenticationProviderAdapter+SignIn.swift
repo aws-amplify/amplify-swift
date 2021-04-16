@@ -26,11 +26,13 @@ extension AuthenticationProviderAdapter {
         // Password can be nil, but awsmobileclient need it to have a dummy value.
         let password = request.password ?? ""
 
+        let validationData = (request.options.pluginOptions as? AWSAuthSignInOptions)?.validationData ?? [:]
+
         let clientMetaData = (request.options.pluginOptions as? AWSAuthSignInOptions)?.metadata ?? [:]
 
         awsMobileClient.signIn(username: username,
                                password: password,
-                               validationData: request.options.validationData as! [String:String],
+                               validationData: validationData,
                                clientMetaData: clientMetaData) { [weak self] result, error in
             guard let self = self else { return }
 
