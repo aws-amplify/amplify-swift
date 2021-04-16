@@ -48,6 +48,7 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
         XCTAssertNotNil(publisher)
         XCTAssertEqual(apiPlugin.reachabilityMap.count, 1)
         guard let reachability = apiPlugin.reachabilityMap.first else {
+            XCTFail("Missing expeected `reachability`")
             return
         }
         XCTAssertEqual(reachability.key, graphQLAPI)
@@ -74,6 +75,7 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
         XCTAssertNotNil(publisher)
         XCTAssertEqual(apiPlugin.reachabilityMap.count, 1)
         guard let reachability = apiPlugin.reachabilityMap.first else {
+            XCTFail("Missing expeected `reachability`")
             return
         }
         XCTAssertEqual(reachability.key, graphQLAPI)
