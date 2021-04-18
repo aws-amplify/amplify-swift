@@ -228,6 +228,10 @@
 		6BEE081D2533CCFA00133961 /* OGCScenarioBPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE081B2533CCFA00133961 /* OGCScenarioBPost.swift */; };
 		6BEE08242533D30800133961 /* OGCScenarioBMGroupPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE08222533D30800133961 /* OGCScenarioBMGroupPost.swift */; };
 		6BEE08252533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE08232533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift */; };
+		76061C93262A785000F0EF38 /* CoffeeShopLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76061C8F262A785000F0EF38 /* CoffeeShopLocation.swift */; };
+		76061C94262A785000F0EF38 /* CoffeeShop+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76061C90262A785000F0EF38 /* CoffeeShop+Schema.swift */; };
+		76061C95262A785000F0EF38 /* CoffeeShopLocation+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76061C91262A785000F0EF38 /* CoffeeShopLocation+Schema.swift */; };
+		76061C96262A785000F0EF38 /* CoffeeShop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76061C92262A785000F0EF38 /* CoffeeShop.swift */; };
 		7678B38426017D5300B4917F /* AppSyncErrorTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */; };
 		7678B38526017D5300B4917F /* AppSyncErrorTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */; };
 		7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */; platformFilter = ios; };
@@ -1091,6 +1095,10 @@
 		71B6F506E5F3F00B0743A9BF /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig"; sourceTree = "<group>"; };
 		73C2E5FA55C85539AD9E39EE /* Pods_Amplify_AWSPluginsCore_CoreMLPredictionsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_CoreMLPredictionsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7503342A8C13588E2B0DDBDE /* Pods-AmplifyFunctionalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyFunctionalTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyFunctionalTests/Pods-AmplifyFunctionalTests.debug.xcconfig"; sourceTree = "<group>"; };
+		76061C8F262A785000F0EF38 /* CoffeeShopLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoffeeShopLocation.swift; sourceTree = "<group>"; };
+		76061C90262A785000F0EF38 /* CoffeeShop+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoffeeShop+Schema.swift"; sourceTree = "<group>"; };
+		76061C91262A785000F0EF38 /* CoffeeShopLocation+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoffeeShopLocation+Schema.swift"; sourceTree = "<group>"; };
+		76061C92262A785000F0EF38 /* CoffeeShop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoffeeShop.swift; sourceTree = "<group>"; };
 		7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorTypeTests.swift; sourceTree = "<group>"; };
 		77A2D125114EA0FFA11A7EFD /* Pods-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7A238096BAB328655B5E388F /* Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin/Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
@@ -2976,6 +2984,10 @@
 				B9FAA11D23879B9F009414B4 /* Book+Schema.swift */,
 				B9FAA11923879AC8009414B4 /* BookAuthor.swift */,
 				B9FAA11F23879BD0009414B4 /* BookAuthor+Schema.swift */,
+				76061C92262A785000F0EF38 /* CoffeeShop.swift */,
+				76061C90262A785000F0EF38 /* CoffeeShop+Schema.swift */,
+				76061C8F262A785000F0EF38 /* CoffeeShopLocation.swift */,
+				76061C91262A785000F0EF38 /* CoffeeShopLocation+Schema.swift */,
 				B9FAA10D23878BF3009414B4 /* UserAccount.swift */,
 				B9FAA11123878C96009414B4 /* UserAccount+Schema.swift */,
 				B9FAA10F23878C5E009414B4 /* UserProfile.swift */,
@@ -5277,6 +5289,8 @@
 				FACF52042329633500646E10 /* TestExtensions.swift in Sources */,
 				216E460824913D430035E3CE /* Color.swift in Sources */,
 				B9FAA11823879A57009414B4 /* Author+Schema.swift in Sources */,
+				76061C95262A785000F0EF38 /* CoffeeShopLocation+Schema.swift in Sources */,
+				76061C94262A785000F0EF38 /* CoffeeShop+Schema.swift in Sources */,
 				B9521836237E21BA00F53237 /* Post+Schema.swift in Sources */,
 				6B7743DE25906FD3001469F5 /* Menu+Schema.swift in Sources */,
 				217D5EB72577F9DF009F0639 /* Project1+Schema.swift in Sources */,
@@ -5286,6 +5300,7 @@
 				FACA36152327FC39000E74F6 /* MessageReporter.swift in Sources */,
 				FAF512AE23986791001ADF4E /* AmplifyModels.swift in Sources */,
 				217D5EC42577F9DF009F0639 /* Team1+Schema.swift in Sources */,
+				76061C96262A785000F0EF38 /* CoffeeShop.swift in Sources */,
 				6BE9D73725A67F7400AB5C9A /* M2MPost.swift in Sources */,
 				B9FAA11C23879B35009414B4 /* Book.swift in Sources */,
 				6B597A0B2565D3E50038C3E2 /* QPredGen.swift in Sources */,
@@ -5318,6 +5333,7 @@
 				2129BE012394627B006363A1 /* PostCommentModelRegistration.swift in Sources */,
 				217D5EB42577F9DF009F0639 /* Comment4+Schema.swift in Sources */,
 				6BE9D73C25A67F7400AB5C9A /* M2MUser.swift in Sources */,
+				76061C93262A785000F0EF38 /* CoffeeShopLocation.swift in Sources */,
 				6BE9D73825A67F7400AB5C9A /* M2MPostEditor+Schema.swift in Sources */,
 				B9FAA10E23878BF3009414B4 /* UserAccount.swift in Sources */,
 				217D5EC12577F9DF009F0639 /* Team2.swift in Sources */,
