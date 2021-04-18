@@ -31,6 +31,9 @@ class SQLStatementTests: XCTestCase {
         ModelRegistry.register(modelType: Book.self)
         ModelRegistry.register(modelType: BookAuthor.self)
 
+        ModelRegistry.register(modelType: CoffeeShop.self)
+        ModelRegistry.register(modelType: CoffeeShopLocation.self)
+
     }
 
     // MARK: - Create Table
@@ -95,6 +98,27 @@ class SQLStatementTests: XCTestCase {
           "id" text primary key not null,
           "accountId" text not null unique,
           foreign key("accountId") references UserAccount("id")
+            on delete cascade
+        );
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `CoffeeShop`
+    ///   - the model represents an association of `has-one` between `CoffeeShop` and `CoffeeShopLocation`
+    /// - Then:
+    ///   - check if the generated SQL statement is valid:
+    ///     - contains a `foreign key` referencing `CoffeeShopLocation`
+    func testCreateTableFromModelWithHasOneAssociation() {
+        let statement = CreateTableStatement(modelSchema: CoffeeShop.schema)
+        let expectedStatement = """
+        create table if not exists CoffeeShop (
+          "id" text primary key not null,
+          "isOpen" integer,
+          "locationID" text unique,
+          foreign key("locationID") references CoffeeShopLocation("id")
             on delete cascade
         );
         """
