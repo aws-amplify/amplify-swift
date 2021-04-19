@@ -13,7 +13,7 @@ public struct CoffeeShop: Model {
   public let id: String
   public var isOpen: Bool?
   public var location: CoffeeShopLocation?
-  
+
   public init(id: String = UUID().uuidString,
       isOpen: Bool? = nil,
       location: CoffeeShopLocation? = nil) {

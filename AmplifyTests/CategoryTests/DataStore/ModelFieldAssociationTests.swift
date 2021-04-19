@@ -89,7 +89,7 @@ class ModelFieldAssociationTests: XCTestCase {
         XCTAssertNotNil(field.associatedField)
     }
 
-    func testModelFieldWithHasOneAssociation() {
+    func testModelFieldWithHasOneBiDirectionalAssociation() {
         let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post, targetName: "postID")
         let field = ModelField.init(name: "comment",
                                     type: .model(type: Comment.self),
@@ -97,9 +97,22 @@ class ModelFieldAssociationTests: XCTestCase {
 
         XCTAssertEqual("Comment", field.associatedModelName)
         XCTAssertTrue(field.hasAssociation)
-        XCTAssertTrue(field.isAssociationOwner)
+        XCTAssertFalse(field.isAssociationOwner)
         XCTAssertTrue(field.isOneToOne)
         XCTAssertNotNil(field.associatedField)
+    }
+
+    func testModelFieldWithHasOneAssociation() {
+        let hasOne = ModelAssociation.hasOne(associatedWith: CoffeeShop.keys.location, targetName: "locationId")
+        let field = ModelField.init(name: "location",
+                                    type: .model(type: CoffeeShopLocation.self),
+                                    association: hasOne)
+
+        XCTAssertEqual("CoffeeShopLocation", field.associatedModelName)
+        XCTAssertTrue(field.hasAssociation)
+        XCTAssertTrue(field.isAssociationOwner)
+        XCTAssertTrue(field.isOneToOne)
+        XCTAssertNil(field.associatedField)
     }
 
 }

@@ -12,7 +12,7 @@ import Amplify
 public struct CoffeeShopLocation: Model {
   public let id: String
   public var address: String
-  
+
   public init(id: String = UUID().uuidString,
       address: String) {
       self.id = id

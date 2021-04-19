@@ -16,15 +16,15 @@ extension CoffeeShop {
     case isOpen
     case location
   }
-  
+
   public static let keys = CodingKeys.self
   //  MARK: - ModelSchema
-  
+
   public static let schema = defineSchema { model in
     let coffeeShop = CoffeeShop.keys
-    
+
     model.pluralName = "CoffeeShops"
-    
+
     model.fields(
       .id(),
       .field(coffeeShop.isOpen, is: .optional, ofType: .bool),

@@ -15,15 +15,15 @@ extension CoffeeShopLocation {
     case id
     case address
   }
-  
+
   public static let keys = CodingKeys.self
   //  MARK: - ModelSchema
-  
+
   public static let schema = defineSchema { model in
     let coffeeShopLocation = CoffeeShopLocation.keys
-    
+
     model.pluralName = "CoffeeShopLocations"
-    
+
     model.fields(
       .id(),
       .field(coffeeShopLocation.address, is: .required, ofType: .string)
