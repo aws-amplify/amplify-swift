@@ -31,7 +31,7 @@ class ModelGraphQLTests: XCTestCase {
                         rating: 5.0,
                         status: status)
 
-        let graphQLInput = post.graphQLInput(Post.schema)
+        let graphQLInput = post.graphQLInputForMutation(Post.schema)
 
         XCTAssertEqual(graphQLInput["title"] as? String, post.title)
         XCTAssertEqual(graphQLInput["content"] as? String, post.content)
@@ -52,7 +52,7 @@ class ModelGraphQLTests: XCTestCase {
                         categories: [category],
                         stickies: ["stickie1"])
 
-        let graphQLInput = todo.graphQLInput(Todo.schema)
+        let graphQLInput = todo.graphQLInputForMutation(Todo.schema)
 
         XCTAssertEqual(graphQLInput["id"] as? String, todo.id)
         XCTAssertEqual(graphQLInput["name"] as? String, todo.name)
@@ -75,7 +75,7 @@ class ModelGraphQLTests: XCTestCase {
 
     func testRecordModelWithReadOnlyFields() {
         let record = Record(id: "id", name: "name", description: "description")
-        let graphQLInput = record.graphQLInput(Record.schema)
+        let graphQLInput = record.graphQLInputForMutation(Record.schema)
         XCTAssertEqual(graphQLInput["id"] as? String, record.id)
         XCTAssertEqual(graphQLInput["name"] as? String, record.name)
         XCTAssertEqual(graphQLInput["description"] as? String, record.description)
@@ -89,7 +89,7 @@ class ModelGraphQLTests: XCTestCase {
         let team1 = Team1(name: "team")
         let project1 = Project1(team: team1)
 
-        let graphQLInput = project1.graphQLInput(Project1.schema)
+        let graphQLInput = project1.graphQLInputForMutation(Project1.schema)
 
         XCTAssertEqual(graphQLInput["id"] as? String, project1.id)
         XCTAssertTrue(graphQLInput.keys.contains("name"))
@@ -103,7 +103,7 @@ class ModelGraphQLTests: XCTestCase {
     func testProjectHasOneTeamSuccess() {
         let team2 = Team2(name: "team")
         let project2 = Project2(teamID: team2.id, team: team2)
-        let graphQLInput = project2.graphQLInput(Project2.schema)
+        let graphQLInput = project2.graphQLInputForMutation(Project2.schema)
         XCTAssertEqual(graphQLInput["id"] as? String, project2.id)
         XCTAssertTrue(graphQLInput.keys.contains("name"))
         XCTAssertNil(graphQLInput["name"]!)
@@ -115,7 +115,7 @@ class ModelGraphQLTests: XCTestCase {
     func testProjectHasOneTeamRandomTeamIDSuccess() {
         let team2 = Team2(name: "team")
         let project2 = Project2(teamID: "randomTeamId", team: team2)
-        let graphQLInput = project2.graphQLInput(Project2.schema)
+        let graphQLInput = project2.graphQLInputForMutation(Project2.schema)
         XCTAssertEqual(graphQLInput["id"] as? String, project2.id)
         XCTAssertTrue(graphQLInput.keys.contains("name"))
         XCTAssertNil(graphQLInput["name"]!)
@@ -127,7 +127,7 @@ class ModelGraphQLTests: XCTestCase {
     func testProjectHasOneTeamMisingTeamObjectSuccess() {
         let team2 = Team2(name: "team")
         let project2 = Project2(teamID: team2.id)
-        let graphQLInput = project2.graphQLInput(Project2.schema)
+        let graphQLInput = project2.graphQLInputForMutation(Project2.schema)
         XCTAssertEqual(graphQLInput["id"] as? String, project2.id)
         XCTAssertTrue(graphQLInput.keys.contains("name"))
         XCTAssertNil(graphQLInput["name"]!)
