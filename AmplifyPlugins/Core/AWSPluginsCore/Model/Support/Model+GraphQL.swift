@@ -15,10 +15,15 @@ extension Model {
 
     /// Get the `Model` values as a `Dictionary` of `String` to `Any?` that can be
     /// used as the `input` of GraphQL related operations.
-    func graphQLInput(_ modelSchema: ModelSchema) -> GraphQLInput {
+    func graphQLInputForMutation(_ modelSchema: ModelSchema) -> GraphQLInput {
         var input: GraphQLInput = [:]
         modelSchema.fields.forEach {
             let modelField = $0.value
+
+            // When the field is read-only don't add it to the GraphQL input object
+            if modelField.isReadOnly {
+                return
+            }
 
             // TODO how to handle associations of type "many" (i.e. cascade save)?
             // This is not supported right now and might be added as a future feature

@@ -167,12 +167,14 @@ public enum ModelFieldDefinition {
     case field(name: String,
                type: ModelFieldType,
                nullability: ModelFieldNullability,
+               isReadOnly: Bool,
                association: ModelAssociation?,
                attributes: [ModelFieldAttribute],
                authRules: AuthRules)
 
     public static func field(_ key: CodingKey,
                              is nullability: ModelFieldNullability = .required,
+                             isReadOnly: Bool = false,
                              ofType type: ModelFieldType = .string,
                              attributes: [ModelFieldAttribute] = [],
                              association: ModelAssociation? = nil,
@@ -180,6 +182,7 @@ public enum ModelFieldDefinition {
         return .field(name: key.stringValue,
                       type: type,
                       nullability: nullability,
+                      isReadOnly: isReadOnly,
                       association: association,
                       attributes: attributes,
                       authRules: authRules)
@@ -193,6 +196,7 @@ public enum ModelFieldDefinition {
         return .field(name: name,
                       type: .string,
                       nullability: .required,
+                      isReadOnly: false,
                       association: nil,
                       attributes: [.primaryKey],
                       authRules: [])
@@ -200,32 +204,38 @@ public enum ModelFieldDefinition {
 
     public static func hasMany(_ key: CodingKey,
                                is nullability: ModelFieldNullability = .required,
+                               isReadOnly: Bool = false,
                                ofType type: Model.Type,
                                associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
+                      isReadOnly: isReadOnly,
                       ofType: .collection(of: type),
                       association: .hasMany(associatedWith: associatedKey))
     }
 
     public static func hasOne(_ key: CodingKey,
                               is nullability: ModelFieldNullability = .required,
+                              isReadOnly: Bool = false,
                               ofType type: Model.Type,
                               associatedWith associatedKey: CodingKey,
                               targetName: String? = nil) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
+                      isReadOnly: isReadOnly,
                       ofType: .model(type: type),
                       association: .hasOne(associatedWith: associatedKey, targetName: targetName))
     }
 
     public static func belongsTo(_ key: CodingKey,
                                  is nullability: ModelFieldNullability = .required,
+                                 isReadOnly: Bool = false,
                                  ofType type: Model.Type,
                                  associatedWith associatedKey: CodingKey? = nil,
                                  targetName: String? = nil) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
+                      isReadOnly: isReadOnly,
                       ofType: .model(type: type),
                       association: .belongsTo(associatedWith: associatedKey, targetName: targetName))
     }
@@ -234,6 +244,7 @@ public enum ModelFieldDefinition {
         guard case let .field(name,
                               type,
                               nullability,
+                              isReadOnly,
                               association,
                               attributes,
                               authRules) = self else {
@@ -242,6 +253,7 @@ public enum ModelFieldDefinition {
         return ModelField(name: name,
                           type: type,
                           isRequired: nullability.isRequired,
+                          isReadOnly: isReadOnly,
                           isArray: type.isArray,
                           attributes: attributes,
                           association: association,
