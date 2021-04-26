@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/aws-amplify/aws-sdk-ios-spm.git",
         "state": {
           "branch": null,
-          "revision": "9057509ddfc1f3ef1c36264e9b8e8173eda634c9",
-          "version": "2.23.3"
+          "revision": "7be6c13ea6fdcfdf54d50c08a10928e2e0bc3fb0",
+          "version": "2.24.0"
         }
       },
       {
