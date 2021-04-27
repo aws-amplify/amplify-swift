@@ -1,5 +1,12 @@
 # Changelog
 ## Unreleased
+## 1.9.0 (2021-04-26)
+
+### Features
+
+- Update SDK to 2.24.0 and add override in AmplifyAWSServiceConfiguration (#1184)
+- **datastore**: support for readonly fields (#1133)
+
 ## 1.8.1 (2021-04-15)
 
 ### Bug Fixes
