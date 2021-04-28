@@ -63,7 +63,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
         let syncOperationQueue = OperationQueue()
         syncOperationQueue.name = "com.amazon.InitialSyncOrchestrator.syncOperationQueue"
-        syncOperationQueue.maxConcurrentOperationCount = 1
+        syncOperationQueue.maxConcurrentOperationCount = 20
         syncOperationQueue.isSuspended = true
         self.syncOperationQueue = syncOperationQueue
 
