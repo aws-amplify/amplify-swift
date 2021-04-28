@@ -30,6 +30,9 @@ If applicable, add screenshots to help explain your problem.
  - CLI Version: [e.g. 4.41.2, Run `amplify version`]
  - Include any relevant log output under `~/.amplify/logs/amplify-cli-<issue-date>.log`
 
+**Is this a regression (i.e. was this working before a version upgrade?)
+*If applicable provide the versions used before and after the upgrade.*
+
 **Device Information (please complete the following information):**
  - Device: [e.g. iPhone6, Simulator]
  - iOS Version: [e.g. iOS 11]
