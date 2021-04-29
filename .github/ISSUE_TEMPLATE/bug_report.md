@@ -25,9 +25,17 @@ If applicable, add screenshots to help explain your problem.
 
 **Environment(please complete the following information):**
  - Amplify Framework Version: [e.g. 1.5.3]
- - Dependency Manager: [e.g. Cocoapods, Carthage]
+ - Amplify Categories:
+   - [ ] Analytics
+   - [ ] API
+   - [ ] Auth
+   - [ ] DataStore
+   - [ ] Predictions
+   - [ ] Storage
+ - Dependency Manager: [e.g. SwiftPM, Cocoapods]
  - Swift Version: [e.g. 5.0]
  - CLI Version: [e.g. 4.41.2, Run `amplify version`]
+ - Xcode Version: [e.g. 12.4 (12D4e), Run `xcodebuild -version`]
  - Include any relevant log output under `~/.amplify/logs/amplify-cli-<issue-date>.log`
 
 **Is this a regression (i.e. was this working before a version upgrade?)
