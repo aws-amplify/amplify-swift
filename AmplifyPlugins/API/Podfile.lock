@@ -45,7 +45,7 @@ DEPENDENCIES:
   - Amplify (from `../../`)
   - AmplifyPlugins/AWSCognitoAuthPlugin (from `../../`)
   - AmplifyTestCommon (from `../../`)
-  - AppSyncRealTimeClient (~> 1.4.0)
+  - AppSyncRealTimeClient (~> 1.4)
   - AWSMobileClient (~> 2.24.0)
   - AWSPluginsCore (from `../../`)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
@@ -91,7 +91,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Amplify: fdb7f9aad75a631449e2afb007f78f77deb25a84
-  AmplifyPlugins: 5ffbe6b8aedfc19a16074acf7a67e6c237333a34
+  AmplifyPlugins: 799d7c01092aa24033e59d29b9ec3fb67bdd4c82
   AmplifyTestCommon: 8d9622a279079e6e9509139754d82006a3fcfbf2
   AppSyncRealTimeClient: 4479354d262a23d2cc9fea1760f3815b75a4091a
   AWSAuthCore: f5325c5e076e8da6ad66932029ddb04451aa28cd
@@ -106,6 +106,6 @@ SPEC CHECKSUMS:
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
 
-PODFILE CHECKSUM: 857e4ea8246683593b8a7db77014aeb7340c15a5
+PODFILE CHECKSUM: 97bb85800180799fa49c6740cdebc2d962ae6258
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.1
