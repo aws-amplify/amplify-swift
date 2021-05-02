@@ -25,6 +25,7 @@ xcuserdata
 
 # Built assets #
 ######################
+.build/
 build
 builtFramework
 AWS*.framework
