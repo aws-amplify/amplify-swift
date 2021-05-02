@@ -320,22 +320,22 @@ extension Dictionary where Key == String, Value == AWSAPICategoryPluginConfigura
 
     // Retrieve the endpoint configuration when there is only one endpoint of the specified `endpointType`
     private func getConfig(for endpointType: AWSAPICategoryPluginEndpointType) throws ->
-    AWSAPICategoryPluginConfiguration.EndpointConfig {
-        let apiForEndpointType = filter { (_, endpointConfig) -> Bool in
-            return endpointConfig.endpointType == endpointType
-        }
+        AWSAPICategoryPluginConfiguration.EndpointConfig {
+            let apiForEndpointType = filter { (_, endpointConfig) -> Bool in
+                return endpointConfig.endpointType == endpointType
+            }
 
-        guard let endpointConfig = apiForEndpointType.first else {
-            throw APIError.invalidConfiguration("Missing API for \(endpointType) endpointType",
-                                                "Add the \(endpointType) API to configuration.")
-        }
+            guard let endpointConfig = apiForEndpointType.first else {
+                throw APIError.invalidConfiguration("Missing API for \(endpointType) endpointType",
+                                                    "Add the \(endpointType) API to configuration.")
+            }
 
-        if apiForEndpointType.count > 1 {
-            throw APIError.invalidConfiguration(
-                "More than one \(endpointType) API configured. Could not infer which API to call",
-                "Use the apiName to specify which API to call")
-        }
-        return endpointConfig.value
+            if apiForEndpointType.count > 1 {
+                throw APIError.invalidConfiguration(
+                    "More than one \(endpointType) API configured. Could not infer which API to call",
+                    "Use the apiName to specify which API to call")
+            }
+            return endpointConfig.value
     }
 
     // Retrieve the endpoint only if there is a single one, with GraphQL taking precedent over REST.
@@ -356,10 +356,10 @@ extension Dictionary where Key == String, Value == AWSAPICategoryPluginConfigura
             return endpoint.value
         }
 
-        throw APIError.invalidConfiguration("Unable to determine which endpoint configuration",
+        throw APIError.invalidConfiguration("Unable to resolve endpoint configuration",
                                             """
-                                            Pass in the apiName to disambiguate between which endpoint
-                                            you are requesting for
+                                            Pass in the apiName to specify the endpoint you are
+                                            retrieving the config for
                                             """)
     }
 }
