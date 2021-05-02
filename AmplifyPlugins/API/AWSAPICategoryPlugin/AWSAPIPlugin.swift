@@ -40,25 +40,21 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin {
 
     /// The underlying map that retains instances of NetworkReachabilityNotifier.  Using a computed property
     /// to work around @available for use on stored properties
-    var iReachabilityMap: [String: Any]?
+    var iReachabilityMap = AtomicValue(initialValue: [String: Any]())
 
     var authProviderFactory: APIAuthProviderFactory
 
     @available(iOS 13.0, *)
-    var reachabilityMap: [String: NetworkReachabilityNotifier] {
+    var reachabilityMap: AtomicValue<[String: NetworkReachabilityNotifier]> {
         get {
-            if iReachabilityMap == nil {
-                iReachabilityMap = [String: NetworkReachabilityNotifier]()
-            }
-            return iReachabilityMap as! [String: NetworkReachabilityNotifier] // swiftlint:disable:this force_cast
+            let value = iReachabilityMap.get()
+                as! [String: NetworkReachabilityNotifier] // swiftlint:disable:this force_cast
+            return AtomicValue<[String: NetworkReachabilityNotifier]>(initialValue: value)
         }
         set {
-            iReachabilityMap = newValue
+            iReachabilityMap = AtomicValue<[String: Any]>(initialValue: newValue.get())
         }
     }
-
-    /// Lock used for performing operations atomically when getting and setting `reachabilityMap`.
-    let reachabilityMapLock = NSLock()
 
     public init(
         modelRegistration: AmplifyModelRegistration? = nil,

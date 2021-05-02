@@ -26,7 +26,7 @@ extension AWSAPIPlugin: Resettable {
         authService = nil
 
         if #available(iOS 13.0, *) {
-            reachabilityMap.removeAll()
+            reachabilityMap.set([String: NetworkReachabilityNotifier]())
         }
 
         subscriptionConnectionFactory = nil

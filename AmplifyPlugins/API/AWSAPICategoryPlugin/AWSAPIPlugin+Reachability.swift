@@ -26,23 +26,23 @@ extension AWSAPIPlugin {
             )
             throw error
         }
+        var result: AnyPublisher<ReachabilityUpdate, Never>?
+        reachabilityMap.with { map in // return `iReachability's dictionary as a new AtomicValue's value
+            if let networkReachability = map[hostName] {
+                result = networkReachability.publisher
+            }
+            do {
+                let networkReachability = try NetworkReachabilityNotifier(host: hostName,
+                                                                          allowsCellularAccess: true,
+                                                                          reachabilityFactory: AmplifyReachability.self)
+                map[hostName] = networkReachability // update the new A
+                reachabilityMap = AtomicValue(initialValue: map) // data race here too
+                result = networkReachability.publisher
+            } catch {
+                Amplify.API.log.error("Unable to initialize NetworkReachabilityNotifier: \(error)")
+            }
+        }
 
-        reachabilityMapLock.lock()
-        defer {
-            reachabilityMapLock.unlock()
-        }
-        if let networkReachability = reachabilityMap[hostName] {
-            return networkReachability.publisher
-        }
-        do {
-            let networkReachability = try NetworkReachabilityNotifier(host: hostName,
-                                                                      allowsCellularAccess: true,
-                                                                      reachabilityFactory: AmplifyReachability.self)
-            reachabilityMap[hostName] = networkReachability
-            return networkReachability.publisher
-        } catch {
-            Amplify.API.log.error("Unable to initialize NetworkReachabilityNotifier: \(error)")
-            return nil
-        }
+        return result
     }
 }

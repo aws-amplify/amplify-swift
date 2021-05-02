@@ -46,8 +46,8 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
 
         let publisher = try apiPlugin.reachabilityPublisher()
         XCTAssertNotNil(publisher)
-        XCTAssertEqual(apiPlugin.reachabilityMap.count, 1)
-        guard let reachability = apiPlugin.reachabilityMap.first else {
+        XCTAssertEqual(apiPlugin.reachabilityMap.get().count, 1)
+        guard let reachability = apiPlugin.reachabilityMap.get().first else {
             XCTFail("Missing expeected `reachability`")
             return
         }
@@ -73,8 +73,8 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
 
         let publisher = try apiPlugin.reachabilityPublisher()
         XCTAssertNotNil(publisher)
-        XCTAssertEqual(apiPlugin.reachabilityMap.count, 1)
-        guard let reachability = apiPlugin.reachabilityMap.first else {
+        XCTAssertEqual(apiPlugin.reachabilityMap.get().count, 1)
+        guard let reachability = apiPlugin.reachabilityMap.get().first else {
             XCTFail("Missing expeected `reachability`")
             return
         }
@@ -113,7 +113,7 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
 
         }
         wait(for: [concurrentPerformCompleted], timeout: 1)
-        XCTAssertEqual(apiPlugin.reachabilityMap.count, 2)
+        XCTAssertEqual(apiPlugin.reachabilityMap.get().count, 2)
     }
 
     // MARK: - Helpers
