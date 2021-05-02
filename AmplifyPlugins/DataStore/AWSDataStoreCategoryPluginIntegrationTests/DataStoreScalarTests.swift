@@ -31,17 +31,32 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
                                         myURL: "https://www.amazon.com/dp/B000NZW3KC/",
                                         myIPAddress: "123.12.34.56")
         let updatedContainer = ScalarContainer(id: container.id)
-        guard case .success(let savedModel) = saveModel(container),
-              case .success(let updatedModel) = saveModel(updatedContainer),
-              case .success(let queriedModel) = queryModel(ScalarContainer.self, byId: container.id),
-              case .success = deleteModel(updatedContainer),
-              case .success(let emptyModel) = queryModel(ScalarContainer.self, byId: container.id) else {
-            XCTFail("Failed to test CRUD operations")
+        guard case .success(let savedModel) = saveModel(container) else {
+            XCTFail("Failed to save model")
             return
         }
         XCTAssertEqual(savedModel, container)
+
+        guard case .success(let updatedModel) = saveModel(updatedContainer) else {
+            XCTFail("Failed to update model")
+            return
+        }
         XCTAssertEqual(updatedModel, updatedContainer)
+
+        guard case .success(let queriedModel) = queryModel(ScalarContainer.self, byId: container.id) else {
+            XCTFail("Failed to query model")
+            return
+        }
         XCTAssertEqual(queriedModel, updatedContainer)
+
+        guard case .success = deleteModel(updatedContainer) else {
+            XCTFail("Failed to delete model")
+            return
+        }
+        guard case .success(let emptyModel) = queryModel(ScalarContainer.self, byId: container.id) else {
+            XCTFail("Failed to query deleted model")
+            return
+        }
         XCTAssertNil(emptyModel)
     }
 
@@ -62,18 +77,32 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
                                                 intNullableList: [1, 2, 3],
                                                 nullableIntList: [1, 2, 3],
                                                 nullableIntNullableList: [1, 2, 3])
-
-        guard case .success(let savedModel) = saveModel(container),
-              case .success(let updatedModel) = saveModel(updatedContainer),
-              case .success(let queriedModel) = queryModel(ListIntContainer.self, byId: container.id),
-              case .success = deleteModel(updatedContainer),
-              case .success(let emptyModel) = queryModel(ListIntContainer.self, byId: container.id) else {
-            XCTFail("Failed to test CRUD operations")
+        guard case .success(let savedModel) = saveModel(container) else {
+            XCTFail("Failed to save model")
             return
         }
         XCTAssertEqual(savedModel, container)
+
+        guard case .success(let updatedModel) = saveModel(updatedContainer) else {
+            XCTFail("Failed to update model")
+            return
+        }
         XCTAssertEqual(updatedModel, updatedContainer)
+
+        guard case .success(let queriedModel) = queryModel(ListIntContainer.self, byId: container.id) else {
+            XCTFail("Failed to query model")
+            return
+        }
         XCTAssertEqual(queriedModel, updatedContainer)
+
+        guard case .success = deleteModel(updatedContainer) else {
+            XCTFail("Failed to delete model")
+            return
+        }
+        guard case .success(let emptyModel) = queryModel(ListIntContainer.self, byId: container.id) else {
+            XCTFail("Failed to query deleted model")
+            return
+        }
         XCTAssertNil(emptyModel)
     }
 
@@ -94,17 +123,78 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
                                                    stringNullableList: ["value1"],
                                                    nullableStringList: ["value1"],
                                                    nullableStringNullableList: ["value1"])
-        guard case .success(let savedModel) = saveModel(container),
-              case .success(let updatedModel) = saveModel(updatedContainer),
-              case .success(let queriedModel) = queryModel(ListStringContainer.self, byId: container.id),
-              case .success = deleteModel(updatedContainer),
-              case .success(let emptyModel) = queryModel(ListStringContainer.self, byId: container.id) else {
-            XCTFail("Failed to test CRUD operations")
+        guard case .success(let savedModel) = saveModel(container) else {
+            XCTFail("Failed to save model")
             return
         }
         XCTAssertEqual(savedModel, container)
+
+        guard case .success(let updatedModel) = saveModel(updatedContainer) else {
+            XCTFail("Failed to update model")
+            return
+        }
         XCTAssertEqual(updatedModel, updatedContainer)
+
+        guard case .success(let queriedModel) = queryModel(ListStringContainer.self, byId: container.id) else {
+            XCTFail("Failed to query model")
+            return
+        }
         XCTAssertEqual(queriedModel, updatedContainer)
+
+        guard case .success = deleteModel(updatedContainer) else {
+            XCTFail("Failed to delete model")
+            return
+        }
+        guard case .success(let emptyModel) = queryModel(ListStringContainer.self, byId: container.id) else {
+            XCTFail("Failed to query deleted model")
+            return
+        }
+        XCTAssertNil(emptyModel)
+    }
+
+    func testListContainerWithNil() throws {
+        try startAmplifyAndWaitForSync()
+        let container = ListStringContainer(
+            test: "test",
+            nullableString: nil,
+            stringList: ["value1"],
+            stringNullableList: nil,
+            nullableStringList: [nil],
+            nullableStringNullableList: nil)
+
+        let updatedContainer = ListStringContainer(id: container.id,
+                                                   test: "test",
+                                                   nullableString: "test",
+                                                   stringList: ["value1"],
+                                                   stringNullableList: ["value1"],
+                                                   nullableStringList: ["value1"],
+                                                   nullableStringNullableList: ["value1"])
+        guard case .success(let savedModel) = saveModel(container) else {
+            XCTFail("Failed to save model")
+            return
+        }
+        XCTAssertEqual(savedModel, container)
+
+        guard case .success(let updatedModel) = saveModel(updatedContainer) else {
+            XCTFail("Failed to update model")
+            return
+        }
+        XCTAssertEqual(updatedModel, updatedContainer)
+
+        guard case .success(let queriedModel) = queryModel(ListStringContainer.self, byId: container.id) else {
+            XCTFail("Failed to query model")
+            return
+        }
+        XCTAssertEqual(queriedModel, updatedContainer)
+
+        guard case .success = deleteModel(updatedContainer) else {
+            XCTFail("Failed to delete model")
+            return
+        }
+        guard case .success(let emptyModel) = queryModel(ListStringContainer.self, byId: container.id) else {
+            XCTFail("Failed to query deleted model")
+            return
+        }
         XCTAssertNil(emptyModel)
     }
 
@@ -123,17 +213,32 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
                                              enumNullableList: [.valueTwo, .valueOne],
                                              nullableEnumList: [.valueTwo, .valueOne],
                                              nullableEnumNullableList: [.valueOne, .valueTwo])
-        guard case .success(let savedModel) = saveModel(container),
-              case .success(let updatedModel) = saveModel(updatedContainer),
-              case .success(let queriedModel) = queryModel(EnumTestModel.self, byId: container.id),
-              case .success = deleteModel(updatedContainer),
-              case .success(let emptyModel) = queryModel(EnumTestModel.self, byId: container.id) else {
-            XCTFail("Failed to test CRUD operations")
+        guard case .success(let savedModel) = saveModel(container) else {
+            XCTFail("Failed to save model")
             return
         }
         XCTAssertEqual(savedModel, container)
+
+        guard case .success(let updatedModel) = saveModel(updatedContainer) else {
+            XCTFail("Failed to update model")
+            return
+        }
         XCTAssertEqual(updatedModel, updatedContainer)
+
+        guard case .success(let queriedModel) = queryModel(EnumTestModel.self, byId: container.id) else {
+            XCTFail("Failed to query model")
+            return
+        }
         XCTAssertEqual(queriedModel, updatedContainer)
+
+        guard case .success = deleteModel(updatedContainer) else {
+            XCTFail("Failed to delete model")
+            return
+        }
+        guard case .success(let emptyModel) = queryModel(EnumTestModel.self, byId: container.id) else {
+            XCTFail("Failed to query deleted model")
+            return
+        }
         XCTAssertNil(emptyModel)
     }
 
@@ -153,17 +258,33 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
                                                    nestedNullableList: [.init(valueOne: 1, valueTwo: "value2")],
                                                    nullableNestedList: [],
                                                    nullableNestedNullableList: nil)
-        guard case .success(let savedModel) = saveModel(container),
-              case .success(let updatedModel) = saveModel(updatedContainer),
-              case .success(let queriedModel) = queryModel(NestedTypeTestModel.self, byId: container.id),
-              case .success = deleteModel(updatedContainer),
-              case .success(let emptyModel) = queryModel(NestedTypeTestModel.self, byId: container.id) else {
-            XCTFail("Failed to test CRUD operations")
+
+        guard case .success(let savedModel) = saveModel(container) else {
+            XCTFail("Failed to save model")
             return
         }
         XCTAssertEqual(savedModel, container)
+
+        guard case .success(let updatedModel) = saveModel(updatedContainer) else {
+            XCTFail("Failed to update model")
+            return
+        }
         XCTAssertEqual(updatedModel, updatedContainer)
+
+        guard case .success(let queriedModel) = queryModel(NestedTypeTestModel.self, byId: container.id) else {
+            XCTFail("Failed to query model")
+            return
+        }
         XCTAssertEqual(queriedModel, updatedContainer)
+
+        guard case .success = deleteModel(updatedContainer) else {
+            XCTFail("Failed to delete model")
+            return
+        }
+        guard case .success(let emptyModel) = queryModel(NestedTypeTestModel.self, byId: container.id) else {
+            XCTFail("Failed to query deleted model")
+            return
+        }
         XCTAssertNil(emptyModel)
     }
 
