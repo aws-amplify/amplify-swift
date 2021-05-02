@@ -81,6 +81,41 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
         XCTAssertEqual(reachability.key, graphQLAPI)
     }
 
+    func testReachabilityConcurrentPerform() throws {
+        let graphQLAPI = "graphQLAPI"
+        let restAPI = "restAPI"
+        do {
+            let endpointConfig = [graphQLAPI: try getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
+                                  restAPI: try getEndpointConfig(apiName: restAPI, endpointType: .rest)]
+            let pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig)
+            let dependencies = AWSAPIPlugin.ConfigurationDependencies(
+                pluginConfig: pluginConfig,
+                authService: MockAWSAuthService(),
+                subscriptionConnectionFactory: AWSSubscriptionConnectionFactory()
+            )
+            apiPlugin.configure(using: dependencies)
+        } catch {
+            XCTFail("Failed to create endpoint config")
+        }
+
+        let concurrentPerformCompleted = expectation(description: "concurrent perform completed")
+        concurrentPerformCompleted.expectedFulfillmentCount = 1_000
+        DispatchQueue.concurrentPerform(iterations: 1_000) { _ in
+            do {
+                let graphQLAPIPublisher = try apiPlugin.reachabilityPublisher(for: graphQLAPI)
+                XCTAssertNotNil(graphQLAPIPublisher)
+                let restAPIPublisher = try apiPlugin.reachabilityPublisher(for: restAPI)
+                XCTAssertNotNil(restAPIPublisher)
+            } catch {
+                XCTFail("\(error)")
+            }
+            concurrentPerformCompleted.fulfill()
+
+        }
+        wait(for: [concurrentPerformCompleted], timeout: 1)
+        XCTAssertEqual(apiPlugin.reachabilityMap.count, 2)
+    }
+
     // MARK: - Helpers
 
     func getEndpointConfig(apiName: String, endpointType: AWSAPICategoryPluginEndpointType) throws ->

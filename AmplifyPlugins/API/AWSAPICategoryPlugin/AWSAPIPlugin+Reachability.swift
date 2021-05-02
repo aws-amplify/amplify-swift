@@ -27,6 +27,10 @@ extension AWSAPIPlugin {
             throw error
         }
 
+        reachabilityMapLock.lock()
+        defer {
+            reachabilityMapLock.unlock()
+        }
         if let networkReachability = reachabilityMap[hostName] {
             return networkReachability.publisher
         }
