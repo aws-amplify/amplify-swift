@@ -33,7 +33,7 @@ let package = Package(
     dependencies: [
         .package(name: "AWSiOSSDKV2", url: "https://github.com/aws-amplify/aws-sdk-ios-spm.git", .upToNextMinor(from: "2.24.0")),
         .package(name: "AppSyncRealTimeClient", url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "1.4.3"),
-        .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.12.0")
+        .package(url: "https://github.com/stephencelis/SQLite.swift.git", .exact("0.12.2"))
     ],
     targets: [
         .target(

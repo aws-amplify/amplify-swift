@@ -91,7 +91,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Amplify: fdb7f9aad75a631449e2afb007f78f77deb25a84
-  AmplifyPlugins: 799d7c01092aa24033e59d29b9ec3fb67bdd4c82
+  AmplifyPlugins: 4ab9557c51ab8547d29ff483fb2cb9c5851e9096
   AmplifyTestCommon: 8d9622a279079e6e9509139754d82006a3fcfbf2
   AppSyncRealTimeClient: 4479354d262a23d2cc9fea1760f3815b75a4091a
   AWSAuthCore: f5325c5e076e8da6ad66932029ddb04451aa28cd

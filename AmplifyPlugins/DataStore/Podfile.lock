@@ -57,7 +57,7 @@ DEPENDENCIES:
   - AWSPluginsCore (from `../../`)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
-  - SQLite.swift (~> 0.12.0)
+  - SQLite.swift (= 0.12.2)
   - SwiftFormat/CLI (= 0.44.17)
   - SwiftLint
 
@@ -100,7 +100,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Amplify: fdb7f9aad75a631449e2afb007f78f77deb25a84
-  AmplifyPlugins: 799d7c01092aa24033e59d29b9ec3fb67bdd4c82
+  AmplifyPlugins: 4ab9557c51ab8547d29ff483fb2cb9c5851e9096
   AmplifyTestCommon: 8d9622a279079e6e9509139754d82006a3fcfbf2
   AppSyncRealTimeClient: 4479354d262a23d2cc9fea1760f3815b75a4091a
   AWSAuthCore: f5325c5e076e8da6ad66932029ddb04451aa28cd
@@ -116,6 +116,6 @@ SPEC CHECKSUMS:
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
 
-PODFILE CHECKSUM: 04860e414d616b67d24ed3346a60700f427764b9
+PODFILE CHECKSUM: fb973c73bd5a639b441e0a01717635b41533ab26
 
 COCOAPODS: 1.10.1
