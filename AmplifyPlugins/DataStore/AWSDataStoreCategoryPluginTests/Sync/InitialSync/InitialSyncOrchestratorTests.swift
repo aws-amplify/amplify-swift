@@ -169,7 +169,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         let commentWasQueried = expectation(description: "Comment was queried")
 
-        var nextTokens = Array(repeating: "token", count: pageCount - 1)
+        let nextTokens = AtomicValue(initialValue: Array(repeating: "token", count: pageCount - 1))
 
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
             if request.document.hasPrefix("query SyncPosts") {
@@ -181,7 +181,8 @@ class InitialSyncOrchestratorTests: XCTestCase {
             }
 
             let startedAt = Int(Date().timeIntervalSince1970)
-            let nextToken = nextTokens.isEmpty ? nil : nextTokens.removeFirst()
+            let nextToken = nextTokens.get().isEmpty ? nil : nextTokens.get().first
+            nextTokens.with { $0.removeFirst() }
             let list = PaginatedList<AnyModel>(items: [], nextToken: nextToken, startedAt: startedAt)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
