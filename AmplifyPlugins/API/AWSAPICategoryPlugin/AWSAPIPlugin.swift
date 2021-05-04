@@ -57,6 +57,9 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin {
         }
     }
 
+    /// Lock used for performing operations atomically when getting and setting `reachabilityMap`.
+    let reachabilityMapLock: NSLock
+
     public init(
         modelRegistration: AmplifyModelRegistration? = nil,
         sessionFactory: URLSessionBehaviorFactory? = nil,
@@ -64,7 +67,8 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin {
     ) {
         self.mapper = OperationTaskMapper()
         self.queue = OperationQueue()
-        self.authProviderFactory =  apiAuthProviderFactory ?? APIAuthProviderFactory()
+        self.authProviderFactory = apiAuthProviderFactory ?? APIAuthProviderFactory()
+        self.reachabilityMapLock = NSLock()
         super.init()
 
         modelRegistration?.registerModels(registry: ModelRegistry.self)
