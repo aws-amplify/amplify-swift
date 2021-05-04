@@ -182,7 +182,9 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
             let startedAt = Int(Date().timeIntervalSince1970)
             let nextToken = nextTokens.get().isEmpty ? nil : nextTokens.get().first
-            nextTokens.with { $0.removeFirst() }
+            if !nextTokens.get().isEmpty {
+                nextTokens.with { $0.removeFirst() }
+            }
             let list = PaginatedList<AnyModel>(items: [], nextToken: nextToken, startedAt: startedAt)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
