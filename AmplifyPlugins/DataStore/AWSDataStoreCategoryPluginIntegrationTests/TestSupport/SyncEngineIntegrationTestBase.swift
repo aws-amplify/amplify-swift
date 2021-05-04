@@ -14,7 +14,7 @@ import AWSMobileClient
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
-class SyncEngineIntegrationTestBase: XCTestCase {
+class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
     static let networkTimeout = TimeInterval(180)
     let networkTimeout = SyncEngineIntegrationTestBase.networkTimeout

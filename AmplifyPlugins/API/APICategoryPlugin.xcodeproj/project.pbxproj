@@ -73,6 +73,8 @@
 		21A4F94C25A7ACE600E1047D /* GraphQLRequest+toListQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A4F94B25A7ACE500E1047D /* GraphQLRequest+toListQuery.swift */; };
 		21A4F95725A7AEB300E1047D /* GraphQLRequestToListQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A4F95625A7AEB300E1047D /* GraphQLRequestToListQueryTests.swift */; };
 		21A4F98F25A7BF9E00E1047D /* AppSyncListResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A4F98E25A7BF9E00E1047D /* AppSyncListResponseTests.swift */; };
+		21A90541261644F700EC141D /* GraphQLScalarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A90540261644F700EC141D /* GraphQLScalarTests.swift */; };
+		21A9054C2616453200EC141D /* GraphQLTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A9054B2616453200EC141D /* GraphQLTestBase.swift */; };
 		21D38B9B240C517C00EC2A8D /* AWSOIDCAuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D38B9A240C517C00EC2A8D /* AWSOIDCAuthProvider.swift */; };
 		21D5286724169E74005186BA /* IAMAuthInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D5286624169E74005186BA /* IAMAuthInterceptor.swift */; };
 		21D7A0DF237B54D90057D00D /* AWSGraphQLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A08D237B54D90057D00D /* AWSGraphQLOperation.swift */; };
@@ -384,6 +386,8 @@
 		21A4F94B25A7ACE500E1047D /* GraphQLRequest+toListQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLRequest+toListQuery.swift"; sourceTree = "<group>"; };
 		21A4F95625A7AEB300E1047D /* GraphQLRequestToListQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestToListQueryTests.swift; sourceTree = "<group>"; };
 		21A4F98E25A7BF9E00E1047D /* AppSyncListResponseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncListResponseTests.swift; sourceTree = "<group>"; };
+		21A90540261644F700EC141D /* GraphQLScalarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLScalarTests.swift; sourceTree = "<group>"; };
+		21A9054B2616453200EC141D /* GraphQLTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLTestBase.swift; sourceTree = "<group>"; };
 		21D38B9A240C517C00EC2A8D /* AWSOIDCAuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSOIDCAuthProvider.swift; sourceTree = "<group>"; };
 		21D5286624169E74005186BA /* IAMAuthInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAMAuthInterceptor.swift; sourceTree = "<group>"; };
 		21D7A08D237B54D90057D00D /* AWSGraphQLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSGraphQLOperation.swift; sourceTree = "<group>"; };
@@ -723,6 +727,8 @@
 				21F40A2D23A0707E0074678E /* GraphQLModelBasedTests-amplifyconfiguration.json */,
 				217856C12383339D00A30D19 /* GraphQLModelBasedTests.swift */,
 				212B299E259251F100593ED5 /* GraphQLModelBasedTests+List.swift */,
+				21A90540261644F700EC141D /* GraphQLScalarTests.swift */,
+				21A9054B2616453200EC141D /* GraphQLTestBase.swift */,
 				21598CEF23A00F8400529F29 /* README.md */,
 			);
 			path = GraphQLModelBased;
@@ -2283,9 +2289,11 @@
 				FA97F5532386CCF500EE9EFE /* AnyModelIntegrationTests.swift in Sources */,
 				217D60012578369F009F0639 /* GraphQLConnectionScenario5Tests.swift in Sources */,
 				217D5FE925783559009F0639 /* GraphQLConnectionScenario2Tests.swift in Sources */,
+				21A9054C2616453200EC141D /* GraphQLTestBase.swift in Sources */,
 				217856C22383339D00A30D19 /* GraphQLModelBasedTests.swift in Sources */,
 				212B298B2592519800593ED5 /* GraphQLConnectionScenario3Tests+List.swift in Sources */,
 				217D60022578369F009F0639 /* GraphQLConnectionScenario1Tests.swift in Sources */,
+				21A90541261644F700EC141D /* GraphQLScalarTests.swift in Sources */,
 				212B299F259251F100593ED5 /* GraphQLModelBasedTests+List.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

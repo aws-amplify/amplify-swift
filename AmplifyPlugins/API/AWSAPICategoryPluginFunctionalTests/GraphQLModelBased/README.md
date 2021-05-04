@@ -157,6 +157,76 @@ type Comment6 @model @key(name: "byPost", fields: ["postID", "content"]) {
   content: String!
 }
 
+# Scalars, Lists, Enums
+
+type ScalarContainer @model {
+   id: ID!
+   myString: String
+   myInt: Int
+   myDouble: Float
+   myBool: Boolean
+   myDate: AWSDate
+   myTime: AWSTime
+   myDateTime: AWSDateTime
+   myTimeStamp: AWSTimestamp
+   myEmail: AWSEmail
+   myJSON: AWSJSON
+   myPhone: AWSPhone
+   myURL: AWSURL
+   myIPAddress: AWSIPAddress
+}
+
+type ListIntContainer @model {
+  id: ID!
+  test: Int!
+  nullableInt: Int
+  intList: [Int!]!
+  intNullableList: [Int!]
+  nullableIntList: [Int]!
+  nullableIntNullableList: [Int]
+}
+
+type ListStringContainer @model {
+  id: ID!
+  test: String!
+  nullableString: String
+  stringList: [String!]!
+  stringNullableList: [String!]
+  nullableStringList: [String]!
+  nullableStringNullableList: [String]
+}
+
+type EnumTestModel @model {
+  id: ID!
+  enumVal: TestEnum!
+  nullableEnumVal: TestEnum
+  enumList: [TestEnum!]!
+  enumNullableList: [TestEnum!]
+  nullableEnumList: [TestEnum]!
+  nullableEnumNullableList: [TestEnum]
+}
+
+enum TestEnum {
+  VALUE_ONE
+  VALUE_TWO
+}
+
+type NestedTypeTestModel @model {
+  id: ID!
+  nestedVal: Nested!
+  nullableNestedVal: Nested
+  nestedList: [Nested!]!
+  nestedNullableList: [Nested!]
+  nullableNestedList: [Nested]!
+  nullableNestedNullableList: [Nested]
+}
+
+type Nested {
+  valueOne: Int
+  valueTwo: String
+}
+
+
 ```
 
 3.  `amplify push`

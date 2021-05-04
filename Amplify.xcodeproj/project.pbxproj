@@ -145,6 +145,20 @@
 		21A4F8F325A77D9100E1047D /* ListPaginationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A4F8F225A77D9100E1047D /* ListPaginationTests.swift */; };
 		21A7C8AA25ACB6C8004355D6 /* ArrayLiteralListProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A7C8A925ACB6C8004355D6 /* ArrayLiteralListProviderTests.swift */; };
 		21A7C90225ACC4D1004355D6 /* MockDataStoreResponders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A7C90125ACC4D1004355D6 /* MockDataStoreResponders.swift */; };
+		21A9052C2616446F00EC141D /* ListStringContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A9051F2616446F00EC141D /* ListStringContainer.swift */; };
+		21A9052D2616446F00EC141D /* ScalarContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A905202616446F00EC141D /* ScalarContainer.swift */; };
+		21A9052E2616446F00EC141D /* NestedTypeTestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A905212616446F00EC141D /* NestedTypeTestModel.swift */; };
+		21A9052F2616446F00EC141D /* NestedTypeTestModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A905222616446F00EC141D /* NestedTypeTestModel+Schema.swift */; };
+		21A905302616446F00EC141D /* ListIntContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A905232616446F00EC141D /* ListIntContainer.swift */; };
+		21A905312616446F00EC141D /* ListIntContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A905242616446F00EC141D /* ListIntContainer+Schema.swift */; };
+		21A905322616446F00EC141D /* ListStringContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A905252616446F00EC141D /* ListStringContainer+Schema.swift */; };
+		21A905332616446F00EC141D /* ScalarContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A905262616446F00EC141D /* ScalarContainer+Schema.swift */; };
+		21A905342616446F00EC141D /* Nested+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A905272616446F00EC141D /* Nested+Schema.swift */; };
+		21A905352616446F00EC141D /* EnumTestModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A905282616446F00EC141D /* EnumTestModel+Schema.swift */; };
+		21A905362616446F00EC141D /* Nested.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A905292616446F00EC141D /* Nested.swift */; };
+		21A905372616446F00EC141D /* EnumTestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A9052A2616446F00EC141D /* EnumTestModel.swift */; };
+		21A905382616446F00EC141D /* TestEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A9052B2616446F00EC141D /* TestEnum.swift */; };
+		21A905602616484A00EC141D /* Scalar+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A9055F2616484A00EC141D /* Scalar+Equatable.swift */; };
 		21AD424B249BF0DA0016FE95 /* AnyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACBAD522386160100E29E56 /* AnyModel.swift */; };
 		21AD424C249BF0DE0016FE95 /* AnyModel+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE776238626D60097E4F1 /* AnyModel+Codable.swift */; };
 		21AD424D249BF0E50016FE95 /* AnyModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE78223862DDB0097E4F1 /* AnyModel+Schema.swift */; };
@@ -958,6 +972,20 @@
 		21A4F8F225A77D9100E1047D /* ListPaginationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListPaginationTests.swift; sourceTree = "<group>"; };
 		21A7C8A925ACB6C8004355D6 /* ArrayLiteralListProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayLiteralListProviderTests.swift; sourceTree = "<group>"; };
 		21A7C90125ACC4D1004355D6 /* MockDataStoreResponders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataStoreResponders.swift; sourceTree = "<group>"; };
+		21A9051F2616446F00EC141D /* ListStringContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListStringContainer.swift; sourceTree = "<group>"; };
+		21A905202616446F00EC141D /* ScalarContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScalarContainer.swift; sourceTree = "<group>"; };
+		21A905212616446F00EC141D /* NestedTypeTestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NestedTypeTestModel.swift; sourceTree = "<group>"; };
+		21A905222616446F00EC141D /* NestedTypeTestModel+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NestedTypeTestModel+Schema.swift"; sourceTree = "<group>"; };
+		21A905232616446F00EC141D /* ListIntContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListIntContainer.swift; sourceTree = "<group>"; };
+		21A905242616446F00EC141D /* ListIntContainer+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ListIntContainer+Schema.swift"; sourceTree = "<group>"; };
+		21A905252616446F00EC141D /* ListStringContainer+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ListStringContainer+Schema.swift"; sourceTree = "<group>"; };
+		21A905262616446F00EC141D /* ScalarContainer+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ScalarContainer+Schema.swift"; sourceTree = "<group>"; };
+		21A905272616446F00EC141D /* Nested+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Nested+Schema.swift"; sourceTree = "<group>"; };
+		21A905282616446F00EC141D /* EnumTestModel+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "EnumTestModel+Schema.swift"; sourceTree = "<group>"; };
+		21A905292616446F00EC141D /* Nested.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Nested.swift; sourceTree = "<group>"; };
+		21A9052A2616446F00EC141D /* EnumTestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumTestModel.swift; sourceTree = "<group>"; };
+		21A9052B2616446F00EC141D /* TestEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEnum.swift; sourceTree = "<group>"; };
+		21A9055F2616484A00EC141D /* Scalar+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Scalar+Equatable.swift"; sourceTree = "<group>"; };
 		21AD4255249BFFDF0016FE95 /* DeprecatedTodo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DeprecatedTodo.swift; path = Deprecated/DeprecatedTodo.swift; sourceTree = "<group>"; };
 		21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorType.swift; sourceTree = "<group>"; };
 		21D79FD9237617C60057D00D /* SubscriptionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionEvent.swift; sourceTree = "<group>"; };
@@ -2098,6 +2126,27 @@
 			path = Collection;
 			sourceTree = "<group>";
 		};
+		21A9051E2616442000EC141D /* Scalar */ = {
+			isa = PBXGroup;
+			children = (
+				21A9052A2616446F00EC141D /* EnumTestModel.swift */,
+				21A905282616446F00EC141D /* EnumTestModel+Schema.swift */,
+				21A905232616446F00EC141D /* ListIntContainer.swift */,
+				21A905242616446F00EC141D /* ListIntContainer+Schema.swift */,
+				21A9051F2616446F00EC141D /* ListStringContainer.swift */,
+				21A905252616446F00EC141D /* ListStringContainer+Schema.swift */,
+				21A905292616446F00EC141D /* Nested.swift */,
+				21A905272616446F00EC141D /* Nested+Schema.swift */,
+				21A905212616446F00EC141D /* NestedTypeTestModel.swift */,
+				21A905222616446F00EC141D /* NestedTypeTestModel+Schema.swift */,
+				21A9055F2616484A00EC141D /* Scalar+Equatable.swift */,
+				21A905202616446F00EC141D /* ScalarContainer.swift */,
+				21A905262616446F00EC141D /* ScalarContainer+Schema.swift */,
+				21A9052B2616446F00EC141D /* TestEnum.swift */,
+			);
+			path = Scalar;
+			sourceTree = "<group>";
+		};
 		21AD424A249BEC440016FE95 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
@@ -2894,6 +2943,7 @@
 				6B597A092565D3E50038C3E2 /* QPredGen.swift */,
 				6B597A082565D3E40038C3E2 /* QPredGen+Schema.swift */,
 				6B7743D625906F7E001469F5 /* Restaurant */,
+				21A9051E2616442000EC141D /* Scalar */,
 				6B9F7C542526864800F1F71C /* ScenarioATest6Post.swift */,
 				6B9F7C532526864800F1F71C /* ScenarioATest6Post+Schema.swift */,
 				762167CB261542F70033FCD2 /* Record.swift */,
@@ -5265,6 +5315,7 @@
 				217D5EB02577F9DF009F0639 /* Post4.swift in Sources */,
 				217D5EB22577F9DF009F0639 /* PostEditor5+Schema.swift in Sources */,
 				21F40A3A23A294770074678E /* TestConfigHelper.swift in Sources */,
+				21A905312616446F00EC141D /* ListIntContainer+Schema.swift in Sources */,
 				B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */,
 				B4F3542C25361BC80050FEE0 /* DynamicEmbedded.swift in Sources */,
 				6B7743E125906FD3001469F5 /* MenuType.swift in Sources */,
@@ -5293,19 +5344,26 @@
 				B9FAA11823879A57009414B4 /* Author+Schema.swift in Sources */,
 				B9521836237E21BA00F53237 /* Post+Schema.swift in Sources */,
 				6B7743DE25906FD3001469F5 /* Menu+Schema.swift in Sources */,
+				21A905352616446F00EC141D /* EnumTestModel+Schema.swift in Sources */,
 				217D5EB72577F9DF009F0639 /* Project1+Schema.swift in Sources */,
 				FA4A955F239ADEBD008E876E /* MockResponder.swift in Sources */,
+				21A9052F2616446F00EC141D /* NestedTypeTestModel+Schema.swift in Sources */,
 				214F497A2486D8A200DA616C /* User.swift in Sources */,
 				B9FAA11223878C96009414B4 /* UserAccount+Schema.swift in Sources */,
 				FACA36152327FC39000E74F6 /* MessageReporter.swift in Sources */,
 				FAF512AE23986791001ADF4E /* AmplifyModels.swift in Sources */,
 				217D5EC42577F9DF009F0639 /* Team1+Schema.swift in Sources */,
 				6BE9D73725A67F7400AB5C9A /* M2MPost.swift in Sources */,
+				21A905362616446F00EC141D /* Nested.swift in Sources */,
 				B9FAA11C23879B35009414B4 /* Book.swift in Sources */,
 				6B597A0B2565D3E50038C3E2 /* QPredGen.swift in Sources */,
+				21A9052E2616446F00EC141D /* NestedTypeTestModel.swift in Sources */,
 				975751B424D21DE000FA0A6E /* MockDevMenuContextProvider.swift in Sources */,
+				21A905342616446F00EC141D /* Nested+Schema.swift in Sources */,
 				6B597A0A2565D3E50038C3E2 /* QPredGen+Schema.swift in Sources */,
 				214F49772486D8A200DA616C /* UserFollowers+Schema.swift in Sources */,
+				21A905332616446F00EC141D /* ScalarContainer+Schema.swift in Sources */,
+				21A905382616446F00EC141D /* TestEnum.swift in Sources */,
 				B9FAA11423878CEA009414B4 /* UserProfile+Schema.swift in Sources */,
 				6BE9D6EF25A6622000AB5C9A /* Team+Schema.swift in Sources */,
 				762C978E26210FF100798FA3 /* RecordCover+Schema.swift in Sources */,
@@ -5314,13 +5372,17 @@
 				217D5EB82577F9DF009F0639 /* Project2+Schema.swift in Sources */,
 				214F49792486D8A200DA616C /* UserFollowing+Schema.swift in Sources */,
 				FACA361D2327FC84000E74F6 /* MockAPICategoryPlugin.swift in Sources */,
+				21A905602616484A00EC141D /* Scalar+Equatable.swift in Sources */,
 				B9FAA11023878C5E009414B4 /* UserProfile.swift in Sources */,
+				21A905322616446F00EC141D /* ListStringContainer+Schema.swift in Sources */,
 				6BE9D6EE25A6622000AB5C9A /* Team.swift in Sources */,
 				B9AA09F12473CA29000E6FBB /* PostStatus.swift in Sources */,
 				6BEE081C2533CCFA00133961 /* OGCScenarioBPost+Schema.swift in Sources */,
 				214F497B2486D8A200DA616C /* User+Schema.swift in Sources */,
 				6B9F7C562526864800F1F71C /* ScenarioATest6Post.swift in Sources */,
+				21A905372616446F00EC141D /* EnumTestModel.swift in Sources */,
 				B9FAA12023879BD0009414B4 /* BookAuthor+Schema.swift in Sources */,
+				21A9052D2616446F00EC141D /* ScalarContainer.swift in Sources */,
 				21F40A4023A295470074678E /* TestCommonConstants.swift in Sources */,
 				217D5EB32577F9DF009F0639 /* Comment3.swift in Sources */,
 				214F497C2486D8A200DA616C /* UserFollowers.swift in Sources */,
@@ -5344,6 +5406,7 @@
 				21FDBB642587D7A30086FCDC /* Post6+Schema.swift in Sources */,
 				217D5EB12577F9DF009F0639 /* Team2+Schema.swift in Sources */,
 				B4F3E9FA24314ECC00F23296 /* MockAuthCategoryPlugin.swift in Sources */,
+				21A9052C2616446F00EC141D /* ListStringContainer.swift in Sources */,
 				21FDBB652587D7A30086FCDC /* Comment6+Schema.swift in Sources */,
 				214F49CE24898E8500DA616C /* Article+Schema.swift in Sources */,
 				216E460A249183230035E3CE /* Section.swift in Sources */,
@@ -5358,6 +5421,7 @@
 				762C978526210F6400798FA3 /* RecordCover.swift in Sources */,
 				216E45ED248E914F0035E3CE /* Category.swift in Sources */,
 				6BE9D6ED25A6622000AB5C9A /* Project+Schema.swift in Sources */,
+				21A905302616446F00EC141D /* ListIntContainer.swift in Sources */,
 				6BE9D6EC25A6622000AB5C9A /* Project.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
