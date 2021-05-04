@@ -300,7 +300,6 @@ extension Dictionary where Key == String, Value == AWSAPICategoryPluginConfigura
         return try getConfig()
     }
 
-    // Retrieve the endpoint configuration for the specified `apiName`
     private func getConfig(for apiName: String) throws -> AWSAPICategoryPluginConfiguration.EndpointConfig {
         guard let endpointConfig = self[apiName] else {
 
@@ -318,7 +317,7 @@ extension Dictionary where Key == String, Value == AWSAPICategoryPluginConfigura
         return endpointConfig
     }
 
-    // Retrieve the endpoint configuration when there is only one endpoint of the specified `endpointType`
+    /// Retrieve the endpoint configuration when there is only one endpoint of the specified `endpointType`
     private func getConfig(for endpointType: AWSAPICategoryPluginEndpointType) throws ->
         AWSAPICategoryPluginConfiguration.EndpointConfig {
             let apiForEndpointType = filter { (_, endpointConfig) -> Bool in
@@ -338,7 +337,7 @@ extension Dictionary where Key == String, Value == AWSAPICategoryPluginConfigura
             return endpointConfig.value
     }
 
-    // Retrieve the endpoint only if there is a single one, with GraphQL taking precedent over REST.
+    /// Retrieve the endpoint only if there is a single one, with GraphQL taking precedent over REST.
     private func getConfig() throws -> AWSAPICategoryPluginConfiguration.EndpointConfig {
         let graphQLEndpoints = filter { (_, endpointConfig) -> Bool in
             return endpointConfig.endpointType == .graphQL
