@@ -22,7 +22,7 @@ extension SignInResult {
             let deliveryDetails = AuthCodeDeliveryDetails(destination: .sms(codeDetails?.destination))
             return .confirmSignInWithSMSMFACode(deliveryDetails, nil)
         case .customChallenge:
-            return .confirmSignInWithCustomChallenge(nil)
+            return .confirmSignInWithCustomChallenge(parameters)
         case .newPasswordRequired:
             return .confirmSignInWithNewPassword(nil)
         default:
