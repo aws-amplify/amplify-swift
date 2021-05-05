@@ -1,23 +1,23 @@
 PODS:
-  - Amplify (1.9.0):
-    - Amplify/Default (= 1.9.0)
-  - Amplify/Default (1.9.0)
-  - AmplifyPlugins/AWSCognitoAuthPlugin (1.9.0):
+  - Amplify (1.9.1):
+    - Amplify/Default (= 1.9.1)
+  - Amplify/Default (1.9.1)
+  - AmplifyPlugins/AWSCognitoAuthPlugin (1.9.1):
     - AWSAuthCore (~> 2.24.0)
     - AWSCognitoIdentityProvider (~> 2.24.0)
     - AWSCognitoIdentityProviderASF (~> 2.24.0)
     - AWSCore (~> 2.24.0)
     - AWSMobileClient (~> 2.24.0)
-    - AWSPluginsCore (= 1.9.0)
-  - AmplifyTestCommon (1.9.0):
-    - Amplify (= 1.9.0)
-    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.9.0)
-  - AmplifyTestCommon/AWSPluginsTestCommon (1.9.0):
-    - Amplify (= 1.9.0)
+    - AWSPluginsCore (= 1.9.1)
+  - AmplifyTestCommon (1.9.1):
+    - Amplify (= 1.9.1)
+    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.9.1)
+  - AmplifyTestCommon/AWSPluginsTestCommon (1.9.1):
+    - Amplify (= 1.9.1)
     - AWSCore (~> 2.24.0)
     - AWSMobileClient (~> 2.24.0)
-    - AWSPluginsCore (= 1.9.0)
-  - AppSyncRealTimeClient (1.4.4):
+    - AWSPluginsCore (= 1.9.1)
+  - AppSyncRealTimeClient (1.5.0):
     - Starscream (~> 3.1.1)
   - AWSAuthCore (2.24.0):
     - AWSCore (= 2.24.0)
@@ -31,8 +31,8 @@ PODS:
     - AWSCognitoIdentityProvider (= 2.24.0)
     - AWSCognitoIdentityProviderASF (= 2.24.0)
     - AWSCore (= 2.24.0)
-  - AWSPluginsCore (1.9.0):
-    - Amplify (= 1.9.0)
+  - AWSPluginsCore (1.9.1):
+    - Amplify (= 1.9.1)
     - AWSCore (~> 2.24.0)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
@@ -90,16 +90,16 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  Amplify: fdb7f9aad75a631449e2afb007f78f77deb25a84
-  AmplifyPlugins: 4ab9557c51ab8547d29ff483fb2cb9c5851e9096
-  AmplifyTestCommon: 8d9622a279079e6e9509139754d82006a3fcfbf2
-  AppSyncRealTimeClient: 4479354d262a23d2cc9fea1760f3815b75a4091a
+  Amplify: 424fb27b96360ef59647c91ab7cc1acd64b107a9
+  AmplifyPlugins: 35c951f0e97aaa8ba11e2b0ed9610d62ed60a2e0
+  AmplifyTestCommon: e8c108063d9c3e10764504017e5f89d0cd323432
+  AppSyncRealTimeClient: 2b4482b1770a3e5cf64f9714a6d198550017b5a2
   AWSAuthCore: f5325c5e076e8da6ad66932029ddb04451aa28cd
   AWSCognitoIdentityProvider: 874160e2f79fc957efd28745ee7389bccd59dfaf
   AWSCognitoIdentityProviderASF: a604ce4b892fe7be0729d22a77a36f8b641e35a4
   AWSCore: d5cd1311b33a4ae9faacda839c0ac9fff711cd79
   AWSMobileClient: 0cd4603f1dff10edb1e7b32e07753c864a21c5ed
-  AWSPluginsCore: 34b987a116d75fb09852e2812cb53902d72c73c8
+  AWSPluginsCore: ffd554c493e6e46a45c2e71e4fbc33fbb3e00b7d
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
@@ -108,4 +108,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 97bb85800180799fa49c6740cdebc2d962ae6258
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.9.3

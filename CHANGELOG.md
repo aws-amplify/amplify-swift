@@ -1,5 +1,14 @@
 # Changelog
 ## Unreleased
+## 1.9.1 (2021-05-05)
+
+### Bug Fixes
+
+- **API**: Reachability resolve to GraphQL API (#1167)
+- **auth**: pass public challenge parameters in nextstep when authenticating with custom challenge
+- SQLLite dependency exact 0.12.2 version (#1199)
+- AppSyncRealTimeClient dependency up to next major (#1198)
+
 ## 1.9.0 (2021-04-26)
 
 ### Features
