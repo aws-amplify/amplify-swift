@@ -31,11 +31,13 @@ public struct GraphQLRequest<R: Decodable> {
                 document: String,
                 variables: [String: Any]? = nil,
                 responseType: R.Type,
-                decodePath: String? = nil) {
+                decodePath: String? = nil,
+                authModeStrategy: AuthModeStrategy? = nil) {
         self.apiName = apiName
         self.document = document
         self.variables = variables
         self.responseType = responseType
         self.decodePath = decodePath
+        self.authModeStrategy = authModeStrategy
     }
 }

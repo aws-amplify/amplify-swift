@@ -63,20 +63,34 @@ public struct DataStoreConfiguration {
     /// The page size of each sync execution
     public let syncPageSize: UInt
 
+    /// Selective sync expressions
     public let syncExpressions: [DataStoreSyncExpression]
+
+    /// Authorization mode strategy
+    public let authModeStrategy: AuthModeStrategy
 
     init(errorHandler: @escaping DataStoreErrorHandler,
          conflictHandler: @escaping DataStoreConflictHandler,
          syncInterval: TimeInterval,
          syncMaxRecords: UInt,
          syncPageSize: UInt,
-         syncExpressions: [DataStoreSyncExpression]) {
+         syncExpressions: [DataStoreSyncExpression],
+         authModeStrategy: AuthModeStrategyType = .default) {
         self.errorHandler = errorHandler
         self.conflictHandler = conflictHandler
         self.syncInterval = syncInterval
         self.syncMaxRecords = syncMaxRecords
         self.syncPageSize = syncPageSize
         self.syncExpressions = syncExpressions
+
+        switch authModeStrategy {
+        case .default:
+            self.authModeStrategy = DefaultAuthModeStrategy()
+        case .multiAuth:
+            self.authModeStrategy = MultiAuthModeStrategy()
+        case .custom(let customStrategy):
+            self.authModeStrategy = customStrategy
+        }
     }
 
 }
@@ -106,14 +120,16 @@ extension DataStoreConfiguration {
         syncInterval: TimeInterval = DataStoreConfiguration.defaultSyncInterval,
         syncMaxRecords: UInt = DataStoreConfiguration.defaultSyncMaxRecords,
         syncPageSize: UInt = DataStoreConfiguration.defaultSyncPageSize,
-        syncExpressions: [DataStoreSyncExpression] = []
+        syncExpressions: [DataStoreSyncExpression] = [],
+        authModeStrategy: AuthModeStrategyType = .default
     ) -> DataStoreConfiguration {
         return DataStoreConfiguration(errorHandler: errorHandler,
                                       conflictHandler: conflictHandler,
                                       syncInterval: syncInterval,
                                       syncMaxRecords: syncMaxRecords,
                                       syncPageSize: syncPageSize,
-                                      syncExpressions: syncExpressions)
+                                      syncExpressions: syncExpressions,
+                                      authModeStrategy: authModeStrategy)
     }
 
     /// The default configuration.

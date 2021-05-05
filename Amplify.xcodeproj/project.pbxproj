@@ -242,6 +242,7 @@
 		6BEE081D2533CCFA00133961 /* OGCScenarioBPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE081B2533CCFA00133961 /* OGCScenarioBPost.swift */; };
 		6BEE08242533D30800133961 /* OGCScenarioBMGroupPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE08222533D30800133961 /* OGCScenarioBMGroupPost.swift */; };
 		6BEE08252533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BEE08232533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift */; };
+		761D6ABA2641F64900A54DDA /* AuthModeStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761D6AB82641DBA200A54DDA /* AuthModeStrategy.swift */; };
 		762167CC261542F70033FCD2 /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762167CB261542F70033FCD2 /* Record.swift */; };
 		762167D52615435C0033FCD2 /* Record+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762167D42615435C0033FCD2 /* Record+Schema.swift */; };
 		762C978526210F6400798FA3 /* RecordCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762C978426210F6400798FA3 /* RecordCover.swift */; };
@@ -1129,6 +1130,7 @@
 		71B6F506E5F3F00B0743A9BF /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig"; sourceTree = "<group>"; };
 		73C2E5FA55C85539AD9E39EE /* Pods_Amplify_AWSPluginsCore_CoreMLPredictionsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_CoreMLPredictionsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7503342A8C13588E2B0DDBDE /* Pods-AmplifyFunctionalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyFunctionalTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyFunctionalTests/Pods-AmplifyFunctionalTests.debug.xcconfig"; sourceTree = "<group>"; };
+		761D6AB82641DBA200A54DDA /* AuthModeStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModeStrategy.swift; sourceTree = "<group>"; };
 		762167CB261542F70033FCD2 /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
 		762167D42615435C0033FCD2 /* Record+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Record+Schema.swift"; sourceTree = "<group>"; };
 		762C978426210F6400798FA3 /* RecordCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordCover.swift; sourceTree = "<group>"; };
@@ -2692,6 +2694,7 @@
 				B4FA336124105D1800E1C659 /* AuthCategoryPlugin.swift */,
 				B463D6CC24633DA2008C0F85 /* AuthCategoryUserBehavior.swift */,
 				FA00F68B24DA3A8F003E8A71 /* AuthCategoryUserBehavior+Combine.swift */,
+				761D6AB82641DBA200A54DDA /* AuthModeStrategy.swift */,
 				B4A19DA924101E9D00DE2E55 /* Error */,
 				B49A02F72410BEBD00B42A25 /* Internal */,
 				B4A19DA724101E9D00DE2E55 /* Models */,
@@ -5089,6 +5092,7 @@
 				FA09B92F2321A2DE000E064D /* APICategory+CategoryConfigurable.swift in Sources */,
 				B4D3853E236C97360014653D /* PredictionsCategory+HubPayloadEventName.swift in Sources */,
 				FA9FB7792329D4D400C04D32 /* HubFilter.swift in Sources */,
+				761D6ABA2641F64900A54DDA /* AuthModeStrategy.swift in Sources */,
 				B92E03AD2367CE7A006CEB8D /* DataStoreCategory+Behavior.swift in Sources */,
 				FAC2354B227A055A00424678 /* Amplify.swift in Sources */,
 				FA09B92D2321A27F000E064D /* CategoryConfigurable.swift in Sources */,
