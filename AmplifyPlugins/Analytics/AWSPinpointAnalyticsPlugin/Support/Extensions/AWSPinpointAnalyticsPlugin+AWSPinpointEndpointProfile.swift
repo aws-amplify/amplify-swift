@@ -14,6 +14,7 @@ extension AWSPinpointEndpointProfile {
         let pinpointEndpointProfileUser = user ?? AWSPinpointEndpointProfileUser()
         pinpointEndpointProfileUser.userId = identityId
         user = pinpointEndpointProfileUser
+        
     }
 
     func addProperties(_ properties: [String: AnalyticsPropertyValue]) {
@@ -33,24 +34,29 @@ extension AWSPinpointEndpointProfile {
     func addUserProfile(_ userProfile: AnalyticsUserProfile) {
         if let email = userProfile.email {
             addAttribute([email], forKey: "email")
+            user?.addAttribute([email], forKey: "email")
         }
 
         if let name = userProfile.name {
             addAttribute([name], forKey: "name")
+            user?.addAttribute([name], forKey: "name")
         }
 
         if let plan = userProfile.plan {
             addAttribute([plan], forKey: "plan")
+            user?.addAttribute([plan], forKey: "plan")
         }
 
         if let properties = userProfile.properties {
             addProperties(properties)
+            // TODO: add to `user` which is `AWSPinpointEndpointProfileUser`
         }
 
         if let locationValue = userProfile.location {
             let pinpointEndpointProfileLocation = location ?? AWSPinpointEndpointProfileLocation()
             pinpointEndpointProfileLocation.addLocation(locationValue)
             location = pinpointEndpointProfileLocation
+            // TODO anything else here?
         }
     }
 }
