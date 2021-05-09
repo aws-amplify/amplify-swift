@@ -13,9 +13,13 @@ public protocol DefaultLogger {
 }
 
 public extension DefaultLogger {
+
+    /// <#Description#>
     static var log: Logger {
         Amplify.Logging.logger(forCategory: String(describing: self))
     }
+
+    /// <#Description#>
     var log: Logger {
         type(of: self).log
     }

@@ -7,8 +7,10 @@
 
 import Foundation
 
+/// <#Description#>
 public typealias RawGraphQLResponse = String
 
+/// <#Description#>
 public typealias GraphQLResponse<ResponseType: Decodable> =
     Result<ResponseType, GraphQLResponseError<ResponseType>>
 
@@ -31,6 +33,7 @@ public enum GraphQLResponseError<ResponseType: Decodable>: AmplifyError {
     /// An unknown error occurred
     case unknown(ErrorDescription, RecoverySuggestion, Error?)
 
+    /// <#Description#>
     public var errorDescription: ErrorDescription {
         switch self {
         case .error(let errors):
@@ -44,6 +47,7 @@ public enum GraphQLResponseError<ResponseType: Decodable>: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .error:
@@ -60,6 +64,7 @@ public enum GraphQLResponseError<ResponseType: Decodable>: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var underlyingError: Error? {
         switch self {
         case .error:
@@ -73,6 +78,11 @@ public enum GraphQLResponseError<ResponseType: Decodable>: AmplifyError {
         }
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - errorDescription: <#errorDescription description#>
+    ///   - recoverySuggestion: <#recoverySuggestion description#>
+    ///   - error: <#error description#>
     public init(
         errorDescription: ErrorDescription = "An unknown error occurred",
         recoverySuggestion: RecoverySuggestion = "See `underlyingError` for more details",

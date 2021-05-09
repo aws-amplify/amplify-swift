@@ -24,6 +24,11 @@ public struct HubPayload {
     /// AmplifyOperations, this field will be the Operation's associated OperationResult.
     public let data: Any?
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - eventName: <#eventName description#>
+    ///   - context: <#context description#>
+    ///   - data: <#data description#>
     public init(eventName: String,
                 context: Any? = nil,
                 data: Any? = nil) {

@@ -8,10 +8,19 @@
 import Foundation
 
 public extension JSONValue {
+
+    /// <#Description#>
+    /// - Parameter keyPath: <#keyPath description#>
+    /// - Returns: <#description#>
     func value(at keyPath: String) -> JSONValue? {
         value(at: keyPath, separatedBy: ".")
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - keyPath: <#keyPath description#>
+    ///   - separator: <#separator description#>
+    /// - Returns: <#description#>
     func value<T: StringProtocol>(at keyPath: String,
                                   separatedBy separator: T) -> JSONValue? {
         let pathComponents = keyPath.components(separatedBy: separator)
@@ -19,6 +28,11 @@ public extension JSONValue {
         return value
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - keyPath: <#keyPath description#>
+    ///   - defaultValue: <#defaultValue description#>
+    /// - Returns: <#description#>
     func value(at keyPath: String, withDefault defaultValue: JSONValue) -> JSONValue {
         guard let jsonValue = value(at: keyPath) else {
             return defaultValue

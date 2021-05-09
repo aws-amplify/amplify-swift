@@ -7,6 +7,12 @@
 
 extension MutationEvent {
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - model: <#model description#>
+    ///   - mutationType: <#mutationType description#>
+    ///   - version: <#version description#>
+    /// - Throws: <#description#>
     public init(untypedModel model: Model,
                 mutationType: MutationType,
                 version: Int? = nil) throws {

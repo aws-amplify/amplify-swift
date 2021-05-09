@@ -14,6 +14,10 @@ public struct UnsubscribeToken {
     let channel: HubChannel
     let id: UUID
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - channel: <#channel description#>
+    ///   - id: <#id description#>
     public init(channel: HubChannel, id: UUID) {
         self.channel = channel
         self.id = id
@@ -21,10 +25,18 @@ public struct UnsubscribeToken {
 }
 
 extension UnsubscribeToken: Hashable {
+
+    /// <#Description#>
+    /// - Parameters:
+    ///   - lhs: <#lhs description#>
+    ///   - rhs: <#rhs description#>
+    /// - Returns: <#description#>
     public static func == (lhs: UnsubscribeToken, rhs: UnsubscribeToken) -> Bool {
         return lhs.id == rhs.id
     }
 
+    /// <#Description#>
+    /// - Parameter hasher: <#hasher description#>
     public func hash(into hasher: inout Hasher) {
         return id.hash(into: &hasher)
     }

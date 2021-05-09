@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public struct BasicAnalyticsEvent: AnalyticsEvent {
 
     /// The name of the event
@@ -15,6 +16,10 @@ public struct BasicAnalyticsEvent: AnalyticsEvent {
     /// Properties of the event
     public var properties: AnalyticsProperties?
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - name: <#name description#>
+    ///   - properties: <#properties description#>
     public init(name: String,
                 properties: AnalyticsProperties? = nil) {
         self.name = name

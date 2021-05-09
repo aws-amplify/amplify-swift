@@ -8,6 +8,8 @@
 import Foundation
 
 public extension MutationEvent {
+
+    /// <#Description#>
     enum MutationType: String, Codable {
         case create
         case update
@@ -16,6 +18,8 @@ public extension MutationEvent {
 }
 
 public extension MutationEvent.MutationType {
+
+    /// <#Description#>
     var graphQLMutationType: GraphQLMutationType {
         switch self {
         case .create:
@@ -27,6 +31,8 @@ public extension MutationEvent.MutationType {
         }
     }
 
+    /// <#Description#>
+    /// - Parameter graphQLMutationType: <#graphQLMutationType description#>
     init(graphQLMutationType: GraphQLMutationType) {
         switch graphQLMutationType {
         case .create:

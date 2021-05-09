@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public protocol AuthConfirmUserAttributeOperation: AmplifyOperation<
     AuthConfirmUserAttributeRequest,
     Void,

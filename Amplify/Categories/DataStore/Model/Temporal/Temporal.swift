@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public struct Temporal {
 
     /// This struct is used as a namespace to all temporal types. It should
@@ -62,6 +63,7 @@ public protocol TemporalSpec {
 /// Extension to add default implementation to generic members of `TemporalSpec`.
 extension TemporalSpec {
 
+    /// <#Description#>
     static var iso8601Calendar: Calendar {
         var calendar = Calendar(identifier: .iso8601)
         calendar.timeZone = .utc
@@ -83,6 +85,9 @@ extension TemporalSpec {
         return formatter
     }
 
+    /// <#Description#>
+    /// - Parameter iso8601String: <#iso8601String description#>
+    /// - Returns: <#description#>
     static func iso8601Date(from iso8601String: String) -> Foundation.Date? {
         var date: Foundation.Date?
         for format in TemporalFormat.sortedCasesForParsing {
@@ -95,6 +100,11 @@ extension TemporalSpec {
         return date
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - format: <#format description#>
+    ///   - timeZone: <#timeZone description#>
+    /// - Returns: <#description#>
     public func iso8601FormattedString(format: TemporalFormat,
                                        timeZone: TimeZone = .utc) -> String {
         let formatter = Self.iso8601DateFormatter(format: format, timeZone: timeZone)

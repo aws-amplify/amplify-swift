@@ -17,12 +17,18 @@ extension Temporal {
     /// When the full date information is required, use `DateTime` instead.
     public struct Date: TemporalSpec, DateUnitOperable {
 
+        /// <#Description#>
+        /// - Returns: <#description#>
         public static func now() -> Self {
             return Temporal.Date(Foundation.Date())
         }
 
+        /// <#Description#>
         public let foundationDate: Foundation.Date
 
+        /// <#Description#>
+        /// - Parameter iso8601String: <#iso8601String description#>
+        /// - Throws: <#description#>
         public init(iso8601String: String) throws {
             guard let date = Temporal.Date.iso8601Date(from: iso8601String) else {
                 throw DataStoreError.invalidDateFormat(iso8601String)
@@ -30,6 +36,8 @@ extension Temporal {
             self.init(date)
         }
 
+        /// <#Description#>
+        /// - Parameter date: <#date description#>
         public init(_ date: Foundation.Date) {
             // sets the date to a fixed instant so date-only operations are safe
             self.foundationDate = Date.iso8601Calendar.startOfDay(for: date)

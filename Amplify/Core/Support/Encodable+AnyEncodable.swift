@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public struct AnyEncodable: Encodable {
 
     let encodable: Encodable
@@ -15,6 +16,9 @@ public struct AnyEncodable: Encodable {
         self.encodable = encodable
     }
 
+    /// <#Description#>
+    /// - Parameter encoder: <#encoder description#>
+    /// - Throws: <#description#>
     public func encode(to encoder: Encoder) throws {
         try encodable.encode(to: encoder)
     }
@@ -22,6 +26,8 @@ public struct AnyEncodable: Encodable {
 
 extension Encodable {
 
+    /// <#Description#>
+    /// - Returns: <#description#>
     public func eraseToAnyEncodable() -> AnyEncodable {
         return AnyEncodable(self)
     }

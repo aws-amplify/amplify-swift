@@ -22,6 +22,8 @@ public enum PluginError {
 }
 
 extension PluginError: AmplifyError {
+
+    /// <#Description#>
     public var errorDescription: ErrorDescription {
         switch self {
         case .mismatchedPlugin(let description, _, _),
@@ -32,6 +34,7 @@ extension PluginError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .mismatchedPlugin(_, let recoverySuggestion, _),
@@ -42,6 +45,7 @@ extension PluginError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var underlyingError: Error? {
         switch self {
         case .mismatchedPlugin(_, _, let underlyingError),
@@ -52,6 +56,11 @@ extension PluginError: AmplifyError {
         }
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - errorDescription: <#errorDescription description#>
+    ///   - recoverySuggestion: <#recoverySuggestion description#>
+    ///   - error: <#error description#>
     public init(
         errorDescription: ErrorDescription = "An unknown error occurred",
         recoverySuggestion: RecoverySuggestion = "See `underlyingError` for more details",

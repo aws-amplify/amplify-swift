@@ -6,6 +6,9 @@
 //
 
 extension AtomicValue where Value: RangeReplaceableCollection {
+
+    /// <#Description#>
+    /// - Parameter newElement: <#newElement description#>
     public func append(_ newElement: Value.Element) {
         lock.lock()
         defer {
@@ -14,6 +17,8 @@ extension AtomicValue where Value: RangeReplaceableCollection {
         value.append(newElement)
     }
 
+    /// <#Description#>
+    /// - Parameter sequence: <#sequence description#>
     public func append<S>(contentsOf sequence: S) where S: Sequence, S.Element == Value.Element {
         lock.lock()
         defer {
@@ -22,6 +27,8 @@ extension AtomicValue where Value: RangeReplaceableCollection {
         value.append(contentsOf: sequence)
     }
 
+    /// <#Description#>
+    /// - Returns: <#description#>
     public func removeFirst() -> Value.Element {
         lock.lock()
         defer {
@@ -30,6 +37,7 @@ extension AtomicValue where Value: RangeReplaceableCollection {
         return value.removeFirst()
     }
 
+    /// <#Description#>
     public subscript(_ key: Value.Index) -> Value.Element {
         lock.lock()
         defer {

@@ -8,6 +8,12 @@
 import Foundation
 
 extension QueryOperator: Equatable {
+
+    /// <#Description#>
+    /// - Parameters:
+    ///   - lhs: <#lhs description#>
+    ///   - rhs: <#rhs description#>
+    /// - Returns: <#description#>
     public static func == (lhs: QueryOperator, rhs: QueryOperator) -> Bool {
         switch (lhs, rhs) {
         case let (.contains(one), .contains(other)),

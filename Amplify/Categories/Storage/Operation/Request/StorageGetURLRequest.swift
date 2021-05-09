@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// <#Description#>
 public struct StorageGetURLRequest: AmplifyOperationRequest {
     /// The unique identifier for the object in storage
     public let key: String
@@ -12,6 +13,10 @@ public struct StorageGetURLRequest: AmplifyOperationRequest {
     /// Options to adjust the behavior of this request, including plugin-options
     public let options: Options
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - key: <#key description#>
+    ///   - options: <#options description#>
     public init(key: String, options: Options) {
         self.key = key
         self.options = options
@@ -38,6 +43,12 @@ public extension StorageGetURLRequest {
         /// key/values
         public let pluginOptions: Any?
 
+        /// <#Description#>
+        /// - Parameters:
+        ///   - accessLevel: <#accessLevel description#>
+        ///   - targetIdentityId: <#targetIdentityId description#>
+        ///   - expires: <#expires description#>
+        ///   - pluginOptions: <#pluginOptions description#>
         public init(accessLevel: StorageAccessLevel = .guest,
                     targetIdentityId: String? = nil,
                     expires: Int = Options.defaultExpireInSeconds,

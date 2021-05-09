@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public struct PredictionsInterpretRequest: AmplifyOperationRequest {
 
     /// The text to be interpreted.
@@ -15,6 +16,10 @@ public struct PredictionsInterpretRequest: AmplifyOperationRequest {
     /// Options to adjust the behavior of this request, including plugin options
     public let options: Options
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - textToInterpret: <#textToInterpret description#>
+    ///   - options: <#options description#>
     public init(textToInterpret: String,
                 options: Options) {
         self.textToInterpret = textToInterpret
@@ -24,6 +29,7 @@ public struct PredictionsInterpretRequest: AmplifyOperationRequest {
 
 public extension PredictionsInterpretRequest {
 
+    /// <#Description#>
     struct Options {
 
         /// The defaultNetworkPolicy for the operation. The default value will be `auto`.
@@ -34,6 +40,10 @@ public extension PredictionsInterpretRequest {
         /// key/values
         public let pluginOptions: Any?
 
+        /// <#Description#>
+        /// - Parameters:
+        ///   - defaultNetworkPolicy: <#defaultNetworkPolicy description#>
+        ///   - pluginOptions: <#pluginOptions description#>
         public init(defaultNetworkPolicy: DefaultNetworkPolicy = .auto,
                     pluginOptions: Any? = nil) {
             self.defaultNetworkPolicy = defaultNetworkPolicy

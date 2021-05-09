@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// <#Description#>
 public struct StorageRemoveRequest: AmplifyOperationRequest {
     /// The unique identifier for the object in storage
     public let key: String
@@ -12,6 +13,10 @@ public struct StorageRemoveRequest: AmplifyOperationRequest {
     /// Options to adjust the behavior of this request, including plugin-options
     public let options: Options
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - key: <#key description#>
+    ///   - options: <#options description#>
     public init(key: String, options: Options) {
         self.key = key
         self.options = options
@@ -29,6 +34,10 @@ public extension StorageRemoveRequest {
         /// key/values
         public let pluginOptions: Any?
 
+        /// <#Description#>
+        /// - Parameters:
+        ///   - accessLevel: <#accessLevel description#>
+        ///   - pluginOptions: <#pluginOptions description#>
         public init(accessLevel: StorageAccessLevel = .guest,
                     pluginOptions: Any? = nil) {
             self.accessLevel = accessLevel

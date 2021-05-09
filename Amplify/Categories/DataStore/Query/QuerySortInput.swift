@@ -9,13 +9,22 @@ import Foundation
 
 /// A simple enum that holding a sorting direction for a field that can be applied to queries.
 public enum QuerySortBy {
+
+    /// <#Description#>
     case ascending(CodingKey)
+
+    /// <#Description#>
     case descending(CodingKey)
 }
 
+/// <#Description#>
 public struct QuerySortInput {
+
+    /// <#Description#>
     public let inputs: [QuerySortBy]
 
+    /// <#Description#>
+    /// - Parameter inputs: <#inputs description#>
     public init(_ inputs: [QuerySortBy]) {
         self.inputs = inputs
     }

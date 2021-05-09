@@ -7,10 +7,14 @@
 
 import CoreGraphics
 
+/// <#Description#>
 public struct Polygon {
 
+    /// <#Description#>
     public let points: [CGPoint]
 
+    /// <#Description#>
+    /// - Parameter points: <#points description#>
     public init(points: [CGPoint]) {
         self.points = points
     }

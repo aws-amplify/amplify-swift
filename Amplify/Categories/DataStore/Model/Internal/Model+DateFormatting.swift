@@ -13,6 +13,7 @@ import Foundation
 ///   breaking change.
 public struct ModelDateFormatting {
 
+    /// <#Description#>
     public static let decodingStrategy: JSONDecoder.DateDecodingStrategy = {
         let strategy = JSONDecoder.DateDecodingStrategy.custom { decoder -> Date in
             let container = try decoder.singleValueContainer()
@@ -24,6 +25,7 @@ public struct ModelDateFormatting {
         return strategy
     }()
 
+    /// <#Description#>
     public static let encodingStrategy: JSONEncoder.DateEncodingStrategy = {
         let strategy = JSONEncoder.DateEncodingStrategy.custom { date, encoder in
             var container = encoder.singleValueContainer()

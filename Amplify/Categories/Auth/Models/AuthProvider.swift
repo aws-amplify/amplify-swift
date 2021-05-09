@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public enum AuthProvider {
 
     case amazon

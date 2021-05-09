@@ -7,8 +7,10 @@
 
 import Combine
 
+/// <#Description#>
 public typealias DataStoreCategoryBehavior = DataStoreBaseBehavior & DataStoreSubscribeBehavior
 
+/// <#Description#>
 public protocol DataStoreBaseBehavior {
 
     /// Saves the model to storage. If sync is enabled, also initiates a sync of the mutation to the remote API
@@ -16,20 +18,43 @@ public protocol DataStoreBaseBehavior {
                         where condition: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>)
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - modelType: <#modelType description#>
+    ///   - id: <#id description#>
+    ///   - completion: <#completion description#>
     func query<M: Model>(_ modelType: M.Type,
                          byId id: String,
                          completion: DataStoreCallback<M?>)
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - modelType: <#modelType description#>
+    ///   - predicate: <#predicate description#>
+    ///   - sortInput: <#sortInput description#>
+    ///   - paginationInput: <#paginationInput description#>
+    ///   - completion: <#completion description#>
     func query<M: Model>(_ modelType: M.Type,
                          where predicate: QueryPredicate?,
                          sort sortInput: QuerySortInput?,
                          paginate paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>)
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - model: <#model description#>
+    ///   - predicate: <#predicate description#>
+    ///   - completion: <#completion description#>
     func delete<M: Model>(_ model: M,
                           where predicate: QueryPredicate?,
                           completion: @escaping DataStoreCallback<Void>)
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - modelType: <#modelType description#>
+    ///   - id: <#id description#>
+    ///   - predicate: <#predicate description#>
+    ///   - completion: <#completion description#>
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
                           where predicate: QueryPredicate?,
@@ -60,6 +85,7 @@ public protocol DataStoreBaseBehavior {
     func clear(completion: @escaping DataStoreCallback<Void>)
 }
 
+/// <#Description#>
 public protocol DataStoreSubscribeBehavior {
     /// Returns a Publisher for model changes (create, updates, delete)
     /// - Parameter modelType: The model type to observe

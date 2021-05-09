@@ -8,6 +8,7 @@
 extension MutationEvent {
     // MARK: - CodingKeys
 
+    /// <#Description#>
     public enum CodingKeys: String, ModelKey {
         case id
         case modelId
@@ -20,10 +21,12 @@ extension MutationEvent {
         case graphQLFilterJSON
     }
 
+    /// <#Description#>
     public static let keys = CodingKeys.self
 
     // MARK: - ModelSchema
 
+    /// <#Description#>
     public static let schema = defineSchema { definition in
         let mutation = MutationEvent.keys
 

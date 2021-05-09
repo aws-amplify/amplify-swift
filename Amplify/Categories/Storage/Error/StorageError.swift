@@ -5,19 +5,40 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// <#Description#>
 public enum StorageError {
+
+    /// <#Description#>
     case accessDenied(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
     case authError(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
     case httpStatusError(Int, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
     case keyNotFound(Key, ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
     case localFileNotFound(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
     case service(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
     case unknown(ErrorDescription, Error? = nil)
+
+    /// <#Description#>
     case validation(Field, ErrorDescription, RecoverySuggestion, Error? = nil)
 }
 
 extension StorageError: AmplifyError {
+
+    /// <#Description#>
     public var errorDescription: ErrorDescription {
         switch self {
         case .accessDenied(let errorDescription, _, _),
@@ -37,6 +58,7 @@ extension StorageError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .accessDenied(_, let recoverySuggestion, _),
@@ -64,6 +86,7 @@ extension StorageError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var underlyingError: Error? {
         switch self {
         case .accessDenied(_, _, let underlyingError),
@@ -79,6 +102,11 @@ extension StorageError: AmplifyError {
         }
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - errorDescription: <#errorDescription description#>
+    ///   - recoverySuggestion: <#recoverySuggestion description#>
+    ///   - error: <#error description#>
     public init(
         errorDescription: ErrorDescription = "An unknown error occurred",
         recoverySuggestion: RecoverySuggestion = "(Ignored)",

@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public typealias AnalyticsProperties = [String: AnalyticsPropertyValue]
 
 /// Behavior of the Analytics category that clients will use

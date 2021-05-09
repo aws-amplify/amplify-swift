@@ -614,6 +614,8 @@ public enum LanguageType: String {
 
 extension LanguageType {
 
+    /// <#Description#>
+    /// - Parameter locale: <#locale description#>
     public init(locale: Locale) {
         guard let languageCode = locale.languageCode,
         let type = LanguageType(rawValue: languageCode) else {

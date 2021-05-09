@@ -9,6 +9,13 @@ import Foundation
 
 extension AuthCategory: AuthCategoryBehavior {
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - username: <#username description#>
+    ///   - password: <#password description#>
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func signUp(username: String,
                        password: String? = nil,
@@ -20,6 +27,13 @@ extension AuthCategory: AuthCategoryBehavior {
                              listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - username: <#username description#>
+    ///   - confirmationCode: <#confirmationCode description#>
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func confirmSignUp(for username: String,
                               confirmationCode: String,
@@ -31,6 +45,12 @@ extension AuthCategory: AuthCategoryBehavior {
                                     listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - username: <#username description#>
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func resendSignUpCode(for username: String,
                                  options: AuthResendSignUpCodeOperation.Request.Options? = nil,
@@ -41,6 +61,13 @@ extension AuthCategory: AuthCategoryBehavior {
                                            listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - username: <#username description#>
+    ///   - password: <#password description#>
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func signIn(username: String? = nil,
                        password: String? = nil,
@@ -52,6 +79,12 @@ extension AuthCategory: AuthCategoryBehavior {
                              listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - presentationAnchor: <#presentationAnchor description#>
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthWebUISignInOperation.Request.Options? = nil,
@@ -61,6 +94,13 @@ extension AuthCategory: AuthCategoryBehavior {
                                       listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - authProvider: <#authProvider description#>
+    ///   - presentationAnchor: <#presentationAnchor description#>
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor,
@@ -73,6 +113,12 @@ extension AuthCategory: AuthCategoryBehavior {
                                           listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - challengeResponse: <#challengeResponse description#>
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func confirmSignIn(challengeResponse: String,
                               options: AuthConfirmSignInOperation.Request.Options? = nil,
@@ -82,12 +128,22 @@ extension AuthCategory: AuthCategoryBehavior {
                                     listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func signOut(options: AuthSignOutOperation.Request.Options? = nil,
                         listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation {
         plugin.signOut(options: options, listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options? = nil,
                                  listener: AuthFetchSessionOperation.ResultListener?) -> AuthFetchSessionOperation {
@@ -95,6 +151,12 @@ extension AuthCategory: AuthCategoryBehavior {
                                        listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - username: <#username description#>
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func resetPassword(for username: String,
                               options: AuthResetPasswordOperation.Request.Options? = nil,
@@ -104,6 +166,14 @@ extension AuthCategory: AuthCategoryBehavior {
                                     listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - username: <#username description#>
+    ///   - newPassword: <#newPassword description#>
+    ///   - confirmationCode: <#confirmationCode description#>
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func confirmResetPassword(for username: String,
                                      with newPassword: String,

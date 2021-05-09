@@ -7,11 +7,13 @@
 
 import Foundation
 
+/// <#Description#>
 final public class DataStoreCategory: Category {
 
     /// Always .dataStore
     public let categoryType: CategoryType = .dataStore
 
+    /// <#Description#>
     var plugins = [PluginKey: DataStoreCategoryPlugin]()
 
     /// Returns the plugin added to the category, if only one plugin is added. Accessing this property if no plugins
@@ -43,6 +45,7 @@ final public class DataStoreCategory: Category {
         return plugins.first!.value
     }
 
+    /// <#Description#>
     var isConfigured = false
 
     // MARK: - Plugin handling

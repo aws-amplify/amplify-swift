@@ -9,6 +9,9 @@ import Foundation
 
 extension DataStoreError {
 
+    /// <#Description#>
+    /// - Parameter value: <#value description#>
+    /// - Returns: <#description#>
     public static func invalidDateFormat(_ value: String) -> DataStoreError {
         return DataStoreError.decodingError(
             """

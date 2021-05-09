@@ -5,10 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// <#Description#>
 public struct StorageListRequest: AmplifyOperationRequest {
     /// Options to adjust the behavior of this request, including plugin-options
     public let options: Options
 
+    /// <#Description#>
+    /// - Parameter options: <#options description#>
     public init(options: Options) {
         self.options = options
     }
@@ -31,6 +34,12 @@ public extension StorageListRequest {
         /// key/values
         public let pluginOptions: Any?
 
+        /// <#Description#>
+        /// - Parameters:
+        ///   - accessLevel: <#accessLevel description#>
+        ///   - targetIdentityId: <#targetIdentityId description#>
+        ///   - path: <#path description#>
+        ///   - pluginOptions: <#pluginOptions description#>
         public init(accessLevel: StorageAccessLevel = .guest,
                     targetIdentityId: String? = nil,
                     path: String? = nil,

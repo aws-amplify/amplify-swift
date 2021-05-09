@@ -41,6 +41,8 @@ public enum CategoryType: String {
 extension CategoryType: CaseIterable {}
 
 public extension CategoryType {
+
+    /// <#Description#>
     var displayName: String {
         switch self {
         case .analytics:
@@ -62,6 +64,7 @@ public extension CategoryType {
         }
     }
 
+    /// <#Description#>
     var category: Category {
         switch self {
         case .analytics:

@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// <#Description#>
 public protocol StorageRemoveOperation: AmplifyOperation<StorageRemoveRequest, String, StorageError> {}
 
 public extension HubPayload.EventName.Storage {

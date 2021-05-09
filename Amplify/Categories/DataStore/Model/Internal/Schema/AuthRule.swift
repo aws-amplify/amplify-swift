@@ -30,14 +30,37 @@ public typealias AuthRules = [AuthRule]
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
 public struct AuthRule {
+
+    /// <#Description#>
     public let allow: AuthStrategy
+
+    /// <#Description#>
     public let ownerField: String?
+
+    /// <#Description#>
     public let identityClaim: String?
+
+    /// <#Description#>
     public let groupClaim: String?
+
+    /// <#Description#>
     public let groups: [String]
+
+    /// <#Description#>
     public let groupsField: String?
+
+    /// <#Description#>
     public let operations: [ModelOperation]
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - allow: <#allow description#>
+    ///   - ownerField: <#ownerField description#>
+    ///   - identityClaim: <#identityClaim description#>
+    ///   - groupClaim: <#groupClaim description#>
+    ///   - groups: <#groups description#>
+    ///   - groupsField: <#groupsField description#>
+    ///   - operations: <#operations description#>
     public init(allow: AuthStrategy,
                 ownerField: String? = nil,
                 identityClaim: String? = nil,

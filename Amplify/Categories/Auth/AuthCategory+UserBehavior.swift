@@ -9,10 +9,17 @@ import Foundation
 
 extension AuthCategory: AuthCategoryUserBehavior {
 
+    /// <#Description#>
+    /// - Returns: <#description#>
     public func getCurrentUser() -> AuthUser? {
         return plugin.getCurrentUser()
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func fetchUserAttributes(options: AuthFetchUserAttributeOperation.Request.Options? = nil,
                                     listener: AuthFetchUserAttributeOperation.ResultListener?)
@@ -21,6 +28,12 @@ extension AuthCategory: AuthCategoryUserBehavior {
                                               listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - userAttribute: <#userAttribute description#>
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func update(userAttribute: AuthUserAttribute,
                        options: AuthUpdateUserAttributeOperation.Request.Options? = nil,
@@ -30,6 +43,12 @@ extension AuthCategory: AuthCategoryUserBehavior {
                              listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - userAttributes: <#userAttributes description#>
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func update(userAttributes: [AuthUserAttribute],
                        options: AuthUpdateUserAttributesOperation.Request.Options? = nil,
@@ -40,6 +59,12 @@ extension AuthCategory: AuthCategoryUserBehavior {
                                  listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - attributeKey: <#attributeKey description#>
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func resendConfirmationCode(for attributeKey: AuthUserAttributeKey,
                                        options: AuthAttributeResendConfirmationCodeOperation.Request.Options? = nil,
@@ -51,6 +76,13 @@ extension AuthCategory: AuthCategoryUserBehavior {
 
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - userAttribute: <#userAttribute description#>
+    ///   - confirmationCode: <#confirmationCode description#>
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func confirm(userAttribute: AuthUserAttributeKey,
                         confirmationCode: String,
@@ -63,6 +95,13 @@ extension AuthCategory: AuthCategoryUserBehavior {
                                   listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - oldPassword: <#oldPassword description#>
+    ///   - newPassword: <#newPassword description#>
+    ///   - options: <#options description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func update(oldPassword: String,
                        to newPassword: String,

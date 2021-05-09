@@ -8,14 +8,17 @@
 /// Convenience getters for attributes
 public extension ModelSchema {
 
+    /// <#Description#>
     var isSyncable: Bool {
         !attributes.contains(.isSystem)
     }
 
+    /// <#Description#>
     var isSystem: Bool {
         attributes.contains(.isSystem)
     }
 
+    /// <#Description#>
     var hasAuthenticationRules: Bool {
         return !authRules.isEmpty
     }

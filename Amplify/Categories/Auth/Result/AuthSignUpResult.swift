@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public struct AuthSignUpResult {
 
     /// Indicate whether the signUp flow is completed.
@@ -19,8 +20,11 @@ public struct AuthSignUpResult {
         }
     }
 
+    /// <#Description#>
     public let nextStep: AuthSignUpStep
 
+    /// <#Description#>
+    /// - Parameter nextStep: <#nextStep description#>
     public init(_ nextStep: AuthSignUpStep) {
         self.nextStep = nextStep
     }

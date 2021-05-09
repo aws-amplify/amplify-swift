@@ -7,8 +7,11 @@
 
 /// The Analytics category enables you to collect analytics data for your app.
 final public class AnalyticsCategory: Category {
+
+    /// <#Description#>
     public let categoryType = CategoryType.analytics
 
+    /// <#Description#>
     var plugins = [PluginKey: AnalyticsCategoryPlugin]()
 
     /// Returns the plugin added to the category, if only one plugin is added. Accessing this property if no plugins
@@ -40,6 +43,7 @@ final public class AnalyticsCategory: Category {
         return plugin
     }
 
+    /// <#Description#>
     var isConfigured = false
 
     // MARK: - Plugin handling

@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public protocol Evaluable {
     func evaluate(target: Model) -> Bool
 }

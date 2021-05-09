@@ -8,6 +8,7 @@
 import Combine
 import Foundation
 
+/// <#Description#>
 @available(iOS 13.0, *)
 public typealias DataStorePublisher<Output> = AnyPublisher<Output, DataStoreError>
 

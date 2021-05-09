@@ -8,31 +8,62 @@
 import Foundation
 
 extension AmplifyAPICategory: APICategoryRESTBehavior {
+
+    /// <#Description#>
+    /// - Parameters:
+    ///   - request: <#request description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func get(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         plugin.get(request: request, listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - request: <#request description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func put(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         plugin.put(request: request, listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - request: <#request description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func post(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         plugin.post(request: request, listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - request: <#request description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func delete(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         plugin.delete(request: request, listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - request: <#request description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func head(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         plugin.head(request: request, listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - request: <#request description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func patch(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         plugin.patch(request: request, listener: listener)

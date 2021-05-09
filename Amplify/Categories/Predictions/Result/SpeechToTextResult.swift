@@ -7,9 +7,14 @@
 
 import Foundation
 
+/// <#Description#>
 public struct SpeechToTextResult: ConvertResult {
-     public let transcription: String
 
+    /// <#Description#>
+    public let transcription: String
+
+    /// <#Description#>
+    /// - Parameter transcription: <#transcription description#>
     public init(transcription: String) {
         self.transcription = transcription
     }

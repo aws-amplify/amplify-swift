@@ -9,6 +9,7 @@ import Foundation
 
 public extension JSONValue {
 
+    /// <#Description#>
     subscript(_ key: String) -> JSONValue? {
         guard case .object(let object) = self else {
             return nil
@@ -16,6 +17,7 @@ public extension JSONValue {
         return object[key]
     }
 
+    /// <#Description#>
     subscript(_ key: Int) -> JSONValue? {
         switch self {
         case .array(let array):

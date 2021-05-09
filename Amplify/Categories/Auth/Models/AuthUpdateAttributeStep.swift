@@ -5,9 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// <#Description#>
 public enum AuthUpdateAttributeStep {
 
+    /// <#Description#>
     case confirmAttributeWithCode(AuthCodeDeliveryDetails, AdditionalInfo?)
 
+    /// <#Description#>
     case done
 }

@@ -7,17 +7,47 @@
 
 import Foundation
 
+/// <#Description#>
 public struct MutationEvent: Model {
+
+    /// <#Description#>
     public let id: Identifier
+
+    /// <#Description#>
     public let modelId: Identifier
+
+    /// <#Description#>
     public var modelName: String
+
+    /// <#Description#>
     public var json: String
+
+    /// <#Description#>
     public var mutationType: String
+
+    /// <#Description#>
     public var createdAt: Temporal.DateTime
+
+    /// <#Description#>
     public var version: Int?
+
+    /// <#Description#>
     public var inProcess: Bool
+
+    /// <#Description#>
     public var graphQLFilterJSON: String?
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - id: <#id description#>
+    ///   - modelId: <#modelId description#>
+    ///   - modelName: <#modelName description#>
+    ///   - json: <#json description#>
+    ///   - mutationType: <#mutationType description#>
+    ///   - createdAt: <#createdAt description#>
+    ///   - version: <#version description#>
+    ///   - inProcess: <#inProcess description#>
+    ///   - graphQLFilterJSON: <#graphQLFilterJSON description#>
     public init(id: Identifier = UUID().uuidString,
                 modelId: String,
                 modelName: String,
@@ -38,6 +68,14 @@ public struct MutationEvent: Model {
         self.graphQLFilterJSON = graphQLFilterJSON
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - model: <#model description#>
+    ///   - modelSchema: <#modelSchema description#>
+    ///   - mutationType: <#mutationType description#>
+    ///   - version: <#version description#>
+    ///   - graphQLFilterJSON: <#graphQLFilterJSON description#>
+    /// - Throws: <#description#>
     public init<M: Model>(model: M,
                           modelSchema: ModelSchema,
                           mutationType: MutationType,
@@ -53,6 +91,13 @@ public struct MutationEvent: Model {
 
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - model: <#model description#>
+    ///   - mutationType: <#mutationType description#>
+    ///   - version: <#version description#>
+    ///   - graphQLFilterJSON: <#graphQLFilterJSON description#>
+    /// - Throws: <#description#>
     @available(*, deprecated, message: """
     Initializing from a model without a ModelSchema is deprecated.
     Use init(model:modelSchema:mutationType:version:graphQLFilterJSON:) instead.
@@ -69,6 +114,9 @@ public struct MutationEvent: Model {
 
     }
 
+    /// <#Description#>
+    /// - Throws: <#description#>
+    /// - Returns: <#description#>
     public func decodeModel() throws -> Model {
         let model = try ModelRegistry.decode(modelName: modelName, from: json)
         return model

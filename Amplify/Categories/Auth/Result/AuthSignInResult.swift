@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public struct AuthSignInResult {
 
     /// Informs whether the user is signedIn or not.
@@ -26,6 +27,8 @@ public struct AuthSignInResult {
     ///
     public var nextStep: AuthSignInStep
 
+    /// <#Description#>
+    /// - Parameter nextStep: <#nextStep description#>
     public init(nextStep: AuthSignInStep) {
         self.nextStep = nextStep
     }

@@ -211,6 +211,12 @@ struct PersistableHelper {
         }
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - start: <#start description#>
+    ///   - end: <#end description#>
+    ///   - value: <#value description#>
+    /// - Returns: <#description#>
     public static func isBetween(_ start: Persistable, _ end: Persistable, _ value: Any?) -> Bool {
         if value == nil {
             return false

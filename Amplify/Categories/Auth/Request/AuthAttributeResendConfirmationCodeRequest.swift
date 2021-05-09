@@ -10,10 +10,16 @@ import Foundation
 // swiftlint:disable:next type_name
 public struct AuthAttributeResendConfirmationCodeRequest: AmplifyOperationRequest {
 
+    /// <#Description#>
     public let attributeKey: AuthUserAttributeKey
 
+    /// <#Description#>
     public var options: Options
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - attributeKey: <#attributeKey description#>
+    ///   - options: <#options description#>
     public init(attributeKey: AuthUserAttributeKey,
                 options: Options) {
         self.attributeKey = attributeKey
@@ -23,6 +29,7 @@ public struct AuthAttributeResendConfirmationCodeRequest: AmplifyOperationReques
 
 public extension AuthAttributeResendConfirmationCodeRequest {
 
+    /// <#Description#>
     struct Options {
 
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
@@ -30,6 +37,8 @@ public extension AuthAttributeResendConfirmationCodeRequest {
         /// key/values
         public let pluginOptions: Any?
 
+        /// <#Description#>
+        /// - Parameter pluginOptions: <#pluginOptions description#>
         public init(pluginOptions: Any? = nil) {
             self.pluginOptions = pluginOptions
         }

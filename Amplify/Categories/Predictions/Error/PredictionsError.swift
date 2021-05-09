@@ -12,16 +12,29 @@ public enum PredictionsError {
 
     /// Access denied while executing the operation
     case accessDenied(ErrorDescription, RecoverySuggestion, Error? = nil)
-    case auth(ErrorDescription, RecoverySuggestion, Error? = nil)
-    case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
-    case httpStatus(Int, RecoverySuggestion, Error? = nil)
-    case network(ErrorDescription, RecoverySuggestion, Error? = nil)
-    case service(ErrorDescription, RecoverySuggestion, Error? = nil)
-    case unknown(ErrorDescription, RecoverySuggestion, Error? = nil)
 
+    /// <#Description#>
+    case auth(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
+    case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
+    case httpStatus(Int, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
+    case network(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
+    case service(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
+    case unknown(ErrorDescription, RecoverySuggestion, Error? = nil)
 }
 
 extension PredictionsError: AmplifyError {
+
+    /// <#Description#>
     public var errorDescription: ErrorDescription {
         switch self {
         case .accessDenied(let errorDescription, _, _),
@@ -40,6 +53,7 @@ extension PredictionsError: AmplifyError {
 
     }
 
+    /// <#Description#>
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .accessDenied(_, let recoverySuggestion, _),
@@ -60,6 +74,7 @@ extension PredictionsError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var underlyingError: Error? {
         switch self {
         case .accessDenied(_, _, let underlyingError),
@@ -73,6 +88,11 @@ extension PredictionsError: AmplifyError {
         }
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - errorDescription: <#errorDescription description#>
+    ///   - recoverySuggestion: <#recoverySuggestion description#>
+    ///   - error: <#error description#>
     public init(
         errorDescription: ErrorDescription = "An unknown error occurred",
         recoverySuggestion: RecoverySuggestion = "See `underlyingError` for more details",

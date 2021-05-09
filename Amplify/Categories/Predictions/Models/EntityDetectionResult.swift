@@ -7,11 +7,20 @@
 
 /// Struct that holds the entity detection result for a string of text for the Predictions category
 public struct EntityDetectionResult {
+
+    /// <#Description#>
     public let type: EntityType
+
+    /// <#Description#>
     public let targetText: String
+
+    /// <#Description#>
     public let score: Float?
+
+    /// <#Description#>
     public let range: Range<String.Index>
 
+    /// <#Description#>
     public init(type: EntityType,
                 targetText: String,
                 score: Float?,

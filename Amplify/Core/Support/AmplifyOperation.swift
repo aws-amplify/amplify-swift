@@ -18,6 +18,7 @@ import Foundation
 /// Pausable/resumable tasks that do not require Hub dispatching should use AsynchronousOperation instead.
 open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: AmplifyError>: AsynchronousOperation {
 
+    /// <#Description#>
     struct OperationCancelledError: Error { }
 
     /// The concrete Request associated with this operation
@@ -120,6 +121,9 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
         }
     }
 
+    /// <#Description#>
+    /// - Parameter resultListener: <#resultListener description#>
+    /// - Returns: <#description#>
     func subscribe(resultListener: @escaping ResultListener) -> UnsubscribeToken {
         let channel = HubChannel(from: categoryType)
         let filterById = HubFilters.forOperation(self)

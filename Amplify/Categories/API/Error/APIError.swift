@@ -9,7 +9,11 @@ import Foundation
 
 /// Errors specific to the API Category
 public enum APIError {
+
+    /// <#Description#>
     public typealias UserInfo = [String: Any]
+
+    /// <#Description#>
     public typealias StatusCode = Int
 
     /// An unknown error
@@ -36,6 +40,12 @@ public enum APIError {
 }
 
 extension APIError: AmplifyError {
+
+    /// <#Description#>
+    /// - Parameters:
+    ///   - errorDescription: <#errorDescription description#>
+    ///   - recoverySuggestion: <#recoverySuggestion description#>
+    ///   - error: <#error description#>
     public init(
         errorDescription: ErrorDescription = "An unknown error occurred",
         recoverySuggestion: RecoverySuggestion = "See `underlyingError` for more details",
@@ -48,6 +58,7 @@ extension APIError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var errorDescription: ErrorDescription {
         switch self {
         case .unknown(let errorDescription, _, _):
@@ -73,6 +84,7 @@ extension APIError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .unknown(_, let recoverySuggestion, _):
@@ -105,6 +117,7 @@ extension APIError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var underlyingError: Error? {
         switch self {
         case .unknown(_, _, let error):

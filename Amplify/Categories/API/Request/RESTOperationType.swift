@@ -18,6 +18,8 @@ public enum RESTOperationType: String {
 }
 
 extension RESTOperationType: HubPayloadEventNameConvertible {
+
+    /// <#Description#>
     public var hubEventName: String {
         switch self {
         case .get:

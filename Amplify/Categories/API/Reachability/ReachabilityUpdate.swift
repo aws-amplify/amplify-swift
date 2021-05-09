@@ -7,8 +7,15 @@
 
 import Foundation
 
+
+/// <#Description#>
 public struct ReachabilityUpdate {
+
+    /// <#Description#>
     public let isOnline: Bool
+
+    /// <#Description#>
+    /// - Parameter isOnline: <#isOnline description#>
     public init(isOnline: Bool) {
         self.isOnline = isOnline
     }

@@ -16,6 +16,8 @@ public enum CoreError {
 }
 
 extension CoreError: AmplifyError {
+
+    /// <#Description#>
     public var errorDescription: ErrorDescription {
         switch self {
         case .listOperation(let errorDescription, _, _),
@@ -24,6 +26,7 @@ extension CoreError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .listOperation(_, let recoverySuggestion, _),
@@ -32,6 +35,7 @@ extension CoreError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var underlyingError: Error? {
         switch self {
         case .listOperation(_, _, let underlyingError),
@@ -40,6 +44,11 @@ extension CoreError: AmplifyError {
         }
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - errorDescription: <#errorDescription description#>
+    ///   - recoverySuggestion: <#recoverySuggestion description#>
+    ///   - error: <#error description#>
     public init(
         errorDescription: ErrorDescription = "An unknown error occurred",
         recoverySuggestion: RecoverySuggestion = "(Ignored)",

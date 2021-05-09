@@ -14,10 +14,20 @@ import Foundation
 /// - Note: the implementation simply delegates to the `iso8601String` formatted date.
 extension TemporalSpec where Self: Comparable {
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - lhs: <#lhs description#>
+    ///   - rhs: <#rhs description#>
+    /// - Returns: <#description#>
     public static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.iso8601String == rhs.iso8601String
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - lhs: <#lhs description#>
+    ///   - rhs: <#rhs description#>
+    /// - Returns: <#description#>
     public static func < (lhs: Self, rhs: Self) -> Bool {
         return lhs.iso8601String < rhs.iso8601String
     }

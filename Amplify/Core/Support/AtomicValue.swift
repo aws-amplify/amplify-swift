@@ -7,15 +7,20 @@
 
 import Foundation
 
+/// <#Description#>
 public final class AtomicValue<Value> {
     let lock = NSLock()
 
     var value: Value
 
+    /// <#Description#>
+    /// - Parameter initialValue: <#initialValue description#>
     public init(initialValue: Value) {
         self.value = initialValue
     }
 
+    /// <#Description#>
+    /// - Returns: <#description#>
     public func get() -> Value {
         lock.lock()
         defer {
@@ -24,6 +29,8 @@ public final class AtomicValue<Value> {
         return value
     }
 
+    /// <#Description#>
+    /// - Parameter newValue: <#newValue description#>
     public func set(_ newValue: Value) {
         lock.lock()
         defer {

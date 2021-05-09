@@ -18,6 +18,8 @@ public enum GraphQLOperationType {
 }
 
 extension GraphQLOperationType: HubPayloadEventNameConvertible {
+
+    /// <#Description#>
     public var hubEventName: String {
         switch self {
         case .query:

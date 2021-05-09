@@ -9,6 +9,8 @@ import Foundation
 
 extension DataStoreCategory: Resettable {
 
+    /// <#Description#>
+    /// - Parameter onComplete: <#onComplete description#>
     public func reset(onComplete: @escaping BasicClosure) {
         let group = DispatchGroup()
 

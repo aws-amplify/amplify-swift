@@ -16,16 +16,22 @@ extension Temporal {
     /// As all Temporal types, `Time` relies on the ISO8601 calendar and fixed format.
     public struct Time: TemporalSpec, TimeUnitOperable {
 
+        /// <#Description#>
         public static var iso8601DateComponents: Set<Calendar.Component> {
             [.hour, .minute, .second, .nanosecond, .timeZone]
         }
 
+        /// <#Description#>
+        /// - Returns: <#description#>
         public static func now() -> Time {
             return Time(Foundation.Date())
         }
 
+        /// <#Description#>
         public let foundationDate: Foundation.Date
 
+        /// <#Description#>
+        /// - Parameter date: <#date description#>
         public init(_ date: Foundation.Date) {
             // sets the date to a fixed instant so time-only operations are safe
             let calendar = Time.iso8601Calendar
@@ -41,6 +47,9 @@ extension Temporal {
             self.foundationDate = calendar.date(from: components) ?? date
         }
 
+        /// <#Description#>
+        /// - Parameter iso8601String: <#iso8601String description#>
+        /// - Throws: <#description#>
         public init(iso8601String: String) throws {
             guard let date = Time.iso8601Date(from: iso8601String) else {
                 throw DataStoreError.invalidDateFormat(iso8601String)

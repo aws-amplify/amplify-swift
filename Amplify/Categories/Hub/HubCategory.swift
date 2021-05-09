@@ -12,6 +12,7 @@
 /// events like a user sign-in or notification of a file download.
 final public class HubCategory: Category {
 
+    /// <#Description#>
     enum ConfigurationState {
         /// Default configuration at initialization
         case `default`
@@ -23,6 +24,7 @@ final public class HubCategory: Category {
         case configured
     }
 
+    /// <#Description#>
     public let categoryType = CategoryType.hub
 
     // Upon creation, the LoggingCategory will have a default plugin and a configuration state reflecting that.

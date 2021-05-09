@@ -5,12 +5,19 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// <#Description#>
 public enum LoggingError {
+
+    /// <#Description#>
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
     case unknown(ErrorDescription, Error?)
 }
 
 extension LoggingError: AmplifyError {
+
+    /// <#Description#>
     public var errorDescription: ErrorDescription {
         switch self {
         case .configuration(let errorDescription, _, _):
@@ -20,6 +27,7 @@ extension LoggingError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .configuration(_, let recoverySuggestion, _):
@@ -29,6 +37,7 @@ extension LoggingError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var underlyingError: Error? {
         switch self {
         case .configuration(_, _, let underlyingError),
@@ -37,6 +46,11 @@ extension LoggingError: AmplifyError {
         }
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - errorDescription: <#errorDescription description#>
+    ///   - recoverySuggestion: <#recoverySuggestion description#>
+    ///   - error: <#error description#>
     public init(
         errorDescription: ErrorDescription = "An unknown error occurred",
         recoverySuggestion: RecoverySuggestion = "(Ignored)",

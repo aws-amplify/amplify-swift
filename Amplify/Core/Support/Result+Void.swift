@@ -6,5 +6,7 @@
 //
 
 extension Result where Success == Void {
+
+    /// <#Description#>
     public static var successfulVoid: Result<Void, Failure> { .success(()) }
 }

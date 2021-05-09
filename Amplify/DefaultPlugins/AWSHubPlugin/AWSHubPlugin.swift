@@ -31,6 +31,7 @@ final public class AWSHubPlugin: HubCategoryPlugin {
 
     // MARK: - HubCategoryPlugin
 
+    /// <#Description#>
     public var key: String {
         return type(of: self).key
     }
@@ -46,10 +47,20 @@ final public class AWSHubPlugin: HubCategoryPlugin {
         onComplete()
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - channel: <#channel description#>
+    ///   - payload: <#payload description#>
     public func dispatch(to channel: HubChannel, payload: HubPayload) {
         dispatcher.dispatch(to: channel, payload: payload)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - channel: <#channel description#>
+    ///   - eventName: <#eventName description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     public func listen(to channel: HubChannel,
                        eventName: HubPayloadEventName,
                        listener: @escaping HubListener) -> UnsubscribeToken {
@@ -57,6 +68,12 @@ final public class AWSHubPlugin: HubCategoryPlugin {
         return listen(to: channel, isIncluded: filter, listener: listener)
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - channel: <#channel description#>
+    ///   - filter: <#filter description#>
+    ///   - listener: <#listener description#>
+    /// - Returns: <#description#>
     public func listen(to channel: HubChannel,
                        isIncluded filter: HubFilter? = nil,
                        listener: @escaping HubListener) -> UnsubscribeToken {
@@ -67,6 +84,8 @@ final public class AWSHubPlugin: HubCategoryPlugin {
         return unsubscribeToken
     }
 
+    /// <#Description#>
+    /// - Parameter token: <#token description#>
     public func removeListener(_ token: UnsubscribeToken) {
         dispatcher.removeListener(withId: token.id)
     }

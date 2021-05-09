@@ -7,14 +7,23 @@
 
 import Foundation
 
+/// <#Description#>
 public struct AuthSignInRequest: AmplifyOperationRequest {
 
+    /// <#Description#>
     public let username: String?
 
+    /// <#Description#>
     public let password: String?
 
+    /// <#Description#>
     public var options: Options
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - username: <#username description#>
+    ///   - password: <#password description#>
+    ///   - options: <#options description#>
     public init(username: String?, password: String?, options: Options) {
         self.username = username
         self.password = password
@@ -24,6 +33,7 @@ public struct AuthSignInRequest: AmplifyOperationRequest {
 
 public extension AuthSignInRequest {
 
+    /// <#Description#>
     struct Options {
 
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
@@ -31,6 +41,8 @@ public extension AuthSignInRequest {
         /// key/values
         public let pluginOptions: Any?
 
+        /// <#Description#>
+        /// - Parameter pluginOptions: <#pluginOptions description#>
         public init(pluginOptions: Any? = nil) {
             self.pluginOptions = pluginOptions
         }

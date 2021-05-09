@@ -5,8 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// <#Description#>
 final public class PredictionsCategory: Category {
 
+    /// <#Description#>
     public let categoryType = CategoryType.predictions
 
     var plugins = [PluginKey: PredictionsCategoryPlugin]()

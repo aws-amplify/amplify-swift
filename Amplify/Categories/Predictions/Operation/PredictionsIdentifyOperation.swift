@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public protocol PredictionsIdentifyOperation: AmplifyOperation<
     PredictionsIdentifyRequest,
     IdentifyResult,
@@ -14,6 +15,10 @@ public protocol PredictionsIdentifyOperation: AmplifyOperation<
 > { }
 
 public extension HubPayload.EventName.Predictions {
+
+    /// <#Description#>
     static let identifyLabels = "Predictions.identifyLabels"
+
+    /// <#Description#>
     static let identifyCelebrities = "Predictions.identifyCelebrities"
 }

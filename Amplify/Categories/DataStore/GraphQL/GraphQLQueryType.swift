@@ -10,7 +10,13 @@
 /// `get`, which aims to fetch one result identified by its `id`.
 /// `sync`, similar to `list` and returns results with optionally specifically a point in time
 public enum GraphQLQueryType: String {
+
+    /// <#Description#>
     case get
+
+    /// <#Description#>
     case list
+
+    /// <#Description#>
     case sync
 }

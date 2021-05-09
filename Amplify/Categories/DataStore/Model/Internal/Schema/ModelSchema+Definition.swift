@@ -12,28 +12,62 @@ import Foundation
 ///   directly by host applications. The behavior of this may change without warning.
 public enum ModelFieldType {
 
+    /// <#Description#>
     case string
+
+    /// <#Description#>
     case int
+
+    /// <#Description#>
     case double
+
+    /// <#Description#>
     case date
+
+    /// <#Description#>
     case dateTime
+
+    /// <#Description#>
     case time
+
+    /// <#Description#>
     case timestamp
+
+    /// <#Description#>
     case bool
+
+    /// <#Description#>
     case `enum`(type: EnumPersistable.Type)
+
+    /// <#Description#>
     case embedded(type: Codable.Type, schema: ModelSchema?)
+
+    /// <#Description#>
     case embeddedCollection(of: Codable.Type, schema: ModelSchema?)
+
+    /// <#Description#>
     case model(name: ModelName)
+
+    /// <#Description#>
     case collection(of: ModelName)
 
+    /// <#Description#>
+    /// - Parameter type: <#type description#>
+    /// - Returns: <#description#>
     public static func model(type: Model.Type) -> ModelFieldType {
         .model(name: type.modelName)
     }
 
+    /// <#Description#>
+    /// - Parameter type: <#type description#>
+    /// - Returns: <#description#>
     public static func collection(of type: Model.Type) -> ModelFieldType {
         .collection(of: type.modelName)
     }
 
+    /// <#Description#>
+    /// - Parameter type: <#type description#>
+    /// - Returns: <#description#>
     public static func embedded(type: Codable.Type) -> ModelFieldType {
         guard let embeddedType = type as? Embeddable.Type else {
             return .embedded(type: type, schema: nil)
@@ -41,6 +75,9 @@ public enum ModelFieldType {
         return .embedded(type: type, schema: embeddedType.schema)
     }
 
+    /// <#Description#>
+    /// - Parameter type: <#type description#>
+    /// - Returns: <#description#>
     public static func embeddedCollection(of type: Codable.Type) -> ModelFieldType {
         guard let embeddedType = type as? Embeddable.Type else {
             return .embedded(type: type, schema: nil)
@@ -48,6 +85,7 @@ public enum ModelFieldType {
         return .embeddedCollection(of: type, schema: embeddedType.schema)
     }
 
+    /// <#Description#>
     public var isArray: Bool {
         switch self {
         case .collection, .embeddedCollection:
@@ -57,6 +95,9 @@ public enum ModelFieldType {
         }
     }
 
+    /// <#Description#>
+    /// - Parameter type: <#type description#>
+    /// - Returns: <#description#>
     @available(*, deprecated, message: """
         This has been replaced with `.embedded(type)` and `.embeddedCollection(of)` \
         Please use Amplify CLI 4.21.4 or newer to re-generate your Models to conform to Embeddable type.
@@ -65,6 +106,9 @@ public enum ModelFieldType {
         return .embedded(type: type, schema: nil)
     }
 
+    /// <#Description#>
+    /// - Parameter type: <#type description#>
+    /// - Returns: <#description#>
     public static func from(type: Any.Type) -> ModelFieldType {
         if type is String.Type {
             return .string
@@ -124,7 +168,11 @@ public enum ModelFieldNullability {
 public struct ModelSchemaDefinition {
 
     internal let name: String
+
+    /// <#Description#>
     public var pluralName: String?
+
+    /// <#Description#>
     public var authRules: AuthRules
     internal var fields: ModelFields
     internal var attributes: [ModelAttribute]
@@ -140,6 +188,8 @@ public struct ModelSchemaDefinition {
         self.attributes = attributes
     }
 
+    /// <#Description#>
+    /// - Parameter fields: <#fields description#>
     public mutating func fields(_ fields: ModelFieldDefinition...) {
         fields.forEach { definition in
             let field = definition.modelField
@@ -147,6 +197,8 @@ public struct ModelSchemaDefinition {
         }
     }
 
+    /// <#Description#>
+    /// - Parameter attributes: <#attributes description#>
     public mutating func attributes(_ attributes: ModelAttribute...) {
         self.attributes = attributes
     }
@@ -172,6 +224,16 @@ public enum ModelFieldDefinition {
                attributes: [ModelFieldAttribute],
                authRules: AuthRules)
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - key: <#key description#>
+    ///   - nullability: <#nullability description#>
+    ///   - isReadOnly: <#isReadOnly description#>
+    ///   - type: <#type description#>
+    ///   - attributes: <#attributes description#>
+    ///   - association: <#association description#>
+    ///   - authRules: <#authRules description#>
+    /// - Returns: <#description#>
     public static func field(_ key: CodingKey,
                              is nullability: ModelFieldNullability = .required,
                              isReadOnly: Bool = false,
@@ -188,10 +250,16 @@ public enum ModelFieldDefinition {
                       authRules: authRules)
     }
 
+    /// <#Description#>
+    /// - Parameter key: <#key description#>
+    /// - Returns: <#description#>
     public static func id(_ key: CodingKey) -> ModelFieldDefinition {
         return id(key.stringValue)
     }
 
+    /// <#Description#>
+    /// - Parameter name: <#name description#>
+    /// - Returns: <#description#>
     public static func id(_ name: String = "id") -> ModelFieldDefinition {
         return .field(name: name,
                       type: .string,
@@ -202,6 +270,14 @@ public enum ModelFieldDefinition {
                       authRules: [])
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - key: <#key description#>
+    ///   - nullability: <#nullability description#>
+    ///   - isReadOnly: <#isReadOnly description#>
+    ///   - type: <#type description#>
+    ///   - associatedKey: <#associatedKey description#>
+    /// - Returns: <#description#>
     public static func hasMany(_ key: CodingKey,
                                is nullability: ModelFieldNullability = .required,
                                isReadOnly: Bool = false,
@@ -214,6 +290,15 @@ public enum ModelFieldDefinition {
                       association: .hasMany(associatedWith: associatedKey))
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - key: <#key description#>
+    ///   - nullability: <#nullability description#>
+    ///   - isReadOnly: <#isReadOnly description#>
+    ///   - type: <#type description#>
+    ///   - associatedKey: <#associatedKey description#>
+    ///   - targetName: <#targetName description#>
+    /// - Returns: <#description#>
     public static func hasOne(_ key: CodingKey,
                               is nullability: ModelFieldNullability = .required,
                               isReadOnly: Bool = false,
@@ -227,6 +312,15 @@ public enum ModelFieldDefinition {
                       association: .hasOne(associatedWith: associatedKey, targetName: targetName))
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - key: <#key description#>
+    ///   - nullability: <#nullability description#>
+    ///   - isReadOnly: <#isReadOnly description#>
+    ///   - type: <#type description#>
+    ///   - associatedKey: <#associatedKey description#>
+    ///   - targetName: <#targetName description#>
+    /// - Returns: <#description#>
     public static func belongsTo(_ key: CodingKey,
                                  is nullability: ModelFieldNullability = .required,
                                  isReadOnly: Bool = false,
@@ -240,6 +334,7 @@ public enum ModelFieldDefinition {
                       association: .belongsTo(associatedWith: associatedKey, targetName: targetName))
     }
 
+    /// <#Description#>
     public var modelField: ModelField {
         guard case let .field(name,
                               type,

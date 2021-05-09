@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public struct StorageUploadFileRequest: AmplifyOperationRequest {
     /// The unique identifier for the object in storage
     public let key: String
@@ -17,6 +18,11 @@ public struct StorageUploadFileRequest: AmplifyOperationRequest {
     /// Options to adjust the behavior of this request, including plugin-options
     public let options: Options
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - key: <#key description#>
+    ///   - local: <#local description#>
+    ///   - options: <#options description#>
     public init(key: String, local: URL, options: Options) {
         self.key = key
         self.local = local
@@ -44,6 +50,13 @@ public extension StorageUploadFileRequest {
         /// key/values
         public let pluginOptions: Any?
 
+        /// <#Description#>
+        /// - Parameters:
+        ///   - accessLevel: <#accessLevel description#>
+        ///   - targetIdentityId: <#targetIdentityId description#>
+        ///   - metadata: <#metadata description#>
+        ///   - contentType: <#contentType description#>
+        ///   - pluginOptions: <#pluginOptions description#>
         public init(accessLevel: StorageAccessLevel = .guest,
                     targetIdentityId: String? = nil,
                     metadata: [String: String]? = nil,

@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public struct PredictionsTranslateTextRequest: AmplifyOperationRequest {
 
     /// The text to translate.
@@ -21,6 +22,12 @@ public struct PredictionsTranslateTextRequest: AmplifyOperationRequest {
     /// Options to adjust the behavior of this request, including plugin options
     public let options: Options
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - textToTranslate: <#textToTranslate description#>
+    ///   - targetLanguage: <#targetLanguage description#>
+    ///   - language: <#language description#>
+    ///   - options: <#options description#>
     public init(textToTranslate: String,
                 targetLanguage: LanguageType?,
                 language: LanguageType?,
@@ -33,6 +40,8 @@ public struct PredictionsTranslateTextRequest: AmplifyOperationRequest {
 }
 
 extension PredictionsTranslateTextRequest {
+
+    /// <#Description#>
     public struct Options {
 
         /// The default NetworkPolicy for the operation. The default value will be `auto`.
@@ -43,6 +52,10 @@ extension PredictionsTranslateTextRequest {
         /// key/values
         public let pluginOptions: Any?
 
+        /// <#Description#>
+        /// - Parameters:
+        ///   - defaultNetworkPolicy: <#defaultNetworkPolicy description#>
+        ///   - pluginOptions: <#pluginOptions description#>
         public init(defaultNetworkPolicy: DefaultNetworkPolicy = .auto,
                     pluginOptions: Any? = nil) {
             self.defaultNetworkPolicy = defaultNetworkPolicy

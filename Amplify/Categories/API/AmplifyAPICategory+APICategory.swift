@@ -56,6 +56,8 @@ extension AmplifyAPICategory: APICategory {
 }
 
 extension AmplifyAPICategory: CategoryTypeable {
+
+    /// <#Description#>
     public var categoryType: CategoryType {
         .api
     }

@@ -7,6 +7,11 @@
 
 extension AmplifyAPICategory: APICategoryInterceptorBehavior {
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - interceptor: <#interceptor description#>
+    ///   - apiName: <#apiName description#>
+    /// - Throws: <#description#>
     public func add(interceptor: URLRequestInterceptor, for apiName: String) throws {
         try plugin.add(interceptor: interceptor, for: apiName)
     }

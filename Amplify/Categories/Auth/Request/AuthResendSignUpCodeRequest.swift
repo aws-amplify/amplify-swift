@@ -7,12 +7,19 @@
 
 import Foundation
 
+/// <#Description#>
 public struct AuthResendSignUpCodeRequest: AmplifyOperationRequest {
 
+    /// <#Description#>
     public let username: String
 
+    /// <#Description#>
     public var options: Options
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - username: <#username description#>
+    ///   - options: <#options description#>
     public init(username: String, options: Options) {
         self.username = username
         self.options = options
@@ -21,6 +28,7 @@ public struct AuthResendSignUpCodeRequest: AmplifyOperationRequest {
 
 public extension AuthResendSignUpCodeRequest {
 
+    /// <#Description#>
     struct Options {
 
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
@@ -28,6 +36,8 @@ public extension AuthResendSignUpCodeRequest {
         /// key/values
         public let pluginOptions: Any?
 
+        /// <#Description#>
+        /// - Parameter pluginOptions: <#pluginOptions description#>
         public init(pluginOptions: Any? = nil) {
             self.pluginOptions = pluginOptions
         }

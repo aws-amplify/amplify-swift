@@ -26,19 +26,45 @@ public enum ModelFieldAttribute {
 ///   directly by host applications. The behavior of this may change without warning.
 public struct ModelField {
 
+    /// <#Description#>
     public let name: String
+
+    /// <#Description#>
     public let type: ModelFieldType
+
+    /// <#Description#>
     public let isRequired: Bool
+
+    /// <#Description#>
     public let isReadOnly: Bool
+
+    /// <#Description#>
     public let isArray: Bool
+
+    /// <#Description#>
     public let attributes: [ModelFieldAttribute]
+
+    /// <#Description#>
     public let association: ModelAssociation?
+
+    /// <#Description#>
     public let authRules: AuthRules
 
+    /// <#Description#>
     public var isPrimaryKey: Bool {
         return name == "id"
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - name: <#name description#>
+    ///   - type: <#type description#>
+    ///   - isRequired: <#isRequired description#>
+    ///   - isReadOnly: <#isReadOnly description#>
+    ///   - isArray: <#isArray description#>
+    ///   - attributes: <#attributes description#>
+    ///   - association: <#association description#>
+    ///   - authRules: <#authRules description#>
     public init(name: String,
                 type: ModelFieldType,
                 isRequired: Bool = false,
@@ -70,14 +96,25 @@ public typealias ModelName = String
 ///   directly by host applications. The behavior of this may change without warning.
 public struct ModelSchema {
 
+    /// <#Description#>
     public let name: String
+
+    /// <#Description#>
     public let pluralName: String?
+
+    /// <#Description#>
     public let authRules: AuthRules
+
+    /// <#Description#>
     public let fields: ModelFields
+
+    /// <#Description#>
     public let attributes: [ModelAttribute]
 
+    /// <#Description#>
     public let sortedFields: [ModelField]
 
+    /// <#Description#>
     public var primaryKey: ModelField {
         guard let primaryKey = fields.first(where: { $1.isPrimaryKey }) else {
             preconditionFailure("Primary Key not defined for `\(name)`")
@@ -85,6 +122,13 @@ public struct ModelSchema {
         return primaryKey.value
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - name: <#name description#>
+    ///   - pluralName: <#pluralName description#>
+    ///   - authRules: <#authRules description#>
+    ///   - attributes: <#attributes description#>
+    ///   - fields: <#fields description#>
     public init(name: String,
                 pluralName: String? = nil,
                 authRules: AuthRules = [],
@@ -99,6 +143,9 @@ public struct ModelSchema {
         self.sortedFields = fields.sortedFields()
     }
 
+    /// <#Description#>
+    /// - Parameter name: <#name description#>
+    /// - Returns: <#description#>
     public func field(withName name: String) -> ModelField? {
         return fields[name]
     }

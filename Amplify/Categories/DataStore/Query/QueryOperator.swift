@@ -7,17 +7,39 @@
 
 import Foundation
 
+/// <#Description#>
 public enum QueryOperator {
+
+    /// <#Description#>
     case notEqual(_ value: Persistable?)
+
+    /// <#Description#>
     case equals(_ value: Persistable?)
+
+    /// <#Description#>
     case lessOrEqual(_ value: Persistable)
+
+    /// <#Description#>
     case lessThan(_ value: Persistable)
+
+    /// <#Description#>
     case greaterOrEqual(_ value: Persistable)
+
+    /// <#Description#>
     case greaterThan(_ value: Persistable)
+
+    /// <#Description#>
     case contains(_ value: String)
+
+    /// <#Description#>
     case between(start: Persistable, end: Persistable)
+
+    /// <#Description#>
     case beginsWith(_ value: String)
 
+    /// <#Description#>
+    /// - Parameter target: <#target description#>
+    /// - Returns: <#description#>
     public func evaluate(target: Any) -> Bool {
         switch self {
         case .notEqual(let predicateValue):

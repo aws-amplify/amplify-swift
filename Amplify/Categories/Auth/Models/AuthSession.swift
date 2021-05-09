@@ -7,7 +7,9 @@
 
 import Foundation
 
+/// <#Description#>
 public protocol AuthSession {
 
+    /// <#Description#>
     var isSignedIn: Bool { get }
 }

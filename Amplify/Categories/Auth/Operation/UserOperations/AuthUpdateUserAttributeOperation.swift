@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// <#Description#>
 public protocol AuthUpdateUserAttributeOperation: AmplifyOperation<
     AuthUpdateUserAttributeRequest,
     AuthUpdateAttributeResult,

@@ -8,6 +8,9 @@
 import Foundation
 
 extension AmplifyAPICategory: APICategoryAuthProviderFactoryBehavior {
+
+    /// <#Description#>
+    /// - Returns: <#description#>
     public func apiAuthProviderFactory() -> APIAuthProviderFactory {
         return plugin.apiAuthProviderFactory()
     }

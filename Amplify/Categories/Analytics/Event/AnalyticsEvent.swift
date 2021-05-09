@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public protocol AnalyticsEvent {
 
     /// Name of the event

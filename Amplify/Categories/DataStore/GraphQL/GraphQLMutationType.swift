@@ -7,8 +7,14 @@
 
 /// Defines the type of a GraphQL mutation.
 public enum GraphQLMutationType: String, Codable {
+
+    /// <#Description#>
     case create
+
+    /// <#Description#>
     case update
+
+    /// <#Description#>
     case delete
 }
 

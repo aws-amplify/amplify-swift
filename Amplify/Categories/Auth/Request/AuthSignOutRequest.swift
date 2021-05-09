@@ -7,10 +7,14 @@
 
 import Foundation
 
+/// <#Description#>
 public struct AuthSignOutRequest: AmplifyOperationRequest {
 
+    /// <#Description#>
     public var options: Options
 
+    /// <#Description#>
+    /// - Parameter options: <#options description#>
     public init(options: Options) {
 
         self.options = options
@@ -19,6 +23,7 @@ public struct AuthSignOutRequest: AmplifyOperationRequest {
 
 public extension AuthSignOutRequest {
 
+    /// <#Description#>
     struct Options {
 
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
@@ -26,8 +31,13 @@ public extension AuthSignOutRequest {
         /// key/values
         public let pluginOptions: Any?
 
+        /// <#Description#>
         public let globalSignOut: Bool
 
+        /// <#Description#>
+        /// - Parameters:
+        ///   - globalSignOut: <#globalSignOut description#>
+        ///   - pluginOptions: <#pluginOptions description#>
         public init(globalSignOut: Bool = false,
                     pluginOptions: Any? = nil) {
             self.globalSignOut = globalSignOut

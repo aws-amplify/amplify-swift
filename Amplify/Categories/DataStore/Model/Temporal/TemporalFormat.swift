@@ -12,9 +12,16 @@ import Foundation
 /// to a corresponding format string.
 public enum TemporalFormat: CaseIterable {
 
+    /// <#Description#>
     case short
+
+    /// <#Description#>
     case medium
+
+    /// <#Description#>
     case long
+
+    /// <#Description#>
     case full
 
 }

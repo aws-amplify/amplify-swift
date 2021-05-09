@@ -22,18 +22,22 @@ public struct ModelRegistry {
 
     private static var modelSchemaMapping = [ModelName: ModelSchema]()
 
+    /// <#Description#>
     public static var models: [Model.Type] {
         concurrencyQueue.sync {
             Array(modelTypes.values)
         }
     }
 
+    /// <#Description#>
     public static var modelSchemas: [ModelSchema] {
         concurrencyQueue.sync {
             Array(modelSchemaMapping.values)
         }
     }
 
+    /// <#Description#>
+    /// - Parameter modelType: <#modelType description#>
     public static func register(modelType: Model.Type) {
         register(modelType: modelType,
                  modelSchema: modelType.schema) { (jsonString, jsonDecoder) -> Model in
@@ -42,6 +46,11 @@ public struct ModelRegistry {
         }
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - modelType: <#modelType description#>
+    ///   - modelSchema: <#modelSchema description#>
+    ///   - jsonDecoder: <#jsonDecoder description#>
     public static func register(modelType: Model.Type,
                                 modelSchema: ModelSchema,
                                 jsonDecoder: @escaping (String, JSONDecoder?) throws -> Model) {
@@ -56,12 +65,18 @@ public struct ModelRegistry {
         }
     }
 
+    /// <#Description#>
+    /// - Parameter name: <#name description#>
+    /// - Returns: <#description#>
     public static func modelType(from name: ModelName) -> Model.Type? {
         concurrencyQueue.sync {
             modelTypes[name]
         }
     }
 
+    /// <#Description#>
+    /// - Parameter modelType: <#modelType description#>
+    /// - Returns: <#description#>
     @available(*, deprecated, message: """
     Retrieving model schema using Model.Type is deprecated, instead retrieve using model name.
     """)
@@ -69,12 +84,22 @@ public struct ModelRegistry {
         return modelSchema(from: modelType.modelName)
     }
 
+    /// <#Description#>
+    /// - Parameter name: <#name description#>
+    /// - Returns: <#description#>
     public static func modelSchema(from name: ModelName) -> ModelSchema? {
         concurrencyQueue.sync {
             modelSchemaMapping[name]
         }
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - modelName: <#modelName description#>
+    ///   - jsonString: <#jsonString description#>
+    ///   - jsonDecoder: <#jsonDecoder description#>
+    /// - Throws: <#description#>
+    /// - Returns: <#description#>
     public static func decode(modelName: ModelName,
                               from jsonString: String,
                               jsonDecoder: JSONDecoder? = nil) throws -> Model {

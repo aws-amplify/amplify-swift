@@ -158,6 +158,9 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
         }
     }
 
+    /// <#Description#>
+    /// - Parameter encoder: <#encoder description#>
+    /// - Throws: <#description#>
     public func encode(to encoder: Encoder) throws {
         switch loadedState {
         case .notLoaded:

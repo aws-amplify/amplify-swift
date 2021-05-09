@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public struct PredictionsTextToSpeechRequest: AmplifyOperationRequest {
 
     /// The text to synthesize to speech
@@ -15,6 +16,10 @@ public struct PredictionsTextToSpeechRequest: AmplifyOperationRequest {
     /// Options to adjust the behavior of this request, including plugin options
     public let options: Options
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - textToSpeech: <#textToSpeech description#>
+    ///   - options: <#options description#>
     public init(textToSpeech: String,
                 options: Options) {
         self.textToSpeech = textToSpeech
@@ -23,6 +28,8 @@ public struct PredictionsTextToSpeechRequest: AmplifyOperationRequest {
 }
 
 extension PredictionsTextToSpeechRequest {
+
+    /// <#Description#>
     public struct Options {
 
         /// The default NetworkPolicy for the operation. The default value will be `auto`.
@@ -36,6 +43,11 @@ extension PredictionsTextToSpeechRequest {
         /// key/values
         public let pluginOptions: Any?
 
+        /// <#Description#>
+        /// - Parameters:
+        ///   - defaultNetworkPolicy: <#defaultNetworkPolicy description#>
+        ///   - voiceType: <#voiceType description#>
+        ///   - pluginOptions: <#pluginOptions description#>
         public init(defaultNetworkPolicy: DefaultNetworkPolicy = .auto,
                     voiceType: VoiceType? = nil,
                     pluginOptions: Any? = nil) {

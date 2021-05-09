@@ -7,14 +7,23 @@
 
 import Foundation
 
+/// <#Description#>
 public struct AuthConfirmUserAttributeRequest: AmplifyOperationRequest {
 
+    /// <#Description#>
     public let attributeKey: AuthUserAttributeKey
 
+    /// <#Description#>
     public let confirmationCode: String
 
+    /// <#Description#>
     public var options: Options
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - attributeKey: <#attributeKey description#>
+    ///   - confirmationCode: <#confirmationCode description#>
+    ///   - options: <#options description#>
     public init(attributeKey: AuthUserAttributeKey,
                 confirmationCode: String,
                 options: Options) {
@@ -26,6 +35,7 @@ public struct AuthConfirmUserAttributeRequest: AmplifyOperationRequest {
 
 public extension AuthConfirmUserAttributeRequest {
 
+    /// <#Description#>
     struct Options {
 
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide

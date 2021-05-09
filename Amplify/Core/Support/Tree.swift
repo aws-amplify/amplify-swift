@@ -9,10 +9,18 @@ import Foundation
 
 /// A Tree data type with a `value` of some type `E` and `children` subtrees.
 public class Tree<E> {
+
+    /// <#Description#>
     public var value: E
+
+    /// <#Description#>
     public var children: [Tree<E>] = []
+
+    /// <#Description#>
     public weak var parent: Tree<E>?
 
+    /// <#Description#>
+    /// - Parameter value: <#value description#>
     public init(value: E) {
         self.value = value
     }

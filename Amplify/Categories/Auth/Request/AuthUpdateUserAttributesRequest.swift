@@ -7,12 +7,19 @@
 
 import Foundation
 
+/// <#Description#>
 public struct AuthUpdateUserAttributesRequest: AmplifyOperationRequest {
 
+    /// <#Description#>
     public let userAttributes: [AuthUserAttribute]
 
+    /// <#Description#>
     public var options: Options
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - userAttributes: <#userAttributes description#>
+    ///   - options: <#options description#>
     public init(userAttributes: [AuthUserAttribute],
                 options: Options) {
         self.userAttributes = userAttributes
@@ -22,6 +29,7 @@ public struct AuthUpdateUserAttributesRequest: AmplifyOperationRequest {
 
 public extension AuthUpdateUserAttributesRequest {
 
+    /// <#Description#>
     struct Options {
 
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
@@ -29,6 +37,8 @@ public extension AuthUpdateUserAttributesRequest {
         /// key/values
         public let pluginOptions: Any?
 
+        /// <#Description#>
+        /// - Parameter pluginOptions: <#pluginOptions description#>
         public init(pluginOptions: Any? = nil) {
             self.pluginOptions = pluginOptions
         }

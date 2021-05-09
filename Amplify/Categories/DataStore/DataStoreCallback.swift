@@ -24,6 +24,7 @@ extension DataStoreResult {
         return .failure(dataStoreError)
     }
 
+    /// <#Description#>
     public static var emptyResult: DataStoreResult<Void> {
         .successfulVoid
     }

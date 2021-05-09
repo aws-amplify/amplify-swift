@@ -7,8 +7,14 @@
 
 /// Defines the type of a GraphQL subscription.
 public enum GraphQLSubscriptionType: String {
+
+    /// <#Description#>
     case onCreate
+
+    /// <#Description#>
     case onDelete
+
+    /// <#Description#>
     case onUpdate
 }
 

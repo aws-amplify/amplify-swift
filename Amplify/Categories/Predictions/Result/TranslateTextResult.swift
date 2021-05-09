@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// <#Description#>
 public struct TranslateTextResult: ConvertResult {
 
     /// Translated text
@@ -13,6 +14,10 @@ public struct TranslateTextResult: ConvertResult {
     /// Language to which the text was translated.
     public let targetLanguage: LanguageType
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - text: <#text description#>
+    ///   - targetLanguage: <#targetLanguage description#>
     public init(text: String, targetLanguage: LanguageType) {
         self.text = text
         self.targetLanguage = targetLanguage

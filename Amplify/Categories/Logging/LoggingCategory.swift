@@ -23,6 +23,7 @@ final public class LoggingCategory: Category {
     let concurrencyQueue = DispatchQueue(label: "com.amazonaws.Amplify.Logging.concurrency",
                                          target: DispatchQueue.global())
 
+    /// <#Description#>
     public let categoryType = CategoryType.logging
 
     /// The global logLevel. Messages logged at a priority less than or equal to this value will be logged (e.g., if

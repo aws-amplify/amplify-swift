@@ -5,8 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// <#Description#>
 public enum LabelType {
+
+    /// <#Description#>
     case all
+
+    /// <#Description#>
     case moderation
+
+    /// <#Description#>
     case labels
 }

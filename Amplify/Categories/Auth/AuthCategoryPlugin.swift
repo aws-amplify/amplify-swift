@@ -7,9 +7,12 @@
 
 import Foundation
 
+/// <#Description#>
 public protocol AuthCategoryPlugin: Plugin, AuthCategoryBehavior {}
 
 public extension AuthCategoryPlugin {
+
+    /// <#Description#>
     var categoryType: CategoryType {
         return .auth
     }

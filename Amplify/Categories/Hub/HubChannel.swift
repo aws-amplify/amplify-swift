@@ -10,22 +10,31 @@
 /// associated with different categories.
 public enum HubChannel {
 
+    /// <#Description#>
     case analytics
 
+    /// <#Description#>
     case api
 
+    /// <#Description#>
     case auth
 
+    /// <#Description#>
     case dataStore
 
+    /// <#Description#>
     case hub
 
+    /// <#Description#>
     case logging
 
+    /// <#Description#>
     case predictions
 
+    /// <#Description#>
     case storage
 
+    /// <#Description#>
     case custom(String)
 
     /// Convenience property to return an array of all non-`custom` channels
@@ -41,6 +50,12 @@ public enum HubChannel {
 }
 
 extension HubChannel: Equatable {
+
+    /// <#Description#>
+    /// - Parameters:
+    ///   - lhs: <#lhs description#>
+    ///   - rhs: <#rhs description#>
+    /// - Returns: <#description#>
     public static func == (lhs: HubChannel, rhs: HubChannel) -> Bool {
         switch (lhs, rhs) {
         case (.analytics, .analytics):

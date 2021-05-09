@@ -6,11 +6,19 @@
 //
 
 public extension HubPayload.EventName {
+
+    /// <#Description#>
     struct Analytics { }
 }
 
 public extension HubPayload.EventName.Analytics {
+
+    /// <#Description#>
     static let identifyUser = "Analytics.identifyUser"
+
+    /// <#Description#>
     static let record = "Analytics.record"
+
+    /// <#Description#>
     static let flushEvents = "Analytics.flushEvents"
 }

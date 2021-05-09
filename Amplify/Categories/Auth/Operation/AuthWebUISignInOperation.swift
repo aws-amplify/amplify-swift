@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public protocol AuthWebUISignInOperation: AmplifyOperation<
     AuthWebUISignInRequest,
     AuthSignInResult,

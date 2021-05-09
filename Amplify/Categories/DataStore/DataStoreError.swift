@@ -9,24 +9,51 @@ import Foundation
 
 // MARK: - Enum
 
+/// <#Description#>
 public enum DataStoreError: Error {
+
+    /// <#Description#>
     case api(AmplifyError, MutationEvent? = nil)
+
+    /// <#Description#>
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
     case conflict(DataStoreSyncConflict)
+
+    /// <#Description#>
     case invalidCondition(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
     case decodingError(ErrorDescription, RecoverySuggestion)
+
+    /// <#Description#>
     case internalOperation(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
     case invalidDatabase(path: String, Error? = nil)
+
+    /// <#Description#>
     case invalidModelName(String)
+
+    /// <#Description#>
     case invalidOperation(causedBy: Error? = nil)
+
+    /// <#Description#>
     case nonUniqueResult(model: String, count: Int)
+
+    /// <#Description#>
     case sync(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
     case unknown(ErrorDescription, RecoverySuggestion, Error? = nil)
 }
 
 // MARK: - AmplifyError
 
 extension DataStoreError: AmplifyError {
+
+    /// <#Description#>
     public var errorDescription: ErrorDescription {
         switch self {
         case .api(let error, _):
@@ -54,6 +81,7 @@ extension DataStoreError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .api(let error, _):
@@ -82,6 +110,7 @@ extension DataStoreError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var underlyingError: Error? {
         switch self {
         case .api(let amplifyError, _):
@@ -99,6 +128,11 @@ extension DataStoreError: AmplifyError {
         }
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - errorDescription: <#errorDescription description#>
+    ///   - recoverySuggestion: <#recoverySuggestion description#>
+    ///   - error: <#error description#>
     public init(
         errorDescription: ErrorDescription = "An unknown error occurred",
         recoverySuggestion: RecoverySuggestion = "See `underlyingError` for more details",

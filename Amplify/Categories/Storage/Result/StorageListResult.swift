@@ -7,7 +7,11 @@
 
 import Foundation
 
+/// <#Description#>
 public struct StorageListResult {
+
+    /// <#Description#>
+    /// - Parameter items: <#items description#>
     public init(items: [Item]) {
         self.items = items
     }
@@ -18,6 +22,7 @@ public struct StorageListResult {
 
 extension StorageListResult {
 
+    /// <#Description#>
     public struct Item {
 
         /// The unique identifier of the object in storage.
@@ -36,6 +41,13 @@ extension StorageListResult {
         /// Additional results specific to the plugin.
         public let pluginResults: Any?
 
+        /// <#Description#>
+        /// - Parameters:
+        ///   - key: <#key description#>
+        ///   - size: <#size description#>
+        ///   - eTag: <#eTag description#>
+        ///   - lastModified: <#lastModified description#>
+        ///   - pluginResults: <#pluginResults description#>
         public init(key: String,
                     size: Int? = nil,
                     eTag: String? = nil,

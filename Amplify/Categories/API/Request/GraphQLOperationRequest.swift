@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// <#Description#>
 public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
 
     /// The name of the API to perform the request against
@@ -28,6 +29,15 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
     /// Options to adjust the behavior of this request, including plugin-options
     public let options: Options
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - apiName: <#apiName description#>
+    ///   - operationType: <#operationType description#>
+    ///   - document: <#document description#>
+    ///   - variables: <#variables description#>
+    ///   - responseType: <#responseType description#>
+    ///   - decodePath: <#decodePath description#>
+    ///   - options: <#options description#>
     public init(apiName: String?,
                 operationType: GraphQLOperationType,
                 document: String,
@@ -46,7 +56,11 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
 }
 
 public extension GraphQLOperationRequest {
+
+    /// <#Description#>
     struct Options {
+
+        /// <#Description#>
         public init() { }
     }
 }

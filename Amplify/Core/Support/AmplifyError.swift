@@ -13,9 +13,16 @@ public typealias ErrorDescription = String
 /// Convenience typealias to disambiguate positional parameters of AmplifyErrors
 public typealias RecoverySuggestion = String
 
+/// <#Description#>
 public typealias ErrorName = String
+
+/// <#Description#>
 public typealias Field = String
+
+/// <#Description#>
 public typealias Key = String
+
+/// <#Description#>
 public typealias TargetIdentityId = String
 
 /// Amplify's philosophy is to expose friendly error messages to the customer that assist with debugging.
@@ -41,6 +48,8 @@ public protocol AmplifyError: Error, CustomDebugStringConvertible {
 }
 
 public extension AmplifyError {
+
+    /// <#Description#>
     var debugDescription: String {
         let errorType = type(of: self)
 

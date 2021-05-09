@@ -7,9 +7,12 @@
 
 import Foundation
 
+/// <#Description#>
 public protocol PredictionsTranslateTextOperation: AmplifyOperation<PredictionsTranslateTextRequest,
 TranslateTextResult, PredictionsError> { }
 
 public extension HubPayload.EventName.Predictions {
+
+    /// <#Description#>
     static let translate = "Predictions.translate"
 }

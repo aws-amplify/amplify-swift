@@ -9,6 +9,8 @@
 public protocol LoggingCategoryPlugin: Plugin, LoggingCategoryClientBehavior { }
 
 public extension LoggingCategoryPlugin {
+
+    /// <#Description#>
     var categoryType: CategoryType {
         return .logging
     }

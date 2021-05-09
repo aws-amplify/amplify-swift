@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public struct StorageDownloadDataRequest: AmplifyOperationRequest {
     /// The unique identifier for the object in storage
     public let key: String
@@ -14,6 +15,10 @@ public struct StorageDownloadDataRequest: AmplifyOperationRequest {
     /// Options to adjust the behavior of this request, including plugin-options
     public let options: Options
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - key: <#key description#>
+    ///   - options: <#options description#>
     public init(key: String, options: Options) {
         self.key = key
         self.options = options

@@ -6,5 +6,7 @@
 //
 
 public extension HubPayload.EventName {
+
+    /// <#Description#>
     struct API { }
 }

@@ -7,10 +7,12 @@
 
 extension Model {
 
+    /// <#Description#>
     public static var modelName: String {
         return String(describing: self)
     }
 
+    /// <#Description#>
     public var modelName: String {
         return type(of: self).modelName
     }

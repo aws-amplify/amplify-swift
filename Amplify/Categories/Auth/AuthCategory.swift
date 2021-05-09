@@ -5,10 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// <#Description#>
 final public class AuthCategory: Category {
 
+    /// <#Description#>
     public let categoryType =  CategoryType.auth
 
+    /// <#Description#>
     var plugins = [PluginKey: AuthCategoryPlugin]()
 
     /// Returns the plugin added to the category, if only one plugin is added. Accessing this property if no plugins
@@ -40,6 +43,7 @@ final public class AuthCategory: Category {
         return plugins.first!.value
     }
 
+    /// <#Description#>
     var isConfigured = false
 
     // MARK: - Plugin handling

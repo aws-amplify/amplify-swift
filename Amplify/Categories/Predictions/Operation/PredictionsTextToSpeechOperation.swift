@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public protocol PredictionsTextToSpeechOperation: AmplifyOperation<
     PredictionsTextToSpeechRequest,
     TextToSpeechResult,
@@ -14,5 +15,7 @@ public protocol PredictionsTextToSpeechOperation: AmplifyOperation<
 > { }
 
 public extension HubPayload.EventName.Predictions {
+
+    /// <#Description#>
     static let textToSpeech = "Predictions.textToSpeech"
 }

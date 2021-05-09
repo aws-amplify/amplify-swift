@@ -10,6 +10,7 @@ import Combine
 @available(iOS 13.0, *)
 extension List {
 
+    /// <#Description#>
     public typealias LazyListPublisher = AnyPublisher<[Element], DataStoreError>
 
     /// This method has been deprecated, Use load(completion:) instead.

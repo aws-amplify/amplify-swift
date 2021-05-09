@@ -10,9 +10,12 @@ import Foundation
 /// Extension of `Amplify` for supporting Developer Menu feature
 extension Amplify {
 
+    /// <#Description#>
     @available(iOS 13.0.0, *)
     static var devMenu: AmplifyDevMenu?
 
+    /// <#Description#>
+    /// - Parameter contextProvider: <#contextProvider description#>
     @available(iOS 13.0.0, *)
     public static func enableDevMenu(contextProvider: DevMenuPresentationContextProvider) {
         #if DEBUG

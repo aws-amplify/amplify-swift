@@ -7,9 +7,14 @@
 
 import Foundation
 
+/// <#Description#>
 public struct StorageCategoryConfiguration: CategoryConfiguration {
+
+    /// <#Description#>
     public let plugins: [String: JSONValue]
 
+    /// <#Description#>
+    /// - Parameter plugins: <#plugins description#>
     public init(plugins: [String: JSONValue] = [:]) {
         self.plugins = plugins
     }

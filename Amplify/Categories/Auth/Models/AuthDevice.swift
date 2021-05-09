@@ -7,9 +7,12 @@
 
 import Foundation
 
+/// <#Description#>
 public protocol AuthDevice {
 
+    /// <#Description#>
     var id: String { get }
 
+    /// <#Description#>
     var name: String { get }
 }

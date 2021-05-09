@@ -5,9 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// <#Description#>
 public enum SubscriptionConnectionState {
 
-     /// The subscription is in process of connecting
+    /// The subscription is in process of connecting
     case connecting
 
     /// The subscription has connected and is receiving events from the service

@@ -8,6 +8,10 @@
 import Combine
 
 extension DataStoreCategory: DataStoreSubscribeBehavior {
+
+    /// <#Description#>
+    /// - Parameter modelType: <#modelType description#>
+    /// - Returns: <#description#>
     @available(iOS 13.0, *)
     public func publisher<M: Model>(for modelType: M.Type) -> AnyPublisher<MutationEvent, DataStoreError> {
         return plugin.publisher(for: modelType)

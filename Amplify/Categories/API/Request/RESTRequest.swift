@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public class RESTRequest {
 
     /// The name of REST API being invoked, as specified in `amplifyconfiguration.json`.
@@ -25,6 +26,14 @@ public class RESTRequest {
     /// Body content
     public let body: Data?
 
+
+    /// <#Description#>
+    /// - Parameters:
+    ///   - apiName: <#apiName description#>
+    ///   - path: <#path description#>
+    ///   - headers: <#headers description#>
+    ///   - queryParameters: <#queryParameters description#>
+    ///   - body: <#body description#>
     public init(apiName: String? = nil,
                 path: String? = nil,
                 headers: [String: String]? = nil,

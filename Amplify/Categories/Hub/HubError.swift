@@ -7,11 +7,17 @@
 
 /// Errors associated with configuring and inspecting Amplify Categories
 public enum HubError {
+
+    /// <#Description#>
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// <#Description#>
     case unknownError(ErrorDescription, RecoverySuggestion, Error? = nil)
 }
 
 extension HubError: AmplifyError {
+
+    /// <#Description#>
     public var errorDescription: ErrorDescription {
         switch self {
         case .configuration(let description, _, _),
@@ -20,6 +26,7 @@ extension HubError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .configuration(_, let recoverySuggestion, _),
@@ -28,6 +35,7 @@ extension HubError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var underlyingError: Error? {
         switch self {
         case .configuration(_, _, let underlyingError),
@@ -36,6 +44,11 @@ extension HubError: AmplifyError {
         }
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - errorDescription: <#errorDescription description#>
+    ///   - recoverySuggestion: <#recoverySuggestion description#>
+    ///   - error: <#error description#>
     public init(
         errorDescription: ErrorDescription = "An unknown error occurred",
         recoverySuggestion: RecoverySuggestion = "See `underlyingError` for more details",

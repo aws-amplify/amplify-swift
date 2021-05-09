@@ -7,6 +7,9 @@
 
 import Foundation
 
+/// <#Description#>
 public protocol APICategoryAuthProviderFactoryBehavior {
+
+    /// <#Description#>
     func apiAuthProviderFactory() -> APIAuthProviderFactory
 }

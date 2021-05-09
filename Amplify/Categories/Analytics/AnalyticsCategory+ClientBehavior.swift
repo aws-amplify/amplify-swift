@@ -6,34 +6,50 @@
 //
 
 extension AnalyticsCategory: AnalyticsCategoryBehavior {
+
+    /// <#Description#>
+    /// - Parameters:
+    ///   - identityId: <#identityId description#>
+    ///   - userProfile: <#userProfile description#>
     public func identifyUser(_ identityId: String, withProfile userProfile: AnalyticsUserProfile? = nil) {
         plugin.identifyUser(identityId, withProfile: userProfile)
     }
 
+    /// <#Description#>
+    /// - Parameter event: <#event description#>
     public func record(event: AnalyticsEvent) {
         plugin.record(event: event)
     }
 
+    /// <#Description#>
+    /// - Parameter eventName: <#eventName description#>
     public func record(eventWithName eventName: String) {
         plugin.record(eventWithName: eventName)
     }
 
+    /// <#Description#>
+    /// - Parameter properties: <#properties description#>
     public func registerGlobalProperties(_ properties: AnalyticsProperties) {
         plugin.registerGlobalProperties(properties)
     }
 
+    /// <#Description#>
+    /// - Parameter keys: <#keys description#>
     public func unregisterGlobalProperties(_ keys: Set<String>? = nil) {
         plugin.unregisterGlobalProperties(keys)
     }
 
+    /// <#Description#>
     public func flushEvents() {
         plugin.flushEvents()
     }
 
+    /// <#Description#>
     public func enable() {
         plugin.enable()
     }
 
+    /// <#Description#>
     public func disable() {
         plugin.disable()
     }

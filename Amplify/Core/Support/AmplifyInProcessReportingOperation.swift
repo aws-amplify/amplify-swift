@@ -21,8 +21,11 @@ open class AmplifyInProcessReportingOperation<
     Success,
     Failure: AmplifyError
 >: AmplifyOperation<Request, Success, Failure> {
+
+    /// <#Description#>
     public typealias InProcess = InProcess
 
+    /// <#Description#>
     var inProcessListenerUnsubscribeToken: UnsubscribeToken?
 
     /// Local storage for the result publisher associated with this operation. In iOS
@@ -31,6 +34,14 @@ open class AmplifyInProcessReportingOperation<
     /// derive the `inProcessPublisher` computed property from this value.
     var inProcessSubject: Any
 
+
+    /// <#Description#>
+    /// - Parameters:
+    ///   - categoryType: <#categoryType description#>
+    ///   - eventName: <#eventName description#>
+    ///   - request: <#request description#>
+    ///   - inProcessListener: <#inProcessListener description#>
+    ///   - resultListener: <#resultListener description#>
     public init(categoryType: CategoryType,
                 eventName: HubPayloadEventName,
                 request: Request,

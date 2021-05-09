@@ -8,4 +8,5 @@
 /// Convenience typealias
 public typealias BasicClosure = () -> Void
 
+/// <#Description#>
 public typealias BasicThrowableClosure = () throws -> Void

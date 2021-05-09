@@ -8,6 +8,7 @@
 /// The API category provides a solution for making HTTP requests to REST and GraphQL endpoints.
 final public class AmplifyAPICategory {
 
+    /// <#Description#>
     var plugins = [PluginKey: APICategoryPlugin]()
 
     /// Returns the plugin added to the category, if only one plugin is added. Accessing this property if no plugins

@@ -6,8 +6,16 @@
 //
 
 import Foundation
+
+/// <#Description#>
 public enum AccessLevel: String {
+
+    /// <#Description#>
     case `public`
+
+    /// <#Description#>
     case protected
+
+    /// <#Description#>
     case `private`
 }

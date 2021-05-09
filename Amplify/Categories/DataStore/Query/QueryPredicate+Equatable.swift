@@ -22,6 +22,11 @@ private func isEqual(_ one: QueryPredicate?, to other: QueryPredicate?) -> Bool 
 
 extension QueryPredicateOperation: Equatable {
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - lhs: <#lhs description#>
+    ///   - rhs: <#rhs description#>
+    /// - Returns: <#description#>
     public static func == (lhs: QueryPredicateOperation, rhs: QueryPredicateOperation) -> Bool {
         return lhs.field == rhs.field && lhs.operator == rhs.operator
     }
@@ -30,6 +35,11 @@ extension QueryPredicateOperation: Equatable {
 
 extension QueryPredicateGroup: Equatable {
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - lhs: <#lhs description#>
+    ///   - rhs: <#rhs description#>
+    /// - Returns: <#description#>
     public static func == (lhs: QueryPredicateGroup, rhs: QueryPredicateGroup) -> Bool {
         return lhs.type == rhs.type
             && lhs.predicates.count == rhs.predicates.count

@@ -6,9 +6,13 @@
 //
 
 public extension HubPayload.EventName {
+
+    /// <#Description#>
     struct Amplify { }
 }
 
 public extension HubPayload.EventName.Amplify {
+
+    /// <#Description#>
     static let configured = "Amplify.configured"
 }

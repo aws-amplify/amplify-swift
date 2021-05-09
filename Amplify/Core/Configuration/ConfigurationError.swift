@@ -21,6 +21,8 @@ public enum ConfigurationError {
 }
 
 extension ConfigurationError: AmplifyError {
+
+    /// <#Description#>
     public var errorDescription: ErrorDescription {
         switch self {
         case .amplifyAlreadyConfigured(let description, _, _),
@@ -31,6 +33,7 @@ extension ConfigurationError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .amplifyAlreadyConfigured(_, let recoverySuggestion, _),
@@ -41,6 +44,7 @@ extension ConfigurationError: AmplifyError {
         }
     }
 
+    /// <#Description#>
     public var underlyingError: Error? {
         switch self {
         case .amplifyAlreadyConfigured(_, _, let underlyingError),
@@ -51,6 +55,11 @@ extension ConfigurationError: AmplifyError {
         }
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - errorDescription: <#errorDescription description#>
+    ///   - recoverySuggestion: <#recoverySuggestion description#>
+    ///   - error: <#error description#>
     public init(
         errorDescription: ErrorDescription = "An unknown error occurred",
         recoverySuggestion: RecoverySuggestion = "See `underlyingError` for more details",

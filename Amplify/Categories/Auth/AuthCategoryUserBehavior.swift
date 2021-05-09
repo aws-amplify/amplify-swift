@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// <#Description#>
 public protocol AuthCategoryUserBehavior: class {
 
     /// Returns the currently logged in user.

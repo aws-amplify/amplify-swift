@@ -7,6 +7,13 @@
 
 /// Commonly used cross-category error messages.
 public struct AmplifyErrorMessages {
+
+    /// <#Description#>
+    /// - Parameters:
+    ///   - file: <#file description#>
+    ///   - function: <#function description#>
+    ///   - line: <#line description#>
+    /// - Returns: <#description#>
     public static func reportBugToAWS(file: StaticString = #file,
                                       function: StaticString = #function,
                                       line: UInt = #line) -> String {
@@ -21,6 +28,12 @@ public struct AmplifyErrorMessages {
         """
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - file: <#file description#>
+    ///   - function: <#function description#>
+    ///   - line: <#line description#>
+    /// - Returns: <#description#>
     public static func shouldNotHappenReportBugToAWS(file: StaticString = #file,
                                                      function: StaticString = #function,
                                                      line: UInt = #line) -> String {
