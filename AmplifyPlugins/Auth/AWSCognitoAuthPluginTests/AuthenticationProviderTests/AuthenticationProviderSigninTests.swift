@@ -186,6 +186,123 @@ class AuthenticationProviderSigninTests: BaseAuthenticationProviderTest {
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
+    /// Test a signIn with additional info in next step
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mock additional info in custom auth
+    ///
+    /// - When:
+    ///    - I invoke signIn
+    /// - Then:
+    ///    - I should get a the info in next step
+    ///
+    func testCustomAuthWithAdditionalInfo() {
+
+        let mockSigninResult = SignInResult(signInState: .customChallenge, parameters: ["paramKey": "value"])
+        mockAWSMobileClient?.signInMockResult = .success(mockSigninResult)
+
+        let options = AuthSignInRequest.Options()
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+            switch result {
+            case .success(let signinResult):
+                guard case .confirmSignInWithCustomChallenge(let additionalInfo) = signinResult.nextStep else {
+                    XCTFail("Result should be .confirmSignInWithCustomChallenge for next step")
+                    return
+                }
+                guard let addditionalValue = additionalInfo?["paramKey"] else {
+                    XCTFail("Additional info should be passed to the result")
+                    return
+                }
+                XCTAssertEqual(addditionalValue, "value", "Additional info should be same")
+                XCTAssertFalse(signinResult.isSignedIn, "Signin result should not be complete")
+            case .failure(let error):
+                XCTFail("Received failure with error \(error)")
+            }
+        }
+        wait(for: [resultExpectation], timeout: apiTimeout)
+    }
+
+    /// Test a signIn with additional info in next step
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mock additional info in sms mfa
+    ///
+    /// - When:
+    ///    - I invoke signIn
+    /// - Then:
+    ///    - I should get a the info in next step
+    ///
+    func testSMSMFAWithAdditionalInfo() {
+
+        let mockSigninResult = SignInResult(signInState: .smsMFA, parameters: ["paramKey": "value"])
+        mockAWSMobileClient?.signInMockResult = .success(mockSigninResult)
+
+        let options = AuthSignInRequest.Options()
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+            switch result {
+            case .success(let signinResult):
+                guard case .confirmSignInWithSMSMFACode(_, let additionalInfo) = signinResult.nextStep else {
+                    XCTFail("Result should be .confirmSignInWithSMSMFACode for next step")
+                    return
+                }
+                guard let addditionalValue = additionalInfo?["paramKey"] else {
+                    XCTFail("Additional info should be passed to the result")
+                    return
+                }
+                XCTAssertEqual(addditionalValue, "value", "Additional info should be same")
+                XCTAssertFalse(signinResult.isSignedIn, "Signin result should not be complete")
+            case .failure(let error):
+                XCTFail("Received failure with error \(error)")
+            }
+        }
+        wait(for: [resultExpectation], timeout: apiTimeout)
+    }
+
+    /// Test a signIn with additional info in next step
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mock additional info in new password
+    ///
+    /// - When:
+    ///    - I invoke signIn
+    /// - Then:
+    ///    - I should get a the info in next step
+    ///
+    func testNewPasswordWithAdditionalInfo() {
+
+        let mockSigninResult = SignInResult(signInState: .newPasswordRequired, parameters: ["paramKey": "value"])
+        mockAWSMobileClient?.signInMockResult = .success(mockSigninResult)
+
+        let options = AuthSignInRequest.Options()
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+            switch result {
+            case .success(let signinResult):
+                guard case .confirmSignInWithNewPassword(let additionalInfo) = signinResult.nextStep else {
+                    XCTFail("Result should be .confirmSignInWithNewPassword for next step")
+                    return
+                }
+                guard let addditionalValue = additionalInfo?["paramKey"] else {
+                    XCTFail("Additional info should be passed to the result")
+                    return
+                }
+                XCTAssertEqual(addditionalValue, "value", "Additional info should be same")
+                XCTAssertFalse(signinResult.isSignedIn, "Signin result should not be complete")
+            case .failure(let error):
+                XCTFail("Received failure with error \(error)")
+            }
+        }
+        wait(for: [resultExpectation], timeout: apiTimeout)
+    }
+
     /// Test a signIn with customChallenge as signIn result response
     ///
     /// - Given: Given an auth plugin with mocked service. Mock customChallenge response for signIn result
