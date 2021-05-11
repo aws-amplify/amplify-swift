@@ -152,14 +152,16 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
         XCTAssertNil(emptyModel)
     }
 
+    // TODO: Not sure how this was compiling and tested before, should be fixed with
+    // https://github.com/aws-amplify/amplify-ios/pull/1145
     func testListContainerWithNil() throws {
         try startAmplifyAndWaitForSync()
         let container = ListStringContainer(
             test: "test",
             nullableString: nil,
             stringList: ["value1"],
-            stringNullableList: nil,
-            nullableStringList: [nil],
+            stringNullableList: [], // TODO: test with `nil` with new codegen feature
+            nullableStringList: ["value1"], // TODO: test with `[nil]`
             nullableStringNullableList: nil)
 
         let updatedContainer = ListStringContainer(id: container.id,
