@@ -7,6 +7,7 @@
 
 import Amplify
 import Foundation
+import AWSPluginsCore
 
 /// Error Handler function typealias
 public typealias DataStoreErrorHandler = (AmplifyError) -> Void
@@ -85,9 +86,9 @@ public struct DataStoreConfiguration {
 
         switch authModeStrategy {
         case .default:
-            self.authModeStrategy = DefaultAuthModeStrategy()
+            self.authModeStrategy = AWSDefaultAuthModeStrategy()
         case .multiAuth:
-            self.authModeStrategy = MultiAuthModeStrategy()
+            self.authModeStrategy = AWSMultiAuthModeStrategy()
         case .custom(let customStrategy):
             self.authModeStrategy = customStrategy
         }

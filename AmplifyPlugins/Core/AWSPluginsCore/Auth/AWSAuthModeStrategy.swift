@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Amplify
 
 /// Represents different auth strategies supported by a client
 /// interfacing with an AppSync backend
@@ -22,12 +23,21 @@ public enum AuthModeStrategyType {
     case custom(AuthModeStrategy)
 }
 
-public protocol AuthModeStrategy {}
-
-public struct DefaultAuthModeStrategy: AuthModeStrategy {
-    public init() {}
+public protocol AuthModeStrategy {
+    func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> [AWSAuthorizationType]
 }
 
-public struct MultiAuthModeStrategy: AuthModeStrategy {
+public struct AWSDefaultAuthModeStrategy: AuthModeStrategy {
     public init() {}
+    public func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> [AWSAuthorizationType] {
+        []
+    }
+}
+
+/// Multi-auth strategy implementation based on schema metadata
+public struct AWSMultiAuthModeStrategy: AuthModeStrategy {
+    public init() {}
+    public func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> [AWSAuthorizationType] {
+        []
+    }
 }

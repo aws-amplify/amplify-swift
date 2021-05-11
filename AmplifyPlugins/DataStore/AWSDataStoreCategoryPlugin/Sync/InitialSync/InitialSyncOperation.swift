@@ -122,6 +122,8 @@ final class InitialSyncOperation: AsynchronousOperation {
             $0.modelSchema.name == modelSchema.name
         }
         let queryPredicate = syncExpression?.modelPredicate()
+        let authModeStrategy = dataStoreConfiguration.authModeStrategy
+        
         let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: modelSchema,
                                                                 where: queryPredicate,
                                                                 limit: limit,
