@@ -2936,6 +2936,7 @@
 				B9521830237E21B900F53237 /* Comment.swift */,
 				B952182E237E21B900F53237 /* Comment+Schema.swift */,
 				767F85FB2649FF540076D633 /* CustomerOrder.swift */,
+				767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */,
 				21AD4255249BFFDF0016FE95 /* DeprecatedTodo.swift */,
 				FAA2E8BB239FFC7700E420EA /* MockModels.swift */,
 				6BEE08222533D30800133961 /* OGCScenarioBMGroupPost.swift */,

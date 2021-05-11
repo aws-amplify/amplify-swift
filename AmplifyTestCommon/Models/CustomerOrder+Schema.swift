@@ -16,19 +16,19 @@ extension CustomerOrder {
     case orderId
     case email
   }
-  
+
   public static let keys = CodingKeys.self
   //  MARK: - ModelSchema
-  
+
   public static let schema = defineSchema { model in
-    let customerOrder = customerOrder.keys
-    
+    let customerOrder = CustomerOrder.keys
+
     model.pluralName = "CustomerOrders"
-    model.attributes(.index(fields: ["orderId","id"], name: nil))
+    model.attributes(.index(fields: ["orderId", "id"], name: nil))
     model.fields(
       .id(),
       .field(customerOrder.orderId, is: .required, ofType: .string),
-      .field(todo.email, is: .required, ofType: .string)
+      .field(customerOrder.email, is: .required, ofType: .string)
     )
     }
 }
