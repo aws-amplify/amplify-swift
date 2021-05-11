@@ -13,7 +13,7 @@ public struct CustomerOrder: Model {
   public let id: String
   public var orderId: String
   public var email: String
-  
+
   public init(id: String = UUID().uuidString,
       orderId: String,
       email: String) {

@@ -2933,6 +2933,7 @@
 				B9521830237E21B900F53237 /* Comment.swift */,
 				B952182E237E21B900F53237 /* Comment+Schema.swift */,
 				767F85FB2649FF540076D633 /* CustomerOrder.swift */,
+				767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */,
 				21AD4255249BFFDF0016FE95 /* DeprecatedTodo.swift */,
 				6BE9D73025A67F5A00AB5C9A /* M2MPostEditorUser */,
 				FAA2E8BB239FFC7700E420EA /* MockModels.swift */,
@@ -2963,7 +2964,6 @@
 				214F49712486D8A100DA616C /* UserFollowers+Schema.swift */,
 				214F49722486D8A200DA616C /* UserFollowing.swift */,
 				214F49732486D8A200DA616C /* UserFollowing+Schema.swift */,
-				767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
