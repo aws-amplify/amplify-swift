@@ -6,9 +6,7 @@ The following steps demonstrate how to set up an GraphQL endpoint with AppSync t
 
 1. `amplify init`
 
-2. `export AMPLIFY_DATASTORE_SYNC=true`
-
-3. `amplify add api`
+2. `amplify add api`
 
 ```perl
 ? Please select from one of the below mentioned services: `GraphQL`
@@ -50,6 +48,13 @@ type Comment @model {
     createdAt: AWSDateTime!
     post: Post @connection(name: "PostComment")
 }
+
+type CustomerOrder @model
+   @key(fields: ["orderId","id"]) {
+   id: ID!
+   orderId: String!
+   email: String!
+}
 ```
 
-4. `amplify push`
+3. `amplify push`
