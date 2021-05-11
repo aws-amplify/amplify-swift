@@ -130,7 +130,7 @@ public extension ModelSchema {
     /// without a name and at least 1 field
     var customPrimaryIndexFields: [ModelFieldName]? {
         attributes.compactMap {
-            if case let .index(fields, name) = $0, name == nil {
+            if case let .index(fields, name) = $0, name == nil, fields.count >= 1 {
                 return fields
             }
             return nil
