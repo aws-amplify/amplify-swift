@@ -132,7 +132,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
     func testReconcilingWithoutLocalModel() throws {
         let expect = expectation(description: "action .reconciled notified")
-        let expectedDisposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync)
+        let expectedDisposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync, .create)
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.reconciled(expectedDisposition))
             expect.fulfill()
@@ -144,11 +144,11 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
     func testExecuteApplyRemoteModelThatDoesNotExistLocally() throws {
         let expect = expectation(description: "action .execute applyRemoteModel")
-        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync)
+        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync, .create)
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostMutationSync.model))
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostMutationSync,
-                                                                                 existsLocally: false))
+                                                                                 mutationType: .create))
             expect.fulfill()
         }
 
@@ -158,13 +158,13 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
     func testExecuteApplyRemoteModelThatExistsLocally() throws {
         let expect = expectation(description: "action .execute applyRemoteModel")
-        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync)
+        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync, .update)
 
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostMutationSync.model))
         storageAdapter.returnOnQueryMutationSyncMetadata(.some(anyPostMetadata))
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostMutationSync,
-                                                                                 existsLocally: true))
+                                                                                 mutationType: .update))
             expect.fulfill()
         }
         stateMachine.state = .executing(disposition)
@@ -174,7 +174,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
     func testExecuteApplyRemoteModel_saveMutationFailed() throws {
         let expect = expectation(description: "action .execute error on save model")
-        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync)
+        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync, .create)
         let error = DataStoreError.invalidModelName("invModelName")
         storageAdapter.returnOnSave(dataStoreResult: .failure(error))
         stateMachine.pushExpectActionCriteria { action in
@@ -189,7 +189,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
     func testExecuteApplyRemoteModel_saveMutationOK_MetadataFailed() throws {
         let expect = expectation(description: "action .execute error on save mutation")
-        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync)
+        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync, .create)
         let error = DataStoreError.invalidModelName("forceError")
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostMutationSync.model))
         storageAdapter.shouldReturnErrorOnSaveMetadata = true
@@ -204,11 +204,11 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
     func testExecuteApplyRemoteModel_Delete() throws {
         let expect = expectation(description: "action .execute applyRemoteModel delete success case")
-        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostDeletedMutationSync)
+        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostDeletedMutationSync, .create)
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostDeletedMutationSync.model))
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostDeletedMutationSync,
-                                                                                 existsLocally: false))
+                                                                                 mutationType: .create))
             expect.fulfill()
         }
 
@@ -218,7 +218,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
     func testExecuteApplyRemoteModel_Delete_saveMutationFailed() throws {
         let expect = expectation(description: "action .execute applyRemoteModel delete mutation error")
-        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostDeletedMutationSync)
+        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostDeletedMutationSync, .create)
         let error = DataStoreError.invalidModelName("DelMutate")
         storageAdapter.shouldReturnErrorOnDeleteMutation = true
         stateMachine.pushExpectActionCriteria { action in
@@ -233,7 +233,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
     func testExecuteApplyRemoteModel_Delete_saveMutationOK_saveMetadataFailed() throws {
         let expect = expectation(description: "action .execute applyRemoteModel delete metadata error")
-        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostDeletedMutationSync)
+        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostDeletedMutationSync, .create)
         let error = DataStoreError.invalidModelName("forceError")
         storageAdapter.shouldReturnErrorOnSaveMetadata = true
         storageAdapter.returnOnSave(dataStoreResult: .failure(error))
@@ -286,7 +286,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             notifyExpect.fulfill()
         }
 
-        stateMachine.state = .notifying(anyPostMutationSync, false)
+        stateMachine.state = .notifying(anyPostMutationSync, .create)
 
         waitForExpectations(timeout: 1)
         Amplify.Hub.removeListener(hubListener)
