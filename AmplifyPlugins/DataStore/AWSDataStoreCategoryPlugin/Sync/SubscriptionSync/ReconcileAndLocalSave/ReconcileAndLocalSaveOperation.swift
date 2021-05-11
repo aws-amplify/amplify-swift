@@ -34,6 +34,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     private let stateMachine: StateMachine<State, Action>
     private let remoteModel: RemoteModel
     private let modelSchema: ModelSchema
+    private let stopwatch: Stopwatch
     private var stateMachineSink: AnyCancellable?
 
     private let mutationEventPublisher: PassthroughSubject<ReconcileAndLocalSaveOperationEvent, DataStoreError>
@@ -48,6 +49,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         self.modelSchema = modelSchema
         self.remoteModel = remoteModel
         self.storageAdapter = storageAdapter
+        self.stopwatch = Stopwatch()
         self.stateMachine = stateMachine ?? StateMachine(initialState: .waiting,
                                                          resolver: Resolver.resolve(currentState:action:))
         self.mutationEventPublisher = PassthroughSubject<ReconcileAndLocalSaveOperationEvent, DataStoreError>()
@@ -74,6 +76,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             return
         }
 
+        stopwatch.start()
         stateMachine.notify(action: .started(remoteModel))
     }
 
@@ -109,6 +112,9 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         case .finished:
             // Maybe we have to notify the Hub?
             notifyFinished()
+            if log.logLevel == .debug {
+                log.debug("total time: \(stopwatch.stop())s")
+            }
             finish()
         }
 
@@ -140,6 +146,11 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         }
 
         let queriedAction = Action.queried(remoteModel, localMetadata)
+
+        if log.logLevel == .debug {
+            log.debug("query local metadata: \(stopwatch.lap())s")
+        }
+
         stateMachine.notify(action: queriedAction)
     }
 
@@ -162,7 +173,9 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         case .success(let mutationEvents):
             pendingMutations = mutationEvents
         }
-
+        if log.logLevel == .debug {
+            log.debug("query pending mutations: \(stopwatch.lap())s")
+        }
         let disposition = RemoteSyncReconciler.reconcile(remoteModel: remoteModel,
                                                          to: localMetadata,
                                                          pendingMutations: pendingMutations)
@@ -192,8 +205,6 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     private func apply(remoteModel: RemoteModel) {
         if log.logLevel == .verbose {
             log.verbose("\(#function): remoteModel")
-        } else if log.logLevel == .debug {
-            log.debug(#function)
         }
 
         guard !isCancelled else {
@@ -228,6 +239,9 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                               modelSchema: modelSchema,
                               withId: remoteModel.model.id,
                               predicate: nil) { response in
+            if log.logLevel == .debug {
+                log.debug("delete model: \(stopwatch.lap())s")
+            }
             switch response {
             case .failure(let dataStoreError):
                 let errorAction = Action.errored(dataStoreError)
@@ -241,6 +255,9 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     private func saveCreateOrUpdateMutation(storageAdapter: StorageEngineAdapter, remoteModel: RemoteModel) {
         log.verbose(#function)
         storageAdapter.save(untypedModel: remoteModel.model.instance) { response in
+            if self.log.logLevel == .debug {
+                self.log.debug("save model: \(self.stopwatch.lap())s")
+            }
             switch response {
             case .failure(let dataStoreError):
                 let errorAction = Action.errored(dataStoreError)
@@ -274,6 +291,9 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             return
         }
         storageAdapter.save(remoteModel.syncMetadata, condition: nil) { result in
+            if self.log.logLevel == .debug {
+                self.log.debug("save metadata: \(self.stopwatch.lap())s")
+            }
             switch result {
             case .failure(let dataStoreError):
                 let errorAction = Action.errored(dataStoreError)
@@ -358,7 +378,6 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
         return pendingMutationResult
     }
-
 }
 
 @available(iOS 13.0, *)
