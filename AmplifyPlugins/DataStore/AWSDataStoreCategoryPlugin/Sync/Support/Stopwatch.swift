@@ -48,6 +48,8 @@ class Stopwatch {
     func stop() -> Double {
         lock.lock()
         defer {
+            lapStart = nil
+            startTime = nil
             lock.unlock()
         }
         guard let startTime = startTime else {
