@@ -13,32 +13,72 @@ struct RemoteSyncReconciler {
     typealias LocalMetadata = ReconcileAndLocalSaveOperation.LocalMetadata
     typealias RemoteModel = ReconcileAndLocalSaveOperation.RemoteModel
 
-    enum Disposition {
-        case applyRemoteModel(RemoteModel, MutationEvent.MutationType)
-        case dropRemoteModel(String)
+    struct Disposition {
+        var createModels = [RemoteModel]()
+        var updateModels = [RemoteModel]()
+        var deleteModels = [RemoteModel]()
+
+        var totalCount: Int {
+            createModels.count + updateModels.count + deleteModels.count
+        }
     }
 
-    static func shouldDropRemoteModel(_ remoteModel: RemoteModel,
-                                      pendingMutations: [MutationEvent]) -> Bool {
-        !pendingMutations.isEmpty
+    static func reconcile(_ remoteModels: [RemoteModel],
+                          pendingMutations: [MutationEvent]) -> [RemoteModel] {
+        guard !pendingMutations.isEmpty else {
+            return remoteModels
+        }
+
+        let pendingMutationModelIdsArr = pendingMutations.map { mutationEvent in
+            mutationEvent.modelId
+        }
+        let pendingMutationModelIds = Set(pendingMutationModelIdsArr)
+
+        return remoteModels.filter { remoteModel in
+            !pendingMutationModelIds.contains(remoteModel.model.id)
+        }
     }
 
-    static func reconcile(remoteModel: RemoteModel,
-                          to localMetadata: LocalMetadata?) -> Disposition {
-        guard let localMetadata = localMetadata else {
-            if remoteModel.syncMetadata.deleted {
-                return .applyRemoteModel(remoteModel, .delete)
-            } else {
-                return .applyRemoteModel(remoteModel, .create)
+    static func reconcile(remoteModels: [RemoteModel],
+                          localMetadatas: [LocalMetadata]) -> Disposition {
+        var disposition = Disposition()
+
+        guard !remoteModels.isEmpty else {
+            return disposition
+        }
+
+        guard !localMetadatas.isEmpty else {
+            remoteModels.forEach { remoteModel in
+                if !remoteModel.syncMetadata.deleted {
+                    disposition.createModels.append(remoteModel)
+                }
+            }
+            return disposition
+        }
+
+        var localMetadataMap = [Model.Identifier: LocalMetadata]()
+        for localMetadata in localMetadatas {
+            localMetadataMap.updateValue(localMetadata, forKey: localMetadata.id)
+        }
+
+        remoteModels.forEach { remoteModel in
+            guard let localMetadata = localMetadataMap[remoteModel.model.id] else {
+                if !remoteModel.syncMetadata.deleted {
+                    disposition.createModels.append(remoteModel)
+                }
+                return
+            }
+
+            if remoteModel.syncMetadata.version >= localMetadata.version {
+                if remoteModel.syncMetadata.deleted {
+                    disposition.deleteModels.append(remoteModel)
+                } else {
+                    disposition.updateModels.append(remoteModel)
+                }
             }
         }
 
-        // Technically, we should never receive a subscription for a version we already have, but we'll be defensive
-        // and make this check include the current version
-        if remoteModel.syncMetadata.version >= localMetadata.version {
-            return .applyRemoteModel(remoteModel, .update)
-        }
+        return disposition
 
-        return .dropRemoteModel(remoteModel.model.modelName)
     }
 }

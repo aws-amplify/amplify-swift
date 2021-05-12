@@ -297,6 +297,21 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         return try result.unique()
     }
 
+    func queryMutationSyncMetadata(forModelIds modelIds: [Model.Identifier]) throws -> [MutationSyncMetadata] {
+        let modelType = MutationSyncMetadata.self
+        let fields = MutationSyncMetadata.keys
+        var queryPredicates: [QueryPredicateOperation] = []
+        for id in modelIds {
+            queryPredicates.append(QueryPredicateOperation(field: fields.id.stringValue, operator: .equals(id)))
+        }
+        let groupedQueryPredicates =  QueryPredicateGroup(type: .or, predicates: queryPredicates)
+        let statement = SelectStatement(from: modelType.schema, predicate: groupedQueryPredicates)
+        let rows = try connection.prepare(statement.stringValue).run(statement.variables)
+        let result = try rows.convert(to: modelType,
+                                      using: statement)
+        return result
+    }
+
     func queryModelSyncMetadata(for modelSchema: ModelSchema) throws -> ModelSyncMetadata? {
         let statement = SelectStatement(from: ModelSyncMetadata.schema,
                                         predicate: field("id").eq(modelSchema.name))
