@@ -23,21 +23,25 @@ public enum AuthModeStrategyType {
     case custom(AuthModeStrategy)
 }
 
+public typealias AuthorizationTypes = IndexingIterator<[AWSAuthorizationType]>
+
 public protocol AuthModeStrategy {
-    func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> [AWSAuthorizationType]
+    func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> AuthorizationTypes
 }
 
 public struct AWSDefaultAuthModeStrategy: AuthModeStrategy {
-    public init() {}
-    public func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> [AWSAuthorizationType] {
-        []
+    public init() {
+    }
+
+    public func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> AuthorizationTypes {
+        [].makeIterator()
     }
 }
 
 /// Multi-auth strategy implementation based on schema metadata
 public struct AWSMultiAuthModeStrategy: AuthModeStrategy {
     public init() {}
-    public func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> [AWSAuthorizationType] {
-        []
+    public func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> AuthorizationTypes {
+        [].makeIterator()
     }
 }

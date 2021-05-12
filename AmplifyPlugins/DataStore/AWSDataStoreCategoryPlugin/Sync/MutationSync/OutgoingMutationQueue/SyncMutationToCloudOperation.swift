@@ -200,7 +200,7 @@ class SyncMutationToCloudOperation: Operation {
 
         switch error {
         case .networkError(_, _, let error):
-            //currently expecting APIOperationResponse to be an URLError
+            // currently expecting APIOperationResponse to be an URLError
             let urlError = error as? URLError
             advice = requestRetryablePolicy.retryRequestAdvice(urlError: urlError,
                                                                httpURLResponse: nil,
