@@ -127,32 +127,12 @@ final class InitialSyncOperation: AsynchronousOperation {
             schema: modelSchema,
             operation: .read)
 
-        // query
-        // if auth error and availableAuthTypes.count > 0 -> retry
-        // else finish
-
         makeAPIRequest(lastSyncTime: lastSyncTime,
                                        limit: limit,
                                        queryPredicate: queryPredicate,
                                        nextToken: nextToken,
                                        authType: authTypes.next(),
                                        authTypeFactory: { authTypes.next() })
-
-        /*_ = api.query(request: request) { result in
-            switch result {
-            case .failure(let apiError):
-                if self.isNotAuthorizedError(apiError: apiError), let nextAuthType = authTypes.next() {
-                    return
-                }
-                if self.isAuthSignedOutError(apiError: apiError) {
-                    self.dataStoreConfiguration.errorHandler(DataStoreError.api(apiError))
-                }
-                // TODO: Retry query on error
-                self.finish(result: .failure(DataStoreError.api(apiError)))
-            case .success(let graphQLResult):
-                self.handleQueryResults(lastSyncTime: lastSyncTime, graphQLResult: graphQLResult)
-            }
-        }*/
     }
 
     /// Performs given API request, retries if error is retriable
@@ -167,12 +147,12 @@ final class InitialSyncOperation: AsynchronousOperation {
                                        queryPredicate: queryPredicate,
                                        nextToken: nextToken,
                                        authType: authTypeFactory())
-        
+
         _ = api?.query(request: request) { result in
             switch result {
             case .failure(let apiError):
                 if self.isNotAuthorizedError(apiError: apiError), let nextAuthType = authTypeFactory() {
-                    self.log.debug("Received API error: \(apiError), retrying with auth type \(nextAuthType)")
+                    self.log.debug("Received Unauthorized API error: \(apiError), retrying with auth type \(nextAuthType)")
                     self.makeAPIRequest(lastSyncTime: lastSyncTime,
                                    limit: limit,
                                    queryPredicate: queryPredicate,
@@ -191,7 +171,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             }
         }
     }
-    
+
     private func createAPIRequest(lastSyncTime: Int?,
                                   limit: Int,
                                   queryPredicate: QueryPredicate?,

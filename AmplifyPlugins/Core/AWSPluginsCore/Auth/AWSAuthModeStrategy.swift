@@ -23,25 +23,53 @@ public enum AuthModeStrategyType {
     case custom(AuthModeStrategy)
 }
 
-public typealias AuthorizationTypes = IndexingIterator<[AWSAuthorizationType]>
+public typealias AWSAuthorizationTypesIterator = IndexingIterator<[AWSAuthorizationType]>
 
+/// Represents an authorization strategy used by DataStore
 public protocol AuthModeStrategy {
-    func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> AuthorizationTypes
+    func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> AWSAuthorizationTypesIterator
 }
+
+// MARK: - AWSDefaultAuthModeStrategy
 
 public struct AWSDefaultAuthModeStrategy: AuthModeStrategy {
-    public init() {
-    }
-
-    public func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> AuthorizationTypes {
-        [].makeIterator()
+    public func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> AWSAuthorizationTypesIterator {
+        return [].makeIterator()
     }
 }
+
+// MARK: - AWSMultiAuthModeStrategy
 
 /// Multi-auth strategy implementation based on schema metadata
 public struct AWSMultiAuthModeStrategy: AuthModeStrategy {
+    private typealias AuthStrategyPriority = Int
+    private static let authStrategyPriority: [AuthStrategy: AuthStrategyPriority] = [
+        .owner : 0,
+        .groups: 1,
+        .private: 2,
+        .public: 3
+    ]
+
+    private static let authStrategyTypesMap: [AuthStrategy: AWSAuthorizationType] = [
+        .owner : .amazonCognitoUserPools,
+        .groups : .amazonCognitoUserPools,
+        .private : .amazonCognitoUserPools,
+        .public : .apiKey
+    ]
+    
+    private static let comparator = { (rule1: AuthRule, rule2: AuthRule) -> Bool in
+        Self.authStrategyPriority[rule1.allow]! < Self.authStrategyPriority[rule2.allow]!
+    }
+
     public init() {}
-    public func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> AuthorizationTypes {
-        [].makeIterator()
+
+    public func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> AWSAuthorizationTypesIterator {
+        let applicableAuthRules = schema.authRules
+            .filter(modelOperation: operation)
+            .sorted(by: AWSMultiAuthModeStrategy.comparator)
+            .map { Self.authStrategyTypesMap[$0.allow]! }
+        
+        return applicableAuthRules.makeIterator()
+        
     }
 }

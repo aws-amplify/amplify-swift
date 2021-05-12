@@ -252,6 +252,7 @@
 		767F85FC2649FF540076D633 /* CustomerOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767F85FB2649FF540076D633 /* CustomerOrder.swift */; };
 		767F85FE2649FFCC0076D633 /* CustomerOrder+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */; };
 		76A4023C264B1E3A009D4127 /* AWSAuthModeStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A4023B264B1E3A009D4127 /* AWSAuthModeStrategy.swift */; };
+		76B17DD8264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B17DD7264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift */; };
 		7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */; platformFilter = ios; };
 		7F27B1DCE59C1E674172CCD6 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */; };
 		881246F5DCC59436DC932469 /* Pods_Amplify_AWSPluginsCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35D92182B8445C8F9B0FAE94 /* Pods_Amplify_AWSPluginsCore.framework */; };
@@ -1139,6 +1140,7 @@
 		767F85FB2649FF540076D633 /* CustomerOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerOrder.swift; sourceTree = "<group>"; };
 		767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomerOrder+Schema.swift"; sourceTree = "<group>"; };
 		76A4023B264B1E3A009D4127 /* AWSAuthModeStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthModeStrategy.swift; sourceTree = "<group>"; };
+		76B17DD7264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelSchema+AuthRulesByOperation.swift"; sourceTree = "<group>"; };
 		77A2D125114EA0FFA11A7EFD /* Pods-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7A238096BAB328655B5E388F /* Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin/Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		7A7FD9B3CFF63FD16788A990 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -2923,13 +2925,14 @@
 		B937FBFC23FB4ED300081639 /* Schema */ = {
 			isa = PBXGroup;
 			children = (
+				210B3E33245CB73400F43848 /* AuthRule.swift */,
 				B92E03AB2367CE7A006CEB8D /* Model+Schema.swift */,
 				B9FAA10A23878122009414B4 /* ModelField+Association.swift */,
 				B92E03A82367CE7A006CEB8D /* ModelSchema.swift */,
 				FAA64FC22397294500B9C3C6 /* ModelSchema+Attributes.swift */,
+				76B17DD7264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift */,
 				B92E03AA2367CE7A006CEB8D /* ModelSchema+Definition.swift */,
 				B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */,
-				210B3E33245CB73400F43848 /* AuthRule.swift */,
 			);
 			path = Schema;
 			sourceTree = "<group>";
@@ -5226,6 +5229,7 @@
 				FAC23522227A053D00424678 /* LoggingCategory.swift in Sources */,
 				FAC2358F227A4A6E00424678 /* HubCategory.swift in Sources */,
 				B4B5CC872457B2470019C783 /* AuthUpdateUserAttributeRequest.swift in Sources */,
+				76B17DD8264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift in Sources */,
 				B98E9D0E2372236300934B51 /* ModelKey.swift in Sources */,
 				B91A879E23D12B730049A12F /* Time.swift in Sources */,
 				B9FAA13C238BBE67009414B4 /* DataStoreCallback+Combine.swift in Sources */,
