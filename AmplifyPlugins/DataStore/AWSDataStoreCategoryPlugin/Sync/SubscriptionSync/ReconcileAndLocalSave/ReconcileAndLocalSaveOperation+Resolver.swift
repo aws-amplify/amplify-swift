@@ -20,22 +20,25 @@ extension ReconcileAndLocalSaveOperation {
             switch (currentState, action) {
 
             case (.waiting, .started(let remoteModel)):
-                return .querying(remoteModel)
+                return .queryingPendingMutations(remoteModel)
 
-            case (.querying, .queried(let remoteModel, let localModel)):
-                return .reconciling(remoteModel, localModel)
-
-            case (.reconciling, .reconciled(let disposition)):
-                return .executing(disposition)
-
-            case (.executing, .dropped(let modelName)):
+            case (.queryingPendingMutations, .dropped(let modelName)):
                 return .notifyingDropped(modelName)
+
+            case (.queryingPendingMutations, .queriedPendingMutations(let remoteModel)):
+                return .queryingLocalMetadata(remoteModel)
+
+            case (.queryingLocalMetadata, .dropped(let modelName)):
+                return .notifyingDropped(modelName)
+
+            case (.queryingLocalMetadata, .reconciledAsApply(let remoteModel, let mutationType)):
+                return .applyingRemoteModel(remoteModel, mutationType)
+
+            case (.applyingRemoteModel, .applied(let savedModel, let mutationType)):
+                return .notifying(savedModel, mutationType)
 
             case (.notifyingDropped, .notified):
                 return .finished
-
-            case (.executing, .applied(let savedModel, let mutationType)):
-                return .notifying(savedModel, mutationType)
 
             case (.notifying, .notified):
                 return .finished

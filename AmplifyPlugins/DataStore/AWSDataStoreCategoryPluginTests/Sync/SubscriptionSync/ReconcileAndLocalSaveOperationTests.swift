@@ -60,6 +60,22 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         XCTAssertEqual(stateMachine.state, ReconcileAndLocalSaveOperation.State.waiting)
     }
 
+    func testQueryingPendingMutations_Empty() {
+        let expect = expectation(description: "action .queriedPendingMutations notified")
+        storageAdapter.returnOnQuery(dataStoreResult: nil)
+
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action,
+                           ReconcileAndLocalSaveOperation.Action.queriedPendingMutations(self.anyPostMutationSync))
+            expect.fulfill()
+        }
+
+        stateMachine.state = .queryingPendingMutations(anyPostMutationSync)
+
+        waitForExpectations(timeout: 1)
+    }
+
+    /*
     func testQuerying() throws {
         let expect = expectation(description: "action .queried notified")
         storageAdapter.returnOnQueryMutationSyncMetadata(anyPostMetadata)
@@ -74,6 +90,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
         waitForExpectations(timeout: 1)
     }
+    */
     /*
      //    TODO: Need to check the model registry
      func testQueryingUnregisteredModel_error() throws {
@@ -89,6 +106,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
      }
      */
+    /*
     func testQueryingWithInvalidStorageAdapter_error() throws {
         let expect = expectation(description: "action .errored nil storage adapter")
         stateMachine.pushExpectActionCriteria { action in
@@ -272,7 +290,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
         waitForExpectations(timeout: 1)
     }
-
+    */
     func testNotifying() throws {
         let hubExpect = expectation(description: "Hub is notified")
         let notifyExpect = expectation(description: "action .notified notified")
