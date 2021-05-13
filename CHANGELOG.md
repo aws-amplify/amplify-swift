@@ -1,5 +1,12 @@
 # Changelog
 ## Unreleased
+## 1.9.2 (2021-05-13)
+
+### Bug Fixes
+
+- **DataStore**: log metrics for ReconcileAndLocalSaveOperation (#1215)
+- Pass additional info in signIn next step (#1201)
+
 ## 1.9.1 (2021-05-05)
 
 ### Bug Fixes
