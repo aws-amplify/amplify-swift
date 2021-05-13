@@ -217,7 +217,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
         // TODO: Wrap this in a transaction
         if mutationType == .delete {
-            saveDeleteMutation(storageAdapter: storageAdapter, remoteModel: remoteModel, mutationType: mutationType)
+            saveDeleteMutation(storageAdapter: storageAdapter, remoteModel: remoteModel)
         } else {
             saveCreateOrUpdateMutation(storageAdapter: storageAdapter,
                                        remoteModel: remoteModel,
@@ -226,8 +226,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     }
 
     private func saveDeleteMutation(storageAdapter: StorageEngineAdapter,
-                                    remoteModel: RemoteModel,
-                                    mutationType: MutationEvent.MutationType) {
+                                    remoteModel: RemoteModel) {
         log.verbose(#function)
 
         guard let modelType = ModelRegistry.modelType(from: modelSchema.name) else {
@@ -250,7 +249,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             case .success:
                 self.saveMetadata(storageAdapter: storageAdapter,
                                   inProcessModel: remoteModel,
-                                  mutationType: mutationType)
+                                  mutationType: .delete)
             }
         }
     }
