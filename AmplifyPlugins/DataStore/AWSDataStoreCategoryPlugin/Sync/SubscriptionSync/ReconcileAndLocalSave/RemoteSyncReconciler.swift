@@ -12,21 +12,19 @@ import Amplify
 struct RemoteSyncReconciler {
     typealias LocalMetadata = ReconcileAndLocalSaveOperation.LocalMetadata
     typealias RemoteModel = ReconcileAndLocalSaveOperation.RemoteModel
-    typealias SavedModel = ReconcileAndLocalSaveOperation.AppliedModel
 
     enum Disposition {
         case applyRemoteModel(RemoteModel, MutationEvent.MutationType)
         case dropRemoteModel(String)
     }
 
+    static func reoncile(_ remoteModel: RemoteModel,
+                         pendingMutations: [MutationEvent]) -> RemoteModel? {
+        pendingMutations.isEmpty ? remoteModel : nil
+    }
+
     static func reconcile(remoteModel: RemoteModel,
-                          to localMetadata: LocalMetadata?,
-                          pendingMutations: [MutationEvent]) -> Disposition {
-
-        guard pendingMutations.isEmpty else {
-            return .dropRemoteModel(remoteModel.model.modelName)
-        }
-
+                          to localMetadata: LocalMetadata?) -> Disposition {
         guard let localMetadata = localMetadata else {
             if remoteModel.syncMetadata.deleted {
                 return .dropRemoteModel(remoteModel.model.modelName)

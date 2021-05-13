@@ -88,14 +88,20 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         case .waiting:
             break
 
-        case .querying(let remoteModel):
-            query(remoteModel: remoteModel)
+        case .queryingPendingMutations(let remoteModel):
+            queryPendingMutations(remoteModel: remoteModel)
 
-        case .reconciling(let remoteModel, let localMetadata):
-            reconcile(remoteModel: remoteModel, to: localMetadata)
+        case .reconcilingWithPendingMutations(let remoteModel, let pendingMutations):
+            reconcile(remoteModel, pendingMutations: pendingMutations)
 
-        case .executing(let disposition):
-            execute(disposition: disposition)
+        case .queryingLocalMetadata(let remoteModel):
+            queryLocalMetadata(remoteModel: remoteModel)
+
+        case .reconcilingWithLocalMetadata(let remoteModel, let localMetadata):
+            reconcile(remoteModel, localMetadata: localMetadata)
+
+        case .applyingRemoteModel(let remoteModel, let mutationType):
+            applyRemoteModel(remoteModel: remoteModel, mutationType: mutationType)
 
         case .notifyingDropped(let modelName):
             notifyDropped(modelName: modelName)
@@ -122,10 +128,44 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
     // MARK: - Responder methods
 
-    /// Responder method for `querying`. Notify actions:
-    /// - queried
-    /// - errored
-    func query(remoteModel: RemoteModel) {
+    func queryPendingMutations(remoteModel: RemoteModel) {
+        log.verbose(#function)
+        guard !isCancelled else {
+            log.verbose("\(#function) - cancelled, aborting")
+            return
+        }
+
+        guard let storageAdapter = storageAdapter else {
+            stateMachine.notify(action: .errored(DataStoreError.nilStorageAdapter()))
+            return
+        }
+
+        MutationEvent.pendingMutationEvents(forModelId: remoteModel.model.id,
+                                            storageAdapter: storageAdapter) { result in
+            if log.logLevel == .debug {
+                log.debug("query pending mutations: \(stopwatch.lap())s")
+            }
+
+            switch result {
+            case .failure(let dataStoreError):
+                stateMachine.notify(action: .errored(dataStoreError))
+                return
+            case .success(let mutationEvents):
+                stateMachine.notify(action: .queriedPendingMutations(remoteModel, mutationEvents))
+            }
+        }
+    }
+
+    func reconcile(_ remoteModel: RemoteModel, pendingMutations: [MutationEvent]) {
+        if let remoteModelToApply = RemoteSyncReconciler.reoncile(remoteModel,
+                                                                  pendingMutations: pendingMutations) {
+            stateMachine.notify(action: .reconciledWithPendingMutations(remoteModelToApply))
+        } else {
+            stateMachine.notify(action: .dropped(modelName: remoteModel.model.modelName))
+        }
+    }
+
+    func queryLocalMetadata(remoteModel: RemoteModel) {
         log.verbose("query: \(remoteModel)")
         guard !isCancelled else {
             log.info("\(#function) - cancelled, aborting")
@@ -140,67 +180,28 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         let localMetadata: MutationSyncMetadata?
         do {
             localMetadata = try storageAdapter.queryMutationSyncMetadata(for: remoteModel.model.id)
+            if log.logLevel == .debug {
+                log.debug("query local metadata: \(stopwatch.lap())s")
+            }
         } catch {
             stateMachine.notify(action: .errored(DataStoreError(error: error)))
             return
         }
-
-        let queriedAction = Action.queried(remoteModel, localMetadata)
-
-        if log.logLevel == .debug {
-            log.debug("query local metadata: \(stopwatch.lap())s")
-        }
-
-        stateMachine.notify(action: queriedAction)
+        stateMachine.notify(action: .queriedLocalMetadata(remoteModel, localMetadata))
     }
 
-    /// Responder method for `reconciling`. Notify actions:
-    /// - reconciled
-    /// - conflict
-    /// - errored
-    func reconcile(remoteModel: RemoteModel, to localMetadata: LocalMetadata?) {
-        log.verbose(#function)
-        guard !isCancelled else {
-            log.verbose("\(#function) - cancelled, aborting")
-            return
-        }
-
-        let pendingMutations: [MutationEvent]
-        switch getPendingMutations(forModelId: remoteModel.model.id) {
-        case .failure(let dataStoreError):
-            stateMachine.notify(action: .errored(dataStoreError))
-            return
-        case .success(let mutationEvents):
-            pendingMutations = mutationEvents
-        }
-        if log.logLevel == .debug {
-            log.debug("query pending mutations: \(stopwatch.lap())s")
-        }
+    func reconcile(_ remoteModel: RemoteModel, localMetadata: MutationSyncMetadata?) {
         let disposition = RemoteSyncReconciler.reconcile(remoteModel: remoteModel,
-                                                         to: localMetadata,
-                                                         pendingMutations: pendingMutations)
-
-        stateMachine.notify(action: .reconciled(disposition))
-    }
-
-    /// Responder method for `executing`. Applies the appropriate disposition. Either invokes `apply`, or directly
-    /// notifies the state machine for:
-    /// - errored
-    /// - dropped
-    func execute(disposition: RemoteSyncReconciler.Disposition) {
+                                                                   to: localMetadata)
         switch disposition {
         case .applyRemoteModel(let remoteModel, let mutationType):
-            apply(remoteModel: remoteModel, mutationType: mutationType)
+            stateMachine.notify(action: .reconciledAsApply(remoteModel, mutationType))
         case .dropRemoteModel(let modelName):
             stateMachine.notify(action: .dropped(modelName: modelName))
         }
     }
 
-    /// Execution method for the `applyRemoteModel` disposition. Does not notify directly, but delegates to save or
-    /// delete methods, which eventually notify with:
-    /// - applied
-    /// - errored
-    private func apply(remoteModel: RemoteModel, mutationType: MutationEvent.MutationType) {
+    func applyRemoteModel(remoteModel: RemoteModel, mutationType: MutationEvent.MutationType) {
         if log.logLevel == .verbose {
             log.verbose("\(#function): remoteModel")
         }
@@ -297,7 +298,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 self.stateMachine.notify(action: errorAction)
             case .success(let syncMetadata):
                 let appliedModel = MutationSync(model: inProcessModel.model, syncMetadata: syncMetadata)
-                self.stateMachine.notify(action: .applied(appliedModel, mutationType: mutationType))
+                self.stateMachine.notify(action: .applied(appliedModel, mutationType))
             }
         }
     }
@@ -342,29 +343,6 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
     private func notifyFinished() {
         mutationEventPublisher.send(completion: .finished)
-    }
-
-    private func getPendingMutations(forModelId modelId: Model.Identifier) -> DataStoreResult<[MutationEvent]> {
-        guard let storageAdapter = storageAdapter else {
-            return .failure(DataStoreError.nilStorageAdapter())
-        }
-
-        let semaphore = DispatchSemaphore(value: 0)
-        var pendingMutationResultFromQuery: DataStoreResult<[MutationEvent]>?
-        MutationEvent.pendingMutationEvents(forModelId: modelId,
-                                            storageAdapter: storageAdapter) {
-            pendingMutationResultFromQuery = $0
-            semaphore.signal()
-        }
-        semaphore.wait()
-
-        guard let pendingMutationResult = pendingMutationResultFromQuery else {
-            let dataStoreError = DataStoreError.unknown("Unable to query pending mutation events",
-                                                        AmplifyErrorMessages.shouldNotHappenReportBugToAWS())
-            return .failure(dataStoreError)
-        }
-
-        return pendingMutationResult
     }
 }
 

@@ -20,22 +20,31 @@ extension ReconcileAndLocalSaveOperation {
             switch (currentState, action) {
 
             case (.waiting, .started(let remoteModel)):
-                return .querying(remoteModel)
+                return .queryingPendingMutations(remoteModel)
 
-            case (.querying, .queried(let remoteModel, let localModel)):
-                return .reconciling(remoteModel, localModel)
+            case (.queryingPendingMutations, .queriedPendingMutations(let remoteModel, let pendingMutations)):
+                return .reconcilingWithPendingMutations(remoteModel, pendingMutations)
 
-            case (.reconciling, .reconciled(let disposition)):
-                return .executing(disposition)
-
-            case (.executing, .dropped(let modelName)):
+            case (.reconcilingWithPendingMutations, .dropped(let modelName)):
                 return .notifyingDropped(modelName)
+
+            case (.reconcilingWithPendingMutations, .reconciledWithPendingMutations(let remoteModel)):
+                return .queryingLocalMetadata(remoteModel)
+
+            case (.queryingLocalMetadata, .queriedLocalMetadata(let remoteModel, let localMetadata)):
+                return .reconcilingWithLocalMetadata(remoteModel, localMetadata)
+
+            case (.reconcilingWithLocalMetadata, .dropped(let modelName)):
+                return .notifyingDropped(modelName)
+
+            case (.reconcilingWithLocalMetadata, .reconciledAsApply(let remoteModel, let mutationType)):
+                return .applyingRemoteModel(remoteModel, mutationType)
+
+            case (.applyingRemoteModel, .applied(let savedModel, let mutationType)):
+                return .notifying(savedModel, mutationType)
 
             case (.notifyingDropped, .notified):
                 return .finished
-
-            case (.executing, .applied(let savedModel, let mutationType)):
-                return .notifying(savedModel, mutationType)
 
             case (.notifying, .notified):
                 return .finished

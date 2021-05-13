@@ -32,16 +32,26 @@ extension ReconcileAndLocalSaveOperation.Action: Equatable {
         case (.started(let model1), .started(let model2)):
             return model1.model.id == model2.model.id
                 && model1.model.modelName == model2.model.modelName
-        case (.queried(let model1, let lmetadata1), .queried(let model2, let lmetadata2)):
-            return model1.model.id == model2.model.id
-                && lmetadata1?.id == lmetadata2?.id
-                && model1.model.modelName == model2.model.modelName
-        case (.reconciled(let disposition1), .reconciled(let disposition2)):
-            return disposition1 == disposition2
-        case (.applied(let model1, let existsLocally1), .applied(let model2, let existsLocally2)):
+        case (.queriedPendingMutations(let model1, let pendingMutations1),
+              .queriedPendingMutations(let model2, let pendingMutations2)):
             return model1.model.id == model2.model.id
                 && model1.model.modelName == model2.model.modelName
-                && existsLocally1 == existsLocally2
+                && pendingMutations1 == pendingMutations2
+        case (.reconciledWithPendingMutations(let model1), .reconciledWithPendingMutations(let model2)):
+            return model1.model.id == model2.model.id
+                && model1.model.modelName == model2.model.modelName
+        case (.queriedLocalMetadata(let model1, let localmetadata1), .queriedLocalMetadata(let model2, let localmetadata2)):
+            return model1.model.id == model2.model.id
+                && model1.model.modelName == model2.model.modelName
+                && localmetadata1 == localmetadata2
+        case (.reconciledAsApply(let model1, let mutationEvent1), .reconciledAsApply(let model2, let mutationEvent2)):
+            return model1.model.id == model2.model.id
+                && model1.model.modelName == model2.model.modelName
+                && mutationEvent1 == mutationEvent2
+        case (.applied(let model1, let mutationEvent1), applied(let model2, let mutationEvent2)):
+            return model1.model.id == model2.model.id
+                && model1.model.modelName == model2.model.modelName
+                && mutationEvent1 == mutationEvent2
         case (.dropped, dropped):
             return true
         case (.notified, .notified):
@@ -62,15 +72,16 @@ extension ReconcileAndLocalSaveOperation.State: Equatable {
         switch (lhs, rhs) {
         case (.waiting, .waiting):
             return true
-        case (.querying(let model1), .querying(let model2)):
+        case (.queryingPendingMutations(let model1), .queryingPendingMutations(let model2)):
             return model1.model.id == model2.model.id
                 && model1.model.modelName == model2.model.modelName
-        case (.reconciling(let model1, let lmetadata1), .reconciling(let model2, let lmetadata2)):
+        case (.queryingLocalMetadata(let model1), .queryingLocalMetadata(let model2)):
             return model1.model.id == model2.model.id
-                && lmetadata1?.id == lmetadata2?.id
                 && model1.model.modelName == model2.model.modelName
-        case (.executing(let disposition1), .executing(let disposition2)):
-            return disposition1 == disposition2
+        case (.applyingRemoteModel(let model1, let mutationEvent1), .applyingRemoteModel(let model2, let mutationEvent2)):
+            return model1.model.id == model2.model.id
+                && model1.model.modelName == model2.model.modelName
+                && mutationEvent1 == mutationEvent2
         case (.notifying(let model1, let existsLocally1), .notifying(let model2, let existsLocally2)):
             return model1.model.id == model2.model.id
                 && model1.model.modelName == model2.model.modelName
@@ -102,5 +113,19 @@ extension MutationSyncMetadata: Equatable {
             && lhs.deleted == rhs.deleted
             && lhs.lastChangedAt == rhs.lastChangedAt
             && lhs.version == rhs.version
+    }
+}
+
+extension MutationEvent: Equatable {
+    public static func == (lhs: MutationEvent, rhs: MutationEvent) -> Bool {
+        return lhs.id == rhs.id
+            && lhs.modelId == rhs.modelId
+            && lhs.modelName == rhs.modelName
+            && lhs.json == rhs.json
+            && lhs.mutationType == rhs.mutationType
+            && lhs.createdAt == rhs.createdAt
+            && lhs.version == rhs.version
+            && lhs.inProcess == rhs.inProcess
+            && lhs.graphQLFilterJSON == rhs.graphQLFilterJSON
     }
 }

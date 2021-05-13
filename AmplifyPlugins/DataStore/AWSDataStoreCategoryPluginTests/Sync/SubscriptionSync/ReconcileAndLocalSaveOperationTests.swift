@@ -18,6 +18,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     var anyPostMetadata: MutationSyncMetadata!
     var anyPostMutationSync: MutationSync<AnyModel>!
     var anyPostDeletedMutationSync: MutationSync<AnyModel>!
+    var anyPostMutationEvent: MutationEvent!
 
     var operation: ReconcileAndLocalSaveOperation!
     var stateMachine: MockStateMachine<ReconcileAndLocalSaveOperation.State, ReconcileAndLocalSaveOperation.Action>!
@@ -43,7 +44,11 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                                                          lastChangedAt: Int(Date().timeIntervalSince1970),
                                                          version: 2)
         anyPostDeletedMutationSync = MutationSync<AnyModel>(model: anyPostDelete, syncMetadata: anyPostDeleteMetadata)
-
+        anyPostMutationEvent = MutationEvent(id: "1",
+                                             modelId: "1",
+                                             modelName: testPost.modelName,
+                                             json: "",
+                                             mutationType: .create)
         storageAdapter = MockSQLiteStorageEngineAdapter()
         storageAdapter.returnOnQuery(dataStoreResult: .none)
         storageAdapter.returnOnSave(dataStoreResult: .none)
@@ -60,36 +65,51 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         XCTAssertEqual(stateMachine.state, ReconcileAndLocalSaveOperation.State.waiting)
     }
 
-    func testQuerying() throws {
-        let expect = expectation(description: "action .queried notified")
-        storageAdapter.returnOnQueryMutationSyncMetadata(anyPostMetadata)
+    // MARK: - queryPendingMutations
+
+    func testQueryPendingMutations_queriedPendingMutations() {
+        let expect = expectation(description: "action .queriedPendingMutations")
+        let mutationEvent = MutationEvent(modelId: "1111-22",
+                                          modelName: "Post",
+                                          json: "{}",
+                                          mutationType: .create)
+        let queryResponder = QueryModelTypePredicateResponder<MutationEvent> { _, _ in
+            return .success([mutationEvent])
+        }
+        storageAdapter.responders[.queryModelTypePredicate] = queryResponder
+
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action,
-                           ReconcileAndLocalSaveOperation.Action.queried(self.anyPostMutationSync,
-                                                                         self.anyPostMetadata))
+                           ReconcileAndLocalSaveOperation.Action
+                            .queriedPendingMutations(self.anyPostMutationSync, [mutationEvent]))
             expect.fulfill()
         }
 
-        stateMachine.state = .querying(anyPostMutationSync)
+        stateMachine.state = .queryingPendingMutations(anyPostMutationSync)
 
         waitForExpectations(timeout: 1)
     }
-    /*
-     //    TODO: Need to check the model registry
-     func testQueryingUnregisteredModel_error() throws {
-     let comment = Comment(content: "testContent", post: testPost)
-     let anyComment = AnyModel(comment)
-     let anyCommentMetadata = MutationSyncMetadata(id: "3",
-     deleted: false,
-     lastChangedAt: Int(Date().timeIntervalSince1970),
-     version: 2)
-     let anyCommentMutationSync = MutationSync<AnyModel>(model: anyComment, syncMetadata: anyCommentMetadata)
 
-     stateMachine.state = .querying(anyCommentMutationSync)
+    func testQueryPendingMutations_error() {
+        let expect = expectation(description: "action .queriedPendingMutations")
+        let error = DataStoreError.internalOperation("Failed to query pending mutations", "")
+        let queryResponder = QueryModelTypePredicateResponder<MutationEvent> { _, _ in
+            return .failure(error)
+        }
+        storageAdapter.responders[.queryModelTypePredicate] = queryResponder
 
-     }
-     */
-    func testQueryingWithInvalidStorageAdapter_error() throws {
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action,
+                           ReconcileAndLocalSaveOperation.Action.errored(error))
+            expect.fulfill()
+        }
+
+        stateMachine.state = .queryingPendingMutations(anyPostMutationSync)
+
+        waitForExpectations(timeout: 1)
+    }
+
+    func testQueryPendingMutations_invalidStorageAdapter() throws {
         let expect = expectation(description: "action .errored nil storage adapter")
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action,
@@ -98,82 +118,179 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         }
 
         storageAdapter = nil
-        stateMachine.state = .querying(anyPostMutationSync)
+        stateMachine.state = .queryingPendingMutations(anyPostMutationSync)
 
         waitForExpectations(timeout: 1)
     }
 
-    func testQueryingWithErrorOnQuery() throws {
-        let expect = expectation(description: "action .errored notified")
-        let error = DataStoreError.invalidModelName("invalidModelName")
+    func testQueryPendingMutationsWithEmptyStore() throws {
+        let expect = expectation(description: "action .queriedPendingMutations notified with pending mutation == []")
+        let queryResponder = QueryModelTypePredicateResponder<MutationEvent> { _, _ in
+            return .success([])
+        }
+        storageAdapter.responders[.queryModelTypePredicate] = queryResponder
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action
+                            .queriedPendingMutations(self.anyPostMutationSync, []))
+            expect.fulfill()
+        }
+
+        stateMachine.state = .queryingPendingMutations(anyPostMutationSync)
+
+        waitForExpectations(timeout: 1)
+    }
+
+    // MARK: - reconcile(remoteModel:pendingMutations)
+
+    func testReconcilePendingMutations_reconciled() {
+        let expect = expectation(description: "action .reconciledWithPendingMutations")
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action,
+                           ReconcileAndLocalSaveOperation.Action
+                            .reconciledWithPendingMutations(self.anyPostMutationSync))
+            expect.fulfill()
+        }
+
+        stateMachine.state = .reconcilingWithPendingMutations(anyPostMutationSync, [])
+
+        waitForExpectations(timeout: 1)
+    }
+
+    func testReoncilePendingMutations_dropped() {
+        let expect = expectation(description: "action .reconciledWithPendingMutations")
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action,
+                           ReconcileAndLocalSaveOperation.Action
+                            .dropped(modelName: "Post"))
+            expect.fulfill()
+        }
+
+        stateMachine.state = .reconcilingWithPendingMutations(anyPostMutationSync, [anyPostMutationEvent])
+
+        waitForExpectations(timeout: 1)
+    }
+
+    // MARK: - queryLocalMetadata
+
+    func testQueryLocalMetadata_queriedPendingMutations() {
+        let expect = expectation(description: "action .queriedLocalMetadata")
+        storageAdapter.returnOnQueryMutationSyncMetadata(anyPostMetadata)
+
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action,
+                           ReconcileAndLocalSaveOperation.Action
+                            .queriedLocalMetadata(self.anyPostMutationSync, self.anyPostMetadata))
+            expect.fulfill()
+        }
+
+        stateMachine.state = .queryingLocalMetadata(anyPostMutationSync)
+
+        waitForExpectations(timeout: 1)
+    }
+
+    func testQueryLocalMetadata_error() {
+        let expect = expectation(description: "action .errored")
+        let error = DataStoreError.internalOperation("Failed to query local metadata", "")
         storageAdapter.throwOnQueryMutationSyncMetadata(error: error)
         stateMachine.pushExpectActionCriteria { action in
-            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.errored(error))
+            XCTAssertEqual(action,
+                           ReconcileAndLocalSaveOperation.Action.errored(error))
             expect.fulfill()
         }
 
-        stateMachine.state = .querying(anyPostMutationSync)
+        stateMachine.state = .queryingLocalMetadata(anyPostMutationSync)
 
         waitForExpectations(timeout: 1)
     }
 
-    func testQueryingWithEmptyLocalStore() throws {
-        let expect = expectation(description: "action .queried notified with local data == nil")
+    func testQueryLocalMetadata_invalidStorageAdapter() throws {
+        let expect = expectation(description: "action .errored nil storage adapter")
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action,
+                           ReconcileAndLocalSaveOperation.Action.errored(DataStoreError.nilStorageAdapter()))
+            expect.fulfill()
+        }
+
+        storageAdapter = nil
+        stateMachine.state = .queryingLocalMetadata(anyPostMutationSync)
+
+        waitForExpectations(timeout: 1)
+    }
+
+    func testQueryLocalMetadataWithEmptyStore() throws {
+        let expect = expectation(description: "action .queried notified with local metadata == nil")
         storageAdapter.returnOnQueryMutationSyncMetadata(nil)
         stateMachine.pushExpectActionCriteria { action in
-            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.queried(self.anyPostMutationSync, nil))
+            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action
+                            .queriedLocalMetadata(self.anyPostMutationSync, nil))
             expect.fulfill()
         }
 
-        stateMachine.state = .querying(anyPostMutationSync)
+        stateMachine.state = .queryingLocalMetadata(anyPostMutationSync)
 
         waitForExpectations(timeout: 1)
     }
 
-    func testReconcilingWithoutLocalModel() throws {
-        let expect = expectation(description: "action .reconciled notified")
-        let expectedDisposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync, .create)
+    // MARK: - reconcile(remoteModel:localMetadata)
+
+    func testReconcileLocalMetadata_apply() {
+        let expect = expectation(description: "action .reconciledAsApply")
         stateMachine.pushExpectActionCriteria { action in
-            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.reconciled(expectedDisposition))
+            XCTAssertEqual(action,
+                           ReconcileAndLocalSaveOperation.Action
+                            .reconciledAsApply(self.anyPostMutationSync, .update))
             expect.fulfill()
         }
-        stateMachine.state = .reconciling(anyPostMutationSync, nil)
+
+        stateMachine.state = .reconcilingWithLocalMetadata(anyPostMutationSync, anyPostMetadata)
 
         waitForExpectations(timeout: 1)
     }
 
-    func testExecuteApplyRemoteModelCreate() throws {
-        let expect = expectation(description: "action .execute applyRemoteModel")
-        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync, .create)
+    func testReconcileWithNilLocalMetadata_dropped() {
+        let expect = expectation(description: "action .dropped")
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action,
+                           ReconcileAndLocalSaveOperation.Action
+                            .dropped(modelName: "Post"))
+            expect.fulfill()
+        }
+
+        stateMachine.state = .reconcilingWithLocalMetadata(anyPostDeletedMutationSync, nil)
+
+        waitForExpectations(timeout: 1)
+    }
+
+    // MARK: - applyRemoteModel
+
+    func testApplyRemoteModelCreate() throws {
+        let expect = expectation(description: "action .applied")
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostMutationSync.model))
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostMutationSync,
-                                                                                 mutationType: .create))
+                                                                                 .create))
             expect.fulfill()
         }
 
-        stateMachine.state = .executing(disposition)
+        stateMachine.state = .applyingRemoteModel(anyPostMutationSync, .create)
         waitForExpectations(timeout: 1)
     }
 
     func testExecuteApplyRemoteModelUpdate() throws {
-        let expect = expectation(description: "action .execute applyRemoteModel")
-        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync, .update)
-
+        let expect = expectation(description: "action .applied")
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostMutationSync.model))
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostMutationSync,
-                                                                                 mutationType: .update))
+                                                                                 .update))
             expect.fulfill()
         }
-        stateMachine.state = .executing(disposition)
+        stateMachine.state = .applyingRemoteModel(anyPostMutationSync, .update)
 
         waitForExpectations(timeout: 1)
     }
 
-    func testExecuteApplyRemoteModel_saveMutationFailed() throws {
-        let expect = expectation(description: "action .execute error on save model")
-        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync, .create)
+    func testApplyRemoteModel_saveMutationFailed() throws {
+        let expect = expectation(description: "action .errorred on save model")
         let error = DataStoreError.invalidModelName("invModelName")
         storageAdapter.returnOnSave(dataStoreResult: .failure(error))
         stateMachine.pushExpectActionCriteria { action in
@@ -181,14 +298,13 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             expect.fulfill()
         }
 
-        stateMachine.state = .executing(disposition)
+        stateMachine.state = .applyingRemoteModel(anyPostMutationSync, .create)
 
         waitForExpectations(timeout: 1)
     }
 
-    func testExecuteApplyRemoteModel_saveMutationOK_MetadataFailed() throws {
-        let expect = expectation(description: "action .execute error on save mutation")
-        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync, .create)
+    func testApplyRemoteModel_saveMutationOK_MetadataFailed() throws {
+        let expect = expectation(description: "action .errorred on save mutation")
         let error = DataStoreError.invalidModelName("forceError")
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostMutationSync.model))
         storageAdapter.shouldReturnErrorOnSaveMetadata = true
@@ -197,27 +313,25 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             expect.fulfill()
         }
 
-        stateMachine.state = .executing(disposition)
+        stateMachine.state = .applyingRemoteModel(anyPostMutationSync, .create)
         waitForExpectations(timeout: 1)
     }
 
-    func testExecuteApplyRemoteModel_Delete() throws {
-        let expect = expectation(description: "action .execute applyRemoteModel delete success case")
-        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostDeletedMutationSync, .delete)
+    func testApplyRemoteModel_Delete() throws {
+        let expect = expectation(description: "action .applied delete success case")
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostDeletedMutationSync.model))
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostDeletedMutationSync,
-                                                                                 mutationType: .delete))
+                                                                                 .delete))
             expect.fulfill()
         }
 
-        stateMachine.state = .executing(disposition)
+        stateMachine.state = .applyingRemoteModel(anyPostDeletedMutationSync, .delete)
         waitForExpectations(timeout: 1)
     }
 
-    func testExecuteApplyRemoteModel_Delete_saveMutationFailed() throws {
-        let expect = expectation(description: "action .execute applyRemoteModel delete mutation error")
-        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostDeletedMutationSync, .delete)
+    func testApplyRemoteModel_Delete_saveMutationFailed() throws {
+        let expect = expectation(description: "action .errored delete mutation error")
         let error = DataStoreError.invalidModelName("DelMutate")
         storageAdapter.shouldReturnErrorOnDeleteMutation = true
         stateMachine.pushExpectActionCriteria { action in
@@ -225,14 +339,13 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             expect.fulfill()
         }
 
-        stateMachine.state = .executing(disposition)
+        stateMachine.state = .applyingRemoteModel(anyPostDeletedMutationSync, .delete)
 
         waitForExpectations(timeout: 1)
     }
 
-    func testExecuteApplyRemoteModel_Delete_saveMutationOK_saveMetadataFailed() throws {
-        let expect = expectation(description: "action .execute applyRemoteModel delete metadata error")
-        let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostDeletedMutationSync, .delete)
+    func testApplyRemoteModel_Delete_saveMutationOK_saveMetadataFailed() throws {
+        let expect = expectation(description: "action .errored delete metadata error")
         let error = DataStoreError.invalidModelName("forceError")
         storageAdapter.shouldReturnErrorOnSaveMetadata = true
         storageAdapter.returnOnSave(dataStoreResult: .failure(error))
@@ -241,22 +354,23 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             expect.fulfill()
         }
 
-        stateMachine.state = .executing(disposition)
+        stateMachine.state = .applyingRemoteModel(anyPostDeletedMutationSync, .delete)
         waitForExpectations(timeout: 1)
     }
 
-    func testExecuteDropRemoteModel() throws {
-        let expect = expectation(description: "action .execute dropRemoteModel")
-        let disposition = RemoteSyncReconciler.Disposition.dropRemoteModel
+    // MARK: - notifyDropped
+    func testNotifyingDropped() throws {
+        let expect = expectation(description: "action .notified")
         stateMachine.pushExpectActionCriteria { action in
-            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.dropped(modelName: "Post"))
+            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.notified)
             expect.fulfill()
         }
 
-        stateMachine.state = .executing(disposition("Post"))
-
+        stateMachine.state = .notifyingDropped("Post")
         waitForExpectations(timeout: 1)
     }
+
+    // MARK: - notify
 
     func testNotifying() throws {
         let hubExpect = expectation(description: "Hub is notified")
