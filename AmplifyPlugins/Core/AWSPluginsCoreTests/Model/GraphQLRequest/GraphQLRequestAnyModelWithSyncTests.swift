@@ -172,7 +172,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         }
         """
 
-        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: post.modelName, id: post.id)
+        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: post, modelSchema: post.schema)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)

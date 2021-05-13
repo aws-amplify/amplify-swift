@@ -161,7 +161,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         }
         """
 
-        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: article.modelName, id: article.id)
+        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: article, modelSchema: article.schema)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
