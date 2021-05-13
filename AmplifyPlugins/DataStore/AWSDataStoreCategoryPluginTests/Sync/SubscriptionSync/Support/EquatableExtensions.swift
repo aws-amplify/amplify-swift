@@ -13,13 +13,12 @@ extension RemoteSyncReconciler.Disposition: Equatable {
     public static func == (lhs: RemoteSyncReconciler.Disposition,
                            rhs: RemoteSyncReconciler.Disposition) -> Bool {
         switch (lhs, rhs) {
-        case (.applyRemoteModel(let rm1), .applyRemoteModel(let rm2)):
+        case (.applyRemoteModel(let rm1, let mutationType1), .applyRemoteModel(let rm2, let mutationType2)):
             return rm1.model.id == rm2.model.id &&
-                rm1.model.modelName == rm2.model.modelName
+                rm1.model.modelName == rm2.model.modelName &&
+                mutationType1 == mutationType2
         case (.dropRemoteModel, .dropRemoteModel):
             return true
-        case (.error(let error1), .error(let error2)):
-            return error1.errorDescription == error2.errorDescription
         default:
             return false
         }

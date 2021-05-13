@@ -27,7 +27,7 @@ extension ReconcileAndLocalSaveOperation {
         case notifyingDropped(String)
 
         /// Notifying listeners and callbacks of completion
-        case notifying(AppliedModel, Bool)
+        case notifying(AppliedModel, MutationEvent.MutationType)
 
         /// Operation has successfully completed
         case finished
