@@ -33,6 +33,7 @@ public protocol AuthModeStrategy {
 // MARK: - AWSDefaultAuthModeStrategy
 
 public struct AWSDefaultAuthModeStrategy: AuthModeStrategy {
+    public init() {}
     public func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> AWSAuthorizationTypesIterator {
         return [].makeIterator()
     }
@@ -57,6 +58,7 @@ public struct AWSMultiAuthModeStrategy: AuthModeStrategy {
         .public : .apiKey
     ]
     
+    // TODO: don't force unwrap
     private static let comparator = { (rule1: AuthRule, rule2: AuthRule) -> Bool in
         Self.authStrategyPriority[rule1.allow]! < Self.authStrategyPriority[rule2.allow]!
     }

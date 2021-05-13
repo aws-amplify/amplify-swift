@@ -10,7 +10,7 @@ import AWSPluginsCore
 import Combine
 import Foundation
 
-//Used for testing:
+// Used for testing:
 @available(iOS 13.0, *)
 typealias ModelReconciliationQueueFactory = (
     ModelSchema,
@@ -19,6 +19,7 @@ typealias ModelReconciliationQueueFactory = (
     ReconcileAndSaveOperationQueue,
     QueryPredicate?,
     AuthCategoryBehavior?,
+    AuthModeStrategy,
     IncomingSubscriptionEventPublisher?
 ) -> ModelReconciliationQueue
 
@@ -81,6 +82,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
          reconcileAndSaveQueue: ReconcileAndSaveOperationQueue,
          modelPredicate: QueryPredicate?,
          auth: AuthCategoryBehavior?,
+         authModeStrategy: AuthModeStrategy,
          incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
 
         self.modelSchema = modelSchema
@@ -101,7 +103,8 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             AWSIncomingSubscriptionEventPublisher(modelSchema: modelSchema,
                                                   api: api,
                                                   modelPredicate: modelPredicate,
-                                                  auth: auth)
+                                                  auth: auth,
+                                                  authModeStrategy: authModeStrategy)
         self.incomingSubscriptionEvents = resolvedIncomingSubscriptionEvents
         self.reconcileAndLocalSaveOperationSinks = AtomicValue(initialValue: Set<AnyCancellable?>())
         self.incomingEventsSink = resolvedIncomingSubscriptionEvents

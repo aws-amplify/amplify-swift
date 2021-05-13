@@ -110,6 +110,7 @@ extension DataStoreConfiguration {
     ///   - syncInterval: how often the sync engine will run (in seconds)
     ///   - syncMaxRecords: the number of records to sync per execution
     ///   - syncPageSize: the page size of each sync execution
+    ///   - authModeStrategy: authorization strategy (.default | multiauth)
     /// - Returns: an instance of `DataStoreConfiguration` with the passed parameters.
     public static func custom(
         errorHandler: @escaping DataStoreErrorHandler = { error in

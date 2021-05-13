@@ -47,6 +47,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
          api: APICategoryGraphQLBehavior,
          modelPredicate: QueryPredicate?,
          auth: AuthCategoryBehavior?,
+         authModeStrategy: AuthModeStrategy,
          awsAuthService: AWSAuthServiceBehavior? = nil) {
         self.onCreateConnected = false
         self.onUpdateConnected = false
@@ -69,6 +70,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
             api: api,
             auth: auth,
             awsAuthService: self.awsAuthService,
+            authModeStrategy: authModeStrategy,
             valueListener: onCreateValueListener,
             completionListener: genericCompletionListenerHandler(result:)
         )
@@ -81,6 +83,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
             api: api,
             auth: auth,
             awsAuthService: self.awsAuthService,
+            authModeStrategy: authModeStrategy,
             valueListener: onUpdateValueListener,
             completionListener: genericCompletionListenerHandler(result:)
         )
@@ -93,6 +96,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
             api: api,
             auth: auth,
             awsAuthService: self.awsAuthService,
+            authModeStrategy: authModeStrategy,
             valueListener: onDeleteValueListener,
             completionListener: genericCompletionListenerHandler(result:)
         )
@@ -162,6 +166,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         api: APICategoryGraphQLBehavior,
         auth: AuthCategoryBehavior?,
         awsAuthService: AWSAuthServiceBehavior,
+        authModeStrategy: AuthModeStrategy,
         valueListener: @escaping GraphQLSubscriptionOperation<Payload>.InProcessListener,
         completionListener: @escaping GraphQLSubscriptionOperation<Payload>.ResultListener
     ) -> GraphQLSubscriptionOperation<Payload> {

@@ -77,7 +77,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             OutgoingMutationQueue(storageAdapter: storageAdapter, dataStoreConfiguration: dataStoreConfiguration)
 
         let reconciliationQueueFactory = reconciliationQueueFactory ??
-            AWSIncomingEventReconciliationQueue.init(modelSchemas:api:storageAdapter:syncExpressions:auth:modelReconciliationQueueFactory:)
+            AWSIncomingEventReconciliationQueue.init(modelSchemas:api:storageAdapter:syncExpressions:auth:authModeStrategy:modelReconciliationQueueFactory:)
 
         let initialSyncOrchestratorFactory = initialSyncOrchestratorFactory ??
             AWSInitialSyncOrchestrator.init(dataStoreConfiguration:api:reconciliationQueue:storageAdapter:)
@@ -268,6 +268,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                                                          storageAdapter,
                                                          dataStoreConfiguration.syncExpressions,
                                                          auth,
+                                                         dataStoreConfiguration.authModeStrategy,
                                                          nil)
         reconciliationQueueSink = reconciliationQueue?.publisher.sink(
             receiveCompletion: onReceiveCompletion(receiveCompletion:),
