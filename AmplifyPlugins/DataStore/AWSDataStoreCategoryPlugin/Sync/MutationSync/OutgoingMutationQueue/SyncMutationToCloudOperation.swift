@@ -102,8 +102,15 @@ class SyncMutationToCloudOperation: Operation {
 
             switch mutationType {
             case .delete:
-                request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: mutationEvent.modelName,
-                                                                            id: mutationEvent.modelId,
+                let model = try mutationEvent.decodeModel()
+                guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {
+                    preconditionFailure("""
+                    Could not retrieve schema for the model \(mutationEvent.modelName), verify that datastore is
+                    initialized.
+                    """)
+                }
+                request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: model,
+                                                                            modelSchema: modelSchema,
                                                                             where: graphQLFilter,
                                                                             version: mutationEvent.version)
             case .update:
