@@ -15,9 +15,8 @@ struct RemoteSyncReconciler {
     typealias SavedModel = ReconcileAndLocalSaveOperation.AppliedModel
 
     enum Disposition {
-        case applyRemoteModel(RemoteModel)
+        case applyRemoteModel(RemoteModel, MutationEvent.MutationType)
         case dropRemoteModel(String)
-        case error(DataStoreError)
     }
 
     static func reconcile(remoteModel: RemoteModel,
@@ -29,13 +28,21 @@ struct RemoteSyncReconciler {
         }
 
         guard let localMetadata = localMetadata else {
-            return .applyRemoteModel(remoteModel)
+            if remoteModel.syncMetadata.deleted {
+                return .dropRemoteModel(remoteModel.model.modelName)
+            } else {
+                return .applyRemoteModel(remoteModel, .create)
+            }
         }
 
         // Technically, we should never receive a subscription for a version we already have, but we'll be defensive
         // and make this check include the current version
         if remoteModel.syncMetadata.version >= localMetadata.version {
-            return .applyRemoteModel(remoteModel)
+            if remoteModel.syncMetadata.deleted {
+                return .applyRemoteModel(remoteModel, .delete)
+            } else {
+                return .applyRemoteModel(remoteModel, .update)
+            }
         }
 
         return .dropRemoteModel(remoteModel.model.modelName)

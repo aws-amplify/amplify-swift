@@ -100,8 +100,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         case .notifyingDropped(let modelName):
             notifyDropped(modelName: modelName)
 
-        case .notifying(let savedModel, let existsLocally):
-            notify(savedModel: savedModel, existsLocally: existsLocally)
+        case .notifying(let savedModel, let mutationType):
+            notify(savedModel: savedModel, mutationType: mutationType)
 
         case .inError(let error):
             // Maybe we have to notify the Hub?
@@ -189,12 +189,10 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     /// - dropped
     func execute(disposition: RemoteSyncReconciler.Disposition) {
         switch disposition {
-        case .applyRemoteModel(let remoteModel):
-            apply(remoteModel: remoteModel)
+        case .applyRemoteModel(let remoteModel, let mutationType):
+            apply(remoteModel: remoteModel, mutationType: mutationType)
         case .dropRemoteModel(let modelName):
             stateMachine.notify(action: .dropped(modelName: modelName))
-        case .error(let dataStoreError):
-            stateMachine.notify(action: .errored(dataStoreError))
         }
     }
 
@@ -202,7 +200,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     /// delete methods, which eventually notify with:
     /// - applied
     /// - errored
-    private func apply(remoteModel: RemoteModel) {
+    private func apply(remoteModel: RemoteModel, mutationType: MutationEvent.MutationType) {
         if log.logLevel == .verbose {
             log.verbose("\(#function): remoteModel")
         }
@@ -218,15 +216,17 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         }
 
         // TODO: Wrap this in a transaction
-        if remoteModel.syncMetadata.deleted {
+        if mutationType == .delete {
             saveDeleteMutation(storageAdapter: storageAdapter, remoteModel: remoteModel)
         } else {
-            saveCreateOrUpdateMutation(storageAdapter: storageAdapter, remoteModel: remoteModel)
+            saveCreateOrUpdateMutation(storageAdapter: storageAdapter,
+                                       remoteModel: remoteModel,
+                                       mutationType: mutationType)
         }
-
     }
 
-    private func saveDeleteMutation(storageAdapter: StorageEngineAdapter, remoteModel: RemoteModel) {
+    private func saveDeleteMutation(storageAdapter: StorageEngineAdapter,
+                                    remoteModel: RemoteModel) {
         log.verbose(#function)
 
         guard let modelType = ModelRegistry.modelType(from: modelSchema.name) else {
@@ -247,12 +247,16 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 let errorAction = Action.errored(dataStoreError)
                 self.stateMachine.notify(action: errorAction)
             case .success:
-                self.saveMetadata(storageAdapter: storageAdapter, inProcessModel: remoteModel)
+                self.saveMetadata(storageAdapter: storageAdapter,
+                                  inProcessModel: remoteModel,
+                                  mutationType: .delete)
             }
         }
     }
 
-    private func saveCreateOrUpdateMutation(storageAdapter: StorageEngineAdapter, remoteModel: RemoteModel) {
+    private func saveCreateOrUpdateMutation(storageAdapter: StorageEngineAdapter,
+                                            remoteModel: RemoteModel,
+                                            mutationType: MutationEvent.MutationType) {
         log.verbose(#function)
         storageAdapter.save(untypedModel: remoteModel.model.instance) { response in
             if self.log.logLevel == .debug {
@@ -271,25 +275,18 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                     return
                 }
                 let inProcessModel = MutationSync(model: anyModel, syncMetadata: remoteModel.syncMetadata)
-                self.saveMetadata(storageAdapter: storageAdapter, inProcessModel: inProcessModel)
+                self.saveMetadata(storageAdapter: storageAdapter,
+                                  inProcessModel: inProcessModel,
+                                  mutationType: mutationType)
             }
         }
     }
 
     private func saveMetadata(storageAdapter: StorageEngineAdapter,
-                              inProcessModel: AppliedModel) {
+                              inProcessModel: AppliedModel,
+                              mutationType: MutationEvent.MutationType) {
         log.verbose(#function)
 
-        /// Do a local metadata query before saving to check if the `AppliedModel` is of `create` or
-        /// `update` MutationType from the perspective of the local store
-        let existsLocally: Bool
-        do {
-            let localMetadata = try storageAdapter.queryMutationSyncMetadata(for: remoteModel.model.id)
-            existsLocally = localMetadata != nil
-        } catch {
-            log.error("Failed to query for sync metadata")
-            return
-        }
         storageAdapter.save(remoteModel.syncMetadata, condition: nil) { result in
             if self.log.logLevel == .debug {
                 self.log.debug("save metadata: \(self.stopwatch.lap())s")
@@ -300,7 +297,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 self.stateMachine.notify(action: errorAction)
             case .success(let syncMetadata):
                 let appliedModel = MutationSync(model: inProcessModel.model, syncMetadata: syncMetadata)
-                self.stateMachine.notify(action: .applied(appliedModel, existsLocally: existsLocally))
+                self.stateMachine.notify(action: .applied(appliedModel, mutationType: mutationType))
             }
         }
     }
@@ -313,23 +310,14 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     /// Responder method for `notifying`. Notify actions:
     /// - notified
     func notify(savedModel: AppliedModel,
-                existsLocally: Bool) {
+                mutationType: MutationEvent.MutationType) {
         log.verbose(#function)
 
         guard !isCancelled else {
             log.verbose("\(#function) - cancelled, aborting")
             return
         }
-
-        let mutationType: MutationEvent.MutationType
         let version = savedModel.syncMetadata.version
-        if savedModel.syncMetadata.deleted {
-            mutationType = .delete
-        } else if !existsLocally {
-            mutationType = .create
-        } else {
-            mutationType = .update
-        }
 
         // TODO: Dispatch/notify error if we can't erase to any model? Would imply an error in JSON decoding,
         // which shouldn't be possible this late in the process. Possibly notify global conflict/error handler?

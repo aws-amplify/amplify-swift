@@ -34,8 +34,8 @@ extension ReconcileAndLocalSaveOperation {
             case (.notifyingDropped, .notified):
                 return .finished
 
-            case (.executing, .applied(let savedModel, let existsLocally)):
-                return .notifying(savedModel, existsLocally)
+            case (.executing, .applied(let savedModel, let mutationType)):
+                return .notifying(savedModel, mutationType)
 
             case (.notifying, .notified):
                 return .finished
