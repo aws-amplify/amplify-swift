@@ -13,19 +13,19 @@ extension ReconcileAndLocalSaveOperation {
     /// Actions are declarative, they say what I just did
     enum Action {
         /// Operation has been started by the queue
-        case started(RemoteModel)
+        case started([RemoteModel])
 
         /// Operation has retrieved pending mutations
-        case queriedPendingMutations(RemoteModel, [MutationEvent])
+        case queriedPendingMutations([RemoteModel], [MutationEvent])
 
         /// Operation has reconciled remote model with pending mutations
-        case reconciledWithPendingMutations(RemoteModel)
+        case reconciledWithPendingMutations([RemoteModel])
 
         /// Operation has retrieved local metadata
-        case queriedLocalMetadata(RemoteModel, LocalMetadata?)
+        case queriedLocalMetadata([RemoteModel], [LocalMetadata])
 
         /// Operation has reconciled the local metadata to apply the remote model.
-        case reconciledAsApply(RemoteModel, MutationEvent.MutationType)
+        case reconciledAsApply(RemoteSyncReconciler.Disposition)
 
         /// Operation has applied the incoming RemoteModel to the local database per the reconciled disposition. This
         /// could result in either a save to the local database, or a delete from the local database.

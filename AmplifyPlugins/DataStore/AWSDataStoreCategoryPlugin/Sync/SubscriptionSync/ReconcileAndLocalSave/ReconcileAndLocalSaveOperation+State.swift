@@ -16,19 +16,19 @@ extension ReconcileAndLocalSaveOperation {
         case waiting
 
         /// Querying the pending mutations database
-        case queryingPendingMutations(RemoteModel)
+        case queryingPendingMutations([RemoteModel])
 
         /// Reconciling remote models against pending mutations
-        case reconcilingWithPendingMutations(RemoteModel, [MutationEvent])
+        case reconcilingWithPendingMutations([RemoteModel], [MutationEvent])
 
         /// Querying the local metadata database
-        case queryingLocalMetadata(RemoteModel)
+        case queryingLocalMetadata([RemoteModel])
 
         /// Reconcile against local metadata
-        case reconcilingWithLocalMetadata(RemoteModel, LocalMetadata?)
+        case reconcilingWithLocalMetadata([RemoteModel], [LocalMetadata])
 
         /// Applying the remote model
-        case applyingRemoteModel(RemoteModel, MutationEvent.MutationType)
+        case applyingRemoteModels(RemoteSyncReconciler.Disposition)
 
         /// Notifying that the model was dropped
         case notifyingDropped(String)

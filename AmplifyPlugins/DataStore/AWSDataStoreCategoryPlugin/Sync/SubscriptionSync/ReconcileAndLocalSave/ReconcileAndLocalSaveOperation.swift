@@ -32,7 +32,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
     private weak var storageAdapter: StorageEngineAdapter?
     private let stateMachine: StateMachine<State, Action>
-    private let remoteModel: RemoteModel
+    private let remoteModels: [RemoteModel]
     private let modelSchema: ModelSchema
     private let stopwatch: Stopwatch
     private var stateMachineSink: AnyCancellable?
@@ -43,30 +43,20 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     }
 
     init(modelSchema: ModelSchema,
-         remoteModel: RemoteModel,
+         remoteModels: [RemoteModel],
          storageAdapter: StorageEngineAdapter?,
          stateMachine: StateMachine<State, Action>? = nil) {
         self.modelSchema = modelSchema
-        self.remoteModel = remoteModel
+        self.remoteModels = remoteModels
         self.storageAdapter = storageAdapter
         self.stopwatch = Stopwatch()
+
+        self.mutationEventPublisher = PassthroughSubject<ReconcileAndLocalSaveOperationEvent, DataStoreError>()
         self.stateMachine = stateMachine ?? StateMachine(initialState: .waiting,
                                                          resolver: Resolver.resolve(currentState:action:))
-        self.mutationEventPublisher = PassthroughSubject<ReconcileAndLocalSaveOperationEvent, DataStoreError>()
-
         super.init()
 
-        self.stateMachineSink = self.stateMachine
-            .$state
-            .sink { [weak self] newState in
-                guard let self = self else {
-                    return
-                }
-                self.log.verbose("New state: \(newState)")
-                self.workQueue.async {
-                    self.respond(to: newState)
-                }
-        }
+        self.stateMachine.responder = responder
     }
 
     override func main() {
@@ -76,32 +66,44 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             return
         }
 
+        guard let storageAdapter = storageAdapter else {
+            stateMachine.respond(action: .errored(DataStoreError.nilStorageAdapter()))
+            return
+        }
+
         stopwatch.start()
-        stateMachine.notify(action: .started(remoteModel))
+        do {
+            try storageAdapter.transaction {
+                stateMachine.respond(action: .started(remoteModels))
+            }
+        } catch {
+            let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
+            stateMachine.respond(action: .errored(dataStoreError))
+        }
     }
 
     /// Listens to incoming state changes and invokes the appropriate asynchronous methods in response.
-    func respond(to newState: State) {
+    func responder(to newState: State) {
         log.verbose("\(#function): \(newState)")
 
         switch newState {
         case .waiting:
             break
 
-        case .queryingPendingMutations(let remoteModel):
-            queryPendingMutations(remoteModel: remoteModel)
+        case .queryingPendingMutations(let remoteModels):
+            queryPendingMutations(remoteModels: remoteModels)
 
-        case .reconcilingWithPendingMutations(let remoteModel, let pendingMutations):
-            reconcile(remoteModel, pendingMutations: pendingMutations)
+        case .reconcilingWithPendingMutations(let remoteModels, let pendingMutations):
+            reconcile(remoteModels, pendingMutations: pendingMutations)
 
-        case .queryingLocalMetadata(let remoteModel):
-            queryLocalMetadata(remoteModel: remoteModel)
+        case .queryingLocalMetadata(let remoteModels):
+            queryLocalMetadata(remoteModels: remoteModels)
 
-        case .reconcilingWithLocalMetadata(let remoteModel, let localMetadata):
-            reconcile(remoteModel, localMetadata: localMetadata)
+        case .reconcilingWithLocalMetadata(let remoteModel, let localMetadatas):
+            reconcile(remoteModel, localMetadatas: localMetadatas)
 
-        case .applyingRemoteModel(let remoteModel, let mutationType):
-            applyRemoteModel(remoteModel: remoteModel, mutationType: mutationType)
+        case .applyingRemoteModels(let disposition):
+            applyRemoteModels(disposition: disposition)
 
         case .notifyingDropped(let modelName):
             notifyDropped(modelName: modelName)
@@ -113,22 +115,20 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             // Maybe we have to notify the Hub?
             log.error(error: error)
             notifyFinished()
-            finish()
 
         case .finished:
             // Maybe we have to notify the Hub?
-            notifyFinished()
             if log.logLevel == .debug {
                 log.debug("total time: \(stopwatch.stop())s")
             }
-            finish()
+            notifyFinished()
         }
 
     }
 
     // MARK: - Responder methods
 
-    func queryPendingMutations(remoteModel: RemoteModel) {
+    func queryPendingMutations(remoteModels: [RemoteModel]) {
         log.verbose(#function)
         guard !isCancelled else {
             log.verbose("\(#function) - cancelled, aborting")
@@ -136,76 +136,98 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         }
 
         guard let storageAdapter = storageAdapter else {
-            stateMachine.notify(action: .errored(DataStoreError.nilStorageAdapter()))
+            stateMachine.respond(action: .errored(DataStoreError.nilStorageAdapter()))
             return
         }
 
-        MutationEvent.pendingMutationEvents(forModelId: remoteModel.model.id,
-                                            storageAdapter: storageAdapter) { result in
-            if log.logLevel == .debug {
-                log.debug("query pending mutations: \(stopwatch.lap())s")
-            }
+        guard !remoteModels.isEmpty else {
+            // TODO state transition what which action? "finished"
+            notifyFinished()
+            return
+        }
+        let remoteModelIds = remoteModels.map { remoteModel in
+            remoteModel.model.id
+        }
 
+        MutationEvent.pendingMutationEvents(forModelIds: remoteModelIds,
+                                            storageAdapter: storageAdapter) { result in
             switch result {
             case .failure(let dataStoreError):
-                stateMachine.notify(action: .errored(dataStoreError))
+                stateMachine.respond(action: .errored(dataStoreError))
                 return
             case .success(let mutationEvents):
-                stateMachine.notify(action: .queriedPendingMutations(remoteModel, mutationEvents))
+                stateMachine.respond(action: .queriedPendingMutations(remoteModels, mutationEvents))
             }
         }
     }
 
-    func reconcile(_ remoteModel: RemoteModel, pendingMutations: [MutationEvent]) {
-        if let remoteModelToApply = RemoteSyncReconciler.reoncile(remoteModel,
-                                                                  pendingMutations: pendingMutations) {
-            stateMachine.notify(action: .reconciledWithPendingMutations(remoteModelToApply))
-        } else {
-            stateMachine.notify(action: .dropped(modelName: remoteModel.model.modelName))
+    func reconcile(_ remoteModels: [RemoteModel], pendingMutations: [MutationEvent]) {
+        guard let remoteModel = remoteModels.first else {
+            notifyFinished()
+            return
         }
+
+        let remoteModelsToApply = RemoteSyncReconciler.reconcile(remoteModels,
+                                                                 pendingMutations: pendingMutations)
+
+        for _ in 0 ..< (remoteModels.count - remoteModelsToApply.count) {
+            mutationEventPublisher.send(.mutationEventDropped(modelName: remoteModel.model.modelName))
+        }
+
+        stateMachine.respond(action: .reconciledWithPendingMutations(remoteModelsToApply))
     }
 
-    func queryLocalMetadata(remoteModel: RemoteModel) {
-        log.verbose("query: \(remoteModel)")
+    func queryLocalMetadata(remoteModels: [RemoteModel]) {
         guard !isCancelled else {
             log.info("\(#function) - cancelled, aborting")
             return
         }
 
-        guard let storageAdapter = storageAdapter else {
-            stateMachine.notify(action: .errored(DataStoreError.nilStorageAdapter()))
+        guard let remoteModel = remoteModels.first else {
+            notifyFinished()
             return
         }
 
-        let localMetadata: MutationSyncMetadata?
+        guard let storageAdapter = storageAdapter else {
+            stateMachine.respond(action: .errored(DataStoreError.nilStorageAdapter()))
+            return
+        }
+
+        var localMetadatas = [LocalMetadata]()
+        let remoteModelIds = remoteModels.map { remoteModel in
+            remoteModel.model.id
+        }
+        let maxNumberOfPredicates = 950
+        let chunkedModelIdsArr = remoteModelIds.chunked(into: maxNumberOfPredicates)
         do {
-            localMetadata = try storageAdapter.queryMutationSyncMetadata(for: remoteModel.model.id)
-            if log.logLevel == .debug {
-                log.debug("query local metadata: \(stopwatch.lap())s")
+            for chunkedModelIds in chunkedModelIdsArr {
+                localMetadatas.append(
+                    contentsOf: try storageAdapter.queryMutationSyncMetadata(forModelIds: chunkedModelIds))
             }
         } catch {
-            stateMachine.notify(action: .errored(DataStoreError(error: error)))
+            stateMachine.respond(action: .errored(DataStoreError(error: error)))
             return
         }
-        stateMachine.notify(action: .queriedLocalMetadata(remoteModel, localMetadata))
+
+        stateMachine.respond(action: .queriedLocalMetadata(remoteModels, localMetadatas))
     }
 
-    func reconcile(_ remoteModel: RemoteModel, localMetadata: MutationSyncMetadata?) {
-        let disposition = RemoteSyncReconciler.reconcile(remoteModel: remoteModel,
-                                                                   to: localMetadata)
-        switch disposition {
-        case .applyRemoteModel(let remoteModel, let mutationType):
-            stateMachine.notify(action: .reconciledAsApply(remoteModel, mutationType))
-        case .dropRemoteModel(let modelName):
-            stateMachine.notify(action: .dropped(modelName: modelName))
+    func reconcile(_ remoteModels: [RemoteModel], localMetadatas: [LocalMetadata]) {
+        guard let remoteModel = remoteModels.first else {
+            notifyFinished()
+            return
         }
+
+        let disposition = RemoteSyncReconciler.reconcile(remoteModels: remoteModels,
+                                                         localMetadatas: localMetadatas)
+        for _ in 0 ..< (remoteModels.count - disposition.totalCount) {
+            mutationEventPublisher.send(.mutationEventDropped(modelName: remoteModel.model.modelName))
+        }
+
+        stateMachine.respond(action: .reconciledAsApply(disposition))
     }
 
-    func applyRemoteModel(remoteModel: RemoteModel, mutationType: MutationEvent.MutationType) {
-        if log.logLevel == .verbose {
-            log.verbose("\(#function): remoteModel")
-        }
-
+    func applyRemoteModels(disposition: RemoteSyncReconciler.Disposition) {
         guard !isCancelled else {
             log.verbose("\(#function) - cancelled, aborting")
             return
@@ -216,23 +238,56 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             return
         }
 
-        // TODO: Wrap this in a transaction
-        if mutationType == .delete {
-            saveDeleteMutation(storageAdapter: storageAdapter, remoteModel: remoteModel)
-        } else {
+        let count = AtomicValue<Int>(initialValue: disposition.totalCount)
+        let saveMetadataCompletionBlock: DataStoreCallback<Void> = { result in
+            switch result {
+            case .success:
+                if count.decrement() == 0 {
+                    self.stateMachine.respond(action: .notified)
+                }
+            case .failure(let error):
+                self.stateMachine.respond(action: .errored(error))
+            }
+        }
+        let onSaveMutation: DataStoreCallback<(RemoteModel, MutationEvent.MutationType)> = { result in
+            switch result {
+            case .success((let remoteModel, let mutationType)):
+                self.saveMetadata(storageAdapter: storageAdapter,
+                                  inProcessModel: remoteModel,
+                                  mutationType: mutationType,
+                                  completion: saveMetadataCompletionBlock)
+            case .failure(let error):
+                self.stateMachine.respond(action: .errored(error))
+            }
+        }
+        for deleteModel in disposition.deleteModels {
+            saveDeleteMutation(storageAdapter: storageAdapter,
+                               remoteModel: deleteModel,
+                               completion: onSaveMutation)
+        }
+        for createModel in disposition.createModels {
             saveCreateOrUpdateMutation(storageAdapter: storageAdapter,
-                                       remoteModel: remoteModel,
-                                       mutationType: mutationType)
+                                       remoteModel: createModel,
+                                       mutationType: .create,
+                                       completion: onSaveMutation)
+        }
+        for updateModel in disposition.updateModels {
+            saveCreateOrUpdateMutation(storageAdapter: storageAdapter,
+                                       remoteModel: updateModel,
+                                       mutationType: .update,
+                                       completion: onSaveMutation)
         }
     }
 
     private func saveDeleteMutation(storageAdapter: StorageEngineAdapter,
-                                    remoteModel: RemoteModel) {
+                                    remoteModel: RemoteModel,
+                                    completion: @escaping
+                                        DataStoreCallback<(RemoteModel, MutationEvent.MutationType)>) {
         log.verbose(#function)
 
         guard let modelType = ModelRegistry.modelType(from: modelSchema.name) else {
             let error = DataStoreError.invalidModelName(modelSchema.name)
-            stateMachine.notify(action: .errored(error))
+            stateMachine.respond(action: .errored(error))
             return
         }
 
@@ -245,73 +300,64 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             }
             switch response {
             case .failure(let dataStoreError):
-                let errorAction = Action.errored(dataStoreError)
-                self.stateMachine.notify(action: errorAction)
+                completion(.failure(dataStoreError))
             case .success:
-                self.saveMetadata(storageAdapter: storageAdapter,
-                                  inProcessModel: remoteModel,
-                                  mutationType: .delete)
+                completion(.success((remoteModel, .delete)))
+
             }
         }
     }
 
     private func saveCreateOrUpdateMutation(storageAdapter: StorageEngineAdapter,
                                             remoteModel: RemoteModel,
-                                            mutationType: MutationEvent.MutationType) {
+                                            mutationType: MutationEvent.MutationType,
+                                            completion: @escaping
+                                                DataStoreCallback<(RemoteModel, MutationEvent.MutationType)>) {
         log.verbose(#function)
         storageAdapter.save(untypedModel: remoteModel.model.instance) { response in
-            if self.log.logLevel == .debug {
-                self.log.debug("save model: \(self.stopwatch.lap())s")
-            }
             switch response {
             case .failure(let dataStoreError):
-                let errorAction = Action.errored(dataStoreError)
-                self.stateMachine.notify(action: errorAction)
+                completion(.failure(dataStoreError))
             case .success(let savedModel):
                 let anyModel: AnyModel
                 do {
                     anyModel = try savedModel.eraseToAnyModel()
                 } catch {
-                    self.stateMachine.notify(action: .errored(DataStoreError(error: error)))
+                    let dataStoreError = DataStoreError(error: error)
+                    completion(.failure(dataStoreError))
                     return
                 }
                 let inProcessModel = MutationSync(model: anyModel, syncMetadata: remoteModel.syncMetadata)
-                self.saveMetadata(storageAdapter: storageAdapter,
-                                  inProcessModel: inProcessModel,
-                                  mutationType: mutationType)
+                completion(.success((inProcessModel, mutationType)))
             }
         }
     }
 
     private func saveMetadata(storageAdapter: StorageEngineAdapter,
                               inProcessModel: AppliedModel,
-                              mutationType: MutationEvent.MutationType) {
-        log.verbose(#function)
-
-        storageAdapter.save(remoteModel.syncMetadata, condition: nil) { result in
-            if self.log.logLevel == .debug {
-                self.log.debug("save metadata: \(self.stopwatch.lap())s")
-            }
+                              mutationType: MutationEvent.MutationType,
+                              completion: @escaping DataStoreCallback<Void>) {
+        storageAdapter.save(inProcessModel.syncMetadata, condition: nil) { result in
             switch result {
             case .failure(let dataStoreError):
-                let errorAction = Action.errored(dataStoreError)
-                self.stateMachine.notify(action: errorAction)
+                completion(.failure(dataStoreError))
             case .success(let syncMetadata):
                 let appliedModel = MutationSync(model: inProcessModel.model, syncMetadata: syncMetadata)
-                self.stateMachine.notify(action: .applied(appliedModel, mutationType))
+                self.notify(savedModel: appliedModel, mutationType: mutationType, completion: completion)
             }
         }
     }
 
     func notifyDropped(modelName: String) {
         mutationEventPublisher.send(.mutationEventDropped(modelName: modelName))
-        stateMachine.notify(action: .notified)
+        stateMachine.respond(action: .notified)
     }
 
     /// Responder method for `notifying`. Notify actions:
     /// - notified
     func notify(savedModel: AppliedModel,
-                mutationType: MutationEvent.MutationType) {
+                mutationType: MutationEvent.MutationType,
+                completion: DataStoreCallback<Void> = { _ in }) {
         log.verbose(#function)
 
         guard !isCancelled else {
@@ -338,11 +384,13 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
         mutationEventPublisher.send(.mutationEvent(mutationEvent))
 
-        stateMachine.notify(action: .notified)
+        //stateMachine.notify(action: .notified)
+        completion(.successfulVoid)
     }
 
     private func notifyFinished() {
         mutationEventPublisher.send(completion: .finished)
+        finish()
     }
 }
 

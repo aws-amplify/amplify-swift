@@ -12,12 +12,15 @@ import Foundation
 @available(iOS 13.0, *)
 class StateMachine<State, Action> {
     typealias Reducer = (State, Action) -> State
+    typealias Responder = (State) -> Void
 
     private let queue = DispatchQueue(label: "com.amazonaws.Amplify.StateMachine<\(State.self), \(Action.self)>",
                                       target: DispatchQueue.global())
 
     private var reducer: Reducer
+
     @Published var state: State
+    var responder: Responder?
 
     /// Creates a new state machine that resolves state transition with the specified reducer. Interested parties can
     /// monitor state transitions with the `$state` published property.
@@ -36,10 +39,26 @@ class StateMachine<State, Action> {
     /// state will be published to `state`, before the `notify` action returns.
     func notify(action: Action) {
         queue.sync {
-            log.verbose("Notifying: \(action)")
+            self.log.verbose("Notifying: \(action)")
             let newState = self.resolve(currentState: self.state, action: action)
             self.state = newState
         }
+    }
+
+    /// - Warning: This method is not thread safe because it will resolve the new state and
+    /// apply update the `state` to the new state in a non-atomic way.
+    ///
+    /// Call this method when you want to perform the state machine's `responder` closure with the new state resolved
+    /// from the current state and action.
+    func respond(action: Action) {
+        guard let responder = responder else {
+            log.error("Use of `StateMachine.respond` without an attached responder is a programming error.")
+            return
+        }
+        log.verbose("Responding: \(action)")
+        let newState = resolve(currentState: state, action: action)
+        state = newState
+        responder(newState)
     }
 
     /// Resolves `action` via `reducer`, updates `currentState` with the resolved State value.
