@@ -10,12 +10,20 @@ import AWSPluginsCore
 
 extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
+    /// Write data to the `DataStore`
+    ///
+    /// - Parameters
+    ///   - model: an instance of a model
+    ///   - condition: filters that can be used to match items in the DataStore
+    ///   - completion: A closure to handle result of this method
     public func save<M: Model>(_ model: M,
                                where condition: QueryPredicate? = nil,
                                completion: @escaping DataStoreCallback<M>) {
         save(model, modelSchema: model.schema, where: condition, completion: completion)
     }
 
+    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
+    ///   directly by host applications. The behavior of this may change without warning.
     public func save<M: Model>(_ model: M,
                                modelSchema: ModelSchema,
                                where condition: QueryPredicate? = nil,
@@ -60,6 +68,12 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         storageEngine.save(model, modelSchema: modelSchema, condition: condition, completion: publishingCompletion)
     }
 
+    /// Query data from local store
+    ///
+    /// - Parameters
+    ///   - modelType: the type of the model is queried against
+    ///   - id: a filter that allows to fetch a single item by its id
+    ///   - completion: A closure to handle result of this method
     public func query<M: Model>(_ modelType: M.Type,
                                 byId id: String,
                                 completion: DataStoreCallback<M?>) {
@@ -80,6 +94,14 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         }
     }
 
+    /// Query data from local store
+    ///
+    /// - Parameters
+    ///   - modelType: the type of the model instance is queried
+    ///   - predicate: filters that can be used to match items in the local store
+    ///   - sortInput: a parameter allows the sorting of result from local store
+    ///   - paginationInput: a parameter that allows pagination of local store
+    ///   - completion: A closure to handle result of this method
     public func query<M: Model>(_ modelType: M.Type,
                                 where predicate: QueryPredicate? = nil,
                                 sort sortInput: QuerySortInput? = nil,
@@ -93,6 +115,8 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
               completion: completion)
     }
 
+    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
+    ///   directly by host applications. The behavior of this may change without warning.
     public func query<M: Model>(_ modelType: M.Type,
                                 modelSchema: ModelSchema,
                                 where predicate: QueryPredicate? = nil,
@@ -108,6 +132,13 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                             completion: completion)
     }
 
+    /// Delete data from local store
+    ///
+    /// - Parameters
+    ///   - modelType: the type of the model instance is removing
+    ///   - id: a filter that allows to delete a single item with its id
+    ///   - predicate: filters that can be used to match items in the local store
+    ///   - completion: A closure to handle result of this method
     public func delete<M: Model>(_ modelType: M.Type,
                                  withId id: String,
                                  where predicate: QueryPredicate? = nil,
@@ -115,6 +146,8 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         delete(modelType, modelSchema: modelType.schema, withId: id, where: predicate, completion: completion)
     }
 
+    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
+    ///   directly by host applications. The behavior of this may change without warning.
     public func delete<M: Model>(_ modelType: M.Type,
                                  modelSchema: ModelSchema,
                                  withId id: String,
@@ -126,12 +159,20 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         }
     }
 
+    /// Delete data from local store
+    ///
+    /// - Parameters
+    ///   - model: an instance of a model
+    ///   - predicate: filters that can be used to match items in the local store
+    ///   - completion: A closure to handle result of this method
     public func delete<M: Model>(_ model: M,
                                  where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) {
         delete(model, modelSchema: model.schema, where: predicate, completion: completion)
     }
 
+    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
+    ///   directly by host applications. The behavior of this may change without warning.
     public func delete<M: Model>(_ model: M,
                                  modelSchema: ModelSchema,
                                  where predicate: QueryPredicate? = nil,
@@ -145,12 +186,20 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         }
     }
 
+    /// Delete data from local store
+    ///
+    /// - Parameters
+    ///   - modelType: the type of the model instance is removing
+    ///   - predicate: filters that can be used to match items in the local store
+    ///   - completion: A closure to handle result of this method
     public func delete<M: Model>(_ modelType: M.Type,
                                  where predicate: QueryPredicate,
                                  completion: @escaping DataStoreCallback<Void>) {
         delete(modelType, modelSchema: modelType.schema, where: predicate, completion: completion)
     }
 
+    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
+    ///   directly by host applications. The behavior of this may change without warning.
     public func delete<M: Model>(_ modelType: M.Type,
                                  modelSchema: ModelSchema,
                                  where predicate: QueryPredicate,
@@ -173,10 +222,18 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                              completion: onCompletion)
     }
 
+    /// Start Synchronization of DataStore
+    ///
+    /// - Parameters
+    ///   - completion: A closure to handle result of this method
     public func start(completion: @escaping DataStoreCallback<Void>) {
         reinitStorageEngineIfNeeded(completion: completion)
     }
 
+    /// Stop Synchronization of DataStore
+    ///
+    /// - Parameters
+    ///   - completion: A closure to handle result of this method
     public func stop(completion: @escaping DataStoreCallback<Void>) {
         storageEngineInitSemaphore.wait()
         if storageEngine == nil {
@@ -195,6 +252,10 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         }
     }
 
+    /// Clear local data from DataStore
+    ///
+    /// - Parameters
+    ///   - completion: A closure to handle result of this method
     public func clear(completion: @escaping DataStoreCallback<Void>) {
         storageEngineInitSemaphore.wait()
         if storageEngine == nil {
