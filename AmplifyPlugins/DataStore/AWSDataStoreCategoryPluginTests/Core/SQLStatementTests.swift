@@ -31,9 +31,21 @@ class SQLStatementTests: XCTestCase {
         ModelRegistry.register(modelType: Book.self)
         ModelRegistry.register(modelType: BookAuthor.self)
 
+        // Reserved word
+        ModelRegistry.register(modelType: Transaction.self)
     }
 
     // MARK: - Create Table
+
+    func testCreateTableWithReservedWord() {
+        let statement = CreateTableStatement(modelSchema: Transaction.schema)
+        let expectedStatement = """
+        create table if not exists "Transaction" (
+          "id" text primary key not null
+        );
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
 
     /// - Given: a `Model` type
     /// - When:
@@ -44,7 +56,7 @@ class SQLStatementTests: XCTestCase {
     func testCreateTableFromSimpleModel() {
         let statement = CreateTableStatement(modelSchema: Post.schema)
         let expectedStatement = """
-        create table if not exists Post (
+        create table if not exists "Post" (
           "id" text primary key not null,
           "content" text not null,
           "createdAt" text not null,
@@ -68,7 +80,7 @@ class SQLStatementTests: XCTestCase {
     func testCreateTableFromModelWithForeignKey() {
         let statement = CreateTableStatement(modelSchema: Comment.schema)
         let expectedStatement = """
-        create table if not exists Comment (
+        create table if not exists "Comment" (
           "id" text primary key not null,
           "content" text not null,
           "createdAt" text not null,
@@ -91,7 +103,7 @@ class SQLStatementTests: XCTestCase {
     func testCreateTableFromModelWithOneToOneForeignKey() {
         let statement = CreateTableStatement(modelSchema: UserProfile.schema)
         let expectedStatement = """
-        create table if not exists UserProfile (
+        create table if not exists "UserProfile" (
           "id" text primary key not null,
           "accountId" text not null unique,
           foreign key("accountId") references UserAccount("id")
@@ -112,7 +124,7 @@ class SQLStatementTests: XCTestCase {
     func testCreateTableFromManyToManyAssociationModel() {
         let statement = CreateTableStatement(modelSchema: BookAuthor.schema)
         let expectedStatement = """
-        create table if not exists BookAuthor (
+        create table if not exists "BookAuthor" (
           "id" text primary key not null,
           "authorId" text not null,
           "bookId" text not null,

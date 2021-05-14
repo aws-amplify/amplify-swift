@@ -557,6 +557,8 @@
 		FA31529C233D645400DE78E7 /* StorageListRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA31529B233D645400DE78E7 /* StorageListRequest.swift */; };
 		FA31529E233D645800DE78E7 /* StorageUploadDataRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA31529D233D645800DE78E7 /* StorageUploadDataRequest.swift */; };
 		FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA31529F233D645A00DE78E7 /* StorageRemoveRequest.swift */; };
+		FA32C428264F35390057272F /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA32C427264F35390057272F /* Transaction.swift */; };
+		FA32C42A264F35420057272F /* Transaction+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA32C429264F35410057272F /* Transaction+Schema.swift */; };
 		FA47B8362350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA47B8352350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift */; };
 		FA47B8382350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA47B8372350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift */; };
 		FA4A955F239ADEBD008E876E /* MockResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4A955E239ADEBD008E876E /* MockResponder.swift */; };
@@ -1524,6 +1526,8 @@
 		FA31529D233D645800DE78E7 /* StorageUploadDataRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageUploadDataRequest.swift; sourceTree = "<group>"; };
 		FA31529F233D645A00DE78E7 /* StorageRemoveRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageRemoveRequest.swift; sourceTree = "<group>"; };
 		FA317107232AE8DF009BC140 /* SerialDispatcherPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialDispatcherPerformanceTests.swift; sourceTree = "<group>"; };
+		FA32C427264F35390057272F /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
+		FA32C429264F35410057272F /* Transaction+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Transaction+Schema.swift"; sourceTree = "<group>"; };
 		FA47B8352350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUnsubscribeOperationTests.swift; sourceTree = "<group>"; };
 		FA47B8372350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUnsubscribeHubListenToOperationTests.swift; sourceTree = "<group>"; };
 		FA4A955E239ADEBD008E876E /* MockResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockResponder.swift; sourceTree = "<group>"; };
@@ -2921,17 +2925,14 @@
 		B952182D237E21B900F53237 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				B952182F237E21B900F53237 /* schema.graphql */,
 				FAF512AD23986791001ADF4E /* AmplifyModels.swift */,
 				214F49CB24898E8400DA616C /* Article.swift */,
 				214F49CC24898E8500DA616C /* Article+Schema.swift */,
-				B9FAA10C23878BD6009414B4 /* Associations */,
-				217D5E992577F95D009F0639 /* Collection */,
 				B9521830237E21B900F53237 /* Comment.swift */,
 				B952182E237E21B900F53237 /* Comment+Schema.swift */,
 				21AD4255249BFFDF0016FE95 /* DeprecatedTodo.swift */,
-				6BE9D73025A67F5A00AB5C9A /* M2MPostEditorUser */,
 				FAA2E8BB239FFC7700E420EA /* MockModels.swift */,
-				216E45E9248E91420035E3CE /* NonModel */,
 				6BEE08222533D30800133961 /* OGCScenarioBMGroupPost.swift */,
 				6BEE08232533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift */,
 				6BEE081B2533CCFA00133961 /* OGCScenarioBPost.swift */,
@@ -2942,22 +2943,26 @@
 				B9AA09F02473CA29000E6FBB /* PostStatus.swift */,
 				6B597A092565D3E50038C3E2 /* QPredGen.swift */,
 				6B597A082565D3E40038C3E2 /* QPredGen+Schema.swift */,
-				6B7743D625906F7E001469F5 /* Restaurant */,
-				21A9051E2616442000EC141D /* Scalar */,
-				6B9F7C542526864800F1F71C /* ScenarioATest6Post.swift */,
-				6B9F7C532526864800F1F71C /* ScenarioATest6Post+Schema.swift */,
 				762167CB261542F70033FCD2 /* Record.swift */,
 				762167D42615435C0033FCD2 /* Record+Schema.swift */,
 				762C978426210F6400798FA3 /* RecordCover.swift */,
 				762C978D26210FF100798FA3 /* RecordCover+Schema.swift */,
-				B952182F237E21B900F53237 /* schema.graphql */,
-				6BE9D6E725A6620B00AB5C9A /* TeamProject */,
+				6B9F7C542526864800F1F71C /* ScenarioATest6Post.swift */,
+				6B9F7C532526864800F1F71C /* ScenarioATest6Post+Schema.swift */,
 				214F49742486D8A200DA616C /* User.swift */,
 				214F49752486D8A200DA616C /* User+Schema.swift */,
 				214F49762486D8A200DA616C /* UserFollowers.swift */,
 				214F49712486D8A100DA616C /* UserFollowers+Schema.swift */,
 				214F49722486D8A200DA616C /* UserFollowing.swift */,
 				214F49732486D8A200DA616C /* UserFollowing+Schema.swift */,
+				B9FAA10C23878BD6009414B4 /* Associations */,
+				217D5E992577F95D009F0639 /* Collection */,
+				6BE9D73025A67F5A00AB5C9A /* M2MPostEditorUser */,
+				216E45E9248E91420035E3CE /* NonModel */,
+				FA32C42B264F35480057272F /* ReservedWords */,
+				6B7743D625906F7E001469F5 /* Restaurant */,
+				21A9051E2616442000EC141D /* Scalar */,
+				6BE9D6E725A6620B00AB5C9A /* TeamProject */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -3229,6 +3234,15 @@
 			);
 			name = Request;
 			path = Operation/Request;
+			sourceTree = "<group>";
+		};
+		FA32C42B264F35480057272F /* ReservedWords */ = {
+			isa = PBXGroup;
+			children = (
+				FA32C427264F35390057272F /* Transaction.swift */,
+				FA32C429264F35410057272F /* Transaction+Schema.swift */,
+			);
+			path = ReservedWords;
 			sourceTree = "<group>";
 		};
 		FA4E730F23282A3D003B8EEB /* Internal */ = {
@@ -5374,6 +5388,7 @@
 				FACA361D2327FC84000E74F6 /* MockAPICategoryPlugin.swift in Sources */,
 				21A905602616484A00EC141D /* Scalar+Equatable.swift in Sources */,
 				B9FAA11023878C5E009414B4 /* UserProfile.swift in Sources */,
+				FA32C42A264F35420057272F /* Transaction+Schema.swift in Sources */,
 				21A905322616446F00EC141D /* ListStringContainer+Schema.swift in Sources */,
 				6BE9D6EE25A6622000AB5C9A /* Team.swift in Sources */,
 				B9AA09F12473CA29000E6FBB /* PostStatus.swift in Sources */,
@@ -5413,6 +5428,7 @@
 				21FDBB622587D7A30086FCDC /* Post6.swift in Sources */,
 				217D5EBA2577F9DF009F0639 /* Post4+Schema.swift in Sources */,
 				21A7C90225ACC4D1004355D6 /* MockDataStoreResponders.swift in Sources */,
+				FA32C428264F35390057272F /* Transaction.swift in Sources */,
 				217D5EBD2577F9DF009F0639 /* Post5.swift in Sources */,
 				6B7743E425906FD3001469F5 /* Restaurant.swift in Sources */,
 				FA1846EE23998E44009B9D01 /* MockAPIResponders.swift in Sources */,
