@@ -62,7 +62,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
                     XCTFail("Failed to cast payload data as SyncQueriesStartedEvent")
                     return
                 }
-                XCTAssertEqual(syncQueriesStartedEvent.models.count, 16)
+                XCTAssertEqual(syncQueriesStartedEvent.models.count, 21)
                 syncQueriesStartedReceived.fulfill()
             }
 

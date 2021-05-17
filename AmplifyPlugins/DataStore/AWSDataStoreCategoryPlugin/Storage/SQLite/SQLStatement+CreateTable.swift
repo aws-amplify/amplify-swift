@@ -19,7 +19,7 @@ struct CreateTableStatement: SQLStatement {
 
     var stringValue: String {
         let name = modelSchema.name
-        var statement = "create table if not exists \(name) (\n"
+        var statement = #"create table if not exists "\#(name)" (\#n"#
 
         let columns = modelSchema.columns
         let foreignKeys = modelSchema.foreignKeys
