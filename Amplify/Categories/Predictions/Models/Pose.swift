@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// Struct describing the pose of a person identified in an image
 public struct Pose {
     public let pitch: Double
     public let roll: Double

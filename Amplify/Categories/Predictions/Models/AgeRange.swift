@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Struct describing age range (low, high)
 public struct AgeRange {
     public let low: Int
     public let high: Int

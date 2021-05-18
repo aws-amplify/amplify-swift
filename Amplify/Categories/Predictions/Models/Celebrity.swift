@@ -8,6 +8,8 @@
 import Foundation
 import CoreGraphics
 
+/// Struct holding information about a celebrity, its bounding box
+/// and information about different facial features
 public struct Celebrity {
     public let metadata: CelebrityMetadata
     public let boundingBox: CGRect
@@ -20,6 +22,7 @@ public struct Celebrity {
     }
 }
 
+/// Struct holding information about a celebrity
 public struct CelebrityMetadata {
     public let name: String
     public let identifier: String

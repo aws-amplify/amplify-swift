@@ -7,6 +7,7 @@
 
 import CoreGraphics
 
+/// Struct describing bounding box used to locate objects in an image
 public struct BoundedKeyValue {
     public let key: String
     public let value: String

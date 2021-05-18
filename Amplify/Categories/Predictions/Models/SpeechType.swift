@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// enum describing different speech types
 public enum SpeechType: String {
     case adjective
     case adposition

@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// A struct describing text identified in an image
 public struct IdentifyTextResult: IdentifyResult {
     public let fullText: String?
     public let words: [IdentifiedWord]?

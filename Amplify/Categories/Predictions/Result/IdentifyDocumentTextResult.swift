@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// A struct describing text identified in a document
 public struct IdentifyDocumentTextResult: IdentifyResult {
 
     public let fullText: String

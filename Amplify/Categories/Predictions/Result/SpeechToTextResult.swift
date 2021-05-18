@@ -8,7 +8,8 @@
 import Foundation
 
 public struct SpeechToTextResult: ConvertResult {
-     public let transcription: String
+    /// Resulting string from speech to text conversion
+    public let transcription: String
 
     public init(transcription: String) {
         self.transcription = transcription

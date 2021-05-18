@@ -7,6 +7,7 @@
 
 import CoreGraphics
 
+/// struct describing a word containing text in an image
 public struct IdentifiedWord: IdentifiedText {
     public let text: String
     public let boundingBox: CGRect

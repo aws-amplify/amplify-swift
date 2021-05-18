@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// enum describing different criteria for detection in an image
 public enum IdentifyAction {
     case detectCelebrity
     case detectLabels(LabelType)

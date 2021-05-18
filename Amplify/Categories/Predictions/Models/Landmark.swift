@@ -7,6 +7,7 @@
 
 import CoreGraphics
 
+/// struct holding information about a facial feature
 public struct Landmark {
     public let type: LandmarkType
     public let points: [CGPoint]

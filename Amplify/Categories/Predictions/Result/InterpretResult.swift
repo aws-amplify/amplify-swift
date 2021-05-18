@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// A struct describing result of the Interpret query
 public struct InterpretResult {
 
     public let keyPhrases: [KeyPhrase]?

@@ -7,6 +7,7 @@
 
 import CoreGraphics
 
+/// struct describing a line containing text in an image
 public struct IdentifiedLine: IdentifiedText {
 
     public let text: String

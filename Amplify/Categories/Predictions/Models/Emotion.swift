@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// Struct holding information about `Emotion` with confidence value
 public struct Emotion {
     public let emotion: EmotionType
     public let confidence: Double

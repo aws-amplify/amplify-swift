@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// enum describing different emotions
 public enum EmotionType {
     case angry
     case calm

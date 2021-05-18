@@ -8,7 +8,9 @@
 import Foundation
 
 public struct TextToSpeechResult: ConvertResult {
-     public let audioData: Data
+
+    /// Resulting audio from text to speech conversion
+    public let audioData: Data
 
     public init(audioData: Data) {
         self.audioData = audioData

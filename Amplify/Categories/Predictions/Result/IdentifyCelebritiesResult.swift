@@ -6,6 +6,8 @@
 //
 
 public struct IdentifyCelebritiesResult: IdentifyResult {
+
+    /// List of `Celebrity` as part of Identify query
     public let celebrities: [Celebrity]
 
     public init(celebrities: [Celebrity]) {

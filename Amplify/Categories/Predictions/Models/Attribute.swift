@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Struct describing attribute of an entity with confidence value
 public struct Attribute {
     public let name: String
     public let value: Bool
@@ -19,6 +20,7 @@ public struct Attribute {
     }
 }
 
+/// Struct describing gender of an entity with confidence value
 public struct GenderAttribute {
     public var gender: GenderType
     public var confidence: Double

@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// struct describing a key phrase identified in a text
 public struct KeyPhrase {
 
     public let score: Float?

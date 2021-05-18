@@ -7,6 +7,7 @@
 
 import CoreGraphics
 
+/// A struct containing result for identifying objects in an image
 public struct IdentifyLabelsResult: IdentifyResult {
     public let labels: [Label]
     public let unsafeContent: Bool?
@@ -17,6 +18,7 @@ public struct IdentifyLabelsResult: IdentifyResult {
     }
 }
 
+/// A struct describing real world objects in an image
 public struct Label {
     public let name: String
     public let metadata: LabelMetadata?
