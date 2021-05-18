@@ -15,6 +15,6 @@ extension GraphQLRequest {
                                           variables: variables,
                                           responseType: responseType,
                                           decodePath: decodePath,
-                                          options: GraphQLOperationRequest.Options())
+                                          options: GraphQLOperationRequest.Options(authType: options?.authType))
     }
 }

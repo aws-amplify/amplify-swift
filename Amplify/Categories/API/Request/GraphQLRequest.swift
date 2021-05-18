@@ -46,7 +46,7 @@ public struct GraphQLRequest<R: Decodable> {
 
 public extension GraphQLRequest {
     struct Options {
-        let authType: Any?
+        public let authType: Any?
 
         public init(authType: Any?) {
             self.authType = authType

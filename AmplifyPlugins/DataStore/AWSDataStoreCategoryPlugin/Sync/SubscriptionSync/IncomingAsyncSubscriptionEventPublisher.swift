@@ -170,25 +170,32 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         valueListener: @escaping GraphQLSubscriptionOperation<Payload>.InProcessListener,
         completionListener: @escaping GraphQLSubscriptionOperation<Payload>.ResultListener
     ) -> GraphQLSubscriptionOperation<Payload> {
-
+        
+        var authTypes = authModeStrategy.authTypesFor(
+            schema: modelSchema,
+            operation: .read)
+        
         let request: GraphQLRequest<Payload>
         if modelSchema.hasAuthenticationRules,
             let _ = auth,
             case .success(let tokenString) = awsAuthService.getToken(),
             case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
-
             request = GraphQLRequest<Payload>.subscription(to: modelSchema,
                                                            subscriptionType: subscriptionType,
-                                                           claims: claims)
+                                                           claims: claims,
+                                                           authType: authTypes.next())
         } else if modelSchema.hasAuthenticationRules,
             let oidcAuthProvider = hasOIDCAuthProviderAvailable(api: api),
             case .success(let tokenString) = oidcAuthProvider.getLatestAuthToken(),
             case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
             request = GraphQLRequest<Payload>.subscription(to: modelSchema,
                                                            subscriptionType: subscriptionType,
-                                                           claims: claims)
+                                                           claims: claims,
+                                                           authType: authTypes.next())
         } else {
-            request = GraphQLRequest<Payload>.subscription(to: modelSchema, subscriptionType: subscriptionType)
+            request = GraphQLRequest<Payload>.subscription(to: modelSchema,
+                                                           subscriptionType: subscriptionType,
+                                                           authType: authTypes.next())
         }
 
         let operation = api.subscribe(request: request,

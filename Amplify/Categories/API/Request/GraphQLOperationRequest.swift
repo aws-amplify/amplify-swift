@@ -50,8 +50,10 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
 /// GraphQL Operation Request options extension
 public extension GraphQLOperationRequest {
     struct Options {
+        public let authType: Any?
 
-        /// Empty Initializer
-        public init() { }
+        public init(authType: Any? = nil) {
+            self.authType = authType
+        }
     }
 }

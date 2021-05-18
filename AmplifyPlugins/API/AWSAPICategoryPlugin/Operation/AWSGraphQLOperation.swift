@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Foundation
 
 final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
@@ -92,6 +93,10 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         // Create request
         let urlRequest = GraphQLOperationRequestUtils.constructRequest(with: endpointConfig.baseURL,
                                                                        requestPayload: requestPayload)
+        
+        if let authType = request.options.authType as? AWSAuthorizationType {
+            print("authType \(authType)")
+        }
 
         // Intercept request
         let finalRequest = requestInterceptors.reduce(urlRequest) { (request, interceptor) -> URLRequest in
