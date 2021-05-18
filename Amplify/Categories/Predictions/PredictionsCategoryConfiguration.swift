@@ -10,6 +10,7 @@ import Foundation
 public struct PredictionsCategoryConfiguration: CategoryConfiguration {
     public let plugins: [String: JSONValue]
 
+    /// Initialize `plugins` map
     public init(plugins: [String: JSONValue] = [:]) {
         self.plugins = plugins
     }

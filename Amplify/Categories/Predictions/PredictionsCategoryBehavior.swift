@@ -23,6 +23,7 @@ public protocol PredictionsCategoryBehavior {
                  options: PredictionsTranslateTextRequest.Options?,
                  listener: PredictionsTranslateTextOperation.ResultListener?) -> PredictionsTranslateTextOperation
 
+    /// Synthesize the text to audio
     /// - Parameter textToSpeech: The text to be synthesized to audio
     /// - Parameter listener: Triggered when the event occurs
     /// - Parameter options: Parameters to specific plugin behavior
@@ -31,6 +32,7 @@ public protocol PredictionsCategoryBehavior {
                  options: PredictionsTextToSpeechRequest.Options?,
                  listener: PredictionsTextToSpeechOperation.ResultListener?) -> PredictionsTextToSpeechOperation
 
+    /// Transcribe audio to text
     /// - Parameter speechToText: The url of the audio to be transcribed
     /// - Parameter listener: Triggered when the event occurs
     /// - Parameter options: Parameters to specific plugin behavior
@@ -39,7 +41,7 @@ public protocol PredictionsCategoryBehavior {
                  options: PredictionsSpeechToTextRequest.Options?,
                  listener: PredictionsSpeechToTextOperation.ResultListener?) -> PredictionsSpeechToTextOperation
 
-    /// Translate the text to the language specified.
+    /// Detect contents of an image based on `IdentifyAction`
     /// - Parameter type: The type of image detection you want to perform
     /// - Parameter image: The image you are sending
     /// - Parameter options: Parameters to specific plugin behavior
