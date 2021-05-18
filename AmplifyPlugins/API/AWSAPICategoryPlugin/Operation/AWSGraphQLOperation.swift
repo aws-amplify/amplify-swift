@@ -93,7 +93,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         // Create request
         let urlRequest = GraphQLOperationRequestUtils.constructRequest(with: endpointConfig.baseURL,
                                                                        requestPayload: requestPayload)
-        
+
         if let authType = request.options.authType as? AWSAuthorizationType {
             print("authType \(authType)")
         }

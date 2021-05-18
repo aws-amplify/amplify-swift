@@ -84,7 +84,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             finish()
             return
         }
-        
+
         if let authType = request.options.authType as? AWSAuthorizationType {
             print("authType \(authType)")
         }
