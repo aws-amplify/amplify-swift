@@ -8,7 +8,8 @@
 import Foundation
 import Amplify
 
-/// Decorate the GraphQLDocument with the value of `Model.Identifier` for a "delete" mutation with custom primary keys
+/// Decorate the GraphQLDocument with either a single id of `Model.Identifier`
+/// or with all fields part of a custom primary key for a "delete" mutation
 public struct ModelDeleteDecorator: ModelBasedGraphQLDocumentDecorator {
 
     private let model: Model
@@ -27,19 +28,17 @@ public struct ModelDeleteDecorator: ModelBasedGraphQLDocumentDecorator {
         var inputs = document.inputs
 
         if case .mutation = document.operationType {
+            var objectMap = [String: Any?]()
             if let customPrimaryKeys = modelSchema.customPrimaryIndexFields {
-                var objectMap = [String: Any?]()
-                let graphQLInput = model.graphQLInputForMutation(modelSchema)
                 for key in customPrimaryKeys {
-                    objectMap[key] = graphQLInput[key]
+                    objectMap[key] = model[key]
                 }
-                inputs["input"] = GraphQLDocumentInput(type: "\(document.name.pascalCased())Input!",
-                                                       value: .object(objectMap))
-
             } else {
-                inputs["input"] = GraphQLDocumentInput(type: "\(document.name.pascalCased())Input!",
-                                                       value: .object(["id": model.id]))
+                objectMap["id"] = model.id
             }
+
+            inputs["input"] = GraphQLDocumentInput(type: "\(document.name.pascalCased())Input!",
+                                                   value: .object(objectMap))
         } else if case .query = document.operationType {
             inputs["id"] = GraphQLDocumentInput(type: "ID!", value: .scalar(model.id))
         }
