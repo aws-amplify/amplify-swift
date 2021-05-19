@@ -29,9 +29,9 @@ public struct ModelDeleteDecorator: ModelBasedGraphQLDocumentDecorator {
         if case .mutation = document.operationType {
             if let customPrimaryKeys = modelSchema.customPrimaryIndexFields {
                 var objectMap = [String: Any?]()
-                let graphQLInput = model.graphQLInputForMutation(modelSchema)
+                // let graphQLInput = model.graphQLInputForMutation(modelSchema)
                 for key in customPrimaryKeys {
-                    objectMap[key] = graphQLInput[key]
+                    objectMap[key] = model[key]
                 }
                 inputs["input"] = GraphQLDocumentInput(type: "\(document.name.pascalCased())Input!",
                                                        value: .object(objectMap))
@@ -47,3 +47,84 @@ public struct ModelDeleteDecorator: ModelBasedGraphQLDocumentDecorator {
         return document.copy(inputs: inputs)
     }
 }
+
+// GraphQL Document
+// create
+/*
+ createMutation(input: CreateInput) {
+   createTodo {
+     orderid
+     id
+     email
+   }
+ }
+ variables = {
+    // all the fields
+    orderid: UUID
+    id =
+ }
+ */
+
+// update
+/*
+ updateMutation(input: UpdateInput) {
+   createTodo {
+     orderid
+     id
+     email
+   }
+ }
+ variables = {
+    // all the fields
+    orderid: UUID
+    id =
+ }
+ */
+
+
+// delete
+/*
+ deleteMutation(input: DeleteInput) {
+   createTodo {
+     orderid
+     id
+     email
+   }
+ }
+ variables = {
+    // default
+    id: 123
+ 
+    // custom primary 1
+    orderid: "123"
+ 
+    // custom primary 2
+    orderId
+    id
+ }
+ 
+ // query (get by id)
+  // to verify: Q. what is the id used for querying
+ # custom priamry 1
+ query MyQuery {
+   getBlog6(orderid: "")
+ }
+
+ #custom primary 2
+ query MyQuery {
+   getBlog6(orderid: "", id: "")
+ }
+ 
+ // list
+ listQuery
+ // possibly not much to do here
+ */
+
+
+
+
+
+
+
+
+

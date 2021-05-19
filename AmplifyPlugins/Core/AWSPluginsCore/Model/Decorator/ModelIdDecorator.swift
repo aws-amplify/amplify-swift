@@ -30,6 +30,15 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
             inputs["input"] = GraphQLDocumentInput(type: "\(document.name.pascalCased())Input!",
             value: .object(["id": id]))
         } else if case .query = document.operationType {
+            if let customPrimaryKeys = modelSchema.customPrimaryIndexFields {
+                
+
+                if let first = customPrimaryKeys.first {
+                    // Q. what is the type defiition? is it `\(first)!`
+                    inputs[first] = GraphQLDocumentInput(type: "ID!", value: .scalar(id))
+                }
+                
+            }
             inputs["id"] = GraphQLDocumentInput(type: "ID!", value: .scalar(id))
         }
 

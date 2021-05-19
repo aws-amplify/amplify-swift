@@ -30,10 +30,7 @@ class GraphQLGetQueryTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     ///     - it has variables containing `id`
     func testGetGraphQLQueryFromSimpleModel() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
-        documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
-        let document = documentBuilder.build()
+        // Arrange
         let expectedQueryDocument = """
         query GetPost($id: ID!) {
           getPost(id: $id) {
@@ -49,7 +46,18 @@ class GraphQLGetQueryTests: XCTestCase {
           }
         }
         """
+        
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
+        documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
+        
+        // Action
+        
+        let document = documentBuilder.build()
+        
         XCTAssertEqual(document.name, "getPost")
+        
+        
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         guard let variables = document.variables else {
             XCTFail("The document doesn't contain variables")
