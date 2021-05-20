@@ -28,6 +28,6 @@ protocol ModelReconciliationQueue {
     func start()
     func pause()
     func cancel()
-    func enqueue(_ remoteModel: MutationSync<AnyModel>)
+    func enqueue(_ remoteModels: [MutationSync<AnyModel>])
     var publisher: AnyPublisher<ModelReconciliationQueueEvent, DataStoreError> { get }
 }

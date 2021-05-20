@@ -50,7 +50,7 @@ class ReconcileAndSaveQueueTests: XCTestCase {
             }
         }
         let operation = ReconcileAndLocalSaveOperation(modelSchema: anyPostMutationSync.model.schema,
-                                                       remoteModel: anyPostMutationSync,
+                                                       remoteModels: [anyPostMutationSync],
                                                        storageAdapter: storageAdapter,
                                                        stateMachine: stateMachine)
         queue.addOperation(operation, modelName: Post.modelName)
@@ -78,7 +78,7 @@ class ReconcileAndSaveQueueTests: XCTestCase {
             }
         }
         let operation = ReconcileAndLocalSaveOperation(modelSchema: anyPostMutationSync.model.schema,
-                                                       remoteModel: anyPostMutationSync,
+                                                       remoteModels: [anyPostMutationSync],
                                                        storageAdapter: storageAdapter,
                                                        stateMachine: stateMachine)
         queue.addOperation(operation, modelName: Post.modelName)
@@ -107,7 +107,7 @@ class ReconcileAndSaveQueueTests: XCTestCase {
             }
         }
         let operation = ReconcileAndLocalSaveOperation(modelSchema: anyPostMutationSync.model.schema,
-                                                       remoteModel: anyPostMutationSync,
+                                                       remoteModels: [anyPostMutationSync],
                                                        storageAdapter: storageAdapter,
                                                        stateMachine: stateMachine)
         queue.addOperation(operation, modelName: Post.modelName)

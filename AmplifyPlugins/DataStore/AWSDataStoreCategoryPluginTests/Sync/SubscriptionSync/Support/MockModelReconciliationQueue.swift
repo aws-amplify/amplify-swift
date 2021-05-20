@@ -45,7 +45,7 @@ class MockModelReconciliationQueue: ModelReconciliationQueue {
         //no-op
     }
 
-    func enqueue(_ remoteModel: MutationSync<AnyModel>) {
+    func enqueue(_ remoteModels: [MutationSync<AnyModel>]) {
         //no-op
     }
 

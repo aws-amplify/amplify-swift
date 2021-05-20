@@ -289,12 +289,29 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func queryMutationSyncMetadata(for modelId: Model.Identifier) throws -> MutationSyncMetadata? {
+        let results = try queryMutationSyncMetadata(forModelIds: [modelId])
+        return try results.unique()
+    }
+
+    func queryMutationSyncMetadata(forModelIds modelIds: [Model.Identifier]) throws -> [MutationSyncMetadata] {
         let modelType = MutationSyncMetadata.self
-        let statement = SelectStatement(from: modelType.schema, predicate: field("id").eq(modelId))
-        let rows = try connection.prepare(statement.stringValue).run(statement.variables)
-        let result = try rows.convert(to: modelType,
-                                      using: statement)
-        return try result.unique()
+        let fields = MutationSyncMetadata.keys
+        var results = [MutationSyncMetadata]()
+        let maxNumberOfPredicates = 950
+        let chunkedModelIdsArr = modelIds.chunked(into: maxNumberOfPredicates)
+        for chunkedModelIds in chunkedModelIdsArr {
+            var queryPredicates: [QueryPredicateOperation] = []
+            for id in chunkedModelIds {
+                queryPredicates.append(QueryPredicateOperation(field: fields.id.stringValue, operator: .equals(id)))
+            }
+            let groupedQueryPredicates =  QueryPredicateGroup(type: .or, predicates: queryPredicates)
+            let statement = SelectStatement(from: modelType.schema, predicate: groupedQueryPredicates)
+            let rows = try connection.prepare(statement.stringValue).run(statement.variables)
+            let result = try rows.convert(to: modelType,
+                                          using: statement)
+            results.append(contentsOf: result)
+        }
+        return results
     }
 
     func queryModelSyncMetadata(for modelSchema: ModelSchema) throws -> ModelSyncMetadata? {

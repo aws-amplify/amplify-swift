@@ -270,7 +270,7 @@ class InitialSyncOperationTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
         reconciliationQueue.listeners.append { message in
             if message.hasPrefix("offer(_:)")
-                && message.contains("MutationSync<AnyModel>")
+                && message.contains("MutationSync<AWSPluginsCore.AnyModel>")
                 && message.contains(#"id: "1"#) {
                 itemSubmitted.fulfill()
             }

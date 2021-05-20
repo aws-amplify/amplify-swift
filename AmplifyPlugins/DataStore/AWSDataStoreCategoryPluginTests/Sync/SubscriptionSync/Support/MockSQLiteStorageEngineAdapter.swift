@@ -20,7 +20,9 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     var resultForSave: DataStoreResult<Model>?
 
     var resultForQueryMutationSyncMetadata: MutationSyncMetadata?
+    var resultForQueryMutationSyncMetadatas: [MutationSyncMetadata]
     var errorToThrowOnMutationSyncMetadata: DataStoreError?
+    var errorToThrowOnTransaction: DataStoreError?
 
     var shouldReturnErrorOnSaveMetadata: Bool
     var shouldReturnErrorOnDeleteMutation: Bool
@@ -31,6 +33,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     init() {
         self.shouldReturnErrorOnSaveMetadata = false
         self.shouldReturnErrorOnDeleteMutation = false
+        self.resultForQueryMutationSyncMetadatas = [MutationSyncMetadata]()
     }
 
     func setUp(modelSchemas: [ModelSchema]) throws {
@@ -47,6 +50,10 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         resultForQueryMutationSyncMetadata = mutationSyncMetadata
     }
 
+    func returnOnQueryMutationSyncMetadatas(_ mutationSyncMetadatas: [MutationSyncMetadata]) {
+        resultForQueryMutationSyncMetadatas = mutationSyncMetadatas
+    }
+
     func returnOnSave(dataStoreResult: DataStoreResult<Model>?) {
         resultForSave = dataStoreResult
     }
@@ -58,6 +65,10 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func throwOnQueryMutationSyncMetadata(error: DataStoreError) {
         errorToThrowOnMutationSyncMetadata = error
+    }
+
+    func throwOnTransaction(error: DataStoreError) {
+        errorToThrowOnTransaction = error
     }
 
     // MARK: - StorageEngineAdapter
@@ -194,13 +205,29 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         return resultForQueryMutationSyncMetadata
     }
 
+    func queryMutationSyncMetadata(forModelIds modelIds: [String]) throws -> [MutationSyncMetadata] {
+        if let responder = responders[.queryMutationSyncMetadatas] as? QueryMutationSyncMetadatasResponder {
+            return try responder.callback(modelIds)
+        }
+
+        if let err = errorToThrowOnMutationSyncMetadata {
+            errorToThrowOnMutationSyncMetadata = nil
+            throw err
+        }
+        return resultForQueryMutationSyncMetadatas
+    }
+
     func queryModelSyncMetadata(for modelSchema: ModelSchema) throws -> ModelSyncMetadata? {
         listenerForModelSyncMetadata?()
         return resultForQueryModelSyncMetadata
     }
 
     func transaction(_ basicClosure: () throws -> Void) throws {
-        XCTFail("Not expected to execute")
+        if let err = errorToThrowOnTransaction {
+            errorToThrowOnTransaction = nil
+            throw err
+        }
+        try basicClosure()
     }
     func clear(completion: @escaping DataStoreCallback<Void>) {
         XCTFail("Not expected to execute")

@@ -135,9 +135,14 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         incomingSubscriptionEventQueue.cancelAllOperations()
     }
 
-    func enqueue(_ remoteModel: MutationSync<AnyModel>) {
+    func enqueue(_ remoteModels: [MutationSync<AnyModel>]) {
+        guard let remoteModel = remoteModels.first else {
+            log.info("\(#function) skipping reconcilliation, no models to enqueue.")
+            return
+        }
+
         let reconcileOp = ReconcileAndLocalSaveOperation(modelSchema: modelSchema,
-                                                         remoteModel: remoteModel,
+                                                         remoteModels: remoteModels,
                                                          storageAdapter: storageAdapter)
         var reconcileAndLocalSaveOperationSink: AnyCancellable?
         reconcileAndLocalSaveOperationSink = reconcileOp.publisher.sink(receiveCompletion: { completion in
@@ -166,7 +171,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 }
             }
             incomingSubscriptionEventQueue.addOperation(CancelAwareBlockOperation {
-                self.enqueue(remoteModel)
+                self.enqueue([remoteModel])
             })
         case .connectionConnected:
             modelReconciliationQueueSubject.send(.connected(modelName: modelSchema.name))

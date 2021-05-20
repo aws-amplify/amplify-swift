@@ -564,4 +564,8 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
 
         _ = UserDefaults.removeObject(userDefaults)
     }
+
+    func testQueryMutationSyncMetadata() {
+        // TODO
+    }
 }
