@@ -85,6 +85,9 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
             let modelNames = syncableModelSchemas.map { $0.name }
             self.dispatchSyncQueriesStarted(for: modelNames)
+            if !syncableModelSchemas.containsAssociations() {
+                self.syncOperationQueue.maxConcurrentOperationCount = syncableModelSchemas.count
+            }
             self.syncOperationQueue.isSuspended = false
         }
     }

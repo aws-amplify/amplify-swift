@@ -182,4 +182,8 @@ extension Array where Element == ModelSchema {
         return sortedKeys.map { sortMap[$0]! }
     }
 
+    func containsAssociations() -> Bool {
+        // TODO: actually check for associations
+        return false
+    }
 }
