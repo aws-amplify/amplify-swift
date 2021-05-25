@@ -12,31 +12,38 @@ import Amplify
 import AppSyncRealTimeClient
 
 class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
+    private struct CacheKey: Hashable {
+        let apiName: String
+        let authType: AWSAuthorizationType?
+    }
 
     private let concurrencyQueue = DispatchQueue(label: "com.amazonaws.amplify.AWSSubscriptionConnectionFactory",
                                                  target: DispatchQueue.global())
 
-    var apiToConnectionProvider: [String: ConnectionProvider] = [:]
+    private var apiToConnectionProvider: [CacheKey: ConnectionProvider] = [:]
 
     func getOrCreateConnection(for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
                                authService: AWSAuthServiceBehavior,
+                               authType: AWSAuthorizationType? = nil,
                                apiAuthProviderFactory: APIAuthProviderFactory) throws -> SubscriptionConnection {
         return try concurrencyQueue.sync {
             let apiName = endpointConfig.name
 
             let url = endpointConfig.baseURL
-            let authInterceptor = try getInterceptor(for: endpointConfig.authorizationConfiguration,
+            
+            let authInterceptor = try getInterceptor(for: getOrCreateAuthConfiguration(from: endpointConfig,
+                                                                                       authType: authType),
                                                      authService: authService,
                                                      apiAuthProviderFactory: apiAuthProviderFactory)
 
             // create or retrieve the connection provider. If creating, add interceptors onto the provider.
-            let connectionProvider = apiToConnectionProvider[apiName] ??
+            let connectionProvider = apiToConnectionProvider[CacheKey(apiName: apiName, authType: authType)] ??
                 ConnectionProviderFactory.createConnectionProvider(for: url,
                                                                    authInterceptor: authInterceptor,
                                                                    connectionType: .appSyncRealtime)
 
             // store the connection provider for this api
-            apiToConnectionProvider[apiName] = connectionProvider
+            apiToConnectionProvider[CacheKey(apiName: apiName, authType: authType)] = connectionProvider
 
             // create a subscription connection for subscribing and unsubscribing on the connection provider
             return AppSyncSubscriptionConnection(provider: connectionProvider)
@@ -45,6 +52,16 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
 
     // MARK: Private methods
 
+    private func getOrCreateAuthConfiguration(from endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
+                                                       authType: AWSAuthorizationType?) throws -> AWSAuthorizationConfiguration {
+        // create a configuration if there's an override auth type
+        if let authType = authType {
+            return try endpointConfig.authorizationConfigurationFor(authType: authType)
+        }
+        
+        return endpointConfig.authorizationConfiguration
+    }
+    
     private func getInterceptor(for authorizationConfiguration: AWSAuthorizationConfiguration,
                                 authService: AWSAuthServiceBehavior,
                                 apiAuthProviderFactory: APIAuthProviderFactory) throws -> AuthInterceptor {

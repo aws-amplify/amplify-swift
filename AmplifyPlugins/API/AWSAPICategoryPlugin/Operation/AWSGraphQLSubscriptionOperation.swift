@@ -85,15 +85,15 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             return
         }
 
-        if let authType = request.options.authType as? AWSAuthorizationType {
-            print("authType \(authType)")
-        }
+        // Retrieve request auth type in case of a multi-auth setup
+        let authType = request.options.authType as? AWSAuthorizationType
 
         // Retrieve the subscription connection
         do {
             subscriptionConnection = try subscriptionConnectionFactory
                 .getOrCreateConnection(for: endpointConfig,
                                        authService: authService,
+                                       authType: authType,
                                        apiAuthProviderFactory: apiAuthProviderFactory)
         } catch {
             let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)

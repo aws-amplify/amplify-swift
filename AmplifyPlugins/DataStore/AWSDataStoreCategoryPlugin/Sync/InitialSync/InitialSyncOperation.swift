@@ -113,7 +113,6 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
 
         guard let api = api else {
-            log.error("\(#function): API unexpectedly nil")
             finish(result: .failure(DataStoreError.nilAPIHandle()))
             return
         }
@@ -123,44 +122,15 @@ final class InitialSyncOperation: AsynchronousOperation {
             $0.modelSchema.name == modelSchema.name
         }
         let queryPredicate = syncExpression?.modelPredicate()
-        var authTypes = dataStoreConfiguration.authModeStrategy.authTypesFor(
-            schema: modelSchema,
-            operation: .read)
+        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: modelSchema,
+                                                                where: queryPredicate,
+                                                                limit: limit,
+                                                                nextToken: nextToken,
+                                                                lastSync: lastSyncTime)
 
-        makeAPIRequest(lastSyncTime: lastSyncTime,
-                                       limit: limit,
-                                       queryPredicate: queryPredicate,
-                                       nextToken: nextToken,
-                                       authType: authTypes.next(),
-                                       authTypeFactory: { authTypes.next() })
-    }
-
-    /// Performs given API request, retries if error is retriable
-    private func makeAPIRequest(lastSyncTime: Int?,
-                                limit: Int,
-                                queryPredicate: QueryPredicate?,
-                                nextToken: String? = nil,
-                                authType: AWSAuthorizationType?,
-                                authTypeFactory: @escaping () -> AWSAuthorizationType?) {
-        let request = createAPIRequest(lastSyncTime: lastSyncTime,
-                                       limit: limit,
-                                       queryPredicate: queryPredicate,
-                                       nextToken: nextToken,
-                                       authType: authTypeFactory())
-
-        _ = api?.query(request: request) { result in
+        _ = api.query(request: request) { result in
             switch result {
             case .failure(let apiError):
-                if self.isNotAuthorizedError(apiError: apiError), let nextAuthType = authTypeFactory() {
-                    self.log.debug("Received Unauthorized API error: \(apiError), retrying with auth type \(nextAuthType)")
-                    self.makeAPIRequest(lastSyncTime: lastSyncTime,
-                                   limit: limit,
-                                   queryPredicate: queryPredicate,
-                                   authType: nextAuthType,
-                                   authTypeFactory: authTypeFactory)
-                    return
-                }
-
                 if self.isAuthSignedOutError(apiError: apiError) {
                     self.dataStoreConfiguration.errorHandler(DataStoreError.api(apiError))
                 }
@@ -170,20 +140,6 @@ final class InitialSyncOperation: AsynchronousOperation {
                 self.handleQueryResults(lastSyncTime: lastSyncTime, graphQLResult: graphQLResult)
             }
         }
-    }
-
-    private func createAPIRequest(lastSyncTime: Int?,
-                                  limit: Int,
-                                  queryPredicate: QueryPredicate?,
-                                  nextToken: String? = nil,
-                                  authType: AWSAuthorizationType? = nil) -> GraphQLRequest<SyncQueryResult> {
-        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: modelSchema,
-                                                                where: queryPredicate,
-                                                                limit: limit,
-                                                                nextToken: nextToken,
-                                                                lastSync: lastSyncTime,
-                                                                authType: authType)
-        return request
     }
 
     /// Disposes of the query results: Stops if error, reconciles results if success, and kick off a new query if there
@@ -249,6 +205,16 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
     }
 
+    private func isAuthSignedOutError(apiError: APIError) -> Bool {
+        if case let .operationError(_, _, underlyingError) = apiError,
+            let authError = underlyingError as? AuthError,
+            case .signedOut = authError {
+            return true
+        }
+
+        return false
+    }
+
     private func finish(result: AWSInitialSyncOrchestrator.SyncOperationResult) {
         switch result {
         case .failure(let error):
@@ -261,31 +227,5 @@ final class InitialSyncOperation: AsynchronousOperation {
 
 }
 
-
-// MARK: - Error handling
-@available(iOS 13.0, *)
-extension InitialSyncOperation {
-    private func isAuthSignedOutError(apiError: APIError) -> Bool {
-        if case let .operationError(_, _, underlyingError) = apiError,
-            let authError = underlyingError as? AuthError,
-            case .signedOut = authError {
-            return true
-        }
-
-        return false
-    }
-
-    private func isNotAuthorizedError(apiError: APIError) -> Bool {
-        if case let .operationError(_, _, underlyingError) = apiError,
-            let authError = underlyingError as? AuthError,
-            case .notAuthorized = authError {
-            return true
-        }
-
-        return false
-    }
-}
-
-// MARK: - Logger
 @available(iOS 13.0, *)
 extension InitialSyncOperation: DefaultLogger { }
