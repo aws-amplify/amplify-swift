@@ -1,5 +1,12 @@
 # Changelog
 ## Unreleased
+## 1.9.3 (2021-05-26)
+
+### Bug Fixes
+
+- Quote table names in CreateTableStatement (#1233)
+- **DataStore**: redundant local metadata query in ReconcileAndLocalSaveOperation (#1217)
+
 ## 1.9.2 (2021-05-13)
 
 ### Bug Fixes
