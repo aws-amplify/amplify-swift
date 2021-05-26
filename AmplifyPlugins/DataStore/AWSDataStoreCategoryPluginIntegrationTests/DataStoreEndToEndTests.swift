@@ -237,4 +237,108 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
         wait(for: [conditionalReceived], timeout: networkTimeout)
     }
+
+    /// Ensure DataStore.stop followed by DataStore.start is successful
+    ///
+    /// - Given:  DataStore has completely started
+    /// - When:
+    ///    - DataStore.stop
+    ///    - Followed by DataStore.start in the completion of the stop
+    /// - Then:
+    ///    - Saving a post should be successful
+    ///
+    func testStopStart() throws {
+        try startAmplifyAndWaitForSync()
+        let stopStartSuccess = expectation(description: "stop then start successful")
+        Amplify.DataStore.stop { result in
+            switch result {
+            case .success:
+                Amplify.DataStore.start { result in
+                    switch result {
+                    case .success:
+                        stopStartSuccess.fulfill()
+                    case .failure(let error):
+                        XCTFail("\(error)")
+                    }
+                }
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [stopStartSuccess], timeout: networkTimeout)
+        try validateSavePost()
+
+    }
+
+    /// Ensure DataStore.clear followed by DataStore.start is successful
+    ///
+    /// - Given:  DataStore has completely started
+    /// - When:
+    ///    - DataStore.clear
+    ///    - Followed by DataStore.start in the completion of the clear
+    /// - Then:
+    ///    - Saving a post should be successful
+    ///
+    func testClearStart() throws {
+        try startAmplifyAndWaitForSync()
+        let clearStartSuccess = expectation(description: "clear then start successful")
+        Amplify.DataStore.clear { result in
+            switch result {
+            case .success:
+                Amplify.DataStore.start { result in
+                    switch result {
+                    case .success:
+                        clearStartSuccess.fulfill()
+                    case .failure(let error):
+                        XCTFail("\(error)")
+                    }
+                }
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [clearStartSuccess], timeout: networkTimeout)
+        try validateSavePost()
+    }
+
+    // MARK: - Helpers
+
+    func validateSavePost() throws {
+        let date = Temporal.DateTime.now()
+        let newPost = Post(
+            title: "This is a new post I created",
+            content: "Original content from DataStoreEndToEndTests at \(date)",
+            createdAt: date)
+        let createReceived = expectation(description: "Create notification received")
+        let hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                guard let mutationEvent = payload.data as? MutationEvent
+                    else {
+                        XCTFail("Can't cast payload as mutation event")
+                        return
+                }
+
+                // This check is to protect against stray events being processed after the test has completed,
+                // and it shouldn't be construed as a pattern necessary for production applications.
+                guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
+                    return
+                }
+
+                if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                    XCTAssertEqual(post.content, newPost.content)
+                    XCTAssertEqual(mutationEvent.version, 1)
+                    createReceived.fulfill()
+                    return
+                }
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+
+        Amplify.DataStore.save(newPost) { _ in }
+        wait(for: [createReceived], timeout: networkTimeout)
+    }
 }
