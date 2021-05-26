@@ -1905,8 +1905,8 @@
 				2129BE322394828B006363A1 /* GraphQLRequestModelTests.swift */,
 				214F497D2486DA5000DA616C /* GraphQLRequestOptionalAssociationTests.swift */,
 				6BEE08182533CAA600133961 /* GraphQLRequestOwnerAndGroupTests.swift */,
-				6B9F7C5125267E1500F1F71C /* MockAWSAuthUser.swift */,
 				97943A06265B7A5F0097DBBA /* GraphQLRequestSyncCustomPrimaryKeyTests.swift */,
+				6B9F7C5125267E1500F1F71C /* MockAWSAuthUser.swift */,
 			);
 			path = GraphQLRequest;
 			sourceTree = "<group>";

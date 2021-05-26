@@ -182,7 +182,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
         case .create:
             documentBuilder.add(decorator: ModelDecorator(model: model))
         case .delete:
-            documentBuilder.add(decorator: ModelIdDecorator(.delete(model)))
+            documentBuilder.add(decorator: ModelIdDecorator(model: model))
             if let predicate = predicate {
                 documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: modelSchema)))
             }
@@ -205,7 +205,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(.query(id)))
+        documentBuilder.add(decorator: ModelIdDecorator(id: id))
         let document = documentBuilder.build()
 
         return GraphQLRequest<M?>(document: document.stringValue,

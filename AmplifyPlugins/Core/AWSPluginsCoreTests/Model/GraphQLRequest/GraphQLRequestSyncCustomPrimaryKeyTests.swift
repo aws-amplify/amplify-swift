@@ -25,7 +25,7 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: order.modelName,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(.query(order.id, fields: ["orderId": "testOrderId"])))
+        documentBuilder.add(decorator: ModelIdDecorator(id: order.id, fields: ["orderId": "testOrderId"]))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
@@ -172,7 +172,7 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: order.modelName,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
-        documentBuilder.add(decorator: ModelIdDecorator(.delete(order)))
+        documentBuilder.add(decorator: ModelIdDecorator(model: order))
         documentBuilder.add(decorator: ConflictResolutionDecorator(version: 1, lastSync: nil))
         let document = documentBuilder.build()
         let documentStringValue = """

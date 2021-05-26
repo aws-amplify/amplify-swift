@@ -11,15 +11,22 @@ import Amplify
 /// Decorate the GraphQLDocument with the value of `Model.Identifier` for a "delete" mutation or "get" query.
 public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
 
-    private let input: ModelDecoratorInput
+    private let id: Model.Identifier
+    private let fields: [String: String]?
 
-    public enum ModelDecoratorInput {
-        case delete(Model)
-        case query(Model.Identifier, fields: [String: String]? = nil)
+    public init(model: Model) {
+        var fields = [String: String]()
+        if let customPrimaryKeys = model.schema.customPrimaryIndexFields {
+            for key in customPrimaryKeys {
+                fields[key] = model[key] as? String
+            }
+        }
+        self.init(id: model.id, fields: fields)
     }
 
-    public init(_ input: ModelDecoratorInput) {
-        self.input = input
+    public init(id: Model.Identifier, fields: [String: String]? = nil) {
+        self.id = id
+        self.fields = fields
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
@@ -31,19 +38,17 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
                          modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
         var inputs = document.inputs
 
-        if case .delete(let model) = input {
-            var objectMap = [String: Any?]()
-            if let customPrimaryKeys = modelSchema.customPrimaryIndexFields {
-                for key in customPrimaryKeys {
-                    objectMap[key] = model[key]
+        if case .mutation = document.operationType {
+            var objectMap = [String: String]()
+            if let fields = fields {
+                for (fieldName, value) in fields {
+                    objectMap[fieldName] = value
                 }
-            } else {
-                objectMap["id"] = model.id
             }
-
+            objectMap["id"] = id
             inputs["input"] = GraphQLDocumentInput(type: "\(document.name.pascalCased())Input!",
                                                    value: .object(objectMap))
-        } else if case .query(let id, let fields) = input {
+        } else if case .query = document.operationType {
             inputs["id"] = GraphQLDocumentInput(type: "ID!", value: .scalar(id))
 
             if let fields = fields {

@@ -27,7 +27,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(.query(post.id)))
+        documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
@@ -152,7 +152,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
-        documentBuilder.add(decorator: ModelIdDecorator(.delete(post)))
+        documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
