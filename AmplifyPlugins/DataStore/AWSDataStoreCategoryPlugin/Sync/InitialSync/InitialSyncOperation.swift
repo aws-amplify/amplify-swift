@@ -122,13 +122,8 @@ final class InitialSyncOperation: AsynchronousOperation {
             $0.modelSchema.name == modelSchema.name
         }
         let queryPredicate = syncExpression?.modelPredicate()
-        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: modelSchema,
-                                                                where: queryPredicate,
-                                                                limit: limit,
-                                                                nextToken: nextToken,
-                                                                lastSync: lastSyncTime)
 
-        _ = api.query(request: request) { result in
+        let completionListener: GraphQLOperation<SyncQueryResult>.ResultListener = { result in
             switch result {
             case .failure(let apiError):
                 if self.isAuthSignedOutError(apiError: apiError) {
@@ -140,6 +135,23 @@ final class InitialSyncOperation: AsynchronousOperation {
                 self.handleQueryResults(lastSyncTime: lastSyncTime, graphQLResult: graphQLResult)
             }
         }
+
+        var authTypes = dataStoreConfiguration.authModeStrategy.authTypesFor(schema: modelSchema, operation: .read)
+        RetryableGraphQLOperation<SyncQueryResult>(
+            requestFactory: {
+                guard let authType = authTypes.next() else {
+                    return nil
+                }
+                let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: self.modelSchema,
+                                                                        where: queryPredicate,
+                                                                        limit: limit,
+                                                                        nextToken: nextToken,
+                                                                        lastSync: lastSyncTime,
+                                                                        authType: authType)
+                return request
+            },
+            api: api,
+            operationType: .query(completion: completionListener)).start()
     }
 
     /// Disposes of the query results: Stops if error, reconciles results if success, and kick off a new query if there
