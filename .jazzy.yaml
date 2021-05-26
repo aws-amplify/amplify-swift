@@ -17,5 +17,5 @@ build_tool_arguments:
   - -scheme
   - Amplify
 
-docset_icon: readme-images/icon.png
+docset_icon: readme-images/amplify-icon.png
 
