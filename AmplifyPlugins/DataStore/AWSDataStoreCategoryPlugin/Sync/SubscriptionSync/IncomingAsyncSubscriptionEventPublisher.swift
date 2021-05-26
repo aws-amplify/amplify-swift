@@ -10,68 +10,6 @@ import AWSPluginsCore
 import Combine
 import Foundation
 
-final class RetryableGraphQLSubscriptionOperation<P: Decodable>: AmplifyCancellable {
-    public typealias APIRequestFactory = () -> GraphQLRequest<P>?
-    let api: APICategoryGraphQLBehavior
-    let apiRequestFactory: APIRequestFactory
-    var operation: GraphQLSubscriptionOperation<P>?
-    var valueListener: GraphQLSubscriptionOperation<P>.InProcessListener
-    var completionListener: GraphQLSubscriptionOperation<P>.ResultListener
-    var attempts = 0
-    let id = UUID()
-
-    init(apiRequestFactory: @escaping APIRequestFactory,
-         api: APICategoryGraphQLBehavior,
-         valueListener: @escaping GraphQLSubscriptionOperation<P>.InProcessListener,
-         completionListener: @escaping GraphQLSubscriptionOperation<P>.ResultListener) {
-        self.apiRequestFactory = apiRequestFactory
-        self.api = api
-        self.valueListener = valueListener
-        self.completionListener = completionListener
-    }
-
-    func start() {
-        guard let request = apiRequestFactory() else {
-            // TODO: log error
-            return
-        }
-        start(request: request)
-    }
-
-    func start(request: GraphQLRequest<P>) {
-        self.attempts += 1
-        let wrappedValueListener: GraphQLSubscriptionOperation<P>.InProcessListener = {
-            self.valueListener($0)
-            let attempt = self.attempts
-            let authType = request.options?.authType
-            print("[XXX][\(self.id)] attempt \(attempt) - valueListener \($0) - \(String(describing: authType))")
-            
-        }
-        let wrappedCompletionListener: GraphQLSubscriptionOperation<P>.ResultListener? = {
-            if case .failure = $0, let nextRequest = self.apiRequestFactory() {
-                print("[XXX][\(self.id)] failed \($0)")
-                self.start(request: nextRequest)
-                return
-            }
-            self.completionListener($0)
-        }
-
-        let operation = api.subscribe(request: request,
-                                      valueListener: wrappedValueListener,
-                                      completionListener: wrappedCompletionListener)
-        inFlightOperation(operation: operation)
-    }
-
-    func cancel() {
-        operation?.cancel()
-    }
-
-    private func inFlightOperation(operation: GraphQLSubscriptionOperation<P>?) {
-        // cancel()
-        self.operation = operation
-    }
-}
-
 /// Collects all subscription types for a given model into a single subscribable publisher.
 ///
 /// The queue "Element" is AnyModel to allow for queues to be collected into an aggregate structure upstream, but each
@@ -85,15 +23,15 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
     typealias Payload = MutationSync<AnyModel>
     typealias Event = SubscriptionEvent<GraphQLResponse<Payload>>
 
-    private var onCreateOperation: RetryableGraphQLSubscriptionOperation<Payload>?
+    private var onCreateOperation: RetryableGraphQLOperation<Payload>?
     private var onCreateValueListener: GraphQLSubscriptionOperation<Payload>.InProcessListener?
     private var onCreateConnected: Bool
 
-    private var onUpdateOperation: RetryableGraphQLSubscriptionOperation<Payload>?
+    private var onUpdateOperation: RetryableGraphQLOperation<Payload>?
     private var onUpdateValueListener: GraphQLSubscriptionOperation<Payload>.InProcessListener?
     private var onUpdateConnected: Bool
 
-    private var onDeleteOperation: RetryableGraphQLSubscriptionOperation<Payload>?
+    private var onDeleteOperation: RetryableGraphQLOperation<Payload>?
     private var onDeleteValueListener: GraphQLSubscriptionOperation<Payload>.InProcessListener?
     private var onDeleteConnected: Bool
 
@@ -126,8 +64,8 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
         let onCreateValueListener = onCreateValueListenerHandler(event:)
         self.onCreateValueListener = onCreateValueListener
-        self.onCreateOperation = RetryableGraphQLSubscriptionOperation(
-            apiRequestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
+        self.onCreateOperation = RetryableGraphQLOperation(
+            requestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
                 for: modelSchema,
                 subscriptionType: .onCreate,
                 api: api,
@@ -135,14 +73,13 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
                 awsAuthService: self.awsAuthService,
                 authStrategy: authModeStrategy),
             api: api,
-            valueListener: onCreateValueListener,
-            completionListener: genericCompletionListenerHandler)
+            operationType: .subscription(inProcess: onCreateValueListener, completion: genericCompletionListenerHandler))
         onCreateOperation?.start()
 
         let onUpdateValueListener = onUpdateValueListenerHandler(event:)
         self.onUpdateValueListener = onUpdateValueListener
-        self.onUpdateOperation = RetryableGraphQLSubscriptionOperation(
-            apiRequestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
+        self.onUpdateOperation = RetryableGraphQLOperation(
+            requestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
                 for: modelSchema,
                 subscriptionType: .onUpdate,
                 api: api,
@@ -150,14 +87,13 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
                 awsAuthService: self.awsAuthService,
                 authStrategy: authModeStrategy),
             api: api,
-            valueListener: onUpdateValueListener,
-            completionListener: genericCompletionListenerHandler)
+            operationType: .subscription(inProcess: onUpdateValueListener, completion: genericCompletionListenerHandler))
         onUpdateOperation?.start()
 
         let onDeleteValueListener = onDeleteValueListenerHandler(event:)
         self.onDeleteValueListener = onDeleteValueListener
-        self.onDeleteOperation = RetryableGraphQLSubscriptionOperation(
-            apiRequestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
+        self.onDeleteOperation = RetryableGraphQLOperation(
+            requestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
                 for: modelSchema,
                 subscriptionType: .onDelete,
                 api: api,
@@ -165,8 +101,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
                 awsAuthService: self.awsAuthService,
                 authStrategy: authModeStrategy),
             api: api,
-            valueListener: onDeleteValueListener,
-            completionListener: genericCompletionListenerHandler)
+            operationType: .subscription(inProcess: onDeleteValueListener, completion: genericCompletionListenerHandler))
         onDeleteOperation?.start()
     }
 
@@ -262,13 +197,14 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
     }
 
     static func apiRequestFactoryFor(for modelSchema: ModelSchema,
-                              subscriptionType: GraphQLSubscriptionType,
-                              api: APICategoryGraphQLBehavior,
-                              auth: AuthCategoryBehavior?,
-                              awsAuthService: AWSAuthServiceBehavior,
-                              authStrategy: AuthModeStrategy) -> RetryableGraphQLSubscriptionOperation<Payload>.APIRequestFactory {
+                                     subscriptionType: GraphQLSubscriptionType,
+                                     api: APICategoryGraphQLBehavior,
+                                     auth: AuthCategoryBehavior?,
+                                     awsAuthService: AWSAuthServiceBehavior,
+                                     authStrategy: AuthModeStrategy) -> RetryableGraphQLOperation<Payload>.RequestFactory {
 
-        var authTypesIterator = authStrategy.authTypesFor(schema: modelSchema, operation: subscriptionType.toModelOperation())
+        var authTypesIterator = authStrategy.authTypesFor(schema: modelSchema,
+                                                          operation: subscriptionType.toModelOperation())
 
         return {
             guard let nextAuthType = authTypesIterator.next() else {

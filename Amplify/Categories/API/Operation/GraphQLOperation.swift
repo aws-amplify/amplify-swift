@@ -5,7 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// GraphQL Operation
+import Foundation
+
 open class GraphQLOperation<R: Decodable>: AmplifyOperation<
     GraphQLOperationRequest<R>,
     GraphQLResponse<R>,
@@ -30,4 +31,85 @@ public extension HubPayload.EventName.API {
 
     /// eventName for HubPayloads emitted by this operation
     static let subscribe = "API.subscribe"
+}
+
+public final class RetryableGraphQLOperation<Payload: Decodable>: AmplifyCancellable {
+    public enum RetryableGraphQLOperationType<P: Decodable> {
+        case subscription(inProcess: GraphQLSubscriptionOperation<Payload>.InProcessListener,
+                          completion: GraphQLSubscriptionOperation<Payload>.ResultListener)
+        case mutation(completion: GraphQLOperation<Payload>.ResultListener)
+        case query(completion: GraphQLOperation<Payload>.ResultListener)
+    }
+
+    public typealias RequestFactory = () -> GraphQLRequest<Payload>?
+    let api: APICategoryGraphQLBehavior
+    let requestFactory: RequestFactory
+    var underlyingOperation: AsynchronousOperation?
+    var operationType: RetryableGraphQLOperationType<Payload>
+    var attempts = 0
+    let id = UUID()
+
+    public init(requestFactory: @escaping RequestFactory,
+                api: APICategoryGraphQLBehavior,
+                operationType: RetryableGraphQLOperationType<Payload>) {
+        self.requestFactory = requestFactory
+        self.api = api
+        self.operationType = operationType
+    }
+
+    public func start() {
+        guard let request = requestFactory() else {
+            // TODO: log error
+            return
+        }
+        start(request: request)
+    }
+
+    private func start(request: GraphQLRequest<Payload>) {
+        attempts += 1
+        var operation: AsynchronousOperation?
+        switch operationType {
+        case .subscription(inProcess: let inProcess, completion: let completion):
+            let wrappedCompletionListener: GraphQLSubscriptionOperation<Payload>.ResultListener = {
+                if case .failure = $0, let nextRequest = self.requestFactory() {
+                    self.start(request: nextRequest)
+                    return
+                }
+                completion($0)
+            }
+            operation = api.subscribe(request: request,
+                                          valueListener: inProcess,
+                                          completionListener: wrappedCompletionListener)
+        case .mutation(completion: let completion):
+            let wrappedCompletionListener: GraphQLOperation<Payload>.ResultListener = {
+                if case .failure = $0, let nextRequest = self.requestFactory() {
+                    self.start(request: nextRequest)
+                    return
+                }
+                completion($0)
+            }
+            operation = api.mutate(request: request,
+                                       listener: wrappedCompletionListener)
+        case .query(completion: let completion):
+            let wrappedCompletionListener: GraphQLOperation<Payload>.ResultListener = {
+                if case .failure = $0, let nextRequest = self.requestFactory() {
+                    self.start(request: nextRequest)
+                    return
+                }
+                completion($0)
+            }
+            operation = api.query(request: request,
+                                       listener: wrappedCompletionListener)
+        }
+        inFlightOperation(operation: operation)
+    }
+
+    public func cancel() {
+        underlyingOperation?.cancel()
+    }
+
+    private func inFlightOperation(operation: AsynchronousOperation?) {
+        // cancel()
+        underlyingOperation = operation
+    }
 }
