@@ -68,7 +68,7 @@ extension GraphQLModelBasedTests {
         }
 
         wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
-        XCTAssertEqual(operations.get().count, 50)
+        XCTAssertEqual(operations.get().count, count)
         guard createPost(id: uuid, title: title) != nil else {
             XCTFail("Failed to create post")
             return
