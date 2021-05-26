@@ -9,6 +9,14 @@
 import Amplify
 import Foundation
 
+/*
+ type CustomerOrder @model
+    @key(fields: ["orderId","id"]) {
+    id: ID!
+    orderId: String!
+    email: String!
+ }
+ */
 public struct CustomerOrder: Model {
   public let id: String
   public var orderId: String

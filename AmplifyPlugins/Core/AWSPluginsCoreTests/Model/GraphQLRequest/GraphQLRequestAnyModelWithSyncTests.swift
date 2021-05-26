@@ -16,7 +16,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
     override func setUp() {
         ModelRegistry.register(modelType: Comment.self)
         ModelRegistry.register(modelType: Post.self)
-        ModelRegistry.register(modelType: CustomerOrder.self)
+
     }
 
     override func tearDown() {
@@ -27,7 +27,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
+        documentBuilder.add(decorator: ModelIdDecorator(.query(post.id)))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
@@ -152,7 +152,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
-        documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
+        documentBuilder.add(decorator: ModelIdDecorator(.delete(post)))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
@@ -188,46 +188,6 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
             return
         }
         XCTAssertEqual(input["id"] as? String, post.id)
-    }
-
-    func testDeleteMutationWithCustomPrimaryKeysGraphQLRequest() throws {
-        let order = CustomerOrder(orderId: "testOrderId", email: "testEmail@provider.com")
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: order.modelName,
-                                                               operationType: .mutation)
-        documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
-        documentBuilder.add(decorator: ModelDeleteDecorator(model: order))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
-        let document = documentBuilder.build()
-        let documentStringValue = """
-        mutation DeleteCustomerOrder($input: DeleteCustomerOrderInput!) {
-          deleteCustomerOrder(input: $input) {
-            id
-            email
-            orderId
-            __typename
-            _version
-            _deleted
-            _lastChangedAt
-          }
-        }
-        """
-
-        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: order, modelSchema: order.schema)
-
-        XCTAssertEqual(document.stringValue, request.document)
-        XCTAssertEqual(documentStringValue, request.document)
-        XCTAssert(request.responseType == MutationSyncResult.self)
-        guard let variables = request.variables else {
-            XCTFail("The request doesn't contain variables")
-            return
-        }
-        guard let input = variables["input"] as? [String: Any] else {
-            XCTFail("The document variables property doesn't contain a valid input")
-            return
-        }
-        XCTAssertEqual(input["id"] as? String, order.id)
-        XCTAssertTrue(input["orderId"] != nil)
-        XCTAssertEqual(input["orderId"] as? String, order.orderId)
     }
 
     func testCreateSubscriptionGraphQLRequest() throws {

@@ -53,7 +53,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
     public static func query(modelName: String, byId id: String) -> GraphQLRequest<MutationSyncResult?> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: id))
+        documentBuilder.add(decorator: ModelIdDecorator(.query(id)))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
@@ -116,7 +116,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                       version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: model.modelName, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
-        documentBuilder.add(decorator: ModelDeleteDecorator(model: model))
+        documentBuilder.add(decorator: ModelIdDecorator(.delete(model)))
         if let filter = filter {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))
         }

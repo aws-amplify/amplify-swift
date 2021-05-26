@@ -67,7 +67,7 @@ class GraphQLRequestModelTest: XCTestCase {
     func testQueryByIdGraphQLRequest() {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
+        documentBuilder.add(decorator: ModelIdDecorator(.query("id")))
         let document = documentBuilder.build()
 
         let request = GraphQLRequest<Post>.get(Post.self, byId: "id")
