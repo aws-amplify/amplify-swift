@@ -19,15 +19,15 @@ struct RemoteSyncReconciler {
         case delete(RemoteModel)
     }
 
-    /// Reconciles the incoming `remoteModels` against the pending mutations.
+    /// Filter  the incoming `remoteModels` against the pending mutations.
     /// If there is a matching pending mutation, drop the remote model.
     ///
     /// - Parameters:
     ///   - remoteModels: models retrieved from the remote store
     ///   - pendingMutations: pending mutations from the outbox
     /// - Returns: remote models to be applied
-    static func reconcile(_ remoteModels: [RemoteModel],
-                          pendingMutations: [MutationEvent]) -> [RemoteModel] {
+    static func filter(_ remoteModels: [RemoteModel],
+                       pendingMutations: [MutationEvent]) -> [RemoteModel] {
         guard !pendingMutations.isEmpty else {
             return remoteModels
         }
@@ -42,40 +42,24 @@ struct RemoteSyncReconciler {
         }
     }
 
-    /// Reconciles the incoming `remoteModels` against the local metadata.
-
+    /// Reconciles the incoming `remoteModels` against the local metadata to get the disposition
     ///
     /// - Parameters:
     ///   - remoteModels: models retrieved from the remote store
     ///   - localMetadatas: metadata retrieved from the local store
     /// - Returns: disposition of models to apply locally
-    static func reconcile(_ remoteModels: [RemoteModel],
-                          localMetadatas: [LocalMetadata]) -> [Disposition] {
-        var dispositions = [Disposition]()
-
+    static func getDispositions(_ remoteModels: [RemoteModel],
+                                localMetadatas: [LocalMetadata]) -> [Disposition] {
         guard !remoteModels.isEmpty else {
-            return dispositions
+            return []
         }
 
         guard !localMetadatas.isEmpty else {
-            remoteModels.forEach { remoteModel in
-                if let disposition = reconcile(remoteModel, localMetadata: nil) {
-                    dispositions.append(disposition)
-                }
-            }
-            return dispositions
+            return remoteModels.compactMap { getDisposition($0, localMetadata: nil) }
         }
 
-        var localMetadataMap = [Model.Identifier: LocalMetadata]()
-        for localMetadata in localMetadatas {
-            localMetadataMap.updateValue(localMetadata, forKey: localMetadata.id)
-        }
-
-        remoteModels.forEach { remoteModel in
-            if let disposition = reconcile(remoteModel, localMetadata: localMetadataMap[remoteModel.model.id]) {
-                dispositions.append(disposition)
-            }
-        }
+        let metadataByID = localMetadatas.reduce(into: [:]) { $0[$1.id] = $1 }
+        let dispositions = remoteModels.compactMap { getDisposition($0, localMetadata: metadataByID[$0.model.id]) }
 
         return dispositions
     }
@@ -93,21 +77,15 @@ struct RemoteSyncReconciler {
     ///   - remoteModel: model retrieved from the remote store
     ///   - localMetadata: metadata corresponding to the remote model
     /// - Returns: disposition of the model, `nil` if to be dropped
-    static func reconcile(_ remoteModel: RemoteModel, localMetadata: LocalMetadata?) -> Disposition? {
+    static func getDisposition(_ remoteModel: RemoteModel, localMetadata: LocalMetadata?) -> Disposition? {
         guard let localMetadata = localMetadata else {
-            if !remoteModel.syncMetadata.deleted {
-                return .create(remoteModel)
-            }
+            return remoteModel.syncMetadata.deleted ? nil : .create(remoteModel)
+        }
+
+        guard remoteModel.syncMetadata.version >= localMetadata.version else {
             return nil
         }
 
-        if remoteModel.syncMetadata.version >= localMetadata.version {
-            if remoteModel.syncMetadata.deleted {
-                return .delete(remoteModel)
-            } else {
-                return .update(remoteModel)
-            }
-        }
-        return nil
+        return remoteModel.syncMetadata.deleted ? .delete(remoteModel) : .update(remoteModel)
     }
 }

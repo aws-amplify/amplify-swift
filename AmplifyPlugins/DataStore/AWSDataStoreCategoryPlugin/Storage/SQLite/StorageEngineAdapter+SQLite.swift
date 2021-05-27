@@ -18,6 +18,15 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     private var dbFilePath: URL?
     static let dbVersionKey = "com.amazonaws.DataStore.dbVersion"
 
+    // TODO benchmark whether a SELECT FROM FOO WHERE ID IN (1, 2, 3...) performs measurably
+    // better than SELECT FROM FOO WHERE ID = 1 OR ID=2 OR ID=3
+    //
+    // SQLite supports up to 1000 expressions per SQLStatement. We have chosen to use 50 expressions
+    // less (equaling 950) than the maximum because it is possible that our SQLStatement already has
+    // some expressions.  If we encounter performance problems in the future, we will want to profile
+    // our system and find an optimal value.
+    var maxNumberOfPredicates: Int = 950
+
     convenience init(version: String,
                      databaseName: String = "database",
                      userDefaults: UserDefaults = UserDefaults.standard) throws {
@@ -289,22 +298,21 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func queryMutationSyncMetadata(for modelId: Model.Identifier) throws -> MutationSyncMetadata? {
-        let results = try queryMutationSyncMetadata(forModelIds: [modelId])
+        let results = try queryMutationSyncMetadata(for: [modelId])
         return try results.unique()
     }
 
-    func queryMutationSyncMetadata(forModelIds modelIds: [Model.Identifier]) throws -> [MutationSyncMetadata] {
+    func queryMutationSyncMetadata(for modelIds: [Model.Identifier]) throws -> [MutationSyncMetadata] {
         let modelType = MutationSyncMetadata.self
         let fields = MutationSyncMetadata.keys
         var results = [MutationSyncMetadata]()
-        let maxNumberOfPredicates = 950
         let chunkedModelIdsArr = modelIds.chunked(into: maxNumberOfPredicates)
         for chunkedModelIds in chunkedModelIdsArr {
             var queryPredicates: [QueryPredicateOperation] = []
             for id in chunkedModelIds {
                 queryPredicates.append(QueryPredicateOperation(field: fields.id.stringValue, operator: .equals(id)))
             }
-            let groupedQueryPredicates =  QueryPredicateGroup(type: .or, predicates: queryPredicates)
+            let groupedQueryPredicates = QueryPredicateGroup(type: .or, predicates: queryPredicates)
             let statement = SelectStatement(from: modelType.schema, predicate: groupedQueryPredicates)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result = try rows.convert(to: modelType,

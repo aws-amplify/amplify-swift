@@ -136,8 +136,8 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     }
 
     func enqueue(_ remoteModels: [MutationSync<AnyModel>]) {
-        guard let remoteModel = remoteModels.first else {
-            log.info("\(#function) skipping reconcilliation, no models to enqueue.")
+        guard let remoteModelName = remoteModels.first?.model.modelName else {
+            log.debug("\(#function) skipping reconciliation, no models to enqueue.")
             return
         }
 
@@ -159,7 +159,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             }
         })
         reconcileAndLocalSaveOperationSinks.with { $0.insert(reconcileAndLocalSaveOperationSink) }
-        reconcileAndSaveQueue.addOperation(reconcileOp, modelName: remoteModel.model.modelName)
+        reconcileAndSaveQueue.addOperation(reconcileOp, modelName: remoteModelName)
     }
 
     private func receive(_ receive: IncomingSubscriptionEventPublisherEvent) {

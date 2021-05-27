@@ -14,6 +14,8 @@ import Combine
 
 class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
+    var maxNumberOfPredicates: Int = 950
+
     var responders = [ResponderKeys: Any]()
 
     var resultForQuery: DataStoreResult<[Model]>?
@@ -22,7 +24,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     var resultForQueryMutationSyncMetadata: MutationSyncMetadata?
     var resultForQueryMutationSyncMetadatas: [MutationSyncMetadata]
     var errorToThrowOnMutationSyncMetadata: DataStoreError?
-    var errorToThrowOnTransaction: DataStoreError?
+    var errorToThrowOnTransaction: Error?
 
     var shouldReturnErrorOnSaveMetadata: Bool
     var shouldReturnErrorOnDeleteMutation: Bool
@@ -205,7 +207,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         return resultForQueryMutationSyncMetadata
     }
 
-    func queryMutationSyncMetadata(forModelIds modelIds: [String]) throws -> [MutationSyncMetadata] {
+    func queryMutationSyncMetadata(for modelIds: [String]) throws -> [MutationSyncMetadata] {
         if let responder = responders[.queryMutationSyncMetadatas] as? QueryMutationSyncMetadatasResponder {
             return try responder.callback(modelIds)
         }

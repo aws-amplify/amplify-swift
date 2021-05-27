@@ -21,32 +21,32 @@ class RemoteSyncReconcilerTests: XCTestCase {
 
     // MARK: reconcile(pendingMutations)
 
-    func testReconcilePendingMutations_EmptyRemoteModels() {
+    func testFilter_EmptyRemoteModels() {
         let pendingMutations: [MutationEvent] = [makeMutationEvent()]
-        let results = RemoteSyncReconciler.reconcile([], pendingMutations: pendingMutations)
+        let results = RemoteSyncReconciler.filter([], pendingMutations: pendingMutations)
 
         XCTAssertTrue(results.isEmpty)
     }
 
-    func testReconcilePendingMutations_EmptyPendingMutations() {
+    func testFilter_EmptyPendingMutations() {
         let remoteModel = makeRemoteModel()
-        let results = RemoteSyncReconciler.reconcile([remoteModel], pendingMutations: [])
+        let results = RemoteSyncReconciler.filter([remoteModel], pendingMutations: [])
 
         XCTAssertEqual(results.first?.model.id, remoteModel.model.id)
     }
 
-    func testReconcilePendingMutations_pendingMutationMatchRemoteModel() {
+    func testFilter_pendingMutationMatchRemoteModel() {
         let remoteModel = makeRemoteModel()
         let pendingMutation = makeMutationEvent(modelId: remoteModel.model.id)
-        let results = RemoteSyncReconciler.reconcile([remoteModel], pendingMutations: [pendingMutation])
+        let results = RemoteSyncReconciler.filter([remoteModel], pendingMutations: [pendingMutation])
 
         XCTAssertTrue(results.isEmpty)
     }
 
-    func testReconcilePendingMutations_pendingMutationDoesNotMatchRemoteModel() {
+    func testFilter_pendingMutationDoesNotMatchRemoteModel() {
         let remoteModel = makeRemoteModel(modelId: "1")
         let pendingMutation = makeMutationEvent(modelId: "2")
-        let results = RemoteSyncReconciler.reconcile([remoteModel], pendingMutations: [pendingMutation])
+        let results = RemoteSyncReconciler.filter([remoteModel], pendingMutations: [pendingMutation])
 
         XCTAssertEqual(results.first?.model.id, remoteModel.model.id)
     }
@@ -56,8 +56,8 @@ class RemoteSyncReconcilerTests: XCTestCase {
     func testReconcileLocalMetadata_nilLocalMetadata() {
         let remoteModel = makeRemoteModel(deleted: false, version: 1)
 
-        let disposition = RemoteSyncReconciler.reconcile(remoteModel,
-                                                          localMetadata: nil)
+        let disposition = RemoteSyncReconciler.getDisposition(remoteModel,
+                                                              localMetadata: nil)
 
         XCTAssertEqual(disposition, .create(remoteModel))
     }
@@ -65,8 +65,8 @@ class RemoteSyncReconcilerTests: XCTestCase {
     func testReconcileLocalMetadata_nilLocalMetadata_deletedModel() {
         let remoteModel = makeRemoteModel(deleted: true, version: 2)
 
-        let disposition = RemoteSyncReconciler.reconcile(remoteModel,
-                                                          localMetadata: nil)
+        let disposition = RemoteSyncReconciler.getDisposition(remoteModel,
+                                                              localMetadata: nil)
 
         XCTAssertNil(disposition)
     }
@@ -77,8 +77,8 @@ class RemoteSyncReconcilerTests: XCTestCase {
                                                          deleted: false,
                                                          version: 1)
 
-        let disposition = RemoteSyncReconciler.reconcile(remoteModel,
-                                                         localMetadata: localSyncMetadata)
+        let disposition = RemoteSyncReconciler.getDisposition(remoteModel,
+                                                              localMetadata: localSyncMetadata)
 
         XCTAssertEqual(disposition, .update(remoteModel))
     }
@@ -89,8 +89,8 @@ class RemoteSyncReconcilerTests: XCTestCase {
                                                          deleted: false,
                                                          version: 1)
 
-        let disposition = RemoteSyncReconciler.reconcile(remoteModel,
-                                                         localMetadata: localSyncMetadata)
+        let disposition = RemoteSyncReconciler.getDisposition(remoteModel,
+                                                              localMetadata: localSyncMetadata)
 
         XCTAssertEqual(disposition, .update(remoteModel))
     }
@@ -101,7 +101,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
                                                          deleted: false,
                                                          version: 1)
 
-        let disposition = RemoteSyncReconciler.reconcile(remoteModel,
+        let disposition = RemoteSyncReconciler.getDisposition(remoteModel,
                                                          localMetadata: localSyncMetadata)
 
         XCTAssertEqual(disposition, .delete(remoteModel))
@@ -113,7 +113,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
                                                          deleted: false,
                                                          version: 2)
 
-        let disposition = RemoteSyncReconciler.reconcile(remoteModel,
+        let disposition = RemoteSyncReconciler.getDisposition(remoteModel,
                                                          localMetadata: localSyncMetadata)
 
         XCTAssertNil(disposition)
@@ -127,34 +127,34 @@ class RemoteSyncReconcilerTests: XCTestCase {
                                                          deleted: false,
                                                          version: 2)
 
-        let disposition = RemoteSyncReconciler.reconcile(remoteModel,
+        let disposition = RemoteSyncReconciler.getDisposition(remoteModel,
                                                          localMetadata: localSyncMetadata)
 
         XCTAssertNil(disposition)
     }
 
-    // MARK: - reconcile(remoteModels:localMetadatas)
+    // MARK: - getDispositions(remoteModels:localMetadatas)
 
-    func testReconcileLocalMetadatas_emptyRemoteModel() {
+    func testGetDispositions_emptyRemoteModel() {
         let localSyncMetadata = makeMutationSyncMetadata(modelId: "1", deleted: false, version: 1)
 
-        let dispositions = RemoteSyncReconciler.reconcile([], localMetadatas: [localSyncMetadata])
+        let dispositions = RemoteSyncReconciler.getDispositions([], localMetadatas: [localSyncMetadata])
 
         XCTAssertTrue(dispositions.isEmpty)
     }
 
-    func testReconcileLocalMetadatas_emptyLocal() {
+    func testGetDispositions_emptyLocal() {
         let remoteModel = makeRemoteModel(deleted: false, version: 1)
 
-        let dispositions = RemoteSyncReconciler.reconcile([remoteModel], localMetadatas: [])
+        let dispositions = RemoteSyncReconciler.getDispositions([remoteModel], localMetadatas: [])
 
         XCTAssertEqual(dispositions.first, .create(remoteModel))
     }
 
-    func testReconcileLocalMetadatas_emptyLocal_deletedModel() {
+    func testGetDispositions_emptyLocal_deletedModel() {
         let remoteModel = makeRemoteModel(deleted: true, version: 2)
 
-        let dispositions = RemoteSyncReconciler.reconcile([remoteModel], localMetadatas: [])
+        let dispositions = RemoteSyncReconciler.getDispositions([remoteModel], localMetadatas: [])
 
         XCTAssertTrue(dispositions.isEmpty)
     }
@@ -169,19 +169,19 @@ class RemoteSyncReconcilerTests: XCTestCase {
         // with local metadata, not deleted remote, should be update
         let updateModel = makeRemoteModel(deleted: false, version: 2)
         let localUpdateMetadata = makeMutationSyncMetadata(modelId: updateModel.model.id,
-                                                         deleted: false,
-                                                         version: 1)
+                                                           deleted: false,
+                                                           version: 1)
 
         // with local metadata, deleted remote, should be delete
         let deleteModel = makeRemoteModel(deleted: true, version: 2)
         let localDeleteMetadata = makeMutationSyncMetadata(modelId: deleteModel.model.id,
-                                                         deleted: false,
-                                                         version: 1)
+                                                           deleted: false,
+                                                           version: 1)
 
         let remoteModels = [createModel, droppedModel, updateModel, deleteModel]
         let localMetadatas = [localUpdateMetadata, localDeleteMetadata]
-        let dispositions = RemoteSyncReconciler.reconcile(remoteModels,
-                                                         localMetadatas: localMetadatas)
+        let dispositions = RemoteSyncReconciler.getDispositions(remoteModels,
+                                                                localMetadatas: localMetadatas)
 
         XCTAssertEqual(dispositions.count, 3)
         let create = expectation(description: "exactly one create")

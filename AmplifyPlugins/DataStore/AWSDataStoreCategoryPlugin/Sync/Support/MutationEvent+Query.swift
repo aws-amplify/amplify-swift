@@ -9,22 +9,21 @@ import Amplify
 import Dispatch
 
 extension MutationEvent {
-    static func pendingMutationEvents(forModelId modelId: Model.Identifier,
+    static func pendingMutationEvents(for modelId: Model.Identifier,
                                       storageAdapter: StorageEngineAdapter,
                                       completion: DataStoreCallback<[MutationEvent]>) {
 
-        pendingMutationEvents(forModelIds: [modelId], storageAdapter: storageAdapter, completion: completion)
+        pendingMutationEvents(for: [modelId], storageAdapter: storageAdapter, completion: completion)
     }
 
-    static func pendingMutationEvents(forModelIds modelIds: [Model.Identifier],
+    static func pendingMutationEvents(for modelIds: [Model.Identifier],
                                       storageAdapter: StorageEngineAdapter,
                                       completion: DataStoreCallback<[MutationEvent]>) {
         let fields = MutationEvent.keys
         let predicate = (fields.inProcess == false || fields.inProcess == nil)
-        let maxNumberOfPredicates = 950
         var queriedMutationEvents: [MutationEvent] = []
         var queryError: DataStoreError?
-        let chunkedArrays = modelIds.chunked(into: maxNumberOfPredicates)
+        let chunkedArrays = modelIds.chunked(into: storageAdapter.maxNumberOfPredicates)
         for chunkedArray in chunkedArrays {
             var queryPredicates: [QueryPredicateOperation] = []
             for id in chunkedArray {

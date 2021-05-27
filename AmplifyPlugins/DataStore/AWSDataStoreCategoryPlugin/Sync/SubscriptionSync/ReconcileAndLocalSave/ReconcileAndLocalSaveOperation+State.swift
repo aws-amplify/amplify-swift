@@ -15,7 +15,7 @@ extension ReconcileAndLocalSaveOperation {
         /// Waiting to be started by the queue
         case waiting
 
-        /// Reconiling remote models with local data
+        /// Reconciling remote models with local data
         case reconciling([RemoteModel])
 
         /// Operation has successfully completed

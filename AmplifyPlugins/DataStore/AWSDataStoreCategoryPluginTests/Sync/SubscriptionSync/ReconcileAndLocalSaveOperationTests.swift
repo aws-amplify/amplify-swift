@@ -68,7 +68,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         XCTAssertEqual(stateMachine.state, ReconcileAndLocalSaveOperation.State.waiting)
     }
 
-    // MARK: - Reconcile
+    // MARK: - State tests
 
     func testReconcile() {
         let expect = expectation(description: "action .reconciled")
@@ -112,7 +112,25 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    func testReconcile_transactionError() {
+    func testReconcile_failedQueryPendingMutations() {
+        let expect = expectation(description: "action .reconciled")
+
+        let expectedError = DataStoreError.internalOperation("Query failed", "")
+        let queryResponder = QueryModelTypePredicateResponder<MutationEvent> { _, _ in
+            return .failure(expectedError)
+        }
+        storageAdapter.responders[.queryModelTypePredicate] = queryResponder
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.errored(expectedError))
+            expect.fulfill()
+        }
+
+        stateMachine.state = .reconciling([anyPostMutationSync])
+
+        waitForExpectations(timeout: 1)
+    }
+
+    func testReconcile_transactionDataStoreError() {
         let expect = expectation(description: "action .errored")
 
         let error = DataStoreError.internalOperation("Transaction failed", "")
@@ -124,6 +142,54 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
         stateMachine.state = .reconciling([anyPostMutationSync])
 
+        waitForExpectations(timeout: 1)
+    }
+
+    func testReconcile_transactionError() {
+        let expect = expectation(description: "action .errored")
+
+        enum UnknownError: Error {
+            case unknown
+        }
+        storageAdapter.errorToThrowOnTransaction = UnknownError.unknown
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.errored(
+                            DataStoreError.invalidOperation(causedBy: UnknownError.unknown)))
+            expect.fulfill()
+        }
+
+        stateMachine.state = .reconciling([anyPostMutationSync])
+
+        waitForExpectations(timeout: 1)
+    }
+
+    func testInError() {
+        let expect = expectation(description: "publisher should finish")
+        operation.publisher.sink { completion in
+            switch completion {
+            case .finished:
+                expect.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected error \(error)")
+            }
+        } receiveValue: { _ in }.store(in: &cancellables)
+
+        stateMachine.state = .inError(DataStoreError.unknown("InError State", ""))
+        waitForExpectations(timeout: 1)
+    }
+
+    func testFinished() {
+        let expect = expectation(description: "publisher should finish")
+        operation.publisher.sink { completion in
+            switch completion {
+            case .finished:
+                expect.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected error \(error)")
+            }
+        } receiveValue: { _ in }.store(in: &cancellables)
+
+        stateMachine.state = .finished
         waitForExpectations(timeout: 1)
     }
 
@@ -360,13 +426,13 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     // MARK: - reconcile(remoteModels:localMetadata)
 
     func testReconcileLocalMetadata_emptyModels() {
-        let result = operation.reconcile([], localMetadatas: [anyPostMetadata])
+        let result = operation.getDispositions(for: [], localMetadatas: [anyPostMetadata])
 
         XCTAssertTrue(result.isEmpty)
     }
 
     func testReconcileLocalMetadata_emptyLocalMetadatas() {
-        let result = operation.reconcile([anyPostMutationSync], localMetadatas: [])
+        let result = operation.getDispositions(for: [anyPostMutationSync], localMetadatas: [])
 
         guard let remoteModelDisposition = result.first else {
             XCTFail("Missing models to apply")
@@ -417,7 +483,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 }
             }.store(in: &cancellables)
 
-        let result = operation.reconcile([remoteModel1, remoteModel2],
+        let result = operation.getDispositions(for: [remoteModel1, remoteModel2],
                                          localMetadatas: [localMetadata1, localMetadata2])
 
         XCTAssertTrue(result.isEmpty)
@@ -430,7 +496,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let expect = expectation(description: "storage adapter error")
 
         storageAdapter = nil
-        operation.applyRemoteModels(dispositions: [])
+        operation.applyRemoteModelsDispositions([])
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
@@ -450,7 +516,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let expect = expectation(description: "should complete successfully")
         expect.expectedFulfillmentCount = 2
 
-        operation.applyRemoteModels(dispositions: [])
+        operation.applyRemoteModelsDispositions([])
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
@@ -507,7 +573,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 }
             }.store(in: &cancellables)
 
-        operation.applyRemoteModels(dispositions: [.create(anyPostMutationSync)])
+        operation.applyRemoteModelsDispositions([.create(anyPostMutationSync)])
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
@@ -563,7 +629,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 }
             }.store(in: &cancellables)
 
-        operation.applyRemoteModels(dispositions: [.update(anyPostMutationSync)])
+        operation.applyRemoteModelsDispositions([.update(anyPostMutationSync)])
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
@@ -618,7 +684,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 }
             }.store(in: &cancellables)
 
-        operation.applyRemoteModels(dispositions: [.delete(anyPostMutationSync)])
+        operation.applyRemoteModelsDispositions([.delete(anyPostMutationSync)])
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
@@ -693,7 +759,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 }
             }.store(in: &cancellables)
 
-        operation.applyRemoteModels(dispositions: dispositions)
+        operation.applyRemoteModelsDispositions(dispositions)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
@@ -723,7 +789,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         }
         storageAdapter.responders[.saveUntypedModel] = saveResponder
 
-        operation.applyRemoteModels(dispositions: dispositions)
+        operation.applyRemoteModelsDispositions(dispositions)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure:
@@ -754,7 +820,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         storageAdapter.responders[.saveUntypedModel] = saveResponder
         storageAdapter.shouldReturnErrorOnDeleteMutation = true
 
-        operation.applyRemoteModels(dispositions: dispositions)
+        operation.applyRemoteModelsDispositions(dispositions)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure:
@@ -788,7 +854,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         }
         storageAdapter.responders[.saveModelCompletion] = saveMetadataResponder
 
-        operation.applyRemoteModels(dispositions: dispositions)
+        operation.applyRemoteModelsDispositions(dispositions)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure:
