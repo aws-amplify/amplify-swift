@@ -10,46 +10,33 @@ import Foundation
 import AWSPluginsCore
 import AWSCore
 
-
 public extension AWSAPICategoryPluginConfiguration {
-    typealias APIEndpointName = String
-    
-    struct InterceptorsConfig {
+    struct EndpointInterceptorsConfig {
+        // API name
+        let endpointName: APIEndpointName
+
         let apiAuthProviderFactory: APIAuthProviderFactory
         let authService: AWSAuthServiceBehavior?
-        
-        var interceptors: [APIEndpointName: [URLRequestInterceptor]] = [:]
-        
-        init(apiAuthProviderFactory: APIAuthProviderFactory,
+
+        var interceptors: [URLRequestInterceptor] = []
+
+        init(endpointName: APIEndpointName,
+             apiAuthProviderFactory: APIAuthProviderFactory,
              authService: AWSAuthServiceBehavior? = nil) {
+            self.endpointName = endpointName
             self.apiAuthProviderFactory = apiAuthProviderFactory
             self.authService = authService
         }
-        
-        /// Registers an interceptor for the provided API endpoint
+
+        /// Registers an interceptor
         /// - Parameter interceptor: operation interceptor used to decorate API requests
-        /// - Parameter toEndpoint: API endpoint name
-        public mutating func addInterceptor(_ interceptor: URLRequestInterceptor,
-                                            toEndpoint apiName: APIEndpointName) {
-            self.interceptors[apiName]?.append(interceptor)
+        public mutating func addInterceptor(_ interceptor: URLRequestInterceptor) {
+            interceptors.append(interceptor)
         }
-        
-        
-        /// Returns all the interceptors registered for `apiName` API endpoint
-        /// - Parameter apiName: API endpoint name
-        /// - Returns: request interceptors
-        public func interceptorsForEndpoint(named apiName: APIEndpointName) -> [URLRequestInterceptor] {
-            guard let interceptors = interceptors[apiName] else {
-                return []
-            }
-            return interceptors
-        }
-        
 
         /// Initialize authorization interceptors
-        mutating func addAuthInterceptorsToEndpoint(named apiName: APIEndpointName,
-                                                           ofType endpointType: AWSAPICategoryPluginEndpointType,
-                                                           authConfiguration: AWSAuthorizationConfiguration) throws {
+        mutating func addAuthInterceptorsToEndpoint(endpointType: AWSAPICategoryPluginEndpointType,
+                                                    authConfiguration: AWSAuthorizationConfiguration) throws {
             switch authConfiguration {
             case .none:
                 // No interceptors needed
@@ -57,7 +44,7 @@ public extension AWSAPICategoryPluginConfiguration {
             case .apiKey(let apiKeyConfig):
                 let provider = BasicAPIKeyProvider(apiKey: apiKeyConfig.apiKey)
                 let interceptor = APIKeyURLRequestInterceptor(apiKeyProvider: provider)
-                addInterceptor(interceptor, toEndpoint: apiName)
+                addInterceptor(interceptor)
             case .awsIAM(let iamConfig):
                 guard let authService = authService else {
                     throw PluginError.pluginConfigurationError("AuthService is not set for IAM",
@@ -67,7 +54,7 @@ public extension AWSAPICategoryPluginConfiguration {
                 let interceptor = IAMURLRequestInterceptor(iamCredentialsProvider: provider,
                                                            region: iamConfig.region,
                                                            endpointType: endpointType)
-                addInterceptor(interceptor, toEndpoint: apiName)
+                addInterceptor(interceptor)
             case .amazonCognitoUserPools:
                 guard let authService = authService else {
                     throw PluginError.pluginConfigurationError("AuthService not set for cognito user pools",
@@ -75,14 +62,14 @@ public extension AWSAPICategoryPluginConfiguration {
                 }
                 let provider = BasicUserPoolTokenProvider(authService: authService)
                 let interceptor = UserPoolURLRequestInterceptor(userPoolTokenProvider: provider)
-                addInterceptor(interceptor, toEndpoint: apiName)
+                addInterceptor(interceptor)
             case .openIDConnect:
                 guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
                     return
                 }
                 let wrappedAuthProvider = AuthTokenProviderWrapper(oidcAuthProvider: oidcAuthProvider)
                 let interceptor = UserPoolURLRequestInterceptor(userPoolTokenProvider: wrappedAuthProvider)
-                addInterceptor(interceptor, toEndpoint: apiName)
+                addInterceptor(interceptor)
             }
         }
     }

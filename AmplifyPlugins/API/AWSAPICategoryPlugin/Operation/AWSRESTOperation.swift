@@ -96,7 +96,7 @@ final public class AWSRESTOperation: AmplifyOperation<
                                                                        requestPayload: request.body)
 
         // Intercept request
-        let finalRequest = endpointConfig.interceptors.reduce(urlRequest) { (request, interceptor) -> URLRequest in
+        let finalRequest = try pluginConfig.interceptorsForEndpoint(named: request.apiName).reduce(urlRequest) { (request, interceptor) -> URLRequest in
             do {
                 return try interceptor.intercept(request)
             } catch let error as APIError {

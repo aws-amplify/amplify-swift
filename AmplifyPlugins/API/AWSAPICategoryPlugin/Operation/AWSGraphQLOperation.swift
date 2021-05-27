@@ -92,7 +92,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
                                                                        requestPayload: requestPayload)
 
         // Intercept request
-        let finalRequest = endpointConfig.interceptors.reduce(urlRequest) { (request, interceptor) -> URLRequest in
+        let finalRequest = pluginConfig.interceptorsForEndpoint(named: request.apiName).reduce(urlRequest) { (request, interceptor) -> URLRequest in
             do {
                 return try interceptor.intercept(request)
             } catch let error as APIError {

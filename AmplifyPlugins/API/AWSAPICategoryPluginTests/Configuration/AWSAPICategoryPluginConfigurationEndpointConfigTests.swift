@@ -152,7 +152,6 @@ class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {
             baseURL: URL(string: "http://myhost")!,
             region: nil,
             authorizationType: AWSAuthorizationType.none,
-            authorizationConfiguration: AWSAuthorizationConfiguration.none,
             endpointType: endpointType,
             apiAuthProviderFactory: APIAuthProviderFactory())
     }
