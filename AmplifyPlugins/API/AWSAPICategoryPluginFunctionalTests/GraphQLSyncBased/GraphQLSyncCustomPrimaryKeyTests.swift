@@ -12,7 +12,6 @@ import XCTest
 @testable import AWSAPICategoryPluginTestCommon
 import AWSPluginsCore
 
-// swiftlint:disable cyclomatic_complexity
 class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
 
     static let amplifyConfiguration = "GraphQLSyncBasedTests-amplifyconfiguration"
@@ -51,106 +50,52 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
 
         /// Create order
         let customerOrder = CustomerOrder(orderId: UUID().uuidString, email: "test@abc.com")
-        guard let mutationSyncResult = createCustomerOrder(customerOrder: customerOrder),
-              let _ = mutationSyncResult.model.instance as? CustomerOrder else {
+        guard let createMutationSyncResult = createCustomerOrder(customerOrder: customerOrder),
+              let createdCustomerOrder = createMutationSyncResult.model.instance as? CustomerOrder else {
             XCTFail("Failed to create customer order")
             return
         }
 
         /// Query order
-        let querySuccess = expectation(description: "query successful")
-        let queryRequest = queryCustomerOrder(modelName: CustomerOrder.modelName,
-                                         byId: customerOrder.id,
-                                         orderId: customerOrder.orderId)
-        Amplify.API.query(request: queryRequest) { result in
-            switch result {
-            case .success(let response):
-                switch response {
-                case .success(let mutationSync):
-                    guard let queriedCustomerOrder = mutationSync?.model.instance as? CustomerOrder else {
-                        XCTFail("Failed to retrieve customer order")
-                        return
-                    }
-                    XCTAssertEqual(queriedCustomerOrder.id, customerOrder.id)
-                    querySuccess.fulfill()
-                case .failure(let graphQLError):
-                    XCTFail("\(graphQLError)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [querySuccess], timeout: TestCommonConstants.networkTimeout)
-
-        /// Update order
-        let updatedCustomerOrder = CustomerOrder(id: mutationSyncResult.model["id"] as? String ?? "",
-                                                 orderId: mutationSyncResult.model["orderId"] as? String ?? "",
-                                                 email: "testnew@abc.com")
-
-        let updateSuccess = expectation(description: "update successful")
-        let updateRequest = GraphQLRequest<MutationSyncResult>.updateMutation(
-            of: updatedCustomerOrder,
-            modelSchema: updatedCustomerOrder.schema,
-            version: mutationSyncResult.syncMetadata.version)
-        var updateSyncResult: MutationSyncResult?
-
-        Amplify.API.mutate(request: updateRequest) { result in
-            switch result {
-            case .success(let response):
-                switch response {
-                case .success(let mutationSync):
-                    guard let queriedCustomerOrder = mutationSync.model.instance as? CustomerOrder else {
-                        XCTFail("Failed to retrieve customer order")
-                        return
-                    }
-                    updateSyncResult = mutationSync
-                    XCTAssertEqual(queriedCustomerOrder.id, customerOrder.id)
-                    updateSuccess.fulfill()
-                case .failure(let graphQLError):
-                    XCTFail("\(graphQLError)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [updateSuccess], timeout: TestCommonConstants.networkTimeout)
-
-        guard let updatedSyncResult = updateSyncResult else {
-            XCTFail("failed to sync update")
+        guard let queryMutationSyncResult = queryCustomerOrder(modelName: CustomerOrder.modelName,
+                                                          byId: createdCustomerOrder.id,
+                                                          orderId: createdCustomerOrder.orderId),
+              var queriedCustomerOrder = queryMutationSyncResult.model.instance as? CustomerOrder else {
+            XCTFail("Failed to query customer order")
             return
         }
 
-        /// Delete order
-        let deleteSuccess = expectation(description: "delete successful")
-        let deleteRequest = GraphQLRequest<MutationSyncResult>.deleteMutation(
-            of: updatedCustomerOrder,
-            modelSchema: updatedCustomerOrder.schema,
-            version: updatedSyncResult.syncMetadata.version)
-        Amplify.API.mutate(request: deleteRequest) { result in
-            switch result {
-            case .success(let response):
-                switch response {
-                case .success(let mutationSync):
-                    guard let queriedCustomerOrder = mutationSync.model.instance as? CustomerOrder else {
-                        XCTFail("Failed to retrieve customer order")
-                        return
-                    }
-                    XCTAssertEqual(queriedCustomerOrder.id, updatedCustomerOrder.id)
-                    deleteSuccess.fulfill()
-                case .failure(let graphQLError):
-                    XCTFail("\(graphQLError)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        XCTAssertEqual(customerOrder.id, queriedCustomerOrder.id)
+
+        /// Update order
+        queriedCustomerOrder.email = "testnew@abc.com"
+        guard let updateMutationSyncResult = updateCustomerOrder(of: queriedCustomerOrder,
+                                                                 modelSchema: queriedCustomerOrder.schema,
+                                                                 version: queryMutationSyncResult.syncMetadata.version),
+              let updatedCustomerOrder = updateMutationSyncResult.model.instance as? CustomerOrder else {
+            XCTFail("Failed to update customer order")
+            return
         }
-        wait(for: [deleteSuccess], timeout: TestCommonConstants.networkTimeout)
+
+        XCTAssertEqual(customerOrder.id, updatedCustomerOrder.id)
+
+        /// Delete order
+        guard let deleteMutationSyncResult = deleteCustomerOrder(of: updatedCustomerOrder,
+                                        modelSchema: updatedCustomerOrder.schema,
+                                        version: updateMutationSyncResult.syncMetadata.version),
+              let deletedCustomerOrder = deleteMutationSyncResult.model.instance as? CustomerOrder else {
+            XCTFail("Failed to update customer order")
+            return
+        }
+
+        XCTAssertEqual(customerOrder.id, deletedCustomerOrder.id)
 
         /// Query after delete
         let queryDeleted = expectation(description: "query successful")
-        Amplify.API.query(request: queryCustomerOrder(modelName: CustomerOrder.modelName,
-                                                      byId: updatedCustomerOrder.id,
-                                                      orderId: updatedCustomerOrder.orderId)) { result in
+        let request = getCustomerOrderGraphQLQueryRequest(modelName: CustomerOrder.modelName,
+                                                          byId: deletedCustomerOrder.id,
+                                                          orderId: deletedCustomerOrder.orderId)
+        _ = Amplify.API.query(request: request) { result in
             switch result {
             case .success(let response):
                 switch response {
@@ -201,9 +146,91 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
         return result
     }
 
-    public func queryCustomerOrder(modelName: String,
-                                   byId id: String,
-                                   orderId: String) -> GraphQLRequest<MutationSyncResult?> {
+    func queryCustomerOrder(modelName: String,
+                            byId id: String,
+                            orderId: String) -> MutationSyncResult? {
+        let queryRequest = getCustomerOrderGraphQLQueryRequest(modelName: modelName,
+                                                               byId: id,
+                                                               orderId: orderId)
+        var querySyncResult: MutationSyncResult?
+        let querySuccess = expectation(description: "query successful")
+        _ = Amplify.API.query(request: queryRequest) { event in
+            switch event {
+            case .success(let response):
+                switch response {
+                case .success(let mutationSync):
+                    querySyncResult = mutationSync
+                case .failure(let graphQLError):
+                    XCTFail("\(graphQLError)")
+                }
+                querySuccess.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [querySuccess], timeout: TestCommonConstants.networkTimeout)
+        return querySyncResult
+    }
+
+    func updateCustomerOrder(of model: Model,
+                             modelSchema: ModelSchema,
+                             version: Int) -> MutationSyncResult? {
+        let updateSuccess = expectation(description: "update successful")
+        let updateRequest = GraphQLRequest<MutationSyncResult>.updateMutation(
+            of: model,
+            modelSchema: modelSchema,
+            version: version)
+
+        var updateSyncResult: MutationSyncResult?
+        _ = Amplify.API.mutate(request: updateRequest) { event in
+            switch event {
+            case .success(let response):
+                switch response {
+                case .success(let mutationSync):
+                    updateSyncResult = mutationSync
+                case .failure(let graphQLError):
+                    XCTFail("\(graphQLError)")
+                }
+                updateSuccess.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [updateSuccess], timeout: TestCommonConstants.networkTimeout)
+        return updateSyncResult
+    }
+
+    func deleteCustomerOrder(of model: Model,
+                             modelSchema: ModelSchema,
+                             version: Int) -> MutationSyncResult? {
+        let deleteSuccess = expectation(description: "delete successful")
+        let deleteRequest = GraphQLRequest<MutationSyncResult>.deleteMutation(
+            of: model,
+            modelSchema: modelSchema,
+            version: version)
+
+        var deleteSyncResult: MutationSyncResult?
+        _ = Amplify.API.mutate(request: deleteRequest) { event in
+            switch event {
+            case .success(let response):
+                switch response {
+                case .success(let mutationSync):
+                    deleteSyncResult = mutationSync
+                case .failure(let graphQLError):
+                    XCTFail("\(graphQLError)")
+                }
+                deleteSuccess.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [deleteSuccess], timeout: TestCommonConstants.networkTimeout)
+        return deleteSyncResult
+    }
+
+    func getCustomerOrderGraphQLQueryRequest(modelName: String,
+                                             byId id: String,
+                                             orderId: String) -> GraphQLRequest<MutationSyncResult?> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: id, fields: ["orderId": orderId]))
