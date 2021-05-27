@@ -41,7 +41,7 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
         if case .mutation = document.operationType {
             var objectMap = [String: String]()
             if let fields = fields {
-                for (fieldName, value) in fields {
+                for (fieldName, value) in fields where fieldName != "id" {
                     objectMap[fieldName] = value
                 }
             }
@@ -52,7 +52,7 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
             inputs["id"] = GraphQLDocumentInput(type: "ID!", value: .scalar(id))
 
             if let fields = fields {
-                for (fieldName, value) in fields {
+                for (fieldName, value) in fields where fieldName != "id" {
                     inputs[fieldName] = GraphQLDocumentInput(type: "String!", value: .scalar(value))
                 }
             }
