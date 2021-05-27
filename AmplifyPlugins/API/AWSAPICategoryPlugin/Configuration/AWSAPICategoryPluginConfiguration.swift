@@ -14,7 +14,7 @@ public struct AWSAPICategoryPluginConfiguration {
 
     var endpoints: [APIEndpointName: EndpointConfig]
     private var interceptors: [APIEndpointName: EndpointInterceptorsConfig]
-    
+
     private var apiAuthProviderFactory: APIAuthProviderFactory?
     private var authService: AWSAuthServiceBehavior?
 
@@ -47,7 +47,7 @@ public struct AWSAPICategoryPluginConfiguration {
                                                      authService: authService)
 
         self.init(endpoints: endpoints, interceptors: interceptors)
-        
+
         self.apiAuthProviderFactory = apiAuthProviderFactory
         self.authService = authService
 
@@ -64,26 +64,37 @@ public struct AWSAPICategoryPluginConfiguration {
     /// Returns all the interceptors registered for `apiName` API endpoint
     /// - Parameter apiName: API endpoint name
     /// - Returns: request interceptors
-    func interceptorsForEndpoint(named apiName: APIEndpointName?) -> [URLRequestInterceptor] {
+    internal func interceptorsForEndpoint(named apiName: APIEndpointName?) -> [URLRequestInterceptor] {
         guard let apiName = apiName, let interceptorsConfig = interceptors[apiName] else {
             return []
         }
         return interceptorsConfig.interceptors
     }
-    
-    internal func interceptorsForEndpoint(named apiName: APIEndpointName?,
-                                          endpointType: AWSAPICategoryPluginEndpointType,
-                                          authType: AWSAuthorizationType) throws -> [URLRequestInterceptor] {
-        guard let apiAuthProviderFactory = self.apiAuthProviderFactory else {
-            // TODO: expand on error message and recovery suggestion
-            throw PluginError.unknown("Missing APIAuthProviderFactory", "", nil)
+
+
+    /// Returns or create interceptors for the provided endpointConfig
+    /// - Parameters:
+    ///   - endpointConfig: endpoint configuration
+    ///   - authType: if provided override the registered auth interceptor
+    /// - Throws: PluginConfigurationError in case of failure building an instance of AWSAuthorizationConfiguration
+    /// - Returns: array of URLRequestInterceptor
+    internal func interceptorsForEndpoint(withConfig endpointConfig: EndpointConfig,
+                                          authType: AWSAuthorizationType? = nil) throws -> [URLRequestInterceptor] {
+
+        guard let authType = authType, let apiAuthProviderFactory = self.apiAuthProviderFactory else {
+            return interceptorsForEndpoint(named: endpointConfig.name)
         }
-        let endpointConfig = try endpoints.getConfig(for: apiName)
-        let config = EndpointInterceptorsConfig(endpointName: endpointConfig.name,
+
+        var config = EndpointInterceptorsConfig(endpointName: endpointConfig.name,
                                                 apiAuthProviderFactory: apiAuthProviderFactory,
                                                 authService: authService)
-        let authConfiguration = ""
-        config.addAuthInterceptorsToEndpoint(endpointType: endpointType, authConfiguration: authConfiguration)
+        let authConfiguration = try AWSAuthorizationConfiguration.makeWith(authType: authType,
+                                                                       region: endpointConfig.region,
+                                                                       apiKey: endpointConfig.apiKey)
+        try config.addAuthInterceptorsToEndpoint(endpointType: endpointConfig.endpointType,
+                                                 authConfiguration: authConfiguration)
+
+        // TODO: copy existing interceptors before return
         return config.interceptors
     }
 
@@ -107,7 +118,6 @@ public struct AWSAPICategoryPluginConfiguration {
         return endpoints
     }
 
-    
     /// Given a dictionary of EndpointConfig indexed by API endpoint name, builds a dictionary of EndpointInterceptorsConfig
     /// - Parameters:
     ///   - endpoints: dictionary of EndpointConfig
