@@ -58,10 +58,10 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
         if let authType = authType {
             return try endpointConfig.authorizationConfigurationFor(authType: authType)
         }
-        
+
         return endpointConfig.authorizationConfiguration
     }
-    
+
     private func getInterceptor(for authorizationConfiguration: AWSAuthorizationConfiguration,
                                 authService: AWSAuthServiceBehavior,
                                 apiAuthProviderFactory: APIAuthProviderFactory) throws -> AuthInterceptor {

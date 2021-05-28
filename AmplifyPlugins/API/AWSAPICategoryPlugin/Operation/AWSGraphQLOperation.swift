@@ -57,9 +57,15 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         // Retrieve endpoint configuration
         let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
         let requestInterceptors: [URLRequestInterceptor]
+        
         do {
             endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL)
-            requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
+            
+            if let authType = request.options.authType as? AWSAuthorizationType {
+                requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig, authType: authType)
+            } else {
+                requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
+            }
         } catch let error as APIError {
             dispatch(result: .failure(error))
             finish()
@@ -93,10 +99,6 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         // Create request
         let urlRequest = GraphQLOperationRequestUtils.constructRequest(with: endpointConfig.baseURL,
                                                                        requestPayload: requestPayload)
-
-        if let authType = request.options.authType as? AWSAuthorizationType {
-            print("authType \(authType)")
-        }
 
         // Intercept request
         let finalRequest = requestInterceptors.reduce(urlRequest) { (request, interceptor) -> URLRequest in
