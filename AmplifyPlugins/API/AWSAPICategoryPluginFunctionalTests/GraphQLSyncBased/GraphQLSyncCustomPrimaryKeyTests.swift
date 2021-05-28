@@ -91,34 +91,16 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
         XCTAssertEqual(customerOrder.id, deletedCustomerOrder.id)
 
         /// Query after delete
-        let queryDeleted = expectation(description: "query successful")
-        let request = getCustomerOrderGraphQLQueryRequest(modelName: CustomerOrder.modelName,
-                                                          byId: deletedCustomerOrder.id,
-                                                          orderId: deletedCustomerOrder.orderId)
-        _ = Amplify.API.query(request: request) { result in
-            switch result {
-            case .success(let response):
-                switch response {
-                case .success(let mutationSync):
-                    guard let queriedCustomerOrder = mutationSync?.model.instance as? CustomerOrder else {
-                        XCTFail("Failed to retrieve customer order")
-                        return
-                    }
-                    XCTAssertEqual(queriedCustomerOrder.id, customerOrder.id)
-                    if let isDeleted = mutationSync?.syncMetadata.deleted {
-                        XCTAssertTrue(isDeleted)
-                    } else {
-                        XCTFail("Should be deleted")
-                    }
-                    queryDeleted.fulfill()
-                case .failure(let graphQLError):
-                    XCTFail("\(graphQLError)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        guard let queryAfterDeleteMutationSyncResult = queryCustomerOrder(modelName: CustomerOrder.modelName,
+                                                                          byId: deletedCustomerOrder.id,
+                                                                          orderId: deletedCustomerOrder.orderId),
+              let queryDeletedCustomerOrder = queryAfterDeleteMutationSyncResult.model.instance as? CustomerOrder else {
+            XCTFail("Failed to query customer order")
+            return
         }
-        wait(for: [queryDeleted], timeout: TestCommonConstants.networkTimeout)
+
+        XCTAssertEqual(queryDeletedCustomerOrder.id, customerOrder.id)
+        XCTAssertTrue(queryAfterDeleteMutationSyncResult.syncMetadata.deleted)
     }
 
     // MARK: - Helpers
@@ -149,9 +131,17 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
     func queryCustomerOrder(modelName: String,
                             byId id: String,
                             orderId: String) -> MutationSyncResult? {
-        let queryRequest = getCustomerOrderGraphQLQueryRequest(modelName: modelName,
-                                                               byId: id,
-                                                               orderId: orderId)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
+        documentBuilder.add(decorator: ModelIdDecorator(id: id, fields: ["orderId": orderId]))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: AuthRuleDecorator(.query))
+        let document = documentBuilder.build()
+
+        let queryRequest = GraphQLRequest<MutationSyncResult?>(document: document.stringValue,
+                                                               variables: document.variables,
+                                                               responseType: MutationSyncResult?.self,
+                                                               decodePath: document.name)
         var querySyncResult: MutationSyncResult?
         let querySuccess = expectation(description: "query successful")
         _ = Amplify.API.query(request: queryRequest) { event in
@@ -226,21 +216,5 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
         }
         wait(for: [deleteSuccess], timeout: TestCommonConstants.networkTimeout)
         return deleteSyncResult
-    }
-
-    func getCustomerOrderGraphQLQueryRequest(modelName: String,
-                                             byId id: String,
-                                             orderId: String) -> GraphQLRequest<MutationSyncResult?> {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName, operationType: .query)
-        documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: id, fields: ["orderId": orderId]))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
-        documentBuilder.add(decorator: AuthRuleDecorator(.query))
-        let document = documentBuilder.build()
-
-        return GraphQLRequest<MutationSyncResult?>(document: document.stringValue,
-                                                   variables: document.variables,
-                                                   responseType: MutationSyncResult?.self,
-                                                   decodePath: document.name)
     }
 }
