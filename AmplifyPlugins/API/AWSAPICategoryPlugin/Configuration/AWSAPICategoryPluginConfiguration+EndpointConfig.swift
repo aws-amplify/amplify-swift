@@ -72,7 +72,7 @@ public extension AWSAPICategoryPluginConfiguration {
             self.baseURL = baseURL
             self.region = region
             self.authorizationType = authorizationType
-            self.authorizationConfiguration = try AWSAuthorizationConfiguration.makeWith(authType: authorizationType,
+            self.authorizationConfiguration = try AWSAuthorizationConfiguration.makeConfiguration(authType: authorizationType,
                                                                                          region: region,
                                                                                          apiKey: apiKey)
             self.endpointType = endpointType
@@ -80,7 +80,7 @@ public extension AWSAPICategoryPluginConfiguration {
         }
 
         public func authorizationConfigurationFor(authType: AWSAuthorizationType) throws -> AWSAuthorizationConfiguration {
-            return try AWSAuthorizationConfiguration.makeWith(authType: authType,
+            return try AWSAuthorizationConfiguration.makeConfiguration(authType: authType,
                                                               region: region,
                                                               apiKey: apiKey)
         }

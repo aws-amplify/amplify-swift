@@ -88,7 +88,7 @@ public struct AWSAPICategoryPluginConfiguration {
         var config = EndpointInterceptorsConfig(endpointName: endpointConfig.name,
                                                 apiAuthProviderFactory: apiAuthProviderFactory,
                                                 authService: authService)
-        let authConfiguration = try AWSAuthorizationConfiguration.makeWith(authType: authType,
+        let authConfiguration = try AWSAuthorizationConfiguration.makeConfiguration(authType: authType,
                                                                        region: endpointConfig.region,
                                                                        apiKey: endpointConfig.apiKey)
         try config.addAuthInterceptorsToEndpoint(endpointType: endpointConfig.endpointType,

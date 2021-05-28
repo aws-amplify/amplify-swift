@@ -48,10 +48,17 @@ extension AWSAuthorizationConfiguration {
             return .apiKey(config)
     }
     
-    /// Given an endpoint JSON configuration, returns an AWSAuthorizationConfiguration instance
-    public static func makeWith(authType: AWSAuthorizationType,
-                         region: AWSRegionType?,
-                         apiKey: String?) throws -> AWSAuthorizationConfiguration {
+    
+    /// Instantiates a new configuration conforming to AWSAuthorizationConfiguration
+    /// - Parameters:
+    ///   - authType: authentication type
+    ///   - region: AWS region
+    ///   - apiKey: API key used when `authType` is `apiKey`
+    /// - Throws: if the region is not valid and `authType` is `iam` or if `apiKey` is not valid and `authType` is `apiKey`
+    /// - Returns: an `AWSAuthorizationConfiguration` according to the provided `authType`
+    public static func makeConfiguration(authType: AWSAuthorizationType,
+                                         region: AWSRegionType?,
+                                         apiKey: String?) throws -> AWSAuthorizationConfiguration {
         switch authType {
         case .none:
             return .none
