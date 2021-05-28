@@ -8,6 +8,7 @@
 import XCTest
 import Foundation
 import AmplifyPlugins
+import AWSMobileClient
 import AWSAPICategoryPlugin
 
 @testable import Amplify
