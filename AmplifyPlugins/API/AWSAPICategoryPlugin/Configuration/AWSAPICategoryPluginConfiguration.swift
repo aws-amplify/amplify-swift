@@ -71,7 +71,6 @@ public struct AWSAPICategoryPluginConfiguration {
         return interceptorsConfig.interceptors
     }
 
-
     /// Returns or create interceptors for the provided endpointConfig
     /// - Parameters:
     ///   - endpointConfig: endpoint configuration
