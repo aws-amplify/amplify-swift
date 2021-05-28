@@ -188,10 +188,8 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         signIn(username: user1.username, password: user1.password)
         let connectedInvoked = expectation(description: "Connection established")
         let progressInvoked = expectation(description: "Progress invoked")
-        let ownerId = getUserSub()
         let request = GraphQLRequest<MutationSyncResult>.subscription(to: SocialNote.self,
-                                                                      subscriptionType: .onCreate,
-                                                                      ownerId: ownerId)
+                                                                      subscriptionType: .onCreate)
         let operation = Amplify.API.subscribe(
             request: request,
             valueListener: { graphQLResponse in

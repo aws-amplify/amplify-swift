@@ -64,10 +64,10 @@ class RESTWithIAMIntegrationTests: XCTestCase {
                 }
                 XCTAssertNotNil(response.url)
                 XCTAssertEqual(response.mimeType, "application/json")
-                XCTAssertEqual(response.expectedContentLength, 258)
+                XCTAssertEqual(response.expectedContentLength, 272)
                 XCTAssertEqual(response.statusCode, 403)
                 XCTAssertNotNil(response.allHeaderFields)
-                if let awsResponse = response as? AWSHTTPURLResponse, let data = awsResponse.data {
+                if let awsResponse = response as? AWSHTTPURLResponse, let data = awsResponse.body {
                     let dataString = String(decoding: data, as: UTF8.self)
                     XCTAssertTrue(dataString.contains("not authorized"))
                 } else {

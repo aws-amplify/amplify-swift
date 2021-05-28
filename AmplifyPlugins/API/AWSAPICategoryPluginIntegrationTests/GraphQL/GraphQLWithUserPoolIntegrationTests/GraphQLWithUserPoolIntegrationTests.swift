@@ -7,6 +7,7 @@
 
 import XCTest
 @testable import Amplify
+import AmplifyPlugins
 import AWSMobileClient
 import AWSAPICategoryPlugin
 @testable import AWSAPICategoryPluginTestCommon
@@ -50,6 +51,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
             Amplify.reset()
 
             try Amplify.add(plugin: AWSAPIPlugin())
+            try Amplify.add(plugin: AWSCognitoAuthPlugin())
 
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: GraphQLWithUserPoolIntegrationTests.amplifyConfiguration)

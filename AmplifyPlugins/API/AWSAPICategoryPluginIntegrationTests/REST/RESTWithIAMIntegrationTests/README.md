@@ -14,8 +14,12 @@ The following steps show how to set up an API endpoint with APIGateway and Lambd
 ? Choose a Lambda source `Create a new Lambda function`
 ? Provide a friendly name for your resource to be used as a label for this category in the project: `restwithiamintegratie962cff0`
 ? Provide the AWS Lambda function name: `restwithiamintegratie962cff0`
-? Choose the function template that you want to use: `Serverless express function (Integration with Amazon API Gateway)`
+? Choose the runtime that you want to use: NodeJS
+? Choose the function template that you want to use: `Serverless ExpressJS function (Integration with API Gateway)`
+? Do you want to configure advanced settings? `Yes`
 ? Do you want to access other resources created in this project from your Lambda function? `No`
+? Do you want to invoke this function on a recurring schedule? `No`
+? Do you want to configure Lambda layers for this function? `No`
 ? Do you want to edit the local lambda function now? `No`
 Succesfully added the Lambda function locally
 ? Restrict API access `Yes`
