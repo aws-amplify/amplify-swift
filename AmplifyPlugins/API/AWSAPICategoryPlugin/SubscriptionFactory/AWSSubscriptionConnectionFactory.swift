@@ -12,7 +12,8 @@ import Amplify
 import AppSyncRealTimeClient
 
 class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
-    private struct CacheKey: Hashable {
+    /// Key used to map an API to a ConnectionProvider
+    private struct MapperCacheKey: Hashable {
         let apiName: String
         let authType: AWSAuthorizationType?
     }
@@ -20,7 +21,7 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
     private let concurrencyQueue = DispatchQueue(label: "com.amazonaws.amplify.AWSSubscriptionConnectionFactory",
                                                  target: DispatchQueue.global())
 
-    private var apiToConnectionProvider: [CacheKey: ConnectionProvider] = [:]
+    private var apiToConnectionProvider: [MapperCacheKey: ConnectionProvider] = [:]
 
     func getOrCreateConnection(for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
                                authService: AWSAuthServiceBehavior,
@@ -37,13 +38,13 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
                                                      apiAuthProviderFactory: apiAuthProviderFactory)
 
             // create or retrieve the connection provider. If creating, add interceptors onto the provider.
-            let connectionProvider = apiToConnectionProvider[CacheKey(apiName: apiName, authType: authType)] ??
+            let connectionProvider = apiToConnectionProvider[MapperCacheKey(apiName: apiName, authType: authType)] ??
                 ConnectionProviderFactory.createConnectionProvider(for: url,
                                                                    authInterceptor: authInterceptor,
                                                                    connectionType: .appSyncRealtime)
 
             // store the connection provider for this api
-            apiToConnectionProvider[CacheKey(apiName: apiName, authType: authType)] = connectionProvider
+            apiToConnectionProvider[MapperCacheKey(apiName: apiName, authType: authType)] = connectionProvider
 
             // create a subscription connection for subscribing and unsubscribing on the connection provider
             return AppSyncSubscriptionConnection(provider: connectionProvider)
