@@ -18,10 +18,28 @@ public struct AWSAPICategoryPluginConfiguration {
     private var apiAuthProviderFactory: APIAuthProviderFactory?
     private var authService: AWSAuthServiceBehavior?
 
+    /// Used for testing
+    /// - Parameters:
+    ///   - endpoints: dictionary of EndpointConfig whose keys are the API endpoint name
+    ///   - interceptors: dictionary of EndpointInterceptorsConfig whose keys are the API endpoint name
     internal init(endpoints: [APIEndpointName: EndpointConfig],
                   interceptors: [APIEndpointName: EndpointInterceptorsConfig] = [:]) {
         self.endpoints = endpoints
         self.interceptors = interceptors
+    }
+
+    /// Used for testing
+    /// - Parameters:
+    ///   - endpoints: dictionary of EndpointConfig whose keys are the API endpoint name
+    ///   - interceptors: dictionary of EndpointInterceptorsConfig whose keys are the API endpoint name
+    internal init(endpoints: [APIEndpointName: EndpointConfig],
+                  interceptors: [APIEndpointName: EndpointInterceptorsConfig] = [:],
+                  apiAuthProviderFactory: APIAuthProviderFactory,
+                  authService: AWSAuthServiceBehavior) {
+        self.endpoints = endpoints
+        self.interceptors = interceptors
+        self.apiAuthProviderFactory = apiAuthProviderFactory
+        self.authService = authService
     }
 
     init(jsonValue: JSONValue,
@@ -46,10 +64,10 @@ public struct AWSAPICategoryPluginConfiguration {
                                                      apiAuthProviderFactory: apiAuthProviderFactory,
                                                      authService: authService)
 
-        self.init(endpoints: endpoints, interceptors: interceptors)
-
-        self.apiAuthProviderFactory = apiAuthProviderFactory
-        self.authService = authService
+        self.init(endpoints: endpoints,
+                  interceptors: interceptors,
+                  apiAuthProviderFactory: apiAuthProviderFactory,
+                  authService: authService)
 
     }
 
@@ -104,7 +122,6 @@ public struct AWSAPICategoryPluginConfiguration {
 
     // MARK: Private
 
-
     /// Returns true if the provided interceptor is an auth interceptor
     /// - Parameter interceptor: interceptors
     private func isAuthInterceptor(_ interceptor: URLRequestInterceptor) -> Bool {
@@ -132,7 +149,8 @@ public struct AWSAPICategoryPluginConfiguration {
         return endpoints
     }
 
-    /// Given a dictionary of EndpointConfig indexed by API endpoint name, builds a dictionary of EndpointInterceptorsConfig
+    /// Given a dictionary of EndpointConfig indexed by API endpoint name,
+    /// builds a dictionary of EndpointInterceptorsConfig.
     /// - Parameters:
     ///   - endpoints: dictionary of EndpointConfig
     ///   - apiAuthProviderFactory: apiAuthProviderFactory
