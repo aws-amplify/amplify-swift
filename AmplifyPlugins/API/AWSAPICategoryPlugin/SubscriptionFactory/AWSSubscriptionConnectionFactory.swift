@@ -31,7 +31,7 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
             let apiName = endpointConfig.name
 
             let url = endpointConfig.baseURL
-            
+
             let authInterceptor = try getInterceptor(for: getOrCreateAuthConfiguration(from: endpointConfig,
                                                                                        authType: authType),
                                                      authService: authService,
