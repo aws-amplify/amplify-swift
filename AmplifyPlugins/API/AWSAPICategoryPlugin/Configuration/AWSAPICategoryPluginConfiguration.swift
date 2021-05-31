@@ -76,7 +76,7 @@ public struct AWSAPICategoryPluginConfiguration {
     ///   - endpointConfig: endpoint configuration
     ///   - authType: if provided override the registered auth interceptor
     /// - Throws: PluginConfigurationError in case of failure building an instance of AWSAuthorizationConfiguration
-    /// - Returns: array of URLRequestInterceptor
+    /// - Returns: An array of URLRequestInterceptor
     internal func interceptorsForEndpoint(withConfig endpointConfig: EndpointConfig,
                                           authType: AWSAuthorizationType? = nil) throws -> [URLRequestInterceptor] {
 
@@ -93,11 +93,26 @@ public struct AWSAPICategoryPluginConfiguration {
         try config.addAuthInterceptorsToEndpoint(endpointType: endpointConfig.endpointType,
                                                  authConfiguration: authConfiguration)
 
-        // TODO: copy existing interceptors before return
+        // retrieve current interceptors and replace auth interceptor
+        let currentInterceptors = interceptorsForEndpoint(named: endpointConfig.name).filter {
+            !isAuthInterceptor($0)
+        }
+        config.interceptors.append(contentsOf: currentInterceptors)
+
         return config.interceptors
     }
 
     // MARK: Private
+
+
+    /// Returns true if the provided interceptor is an auth interceptor
+    /// - Parameter interceptor: interceptors
+    private func isAuthInterceptor(_ interceptor: URLRequestInterceptor) -> Bool {
+        return interceptor as? APIKeyURLRequestInterceptor != nil ||
+            interceptor as? UserPoolURLRequestInterceptor != nil ||
+            interceptor as? IAMURLRequestInterceptor != nil
+    }
+
     private static func endpointsFromConfig(
         config: [String: JSONValue],
         apiAuthProviderFactory: APIAuthProviderFactory,
