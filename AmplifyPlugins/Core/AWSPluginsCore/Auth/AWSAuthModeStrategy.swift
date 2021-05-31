@@ -27,12 +27,16 @@ public typealias AWSAuthorizationTypesIterator = IndexingIterator<[AWSAuthorizat
 
 /// Represents an authorization strategy used by DataStore
 public protocol AuthModeStrategy {
+    init()
     func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> AWSAuthorizationTypesIterator
 }
 
 // MARK: - AWSDefaultAuthModeStrategy
 
 public struct AWSDefaultAuthModeStrategy: AuthModeStrategy {
+    
+    public init() {}
+    
     public func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> AWSAuthorizationTypesIterator {
         return [].makeIterator()
     }
@@ -43,6 +47,8 @@ public struct AWSDefaultAuthModeStrategy: AuthModeStrategy {
 /// Multi-auth strategy implementation based on schema metadata
 public struct AWSMultiAuthModeStrategy: AuthModeStrategy {
     private typealias AuthStrategyPriority = Int
+    
+    public init() {}
 
     private static func authTypeFor(authStrategy: AuthStrategy) -> AWSAuthorizationType {
         var authType: AWSAuthorizationType
