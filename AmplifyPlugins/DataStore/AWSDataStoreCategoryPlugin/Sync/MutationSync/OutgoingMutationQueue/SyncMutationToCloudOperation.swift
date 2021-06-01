@@ -26,7 +26,7 @@ class SyncMutationToCloudOperation: Operation {
     private var mutationRetryNotifier: MutationRetryNotifier?
     private var requestRetryablePolicy: RequestRetryablePolicy
     private var currentAttemptNumber: Int
-    private var authTypes: AWSAuthorizationTypesIterator? = nil
+    private var availableAuthTypes: AWSAuthorizationTypeProvider?
 
     init(mutationEvent: MutationEvent,
          api: APICategoryGraphQLBehavior,
@@ -41,17 +41,17 @@ class SyncMutationToCloudOperation: Operation {
         self.completion = completion
         self.currentAttemptNumber = currentAttemptNumber
         self.requestRetryablePolicy = requestRetryablePolicy ?? RequestRetryablePolicy()
-        
+
         if let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName),
            let mutationType = GraphQLMutationType(rawValue: mutationEvent.mutationType) {
-            self.authTypes = authModeStrategy.authTypesFor(schema: modelSchema, operation: mutationType.toModelOperation())
+            self.availableAuthTypes = authModeStrategy.authTypesFor(schema: modelSchema, operation: mutationType.toModelOperation())
         }
         super.init()
     }
 
     override func main() {
         log.verbose(#function)
-        sendMutationToCloud(withAuthType: authTypes?.next())
+        sendMutationToCloud(withAuthType: availableAuthTypes?.next())
     }
 
     override func cancel() {
@@ -90,6 +90,12 @@ class SyncMutationToCloudOperation: Operation {
         }
     }
 
+    
+    /// Creates a GraphQLRequest based on given `mutationType`
+    /// - Parameters:
+    ///   - mutationType: mutation type
+    ///   - authType: authorization type, if provided overrides the auth used to perform the API request
+    /// - Returns: a GraphQL request
     func createAPIRequest(mutationType: GraphQLMutationType,
                           authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSync<AnyModel>>? {
         var request: GraphQLRequest<MutationSync<AnyModel>>
@@ -143,7 +149,6 @@ class SyncMutationToCloudOperation: Operation {
             return nil
         }
         request.options = GraphQLRequest<MutationSync<AnyModel>>.options(authType: authType)
-        
         return request
     }
 
@@ -228,7 +233,7 @@ class SyncMutationToCloudOperation: Operation {
         }
         currentAttemptNumber += 1
     }
-    
+
     private func scheduleRetry(advice: RequestRetryAdvice,
                                withAuthType authType: AWSAuthorizationType?) {
         mutationRetryNotifier = MutationRetryNotifier(advice: advice,

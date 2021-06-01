@@ -51,7 +51,7 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: AmplifyCancell
     var attempts = 0
     let id = UUID()
 
-    
+
     /// Initialize a new retryable operation
     /// - Parameters:
     ///   - requestFactory: `GraphQLRequest<Payload>` factory, called at every new attempt
