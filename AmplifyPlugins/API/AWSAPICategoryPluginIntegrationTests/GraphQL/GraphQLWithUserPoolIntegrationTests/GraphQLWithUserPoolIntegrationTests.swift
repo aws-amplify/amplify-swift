@@ -6,9 +6,10 @@
 //
 
 import XCTest
+import Foundation
 @testable import Amplify
 import AmplifyPlugins
-import AWSMobileClient
+import AWSCore
 import AWSAPICategoryPlugin
 @testable import AWSAPICategoryPluginTestCommon
 @testable import AmplifyTestCommon
@@ -187,11 +188,12 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                           password: GraphQLWithUserPoolIntegrationTests.password)
         let completeInvoked = expectation(description: "request completed")
         let uuid = UUID().uuidString
-        let description = "testCreateTodoMutationWithMissingInputFromVariables"
+
+        // create a Todo mutation with a missing/invalid "description" variable value
         let request = GraphQLRequest(document: CreateTodoMutation.document,
                                      variables: CreateTodoMutation.variables(id: uuid,
                                                                              name: "",
-                                                                             description: description),
+                                                                             description: nil),
                                      responseType: AWSAPICategoryPluginTestCommon.Todo?.self,
                                      decodePath: CreateTodoMutation.decodePath)
         let operation = Amplify.API.mutate(request: request) { event in
@@ -202,13 +204,17 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                     return
                 }
 
-                guard case let .partial(todo, error) = graphQLResponseError else {
-                    XCTFail("Missing partial response")
+                guard case let .transformationError(todo, error) = graphQLResponseError else {
+                    XCTFail("Missing transformation error")
                     return
                 }
-                print(graphQLResponseError.errorDescription)
-                XCTAssertNil(todo)
-                XCTAssertNotNil(error)
+                guard case let .operationError(operationErrorDescription, _, operationError) = error else {
+                    XCTFail("Unexpected error type \(error)")
+                    return
+                }
+                XCTAssertNotNil(todo)
+                XCTAssertNotNil(operationError)
+                XCTAssertEqual(operationErrorDescription, "valueNotFound")
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
