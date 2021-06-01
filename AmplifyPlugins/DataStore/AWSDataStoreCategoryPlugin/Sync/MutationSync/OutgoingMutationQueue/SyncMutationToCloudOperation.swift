@@ -26,9 +26,11 @@ class SyncMutationToCloudOperation: Operation {
     private var mutationRetryNotifier: MutationRetryNotifier?
     private var requestRetryablePolicy: RequestRetryablePolicy
     private var currentAttemptNumber: Int
+    private var authTypes: AWSAuthorizationTypesIterator? = nil
 
     init(mutationEvent: MutationEvent,
          api: APICategoryGraphQLBehavior,
+         authModeStrategy: AuthModeStrategy,
          networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
          currentAttemptNumber: Int = 1,
          requestRetryablePolicy: RequestRetryablePolicy? = RequestRetryablePolicy(),
@@ -39,20 +41,17 @@ class SyncMutationToCloudOperation: Operation {
         self.completion = completion
         self.currentAttemptNumber = currentAttemptNumber
         self.requestRetryablePolicy = requestRetryablePolicy ?? RequestRetryablePolicy()
+        
+        if let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName),
+           let mutationType = GraphQLMutationType(rawValue: mutationEvent.mutationType) {
+            self.authTypes = authModeStrategy.authTypesFor(schema: modelSchema, operation: mutationType.toModelOperation())
+        }
         super.init()
     }
 
     override func main() {
         log.verbose(#function)
-
-        guard !isCancelled else {
-            mutationOperation?.cancel()
-            let apiError = APIError.unknown("Operation cancelled", "")
-            finish(result: .failure(apiError))
-            return
-        }
-
-        sendMutationToCloud()
+        sendMutationToCloud(withAuthType: authTypes?.next())
     }
 
     override func cancel() {
@@ -62,7 +61,7 @@ class SyncMutationToCloudOperation: Operation {
         finish(result: .failure(apiError))
     }
 
-    private func sendMutationToCloud() {
+    private func sendMutationToCloud(withAuthType authType: AWSAuthorizationType? = nil) {
         guard !isCancelled else {
             mutationOperation?.cancel()
             let apiError = APIError.unknown("Operation cancelled", "")
@@ -86,13 +85,14 @@ class SyncMutationToCloudOperation: Operation {
             return
         }
 
-        if let apiRequest = createAPIRequest(mutationType: mutationType) {
+        if let apiRequest = createAPIRequest(mutationType: mutationType, authType: authType) {
             makeAPIRequest(apiRequest)
         }
     }
 
-    func createAPIRequest(mutationType: GraphQLMutationType) -> GraphQLRequest<MutationSync<AnyModel>>? {
-        let request: GraphQLRequest<MutationSync<AnyModel>>
+    func createAPIRequest(mutationType: GraphQLMutationType,
+                          authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSync<AnyModel>>? {
+        var request: GraphQLRequest<MutationSync<AnyModel>>
 
         do {
             var graphQLFilter: GraphQLFilter?
@@ -142,6 +142,8 @@ class SyncMutationToCloudOperation: Operation {
             finish(result: .failure(apiError))
             return nil
         }
+        request.options = GraphQLRequest<MutationSync<AnyModel>>.options(authType: authType)
+        
         return request
     }
 
@@ -209,6 +211,8 @@ class SyncMutationToCloudOperation: Operation {
             advice = requestRetryablePolicy.retryRequestAdvice(urlError: nil,
                                                                httpURLResponse: httpURLResponse,
                                                                attemptNumber: currentAttemptNumber)
+        case .operationError(let apiError, _, _):
+            advice = RequestRetryAdvice(shouldRetry: true, retryInterval: .milliseconds(0))
         default:
             break
         }
@@ -219,10 +223,19 @@ class SyncMutationToCloudOperation: Operation {
         log.verbose("\(#function) scheduling retry for mutation")
         mutationRetryNotifier = MutationRetryNotifier(advice: advice,
                                                       networkReachabilityPublisher: networkReachabilityPublisher) {
-                                                        self.sendMutationToCloud()
-                                                        self.mutationRetryNotifier = nil
+            self.sendMutationToCloud()
+            self.mutationRetryNotifier = nil
         }
         currentAttemptNumber += 1
+    }
+    
+    private func scheduleRetry(advice: RequestRetryAdvice,
+                               withAuthType authType: AWSAuthorizationType?) {
+        mutationRetryNotifier = MutationRetryNotifier(advice: advice,
+                                                      networkReachabilityPublisher: networkReachabilityPublisher) {
+            self.sendMutationToCloud(withAuthType: authType)
+            self.mutationRetryNotifier = nil
+        }
     }
 
     private func finish(result: MutationSyncCloudResult) {
@@ -235,5 +248,21 @@ class SyncMutationToCloudOperation: Operation {
     }
 }
 
+// MARK: - GraphQLMutationType + toModelOperation
+private extension GraphQLMutationType {
+    func toModelOperation() -> ModelOperation {
+        switch self {
+        case .create:
+            return .create
+        case .update:
+            return .update
+        case .delete:
+            return .delete
+        }
+    }
+}
+
+
 @available(iOS 13.0, *)
 extension SyncMutationToCloudOperation: DefaultLogger { }
+

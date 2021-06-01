@@ -34,7 +34,6 @@ public protocol AuthModeStrategy {
 // MARK: - AWSDefaultAuthModeStrategy
 
 public struct AWSDefaultAuthModeStrategy: AuthModeStrategy {
-    
     public init() {}
     
     public func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> AWSAuthorizationTypesIterator {

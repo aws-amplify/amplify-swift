@@ -33,6 +33,8 @@ public extension HubPayload.EventName.API {
     static let subscribe = "API.subscribe"
 }
 
+
+/// Retryable GraphQL operation
 public final class RetryableGraphQLOperation<Payload: Decodable>: AmplifyCancellable {
     public enum RetryableGraphQLOperationType<P: Decodable> {
         case subscription(inProcess: GraphQLSubscriptionOperation<Payload>.InProcessListener,
@@ -49,6 +51,12 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: AmplifyCancell
     var attempts = 0
     let id = UUID()
 
+    
+    /// Initialize a new retryable operation
+    /// - Parameters:
+    ///   - requestFactory: `GraphQLRequest<Payload>` factory, called at every new attempt
+    ///   - api: `APICategoryGraphQLBehavior`
+    ///   - operationType: type of GraphQL operation
     public init(requestFactory: @escaping RequestFactory,
                 api: APICategoryGraphQLBehavior,
                 operationType: RetryableGraphQLOperationType<Payload>) {
@@ -71,7 +79,8 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: AmplifyCancell
         switch operationType {
         case .subscription(inProcess: let inProcess, completion: let completion):
             let wrappedCompletionListener: GraphQLSubscriptionOperation<Payload>.ResultListener = {
-                if case .failure = $0, let nextRequest = self.requestFactory() {
+                if case let .failure(error) = $0, let nextRequest = self.requestFactory() {
+                    print("error \(error)")
                     self.start(request: nextRequest)
                     return
                 }
@@ -82,7 +91,7 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: AmplifyCancell
                                           completionListener: wrappedCompletionListener)
         case .mutation(completion: let completion):
             let wrappedCompletionListener: GraphQLOperation<Payload>.ResultListener = {
-                if case .failure = $0, let nextRequest = self.requestFactory() {
+                if case let .failure(error) = $0, let nextRequest = self.requestFactory() {
                     self.start(request: nextRequest)
                     return
                 }
