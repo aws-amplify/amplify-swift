@@ -228,6 +228,12 @@ type Nested {
   valueTwo: String
 }
 
+type CustomerOrder @model
+   @key(fields: ["orderId","id"]) {
+   id: ID!
+   orderId: String!
+   email: String!
+}
 ```
 3. `amplify push`
 
