@@ -7,6 +7,44 @@
 
 import Amplify
 
+protocol AWSAuthRuleProvider {
+    static var iam: AuthRuleProvider { get }
+    static var userPools: AuthRuleProvider { get }
+}
+
+extension AuthRuleProvider: AWSAuthRuleProvider {
+    private static func valueForIAM() -> String { "iam" }
+    private static func valueForCognitoUserPool() -> String { "userPools" }
+
+    public static var iam: AuthRuleProvider {
+        .custom(name: valueForIAM())
+    }
+
+    public static var userPools: AuthRuleProvider {
+        .custom(name: valueForCognitoUserPool())
+    }
+
+    public func toAWSAuthorizationType() throws -> AWSAuthorizationType {
+        var authType: AWSAuthorizationType
+        switch self {
+        case .apiKey:
+            authType = .apiKey
+        case .oidc:
+            authType = .openIDConnect
+        case .custom(name: let name) where name == AuthRuleProvider.valueForIAM():
+            authType = .awsIAM
+
+        case .custom(name: let name) where name == AuthRuleProvider.valueForCognitoUserPool():
+            authType = .amazonCognitoUserPools
+        case .custom(name: let name):
+            throw DataStoreError.unknown(
+                "Invalid AWS authorization provider in schema @auth rule: \(name)",
+                "Verify your schema.")
+        }
+        return authType
+    }
+}
+
 extension AuthRule {
     func getOwnerFieldOrDefault() -> String {
         guard let ownerField = ownerField else {
