@@ -13,7 +13,7 @@ import AWSCore
 public extension AWSAPICategoryPluginConfiguration {
     struct EndpointInterceptorsConfig {
         // API name
-        let endpointName: APIEndpointName
+        let apiEndpointName: APIEndpointName
 
         let apiAuthProviderFactory: APIAuthProviderFactory
         let authService: AWSAuthServiceBehavior?
@@ -23,7 +23,7 @@ public extension AWSAPICategoryPluginConfiguration {
         init(endpointName: APIEndpointName,
              apiAuthProviderFactory: APIAuthProviderFactory,
              authService: AWSAuthServiceBehavior? = nil) {
-            self.endpointName = endpointName
+            self.apiEndpointName = endpointName
             self.apiAuthProviderFactory = apiAuthProviderFactory
             self.authService = authService
         }
