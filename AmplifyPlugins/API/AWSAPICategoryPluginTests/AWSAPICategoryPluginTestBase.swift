@@ -44,7 +44,7 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
                 authorizationType: AWSAuthorizationType.none,
                 endpointType: .graphQL,
                 apiAuthProviderFactory: apiAuthProvider)]
-            let interceptors = [apiName: AWSAPICategoryPluginConfiguration.EndpointInterceptorsConfig(
+            let interceptors = [apiName: AWSAPIEndpointInterceptors(
                                     endpointName: apiName,
                                     apiAuthProviderFactory: apiAuthProvider)]
             let pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig,

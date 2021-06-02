@@ -11,7 +11,7 @@ import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSAPICategoryPlugin
 
-class AWSAPICategoryPluginConfigurationInterceptorConfigTests: XCTestCase {
+class AWSAPIEndpointInterceptorsTests: XCTestCase {
     let endpointName = "endpointName"
     let apiKey = "apiKey-123456789"
     var config: AWSAuthorizationConfiguration?
@@ -22,11 +22,11 @@ class AWSAPICategoryPluginConfigurationInterceptorConfigTests: XCTestCase {
                                                                  apiKey: apiKey)
     }
 
-    /// Given: an EndpointInterceptorsConfig
+    /// Given: an AWSAPIEndpointInterceptors
     /// When: a new auth interceptor is added
     /// Then: the interceptor is correctly stored
     func testAddAuthInterceptor() throws {
-        var interceptorConfig = createInterceptorConfig()
+        var interceptorConfig = createAPIInterceptorConfig()
 
         try interceptorConfig.addAuthInterceptorsToEndpoint(endpointType: .graphQL, authConfiguration: config!)
 
@@ -34,11 +34,11 @@ class AWSAPICategoryPluginConfigurationInterceptorConfigTests: XCTestCase {
 
     }
 
-    /// Given: an EndpointInterceptorsConfig
+    /// Given: an AWSAPIEndpointInterceptors
     /// When: a new multiple interceptors are added
     /// Then: the interceptors are correctly associated to an endpoint
     func testAddMutipleInterceptors() throws {
-        var interceptorConfig = createInterceptorConfig()
+        var interceptorConfig = createAPIInterceptorConfig()
 
         try interceptorConfig.addAuthInterceptorsToEndpoint(endpointType: .graphQL, authConfiguration: config!)
         interceptorConfig.addInterceptor(CustomInterceptor())
@@ -58,7 +58,7 @@ class AWSAPICategoryPluginConfigurationInterceptorConfigTests: XCTestCase {
         let userPoolConfig = try AWSAuthorizationConfiguration.makeConfiguration(authType: .amazonCognitoUserPools,
                                                                                         region: .USWest2, apiKey: nil)
 
-        var interceptorConfig = createInterceptorConfig()
+        var interceptorConfig = createAPIInterceptorConfig()
         try interceptorConfig.addAuthInterceptorsToEndpoint(endpointType: .graphQL,
                                                             authConfiguration: apiKeyConfig)
         try interceptorConfig.addAuthInterceptorsToEndpoint(endpointType: .graphQL,
@@ -75,8 +75,8 @@ class AWSAPICategoryPluginConfigurationInterceptorConfigTests: XCTestCase {
 
     // MARK: - Test Helpers
 
-    func createInterceptorConfig() -> AWSAPICategoryPluginConfiguration.EndpointInterceptorsConfig {
-        return AWSAPICategoryPluginConfiguration.EndpointInterceptorsConfig(
+    func createAPIInterceptorConfig() -> AWSAPIEndpointInterceptors {
+        return AWSAPIEndpointInterceptors(
             endpointName: endpointName,
             apiAuthProviderFactory: APIAuthProviderFactory(),
             authService: MockAWSAuthService())
