@@ -14,22 +14,26 @@ import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
+// swiftlint:disable cyclomatic_complexity
 class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
 
     /// - Given: API has been setup with CustomerOrder model registered
     /// - When: A new customer order is
-    ///     - saved and queried - should return the saved model
+    ///     - saved, updated and queried - should return the saved model
     ///     - deleted
     ///     - queried
     /// - Then: The model should be deleted finally and the sync events should be received in order
-
-    func testCreateQueryDelete() throws {
+    func testDeleteModelWithCustomPrimaryKey() throws {
 
         try startAmplifyAndWaitForSync()
         let customerOrder = CustomerOrder(orderId: UUID().uuidString, email: "test@abc.com")
 
         let createReceived = expectation(description: "Create notification received")
         let deleteReceived = expectation(description: "Delete notification received")
+        let updateReceived = expectation(description: "Update notification received")
+
+        var updatedCustomerOrder = customerOrder
+        updatedCustomerOrder.email = "testnew@abc.com"
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
@@ -53,10 +57,18 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
                     return
                 }
 
-                if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                    XCTAssertEqual(order.email, customerOrder.email)
-                    XCTAssertEqual(order.orderId, customerOrder.orderId)
+                if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
+                    XCTAssertEqual(order.email, updatedCustomerOrder.email)
+                    XCTAssertEqual(order.orderId, updatedCustomerOrder.orderId)
                     XCTAssertEqual(mutationEvent.version, 2)
+                    updateReceived.fulfill()
+                    return
+                }
+
+                if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
+                    XCTAssertEqual(order.email, updatedCustomerOrder.email)
+                    XCTAssertEqual(order.orderId, updatedCustomerOrder.orderId)
+                    XCTAssertEqual(mutationEvent.version, 3)
                     deleteReceived.fulfill()
                     return
                 }
@@ -71,18 +83,22 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
         Amplify.DataStore.save(customerOrder) { _ in }
         wait(for: [createReceived], timeout: networkTimeout)
 
-        // query the created order
+        // update customer order
+        Amplify.DataStore.save(updatedCustomerOrder) { _ in }
+        wait(for: [updateReceived], timeout: networkTimeout)
+
+        // query the updated order
         let queryBeforeDeleteExpectation = expectation(description: "Queried model should be same as created one")
-        Amplify.DataStore.query(CustomerOrder.self, byId: customerOrder.id) { result in
+        Amplify.DataStore.query(CustomerOrder.self, byId: updatedCustomerOrder.id) { result in
             switch result {
             case .success(let value):
                 guard let order = value else {
                     XCTFail("Queried model is nil")
                     return
                 }
-                XCTAssertEqual(order.id, customerOrder.id)
-                XCTAssertEqual(order.orderId, customerOrder.orderId)
-                XCTAssertEqual(order.email, customerOrder.email)
+                XCTAssertEqual(order.id, updatedCustomerOrder.id)
+                XCTAssertEqual(order.orderId, updatedCustomerOrder.orderId)
+                XCTAssertEqual(order.email, updatedCustomerOrder.email)
                 queryBeforeDeleteExpectation.fulfill()
             case .failure(let error):
                 print("Error : \(error)")
@@ -90,11 +106,13 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
         }
         wait(for: [queryBeforeDeleteExpectation], timeout: networkTimeout)
 
-        Amplify.DataStore.delete(CustomerOrder.self, withId: customerOrder.id) { _ in }
+        // delete the customer order
+        Amplify.DataStore.delete(CustomerOrder.self, withId: updatedCustomerOrder.id) { _ in }
         wait(for: [deleteReceived], timeout: networkTimeout)
 
+        // query the customer order after deletion
         let queryAfterDeleteExpectation = expectation(description: "Deleted model not found upon querying")
-        Amplify.DataStore.query(CustomerOrder.self, byId: customerOrder.id) { result in
+        Amplify.DataStore.query(CustomerOrder.self, byId: updatedCustomerOrder.id) { result in
             switch result {
             case .success(let value):
                 XCTAssertNil(value)
