@@ -136,22 +136,20 @@ final class InitialSyncOperation: AsynchronousOperation {
             }
         }
 
-        var authTypes = dataStoreConfiguration.authModeStrategy.authTypesFor(schema: modelSchema, operation: .read)
+        var authTypes = dataStoreConfiguration.authModeStrategy.authTypesFor(schema: modelSchema,
+                                                                             operation: .read)
         RetryableGraphQLOperation<SyncQueryResult>(
             requestFactory: {
-                guard let authType = authTypes.next() else {
-                    return nil
-                }
-                let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: self.modelSchema,
+                GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: self.modelSchema,
                                                                         where: queryPredicate,
                                                                         limit: limit,
                                                                         nextToken: nextToken,
                                                                         lastSync: lastSyncTime,
-                                                                        authType: authType)
-                return request
+                                                                        authType: authTypes.next())
             },
             api: api,
-            operationType: .query(completion: completionListener)).start()
+            operationType: .query(completion: completionListener),
+            maxRetries: authTypes.count).main()
     }
 
     /// Disposes of the query results: Stops if error, reconciles results if success, and kick off a new query if there

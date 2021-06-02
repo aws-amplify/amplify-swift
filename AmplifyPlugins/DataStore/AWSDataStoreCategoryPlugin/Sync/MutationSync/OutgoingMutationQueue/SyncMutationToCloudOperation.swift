@@ -44,7 +44,8 @@ class SyncMutationToCloudOperation: Operation {
 
         if let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName),
            let mutationType = GraphQLMutationType(rawValue: mutationEvent.mutationType) {
-            self.authTypesProvider = authModeStrategy.authTypesFor(schema: modelSchema, operation: mutationType.toModelOperation())
+            self.authTypesProvider = authModeStrategy.authTypesFor(schema: modelSchema,
+                                                                   operation: mutationType.toModelOperation())
         }
         super.init()
     }
@@ -177,12 +178,12 @@ class SyncMutationToCloudOperation: Operation {
 
         if case .failure(let error) = cloudResult {
             let advice = getRetryAdviceIfRetryable(error: error)
-            
+
             guard advice.shouldRetry else {
                 self.finish(result: .failure(error))
                 return
             }
-            
+
             resolveReachabilityPublisher(request: request)
             if request.options?.authType != nil, let nextAuthType = authTypesProvider?.next() {
                 self.scheduleRetry(advice: advice, withAuthType: nextAuthType)

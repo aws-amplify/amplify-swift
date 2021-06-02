@@ -70,6 +70,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
 
         let operation = SyncMutationToCloudOperation(mutationEvent: mutationEvent,
                                                      api: mockAPIPlugin,
+                                                     authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                      networkReachabilityPublisher: publisher,
                                                      currentAttemptNumber: 1,
                                                      completion: completion)
@@ -140,6 +141,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         }
         let operation = SyncMutationToCloudOperation(mutationEvent: mutationEvent,
                                                      api: mockAPIPlugin,
+                                                     authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                      networkReachabilityPublisher: publisher,
                                                      currentAttemptNumber: 1,
                                                      requestRetryablePolicy: mockRequestRetryPolicy,
@@ -211,6 +213,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         }
         let operation = SyncMutationToCloudOperation(mutationEvent: mutationEvent,
                                                      api: mockAPIPlugin,
+                                                     authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                      networkReachabilityPublisher: publisher,
                                                      currentAttemptNumber: 1,
                                                      requestRetryablePolicy: mockRequestRetryPolicy,

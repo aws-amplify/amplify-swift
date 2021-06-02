@@ -35,7 +35,7 @@ public extension HubPayload.EventName.API {
 
 
 /// Retryable GraphQL operation
-public final class RetryableGraphQLOperation<Payload: Decodable>: AmplifyCancellable {
+public final class RetryableGraphQLOperation<Payload: Decodable>: Operation {
     public enum RetryableGraphQLOperationType<P: Decodable> {
         case subscription(inProcess: GraphQLSubscriptionOperation<Payload>.InProcessListener,
                           completion: GraphQLSubscriptionOperation<Payload>.ResultListener)
@@ -43,12 +43,14 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: AmplifyCancell
         case query(completion: GraphQLOperation<Payload>.ResultListener)
     }
 
-    public typealias RequestFactory = () -> GraphQLRequest<Payload>?
+    public typealias RequestFactory = () -> GraphQLRequest<Payload>
+    
     let api: APICategoryGraphQLBehavior
     let requestFactory: RequestFactory
     var underlyingOperation: AsynchronousOperation?
     var operationType: RetryableGraphQLOperationType<Payload>
     var attempts = 0
+    let maxRetries: Int
     let id = UUID()
 
 
@@ -57,31 +59,29 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: AmplifyCancell
     ///   - requestFactory: `GraphQLRequest<Payload>` factory, called at every new attempt
     ///   - api: `APICategoryGraphQLBehavior`
     ///   - operationType: type of GraphQL operation
+    ///   - maxRetries: maximum number of retries (default 1)
     public init(requestFactory: @escaping RequestFactory,
                 api: APICategoryGraphQLBehavior,
-                operationType: RetryableGraphQLOperationType<Payload>) {
+                operationType: RetryableGraphQLOperationType<Payload>,
+                maxRetries: Int = 1) {
         self.requestFactory = requestFactory
         self.api = api
         self.operationType = operationType
+        self.maxRetries = max(1, maxRetries)
     }
 
-    public func start() {
-        guard let request = requestFactory() else {
-            // TODO: log error
-            return
-        }
-        start(request: request)
+    public override func main() {
+        start(request: requestFactory())
     }
-
+    
     private func start(request: GraphQLRequest<Payload>) {
         attempts += 1
         var operation: AsynchronousOperation?
         switch operationType {
         case .subscription(inProcess: let inProcess, completion: let completion):
             let wrappedCompletionListener: GraphQLSubscriptionOperation<Payload>.ResultListener = {
-                if case let .failure(error) = $0, let nextRequest = self.requestFactory() {
-                    print("error \(error)")
-                    self.start(request: nextRequest)
+                if case let .failure(error) = $0, self.attempts < self.maxRetries {
+                    self.start(request: self.requestFactory())
                     return
                 }
                 completion($0)
@@ -91,34 +91,35 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: AmplifyCancell
                                           completionListener: wrappedCompletionListener)
         case .mutation(completion: let completion):
             let wrappedCompletionListener: GraphQLOperation<Payload>.ResultListener = {
-                if case let .failure(error) = $0, let nextRequest = self.requestFactory() {
-                    self.start(request: nextRequest)
+                if case let .failure(error) = $0, self.attempts < self.maxRetries {
+                    self.start(request: self.requestFactory())
                     return
                 }
                 completion($0)
             }
             operation = api.mutate(request: request,
-                                       listener: wrappedCompletionListener)
+                                   listener: wrappedCompletionListener)
         case .query(completion: let completion):
             let wrappedCompletionListener: GraphQLOperation<Payload>.ResultListener = {
-                if case .failure = $0, let nextRequest = self.requestFactory() {
-                    self.start(request: nextRequest)
+                if case let .failure(error) = $0, self.attempts < self.maxRetries {
+                    self.start(request: self.requestFactory())
                     return
                 }
                 completion($0)
             }
             operation = api.query(request: request,
-                                       listener: wrappedCompletionListener)
+                                  listener: wrappedCompletionListener)
         }
         inFlightOperation(operation: operation)
     }
 
-    public func cancel() {
+    public override func cancel() {
         underlyingOperation?.cancel()
     }
 
     private func inFlightOperation(operation: AsynchronousOperation?) {
-        // cancel()
         underlyingOperation = operation
     }
 }
+
+extension RetryableGraphQLOperation: DefaultLogger {}
