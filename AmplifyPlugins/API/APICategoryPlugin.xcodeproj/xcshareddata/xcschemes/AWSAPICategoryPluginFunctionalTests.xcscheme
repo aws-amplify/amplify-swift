@@ -38,9 +38,6 @@
                <Test
                   Identifier = "GraphQLConnectionScenario1Tests/testListProjectsByTeamID()">
                </Test>
-               <Test
-                  Identifier = "GraphQLSyncBasedTests">
-               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
