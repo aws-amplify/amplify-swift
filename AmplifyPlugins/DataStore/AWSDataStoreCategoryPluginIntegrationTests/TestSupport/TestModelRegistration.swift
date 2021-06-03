@@ -32,6 +32,7 @@ struct TestModelRegistration: AmplifyModelRegistration {
         registry.register(modelType: ListStringContainer.self)
         registry.register(modelType: EnumTestModel.self)
         registry.register(modelType: NestedTypeTestModel.self)
+        registry.register(modelType: CustomerOrder.self)
     }
 
     let version: String = "1"
