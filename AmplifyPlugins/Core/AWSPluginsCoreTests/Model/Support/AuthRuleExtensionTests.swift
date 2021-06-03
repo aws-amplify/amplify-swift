@@ -23,9 +23,4 @@ class AuthRuleExtensionTests: XCTestCase {
             XCTAssertEqual(try provider.toAWSAuthorizationType(), expectedAuthTypes[index])
         }
     }
-
-    func testShouldThrowIfInvalidAuthAWSProvider() throws {
-        let authRuleProvider: AuthRuleProvider = .custom(name: "invalid")
-        XCTAssertThrowsError(try authRuleProvider.toAWSAuthorizationType())
-    }
 }

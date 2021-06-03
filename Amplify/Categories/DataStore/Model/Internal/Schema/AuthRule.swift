@@ -28,7 +28,8 @@ public enum ModelOperation {
 public enum AuthRuleProvider {
     case apiKey
     case oidc
-    case custom(name: String)
+    case iam
+    case userPools
 }
 
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
