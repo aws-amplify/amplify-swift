@@ -33,7 +33,6 @@ extension AuthRuleProvider: AWSAuthRuleProvider {
             authType = .openIDConnect
         case .custom(name: let name) where name == AuthRuleProvider.valueForIAM():
             authType = .awsIAM
-
         case .custom(name: let name) where name == AuthRuleProvider.valueForCognitoUserPool():
             authType = .amazonCognitoUserPools
         case .custom(name: let name):
