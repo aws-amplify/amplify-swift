@@ -26,8 +26,8 @@ protocol ModelSyncGraphQLRequestFactory {
                                where filter: GraphQLFilter?,
                                version: Int?) -> GraphQLRequest<MutationSyncResult>
 
-    static func deleteMutation(modelName: String,
-                               id: Model.Identifier,
+    static func deleteMutation(of model: Model,
+                               modelSchema: ModelSchema,
                                where filter: GraphQLFilter?,
                                version: Int?) -> GraphQLRequest<MutationSyncResult>
 
@@ -110,13 +110,13 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         createOrUpdateMutation(of: model, modelSchema: modelSchema, where: filter, type: .update, version: version)
     }
 
-    public static func deleteMutation(modelName: String,
-                                      id: Model.Identifier,
+    public static func deleteMutation(of model: Model,
+                                      modelSchema: ModelSchema,
                                       where filter: GraphQLFilter? = nil,
                                       version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName, operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: model.modelName, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
-        documentBuilder.add(decorator: ModelIdDecorator(id: id))
+        documentBuilder.add(decorator: ModelIdDecorator(model: model))
         if let filter = filter {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))
         }
