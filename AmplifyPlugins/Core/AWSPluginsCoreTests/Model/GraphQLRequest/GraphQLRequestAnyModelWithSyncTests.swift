@@ -10,11 +10,13 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 
+// swiftlint:disable type_body_length
 class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
 
     override func setUp() {
         ModelRegistry.register(modelType: Comment.self)
         ModelRegistry.register(modelType: Post.self)
+
     }
 
     override func tearDown() {
@@ -172,7 +174,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         }
         """
 
-        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: post.modelName, id: post.id)
+        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: post, modelSchema: post.schema)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)

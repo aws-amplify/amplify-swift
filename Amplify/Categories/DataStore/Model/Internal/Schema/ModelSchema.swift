@@ -7,10 +7,14 @@
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
-public enum ModelAttribute {
+public typealias ModelFieldName = String
+
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
+///   directly by host applications. The behavior of this may change without warning.
+public enum ModelAttribute: Equatable {
 
     /// Represents a database index, often used for frequent query optimizations.
-    case index
+    case index(fields: [ModelFieldName], name: String?)
 
     /// This model is used by the Amplify system or a plugin, and should not be used by the app developer
     case isSystem
@@ -26,7 +30,7 @@ public enum ModelFieldAttribute {
 ///   directly by host applications. The behavior of this may change without warning.
 public struct ModelField {
 
-    public let name: String
+    public let name: ModelFieldName
     public let type: ModelFieldType
     public let isRequired: Bool
     public let isReadOnly: Bool
@@ -104,6 +108,37 @@ public struct ModelSchema {
     }
 
 }
+
+// MARK: - ModelAttribute + Index
+
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
+///   directly by host applications. The behavior of this may change without warning.
+public extension ModelSchema {
+    var indexes: [ModelAttribute] {
+        attributes.filter {
+            switch $0 {
+            case .index:
+                return true
+            default:
+                return false
+            }
+        }
+    }
+
+    /// Returns the list of fields that make up the primary key for the model.
+    /// In case of a custom primary key, the model has a `@key` directive
+    /// without a name and at least 1 field
+    var customPrimaryIndexFields: [ModelFieldName]? {
+        attributes.compactMap {
+            if case let .index(fields, name) = $0, name == nil, fields.count >= 1 {
+                return fields
+            }
+            return nil
+        }.first
+    }
+}
+
+// MARK: - Dictionary + ModelField
 
 extension Dictionary where Key == String, Value == ModelField {
 

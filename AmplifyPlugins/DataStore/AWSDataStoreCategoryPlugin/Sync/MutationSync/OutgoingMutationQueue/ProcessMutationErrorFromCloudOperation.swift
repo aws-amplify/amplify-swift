@@ -191,8 +191,8 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             case .applyRemote:
                 self.saveCreateOrUpdateMutation(remoteModel: remoteModel)
             case .retryLocal:
-                let request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: localModel.modelName,
-                                                                                id: localModel.id,
+                let request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: localModel,
+                                                                                modelSchema: localModel.schema,
                                                                                 version: latestVersion)
                 self.makeAPIRequest(request)
             case .retry(let model):
