@@ -32,4 +32,3 @@ public extension HubPayload.EventName.API {
     /// eventName for HubPayloads emitted by this operation
     static let subscribe = "API.subscribe"
 }
-
