@@ -25,6 +25,15 @@ public enum ModelOperation {
 
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
+public enum AuthRuleProvider {
+    case apiKey
+    case oidc
+    case iam
+    case userPools
+}
+
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
 public typealias AuthRules = [AuthRule]
 
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
@@ -37,6 +46,7 @@ public struct AuthRule {
     public let groups: [String]
     public let groupsField: String?
     public let operations: [ModelOperation]
+    public let provider: AuthRuleProvider?
 
     public init(allow: AuthStrategy,
                 ownerField: String? = nil,
@@ -44,6 +54,7 @@ public struct AuthRule {
                 groupClaim: String? = nil,
                 groups: [String] = [],
                 groupsField: String? = nil,
+                provider: AuthRuleProvider? = nil,
                 operations: [ModelOperation] = []) {
         self.allow = allow
         self.ownerField = ownerField
@@ -51,6 +62,7 @@ public struct AuthRule {
         self.groupClaim = groupClaim
         self.groups = groups
         self.groupsField = groupsField
+        self.provider = provider
         self.operations = operations
     }
 }

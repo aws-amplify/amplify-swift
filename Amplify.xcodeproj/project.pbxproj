@@ -246,6 +246,7 @@
 		762167D52615435C0033FCD2 /* Record+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762167D42615435C0033FCD2 /* Record+Schema.swift */; };
 		762C978526210F6400798FA3 /* RecordCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762C978426210F6400798FA3 /* RecordCover.swift */; };
 		762C978E26210FF100798FA3 /* RecordCover+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762C978D26210FF100798FA3 /* RecordCover+Schema.swift */; };
+		762F70A426683EE2001F8252 /* AuthRuleExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762F70A326683EE2001F8252 /* AuthRuleExtensionTests.swift */; };
 		7678B38426017D5300B4917F /* AppSyncErrorTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */; };
 		7678B38526017D5300B4917F /* AppSyncErrorTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */; };
 		767F85FC2649FF540076D633 /* CustomerOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767F85FB2649FF540076D633 /* CustomerOrder.swift */; };
@@ -1132,6 +1133,7 @@
 		762167D42615435C0033FCD2 /* Record+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Record+Schema.swift"; sourceTree = "<group>"; };
 		762C978426210F6400798FA3 /* RecordCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordCover.swift; sourceTree = "<group>"; };
 		762C978D26210FF100798FA3 /* RecordCover+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RecordCover+Schema.swift"; sourceTree = "<group>"; };
+		762F70A326683EE2001F8252 /* AuthRuleExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRuleExtensionTests.swift; sourceTree = "<group>"; };
 		7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorTypeTests.swift; sourceTree = "<group>"; };
 		767F85FB2649FF540076D633 /* CustomerOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerOrder.swift; sourceTree = "<group>"; };
 		767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomerOrder+Schema.swift"; sourceTree = "<group>"; };
@@ -1890,6 +1892,7 @@
 			children = (
 				2129BE2F2394828A006363A1 /* QueryPredicateGraphQLTests.swift */,
 				D83C515F248964780091548E /* ModelGraphQLTests.swift */,
+				762F70A326683EE2001F8252 /* AuthRuleExtensionTests.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -5271,6 +5274,7 @@
 				FAC23564227A056600424678 /* StorageCategoryClientAPITests.swift in Sources */,
 				FAAFAF3123904B75002CF932 /* AtomicValue+BoolTests.swift in Sources */,
 				B9AF547E23F37DF20059E6C4 /* TemporalOperationTests.swift in Sources */,
+				762F70A426683EE2001F8252 /* AuthRuleExtensionTests.swift in Sources */,
 				FAD3937D23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift in Sources */,
 				FA607FE2233D131B00DFEA24 /* AmplifyOperationHubTests.swift in Sources */,
 				B4944D52251C141200BF0BFE /* JSONValueHolderTest.swift in Sources */,

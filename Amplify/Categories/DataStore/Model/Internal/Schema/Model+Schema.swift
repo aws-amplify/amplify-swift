@@ -63,6 +63,7 @@ extension Model {
                             groupClaim: String? = nil,
                             groups: [String] = [],
                             groupsField: String? = nil,
+                            provider: AuthRuleProvider? = nil,
                             operations: [ModelOperation] = []) -> AuthRule {
         return AuthRule(allow: allow,
                         ownerField: ownerField,
@@ -70,6 +71,7 @@ extension Model {
                         groupClaim: groupClaim,
                         groups: groups,
                         groupsField: groupsField,
+                        provider: provider,
                         operations: operations)
     }
 }
