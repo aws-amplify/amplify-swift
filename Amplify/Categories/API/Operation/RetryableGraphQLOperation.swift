@@ -18,7 +18,7 @@ public protocol AnyGraphQLOperation {
 /// Abastraction for a retryable GraphQLOperation.
 public protocol RetryableGraphQLOperationBehavior: Operation, DefaultLogger {
     associatedtype Payload: Decodable
-    
+
     /// GraphQLOperation concrete type
     associatedtype OperationType: AnyGraphQLOperation
 
@@ -28,23 +28,23 @@ public protocol RetryableGraphQLOperationBehavior: Operation, DefaultLogger {
 
     /// Operation unique identifier
     var id: UUID { get }
-    
+
     /// Number of attempts (min 1)
     var attempts: Int { get set }
-    
+
     /// Underlying GraphQL operation instantiated by `operationFactory`
     var underlyingOperation: OperationType? { get set }
 
     /// Maximum number of allowed retries
     var maxRetries: Int { get }
-    
+
     /// GraphQLRequest factory, invoked to create a new operation
     var requestFactory: RequestFactory { get }
-    
+
     /// GraphQL operation factory, invoked with a newly created GraphQL request
     /// and a wrapped result listener.
     var operationFactory: OperationFactory { get }
-    
+
     var resultListener: OperationResultListener { get }
 
     init(requestFactory: @escaping RequestFactory,
@@ -58,20 +58,20 @@ public protocol RetryableGraphQLOperationBehavior: Operation, DefaultLogger {
 // MARK: RetryableGraphQLOperation + default implementation
 extension RetryableGraphQLOperationBehavior {
     public func start(request: GraphQLRequest<Payload>) {
-        self.attempts += 1
-        log.debug("[\(self.id)] - Try [\(self.attempts)/\(self.maxRetries)]")
+        attempts += 1
+        log.debug("[\(id)] - Try [\(attempts)/\(maxRetries)]")
         let wrappedResultListener: OperationResultListener = { result in
             if case let .failure(error) = result, self.attempts < self.maxRetries {
                 self.log.debug("\(error)")
                 self.start(request: self.requestFactory())
                 return
             }
-            
+
             if case let .failure(error) = result {
                 self.log.debug("\(error)")
                 self.log.debug("[\(self.id)] - Failed")
             }
-            
+
             if case .success = result {
                 self.log.debug("[Operation \(self.id)] - Success")
             }
@@ -108,16 +108,16 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: Operation, Ret
     public override func main() {
         start(request: requestFactory())
     }
-    
+
     public override func cancel() {
-        self.underlyingOperation?.cancel()
+        underlyingOperation?.cancel()
     }
 }
 
 // MARK: - RetryableGraphQLSubscriptionOperation
 public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Operation, RetryableGraphQLOperationBehavior {
     public typealias OperationType = GraphQLSubscriptionOperation<Payload>
-    
+
     public typealias Payload = Payload
 
     public var id: UUID
@@ -141,11 +141,11 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Op
     public override func main() {
         start(request: requestFactory())
     }
-    
+
     public override func cancel() {
-        self.underlyingOperation?.cancel()
+        underlyingOperation?.cancel()
     }
-    
+
 }
 
 
