@@ -251,6 +251,7 @@
 		7678B38526017D5300B4917F /* AppSyncErrorTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */; };
 		767F85FC2649FF540076D633 /* CustomerOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767F85FB2649FF540076D633 /* CustomerOrder.swift */; };
 		767F85FE2649FFCC0076D633 /* CustomerOrder+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */; };
+		769CF2242669B1B9007843A0 /* RetryableGraphQLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769CF2232669B1B9007843A0 /* RetryableGraphQLOperation.swift */; };
 		76A4023C264B1E3A009D4127 /* AWSAuthModeStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A4023B264B1E3A009D4127 /* AWSAuthModeStrategy.swift */; };
 		76B17DD8264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B17DD7264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift */; };
 		7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */; platformFilter = ios; };
@@ -1139,6 +1140,7 @@
 		7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorTypeTests.swift; sourceTree = "<group>"; };
 		767F85FB2649FF540076D633 /* CustomerOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerOrder.swift; sourceTree = "<group>"; };
 		767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomerOrder+Schema.swift"; sourceTree = "<group>"; };
+		769CF2232669B1B9007843A0 /* RetryableGraphQLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetryableGraphQLOperation.swift; sourceTree = "<group>"; };
 		76A4023B264B1E3A009D4127 /* AWSAuthModeStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthModeStrategy.swift; sourceTree = "<group>"; };
 		76B17DD7264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelSchema+AuthRulesByOperation.swift"; sourceTree = "<group>"; };
 		77A2D125114EA0FFA11A7EFD /* Pods-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -3331,6 +3333,7 @@
 			isa = PBXGroup;
 			children = (
 				FA6BC871235F5BD60001A882 /* GraphQLOperation.swift */,
+				769CF2232669B1B9007843A0 /* RetryableGraphQLOperation.swift */,
 				FAC428A5235F83770000F221 /* RESTOperation.swift */,
 				FA58456624D9D6960028D65A /* AmplifyOperation+APIPublishers.swift */,
 			);
@@ -5208,6 +5211,7 @@
 				95DAAB36237E63370028544F /* Selection.swift in Sources */,
 				B4251A0B242504FA007F59EF /* AuthChangePasswordOperation.swift in Sources */,
 				FAC0A2AD22B43FE700B50912 /* HubCategory+ClientBehavior.swift in Sources */,
+				769CF2242669B1B9007843A0 /* RetryableGraphQLOperation.swift in Sources */,
 				B4251A0124250369007F59EF /* AuthConfirmResetPasswordRequest.swift in Sources */,
 				FAAFAF2F23904B14002CF932 /* AtomicValue+Bool.swift in Sources */,
 				B9B50DC823DA15890086F1E1 /* DataStoreError+Temporal.swift in Sources */,
