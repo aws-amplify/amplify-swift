@@ -216,22 +216,6 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         return request
     }
 
-    static func apiRequestFactoryFor(for modelSchema: ModelSchema,
-                                     subscriptionType: GraphQLSubscriptionType,
-                                     api: APICategoryGraphQLBehavior,
-                                     auth: AuthCategoryBehavior?,
-                                     awsAuthService: AWSAuthServiceBehavior,
-                                     authTypeProvider: AWSAuthorizationTypeProvider) -> RetryableGraphQLOperation<Payload>.RequestFactory {
-        var authTypes = authTypeProvider
-        return {
-            return IncomingAsyncSubscriptionEventPublisher.makeAPIRequest(for: modelSchema,
-                                                                          subscriptionType: subscriptionType,
-                                                                          api: api,
-                                                                          auth: auth,
-                                                                          authType: authTypes.next(),
-                                                                          awsAuthService: awsAuthService)
-        }
-    }
 
     static func hasOIDCAuthProviderAvailable(api: APICategoryGraphQLBehavior) -> AmplifyOIDCAuthProvider? {
         if let apiPlugin = api as? APICategoryAuthProviderFactoryBehavior,
@@ -281,6 +265,27 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         onComplete()
     }
 
+}
+
+// MARK: - IncomingAsyncSubscriptionEventPublisher + API request factory
+@available(iOS 13.0, *)
+extension IncomingAsyncSubscriptionEventPublisher {
+    static func apiRequestFactoryFor(for modelSchema: ModelSchema,
+                                     subscriptionType: GraphQLSubscriptionType,
+                                     api: APICategoryGraphQLBehavior,
+                                     auth: AuthCategoryBehavior?,
+                                     awsAuthService: AWSAuthServiceBehavior,
+                                     authTypeProvider: AWSAuthorizationTypeProvider) -> RetryableGraphQLOperation<Payload>.RequestFactory {
+        var authTypes = authTypeProvider
+        return {
+            return IncomingAsyncSubscriptionEventPublisher.makeAPIRequest(for: modelSchema,
+                                                                          subscriptionType: subscriptionType,
+                                                                          api: api,
+                                                                          auth: auth,
+                                                                          authType: authTypes.next(),
+                                                                          awsAuthService: awsAuthService)
+        }
+    }
 }
 
 @available(iOS 13.0, *)

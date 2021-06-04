@@ -8,28 +8,44 @@
 import Foundation
 
 
+/// Convenience protocol to handle any kind of GraphQLOperation
 public protocol AnyGraphQLOperation {
     associatedtype Success
     associatedtype Failure: Error
     typealias ResultListener = (Result<Success, Failure>) -> Void
 }
 
-public protocol RetryableGraphQLOperationBehavior: Operation {
+/// Abastraction for a retryable GraphQLOperation.
+public protocol RetryableGraphQLOperationBehavior: Operation, DefaultLogger {
     associatedtype Payload: Decodable
+    
+    /// GraphQLOperation concrete type
     associatedtype OperationType: AnyGraphQLOperation
 
     typealias RequestFactory = () -> GraphQLRequest<Payload>
     typealias OperationFactory = (GraphQLRequest<Payload>, @escaping OperationResultListener) -> OperationType
     typealias OperationResultListener = OperationType.ResultListener
 
+    /// Operation unique identifier
     var id: UUID { get }
+    
+    /// Number of attempts (min 1)
     var attempts: Int { get set }
+    
+    /// Underlying GraphQL operation instantiated by `operationFactory`
     var underlyingOperation: OperationType? { get set }
 
+    /// Maximum number of allowed retries
     var maxRetries: Int { get }
+    
+    /// GraphQLRequest factory, invoked to create a new operation
     var requestFactory: RequestFactory { get }
-    var resultListener: OperationResultListener { get }
+    
+    /// GraphQL operation factory, invoked with a newly created GraphQL request
+    /// and a wrapped result listener.
     var operationFactory: OperationFactory { get }
+    
+    var resultListener: OperationResultListener { get }
 
     init(requestFactory: @escaping RequestFactory,
          maxRetries: Int,
@@ -43,19 +59,21 @@ public protocol RetryableGraphQLOperationBehavior: Operation {
 extension RetryableGraphQLOperationBehavior {
     public func start(request: GraphQLRequest<Payload>) {
         self.attempts += 1
-        print("[Operation \(self.id)] - Try [\(self.attempts)/\(self.maxRetries)]")
+        log.debug("[\(self.id)] - Try [\(self.attempts)/\(self.maxRetries)]")
         let wrappedResultListener: OperationResultListener = { result in
             if case let .failure(error) = result, self.attempts < self.maxRetries {
+                self.log.debug("\(error)")
                 self.start(request: self.requestFactory())
                 return
             }
             
             if case let .failure(error) = result {
-                print("[Operation \(self.id)] - Failed")
+                self.log.debug("\(error)")
+                self.log.debug("[\(self.id)] - Failed")
             }
             
             if case .success = result {
-                print("[Operation \(self.id)] - Success")
+                self.log.debug("[Operation \(self.id)] - Success")
             }
             // print("[Operation \(self.id)] Succeeded [\(self.attempts)/\(self.maxRetries)]")
             self.resultListener(result)
@@ -64,9 +82,7 @@ extension RetryableGraphQLOperationBehavior {
     }
 }
 
-// MARK: RetryableGraphQLOperation + DefaultLogger
-extension RetryableGraphQLOperation: DefaultLogger {}
-
+// MARK: - RetryableGraphQLOperation
 public final class RetryableGraphQLOperation<Payload: Decodable>: Operation, RetryableGraphQLOperationBehavior {
     public typealias Payload = Payload
     public typealias OperationType = GraphQLOperation<Payload>
@@ -98,6 +114,7 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: Operation, Ret
     }
 }
 
+// MARK: - RetryableGraphQLSubscriptionOperation
 public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Operation, RetryableGraphQLOperationBehavior {
     public typealias OperationType = GraphQLSubscriptionOperation<Payload>
     

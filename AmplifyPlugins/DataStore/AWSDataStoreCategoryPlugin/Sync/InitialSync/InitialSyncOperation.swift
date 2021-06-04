@@ -152,19 +152,6 @@ final class InitialSyncOperation: AsynchronousOperation {
                                   resultListener: completionListener) { nextRequest, wrappedCompletionListener in
             api.query(request: nextRequest, listener: wrappedCompletionListener)
         }.main()
-
-        /*RetryableGraphQLOperation<SyncQueryResult>(
-            requestFactory: {
-                GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: self.modelSchema,
-                                                                        where: queryPredicate,
-                                                                        limit: limit,
-                                                                        nextToken: nextToken,
-                                                                        lastSync: lastSyncTime,
-                                                                        authType: authTypes.next())
-            },
-            api: api,
-            operationType: .query(completion: completionListener),
-            maxRetries: authTypes.count).main()*/
     }
 
     /// Disposes of the query results: Stops if error, reconciles results if success, and kick off a new query if there
