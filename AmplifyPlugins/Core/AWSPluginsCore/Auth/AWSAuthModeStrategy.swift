@@ -80,11 +80,23 @@ public struct AWSMultiAuthModeStrategy: AuthModeStrategy {
     public init() {}
 
     private static func authTypeFor(authRule: AuthRule) -> AWSAuthorizationType {
-        guard let authProvider = authRule.provider,
-              let authType = try? authProvider.toAWSAuthorizationType() else {
-            return .amazonCognitoUserPools
+        if let authProvider = authRule.provider,
+              let authType = try? authProvider.toAWSAuthorizationType() {
+            return authType
         }
-        return authType
+        
+        var defaultAuthType: AWSAuthorizationType
+        switch authRule.allow {
+        case .owner:
+            defaultAuthType = .amazonCognitoUserPools
+        case .groups:
+            defaultAuthType = .amazonCognitoUserPools
+        case .private:
+            defaultAuthType = .amazonCognitoUserPools
+        case .public:
+            defaultAuthType = .apiKey
+        }
+        return defaultAuthType
     }
 
     /// Given an auth rule strategy returns its corresponding priority
