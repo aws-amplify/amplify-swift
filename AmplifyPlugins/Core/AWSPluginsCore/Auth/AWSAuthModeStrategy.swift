@@ -79,17 +79,10 @@ public struct AWSMultiAuthModeStrategy: AuthModeStrategy {
     
     public init() {}
 
-    private static func authTypeFor(authStrategy: AuthStrategy) -> AWSAuthorizationType {
-        var authType: AWSAuthorizationType
-        switch authStrategy {
-        case .owner:
-            authType = .amazonCognitoUserPools
-        case .groups:
-            authType = .amazonCognitoUserPools
-        case .private:
-            authType = .amazonCognitoUserPools
-        case .public:
-            authType = .apiKey
+    private static func authTypeFor(authRule: AuthRule) -> AWSAuthorizationType {
+        guard let authProvider = authRule.provider,
+              let authType = try? authProvider.toAWSAuthorizationType() else {
+            return .amazonCognitoUserPools
         }
         return authType
     }
@@ -119,7 +112,7 @@ public struct AWSMultiAuthModeStrategy: AuthModeStrategy {
         let applicableAuthRules = schema.authRules
             .filter(modelOperation: operation)
             .sorted(by: AWSMultiAuthModeStrategy.comparator)
-            .map { AWSMultiAuthModeStrategy.authTypeFor(authStrategy: $0.allow) }
+            .map { AWSMultiAuthModeStrategy.authTypeFor(authRule: $0) }
 
         return AWSAuthorizationTypeProvider(withValues: applicableAuthRules)
 
