@@ -19,25 +19,10 @@ extension ReconcileAndLocalSaveOperation {
         static func resolve(currentState: State, action: Action) -> State {
             switch (currentState, action) {
 
-            case (.waiting, .started(let remoteModel)):
-                return .querying(remoteModel)
+            case (.waiting, .started(let remoteModels)):
+                return .reconciling(remoteModels)
 
-            case (.querying, .queried(let remoteModel, let localModel)):
-                return .reconciling(remoteModel, localModel)
-
-            case (.reconciling, .reconciled(let disposition)):
-                return .executing(disposition)
-
-            case (.executing, .dropped(let modelName)):
-                return .notifyingDropped(modelName)
-
-            case (.notifyingDropped, .notified):
-                return .finished
-
-            case (.executing, .applied(let savedModel, let mutationType)):
-                return .notifying(savedModel, mutationType)
-
-            case (.notifying, .notified):
+            case (.reconciling, .reconciled):
                 return .finished
 
             case (_, .errored(let amplifyError)):

@@ -12,39 +12,80 @@ import Amplify
 struct RemoteSyncReconciler {
     typealias LocalMetadata = ReconcileAndLocalSaveOperation.LocalMetadata
     typealias RemoteModel = ReconcileAndLocalSaveOperation.RemoteModel
-    typealias SavedModel = ReconcileAndLocalSaveOperation.AppliedModel
 
     enum Disposition {
-        case applyRemoteModel(RemoteModel, MutationEvent.MutationType)
-        case dropRemoteModel(String)
+        case create(RemoteModel)
+        case update(RemoteModel)
+        case delete(RemoteModel)
     }
 
-    static func reconcile(remoteModel: RemoteModel,
-                          to localMetadata: LocalMetadata?,
-                          pendingMutations: [MutationEvent]) -> Disposition {
-
-        guard pendingMutations.isEmpty else {
-            return .dropRemoteModel(remoteModel.model.modelName)
+    /// Filter the incoming `remoteModels` against the pending mutations.
+    /// If there is a matching pending mutation, drop the remote model.
+    ///
+    /// - Parameters:
+    ///   - remoteModels: models retrieved from the remote store
+    ///   - pendingMutations: pending mutations from the outbox
+    /// - Returns: remote models to be applied
+    static func filter(_ remoteModels: [RemoteModel],
+                       pendingMutations: [MutationEvent]) -> [RemoteModel] {
+        guard !pendingMutations.isEmpty else {
+            return remoteModels
         }
 
+        let pendingMutationModelIdsArr = pendingMutations.map { mutationEvent in
+            mutationEvent.modelId
+        }
+        let pendingMutationModelIds = Set(pendingMutationModelIdsArr)
+
+        return remoteModels.filter { remoteModel in
+            !pendingMutationModelIds.contains(remoteModel.model.id)
+        }
+    }
+
+    /// Reconciles the incoming `remoteModels` against the local metadata to get the disposition
+    ///
+    /// - Parameters:
+    ///   - remoteModels: models retrieved from the remote store
+    ///   - localMetadatas: metadata retrieved from the local store
+    /// - Returns: disposition of models to apply locally
+    static func getDispositions(_ remoteModels: [RemoteModel],
+                                localMetadatas: [LocalMetadata]) -> [Disposition] {
+        guard !remoteModels.isEmpty else {
+            return []
+        }
+
+        guard !localMetadatas.isEmpty else {
+            return remoteModels.compactMap { getDisposition($0, localMetadata: nil) }
+        }
+
+        let metadataByID = localMetadatas.reduce(into: [:]) { $0[$1.id] = $1 }
+        let dispositions = remoteModels.compactMap { getDisposition($0, localMetadata: metadataByID[$0.model.id]) }
+
+        return dispositions
+    }
+
+    /// Reconcile a remote model against local metadata
+    /// If there is no local metadata for the corresponding remote model, and the remote model is not deleted, apply a
+    /// `.create` disposition
+    /// If there is no local metadata for the corresponding remote model, and the remote model is deleted, drop it
+    /// If there is local metadata for the corresponding remote model, and the remote model is not deleted, apply an
+    /// `.update` disposition
+    /// if there is local metadata for the corresponding remote model, and the remote model is deleted, apply a
+    /// `.delete` disposition
+    ///
+    /// - Parameters:
+    ///   - remoteModel: model retrieved from the remote store
+    ///   - localMetadata: metadata corresponding to the remote model
+    /// - Returns: disposition of the model, `nil` if to be dropped
+    static func getDisposition(_ remoteModel: RemoteModel, localMetadata: LocalMetadata?) -> Disposition? {
         guard let localMetadata = localMetadata else {
-            if remoteModel.syncMetadata.deleted {
-                return .dropRemoteModel(remoteModel.model.modelName)
-            } else {
-                return .applyRemoteModel(remoteModel, .create)
-            }
+            return remoteModel.syncMetadata.deleted ? nil : .create(remoteModel)
         }
 
-        // Technically, we should never receive a subscription for a version we already have, but we'll be defensive
-        // and make this check include the current version
-        if remoteModel.syncMetadata.version >= localMetadata.version {
-            if remoteModel.syncMetadata.deleted {
-                return .applyRemoteModel(remoteModel, .delete)
-            } else {
-                return .applyRemoteModel(remoteModel, .update)
-            }
+        guard remoteModel.syncMetadata.version >= localMetadata.version else {
+            return nil
         }
 
-        return .dropRemoteModel(remoteModel.model.modelName)
+        return remoteModel.syncMetadata.deleted ? .delete(remoteModel) : .update(remoteModel)
     }
 }

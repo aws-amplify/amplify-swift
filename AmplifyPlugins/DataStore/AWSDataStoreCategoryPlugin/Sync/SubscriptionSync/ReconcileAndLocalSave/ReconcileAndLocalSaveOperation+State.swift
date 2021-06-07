@@ -15,19 +15,8 @@ extension ReconcileAndLocalSaveOperation {
         /// Waiting to be started by the queue
         case waiting
 
-        /// Querying the local database for model data and sync metadata
-        case querying(RemoteModel)
-
-        /// Reconciling incoming remote model with local model and sync metadata
-        case reconciling(RemoteModel, LocalMetadata?)
-
-        /// Executing the reconciled disposition
-        case executing(RemoteSyncReconciler.Disposition)
-
-        case notifyingDropped(String)
-
-        /// Notifying listeners and callbacks of completion
-        case notifying(AppliedModel, MutationEvent.MutationType)
+        /// Reconciling remote models with local data
+        case reconciling([RemoteModel])
 
         /// Operation has successfully completed
         case finished

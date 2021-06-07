@@ -102,13 +102,13 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         eventReconciliationQueueTopic.send(.paused)
     }
 
-    func offer(_ remoteModel: MutationSync<AnyModel>, modelSchema: ModelSchema) {
+    func offer(_ remoteModels: [MutationSync<AnyModel>], modelSchema: ModelSchema) {
         guard let queue = reconciliationQueues[modelSchema.name] else {
             // TODO: Error handling
             return
         }
 
-        queue.enqueue(remoteModel)
+        queue.enqueue(remoteModels)
     }
 
     private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
