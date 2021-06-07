@@ -11,7 +11,7 @@ import AWSPluginsCore
 
 protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
-    var maxNumberOfPredicates: Int { get }
+    static var maxNumberOfPredicates: Int { get }
 
     // MARK: - Async APIs
     func save(untypedModel: Model, completion: @escaping DataStoreCallback<Model>)

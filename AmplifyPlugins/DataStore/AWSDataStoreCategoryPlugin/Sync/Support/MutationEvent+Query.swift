@@ -23,7 +23,7 @@ extension MutationEvent {
         let predicate = (fields.inProcess == false || fields.inProcess == nil)
         var queriedMutationEvents: [MutationEvent] = []
         var queryError: DataStoreError?
-        let chunkedArrays = modelIds.chunked(into: storageAdapter.maxNumberOfPredicates)
+        let chunkedArrays = modelIds.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
         for chunkedArray in chunkedArrays {
             var queryPredicates: [QueryPredicateOperation] = []
             for id in chunkedArray {

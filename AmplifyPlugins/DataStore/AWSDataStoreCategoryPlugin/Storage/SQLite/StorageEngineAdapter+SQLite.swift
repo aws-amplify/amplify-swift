@@ -25,7 +25,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     // less (equaling 950) than the maximum because it is possible that our SQLStatement already has
     // some expressions.  If we encounter performance problems in the future, we will want to profile
     // our system and find an optimal value.
-    var maxNumberOfPredicates: Int = 950
+    static var maxNumberOfPredicates: Int = 950
 
     convenience init(version: String,
                      databaseName: String = "database",
@@ -306,7 +306,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let modelType = MutationSyncMetadata.self
         let fields = MutationSyncMetadata.keys
         var results = [MutationSyncMetadata]()
-        let chunkedModelIdsArr = modelIds.chunked(into: maxNumberOfPredicates)
+        let chunkedModelIdsArr = modelIds.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
         for chunkedModelIds in chunkedModelIdsArr {
             var queryPredicates: [QueryPredicateOperation] = []
             for id in chunkedModelIds {

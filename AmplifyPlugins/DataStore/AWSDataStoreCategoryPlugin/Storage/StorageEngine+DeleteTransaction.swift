@@ -123,7 +123,7 @@ extension StorageEngine {
         }
 
         var queriedModels: [Model] = []
-        let chunkedArrays = ids.chunked(into: storageAdapter.maxNumberOfPredicates)
+        let chunkedArrays = ids.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
         for chunkedArray in chunkedArrays {
             // TODO: Add conveinence to queryPredicate where we have a list of items, to be all or'ed
             var queryPredicates: [QueryPredicateOperation] = []

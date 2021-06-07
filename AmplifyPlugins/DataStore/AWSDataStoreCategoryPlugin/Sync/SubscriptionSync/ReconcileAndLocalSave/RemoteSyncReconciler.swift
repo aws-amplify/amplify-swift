@@ -19,7 +19,7 @@ struct RemoteSyncReconciler {
         case delete(RemoteModel)
     }
 
-    /// Filter  the incoming `remoteModels` against the pending mutations.
+    /// Filter the incoming `remoteModels` against the pending mutations.
     /// If there is a matching pending mutation, drop the remote model.
     ///
     /// - Parameters:
