@@ -13,12 +13,15 @@ extension RemoteSyncReconciler.Disposition: Equatable {
     public static func == (lhs: RemoteSyncReconciler.Disposition,
                            rhs: RemoteSyncReconciler.Disposition) -> Bool {
         switch (lhs, rhs) {
-        case (.applyRemoteModel(let rm1, let mutationType1), .applyRemoteModel(let rm2, let mutationType2)):
-            return rm1.model.id == rm2.model.id &&
-                rm1.model.modelName == rm2.model.modelName &&
-                mutationType1 == mutationType2
-        case (.dropRemoteModel, .dropRemoteModel):
-            return true
+        case (.create(let model1), .create(let model2)):
+            return model1.model.id == model2.model.id &&
+                model1.model.modelName == model2.model.modelName
+        case (.update(let model1), .update(let model2)):
+            return model1.model.id == model2.model.id &&
+                model1.model.modelName == model2.model.modelName
+        case (.delete(let model1), .delete(let model2)):
+            return model1.model.id == model2.model.id &&
+                model1.model.modelName == model2.model.modelName
         default:
             return false
         }
@@ -29,22 +32,9 @@ extension ReconcileAndLocalSaveOperation.Action: Equatable {
     public static func == (lhs: ReconcileAndLocalSaveOperation.Action,
                            rhs: ReconcileAndLocalSaveOperation.Action) -> Bool {
         switch (lhs, rhs) {
-        case (.started(let model1), .started(let model2)):
-            return model1.model.id == model2.model.id
-                && model1.model.modelName == model2.model.modelName
-        case (.queried(let model1, let lmetadata1), .queried(let model2, let lmetadata2)):
-            return model1.model.id == model2.model.id
-                && lmetadata1?.id == lmetadata2?.id
-                && model1.model.modelName == model2.model.modelName
-        case (.reconciled(let disposition1), .reconciled(let disposition2)):
-            return disposition1 == disposition2
-        case (.applied(let model1, let existsLocally1), .applied(let model2, let existsLocally2)):
-            return model1.model.id == model2.model.id
-                && model1.model.modelName == model2.model.modelName
-                && existsLocally1 == existsLocally2
-        case (.dropped, dropped):
-            return true
-        case (.notified, .notified):
+        case (.started(let models1), .started(let models2)):
+            return models1.count == models2.count
+        case (.reconciled, .reconciled):
             return true
         case (.cancelled, .cancelled):
             return true
@@ -62,19 +52,8 @@ extension ReconcileAndLocalSaveOperation.State: Equatable {
         switch (lhs, rhs) {
         case (.waiting, .waiting):
             return true
-        case (.querying(let model1), .querying(let model2)):
-            return model1.model.id == model2.model.id
-                && model1.model.modelName == model2.model.modelName
-        case (.reconciling(let model1, let lmetadata1), .reconciling(let model2, let lmetadata2)):
-            return model1.model.id == model2.model.id
-                && lmetadata1?.id == lmetadata2?.id
-                && model1.model.modelName == model2.model.modelName
-        case (.executing(let disposition1), .executing(let disposition2)):
-            return disposition1 == disposition2
-        case (.notifying(let model1, let existsLocally1), .notifying(let model2, let existsLocally2)):
-            return model1.model.id == model2.model.id
-                && model1.model.modelName == model2.model.modelName
-                && existsLocally1 == existsLocally2
+        case (.reconciling(let models1), .reconciling(let models2)):
+            return models1.count == models2.count
         case (.finished, .finished):
             return true
         case (.inError(let error1), .inError(let error2)):
@@ -102,5 +81,19 @@ extension MutationSyncMetadata: Equatable {
             && lhs.deleted == rhs.deleted
             && lhs.lastChangedAt == rhs.lastChangedAt
             && lhs.version == rhs.version
+    }
+}
+
+extension MutationEvent: Equatable {
+    public static func == (lhs: MutationEvent, rhs: MutationEvent) -> Bool {
+        return lhs.id == rhs.id
+            && lhs.modelId == rhs.modelId
+            && lhs.modelName == rhs.modelName
+            && lhs.json == rhs.json
+            && lhs.mutationType == rhs.mutationType
+            && lhs.createdAt == rhs.createdAt
+            && lhs.version == rhs.version
+            && lhs.inProcess == rhs.inProcess
+            && lhs.graphQLFilterJSON == rhs.graphQLFilterJSON
     }
 }

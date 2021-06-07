@@ -21,8 +21,8 @@ final class MockReconciliationQueue: MessageReporter, IncomingEventReconciliatio
         notify()
     }
 
-    func offer(_ remoteModel: MutationSync<AnyModel>, modelSchema: ModelSchema) {
-        notify("offer(_:) remoteModel: \(remoteModel)")
+    func offer(_ remoteModels: [MutationSync<AnyModel>], modelSchema: ModelSchema) {
+        notify("offer(_:) remoteModels: \(remoteModels)")
     }
 
     var publisher: AnyPublisher<IncomingEventReconciliationQueueEvent, DataStoreError> {

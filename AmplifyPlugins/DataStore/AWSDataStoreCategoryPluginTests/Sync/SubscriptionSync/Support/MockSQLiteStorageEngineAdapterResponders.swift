@@ -15,6 +15,7 @@ extension MockSQLiteStorageEngineAdapter {
         // swiftlint:disable:next identifier_name
         case queryModelTypePredicate
         case queryMutationSyncMetadata
+        case queryMutationSyncMetadatas
         case saveModelCompletion
         case saveUntypedModel
         case deleteUntypedModel
@@ -29,6 +30,8 @@ typealias QueryModelTypePredicateResponder<M: Model> =
     MockResponder<(M.Type, QueryPredicate?), DataStoreResult<[M]>>
 
 typealias QueryMutationSyncMetadataResponder = ThrowingMockResponder<String, MutationSyncMetadata?>
+
+typealias QueryMutationSyncMetadatasResponder = ThrowingMockResponder<[String], [MutationSyncMetadata]>
 
 typealias SaveModelCompletionResponder<M: Model> = MockResponder<(M, DataStoreCallback<M>), Void>
 

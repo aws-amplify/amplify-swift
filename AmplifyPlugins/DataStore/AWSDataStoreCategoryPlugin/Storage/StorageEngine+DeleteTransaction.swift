@@ -122,13 +122,8 @@ extension StorageEngine {
             return []
         }
 
-        // SQLite supports up to 1000 expressions per SQLStatement. We have chosen to use 50 expressions
-        // less (equaling 950) than the maximum because it is possible that our SQLStatement already has
-        // some expressions.  If we encounter performance problems in the future, we will want to profile
-        // our system and find an optimal value.
-        let maxNumberOfPredicates = 950
         var queriedModels: [Model] = []
-        let chunkedArrays = ids.chunked(into: maxNumberOfPredicates)
+        let chunkedArrays = ids.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
         for chunkedArray in chunkedArrays {
             // TODO: Add conveinence to queryPredicate where we have a list of items, to be all or'ed
             var queryPredicates: [QueryPredicateOperation] = []

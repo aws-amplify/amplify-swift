@@ -8,10 +8,12 @@
 import XCTest
 
 @testable import Amplify
+@testable import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
 // swiftlint:disable type_body_length
+// swiftlint:disable file_length
 class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
 
     /// - Given: a list a `Post` instance
@@ -563,5 +565,83 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         }
 
         _ = UserDefaults.removeObject(userDefaults)
+    }
+
+    func testQueryMutationSyncMetadata_EmptyResult() {
+        let modelIds = [UUID().uuidString, UUID().uuidString]
+        do {
+            let results = try storageAdapter.queryMutationSyncMetadata(for: modelIds)
+            XCTAssertTrue(results.isEmpty)
+        } catch {
+            XCTFail("\(error)")
+        }
+    }
+
+    func testQueryMutationSyncMetadata() {
+        let querySuccess = expectation(description: "query for metadata success")
+        let metadata = MutationSyncMetadata(id: UUID().uuidString,
+                                            deleted: false,
+                                            lastChangedAt: Int(Date().timeIntervalSince1970),
+                                            version: 1)
+
+        storageAdapter.save(metadata) { result in
+            switch result {
+            case .success:
+                do {
+                    let result = try self.storageAdapter.queryMutationSyncMetadata(for: metadata.id)
+                    XCTAssertEqual(result?.id, metadata.id)
+                    querySuccess.fulfill()
+                } catch {
+                    XCTFail("\(error)")
+                }
+            case .failure(let error): XCTFail("\(error)")
+            }
+        }
+        wait(for: [querySuccess], timeout: 1)
+    }
+
+    func testQueryMutationSyncMetadataForModelIds() {
+        let metadata1 = MutationSyncMetadata(id: UUID().uuidString,
+                                            deleted: false,
+                                            lastChangedAt: Int(Date().timeIntervalSince1970),
+                                            version: 1)
+        let metadata2 = MutationSyncMetadata(id: UUID().uuidString,
+                                            deleted: false,
+                                            lastChangedAt: Int(Date().timeIntervalSince1970),
+                                            version: 1)
+
+        let saveMetadata1 = expectation(description: "save metadata1 success")
+        storageAdapter.save(metadata1) { result in
+            guard case .success = result else {
+                XCTFail("Failed to save metadata")
+                return
+            }
+            saveMetadata1.fulfill()
+        }
+        wait(for: [saveMetadata1], timeout: 1)
+
+        let saveMetadata2 = expectation(description: "save metadata2 success")
+        storageAdapter.save(metadata2) { result in
+            guard case .success = result else {
+                XCTFail("Failed to save metadata")
+                return
+            }
+            saveMetadata2.fulfill()
+        }
+        wait(for: [saveMetadata2], timeout: 1)
+
+        let querySuccess = expectation(description: "query for metadata success")
+        var modelIds = [metadata1.id]
+        modelIds.append(contentsOf: (1 ... 999).map { _ in UUID().uuidString })
+        modelIds.append(metadata2.id)
+        do {
+            let results = try storageAdapter.queryMutationSyncMetadata(for: modelIds)
+            XCTAssertEqual(results.count, 2)
+            querySuccess.fulfill()
+        } catch {
+            XCTFail("\(error)")
+        }
+
+        wait(for: [querySuccess], timeout: 1)
     }
 }

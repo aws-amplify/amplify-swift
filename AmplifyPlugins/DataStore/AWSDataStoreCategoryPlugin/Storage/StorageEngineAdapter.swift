@@ -11,6 +11,8 @@ import AWSPluginsCore
 
 protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
+    static var maxNumberOfPredicates: Int { get }
+
     // MARK: - Async APIs
     func save(untypedModel: Model, completion: @escaping DataStoreCallback<Model>)
 
@@ -46,6 +48,8 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
     func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>?
 
     func queryMutationSyncMetadata(for modelId: Model.Identifier) throws -> MutationSyncMetadata?
+
+    func queryMutationSyncMetadata(for modelIds: [Model.Identifier]) throws -> [MutationSyncMetadata]
 
     func queryModelSyncMetadata(for modelSchema: ModelSchema) throws -> ModelSyncMetadata?
 
