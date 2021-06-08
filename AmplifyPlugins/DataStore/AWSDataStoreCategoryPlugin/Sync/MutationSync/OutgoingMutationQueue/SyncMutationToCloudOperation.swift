@@ -218,13 +218,20 @@ class SyncMutationToCloudOperation: Operation {
             advice = requestRetryablePolicy.retryRequestAdvice(urlError: urlError,
                                                                httpURLResponse: nil,
                                                                attemptNumber: currentAttemptNumber)
+
+        // TODO: unify below cases (operationError shouldn't be the error type)
+        case .httpStatusError(_, let httpURLResponse) where httpURLResponse.statusCode == 401:
+            let shouldRetry = (authTypesProvider?.count ?? 0) > 0
+            advice = RequestRetryAdvice(shouldRetry: shouldRetry, retryInterval: .milliseconds(0))
+
+        case .operationError(let apiError, _, _):
+            let shouldRetry = (authTypesProvider?.count ?? 0) > 0
+            advice = RequestRetryAdvice(shouldRetry: shouldRetry, retryInterval: .milliseconds(0))
+
         case .httpStatusError(_, let httpURLResponse):
             advice = requestRetryablePolicy.retryRequestAdvice(urlError: nil,
                                                                httpURLResponse: httpURLResponse,
                                                                attemptNumber: currentAttemptNumber)
-        case .operationError(let apiError, _, _):
-            let shouldRetry = (authTypesProvider?.count ?? 0) > 0
-            advice = RequestRetryAdvice(shouldRetry: shouldRetry, retryInterval: .milliseconds(0))
         default:
             break
         }
