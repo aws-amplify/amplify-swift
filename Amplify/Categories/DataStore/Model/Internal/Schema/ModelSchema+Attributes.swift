@@ -19,4 +19,10 @@ public extension ModelSchema {
     var hasAuthenticationRules: Bool {
         return !authRules.isEmpty
     }
+
+    var hasAssociations: Bool {
+        fields.values.contains { modelField in
+            modelField.hasAssociation
+        }
+    }
 }
