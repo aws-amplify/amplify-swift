@@ -42,7 +42,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
     // Future optimization: can perform sync on each root in parallel, since we know they won't have any
     // interdependencies
-    private let syncOperationQueue: OperationQueue
+    let syncOperationQueue: OperationQueue
     private let concurrencyQueue = DispatchQueue(label: "com.amazonaws.InitialSyncOrchestrator.concurrencyQueue",
                                                  target: DispatchQueue.global())
 
@@ -85,6 +85,9 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
             let modelNames = syncableModelSchemas.map { $0.name }
             self.dispatchSyncQueriesStarted(for: modelNames)
+            if !syncableModelSchemas.hasAssociations() {
+                self.syncOperationQueue.maxConcurrentOperationCount = syncableModelSchemas.count
+            }
             self.syncOperationQueue.isSuspended = false
         }
     }
