@@ -16,9 +16,8 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
     override class func setUp() {
         Amplify.Logging.logLevel = .info
-        ModelRegistry.reset()
-        PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
     }
+
 
     /// - Given: An InitialSyncOrchestrator with a model dependency graph
     /// - When:
@@ -26,6 +25,8 @@ class InitialSyncOrchestratorTests: XCTestCase {
     /// - Then:
     ///    - It performs a sync query for each registered model
     func testInvokesCompletionCallback() throws {
+        ModelRegistry.reset()
+        PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
             let startedAt = Int(Date().timeIntervalSince1970)
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
@@ -42,11 +43,10 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
 
-        let orchestrator: InitialSyncOrchestrator =
-            AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
-                                       api: apiPlugin,
-                                       reconciliationQueue: reconciliationQueue,
-                                       storageAdapter: storageAdapter)
+        let orchestrator = AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                                      api: apiPlugin,
+                                                      reconciliationQueue: reconciliationQueue,
+                                                      storageAdapter: storageAdapter)
 
         let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
         let syncQueriesStartedReceived = expectation(description: "syncQueriesStarted received")
@@ -89,7 +89,74 @@ class InitialSyncOrchestratorTests: XCTestCase {
         }
 
         waitForExpectations(timeout: 1)
+        XCTAssertEqual(orchestrator.syncOperationQueue.maxConcurrentOperationCount, 1)
         Amplify.Hub.removeListener(hubListener)
+        sink.cancel()
+    }
+
+    /// - Given: An InitialSyncOrchestrator with a model dependency graph containing no associations
+    /// - When:
+    ///    - The orchestrator starts up
+    /// - Then:
+    ///    - It performs a sync query for each registered model with concurrency set to count of models
+    func testInvokesCompletionCallback_ModelWithNoAssociations() throws {
+        ModelRegistry.reset()
+        struct TestModelsWithNoAssociations: AmplifyModelRegistration {
+            func registerModels(registry: ModelRegistry.Type) {
+                // Models without no associations
+                registry.register(modelType: MockSynced.self)
+                registry.register(modelType: ExampleWithEveryType.self)
+            }
+
+            let version: String = "1"
+        }
+        TestModelsWithNoAssociations().registerModels(registry: ModelRegistry.self)
+
+        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
+            let startedAt = Int(Date().timeIntervalSince1970)
+            let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
+            listener?(event)
+            return nil
+        }
+
+        let apiPlugin = MockAPICategoryPlugin()
+        apiPlugin.responders[.queryRequestListener] = responder
+
+        let storageAdapter = MockSQLiteStorageEngineAdapter()
+        storageAdapter.returnOnQueryModelSyncMetadata(nil)
+
+        let reconciliationQueue = MockReconciliationQueue()
+
+        let orchestrator = AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                                      api: apiPlugin,
+                                                      reconciliationQueue: reconciliationQueue,
+                                                      storageAdapter: storageAdapter)
+        let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        syncStartedReceived.expectedFulfillmentCount = 2
+        let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
+        finishedReceived.expectedFulfillmentCount = 2
+        let sink = orchestrator
+            .publisher
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: { value in
+                    switch value {
+                    case .started:
+                        syncStartedReceived.fulfill()
+                    case .finished:
+                        finishedReceived.fulfill()
+                    default:
+                        break
+                    }
+                  })
+
+        orchestrator.sync { _ in
+            syncCallbackReceived.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+        XCTAssertEqual(orchestrator.syncOperationQueue.maxConcurrentOperationCount, 2)
         sink.cancel()
     }
 
@@ -99,6 +166,8 @@ class InitialSyncOrchestratorTests: XCTestCase {
     /// - Then:
     ///    - It queries models in dependency order, from "parent" to "child"
     func testShouldQueryModelsInDependencyOrder() {
+        ModelRegistry.reset()
+        PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
         let postWasQueried = expectation(description: "Post was queried")
         let commentWasQueried = expectation(description: "Comment was queried")
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
@@ -125,11 +194,10 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
 
-        let orchestrator: InitialSyncOrchestrator =
-            AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
-                                       api: apiPlugin,
-                                       reconciliationQueue: reconciliationQueue,
-                                       storageAdapter: storageAdapter)
+        let orchestrator = AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                                      api: apiPlugin,
+                                                      reconciliationQueue: reconciliationQueue,
+                                                      storageAdapter: storageAdapter)
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         syncStartedReceived.expectedFulfillmentCount = 2
@@ -152,6 +220,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         orchestrator.sync { _ in }
 
         waitForExpectations(timeout: 1)
+        XCTAssertEqual(orchestrator.syncOperationQueue.maxConcurrentOperationCount, 1)
         sink.cancel()
     }
 
@@ -162,6 +231,8 @@ class InitialSyncOrchestratorTests: XCTestCase {
     ///    - It queries models in dependency order, from "parent" to "child", even if parent data is returned in
     ///      multiple pages
     func testShouldQueryModelsInDependencyOrderWithPaginatedResults() {
+        ModelRegistry.reset()
+        PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
         let pageCount = 50
 
         let postWasQueried = expectation(description: "Post was queried")
@@ -196,11 +267,10 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
 
-        let orchestrator: InitialSyncOrchestrator =
-            AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
-                                       api: apiPlugin,
-                                       reconciliationQueue: reconciliationQueue,
-                                       storageAdapter: storageAdapter)
+        let orchestrator = AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                                      api: apiPlugin,
+                                                      reconciliationQueue: reconciliationQueue,
+                                                      storageAdapter: storageAdapter)
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         syncStartedReceived.expectedFulfillmentCount = 2
@@ -223,6 +293,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         orchestrator.sync { _ in }
 
         waitForExpectations(timeout: 1)
+        XCTAssertEqual(orchestrator.syncOperationQueue.maxConcurrentOperationCount, 1)
         sink.cancel()
     }
 

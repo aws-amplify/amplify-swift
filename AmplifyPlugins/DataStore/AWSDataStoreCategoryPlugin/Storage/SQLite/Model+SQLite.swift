@@ -182,4 +182,9 @@ extension Array where Element == ModelSchema {
         return sortedKeys.map { sortMap[$0]! }
     }
 
+    func hasAssociations() -> Bool {
+        contains { modelSchema in
+            modelSchema.hasAssociations
+        }
+    }
 }
