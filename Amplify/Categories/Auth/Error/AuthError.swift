@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Auth error raised in the auth category.
 public enum AuthError {
 
     /// Caused by issue in the way auth category is configured

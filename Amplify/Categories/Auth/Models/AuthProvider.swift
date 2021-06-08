@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Supported auth providers
 public enum AuthProvider {
 
     case amazon

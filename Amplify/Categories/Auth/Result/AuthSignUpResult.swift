@@ -19,6 +19,8 @@ public struct AuthSignUpResult {
         }
     }
 
+    /// Shows the next step required to complete the signUp flow.
+    ///
     public let nextStep: AuthSignUpStep
 
     public init(_ nextStep: AuthSignUpStep) {

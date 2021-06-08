@@ -7,12 +7,16 @@
 
 import Foundation
 
+/// Request for change password operation
 public struct AuthChangePasswordRequest: AmplifyOperationRequest {
 
+    /// Old or existing password for the signed in user
     public let oldPassword: String
 
+    /// New password for the user
     public let newPassword: String
 
+    /// Extra request options defined in `AuthChangePasswordRequest.Options`
     public var options: Options
 
     public init(oldPassword: String,

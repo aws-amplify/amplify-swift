@@ -7,8 +7,10 @@
 
 import Foundation
 
+/// Request to fetch the devices associated with the signed in user.
 public struct AuthFetchDevicesRequest: AmplifyOperationRequest {
 
+    /// Extra request options defined in `AuthFetchDevicesRequest.Options`
     public var options: Options
 
     public init(options: Options) {

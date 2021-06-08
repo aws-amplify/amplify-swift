@@ -7,10 +7,13 @@
 
 import Foundation
 
+/// Request to update the user attribute of the signed in user
 public struct AuthUpdateUserAttributeRequest: AmplifyOperationRequest {
 
+    /// User attribute to update
     public let userAttribute: AuthUserAttribute
 
+    /// Extra request options defined in `AuthUpdateUserAttributeRequest.Options`
     public var options: Options
 
     public init(userAttribute: AuthUserAttribute,

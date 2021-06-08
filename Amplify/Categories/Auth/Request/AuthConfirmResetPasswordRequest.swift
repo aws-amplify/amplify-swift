@@ -7,14 +7,19 @@
 
 import Foundation
 
+/// Request for reset password confirmation
 public struct AuthConfirmResetPasswordRequest: AmplifyOperationRequest {
 
+    /// User name for which reset password was initiated
     public let username: String
 
+    /// New password to be assigned to the user
     public let newPassword: String
 
+    /// Confirmation code received
     public let confirmationCode: String
 
+    /// Extra request options defined in `AuthConfirmResetPasswordRequest.Options`
     public var options: Options
 
     public init(username: String,
