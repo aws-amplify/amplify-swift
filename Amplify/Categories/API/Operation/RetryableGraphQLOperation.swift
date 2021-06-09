@@ -53,15 +53,17 @@ public protocol RetryableGraphQLOperationBehavior: Operation, DefaultLogger {
          _ operationFactory: @escaping OperationFactory)
 
     func start(request: GraphQLRequest<Payload>)
+    
+    func shouldRetry(error: APIError?) -> Bool
 }
 
-// MARK: RetryableGraphQLOperation + default implementation
+// MARK: RetryableGraphQLOperationBehavior + default implementation
 extension RetryableGraphQLOperationBehavior {
     public func start(request: GraphQLRequest<Payload>) {
         attempts += 1
         log.debug("[\(id)] - Try [\(attempts)/\(maxRetries)]")
         let wrappedResultListener: OperationResultListener = { result in
-            if case let .failure(error) = result, self.attempts < self.maxRetries {
+            if case let .failure(error) = result, self.shouldRetry(error: error as? APIError) {
                 self.log.debug("\(error)")
                 self.start(request: self.requestFactory())
                 return
@@ -75,7 +77,6 @@ extension RetryableGraphQLOperationBehavior {
             if case .success = result {
                 self.log.debug("[Operation \(self.id)] - Success")
             }
-            // print("[Operation \(self.id)] Succeeded [\(self.attempts)/\(self.maxRetries)]")
             self.resultListener(result)
         }
         underlyingOperation = operationFactory(request, wrappedResultListener)
@@ -112,6 +113,15 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: Operation, Ret
     public override func cancel() {
         underlyingOperation?.cancel()
     }
+    
+    public func shouldRetry(error: APIError?) -> Bool {
+        guard case let .operationError(_, _, underlyingError) = error,
+              let authError = underlyingError as? AuthError,
+              case .signedOut = authError else {
+                  return false
+              }
+        return self.attempts < self.maxRetries
+    }
 }
 
 // MARK: - RetryableGraphQLSubscriptionOperation
@@ -144,6 +154,10 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Op
 
     public override func cancel() {
         underlyingOperation?.cancel()
+    }
+    
+    public func shouldRetry(error: APIError?) -> Bool {
+        return self.attempts < self.maxRetries
     }
 
 }

@@ -207,6 +207,11 @@ class SyncMutationToCloudOperation: Operation {
             }
         }
     }
+    
+    private func shouldRetryWithDifferentAuthType() -> RequestRetryAdvice {
+        let shouldRetry = (authTypesProvider?.count ?? 0) > 0
+        return RequestRetryAdvice(shouldRetry: shouldRetry, retryInterval: .milliseconds(0))
+    }
 
     private func getRetryAdviceIfRetryable(error: APIError) -> RequestRetryAdvice {
         var advice = RequestRetryAdvice(shouldRetry: false, retryInterval: DispatchTimeInterval.never)
@@ -219,14 +224,13 @@ class SyncMutationToCloudOperation: Operation {
                                                                httpURLResponse: nil,
                                                                attemptNumber: currentAttemptNumber)
 
-        // TODO: unify below cases (operationError shouldn't be the error type)
+        // we can't unify the following two cases as they have different associated values.
+        // should retry with a different authType if server returned "Unauthorized Error"
         case .httpStatusError(_, let httpURLResponse) where httpURLResponse.statusCode == 401:
-            let shouldRetry = (authTypesProvider?.count ?? 0) > 0
-            advice = RequestRetryAdvice(shouldRetry: shouldRetry, retryInterval: .milliseconds(0))
-
-        case .operationError(let apiError, _, _):
-            let shouldRetry = (authTypesProvider?.count ?? 0) > 0
-            advice = RequestRetryAdvice(shouldRetry: shouldRetry, retryInterval: .milliseconds(0))
+            advice = shouldRetryWithDifferentAuthType()
+        // should retry with a different authType if request failed locally with an AuthError
+        case .operationError(_, _, let error) where (error as? AuthError) != nil:
+            advice = shouldRetryWithDifferentAuthType()
 
         case .httpStatusError(_, let httpURLResponse):
             advice = requestRetryablePolicy.retryRequestAdvice(urlError: nil,
