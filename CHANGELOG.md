@@ -1,5 +1,17 @@
 # Changelog
 ## Unreleased
+## 1.10.0 (2021-06-10)
+
+### Features
+
+- **DataStore**: Multiple models ReconcileAndLocalSave transaction (#1237)
+- **datastore**: support for @auth provider attribute (#1258)
+- **datastore**: support mutation (deletion) with custom primary keys (#1228)
+
+### Bug Fixes
+
+- increase sync concurrency count based on associations (#1267)
+
 ## 1.9.3 (2021-05-26)
 
 ### Bug Fixes
