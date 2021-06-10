@@ -130,6 +130,8 @@ platform :ios do
     tag = "v#{version}"
     plugin_root = File.expand_path("#{ENV['CIRCLE_WORKING_DIRECTORY']}/AmplifyPlugins")
   
+    sh('bundle', 'exec', 'swift', 'package', 'update')
+
     sh('bundle', 'exec', 'pod', 'repo', 'update')
 
     # increment plugin lock files by calling pod update on each
