@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// GraphQL Request
 public struct GraphQLRequest<R: Decodable> {
 
     /// The name of graphQL API being invoked, as specified in `amplifyconfiguration.json`.
@@ -25,6 +26,7 @@ public struct GraphQLRequest<R: Decodable> {
     /// The data at that decode path is a list of Todo objects so `responseType` should be `[Todo].self`
     public let decodePath: String?
 
+    /// Initializer for GraphQLRequest
     public init(apiName: String? = nil,
                 document: String,
                 variables: [String: Any]? = nil,

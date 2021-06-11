@@ -5,12 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// GraphQL Operation
 open class GraphQLOperation<R: Decodable>: AmplifyOperation<
     GraphQLOperationRequest<R>,
     GraphQLResponse<R>,
     APIError
 > { }
 
+
+/// GraphQL Subscription Operation
 open class GraphQLSubscriptionOperation<R: Decodable>: AmplifyInProcessReportingOperation<
     GraphQLOperationRequest<R>,
     SubscriptionEvent<GraphQLResponse<R>>,
@@ -21,6 +24,10 @@ open class GraphQLSubscriptionOperation<R: Decodable>: AmplifyInProcessReporting
 public extension HubPayload.EventName.API {
     /// eventName for HubPayloads emitted by this operation
     static let mutate = "API.mutate"
+
+    /// eventName for HubPayloads emitted by this operation
     static let query = "API.query"
+
+    /// eventName for HubPayloads emitted by this operation
     static let subscribe = "API.subscribe"
 }
