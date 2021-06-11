@@ -157,7 +157,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         case .failure(let dataStoreError):
             dataStorePublisher.send(dataStoreError: dataStoreError)
         case .finished:
-            dataStorePublisher.sendFinished()
+            break
         }
     }
 

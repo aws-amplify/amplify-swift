@@ -175,7 +175,7 @@ class AWSAPICategoryPluginTests: XCTestCase {
 
             plugin.clear(completion: { _ in
                 XCTAssert(plugin.storageEngine == nil)
-                XCTAssert(plugin.dataStorePublisher == nil)
+                XCTAssert(plugin.dataStorePublisher != nil)
                 semaphore.signal()
             })
             semaphore.wait()
@@ -230,7 +230,7 @@ class AWSAPICategoryPluginTests: XCTestCase {
 
             plugin.clear(completion: { _ in
                 XCTAssert(plugin.storageEngine == nil)
-                XCTAssert(plugin.dataStorePublisher == nil)
+                XCTAssert(plugin.dataStorePublisher != nil)
                 semaphore.signal()
             })
             semaphore.wait()
@@ -255,5 +255,68 @@ class AWSAPICategoryPluginTests: XCTestCase {
             expectation.fulfill()
         }
         return count
+    }
+
+    /// - Given: Datastore plugin
+    /// - When: Plugin is configured, started and cleared
+    /// - Then: Plugin's publisher should not received .finished and dataStorePublisher should not be nil
+
+    func testStorageEngineClear() throws {
+        let startExpectation = expectation(description: "Start Sync should be called with start")
+        let clearExpectation = expectation(description: "Clear should be called")
+
+        var count = 0
+        let storageEngine = MockStorageEngineBehavior()
+        storageEngine.responders[.startSync] = StartSyncResponder { _ in
+            count = self.expect(startExpectation, count, 1)
+        }
+        storageEngine.responders[.clear] = ClearResponder { _ in
+            count = self.expect(clearExpectation, count, 2)
+        }
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+            return storageEngine
+        }
+        let dataStorePublisher = DataStorePublisher()
+        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
+                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+                                        dataStorePublisher: dataStorePublisher,
+                                        validAPIPluginKey: "MockAPICategoryPlugin",
+                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+
+        let finishNotReceived = expectation(description: "Finish should not be received")
+        finishNotReceived.isInverted = true
+        _ = plugin.publisher.sink { completion in
+            switch completion {
+            case .finished:
+                print("Finish received")
+                finishNotReceived.fulfill()
+            case .failure(let error):
+                print("Error \(error)")
+            }
+        } receiveValue: { event in
+            print(event)
+        }
+
+        do {
+            try plugin.configure(using: nil)
+
+            let semaphore = DispatchSemaphore(value: 0)
+            plugin.start(completion: {_ in
+                XCTAssert(plugin.storageEngine != nil)
+                XCTAssert(plugin.dataStorePublisher != nil)
+                semaphore.signal()
+            })
+            semaphore.wait()
+
+            plugin.clear(completion: { _ in
+                XCTAssert(plugin.storageEngine == nil)
+                XCTAssert(plugin.dataStorePublisher != nil)
+                semaphore.signal()
+            })
+            semaphore.wait()
+        } catch {
+            XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
+        }
+        waitForExpectations(timeout: 1.0)
     }
 }
