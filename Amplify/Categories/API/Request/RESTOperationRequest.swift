@@ -31,7 +31,7 @@ public struct RESTOperationRequest: AmplifyOperationRequest {
     /// Options to adjust the behavior of this request, including plugin-options
     public let options: Options
 
-    /// Initializer with all propoerties
+    /// Initializer with all properties
     public init(apiName: String?,
                 operationType: RESTOperationType,
                 path: String? = nil,
