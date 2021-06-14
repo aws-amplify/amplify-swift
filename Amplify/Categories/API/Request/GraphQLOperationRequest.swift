@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// GraphQL Operation Request
 public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
 
     /// The name of the API to perform the request against
@@ -28,6 +29,7 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
     /// Options to adjust the behavior of this request, including plugin-options
     public let options: Options
 
+    /// Initializer for GraphQLOperationRequest
     public init(apiName: String?,
                 operationType: GraphQLOperationType,
                 document: String,
@@ -45,8 +47,11 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
     }
 }
 
+/// GraphQL Operation Request options extension
 public extension GraphQLOperationRequest {
     struct Options {
+
+        /// Empty Initializer
         public init() { }
     }
 }

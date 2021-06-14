@@ -20,6 +20,7 @@ public struct GraphQLError: Decodable {
     /// Additional map of of errors
     public let extensions: [String: JSONValue]?
 
+    /// Initializer with all properties
     public init(message: String,
                 locations: [Location]? = nil,
                 path: [JSONValue]? = nil,
@@ -35,7 +36,11 @@ extension GraphQLError {
 
     /// Both `line` and `column` are positive numbers describing the beginning of an associated syntax element
     public struct Location: Decodable {
+
+        /// The line describing the associated syntax element
         public let line: Int
+
+        /// The column describing the associated syntax element
         public let column: Int
     }
 }

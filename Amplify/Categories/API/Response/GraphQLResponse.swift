@@ -7,8 +7,10 @@
 
 import Foundation
 
+/// Raw GraphQL Response String
 public typealias RawGraphQLResponse = String
 
+/// GraphQL Response Result
 public typealias GraphQLResponse<ResponseType: Decodable> =
     Result<ResponseType, GraphQLResponseError<ResponseType>>
 

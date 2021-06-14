@@ -7,8 +7,13 @@
 
 import Foundation
 
+/// Reachability Update
 public struct ReachabilityUpdate {
+
+    /// Whether it is online or not
     public let isOnline: Bool
+
+    /// Initializer with initial online state
     public init(isOnline: Bool) {
         self.isOnline = isOnline
     }

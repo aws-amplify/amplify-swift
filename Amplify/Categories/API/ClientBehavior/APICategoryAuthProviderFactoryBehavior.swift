@@ -7,6 +7,9 @@
 
 import Foundation
 
+/// API Category Auth provider Factory Behavior
 public protocol APICategoryAuthProviderFactoryBehavior {
+
+    /// Retrieve the auth provider factory
     func apiAuthProviderFactory() -> APIAuthProviderFactory
 }

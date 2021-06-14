@@ -12,10 +12,22 @@ public protocol RESTOperation: AmplifyOperation<RESTOperationRequest, Data, APIE
 
 /// Event names for HubPayloads emitted by this operation
 public extension HubPayload.EventName.API {
+
+    /// eventName for HubPayloads emitted by this operation
     static let delete = "API.delete"
+
+    /// eventName for HubPayloads emitted by this operation
     static let get = "API.get"
+
+    /// eventName for HubPayloads emitted by this operation
     static let patch = "API.patch"
+
+    /// eventName for HubPayloads emitted by this operation
     static let post = "API.post"
+
+    /// eventName for HubPayloads emitted by this operation
     static let put = "API.put"
+
+    /// eventName for HubPayloads emitted by this operation
     static let head = "API.head"
 }
