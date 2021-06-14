@@ -22,11 +22,11 @@ extension APICategoryGraphQLBehavior {
     ///
     /// - Parameter request: GraphQL request
     /// - Returns: GraphQL operation
-    public func subscribe<R: Decodable>(request: GraphQLRequest<R>) -> GraphQLOperation<R> {
+    public func mutate<R: Decodable>(request: GraphQLRequest<R>) -> GraphQLOperation<R> {
         mutate(request: request, listener: nil)
     }
 
-    /// Default implementation of `query` to provide convenience for passing nil arguments.
+    /// Default implementation of `subscribe` to provide convenience for passing nil arguments.
     ///
     /// - Parameter request: GraphQL request
     /// - Returns: GraphQL operation
