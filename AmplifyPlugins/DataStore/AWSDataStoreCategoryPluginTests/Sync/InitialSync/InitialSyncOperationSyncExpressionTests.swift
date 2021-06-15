@@ -43,7 +43,8 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: configuration)
+            dataStoreConfiguration: configuration,
+            authModeStrategy: AWSDefaultAuthModeStrategy())
     }
 
     func testBaseQueryWithBasicSyncExpression() throws {

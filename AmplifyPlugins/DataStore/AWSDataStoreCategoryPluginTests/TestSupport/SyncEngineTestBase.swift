@@ -10,6 +10,7 @@ import XCTest
 import Combine
 
 @testable import Amplify
+@testable import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
@@ -90,6 +91,7 @@ class SyncEngineTestBase: XCTestCase {
 
         syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
                                       dataStoreConfiguration: .default,
+                                      authModeStrategy: AWSDefaultAuthModeStrategy(),
                                       outgoingMutationQueue: mutationQueue,
                                       mutationEventIngester: mutationDatabaseAdapter,
                                       mutationEventPublisher: awsMutationEventPublisher,
