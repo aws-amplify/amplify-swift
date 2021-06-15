@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 open class GraphQLOperation<R: Decodable>: AmplifyOperation<
     GraphQLOperationRequest<R>,
     GraphQLResponse<R>,
