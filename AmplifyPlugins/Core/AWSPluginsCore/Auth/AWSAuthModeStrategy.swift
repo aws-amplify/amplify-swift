@@ -23,7 +23,24 @@ public enum AuthModeStrategyType {
     case custom(AuthModeStrategy)
 }
 
-public protocol AuthorizationTypeProvider {
+
+/// Methods for checking user current status
+public protocol AuthModeStrategyDelegate: AnyObject {
+    func isUserLoggedIn() -> Bool
+}
+
+/// Represents an authorization strategy used by DataStore
+public protocol AuthModeStrategy: AnyObject {
+    
+    var authDelegate: AuthModeStrategyDelegate? { get set }
+    
+    init()
+    
+    func authTypesFor(schema: ModelSchema,
+                      operation: ModelOperation) -> AWSAuthorizationTypeIterator
+}
+
+public protocol AuthorizationTypeIterator {
     associatedtype AuthorizationType
     
     init(withValues: [AuthorizationType])
@@ -33,7 +50,7 @@ public protocol AuthorizationTypeProvider {
     mutating func next() -> AuthorizationType?
 }
 
-public struct AWSAuthorizationTypeProvider: AuthorizationTypeProvider {
+public struct AWSAuthorizationTypeIterator: AuthorizationTypeIterator {
     public typealias AuthorizationType = AWSAuthorizationType
     
     private var values: IndexingIterator<[AWSAuthorizationType]>
@@ -55,38 +72,31 @@ public struct AWSAuthorizationTypeProvider: AuthorizationTypeProvider {
     
 }
 
-/// Represents an authorization strategy used by DataStore
-public protocol AuthModeStrategy {
-    init()
-    func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> AWSAuthorizationTypeProvider
-}
-
 // MARK: - AWSDefaultAuthModeStrategy
 
-public struct AWSDefaultAuthModeStrategy: AuthModeStrategy {
-    public init() {}
-    
-    public func authTypesFor(schema: ModelSchema, operation: ModelOperation) -> AWSAuthorizationTypeProvider {
-        return AWSAuthorizationTypeProvider(withValues: [])
+public class AWSDefaultAuthModeStrategy: AuthModeStrategy {
+    public var authDelegate: AuthModeStrategyDelegate?
+    required public init() {}
+
+    public func authTypesFor(schema: ModelSchema,
+                             operation: ModelOperation) -> AWSAuthorizationTypeIterator {
+        return AWSAuthorizationTypeIterator(withValues: [])
     }
 }
 
 // MARK: - AWSMultiAuthModeStrategy
 
 /// Multi-auth strategy implementation based on schema metadata
-public struct AWSMultiAuthModeStrategy: AuthModeStrategy {
+public class AWSMultiAuthModeStrategy: AuthModeStrategy {
+    public var authDelegate: AuthModeStrategyDelegate?
+    
     private typealias AuthStrategyPriority = Int
     
-    public init() {}
+    required public init() {}
 
-    private static func authTypeFor(authRule: AuthRule) -> AWSAuthorizationType {
-        if let authProvider = authRule.provider,
-              let authType = try? authProvider.toAWSAuthorizationType() {
-            return authType
-        }
-        
+    private static func defaultAuthTypeFor(authStrategy: AuthStrategy) -> AWSAuthorizationType {
         var defaultAuthType: AWSAuthorizationType
-        switch authRule.allow {
+        switch authStrategy {
         case .owner:
             defaultAuthType = .amazonCognitoUserPools
         case .groups:
@@ -97,6 +107,17 @@ public struct AWSMultiAuthModeStrategy: AuthModeStrategy {
             defaultAuthType = .apiKey
         }
         return defaultAuthType
+    }
+    
+    /// Given an auth rule, returns the corresponding AWSAuthorizationType
+    /// - Parameter authRule: authorization rule
+    /// - Returns: returns corresponding AWSAuthorizationType or a default
+    private static func authTypeFor(authRule: AuthRule) -> AWSAuthorizationType {
+        if let authProvider = authRule.provider {
+            return authProvider.toAWSAuthorizationType()
+        }
+        
+        return defaultAuthTypeFor(authStrategy: authRule.allow)
     }
 
     /// Given an auth rule strategy returns its corresponding priority
@@ -120,13 +141,24 @@ public struct AWSMultiAuthModeStrategy: AuthModeStrategy {
     }
 
     public func authTypesFor(schema: ModelSchema,
-                             operation: ModelOperation) -> AWSAuthorizationTypeProvider {
-        let applicableAuthRules = schema.authRules
+                             operation: ModelOperation) -> AWSAuthorizationTypeIterator {
+        var applicableAuthRules = schema.authRules
             .filter(modelOperation: operation)
             .sorted(by: AWSMultiAuthModeStrategy.comparator)
-            .map { AWSMultiAuthModeStrategy.authTypeFor(authRule: $0) }
+        
+        // if there isn't a user signed in, returns only public rules
+        if let authDelegate = authDelegate, !authDelegate.isUserLoggedIn() {
+            applicableAuthRules = applicableAuthRules.filter { rule in
+                return rule.allow == .public
+            }
+        }
 
-        return AWSAuthorizationTypeProvider(withValues: applicableAuthRules)
-
+        // fallback to default type if we couldn't find any applicable auth type
+//        if applicableAuthRules.count == 0 {
+//            fatalError("wtf")
+//        }
+        return AWSAuthorizationTypeIterator(withValues: applicableAuthRules.map {
+            AWSMultiAuthModeStrategy.authTypeFor(authRule: $0)
+        })
     }
 }

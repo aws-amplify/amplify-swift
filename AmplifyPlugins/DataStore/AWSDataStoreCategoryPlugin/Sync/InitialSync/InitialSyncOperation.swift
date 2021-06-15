@@ -18,6 +18,7 @@ final class InitialSyncOperation: AsynchronousOperation {
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
     private weak var storageAdapter: StorageEngineAdapter?
     private let dataStoreConfiguration: DataStoreConfiguration
+    private let authModeStrategy: AuthModeStrategy
 
     private let modelSchema: ModelSchema
 
@@ -39,12 +40,15 @@ final class InitialSyncOperation: AsynchronousOperation {
          api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?,
-         dataStoreConfiguration: DataStoreConfiguration) {
+         dataStoreConfiguration: DataStoreConfiguration,
+         authModeStrategy: AuthModeStrategy) {
         self.modelSchema = modelSchema
         self.api = api
         self.reconciliationQueue = reconciliationQueue
         self.storageAdapter = storageAdapter
         self.dataStoreConfiguration = dataStoreConfiguration
+        self.authModeStrategy = authModeStrategy
+
         self.recordsReceived = 0
         self.initialSyncOperationTopic = PassthroughSubject<InitialSyncOperationEvent, DataStoreError>()
     }
@@ -136,7 +140,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             }
         }
 
-        var authTypes = dataStoreConfiguration.authModeStrategy.authTypesFor(schema: modelSchema,
+        var authTypes = authModeStrategy.authTypesFor(schema: modelSchema,
                                                                              operation: .read)
 
 

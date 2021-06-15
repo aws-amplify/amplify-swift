@@ -26,7 +26,7 @@ class SyncMutationToCloudOperation: Operation {
     private var mutationRetryNotifier: MutationRetryNotifier?
     private var requestRetryablePolicy: RequestRetryablePolicy
     private var currentAttemptNumber: Int
-    private var authTypesProvider: AWSAuthorizationTypeProvider?
+    private var authTypesIterator: AWSAuthorizationTypeIterator?
 
     init(mutationEvent: MutationEvent,
          api: APICategoryGraphQLBehavior,
@@ -44,7 +44,7 @@ class SyncMutationToCloudOperation: Operation {
 
         if let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName),
            let mutationType = GraphQLMutationType(rawValue: mutationEvent.mutationType) {
-            self.authTypesProvider = authModeStrategy.authTypesFor(schema: modelSchema,
+            self.authTypesIterator = authModeStrategy.authTypesFor(schema: modelSchema,
                                                                    operation: mutationType.toModelOperation())
         }
         super.init()
@@ -52,7 +52,7 @@ class SyncMutationToCloudOperation: Operation {
 
     override func main() {
         log.verbose(#function)
-        sendMutationToCloud(withAuthType: authTypesProvider?.next())
+        sendMutationToCloud(withAuthType: authTypesIterator?.next())
     }
 
     override func cancel() {
@@ -185,7 +185,7 @@ class SyncMutationToCloudOperation: Operation {
             }
 
             resolveReachabilityPublisher(request: request)
-            if request.options?.authType != nil, let nextAuthType = authTypesProvider?.next() {
+            if request.options?.authType != nil, let nextAuthType = authTypesIterator?.next() {
                 self.scheduleRetry(advice: advice, withAuthType: nextAuthType)
             } else {
                 self.scheduleRetry(advice: advice)
@@ -207,9 +207,9 @@ class SyncMutationToCloudOperation: Operation {
             }
         }
     }
-    
+
     private func shouldRetryWithDifferentAuthType() -> RequestRetryAdvice {
-        let shouldRetry = (authTypesProvider?.count ?? 0) > 0
+        let shouldRetry = (authTypesIterator?.count ?? 0) > 0
         return RequestRetryAdvice(shouldRetry: shouldRetry, retryInterval: .milliseconds(0))
     }
 

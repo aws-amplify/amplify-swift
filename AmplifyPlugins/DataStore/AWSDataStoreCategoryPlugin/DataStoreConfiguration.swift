@@ -68,7 +68,7 @@ public struct DataStoreConfiguration {
     public let syncExpressions: [DataStoreSyncExpression]
 
     /// Authorization mode strategy
-    public let authModeStrategy: AuthModeStrategy
+    public var authModeStrategyType: AuthModeStrategyType
 
     init(errorHandler: @escaping DataStoreErrorHandler,
          conflictHandler: @escaping DataStoreConflictHandler,
@@ -83,15 +83,7 @@ public struct DataStoreConfiguration {
         self.syncMaxRecords = syncMaxRecords
         self.syncPageSize = syncPageSize
         self.syncExpressions = syncExpressions
-
-        switch authModeStrategy {
-        case .default:
-            self.authModeStrategy = AWSDefaultAuthModeStrategy()
-        case .multiAuth:
-            self.authModeStrategy = AWSMultiAuthModeStrategy()
-        case .custom(let customStrategy):
-            self.authModeStrategy = customStrategy
-        }
+        self.authModeStrategyType = authModeStrategy
     }
 
 }

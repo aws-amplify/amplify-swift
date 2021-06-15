@@ -275,7 +275,7 @@ extension IncomingAsyncSubscriptionEventPublisher {
                                      api: APICategoryGraphQLBehavior,
                                      auth: AuthCategoryBehavior?,
                                      awsAuthService: AWSAuthServiceBehavior,
-                                     authTypeProvider: AWSAuthorizationTypeProvider) -> RetryableGraphQLOperation<Payload>.RequestFactory {
+                                     authTypeProvider: AWSAuthorizationTypeIterator) -> RetryableGraphQLOperation<Payload>.RequestFactory {
         var authTypes = authTypeProvider
         return {
             return IncomingAsyncSubscriptionEventPublisher.makeAPIRequest(for: modelSchema,
