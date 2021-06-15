@@ -24,7 +24,14 @@ public struct AnalyticsUserProfile {
 
     /// Properties of the user profile
     public var properties: AnalyticsProperties?
-
+    
+    /// Initializer
+    /// - Parameters:
+    ///   - name: Name of user
+    ///   - email: The user's e-mail
+    ///   - plan: The plan for the user
+    ///   - location: Location data about the user
+    ///   - properties: Properties of the user profile
     public init(name: String? = nil,
                 email: String? = nil,
                 plan: String? = nil,
@@ -42,19 +49,33 @@ extension AnalyticsUserProfile {
 
     /// Location specific data
     public struct Location {
-
+        
+        /// The user's latitude
         public var latitude: Double?
-
+        
+        /// The user's longitude
         public var longitude: Double?
 
+        /// The user's postal code
         public var postalCode: String?
 
+        /// The user's city
         public var city: String?
 
+        /// The user's region
         public var region: String?
 
+        /// The user's country
         public var country: String?
 
+        /// Initializer
+        /// - Parameters:
+        ///   - latitude: The user's latitude
+        ///   - longitude: The user's longitude
+        ///   - postalCode: The user's postal code
+        ///   - city: The user's city
+        ///   - region: The user's region
+        ///   - country: The user's country
         public init(latitude: Double? = nil,
                     longitude: Double? = nil,
                     postalCode: String? = nil,
