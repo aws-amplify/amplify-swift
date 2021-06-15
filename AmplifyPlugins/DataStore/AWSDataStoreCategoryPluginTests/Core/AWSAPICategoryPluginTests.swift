@@ -369,8 +369,8 @@ class AWSAPICategoryPluginTests: XCTestCase {
 
             let mockModel = MockSynced(id: "12345")
             try plugin.dataStorePublisher?.send(input: MutationEvent(model: mockModel,
-                                                                 modelSchema: mockModel.schema,
-                                                                 mutationType: .create))
+                                                                     modelSchema: mockModel.schema,
+                                                                     mutationType: .create))
 
             waitForExpectations(timeout: 1.0)
             sink.cancel()
