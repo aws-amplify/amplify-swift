@@ -43,13 +43,14 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.next(), .apiKey)
     }
 
-    // Given: multi-auth strategy and a model schema with 3 auth rules
+    // Given: multi-auth strategy and a model schema with 4 auth rules
     // When: authTypesFor for .create operation is called
     // Then: applicable auth types are ordered according to priority rules
     func testMultiAuthPriorityAuthRulesOrder() {
         let authMode = AWSMultiAuthModeStrategy()
         var authTypesIterator = authMode.authTypesFor(schema: ModelAllStrategies.schema, operation: .read)
-        XCTAssertEqual(authTypesIterator.count, 3)
+        XCTAssertEqual(authTypesIterator.count, 4)
+        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .awsIAM)
@@ -131,11 +132,11 @@ private struct ModelAllStrategies: Model {
         model.authRules = [
             rule(allow: .owner, provider: .userPools, operations: [.create, .read, .update, .delete]),
             rule(allow: .public, provider: .iam, operations: [.read]),
+            rule(allow: .private, provider: .userPools, operations: [.read]),
             rule(allow: .groups, provider: .userPools, operations: [.create, .read])
         ]
     }
 }
-
 
 // MARK: Test AuthModeStrategyDelegate
 
