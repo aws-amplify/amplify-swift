@@ -37,7 +37,7 @@ class AuthModeStrategyTests: XCTestCase {
     // Then: default values based on the auth strategy should be returned
     func testMultiAuthShouldReturnDefaultAuthTypes() {
         let authMode = AWSMultiAuthModeStrategy()
-        var authTypesIterator = authMode.authTypesFor(schema: ModelNoProvider.schema, operation: .create)
+        var authTypesIterator = authMode.authTypesFor(schema: ModelNoProvider.schema, operation: .read)
         XCTAssertEqual(authTypesIterator.count, 2)
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .apiKey)
@@ -65,6 +65,20 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.count, 2)
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
+    }
+
+    // Given: multi-auth strategy a model schema
+    // When: authTypesFor for .create operation is called for unauthenticated user
+    // Then: applicable auth types returned are only public rules
+    func testMultiAuthPriorityUnauthenticatedUser() {
+        let authMode = AWSMultiAuthModeStrategy()
+        let delegate = UnauthenticatedUserDelegate()
+        authMode.authDelegate = delegate
+
+        var authTypesIterator = authMode.authTypesFor(schema: ModelWithOwnerAndPublicAuth.schema,
+                                                      operation: .create)
+        XCTAssertEqual(authTypesIterator.count, 1)
+        XCTAssertEqual(authTypesIterator.next(), .apiKey)
     }
 }
 
@@ -119,5 +133,14 @@ private struct ModelAllStrategies: Model {
             rule(allow: .public, provider: .iam, operations: [.read]),
             rule(allow: .groups, provider: .userPools, operations: [.create, .read])
         ]
+    }
+}
+
+
+// MARK: Test AuthModeStrategyDelegate
+
+class UnauthenticatedUserDelegate: AuthModeStrategyDelegate {
+    func isUserLoggedIn() -> Bool {
+        return false
     }
 }
