@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Request to update the user attributes of the signed in user
+/// Request to update multiple user attributes of the signed in user
 public struct AuthUpdateUserAttributesRequest: AmplifyOperationRequest {
 
     /// List of user attributes to update
