@@ -10,6 +10,11 @@ import Amplify
 import AWSPluginsCore
 import AWSS3
 
+/// Storage Get URL Operation.
+///
+/// See: [Operations] for more details.
+///
+/// [Operations]: https://github.com/aws-amplify/amplify-ios/blob/main/OPERATIONS.md
 public class AWSS3StorageGetURLOperation: AmplifyOperation<
     StorageGetURLRequest,
     URL,
@@ -32,10 +37,12 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<
                    resultListener: resultListener)
     }
 
+    /// Cancels operation.
     override public func cancel() {
         super.cancel()
     }
 
+    /// Performs the task to get URL.
     override public func main() {
         if isCancelled {
             finish()

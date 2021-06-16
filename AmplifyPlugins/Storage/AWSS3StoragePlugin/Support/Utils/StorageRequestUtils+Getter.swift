@@ -67,6 +67,7 @@ extension StorageRequestUtils {
 }
 
 extension StorageAccessLevel {
+    /// Service Access Prefix.
     public var serviceAccessPrefix: String {
         switch self {
         case .guest:

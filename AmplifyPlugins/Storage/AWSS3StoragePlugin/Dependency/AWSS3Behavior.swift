@@ -11,12 +11,12 @@ import AWSS3
 // Behavior that the implemenation class for AWSS3 will use.
 protocol AWSS3Behavior {
 
-    // List objects
+    // Lists objects in a bucket.
     func listObjectsV2(_ request: AWSS3ListObjectsV2Request) -> AWSTask<AWSS3ListObjectsV2Output>
 
-    // Delete objects
+    // Deletes object.
     func deleteObject(_ request: AWSS3DeleteObjectRequest) -> AWSTask<AWSS3DeleteObjectOutput>
 
-    // return the instance of AWSS3
+    // Gets instance of AWS Service.
     func getS3() -> AWSS3
 }
