@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Request to fetch the user attributes of the current user.
+/// Request to fetch the user attributes of the current user
 public struct AuthFetchUserAttributesRequest: AmplifyOperationRequest {
 
     /// Extra request options defined in `AuthFetchUserAttributesRequest.Options`
