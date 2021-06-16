@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Request to update the user attribute of the signed in user
+/// Request to update a single attribute of the signed in user
 public struct AuthUpdateUserAttributeRequest: AmplifyOperationRequest {
 
     /// User attribute to update
