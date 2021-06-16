@@ -10,7 +10,7 @@ import Foundation
 /// Request to resend sign up code
 public struct AuthResendSignUpCodeRequest: AmplifyOperationRequest {
 
-    /// User for which the sign up code to be resend
+    /// User for which the sign up code should be resent
     public let username: String
 
     /// Extra request options defined in `AuthResendSignUpCodeRequest.Options`
