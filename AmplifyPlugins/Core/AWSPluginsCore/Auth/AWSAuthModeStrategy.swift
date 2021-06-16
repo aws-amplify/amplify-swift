@@ -16,7 +16,7 @@ public enum AuthModeStrategyType {
 
     /// Uses schema metadata to create a prioritized list of potential authorization types
     /// that could be used for a request. The client iterates through that list until one of the
-    /// avaialable types succecceds or all of them fail.
+    /// avaialable types succeeds or all of them fail.
     case multiAuth
 
     /// Custom provided authorization strategy.
