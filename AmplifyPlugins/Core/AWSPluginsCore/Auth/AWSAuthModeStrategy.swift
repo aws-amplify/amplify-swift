@@ -76,6 +76,10 @@ public struct AWSAuthorizationTypeIterator: AuthorizationTypeIterator {
 
 // MARK: - AWSDefaultAuthModeStrategy
 
+/// AWS default auth mode strategy.
+///
+/// Returns an empty AWSAuthorizationTypeIterator, so we can just rely on the default authorization type
+/// registered as interceptor for the API
 public class AWSDefaultAuthModeStrategy: AuthModeStrategy {
     public weak var authDelegate: AuthModeStrategyDelegate?
     required public init() {}
@@ -143,7 +147,6 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
         priorityOf(authStrategy: rule1.allow) < priorityOf(authStrategy: rule2.allow)
     }
 
-    
     /// Returns the proper authorization type for the provided schema according to a set of priority rules
     /// - Parameters:
     ///   - schema: model schema
