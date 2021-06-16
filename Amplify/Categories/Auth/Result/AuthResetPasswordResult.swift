@@ -29,9 +29,9 @@ public enum AuthResetPasswordStep {
 
     /// Next step is to confirm the password with a code.
     ///
-    /// Invoke Auth.confirmResetPassword with new password and the confirmation code for th user
-    /// for which reset password was invoked. `AuthCodeDeliveryDetails` provides the details to which
-    /// the confirmation code was send and `AdditionalInfo` will provide more details if present.
+    /// Invoke Auth.confirmResetPassword with new password and the confirmation code for the user
+    /// for which `resetPassword` was invoked. `AuthCodeDeliveryDetails` describes where
+    /// the confirmation code was sent and `AdditionalInfo` will provide more details if present.
     case confirmResetPasswordWithCode(AuthCodeDeliveryDetails, AdditionalInfo?)
 
     /// Reset password complete, there are no remaining steps
