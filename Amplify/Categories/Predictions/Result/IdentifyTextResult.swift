@@ -5,7 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// A struct describing text identified in an image
+/// Results are mapped to IdentifyTextResult when .plain is passed for .detectText in the type: field
+/// in identify() API
 public struct IdentifyTextResult: IdentifyResult {
     public let fullText: String?
     public let words: [IdentifiedWord]?

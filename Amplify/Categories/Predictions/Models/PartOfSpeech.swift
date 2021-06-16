@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// struct holding `SpeechType` and a confidence score detected in a text
+/// part of speech identified in a text from interpret() API
 public struct PartOfSpeech {
     public let tag: SpeechType
     public let score: Float?

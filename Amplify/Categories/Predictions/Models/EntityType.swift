@@ -5,7 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// enum describing different types of `Entity`
+/// Different entity types detected in a text as a result of
+/// interpret() API
 public enum EntityType: String {
     case commercialItem
     case date

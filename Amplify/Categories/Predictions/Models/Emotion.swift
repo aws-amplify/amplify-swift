@@ -5,7 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// Struct holding information about `Emotion` with confidence value
+/// Emotion identified in an entity(faces/celebrities)
+/// as a result of identify() API with associated `EmotionType`
+/// and confidence value
 public struct Emotion {
     public let emotion: EmotionType
     public let confidence: Double

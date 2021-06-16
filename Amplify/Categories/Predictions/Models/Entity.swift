@@ -7,7 +7,8 @@
 
 import CoreGraphics
 
-/// Struct that holds the result of an entity detected from an image per the Identify method
+/// Result returned as part of identify() API call with
+/// `IdentifyAction.detectEntities` type parameter
 public struct Entity {
     public let boundingBox: CGRect
     public let landmarks: [Landmark]

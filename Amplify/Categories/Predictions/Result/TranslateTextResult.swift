@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// Results are mapped to TranslateTextResult when convert() API is
+/// called to translate a text into another language
 public struct TranslateTextResult: ConvertResult {
 
     /// Translated text

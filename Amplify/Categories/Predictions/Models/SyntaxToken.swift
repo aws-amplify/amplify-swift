@@ -5,7 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// struct holding information syntactical information resulting from text interpretation
+/// describes syntactical information resulting from text interpretation as
+/// a result of interpret() API
 public struct SyntaxToken {
 
     public let tokenId: Int

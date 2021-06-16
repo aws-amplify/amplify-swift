@@ -7,6 +7,8 @@
 
 import Foundation
 
+/// Results are mapped to SpeechToTextResult when convert() API is
+/// called to convert a text to audio
 public struct SpeechToTextResult: ConvertResult {
     /// Resulting string from speech to text conversion
     public let transcription: String

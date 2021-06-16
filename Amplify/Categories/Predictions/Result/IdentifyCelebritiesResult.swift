@@ -5,9 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// Results are mapped to IdentifyCelebritiesResult when .detectCelebrity in passed in the type: field
+/// in identify() API
 public struct IdentifyCelebritiesResult: IdentifyResult {
 
-    /// List of `Celebrity` as part of Identify query
     public let celebrities: [Celebrity]
 
     public init(celebrities: [Celebrity]) {

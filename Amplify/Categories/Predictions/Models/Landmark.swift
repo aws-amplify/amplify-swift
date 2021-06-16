@@ -7,7 +7,8 @@
 
 import CoreGraphics
 
-/// struct holding information about a facial feature
+/// describes the facial feature in a celebrity/entity
+/// identified as a result of identify() API
 public struct Landmark {
     public let type: LandmarkType
     public let points: [CGPoint]
@@ -18,6 +19,7 @@ public struct Landmark {
     }
 }
 
+/// different types of facial features
 public enum LandmarkType {
 
     case allPoints

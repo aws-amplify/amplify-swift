@@ -5,7 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// enum describing gender types
+/// Describes gender of an entity identified as a result of
+/// identify() API
 public enum GenderType: String {
     case male
     case female

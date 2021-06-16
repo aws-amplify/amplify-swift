@@ -7,7 +7,8 @@
 
 import CoreGraphics
 
-/// A struct containing result for identifying objects in an image
+/// Results are mapped to IdentifyLabelsResult when .labels in passed to .detectLabels
+/// in the type: field in identify() API
 public struct IdentifyLabelsResult: IdentifyResult {
     public let labels: [Label]
     public let unsafeContent: Bool?
@@ -18,7 +19,7 @@ public struct IdentifyLabelsResult: IdentifyResult {
     }
 }
 
-/// A struct describing real world objects in an image
+/// describes an real world object(chairs, desks) identified in an image
 public struct Label {
     public let name: String
     public let metadata: LabelMetadata?
