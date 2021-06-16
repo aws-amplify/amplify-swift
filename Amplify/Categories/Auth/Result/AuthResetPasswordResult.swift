@@ -34,7 +34,7 @@ public enum AuthResetPasswordStep {
     /// the confirmation code was send and `AdditionalInfo` will provide more details if present.
     case confirmResetPasswordWithCode(AuthCodeDeliveryDetails, AdditionalInfo?)
 
-    /// Reset password complete, there are no next step.
+    /// Reset password complete, there are no remaining steps
     case done
 
 }
