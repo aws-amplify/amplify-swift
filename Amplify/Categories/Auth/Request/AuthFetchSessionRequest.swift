@@ -13,7 +13,7 @@ public struct AuthFetchSessionRequest: AmplifyOperationRequest {
     /// Extra request options defined in `AuthFetchSessionRequest.Options`
     public var options: Options
 
-    public init( options: Options) {
+    public init(options: Options) {
 
         self.options = options
     }
