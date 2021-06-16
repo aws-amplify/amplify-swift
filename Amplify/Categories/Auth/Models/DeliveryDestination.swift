@@ -7,7 +7,7 @@
 
 public typealias Destination = String
 
-/// Destination where a partical item has been delivered
+/// Destination to where an item (e.g., confirmation code) was delivered
 public enum DeliveryDestination {
 
     /// Email destination with optional associated value containing the email info
