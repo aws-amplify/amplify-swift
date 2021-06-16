@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 /// Convenience protocol to handle any kind of GraphQLOperation
 public protocol AnyGraphQLOperation {
     associatedtype Success
@@ -53,7 +52,7 @@ public protocol RetryableGraphQLOperationBehavior: Operation, DefaultLogger {
          _ operationFactory: @escaping OperationFactory)
 
     func start(request: GraphQLRequest<Payload>)
-    
+
     func shouldRetry(error: APIError?) -> Bool
 }
 
@@ -113,19 +112,25 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: Operation, Ret
     public override func cancel() {
         underlyingOperation?.cancel()
     }
-    
+
     public func shouldRetry(error: APIError?) -> Bool {
         guard case let .operationError(_, _, underlyingError) = error,
-              let authError = underlyingError as? AuthError,
-              case .signedOut = authError else {
+              let authError = underlyingError as? AuthError else {
                   return false
               }
-        return self.attempts < self.maxRetries
+
+        switch authError {
+        case .signedOut, .notAuthorized:
+            return attempts < maxRetries
+        default:
+            return false
+        }
     }
 }
 
 // MARK: - RetryableGraphQLSubscriptionOperation
-public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Operation, RetryableGraphQLOperationBehavior {
+public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Operation,
+                                                                              RetryableGraphQLOperationBehavior {
     public typealias OperationType = GraphQLSubscriptionOperation<Payload>
 
     public typealias Payload = Payload
@@ -155,13 +160,12 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Op
     public override func cancel() {
         underlyingOperation?.cancel()
     }
-    
+
     public func shouldRetry(error: APIError?) -> Bool {
-        return self.attempts < self.maxRetries
+        return attempts < maxRetries
     }
 
 }
-
 
 // MARK: GraphQLOperation - GraphQLSubscriptionOperation + AnyGraphQLOperation
 extension GraphQLOperation: AnyGraphQLOperation {}

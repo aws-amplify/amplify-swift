@@ -31,45 +31,45 @@ public protocol AuthModeStrategyDelegate: AnyObject {
 
 /// Represents an authorization strategy used by DataStore
 public protocol AuthModeStrategy: AnyObject {
-    
+
     var authDelegate: AuthModeStrategyDelegate? { get set }
-    
+
     init()
-    
+
     func authTypesFor(schema: ModelSchema,
                       operation: ModelOperation) -> AWSAuthorizationTypeIterator
 }
 
 public protocol AuthorizationTypeIterator {
     associatedtype AuthorizationType
-    
+
     init(withValues: [AuthorizationType])
-    
+
     var count: Int { get }
-    
+
     mutating func next() -> AuthorizationType?
 }
 
 public struct AWSAuthorizationTypeIterator: AuthorizationTypeIterator {
     public typealias AuthorizationType = AWSAuthorizationType
-    
+
     private var values: IndexingIterator<[AWSAuthorizationType]>
     private var _count: Int
-    
+
     public init(withValues values: [AWSAuthorizationType]) {
         self.values = values.makeIterator()
         self._count = values.count
     }
-    
+
     public var count: Int {
-        self._count
+        _count
     }
-    
+
     public mutating func next() -> AWSAuthorizationType? {
-        self.values.next()
+        values.next()
     }
-    
-    
+
+
 }
 
 // MARK: - AWSDefaultAuthModeStrategy
@@ -89,9 +89,9 @@ public class AWSDefaultAuthModeStrategy: AuthModeStrategy {
 /// Multi-auth strategy implementation based on schema metadata
 public class AWSMultiAuthModeStrategy: AuthModeStrategy {
     public var authDelegate: AuthModeStrategyDelegate?
-    
+
     private typealias AuthStrategyPriority = Int
-    
+
     required public init() {}
 
     private static func defaultAuthTypeFor(authStrategy: AuthStrategy) -> AWSAuthorizationType {
@@ -108,7 +108,7 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
         }
         return defaultAuthType
     }
-    
+
     /// Given an auth rule, returns the corresponding AWSAuthorizationType
     /// - Parameter authRule: authorization rule
     /// - Returns: returns corresponding AWSAuthorizationType or a default
@@ -116,7 +116,7 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
         if let authProvider = authRule.provider {
             return authProvider.toAWSAuthorizationType()
         }
-        
+
         return defaultAuthTypeFor(authStrategy: authRule.allow)
     }
 
@@ -145,7 +145,7 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
         var applicableAuthRules = schema.authRules
             .filter(modelOperation: operation)
             .sorted(by: AWSMultiAuthModeStrategy.comparator)
-        
+
         // if there isn't a user signed in, returns only public rules
         if let authDelegate = authDelegate, !authDelegate.isUserLoggedIn() {
             applicableAuthRules = applicableAuthRules.filter { rule in

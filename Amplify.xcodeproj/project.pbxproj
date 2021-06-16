@@ -254,6 +254,7 @@
 		769CF2242669B1B9007843A0 /* RetryableGraphQLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769CF2232669B1B9007843A0 /* RetryableGraphQLOperation.swift */; };
 		76A4023C264B1E3A009D4127 /* AWSAuthModeStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A4023B264B1E3A009D4127 /* AWSAuthModeStrategy.swift */; };
 		76B17DD8264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B17DD7264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift */; };
+		76FFFC91267966D9001EC92B /* RetryableGraphQLOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FFFC90267966D9001EC92B /* RetryableGraphQLOperationTests.swift */; };
 		7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */; platformFilter = ios; };
 		7F27B1DCE59C1E674172CCD6 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */; };
 		881246F5DCC59436DC932469 /* Pods_Amplify_AWSPluginsCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35D92182B8445C8F9B0FAE94 /* Pods_Amplify_AWSPluginsCore.framework */; };
@@ -1143,6 +1144,7 @@
 		769CF2232669B1B9007843A0 /* RetryableGraphQLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetryableGraphQLOperation.swift; sourceTree = "<group>"; };
 		76A4023B264B1E3A009D4127 /* AWSAuthModeStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthModeStrategy.swift; sourceTree = "<group>"; };
 		76B17DD7264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelSchema+AuthRulesByOperation.swift"; sourceTree = "<group>"; };
+		76FFFC90267966D9001EC92B /* RetryableGraphQLOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryableGraphQLOperationTests.swift; sourceTree = "<group>"; };
 		77A2D125114EA0FFA11A7EFD /* Pods-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7A238096BAB328655B5E388F /* Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin/Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		7A7FD9B3CFF63FD16788A990 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -2949,7 +2951,6 @@
 				B9521830237E21B900F53237 /* Comment.swift */,
 				B952182E237E21B900F53237 /* Comment+Schema.swift */,
 				767F85FB2649FF540076D633 /* CustomerOrder.swift */,
-				767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */,
 				21AD4255249BFFDF0016FE95 /* DeprecatedTodo.swift */,
 				FAA2E8BB239FFC7700E420EA /* MockModels.swift */,
 				6BEE08222533D30800133961 /* OGCScenarioBMGroupPost.swift */,
@@ -3634,6 +3635,7 @@
 				FAA9FC3D236210840012638A /* APICategoryClientInterceptorTests.swift */,
 				FA6BC868235F52740001A882 /* APICategoryClientGraphQLTests.swift */,
 				FAC23558227A056600424678 /* APICategoryConfigurationTests.swift */,
+				76FFFC90267966D9001EC92B /* RetryableGraphQLOperationTests.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -5312,6 +5314,7 @@
 				B4BD6B3323708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift in Sources */,
 				FA47B8382350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift in Sources */,
 				FAC23574227A056B00424678 /* ConfigurationTests.swift in Sources */,
+				76FFFC91267966D9001EC92B /* RetryableGraphQLOperationTests.swift in Sources */,
 				B9DCA263240F217C00075E22 /* AnyEncodableTests.swift in Sources */,
 				975751B224D2129E00FA0A6E /* DevMenuExtensionTests.swift in Sources */,
 				FAA64FC72397347B00B9C3C6 /* AtomicValue+RangeReplaceableCollectionTests.swift in Sources */,
