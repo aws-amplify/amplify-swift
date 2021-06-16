@@ -12,12 +12,18 @@ import XCTest
 
 class AuthModeStrategyTests: XCTestCase {
 
+    // Given: default strategy and a model schema
+    // When: authTypesFor for .create operation is called
+    // Then: an empty iterator is returned
     func testDefaultAuthModeShouldReturnAnEmptyIterator() {
         let authMode = AWSDefaultAuthModeStrategy()
         let authTypesIterator = authMode.authTypesFor(schema: AnyModelTester.schema, operation: .create)
         XCTAssertEqual(authTypesIterator.count, 0)
     }
 
+    // Given: multi-auth strategy and a model schema
+    // When: authTypesFor for .create operation is called
+    // Then: auth types are returned in order according to priority rules
     func testMultiAuthShouldRespectAuthPriorityRules() {
         let authMode = AWSMultiAuthModeStrategy()
         var authTypesIterator = authMode.authTypesFor(schema: ModelWithOwnerAndPublicAuth.schema, operation: .create)
@@ -37,6 +43,9 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.next(), .apiKey)
     }
 
+    // Given: multi-auth strategy and a model schema with 3 auth rules
+    // When: authTypesFor for .create operation is called
+    // Then: applicable auth types are ordered according to priority rules
     func testMultiAuthPriorityAuthRulesOrder() {
         let authMode = AWSMultiAuthModeStrategy()
         var authTypesIterator = authMode.authTypesFor(schema: ModelAllStrategies.schema, operation: .read)
@@ -44,6 +53,18 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .awsIAM)
+    }
+
+    // Given: multi-auth strategy and a model schema
+    // When: authTypesFor for .create operation is called
+    // Then: applicable auth types returned are only the
+    //       auth types allowed on the given operation
+    func testMultiAuthPriorityAuthPerOperation() {
+        let authMode = AWSMultiAuthModeStrategy()
+        var authTypesIterator = authMode.authTypesFor(schema: ModelAllStrategies.schema, operation: .create)
+        XCTAssertEqual(authTypesIterator.count, 2)
+        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
+        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
     }
 }
 
