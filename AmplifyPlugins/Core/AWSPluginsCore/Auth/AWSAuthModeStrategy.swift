@@ -23,7 +23,6 @@ public enum AuthModeStrategyType {
     case custom(AuthModeStrategy)
 }
 
-
 /// Methods for checking user current status
 public protocol AuthModeStrategyDelegate: AnyObject {
     func isUserLoggedIn() -> Bool
@@ -40,16 +39,21 @@ public protocol AuthModeStrategy: AnyObject {
                       operation: ModelOperation) -> AWSAuthorizationTypeIterator
 }
 
+/// AuthorizationType iterator with an extra `count` property used
+/// to predict the number of values
 public protocol AuthorizationTypeIterator {
     associatedtype AuthorizationType
 
     init(withValues: [AuthorizationType])
 
+    /// Total number of values
     var count: Int { get }
 
+    /// Next available `AuthorizationType` or `nil` if exhausted
     mutating func next() -> AuthorizationType?
 }
 
+/// AuthorizationTypeIterator for values of type `AWSAuthorizationType`
 public struct AWSAuthorizationTypeIterator: AuthorizationTypeIterator {
     public typealias AuthorizationType = AWSAuthorizationType
 
@@ -68,14 +72,12 @@ public struct AWSAuthorizationTypeIterator: AuthorizationTypeIterator {
     public mutating func next() -> AWSAuthorizationType? {
         values.next()
     }
-
-
 }
 
 // MARK: - AWSDefaultAuthModeStrategy
 
 public class AWSDefaultAuthModeStrategy: AuthModeStrategy {
-    public var authDelegate: AuthModeStrategyDelegate?
+    public weak var authDelegate: AuthModeStrategyDelegate?
     required public init() {}
 
     public func authTypesFor(schema: ModelSchema,
@@ -88,7 +90,7 @@ public class AWSDefaultAuthModeStrategy: AuthModeStrategy {
 
 /// Multi-auth strategy implementation based on schema metadata
 public class AWSMultiAuthModeStrategy: AuthModeStrategy {
-    public var authDelegate: AuthModeStrategyDelegate?
+    public weak var authDelegate: AuthModeStrategyDelegate?
 
     private typealias AuthStrategyPriority = Int
 
@@ -136,10 +138,17 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
         }
     }
 
+    /// A predicate used to sort Auth rules according to above priority rules
     private static let comparator = { (rule1: AuthRule, rule2: AuthRule) -> Bool in
         priorityOf(authStrategy: rule1.allow) < priorityOf(authStrategy: rule2.allow)
     }
 
+    
+    /// Returns the proper authorization type for the provided schema according to a set of priority rules
+    /// - Parameters:
+    ///   - schema: model schema
+    ///   - operation: model operation
+    /// - Returns: an iterator for the applicable auth rules
     public func authTypesFor(schema: ModelSchema,
                              operation: ModelOperation) -> AWSAuthorizationTypeIterator {
         var applicableAuthRules = schema.authRules
@@ -152,11 +161,6 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
                 return rule.allow == .public
             }
         }
-
-        // fallback to default type if we couldn't find any applicable auth type
-//        if applicableAuthRules.count == 0 {
-//            fatalError("wtf")
-//        }
         return AWSAuthorizationTypeIterator(withValues: applicableAuthRules.map {
             AWSMultiAuthModeStrategy.authTypeFor(authRule: $0)
         })
