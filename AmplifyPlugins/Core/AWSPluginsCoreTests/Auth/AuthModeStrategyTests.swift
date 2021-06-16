@@ -36,6 +36,15 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .apiKey)
     }
+
+    func testMultiAuthPriorityAuthRulesOrder() {
+        let authMode = AWSMultiAuthModeStrategy()
+        var authTypesIterator = authMode.authTypesFor(schema: ModelAllStrategies.schema, operation: .read)
+        XCTAssertEqual(authTypesIterator.count, 3)
+        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
+        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
+        XCTAssertEqual(authTypesIterator.next(), .awsIAM)
+    }
 }
 
 // MARK: - Test models
@@ -57,6 +66,7 @@ private struct ModelWithOwnerAndPublicAuth: Model {
     }
 }
 
+/// Model with two auth rules but no auth provider
 private struct ModelNoProvider: Model {
     public let id: String
 
@@ -68,7 +78,25 @@ private struct ModelNoProvider: Model {
     public static let schema = defineSchema { model in
         model.authRules = [
             rule(allow: .owner, operations: [.create, .read, .update, .delete]),
-            rule(allow: .public, operations: [.create, .read, .update, .delete])
+            rule(allow: .public, operations: [.read])
+        ]
+    }
+}
+
+/// Model with multiple auth rules but no auth provider
+private struct ModelAllStrategies: Model {
+    public let id: String
+
+    public enum CodingKeys: String, ModelKey {
+        case id
+    }
+    public static let keys = CodingKeys.self
+
+    public static let schema = defineSchema { model in
+        model.authRules = [
+            rule(allow: .owner, provider: .userPools, operations: [.create, .read, .update, .delete]),
+            rule(allow: .public, provider: .iam, operations: [.read]),
+            rule(allow: .groups, provider: .userPools, operations: [.create, .read])
         ]
     }
 }
