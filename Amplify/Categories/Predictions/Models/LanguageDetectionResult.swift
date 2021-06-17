@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// result describing language identified in a text
+/// Result describing language identified in a text
 /// from interpret() API call
 public struct LanguageDetectionResult {
     public let languageCode: LanguageType

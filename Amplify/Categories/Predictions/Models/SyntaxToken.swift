@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// describes syntactical information resulting from text interpretation as
+/// Describes syntactical information resulting from text interpretation as
 /// a result of interpret() API
 public struct SyntaxToken {
 

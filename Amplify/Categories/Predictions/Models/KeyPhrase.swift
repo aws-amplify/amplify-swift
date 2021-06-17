@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// describes a key phrase identified in a text as
+/// Describes a key phrase identified in a text as
 /// a result of interpret() API call
 public struct KeyPhrase {
 

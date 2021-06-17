@@ -7,7 +7,7 @@
 
 import CoreGraphics
 
-/// describes the facial feature in a celebrity/entity
+/// Describes the facial feature in a celebrity/entity
 /// identified as a result of identify() API
 public struct Landmark {
     public let type: LandmarkType

@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// different identification criteria provided to
+/// Identification criteria provided to
 /// type parameter in identify() API
 public enum IdentifyAction {
     case detectCelebrity

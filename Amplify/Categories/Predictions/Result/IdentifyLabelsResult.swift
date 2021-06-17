@@ -19,7 +19,7 @@ public struct IdentifyLabelsResult: IdentifyResult {
     }
 }
 
-/// describes an real world object(chairs, desks) identified in an image
+/// Describes a real world object (e.g., chair, desk) identified in an image
 public struct Label {
     public let name: String
     public let metadata: LabelMetadata?

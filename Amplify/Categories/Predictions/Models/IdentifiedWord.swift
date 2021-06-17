@@ -7,7 +7,7 @@
 
 import CoreGraphics
 
-/// describes a word identified in an image as a result of
+/// Describes a word identified in an image as a result of
 /// identify() API call
 public struct IdentifiedWord: IdentifiedText {
     public let text: String

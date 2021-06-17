@@ -7,7 +7,7 @@
 
 import CoreGraphics
 
-/// describes a line of text identified in an image as a result of
+/// Describes a line of text identified in an image as a result of
 /// identify() API call
 public struct IdentifiedLine: IdentifiedText {
 
