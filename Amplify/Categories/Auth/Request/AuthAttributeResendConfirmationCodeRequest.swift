@@ -7,7 +7,8 @@
 
 import Foundation
 
-// swiftlint:disable:next type_name
+// swiftlint:disable type_name
+
 /// Request for resending confirmation code that was generated for update attribute
 public struct AuthAttributeResendConfirmationCodeRequest: AmplifyOperationRequest {
 

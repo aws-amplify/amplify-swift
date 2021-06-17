@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Auth device for the user
+/// Device used by the user to sign in
 public protocol AuthDevice {
 
     /// Device id

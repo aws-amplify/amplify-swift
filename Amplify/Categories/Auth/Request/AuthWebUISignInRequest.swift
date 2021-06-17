@@ -8,7 +8,9 @@
 import Foundation
 import UIKit
 
-/// Request to initiate sign in using a web UI. Note that this call would also be used for sign up, forgot password, confirm password, and similar flows.
+/// Request to initiate sign in using a web UI.
+///
+/// Note that this call would also be used for sign up, forgot password, confirm password, and similar flows.
 public struct AuthWebUISignInRequest: AmplifyOperationRequest {
 
     /// Presentation anchor on which the webUI is displayed
