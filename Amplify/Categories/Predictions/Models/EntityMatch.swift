@@ -7,8 +7,8 @@
 
 import CoreGraphics
 
-/// Struct that holds the result for an entity matched from an entity collection
-/// created on Rekogniton and detected from Predictions Identify methods.
+/// Describes the result for an entity matched in an entity collection
+/// created on AWS Rekogniton and detected from identify() API call
 public struct EntityMatch {
     public let boundingBox: CGRect
     public let metadata: EntityMatchMetadata

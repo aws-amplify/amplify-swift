@@ -7,6 +7,7 @@
 
 import CoreGraphics
 
+/// protocol describing identified text in an image
 public protocol IdentifiedText {
     var text: String { get }
     var boundingBox: CGRect { get }

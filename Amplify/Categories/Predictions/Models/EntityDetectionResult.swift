@@ -5,7 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// Struct that holds the entity detection result for a string of text for the Predictions category
+/// Describes the result of interpret() API when the analyzed text
+/// contains a person/place
 public struct EntityDetectionResult {
     public let type: EntityType
     public let targetText: String

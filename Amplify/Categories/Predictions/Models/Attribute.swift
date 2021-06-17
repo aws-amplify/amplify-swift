@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Attribute of an entity identified as a result of identify() API
 public struct Attribute {
     public let name: String
     public let value: Bool
@@ -19,6 +20,8 @@ public struct Attribute {
     }
 }
 
+/// Gender of an entity(face/celebrity) identified with
+/// associated confidence value
 public struct GenderAttribute {
     public var gender: GenderType
     public var confidence: Double

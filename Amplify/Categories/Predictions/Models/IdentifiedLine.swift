@@ -7,6 +7,8 @@
 
 import CoreGraphics
 
+/// Describes a line of text identified in an image as a result of
+/// identify() API call
 public struct IdentifiedLine: IdentifiedText {
 
     public let text: String

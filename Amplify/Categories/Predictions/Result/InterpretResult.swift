@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// Results are mapped to InterpretResult for interpret() API
 public struct InterpretResult {
 
     public let keyPhrases: [KeyPhrase]?

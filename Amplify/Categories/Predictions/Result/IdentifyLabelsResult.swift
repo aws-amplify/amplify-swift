@@ -7,6 +7,8 @@
 
 import CoreGraphics
 
+/// Results are mapped to IdentifyLabelsResult when .labels in passed to .detectLabels
+/// in the type: field in identify() API
 public struct IdentifyLabelsResult: IdentifyResult {
     public let labels: [Label]
     public let unsafeContent: Bool?
@@ -17,6 +19,7 @@ public struct IdentifyLabelsResult: IdentifyResult {
     }
 }
 
+/// Describes a real world object (e.g., chair, desk) identified in an image
 public struct Label {
     public let name: String
     public let metadata: LabelMetadata?

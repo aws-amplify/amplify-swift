@@ -7,6 +7,9 @@
 
 import CoreGraphics
 
+/// Describes the data extracted as key-value pair in
+/// an image/document resulting from identify() API
+/// e.g The text "Name: John Doe" present in an image/document
 public struct BoundedKeyValue {
     public let key: String
     public let value: String

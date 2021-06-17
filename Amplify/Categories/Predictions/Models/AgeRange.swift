@@ -7,6 +7,8 @@
 
 import Foundation
 
+/// Age range of an entity(faces/celebrities) detected
+/// as a result of identify() API
 public struct AgeRange {
     public let low: Int
     public let high: Int

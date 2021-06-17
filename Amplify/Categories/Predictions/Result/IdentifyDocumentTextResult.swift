@@ -5,6 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// Results are mapped to IdentifyDocumentTextResult when .form, .table
+/// or .all is passed for .detectText in the type: field
+/// in identify() API
 public struct IdentifyDocumentTextResult: IdentifyResult {
 
     public let fullText: String
