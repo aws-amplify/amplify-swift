@@ -185,14 +185,13 @@ class GraphQLScalarTests: GraphQLTestBase {
         XCTAssertNil(emptyModel)
     }
 
-    // TODO: Update with https://github.com/aws-amplify/amplify-ios/pull/1145
     func testListContainerWithNil() {
         let container = ListStringContainer(
             test: "test",
             nullableString: nil,
             stringList: ["value1"],
-            stringNullableList: [], // TODO: test with `nil` with new codegen feature
-            nullableStringList: ["value1"], // TODO: test with `[nil]`
+            stringNullableList: nil,
+            nullableStringList: [nil],
             nullableStringNullableList: nil)
 
         let updatedContainer = ListStringContainer(id: container.id,
