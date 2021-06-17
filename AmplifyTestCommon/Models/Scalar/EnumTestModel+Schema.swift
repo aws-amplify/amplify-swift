@@ -34,8 +34,8 @@ extension EnumTestModel {
       .field(enumTestModel.enumVal, is: .required, ofType: .enum(type: TestEnum.self)),
       .field(enumTestModel.nullableEnumVal, is: .optional, ofType: .enum(type: TestEnum.self)),
       .field(enumTestModel.enumList, is: .required, ofType: .embeddedCollection(of: TestEnum.self)),
-      .field(enumTestModel.enumNullableList, is: .required, ofType: .embeddedCollection(of: TestEnum.self)),
-      .field(enumTestModel.nullableEnumList, is: .optional, ofType: .embeddedCollection(of: TestEnum.self)),
+      .field(enumTestModel.enumNullableList, is: .optional, ofType: .embeddedCollection(of: TestEnum.self)),
+      .field(enumTestModel.nullableEnumList, is: .required, ofType: .embeddedCollection(of: TestEnum.self)),
       .field(enumTestModel.nullableEnumNullableList, is: .optional, ofType: .embeddedCollection(of: TestEnum.self))
     )
     }
