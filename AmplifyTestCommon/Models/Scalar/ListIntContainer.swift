@@ -22,9 +22,9 @@ public struct ListIntContainer: Model {
       test: Int,
       nullableInt: Int? = nil,
       intList: [Int] = [],
-      intNullableList: [Int]? = [],
+      intNullableList: [Int]? = nil,
       nullableIntList: [Int?] = [],
-      nullableIntNullableList: [Int?]? = []) {
+      nullableIntNullableList: [Int?]? = nil) {
       self.id = id
       self.test = test
       self.nullableInt = nullableInt

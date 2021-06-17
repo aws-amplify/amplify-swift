@@ -22,9 +22,9 @@ public struct ListStringContainer: Model {
       test: String,
       nullableString: String? = nil,
       stringList: [String] = [],
-      stringNullableList: [String]? = [],
+      stringNullableList: [String]? = nil,
       nullableStringList: [String?] = [],
-      nullableStringNullableList: [String?]? = []) {
+      nullableStringNullableList: [String?]? = nil) {
       self.id = id
       self.test = test
       self.nullableString = nullableString

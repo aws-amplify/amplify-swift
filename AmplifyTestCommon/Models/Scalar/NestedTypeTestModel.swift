@@ -22,9 +22,9 @@ public struct NestedTypeTestModel: Model {
       nestedVal: Nested,
       nullableNestedVal: Nested? = nil,
       nestedList: [Nested] = [],
-      nestedNullableList: [Nested]? = [],
+      nestedNullableList: [Nested]? = nil,
       nullableNestedList: [Nested?] = [],
-      nullableNestedNullableList: [Nested?]? = []) {
+      nullableNestedNullableList: [Nested?]? = nil) {
       self.id = id
       self.nestedVal = nestedVal
       self.nullableNestedVal = nullableNestedVal

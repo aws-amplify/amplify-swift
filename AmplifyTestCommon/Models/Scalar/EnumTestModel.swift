@@ -22,9 +22,9 @@ public struct EnumTestModel: Model {
       enumVal: TestEnum,
       nullableEnumVal: TestEnum? = nil,
       enumList: [TestEnum] = [],
-      enumNullableList: [TestEnum]? = [],
+      enumNullableList: [TestEnum]? = nil,
       nullableEnumList: [TestEnum?] = [],
-      nullableEnumNullableList: [TestEnum?]? = []) {
+      nullableEnumNullableList: [TestEnum?]? = nil) {
       self.id = id
       self.enumVal = enumVal
       self.nullableEnumVal = nullableEnumVal
