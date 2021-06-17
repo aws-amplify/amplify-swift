@@ -22,7 +22,7 @@ typealias ConfirmAttributeCompletion = (Result<Void, AuthError>) -> Void
 
 typealias ChangePasswordCompletion = (Result<Void, AuthError>) -> Void
 
-protocol AuthUserServiceBehavior: class {
+protocol AuthUserServiceBehavior: AnyObject {
 
     func fetchAttributes(request: AuthFetchUserAttributesRequest,
                          completionHandler: @escaping FetchUserAttributesCompletion)

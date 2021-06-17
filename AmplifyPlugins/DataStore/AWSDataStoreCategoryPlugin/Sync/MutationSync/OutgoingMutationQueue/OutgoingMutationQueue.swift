@@ -12,7 +12,7 @@ import AWSPluginsCore
 
 /// Submits outgoing mutation events to the provisioned API
 @available(iOS 13.0, *)
-protocol OutgoingMutationQueueBehavior: class {
+protocol OutgoingMutationQueueBehavior: AnyObject {
     func pauseSyncingToCloud()
     func startSyncingToCloud(api: APICategoryGraphQLBehavior,
                              mutationEventPublisher: MutationEventPublisher)

@@ -8,7 +8,7 @@
 import AWSCore
 import Amplify
 
-public protocol AWSAuthServiceBehavior: class {
+public protocol AWSAuthServiceBehavior: AnyObject {
 
     func getCredentialsProvider() -> AWSCredentialsProvider
 

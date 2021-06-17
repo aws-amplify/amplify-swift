@@ -15,7 +15,7 @@ public protocol NetworkReachabilityProvidingFactory {
 }
 
 /// Wraps methods and properties of Reachability
-public protocol NetworkReachabilityProviding: class {
+public protocol NetworkReachabilityProviding: AnyObject {
     /// If `true`, device can attempt to reach the host using a cellular connection (WAN). If `false`, host is only
     /// considered reachable if it can be accessed via WiFi
     var allowsCellularConnection: Bool { get set }

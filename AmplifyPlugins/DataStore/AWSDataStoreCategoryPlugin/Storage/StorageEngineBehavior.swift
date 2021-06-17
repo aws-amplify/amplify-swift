@@ -14,7 +14,7 @@ enum StorageEngineEvent {
     case mutationEvent(MutationEvent)
 }
 
-protocol StorageEngineBehavior: class, ModelStorageBehavior {
+protocol StorageEngineBehavior: AnyObject, ModelStorageBehavior {
 
     @available(iOS 13.0, *)
     var publisher: AnyPublisher<StorageEngineEvent, DataStoreError> { get }
