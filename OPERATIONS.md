@@ -74,7 +74,7 @@ var cancel: (() -> Void)?
 
 let request = LongOperationRequest(steps: 10, delay: 0.1)
 let operation = LongOperation(request: request,
-                          progressListener: { progress in
+                              progressListener: { progress in
     let percent = Int(progress.fractionCompleted * 100)
     print("Progress: \(percent)")
 
