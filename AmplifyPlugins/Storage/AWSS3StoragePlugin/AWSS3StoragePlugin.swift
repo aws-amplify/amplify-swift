@@ -12,16 +12,16 @@ import AWSPluginsCore
 // The AWSS3StoragePlugin which conforms to the Amplify plugin protocols and implements the Storage Plugin APIs for S3.
 final public class AWSS3StoragePlugin: StorageCategoryPlugin {
 
-    /// An instance of the S3 storage service
+    /// An instance of the S3 storage service.
     var storageService: AWSS3StorageServiceBehaviour!
 
-    /// An instance of the authentication service
+    /// An instance of the authentication service.
     var authService: AWSAuthServiceBehavior!
 
     /// A queue that regulates the execution of operations.
     var queue: OperationQueue!
 
-    /// The default access level used for API calls
+    /// The default access level used for API calls.
     var defaultAccessLevel: StorageAccessLevel!
 
     /// The unique key of the plugin within the storage category.

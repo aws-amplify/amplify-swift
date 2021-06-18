@@ -10,6 +10,11 @@ import Amplify
 import AWSPluginsCore
 import AWSS3
 
+/// Storage Download Data Operation.
+///
+/// See: [Operations] for more details.
+///
+/// [Operations]: https://github.com/aws-amplify/amplify-ios/blob/main/OPERATIONS.md
 public class AWSS3StorageDownloadDataOperation: AmplifyInProcessReportingOperation<
     StorageDownloadDataRequest,
     Progress,
@@ -22,7 +27,7 @@ public class AWSS3StorageDownloadDataOperation: AmplifyInProcessReportingOperati
 
     var storageTaskReference: StorageTaskReference?
 
-    /// Serial queue for synchronizing access to `storageTaskReference`.
+    // Serial queue for synchronizing access to `storageTaskReference`.
     private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
     init(_ request: StorageDownloadDataRequest,
@@ -40,6 +45,7 @@ public class AWSS3StorageDownloadDataOperation: AmplifyInProcessReportingOperati
                    resultListener: resultListener)
     }
 
+    /// Pauses operation.
     override public func pause() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.pause()
@@ -47,6 +53,7 @@ public class AWSS3StorageDownloadDataOperation: AmplifyInProcessReportingOperati
         }
     }
 
+    /// Resumes operation.
     override public func resume() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.resume()
@@ -54,6 +61,7 @@ public class AWSS3StorageDownloadDataOperation: AmplifyInProcessReportingOperati
         }
     }
 
+    /// Cancels operation.
     override public func cancel() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.cancel()
@@ -61,6 +69,7 @@ public class AWSS3StorageDownloadDataOperation: AmplifyInProcessReportingOperati
         }
     }
 
+    /// Performs the task to download data.
     override public func main() {
         if isCancelled {
             finish()

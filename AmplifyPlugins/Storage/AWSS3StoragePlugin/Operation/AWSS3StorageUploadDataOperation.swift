@@ -10,6 +10,11 @@ import Amplify
 import AWSPluginsCore
 import AWSS3
 
+/// Upload Data Operation.
+///
+/// See: [Operations] for more details.
+///
+/// [Operations]: https://github.com/aws-amplify/amplify-ios/blob/main/OPERATIONS.md
 public class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
     StorageUploadDataRequest,
     Progress,
@@ -40,6 +45,7 @@ public class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation
                    resultListener: resultListener)
     }
 
+    /// Pauses operation.
     override public func pause() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.pause()
@@ -47,6 +53,7 @@ public class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation
         }
     }
 
+    /// Resume operation.
     override public func resume() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.resume()
@@ -54,6 +61,7 @@ public class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation
         }
     }
 
+    /// Cancels operation.
     override public func cancel() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.cancel()
@@ -61,6 +69,7 @@ public class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation
         }
     }
 
+    /// Performs the task to upload data.
     override public func main() {
         if isCancelled {
             finish()

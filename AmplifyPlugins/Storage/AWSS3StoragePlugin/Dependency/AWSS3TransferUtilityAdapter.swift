@@ -16,10 +16,19 @@ class AWSS3TransferUtilityAdapter: AWSS3TransferUtilityBehavior {
 
     let transferUtility: AWSS3TransferUtility
 
+    /// Creates a Transfer Utility Adapter.
+    /// - Parameter transferUtility: Transfer Utility.
     public init(_ transferUtility: AWSS3TransferUtility) {
         self.transferUtility = transferUtility
     }
 
+    /// Downloads data.
+    /// - Parameters:
+    ///   - fromBucket: Bucket.
+    ///   - key: Key.
+    ///   - expression: Expression.
+    ///   - completionHandler: Completion handler.
+    /// - Returns: Task which provides the download task.
     public func downloadData(fromBucket: String,
                              key: String,
                              expression: AWSS3TransferUtilityDownloadExpression,
@@ -32,6 +41,15 @@ class AWSS3TransferUtilityAdapter: AWSS3TransferUtilityBehavior {
                                                 completionHandler: completionHandler)
     }
 
+
+    /// Downloads to a file.
+    /// - Parameters:
+    ///   - fileURL: File URL.
+    ///   - bucket: Bucket.
+    ///   - key: Key.
+    ///   - expression: Expression.
+    ///   - completionHandler: Completion Handler
+    /// - Returns: Task which provides the download task.
     public func download(to fileURL: URL,
                          bucket: String,
                          key: String,
@@ -46,7 +64,18 @@ class AWSS3TransferUtilityAdapter: AWSS3TransferUtilityBehavior {
                                             completionHandler: completionHandler)
     }
 
+
     // swiftlint:disable function_parameter_count
+
+    /// Uploads data.
+    /// - Parameters:
+    ///   - data: Data.
+    ///   - bucket: Bucket.
+    ///   - key: Key.
+    ///   - contentType: Content Type.
+    ///   - expression: Expression.
+    ///   - completionHandler: Completion Handler.
+    /// - Returns: Task which provides the upload task.
     public func uploadData(data: Data,
                            bucket: String,
                            key: String,
@@ -63,6 +92,15 @@ class AWSS3TransferUtilityAdapter: AWSS3TransferUtilityBehavior {
                                               completionHandler: completionHandler)
     }
 
+    /// Uploads file.
+    /// - Parameters:
+    ///   - fileURL: File URL.
+    ///   - bucket: Bucket.
+    ///   - key: Key.
+    ///   - contentType: Content Type.
+    ///   - expression: Expression.
+    ///   - completionHandler: Completion Handler.
+    /// - Returns: Task which provides the uplopad task.
     public func uploadFile(fileURL: URL,
                            bucket: String,
                            key: String,
@@ -79,6 +117,15 @@ class AWSS3TransferUtilityAdapter: AWSS3TransferUtilityBehavior {
                                           completionHandler: completionHandler)
     }
 
+    /// Uploads using multipart process.
+    /// - Parameters:
+    ///   - fileURL: File URL,
+    ///   - bucket: Bucket.
+    ///   - key: Key.
+    ///   - contentType: Content Type.
+    ///   - expression: Expression.
+    ///   - completionHandler: Completion handler.
+    /// - Returns: Task which provides multipart upload task.
     public func uploadUsingMultiPart(fileURL: URL,
                                      bucket: String,
                                      key: String,
@@ -95,6 +142,15 @@ class AWSS3TransferUtilityAdapter: AWSS3TransferUtilityBehavior {
                                                     completionHandler: completionHandler)
     }
 
+    /// Uploads using multipart process.
+    /// - Parameters:
+    ///   - data: Data.
+    ///   - bucket: Bucket.
+    ///   - key: Key.
+    ///   - contentType: Content Type.
+    ///   - expression: Expression.
+    ///   - completionHandler: Completion handle.
+    /// - Returns: Task which provides the multipart upload task.
     public func uploadUsingMultiPart(data: Data,
                                      bucket: String,
                                      key: String,

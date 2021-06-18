@@ -12,6 +12,12 @@ import AWSS3
 
 // TODO: thread safety: everything has to be locked down
 // TODO verify no retain cycle
+
+/// Storage Download File Operation.
+///
+/// See: [Operations] for more details.
+///
+/// [Operations]: https://github.com/aws-amplify/amplify-ios/blob/main/OPERATIONS.md
 public class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
     StorageDownloadFileRequest,
     Progress,
@@ -24,7 +30,7 @@ public class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperati
 
     var storageTaskReference: StorageTaskReference?
 
-    /// Serial queue for synchronizing access to `storageTaskReference`.
+    // Serial queue for synchronizing access to `storageTaskReference`.
     private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
     init(_ request: StorageDownloadFileRequest,
@@ -42,6 +48,7 @@ public class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperati
                    resultListener: resultListener)
     }
 
+    /// Pauses operation.
     override public func pause() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.pause()
@@ -49,6 +56,7 @@ public class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperati
         }
     }
 
+    /// Resumes operation.
     override public func resume() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.resume()
@@ -56,6 +64,7 @@ public class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperati
         }
     }
 
+    /// Cancels operation.
     override public func cancel() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.cancel()
@@ -63,6 +72,7 @@ public class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperati
         }
     }
 
+    /// Performs the task to download file.
     override public func main() {
         if isCancelled {
             finish()

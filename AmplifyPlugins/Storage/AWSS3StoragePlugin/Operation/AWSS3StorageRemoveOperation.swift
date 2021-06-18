@@ -10,6 +10,11 @@ import Amplify
 import AWSPluginsCore
 import AWSS3
 
+/// Storage Remove Operation.
+///
+/// See: [Operations] for more details.
+///
+/// [Operations]: https://github.com/aws-amplify/amplify-ios/blob/main/OPERATIONS.md
 public class AWSS3StorageRemoveOperation: AmplifyOperation<
     StorageRemoveRequest,
     String,
@@ -32,10 +37,12 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<
                    resultListener: resultListener)
     }
 
+    /// Cancels operation.
     override public func cancel() {
         super.cancel()
     }
 
+    /// Perform the task to remove item.
     override public func main() {
         if isCancelled {
             finish()
