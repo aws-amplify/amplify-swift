@@ -7,8 +7,10 @@
 
 import Foundation
 
+/// Request to remember the current device
 public struct AuthRememberDeviceRequest: AmplifyOperationRequest {
 
+    /// Extra request options defined in `AuthRememberDeviceRequest.Options`
     public var options: Options
 
     public init(options: Options) {

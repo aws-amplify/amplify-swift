@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Amplify error raised in the Auth category.
 public enum AuthError {
 
     /// Caused by issue in the way auth category is configured

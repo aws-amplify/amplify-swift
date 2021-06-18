@@ -7,11 +7,15 @@
 
 import Foundation
 
-// swiftlint:disable:next type_name
+// swiftlint:disable type_name
+
+/// Request for resending confirmation code that was generated for update attribute
 public struct AuthAttributeResendConfirmationCodeRequest: AmplifyOperationRequest {
 
+    /// Attribute key for which the confirmation code was sent
     public let attributeKey: AuthUserAttributeKey
 
+    /// Extra request options defined in `AuthAttributeResendConfirmationCodeRequest.Options`
     public var options: Options
 
     public init(attributeKey: AuthUserAttributeKey,

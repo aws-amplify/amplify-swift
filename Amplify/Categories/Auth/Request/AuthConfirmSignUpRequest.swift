@@ -7,12 +7,16 @@
 
 import Foundation
 
+/// Request to confirm the signup flow
 public struct AuthConfirmSignUpRequest: AmplifyOperationRequest {
 
+    /// User name for which to confirm the signup
     public let username: String
 
+    /// Confirmation code received by the user
     public let code: String
 
+    /// Extra request options defined in `AuthConfirmSignUpRequest.Options`
     public var options: Options
 
     public init(username: String, code: String, options: Options) {

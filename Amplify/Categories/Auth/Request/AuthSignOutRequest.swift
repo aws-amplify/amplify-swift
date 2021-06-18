@@ -7,8 +7,10 @@
 
 import Foundation
 
+/// Request for sign out user
 public struct AuthSignOutRequest: AmplifyOperationRequest {
 
+    /// Extra request options defined in `AuthSignOutRequest.Options`
     public var options: Options
 
     public init(options: Options) {

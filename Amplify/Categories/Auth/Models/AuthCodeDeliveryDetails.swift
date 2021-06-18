@@ -9,6 +9,7 @@ import Foundation
 
 public typealias AdditionalInfo = [String: String]
 
+/// Details on where the code has been delivered
 public struct AuthCodeDeliveryDetails {
 
     /// Destination to which the code was delivered.

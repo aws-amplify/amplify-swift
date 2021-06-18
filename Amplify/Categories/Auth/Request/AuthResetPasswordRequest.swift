@@ -7,10 +7,12 @@
 
 import Foundation
 
+/// Request to reset password of a user
 public struct AuthResetPasswordRequest: AmplifyOperationRequest {
 
     public let username: String
 
+    /// Extra request options defined in `AuthResetPasswordRequest.Options`
     public var options: Options
 
     public init(username: String,

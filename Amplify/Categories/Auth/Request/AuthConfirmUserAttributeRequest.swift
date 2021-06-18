@@ -7,12 +7,16 @@
 
 import Foundation
 
+/// Request to confirm a user attribute update
 public struct AuthConfirmUserAttributeRequest: AmplifyOperationRequest {
 
+    /// Attribute to be confirmed
     public let attributeKey: AuthUserAttributeKey
 
+    /// Confirmation code received by the user
     public let confirmationCode: String
 
+    /// Extra request options defined in `AuthConfirmUserAttributeRequest.Options`
     public var options: Options
 
     public init(attributeKey: AuthUserAttributeKey,
