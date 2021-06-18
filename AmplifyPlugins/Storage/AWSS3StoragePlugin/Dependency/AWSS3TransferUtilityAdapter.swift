@@ -92,7 +92,7 @@ class AWSS3TransferUtilityAdapter: AWSS3TransferUtilityBehavior {
                                               completionHandler: completionHandler)
     }
 
-    /// Uploas file.
+    /// Uploads file.
     /// - Parameters:
     ///   - fileURL: File URL.
     ///   - bucket: Bucket.
