@@ -98,8 +98,6 @@ func die() {
     }
 }
 
-let cancelEnabled = false
-
 let runner = LongOperationRunner()
 let request = LongOperationRequest(steps: 10, delay: 0.1)
 runner.run(request: request) { progress in
