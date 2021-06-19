@@ -18,9 +18,15 @@ public enum AuthModeStrategyType {
     /// that could be used for a request. The client iterates through that list until one of the
     /// avaialable types succeeds or all of them fail.
     case multiAuth
-
-    /// Custom provided authorization strategy.
-    case custom(AuthModeStrategy)
+    
+    public func resolveStrategy() -> AuthModeStrategy {
+        switch self {
+        case .default:
+            return AWSDefaultAuthModeStrategy()
+        case .multiAuth:
+            return AWSMultiAuthModeStrategy()
+        }
+    }
 }
 
 /// Methods for checking user current status

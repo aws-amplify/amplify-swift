@@ -78,15 +78,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
 
         // initialize auth strategy
-        var resolvedAuthStrategy: AuthModeStrategy
-        switch dataStoreConfiguration.authModeStrategyType {
-        case .default:
-            resolvedAuthStrategy = AWSDefaultAuthModeStrategy()
-        case .multiAuth:
-            resolvedAuthStrategy = AWSMultiAuthModeStrategy()
-        case .custom(let customStrategy):
-            resolvedAuthStrategy = customStrategy
-        }
+        let resolvedAuthStrategy: AuthModeStrategy = dataStoreConfiguration.authModeStrategyType.resolveStrategy()
 
         let outgoingMutationQueue = outgoingMutationQueue ??
             OutgoingMutationQueue(storageAdapter: storageAdapter,
