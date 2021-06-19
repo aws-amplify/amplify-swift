@@ -81,6 +81,49 @@ class RESTWithIAMIntegrationTests: XCTestCase {
         wait(for: [failedInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
+    func testGetAPIWithQueryParamsSuccess() {
+        let completeInvoked = expectation(description: "request completed")
+        let request = RESTRequest(path: "/items",
+                                  queryParameters: [
+                                    "user": "hello@email.com",
+                                    "created": "2021-06-18T09:00:00Z"
+                                  ])
+        _ = Amplify.API.get(request: request) { event in
+            switch event {
+            case .success(let data):
+                let result = String(decoding: data, as: UTF8.self)
+                print(result)
+                completeInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            }
+        }
+
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    func testGetAPIWithEncodedQueryParamsSuccess() {
+        let completeInvoked = expectation(description: "request completed")
+        let request = RESTRequest(path: "/items",
+                                  queryParameters: [
+                                    "user": "hello%40email.com",
+                                    "created": "2021-06-18T09%3A00%3A00Z"
+                                  ])
+        _ = Amplify.API.get(request: request) { event in
+            switch event {
+            case .success(let data):
+                let result = String(decoding: data, as: UTF8.self)
+                print(result)
+                completeInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            }
+        }
+
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+
+
     func testPutAPISuccess() {
         let completeInvoked = expectation(description: "request completed")
         let request = RESTRequest(path: "/items")
