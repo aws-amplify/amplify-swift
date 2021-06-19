@@ -56,6 +56,19 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.next(), .awsIAM)
     }
 
+    // Given: multi-auth strategy and a model schema multiple public rules
+    // When: authTypesFor for .create operation is called
+    // Then: applicable auth types are ordered according to priority rules
+    func testMultiAuthPriorityAuthRulesOrderSameStrategy() {
+        let authMode = AWSMultiAuthModeStrategy()
+        var authTypesIterator = authMode.authTypesFor(schema: ModelWithMultiplePublicRules.schema, operation: .read)
+        XCTAssertEqual(authTypesIterator.count, 4)
+        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
+        XCTAssertEqual(authTypesIterator.next(), .openIDConnect)
+        XCTAssertEqual(authTypesIterator.next(), .awsIAM)
+        XCTAssertEqual(authTypesIterator.next(), .apiKey)
+    }
+
     // Given: multi-auth strategy and a model schema
     // When: authTypesFor for .create operation is called
     // Then: applicable auth types returned are only the
@@ -81,6 +94,7 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.count, 1)
         XCTAssertEqual(authTypesIterator.next(), .apiKey)
     }
+
 }
 
 // MARK: - Test models
@@ -98,6 +112,25 @@ private struct ModelWithOwnerAndPublicAuth: Model {
         model.authRules = [
             rule(allow: .owner, provider: .userPools, operations: [.create, .read, .update, .delete]),
             rule(allow: .public, provider: .apiKey, operations: [.create, .read, .update, .delete])
+        ]
+    }
+}
+
+/// Model with multiple auth rules with equal strategy
+private struct ModelWithMultiplePublicRules: Model {
+    public let id: String
+
+    public enum CodingKeys: String, ModelKey {
+        case id
+    }
+    public static let keys = CodingKeys.self
+
+    public static let schema = defineSchema { model in
+        model.authRules = [
+            rule(allow: .public, provider: .iam, operations: [.create, .read, .update, .delete]),
+            rule(allow: .public, provider: .apiKey, operations: [.create, .read, .update, .delete]),
+            rule(allow: .public, provider: .userPools, operations: [.create, .read, .update, .delete]),
+            rule(allow: .public, provider: .oidc, operations: [.create, .read, .update, .delete])
         ]
     }
 }

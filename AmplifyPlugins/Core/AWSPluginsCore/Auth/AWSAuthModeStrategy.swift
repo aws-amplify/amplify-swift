@@ -18,7 +18,7 @@ public enum AuthModeStrategyType {
     /// that could be used for a request. The client iterates through that list until one of the
     /// avaialable types succeeds or all of them fail.
     case multiAuth
-    
+
     public func resolveStrategy() -> AuthModeStrategy {
         switch self {
         case .default:
@@ -102,7 +102,7 @@ public class AWSDefaultAuthModeStrategy: AuthModeStrategy {
 public class AWSMultiAuthModeStrategy: AuthModeStrategy {
     public weak var authDelegate: AuthModeStrategyDelegate?
 
-    private typealias AuthStrategyPriority = Int
+    private typealias AuthPriority = Int
 
     required public init() {}
 
@@ -135,7 +135,7 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
     /// Given an auth rule strategy returns its corresponding priority
     /// - Parameter authStrategy: auth rule strategy
     /// - Returns: priority
-    private static func priorityOf(authStrategy: AuthStrategy) -> AuthStrategyPriority {
+    private static func priorityOf(authStrategy: AuthStrategy) -> AuthPriority {
         switch authStrategy {
         case .owner:
             return 0
@@ -148,9 +148,30 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
         }
     }
 
+    /// Given an auth rule provider returns its corresponding priority
+    /// - Parameter authRuleProvider: auth rule provider
+    /// - Returns: priority
+    private static func priorityOf(authRuleProvider provider: AuthRuleProvider) -> AuthPriority {
+        switch provider {
+        case .userPools:
+            return 0
+        case .oidc:
+            return 1
+        case .iam:
+            return 2
+        case .apiKey:
+            return 3
+        }
+    }
+
     /// A predicate used to sort Auth rules according to above priority rules
+    /// Use provider priority to sort if rules have the same strategy
     private static let comparator = { (rule1: AuthRule, rule2: AuthRule) -> Bool in
-        priorityOf(authStrategy: rule1.allow) < priorityOf(authStrategy: rule2.allow)
+        if let providerRule1 = rule1.provider,
+           let providerRule2 = rule2.provider, rule1.allow == rule2.allow {
+            return priorityOf(authRuleProvider: providerRule1) < priorityOf(authRuleProvider: providerRule2)
+        }
+        return priorityOf(authStrategy: rule1.allow) < priorityOf(authStrategy: rule2.allow)
     }
 
     /// Returns the proper authorization type for the provided schema according to a set of priority rules
@@ -170,8 +191,9 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
                 return rule.allow == .public
             }
         }
-        return AWSAuthorizationTypeIterator(withValues: applicableAuthRules.map {
+        let applicableAuthTypes = applicableAuthRules.map {
             AWSMultiAuthModeStrategy.authTypeFor(authRule: $0)
-        })
+        }
+        return AWSAuthorizationTypeIterator(withValues: applicableAuthTypes)
     }
 }
