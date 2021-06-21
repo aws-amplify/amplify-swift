@@ -27,7 +27,7 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
     public let decodePath: String?
 
     /// Options to adjust the behavior of this request, including plugin-options
-    public let options: Options
+    public let options: Any?
 
     /// Initializer for GraphQLOperationRequest
     public init(apiName: String?,
@@ -36,7 +36,7 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
                 variables: [String: Any]? = nil,
                 responseType: R.Type,
                 decodePath: String? = nil,
-                options: Options) {
+                options: Any?) {
         self.apiName = apiName
         self.operationType = operationType
         self.document = document
@@ -44,16 +44,5 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
         self.responseType = responseType
         self.decodePath = decodePath
         self.options = options
-    }
-}
-
-/// GraphQL Operation Request options extension
-public extension GraphQLOperationRequest {
-    struct Options {
-        public let authType: Any?
-
-        public init(authType: Any? = nil) {
-            self.authType = authType
-        }
     }
 }

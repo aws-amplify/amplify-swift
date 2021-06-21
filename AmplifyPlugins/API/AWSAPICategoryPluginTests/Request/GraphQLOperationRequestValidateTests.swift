@@ -19,7 +19,7 @@ class GraphQLOperationRequestValidateTests: XCTestCase {
                                                      operationType: .mutation,
                                                      document: testDocument,
                                                      responseType: String.self,
-                                                     options: GraphQLOperationRequest.Options())
+                                                     options: nil)
         XCTAssertNoThrow(try graphQLOperationRequest.validate())
     }
 }

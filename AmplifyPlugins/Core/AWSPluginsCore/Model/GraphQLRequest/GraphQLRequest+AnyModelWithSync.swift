@@ -72,7 +72,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                    variables: document.variables,
                                                    responseType: MutationSyncResult?.self,
                                                    decodePath: document.name,
-                                                   options: GraphQLRequest<MutationSyncResult?>.Options(authType: authType))
+                                                   pluginOptions: AWSPluginOptions(authType: authType))
     }
 
     public static func createMutation(of model: Model,
@@ -154,7 +154,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
                                                   decodePath: document.name,
-                                                  options: GraphQLRequest<MutationSyncResult>.Options(authType: authType))
+                                                  pluginOptions: AWSPluginOptions(authType: authType))
     }
 
     public static func subscription(to modelSchema: ModelSchema,
@@ -171,7 +171,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
                                                   decodePath: document.name,
-                                                  options: GraphQLRequest<MutationSyncResult>.Options(authType: authType))
+                                                  pluginOptions: AWSPluginOptions(authType: authType))
     }
 
     public static func subscription(to modelSchema: ModelSchema,
@@ -190,7 +190,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
                                                   decodePath: document.name,
-                                                  options: GraphQLRequest<MutationSyncResult>.Options(authType: authType))
+                                                  pluginOptions: AWSPluginOptions(authType: authType))
     }
 
     public static func syncQuery(modelSchema: ModelSchema,
@@ -214,7 +214,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                variables: document.variables,
                                                responseType: SyncQueryResult.self,
                                                decodePath: document.name,
-                                               options: GraphQLRequest<SyncQueryResult>.options(authType: authType))
+                                               pluginOptions: AWSPluginOptions(authType: authType))
     }
 
     // MARK: Private methods
@@ -240,7 +240,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
                                                   decodePath: document.name,
-                                                  options: GraphQLRequest<MutationSyncResult>.Options(authType: authType))
+                                                  pluginOptions: AWSPluginOptions(authType: authType))
     }
 
     /// This function tries to optimize provided `QueryPredicate` to perform a DynamoDB query instead of a scan.

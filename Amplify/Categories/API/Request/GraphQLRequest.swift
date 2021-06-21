@@ -27,33 +27,19 @@ public struct GraphQLRequest<R: Decodable> {
     public let decodePath: String?
 
     /// Options to adjust the behavior of this request, including plugin-options
-    public var options: Options?
+    public var pluginOptions: Any?
 
     public init(apiName: String? = nil,
                 document: String,
                 variables: [String: Any]? = nil,
                 responseType: R.Type,
                 decodePath: String? = nil,
-                options: Options? = nil) {
+                pluginOptions: Any? = nil) {
         self.apiName = apiName
         self.document = document
         self.variables = variables
         self.responseType = responseType
         self.decodePath = decodePath
-        self.options = options
-    }
-}
-
-public extension GraphQLRequest {
-    struct Options {
-        public let authType: Any?
-
-        public init(authType: Any?) {
-            self.authType = authType
-        }
-    }
-
-    static func options(authType: Any?) -> Self.Options {
-        Self.Options(authType: authType)
+        self.pluginOptions = pluginOptions
     }
 }
