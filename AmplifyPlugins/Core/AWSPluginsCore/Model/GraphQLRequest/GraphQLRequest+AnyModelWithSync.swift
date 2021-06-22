@@ -68,11 +68,14 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
 
+        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let requestOptions = GraphQLRequest<MutationSyncResult?>.Options(pluginOptions: awsPluginOptions)
+
         return GraphQLRequest<MutationSyncResult?>(document: document.stringValue,
                                                    variables: document.variables,
                                                    responseType: MutationSyncResult?.self,
                                                    decodePath: document.name,
-                                                   pluginOptions: AWSPluginOptions(authType: authType))
+                                                   options: requestOptions)
     }
 
     public static func createMutation(of model: Model,
@@ -150,11 +153,14 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
 
+        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
+
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
                                                   decodePath: document.name,
-                                                  pluginOptions: AWSPluginOptions(authType: authType))
+                                                  options: requestOptions)
     }
 
     public static func subscription(to modelSchema: ModelSchema,
@@ -167,11 +173,14 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
 
+        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
+
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
                                                   decodePath: document.name,
-                                                  pluginOptions: AWSPluginOptions(authType: authType))
+                                                  options: requestOptions)
     }
 
     public static func subscription(to modelSchema: ModelSchema,
@@ -186,11 +195,14 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(subscriptionType, claims)))
         let document = documentBuilder.build()
 
+        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
+
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
                                                   decodePath: document.name,
-                                                  pluginOptions: AWSPluginOptions(authType: authType))
+                                                  options: requestOptions)
     }
 
     public static func syncQuery(modelSchema: ModelSchema,
@@ -210,11 +222,14 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
 
+        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let requestOptions = GraphQLRequest<SyncQueryResult>.Options(pluginOptions: awsPluginOptions)
+
         return GraphQLRequest<SyncQueryResult>(document: document.stringValue,
                                                variables: document.variables,
                                                responseType: SyncQueryResult.self,
                                                decodePath: document.name,
-                                               pluginOptions: AWSPluginOptions(authType: authType))
+                                               options: requestOptions)
     }
 
     // MARK: Private methods
@@ -236,11 +251,14 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
 
+        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
+
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
                                                   decodePath: document.name,
-                                                  pluginOptions: AWSPluginOptions(authType: authType))
+                                                  options: requestOptions)
     }
 
     /// This function tries to optimize provided `QueryPredicate` to perform a DynamoDB query instead of a scan.

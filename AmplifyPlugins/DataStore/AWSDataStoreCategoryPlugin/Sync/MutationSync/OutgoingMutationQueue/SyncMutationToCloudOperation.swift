@@ -148,7 +148,9 @@ class SyncMutationToCloudOperation: Operation {
             finish(result: .failure(apiError))
             return nil
         }
-        request.pluginOptions = AWSPluginOptions(authType: authType)
+
+        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        request.options = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
         return request
     }
 
@@ -185,7 +187,7 @@ class SyncMutationToCloudOperation: Operation {
             }
 
             resolveReachabilityPublisher(request: request)
-            if let pluginOptions = request.pluginOptions as? AWSPluginOptions, pluginOptions.authType != nil,
+            if let pluginOptions = request.options?.pluginOptions as? AWSPluginOptions, pluginOptions.authType != nil,
                let nextAuthType = authTypesIterator?.next() {
                 self.scheduleRetry(advice: advice, withAuthType: nextAuthType)
             } else {
