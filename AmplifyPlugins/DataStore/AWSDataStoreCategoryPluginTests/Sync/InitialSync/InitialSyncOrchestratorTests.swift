@@ -131,6 +131,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator = AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                                      authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                       api: apiPlugin,
                                                       reconciliationQueue: reconciliationQueue,
                                                       storageAdapter: storageAdapter)
