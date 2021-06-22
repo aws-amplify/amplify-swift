@@ -134,11 +134,12 @@ extension RetryableGraphQLOperationTests {
     }
 
     private func makeTestOperation() -> GraphQLOperation<Payload> {
+        let requestOptions = GraphQLOperationRequest<Payload>.Options(pluginOptions: nil)
         let operationRequest = GraphQLOperationRequest<Payload>(apiName: testApiName,
                                                                 operationType: .subscription,
                                                                 document: "",
                                                                 responseType: Payload.self,
-                                                                options: nil)
+                                                                options: requestOptions)
         return GraphQLOperation<Payload>(categoryType: .dataStore,
                                          eventName: "eventName",
                                          request: operationRequest)

@@ -7,7 +7,6 @@
 
 /// GraphQL Operation Request
 public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
-
     /// The name of the API to perform the request against
     public let apiName: String?
 
@@ -27,7 +26,7 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
     public let decodePath: String?
 
     /// Options to adjust the behavior of this request, including plugin-options
-    public let options: Any?
+    public let options: Options
 
     /// Initializer for GraphQLOperationRequest
     public init(apiName: String?,
@@ -36,7 +35,7 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
                 variables: [String: Any]? = nil,
                 responseType: R.Type,
                 decodePath: String? = nil,
-                options: Any?) {
+                options: Options) {
         self.apiName = apiName
         self.operationType = operationType
         self.document = document
@@ -44,5 +43,16 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
         self.responseType = responseType
         self.decodePath = decodePath
         self.options = options
+    }
+}
+
+// MARK:  GraphQLOperationRequest + Options
+public extension GraphQLOperationRequest {
+    struct Options {
+        public let pluginOptions: Any?
+
+        public init(pluginOptions: Any?) {
+            self.pluginOptions = pluginOptions
+        }
     }
 }

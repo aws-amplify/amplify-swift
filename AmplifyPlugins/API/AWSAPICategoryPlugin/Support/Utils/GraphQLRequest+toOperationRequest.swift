@@ -5,20 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import struct Amplify.GraphQLRequest
-import struct Amplify.GraphQLOperationRequest
-import enum Amplify.GraphQLOperationType
-
-import AWSPluginsCore
+import Amplify
 
 extension GraphQLRequest {
     func toOperationRequest(operationType: GraphQLOperationType) -> GraphQLOperationRequest<R> {
+        let requestOptions = GraphQLOperationRequest<R>.Options(pluginOptions: options?.pluginOptions)
         return GraphQLOperationRequest<R>(apiName: apiName,
                                           operationType: operationType,
                                           document: document,
                                           variables: variables,
                                           responseType: responseType,
                                           decodePath: decodePath,
-                                          options: options?.pluginOptions)
+                                          options: requestOptions)
     }
 }
