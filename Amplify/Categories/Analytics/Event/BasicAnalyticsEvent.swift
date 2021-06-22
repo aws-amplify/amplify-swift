@@ -15,7 +15,7 @@ public struct BasicAnalyticsEvent: AnalyticsEvent {
 
     /// Properties of the event
     public var properties: AnalyticsProperties?
-    
+
     /// Initializer
     /// - Parameters:
     ///   - name: The name of the event
