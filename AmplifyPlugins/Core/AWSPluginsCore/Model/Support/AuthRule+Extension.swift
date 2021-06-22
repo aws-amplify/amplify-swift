@@ -8,6 +8,9 @@
 import Amplify
 
 extension AuthRuleProvider {
+
+    /// Returns corresponding `AWSAuthorizationType` for each `AuthRuleProvider`
+    /// - Returns: AWS authorization type
     public func toAWSAuthorizationType() -> AWSAuthorizationType {
         var authType: AWSAuthorizationType
         switch self {
