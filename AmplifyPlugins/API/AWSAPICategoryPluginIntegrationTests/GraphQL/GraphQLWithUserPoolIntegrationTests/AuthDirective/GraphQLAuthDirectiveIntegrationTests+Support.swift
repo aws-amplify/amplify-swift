@@ -54,9 +54,9 @@ extension GraphQLAuthDirectiveIntegrationTests {
                     version: Int) -> Result<MutationSyncResult, GraphQLResponseError<MutationSyncResult>> {
         let deleteNoteInvoked = expectation(description: "note was deleted")
         var resultOptional: Result<MutationSyncResult, GraphQLResponseError<MutationSyncResult>>?
-        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: SocialNote.modelName,
-                                                                        id: id,
-                                                                        version: version)
+        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: SocialNote(id: id, content: ""),
+                                                                         modelSchema: SocialNote.schema,
+                                                                         version: version)
         _ = Amplify.API.mutate(request: request, listener: { event in
             resultOptional = self.onMutationEvent(event)
             deleteNoteInvoked.fulfill()
