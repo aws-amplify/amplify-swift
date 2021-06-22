@@ -87,7 +87,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
         // Retrieve request plugin option and
         // auth type in case of a multi-auth setup
-        let pluginOptions = request.options as? AWSPluginOptions
+        let pluginOptions = request.options.pluginOptions as? AWSPluginOptions
 
         // Retrieve the subscription connection
         do {
