@@ -138,7 +138,7 @@ extension RetryableGraphQLOperationTests {
                                                                 operationType: .subscription,
                                                                 document: "",
                                                                 responseType: Payload.self,
-                                                                options: GraphQLOperationRequest<Payload>.Options())
+                                                                options: nil)
         return GraphQLOperation<Payload>(categoryType: .dataStore,
                                          eventName: "eventName",
                                          request: operationRequest)
