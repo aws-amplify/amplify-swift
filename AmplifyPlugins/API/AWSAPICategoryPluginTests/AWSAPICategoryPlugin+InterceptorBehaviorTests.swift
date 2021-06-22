@@ -14,12 +14,12 @@ class AWSAPICategoryPluginInterceptorBehaviorTests: AWSAPICategoryPluginTestBase
 
     func testAddInterceptor() throws {
         XCTAssertNotNil(apiPlugin.pluginConfig.endpoints[apiName])
-        XCTAssertEqual(apiPlugin.pluginConfig.endpoints[apiName]?.interceptors.count, 0)
+        XCTAssertEqual(apiPlugin.pluginConfig.interceptorsForEndpoint(named: apiName).count, 0)
 
         let provider = BasicUserPoolTokenProvider(authService: authService)
         let requestInterceptor = UserPoolURLRequestInterceptor(userPoolTokenProvider: provider)
         try apiPlugin.add(interceptor: requestInterceptor, for: apiName)
 
-        XCTAssertEqual(apiPlugin.pluginConfig.endpoints[apiName]?.interceptors.count, 1)
+        XCTAssertEqual(apiPlugin.pluginConfig.interceptorsForEndpoint(named: apiName).count, 1)
     }
 }

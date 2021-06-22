@@ -33,6 +33,7 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
         apiPlugin = AWSAPIPlugin()
 
         let authService = MockAWSAuthService()
+        let apiAuthProvider = APIAuthProviderFactory()
         self.authService = authService
 
         do {
@@ -41,10 +42,13 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
                 baseURL: baseURL,
                 region: region,
                 authorizationType: AWSAuthorizationType.none,
-                authorizationConfiguration: AWSAuthorizationConfiguration.none,
                 endpointType: .graphQL,
-                apiAuthProviderFactory: APIAuthProviderFactory())]
-            let pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig)
+                apiAuthProviderFactory: apiAuthProvider)]
+            let interceptors = [apiName: AWSAPIEndpointInterceptors(
+                                    endpointName: apiName,
+                                    apiAuthProviderFactory: apiAuthProvider)]
+            let pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig,
+                                                                 interceptors: interceptors)
             self.pluginConfig = pluginConfig
 
             let dependencies = AWSAPIPlugin.ConfigurationDependencies(

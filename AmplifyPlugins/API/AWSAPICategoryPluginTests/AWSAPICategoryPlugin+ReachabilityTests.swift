@@ -125,7 +125,6 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
             baseURL: URL(string: "http://\(apiName)")!,
             region: nil,
             authorizationType: AWSAuthorizationType.none,
-            authorizationConfiguration: AWSAuthorizationConfiguration.none,
             endpointType: endpointType,
             apiAuthProviderFactory: APIAuthProviderFactory())
     }

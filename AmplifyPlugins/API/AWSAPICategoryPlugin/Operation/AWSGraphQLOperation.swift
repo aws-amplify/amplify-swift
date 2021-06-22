@@ -55,8 +55,10 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
 
         // Retrieve endpoint configuration
         let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
+        let requestInterceptors: [URLRequestInterceptor]
         do {
             endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL)
+            requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
         } catch let error as APIError {
             dispatch(result: .failure(error))
             finish()
@@ -92,7 +94,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
                                                                        requestPayload: requestPayload)
 
         // Intercept request
-        let finalRequest = endpointConfig.interceptors.reduce(urlRequest) { (request, interceptor) -> URLRequest in
+        let finalRequest = requestInterceptors.reduce(urlRequest) { (request, interceptor) -> URLRequest in
             do {
                 return try interceptor.intercept(request)
             } catch let error as APIError {

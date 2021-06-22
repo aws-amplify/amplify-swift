@@ -14,6 +14,6 @@ public extension AWSAPIPlugin {
                                                        "")
         }
 
-        pluginConfig.endpoints[apiName]?.addInterceptor(interceptor: interceptor)
+        pluginConfig.addInterceptor(interceptor, toEndpoint: apiName)
     }
 }

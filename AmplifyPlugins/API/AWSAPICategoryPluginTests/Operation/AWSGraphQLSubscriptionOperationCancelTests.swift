@@ -41,7 +41,6 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
                 baseURL: baseURL,
                 region: region,
                 authorizationType: AWSAuthorizationType.none,
-                authorizationConfiguration: AWSAuthorizationConfiguration.none,
                 endpointType: .graphQL,
                 apiAuthProviderFactory: APIAuthProviderFactory())]
             let pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig)
