@@ -413,19 +413,19 @@ extension RemoteSyncEngine: AuthModeStrategyDelegate {
     func isUserLoggedIn() -> Bool {
         // if OIDC is used as authentication provider
         // use `getLatestAuthToken`
-        if let authProviderFactory = api as? APICategoryAuthProviderFactoryBehavior {
-            let authProvider = authProviderFactory.apiAuthProviderFactory()
-            let oidcAuthProvider = authProvider.oidcAuthProvider()
-
-            if let authToken = oidcAuthProvider?.getLatestAuthToken(),
-               case .success = authToken {
+        if let authProviderFactory = api as? APICategoryAuthProviderFactoryBehavior,
+           let oidcAuthProvider = authProviderFactory.apiAuthProviderFactory().oidcAuthProvider() {
+            switch oidcAuthProvider.getLatestAuthToken() {
+            case .failure:
+                return false
+            case .success:
                 return true
             }
-
         }
+
         guard let auth = auth, let _ = auth.getCurrentUser() else {
             return false
         }
-       return true
+        return true
     }
 }
