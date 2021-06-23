@@ -8,6 +8,7 @@
 import Amplify
 import Combine
 import Foundation
+import AWSPluginsCore
 
 @available(iOS 13.0, *)
 class RemoteSyncEngine: RemoteSyncEngineBehavior {
@@ -15,6 +16,9 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     weak var storageAdapter: StorageEngineAdapter?
 
     private var dataStoreConfiguration: DataStoreConfiguration
+
+    // Authorization mode strategy
+    private var authModeStrategy: AuthModeStrategy
 
     // Assigned at `start`
     weak var api: APICategoryGraphQLBehavior?
@@ -73,14 +77,19 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
 
+        // initialize auth strategy
+        let resolvedAuthStrategy: AuthModeStrategy = dataStoreConfiguration.authModeStrategyType.resolveStrategy()
+
         let outgoingMutationQueue = outgoingMutationQueue ??
-            OutgoingMutationQueue(storageAdapter: storageAdapter, dataStoreConfiguration: dataStoreConfiguration)
+            OutgoingMutationQueue(storageAdapter: storageAdapter,
+                                  dataStoreConfiguration: dataStoreConfiguration,
+                                  authModeStrategy: resolvedAuthStrategy)
 
         let reconciliationQueueFactory = reconciliationQueueFactory ??
-            AWSIncomingEventReconciliationQueue.init(modelSchemas:api:storageAdapter:syncExpressions:auth:modelReconciliationQueueFactory:)
+            AWSIncomingEventReconciliationQueue.init(modelSchemas:api:storageAdapter:syncExpressions:auth:authModeStrategy:modelReconciliationQueueFactory:)
 
         let initialSyncOrchestratorFactory = initialSyncOrchestratorFactory ??
-            AWSInitialSyncOrchestrator.init(dataStoreConfiguration:api:reconciliationQueue:storageAdapter:)
+        AWSInitialSyncOrchestrator.init(dataStoreConfiguration:authModeStrategy:api:reconciliationQueue:storageAdapter:)
 
         let resolver = RemoteSyncEngine.Resolver.resolve(currentState:action:)
         let stateMachine = stateMachine ?? StateMachine(initialState: .notStarted,
@@ -90,6 +99,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
         self.init(storageAdapter: storageAdapter,
                   dataStoreConfiguration: dataStoreConfiguration,
+                  authModeStrategy: resolvedAuthStrategy,
                   outgoingMutationQueue: outgoingMutationQueue,
                   mutationEventIngester: mutationDatabaseAdapter,
                   mutationEventPublisher: awsMutationEventPublisher,
@@ -102,6 +112,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     init(storageAdapter: StorageEngineAdapter,
          dataStoreConfiguration: DataStoreConfiguration,
+         authModeStrategy: AuthModeStrategy,
          outgoingMutationQueue: OutgoingMutationQueueBehavior,
          mutationEventIngester: MutationEventIngester,
          mutationEventPublisher: MutationEventPublisher,
@@ -112,6 +123,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
          requestRetryablePolicy: RequestRetryablePolicy) {
         self.storageAdapter = storageAdapter
         self.dataStoreConfiguration = dataStoreConfiguration
+        self.authModeStrategy = authModeStrategy
         self.mutationEventIngester = mutationEventIngester
         self.mutationEventPublisher = mutationEventPublisher
         self.outgoingMutationQueue = outgoingMutationQueue
@@ -136,9 +148,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                 }
         }
 
-        self.outgoingMutationQueueSink = self.outgoingMutationQueue.publisher.sink { mutationEvent in
-            self.remoteSyncTopicPublisher.send(.mutationEvent(mutationEvent))
-        }
+        self.authModeStrategy.authDelegate = self
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -268,6 +278,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                                                          storageAdapter,
                                                          dataStoreConfiguration.syncExpressions,
                                                          auth,
+                                                         authModeStrategy,
                                                          nil)
         reconciliationQueueSink = reconciliationQueue?.publisher.sink(
             receiveCompletion: onReceiveCompletion(receiveCompletion:),
@@ -278,6 +289,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         log.debug(#function)
 
         let initialSyncOrchestrator = initialSyncOrchestratorFactory(dataStoreConfiguration,
+                                                                     authModeStrategy,
                                                                      api,
                                                                      reconciliationQueue,
                                                                      storageAdapter)
@@ -395,3 +407,22 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
 @available(iOS 13.0, *)
 extension RemoteSyncEngine: DefaultLogger { }
+
+@available(iOS 13.0, *)
+extension RemoteSyncEngine: AuthModeStrategyDelegate {
+    func isUserLoggedIn() -> Bool {
+        // if OIDC is used as authentication provider
+        // use `getLatestAuthToken`
+        if let authProviderFactory = api as? APICategoryAuthProviderFactoryBehavior,
+           let oidcAuthProvider = authProviderFactory.apiAuthProviderFactory().oidcAuthProvider() {
+            switch oidcAuthProvider.getLatestAuthToken() {
+            case .failure:
+                return false
+            case .success:
+                return true
+            }
+        }
+        
+        return auth?.getCurrentUser() != nil
+    }
+}

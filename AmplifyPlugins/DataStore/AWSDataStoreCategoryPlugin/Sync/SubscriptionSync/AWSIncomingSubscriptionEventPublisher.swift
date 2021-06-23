@@ -26,12 +26,14 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
     init(modelSchema: ModelSchema,
          api: APICategoryGraphQLBehavior,
          modelPredicate: QueryPredicate?,
-         auth: AuthCategoryBehavior?) {
+         auth: AuthCategoryBehavior?,
+         authModeStrategy: AuthModeStrategy) {
         self.subscriptionEventSubject = PassthroughSubject<IncomingSubscriptionEventPublisherEvent, DataStoreError>()
         self.asyncEvents = IncomingAsyncSubscriptionEventPublisher(modelSchema: modelSchema,
                                                                    api: api,
                                                                    modelPredicate: modelPredicate,
-                                                                   auth: auth)
+                                                                   auth: auth,
+                                                                   authModeStrategy: authModeStrategy)
 
         let mapper = IncomingAsyncSubscriptionEventToAnyModelMapper()
         self.mapper = mapper

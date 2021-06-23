@@ -10,6 +10,7 @@ import SQLite
 
 @testable import Amplify
 @testable import AmplifyTestCommon
+@testable import AWSPluginsCore
 @testable import AWSDataStoreCategoryPlugin
 
 class OutgoingMutationQueueTests: SyncEngineTestBase {
@@ -24,7 +25,8 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         tryOrFail {
             try setUpStorageAdapter()
             try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
-                                                                    dataStoreConfiguration: .default))
+                                                                    dataStoreConfiguration: .default,
+                                                                    authModeStrategy: AWSDefaultAuthModeStrategy()))
         }
         let post = Post(title: "Post title",
                         content: "Post content",
@@ -174,7 +176,8 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         tryOrFail {
             try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
-                                                                    dataStoreConfiguration: .default))
+                                                                    dataStoreConfiguration: .default,
+                                                                    authModeStrategy: AWSDefaultAuthModeStrategy()))
             try startAmplify()
         }
 

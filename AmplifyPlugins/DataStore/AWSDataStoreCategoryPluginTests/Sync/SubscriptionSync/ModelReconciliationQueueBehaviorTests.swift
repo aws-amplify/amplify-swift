@@ -33,6 +33,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                                                 reconcileAndSaveQueue: reconcileAndSaveQueue,
                                                 modelPredicate: modelPredicate,
                                                 auth: authPlugin,
+                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
 
         // We know this won't be nil, but we need to keep a reference to the queue in memory for the duration of the
@@ -82,6 +83,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                                                 reconcileAndSaveQueue: reconcileAndSaveQueue,
                                                 modelPredicate: modelPredicate,
                                                 auth: authPlugin,
+                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
 
         for iteration in 1 ... 3 {
@@ -155,6 +157,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                                                 reconcileAndSaveQueue: reconcileAndSaveQueue,
                                                 modelPredicate: syncExpression.modelPredicate(),
                                                 auth: authPlugin,
+                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
 
         for iteration in 1 ... 3 {
@@ -247,6 +250,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                                                 reconcileAndSaveQueue: reconcileAndSaveQueue,
                                                 modelPredicate: modelPredicate,
                                                 auth: authPlugin,
+                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
         for iteration in 1 ... 3 {
             let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()
@@ -319,6 +323,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                                                 reconcileAndSaveQueue: reconcileAndSaveQueue,
                                                 modelPredicate: modelPredicate,
                                                 auth: authPlugin,
+                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
         for iteration in 1 ... 2 {
             let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()
@@ -423,6 +428,7 @@ extension ModelReconciliationQueueBehaviorTests {
                                                 reconcileAndSaveQueue: reconcileAndSaveQueue,
                                                 modelPredicate: modelPredicate,
                                                 auth: authPlugin,
+                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
         let completion = completionSignalWithAppSyncError(AppSyncErrorType.unauthorized)
 
@@ -444,6 +450,7 @@ extension ModelReconciliationQueueBehaviorTests {
                                                 reconcileAndSaveQueue: reconcileAndSaveQueue,
                                                 modelPredicate: modelPredicate,
                                                 auth: authPlugin,
+                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
         let completion = completionSignalWithAppSyncError(AppSyncErrorType.operationDisabled)
 
@@ -465,6 +472,7 @@ extension ModelReconciliationQueueBehaviorTests {
                                                 reconcileAndSaveQueue: reconcileAndSaveQueue,
                                                 modelPredicate: modelPredicate,
                                                 auth: authPlugin,
+                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
         let completion = completionSignalWithAppSyncError(AppSyncErrorType.conflictUnhandled)
 

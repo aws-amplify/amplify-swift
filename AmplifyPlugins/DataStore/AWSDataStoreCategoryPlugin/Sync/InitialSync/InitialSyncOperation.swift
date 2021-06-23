@@ -18,6 +18,7 @@ final class InitialSyncOperation: AsynchronousOperation {
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
     private weak var storageAdapter: StorageEngineAdapter?
     private let dataStoreConfiguration: DataStoreConfiguration
+    private let authModeStrategy: AuthModeStrategy
 
     private let modelSchema: ModelSchema
 
@@ -39,12 +40,15 @@ final class InitialSyncOperation: AsynchronousOperation {
          api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?,
-         dataStoreConfiguration: DataStoreConfiguration) {
+         dataStoreConfiguration: DataStoreConfiguration,
+         authModeStrategy: AuthModeStrategy) {
         self.modelSchema = modelSchema
         self.api = api
         self.reconciliationQueue = reconciliationQueue
         self.storageAdapter = storageAdapter
         self.dataStoreConfiguration = dataStoreConfiguration
+        self.authModeStrategy = authModeStrategy
+
         self.recordsReceived = 0
         self.initialSyncOperationTopic = PassthroughSubject<InitialSyncOperationEvent, DataStoreError>()
     }
@@ -122,13 +126,8 @@ final class InitialSyncOperation: AsynchronousOperation {
             $0.modelSchema.name == modelSchema.name
         }
         let queryPredicate = syncExpression?.modelPredicate()
-        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: modelSchema,
-                                                                where: queryPredicate,
-                                                                limit: limit,
-                                                                nextToken: nextToken,
-                                                                lastSync: lastSyncTime)
 
-        _ = api.query(request: request) { result in
+        let completionListener: GraphQLOperation<SyncQueryResult>.ResultListener = { result in
             switch result {
             case .failure(let apiError):
                 if self.isAuthSignedOutError(apiError: apiError) {
@@ -140,6 +139,22 @@ final class InitialSyncOperation: AsynchronousOperation {
                 self.handleQueryResults(lastSyncTime: lastSyncTime, graphQLResult: graphQLResult)
             }
         }
+
+        var authTypes = authModeStrategy.authTypesFor(schema: modelSchema,
+                                                                             operation: .read)
+
+        RetryableGraphQLOperation(requestFactory: {
+            GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: self.modelSchema,
+                                                      where: queryPredicate,
+                                                      limit: limit,
+                                                      nextToken: nextToken,
+                                                      lastSync: lastSyncTime,
+                                                      authType: authTypes.next())
+        },
+                                  maxRetries: authTypes.count,
+                                  resultListener: completionListener) { nextRequest, wrappedCompletionListener in
+            api.query(request: nextRequest, listener: wrappedCompletionListener)
+        }.main()
     }
 
     /// Disposes of the query results: Stops if error, reconciles results if success, and kick off a new query if there

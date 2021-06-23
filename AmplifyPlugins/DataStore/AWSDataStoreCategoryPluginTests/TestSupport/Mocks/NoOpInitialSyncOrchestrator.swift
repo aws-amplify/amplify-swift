@@ -16,7 +16,7 @@ struct NoOpInitialSyncOrchestrator: InitialSyncOrchestrator {
         return initialSyncOrchestratorTopic.eraseToAnyPublisher()
     }
 
-    static let factory: InitialSyncOrchestratorFactory = { _, _, _, _ in
+    static let factory: InitialSyncOrchestratorFactory = { _, _, _, _, _  in
         let initialSyncOrchestratorTopic = PassthroughSubject<InitialSyncOperationEvent, DataStoreError>()
         let noOpInitialSyncOrchestrator = NoOpInitialSyncOrchestrator(initialSyncOrchestratorTopic: initialSyncOrchestratorTopic)
         return noOpInitialSyncOrchestrator

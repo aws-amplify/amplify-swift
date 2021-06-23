@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Foundation
 
 final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
@@ -56,9 +57,15 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         // Retrieve endpoint configuration
         let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
         let requestInterceptors: [URLRequestInterceptor]
+
         do {
             endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL)
-            requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
+
+            if let pluginOptions = request.options.pluginOptions as? AWSPluginOptions, let authType = pluginOptions.authType {
+                requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig, authType: authType)
+            } else {
+                requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
+            }
         } catch let error as APIError {
             dispatch(result: .failure(error))
             finish()

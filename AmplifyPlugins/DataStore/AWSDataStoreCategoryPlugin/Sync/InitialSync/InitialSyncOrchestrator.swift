@@ -20,6 +20,7 @@ protocol InitialSyncOrchestrator {
 @available(iOS 13.0, *)
 typealias InitialSyncOrchestratorFactory =
     (DataStoreConfiguration,
+     AuthModeStrategy,
     APICategoryGraphQLBehavior?,
     IncomingEventReconciliationQueue?,
     StorageEngineAdapter?) -> InitialSyncOrchestrator
@@ -35,6 +36,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     private weak var api: APICategoryGraphQLBehavior?
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
     private weak var storageAdapter: StorageEngineAdapter?
+    private let authModeStrategy: AuthModeStrategy
 
     private var completion: SyncOperationResultHandler?
 
@@ -52,11 +54,13 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     }
 
     init(dataStoreConfiguration: DataStoreConfiguration,
+         authModeStrategy: AuthModeStrategy,
          api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?) {
         self.initialSyncOperationSinks = [:]
         self.dataStoreConfiguration = dataStoreConfiguration
+        self.authModeStrategy = authModeStrategy
         self.api = api
         self.reconciliationQueue = reconciliationQueue
         self.storageAdapter = storageAdapter
@@ -105,7 +109,8 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
                                                        api: api,
                                                        reconciliationQueue: reconciliationQueue,
                                                        storageAdapter: storageAdapter,
-                                                       dataStoreConfiguration: dataStoreConfiguration)
+                                                       dataStoreConfiguration: dataStoreConfiguration,
+                                                       authModeStrategy: authModeStrategy)
 
         initialSyncOperationSinks[modelSchema.name] = initialSyncForModel
             .publisher

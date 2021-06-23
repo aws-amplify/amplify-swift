@@ -41,6 +41,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             api: apiPlugin,
             storageAdapter: storageAdapter,
             syncExpressions: [],
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
             modelReconciliationQueueFactory: modelReconciliationQueueFactory)
     }
 

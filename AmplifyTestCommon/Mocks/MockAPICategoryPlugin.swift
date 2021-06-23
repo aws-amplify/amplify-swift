@@ -41,13 +41,13 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin, APICategoryReac
                 return operation
             }
         }
-        let options = GraphQLOperationRequest<R>.Options()
+        let requestOptions = GraphQLOperationRequest<R>.Options(pluginOptions: nil)
         let request = GraphQLOperationRequest<R>(apiName: request.apiName,
                                                  operationType: .mutation,
                                                  document: request.document,
                                                  variables: request.variables,
                                                  responseType: request.responseType,
-                                                 options: options)
+                                                 options: requestOptions)
         let operation = MockGraphQLOperation(request: request, responseType: request.responseType)
 
         return operation
@@ -63,13 +63,13 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin, APICategoryReac
             }
         }
 
-        let options = GraphQLOperationRequest<R>.Options()
+        let requestOptions = GraphQLOperationRequest<R>.Options(pluginOptions: nil)
         let request = GraphQLOperationRequest<R>(apiName: request.apiName,
                                                  operationType: .query,
                                                  document: request.document,
                                                  variables: request.variables,
                                                  responseType: request.responseType,
-                                                 options: options)
+                                                 options: requestOptions)
         let operation = MockGraphQLOperation(request: request, responseType: request.responseType)
 
         return operation
@@ -92,13 +92,13 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin, APICategoryReac
                 }
             }
 
-            let options = GraphQLOperationRequest<R>.Options()
+            let requestOptions = GraphQLOperationRequest<R>.Options(pluginOptions: nil)
             let request = GraphQLOperationRequest<R>(apiName: request.apiName,
                                                      operationType: .subscription,
                                                      document: request.document,
                                                      variables: request.variables,
                                                      responseType: request.responseType,
-                                                     options: options)
+                                                     options: requestOptions)
             let operation = MockSubscriptionGraphQLOperation(request: request, responseType: request.responseType)
             return operation
     }

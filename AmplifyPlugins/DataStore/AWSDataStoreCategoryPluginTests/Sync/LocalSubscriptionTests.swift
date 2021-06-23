@@ -10,6 +10,7 @@ import SQLite
 
 import Combine
 @testable import Amplify
+@testable import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
@@ -41,6 +42,7 @@ class LocalSubscriptionTests: XCTestCase {
             let syncEngine = RemoteSyncEngine(
                 storageAdapter: storageAdapter,
                 dataStoreConfiguration: .default,
+                authModeStrategy: AWSDefaultAuthModeStrategy(),
                 outgoingMutationQueue: outgoingMutationQueue,
                 mutationEventIngester: mutationDatabaseAdapter,
                 mutationEventPublisher: awsMutationEventPublisher,
