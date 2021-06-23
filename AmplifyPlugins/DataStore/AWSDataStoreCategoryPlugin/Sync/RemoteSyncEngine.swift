@@ -411,6 +411,18 @@ extension RemoteSyncEngine: DefaultLogger { }
 @available(iOS 13.0, *)
 extension RemoteSyncEngine: AuthModeStrategyDelegate {
     func isUserLoggedIn() -> Bool {
+        // if OIDC is used as authentication provider
+        // use `getLatestAuthToken`
+        if let authProviderFactory = api as? APICategoryAuthProviderFactoryBehavior {
+            let authProvider = authProviderFactory.apiAuthProviderFactory()
+            let oidcAuthProvider = authProvider.oidcAuthProvider()
+
+            if let authToken = oidcAuthProvider?.getLatestAuthToken(),
+               case .success = authToken {
+                return true
+            }
+
+        }
         guard let auth = auth, let _ = auth.getCurrentUser() else {
             return false
         }
