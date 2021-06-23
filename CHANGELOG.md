@@ -1,5 +1,17 @@
 # Changelog
 ## Unreleased
+## 1.11.0 (2021-06-23)
+
+### Features
+
+- **api**: fix querystring encoding according to AWS SigV4 (#1068)
+
+### Bug Fixes
+
+- GraphQLBuilder use model name from schema instead of model (#1292)
+- **api**: interceptors refactoring (#1247)
+- **Model**: Apply codegen changes test models (#1145)
+
 ## 1.10.0 (2021-06-10)
 
 ### Features

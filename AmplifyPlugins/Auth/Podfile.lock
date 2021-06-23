@@ -1,15 +1,15 @@
 PODS:
-  - Amplify (1.10.0):
-    - Amplify/Default (= 1.10.0)
-  - Amplify/Default (1.10.0)
-  - AmplifyTestCommon (1.10.0):
-    - Amplify (= 1.10.0)
-    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.10.0)
-  - AmplifyTestCommon/AWSPluginsTestCommon (1.10.0):
-    - Amplify (= 1.10.0)
+  - Amplify (1.11.0):
+    - Amplify/Default (= 1.11.0)
+  - Amplify/Default (1.11.0)
+  - AmplifyTestCommon (1.11.0):
+    - Amplify (= 1.11.0)
+    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.11.0)
+  - AmplifyTestCommon/AWSPluginsTestCommon (1.11.0):
+    - Amplify (= 1.11.0)
     - AWSCore (~> 2.24.0)
     - AWSMobileClient (~> 2.24.0)
-    - AWSPluginsCore (= 1.10.0)
+    - AWSPluginsCore (= 1.11.0)
   - AWSAuthCore (2.24.2):
     - AWSCore (= 2.24.2)
   - AWSCognitoIdentityProvider (2.24.2):
@@ -22,8 +22,8 @@ PODS:
     - AWSCognitoIdentityProvider (= 2.24.2)
     - AWSCognitoIdentityProviderASF (= 2.24.2)
     - AWSCore (= 2.24.2)
-  - AWSPluginsCore (1.10.0):
-    - Amplify (= 1.10.0)
+  - AWSPluginsCore (1.11.0):
+    - Amplify (= 1.11.0)
     - AWSCore (~> 2.24.0)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
@@ -74,14 +74,14 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  Amplify: 11e56f4e8ae5abc7a3c2e061c5b99265f81cc93a
-  AmplifyTestCommon: 6199a4f5cef80b7daf06b2b053328700599114be
+  Amplify: cf25ee17b0762b3bacd4d4d49891ddada6bee912
+  AmplifyTestCommon: c6b50517f0e2509a70441fa7a4d38753ae8f2a94
   AWSAuthCore: d2cb921db598ea03d67284977a3c691e9a1aee83
   AWSCognitoIdentityProvider: f9d68c563718fa5aa76e077752df06c73810efba
   AWSCognitoIdentityProviderASF: 21681469334e286df6e5470f3cbab3b10edbf818
   AWSCore: 08a61ac2b1d98b2d43f59ee40c4bd68e58dfdea3
   AWSMobileClient: 6af7fff9e58f8d427acf3381cbbae2f0c34d52ab
-  AWSPluginsCore: 744703798503e07230cc64b67b1f7ff0569e06e9
+  AWSPluginsCore: 1670f03a8612d60bd84c541ffa34f538e4037052
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
