@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-protocol CategoryConfigurable: class, CategoryTypeable {
+protocol CategoryConfigurable: AnyObject, CategoryTypeable {
 
     /// true if the category has already been configured
     var isConfigured: Bool { get }

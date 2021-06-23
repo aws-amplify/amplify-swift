@@ -6,7 +6,7 @@
 //
 
 /// Behavior of the API category related to GraphQL operations
-public protocol APICategoryGraphQLBehavior: class {
+public protocol APICategoryGraphQLBehavior: AnyObject {
 
     // MARK: - Request-based GraphQL Operations
 
