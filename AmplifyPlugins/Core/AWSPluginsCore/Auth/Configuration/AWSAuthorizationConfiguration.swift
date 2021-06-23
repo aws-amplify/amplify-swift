@@ -47,8 +47,8 @@ extension AWSAuthorizationConfiguration {
             let config = APIKeyConfiguration(apiKey: apiKey)
             return .apiKey(config)
     }
-    
-    
+
+
     /// Instantiates a new configuration conforming to AWSAuthorizationConfiguration
     /// - Parameters:
     ///   - authType: authentication type

@@ -45,7 +45,7 @@ extension AnalyticsError: AmplifyError {
             return error
         }
     }
-    
+
     /// Initializer
     /// - Parameters:
     ///   - errorDescription: Error Description

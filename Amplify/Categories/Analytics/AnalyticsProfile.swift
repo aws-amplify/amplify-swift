@@ -24,7 +24,7 @@ public struct AnalyticsUserProfile {
 
     /// Properties of the user profile
     public var properties: AnalyticsProperties?
-    
+
     /// Initializer
     /// - Parameters:
     ///   - name: Name of user
@@ -49,10 +49,10 @@ extension AnalyticsUserProfile {
 
     /// Location specific data
     public struct Location {
-        
+
         /// The user's latitude
         public var latitude: Double?
-        
+
         /// The user's longitude
         public var longitude: Double?
 

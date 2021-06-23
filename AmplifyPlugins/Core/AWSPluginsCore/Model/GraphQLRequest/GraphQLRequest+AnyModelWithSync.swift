@@ -114,7 +114,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                       modelSchema: ModelSchema,
                                       where filter: GraphQLFilter? = nil,
                                       version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: model.modelName, operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelSchema.name, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(model: model))
         if let filter = filter {
