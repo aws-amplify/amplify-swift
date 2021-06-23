@@ -422,10 +422,7 @@ extension RemoteSyncEngine: AuthModeStrategyDelegate {
                 return true
             }
         }
-
-        guard let auth = auth, let _ = auth.getCurrentUser() else {
-            return false
-        }
-        return true
+        
+        return auth?.getCurrentUser() != nil
     }
 }
