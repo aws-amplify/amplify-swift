@@ -95,7 +95,7 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         //       when there's no authenticated user.
         //       We should be instead failing early and don't send the request.
         //       See: https://github.com/aws-amplify/amplify-ios/issues/1291
-        if case .subscription(_, _) = input, authRule.isReadRestrictingOwner() {
+        if case let .subscription(_, claims) = input, authRule.isReadRestrictingOwner(), claims == nil {
             var inputs = document.inputs
             inputs[ownerField] = GraphQLDocumentInput(type: "String!", value: .scalar(""))
             return document.copy(inputs: inputs, selectionSet: selectionSet)
