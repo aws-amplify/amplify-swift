@@ -18,15 +18,7 @@
 ? After how many days from now the API key should expire (1-365): `365`
 ? Do you want to configure advanced settings for the GraphQL API `Yes, I want to make some additional changes.`
 ? Configure additional auth types? `Yes`
-? Choose the additional authorization types you want to configure for the API: `Amazon Cognito User Pool`, `IAM`, `OpenID Connect`
-
-
-OpenID Connect configuration:
-? Enter a name for the OpenID Connect provider: `okta`
-? Enter the OpenID Connect provider domain (Issuer URL): [OIDC_URL_HERE]
-? Enter the Client Id from your OpenID Client Connect application (optional):
-? Enter the number of milliseconds a token is valid after being issued to a user: `86400000`
-? Enter the number of milliseconds a token is valid after being authenticated: `86400000`
+? Choose the additional authorization types you want to configure for the API: `Amazon Cognito User Pool`, `IAM`
 ? Enable conflict detection? `Yes`
 ? Select the default resolution strategy Auto Merge
 ? Do you have an annotated GraphQL schema? `Yes`
@@ -45,11 +37,7 @@ OpenID Connect configuration:
     "user1": "<USER1_EMAIL>",
     "passwordUser1": "<PASSWORD_1>",
     "user2": "<USER2_EMAIL>",
-    "passwordUser2": "<PASSWORD_2>",
-    
-    "oidcUser": "<OIDCUSER_EMAIL>",
-    "passwordOidcUser": "<PASSWORD_OIDC>",
-    "oidcEndpoint": "<OIDC_TOKEN_ENDPOINT>"
+    "passwordUser2": "<PASSWORD_2>"
 }
 
 ```

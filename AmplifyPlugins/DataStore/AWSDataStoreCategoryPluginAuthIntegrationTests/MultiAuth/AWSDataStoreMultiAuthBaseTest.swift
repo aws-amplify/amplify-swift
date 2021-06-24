@@ -21,8 +21,6 @@ class AWSDataStoreMultiAuthBaseTest: XCTestCase {
 
     var user1: TestUser?
     var user2: TestUser?
-    var oidcUser: TestUser?
-    var oidcEndpoint: URL?
 
     static let amplifyConfigurationFile = "AWSDataStoreCategoryPluginMultiAuthIntegrationTests-amplifyconfiguration"
     static let credentialsFile = "AWSDataStoreCategoryPluginMultiAuthIntegrationTests-credentials"
@@ -38,19 +36,13 @@ class AWSDataStoreMultiAuthBaseTest: XCTestCase {
             guard let user1 = credentials["user1"],
                   let user2 = credentials["user2"],
                   let passwordUser1 = credentials["passwordUser1"],
-                  let passwordUser2 = credentials["passwordUser2"],
-                  let oidcUser = credentials["oidcUser"],
-                  let oidcUserPassword = credentials["passwordOidcUser"],
-                  let oidcEndpointString = credentials["oidcEndpoint"],
-                  let oidcEndpoint = URL(string: oidcEndpointString) else {
+                  let passwordUser2 = credentials["passwordUser2"] else {
                 XCTFail("Invalid \(Self.credentialsFile).json data")
                 return
             }
 
             self.user1 = TestUser(username: user1, password: passwordUser1)
             self.user2 = TestUser(username: user2, password: passwordUser2)
-            self.oidcUser = TestUser(username: oidcUser, password: oidcUserPassword)
-            self.oidcEndpoint = oidcEndpoint
 
             authRecorderInterceptor.reset()
 
