@@ -154,19 +154,16 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     }
 
     private func makeCompletionResult() -> Result<Void, DataStoreError> {
-        if syncErrors.allSatisfy(isUnauthorizedError) {
+        if syncErrors.isEmpty || syncErrors.allSatisfy(isUnauthorizedError) {
             return .successfulVoid
         }
 
-        guard syncErrors.isEmpty else {
-            let allMessages = syncErrors.map { String(describing: $0) }
-            let syncError = DataStoreError.sync(
-                "One or more errors occurred syncing models. See below for detailed error description.",
-                allMessages.joined(separator: "\n")
-            )
-            return .failure(syncError)
-        }
-        return .successfulVoid
+        let allMessages = syncErrors.map { String(describing: $0) }
+        let syncError = DataStoreError.sync(
+            "One or more errors occurred syncing models. See below for detailed error description.",
+            allMessages.joined(separator: "\n")
+        )
+        return .failure(syncError)
     }
 
     private func dispatchSyncQueriesStarted(for modelNames: [String]) {
