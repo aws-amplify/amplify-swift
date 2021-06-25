@@ -171,6 +171,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: subscriptionType))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(subscriptionType, nil)))
         let document = documentBuilder.build()
 
         let awsPluginOptions = AWSPluginOptions(authType: authType)

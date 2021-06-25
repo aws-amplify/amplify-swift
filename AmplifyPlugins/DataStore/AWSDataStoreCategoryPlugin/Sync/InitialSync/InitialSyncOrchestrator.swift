@@ -122,6 +122,10 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
                         "",
                         dataStoreError)
                     self.syncErrors.append(syncError)
+
+                    if self.isUnauthorizedError(syncError) {
+                        self.initialSyncOrchestratorTopic.send(.finished(modelName: modelSchema.name))
+                    }
                 }
                 self.initialSyncOperationSinks.removeValue(forKey: modelSchema.name)
                 self.onReceiveCompletion()
@@ -150,15 +154,16 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     }
 
     private func makeCompletionResult() -> Result<Void, DataStoreError> {
-        guard syncErrors.isEmpty else {
-            let allMessages = syncErrors.map { String(describing: $0) }
-            let syncError = DataStoreError.sync(
-                "One or more errors occurred syncing models. See below for detailed error description.",
-                allMessages.joined(separator: "\n")
-            )
-            return .failure(syncError)
+        if syncErrors.isEmpty || syncErrors.allSatisfy(isUnauthorizedError) {
+            return .successfulVoid
         }
-        return .successfulVoid
+
+        let allMessages = syncErrors.map { String(describing: $0) }
+        let syncError = DataStoreError.sync(
+            "One or more errors occurred syncing models. See below for detailed error description.",
+            allMessages.joined(separator: "\n")
+        )
+        return .failure(syncError)
     }
 
     private func dispatchSyncQueriesStarted(for modelNames: [String]) {
@@ -178,5 +183,40 @@ extension AWSInitialSyncOrchestrator: Resettable {
         syncOperationQueue.cancelAllOperations()
         syncOperationQueue.waitUntilAllOperationsAreFinished()
         onComplete()
+    }
+}
+
+@available(iOS 13.0, *)
+extension AWSInitialSyncOrchestrator {
+    private typealias ResponseType = PaginatedList<AnyModel>
+    private func graphqlErrors(from error: GraphQLResponseError<ResponseType>?) -> [GraphQLError]? {
+        if case let .error(errors) = error {
+            return errors
+        }
+        return nil
+    }
+
+    private func errorTypeValueFrom(graphQLError: GraphQLError) -> String? {
+        guard case let .string(errorTypeValue) = graphQLError.extensions?["errorType"] else {
+            return nil
+        }
+        return errorTypeValue
+    }
+
+    private func isUnauthorizedError(_ error: DataStoreError) -> Bool {
+        guard case let .sync(_, _, underlyingError) = error,
+              let datastoreError = underlyingError as? DataStoreError
+              else {
+            return false
+        }
+
+        if case let .api(apiError, _) = datastoreError,
+           let responseError = apiError as? GraphQLResponseError<ResponseType>,
+           let graphQLError = graphqlErrors(from: responseError)?.first,
+           let errorTypeValue = errorTypeValueFrom(graphQLError: graphQLError),
+           case .unauthorized = AppSyncErrorType(errorTypeValue) {
+            return true
+        }
+        return false
     }
 }
