@@ -21,12 +21,23 @@ Our default implementation works with Amazon Web Services (AWS), but AWS Amplify
 - [Predictions](https://docs.amplify.aws/lib/predictions/getting-started/q/platform/ios) - to detect text, images, and more!
 - [Storage](https://docs.amplify.aws/lib/storage/getting-started/q/platform/ios) - store complex objects like pictures and videos to the cloud.
 
-All services and features not listed above are supported via the [iOS SDK](https://docs.amplify.aws/sdk/q/platform/ios) or if supported by a category can be accessed via the Escape Hatch like below:`
+All services and features not listed above are supported via the [iOS SDK](https://docs.amplify.aws/sdk/q/platform/ios) or if supported by a category can be accessed via the Escape Hatch like below:
 
 ```swift
-let rekognitionService = Amplify.Predictions.getEscapeHatch(key: .rekognition) as! AWSRekognition
-let request = rekognitionService.AWSRekognitionCreateCollectionRequest()
-rekognitionService.createCollection(request)
+guard let predictionsPlugin = try Amplify.Predictions.getPlugin(for: "awsPredictionsPlugin") as? AWSPredictionsPlugin else {
+    print("Unable to cast to AWSPredictionsPlugin")
+    return
+}
+
+guard let rekognitionService = predictionsPlugin.getEscapeHatch(key: .rekognition) as? AWSRekognition else {
+    print("Unable to get AWSRekognition")
+    return
+}
+
+let request = AWSRekognitionCreateCollectionRequest()
+if let request = request {
+    rekognitionService.createCollection(request)
+}
 ```
 
 ## Platform Support
