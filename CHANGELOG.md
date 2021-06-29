@@ -1,5 +1,15 @@
 # Changelog
 ## Unreleased
+## 1.12.0 (2021-06-28)
+
+### Features
+
+- **datastore**: multi-auth support (#1260)
+
+### Bug Fixes
+
+- **datastore**: initalSync should be successful in case of unauthorized errors (#1299)
+
 ## 1.11.0 (2021-06-23)
 
 ### Features
