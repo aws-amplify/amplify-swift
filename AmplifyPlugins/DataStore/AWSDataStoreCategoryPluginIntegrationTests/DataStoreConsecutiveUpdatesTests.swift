@@ -25,55 +25,48 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         try startAmplifyAndWaitForSync()
 
         // create a post
-        let myPost = Post(id: UUID().uuidString,
-                          title: "MyPost",
+        let newPost = Post(title: "MyPost",
                           content: "This is my post.",
                           createdAt: Temporal.DateTime.now(),
                           rating: 3,
                           status: .published)
 
-        var updatedPost = myPost
+        var updatedPost = newPost
         updatedPost.rating = 5
         updatedPost.title = "MyUpdatedPost"
         updatedPost.content = "This is my updated post."
 
-        let saveSyncExpectation = expectation(description: "Post is saved and synced")
-        let updateSyncExpectation = expectation(description: "Post is updated and synced")
+        let saveSyncReceived = expectation(description: "Received create mutation event on subscription for Post")
+        let updateSyncReceived = expectation(description: "Received update mutation event on subscription for Post")
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-            guard let mutationEvent = payload.data as? MutationEvent
-            else {
+            guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Can't cast payload as mutation event")
                 return
             }
 
-            guard let post = try? mutationEvent.decodeModel() as? Post,
-                  post.id == myPost.id else {
+            guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
                 return
             }
 
             if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                XCTAssertEqual(post.title, myPost.title)
-                XCTAssertEqual(post.content, myPost.content)
-                XCTAssertEqual(post.rating, myPost.rating)
-                saveSyncExpectation.fulfill()
+                XCTAssertEqual(post, newPost)
+                XCTAssertEqual(mutationEvent.version, 1)
+                saveSyncReceived.fulfill()
                 return
             }
 
             if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
                 // this should be removed once the bug is fixed
-                XCTAssertEqual(post.title, myPost.title)
-                XCTAssertEqual(post.content, myPost.content)
-                XCTAssertEqual(post.rating, myPost.rating)
+                XCTAssertEqual(post, newPost)
 
                 // this is the expected behavior which is currently failing
-                // XCTAssertEqual(post.title, "MyUpdatedPost")
-                // XCTAssertEqual(post.content, "This is my updated post.")
-                // XCTAssertEqual(post.rating, 5)
+                // XCTAssertEqual(post, updatedPost)
 
-                updateSyncExpectation.fulfill()
+                XCTAssertEqual(mutationEvent.version, 2)
+                updateSyncReceived.fulfill()
                 return
             }
         }
@@ -83,69 +76,78 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
             return
         }
 
-        // save the post
-        let immediateSaveExpectation = expectation(description: "Post is saved")
-        Amplify.DataStore.save(myPost) { result in
+        // save the post and update it immediately
+        let saveAndImmediatelyUpdate = expectation(description: "Post is saved and then immediately updated")
+        Amplify.DataStore.save(newPost) { result in
             switch result {
             case .success:
-                immediateSaveExpectation.fulfill()
+                Amplify.DataStore.save(updatedPost) { result in
+                    switch result {
+                    case .success:
+                        saveAndImmediatelyUpdate.fulfill()
+                    case .failure(let error):
+                        XCTFail("Error: \(error)")
+                    }
+                }
             case .failure(let error):
                 XCTFail("Error: \(error)")
             }
         }
-        wait(for: [immediateSaveExpectation], timeout: networkTimeout)
-
-        // update the created post
-        let immediateUpdateExpectation = expectation(description: "Post is updated")
-        Amplify.DataStore.save(updatedPost) { result in
-            switch result {
-            case .success:
-                immediateUpdateExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Error: \(error)")
-            }
-        }
-        wait(for: [immediateUpdateExpectation], timeout: networkTimeout)
+        wait(for: [saveAndImmediatelyUpdate], timeout: networkTimeout)
 
         // query the updated post immediately
-        let immediateQueryExpectation = expectation(description: "Post is updated immediately")
-        Amplify.DataStore.query(Post.self, byId: updatedPost.id) { result in
-            switch result {
-            case .success(let post):
-                XCTAssertEqual(post?.title, updatedPost.title)
-                XCTAssertEqual(post?.content, updatedPost.content)
-                XCTAssertEqual(post?.rating, updatedPost.rating)
-                immediateQueryExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Error: \(error)")
-            }
+        guard let queryResult = queryPost(byId: updatedPost.id) else {
+            XCTFail("Post should be available after update")
+            return
         }
-        wait(for: [immediateQueryExpectation], timeout: networkTimeout)
+        XCTAssertEqual(queryResult, updatedPost)
 
-        wait(for: [saveSyncExpectation], timeout: networkTimeout)
-        wait(for: [updateSyncExpectation], timeout: networkTimeout)
+        wait(for: [saveSyncReceived, updateSyncReceived], timeout: networkTimeout)
 
         // query the updated post in eventual consistent state
-        let queryExpectation = expectation(description: "Post is updated in eventual consistent state")
-        Amplify.DataStore.query(Post.self, byId: updatedPost.id) { result in
-            switch result {
-            case .success(let post):
-                // this should be removed once the bug is fixed
-                XCTAssertEqual(post?.title, myPost.title)
-                XCTAssertEqual(post?.content, myPost.content)
-                XCTAssertEqual(post?.rating, myPost.rating)
+        guard let queryResultAfterSync = queryPost(byId: updatedPost.id) else {
+            XCTFail("Post should be available after update and sync")
+            return
+        }
 
-                // this is the expected behavior which is currently failing
-                // XCTAssertEqual(post?.title, updatedPost.title)
-                // XCTAssertEqual(post?.content, updatedPost.content)
-                // XCTAssertEqual(post?.rating, updatedPost.rating)
-                queryExpectation.fulfill()
+        // this should be removed once the bug is fixed
+        XCTAssertEqual(queryResultAfterSync, newPost)
+
+        // this is the expected behavior which is currently failing
+        // XCTAssertEqual(queryResultAfterSync, updatedPost)
+
+        // API query
+        let queryRequest =
+            GraphQLRequest<MutationSyncResult?>.query(modelName: updatedPost.modelName, byId: updatedPost.id)
+        let apiQuerySuccess = expectation(description: "API query is successful")
+        Amplify.API.query(request: queryRequest) { result in
+            switch result {
+            case .success(let mutationSyncResult):
+                switch mutationSyncResult {
+                case .success(let data):
+                    guard let post = data else {
+                        XCTFail("Failed to get data")
+                        return
+                    }
+
+                    // this should be removed once the bug is fixed
+                    XCTAssertEqual(post.model["title"] as? String, newPost.title)
+                    XCTAssertEqual(post.model["content"] as? String, newPost.content)
+                    XCTAssertEqual(post.model["rating"] as? Double, newPost.rating)
+
+                    // this is the expected behavior which is currently failing
+                    // XCTAssertEqual(post.model["title"] as? String, updatedPost.title)
+                    // XCTAssertEqual(post.model["content"] as? String, updatedPost.content)
+                    // XCTAssertEqual(post.model["rating"] as? Double, updatedPost.rating)
+                    apiQuerySuccess.fulfill()
+                case .failure(let error):
+                    XCTFail("Error: \(error)")
+                }
             case .failure(let error):
                 XCTFail("Error: \(error)")
             }
         }
-        wait(for: [queryExpectation], timeout: networkTimeout)
-
+        wait(for: [apiQuerySuccess], timeout: networkTimeout)
     }
 
     /// - Given: API has been setup with `Post` model registered
@@ -155,47 +157,40 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         try startAmplifyAndWaitForSync()
 
         // create a post
-        let myPost = Post(id: UUID().uuidString,
-                          title: "MyPost",
+        let newPost = Post(title: "MyPost",
                           content: "This is my post.",
                           createdAt: Temporal.DateTime.now(),
                           rating: 3,
                           status: .published)
 
-        let saveSyncExpectation = expectation(description: "Post is saved and synced")
+        let saveSyncReceived = expectation(description: "Received create mutation event on subscription for Post")
         // this needs to be commented out once the bug is fixed
         // currently the API request for delete mutation fails with error message "Conflict resolver rejects mutation."
         // because of version not being included, so the hub event is never fired
-        // let deleteSyncExpectation = expectation(description: "Post is deleted and synced")
+        // let deleteSyncReceived = expectation(description: "Received delete mutation event on subscription for Post")
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-            guard let mutationEvent = payload.data as? MutationEvent
-            else {
+            guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Can't cast payload as mutation event")
                 return
             }
 
-            guard let post = try? mutationEvent.decodeModel() as? Post,
-                  post.id == myPost.id else {
+            guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
                 return
             }
 
             if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                XCTAssertEqual(post.title, myPost.title)
-                XCTAssertEqual(post.content, myPost.content)
-                XCTAssertEqual(post.rating, myPost.rating)
-                saveSyncExpectation.fulfill()
+                XCTAssertEqual(post, newPost)
+                saveSyncReceived.fulfill()
                 return
             }
 
             if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                XCTAssertEqual(post.title, myPost.title)
-                XCTAssertEqual(post.content, myPost.content)
-                XCTAssertEqual(post.rating, myPost.rating)
+                XCTAssertEqual(post, newPost)
                 // this needs to be commented out once the bug is fixed
-                // deleteSyncExpectation.fulfill()
+                // deleteSyncReceived.fulfill()
                 return
             }
         }
@@ -206,66 +201,68 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         }
 
         // save the post
-        let immediateSaveExpectation = expectation(description: "Post is saved")
-        Amplify.DataStore.save(myPost) { result in
+        let saveAndImmediatelyDelete = expectation(description: "Post is saved and then immediately deleted")
+        Amplify.DataStore.save(newPost) { result in
             switch result {
             case .success:
-                immediateSaveExpectation.fulfill()
+                Amplify.DataStore.delete(newPost) { result in
+                    switch result {
+                    case .success:
+                        saveAndImmediatelyDelete.fulfill()
+                    case .failure(let error):
+                        XCTFail("Error: \(error)")
+                    }
+                }
             case .failure(let error):
                 XCTFail("Error: \(error)")
             }
         }
-        wait(for: [immediateSaveExpectation], timeout: networkTimeout)
-
-        // delete the post
-        let immediateDeleteExpectation = expectation(description: "Post is immediately deleted")
-        Amplify.DataStore.delete(myPost) { result in
-            switch result {
-            case .success:
-                immediateDeleteExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Error: \(error)")
-            }
-        }
-        wait(for: [immediateDeleteExpectation], timeout: networkTimeout)
+        wait(for: [saveAndImmediatelyDelete], timeout: networkTimeout)
 
         // query the deleted post immediately
-        let immediateQueryExpectation = expectation(description: "Post is not found after immediately deleting")
-        Amplify.DataStore.query(Post.self, byId: myPost.id) { result in
-            switch result {
-            case .success(let post):
-                XCTAssertNil(post)
-                immediateQueryExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Error: \(error)")
-            }
-        }
-        wait(for: [immediateQueryExpectation], timeout: networkTimeout)
+        let queryResult = queryPost(byId: newPost.id)
+        XCTAssertNil(queryResult)
 
-        wait(for: [saveSyncExpectation], timeout: networkTimeout)
+        wait(for: [saveSyncReceived], timeout: networkTimeout)
         // this needs to be commented out once the bug is fixed
-        // wait(for: [deleteSyncExpectation], timeout: networkTimeout)
+        // wait(for: [deleteSyncReceived], timeout: networkTimeout)
 
         // query the deleted post in eventual consistent state
-        let queryExpectation = expectation(description: "Post is not found in eventual consistent state ")
-        Amplify.DataStore.query(Post.self, byId: myPost.id) { result in
-            switch result {
-            case .success(let post):
-                // this should be removed once the bug is fixed
-                XCTAssertNotNil(post)
-                XCTAssertEqual(post?.title, myPost.title)
-                XCTAssertEqual(post?.content, myPost.content)
-                XCTAssertEqual(post?.rating, myPost.rating)
+        let queryResultAfterSync = queryPost(byId: newPost.id)
 
-                // this is the actual behavior which is currently failing
-                // XCTAssertNil(post)
-                queryExpectation.fulfill()
+        // this should be removed once the bug is fixed
+        XCTAssertNotNil(queryResultAfterSync)
+        XCTAssertEqual(queryResultAfterSync, newPost)
+
+        // this is the actual behavior which is currently failing
+        // XCTAssertNil(post)
+
+        // API query
+        let queryRequest =
+            GraphQLRequest<MutationSyncResult?>.query(modelName: newPost.modelName, byId: newPost.id)
+        let apiQuerySuccess = expectation(description: "API query is successful")
+        Amplify.API.query(request: queryRequest) { result in
+            switch result {
+            case .success(let mutationSyncResult):
+                switch mutationSyncResult {
+                case .success(let data):
+                    guard let post = data else {
+                        XCTFail("Failed to get data")
+                        return
+                    }
+
+                    XCTAssertEqual(post.model["title"] as? String, newPost.title)
+                    XCTAssertEqual(post.model["content"] as? String, newPost.content)
+                    XCTAssertEqual(post.model["rating"] as? Double, newPost.rating)
+                    apiQuerySuccess.fulfill()
+                case .failure(let error):
+                    XCTFail("Error: \(error)")
+                }
             case .failure(let error):
                 XCTFail("Error: \(error)")
             }
         }
-        wait(for: [queryExpectation], timeout: networkTimeout)
-
+        wait(for: [apiQuerySuccess], timeout: networkTimeout)
     }
 
     /// - Given: API has been setup with `Post` model registered
@@ -275,67 +272,56 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         try startAmplifyAndWaitForSync()
 
         // create a post
-        let myPost = Post(id: UUID().uuidString,
-                          title: "MyPost",
+        let newPost = Post(title: "MyPost",
                           content: "This is my post.",
                           createdAt: Temporal.DateTime.now(),
                           rating: 3,
                           status: .published)
 
-        var updatedPost = myPost
+        var updatedPost = newPost
         updatedPost.rating = 5
         updatedPost.title = "MyUpdatedPost"
         updatedPost.content = "This is my updated post."
 
-        let saveSyncExpectation = expectation(description: "Post is saved and synced")
-        let updateSyncExpectation = expectation(description: "Post is updated and synced")
+        let saveSyncReceived = expectation(description: "Received create mutation event on subscription for Post")
+        let updateSyncReceived = expectation(description: "Received update mutation event on subscription for Post")
         // this needs to be commented out once the bug is fixed
         // currently the API request for delete mutation fails with error message "Conflict resolver rejects mutation."
         // because of version not being included, so the hub event is never fired
-        // let deleteSyncExpectation = expectation(description: "Post is deleted and synced")
+        // let deleteSyncReceived = expectation(description: "Received delete mutation event on subscription for Post")
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-            guard let mutationEvent = payload.data as? MutationEvent
-            else {
+            guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Can't cast payload as mutation event")
                 return
             }
 
-            guard let post = try? mutationEvent.decodeModel() as? Post,
-                  post.id == myPost.id else {
+            guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
                 return
             }
 
             if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                XCTAssertEqual(post.title, myPost.title)
-                XCTAssertEqual(post.content, myPost.content)
-                XCTAssertEqual(post.rating, myPost.rating)
-                saveSyncExpectation.fulfill()
+                XCTAssertEqual(post, newPost)
+                saveSyncReceived.fulfill()
                 return
             }
 
             if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
                 // this should be removed once the bug is fixed
-                XCTAssertEqual(post.title, myPost.title)
-                XCTAssertEqual(post.content, myPost.content)
-                XCTAssertEqual(post.rating, myPost.rating)
+                XCTAssertEqual(post, newPost)
 
                 // expected behavior which is currently failing
-                // XCTAssertEqual(post.title, updatedPost.title)
-                // XCTAssertEqual(post.content, updatedPost.content)
-                // XCTAssertEqual(post.rating, updatedPost.rating)
-                updateSyncExpectation.fulfill()
+                // XCTAssertEqual(post, updatedPost)
+                updateSyncReceived.fulfill()
                 return
             }
 
             if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                XCTAssertEqual(post.title, updatedPost.title)
-                XCTAssertEqual(post.content, updatedPost.content)
-                XCTAssertEqual(post.rating, updatedPost.rating)
+                XCTAssertEqual(post, updatedPost)
                 // this needs to be commented out once the bug is fixed
-                // deleteSyncExpectation.fulfill()
+                // deleteSyncReceived.fulfill()
                 return
             }
         }
@@ -345,78 +331,102 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
             return
         }
 
-        // save the post
-        let immediateSaveExpectation = expectation(description: "Post is saved")
-        Amplify.DataStore.save(myPost) { result in
+        // save the post, update and delete immediately
+        let saveThenUpdateAndImmediatelyDelete =
+            expectation(description: "Post is saved then updated and deleted immediately")
+        Amplify.DataStore.save(newPost) { result in
             switch result {
             case .success:
-                immediateSaveExpectation.fulfill()
+                Amplify.DataStore.save(updatedPost) { result in
+                    switch result {
+                    case .success:
+                        Amplify.DataStore.delete(updatedPost) { result in
+                            switch result {
+                            case .success:
+                                saveThenUpdateAndImmediatelyDelete.fulfill()
+                            case .failure(let error):
+                                XCTFail("Error: \(error)")
+                            }
+                        }
+                    case .failure(let error):
+                        XCTFail("Error: \(error)")
+                    }
+                }
             case .failure(let error):
                 XCTFail("Error: \(error)")
             }
         }
-        wait(for: [immediateSaveExpectation], timeout: networkTimeout)
-
-        // update the created post
-        let immediateUpdateExpectation = expectation(description: "Post is updated")
-        Amplify.DataStore.save(updatedPost) { result in
-            switch result {
-            case .success:
-                immediateUpdateExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Error: \(error)")
-            }
-        }
-        wait(for: [immediateUpdateExpectation], timeout: networkTimeout)
-
-        // delete the updated post
-        let immediateDeleteExpectation = expectation(description: "Post is immediately deleted")
-        Amplify.DataStore.delete(updatedPost) { result in
-            switch result {
-            case .success:
-                immediateDeleteExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Error: \(error)")
-            }
-        }
-        wait(for: [immediateDeleteExpectation], timeout: networkTimeout)
+        wait(for: [saveThenUpdateAndImmediatelyDelete], timeout: networkTimeout)
 
         // query the deleted post immediately
-        let immediateQueryExpectation = expectation(description: "Post is not found after immediately deleting")
-        Amplify.DataStore.query(Post.self, byId: myPost.id) { result in
-            switch result {
-            case .success(let post):
-                XCTAssertNil(post)
-                immediateQueryExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Error: \(error)")
-            }
-        }
-        wait(for: [immediateQueryExpectation], timeout: networkTimeout)
+        let queryResult = queryPost(byId: newPost.id)
+        XCTAssertNil(queryResult)
 
-        wait(for: [saveSyncExpectation], timeout: networkTimeout)
-        wait(for: [updateSyncExpectation], timeout: networkTimeout)
+        wait(for: [saveSyncReceived, updateSyncReceived], timeout: networkTimeout)
         // this needs to be commented out once the bug is fixed
         // wait(for: [deleteSyncExpectation], timeout: networkTimeout)
 
         // query the deleted post
-        let queryExpectation = expectation(description: "Post is not found")
-        Amplify.DataStore.query(Post.self, byId: updatedPost.id) { result in
+        let queryResultAfterSync = queryPost(byId: updatedPost.id)
+
+        // this should be removed once the bug is fixed
+        XCTAssertNotNil(queryResultAfterSync)
+        XCTAssertEqual(queryResultAfterSync, newPost)
+
+        // this is the actual behavior which is currently failing
+        // XCTAssertNil(post)
+
+        // API query
+        let queryRequest =
+            GraphQLRequest<MutationSyncResult?>.query(modelName: updatedPost.modelName, byId: updatedPost.id)
+        let apiQuerySuccess = expectation(description: "API query is successful")
+        Amplify.API.query(request: queryRequest) { result in
+            switch result {
+            case .success(let mutationSyncResult):
+                switch mutationSyncResult {
+                case .success(let data):
+                    guard let post = data else {
+                        XCTFail("Failed to get data")
+                        return
+                    }
+
+                    XCTAssertEqual(post.model["title"] as? String, newPost.title)
+                    XCTAssertEqual(post.model["content"] as? String, newPost.content)
+                    XCTAssertEqual(post.model["rating"] as? Double, newPost.rating)
+                    apiQuerySuccess.fulfill()
+                case .failure(let error):
+                    XCTFail("Error: \(error)")
+                }
+            case .failure(let error):
+                XCTFail("Error: \(error)")
+            }
+        }
+        wait(for: [apiQuerySuccess], timeout: networkTimeout)
+    }
+
+    private func queryPost(byId id: String) -> Post? {
+        let queryExpectation = expectation(description: "Query is successful")
+        var queryResult: Post?
+        Amplify.DataStore.query(Post.self, byId: id) { result in
             switch result {
             case .success(let post):
-                // this should be removed once the bug is fixed
-                XCTAssertNotNil(post)
-                XCTAssertEqual(post?.title, myPost.title)
-                XCTAssertEqual(post?.content, myPost.content)
-                XCTAssertEqual(post?.rating, myPost.rating)
-
-                // this is the actual behavior which is currently failing
-                // XCTAssertNil(post)
+                queryResult = post
                 queryExpectation.fulfill()
             case .failure(let error):
                 XCTFail("Error: \(error)")
             }
         }
         wait(for: [queryExpectation], timeout: networkTimeout)
+        return queryResult
+    }
+}
+
+extension Post: Equatable {
+
+    public static func == (lhs: Post, rhs: Post) -> Bool {
+        return lhs.id == rhs.id
+            && lhs.title == rhs.title
+            && lhs.content == rhs.content
+            && lhs.rating == rhs.rating
     }
 }
