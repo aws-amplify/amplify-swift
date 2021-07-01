@@ -156,15 +156,8 @@ extension StorageEngine {
 
     private func getAssociatedModelsMap(associatedModels: [(ModelName, Model)]) -> [ModelName: [Model]] {
         var associatedModelsMap = [ModelName: [Model]]()
-        for associatedModel in associatedModels {
-            let modelName = associatedModel.0
-            let model = associatedModel.1
-            if var models = associatedModelsMap[modelName] {
-                models.append(model)
-                associatedModelsMap.updateValue(models, forKey: modelName)
-            } else {
-                associatedModelsMap.updateValue([model], forKey: modelName)
-            }
+        for (modelName, model) in associatedModels {
+            associatedModelsMap[modelName, default: []].append(model)
         }
         return associatedModelsMap
     }

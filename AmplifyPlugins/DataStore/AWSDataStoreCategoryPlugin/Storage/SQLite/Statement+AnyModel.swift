@@ -10,20 +10,20 @@ import SQLite
 import Foundation
 
 extension Statement {
-    func convert(toUntypedModel modelSchema: ModelSchema,
-                 using statement: SelectStatement) throws -> [Model] {
+    func convertToUntypedModel(using modelSchema: ModelSchema,
+                               statement: SelectStatement) throws -> [Model] {
         var models = [Model]()
 
         for row in self {
-            let modelValues = try convert(row: row, to: modelSchema, using: statement)
-            let untypedModel = try convert(toAnyModel: modelSchema, modelDictionary: modelValues)
+            let modelValues = try convert(row: row, withSchema: modelSchema, using: statement)
+            let untypedModel = try convertToAnyModel(using: modelSchema, modelDictionary: modelValues)
             models.append(untypedModel)
         }
 
         return models
     }
 
-    private func convert(toAnyModel modelSchema: ModelSchema, modelDictionary: ModelValues) throws -> Model {
+    private func convertToAnyModel(using modelSchema: ModelSchema, modelDictionary: ModelValues) throws -> Model {
         let data = try JSONSerialization.data(withJSONObject: modelDictionary)
         guard let jsonString = String(data: data, encoding: .utf8) else {
             let error = DataStoreError.decodingError(

@@ -234,7 +234,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                                             paginationInput: paginationInput)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result: [M] = try rows.convert(to: modelType,
-                                               modelSchema: modelSchema,
+                                               withSchema: modelSchema,
                                                using: statement)
             completion(.success(result))
         } catch {
@@ -288,7 +288,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let rows = try connection.prepare(sql).bind(ids)
 
         let syncMetadataList = try rows.convert(to: MutationSyncMetadata.self,
-                                                modelSchema: MutationSyncMetadata.schema,
+                                                withSchema: MutationSyncMetadata.schema,
                                                 using: statement)
         let mutationSyncList = try syncMetadataList.map { syncMetadata -> MutationSync<AnyModel> in
             guard let model = modelById[syncMetadata.id] else {
@@ -320,7 +320,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             let statement = SelectStatement(from: modelSchema, predicate: groupedQueryPredicates)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result = try rows.convert(to: modelType,
-                                          modelSchema: modelSchema,
+                                          withSchema: modelSchema,
                                           using: statement)
             results.append(contentsOf: result)
         }
@@ -332,7 +332,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                                         predicate: field("id").eq(modelSchema.name))
         let rows = try connection.prepare(statement.stringValue).run(statement.variables)
         let result = try rows.convert(to: ModelSyncMetadata.self,
-                                      modelSchema: ModelSyncMetadata.schema,
+                                      withSchema: ModelSyncMetadata.schema,
                                       using: statement)
         return try result.unique()
     }

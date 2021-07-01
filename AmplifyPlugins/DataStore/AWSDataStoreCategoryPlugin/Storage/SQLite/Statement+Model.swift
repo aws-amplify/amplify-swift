@@ -40,7 +40,7 @@ protocol StatementModelConvertible {
     ///   - statement - the query executed that generated this result
     /// - Returns: an array of `Model` of the specified type
     func convert<M: Model>(to modelType: M.Type,
-                           modelSchema: ModelSchema,
+                           withSchema modelSchema: ModelSchema,
                            using statement: SelectStatement) throws -> [M]
 
 }
@@ -53,13 +53,13 @@ extension Statement: StatementModelConvertible {
     }
 
     func convert<M: Model>(to modelType: M.Type,
-                           modelSchema: ModelSchema,
+                           withSchema modelSchema: ModelSchema,
                            using statement: SelectStatement) throws -> [M] {
         var elements: [ModelValues] = []
 
         // parse each row of the result
         for row in self {
-            let modelDictionary = try convert(row: row, to: modelSchema, using: statement)
+            let modelDictionary = try convert(row: row, withSchema: modelSchema, using: statement)
             elements.append(modelDictionary)
         }
 
@@ -69,7 +69,7 @@ extension Statement: StatementModelConvertible {
     }
 
     func convert(row: Element,
-                 to modelSchema: ModelSchema,
+                 withSchema modelSchema: ModelSchema,
                  using statement: SelectStatement) throws -> ModelValues {
         let columnMapping = statement.metadata.columnMapping
         let modelDictionary = ([:] as ModelValues).mutableCopy()
