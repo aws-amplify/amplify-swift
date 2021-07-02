@@ -261,8 +261,8 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
                     XCTAssertFalse(post.syncMetadata.deleted)
 
                     // can be uncommented once delete mutation response is success
-                    // currently the API request for delete mutation fails with error message
-                    // "Conflict resolver rejects mutation." because of version not being included
+                    // currently the API request for delete mutation is sent with nil version, which
+                    // fails with error message "Conflict resolver rejects mutation."
                     // XCTAssertTrue(post.syncMetadata.deleted)
                     apiQuerySuccess.fulfill()
                 case .failure(let error):
@@ -412,8 +412,8 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
                     XCTAssertFalse(post.syncMetadata.deleted)
 
                     // can be uncommented once delete mutation response is success
-                    // currently the API request for delete mutation fails with error message
-                    // "Conflict resolver rejects mutation." because of version not being included
+                    // currently the API request for delete mutation is sent with version 1, which
+                    // fails with error message "Conflict resolver rejects mutation."
                     // XCTAssertTrue(post.syncMetadata.deleted)
                     apiQuerySuccess.fulfill()
                 case .failure(let error):
