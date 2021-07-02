@@ -176,6 +176,7 @@
 		769CF2C9266D7F04007843A0 /* AWSDataStoreMultiAuthTwoRulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769CF2C8266D7F04007843A0 /* AWSDataStoreMultiAuthTwoRulesTests.swift */; };
 		769CF2CB266D7F47007843A0 /* AWSDataStoreMultiAuthTwoRulesTests+Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769CF2CA266D7F47007843A0 /* AWSDataStoreMultiAuthTwoRulesTests+Models.swift */; };
 		8141657E756CC7B2EE1CE851 /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA320D973669D3843FDF755E /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework */; };
+		9728F2B02683D98D00A506A8 /* DataStoreConsecutiveUpdatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9728F2AF2683D98D00A506A8 /* DataStoreConsecutiveUpdatesTests.swift */; };
 		97406B382666DC0200C41E19 /* DataStoreCustomPrimaryKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97406B372666DC0200C41E19 /* DataStoreCustomPrimaryKeyTests.swift */; };
 		A209418EED69D7B1BB8A55C2 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C63AE18F2569D004E94BD550 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */; };
 		A569484A6FBAE7EC7ADF3FD4 /* Pods_AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A1D332BE6CF885805360B3D /* Pods_AWSDataStoreCategoryPlugin.framework */; };
@@ -436,6 +437,7 @@
 		6BE9D6F225A665EA00AB5C9A /* StorageEngineTestsBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEngineTestsBase.swift; sourceTree = "<group>"; };
 		6BE9D73D25A6800100AB5C9A /* StorageEngineTestsManyToMany.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEngineTestsManyToMany.swift; sourceTree = "<group>"; };
 		7678B30F25FAD93200B4917F /* InitialSyncOperationSyncExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialSyncOperationSyncExpressionTests.swift; sourceTree = "<group>"; };
+		9728F2AF2683D98D00A506A8 /* DataStoreConsecutiveUpdatesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConsecutiveUpdatesTests.swift; sourceTree = "<group>"; };
 		767C398A266EE4DA00CB64B9 /* AWSDataStoreMultiAuthThreeRulesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreMultiAuthThreeRulesTests.swift; sourceTree = "<group>"; };
 		767C398C266EE59000CB64B9 /* AWSDataStoreMultiAuthThreeRulesTests+Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSDataStoreMultiAuthThreeRulesTests+Models.swift"; sourceTree = "<group>"; };
 		767C398E266EEBFD00CB64B9 /* AWSDataStoreMultiAuthCombinationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreMultiAuthCombinationTests.swift; sourceTree = "<group>"; };
@@ -832,6 +834,7 @@
 				FA6B0EA9249445D50062AA59 /* AWSDataStorePluginConfigurationTests.swift */,
 				217D61552578AEB0009F0639 /* Connection */,
 				D8C5BA58249815A6007C3A68 /* DataStoreConfigurationTests.swift */,
+				9728F2AF2683D98D00A506A8 /* DataStoreConsecutiveUpdatesTests.swift */,
 				97406B372666DC0200C41E19 /* DataStoreCustomPrimaryKeyTests.swift */,
 				FAB571412395A3E80006A5F8 /* DataStoreEndToEndTests.swift */,
 				D8E9992325013C2F0006170A /* DataStoreHubEventsTests.swift */,
@@ -2116,6 +2119,7 @@
 				2149E62D23886D3900873955 /* SyncMetadataTests.swift in Sources */,
 				217D622D2579E15F009F0639 /* DataStoreConnectionScenario3Tests.swift in Sources */,
 				FAD2BDF6239583B2006EB065 /* TestModelRegistration.swift in Sources */,
+				9728F2B02683D98D00A506A8 /* DataStoreConsecutiveUpdatesTests.swift in Sources */,
 				D888E80A24A65B3800F4CE3E /* DataStoreLocalStoreTests.swift in Sources */,
 				217D622225798ED3009F0639 /* DataStoreConnectionScenario1Tests.swift in Sources */,
 				217D61752578AF85009F0639 /* DataStoreConnectionScenario2Tests.swift in Sources */,
