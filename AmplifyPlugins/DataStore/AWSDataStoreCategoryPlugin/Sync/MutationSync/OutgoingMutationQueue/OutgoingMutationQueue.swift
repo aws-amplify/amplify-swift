@@ -12,7 +12,7 @@ import AWSPluginsCore
 
 /// Submits outgoing mutation events to the provisioned API
 @available(iOS 13.0, *)
-protocol OutgoingMutationQueueBehavior: class {
+protocol OutgoingMutationQueueBehavior: AnyObject {
     func pauseSyncingToCloud()
     func startSyncingToCloud(api: APICategoryGraphQLBehavior,
                              mutationEventPublisher: MutationEventPublisher)
@@ -34,6 +34,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     private var subscription: Subscription?
     private let dataStoreConfiguration: DataStoreConfiguration
     private let storageAdapter: StorageEngineAdapter
+    private var authModeStrategy: AuthModeStrategy
 
     private let outgoingMutationQueueSubject: PassthroughSubject<MutationEvent, Never>
     public var publisher: AnyPublisher<MutationEvent, Never> {
@@ -42,9 +43,12 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     init(_ stateMachine: StateMachine<State, Action>? = nil,
          storageAdapter: StorageEngineAdapter,
-         dataStoreConfiguration: DataStoreConfiguration) {
+         dataStoreConfiguration: DataStoreConfiguration,
+         authModeStrategy: AuthModeStrategy) {
         self.storageAdapter = storageAdapter
         self.dataStoreConfiguration = dataStoreConfiguration
+        self.authModeStrategy = authModeStrategy
+
         let operationQueue = OperationQueue()
         operationQueue.name = "com.amazonaws.OutgoingMutationOperationQueue"
         operationQueue.maxConcurrentOperationCount = 1
@@ -184,7 +188,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
         let syncMutationToCloudOperation = SyncMutationToCloudOperation(
             mutationEvent: mutationEvent,
-            api: api) { result in
+            api: api,
+            authModeStrategy: authModeStrategy) { result in
                 self.log.verbose(
                     "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent.id); result: \(result)")
                 self.processSyncMutationToCloudResult(result, mutationEvent: mutationEvent, api: api)

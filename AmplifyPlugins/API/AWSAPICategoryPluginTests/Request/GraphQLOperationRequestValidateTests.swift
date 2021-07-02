@@ -15,11 +15,12 @@ class GraphQLOperationRequestValidateTests: XCTestCase {
     let testDocument = "testDocument"
 
     func testGraphQLOperationRequestValidate() throws {
+        let requestOptions = GraphQLOperationRequest<String>.Options(pluginOptions: nil)
         let graphQLOperationRequest = GraphQLOperationRequest(apiName: testApiName,
                                                      operationType: .mutation,
                                                      document: testDocument,
                                                      responseType: String.self,
-                                                     options: GraphQLOperationRequest.Options())
+                                                     options: requestOptions)
         XCTAssertNoThrow(try graphQLOperationRequest.validate())
     }
 }

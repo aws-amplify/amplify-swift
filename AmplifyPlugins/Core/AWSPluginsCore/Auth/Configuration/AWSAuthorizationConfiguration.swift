@@ -17,10 +17,7 @@ public enum AWSAuthorizationConfiguration {
     case amazonCognitoUserPools(CognitoUserPoolsConfiguration)
 }
 
-
-
 // MARK: - AWSAuthorizationConfiguration factory
-
 extension AWSAuthorizationConfiguration {
     private static func awsIAMAuthorizationConfiguration(region: AWSRegionType?)
         throws -> AWSAuthorizationConfiguration {
@@ -48,13 +45,13 @@ extension AWSAuthorizationConfiguration {
             return .apiKey(config)
     }
 
-
     /// Instantiates a new configuration conforming to AWSAuthorizationConfiguration
     /// - Parameters:
     ///   - authType: authentication type
     ///   - region: AWS region
     ///   - apiKey: API key used when `authType` is `apiKey`
-    /// - Throws: if the region is not valid and `authType` is `iam` or if `apiKey` is not valid and `authType` is `apiKey`
+    /// - Throws: if the region is not valid and `authType` is `iam`
+    ///           or if `apiKey` is not valid and `authType` is `apiKey`
     /// - Returns: an `AWSAuthorizationConfiguration` according to the provided `authType`
     public static func makeConfiguration(authType: AWSAuthorizationType,
                                          region: AWSRegionType?,
@@ -73,4 +70,3 @@ extension AWSAuthorizationConfiguration {
         }
     }
 }
-

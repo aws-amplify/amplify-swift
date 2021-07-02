@@ -85,11 +85,16 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             return
         }
 
+        // Retrieve request plugin option and
+        // auth type in case of a multi-auth setup
+        let pluginOptions = request.options.pluginOptions as? AWSPluginOptions
+
         // Retrieve the subscription connection
         do {
             subscriptionConnection = try subscriptionConnectionFactory
                 .getOrCreateConnection(for: endpointConfig,
                                        authService: authService,
+                                       authType: pluginOptions?.authType,
                                        apiAuthProviderFactory: apiAuthProviderFactory)
         } catch {
             let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)

@@ -15,34 +15,42 @@ public typealias MutationSyncResult = MutationSync<AnyModel>
 /// publicly exposed to developers
 protocol ModelSyncGraphQLRequestFactory {
 
-    static func query(modelName: String, byId id: String) -> GraphQLRequest<MutationSyncResult?>
+    static func query(modelName: String,
+                      byId id: String,
+                      authType: AWSAuthorizationType?) -> GraphQLRequest<MutationSyncResult?>
 
     static func createMutation(of model: Model,
                                modelSchema: ModelSchema,
-                               version: Int?) -> GraphQLRequest<MutationSyncResult>
+                               version: Int?,
+                               authType: AWSAuthorizationType?) -> GraphQLRequest<MutationSyncResult>
 
     static func updateMutation(of model: Model,
                                modelSchema: ModelSchema,
                                where filter: GraphQLFilter?,
-                               version: Int?) -> GraphQLRequest<MutationSyncResult>
+                               version: Int?,
+                               authType: AWSAuthorizationType?) -> GraphQLRequest<MutationSyncResult>
 
     static func deleteMutation(of model: Model,
                                modelSchema: ModelSchema,
                                where filter: GraphQLFilter?,
-                               version: Int?) -> GraphQLRequest<MutationSyncResult>
-
-    static func subscription(to modelSchema: ModelSchema,
-                             subscriptionType: GraphQLSubscriptionType) -> GraphQLRequest<MutationSyncResult>
+                               version: Int?,
+                               authType: AWSAuthorizationType?) -> GraphQLRequest<MutationSyncResult>
 
     static func subscription(to modelSchema: ModelSchema,
                              subscriptionType: GraphQLSubscriptionType,
-                             claims: IdentityClaimsDictionary) -> GraphQLRequest<MutationSyncResult>
+                             authType: AWSAuthorizationType?) -> GraphQLRequest<MutationSyncResult>
+
+    static func subscription(to modelSchema: ModelSchema,
+                             subscriptionType: GraphQLSubscriptionType,
+                             claims: IdentityClaimsDictionary,
+                             authType: AWSAuthorizationType?) -> GraphQLRequest<MutationSyncResult>
 
     static func syncQuery(modelSchema: ModelSchema,
                           where predicate: QueryPredicate?,
                           limit: Int?,
                           nextToken: String?,
-                          lastSync: Int?) -> GraphQLRequest<SyncQueryResult>
+                          lastSync: Int?,
+                          authType: AWSAuthorizationType?) -> GraphQLRequest<SyncQueryResult>
 
 }
 
@@ -50,7 +58,9 @@ protocol ModelSyncGraphQLRequestFactory {
 /// as `version` and `lastSync` and returns a model that has been erased to `AnyModel`.
 extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
-    public static func query(modelName: String, byId id: String) -> GraphQLRequest<MutationSyncResult?> {
+    public static func query(modelName: String,
+                             byId id: String,
+                             authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult?> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: id))
@@ -58,62 +68,81 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
 
+        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let requestOptions = GraphQLRequest<MutationSyncResult?>.Options(pluginOptions: awsPluginOptions)
+
         return GraphQLRequest<MutationSyncResult?>(document: document.stringValue,
                                                    variables: document.variables,
                                                    responseType: MutationSyncResult?.self,
-                                                   decodePath: document.name)
+                                                   decodePath: document.name,
+                                                   options: requestOptions)
     }
 
-    public static func createMutation(of model: Model, version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        createMutation(of: model, modelSchema: model.schema, version: version)
+    public static func createMutation(of model: Model,
+                                      version: Int? = nil,
+                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+        createMutation(of: model, modelSchema: model.schema, version: version, authType: authType)
     }
 
     public static func updateMutation(of model: Model,
                                       where filter: GraphQLFilter? = nil,
-                                      version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        updateMutation(of: model, modelSchema: model.schema, where: filter, version: version)
-    }
-
-    public static func subscription(to modelType: Model.Type,
-                                    subscriptionType: GraphQLSubscriptionType) -> GraphQLRequest<MutationSyncResult> {
-        subscription(to: modelType.schema, subscriptionType: subscriptionType)
+                                      version: Int? = nil,
+                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+        updateMutation(of: model, modelSchema: model.schema, where: filter, version: version, authType: authType)
     }
 
     public static func subscription(to modelType: Model.Type,
                                     subscriptionType: GraphQLSubscriptionType,
-                                    claims: IdentityClaimsDictionary) -> GraphQLRequest<MutationSyncResult> {
-        subscription(to: modelType.schema, subscriptionType: subscriptionType, claims: claims)
+                                    authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+        subscription(to: modelType.schema, subscriptionType: subscriptionType, authType: authType)
+    }
+
+    public static func subscription(to modelType: Model.Type,
+                                    subscriptionType: GraphQLSubscriptionType,
+                                    claims: IdentityClaimsDictionary,
+                                    authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+        subscription(to: modelType.schema, subscriptionType: subscriptionType, claims: claims, authType: authType)
     }
 
     public static func syncQuery(modelType: Model.Type,
                                  where predicate: QueryPredicate? = nil,
                                  limit: Int? = nil,
                                  nextToken: String? = nil,
-                                 lastSync: Int? = nil) -> GraphQLRequest<SyncQueryResult> {
+                                 lastSync: Int? = nil,
+                                 authType: AWSAuthorizationType? = nil) -> GraphQLRequest<SyncQueryResult> {
         syncQuery(modelSchema: modelType.schema,
                          where: predicate,
                          limit: limit,
                          nextToken: nextToken,
-                         lastSync: lastSync)
+                         lastSync: lastSync,
+                         authType: authType)
     }
 
     public static func createMutation(of model: Model,
                                       modelSchema: ModelSchema,
-                                      version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        createOrUpdateMutation(of: model, modelSchema: modelSchema, type: .create, version: version)
+                                      version: Int? = nil,
+                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+        createOrUpdateMutation(of: model, modelSchema: modelSchema, type: .create, version: version, authType: authType)
     }
 
     public static func updateMutation(of model: Model,
                                       modelSchema: ModelSchema,
                                       where filter: GraphQLFilter? = nil,
-                                      version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        createOrUpdateMutation(of: model, modelSchema: modelSchema, where: filter, type: .update, version: version)
+                                      version: Int? = nil,
+                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+        createOrUpdateMutation(of: model,
+                               modelSchema: modelSchema,
+                               where: filter,
+                               type: .update,
+                               version: version,
+                               authType: authType)
     }
 
     public static func deleteMutation(of model: Model,
                                       modelSchema: ModelSchema,
                                       where filter: GraphQLFilter? = nil,
-                                      version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
+                                      version: Int? = nil,
+                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelSchema.name, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(model: model))
@@ -124,30 +153,41 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
 
+        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
+
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
-                                                  decodePath: document.name)
+                                                  decodePath: document.name,
+                                                  options: requestOptions)
     }
 
     public static func subscription(to modelSchema: ModelSchema,
-                                    subscriptionType: GraphQLSubscriptionType) -> GraphQLRequest<MutationSyncResult> {
+                                    subscriptionType: GraphQLSubscriptionType,
+                                    authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: subscriptionType))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(subscriptionType, nil)))
         let document = documentBuilder.build()
+
+        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
 
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
-                                                  decodePath: document.name)
+                                                  decodePath: document.name,
+                                                  options: requestOptions)
     }
 
     public static func subscription(to modelSchema: ModelSchema,
                                     subscriptionType: GraphQLSubscriptionType,
-                                    claims: IdentityClaimsDictionary) -> GraphQLRequest<MutationSyncResult> {
+                                    claims: IdentityClaimsDictionary,
+                                    authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .subscription)
@@ -156,17 +196,22 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(subscriptionType, claims)))
         let document = documentBuilder.build()
 
+        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
+
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
-                                                  decodePath: document.name)
+                                                  decodePath: document.name,
+                                                  options: requestOptions)
     }
 
     public static func syncQuery(modelSchema: ModelSchema,
                                  where predicate: QueryPredicate? = nil,
                                  limit: Int? = nil,
                                  nextToken: String? = nil,
-                                 lastSync: Int? = nil) -> GraphQLRequest<SyncQueryResult> {
+                                 lastSync: Int? = nil,
+                                 authType: AWSAuthorizationType? = nil) -> GraphQLRequest<SyncQueryResult> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
@@ -178,10 +223,14 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
 
+        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let requestOptions = GraphQLRequest<SyncQueryResult>.Options(pluginOptions: awsPluginOptions)
+
         return GraphQLRequest<SyncQueryResult>(document: document.stringValue,
                                                variables: document.variables,
                                                responseType: SyncQueryResult.self,
-                                               decodePath: document.name)
+                                               decodePath: document.name,
+                                               options: requestOptions)
     }
 
     // MARK: Private methods
@@ -190,7 +239,8 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                modelSchema: ModelSchema,
                                                where filter: GraphQLFilter? = nil,
                                                type: GraphQLMutationType,
-                                               version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
+                                               version: Int? = nil,
+                                               authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelSchema.name,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
@@ -202,10 +252,14 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
 
+        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
+
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
-                                                  decodePath: document.name)
+                                                  decodePath: document.name,
+                                                  options: requestOptions)
     }
 
     /// This function tries to optimize provided `QueryPredicate` to perform a DynamoDB query instead of a scan.

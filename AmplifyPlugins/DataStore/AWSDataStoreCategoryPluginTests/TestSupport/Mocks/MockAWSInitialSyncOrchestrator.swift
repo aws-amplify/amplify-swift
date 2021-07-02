@@ -15,7 +15,7 @@ import Combine
 
 class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     static let factory: InitialSyncOrchestratorFactory = {
-        dataStoreConfiguration, api, reconciliationQueue, storageAdapter in
+        dataStoreConfiguration, authModeStrategy, api, reconciliationQueue, storageAdapter  in
         MockAWSInitialSyncOrchestrator(dataStoreConfiguration: dataStoreConfiguration,
                                        api: api,
                                        reconciliationQueue: reconciliationQueue,

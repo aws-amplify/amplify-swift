@@ -7,7 +7,6 @@
 
 /// GraphQL Operation Request
 public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
-
     /// The name of the API to perform the request against
     public let apiName: String?
 
@@ -47,11 +46,13 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
     }
 }
 
-/// GraphQL Operation Request options extension
+// MARK:  GraphQLOperationRequest + Options
 public extension GraphQLOperationRequest {
     struct Options {
+        public let pluginOptions: Any?
 
-        /// Empty Initializer
-        public init() { }
+        public init(pluginOptions: Any?) {
+            self.pluginOptions = pluginOptions
+        }
     }
 }

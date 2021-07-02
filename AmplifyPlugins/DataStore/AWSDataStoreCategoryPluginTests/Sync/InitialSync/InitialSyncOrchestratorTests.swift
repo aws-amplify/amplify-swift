@@ -43,10 +43,12 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
 
-        let orchestrator = AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
-                                                      api: apiPlugin,
-                                                      reconciliationQueue: reconciliationQueue,
-                                                      storageAdapter: storageAdapter)
+        let orchestrator: AWSInitialSyncOrchestrator =
+        AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                   authModeStrategy: AWSDefaultAuthModeStrategy(),
+                                   api: apiPlugin,
+                                   reconciliationQueue: reconciliationQueue,
+                                   storageAdapter: storageAdapter)
 
         let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
         let syncQueriesStartedReceived = expectation(description: "syncQueriesStarted received")
@@ -129,6 +131,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator = AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                                      authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                       api: apiPlugin,
                                                       reconciliationQueue: reconciliationQueue,
                                                       storageAdapter: storageAdapter)
@@ -194,10 +197,12 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
 
-        let orchestrator = AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
-                                                      api: apiPlugin,
-                                                      reconciliationQueue: reconciliationQueue,
-                                                      storageAdapter: storageAdapter)
+        let orchestrator: AWSInitialSyncOrchestrator =
+            AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                       authModeStrategy: AWSDefaultAuthModeStrategy(),
+                                       api: apiPlugin,
+                                       reconciliationQueue: reconciliationQueue,
+                                       storageAdapter: storageAdapter)
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         syncStartedReceived.expectedFulfillmentCount = 2
@@ -267,10 +272,12 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
 
-        let orchestrator = AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
-                                                      api: apiPlugin,
-                                                      reconciliationQueue: reconciliationQueue,
-                                                      storageAdapter: storageAdapter)
+        let orchestrator: AWSInitialSyncOrchestrator =
+            AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                       authModeStrategy: AWSDefaultAuthModeStrategy(),
+                                       api: apiPlugin,
+                                       reconciliationQueue: reconciliationQueue,
+                                       storageAdapter: storageAdapter)
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         syncStartedReceived.expectedFulfillmentCount = 2

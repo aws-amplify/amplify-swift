@@ -7,7 +7,7 @@
 
 import Amplify
 
-protocol CoreMLPredictionBehavior: class {
+protocol CoreMLPredictionBehavior: AnyObject {
 
     typealias InterpretTextEventHandler = (InterpretEvent) -> Void
     typealias InterpretEvent = PredictionsEvent<InterpretResult, PredictionsError>

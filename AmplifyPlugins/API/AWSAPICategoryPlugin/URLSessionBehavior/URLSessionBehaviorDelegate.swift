@@ -8,7 +8,7 @@
 import Foundation
 
 /// Defines URLSession behaviors used during fulfillment of API tasks
-public protocol URLSessionBehaviorDelegate: class {
+public protocol URLSessionBehaviorDelegate: AnyObject {
     func urlSessionBehavior(_ session: URLSessionBehavior,
                             dataTaskBehavior: URLSessionDataTaskBehavior,
                             didCompleteWithError error: Error?)

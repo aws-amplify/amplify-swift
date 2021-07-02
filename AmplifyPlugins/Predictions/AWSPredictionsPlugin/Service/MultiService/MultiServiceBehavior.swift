@@ -7,7 +7,7 @@
 
 import Amplify
 
-protocol MultiServiceBehavior: class {
+protocol MultiServiceBehavior: AnyObject {
 
     associatedtype ServiceResult
 

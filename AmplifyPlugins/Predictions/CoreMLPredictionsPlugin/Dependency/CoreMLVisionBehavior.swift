@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-protocol CoreMLVisionBehavior: class {
+protocol CoreMLVisionBehavior: AnyObject {
 
     func detectLabels(_ imageURL: URL) -> IdentifyLabelsResult?
 

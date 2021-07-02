@@ -1,0 +1,125 @@
+name: Bug Report
+description: Create a report to help us improve
+labels:
+  - pending-triage
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps To Reproduce
+      description: How do you trigger this bug? Please walk us through it step by step.
+      value: |
+        Steps to reproduce the behavior:
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+      render: swift
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: input
+    id: amplify-version
+    attributes:
+      label: Amplify Framework Version
+      placeholder: e.g. 1.5.3
+    validations:
+      required: true
+  - type: dropdown
+    id: categories
+    attributes:
+      label: Amplify Categories
+      multiple: true
+      options:
+        - Analytics
+        - API
+        - Auth
+        - DataStore
+        - Predictions
+        - Storage
+  - type: dropdown
+    id: depedency-manager
+    attributes:
+      label: Dependency manager
+      multiple: false
+      options:
+        - Swift PM
+        - Cocoapods
+    validations:
+      required: true
+  - type: input
+    id: swift
+    attributes:
+      label: Swift version
+      placeholder: e.g. 5.0
+    validations:
+      required: true
+  - type: input
+    id: cli
+    attributes:
+      label: CLI version
+      placeholder: |
+        - e.g. 4.41.2
+        - Run `amplify version`
+    validations:
+      required: true
+  - type: input
+    id: xcode
+    attributes:
+      label: Xcode version
+      placeholder: |
+        - e.g. 12.4 (12D4e)
+        - Run `xcodebuild -version`
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: >-
+        Include any relevant log output under
+        `~/.amplify/logs/amplify-cli-<issue-date>.log`
+      render: shell
+  - type: textarea
+    id: regression
+    attributes:
+      label: Is this a regression? (i.e. was this working before a version upgrade)
+      placeholder: If applicable provide the versions used before and after the upgrade.
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      placeholder: |
+        - e.g. iPhone6
+        - Simulator
+    validations:
+      required: true
+  - type: input
+    id: ios-version
+    attributes:
+      label: iOS Version
+      placeholder: e.g. iOS 11
+    validations:
+      required: true
+  - type: input
+    id: simulators
+    attributes:
+      label: Specific to simulators
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.

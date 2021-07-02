@@ -1,0 +1,247 @@
+type OwnerUPPost @model @auth(rules: [{ allow: owner }]) {
+    id: ID!
+    name: String!
+}
+
+type OwnerOIDCPost
+@model
+@auth(rules: [{ allow: owner, provider: oidc, identityClaim: "sub" }]) {
+    id: ID!
+    name: String!
+}
+
+type GroupUPPost @model @auth(rules: [{ allow: groups, groups: ["Admins"] }]) {
+    id: ID!
+    name: String!
+}
+
+type PrivateUPPost
+@model
+@auth(rules: [{ allow: private, provider: userPools }]) {
+    id: ID!
+    name: String!
+}
+
+type PrivateIAMPost @model @auth(rules: [{ allow: private, provider: iam }]) {
+    id: ID!
+    name: String!
+}
+
+type PublicIAMPost @model @auth(rules: [{ allow: public, provider: iam }]) {
+    id: ID!
+    name: String!
+}
+
+type PublicAPIPost @model @auth(rules: [{ allow: public, provider: apiKey }]) {
+    id: ID!
+    name: String!
+}
+
+type OwnerPrivateUPIAMPost
+@model
+@auth(rules: [{ allow: owner }, { allow: private, provider: iam }]) {
+    id: ID!
+    name: String!
+}
+
+type OwnerPublicUPAPIPost
+@model
+@auth(rules: [{ allow: owner }, { allow: public, provider: apiKey }]) {
+    id: ID!
+    name: String!
+}
+
+type OwnerPublicUPIAMPost
+@model
+@auth(rules: [{ allow: owner }, { allow: public, provider: iam }]) {
+    id: ID!
+    name: String!
+}
+
+type OwnerPublicOIDAPIPost
+@model
+@auth(
+    rules: [
+        { allow: owner, provider: oidc, identityClaim: "sub" }
+        { allow: public, provider: apiKey }
+    ]
+) {
+    id: ID!
+    name: String!
+}
+
+type GroupPrivateUPIAMPost
+@model
+@auth(
+    rules: [
+        { allow: groups, groups: ["Admins"] }
+        { allow: private, provider: iam }
+    ]
+) {
+    id: ID!
+    name: String!
+}
+
+type GroupPublicUPAPIPost
+@model
+@auth(
+    rules: [
+        { allow: groups, groups: ["Admins"] }
+        { allow: public, provider: apiKey }
+    ]
+) {
+    id: ID!
+    name: String!
+}
+
+type GroupPublicUPIAMPost
+@model
+@auth(
+    rules: [
+        { allow: groups, groups: ["Admins"] }
+        { allow: public, provider: iam }
+    ]
+) {
+    id: ID!
+    name: String!
+}
+
+type PrivatePrivateUPIAMPost
+@model
+@auth(
+    rules: [
+        { allow: private, provider: userPools }
+        { allow: private, provider: iam }
+    ]
+) {
+    id: ID!
+    name: String!
+}
+
+type PrivatePublicUPAPIPost
+@model
+@auth(
+    rules: [
+        { allow: private, provider: userPools }
+        { allow: public, provider: apiKey }
+    ]
+) {
+    id: ID!
+    name: String!
+}
+
+type PrivatePublicUPIAMPost
+@model
+@auth(
+    rules: [
+        { allow: private, provider: userPools }
+        { allow: public, provider: iam }
+    ]
+) {
+    id: ID!
+    name: String!
+}
+
+type PrivatePublicIAMAPIPost
+@model
+@auth(
+    rules: [
+        { allow: private, provider: iam }
+        { allow: public, provider: apiKey }
+    ]
+) {
+    id: ID!
+    name: String!
+}
+
+type PublicPublicIAMAPIPost
+@model
+@auth(
+    rules: [
+        { allow: public, provider: iam }
+        { allow: public, provider: apiKey }
+    ]
+) {
+    id: ID!
+    name: String!
+}
+
+type OwnerPrivatePublicUPIAMAPIPost
+@model
+@auth(
+    rules: [
+        { allow: owner }
+        { allow: private, provider: iam }
+        { allow: public, provider: apiKey }
+    ]
+) {
+    id: ID!
+    name: String!
+}
+
+type GroupPrivatePublicUPIAMAPIPost
+@model
+@auth(
+    rules: [
+        { allow: groups, groups: ["Admins"] }
+        { allow: private, provider: iam }
+        { allow: public, provider: apiKey }
+    ]
+) {
+    id: ID!
+    name: String!
+}
+
+type PrivatePrivatePublicUPIAMIAMPost
+@model
+@auth(
+    rules: [
+        { allow: private, provider: userPools }
+        { allow: private, provider: iam }
+        { allow: public, provider: iam }
+    ]
+) {
+    id: ID!
+    name: String!
+}
+
+type PrivatePrivatePublicUPIAMAPIPost
+@model
+@auth(
+    rules: [
+        { allow: private, provider: userPools }
+        { allow: private, provider: iam }
+        { allow: public, provider: apiKey }
+    ]
+) {
+    id: ID!
+    name: String!
+}
+
+type PrivatePublicPublicUPAPIIAMPost
+@model
+@auth(
+    rules: [
+        { allow: private, provider: userPools }
+        { allow: public, provider: apiKey }
+        { allow: public, provider: iam }
+    ]
+) {
+    id: ID!
+    name: String!
+}
+
+type PrivatePublicComboUPPost
+@model
+@auth(rules: [{ allow: owner }]) {
+    id: ID!
+    name: String!
+}
+
+type PrivatePublicComboAPIPost
+@model
+@auth(rules: [{ allow: public, provider: apiKey }]) {
+    id: ID!
+    name: String!
+}
+

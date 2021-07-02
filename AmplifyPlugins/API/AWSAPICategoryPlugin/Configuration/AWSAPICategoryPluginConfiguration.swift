@@ -144,6 +144,7 @@ public struct AWSAPICategoryPluginConfiguration {
             interceptor as? IAMURLRequestInterceptor != nil
     }
 
+    // MARK: Private
     private static func endpointsFromConfig(
         config: [String: JSONValue],
         apiAuthProviderFactory: APIAuthProviderFactory,

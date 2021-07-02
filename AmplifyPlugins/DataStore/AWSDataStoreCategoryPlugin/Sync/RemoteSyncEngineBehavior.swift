@@ -24,7 +24,7 @@ enum RemoteSyncEngineEvent {
 }
 
 /// Behavior to sync mutation events to the remote API, and to subscribe to mutations from the remote API
-protocol RemoteSyncEngineBehavior: class {
+protocol RemoteSyncEngineBehavior: AnyObject {
 
     /// Start the sync process with a "delta sync" merge
     ///

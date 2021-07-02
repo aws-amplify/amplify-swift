@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-protocol CoreMLSpeechBehavior: class {
+protocol CoreMLSpeechBehavior: AnyObject {
 
     func getTranscription(_ audioData: URL, callback: @escaping (SpeechToTextResult?) -> Void)
 }

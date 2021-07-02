@@ -18,20 +18,13 @@ typealias IncomingEventReconciliationQueueFactory =
     StorageEngineAdapter,
     [DataStoreSyncExpression],
     AuthCategoryBehavior?,
+    AuthModeStrategy,
     ModelReconciliationQueueFactory?
 ) -> IncomingEventReconciliationQueue
 
 @available(iOS 13.0, *)
 final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
 
-    static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, _ in
-        AWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
-                                            api: api,
-                                            storageAdapter: storageAdapter,
-                                            syncExpressions: syncExpressions,
-                                            auth: auth,
-                                            modelReconciliationQueueFactory: nil)
-    }
     private var modelReconciliationQueueSinks: [String: AnyCancellable]
 
     private let eventReconciliationQueueTopic: PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>
@@ -54,14 +47,14 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
          storageAdapter: StorageEngineAdapter,
          syncExpressions: [DataStoreSyncExpression],
          auth: AuthCategoryBehavior? = nil,
+         authModeStrategy: AuthModeStrategy,
          modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil) {
         self.modelReconciliationQueueSinks = [:]
         self.eventReconciliationQueueTopic = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
         self.reconciliationQueues = [:]
         self.reconciliationQueueConnectionStatus = [:]
         self.reconcileAndSaveQueue = ReconcileAndSaveQueue(modelSchemas)
-        self.modelReconciliationQueueFactory = modelReconciliationQueueFactory ??
-            AWSModelReconciliationQueue.init(modelSchema:storageAdapter:api:reconcileAndSaveQueue:modelPredicate:auth:incomingSubscriptionEvents:)
+        self.modelReconciliationQueueFactory = modelReconciliationQueueFactory ?? AWSModelReconciliationQueue.init
         // TODO: Add target for SyncEngine system to help prevent thread explosion and increase performance
         // https://github.com/aws-amplify/amplify-ios/issues/399
         self.connectionStatusSerialQueue
@@ -79,6 +72,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                                                              reconcileAndSaveQueue,
                                                              modelPredicate,
                                                              auth,
+                                                             authModeStrategy,
                                                              nil)
             guard reconciliationQueues[modelName] == nil else {
                 Amplify.DataStore.log
@@ -167,6 +161,21 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 
 }
 
+// MARK: - Static factory
+@available(iOS 13.0, *)
+extension AWSIncomingEventReconciliationQueue {
+    static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, authModeStrategy, _ in
+        AWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
+                                            api: api,
+                                            storageAdapter: storageAdapter,
+                                            syncExpressions: syncExpressions,
+                                            auth: auth,
+                                            authModeStrategy: authModeStrategy,
+                                            modelReconciliationQueueFactory: nil)
+    }
+}
+
+// MARK: - AWSIncomingEventReconciliationQueue + Resettable
 @available(iOS 13.0, *)
 extension AWSIncomingEventReconciliationQueue: Resettable {
 

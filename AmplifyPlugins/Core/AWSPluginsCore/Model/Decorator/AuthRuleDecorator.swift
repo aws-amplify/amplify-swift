@@ -11,7 +11,7 @@ import Amplify
 public typealias IdentityClaimsDictionary = [String: AnyObject]
 
 public enum AuthRuleDecoratorInput {
-    case subscription(GraphQLSubscriptionType, IdentityClaimsDictionary)
+    case subscription(GraphQLSubscriptionType, IdentityClaimsDictionary?)
     case mutation
     case query
 }
@@ -77,17 +77,30 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         selectionSet = appendOwnerFieldToSelectionSetIfNeeded(selectionSet: selectionSet, ownerField: ownerField)
 
         if case let .subscription(_, claims) = input,
+           let tokenClaims = claims,
             authRule.isReadRestrictingOwner() &&
-                isNotInReadRestrictingStaticGroup(jwtTokenClaims: claims,
+                isNotInReadRestrictingStaticGroup(jwtTokenClaims: tokenClaims,
                                                   readRestrictingStaticGroups: readRestrictingStaticGroups) {
             var inputs = document.inputs
             let identityClaimValue = resolveIdentityClaimValue(identityClaim: authRule.identityClaimOrDefault(),
-                                                               claims: claims)
+                                                               claims: tokenClaims)
             if let identityClaimValue = identityClaimValue {
                 inputs[ownerField] = GraphQLDocumentInput(type: "String!", value: .scalar(identityClaimValue))
             }
             return document.copy(inputs: inputs, selectionSet: selectionSet)
         }
+
+        // TODO: Subscriptions always require an `owner` field.
+        //       We're sending an invalid owner value to receive a proper response from AppSync,
+        //       when there's no authenticated user.
+        //       We should be instead failing early and don't send the request.
+        //       See: https://github.com/aws-amplify/amplify-ios/issues/1291
+        if case let .subscription(_, claims) = input, authRule.isReadRestrictingOwner(), claims == nil {
+            var inputs = document.inputs
+            inputs[ownerField] = GraphQLDocumentInput(type: "String!", value: .scalar(""))
+            return document.copy(inputs: inputs, selectionSet: selectionSet)
+        }
+
         return document.copy(selectionSet: selectionSet)
     }
 

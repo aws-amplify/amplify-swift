@@ -33,7 +33,8 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         storageAdapter = MockSQLiteStorageEngineAdapter()
         mutationQueue = OutgoingMutationQueue(stateMachine,
                                               storageAdapter: storageAdapter,
-                                              dataStoreConfiguration: .default)
+                                              dataStoreConfiguration: .default,
+                                              authModeStrategy: AWSDefaultAuthModeStrategy())
         eventSource = MockMutationEventSource()
         publisher = AWSMutationEventPublisher(eventSource: eventSource)
         apiBehavior = MockAPICategoryPlugin()
@@ -48,7 +49,8 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
 
         mutationQueue = OutgoingMutationQueue(stateMachine,
                                               storageAdapter: storageAdapter,
-                                              dataStoreConfiguration: .default)
+                                              dataStoreConfiguration: .default,
+                                              authModeStrategy: AWSDefaultAuthModeStrategy())
         waitForExpectations(timeout: 1)
 
         XCTAssertEqual(stateMachine.state, OutgoingMutationQueue.State.notInitialized)

@@ -1,5 +1,27 @@
 # Changelog
 ## Unreleased
+## 1.12.0 (2021-06-28)
+
+### Features
+
+- **datastore**: multi-auth support (#1260)
+
+### Bug Fixes
+
+- **datastore**: initalSync should be successful in case of unauthorized errors (#1299)
+
+## 1.11.0 (2021-06-23)
+
+### Features
+
+- **api**: fix querystring encoding according to AWS SigV4 (#1068)
+
+### Bug Fixes
+
+- GraphQLBuilder use model name from schema instead of model (#1292)
+- **api**: interceptors refactoring (#1247)
+- **Model**: Apply codegen changes test models (#1145)
+
 ## 1.10.0 (2021-06-10)
 
 ### Features
