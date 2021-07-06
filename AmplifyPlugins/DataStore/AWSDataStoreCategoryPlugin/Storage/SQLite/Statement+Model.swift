@@ -36,9 +36,11 @@ protocol StatementModelConvertible {
     ///
     /// - Parameters:
     ///   - modelType - the target `Model` type
+    ///   - modelSchema - the schema for `Model`
     ///   - statement - the query executed that generated this result
     /// - Returns: an array of `Model` of the specified type
     func convert<M: Model>(to modelType: M.Type,
+                           withSchema modelSchema: ModelSchema,
                            using statement: SelectStatement) throws -> [M]
 
 }
@@ -51,12 +53,13 @@ extension Statement: StatementModelConvertible {
     }
 
     func convert<M: Model>(to modelType: M.Type,
+                           withSchema modelSchema: ModelSchema,
                            using statement: SelectStatement) throws -> [M] {
         var elements: [ModelValues] = []
 
         // parse each row of the result
         for row in self {
-            let modelDictionary = try convert(row: row, to: modelType, using: statement)
+            let modelDictionary = try convert(row: row, withSchema: modelSchema, using: statement)
             elements.append(modelDictionary)
         }
 
@@ -66,7 +69,7 @@ extension Statement: StatementModelConvertible {
     }
 
     func convert(row: Element,
-                 to modelType: Model.Type,
+                 withSchema modelSchema: ModelSchema,
                  using statement: SelectStatement) throws -> ModelValues {
         let columnMapping = statement.metadata.columnMapping
         let modelDictionary = ([:] as ModelValues).mutableCopy()
@@ -75,7 +78,7 @@ extension Statement: StatementModelConvertible {
             guard let (schema, field) = columnMapping[column] else {
                 logger.debug("""
                 A column named \(column) was found in the result set but no field on
-                \(modelType.modelName) could be found with that name and it will be ignored.
+                \(modelSchema.name) could be found with that name and it will be ignored.
                 """)
                 continue
             }

@@ -106,7 +106,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
             : completion(.emptyResult)
     }
 
-    func query(untypedModel modelType: Model.Type,
+    func query(modelSchema: ModelSchema,
                predicate: QueryPredicate?,
                completion: DataStoreCallback<[Model]>) {
         let result = resultForQuery ?? .failure(DataStoreError.invalidOperation(causedBy: nil))

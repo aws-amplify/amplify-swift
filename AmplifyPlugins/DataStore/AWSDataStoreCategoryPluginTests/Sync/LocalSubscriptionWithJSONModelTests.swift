@@ -317,4 +317,106 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
 
         subscription.cancel()
     }
+
+    /// - Given: A configured DataStore, with post and comment
+    /// - When:
+    ///    - I subscribe to model events
+    ///    - Delete the post. This will cascade delete the comments as well
+    /// - Then:
+    ///    - I am notified of `delete` mutations of the post and comments deleted
+    func testDeletePostShouldDeleteComments() {
+        let receivedPostMutationEvent = expectation(description: "Received post delete mutation event")
+
+        let subscriptionPost = dataStorePlugin.publisher(for: "Post").sink(
+            receiveCompletion: { completion in
+                switch completion {
+                case .failure(let error):
+                    XCTFail("Unexpected error: \(error)")
+                case .finished:
+                    break
+                }
+            }, receiveValue: { mutationEvent in
+                if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue {
+                    receivedPostMutationEvent.fulfill()
+                }
+            })
+
+        let title = "a title"
+        let content = "some content"
+        let createdAt = Temporal.DateTime.now().iso8601String
+        let post = ["title": .string(title),
+                    "content": .string(content),
+                    "createdAt": .string(createdAt)] as [String: JSONValue]
+        let model = DynamicModel(values: post)
+        let postSchema = ModelRegistry.modelSchema(from: "Post")!
+        let savedPost = expectation(description: "post saved")
+        dataStorePlugin.save(model, modelSchema: postSchema) { result in
+            switch result {
+            case .failure(let error):
+                XCTFail("\(error)")
+            case .success(let model):
+                print(model)
+                savedPost.fulfill()
+            }
+        }
+        wait(for: [savedPost], timeout: 1.0)
+
+        let commentContent = "some content"
+        let comment = ["content": .string(commentContent),
+                       "createdAt": .string(createdAt),
+                       "post": .object(model.values)] as [String: JSONValue]
+        let commentModel = DynamicModel(values: comment)
+        let commentSchema = ModelRegistry.modelSchema(from: "Comment")!
+        let savedComment = expectation(description: "comment saved")
+        dataStorePlugin.save(commentModel, modelSchema: commentSchema) { result in
+            switch result {
+            case .failure(let error):
+                XCTFail("\(error)")
+            case .success(let model):
+                print(model)
+                savedComment.fulfill()
+            }
+        }
+        wait(for: [savedComment], timeout: 1.0)
+
+        let queryCommentSuccess = expectation(description: "querying for comment should exist")
+        dataStorePlugin.query(DynamicModel.self,
+                              modelSchema: commentSchema,
+                              where: DynamicModel.keys.id == commentModel.id) { result in
+            switch result {
+            case .success(let comments):
+                XCTAssertEqual(comments.count, 1)
+                queryCommentSuccess.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [queryCommentSuccess], timeout: 10.0)
+
+        let deletePostSuccess = expectation(description: "deleted post successfully")
+        dataStorePlugin.delete(model, modelSchema: postSchema) { result in
+            switch result {
+            case .success:
+                deletePostSuccess.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [receivedPostMutationEvent, deletePostSuccess], timeout: 10.0)
+        subscriptionPost.cancel()
+
+        let queryCommentEmpty = expectation(description: "querying for comment should be empty")
+        dataStorePlugin.query(DynamicModel.self,
+                              modelSchema: commentSchema,
+                              where: DynamicModel.keys.id == commentModel.id) { result in
+            switch result {
+            case .success(let comments):
+                XCTAssertEqual(comments.count, 0)
+                queryCommentEmpty.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [queryCommentEmpty], timeout: 10.0)
+    }
 }

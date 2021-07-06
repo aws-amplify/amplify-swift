@@ -233,7 +233,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                                             sort: sort,
                                             paginationInput: paginationInput)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
-            let result: [M] = try rows.convert(to: modelType, using: statement)
+            let result: [M] = try rows.convert(to: modelType,
+                                               withSchema: modelSchema,
+                                               using: statement)
             completion(.success(result))
         } catch {
             completion(.failure(causedBy: error))
@@ -286,6 +288,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let rows = try connection.prepare(sql).bind(ids)
 
         let syncMetadataList = try rows.convert(to: MutationSyncMetadata.self,
+                                                withSchema: MutationSyncMetadata.schema,
                                                 using: statement)
         let mutationSyncList = try syncMetadataList.map { syncMetadata -> MutationSync<AnyModel> in
             guard let model = modelById[syncMetadata.id] else {
@@ -304,6 +307,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func queryMutationSyncMetadata(for modelIds: [Model.Identifier]) throws -> [MutationSyncMetadata] {
         let modelType = MutationSyncMetadata.self
+        let modelSchema = MutationSyncMetadata.schema
         let fields = MutationSyncMetadata.keys
         var results = [MutationSyncMetadata]()
         let chunkedModelIdsArr = modelIds.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
@@ -313,9 +317,10 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                 queryPredicates.append(QueryPredicateOperation(field: fields.id.stringValue, operator: .equals(id)))
             }
             let groupedQueryPredicates = QueryPredicateGroup(type: .or, predicates: queryPredicates)
-            let statement = SelectStatement(from: modelType.schema, predicate: groupedQueryPredicates)
+            let statement = SelectStatement(from: modelSchema, predicate: groupedQueryPredicates)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result = try rows.convert(to: modelType,
+                                          withSchema: modelSchema,
                                           using: statement)
             results.append(contentsOf: result)
         }
@@ -327,6 +332,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                                         predicate: field("id").eq(modelSchema.name))
         let rows = try connection.prepare(statement.stringValue).run(statement.variables)
         let result = try rows.convert(to: ModelSyncMetadata.self,
+                                      withSchema: ModelSyncMetadata.schema,
                                       using: statement)
         return try result.unique()
     }

@@ -33,7 +33,7 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior {
                           predicate: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>)
 
-    func query(untypedModel modelType: Model.Type,
+    func query(modelSchema: ModelSchema,
                predicate: QueryPredicate?,
                completion: DataStoreCallback<[Model]>)
 
