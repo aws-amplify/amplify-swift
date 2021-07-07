@@ -11,23 +11,6 @@ import XCTest
 import Amplify
 @testable import AmplifyTestCommon
 
-@available(iOS 13.0, *)
-class AmplifyOperationCombineTests: XCTestCase {
-
-    func testResultPublisher() {
-
-    }
-
-}
-
-struct MockPublisherRequest: AmplifyOperationRequest {
-    struct Options { }
-    let options = Options()
-}
-
-extension HubPayloadEventName {
-    static var mockPublisherOperation = "MockPublisherOperation"
-}
 
 class MockPublisherOperation: AmplifyOperation<MockPublisherRequest, Int, APIError> {
     typealias Responder = (MockPublisherOperation) -> Void

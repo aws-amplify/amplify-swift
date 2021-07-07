@@ -256,15 +256,6 @@ class AmplifyOperationCombineTests: XCTestCase {
 
 }
 
-struct MockPublisherRequest: AmplifyOperationRequest {
-    struct Options { }
-    let options = Options()
-}
-
-extension HubPayloadEventName {
-    static var mockPublisherOperation = "MockPublisherOperation"
-}
-
 class MockPublisherOperation: AmplifyOperation<MockPublisherRequest, Int, APIError> {
     typealias Responder = (MockPublisherOperation) -> Void
     let responder: Responder
