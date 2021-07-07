@@ -256,6 +256,9 @@
 		76A4023C264B1E3A009D4127 /* AWSAuthModeStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A4023B264B1E3A009D4127 /* AWSAuthModeStrategy.swift */; };
 		76B17DD8264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B17DD7264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift */; };
 		76C0F4EC26797F4500F0E6AB /* AuthModeStrategyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C0F4EA26797F3C00F0E6AB /* AuthModeStrategyTests.swift */; };
+		76D54D17269624DD0063D79F /* MockPublisherOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D54D15269624DD0063D79F /* MockPublisherOperation.swift */; };
+		76D54D18269624DD0063D79F /* MockPublisherRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D54D16269624DD0063D79F /* MockPublisherRequest.swift */; };
+		76D54D1A269625350063D79F /* HubPayloadEventName+mockPublisherOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D54D19269625350063D79F /* HubPayloadEventName+mockPublisherOperation.swift */; };
 		76FFFC91267966D9001EC92B /* RetryableGraphQLOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FFFC90267966D9001EC92B /* RetryableGraphQLOperationTests.swift */; };
 		7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */; platformFilter = ios; };
 		7F27B1DCE59C1E674172CCD6 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */; };
@@ -1148,6 +1151,9 @@
 		76A4023B264B1E3A009D4127 /* AWSAuthModeStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthModeStrategy.swift; sourceTree = "<group>"; };
 		76B17DD7264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelSchema+AuthRulesByOperation.swift"; sourceTree = "<group>"; };
 		76C0F4EA26797F3C00F0E6AB /* AuthModeStrategyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModeStrategyTests.swift; sourceTree = "<group>"; };
+		76D54D15269624DD0063D79F /* MockPublisherOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockPublisherOperation.swift; sourceTree = "<group>"; };
+		76D54D16269624DD0063D79F /* MockPublisherRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockPublisherRequest.swift; sourceTree = "<group>"; };
+		76D54D19269625350063D79F /* HubPayloadEventName+mockPublisherOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "HubPayloadEventName+mockPublisherOperation.swift"; sourceTree = "<group>"; };
 		76FFFC90267966D9001EC92B /* RetryableGraphQLOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryableGraphQLOperationTests.swift; sourceTree = "<group>"; };
 		77A2D125114EA0FFA11A7EFD /* Pods-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7A238096BAB328655B5E388F /* Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin/Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
@@ -2972,8 +2978,6 @@
 				762167D42615435C0033FCD2 /* Record+Schema.swift */,
 				762C978426210F6400798FA3 /* RecordCover.swift */,
 				762C978D26210FF100798FA3 /* RecordCover+Schema.swift */,
-				6B7743D625906F7E001469F5 /* Restaurant */,
-				21A9051E2616442000EC141D /* Scalar */,
 				6B9F7C542526864800F1F71C /* ScenarioATest6Post.swift */,
 				6B9F7C532526864800F1F71C /* ScenarioATest6Post+Schema.swift */,
 				214F49742486D8A200DA616C /* User.swift */,
@@ -3408,6 +3412,7 @@
 				21F40A3B23A2952C0074678E /* AuthHelper.swift */,
 				21F40A3D23A295390074678E /* AWSMobileClient+Message.swift */,
 				FA176ED6238503C200C5C5F9 /* HubListenerTestUtilities.swift */,
+				76D54D19269625350063D79F /* HubPayloadEventName+mockPublisherOperation.swift */,
 				21F40A3923A294770074678E /* TestConfigHelper.swift */,
 			);
 			path = Helpers;
@@ -3694,6 +3699,8 @@
 		FAC23577227A056F00424678 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				76D54D15269624DD0063D79F /* MockPublisherOperation.swift */,
+				76D54D16269624DD0063D79F /* MockPublisherRequest.swift */,
 				FAC23578227A056F00424678 /* MessageReporter.swift */,
 				FAC2355E227A056600424678 /* MockAnalyticsCategoryPlugin.swift */,
 				FAC23557227A056600424678 /* MockAPICategoryPlugin.swift */,
@@ -5354,6 +5361,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				214F49CD24898E8500DA616C /* Article.swift in Sources */,
+				76D54D1A269625350063D79F /* HubPayloadEventName+mockPublisherOperation.swift in Sources */,
 				762167CC261542F70033FCD2 /* Record.swift in Sources */,
 				762167D52615435C0033FCD2 /* Record+Schema.swift in Sources */,
 				B9FAA116238799D3009414B4 /* Author.swift in Sources */,
@@ -5411,6 +5419,7 @@
 				6BE9D73725A67F7400AB5C9A /* M2MPost.swift in Sources */,
 				21A905362616446F00EC141D /* Nested.swift in Sources */,
 				B9FAA11C23879B35009414B4 /* Book.swift in Sources */,
+				76D54D18269624DD0063D79F /* MockPublisherRequest.swift in Sources */,
 				6B597A0B2565D3E50038C3E2 /* QPredGen.swift in Sources */,
 				21A9052E2616446F00EC141D /* NestedTypeTestModel.swift in Sources */,
 				975751B424D21DE000FA0A6E /* MockDevMenuContextProvider.swift in Sources */,
@@ -5440,6 +5449,7 @@
 				B9FAA12023879BD0009414B4 /* BookAuthor+Schema.swift in Sources */,
 				21A9052D2616446F00EC141D /* ScalarContainer.swift in Sources */,
 				21F40A4023A295470074678E /* TestCommonConstants.swift in Sources */,
+				76D54D17269624DD0063D79F /* MockPublisherOperation.swift in Sources */,
 				217D5EB32577F9DF009F0639 /* Comment3.swift in Sources */,
 				214F497C2486D8A200DA616C /* UserFollowers.swift in Sources */,
 				217D5EB62577F9DF009F0639 /* Comment3+Schema.swift in Sources */,
