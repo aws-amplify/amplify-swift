@@ -33,7 +33,10 @@ let package = Package(
     dependencies: [
         .package(name: "AWSiOSSDKV2", url: "https://github.com/aws-amplify/aws-sdk-ios-spm.git", .upToNextMinor(from: "2.24.0")),
         .package(name: "AppSyncRealTimeClient", url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "1.4.3"),
-        .package(url: "https://github.com/stephencelis/SQLite.swift.git", .exact("0.12.2"))
+        .package(url: "https://github.com/stephencelis/SQLite.swift.git", .exact("0.12.2")),
+        
+        .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", .exact("1.2.0")),
+        .package(url: "https://github.com/mattgallagher/CwlCatchException.git", .exact("1.2.0")),
     ],
     targets: [
         .target(
@@ -118,6 +121,45 @@ let package = Package(
             exclude: [
                 "Resources/Info.plist"
             ]
-        )
+        ),
+        
+        // Tests
+        .target(
+            name: "AmplifyTestCommon",
+            dependencies: [
+                .target(name: "Amplify"),
+                .product(name: "AWSMobileClientXCF", package: "AWSiOSSDKV2"),
+                .product(name: "CwlCatchException", package: "CwlCatchException"),
+                .product(name: "CwlPreconditionTesting", package: "CwlPreconditionTesting")
+            ],
+            path: "AmplifyTestCommon",
+            exclude: [
+                "Info.plist"
+            ]
+        ),
+        
+        .testTarget(
+            name: "AmplifyTests",
+            dependencies: [
+                .target(name: "Amplify"),
+                .target(name: "AmplifyTestCommon"),
+            ],
+            path: "AmplifyTests",
+            exclude: [
+                "Info.plist",
+                "CoreTests/README.md"
+            ]),
+        
+        .testTarget(
+            name: "AmplifyFunctionalTests",
+            dependencies: [
+                .target(name: "Amplify"),
+                .target(name: "AmplifyTestCommon")
+            ],
+            path: "AmplifyFunctionalTests",
+            exclude: [
+                "Info.plist"
+            ]),
+        
     ]
 )
