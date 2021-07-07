@@ -1,22 +1,18 @@
 //
-// Copyright Amazon.com Inc. or its affiliates.
-// All Rights Reserved.
+//  File.swift
+//  
 //
-// SPDX-License-Identifier: Apache-2.0
+//  Created by Costantino, Diego on 2021-07-07.
 //
 
-import Combine
-import XCTest
-
+import Foundation
 import Amplify
-@testable import AmplifyTestCommon
-
 
 class MockPublisherOperation: AmplifyOperation<MockPublisherRequest, Int, APIError> {
     typealias Responder = (MockPublisherOperation) -> Void
     let responder: Responder
 
-    init(responder: @escaping Responder, resultListener: ResultListener?) {
+    init(responder: @escaping Responder, resultListener: ResultListener? = nil) {
         self.responder = responder
         super.init(
             categoryType: .api,
@@ -27,7 +23,9 @@ class MockPublisherOperation: AmplifyOperation<MockPublisherRequest, Int, APIErr
     }
 
     override func main() {
-        responder(self)
+        DispatchQueue.global().async {
+            self.responder(self)
+        }
     }
 
 }
