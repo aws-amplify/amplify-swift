@@ -35,6 +35,7 @@ let package = Package(
         .package(name: "AppSyncRealTimeClient", url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "1.4.3"),
         .package(url: "https://github.com/stephencelis/SQLite.swift.git", .exact("0.12.2")),
         
+        // Test dependencies
         .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", .exact("1.2.0")),
         .package(url: "https://github.com/mattgallagher/CwlCatchException.git", .exact("1.2.0")),
     ],
@@ -134,7 +135,12 @@ let package = Package(
             ],
             path: "AmplifyTestCommon",
             exclude: [
-                "Info.plist"
+                "Info.plist",
+                "Models/Collection/connection-schema.graphql",
+                "Models/M2MPostEditorUser/schema.graphql",
+                "Models/Restaurant/schema.graphql",
+                "Models/TeamProject/schema.graphql",
+                "Models/schema.graphql"
             ]
         ),
         
@@ -147,7 +153,8 @@ let package = Package(
             path: "AmplifyTests",
             exclude: [
                 "Info.plist",
-                "CoreTests/README.md"
+                "CoreTests/README.md",
+                "Models/M2MPostEditorUser/schema.graphql"
             ]),
         
         .testTarget(
