@@ -17,9 +17,9 @@ extension CLICommandReportable {
         for task in tasks {
             switch task {
             case .success(let message):
-                print("-- ✅ \(message)")
+                print("-- \(message)")
             case .failure(let error):
-                print("-- 🚫 \(error)")
+                print("-- \(error)")
             }
         }
     }

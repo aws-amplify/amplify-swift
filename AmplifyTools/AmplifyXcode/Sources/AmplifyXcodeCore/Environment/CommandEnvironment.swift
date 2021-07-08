@@ -103,12 +103,18 @@ extension CommandEnvironment {
     public func addFilesToXcodeProject(
         projectPath path: String,
         files: [XcodeProjectFile],
-        toGroup group: String) throws {
+        toGroup group: String,
+        inTarget target: XcodeProjectTarget) throws {
         do {
             let xcodeProject = try loadFirstXcodeProject(fromDirectory: path)
-            try xcodeProject.add(files: files, toGroup: group)
+            try xcodeProject.add(files: files, toGroup: group, inTarget: target)
             try xcodeProject.synchronize()
         } catch {
+            if case let XcodeProjectError.targetNotFound(name: targetName) = error {
+                throw AmplifyCommandError(.xcodeProject,
+                                          errorDescription: "Target \(targetName) not found",
+                                          recoverySuggestion: "Manually add Amplify files to your Xcode project.")
+            }
             throw AmplifyCommandError(.xcodeProject, error: error)
         }
     }
