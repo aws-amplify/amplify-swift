@@ -9,7 +9,7 @@ import Foundation
 import PathKit
 import XcodeProj
 
-/// XCode project error
+/// Xcode project error
 public enum XcodeProjectError: Error {
     case notFound(path: String)
     case noPbxProjFound
