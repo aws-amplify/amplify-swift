@@ -44,10 +44,16 @@ extension XcodeProj {
     }
 
     func addResourceFile(_ file: PBXBuildFile, toTarget target: PBXTarget) throws {
+        if let files = try target.resourcesBuildPhase()?.files, files.contains(file) {
+            return
+        }
         try target.resourcesBuildPhase()?.files?.append(file)
     }
 
     func addSourceFile(_ file: PBXBuildFile, toTarget target: PBXTarget) throws {
+        if let files = try target.sourcesBuildPhase()?.files, files.contains(file) {
+            return
+        }
         try target.sourcesBuildPhase()?.files?.append(file)
     }
 }
