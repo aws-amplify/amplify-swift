@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/aws-amplify/amplify-ci-support
-  revision: 69f61cc2dae85f3d3caa445ef11eec710722cdc6
+  revision: f3ebefa2e64eba64b7bb05aad51e1e91f0c74112
   branch: main
   glob: src/fastlane/release_actions/*.gemspec
   specs:
