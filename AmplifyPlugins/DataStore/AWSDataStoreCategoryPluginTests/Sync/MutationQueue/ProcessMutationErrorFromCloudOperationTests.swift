@@ -549,6 +549,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         storageAdapter.shouldReturnErrorOnDeleteMutation = false
         storageAdapter.responders[.deleteUntypedModel] = DeleteUntypedModelCompletionResponder { _ in
             modelDeletedEvent.fulfill()
+            return .emptyResult
         }
         storageAdapter.responders[.saveModelCompletion] =
             SaveModelCompletionResponder<MutationSyncMetadata> { metadata, completion in

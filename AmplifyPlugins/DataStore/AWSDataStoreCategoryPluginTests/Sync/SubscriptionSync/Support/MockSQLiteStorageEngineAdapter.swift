@@ -96,8 +96,8 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
                 predicate: QueryPredicate? = nil,
                 completion: (Result<Void, DataStoreError>) -> Void) {
         if let responder = responders[.deleteUntypedModel] as? DeleteUntypedModelCompletionResponder {
-            responder.callback((modelType, id))
-            completion(.emptyResult)
+            let result = responder.callback((modelType, id))
+            completion(result)
             return
         }
 

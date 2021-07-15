@@ -8,6 +8,7 @@
 import Foundation
 import XCTest
 import Combine
+import SQLite
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -653,6 +654,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let deleteResponder = DeleteUntypedModelCompletionResponder { _, id in
             XCTAssertEqual(id, self.anyPostMutationSync.model.id)
             stoargeExpect.fulfill()
+            return .emptyResult
         }
         storageAdapter.responders[.deleteUntypedModel] = deleteResponder
 
@@ -728,6 +730,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let deleteResponder = DeleteUntypedModelCompletionResponder { _, id in
             XCTAssertEqual(id, self.anyPostMutationSync.model.id)
             stoargeExpect.fulfill()
+            return .emptyResult
         }
         storageAdapter.responders[.deleteUntypedModel] = deleteResponder
 
@@ -799,6 +802,64 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 }
             }, receiveValue: { _ in
                 XCTFail("Unexpected value received")
+            }).store(in: &cancellables)
+        waitForExpectations(timeout: 1)
+    }
+
+    func testApplyRemoteModels_failWithConstraintViolationShouldBeSuccessful() {
+        let expect = expectation(description: "should complete successfully")
+        expect.expectedFulfillmentCount = 2
+        let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
+                                                                .create(anyPostMutationSync),
+                                                                .update(anyPostMutationSync),
+                                                                .update(anyPostMutationSync),
+                                                                .delete(anyPostMutationSync),
+                                                                .delete(anyPostMutationSync),
+                                                                .create(anyPostMutationSync),
+                                                                .update(anyPostMutationSync),
+                                                                .delete(anyPostMutationSync)]
+        let expectDropped = expectation(description: "should notify dropped")
+        expectDropped.expectedFulfillmentCount = dispositions.count
+        let constraintViolationError = Result.error(message: "Foreign Key Constraint Violation",
+                                                    code: SQLITE_CONSTRAINT,
+                                                    statement: nil)
+        let dataStoreError = DataStoreError.invalidOperation(causedBy: constraintViolationError)
+        let saveResponder = SaveUntypedModelResponder { _, completion in
+            completion(.failure(dataStoreError))
+        }
+        storageAdapter.responders[.saveUntypedModel] = saveResponder
+        let deleteResponder = DeleteUntypedModelCompletionResponder { _, _ in
+            return .failure(dataStoreError)
+        }
+        storageAdapter.responders[.deleteUntypedModel] = deleteResponder
+
+        operation.publisher
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    XCTFail("Unexpected completion")
+                case .failure(let error):
+                    XCTFail("Unexpected error \(error)")
+                }
+            } receiveValue: { event in
+                switch event {
+                case .mutationEventDropped(let name):
+                    expectDropped.fulfill()
+                default:
+                    break
+                }
+            }.store(in: &cancellables)
+
+        operation.applyRemoteModelsDispositions(dispositions)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure:
+                    XCTFail("Unexpected failure")
+                case .finished:
+                    expect.fulfill()
+                }
+            }, receiveValue: { _ in
+                expect.fulfill()
             }).store(in: &cancellables)
         waitForExpectations(timeout: 1)
     }
