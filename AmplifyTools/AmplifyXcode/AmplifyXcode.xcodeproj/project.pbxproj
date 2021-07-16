@@ -1117,7 +1117,7 @@
 
 /* Begin PBXFileReference section */
 		"AEXML::AEXML::Product" /* AEXML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AEXML.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		"AmplifyXcode::AmplifyXcode::Product" /* AmplifyXcode */ = {isa = PBXFileReference; lastKnownFileType = text; path = AmplifyXcode; sourceTree = BUILT_PRODUCTS_DIR; };
+		"AmplifyXcode::AmplifyXcode::Product" /* amplify-xcode */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = "amplify-xcode"; sourceTree = BUILT_PRODUCTS_DIR; };
 		"AmplifyXcode::AmplifyXcodeCore::Product" /* AmplifyXcodeCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AmplifyXcodeCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"AmplifyXcode::AmplifyXcodeCoreTests::Product" /* AmplifyXcodeCoreTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = AmplifyXcodeCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		"AmplifyXcode::AmplifyXcodeTests::Product" /* AmplifyXcodeTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = AmplifyXcodeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2353,7 +2353,7 @@
 				"PathKit::PathKit::Product" /* PathKit.framework */,
 				"Version::Version::Product" /* Version.framework */,
 				"GraphViz::GraphViz::Product" /* GraphViz.framework */,
-				"AmplifyXcode::AmplifyXcode::Product" /* AmplifyXcode */,
+				"AmplifyXcode::AmplifyXcode::Product" /* amplify-xcode */,
 				"XcodeGen::ProjectSpec::Product" /* ProjectSpec.framework */,
 				"JSONUtilities::JSONUtilities::Product" /* JSONUtilities.framework */,
 				"AEXML::AEXML::Product" /* AEXML.framework */,
@@ -2413,7 +2413,7 @@
 			path = Mocks;
 			sourceTree = "<group>";
 		};
-		OBJ_5 /*  */ = {
+		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
 				OBJ_6 /* Package.swift */,
@@ -2424,7 +2424,6 @@
 				OBJ_400 /* BuildTools */,
 				OBJ_401 /* README.md */,
 			);
-			name = "";
 			sourceTree = "<group>";
 		};
 		OBJ_53 /* Support */ = {
@@ -2675,7 +2674,7 @@
 			);
 			name = AmplifyXcode;
 			productName = AmplifyXcode;
-			productReference = "AmplifyXcode::AmplifyXcode::Product" /* AmplifyXcode */;
+			productReference = "AmplifyXcode::AmplifyXcode::Product" /* amplify-xcode */;
 			productType = "com.apple.product-type.tool";
 		};
 		"AmplifyXcode::AmplifyXcodeCore" /* AmplifyXcodeCore */ = {
@@ -3186,7 +3185,7 @@
 			knownRegions = (
 				en,
 			);
-			mainGroup = OBJ_5 /*  */;
+			mainGroup = OBJ_5;
 			productRefGroup = OBJ_380 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -4622,6 +4621,7 @@
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_NAME = "amplify-xcode";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
 				SWIFT_FORCE_DYNAMIC_LINK_STDLIB = YES;
 				SWIFT_FORCE_STATIC_LINK_STDLIB = NO;
@@ -4651,6 +4651,7 @@
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_NAME = "amplify-xcode";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
 				SWIFT_FORCE_DYNAMIC_LINK_STDLIB = YES;
 				SWIFT_FORCE_STATIC_LINK_STDLIB = NO;

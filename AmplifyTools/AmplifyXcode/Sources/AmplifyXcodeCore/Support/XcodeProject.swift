@@ -9,15 +9,29 @@ import Foundation
 import PathKit
 import XcodeProj
 
+/// Xcode project error
 public enum XcodeProjectError: Error {
     case notFound(path: String)
     case noPbxProjFound
     case groupNotFound(group: String)
     case addFileFailed
+    case targetNotFound(name: String)
 }
 
+/// Xcode project target
+public enum XcodeProjectTarget {
+    /// primary target (name matches project file)
+    case primary
+    case named(String)
+}
+
+/// Xcode project file type
 public enum XcodeProjectFileType {
-    case resource, source
+    /// resource file
+    case resource
+
+    /// source file (i.e. Swift, Obj-C)
+    case source
 }
 
 public struct XcodeProjectFile: Equatable {
@@ -48,21 +62,40 @@ struct XcodeProject {
     func synchronize() throws {
         try project.pbxproj.write(path: Path(pbxProjFilePath), override: true)
     }
+
+    private func resolveTarget(_ target: XcodeProjectTarget) throws -> PBXTarget {
+        let targetName: String
+        switch target {
+        case .primary:
+            targetName = project.mainProject()?.name ?? "primary"
+        case .named(let name):
+            targetName = name
+        }
+
+        if let targetRef = project.targets(named: targetName, ofType: .application).first {
+            return targetRef
+        }
+
+        throw XcodeProjectError.targetNotFound(name: targetName)
+    }
 }
 
 // MARK: Add files
 extension XcodeProject {
-    func add(files: [XcodeProjectFile], toGroup group: String) throws {
+    func add(files: [XcodeProjectFile],
+             toGroup group: String,
+             inTarget target: XcodeProjectTarget) throws {
         guard let mainProject = project.mainProject() else {
             throw XcodeProjectError.noPbxProjFound
         }
 
         let sourceRoot = Path(basePath)
 
-        // TODO: unwrap and check targetGroup before proceeding
         guard let targetGroup = try project.getOrCreateGroup(named: group, in: mainProject.mainGroup) else {
             throw XcodeProjectError.groupNotFound(group: group)
         }
+
+        let targetRef = try resolveTarget(target)
 
         for file in files {
             let path = Path(file.path)
@@ -73,9 +106,9 @@ extension XcodeProject {
 
             switch file.type {
             case .resource:
-                project.addBuildFileToResources(buildFile)
+                try project.addResourceFile(buildFile, toTarget: targetRef)
             case .source:
-                project.addBuildFileToSources(buildFile)
+                try project.addSourceFile(buildFile, toTarget: targetRef)
             }
         }
     }
