@@ -18,7 +18,7 @@ open class APIAuthProviderFactory {
     open func oidcAuthProvider() -> AmplifyOIDCAuthProvider? {
         return nil
     }
-    
+
     open func functionAuthProvider() -> AmplifyFunctionAuthProvider? {
         return nil
     }
