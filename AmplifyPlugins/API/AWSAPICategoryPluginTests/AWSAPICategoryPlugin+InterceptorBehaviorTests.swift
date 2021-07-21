@@ -17,7 +17,7 @@ class AWSAPICategoryPluginInterceptorBehaviorTests: AWSAPICategoryPluginTestBase
         XCTAssertEqual(apiPlugin.pluginConfig.interceptorsForEndpoint(named: apiName).count, 0)
 
         let provider = BasicUserPoolTokenProvider(authService: authService)
-        let requestInterceptor = UserPoolURLRequestInterceptor(userPoolTokenProvider: provider)
+        let requestInterceptor = AuthTokenURLRequestInterceptor(userPoolTokenProvider: provider)
         try apiPlugin.add(interceptor: requestInterceptor, for: apiName)
 
         XCTAssertEqual(apiPlugin.pluginConfig.interceptorsForEndpoint(named: apiName).count, 1)

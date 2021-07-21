@@ -70,7 +70,7 @@ class AWSAPIEndpointInterceptorsTests: XCTestCase {
         XCTAssertEqual(interceptorConfig.interceptors.count, 3)
         XCTAssertNotNil(interceptorConfig.interceptors[0] as? APIKeyURLRequestInterceptor)
         XCTAssertNotNil(interceptorConfig.interceptors[1] as? IAMURLRequestInterceptor)
-        XCTAssertNotNil(interceptorConfig.interceptors[2] as? UserPoolURLRequestInterceptor)
+        XCTAssertNotNil(interceptorConfig.interceptors[2] as? AuthTokenURLRequestInterceptor)
     }
 
     // MARK: - Test Helpers

@@ -111,7 +111,7 @@
 		21D7A114237B54D90057D00D /* GraphQLOperationRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0CF237B54D90057D00D /* GraphQLOperationRequest+Validate.swift */; };
 		21D7A115237B54D90057D00D /* AWSAPIPlugin+RESTBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0D0237B54D90057D00D /* AWSAPIPlugin+RESTBehavior.swift */; };
 		21D7A116237B54D90057D00D /* AWSAPIPlugin+URLSessionBehaviorDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0D1237B54D90057D00D /* AWSAPIPlugin+URLSessionBehaviorDelegate.swift */; };
-		21D7A117237B54D90057D00D /* UserPoolRequestInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0D4237B54D90057D00D /* UserPoolRequestInterceptor.swift */; };
+		21D7A117237B54D90057D00D /* AuthTokenURLRequestInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0D4237B54D90057D00D /* AuthTokenURLRequestInterceptor.swift */; };
 		21D7A118237B54D90057D00D /* APIKeyURLRequestInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0D5237B54D90057D00D /* APIKeyURLRequestInterceptor.swift */; };
 		21D7A119237B54D90057D00D /* IAMURLRequestInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0D6237B54D90057D00D /* IAMURLRequestInterceptor.swift */; };
 		21D7A11A237B54D90057D00D /* AWSAPICategoryPluginError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0D7237B54D90057D00D /* AWSAPICategoryPluginError.swift */; };
@@ -429,7 +429,7 @@
 		21D7A0CF237B54D90057D00D /* GraphQLOperationRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLOperationRequest+Validate.swift"; sourceTree = "<group>"; };
 		21D7A0D0237B54D90057D00D /* AWSAPIPlugin+RESTBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSAPIPlugin+RESTBehavior.swift"; sourceTree = "<group>"; };
 		21D7A0D1237B54D90057D00D /* AWSAPIPlugin+URLSessionBehaviorDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSAPIPlugin+URLSessionBehaviorDelegate.swift"; sourceTree = "<group>"; };
-		21D7A0D4237B54D90057D00D /* UserPoolRequestInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserPoolRequestInterceptor.swift; sourceTree = "<group>"; };
+		21D7A0D4237B54D90057D00D /* AuthTokenURLRequestInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthTokenURLRequestInterceptor.swift; sourceTree = "<group>"; };
 		21D7A0D5237B54D90057D00D /* APIKeyURLRequestInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKeyURLRequestInterceptor.swift; sourceTree = "<group>"; };
 		21D7A0D6237B54D90057D00D /* IAMURLRequestInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAMURLRequestInterceptor.swift; sourceTree = "<group>"; };
 		21D7A0D7237B54D90057D00D /* AWSAPICategoryPluginError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginError.swift; sourceTree = "<group>"; };
@@ -1009,8 +1009,8 @@
 			children = (
 				21D7A0D5237B54D90057D00D /* APIKeyURLRequestInterceptor.swift */,
 				6BD462072538102500906831 /* AuthTokenProviderWrapper.swift */,
+				21D7A0D4237B54D90057D00D /* AuthTokenURLRequestInterceptor.swift */,
 				21D7A0D6237B54D90057D00D /* IAMURLRequestInterceptor.swift */,
-				21D7A0D4237B54D90057D00D /* UserPoolRequestInterceptor.swift */,
 			);
 			path = RequestInterceptor;
 			sourceTree = "<group>";
@@ -2377,7 +2377,7 @@
 				214BD3B223FB5C4C0059A286 /* SubscriptionConnectionFactory.swift in Sources */,
 				21D7A0E4237B54D90057D00D /* APIOperation.swift in Sources */,
 				21D7A11A237B54D90057D00D /* AWSAPICategoryPluginError.swift in Sources */,
-				21D7A117237B54D90057D00D /* UserPoolRequestInterceptor.swift in Sources */,
+				21D7A117237B54D90057D00D /* AuthTokenURLRequestInterceptor.swift in Sources */,
 				21D38B9B240C517C00EC2A8D /* AWSOIDCAuthProvider.swift in Sources */,
 				211BEDF025E5904E004F367A /* AWSHTTPURLResponse.swift in Sources */,
 				216449472587E92B00C548A5 /* GraphQLResponseDecoder+DecodeData.swift in Sources */,
