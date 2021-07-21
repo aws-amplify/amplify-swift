@@ -189,7 +189,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         let syncMutationToCloudOperation = SyncMutationToCloudOperation(
             mutationEvent: mutationEvent,
             api: api,
-            authModeStrategy: authModeStrategy) { result in
+            authModeStrategy: authModeStrategy,
+            storageAdapter: storageAdapter) { result in
                 self.log.verbose(
                     "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent.id); result: \(result)")
                 self.processSyncMutationToCloudResult(result, mutationEvent: mutationEvent, api: api)
