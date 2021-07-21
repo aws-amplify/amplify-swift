@@ -69,7 +69,7 @@ struct AWSAPIEndpointInterceptors {
             let wrappedAuthProvider = AuthTokenProviderWrapper(tokenAuthProvider: oidcAuthProvider)
             let interceptor = AuthTokenURLRequestInterceptor(userPoolTokenProvider: wrappedAuthProvider)
             addInterceptor(interceptor)
-        case .awsLambda:
+        case .function:
             guard let functionAuthProvider = apiAuthProviderFactory.functionAuthProvider() else {
                 return
             }

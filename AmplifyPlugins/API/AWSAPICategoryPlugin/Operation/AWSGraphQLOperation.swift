@@ -61,8 +61,10 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         do {
             endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL)
 
-            if let pluginOptions = request.options.pluginOptions as? AWSPluginOptions, let authType = pluginOptions.authType {
-                requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig, authType: authType)
+            if let pluginOptions = request.options.pluginOptions as? AWSPluginOptions,
+               let authType = pluginOptions.authType {
+                requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig,
+                                                                               authType: authType)
             } else {
                 requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
             }

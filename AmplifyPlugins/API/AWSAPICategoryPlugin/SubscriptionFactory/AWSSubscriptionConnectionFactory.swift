@@ -85,7 +85,7 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
             }
             let wrappedProvider = OIDCAuthProviderWrapper(authTokenProvider: oidcAuthProvider)
             authInterceptor = OIDCAuthInterceptor(wrappedProvider)
-        case .awsLambda(_):
+        case .function(_):
             guard let functionAuthProvider = apiAuthProviderFactory.functionAuthProvider() else {
                 throw APIError.invalidConfiguration("Using function as auth provider requires passing in an APIAuthProvider with a Function AuthProvider",
                                                     "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider",
