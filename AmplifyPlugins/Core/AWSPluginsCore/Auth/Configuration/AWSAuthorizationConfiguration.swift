@@ -15,6 +15,7 @@ public enum AWSAuthorizationConfiguration {
     case awsIAM(AWSIAMConfiguration)
     case openIDConnect(OIDCConfiguration)
     case amazonCognitoUserPools(CognitoUserPoolsConfiguration)
+    case awsLambda(AWSLambdaAuthConfiguration)
 }
 
 // MARK: - AWSAuthorizationConfiguration factory
@@ -45,6 +46,15 @@ extension AWSAuthorizationConfiguration {
             return .apiKey(config)
     }
 
+    private static func awsLambdaAuthConfiguration(region: AWSRegionType?)
+        throws -> AWSAuthorizationConfiguration {
+            guard let region = region else {
+                throw PluginError.pluginConfigurationError("Region is not set for IAM",
+                                                           "Set the region")
+            }
+            return .awsLambda(AWSLambdaAuthConfiguration(region: region))
+    }
+
     /// Instantiates a new configuration conforming to AWSAuthorizationConfiguration
     /// - Parameters:
     ///   - authType: authentication type
@@ -67,6 +77,8 @@ extension AWSAuthorizationConfiguration {
             return .openIDConnect(OIDCConfiguration())
         case .amazonCognitoUserPools:
             return .amazonCognitoUserPools(CognitoUserPoolsConfiguration())
+        case .function:
+            return try awsLambdaAuthConfiguration(region: region)
         }
     }
 }

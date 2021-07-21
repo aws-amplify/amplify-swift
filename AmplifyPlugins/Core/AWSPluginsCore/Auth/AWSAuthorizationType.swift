@@ -36,6 +36,8 @@ public enum AWSAuthorizationType: String {
     /// - SeeAlso: [https://docs.aws.amazon.com/appsync/latest/devguide/security.html#amazon-cognito-user-pools-authorization](Amazon Cognito User Pools)
     case amazonCognitoUserPools = "AMAZON_COGNITO_USER_POOLS"
 
+    case function = "AWS_LAMBDA"
+
 }
 
 // swiftlint:enable line_length

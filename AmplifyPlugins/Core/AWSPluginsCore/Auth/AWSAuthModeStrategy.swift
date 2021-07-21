@@ -118,6 +118,8 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
             defaultAuthType = .amazonCognitoUserPools
         case .public:
             defaultAuthType = .apiKey
+        case .custom:
+            defaultAuthType = .function
         }
         return defaultAuthType
     }
@@ -138,14 +140,16 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
     /// - Returns: priority
     private static func priorityOf(authStrategy: AuthStrategy) -> AuthPriority {
         switch authStrategy {
-        case .owner:
+        case .custom:
             return 0
-        case .groups:
+        case .owner:
             return 1
-        case .private:
+        case .groups:
             return 2
-        case .public:
+        case .private:
             return 3
+        case .public:
+            return 4
         }
     }
 
@@ -154,14 +158,16 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
     /// - Returns: priority
     private static func priorityOf(authRuleProvider provider: AuthRuleProvider) -> AuthPriority {
         switch provider {
-        case .userPools:
+        case .function:
             return 0
-        case .oidc:
+        case .userPools:
             return 1
-        case .iam:
+        case .oidc:
             return 2
-        case .apiKey:
+        case .iam:
             return 3
+        case .apiKey:
+            return 4
         }
     }
 
