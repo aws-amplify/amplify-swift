@@ -49,7 +49,7 @@ extension AWSAuthorizationConfiguration {
     private static func awsLambdaAuthConfiguration(region: AWSRegionType?)
         throws -> AWSAuthorizationConfiguration {
             guard let region = region else {
-                throw PluginError.pluginConfigurationError("Region is not set for IAM",
+                throw PluginError.pluginConfigurationError("Region is not set for AWS Lambda",
                                                            "Set the region")
             }
             return .awsLambda(AWSLambdaAuthConfiguration(region: region))
