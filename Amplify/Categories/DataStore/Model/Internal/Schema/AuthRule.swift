@@ -12,6 +12,7 @@ public enum AuthStrategy {
     case groups
     case `private`
     case `public`
+    case custom
 }
 
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
@@ -30,6 +31,7 @@ public enum AuthRuleProvider {
     case oidc
     case iam
     case userPools
+    case function
 }
 
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
