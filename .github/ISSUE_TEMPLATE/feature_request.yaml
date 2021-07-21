@@ -37,8 +37,7 @@ body:
         - DataStore
         - Predictions
         - Storage
-  - type: dropdown
-  
+
   - type: textarea
     id: context
     attributes:
