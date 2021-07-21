@@ -135,7 +135,8 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
         return defaultAuthTypeFor(authStrategy: authRule.allow)
     }
 
-    /// Given an auth rule strategy returns its corresponding priority
+    /// Given an auth rule strategy returns its corresponding priority.
+    /// Strategies are ordered from "most specific" to "least specific".
     /// - Parameter authStrategy: auth rule strategy
     /// - Returns: priority
     private static func priorityOf(authStrategy: AuthStrategy) -> AuthPriority {
@@ -153,7 +154,8 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
         }
     }
 
-    /// Given an auth rule provider returns its corresponding priority
+    /// Given an auth rule provider returns its corresponding priority.
+    /// Providers are ordered from "most specific" to "least specific".
     /// - Parameter authRuleProvider: auth rule provider
     /// - Returns: priority
     private static func priorityOf(authRuleProvider provider: AuthRuleProvider) -> AuthPriority {
