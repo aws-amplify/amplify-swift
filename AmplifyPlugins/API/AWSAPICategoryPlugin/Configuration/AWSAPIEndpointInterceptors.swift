@@ -60,21 +60,21 @@ struct AWSAPIEndpointInterceptors {
                                                            "")
             }
             let provider = BasicUserPoolTokenProvider(authService: authService)
-            let interceptor = AuthTokenURLRequestInterceptor(userPoolTokenProvider: provider)
+            let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: provider)
             addInterceptor(interceptor)
         case .openIDConnect:
             guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
                 return
             }
             let wrappedAuthProvider = AuthTokenProviderWrapper(tokenAuthProvider: oidcAuthProvider)
-            let interceptor = AuthTokenURLRequestInterceptor(userPoolTokenProvider: wrappedAuthProvider)
+            let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: wrappedAuthProvider)
             addInterceptor(interceptor)
         case .function:
             guard let functionAuthProvider = apiAuthProviderFactory.functionAuthProvider() else {
                 return
             }
             let wrappedAuthProvider = AuthTokenProviderWrapper(tokenAuthProvider: functionAuthProvider)
-            let interceptor = AuthTokenURLRequestInterceptor(userPoolTokenProvider: wrappedAuthProvider)
+            let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: wrappedAuthProvider)
             addInterceptor(interceptor)
         }
     }

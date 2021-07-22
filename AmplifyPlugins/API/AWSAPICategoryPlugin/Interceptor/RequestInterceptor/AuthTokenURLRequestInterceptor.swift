@@ -14,8 +14,8 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
 
     let authTokenProvider: AuthTokenProvider
 
-    init(userPoolTokenProvider: AuthTokenProvider) {
-        self.authTokenProvider = userPoolTokenProvider
+    init(authTokenProvider: AuthTokenProvider) {
+        self.authTokenProvider = authTokenProvider
     }
 
     func intercept(_ request: URLRequest) throws -> URLRequest {

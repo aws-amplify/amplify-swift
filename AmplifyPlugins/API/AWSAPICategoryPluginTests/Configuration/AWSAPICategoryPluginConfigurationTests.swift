@@ -92,7 +92,7 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
     /// Then: the registered interceptors is replaced with a new interceptor according to
     ///      provided authType
     func testInterceptorForEndpointWithConfigAndAuthType() throws {
-        let userPoolInterceptor = AuthTokenURLRequestInterceptor(userPoolTokenProvider: MockTokenProvider())
+        let userPoolInterceptor = AuthTokenURLRequestInterceptor(authTokenProvider: MockTokenProvider())
         config?.addInterceptor(userPoolInterceptor, toEndpoint: graphQLAPI)
 
         let interceptors = try config?.interceptorsForEndpoint(withConfig: endpointConfig!, authType: .apiKey)
