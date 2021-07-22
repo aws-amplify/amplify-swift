@@ -88,7 +88,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     func cancel() {
         log.verbose(#function)
-        // Techncially this should be in a "cancelling" responder, but it's simpler to cancel here and move straight
+        // Technically this should be in a "cancelling" responder, but it's simpler to cancel here and move straight
         // to .finished. If in the future we need to add more work to the teardown state, move it to a separate method.
         operationQueue.cancelAllOperations()
         stateMachine.notify(action: .receivedCancel)

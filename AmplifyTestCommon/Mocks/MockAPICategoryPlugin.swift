@@ -12,6 +12,20 @@ import Foundation
 class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin, APICategoryReachabilityBehavior {
     var responders = [ResponderKeys: Any]()
 
+    private var _reachabilityPublisher: Any?
+
+    @available(iOS 13.0, *)
+    init(reachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>) {
+        _reachabilityPublisher = reachabilityPublisher
+        super.init()
+    }
+
+    // We're declaring this even though it's not strictly necessary to expose the no-arg initializer
+    // to iOS 13+ test contexts.
+    override init() {
+        super.init()
+    }
+
     // MARK: - Properties
 
     var key: String {
@@ -105,12 +119,16 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin, APICategoryReac
 
     @available(iOS 13.0, *)
     public func reachabilityPublisher(for apiName: String?) -> AnyPublisher<ReachabilityUpdate, Never>? {
-        return nil
+        reachabilityPublisher()
     }
 
     @available(iOS 13.0, *)
     public func reachabilityPublisher() -> AnyPublisher<ReachabilityUpdate, Never>? {
-        return Just(ReachabilityUpdate(isOnline: true)).eraseToAnyPublisher()
+        if let reachabilityPublisher = _reachabilityPublisher as? AnyPublisher<ReachabilityUpdate, Never> {
+            return reachabilityPublisher
+        } else {
+            return Just(ReachabilityUpdate(isOnline: true)).eraseToAnyPublisher()
+        }
     }
 
     // MARK: - REST methods

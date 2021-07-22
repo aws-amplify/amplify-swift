@@ -31,15 +31,17 @@ class SyncEngineTestBase: XCTestCase {
 
     var stateMachine: StateMachine<RemoteSyncEngine.State, RemoteSyncEngine.Action>!
 
-    var reachabilityPublisher: PassthroughSubject<ReachabilityUpdate, Never>?
+    var reachabilityPublisher: CurrentValueSubject<ReachabilityUpdate, Never>?
 
     var syncEngine: RemoteSyncEngineBehavior!
 
     var remoteSyncEngineSink: AnyCancellable!
 
+    var requestRetryablePolicy: MockRequestRetryablePolicy!
+
     // MARK: - Setup
 
-    override func setUp() {
+    override func setUpWithError() throws {
         continueAfterFailure = false
 
         Amplify.reset()
@@ -57,22 +59,41 @@ class SyncEngineTestBase: XCTestCase {
             "awsDataStorePlugin": true
         ])
 
+        requestRetryablePolicy = MockRequestRetryablePolicy()
+
         amplifyConfig = AmplifyConfiguration(api: apiConfig, auth: authConfig, dataStore: dataStoreConfig)
 
-        apiPlugin = MockAPICategoryPlugin()
-        authPlugin = MockAuthCategoryPlugin()
-        tryOrFail {
-            try Amplify.add(plugin: apiPlugin)
-            try Amplify.add(plugin: authPlugin)
+        if let reachabilityPublisher = reachabilityPublisher {
+            apiPlugin = MockAPICategoryPlugin(
+                reachabilityPublisher: reachabilityPublisher.eraseToAnyPublisher()
+            )
+        } else {
+            apiPlugin = MockAPICategoryPlugin()
         }
+
+        authPlugin = MockAuthCategoryPlugin()
+        try Amplify.add(plugin: apiPlugin)
+        try Amplify.add(plugin: authPlugin)
     }
 
-    /// Sets up a StorageAdapter backed by an in-memory SQLite database. Optionally registers and sets up models in
+    /// Sets up a StorageAdapter backed by `connection`. Optionally registers and sets up models in
     /// `models`.
-    func setUpStorageAdapter(preCreating models: [Model.Type] = []) throws {
+    /// - Parameters:
+    ///   - models: models to pre-create. Defaults to empty array
+    ///   - connection: SQLite Connection for the database. defaults to an in-memory connection
+    func setUpStorageAdapter(
+        preCreating models: [Model.Type] = [],
+        connection: Connection? = nil
+    ) throws {
         models.forEach { ModelRegistry.register(modelType: $0) }
-        let connection = try Connection(.inMemory)
-        storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
+        let resolvedConnection: Connection
+        if let connection = connection {
+            resolvedConnection = connection
+        } else {
+            resolvedConnection = try Connection(.inMemory)
+        }
+
+        storageAdapter = try SQLiteStorageEngineAdapter(connection: resolvedConnection)
         try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + models.map { $0.schema })
     }
 
@@ -99,7 +120,7 @@ class SyncEngineTestBase: XCTestCase {
                                       reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
                                       stateMachine: stateMachine,
                                       networkReachabilityPublisher: reachabilityPublisher?.eraseToAnyPublisher(),
-                                      requestRetryablePolicy: MockRequestRetryablePolicy())
+                                      requestRetryablePolicy: requestRetryablePolicy)
         remoteSyncEngineSink = syncEngine
             .publisher
             .sink(receiveCompletion: {_ in },

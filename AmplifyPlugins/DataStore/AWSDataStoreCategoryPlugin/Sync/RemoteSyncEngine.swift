@@ -208,12 +208,14 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             let reachability = api as? APICategoryReachabilityBehavior {
             do {
                 networkReachabilityPublisher = try reachability.reachabilityPublisher()
-                networkReachabilitySink = networkReachabilityPublisher?
-                    .sink(receiveValue: onReceiveNetworkStatus(networkStatus:))
             } catch {
                 log.error("\(#function): Unable to listen on reachability: \(error)")
             }
         }
+
+        networkReachabilitySink =
+            networkReachabilityPublisher?
+            .sink(receiveValue: onReceiveNetworkStatus(networkStatus:))
 
         remoteSyncTopicPublisher.send(.storageAdapterAvailable)
         stateMachine.notify(action: .receivedStart)

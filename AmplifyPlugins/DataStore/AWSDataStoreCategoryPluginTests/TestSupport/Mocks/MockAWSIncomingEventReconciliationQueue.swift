@@ -48,7 +48,7 @@ class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue 
     }
 
     func offer(_ remoteModels: [MutationSync<AnyModel>], modelSchema: ModelSchema) {
-        //no-op for mock
+        // no-op for mock
     }
 
     static func mockSendCompletion(completion: Subscribers.Completion<DataStoreError>) {
@@ -60,6 +60,6 @@ class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue 
     }
 
     func cancel() {
-        //no-op for mock
+        // no-op for mock
     }
 }
