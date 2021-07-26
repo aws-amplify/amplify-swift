@@ -161,9 +161,10 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
 
         // Submit multiple mutations
 
-        // We expect this to be picked up by the OutgoingMutationQueue right away, but it won't be
-        // able to complete because the network is not available. That all happens on a background
-        // queue, which means we can continue to save updates locally.
+        // We expect this to be picked up by the OutgoingMutationQueue right away, but even though
+        // the local store updates, the sync won't be able to complete because the network is not
+        // available. Syncing all happens on a background queue, which means we can continue to
+        // save updates (and thus enqueue outgoing mutations for processing) locally.
         post.content = "Initial updated content"
         let savedInitialUpdate = expectation(description: "savedInitialUpdate")
         Amplify.DataStore.save(post) {
@@ -176,7 +177,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         wait(for: [savedInitialUpdate], timeout: 0.1)
 
         // We expect this to be written to the queue as a new record. We also expect that it will
-        // be ovewrriten by the next mutation, without ever being synced to the service.
+        // be overwritten by the next mutation, without ever being synced to the service.
         post.content = "Interim content"
         let savedInterimUpdate = expectation(description: "savedInterimUpdate")
         Amplify.DataStore.save(post) {
@@ -207,6 +208,20 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         }
         wait(for: [timerExpired], timeout: 6.0)
 
+        // BUG BEGINS MANIFESTING HERE
+
+        // At this point, the MutationEvent table (the backing store for the outgoing mutation
+        // queue) has two records. The first is the initial update, the second is the "interim"
+        // update. Both are marked as `inProcess: false`, even though the initial update is actually
+        // in-process as an operation on the outgoing mutation processor's OperationQueue, waiting
+        // for the network to resume or for the retry period to expire.
+
+        // Write another mutation. The current disposition behavior is that the system detects
+        // a not-in-process mutation in the queue, and overwrites it with this data. The
+        // reconciliation logic drops all but the oldest not-in-process mutations, which means that
+        // after the reconciliation completes, there will be one record in the MutationEvent table.
+        // It will have the ID of the initial update, but the content of the final update. The
+        // record for the interim update has been deleted.
         post.content = expectedFinalContent
         let savedFinalUpdate = expectation(description: "savedFinalUpdate")
         Amplify.DataStore.save(post) {
@@ -223,6 +238,10 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         apiPlugin.responders = [.mutateRequestListener: acceptSubsequentMutations]
         reachabilityPublisher?.send(ReachabilityUpdate(isOnline: true))
         wait(for: [networkAvailableAgain], timeout: 5.0)
+
+        // Once the initial update completes, the Operation deletes itself from the MutationEvent
+        // queue. However, the data in that MutationEvent record *actually* corresponds to the
+        // final update, not the initial update, meaning all subsequent data is lost.
 
         // Assert last mutation is sent
         wait(for: [expectedFinalContentReceived], timeout: 1.0)
