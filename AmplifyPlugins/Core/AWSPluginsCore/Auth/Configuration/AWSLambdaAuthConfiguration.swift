@@ -9,9 +9,5 @@ import Foundation
 import AWSCore
 
 public struct AWSLambdaAuthConfiguration {
-    public let region: AWSRegionType
-
-    public init(region: AWSRegionType) {
-        self.region = region
-    }
+    public init() {}
 }

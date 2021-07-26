@@ -46,15 +46,6 @@ extension AWSAuthorizationConfiguration {
             return .apiKey(config)
     }
 
-    private static func awsLambdaAuthConfiguration(region: AWSRegionType?)
-        throws -> AWSAuthorizationConfiguration {
-            guard let region = region else {
-                throw PluginError.pluginConfigurationError("Region is not set for AWS Lambda",
-                                                           "Set the region")
-            }
-            return .function(AWSLambdaAuthConfiguration(region: region))
-    }
-
     /// Instantiates a new configuration conforming to AWSAuthorizationConfiguration
     /// - Parameters:
     ///   - authType: authentication type
@@ -78,7 +69,7 @@ extension AWSAuthorizationConfiguration {
         case .amazonCognitoUserPools:
             return .amazonCognitoUserPools(CognitoUserPoolsConfiguration())
         case .function:
-            return try awsLambdaAuthConfiguration(region: region)
+            return .function(AWSLambdaAuthConfiguration())
         }
     }
 }
