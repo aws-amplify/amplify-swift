@@ -67,9 +67,9 @@ internal extension AuthRule {
         switch provider {
         // OIDC and Function providers don't need
         // Auth plugin
-        case .oidc, .function:
+        case .oidc, .function, .none:
             return false
-        default:
+        case .apiKey, .userPools, .iam:
             return true
         }
     }
