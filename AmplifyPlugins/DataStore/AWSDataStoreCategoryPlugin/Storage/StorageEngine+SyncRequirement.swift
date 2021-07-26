@@ -79,6 +79,6 @@ internal extension AuthRules {
     /// Convenience method to check whether we need Auth plugin
     /// - Returns: true  If **any** of the rules uses a provider that requires the Auth plugin
     var requireAuthPlugin: Bool {
-        contains(where: { $0.requiresAuthPlugin })
+        contains { $0.requiresAuthPlugin }
     }
 }
