@@ -84,7 +84,7 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
     /// - Then:
     ///    - The subscription should receive mutation events corresponding to the API calls performed.
     ///
-    func testOnCreateTodo() {
+    func testOnCreateTodoSubscription() {
         let connectedInvoked = expectation(description: "Connection established")
         let disconnectedInvoked = expectation(description: "Connection disconnected")
         let completedInvoked = expectation(description: "Completed invoked")

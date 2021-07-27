@@ -142,6 +142,8 @@
 		763C855E26AF8F6C005164B2 /* AWSAPICategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSAPICategoryPlugin.framework */; };
 		763C856726AF9012005164B2 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 763C856626AF9012005164B2 /* README.md */; };
 		763C856C26AF9336005164B2 /* GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 763C856A26AF9185005164B2 /* GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration.json */; };
+		763C857126B0651A005164B2 /* AuthenticationTokenAuthInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763C857026B0651A005164B2 /* AuthenticationTokenAuthInterceptor.swift */; };
+		763C857326B06E12005164B2 /* AuthenticationTokenAuthInterceptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763C857226B06E12005164B2 /* AuthenticationTokenAuthInterceptorTests.swift */; };
 		76A240762665566C0001B523 /* AWSAPIEndpointInterceptorsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A240752665566C0001B523 /* AWSAPIEndpointInterceptorsTests.swift */; };
 		76DCCD2E265EDDDD00BD7964 /* AWSAPIEndpointInterceptors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76DCCD2D265EDDDD00BD7964 /* AWSAPIEndpointInterceptors.swift */; };
 		9B13EA5E48896E8B38883633 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 930DD773E0FB4047393CA2AD /* Pods_HostApp.framework */; };
@@ -510,6 +512,8 @@
 		763C855D26AF8F6C005164B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		763C856626AF9012005164B2 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		763C856A26AF9185005164B2 /* GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration.json"; sourceTree = "<group>"; };
+		763C857026B0651A005164B2 /* AuthenticationTokenAuthInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationTokenAuthInterceptor.swift; sourceTree = "<group>"; };
+		763C857226B06E12005164B2 /* AuthenticationTokenAuthInterceptorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationTokenAuthInterceptorTests.swift; sourceTree = "<group>"; };
 		76A240752665566C0001B523 /* AWSAPIEndpointInterceptorsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPIEndpointInterceptorsTests.swift; sourceTree = "<group>"; };
 		76DCCD2D265EDDDD00BD7964 /* AWSAPIEndpointInterceptors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPIEndpointInterceptors.swift; sourceTree = "<group>"; };
 		77792DD821FC754D857FC63C /* Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithIAMIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithIAMIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithIAMIntegrationTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithIAMIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -722,6 +726,7 @@
 			isa = PBXGroup;
 			children = (
 				2136FABA262022D700A95F6F /* IAMAuthInterceptorTests.swift */,
+				763C857226B06E12005164B2 /* AuthenticationTokenAuthInterceptorTests.swift */,
 			);
 			path = SubscriptionInterceptor;
 			sourceTree = "<group>";
@@ -923,6 +928,7 @@
 			isa = PBXGroup;
 			children = (
 				21D5286624169E74005186BA /* IAMAuthInterceptor.swift */,
+				763C857026B0651A005164B2 /* AuthenticationTokenAuthInterceptor.swift */,
 				6BD4620525380EA200906831 /* OIDCAuthProviderWrapper.swift */,
 			);
 			path = SubscriptionInterceptor;
@@ -2527,6 +2533,7 @@
 				21D7A11A237B54D90057D00D /* AWSAPICategoryPluginError.swift in Sources */,
 				21D7A117237B54D90057D00D /* AuthTokenURLRequestInterceptor.swift in Sources */,
 				21D38B9B240C517C00EC2A8D /* AWSOIDCAuthProvider.swift in Sources */,
+				763C857126B0651A005164B2 /* AuthenticationTokenAuthInterceptor.swift in Sources */,
 				211BEDF025E5904E004F367A /* AWSHTTPURLResponse.swift in Sources */,
 				216449472587E92B00C548A5 /* GraphQLResponseDecoder+DecodeData.swift in Sources */,
 				21A4EEF8259E38B500E1047D /* AppSyncListDecoder.swift in Sources */,
@@ -2604,6 +2611,7 @@
 				FA1C810A25868A4B006160E9 /* AWSAPICategoryPluginAmplifyVersionableTests.swift in Sources */,
 				FADC469524C0E8AF00EF447B /* GraphQLQueryCombineTests.swift in Sources */,
 				B4DFA5E3237A611D0013E17B /* AWSGraphQLOperationTests.swift in Sources */,
+				763C857326B06E12005164B2 /* AuthenticationTokenAuthInterceptorTests.swift in Sources */,
 				B4DFA5F9237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionDelegateTests.swift in Sources */,
 				B4DFA5EC237A611D0013E17B /* GraphQLRequestUtils+ValidatorTests.swift in Sources */,
 				B4DFA5EB237A611D0013E17B /* AWSAPICategoryPlugin+ResetTests.swift in Sources */,

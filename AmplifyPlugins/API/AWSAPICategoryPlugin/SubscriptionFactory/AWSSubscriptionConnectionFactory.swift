@@ -91,8 +91,7 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
                     "Using function as auth provider requires passing in an APIAuthProvider with a Function AuthProvider",
                     "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil)
             }
-            let wrappedProvider = OIDCAuthProviderWrapper(authTokenProvider: functionAuthProvider)
-            authInterceptor = OIDCAuthInterceptor(wrappedProvider)
+            authInterceptor = AuthenticationTokenAuthInterceptor(authTokenProvider: functionAuthProvider)
         case .none:
             throw APIError.unknown("Cannot create AppSync subscription for none auth mode", "")
         }
