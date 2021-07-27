@@ -64,14 +64,16 @@ struct AWSAPIEndpointInterceptors {
             addInterceptor(interceptor)
         case .openIDConnect:
             guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
-                return
+                throw PluginError.pluginConfigurationError("AuthService not set for OIDC",
+                                                           "Provide an AmplifyOIDCAuthProvider via API plugin configuration")
             }
             let wrappedAuthProvider = AuthTokenProviderWrapper(tokenAuthProvider: oidcAuthProvider)
             let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: wrappedAuthProvider)
             addInterceptor(interceptor)
         case .function:
             guard let functionAuthProvider = apiAuthProviderFactory.functionAuthProvider() else {
-                return
+                throw PluginError.pluginConfigurationError("AuthService not set for function auth",
+                                                           "Provide an AmplifyFunctionAuthProvider via API plugin configuration")
             }
             let wrappedAuthProvider = AuthTokenProviderWrapper(tokenAuthProvider: functionAuthProvider)
             let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: wrappedAuthProvider)
