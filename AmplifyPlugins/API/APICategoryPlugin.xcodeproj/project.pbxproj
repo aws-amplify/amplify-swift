@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		13066F229854831AA628ECEC /* Pods_HostApp_AWSAPICategoryPluginTestCommon_RESTWithUserPoolIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD6386039136045F18D44AC /* Pods_HostApp_AWSAPICategoryPluginTestCommon_RESTWithUserPoolIntegrationTests.framework */; };
+		1FF6093C5054651046CBD72F /* Pods_HostApp_AWSAPICategoryPluginTestCommon_GraphQLWithLambdaAuthIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DFADA148F376B33D0F75509 /* Pods_HostApp_AWSAPICategoryPluginTestCommon_GraphQLWithLambdaAuthIntegrationTests.framework */; };
 		210E217E265E9BB000D90ED8 /* GraphQLModelBasedTests+Concurrency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210E217D265E9BB000D90ED8 /* GraphQLModelBasedTests+Concurrency.swift */; };
 		210E2180265EFD6800D90ED8 /* GraphQLSyncCustomPrimaryKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210E217F265EFD6800D90ED8 /* GraphQLSyncCustomPrimaryKeyTests.swift */; };
 		211BEDF025E5904E004F367A /* AWSHTTPURLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211BEDEF25E5904E004F367A /* AWSHTTPURLResponse.swift */; };
@@ -137,6 +138,12 @@
 		6BD462082538102500906831 /* AuthTokenProviderWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD462072538102500906831 /* AuthTokenProviderWrapper.swift */; };
 		76148E0925D896EA007F3F21 /* URLComponents+sigv4Encoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76148E0825D896EA007F3F21 /* URLComponents+sigv4Encoding.swift */; };
 		7632AD8A252E1E10009B5BC9 /* AppSyncJSONValue+toJSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7632AD89252E1E10009B5BC9 /* AppSyncJSONValue+toJSONValue.swift */; };
+		763C855C26AF8F6C005164B2 /* GraphQLWithLambdaAuthIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763C855B26AF8F6C005164B2 /* GraphQLWithLambdaAuthIntegrationTests.swift */; };
+		763C855E26AF8F6C005164B2 /* AWSAPICategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSAPICategoryPlugin.framework */; };
+		763C856726AF9012005164B2 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 763C856626AF9012005164B2 /* README.md */; };
+		763C856C26AF9336005164B2 /* GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 763C856A26AF9185005164B2 /* GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration.json */; };
+		763C856E26AF941C005164B2 /* GraphQLWithLambdaAuthIntegrationTests-awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 763C856D26AF941C005164B2 /* GraphQLWithLambdaAuthIntegrationTests-awsconfiguration.json */; };
+		763C856F26AF946C005164B2 /* GraphQLWithLambdaAuthIntegrationTests-awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 763C856D26AF941C005164B2 /* GraphQLWithLambdaAuthIntegrationTests-awsconfiguration.json */; };
 		76A240762665566C0001B523 /* AWSAPIEndpointInterceptorsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A240752665566C0001B523 /* AWSAPIEndpointInterceptorsTests.swift */; };
 		76DCCD2E265EDDDD00BD7964 /* AWSAPIEndpointInterceptors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76DCCD2D265EDDDD00BD7964 /* AWSAPIEndpointInterceptors.swift */; };
 		9B13EA5E48896E8B38883633 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 930DD773E0FB4047393CA2AD /* Pods_HostApp.framework */; };
@@ -293,6 +300,27 @@
 			remoteGlobalIDString = 21409C6623850A9E000A53C9;
 			remoteInfo = AWSAPICategoryPluginTestCommon;
 		};
+		763C855F26AF8F6C005164B2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B478F5FA2374DBF400C4F92B;
+			remoteInfo = AWSAPICategoryPlugin;
+		};
+		763C856426AF8FEF005164B2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B478F6BB2374E0B500C4F92B;
+			remoteInfo = HostApp;
+		};
+		763C856826AF90B2005164B2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 21409C6623850A9E000A53C9;
+			remoteInfo = AWSAPICategoryPluginTestCommon;
+		};
 		B478F64F2374DCE700C4F92B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
@@ -310,6 +338,7 @@
 		0D22C7A16EB2594AD81FA649 /* Pods-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests/Pods-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		13D57D75AE76490200BD2D15 /* Pods-HostApp-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests/Pods-HostApp-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		14008785FCC34324B9904B2D /* Pods-HostApp-AWSAPICategoryPluginFunctionalTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginFunctionalTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginFunctionalTests/Pods-HostApp-AWSAPICategoryPluginFunctionalTests.release.xcconfig"; sourceTree = "<group>"; };
+		18B0C6B8A81B8AAC8B22899D /* Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		1B13CFC866A30622EDD91AF4 /* Pods_AWSAPICategoryPlugin_AWSAPICategoryPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSAPICategoryPlugin_AWSAPICategoryPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B30959CE873C097E54BDFD6 /* Pods-GraphQLWithAPIKeyIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GraphQLWithAPIKeyIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-GraphQLWithAPIKeyIntegrationTests/Pods-GraphQLWithAPIKeyIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		1FDC07084023DEF205FF6598 /* Pods-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -456,6 +485,7 @@
 		4AD63A179BA4F1B0F5A8239C /* Pods-HostApp-GraphQLWithIAMIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-GraphQLWithIAMIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-GraphQLWithIAMIntegrationTests/Pods-HostApp-GraphQLWithIAMIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4B77D41B0A0DF50AD28492CC /* Pods-HostApp-AWSAPICategoryPluginTestCommon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginTestCommon.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon/Pods-HostApp-AWSAPICategoryPluginTestCommon.release.xcconfig"; sourceTree = "<group>"; };
 		4C9D31E2654F5401D8DFA1EC /* Pods-AWSAPICategoryHostAppWithIAM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAPICategoryHostAppWithIAM.debug.xcconfig"; path = "Target Support Files/Pods-AWSAPICategoryHostAppWithIAM/Pods-AWSAPICategoryHostAppWithIAM.debug.xcconfig"; sourceTree = "<group>"; };
+		4DFADA148F376B33D0F75509 /* Pods_HostApp_AWSAPICategoryPluginTestCommon_GraphQLWithLambdaAuthIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSAPICategoryPluginTestCommon_GraphQLWithLambdaAuthIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		53890B4754019D7240753060 /* Pods-HostApp-AWSAPICategoryPluginTestCommon-RESTWithUserPoolIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginTestCommon-RESTWithUserPoolIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-RESTWithUserPoolIntegrationTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-RESTWithUserPoolIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		590266D0504CD8553B44EAE8 /* Pods-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		60CE874DF1685CDF2AF2A276 /* Pods-HostApp-AWSAPICategoryPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginIntegrationTests/Pods-HostApp-AWSAPICategoryPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -473,14 +503,22 @@
 		6BD4620525380EA200906831 /* OIDCAuthProviderWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OIDCAuthProviderWrapper.swift; sourceTree = "<group>"; };
 		6BD462072538102500906831 /* AuthTokenProviderWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthTokenProviderWrapper.swift; sourceTree = "<group>"; };
 		6DD6386039136045F18D44AC /* Pods_HostApp_AWSAPICategoryPluginTestCommon_RESTWithUserPoolIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSAPICategoryPluginTestCommon_RESTWithUserPoolIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		709F459B48D0BF516FC4B522 /* Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		74EDB7008F5342ED4B38C9CA /* Pods_HostApp_AWSAPICategoryPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSAPICategoryPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		76148E0825D896EA007F3F21 /* URLComponents+sigv4Encoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLComponents+sigv4Encoding.swift"; sourceTree = "<group>"; };
 		7632AD89252E1E10009B5BC9 /* AppSyncJSONValue+toJSONValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppSyncJSONValue+toJSONValue.swift"; sourceTree = "<group>"; };
+		763C855926AF8F6C005164B2 /* GraphQLWithLambdaAuthIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GraphQLWithLambdaAuthIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		763C855B26AF8F6C005164B2 /* GraphQLWithLambdaAuthIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLWithLambdaAuthIntegrationTests.swift; sourceTree = "<group>"; };
+		763C855D26AF8F6C005164B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		763C856626AF9012005164B2 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		763C856A26AF9185005164B2 /* GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration.json"; sourceTree = "<group>"; };
+		763C856D26AF941C005164B2 /* GraphQLWithLambdaAuthIntegrationTests-awsconfiguration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "GraphQLWithLambdaAuthIntegrationTests-awsconfiguration.json"; sourceTree = "<group>"; };
 		76A240752665566C0001B523 /* AWSAPIEndpointInterceptorsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPIEndpointInterceptorsTests.swift; sourceTree = "<group>"; };
 		76DCCD2D265EDDDD00BD7964 /* AWSAPIEndpointInterceptors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPIEndpointInterceptors.swift; sourceTree = "<group>"; };
 		77792DD821FC754D857FC63C /* Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithIAMIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithIAMIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithIAMIntegrationTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithIAMIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		7866FCFB5807C2D20219CEBE /* Pods-HostApp-AWSAPICategoryPluginTestCommon-RESTWithIAMIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginTestCommon-RESTWithIAMIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-RESTWithIAMIntegrationTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-RESTWithIAMIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		7A255F655FE0AE43E68F2972 /* Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithUserPoolIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithUserPoolIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithUserPoolIntegrationTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithUserPoolIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
+		7A3751EEA19CC7C101D570CA /* Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaIntegrationTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		7CAC5A88BE3D8AAD8B926A28 /* Pods_HostApp_AWSAPICategoryPluginTestCommon_AWSAPICategoryPluginFunctionalTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSAPICategoryPluginTestCommon_AWSAPICategoryPluginFunctionalTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		881AB4B98B48235DEC7754C2 /* Pods_AWSAPICategoryPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSAPICategoryPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		89457627057299D7047B9C40 /* Pods-HostApp-AWSAPICategoryPluginTestCommon-RESTWithUserPoolIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginTestCommon-RESTWithUserPoolIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-RESTWithUserPoolIntegrationTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-RESTWithUserPoolIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -534,9 +572,11 @@
 		CDAC1C5BC9D8A9C27E70CB95 /* Pods_AWSAPICategoryHostAppWithIAM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSAPICategoryHostAppWithIAM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEC56C63267289FDB34EA467 /* Pods-HostApp-RESTWithIAMIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-RESTWithIAMIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-RESTWithIAMIntegrationTests/Pods-HostApp-RESTWithIAMIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D81918B51EB7C63CA41E8BCC /* Pods-GraphQLWithIAMIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GraphQLWithIAMIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-GraphQLWithIAMIntegrationTests/Pods-GraphQLWithIAMIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
+		DBA93F2CB1F3472EF3283A79 /* Pods_HostApp_AWSAPICategoryPluginTestCommon_GraphQLWithLambdaIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSAPICategoryPluginTestCommon_GraphQLWithLambdaIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF28D41FAD6EFE81E1CFFB8E /* Pods_AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E199BA19FD0A130933EDF93F /* Pods-HostApp-AWSAPICategoryPluginTestCommon-AWSAPICategoryPluginFunctionalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginTestCommon-AWSAPICategoryPluginFunctionalTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-AWSAPICategoryPluginFunctionalTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-AWSAPICategoryPluginFunctionalTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E3E855FC9186F25F5FBF8A06 /* Pods_GraphQLWithAPIKeyIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GraphQLWithAPIKeyIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E5EAC3D70F385D9A6FEBD949 /* Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaIntegrationTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F2E34DE129C74003DCC9F6A2 /* Pods-AWSAPICategoryHostAppWithIAM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAPICategoryHostAppWithIAM.release.xcconfig"; path = "Target Support Files/Pods-AWSAPICategoryHostAppWithIAM/Pods-AWSAPICategoryHostAppWithIAM.release.xcconfig"; sourceTree = "<group>"; };
 		FA1C810925868A4B006160E9 /* AWSAPICategoryPluginAmplifyVersionableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginAmplifyVersionableTests.swift; sourceTree = "<group>"; };
 		FA249EE224C5F7E8009B3CE8 /* GraphQLMutateCombineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLMutateCombineTests.swift; sourceTree = "<group>"; };
@@ -607,6 +647,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		763C855626AF8F6C005164B2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				763C855E26AF8F6C005164B2 /* AWSAPICategoryPlugin.framework in Frameworks */,
+				1FF6093C5054651046CBD72F /* Pods_HostApp_AWSAPICategoryPluginTestCommon_GraphQLWithLambdaAuthIntegrationTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B478F5F82374DBF400C4F92B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -652,6 +701,8 @@
 				B1AB915DA3F982E560CD6E47 /* Pods_HostApp_AWSAPICategoryPluginTestCommon_GraphQLWithUserPoolIntegrationTests.framework */,
 				2D57635393A9898E665C00A1 /* Pods_HostApp_AWSAPICategoryPluginTestCommon_RESTWithIAMIntegrationTests.framework */,
 				6DD6386039136045F18D44AC /* Pods_HostApp_AWSAPICategoryPluginTestCommon_RESTWithUserPoolIntegrationTests.framework */,
+				DBA93F2CB1F3472EF3283A79 /* Pods_HostApp_AWSAPICategoryPluginTestCommon_GraphQLWithLambdaIntegrationTests.framework */,
+				4DFADA148F376B33D0F75509 /* Pods_HostApp_AWSAPICategoryPluginTestCommon_GraphQLWithLambdaAuthIntegrationTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -786,6 +837,7 @@
 		217856242380BF8000A30D19 /* GraphQL */ = {
 			isa = PBXGroup;
 			children = (
+				763C855A26AF8F6C005164B2 /* GraphQLWithLambdaAuthIntegrationTests */,
 				217856612380C60400A30D19 /* GraphQLWithIAMIntegrationTests */,
 				217856A023810B9400A30D19 /* GraphQLWithUserPoolIntegrationTests */,
 			);
@@ -1058,6 +1110,18 @@
 			path = Reachability;
 			sourceTree = "<group>";
 		};
+		763C855A26AF8F6C005164B2 /* GraphQLWithLambdaAuthIntegrationTests */ = {
+			isa = PBXGroup;
+			children = (
+				763C856A26AF9185005164B2 /* GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration.json */,
+				763C856D26AF941C005164B2 /* GraphQLWithLambdaAuthIntegrationTests-awsconfiguration.json */,
+				763C855B26AF8F6C005164B2 /* GraphQLWithLambdaAuthIntegrationTests.swift */,
+				763C856626AF9012005164B2 /* README.md */,
+				763C855D26AF8F6C005164B2 /* Info.plist */,
+			);
+			path = GraphQLWithLambdaAuthIntegrationTests;
+			sourceTree = "<group>";
+		};
 		B478F5F12374DBF400C4F92B = {
 			isa = PBXGroup;
 			children = (
@@ -1086,6 +1150,7 @@
 				2178569F23810B9400A30D19 /* GraphQLWithUserPoolIntegrationTests.xctest */,
 				21409C6723850A9E000A53C9 /* AWSAPICategoryPluginTestCommon.framework */,
 				219A888C23ECF8A400BBC5F2 /* RESTWithUserPoolIntegrationTests.xctest */,
+				763C855926AF8F6C005164B2 /* GraphQLWithLambdaAuthIntegrationTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1277,6 +1342,10 @@
 				7866FCFB5807C2D20219CEBE /* Pods-HostApp-AWSAPICategoryPluginTestCommon-RESTWithIAMIntegrationTests.release.xcconfig */,
 				89457627057299D7047B9C40 /* Pods-HostApp-AWSAPICategoryPluginTestCommon-RESTWithUserPoolIntegrationTests.debug.xcconfig */,
 				53890B4754019D7240753060 /* Pods-HostApp-AWSAPICategoryPluginTestCommon-RESTWithUserPoolIntegrationTests.release.xcconfig */,
+				E5EAC3D70F385D9A6FEBD949 /* Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaIntegrationTests.debug.xcconfig */,
+				7A3751EEA19CC7C101D570CA /* Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaIntegrationTests.release.xcconfig */,
+				709F459B48D0BF516FC4B522 /* Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests.debug.xcconfig */,
+				18B0C6B8A81B8AAC8B22899D /* Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1450,6 +1519,28 @@
 			productReference = 219A888C23ECF8A400BBC5F2 /* RESTWithUserPoolIntegrationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		763C855826AF8F6C005164B2 /* GraphQLWithLambdaAuthIntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 763C856126AF8F6C005164B2 /* Build configuration list for PBXNativeTarget "GraphQLWithLambdaAuthIntegrationTests" */;
+			buildPhases = (
+				2D11AF11AA689BFE11737A47 /* [CP] Check Pods Manifest.lock */,
+				763C855526AF8F6C005164B2 /* Sources */,
+				763C855626AF8F6C005164B2 /* Frameworks */,
+				763C855726AF8F6C005164B2 /* Resources */,
+				FB9995D65246F85FCD067615 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				763C856926AF90B2005164B2 /* PBXTargetDependency */,
+				763C856026AF8F6C005164B2 /* PBXTargetDependency */,
+				763C856526AF8FEF005164B2 /* PBXTargetDependency */,
+			);
+			name = GraphQLWithLambdaAuthIntegrationTests;
+			productName = GraphQLWithLambdaAuthIntegrationTests;
+			productReference = 763C855926AF8F6C005164B2 /* GraphQLWithLambdaAuthIntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		B478F5FA2374DBF400C4F92B /* AWSAPICategoryPlugin */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B478F6032374DBF400C4F92B /* Build configuration list for PBXNativeTarget "AWSAPICategoryPlugin" */;
@@ -1518,7 +1609,7 @@
 		B478F5F22374DBF400C4F92B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1150;
+				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1110;
 				ORGANIZATIONNAME = "Amazon Web Services";
 				TargetAttributes = {
@@ -1544,6 +1635,10 @@
 					};
 					219A888B23ECF8A400BBC5F2 = {
 						CreatedOnToolsVersion = 11.3.1;
+						TestTargetID = B478F6BB2374E0B500C4F92B;
+					};
+					763C855826AF8F6C005164B2 = {
+						CreatedOnToolsVersion = 12.5.1;
 						TestTargetID = B478F6BB2374E0B500C4F92B;
 					};
 					B478F5FA2374DBF400C4F92B = {
@@ -1578,6 +1673,7 @@
 				2178569E23810B9400A30D19 /* GraphQLWithUserPoolIntegrationTests */,
 				2178567F2380C90600A30D19 /* RESTWithIAMIntegrationTests */,
 				219A888B23ECF8A400BBC5F2 /* RESTWithUserPoolIntegrationTests */,
+				763C855826AF8F6C005164B2 /* GraphQLWithLambdaAuthIntegrationTests */,
 				B478F6BB2374E0B500C4F92B /* HostApp */,
 			);
 		};
@@ -1628,10 +1724,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		763C855726AF8F6C005164B2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B478F5F92374DBF400C4F92B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				763C856726AF9012005164B2 /* README.md in Resources */,
+				763C856E26AF941C005164B2 /* GraphQLWithLambdaAuthIntegrationTests-awsconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1646,6 +1751,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				763C856F26AF946C005164B2 /* GraphQLWithLambdaAuthIntegrationTests-awsconfiguration.json in Resources */,
+				763C856C26AF9336005164B2 /* GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration.json in Resources */,
 				219A88A223EE034F00BBC5F2 /* RESTWithUserPoolIntegrationTests-amplifyconfiguration.json in Resources */,
 				21598CE3239FF54E00529F29 /* RESTWithIAMIntegrationTests-amplifyconfiguration.json in Resources */,
 				21233D0B2469EBA000039337 /* GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration.json in Resources */,
@@ -1802,6 +1909,28 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-HostApp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		2D11AF11AA689BFE11737A47 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2254,6 +2383,23 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/AWSAPICategoryPluginIntegrationTests/REST/RESTWithIAMIntegrationTests\"\n";
 		};
+		FB9995D65246F85FCD067615 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		FDD102FD0C405872630B4F56 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2339,6 +2485,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				219A888F23ECF8A400BBC5F2 /* RESTWithUserPoolIntegrationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		763C855526AF8F6C005164B2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				763C855C26AF8F6C005164B2 /* GraphQLWithLambdaAuthIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2560,6 +2714,21 @@
 			isa = PBXTargetDependency;
 			target = 21409C6623850A9E000A53C9 /* AWSAPICategoryPluginTestCommon */;
 			targetProxy = 219A889923ECF91500BBC5F2 /* PBXContainerItemProxy */;
+		};
+		763C856026AF8F6C005164B2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B478F5FA2374DBF400C4F92B /* AWSAPICategoryPlugin */;
+			targetProxy = 763C855F26AF8F6C005164B2 /* PBXContainerItemProxy */;
+		};
+		763C856526AF8FEF005164B2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B478F6BB2374E0B500C4F92B /* HostApp */;
+			targetProxy = 763C856426AF8FEF005164B2 /* PBXContainerItemProxy */;
+		};
+		763C856926AF90B2005164B2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 21409C6623850A9E000A53C9 /* AWSAPICategoryPluginTestCommon */;
+			targetProxy = 763C856826AF90B2005164B2 /* PBXContainerItemProxy */;
 		};
 		B478F6502374DCE700C4F92B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2846,6 +3015,48 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.RESTWithUserPoolIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HostApp.app/HostApp";
+			};
+			name = Release;
+		};
+		763C856226AF8F6C005164B2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 709F459B48D0BF516FC4B522 /* Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests.debug.xcconfig */;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AWSAPICategoryPluginIntegrationTests/GraphQL/GraphQLWithLambdaAuthIntegrationTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.GraphQLWithLambdaAuthIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HostApp.app/HostApp";
+			};
+			name = Debug;
+		};
+		763C856326AF8F6C005164B2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 18B0C6B8A81B8AAC8B22899D /* Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithLambdaAuthIntegrationTests.release.xcconfig */;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AWSAPICategoryPluginIntegrationTests/GraphQL/GraphQLWithLambdaAuthIntegrationTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.GraphQLWithLambdaAuthIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3154,6 +3365,15 @@
 			buildConfigurations = (
 				219A889423ECF8A500BBC5F2 /* Debug */,
 				219A889523ECF8A500BBC5F2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		763C856126AF8F6C005164B2 /* Build configuration list for PBXNativeTarget "GraphQLWithLambdaAuthIntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				763C856226AF8F6C005164B2 /* Debug */,
+				763C856326AF8F6C005164B2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
