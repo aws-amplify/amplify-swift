@@ -187,10 +187,6 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         storageEngineInitSemaphore.signal()
         storageEngine.stopSync { result in
             self.storageEngine = nil
-            if #available(iOS 13.0, *) {
-                self.dataStorePublisher?.sendFinished()
-            }
-            self.dataStorePublisher = nil
             completion(result)
         }
     }
