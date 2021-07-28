@@ -26,19 +26,20 @@ class AuthenticationTokenAuthInterceptor: AuthInterceptor {
             return message
         }
 
-        if case .subscribe = message.messageType {
-            let authHeader = TokenAuthHeader(token: authToken, host: host)
-            var payload = message.payload ?? AppSyncMessage.Payload()
-            payload.authHeader = authHeader
-
-            let signedMessage = AppSyncMessage(
-                id: message.id,
-                payload: payload,
-                type: message.messageType
-            )
-            return signedMessage
+        guard case .subscribe = message.messageType else {
+            return message
         }
-        return message
+
+        let authHeader = TokenAuthHeader(token: authToken, host: host)
+        var payload = message.payload ?? AppSyncMessage.Payload()
+        payload.authHeader = authHeader
+
+        let signedMessage = AppSyncMessage(
+            id: message.id,
+            payload: payload,
+            type: message.messageType
+        )
+        return signedMessage
     }
 
     func interceptConnection(
@@ -71,12 +72,7 @@ class AuthenticationTokenAuthInterceptor: AuthInterceptor {
     }
 
     private func getAuthToken() -> AmplifyAuthTokenProvider.AuthToken? {
-        switch authTokenProvider.getLatestAuthToken() {
-        case .success(let token):
-            return token
-        case .failure:
-            return nil
-        }
+        try? authTokenProvider.getLatestAuthToken().get()
     }
 }
 
