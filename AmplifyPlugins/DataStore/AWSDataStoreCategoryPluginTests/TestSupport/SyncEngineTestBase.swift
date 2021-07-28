@@ -31,7 +31,7 @@ class SyncEngineTestBase: XCTestCase {
 
     var stateMachine: StateMachine<RemoteSyncEngine.State, RemoteSyncEngine.Action>!
 
-    var reachabilityPublisher: CurrentValueSubject<ReachabilityUpdate, Never>?
+    var reachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?
 
     var syncEngine: RemoteSyncEngineBehavior!
 
@@ -65,7 +65,7 @@ class SyncEngineTestBase: XCTestCase {
 
         if let reachabilityPublisher = reachabilityPublisher {
             apiPlugin = MockAPICategoryPlugin(
-                reachabilityPublisher: reachabilityPublisher.eraseToAnyPublisher()
+                reachabilityPublisher: reachabilityPublisher
             )
         } else {
             apiPlugin = MockAPICategoryPlugin()
@@ -119,7 +119,7 @@ class SyncEngineTestBase: XCTestCase {
                                       initialSyncOrchestratorFactory: initialSyncOrchestratorFactory,
                                       reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
                                       stateMachine: stateMachine,
-                                      networkReachabilityPublisher: reachabilityPublisher?.eraseToAnyPublisher(),
+                                      networkReachabilityPublisher: reachabilityPublisher,
                                       requestRetryablePolicy: requestRetryablePolicy)
         remoteSyncEngineSink = syncEngine
             .publisher

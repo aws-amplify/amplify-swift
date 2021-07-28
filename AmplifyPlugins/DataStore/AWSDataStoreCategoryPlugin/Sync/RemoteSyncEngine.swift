@@ -44,8 +44,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     /// Synchronizes startup operations
-    private let workQueue = DispatchQueue(label: "com.amazonaws.RemoteSyncEngineOperationQueue",
-                                          target: DispatchQueue.global())
+    let workQueue = DispatchQueue(label: "com.amazonaws.RemoteSyncEngineOperationQueue",
+                                  target: DispatchQueue.global())
 
     // Assigned at `setUpCloudSubscriptions`
     var reconciliationQueue: IncomingEventReconciliationQueue?
@@ -89,7 +89,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             AWSIncomingEventReconciliationQueue.init(modelSchemas:api:storageAdapter:syncExpressions:auth:authModeStrategy:modelReconciliationQueueFactory:)
 
         let initialSyncOrchestratorFactory = initialSyncOrchestratorFactory ??
-        AWSInitialSyncOrchestrator.init(dataStoreConfiguration:authModeStrategy:api:reconciliationQueue:storageAdapter:)
+            AWSInitialSyncOrchestrator.init(dataStoreConfiguration:authModeStrategy:api:reconciliationQueue:storageAdapter:)
 
         let resolver = RemoteSyncEngine.Resolver.resolve(currentState:action:)
         let stateMachine = stateMachine ?? StateMachine(initialState: .notStarted,
@@ -252,11 +252,11 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     private func pauseMutations() {
         log.debug(#function)
-        outgoingMutationQueue.pauseSyncingToCloud()
-
-        remoteSyncTopicPublisher.send(.mutationsPaused)
-        if let storageAdapter = self.storageAdapter {
-            stateMachine.notify(action: .pausedMutationQueue(storageAdapter))
+        outgoingMutationQueue.stopSyncingToCloud {
+            self.remoteSyncTopicPublisher.send(.mutationsPaused)
+            if let storageAdapter = self.storageAdapter {
+                self.stateMachine.notify(action: .pausedMutationQueue(storageAdapter))
+            }
         }
     }
 
@@ -348,23 +348,23 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private func cleanup(error: AmplifyError) {
         reconciliationQueue?.cancel()
         reconciliationQueue = nil
-        outgoingMutationQueue.pauseSyncingToCloud()
-
-        remoteSyncTopicPublisher.send(.cleanedUp)
-        stateMachine.notify(action: .cleanedUp(error))
+        outgoingMutationQueue.stopSyncingToCloud {
+            self.remoteSyncTopicPublisher.send(.cleanedUp)
+            self.stateMachine.notify(action: .cleanedUp(error))
+        }
     }
 
     private func cleanupForTermination() {
         reconciliationQueue?.cancel()
         reconciliationQueue = nil
-        outgoingMutationQueue.pauseSyncingToCloud()
-
-        mutationEventPublisher.cancel()
-
-        remoteSyncTopicPublisher.send(.cleanedUpForTermination)
-        stateMachine.notify(action: .cleanedUpForTermination)
+        outgoingMutationQueue.stopSyncingToCloud {
+            self.mutationEventPublisher.cancel()
+            self.remoteSyncTopicPublisher.send(.cleanedUpForTermination)
+            self.stateMachine.notify(action: .cleanedUpForTermination)
+        }
     }
 
+    /// Must be invoked from workQueue (as in during a `respond` call
     private func notifySyncStarted() {
         resetCurrentAttemptNumber()
         Amplify.Hub.dispatch(to: .dataStore,
@@ -381,6 +381,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         Amplify.Hub.dispatch(to: .dataStore, payload: networkStatusEventPayload)
     }
 
+    /// Must be invoked from workQueue (as during a `respond` call)
     func cancelEmitters() {
         syncEventEmitter = nil
         readyEventEmitter = nil

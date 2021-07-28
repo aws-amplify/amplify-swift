@@ -16,6 +16,8 @@ import Combine
 
 class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
 
+    var reachabilitySubject: CurrentValueSubject<ReachabilityUpdate, Never>!
+
     let dbFile: URL = {
         let tempDir = FileManager.default.temporaryDirectory
         let dbName = "OutgoingMutationQueueNetworkTests.db"
@@ -34,7 +36,8 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
     override func setUpWithError() throws {
         // For this test, we want the network to be initially available. We'll set it to unavailable
         // later in the test to simulate a loss of connectivity after the initial create mutation.
-        reachabilityPublisher = CurrentValueSubject(ReachabilityUpdate(isOnline: true))
+        reachabilitySubject = CurrentValueSubject(ReachabilityUpdate(isOnline: true))
+        reachabilityPublisher = reachabilitySubject.eraseToAnyPublisher()
         try super.setUpWithError()
 
         // Ignore failures -- we don't care if the file didn't exist prior to this test, and if
@@ -61,11 +64,24 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
     /// - Then:
     ///   - The sync engine submits the most recent update to the service
     func testLastMutationSentWhenNoNetwork() throws {
+        // NOTE: The state descriptions in this test are approximate, especially as regards the
+        // values of the MutationEvent table. Processing happens asynchronously, so it is important
+        // to only assert the behavior we care about (which is that the final update happens after
+        // network is restored).
+
+        var cancellables = Set<AnyCancellable>()
+        Amplify
+            .Hub
+            .publisher(for: .dataStore)
+            .print("#####")
+            .sink { print($0) }
+            .store(in: &cancellables)
+
         var post = Post(title: "Test", content: "Newly created", createdAt: .now())
         let expectedFinalContent = "FINAL UPDATE"
         let version = AtomicValue(initialValue: 0)
 
-        // We expect 2 network available notifications: the initial notification sent from the
+        // We expect 2 "network available" notifications: the initial notification sent from the
         // RemoteSyncEngine when it first `start()`s and subscribes to the reachability publisher,
         // and the notification after we restore connectivity later in the test.
         let shouldFulfillNetworkAvailableAgain = AtomicValue(initialValue: false)
@@ -114,8 +130,8 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
             listenerDelay: 0.25
         )
 
-        // Once we've rejected one mutation due to an unreachable network, we'll allow subsequent
-        // mutations to succeed. This is where we will assert that we've seen the last mutation
+        // Once we've rejected some mutations due to an unreachable network, we'll allow the final
+        // mutation to succeed. This is where we will assert that we've seen the last mutation
         // to be processed
         let expectedFinalContentReceived = expectation(description: "expectedFinalContentReceived")
         let acceptSubsequentMutations = setUpSubsequentMutationRequestResponder(
@@ -125,103 +141,105 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
             incrementing: version
         )
 
+        // Start by accepting the initial "create" mutation
         apiPlugin.responders = [.mutateRequestListener: acceptInitialMutation]
 
         try startAmplifyAndWaitForSync()
 
         // Save initial model
-        let saved1 = expectation(description: "saved1")
+        let createdNewItem = expectation(description: "createdNewItem")
         Amplify.DataStore.save(post) {
             if case .failure(let error) = $0 {
                 XCTAssertNil(error)
             } else {
-                saved1.fulfill()
+                createdNewItem.fulfill()
             }
         }
 
-        wait(for: [saved1, apiRespondedWithSuccess], timeout: 0.1)
+        wait(for: [createdNewItem, apiRespondedWithSuccess], timeout: 0.1)
 
-        // "Turn off" network and set up responder to reject subsequent requests. Notify each
-        // subscription listener of a connection error, which will cause the state machine to
-        // clean up.
+        // Set the responder to reject the mutation. Make sure to push a retry advice before sending
+        // a new mutation.
+        apiPlugin.responders = [.mutateRequestListener: rejectMutationsWithRetriableError]
+
+        // NOTE: This policy is not used by the SyncMutationToCloudOperation, only by the
+        // RemoteSyncEngine. TODO: Make the RetryAdvice used by the SyncMutationToCloudOperation
+        // injectabl so we have control over it.
         requestRetryablePolicy
             .pushOnRetryRequestAdvice(
                 response: RequestRetryAdvice(
                     shouldRetry: true,
-                    retryInterval: .milliseconds(10)
+                    retryInterval: .seconds(100)
                 )
             )
-        apiPlugin.responders = [.mutateRequestListener: rejectMutationsWithRetriableError]
-        reachabilityPublisher?.send(ReachabilityUpdate(isOnline: false))
-        wait(for: [networkUnavailable], timeout: 0.1)
+
+        // We expect this to be picked up by the OutgoingMutationQueue since the network is still
+        // available. However, the mutation will be rejected with a retriable error. That retry
+        // will be scheduled and probably in "waiting" mode when we send the network unavailable
+        // notification below.
+        post.content = "Update 1"
+        let savedUpdate1 = expectation(description: "savedUpdate1")
+        Amplify.DataStore.save(post) {
+            if case .failure(let error) = $0 {
+                XCTAssertNil(error)
+            } else {
+                savedUpdate1.fulfill()
+            }
+        }
+        wait(for: [savedUpdate1], timeout: 0.1)
+
+        // At this point, the MutationEvent table (the backing store for the outgoing mutation
+        // queue) has only a record for the interim update. It is marked as `inProcess: true`,
+        // because the mutation queue is operational and will have picked up the item and attempted
+        // to sync it to the cloud.
+
+        // "Turn off" network. The `mockSendCompletion` notifies each subscription listener of a
+        // connection error, which will cause the state machine to clean up. As part of cleanup,
+        // the RemoteSyncEngine will stop the outgoing mutation queue. We will set the retry
+        // advice interval to be very high, so it will be preempted by the "network available"
+        // message we send later.
+
+        reachabilitySubject.send(ReachabilityUpdate(isOnline: false))
         let noNetworkCompletion = Subscribers
             .Completion<DataStoreError>
             .failure(.sync("Test", "test", connectionError))
         MockAWSIncomingEventReconciliationQueue.mockSendCompletion(completion: noNetworkCompletion)
 
-        // Submit multiple mutations
+        // Assert that DataStore has pushed the no-network event. This isn't strictly necessary for
+        // correct operation of the queue.
+        wait(for: [networkUnavailable], timeout: 0.1)
 
-        // We expect this to be picked up by the OutgoingMutationQueue right away, but even though
-        // the local store updates, the sync won't be able to complete because the network is not
-        // available. Syncing all happens on a background queue, which means we can continue to
-        // save updates (and thus enqueue outgoing mutations for processing) locally.
-        post.content = "Initial updated content"
-        let savedInitialUpdate = expectation(description: "savedInitialUpdate")
+        // At this point, the MutationEvent table has only a record for update1. It is marked as
+        // `inProcess: false`, because the mutation queue has been fully cancelled by the cleanup
+        // process.
+
+        // Submit two more mutations. The second mutation will overwrite the "initial updated
+        // content" record with new "interim" content. Neither of those will be processed by the
+        // outgoing mutation queue, since the network is not available and the OutgoingMutationQueue
+        // was stopped during cleanup above.
+
+        // We expect this to be written to the queue, overwriting the existing initial update. We
+        // also expect that it will be overwritten by the next mutation, without ever being synced
+        // to the service.
+        post.content = "Update 2"
+        let savedUpdate2 = expectation(description: "savedUpdate2")
         Amplify.DataStore.save(post) {
             if case .failure(let error) = $0 {
                 XCTAssertNil(error)
             } else {
-                savedInitialUpdate.fulfill()
+                savedUpdate2.fulfill()
             }
         }
-        wait(for: [savedInitialUpdate], timeout: 0.1)
+        wait(for: [savedUpdate2], timeout: 0.1)
 
-        // We expect this to be written to the queue as a new record. We also expect that it will
-        // be overwritten by the next mutation, without ever being synced to the service.
-        post.content = "Interim content"
-        let savedInterimUpdate = expectation(description: "savedInterimUpdate")
-        Amplify.DataStore.save(post) {
-            if case .failure(let error) = $0 {
-                XCTAssertNil(error)
-            } else {
-                savedInterimUpdate.fulfill()
-            }
-        }
-        wait(for: [savedInterimUpdate], timeout: 0.1)
-
-        // Send another "no network" error to trigger a cleanup
-        requestRetryablePolicy
-            .pushOnRetryRequestAdvice(
-                response: RequestRetryAdvice(
-                    shouldRetry: true,
-                    retryInterval: .milliseconds(10)
-                )
-            )
-        MockAWSIncomingEventReconciliationQueue.mockSendCompletion(completion: noNetworkCompletion)
-
-        // TODO: make the retry advice used by the outgoing mutation event injectable, so we don't
-        // have to wait an arbitrary amount of time for the exponential backoff to grow to the point
-        // where we're comfortable the in-process mutation will be sitting in the pending state.
-        let timerExpired = expectation(description: "timerExpired")
-        DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(5)) {
-            timerExpired.fulfill()
-        }
-        wait(for: [timerExpired], timeout: 6.0)
-
-        // BUG BEGINS MANIFESTING HERE
-
-        // At this point, the MutationEvent table (the backing store for the outgoing mutation
-        // queue) has two records. The first is the initial update, the second is the "interim"
-        // update. Both are marked as `inProcess: false`, even though the initial update is actually
-        // in-process as an operation on the outgoing mutation processor's OperationQueue, waiting
-        // for the network to resume or for the retry period to expire.
+        // At this point, the MutationEvent table has only a record for update2. It is marked as
+        // `inProcess: false`, because the mutation queue has been fully cancelled.
 
         // Write another mutation. The current disposition behavior is that the system detects
         // a not-in-process mutation in the queue, and overwrites it with this data. The
         // reconciliation logic drops all but the oldest not-in-process mutations, which means that
-        // after the reconciliation completes, there will be one record in the MutationEvent table.
-        // It will have the ID of the initial update, but the content of the final update. The
-        // record for the interim update has been deleted.
+        // even if there were multiple not-in-process mutations, after the reconciliation completes
+        // there would only be one record in the MutationEvent table.
         post.content = expectedFinalContent
         let savedFinalUpdate = expectation(description: "savedFinalUpdate")
         Amplify.DataStore.save(post) {
@@ -234,17 +252,14 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         wait(for: [savedFinalUpdate], timeout: 0.1)
 
         // Turn on network. This will preempt the retry timer and immediately start processing
-        // the queue. We expect the initial mutation to be processed, along with the last one.
+        // the queue. We expect the mutation queue to restart, poll the MutationEvent table, pick
+        // up the final update, and process it.
         apiPlugin.responders = [.mutateRequestListener: acceptSubsequentMutations]
-        reachabilityPublisher?.send(ReachabilityUpdate(isOnline: true))
+        reachabilitySubject.send(ReachabilityUpdate(isOnline: true))
         wait(for: [networkAvailableAgain], timeout: 5.0)
 
-        // Once the initial update completes, the Operation deletes itself from the MutationEvent
-        // queue. However, the data in that MutationEvent record *actually* corresponds to the
-        // final update, not the initial update, meaning all subsequent data is lost.
-
         // Assert last mutation is sent
-        wait(for: [expectedFinalContentReceived], timeout: 1.0)
+        wait(for: [expectedFinalContentReceived], timeout: 5.0)
 
         Amplify.Hub.removeListener(networkStatusListener)
     }
@@ -323,3 +338,4 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
     }
 
 }
+

@@ -141,7 +141,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             receivedSubscription.fulfill()
         }
         stateMachine.state = .starting(apiBehavior, publisher)
-        wait(for: [receivedSubscription], timeout: 200)
+        wait(for: [receivedSubscription], timeout: 0.1)
 
         //Mock incoming mutation event
         let post = Post(title: "title",
@@ -167,32 +167,27 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         apiBehavior.responders[.mutateRequestListener] = responder
 
         stateMachine.state = .requestingEvent
-        wait(for: [enqueueEvent, mutateAPICallExpecation], timeout: 200)
+        wait(for: [enqueueEvent, mutateAPICallExpecation], timeout: 0.1)
 
-        // While we are expecting the mutationEvent to be processed by making an API call.
-        // pause the mutation queue.  Note that we are not testing that the operation
-        // actually gets paused, the purpose of this test is to test the state transition
+        // While we are expecting the mutationEvent to be processed by making an API call,
+        // stop the mutation queue. Note that we are not testing that the operation
+        // actually gets cancelled, the purpose of this test is to test the state transition
         // when we call startSyncingToCloud()
-        mutationQueue.pauseSyncingToCloud()
+        let mutationQueueStopped = expectation(description: "mutationQueueStopped")
+        mutationQueue.stopSyncingToCloud { mutationQueueStopped.fulfill() }
 
         //Re-enable syncing
-        let startRecievedAgain = expectation(description: "Start recieved again")
-        let resumeSyncingToCloud = expectation(description: "Resume sync to cloud")
+        let startReceivedAgain = expectation(description: "Start received again")
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedStart(self.apiBehavior,
                                                                               self.publisher))
-            startRecievedAgain.fulfill()
-        }
-        stateMachine.pushExpectActionCriteria { action in
-            XCTAssertEqual(action, OutgoingMutationQueue.Action.resumedSyncingToCloud)
-            resumeSyncingToCloud.fulfill()
+            startReceivedAgain.fulfill()
         }
 
         mutationQueue.startSyncingToCloud(api: apiBehavior,
                                           mutationEventPublisher: publisher)
-        stateMachine.state = .resumingMutationQueue
 
-        wait(for: [startRecievedAgain, resumeSyncingToCloud], timeout: 1)
+        wait(for: [startReceivedAgain], timeout: 1)
 
         //After - enabling, mock the callback from API to be completed
         let processEvent = expectation(description: "state requestingEvent, processedEvent")
@@ -219,15 +214,13 @@ extension OutgoingMutationQueue.State: Equatable {
         switch (lhs, rhs) {
         case (.notInitialized, notInitialized):
             return true
-        case (.notStarted, .notStarted):
+        case (.stopped, .stopped):
             return true
         case (.starting, .starting):
             return true
         case (.requestingEvent, .requestingEvent):
             return true
         case (.waitingForEventToProcess, .waitingForEventToProcess):
-            return true
-        case (.finished, .finished):
             return true
         case (.inError, .inError):
             return true
@@ -250,9 +243,7 @@ extension OutgoingMutationQueue.Action: Equatable {
             return true
         case (.processedEvent, .processedEvent):
             return true
-        case (.receivedCancel, .receivedCancel):
-            return true
-        case (.resumedSyncingToCloud, .resumedSyncingToCloud):
+        case (.receivedStop, .receivedStop):
             return true
         case (.errored, .errored):
             return true

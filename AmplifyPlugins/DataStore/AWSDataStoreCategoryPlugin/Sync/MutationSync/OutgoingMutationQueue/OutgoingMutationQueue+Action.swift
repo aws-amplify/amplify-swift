@@ -21,10 +21,12 @@ extension OutgoingMutationQueue {
         // Event loop
         case enqueuedEvent
         case processedEvent
-        case resumedSyncingToCloud
+
+        // Wrap-up
+        case receivedStop(BasicClosure)
+        case doneStopping
 
         // Terminal actions
-        case receivedCancel
         case errored(AmplifyError)
 
         var displayName: String {
@@ -37,10 +39,10 @@ extension OutgoingMutationQueue {
                 return "initialized"
             case .processedEvent:
                 return "processedEvent"
-            case .resumedSyncingToCloud:
-                return "resumedSyncingToCloud"
-            case .receivedCancel:
-                return "receivedCancel"
+            case .receivedStop:
+                return "receivedStop"
+            case .doneStopping:
+                return "doneStopping"
             case .receivedStart:
                 return "receivedStart"
             case .receivedSubscription:
