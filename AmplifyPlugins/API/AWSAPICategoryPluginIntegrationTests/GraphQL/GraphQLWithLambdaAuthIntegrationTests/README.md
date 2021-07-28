@@ -22,8 +22,8 @@ The following steps demonstrate how to set up an GraphQL endpoint with AppSync. 
 4. Copy `amplifyconfiguration.json` over as `GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration.json`
 5. Replace the authorization type `API_KEY` with  `AWS_LAMBDA` in `GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration.json` 
 
-6. Run `amplify console` top open the AWS Console and choose Lambda.
-7. Create a new Lambda function called "AuthorizerLambda" with the following content
+6. Run `amplify console` to open the AWS Console
+7. Select `AWS Lambda` and create a new Lambda function called "AuthorizerLambda" with the following content
 ```
 exports.handler = async (event) => {
     console.log(`auth event >`, JSON.stringify(event, null, 2))
@@ -39,7 +39,7 @@ exports.handler = async (event) => {
     return response
 };
 ```
-8. still in the AWSConsole, go to AppSync, select your app
+8. still in the AWSConsole, navigate to `AWS AppSync` and select the app you've created before
 9. In the "Settings" panel under "Default authorization mode", set the authorization type as `AWS Lambda` and select the newly created Lambda function
 
 Note: steps 4..9 should be updated when the CLI supports this new authorization type.
