@@ -75,6 +75,36 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
+    
+    /// Test paginated query
+    ///
+    /// - Given:  paginated query request
+    /// - When:
+    ///    - Call API.query
+    /// - Then:
+    ///    - The operation completes successfully with no errors and a list of todos in response
+    ///
+    func testQueryTodos() {
+        let completeInvoked = expectation(description: "request completed")
+        let sink = Amplify.API.query(request: .paginatedList(Todo.self))
+            .resultPublisher
+            .sink {
+                if case let .failure(error) = $0 {
+                    XCTFail("Query failure with error \(error)")
+                }
+            }
+            receiveValue: {
+                switch $0 {
+                case .failure(let error):
+                    XCTFail("Received failure \(error)")
+                case .success(let result):
+                    XCTAssertNotNil(result)
+                    completeInvoked.fulfill()
+                }
+            }
+        XCTAssertNotNil(sink)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+    }
 
     /// A subscription to onCreate todo should receive an event for each create Todo mutation API called
     ///
