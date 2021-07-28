@@ -174,7 +174,12 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         // actually gets cancelled, the purpose of this test is to test the state transition
         // when we call startSyncingToCloud()
         let mutationQueueStopped = expectation(description: "mutationQueueStopped")
-        mutationQueue.stopSyncingToCloud { mutationQueueStopped.fulfill() }
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedStop {})
+            mutationQueueStopped.fulfill()
+        }
+        mutationQueue.stopSyncingToCloud { }
+        wait(for: [mutationQueueStopped], timeout: 0.1)
 
         //Re-enable syncing
         let startReceivedAgain = expectation(description: "Start received again")

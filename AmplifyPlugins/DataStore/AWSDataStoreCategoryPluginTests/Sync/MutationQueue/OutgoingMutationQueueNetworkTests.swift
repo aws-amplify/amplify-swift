@@ -69,14 +69,6 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // to only assert the behavior we care about (which is that the final update happens after
         // network is restored).
 
-        var cancellables = Set<AnyCancellable>()
-        Amplify
-            .Hub
-            .publisher(for: .dataStore)
-            .print("#####")
-            .sink { print($0) }
-            .store(in: &cancellables)
-
         var post = Post(title: "Test", content: "Newly created", createdAt: .now())
         let expectedFinalContent = "FINAL UPDATE"
         let version = AtomicValue(initialValue: 0)
