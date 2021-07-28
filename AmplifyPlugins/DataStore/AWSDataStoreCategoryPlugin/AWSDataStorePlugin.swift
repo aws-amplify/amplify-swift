@@ -176,6 +176,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     public func reset(onComplete: @escaping (() -> Void)) {
         let group = DispatchGroup()
         if let resettable = storageEngine as? Resettable {
+            log.verbose("Resetting storageEngine")
             group.enter()
             DispatchQueue.global().async {
                 resettable.reset {

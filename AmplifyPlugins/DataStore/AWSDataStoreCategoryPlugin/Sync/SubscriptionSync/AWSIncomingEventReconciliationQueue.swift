@@ -185,6 +185,7 @@ extension AWSIncomingEventReconciliationQueue: Resettable {
             guard let queue = queue as? Resettable else {
                 continue
             }
+            Amplify.log.verbose("Resetting reconciliationQueue")
             group.enter()
             DispatchQueue.global().async {
                 queue.reset { group.leave() }
@@ -193,6 +194,7 @@ extension AWSIncomingEventReconciliationQueue: Resettable {
 
         group.enter()
         DispatchQueue.global().async {
+            Amplify.log.verbose("Resetting reconcileAndSaveQueue")
             self.reconcileAndSaveQueue.cancelAllOperations()
             self.reconcileAndSaveQueue.waitUntilOperationsAreFinished()
             group.leave()

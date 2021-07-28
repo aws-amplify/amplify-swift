@@ -14,6 +14,7 @@ extension AuthorizationProviderAdapter: Resettable {
         // and then invoke reset on the awsmobileClient.
         awsMobileClient.removeUserStateListener(self)
         if let resettable = awsMobileClient as? Resettable {
+            log.verbose("Resetting awsMobileClient")
             resettable.reset(onComplete: onComplete)
         } else {
             onComplete()

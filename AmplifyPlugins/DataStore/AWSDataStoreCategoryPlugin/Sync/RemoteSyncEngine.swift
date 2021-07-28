@@ -386,26 +386,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         syncEventEmitter = nil
         readyEventEmitter = nil
     }
-
-    func reset(onComplete: () -> Void) {
-        let group = DispatchGroup()
-
-        group.enter()
-
-        let mirror = Mirror(reflecting: self)
-        for child in mirror.children {
-            if let resettable = child.value as? Resettable {
-                DispatchQueue.global().async {
-                    resettable.reset {
-                        group.leave()
-                    }
-                }
-            }
-        }
-
-        group.wait()
-        onComplete()
-    }
 }
 
 @available(iOS 13.0, *)
@@ -427,5 +407,33 @@ extension RemoteSyncEngine: AuthModeStrategyDelegate {
         }
 
         return auth?.getCurrentUser() != nil
+    }
+}
+
+@available(iOS 13.0, *)
+extension RemoteSyncEngine: Resettable {
+    func reset(onComplete: @escaping BasicClosure) {
+        let group = DispatchGroup()
+
+        let mirror = Mirror(reflecting: self)
+        for child in mirror.children {
+            guard child.label != "api" else {
+                log.verbose("Not resetting API category from RemoteSyncEngine")
+                continue
+            }
+
+            if let resettable = child.value as? Resettable {
+                group.enter()
+                log.verbose("Resetting \(child.label ?? "some child")")
+                DispatchQueue.global().async {
+                    resettable.reset {
+                        group.leave()
+                    }
+                }
+            }
+        }
+
+        group.wait()
+        onComplete()
     }
 }

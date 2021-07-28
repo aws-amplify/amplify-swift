@@ -151,6 +151,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         subscription = nil
         operationQueue.cancelAllOperations()
         operationQueue.isSuspended = true
+        operationQueue.waitUntilAllOperationsAreFinished()
         stateMachine.notify(action: .doneStopping)
         completion()
     }
@@ -354,6 +355,13 @@ extension OutgoingMutationQueue: Subscriber {
     func receive(completion: Subscribers.Completion<DataStoreError>) {
         log.verbose(#function)
         subscription?.cancel()
+    }
+}
+
+@available(iOS 13.0, *)
+extension OutgoingMutationQueue: Resettable {
+    func reset(onComplete: @escaping BasicClosure) {
+        doStop(completion: onComplete)
     }
 }
 

@@ -210,12 +210,14 @@ extension AWSModelReconciliationQueue: DefaultLogger { }
 @available(iOS 13.0, *)
 extension AWSModelReconciliationQueue: Resettable {
 
-    func reset(onComplete: () -> Void) {
+    func reset(onComplete: @escaping BasicClosure) {
         let group = DispatchGroup()
 
+        log.verbose("Resetting incomingEventsSink")
         incomingEventsSink?.cancel()
 
         if let resettable = incomingSubscriptionEvents as? Resettable {
+            log.verbose("Resetting incomingSubscriptionEvents")
             group.enter()
             DispatchQueue.global().async {
                 resettable.reset { group.leave() }
@@ -224,6 +226,7 @@ extension AWSModelReconciliationQueue: Resettable {
 
         group.enter()
         DispatchQueue.global().async {
+            self.log.verbose("Cancelling incomingSubscriptionEventQueue")
             self.incomingSubscriptionEventQueue.cancelAllOperations()
             self.incomingSubscriptionEventQueue.waitUntilAllOperationsAreFinished()
             group.leave()

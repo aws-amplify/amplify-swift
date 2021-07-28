@@ -363,24 +363,6 @@ final class StorageEngine: StorageEngineBehavior {
         }
     }
 
-    func reset(onComplete: () -> Void) {
-        // TOOD: Perform cleanup on StorageAdapter, including releasing its `Connection` if needed
-        let group = DispatchGroup()
-        if #available(iOS 13.0, *) {
-
-            if let resettable = syncEngine as? Resettable {
-                group.enter()
-                DispatchQueue.global().async {
-                    resettable.reset {
-                        group.leave()
-                    }
-                }
-            }
-        }
-        group.wait()
-        onComplete()
-    }
-
     @available(iOS 13.0, *)
     private func syncDeletions<M: Model>(of modelType: M.Type,
                                          modelSchema: ModelSchema,
@@ -567,6 +549,27 @@ final class StorageEngine: StorageEngineBehavior {
                 })
     }
 
+}
+
+extension StorageEngine: Resettable {
+    func reset(onComplete: @escaping BasicClosure) {
+        // TOOD: Perform cleanup on StorageAdapter, including releasing its `Connection` if needed
+        let group = DispatchGroup()
+        if #available(iOS 13.0, *) {
+
+            if let resettable = syncEngine as? Resettable {
+                log.verbose("Resetting syncEngine")
+                group.enter()
+                DispatchQueue.global().async {
+                    resettable.reset {
+                        group.leave()
+                    }
+                }
+            }
+        }
+        group.wait()
+        onComplete()
+    }
 }
 
 extension StorageEngine: DefaultLogger { }
