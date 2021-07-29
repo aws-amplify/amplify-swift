@@ -16,7 +16,7 @@ private struct EncodableStruct: Encodable {
 
 }
 
-class AnyEncodableTests: XCTest {
+class AnyEncodableTests: XCTestCase {
 
     /// - Given: a struct that comforms to `Encodable`
     /// - When:
