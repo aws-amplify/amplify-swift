@@ -12,7 +12,7 @@ extension AWSCognitoAuthPlugin {
     public func reset(onComplete: @escaping BasicClosure) {
 
         if let resettable = authorizationProvider as? Resettable {
-            log.verbose("Resetting authorizationProvider")
+            Amplify.log.verbose("Resetting authorizationProvider")
             resettable.reset { [weak self] in
                 self?.completeReset(onComplete: onComplete)
             }
