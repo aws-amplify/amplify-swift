@@ -52,7 +52,7 @@ class AWSDataStoreMultiAuthBaseTest: XCTestCase {
     }
 
     override func tearDownWithError() throws {
-        sleep(2)
+        sleep(5)
         Amplify.reset()
     }
 
@@ -181,29 +181,33 @@ extension AWSDataStoreMultiAuthBaseTest {
                               expectedModelSynced: Int = 1) {
         var modelSyncedCount = 0
         let dataStoreEvents = HubPayload.EventName.DataStore.self
-        _ = Amplify.Hub.listen(to: .dataStore) { event in
-            // subscription fulfilled
-            if event.eventName == dataStoreEvents.subscriptionsEstablished {
-                expectations.subscriptionsEstablished.fulfill()
-            }
+        let cancellable = Amplify
+            .Hub
+            .publisher(for: .dataStore)
+            .sink { event in
+                // subscription fulfilled
+                if event.eventName == dataStoreEvents.subscriptionsEstablished {
+                    expectations.subscriptionsEstablished.fulfill()
+                }
 
-            // syncQueryReady fulfilled
-            if event.eventName == dataStoreEvents.modelSynced {
-                modelSyncedCount += 1
-                if modelSyncedCount == expectedModelSynced {
-                    expectations.modelsSynced.fulfill()
+                // syncQueryReady fulfilled
+                if event.eventName == dataStoreEvents.modelSynced {
+                    modelSyncedCount += 1
+                    if modelSyncedCount == expectedModelSynced {
+                        expectations.modelsSynced.fulfill()
+                    }
+                }
+
+                if event.eventName == dataStoreEvents.ready {
+                    expectations.ready.fulfill()
                 }
             }
-
-            if event.eventName == dataStoreEvents.ready {
-                expectations.ready.fulfill()
-            }
-        }
         Amplify.DataStore.start { _ in }
         wait(for: [expectations.subscriptionsEstablished,
                    expectations.modelsSynced,
                    expectations.ready],
              timeout: 60)
+        cancellable.cancel()
     }
 
     /// Assert that a save and a delete mutation complete successfully.
