@@ -220,22 +220,16 @@ extension AWSModelReconciliationQueue: Resettable {
         if let resettable = incomingSubscriptionEvents as? Resettable {
             log.verbose("Resetting incomingSubscriptionEvents")
             group.enter()
-            DispatchQueue.global().async {
-                resettable.reset {
-                    self.log.verbose("Resetting incomingSubscriptionEvents: finished")
-                    group.leave()
-                }
+            resettable.reset {
+                self.log.verbose("Resetting incomingSubscriptionEvents: finished")
+                group.leave()
             }
         }
 
-        group.enter()
-        DispatchQueue.global().async {
-            self.log.verbose("Resetting incomingSubscriptionEventQueue")
-            self.incomingSubscriptionEventQueue.cancelAllOperations()
-            self.incomingSubscriptionEventQueue.waitUntilAllOperationsAreFinished()
-            self.log.verbose("Resetting incomingSubscriptionEventQueue: finished")
-            group.leave()
-        }
+        log.verbose("Resetting incomingSubscriptionEventQueue")
+        incomingSubscriptionEventQueue.cancelAllOperations()
+        incomingSubscriptionEventQueue.waitUntilAllOperationsAreFinished()
+        log.verbose("Resetting incomingSubscriptionEventQueue: finished")
 
         group.wait()
 

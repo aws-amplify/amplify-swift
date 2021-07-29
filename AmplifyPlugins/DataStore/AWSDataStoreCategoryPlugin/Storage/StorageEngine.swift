@@ -555,19 +555,15 @@ extension StorageEngine: Resettable {
     func reset(onComplete: @escaping BasicClosure) {
         // TOOD: Perform cleanup on StorageAdapter, including releasing its `Connection` if needed
         let group = DispatchGroup()
-        if #available(iOS 13.0, *) {
-
-            if let resettable = syncEngine as? Resettable {
-                log.verbose("Resetting syncEngine")
-                group.enter()
-                DispatchQueue.global().async {
-                    resettable.reset {
-                        self.log.verbose("Resetting syncEngine: finished")
-                        group.leave()
-                    }
-                }
+        if #available(iOS 13.0, *), let resettable = syncEngine as? Resettable {
+            log.verbose("Resetting syncEngine")
+            group.enter()
+            resettable.reset {
+                self.log.verbose("Resetting syncEngine: finished")
+                group.leave()
             }
         }
+
         group.wait()
         onComplete()
     }

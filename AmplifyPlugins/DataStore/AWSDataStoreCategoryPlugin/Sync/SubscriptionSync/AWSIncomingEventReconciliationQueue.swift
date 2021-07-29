@@ -192,25 +192,19 @@ extension AWSIncomingEventReconciliationQueue: Resettable {
             }
             Amplify.log.verbose("Resetting reconciliationQueue")
             group.enter()
-            DispatchQueue.global().async {
-                queue.reset {
-                    Amplify.log.verbose("Resetting reconciliationQueue: finished")
-                    group.leave()
-                }
+            queue.reset {
+                Amplify.log.verbose("Resetting reconciliationQueue: finished")
+                group.leave()
             }
         }
 
-        group.enter()
-        DispatchQueue.global().async {
-            Amplify.log.verbose("Resetting reconcileAndSaveQueue")
-            self.reconcileAndSaveQueue.cancelAllOperations()
-            self.reconcileAndSaveQueue.waitUntilOperationsAreFinished()
-            Amplify.log.verbose("Resetting reconcileAndSaveQueue: finished")
-            group.leave()
-        }
+        Amplify.log.verbose("Resetting reconcileAndSaveQueue")
+        reconcileAndSaveQueue.cancelAllOperations()
+        reconcileAndSaveQueue.waitUntilOperationsAreFinished()
+        Amplify.log.verbose("Resetting reconcileAndSaveQueue: finished")
 
-        group.enter()
         Amplify.log.verbose("Cancelling AWSIncomingEventReconciliationQueue")
+        group.enter()
         cancel {
             Amplify.log.verbose("Cancelling AWSIncomingEventReconciliationQueue: finished")
             group.leave()

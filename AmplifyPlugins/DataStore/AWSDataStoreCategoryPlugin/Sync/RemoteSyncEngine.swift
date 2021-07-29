@@ -427,11 +427,9 @@ extension RemoteSyncEngine: Resettable {
             if let resettable = child.value as? Resettable {
                 group.enter()
                 log.verbose("Resetting \(label)")
-                DispatchQueue.global().async {
-                    resettable.reset {
-                        self.log.verbose("Resetting \(label): finished")
-                        group.leave()
-                    }
+                resettable.reset {
+                    self.log.verbose("Resetting \(label): finished")
+                    group.leave()
                 }
             }
         }

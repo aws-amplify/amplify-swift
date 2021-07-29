@@ -74,21 +74,17 @@ extension AWSIncomingSubscriptionEventPublisher: Resettable {
 
         group.enter()
         Amplify.log.verbose("Resetting asyncEvents")
-        DispatchQueue.global().async {
-            self.asyncEvents.reset {
-                Amplify.log.verbose("Resetting asyncEvents: finished")
-                group.leave()
-            }
+        asyncEvents.reset {
+            Amplify.log.verbose("Resetting asyncEvents: finished")
+            group.leave()
         }
 
         if let mapper = mapper {
             Amplify.log.verbose("Resetting mapper")
             group.enter()
-            DispatchQueue.global().async {
-                mapper.reset {
-                    Amplify.log.verbose("Resetting mapper: finished")
-                    group.leave()
-                }
+            mapper.reset {
+                Amplify.log.verbose("Resetting mapper: finished")
+                group.leave()
             }
         }
 
