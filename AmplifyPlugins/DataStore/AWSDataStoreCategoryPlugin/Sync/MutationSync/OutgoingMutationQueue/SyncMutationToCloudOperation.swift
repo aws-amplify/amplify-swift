@@ -200,13 +200,12 @@ class SyncMutationToCloudOperation: Operation {
         }
 
         // sync version in the mutation event table before calling finish()
-        if case let .success(graphQLResponse) = cloudResult {
-            if case let .success(graphQLResult) = graphQLResponse {
-                MutationEvent.updatePendingMutationEventVersion(for: mutationEvent.modelId,
-                                                                mutationSync: graphQLResult,
-                                                                storageAdapter: storageAdapter) { result in
-                    self.log.verbose("\(#function) received result after syncing version from API: \(result)")
-                }
+        if case let .success(graphQLResponse) = cloudResult,
+           case let .success(graphQLResult) = graphQLResponse {
+            MutationEvent.updatePendingMutationEventVersion(for: mutationEvent.modelId,
+                                                            mutationSync: graphQLResult,
+                                                            storageAdapter: storageAdapter) { result in
+                self.log.verbose("\(#function) received result after syncing version from API: \(result)")
             }
         }
 
@@ -313,7 +312,7 @@ extension MutationEvent {
     static func updatePendingMutationEventVersion(for modelId: Model.Identifier,
                                                   mutationSync: MutationSync<AnyModel>,
                                                   storageAdapter: StorageEngineAdapter,
-                                                  completion: @escaping DataStoreCallback<[MutationEvent]>) {
+                                                  completion: @escaping DataStoreCallback<Void>) {
         MutationEvent.pendingMutationEvents(
             for: modelId,
             storageAdapter: storageAdapter) { queryResult in
@@ -321,11 +320,9 @@ extension MutationEvent {
             case .failure(let dataStoreError):
                 completion(.failure(dataStoreError))
             case .success(let localMutationEvents):
-                guard !localMutationEvents.isEmpty, var existingEvent = localMutationEvents.first else {
-                    completion(.failure(
-                                DataStoreError.unknown(
-                                    "Mutation event table doesn't have mutation events with model id : \(modelId)",
-                                    "")))
+                guard var existingEvent = localMutationEvents.first else {
+                    Amplify.log.verbose(
+                        "\(#function) Mutation event table doesn't have mutation events with model id : \(modelId)")
                     break
                 }
 
@@ -334,8 +331,8 @@ extension MutationEvent {
                     switch result {
                     case .failure(let dataStoreError):
                         completion(.failure(dataStoreError))
-                    case .success(let savedMutationEvent):
-                        completion(.success([savedMutationEvent]))
+                    case .success:
+                        completion(.success(()))
                     }
                 }
             }

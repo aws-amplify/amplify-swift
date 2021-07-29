@@ -168,6 +168,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
 
             if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
                 XCTAssertEqual(post, newPost)
+                XCTAssertEqual(mutationEvent.version, 2)
                 deleteSyncReceived.fulfill()
                 return
             }
@@ -223,6 +224,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
                     XCTAssertEqual(post.model["content"] as? String, newPost.content)
                     XCTAssertEqual(post.model["rating"] as? Double, newPost.rating)
                     XCTAssertTrue(post.syncMetadata.deleted)
+                    XCTAssertEqual(post.syncMetadata.version, 2)
                     apiQuerySuccess.fulfill()
                 case .failure(let error):
                     XCTFail("Error: \(error)")
@@ -283,6 +285,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
 
             if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
                 XCTAssertEqual(post, updatedPost)
+                XCTAssertEqual(mutationEvent.version, 3)
                 deleteSyncReceived.fulfill()
                 return
             }
@@ -352,6 +355,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
                     XCTAssertEqual(post.model["content"] as? String, updatedPost.content)
                     XCTAssertEqual(post.model["rating"] as? Double, updatedPost.rating)
                     XCTAssertTrue(post.syncMetadata.deleted)
+                    XCTAssertEqual(post.syncMetadata.version, 3)
                     apiQuerySuccess.fulfill()
                 case .failure(let error):
                     XCTFail("Error: \(error)")
