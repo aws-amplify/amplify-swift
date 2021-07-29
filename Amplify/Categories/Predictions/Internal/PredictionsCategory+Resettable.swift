@@ -13,7 +13,7 @@ extension PredictionsCategory: Resettable {
         let group = DispatchGroup()
 
         for plugin in plugins.values {
-            log.verbose("Resetting \(self.categoryType) plugin")
+            log.verbose("Resetting \(categoryType) plugin")
             group.enter()
             plugin.reset {
                 self.log.verbose("Resetting \(self.categoryType) plugin: finished")

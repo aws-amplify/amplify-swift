@@ -16,7 +16,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin, APICategoryReac
 
     @available(iOS 13.0, *)
     init(reachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>) {
-        _reachabilityPublisher = reachabilityPublisher
+        self._reachabilityPublisher = reachabilityPublisher
         super.init()
     }
 

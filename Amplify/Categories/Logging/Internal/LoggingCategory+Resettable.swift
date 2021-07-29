@@ -10,7 +10,7 @@ import Foundation
 extension LoggingCategory: Resettable {
 
     public func reset(onComplete: @escaping BasicClosure) {
-        log.verbose("Resetting \(self.categoryType) plugin: no 'finish' message will be logged")
+        log.verbose("Resetting \(categoryType) plugin: no 'finish' message will be logged")
         concurrencyQueue.sync {
             let group = DispatchGroup()
 
