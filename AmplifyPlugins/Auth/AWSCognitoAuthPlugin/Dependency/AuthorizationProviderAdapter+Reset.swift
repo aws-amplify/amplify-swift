@@ -13,9 +13,13 @@ extension AuthorizationProviderAdapter: Resettable {
         // There is no method in awsmobileClient to remove all listeners in one go. So remove the listener here first
         // and then invoke reset on the awsmobileClient.
         awsMobileClient.removeUserStateListener(self)
+
         if let resettable = awsMobileClient as? Resettable {
             Amplify.log.verbose("Resetting awsMobileClient")
-            resettable.reset(onComplete: onComplete)
+            resettable.reset {
+                Amplify.log.verbose("Resetting awsMobileClient: finished")
+                onComplete()
+            }
         } else {
             onComplete()
         }

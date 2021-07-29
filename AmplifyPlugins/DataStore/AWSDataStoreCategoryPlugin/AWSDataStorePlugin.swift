@@ -180,6 +180,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             group.enter()
             DispatchQueue.global().async {
                 resettable.reset {
+                    self.log.verbose("Resetting storageEngine: finished")
                     group.leave()
                 }
             }

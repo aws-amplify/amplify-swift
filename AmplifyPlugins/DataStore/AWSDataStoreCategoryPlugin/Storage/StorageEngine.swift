@@ -562,6 +562,7 @@ extension StorageEngine: Resettable {
                 group.enter()
                 DispatchQueue.global().async {
                     resettable.reset {
+                        self.log.verbose("Resetting syncEngine: finished")
                         group.leave()
                     }
                 }

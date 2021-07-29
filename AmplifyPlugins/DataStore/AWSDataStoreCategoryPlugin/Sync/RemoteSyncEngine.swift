@@ -417,16 +417,19 @@ extension RemoteSyncEngine: Resettable {
 
         let mirror = Mirror(reflecting: self)
         for child in mirror.children {
-            guard child.label != "api" else {
-                log.verbose("Not resetting API category from RemoteSyncEngine")
+            let label = child.label ?? "some RemoteSyncEngine child"
+            guard label != "api",
+                  label != "auth" else {
+                log.verbose("Not resetting \(label) from RemoteSyncEngine")
                 continue
             }
 
             if let resettable = child.value as? Resettable {
                 group.enter()
-                log.verbose("Resetting \(child.label ?? "some child")")
+                log.verbose("Resetting \(label)")
                 DispatchQueue.global().async {
                     resettable.reset {
+                        self.log.verbose("Resetting \(label): finished")
                         group.leave()
                     }
                 }

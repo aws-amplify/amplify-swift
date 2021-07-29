@@ -188,7 +188,10 @@ extension AWSIncomingEventReconciliationQueue: Resettable {
             Amplify.log.verbose("Resetting reconciliationQueue")
             group.enter()
             DispatchQueue.global().async {
-                queue.reset { group.leave() }
+                queue.reset {
+                    Amplify.log.verbose("Resetting reconciliationQueue: finished")
+                    group.leave()
+                }
             }
         }
 
@@ -197,6 +200,7 @@ extension AWSIncomingEventReconciliationQueue: Resettable {
             Amplify.log.verbose("Resetting reconcileAndSaveQueue")
             self.reconcileAndSaveQueue.cancelAllOperations()
             self.reconcileAndSaveQueue.waitUntilOperationsAreFinished()
+            Amplify.log.verbose("Resetting reconcileAndSaveQueue: finished")
             group.leave()
         }
 

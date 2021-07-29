@@ -23,7 +23,7 @@ class MockRequestRetryablePolicy: RequestRetryablePolicy {
     override func retryRequestAdvice(urlError: URLError?,
                                      httpURLResponse: HTTPURLResponse?,
                                      attemptNumber: Int) -> RequestRetryAdvice {
-        // If this breaks, you didn't push anything onto the stack
+        // If this breaks, you didn't push anything onto the queue
         responseQueue.removeFirst()
     }
 }

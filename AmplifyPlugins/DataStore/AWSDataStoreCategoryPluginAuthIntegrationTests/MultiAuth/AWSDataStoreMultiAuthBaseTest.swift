@@ -52,7 +52,7 @@ class AWSDataStoreMultiAuthBaseTest: XCTestCase {
     }
 
     override func tearDownWithError() throws {
-        sleep(10)
+        sleep(2)
         Amplify.reset()
     }
 
