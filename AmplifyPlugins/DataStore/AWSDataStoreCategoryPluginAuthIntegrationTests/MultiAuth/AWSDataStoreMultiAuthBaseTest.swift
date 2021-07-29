@@ -25,9 +25,11 @@ class AWSDataStoreMultiAuthBaseTest: XCTestCase {
     static let amplifyConfigurationFile = "AWSDataStoreCategoryPluginMultiAuthIntegrationTests-amplifyconfiguration"
     static let credentialsFile = "AWSDataStoreCategoryPluginMultiAuthIntegrationTests-credentials"
 
-    var authRecorderInterceptor: AuthRecorderInterceptor = AuthRecorderInterceptor()
+    var authRecorderInterceptor: AuthRecorderInterceptor!
 
     override func setUp() {
+        continueAfterFailure = false
+
         Amplify.Logging.logLevel = .verbose
 
         do {
@@ -44,7 +46,7 @@ class AWSDataStoreMultiAuthBaseTest: XCTestCase {
             self.user1 = TestUser(username: user1, password: passwordUser1)
             self.user2 = TestUser(username: user2, password: passwordUser2)
 
-            authRecorderInterceptor.reset()
+            authRecorderInterceptor = AuthRecorderInterceptor()
 
         } catch {
             XCTFail("Error during setup: \(error)")
@@ -59,8 +61,8 @@ class AWSDataStoreMultiAuthBaseTest: XCTestCase {
     // MARK: - Test Helpers
     func makeExpectations() -> MultiAuthTestExpectations {
         MultiAuthTestExpectations(
-            subscriptionsEstablished: expectation(description: "Subscription established"),
-            modelsSynced: expectation(description: "Model synced"),
+            subscriptionsEstablished: expectation(description: "Subscriptions established"),
+            modelsSynced: expectation(description: "Models synced"),
 
             query: expectation(description: "Query success"),
 
@@ -70,7 +72,8 @@ class AWSDataStoreMultiAuthBaseTest: XCTestCase {
             mutationDelete: expectation(description: "Mutation delete success"),
             mutationDeleteProcessed: expectation(description: "Mutation delete processed"),
 
-            ready: expectation(description: "Ready"))
+            ready: expectation(description: "Ready")
+        )
     }
 
     /// Setup DataStore with given models
@@ -181,7 +184,7 @@ extension AWSDataStoreMultiAuthBaseTest {
                               expectedModelSynced: Int = 1) {
         var modelSyncedCount = 0
         let dataStoreEvents = HubPayload.EventName.DataStore.self
-        let cancellable = Amplify
+        Amplify
             .Hub
             .publisher(for: .dataStore)
             .sink { event in
@@ -202,12 +205,15 @@ extension AWSDataStoreMultiAuthBaseTest {
                     expectations.ready.fulfill()
                 }
             }
+            .store(in: &requests)
+
         Amplify.DataStore.start { _ in }
+
         wait(for: [expectations.subscriptionsEstablished,
                    expectations.modelsSynced,
                    expectations.ready],
              timeout: 60)
-        cancellable.cancel()
+
     }
 
     /// Assert that a save and a delete mutation complete successfully.
@@ -218,22 +224,27 @@ extension AWSDataStoreMultiAuthBaseTest {
     func assertMutations<M: Model>(model: M,
                                    _ expectations: MultiAuthTestExpectations,
                                    onFailure: @escaping (_ error: DataStoreError) -> Void) {
-        _ = Amplify.Hub.listen(to: .dataStore, eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-            guard let mutationEvent = payload.data as? MutationEvent,
-                  mutationEvent.modelId == model.id else {
-                return
-            }
+        Amplify
+            .Hub
+            .publisher(for: .dataStore)
+            .filter { $0.eventName == HubPayload.EventName.DataStore.syncReceived }
+            .sink { payload in
+                guard let mutationEvent = payload.data as? MutationEvent,
+                      mutationEvent.modelId == model.id else {
+                    return
+                }
 
-            if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                expectations.mutationSaveProcessed.fulfill()
-                return
-            }
+                if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                    expectations.mutationSaveProcessed.fulfill()
+                    return
+                }
 
-            if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                expectations.mutationDeleteProcessed.fulfill()
-                return
+                if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
+                    expectations.mutationDeleteProcessed.fulfill()
+                    return
+                }
             }
-        }
+            .store(in: &requests)
 
         Amplify.DataStore.save(model).sink {
             if case let .failure(error) = $0 {

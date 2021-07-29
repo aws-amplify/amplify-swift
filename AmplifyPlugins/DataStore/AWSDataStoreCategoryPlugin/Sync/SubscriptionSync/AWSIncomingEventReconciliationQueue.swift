@@ -146,11 +146,16 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     }
 
     func cancel() {
+        cancel(completion: nil)
+    }
+
+    private func cancel(completion: BasicClosure?) {
         modelReconciliationQueueSinks.values.forEach { $0.cancel() }
         reconciliationQueues.values.forEach { $0.cancel()}
         connectionStatusSerialQueue.async {
             self.reconciliationQueues = [:]
             self.modelReconciliationQueueSinks = [:]
+            completion?()
         }
     }
 
@@ -201,6 +206,13 @@ extension AWSIncomingEventReconciliationQueue: Resettable {
             self.reconcileAndSaveQueue.cancelAllOperations()
             self.reconcileAndSaveQueue.waitUntilOperationsAreFinished()
             Amplify.log.verbose("Resetting reconcileAndSaveQueue: finished")
+            group.leave()
+        }
+
+        group.enter()
+        Amplify.log.verbose("Cancelling AWSIncomingEventReconciliationQueue")
+        cancel {
+            Amplify.log.verbose("Cancelling AWSIncomingEventReconciliationQueue: finished")
             group.leave()
         }
 
