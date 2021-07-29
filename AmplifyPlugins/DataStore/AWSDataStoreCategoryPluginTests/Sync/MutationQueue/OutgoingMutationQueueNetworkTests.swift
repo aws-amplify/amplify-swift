@@ -44,8 +44,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // it can't write, the tests will fail elsewhere
         try? FileManager.default.removeItem(at: dbFile)
 
-        let connection = try Connection(dbFile.path)
-        try setUpStorageAdapter(connection: connection)
+        try setUpStorageAdapter()
 
         let mutationQueue = OutgoingMutationQueue(
             storageAdapter: storageAdapter,

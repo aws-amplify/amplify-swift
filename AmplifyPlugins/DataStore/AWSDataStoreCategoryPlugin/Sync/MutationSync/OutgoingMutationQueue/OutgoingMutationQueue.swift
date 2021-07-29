@@ -31,7 +31,6 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                                           target: DispatchQueue.global())
 
     private weak var api: APICategoryGraphQLBehavior?
-    private weak var mutationEventPublisher: MutationEventPublisher?
 
     private var subscription: Subscription?
     private let dataStoreConfiguration: DataStoreConfiguration
@@ -133,7 +132,6 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                          mutationEventPublisher: MutationEventPublisher) {
         log.verbose(#function)
         self.api = api
-        self.mutationEventPublisher = mutationEventPublisher
 
         queryMutationEventsFromStorage {
             self.operationQueue.isSuspended = false
