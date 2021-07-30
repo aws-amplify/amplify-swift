@@ -15,6 +15,7 @@ public enum AWSAuthorizationConfiguration {
     case awsIAM(AWSIAMConfiguration)
     case openIDConnect(OIDCConfiguration)
     case amazonCognitoUserPools(CognitoUserPoolsConfiguration)
+    case function(AWSLambdaAuthConfiguration)
 }
 
 // MARK: - AWSAuthorizationConfiguration factory
@@ -67,6 +68,8 @@ extension AWSAuthorizationConfiguration {
             return .openIDConnect(OIDCConfiguration())
         case .amazonCognitoUserPools:
             return .amazonCognitoUserPools(CognitoUserPoolsConfiguration())
+        case .function:
+            return .function(AWSLambdaAuthConfiguration())
         }
     }
 }

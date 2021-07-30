@@ -95,6 +95,34 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.next(), .apiKey)
     }
 
+    // Given: multi-auth model schema with a custom strategy
+    // When: authTypesFor for .create operation is called
+    // Then: applicable auth types returned respect the priority rules
+    func testMultiAuthPriorityWithCustomStrategy() {
+        let authMode = AWSMultiAuthModeStrategy()
+        var authTypesIterator = authMode.authTypesFor(schema: ModelWithCustomStrategy.schema,
+                                                      operation: .create)
+        XCTAssertEqual(authTypesIterator.count, 3)
+        XCTAssertEqual(authTypesIterator.next(), .function)
+        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
+        XCTAssertEqual(authTypesIterator.next(), .awsIAM)
+    }
+
+    // Given: multi-auth model schema with a custom strategy
+    // When: authTypesFor for .create operation is called for unauthenticated user
+    // Then: applicable auth types returned are public rules or custom
+    func testMultiAuthPriorityUnauthenticatedUserWithCustom() {
+        let authMode = AWSMultiAuthModeStrategy()
+        let delegate = UnauthenticatedUserDelegate()
+        authMode.authDelegate = delegate
+
+        var authTypesIterator = authMode.authTypesFor(schema: ModelWithCustomStrategy.schema,
+                                                      operation: .create)
+        XCTAssertEqual(authTypesIterator.count, 2)
+        XCTAssertEqual(authTypesIterator.next(), .function)
+        XCTAssertEqual(authTypesIterator.next(), .awsIAM)
+    }
+
 }
 
 // MARK: - Test models
@@ -167,6 +195,24 @@ private struct ModelAllStrategies: Model {
             rule(allow: .public, provider: .iam, operations: [.read]),
             rule(allow: .private, provider: .userPools, operations: [.read]),
             rule(allow: .groups, provider: .userPools, operations: [.create, .read])
+        ]
+    }
+}
+
+/// Model with custom auth rule
+private struct ModelWithCustomStrategy: Model {
+    public let id: String
+
+    public enum CodingKeys: String, ModelKey {
+        case id
+    }
+    public static let keys = CodingKeys.self
+
+    public static let schema = defineSchema { model in
+        model.authRules = [
+            rule(allow: .public, provider: .iam, operations: [.create, .read, .update, .delete]),
+            rule(allow: .custom, provider: .function, operations: [.create, .read, .update, .delete]),
+            rule(allow: .owner, provider: .userPools, operations: [.create, .read, .update, .delete]),
         ]
     }
 }

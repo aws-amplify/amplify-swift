@@ -19,22 +19,25 @@ public enum AWSAuthorizationType: String {
     case none = "NONE"
 
      /// A hardcoded key which can provide throttling for an unauthenticated API.
-    /// - SeeAlso: [https://docs.aws.amazon.com/appsync/latest/devguide/security.html#api-key-authorization](API Key Authorization)
+    /// - SeeAlso: [https://docs.aws.amazon.com/appsync/latest/devguide/security-authz.html#api-key-authorization](API Key Authorization)
     case apiKey = "API_KEY"
 
      /// Use an IAM access/secret key credential pair to authorize access to an API.
-    /// - SeeAlso: [https://docs.aws.amazon.com/appsync/latest/devguide/security.html#aws-iam-authorization](IAM Authorization)
+    /// - SeeAlso: [https://docs.aws.amazon.com/appsync/latest/devguide/security-authz.html#aws-iam-authorization](IAM Authorization)
     /// - SeeAlso: [https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html](IAM Introduction)
     case awsIAM = "AWS_IAM"
 
      /// OpenID Connect is a simple identity layer on top of OAuth2.0.
-    /// - SeeAlso: [https://docs.aws.amazon.com/appsync/latest/devguide/security.html#openid-connect-authorization](OpenID Connect Authorization)
+    /// - SeeAlso: [https://docs.aws.amazon.com/appsync/latest/devguide/security-authz.html#openid-connect-authorization](OpenID Connect Authorization)
     /// - SeeAlso: [https://openid.net/specs/openid-connect-core-1_0.html](OpenID Connect Specification)
     case openIDConnect = "OPENID_CONNECT"
 
      /// Control access to date by putting users into different permissions pools.
-    /// - SeeAlso: [https://docs.aws.amazon.com/appsync/latest/devguide/security.html#amazon-cognito-user-pools-authorization](Amazon Cognito User Pools)
+    /// - SeeAlso: [https://docs.aws.amazon.com/appsync/latest/devguide/security-authz.html#amazon-cognito-user-pools-authorization](Amazon Cognito User Pools)
     case amazonCognitoUserPools = "AMAZON_COGNITO_USER_POOLS"
+
+    /// Control access by calling a lambda function,
+    case function = "AWS_LAMBDA"
 
 }
 

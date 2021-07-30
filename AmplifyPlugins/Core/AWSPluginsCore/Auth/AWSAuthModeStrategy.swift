@@ -118,6 +118,8 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
             defaultAuthType = .amazonCognitoUserPools
         case .public:
             defaultAuthType = .apiKey
+        case .custom:
+            defaultAuthType = .function
         }
         return defaultAuthType
     }
@@ -133,35 +135,41 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
         return defaultAuthTypeFor(authStrategy: authRule.allow)
     }
 
-    /// Given an auth rule strategy returns its corresponding priority
+    /// Given an auth rule strategy returns its corresponding priority.
+    /// Strategies are ordered from "most specific" to "least specific".
     /// - Parameter authStrategy: auth rule strategy
     /// - Returns: priority
     private static func priorityOf(authStrategy: AuthStrategy) -> AuthPriority {
         switch authStrategy {
-        case .owner:
+        case .custom:
             return 0
-        case .groups:
+        case .owner:
             return 1
-        case .private:
+        case .groups:
             return 2
-        case .public:
+        case .private:
             return 3
+        case .public:
+            return 4
         }
     }
 
-    /// Given an auth rule provider returns its corresponding priority
+    /// Given an auth rule provider returns its corresponding priority.
+    /// Providers are ordered from "most specific" to "least specific".
     /// - Parameter authRuleProvider: auth rule provider
     /// - Returns: priority
     private static func priorityOf(authRuleProvider provider: AuthRuleProvider) -> AuthPriority {
         switch provider {
-        case .userPools:
+        case .function:
             return 0
-        case .oidc:
+        case .userPools:
             return 1
-        case .iam:
+        case .oidc:
             return 2
-        case .apiKey:
+        case .iam:
             return 3
+        case .apiKey:
+            return 4
         }
     }
 
@@ -186,10 +194,10 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
             .filter(modelOperation: operation)
             .sorted(by: AWSMultiAuthModeStrategy.comparator)
 
-        // if there isn't a user signed in, returns only public rules
+        // if there isn't a user signed in, returns only public or custom rules
         if let authDelegate = authDelegate, !authDelegate.isUserLoggedIn() {
             applicableAuthRules = applicableAuthRules.filter { rule in
-                return rule.allow == .public
+                return rule.allow == .public || rule.allow == .custom
             }
         }
         let applicableAuthTypes = applicableAuthRules.map {

@@ -140,7 +140,7 @@ public struct AWSAPICategoryPluginConfiguration {
     /// - Parameter interceptor: interceptors
     private func isAuthInterceptor(_ interceptor: URLRequestInterceptor) -> Bool {
         return interceptor as? APIKeyURLRequestInterceptor != nil ||
-            interceptor as? UserPoolURLRequestInterceptor != nil ||
+            interceptor as? AuthTokenURLRequestInterceptor != nil ||
             interceptor as? IAMURLRequestInterceptor != nil
     }
 

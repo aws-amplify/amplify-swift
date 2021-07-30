@@ -11,13 +11,13 @@ import AppSyncRealTimeClient
 
 class OIDCAuthProviderWrapper: OIDCAuthProvider {
 
-    let oidcAuthProvider: AmplifyOIDCAuthProvider
+    let authTokenProvider: AmplifyAuthTokenProvider
 
-    public init(oidcAuthProvider: AmplifyOIDCAuthProvider) {
-        self.oidcAuthProvider = oidcAuthProvider
+    public init(authTokenProvider: AmplifyAuthTokenProvider) {
+        self.authTokenProvider = authTokenProvider
     }
 
     func getLatestAuthToken() -> Result<String, Error> {
-        return oidcAuthProvider.getLatestAuthToken()
+        return authTokenProvider.getLatestAuthToken()
     }
 }

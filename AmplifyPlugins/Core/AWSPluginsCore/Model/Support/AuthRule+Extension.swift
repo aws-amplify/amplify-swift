@@ -22,6 +22,8 @@ extension AuthRuleProvider {
             authType = .awsIAM
         case .userPools:
             authType = .amazonCognitoUserPools
+        case .function:
+            authType = .function
         }
         return authType
     }

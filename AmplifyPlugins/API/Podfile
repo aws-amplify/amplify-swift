@@ -41,6 +41,11 @@ target "HostApp" do
       pod 'AmplifyPlugins/AWSCognitoAuthPlugin', :path => '../../'
       inherit! :complete
     end
+    
+    target "GraphQLWithLambdaAuthIntegrationTests" do
+      pod 'AmplifyPlugins/AWSCognitoAuthPlugin', :path => '../../'
+      inherit! :complete
+    end
   
     target "RESTWithIAMIntegrationTests" do 
       pod 'AmplifyPlugins/AWSCognitoAuthPlugin', :path => '../../'
