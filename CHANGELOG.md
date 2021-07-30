@@ -1,5 +1,16 @@
 # Changelog
 ## Unreleased
+## 1.13.0 (2021-07-30)
+
+### Features
+
+- support for lambda authorizer (#1334)
+
+### Bug Fixes
+
+- **amplify-xcode**: add files to primary target (#1313)
+- **DataStore**: dynamic model support for cascade delete (#1296)
+
 ## 1.12.0 (2021-06-28)
 
 ### Features
