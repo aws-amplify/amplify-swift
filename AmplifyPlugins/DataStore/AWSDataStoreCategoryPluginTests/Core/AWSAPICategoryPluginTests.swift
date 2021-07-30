@@ -386,7 +386,6 @@ class AWSAPICategoryPluginTests: XCTestCase {
     ///     - plugin.stop() is called
     ///     - a mutation event is sent
     /// - Then: The subscriber to plugin's publisher should receive the mutation
-
     func testStorageEngineStartStopSend() {
         let startExpectation = expectation(description: "Start Sync should be called with start")
         let stopExpectation = expectation(description: "Stop should be called")
