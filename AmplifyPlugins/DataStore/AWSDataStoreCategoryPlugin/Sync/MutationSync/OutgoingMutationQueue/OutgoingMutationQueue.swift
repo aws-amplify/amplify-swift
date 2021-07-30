@@ -189,8 +189,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         let syncMutationToCloudOperation = SyncMutationToCloudOperation(
             mutationEvent: mutationEvent,
             api: api,
-            authModeStrategy: authModeStrategy,
-            storageAdapter: storageAdapter) { result in
+            authModeStrategy: authModeStrategy) { result in
                 self.log.verbose(
                     "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent.id); result: \(result)")
                 self.processSyncMutationToCloudResult(result, mutationEvent: mutationEvent, api: api)
@@ -207,7 +206,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                                                   api: APICategoryGraphQLBehavior) {
         if case let .success(graphQLResponse) = result {
             if case let .success(graphQLResult) = graphQLResponse {
-                completeProcessingEvent(mutationEvent,
+                processSuccessEvent(mutationEvent,
                                         mutationSyncMetadata: graphQLResult)
             } else if case let .failure(graphQLResponseError) = graphQLResponse {
                 processMutationErrorFromCloud(mutationEvent: mutationEvent,
@@ -221,6 +220,20 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                                           apiError: apiError,
                                           graphQLResponseError: nil)
         }
+    }
+
+    private func processSuccessEvent(_ mutationEvent: MutationEvent,
+                                     mutationSyncMetadata: MutationSync<AnyModel>?) {
+        if let mutationSyncMetadata = mutationSyncMetadata {
+            MutationEvent.updatePendingMutationEventVersionIfNil(
+                for: mutationEvent.modelId,
+                mutationSync: mutationSyncMetadata,
+                storageAdapter: storageAdapter) { result in
+                self.log.verbose("\(#function) received result after syncing version from API: \(result)")
+            }
+        }
+
+        completeProcessingEvent(mutationEvent, mutationSyncMetadata: mutationSyncMetadata)
     }
 
     private func processMutationErrorFromCloud(mutationEvent: MutationEvent,

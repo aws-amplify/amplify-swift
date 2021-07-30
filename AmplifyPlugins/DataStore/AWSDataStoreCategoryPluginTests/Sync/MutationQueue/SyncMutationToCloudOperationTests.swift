@@ -73,7 +73,6 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                                                      authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                      networkReachabilityPublisher: publisher,
                                                      currentAttemptNumber: 1,
-                                                     storageAdapter: MockSQLiteStorageEngineAdapter(),
                                                      completion: completion)
         let queue = OperationQueue()
         queue.addOperation(operation)
@@ -145,7 +144,6 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                                                      authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                      networkReachabilityPublisher: publisher,
                                                      currentAttemptNumber: 1,
-                                                     storageAdapter: MockSQLiteStorageEngineAdapter(),
                                                      requestRetryablePolicy: mockRequestRetryPolicy,
                                                      completion: completion)
         let queue = OperationQueue()
@@ -218,7 +216,6 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                                                      authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                      networkReachabilityPublisher: publisher,
                                                      currentAttemptNumber: 1,
-                                                     storageAdapter: MockSQLiteStorageEngineAdapter(),
                                                      requestRetryablePolicy: mockRequestRetryPolicy,
                                                      completion: completion)
         let queue = OperationQueue()

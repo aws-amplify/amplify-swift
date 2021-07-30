@@ -27,14 +27,12 @@ class SyncMutationToCloudOperation: Operation {
     private var requestRetryablePolicy: RequestRetryablePolicy
     private var currentAttemptNumber: Int
     private var authTypesIterator: AWSAuthorizationTypeIterator?
-    private let storageAdapter: StorageEngineAdapter
 
     init(mutationEvent: MutationEvent,
          api: APICategoryGraphQLBehavior,
          authModeStrategy: AuthModeStrategy,
          networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
          currentAttemptNumber: Int = 1,
-         storageAdapter: StorageEngineAdapter,
          requestRetryablePolicy: RequestRetryablePolicy? = RequestRetryablePolicy(),
          completion: @escaping GraphQLOperation<MutationSync<AnyModel>>.ResultListener) {
         self.mutationEvent = mutationEvent
@@ -43,7 +41,6 @@ class SyncMutationToCloudOperation: Operation {
         self.completion = completion
         self.currentAttemptNumber = currentAttemptNumber
         self.requestRetryablePolicy = requestRetryablePolicy ?? RequestRetryablePolicy()
-        self.storageAdapter = storageAdapter
 
         if let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName),
            let mutationType = GraphQLMutationType(rawValue: mutationEvent.mutationType) {
@@ -199,16 +196,6 @@ class SyncMutationToCloudOperation: Operation {
             return
         }
 
-        // sync version in the mutation event table before calling finish()
-        if case let .success(graphQLResponse) = cloudResult,
-           case let .success(graphQLResult) = graphQLResponse {
-            MutationEvent.updatePendingMutationEventVersion(for: mutationEvent.modelId,
-                                                            mutationSync: graphQLResult,
-                                                            storageAdapter: storageAdapter) { result in
-                self.log.verbose("\(#function) received result after syncing version from API: \(result)")
-            }
-        }
-
         finish(result: cloudResult)
     }
 
@@ -305,38 +292,3 @@ private extension GraphQLMutationType {
 
 @available(iOS 13.0, *)
 extension SyncMutationToCloudOperation: DefaultLogger { }
-
-extension MutationEvent {
-    // updates the head of pending mutation event queue with with syncMetadata version in `mutationSync`
-    // and saves it in the mutation event table (returned as API response)
-    static func updatePendingMutationEventVersion(for modelId: Model.Identifier,
-                                                  mutationSync: MutationSync<AnyModel>,
-                                                  storageAdapter: StorageEngineAdapter,
-                                                  completion: @escaping DataStoreCallback<Void>) {
-        MutationEvent.pendingMutationEvents(
-            for: modelId,
-            storageAdapter: storageAdapter) { queryResult in
-            switch queryResult {
-            case .failure(let dataStoreError):
-                completion(.failure(dataStoreError))
-            case .success(let localMutationEvents):
-                guard var existingEvent = localMutationEvents.first else {
-                    Amplify.log.verbose(
-                        "\(#function) Mutation event table doesn't have mutation events with model id : \(modelId)")
-                    break
-                }
-
-                existingEvent.version = mutationSync.syncMetadata.version
-                storageAdapter.save(existingEvent, condition: nil) { result in
-                    switch result {
-                    case .failure(let dataStoreError):
-                        completion(.failure(dataStoreError))
-                    case .success:
-                        completion(.success(()))
-                    }
-                }
-            }
-        }
-    }
-
-}

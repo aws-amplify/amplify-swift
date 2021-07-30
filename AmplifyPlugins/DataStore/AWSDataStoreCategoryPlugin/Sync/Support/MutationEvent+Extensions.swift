@@ -10,13 +10,14 @@ import Dispatch
 import AWSPluginsCore
 
 extension MutationEvent {
-    
-    // updates the head of pending mutation event queue with with syncMetadata version in `mutationSync`
-    // and saves it in the mutation event table (returned as API response)
+
+    // updates the head of pending mutation event queue for a given model `id`
+    // if it has a `nil` version, with syncMetadata version in `mutationSync`
+    // and saves it in the mutation event table
     static func updatePendingMutationEventVersionIfNil(for modelId: Model.Identifier,
-                                                  mutationSync: MutationSync<AnyModel>,
-                                                  storageAdapter: StorageEngineAdapter,
-                                                  completion: @escaping DataStoreCallback<Void>) {
+                                                       mutationSync: MutationSync<AnyModel>,
+                                                       storageAdapter: StorageEngineAdapter,
+                                                       completion: @escaping DataStoreCallback<Void>) {
         MutationEvent.pendingMutationEvents(
             for: modelId,
             storageAdapter: storageAdapter) { queryResult in
