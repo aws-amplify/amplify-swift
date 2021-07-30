@@ -222,10 +222,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     func stop(completion: @escaping DataStoreCallback<Void>) {
-        stateMachine.notify(action: .finished)
         if finishedCompletionBlock == nil {
             finishedCompletionBlock = completion
         }
+        stateMachine.notify(action: .finished)
     }
 
     func terminate() {
