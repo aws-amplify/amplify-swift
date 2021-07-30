@@ -74,6 +74,12 @@ final class AWSMutationEventPublisher: Publisher {
                 self.log.verbose("AWSMutationPublisher.eventSource is unexpectedly nil")
                 return
             }
+
+            guard self.subscription != nil else {
+                self.log.debug("Subscription is nil, not getting next mutation event")
+                return
+            }
+
             eventSource.getNextMutationEvent(completion: promise)
         }
     }
