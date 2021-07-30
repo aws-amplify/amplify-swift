@@ -108,6 +108,21 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.next(), .awsIAM)
     }
 
+    // Given: multi-auth model schema with a custom strategy
+    // When: authTypesFor for .create operation is called for unauthenticated user
+    // Then: applicable auth types returned are public rules or custom
+    func testMultiAuthPriorityUnauthenticatedUserWithCustom() {
+        let authMode = AWSMultiAuthModeStrategy()
+        let delegate = UnauthenticatedUserDelegate()
+        authMode.authDelegate = delegate
+
+        var authTypesIterator = authMode.authTypesFor(schema: ModelWithCustomStrategy.schema,
+                                                      operation: .create)
+        XCTAssertEqual(authTypesIterator.count, 2)
+        XCTAssertEqual(authTypesIterator.next(), .function)
+        XCTAssertEqual(authTypesIterator.next(), .awsIAM)
+    }
+
 }
 
 // MARK: - Test models

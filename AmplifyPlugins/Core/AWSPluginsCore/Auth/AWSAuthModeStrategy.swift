@@ -194,10 +194,10 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
             .filter(modelOperation: operation)
             .sorted(by: AWSMultiAuthModeStrategy.comparator)
 
-        // if there isn't a user signed in, returns only public rules
+        // if there isn't a user signed in, returns only public or custom rules
         if let authDelegate = authDelegate, !authDelegate.isUserLoggedIn() {
             applicableAuthRules = applicableAuthRules.filter { rule in
-                return rule.allow == .public
+                return rule.allow == .public || rule.allow == .custom
             }
         }
         let applicableAuthTypes = applicableAuthRules.map {
