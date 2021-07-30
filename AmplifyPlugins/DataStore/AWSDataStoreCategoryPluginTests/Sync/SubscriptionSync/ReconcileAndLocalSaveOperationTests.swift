@@ -8,7 +8,6 @@
 import Foundation
 import XCTest
 import Combine
-import SQLite
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -820,13 +819,11 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                                                                 .delete(anyPostMutationSync)]
         let expectDropped = expectation(description: "should notify dropped")
         expectDropped.expectedFulfillmentCount = dispositions.count
-        let constraintViolationError = Result.error(message: "Foreign Key Constraint Violation",
-                                                    code: SQLITE_CONSTRAINT,
-                                                    statement: nil)
-        let dataStoreError = DataStoreError.invalidOperation(causedBy: constraintViolationError)
+        let dataStoreError = DataStoreError.internalOperation("Failed to save", "")
         let saveResponder = SaveUntypedModelResponder { _, completion in
             completion(.failure(dataStoreError))
         }
+        storageAdapter.shouldIgnoreError = true
         storageAdapter.responders[.saveUntypedModel] = saveResponder
         let deleteResponder = DeleteUntypedModelCompletionResponder { _, _ in
             return .failure(dataStoreError)

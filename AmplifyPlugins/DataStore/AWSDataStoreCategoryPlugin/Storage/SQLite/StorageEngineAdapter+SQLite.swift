@@ -361,7 +361,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func shouldIgnoreError(error: DataStoreError) -> Bool {
-        if let sqliteError = SQLiteResultError(dataStoreError: error),
+        if let sqliteError = SQLiteResultError(from: error),
            case .constraintViolation = sqliteError {
             return true
         }

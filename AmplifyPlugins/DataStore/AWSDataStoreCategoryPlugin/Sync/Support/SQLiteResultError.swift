@@ -24,7 +24,7 @@ enum SQLiteResultError {
     /// - statement: the statement which produced the error
     case error(message: String, code: Int32, statement: Statement?)
 
-    init?(dataStoreError: DataStoreError) {
+    init?(from dataStoreError: DataStoreError) {
         guard case let .invalidOperation(error) = dataStoreError,
               let resultError = error as? Result,
               case .error(let message, let code, let statement) = resultError else {
