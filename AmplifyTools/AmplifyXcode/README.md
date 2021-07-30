@@ -2,7 +2,7 @@
 <img src="https://s3.amazonaws.com/aws-mobile-hub-images/aws-amplify-logo.png" alt="AWS Amplify" width="550" >
 
 AmplifyXcode is a command line tool distributed as part of the Amplify CLI. It aims to provide a seamless integration between Xcode and Amplify CLI during development of Amplify-based applications.
-AmplifyXcode exposes three commands that allows to update an Xcode project files with the generated Amplify Swift models and configuration files.
+AmplifyXcode exposes three commands that allow to update an Xcode project files with the generated Amplify Swift models and configuration files.
 It's designed to be extensible and its core, `AmplifyXcodeCore`, is fully decoupled from the command line interface.
 ## Platform Support
 AmplifyXcode is available on MacOS 10.13 and above.
@@ -11,12 +11,12 @@ This program is licensed under the Apache 2.0 License.
 
 ## Commands
 `amplify-xcode import-config --path project-path`
-Imports Amplify project files into the Xcode project located at *project-path*.
+Imports Amplify project files into the Xcode project located at the provided *project-path*.
 
 `amplify-xcode import-models --path project-path`
-Imports Amplify generated Swift models into the Xcode project located at *project-path*.
+Imports Amplify generated Swift models into the Xcode project located at the provided *project-path*.
 
-`amplify-xcode generate-schema`
+`amplify-xcode generate-schema --output-path output`
 Generates a JSON description of its commands that can be used to programmatically call amplify-xcode from a different environment.
 The Amplify CLI reads the output of this command to generate a [NodeJS bridging module](https://github.com/aws-amplify/amplify-cli/blob/master/packages/amplify-frontend-ios/lib/amplify-xcode.js) to safely invoke the above commands as described in the **CLI Integration** section.
 
