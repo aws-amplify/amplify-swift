@@ -346,7 +346,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                                   predicate: nil) { response in
                 switch response {
                 case .failure(let dataStoreError):
-                    if SQLiteResultError.isConstraintViolation(dataStoreError) {
+                    if storageAdapter.shouldIgnoreError(error: dataStoreError) {
                         self.notifyDropped(modelName: remoteModel.model.modelName)
                         promise(.success(.dropped))
                     } else {
@@ -365,7 +365,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             storageAdapter.save(untypedModel: remoteModel.model.instance) { response in
                 switch response {
                 case .failure(let dataStoreError):
-                    if SQLiteResultError.isConstraintViolation(dataStoreError) {
+                    if storageAdapter.shouldIgnoreError(error: dataStoreError) {
                         self.notifyDropped(modelName: remoteModel.model.modelName)
                         promise(.success(.dropped))
                     } else {
