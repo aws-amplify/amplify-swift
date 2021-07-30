@@ -39,8 +39,12 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
         self.mapper = mapper
 
         asyncEvents.subscribe(subscriber: mapper)
-        self.mapperSink = mapper.publisher.sink(receiveCompletion: onReceiveCompletion(receiveCompletion:),
-                                                receiveValue: onReceive(receiveValue:))
+        self.mapperSink = mapper
+            .publisher
+            .sink(
+                receiveCompletion: { [weak self] in self?.onReceiveCompletion(receiveCompletion: $0) },
+                receiveValue: { [weak self] in self?.onReceive(receiveValue: $0) }
+            )
     }
 
     private func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {

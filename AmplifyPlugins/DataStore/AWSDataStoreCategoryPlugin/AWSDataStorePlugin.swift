@@ -143,8 +143,12 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     @available(iOS 13.0, *)
     private func setupStorageSink() {
-        storageEngineSink = storageEngine.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
-                                                         receiveValue: onRecieveValue(receiveValue:))
+        storageEngineSink = storageEngine
+            .publisher
+            .sink(
+                receiveCompletion: { [weak self] in self?.onReceiveCompletion(completed: $0) },
+                receiveValue: { [weak self] in self?.onRecieveValue(receiveValue: $0) }
+            )
     }
 
     @available(iOS 13.0, *)

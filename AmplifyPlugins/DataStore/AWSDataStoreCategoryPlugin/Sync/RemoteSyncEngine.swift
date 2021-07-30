@@ -215,7 +215,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
         networkReachabilitySink =
             networkReachabilityPublisher?
-            .sink(receiveValue: onReceiveNetworkStatus(networkStatus:))
+            .sink { [weak self] in self?.onReceiveNetworkStatus(networkStatus: $0) }
 
         remoteSyncTopicPublisher.send(.storageAdapterAvailable)
         stateMachine.notify(action: .receivedStart)
@@ -282,9 +282,12 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                                                          auth,
                                                          authModeStrategy,
                                                          nil)
-        reconciliationQueueSink = reconciliationQueue?.publisher.sink(
-            receiveCompletion: onReceiveCompletion(receiveCompletion:),
-            receiveValue: onReceive(receiveValue:))
+        reconciliationQueueSink = reconciliationQueue?
+            .publisher
+            .sink(
+                receiveCompletion: { [weak self] in self?.onReceiveCompletion(receiveCompletion: $0) },
+                receiveValue: { [weak self] in self?.onReceive(receiveValue: $0) }
+            )
     }
 
     private func performInitialSync() {
@@ -302,13 +305,19 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
                                             reconciliationQueue: reconciliationQueue)
 
-        readyEventEmitter = ReadyEventEmitter(remoteSyncEnginePublisher: publisher,
-                                              completion: { self.cancelEmitters() })
+        readyEventEmitter = ReadyEventEmitter(
+            remoteSyncEnginePublisher: publisher,
+            completion: { [weak self] in self?.cancelEmitters() }
+        )
 
         // TODO: This should be an AsynchronousOperation, not a semaphore-waited block
         let semaphore = DispatchSemaphore(value: 0)
 
-        initialSyncOrchestrator.sync { result in
+        initialSyncOrchestrator.sync { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
             if case .failure(let dataStoreError) = result {
                 self.log.error(dataStoreError.errorDescription)
                 self.log.error(dataStoreError.recoverySuggestion)

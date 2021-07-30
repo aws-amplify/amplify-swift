@@ -200,10 +200,11 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         let syncMutationToCloudOperation = SyncMutationToCloudOperation(
             mutationEvent: mutationEvent,
             api: api,
-            authModeStrategy: authModeStrategy) { result in
-                self.log.verbose(
-                    "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent.id); result: \(result)")
-                self.processSyncMutationToCloudResult(result, mutationEvent: mutationEvent, api: api)
+            authModeStrategy: authModeStrategy
+        ) { [weak self] result in
+            self?.log.verbose(
+                "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent.id); result: \(result)")
+            self?.processSyncMutationToCloudResult(result, mutationEvent: mutationEvent, api: api)
         }
 
         dispatchOutboxMutationEnqueuedEvent(mutationEvent: mutationEvent)
@@ -243,14 +244,18 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             api: api,
             storageAdapter: storageAdapter,
             graphQLResponseError: graphQLResponseError,
-            apiError: apiError) { result in
-                self.log.verbose("[ProcessMutationErrorFromCloudOperation] result: \(result)")
-                if case let .success(mutationEventOptional) = result,
-                    let outgoingMutationEvent = mutationEventOptional {
-                    self.outgoingMutationQueueSubject.send(outgoingMutationEvent)
-                }
-                self.completeProcessingEvent(mutationEvent,
-                                             mutationSyncMetadata: nil)
+            apiError: apiError
+        ) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+            self.log.verbose("[ProcessMutationErrorFromCloudOperation] result: \(result)")
+            if case let .success(mutationEventOptional) = result,
+               let outgoingMutationEvent = mutationEventOptional {
+                self.outgoingMutationQueueSubject.send(outgoingMutationEvent)
+            }
+            self.completeProcessingEvent(mutationEvent,
+                                         mutationSyncMetadata: nil)
         }
         operationQueue.addOperation(processMutationErrorFromCloudOperation)
     }
