@@ -25,6 +25,14 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         return dbFile
     }()
 
+    func getDBConnection(inMemory: Bool) throws -> Connection {
+        if inMemory {
+            return try Connection(.inMemory)
+        } else {
+            return try Connection(dbFile.path)
+        }
+    }
+
     let connectionError: APIError = {
         APIError.networkError(
             "TEST: Network not available",
@@ -43,6 +51,9 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // Ignore failures -- we don't care if the file didn't exist prior to this test, and if
         // it can't write, the tests will fail elsewhere
         try? FileManager.default.removeItem(at: dbFile)
+
+        let connection = try getDBConnection(inMemory: true)
+        try setUpStorageAdapter(connection: connection)
 
         try setUpStorageAdapter()
 

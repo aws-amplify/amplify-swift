@@ -262,6 +262,12 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     private func completeProcessingEvent(_ mutationEvent: MutationEvent,
                                          mutationSyncMetadata: MutationSync<AnyModel>?) {
+        // TODO: We shouldn't be inspecting state, we should be using granular enough states to
+        // ensure we don't encounter forbidden transitions.
+        if case .stopped = stateMachine.state {
+            return
+        }
+
         // This doesn't belong here--need to add a `delete` API to the MutationEventSource and pass a
         // reference into the mutation queue.
         Amplify.DataStore.delete(mutationEvent) { result in
