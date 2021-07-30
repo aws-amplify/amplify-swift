@@ -54,7 +54,10 @@ class AWSDataStoreMultiAuthBaseTest: XCTestCase {
     }
 
     override func tearDownWithError() throws {
-        sleep(5)
+        let stopped = expectation(description: "stopped")
+        Amplify.DataStore.stop { _ in stopped.fulfill() }
+        waitForExpectations(timeout: 1.0)
+
         Amplify.reset()
     }
 
