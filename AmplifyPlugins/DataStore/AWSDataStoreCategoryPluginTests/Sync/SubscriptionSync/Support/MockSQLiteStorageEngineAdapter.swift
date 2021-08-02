@@ -28,6 +28,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     var shouldReturnErrorOnSaveMetadata: Bool
     var shouldReturnErrorOnDeleteMutation: Bool
+    var shouldIgnoreError: Bool
 
     var resultForQueryModelSyncMetadata: ModelSyncMetadata?
     var listenerForModelSyncMetadata: BasicClosure?
@@ -35,6 +36,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     init() {
         self.shouldReturnErrorOnSaveMetadata = false
         self.shouldReturnErrorOnDeleteMutation = false
+        self.shouldIgnoreError = false
         self.resultForQueryMutationSyncMetadatas = [MutationSyncMetadata]()
     }
 
@@ -96,8 +98,8 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
                 predicate: QueryPredicate? = nil,
                 completion: (Result<Void, DataStoreError>) -> Void) {
         if let responder = responders[.deleteUntypedModel] as? DeleteUntypedModelCompletionResponder {
-            responder.callback((modelType, id))
-            completion(.emptyResult)
+            let result = responder.callback((modelType, id))
+            completion(result)
             return
         }
 
@@ -231,8 +233,13 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
         try basicClosure()
     }
+
     func clear(completion: @escaping DataStoreCallback<Void>) {
         XCTFail("Not expected to execute")
+    }
+
+    func shouldIgnoreError(error: DataStoreError) -> Bool {
+        return shouldIgnoreError
     }
 }
 
