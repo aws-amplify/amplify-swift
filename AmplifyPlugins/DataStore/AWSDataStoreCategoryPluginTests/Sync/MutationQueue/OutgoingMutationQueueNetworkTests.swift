@@ -16,6 +16,8 @@ import Combine
 
 class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
 
+    var cancellables: Set<AnyCancellable>!
+
     var reachabilitySubject: CurrentValueSubject<ReachabilityUpdate, Never>!
 
     let dbFile: URL = {
@@ -42,6 +44,8 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
     }()
 
     override func setUpWithError() throws {
+        cancellables = []
+
         // For this test, we want the network to be initially available. We'll set it to unavailable
         // later in the test to simulate a loss of connectivity after the initial create mutation.
         reachabilitySubject = CurrentValueSubject(ReachabilityUpdate(isOnline: true))
@@ -83,34 +87,13 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         let expectedFinalContent = "FINAL UPDATE"
         let version = AtomicValue(initialValue: 0)
 
-        // We expect 2 "network available" notifications: the initial notification sent from the
-        // RemoteSyncEngine when it first `start()`s and subscribes to the reachability publisher,
-        // and the notification after we restore connectivity later in the test.
-        let shouldFulfillNetworkAvailableAgain = AtomicValue(initialValue: false)
         let networkUnavailable = expectation(description: "networkUnavailable")
         let networkAvailableAgain = expectation(description: "networkAvailableAgain")
-        let networkStatusFilter = HubFilters.forEventName(HubPayload.EventName.DataStore.networkStatus)
 
-        let networkStatusListener = Amplify.Hub.listen(
-            to: .dataStore,
-            isIncluded: networkStatusFilter
-        ) { payload in
-            guard let networkStatusEvent = payload.data as? NetworkStatusEvent else {
-                XCTFail("Failed to cast payload data as NetworkStatusEvent")
-                return
-            }
-
-            if networkStatusEvent.active {
-                if shouldFulfillNetworkAvailableAgain.get() {
-                    networkAvailableAgain.fulfill()
-                }
-            } else {
-                // If the received event is an "unavailable" message, we should fulfill the
-                // "network available" expectation the next time we receive an "available" message.
-                shouldFulfillNetworkAvailableAgain.set(true)
-                networkUnavailable.fulfill()
-            }
-        }
+        setUpNetworkStatusListener(
+            fulfillingWhenNetworkUnavailable: networkUnavailable,
+            fulfillingWhenNetworkAvailableAgain: networkAvailableAgain
+        )
 
         // Set up API responder chain
 
@@ -253,17 +236,22 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         }
         wait(for: [savedFinalUpdate], timeout: 0.1)
 
+        let syncStarted = expectation(description: "syncStarted")
+        setUpSyncStartedListener(
+            fulfillingWhenSyncStarted: syncStarted
+        )
+
+        let outboxEmpty = expectation(description: "outboxEmpty")
+        setUpOutboxEmptyListener(
+            fulfillingWhenOutboxEmpty: outboxEmpty
+        )
+
         // Turn on network. This will preempt the retry timer and immediately start processing
         // the queue. We expect the mutation queue to restart, poll the MutationEvent table, pick
         // up the final update, and process it.
         apiPlugin.responders = [.mutateRequestListener: acceptSubsequentMutations]
         reachabilitySubject.send(ReachabilityUpdate(isOnline: true))
-        wait(for: [networkAvailableAgain], timeout: 5.0)
-
-        // Assert last mutation is sent
-        wait(for: [expectedFinalContentReceived], timeout: 5.0)
-
-        Amplify.Hub.removeListener(networkStatusListener)
+        wait(for: [networkAvailableAgain, syncStarted, outboxEmpty, expectedFinalContentReceived], timeout: 5.0)
     }
 
     // MARK: - Utilities
@@ -339,5 +327,68 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
 
     }
 
-}
+    private func setUpNetworkStatusListener(
+        fulfillingWhenNetworkUnavailable networkUnavailable: XCTestExpectation,
+        fulfillingWhenNetworkAvailableAgain networkAvailableAgain: XCTestExpectation
+    ) {
+        // We expect 2 "network available" notifications: the initial notification sent from the
+        // RemoteSyncEngine when it first `start()`s and subscribes to the reachability publisher,
+        // and the notification after we restore connectivity later in the test.
+        let shouldFulfillNetworkAvailableAgain = AtomicValue(initialValue: false)
 
+        Amplify
+            .Hub
+            .publisher(for: .dataStore)
+            .print("### DataStore listener \(Date()) - ")
+            .filter { $0.eventName == HubPayload.EventName.DataStore.networkStatus }
+            .sink { payload in
+                guard let networkStatusEvent = payload.data as? NetworkStatusEvent else {
+                    XCTFail("Failed to cast payload data as NetworkStatusEvent")
+                    return
+                }
+
+                if networkStatusEvent.active {
+                    if shouldFulfillNetworkAvailableAgain.get() {
+                        networkAvailableAgain.fulfill()
+                    }
+                } else {
+                    // If the received event is an "unavailable" message, we should fulfill the
+                    // "network available" expectation the next time we receive an "available" message.
+                    shouldFulfillNetworkAvailableAgain.set(true)
+                    networkUnavailable.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+    private func setUpSyncStartedListener(
+        fulfillingWhenSyncStarted syncStarted: XCTestExpectation
+    ) {
+        Amplify
+            .Hub
+            .publisher(for: .dataStore)
+            .filter { $0.eventName == HubPayload.EventName.DataStore.syncStarted }
+            .sink { _ in syncStarted.fulfill() }
+            .store(in: &cancellables)
+    }
+
+    private func setUpOutboxEmptyListener(
+        fulfillingWhenOutboxEmpty outboxEmpty: XCTestExpectation
+    ) {
+        Amplify
+            .Hub
+            .publisher(for: .dataStore)
+            .filter { $0.eventName == HubPayload.EventName.DataStore.outboxStatus }
+            .sink { payload in
+                guard let outboxStatusEvent = payload.data as? OutboxStatusEvent else {
+                    XCTFail("Failed to cast payload data as OutboxStatusEvent")
+                    return
+                }
+                if outboxStatusEvent.isEmpty {
+                    outboxEmpty.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+}
