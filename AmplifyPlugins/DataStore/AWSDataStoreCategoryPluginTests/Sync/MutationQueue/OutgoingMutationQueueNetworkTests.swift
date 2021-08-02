@@ -69,6 +69,11 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         try setUpDataStore(mutationQueue: mutationQueue)
     }
 
+    override func tearDownWithError() throws {
+        cancellables = []
+        try super.tearDownWithError()
+    }
+
     /// - Given: A sync-configured DataStore, running without a network connection
     /// - When:
     ///   - I make multiple mutations to a single model
