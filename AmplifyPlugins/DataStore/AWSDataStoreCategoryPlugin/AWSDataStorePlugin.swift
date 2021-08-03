@@ -153,15 +153,11 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     @available(iOS 13.0, *)
     private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
-        guard let dataStorePublisher = self.dataStorePublisher else {
-            log.error("Data store publisher not initalized")
-            return
-        }
         switch completed {
         case .failure(let dataStoreError):
-            dataStorePublisher.send(dataStoreError: dataStoreError)
+            log.error("StorageEngine completed with error: \(dataStoreError)")
         case .finished:
-            dataStorePublisher.sendFinished()
+            break
         }
     }
 
