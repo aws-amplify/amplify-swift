@@ -84,17 +84,15 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         eventSource.pushMutationEvent(futureResult: .success(futureResult))
 
         let enqueueEvent = expectation(description: "state requestingEvent, enqueueEvent")
-        let processEvent = expectation(description: "state requestingEvent, processedEvent")
-
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, OutgoingMutationQueue.Action.enqueuedEvent)
             enqueueEvent.fulfill()
         }
 
-        let mutateAPICallExpecation = expectation(description: "Call to api category for mutate")
+        let apiMutationReceived = expectation(description: "API call for mutate received")
         var listenerFromRequest: GraphQLOperation<MutationSync<AnyModel>>.ResultListener!
         let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
-            mutateAPICallExpecation.fulfill()
+            apiMutationReceived.fulfill()
             listenerFromRequest = eventListener
             return nil
         }
@@ -102,8 +100,9 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
 
         stateMachine.state = .requestingEvent
 
-        wait(for: [enqueueEvent, mutateAPICallExpecation], timeout: 1)
+        wait(for: [enqueueEvent, apiMutationReceived], timeout: 1)
 
+        let processEvent = expectation(description: "state requestingEvent, processedEvent")
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, OutgoingMutationQueue.Action.processedEvent)
             processEvent.fulfill()

@@ -108,6 +108,8 @@ extension DataStoreError: AmplifyError {
             self = error
         } else if let amplifyError = error as? AmplifyError {
             self = .api(amplifyError)
+        } else if error.isOperationCancelledError {
+            self = .unknown("Operation cancelled", "", error)
         } else {
             self = .unknown(errorDescription, recoverySuggestion, error)
         }

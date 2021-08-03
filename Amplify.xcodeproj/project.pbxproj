@@ -609,6 +609,7 @@
 		FA9D6C1B238DEEEB00C7DD9F /* ConcurrentDispatcherPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B8872339633C007F1435 /* ConcurrentDispatcherPerformanceTests.swift */; };
 		FA9D6C1E238DEF0E00C7DD9F /* DefaultHubPluginPerformanceTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B88A23397791007F1435 /* DefaultHubPluginPerformanceTestHelpers.swift */; };
 		FA9D6C1F238DEF1100C7DD9F /* SerialDispatcherPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA317107232AE8DF009BC140 /* SerialDispatcherPerformanceTests.swift */; };
+		FA9F939626BAF73F00805607 /* OperationCancelledError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F939526BAF73F00805607 /* OperationCancelledError.swift */; };
 		FA9FB7792329D4D400C04D32 /* HubFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FB7782329D4D400C04D32 /* HubFilter.swift */; };
 		FA9FB77B2329D4FB00C04D32 /* UnsubscribeToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FB77A2329D4FB00C04D32 /* UnsubscribeToken.swift */; };
 		FA9FB77D232AA0D800C04D32 /* FilteredListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FB77C232AA0D800C04D32 /* FilteredListener.swift */; };
@@ -1591,6 +1592,7 @@
 		FA8EE780238628490097E4F1 /* Persistable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistable.swift; sourceTree = "<group>"; };
 		FA8EE78223862DDB0097E4F1 /* AnyModel+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnyModel+Schema.swift"; sourceTree = "<group>"; };
 		FA8F4D232395B1B600861D91 /* MutationEvent+Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MutationEvent+Model.swift"; sourceTree = "<group>"; };
+		FA9F939526BAF73F00805607 /* OperationCancelledError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationCancelledError.swift; sourceTree = "<group>"; };
 		FA9FB7782329D4D400C04D32 /* HubFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubFilter.swift; sourceTree = "<group>"; };
 		FA9FB77A2329D4FB00C04D32 /* UnsubscribeToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnsubscribeToken.swift; sourceTree = "<group>"; };
 		FA9FB77C232AA0D800C04D32 /* FilteredListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteredListener.swift; sourceTree = "<group>"; };
@@ -3303,6 +3305,7 @@
 				FA5704C8245F3C6900392C19 /* AmplifyInProcessReportingOperation.swift */,
 				FA249EE624C5FA49009B3CE8 /* AmplifyInProcessReportingOperation+Combine.swift */,
 				FA56F72622B14BF70039754A /* AmplifyOperation.swift */,
+				FA9F939526BAF73F00805607 /* OperationCancelledError.swift */,
 				FAA7A5A524C0CC8F00CA863F /* AmplifyOperation+Combine.swift */,
 				FA5704CA245F58C600392C19 /* AmplifyOperation+Hub.swift */,
 				FAB9D810233BF5F600928AA9 /* AmplifyOperationContext.swift */,
@@ -5050,6 +5053,7 @@
 				B4B5CC812457B0690019C783 /* AuthFetchUserAttributesRequest.swift in Sources */,
 				B493E69324524E8C00D9E521 /* AuthUserAttribute.swift in Sources */,
 				B450741524115C340098F02D /* AuthSignInResult.swift in Sources */,
+				FA9F939626BAF73F00805607 /* OperationCancelledError.swift in Sources */,
 				B468841A2460A98E00221268 /* AuthForgetDeviceRequest.swift in Sources */,
 				217855C3237F84D700A30D19 /* RESTRequest.swift in Sources */,
 				975751AD24CA35F000FA0A6E /* IssueInfoHelper.swift in Sources */,

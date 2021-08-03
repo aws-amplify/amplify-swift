@@ -18,8 +18,6 @@ import Foundation
 /// Pausable/resumable tasks that do not require Hub dispatching should use AsynchronousOperation instead.
 open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: AmplifyError>: AsynchronousOperation {
 
-    struct OperationCancelledError: Error { }
-
     /// The concrete Request associated with this operation
     public typealias Request = Request
 
