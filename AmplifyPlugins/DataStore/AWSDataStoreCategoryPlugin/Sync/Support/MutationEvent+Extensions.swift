@@ -11,7 +11,7 @@ import AWSPluginsCore
 
 extension MutationEvent {
 
-    // updates the head of pending mutation event queue for a given model `id`
+    // Updates the head of pending mutation event queue for a given model `id`
     // if it has a `nil` version, with syncMetadata version in `mutationSync`
     // and saves it in the mutation event table
     static func updatePendingMutationEventVersionIfNil(for modelId: Model.Identifier,

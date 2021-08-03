@@ -228,8 +228,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             MutationEvent.updatePendingMutationEventVersionIfNil(
                 for: mutationEvent.modelId,
                 mutationSync: mutationSyncMetadata,
-                storageAdapter: storageAdapter) { result in
-                self.log.verbose("\(#function) received result after syncing version from API: \(result)")
+                storageAdapter: storageAdapter) { _ in
                 self.completeProcessingEvent(mutationEvent, mutationSyncMetadata: mutationSyncMetadata)
             }
         } else {
