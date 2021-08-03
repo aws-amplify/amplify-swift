@@ -26,12 +26,15 @@ extension MutationEvent {
                 completion(.failure(dataStoreError))
             case .success(let localMutationEvents):
                 guard var existingEvent = localMutationEvents.first else {
-                    Amplify.log.verbose(
-                        "\(#function) Mutation event table doesn't have mutation events with model id : \(modelId)")
-                    break
+                    completion(.success(()))
+                    return
                 }
 
                 if existingEvent.version == nil {
+                    Amplify.log.verbose("""
+                        Replacing existing mutation event having nil version with version from mutation response
+                            \(mutationSync.syncMetadata.version)
+                        """)
                     existingEvent.version = mutationSync.syncMetadata.version
                     storageAdapter.save(existingEvent, condition: nil) { result in
                         switch result {
@@ -41,6 +44,8 @@ extension MutationEvent {
                             completion(.success(()))
                         }
                     }
+                } else {
+                    completion(.success(()))
                 }
             }
         }

@@ -230,10 +230,11 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                 mutationSync: mutationSyncMetadata,
                 storageAdapter: storageAdapter) { result in
                 self.log.verbose("\(#function) received result after syncing version from API: \(result)")
+                self.completeProcessingEvent(mutationEvent, mutationSyncMetadata: mutationSyncMetadata)
             }
+        } else {
+            completeProcessingEvent(mutationEvent, mutationSyncMetadata: mutationSyncMetadata)
         }
-
-        completeProcessingEvent(mutationEvent, mutationSyncMetadata: mutationSyncMetadata)
     }
 
     private func processMutationErrorFromCloud(mutationEvent: MutationEvent,
