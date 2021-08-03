@@ -314,6 +314,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         let semaphore = DispatchSemaphore(value: 0)
 
         initialSyncOrchestrator.sync { [weak self] result in
+            defer {
+                semaphore.signal()
+            }
+
             guard let self = self else {
                 return
             }
@@ -332,7 +336,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                 self.remoteSyncTopicPublisher.send(.performedInitialSync)
                 self.stateMachine.notify(action: .performedInitialSync)
             }
-            semaphore.signal()
         }
 
         semaphore.wait()

@@ -153,8 +153,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         apiPlugin.responders = [.mutateRequestListener: rejectMutationsWithRetriableError]
 
         // NOTE: This policy is not used by the SyncMutationToCloudOperation, only by the
-        // RemoteSyncEngine. TODO: Make the RetryAdvice used by the SyncMutationToCloudOperation
-        // injectabl so we have control over it.
+        // RemoteSyncEngine.
         requestRetryablePolicy
             .pushOnRetryRequestAdvice(
                 response: RequestRetryAdvice(
