@@ -30,9 +30,20 @@ public class Amplify {
     public static internal(set) var Auth = AuthCategory()
     public static internal(set) var DataStore = DataStoreCategory()
     public static internal(set) var Hub = HubCategory()
-    public static internal(set) var Logging = LoggingCategory()
     public static internal(set) var Predictions = PredictionsCategory()
     public static internal(set) var Storage = StorageCategory()
+
+    // Special case category. We protect this with an AtomicValue because it is used by reset()
+    // methods during setup & teardown of tests
+    public static internal(set) var Logging: LoggingCategory {
+        get {
+            loggingAtomic.get()
+        }
+        set {
+            loggingAtomic.set(newValue)
+        }
+    }
+    private static let loggingAtomic = AtomicValue<LoggingCategory>(initialValue: LoggingCategory())
 
     /// Adds `plugin` to the Analytics category
     ///

@@ -98,9 +98,7 @@ extension Amplify {
         }
 
         group.enter()
-        DispatchQueue.global().async {
-            resettable.reset(onComplete: onComplete)
-        }
+        resettable.reset(onComplete: onComplete)
     }
 
 }

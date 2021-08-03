@@ -13,12 +13,18 @@ extension DataStoreCategory: Resettable {
         let group = DispatchGroup()
 
         for plugin in plugins.values {
+            log.verbose("Resetting \(categoryType) plugin")
             group.enter()
-            plugin.reset { group.leave() }
+            plugin.reset {
+                self.log.verbose("Resetting \(self.categoryType) plugin: finished")
+                group.leave()
+            }
         }
 
+        log.verbose("Resetting ModelRegistry and ModelListDecoderRegistry")
         ModelRegistry.reset()
         ModelListDecoderRegistry.reset()
+        log.verbose("Resetting ModelRegistry and ModelListDecoderRegistry: finished")
 
         group.wait()
 

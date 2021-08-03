@@ -59,6 +59,10 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
     }
 
     override func tearDown() {
+        let stopped = expectation(description: "stopped")
+        Amplify.DataStore.stop { _ in stopped.fulfill() }
+        waitForExpectations(timeout: 1.0)
+
         signOut()
         Amplify.reset()
     }

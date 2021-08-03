@@ -12,6 +12,7 @@ import Combine
 
 @available(iOS 13.0, *)
 final class MutationRetryNotifier {
+    private var lock: NSLock
     private var nextSyncTimer: DispatchSourceTimer?
     private var handlerQueue = DispatchQueue.global(qos: .default)
     var retryMutationCallback: () -> Void
@@ -20,6 +21,8 @@ final class MutationRetryNotifier {
     init(advice: RequestRetryAdvice,
          networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?,
          retryMutationCallback: @escaping BasicClosure) {
+        self.lock = NSLock()
+
         self.retryMutationCallback = retryMutationCallback
 
         let deadline = DispatchTime.now() + advice.retryInterval
@@ -33,6 +36,10 @@ final class MutationRetryNotifier {
     }
 
     private func scheduleTimer(at deadline: DispatchTime) {
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
         nextSyncTimer = DispatchSource.makeOneOffDispatchSourceTimer(deadline: deadline, queue: handlerQueue) {
             self.notifyCallback()
         }
@@ -40,6 +47,10 @@ final class MutationRetryNotifier {
     }
 
     func cancel() {
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
         reachabilitySubscription?.cancel()
         nextSyncTimer?.cancel()
     }
@@ -55,7 +66,9 @@ final class MutationRetryNotifier {
 extension MutationRetryNotifier: Subscriber {
     func receive(subscription: Subscription) {
         log.verbose(#function)
+        lock.lock()
         reachabilitySubscription = subscription
+        lock.unlock()
         subscription.request(.unlimited)
     }
 
@@ -69,6 +82,10 @@ extension MutationRetryNotifier: Subscriber {
 
     func receive(completion: Subscribers.Completion<Never>) {
         log.verbose(#function)
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
         reachabilitySubscription?.cancel()
     }
 }
