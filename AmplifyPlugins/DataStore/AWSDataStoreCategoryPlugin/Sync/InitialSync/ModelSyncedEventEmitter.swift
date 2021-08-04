@@ -117,15 +117,16 @@ final class ModelSyncedEventEmitter {
             case .delete:
                 modelSyncedEventBuilder.deleted += 1
             default:
-                break
-            }
-            if initialSyncOperationFinished && reconciledReceived == recordsReceived {
-                dispatchModelSyncedEvent()
+                log.error("Unexpected mutationType received: \(event.mutationType)")
             }
         case .mutationEventDropped:
             reconciledReceived += 1
         default:
             return
+        }
+
+        if initialSyncOperationFinished && reconciledReceived == recordsReceived {
+            dispatchModelSyncedEvent()
         }
     }
 

@@ -88,6 +88,8 @@ extension AuthError: AmplifyError {
     ) {
         if let error = error as? Self {
             self = error
+        } else if error.isOperationCancelledError {
+            self = .unknown("Operation cancelled", error)
         } else {
             self = .unknown(errorDescription, error)
         }

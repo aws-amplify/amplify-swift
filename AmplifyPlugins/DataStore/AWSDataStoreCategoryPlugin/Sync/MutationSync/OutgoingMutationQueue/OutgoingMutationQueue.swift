@@ -27,8 +27,11 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     private let operationQueue: OperationQueue
 
-    private let workQueue = DispatchQueue(label: "com.amazonaws.OutgoingMutationOperationQueue",
-                                          target: DispatchQueue.global())
+    /// A DispatchQueue for synchronizing state on the mutation queue
+    private let mutationDispatchQueue = DispatchQueue(
+        label: "com.amazonaws.OutgoingMutationQueue",
+        target: DispatchQueue.global()
+    )
 
     private weak var api: APICategoryGraphQLBehavior?
 
@@ -52,6 +55,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
         let operationQueue = OperationQueue()
         operationQueue.name = "com.amazonaws.OutgoingMutationOperationQueue"
+        operationQueue.underlyingQueue = mutationDispatchQueue
         operationQueue.maxConcurrentOperationCount = 1
         operationQueue.isSuspended = true
 
@@ -70,7 +74,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                     return
                 }
                 self.log.verbose("New state: \(newState)")
-                self.workQueue.async {
+                self.mutationDispatchQueue.async {
                     self.respond(to: newState)
                 }
         }
@@ -238,6 +242,11 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                                                api: APICategoryGraphQLBehavior,
                                                apiError: APIError?,
                                                graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>?) {
+        if let apiError = apiError, apiError.isOperationCancelledError {
+            log.verbose("SyncMutationToCloudOperation was cancelled, aborting processing")
+            return
+        }
+
         let processMutationErrorFromCloudOperation = ProcessMutationErrorFromCloudOperation(
             dataStoreConfiguration: dataStoreConfiguration,
             mutationEvent: mutationEvent,

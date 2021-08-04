@@ -59,8 +59,6 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         let connection = try getDBConnection(inMemory: true)
         try setUpStorageAdapter(connection: connection)
 
-        try setUpStorageAdapter()
-
         let mutationQueue = OutgoingMutationQueue(
             storageAdapter: storageAdapter,
             dataStoreConfiguration: .default,
