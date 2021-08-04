@@ -222,7 +222,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                                                   api: APICategoryGraphQLBehavior) {
         if case let .success(graphQLResponse) = result {
             if case let .success(graphQLResult) = graphQLResponse {
-                completeProcessingEvent(mutationEvent,
+                processSuccessEvent(mutationEvent,
                                         mutationSyncMetadata: graphQLResult)
             } else if case let .failure(graphQLResponseError) = graphQLResponse {
                 processMutationErrorFromCloud(mutationEvent: mutationEvent,
@@ -235,6 +235,22 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                                           api: api,
                                           apiError: apiError,
                                           graphQLResponseError: nil)
+        }
+    }
+
+    /// Process the successful response from API by updating the mutation events in
+    /// mutation event table having `nil` version
+    private func processSuccessEvent(_ mutationEvent: MutationEvent,
+                                     mutationSyncMetadata: MutationSync<AnyModel>?) {
+        if let mutationSyncMetadata = mutationSyncMetadata {
+            MutationEvent.updatePendingMutationEventVersionIfNil(
+                for: mutationEvent.modelId,
+                mutationSync: mutationSyncMetadata,
+                storageAdapter: storageAdapter) { _ in
+                self.completeProcessingEvent(mutationEvent, mutationSyncMetadata: mutationSyncMetadata)
+            }
+        } else {
+            completeProcessingEvent(mutationEvent, mutationSyncMetadata: mutationSyncMetadata)
         }
     }
 
