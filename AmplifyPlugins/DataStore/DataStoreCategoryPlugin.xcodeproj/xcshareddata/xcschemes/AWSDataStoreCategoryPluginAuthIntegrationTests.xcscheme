@@ -29,6 +29,9 @@
                <Test
                   Identifier = "AWSDataStoreMultiAuthSingleRuleTests/testOwnerOIDC()">
                </Test>
+               <Test
+                  Identifier = "AWSDataStoreMultiAuthTwoRulesTests/testOwnerPublicOIDCAPIAuthenticatedUsers()">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
