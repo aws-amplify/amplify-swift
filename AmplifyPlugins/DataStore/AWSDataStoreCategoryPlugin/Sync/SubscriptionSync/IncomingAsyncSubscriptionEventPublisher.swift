@@ -43,6 +43,8 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
     private let incomingSubscriptionEvents: PassthroughSubject<Event, DataStoreError>
     private let awsAuthService: AWSAuthServiceBehavior
 
+    private let consistencyQueue: DispatchQueue
+
     init(modelSchema: ModelSchema,
          api: APICategoryGraphQLBehavior,
          modelPredicate: QueryPredicate?,
@@ -52,6 +54,10 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         self.onCreateConnected = false
         self.onUpdateConnected = false
         self.onDeleteConnected = false
+        self.consistencyQueue = DispatchQueue(
+            label: "com.amazonaws.Amplify.RemoteSyncEngine.\(modelSchema.name)"
+        )
+
         self.connectionStatusQueue = OperationQueue()
         connectionStatusQueue.name
             = "com.amazonaws.Amplify.RemoteSyncEngine.\(modelSchema.name).IncomingAsyncSubscriptionEventPublisher"
@@ -230,37 +236,42 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
     }
 
     func cancel() {
-        genericCompletionListenerHandler(result: .successfulVoid)
+        consistencyQueue.sync {
+            genericCompletionListenerHandler(result: .successfulVoid)
 
-        onCreateOperation?.cancel()
-        onCreateOperation = nil
-        onCreateValueListener = nil
+            onCreateOperation?.cancel()
+            onCreateOperation = nil
+            onCreateValueListener = nil
 
-        onUpdateOperation?.cancel()
-        onUpdateOperation = nil
-        onUpdateValueListener = nil
+            onUpdateOperation?.cancel()
+            onUpdateOperation = nil
+            onUpdateValueListener = nil
 
-        onDeleteOperation?.cancel()
-        onDeleteOperation = nil
-        onDeleteValueListener = nil
+            onDeleteOperation?.cancel()
+            onDeleteOperation = nil
+            onDeleteValueListener = nil
 
-        connectionStatusQueue.cancelAllOperations()
+            connectionStatusQueue.cancelAllOperations()
+            connectionStatusQueue.waitUntilAllOperationsAreFinished()
+        }
     }
 
     func reset(onComplete: () -> Void) {
-        onCreateOperation?.cancel()
-        onCreateOperation = nil
-        onCreateValueListener?(.connection(.disconnected))
+        consistencyQueue.sync {
+            onCreateOperation?.cancel()
+            onCreateOperation = nil
+            onCreateValueListener?(.connection(.disconnected))
 
-        onUpdateOperation?.cancel()
-        onUpdateOperation = nil
-        onUpdateValueListener?(.connection(.disconnected))
+            onUpdateOperation?.cancel()
+            onUpdateOperation = nil
+            onUpdateValueListener?(.connection(.disconnected))
 
-        onDeleteOperation?.cancel()
-        onDeleteOperation = nil
-        onDeleteValueListener?(.connection(.disconnected))
+            onDeleteOperation?.cancel()
+            onDeleteOperation = nil
+            onDeleteValueListener?(.connection(.disconnected))
 
-        genericCompletionListenerHandler(result: .successfulVoid)
+            genericCompletionListenerHandler(result: .successfulVoid)
+        }
 
         onComplete()
     }

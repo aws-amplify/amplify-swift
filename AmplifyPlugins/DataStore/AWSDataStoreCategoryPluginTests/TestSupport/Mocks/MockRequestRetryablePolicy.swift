@@ -14,19 +14,16 @@ import Foundation
 
 class MockRequestRetryablePolicy: RequestRetryablePolicy {
 
-    var responseStack: [RequestRetryAdvice] = []
+    var responseQueue: [RequestRetryAdvice] = []
 
     func pushOnRetryRequestAdvice(response: RequestRetryAdvice) {
-        responseStack.append(response)
+        responseQueue.append(response)
     }
 
     override func retryRequestAdvice(urlError: URLError?,
                                      httpURLResponse: HTTPURLResponse?,
                                      attemptNumber: Int) -> RequestRetryAdvice {
-        //If this breaks, you didn't push anything onto the stack
-        let result = responseStack.first!
-        responseStack.remove(at: 0)
-        return result
-
+        // If this breaks, you didn't push anything onto the queue
+        responseQueue.removeFirst()
     }
 }

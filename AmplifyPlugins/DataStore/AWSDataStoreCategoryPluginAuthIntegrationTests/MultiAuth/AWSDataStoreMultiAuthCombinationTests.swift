@@ -108,8 +108,6 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreMultiAuthBaseTest {
         assertUsedAuthTypes([.amazonCognitoUserPools, .apiKey])
     }
 
-    ///
-
     /// Given: an unauthenticated user
     /// When: DataStore query/mutation operations are sent
     /// Then:

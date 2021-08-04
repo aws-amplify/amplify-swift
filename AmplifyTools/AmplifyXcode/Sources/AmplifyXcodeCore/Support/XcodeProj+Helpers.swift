@@ -36,15 +36,24 @@ extension XcodeProj {
     }
 }
 
-// MARK: addBuildFileTo
+// MARK: Add files to project
 extension XcodeProj {
-    func addBuildFileToResources(_ file: PBXBuildFile) {
-        // TODO: should we find the proper build phase?
-        pbxproj.resourcesBuildPhases.first?.files?.append(file)
+    func targets(named targetName: String,
+                 ofType productType: PBXProductType) -> [PBXTarget] {
+        pbxproj.targets(named: targetName).filter { $0.productType == productType }
     }
 
-    func addBuildFileToSources(_ file: PBXBuildFile) {
-        // TODO: should we find the proper build phase?
-        pbxproj.sourcesBuildPhases.first?.files?.append(file)
+    func addResourceFile(_ file: PBXBuildFile, toTarget target: PBXTarget) throws {
+        if let files = try target.resourcesBuildPhase()?.files, files.contains(file) {
+            return
+        }
+        try target.resourcesBuildPhase()?.files?.append(file)
+    }
+
+    func addSourceFile(_ file: PBXBuildFile, toTarget target: PBXTarget) throws {
+        if let files = try target.sourcesBuildPhase()?.files, files.contains(file) {
+            return
+        }
+        try target.sourcesBuildPhase()?.files?.append(file)
     }
 }

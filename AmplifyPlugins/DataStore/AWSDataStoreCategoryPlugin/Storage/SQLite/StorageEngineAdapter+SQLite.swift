@@ -360,6 +360,15 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         completion(.successfulVoid)
     }
 
+    func shouldIgnoreError(error: DataStoreError) -> Bool {
+        if let sqliteError = SQLiteResultError(from: error),
+           case .constraintViolation = sqliteError {
+            return true
+        }
+
+        return false
+    }
+
     static func clearIfNewVersion(version: String,
                                   dbFilePath: URL,
                                   userDefaults: UserDefaults = UserDefaults.standard,

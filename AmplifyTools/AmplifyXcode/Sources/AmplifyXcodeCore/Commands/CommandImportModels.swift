@@ -33,7 +33,8 @@ enum CommandImportModelsTasks {
             try environment.addFilesToXcodeProject(
                 projectPath: environment.basePath,
                 files: models,
-                toGroup: args.modelsGroup)
+                toGroup: args.modelsGroup,
+                inTarget: .primary)
 
             let addedModels = models.map { Path($0.path).lastComponent }
             return .success("Successfully added models \(addedModels) to '\(args.modelsGroup)' group.")

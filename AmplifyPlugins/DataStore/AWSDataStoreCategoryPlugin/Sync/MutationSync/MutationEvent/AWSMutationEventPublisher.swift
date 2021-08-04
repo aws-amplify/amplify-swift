@@ -9,7 +9,9 @@ import Amplify
 import Combine
 import Foundation
 
-/// Note: This publisher accepts only a single subscriber
+/// Note: This publisher accepts only a single subscriber. It retains a weak reference to
+/// its MutationEventSource even after downstream subscribers have issued a `cancel()`,
+/// so that subsequent subscribers will still receive event notifications.
 @available(iOS 13.0, *)
 final class AWSMutationEventPublisher: Publisher {
     typealias Output = MutationEvent
@@ -35,7 +37,6 @@ final class AWSMutationEventPublisher: Publisher {
 
     func cancel() {
         subscription = nil
-        eventSource = nil
     }
 
     func request(_ demand: Subscribers.Demand) {
@@ -51,6 +52,7 @@ final class AWSMutationEventPublisher: Publisher {
     }
 
     func requestNextEvent() {
+        log.verbose(#function)
         let promise: DataStoreCallback<MutationEvent> = { [weak self] result in
             guard let self = self, let subscriber = self.subscription?.subscriber else {
                 return
@@ -68,7 +70,17 @@ final class AWSMutationEventPublisher: Publisher {
         }
 
         DispatchQueue.global().async {
-            self.eventSource?.getNextMutationEvent(completion: promise)
+            guard let eventSource = self.eventSource else {
+                self.log.verbose("AWSMutationPublisher.eventSource is unexpectedly nil")
+                return
+            }
+
+            guard self.subscription != nil else {
+                self.log.debug("Subscription is nil, not getting next mutation event")
+                return
+            }
+
+            eventSource.getNextMutationEvent(completion: promise)
         }
     }
 

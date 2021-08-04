@@ -13,13 +13,13 @@ import Combine
 @testable import AWSDataStoreCategoryPlugin
 
 class MockOutgoingMutationQueue: OutgoingMutationQueueBehavior {
-    func pauseSyncingToCloud() {
-        //no-op
+    func stopSyncingToCloud(_ completion: @escaping BasicClosure = {}) {
+        completion()
     }
 
     func startSyncingToCloud(api: APICategoryGraphQLBehavior,
                              mutationEventPublisher: MutationEventPublisher) {
-        //no-op
+        // no-op
     }
 
     var publisher: AnyPublisher<MutationEvent, Never> {

@@ -29,7 +29,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
         try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
 
-        let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
+        let methodWasInvokedOnPlugin = expectation(description: "error(_:) method was invoked on plugin")
         plugin.listeners.append { message in
             if message.starts(with: "error(_:)") {
                 methodWasInvokedOnPlugin.fulfill()
@@ -46,7 +46,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
         try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
 
-        let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
+        let methodWasInvokedOnPlugin = expectation(description: "error(error:) method was invoked on plugin")
         plugin.listeners.append { message in
             if message.starts(with: "error(error:)") {
                 methodWasInvokedOnPlugin.fulfill()
@@ -64,8 +64,9 @@ class LoggingCategoryClientAPITests: XCTestCase {
         try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
 
-        let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
+        let methodWasInvokedOnPlugin = expectation(description: "warn(_:) method was invoked on plugin")
         plugin.listeners.append { message in
+            print("message: \(message)")
             if message.starts(with: "warn(_:)") {
                 methodWasInvokedOnPlugin.fulfill()
             }
@@ -81,7 +82,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
         try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
 
-        let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
+        let methodWasInvokedOnPlugin = expectation(description: "info(_:) method was invoked on plugin")
         plugin.listeners.append { message in
             if message.starts(with: "info(_:)") {
                 methodWasInvokedOnPlugin.fulfill()
@@ -98,7 +99,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
         try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
 
-        let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
+        let methodWasInvokedOnPlugin = expectation(description: "debug(_:) method was invoked on plugin")
         plugin.listeners.append { message in
             if message.starts(with: "debug(_:)") {
                 methodWasInvokedOnPlugin.fulfill()
@@ -115,14 +116,17 @@ class LoggingCategoryClientAPITests: XCTestCase {
         try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
 
-        let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
+        let methodWasInvokedOnPlugin = expectation(description: "verbose(_:) method was invoked on plugin")
+        // Amplify uses verbose logging during the `reset` flow, so there may be mulitple
+        // invocations. We'll explicitly check the message content
         plugin.listeners.append { message in
-            if message.starts(with: "verbose(_:)") {
+            print("message: \(message)")
+            if message.starts(with: "verbose(_:)") && message.contains("Testing verbose logging") {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
 
-        Amplify.Logging.verbose("Test")
+        Amplify.Logging.verbose("Testing verbose logging")
 
         waitForExpectations(timeout: 0.5)
     }

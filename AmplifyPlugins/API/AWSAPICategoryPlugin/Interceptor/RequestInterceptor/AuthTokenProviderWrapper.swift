@@ -11,14 +11,14 @@ import Foundation
 
 class AuthTokenProviderWrapper: AuthTokenProvider {
 
-    let oidcAuthProvider: AmplifyOIDCAuthProvider
+    let wrappedAuthTokenProvider: AmplifyAuthTokenProvider
 
-    init(oidcAuthProvider: AmplifyOIDCAuthProvider) {
-        self.oidcAuthProvider = oidcAuthProvider
+    init(tokenAuthProvider: AmplifyAuthTokenProvider) {
+        self.wrappedAuthTokenProvider = tokenAuthProvider
     }
 
     func getToken() -> Result<String, AuthError> {
-        let result = oidcAuthProvider.getLatestAuthToken()
+        let result = wrappedAuthTokenProvider.getLatestAuthToken()
         switch result {
         case .success(let result):
             return .success(result)

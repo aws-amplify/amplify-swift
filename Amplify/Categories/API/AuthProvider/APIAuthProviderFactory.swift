@@ -18,11 +18,19 @@ open class APIAuthProviderFactory {
     open func oidcAuthProvider() -> AmplifyOIDCAuthProvider? {
         return nil
     }
+
+    open func functionAuthProvider() -> AmplifyFunctionAuthProvider? {
+        return nil
+    }
+}
+
+public protocol AmplifyAuthTokenProvider {
+    typealias AuthToken = String
+    func getLatestAuthToken() -> Result<AuthToken, Error>
 }
 
 /// Amplify OIDC Auth Provider
-public protocol AmplifyOIDCAuthProvider {
+public protocol AmplifyOIDCAuthProvider: AmplifyAuthTokenProvider {}
 
-    /// Retrieve the latest auth token
-    func getLatestAuthToken() -> Result<String, Error>
-}
+/// Amplify Function Auth Provider
+public protocol AmplifyFunctionAuthProvider: AmplifyAuthTokenProvider {}

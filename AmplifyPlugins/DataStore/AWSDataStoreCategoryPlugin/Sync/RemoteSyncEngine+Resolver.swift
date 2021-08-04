@@ -61,7 +61,7 @@ extension RemoteSyncEngine {
             case (.cleaningUpForTermination, .cleanedUpForTermination):
                 return .terminate
 
-            case (.schedulingRestart, .scheduleRestartFinished):
+            case (.schedulingRestart, .scheduledRestartTriggered):
                 return .pausingSubscriptions
 
             default:

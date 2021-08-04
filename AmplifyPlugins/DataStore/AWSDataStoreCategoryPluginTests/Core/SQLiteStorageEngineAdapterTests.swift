@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import SQLite
 
 @testable import Amplify
 @testable import AWSPluginsCore
@@ -643,5 +644,23 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         }
 
         wait(for: [querySuccess], timeout: 1)
+    }
+
+    func testShouldIgnoreConstraintViolationError() {
+        let constraintViolationError = Result.error(message: "Foreign Key Constraint Violation",
+                                                    code: SQLITE_CONSTRAINT,
+                                                    statement: nil)
+        let dataStoreError = DataStoreError.invalidOperation(causedBy: constraintViolationError)
+
+        XCTAssertTrue(storageAdapter.shouldIgnoreError(error: dataStoreError))
+    }
+
+    func testShouldIgnoreErrorFalse() {
+        let constraintViolationError = Result.error(message: "",
+                                                    code: SQLITE_BUSY,
+                                                    statement: nil)
+        let dataStoreError = DataStoreError.invalidOperation(causedBy: constraintViolationError)
+
+        XCTAssertFalse(storageAdapter.shouldIgnoreError(error: dataStoreError))
     }
 }

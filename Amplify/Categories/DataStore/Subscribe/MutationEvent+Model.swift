@@ -20,7 +20,7 @@ extension MutationEvent {
                       mutationType: mutationType,
                       version: version)
     }
-  
+
     public init(untypedModel model: Model,
                 modelName: ModelName,
                 mutationType: MutationType,

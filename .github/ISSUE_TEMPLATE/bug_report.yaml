@@ -1,7 +1,5 @@
 name: Bug Report
 description: Create a report to help us improve
-labels:
-  - pending-triage
 body:
   - type: textarea
     id: description
@@ -50,6 +48,8 @@ body:
         - DataStore
         - Predictions
         - Storage
+    validations:
+      required: true
   - type: dropdown
     id: depedency-manager
     attributes:

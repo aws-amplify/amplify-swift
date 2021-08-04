@@ -92,11 +92,16 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber, AmplifyC
         subscription?.cancel()
         subscription = nil
     }
+}
 
-    func reset(onComplete: () -> Void) {
+@available(iOS 13.0, *)
+extension IncomingAsyncSubscriptionEventToAnyModelMapper: Resettable {
+    func reset(onComplete: @escaping BasicClosure) {
+        log.verbose("Resetting modelsFromSubscription and subscription")
         modelsFromSubscription.send(completion: .finished)
         subscription?.cancel()
         subscription = nil
+        log.verbose("Resetting modelsFromSubscription and subscription: finished")
         onComplete()
     }
 }

@@ -44,3 +44,13 @@ protocol ModelStorageBehavior {
                          completion: DataStoreCallback<[M]>)
 
 }
+
+protocol ModelStorageErrorBehavior {
+    func shouldIgnoreError(error: DataStoreError) -> Bool
+}
+
+extension ModelStorageErrorBehavior {
+    func shouldIgnoreError(error: DataStoreError) -> Bool {
+        return false
+    }
+}

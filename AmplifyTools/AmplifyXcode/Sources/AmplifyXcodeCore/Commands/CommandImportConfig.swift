@@ -44,7 +44,8 @@ enum ImportConfigTasks {
         do {
             try environment.addFilesToXcodeProject(projectPath: projectPath,
                                                    files: configFiles,
-                                                   toGroup: args.configGroup)
+                                                   toGroup: args.configGroup,
+                                                   inTarget: .primary)
             return .success("Successfully updated project \(projectPath).")
         } catch {
             if let underlyingError = error as? AmplifyCommandError {

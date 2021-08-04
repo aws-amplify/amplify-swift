@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AmplifyXcode::AmplifyXcode"
-               BuildableName = "AmplifyXcode"
+               BuildableName = "amplify-xcode"
                BlueprintName = "AmplifyXcode"
                ReferencedContainer = "container:AmplifyXcode.xcodeproj">
             </BuildableReference>

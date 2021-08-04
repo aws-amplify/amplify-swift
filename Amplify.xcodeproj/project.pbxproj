@@ -248,6 +248,7 @@
 		762C978526210F6400798FA3 /* RecordCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762C978426210F6400798FA3 /* RecordCover.swift */; };
 		762C978E26210FF100798FA3 /* RecordCover+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762C978D26210FF100798FA3 /* RecordCover+Schema.swift */; };
 		762F70A426683EE2001F8252 /* AuthRuleExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762F70A326683EE2001F8252 /* AuthRuleExtensionTests.swift */; };
+		7638895326A7A9AC0061AF0B /* AWSLambdaAuthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7638895226A7A9AC0061AF0B /* AWSLambdaAuthConfiguration.swift */; };
 		7678B38426017D5300B4917F /* AppSyncErrorTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */; };
 		7678B38526017D5300B4917F /* AppSyncErrorTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */; };
 		767F85FC2649FF540076D633 /* CustomerOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767F85FB2649FF540076D633 /* CustomerOrder.swift */; };
@@ -1141,6 +1142,7 @@
 		762C978426210F6400798FA3 /* RecordCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordCover.swift; sourceTree = "<group>"; };
 		762C978D26210FF100798FA3 /* RecordCover+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RecordCover+Schema.swift"; sourceTree = "<group>"; };
 		762F70A326683EE2001F8252 /* AuthRuleExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRuleExtensionTests.swift; sourceTree = "<group>"; };
+		7638895226A7A9AC0061AF0B /* AWSLambdaAuthConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSLambdaAuthConfiguration.swift; sourceTree = "<group>"; };
 		7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorTypeTests.swift; sourceTree = "<group>"; };
 		767F85FB2649FF540076D633 /* CustomerOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerOrder.swift; sourceTree = "<group>"; };
 		767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomerOrder+Schema.swift"; sourceTree = "<group>"; };
@@ -1993,6 +1995,7 @@
 				21420A7C237222A700FA140C /* APIKeyConfiguration.swift */,
 				21420A7D237222A700FA140C /* AWSAuthorizationConfiguration.swift */,
 				21420A7B237222A700FA140C /* AWSIAMConfiguration.swift */,
+				7638895226A7A9AC0061AF0B /* AWSLambdaAuthConfiguration.swift */,
 				21420A7F237222A700FA140C /* CognitoUserPoolsConfiguration.swift */,
 				21420A7E237222A700FA140C /* OIDCConfiguration.swift */,
 			);
@@ -2972,8 +2975,6 @@
 				762167D42615435C0033FCD2 /* Record+Schema.swift */,
 				762C978426210F6400798FA3 /* RecordCover.swift */,
 				762C978D26210FF100798FA3 /* RecordCover+Schema.swift */,
-				6B7743D625906F7E001469F5 /* Restaurant */,
-				21A9051E2616442000EC141D /* Scalar */,
 				6B9F7C542526864800F1F71C /* ScenarioATest6Post.swift */,
 				6B9F7C532526864800F1F71C /* ScenarioATest6Post+Schema.swift */,
 				214F49742486D8A200DA616C /* User.swift */,
@@ -4748,6 +4749,7 @@
 				2129BE1E2394806B006363A1 /* QueryPredicate+GraphQL.swift in Sources */,
 				21420A8F237222A900FA140C /* AWSIAMConfiguration.swift in Sources */,
 				219A888523EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift in Sources */,
+				7638895326A7A9AC0061AF0B /* AWSLambdaAuthConfiguration.swift in Sources */,
 				219A88F123F3379900BBC5F2 /* GraphQLDocumentInput.swift in Sources */,
 				21AD424E249BF0E90016FE95 /* AnyModel+Subscript.swift in Sources */,
 				21420AA0237222A900FA140C /* AWSAuthorizationType.swift in Sources */,

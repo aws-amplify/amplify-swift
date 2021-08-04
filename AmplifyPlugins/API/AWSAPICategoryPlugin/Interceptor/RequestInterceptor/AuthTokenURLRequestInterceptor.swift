@@ -10,12 +10,12 @@ import AWSPluginsCore
 import Foundation
 import AWSCore
 
-struct UserPoolURLRequestInterceptor: URLRequestInterceptor {
+struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
 
-    let userPoolTokenProvider: AuthTokenProvider
+    let authTokenProvider: AuthTokenProvider
 
-    init(userPoolTokenProvider: AuthTokenProvider) {
-        self.userPoolTokenProvider = userPoolTokenProvider
+    init(authTokenProvider: AuthTokenProvider) {
+        self.authTokenProvider = authTokenProvider
     }
 
     func intercept(_ request: URLRequest) throws -> URLRequest {
@@ -30,10 +30,10 @@ struct UserPoolURLRequestInterceptor: URLRequestInterceptor {
         mutableRequest.setValue(AmplifyAWSServiceConfiguration.baseUserAgent(),
                                 forHTTPHeaderField: URLRequestConstants.Header.userAgent)
 
-        let tokenResult = userPoolTokenProvider.getToken()
+        let tokenResult = authTokenProvider.getToken()
         guard case let .success(token) = tokenResult else {
             if case let .failure(error) = tokenResult {
-                throw APIError.operationError("Failed to retrieve Cognito UserPool token.", "", error)
+                throw APIError.operationError("Failed to retrieve authorization token.", "", error)
             }
 
             return mutableRequest as URLRequest
