@@ -222,6 +222,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         }
     }
 
+    /// Process the successful response from API by updating the mutation events in
+    /// mutation event table having `nil` version
     private func processSuccessEvent(_ mutationEvent: MutationEvent,
                                      mutationSyncMetadata: MutationSync<AnyModel>?) {
         if let mutationSyncMetadata = mutationSyncMetadata {
