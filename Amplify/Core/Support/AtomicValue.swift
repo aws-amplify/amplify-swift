@@ -7,12 +7,13 @@
 
 import Foundation
 
+/// A class that wraps access to its underlying value with an NSLocking instance.
 public final class AtomicValue<Value> {
-    let lock = NSLock()
-
+    let lock: NSLocking
     var value: Value
 
     public init(initialValue: Value) {
+        self.lock = NSLock()
         self.value = initialValue
     }
 
@@ -46,6 +47,11 @@ public final class AtomicValue<Value> {
 
     /// Performs `block` with an `inout` value, preventing other access until the block exits,
     /// and enabling the block to mutate the value
+    ///
+    /// - Warning: The AtomicValue lock is not reentrant. Specifically, it is not
+    /// possible to call outside the block to `get` an AtomicValue (e.g., via a
+    /// convenience property) while inside the `with` block. Attempting to do so will
+    /// cause a deadlock.
     public func with(block: (inout Value) -> Void) {
         lock.execute {
             block(&value)

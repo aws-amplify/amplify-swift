@@ -3685,9 +3685,9 @@
 			isa = PBXGroup;
 			children = (
 				FACA35EA2326B217000E74F6 /* AmplifyConfigurationInitializationTests.swift */,
-				FA1B964D24BF5FA70002B90A /* AmplifyOperationCombineTests.swift */,
-				FA58456824DA29B00028D65A /* AmplifyInProcessReportingOperationCombineTests.swift */,
 				FA58456A24DA31370028D65A /* AmplifyInProcessReportingOperationChainedTests.swift */,
+				FA58456824DA29B00028D65A /* AmplifyInProcessReportingOperationCombineTests.swift */,
+				FA1B964D24BF5FA70002B90A /* AmplifyOperationCombineTests.swift */,
 				B9DCA262240F217C00075E22 /* AnyEncodableTests.swift */,
 				FACF520823298C1200646E10 /* AtomicDictionaryTests.swift */,
 				FAAFAF3023904B75002CF932 /* AtomicValue+BoolTests.swift */,
