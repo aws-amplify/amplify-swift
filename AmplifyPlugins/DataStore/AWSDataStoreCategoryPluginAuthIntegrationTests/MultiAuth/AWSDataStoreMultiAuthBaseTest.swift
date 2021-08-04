@@ -58,6 +58,9 @@ class AWSDataStoreMultiAuthBaseTest: XCTestCase {
         Amplify.DataStore.stop { _ in stopped.fulfill() }
         waitForExpectations(timeout: 1.0)
 
+        requests.forEach { $0.cancel() }
+        requests = []
+
         Amplify.reset()
     }
 
