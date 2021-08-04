@@ -17,49 +17,39 @@ public final class AtomicValue<Value> {
     }
 
     public func get() -> Value {
-        lock.lock()
-        defer {
-            lock.unlock()
+        lock.execute {
+            value
         }
-        return value
     }
 
     public func set(_ newValue: Value) {
-        lock.lock()
-        defer {
-            lock.unlock()
+        lock.execute {
+            value = newValue
         }
-        value = newValue
     }
 
     /// Sets AtomicValue to `newValue` and returns the old value
     public func getAndSet(_ newValue: Value) -> Value {
-        lock.lock()
-        defer {
-            lock.unlock()
+        lock.execute {
+            let oldValue = value
+            value = newValue
+            return oldValue
         }
-        let oldValue = value
-        value = newValue
-        return oldValue
     }
 
     /// Performs `block` with the current value, preventing other access until the block exits.
     public func atomicallyPerform(block: (Value) -> Void) {
-        lock.lock()
-        defer {
-            lock.unlock()
+        lock.execute {
+            block(value)
         }
-        block(value)
     }
 
     /// Performs `block` with an `inout` value, preventing other access until the block exits,
     /// and enabling the block to mutate the value
     public func with(block: (inout Value) -> Void) {
-        lock.lock()
-        defer {
-            lock.unlock()
+        lock.execute {
+            block(&value)
         }
-        block(&value)
     }
 
 }

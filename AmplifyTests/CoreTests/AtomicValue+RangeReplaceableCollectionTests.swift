@@ -15,7 +15,7 @@ class AtomicValueRangeReplaceableTests: XCTestCase {
         let atomicArray = AtomicValue(initialValue: [Int]())
 
         DispatchQueue.concurrentPerform(iterations: 10_000) { iteration in
-            _ = atomicArray.append(iteration)
+            atomicArray.append(iteration)
         }
 
         XCTAssertEqual(atomicArray.get().count, 10_000)
@@ -26,7 +26,7 @@ class AtomicValueRangeReplaceableTests: XCTestCase {
 
         DispatchQueue.concurrentPerform(iterations: 10_000) { iteration in
             let newArray = [iteration, iteration * 2]
-            _ = atomicArray.append(contentsOf: newArray)
+            atomicArray.append(contentsOf: newArray)
         }
 
         XCTAssertEqual(atomicArray.get().count, 20_000)

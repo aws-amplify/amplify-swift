@@ -8,21 +8,17 @@
 extension AtomicValue where Value: Numeric {
     /// Increments the current value by `amount` and returns the incremented value
     public func increment(by amount: Value = 1) -> Value {
-        lock.lock()
-        defer {
-            lock.unlock()
+        lock.execute {
+            value += amount
+            return value
         }
-        value += amount
-        return value
     }
 
     /// Decrements the current value by `amount` and returns the decremented value
     public func decrement(by amount: Value = 1) -> Value {
-        lock.lock()
-        defer {
-            lock.unlock()
+        lock.execute {
+            value -= amount
+            return value
         }
-        value -= amount
-        return value
     }
 }
