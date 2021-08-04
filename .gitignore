@@ -52,7 +52,8 @@ credentials-mc.json
 fastlane/report.xml
 
 # Amplify artifacts, such as used for integ tests
-amplify
+#amplify/
+AmplifyPlugins/**/amplify
 amplify/\#current-cloud-backend
 amplify/.config/local-*
 amplify/logs
