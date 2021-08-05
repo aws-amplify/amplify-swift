@@ -283,6 +283,17 @@ workflows:
           scheme: AWSS3StoragePlugin
           requires:
             - install_gems
+      - plugin_unit_test:
+          name: integ_test_storage
+          path: Storage
+          workspace: StoragePlugin
+          scheme: AWSS3StoragePluginFunctionalTests
+          requires:
+            - install_gems
+          filters:
+            branches:
+              only:
+                - test
       - deploy:
           name: deploy unstable
           <<: *deploy_requires
