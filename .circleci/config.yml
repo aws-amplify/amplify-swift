@@ -271,7 +271,7 @@ deploy_requires: &deploy_requires
 workflows:
   build_test_deploy:
     jobs:
-      - checkout_code:
+      - checkout_code
       - install_gems:
           requires:
             - checkout_code
