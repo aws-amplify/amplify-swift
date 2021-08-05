@@ -108,10 +108,6 @@ jobs:
           key: *repo_cache_key
           paths:
             - ~/amplify-ios
-  configure_aws:
-    <<: *defaults
-    steps:
-      - configure_aws
   install_gems:
     <<: *defaults
     steps:
@@ -229,6 +225,7 @@ jobs:
       - restore_gems
       - check_bundle
       - make_artifacts_directory
+      - configure_aws
       - run:
           name: Download configuration for << parameters.scheme >>
           command: | 
@@ -274,10 +271,7 @@ deploy_requires: &deploy_requires
 workflows:
   build_test_deploy:
     jobs:
-      - configure_aws
       - checkout_code:
-          requires:
-            - configure_aws
       - install_gems:
           requires:
             - checkout_code
