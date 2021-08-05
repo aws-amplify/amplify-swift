@@ -1,5 +1,15 @@
 # Changelog
 ## Unreleased
+## 1.13.1 (2021-08-05)
+
+### Bug Fixes
+
+- **Datastore**: consecutive updates nil version scenario (#1333)
+- **DataStore**: Various mutation sync fixes (#1355)
+- **DataStore**: do not send completion event to publisher on DataStore.clear() and DataStore.stop() (#1273)
+- Fix data store mutation when restoring network (#1345)
+- **DataStore**: drop failed constraint violation reconciliations (#1321)
+
 ## 1.13.0 (2021-07-30)
 
 ### Features
