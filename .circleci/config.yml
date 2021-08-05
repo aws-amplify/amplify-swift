@@ -84,6 +84,34 @@ commands:
       - store_artifacts:
           path: artifacts
 
+  configure_aws:
+    description: >-
+      Install aws cli and configure aws release profile
+    steps:
+      - run:
+          name: Install AWS cli
+          command: |
+            HOMEBREW_NO_AUTO_UPDATE=1 brew install awscli
+      - run:
+          name: Configure AWS profiles
+          command: |
+            aws configure --profile aws_profile set region us-east-1
+            echo -e "[aws_profile]\naws_access_key_id=${AWS_ACCESS_KEY_ID}\naws_secret_access_key=${AWS_SECRET_ACCESS_KEY}\n" >> ~/.aws/credentials
+  skip_job_unless_required:
+    description: >-
+      Skip job unless required
+    steps:
+      - run:
+          name: Skip job if SKIP_JOB flag is set
+          command: |
+              variable_name=SKIP_JOB_${CIRCLE_JOB}
+              skipjob_flag=$(eval "echo $"${variable_name}"")
+              skipjob_flag=$(echo "${skipjob_flag}" | tr '[:upper:]' '[:lower:]')
+              if [ "${skipjob_flag}" == "true" ]
+              then
+                echo "Skipping current job as ${variable_name} environment variable is set"
+                circleci step halt
+              fi
 jobs:
   checkout_code:
     <<: *defaults
@@ -94,7 +122,6 @@ jobs:
           key: *repo_cache_key
           paths:
             - ~/amplify-ios
-
   install_gems:
     <<: *defaults
     steps:
@@ -189,6 +216,47 @@ jobs:
       - store_test_results:
           path: build/reports
       - upload_artifacts
+  
+  plugin_integ_test:
+    <<: *defaults
+    parameters:
+      path:
+        type: string
+      workspace:
+        type: string
+      scheme:
+        type: string
+    working_directory: ~/amplify-ios/AmplifyPlugins/<< parameters.path >>
+    description: << parameters.path >> << parameters.scheme >> integration test
+    steps:
+      - skip_job_unless_required
+      - *restore_repo
+      - restore_plugin_pods:
+          prefix: << parameters.path >>
+      - pre_start_simulator
+      - run: pod install
+      - save_plugin_pods:
+          prefix: << parameters.path >>
+      - restore_gems
+      - check_bundle
+      - make_artifacts_directory
+      - configure_aws
+      - run:
+          name: Download configuration for << parameters.scheme >>
+          command: | 
+            bash ~/amplify-ios/CircleciScripts/backend_resource_management.sh ${BACKEND_BUCKET} << parameters.scheme >>
+      - run:
+          name: Build << parameters.path >>
+          command: xcodebuild build-for-testing -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | tee "artifacts/build-<< parameters.scheme >>.log" | xcpretty
+      - run:
+          name: Test << parameters.path >>
+          command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | tee "artifacts/test-<< parameters.scheme >>.log" | xcpretty --simple --color --report junit
+      - run:
+          name: Upload << parameters.path >> coverage report to Codecov
+          command: bash ~/amplify-ios/build-support/codecov.sh -F << parameters.path >>_plugin_integ_test -J '^<< parameters.scheme >>$'
+      - store_test_results:
+          path: build/reports
+      - upload_artifacts
 
   deploy:
     <<: *defaults
@@ -220,6 +288,7 @@ deploy_requires: &deploy_requires
     - unit_test_datastore
     - unit_test_predictions
     - unit_test_storage
+    - integ_test_storage_functional
 
 workflows:
   build_test_deploy:
@@ -283,6 +352,17 @@ workflows:
           scheme: AWSS3StoragePlugin
           requires:
             - install_gems
+      - plugin_integ_test:
+          name: integ_test_storage_functional
+          path: Storage
+          workspace: StoragePlugin
+          scheme: AWSS3StoragePluginFunctionalTests
+          requires:
+            - unit_test_storage
+          filters:
+            branches:
+              only:
+                - main
       - deploy:
           name: deploy unstable
           <<: *deploy_requires
