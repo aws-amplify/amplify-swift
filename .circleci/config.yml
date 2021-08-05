@@ -99,10 +99,6 @@ commands:
             echo -e "[aws_profile]\naws_access_key_id=${AWS_ACCESS_KEY_ID}\naws_secret_access_key=${AWS_SECRET_ACCESS_KEY}\n" >> ~/.aws/credentials
 
 jobs:
-  configure_aws:
-    <<: *defaults
-    steps:
-      - configure_aws
   checkout_code:
     <<: *defaults
     steps:
@@ -276,7 +272,6 @@ deploy_requires: &deploy_requires
 workflows:
   build_test_deploy:
     jobs:
-      - configure_aws
       - checkout_code
       - install_gems:
           requires:
@@ -301,7 +296,6 @@ workflows:
           scheme: AWSS3StoragePluginFunctionalTests
           requires:
             - install_gems
-            - configure_aws
           filters:
             branches:
               only:
