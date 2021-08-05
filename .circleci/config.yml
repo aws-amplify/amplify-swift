@@ -276,6 +276,8 @@ workflows:
     jobs:
       - configure_aws
       - checkout_code
+          requires:
+            - configure_aws
       - install_gems:
           requires:
             - checkout_code
