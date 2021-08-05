@@ -275,7 +275,7 @@ workflows:
   build_test_deploy:
     jobs:
       - configure_aws
-      - checkout_code
+      - checkout_code:
           requires:
             - configure_aws
       - install_gems:
