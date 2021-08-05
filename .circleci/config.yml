@@ -108,7 +108,10 @@ jobs:
           key: *repo_cache_key
           paths:
             - ~/amplify-ios
-
+  configure_aws:
+    <<: *defaults
+    steps:
+      - configure_aws
   install_gems:
     <<: *defaults
     steps:
