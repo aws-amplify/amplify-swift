@@ -229,7 +229,7 @@ jobs:
       - run:
           name: Download configuration for << parameters.scheme >>
           command: | 
-            aws s3 cp "s3://amplify-config/amplifyconfiguration.json" "amplifyconfiguration.json"
+            aws s3 cp "s3://amplify-config/amplifyconfiguration.json" "~/amplify-ios/AmplifyPlugins/Storage/AWSS3StoragePluginFunctionalTests/AWSS3StoragePluginTests-amplifyconfiguration.json"
       - run:
           name: Build << parameters.path >>
           command: xcodebuild build-for-testing -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | tee "artifacts/build-<< parameters.scheme >>.log" | xcpretty
