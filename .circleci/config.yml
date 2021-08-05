@@ -97,7 +97,21 @@ commands:
           command: |
             aws configure --profile aws_profile set region us-east-1
             echo -e "[aws_profile]\naws_access_key_id=${AWS_ACCESS_KEY_ID}\naws_secret_access_key=${AWS_SECRET_ACCESS_KEY}\n" >> ~/.aws/credentials
-
+  skip_job_unless_required:
+    description: >-
+      Skip job unless required
+    steps:
+      - run:
+          name: Skip job if SKIP_JOB flag is set
+          command: |
+              variable_name=SKIP_JOB_${CIRCLE_JOB}
+              skipjob_flag=$(eval "echo $"${variable_name}"")
+              skipjob_flag=$(echo "${skipjob_flag}" | tr '[:upper:]' '[:lower:]')
+              if [ "${skipjob_flag}" == "true" ]
+              then
+                echo "Skipping current job as ${variable_name} environment variable is set"
+                circleci step halt
+              fi
 jobs:
   checkout_code:
     <<: *defaults
@@ -215,6 +229,7 @@ jobs:
     working_directory: ~/amplify-ios/AmplifyPlugins/<< parameters.path >>
     description: << parameters.path >> unit test
     steps:
+      - skip_job_unless_required
       - *restore_repo
       - restore_plugin_pods:
           prefix: << parameters.path >>
