@@ -282,7 +282,7 @@ deploy_requires: &deploy_requires
   requires:
     - build_test_amplify
     - build_test_aws_plugins_core
-    - unit_test_storage
+    - integ_test_storage_functional
 
 workflows:
   build_test_deploy:
@@ -303,14 +303,15 @@ workflows:
           workspace: StoragePlugin
           scheme: AWSS3StoragePlugin
           requires:
-            - install_gems
+            - build_test_amplify
+            - build_test_aws_plugins_core
       - plugin_integ_test:
-          name: integ_test_storage
+          name: integ_test_storage_functional
           path: Storage
           workspace: StoragePlugin
           scheme: AWSS3StoragePluginFunctionalTests
           requires:
-            - install_gems
+            - unit_test_storage
           filters:
             branches:
               only:
