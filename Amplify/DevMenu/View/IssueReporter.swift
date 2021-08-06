@@ -9,7 +9,7 @@ import SwiftUI
 import UIKit
 
 /// Issue report screen in developer menu
-@available(iOS 13.0, *)
+@available(iOSApplicationExtension, unavailable)
 struct IssueReporter: View {
     @State var issueDescription: String = ""
     @State var includeLogs = true
