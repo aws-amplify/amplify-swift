@@ -171,8 +171,6 @@
 		21D79FDA237617C60057D00D /* SubscriptionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FD9237617C60057D00D /* SubscriptionEvent.swift */; };
 		21D79FE32377F4120057D00D /* SubscriptionConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FE22377F4120057D00D /* SubscriptionConnectionState.swift */; };
 		21F40A3A23A294770074678E /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3923A294770074678E /* TestConfigHelper.swift */; };
-		21F40A3C23A2952C0074678E /* AuthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3B23A2952C0074678E /* AuthHelper.swift */; };
-		21F40A3E23A295390074678E /* AWSMobileClient+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3D23A295390074678E /* AWSMobileClient+Message.swift */; };
 		21F40A4023A295470074678E /* TestCommonConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3F23A295470074678E /* TestCommonConstants.swift */; };
 		21FDBB612587D7A30086FCDC /* Blog6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FDBB5B2587D7A30086FCDC /* Blog6.swift */; };
 		21FDBB622587D7A30086FCDC /* Post6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FDBB5C2587D7A30086FCDC /* Post6.swift */; };
@@ -1006,8 +1004,6 @@
 		21D79FD9237617C60057D00D /* SubscriptionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionEvent.swift; sourceTree = "<group>"; };
 		21D79FE22377F4120057D00D /* SubscriptionConnectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionConnectionState.swift; sourceTree = "<group>"; };
 		21F40A3923A294770074678E /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
-		21F40A3B23A2952C0074678E /* AuthHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthHelper.swift; sourceTree = "<group>"; };
-		21F40A3D23A295390074678E /* AWSMobileClient+Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSMobileClient+Message.swift"; sourceTree = "<group>"; };
 		21F40A3F23A295470074678E /* TestCommonConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestCommonConstants.swift; sourceTree = "<group>"; };
 		21FDBB5B2587D7A30086FCDC /* Blog6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog6.swift; sourceTree = "<group>"; };
 		21FDBB5C2587D7A30086FCDC /* Post6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post6.swift; sourceTree = "<group>"; };
@@ -3420,8 +3416,6 @@
 		FA9D6C20238DF06B00C7DD9F /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				21F40A3B23A2952C0074678E /* AuthHelper.swift */,
-				21F40A3D23A295390074678E /* AWSMobileClient+Message.swift */,
 				FA176ED6238503C200C5C5F9 /* HubListenerTestUtilities.swift */,
 				21F40A3923A294770074678E /* TestConfigHelper.swift */,
 			);
@@ -5406,7 +5400,6 @@
 				B9521837237E21BA00F53237 /* Post.swift in Sources */,
 				B9FAA11A23879AC8009414B4 /* BookAuthor.swift in Sources */,
 				217D5EBF2577F9DF009F0639 /* Comment4.swift in Sources */,
-				21F40A3E23A295390074678E /* AWSMobileClient+Message.swift in Sources */,
 				FAA2E8BC239FFC7700E420EA /* MockModels.swift in Sources */,
 				B9FAA11E23879B9F009414B4 /* Book+Schema.swift in Sources */,
 				217D5EB52577F9DF009F0639 /* Project1.swift in Sources */,
@@ -5474,7 +5467,6 @@
 				217D5EC12577F9DF009F0639 /* Team2.swift in Sources */,
 				217D5EBE2577F9DF009F0639 /* Post5+Schema.swift in Sources */,
 				214F49782486D8A200DA616C /* UserFollowing.swift in Sources */,
-				21F40A3C23A2952C0074678E /* AuthHelper.swift in Sources */,
 				6BEE08242533D30800133961 /* OGCScenarioBMGroupPost.swift in Sources */,
 				217D5EC22577F9DF009F0639 /* User5+Schema.swift in Sources */,
 				21FDBB642587D7A30086FCDC /* Post6+Schema.swift in Sources */,
