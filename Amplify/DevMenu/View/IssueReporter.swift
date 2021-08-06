@@ -10,6 +10,7 @@ import UIKit
 
 /// Issue report screen in developer menu
 @available(iOSApplicationExtension, unavailable)
+
 struct IssueReporter: View {
     @State var issueDescription: String = ""
     @State var includeLogs = true
