@@ -227,7 +227,7 @@ jobs:
       scheme:
         type: string
     working_directory: ~/amplify-ios/AmplifyPlugins/<< parameters.path >>
-    description: << parameters.path >> unit test
+    description: << parameters.path >> << parameters.scheme >> integration test
     steps:
       - skip_job_unless_required
       - *restore_repo
@@ -244,7 +244,7 @@ jobs:
       - run:
           name: Download configuration for << parameters.scheme >>
           command: | 
-            bash ~/amplify-ios/CircleciScripts/aws_resource_management.sh ${BACKEND_BUCKET} << parameters.scheme >>
+            bash ~/amplify-ios/CircleciScripts/backend_resource_management.sh ${BACKEND_BUCKET} << parameters.scheme >>
       - run:
           name: Build << parameters.path >>
           command: xcodebuild build-for-testing -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | tee "artifacts/build-<< parameters.scheme >>.log" | xcpretty
