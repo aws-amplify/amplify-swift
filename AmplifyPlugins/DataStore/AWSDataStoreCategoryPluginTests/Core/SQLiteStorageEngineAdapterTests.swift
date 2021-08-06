@@ -648,7 +648,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
 
     func testShouldIgnoreConstraintViolationError() {
         let constraintViolationError = Result.error(message: "Foreign Key Constraint Violation",
-                                                    code: SQLITE_CONSTRAINT,
+                                                    code: SQLiteResultError.SQLiteConstraint,
                                                     statement: nil)
         let dataStoreError = DataStoreError.invalidOperation(causedBy: constraintViolationError)
 

@@ -12,6 +12,9 @@ import Amplify
 /// See https://sqlite.org/rescode.html#primary_result_code_list
 enum SQLiteResultError {
 
+    /// [(19) SQLITE_CONSTRAINT](https://sqlite.org/rescode.html#constraint)
+    static let SQLiteConstraint: Int32 = 19
+
     /// Constraint Violation, such as foreign key constraint violation, occurs when trying to process a SQL statement
     /// where the insert/update statement is performed for a child object and its parent does not exist.
     /// See https://sqlite.org/rescode.html#constraint for more details
@@ -31,7 +34,7 @@ enum SQLiteResultError {
             return nil
         }
 
-        if code == SQLITE_CONSTRAINT {
+        if code == SQLiteResultError.SQLiteConstraint {
             self = .constraintViolation(statement: statement)
             return
         }
