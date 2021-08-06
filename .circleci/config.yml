@@ -314,7 +314,7 @@ workflows:
           filters:
             branches:
               only:
-                - test
+                - test2
       - deploy:
           name: deploy unstable
           <<: *deploy_requires
