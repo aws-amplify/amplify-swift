@@ -65,11 +65,11 @@ extension StorageEngine {
 internal extension AuthRule {
     var requiresAuthPlugin: Bool {
         switch provider {
-        // OIDC and Function providers don't need
+        // OIDC, Function and API key providers don't need
         // Auth plugin
-        case .oidc, .function, .none:
+        case .oidc, .function, .apiKey, .none:
             return false
-        case .apiKey, .userPools, .iam:
+        case .userPools, .iam:
             return true
         }
     }
