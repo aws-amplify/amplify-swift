@@ -212,7 +212,7 @@ private struct ModelWithCustomStrategy: Model {
         model.authRules = [
             rule(allow: .public, provider: .iam, operations: [.create, .read, .update, .delete]),
             rule(allow: .custom, provider: .function, operations: [.create, .read, .update, .delete]),
-            rule(allow: .owner, provider: .userPools, operations: [.create, .read, .update, .delete]),
+            rule(allow: .owner, provider: .userPools, operations: [.create, .read, .update, .delete])
         ]
     }
 }
