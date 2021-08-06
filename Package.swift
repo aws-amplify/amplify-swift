@@ -91,6 +91,9 @@ let package = Package(
             path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin",
             exclude: [
                 "Info.plist"
+            ],
+            linkerSettings: [
+                .linkedLibrary("sqlite3")
             ]
         ),
         .target(
