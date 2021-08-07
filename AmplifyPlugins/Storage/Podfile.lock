@@ -1,22 +1,22 @@
 PODS:
-  - Amplify (1.13.1):
-    - Amplify/Default (= 1.13.1)
-  - Amplify/Default (1.13.1)
-  - AmplifyPlugins/AWSCognitoAuthPlugin (1.13.1):
+  - Amplify (1.13.3):
+    - Amplify/Default (= 1.13.3)
+  - Amplify/Default (1.13.3)
+  - AmplifyPlugins/AWSCognitoAuthPlugin (1.13.3):
     - AWSAuthCore (~> 2.24.0)
     - AWSCognitoIdentityProvider (~> 2.24.0)
     - AWSCognitoIdentityProviderASF (~> 2.24.0)
     - AWSCore (~> 2.24.0)
     - AWSMobileClient (~> 2.24.0)
-    - AWSPluginsCore (= 1.13.1)
-  - AmplifyTestCommon (1.13.1):
-    - Amplify (= 1.13.1)
-    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.13.1)
-  - AmplifyTestCommon/AWSPluginsTestCommon (1.13.1):
-    - Amplify (= 1.13.1)
+    - AWSPluginsCore (= 1.13.3)
+  - AmplifyTestCommon (1.13.3):
+    - Amplify (= 1.13.3)
+    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.13.3)
+  - AmplifyTestCommon/AWSPluginsTestCommon (1.13.3):
+    - Amplify (= 1.13.3)
     - AWSCore (~> 2.24.0)
     - AWSMobileClient (~> 2.24.0)
-    - AWSPluginsCore (= 1.13.1)
+    - AWSPluginsCore (= 1.13.3)
   - AWSAuthCore (2.24.4):
     - AWSCore (= 2.24.4)
   - AWSCognitoIdentityProvider (2.24.4):
@@ -29,8 +29,8 @@ PODS:
     - AWSCognitoIdentityProvider (= 2.24.4)
     - AWSCognitoIdentityProviderASF (= 2.24.4)
     - AWSCore (= 2.24.4)
-  - AWSPluginsCore (1.13.1):
-    - Amplify (= 1.13.1)
+  - AWSPluginsCore (1.13.3):
+    - Amplify (= 1.13.3)
     - AWSCore (~> 2.24.0)
   - AWSS3 (2.24.4):
     - AWSCore (= 2.24.4)
@@ -87,15 +87,15 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  Amplify: f8f17c382d40424f6f919453e14e70abc8d7e1b8
-  AmplifyPlugins: a4d20c048a4ad82da9db930565bc3eeba989594f
-  AmplifyTestCommon: 10695b3661a6631b83ef24cb019f825238b274b1
+  Amplify: 533d502d872cf91c09861720d59f5ec916cc1c33
+  AmplifyPlugins: 1b62bc69051dec11c8c9a44676090d4e390551f1
+  AmplifyTestCommon: 511bada5d0cbff5ee755c5251023a241b917f4f6
   AWSAuthCore: 208b14f036d66b839d828e516cc5c718f511a6dd
   AWSCognitoIdentityProvider: f85025540fc944ed6060736ea6ed8519b7684e67
   AWSCognitoIdentityProviderASF: bf64d310e6100af4434fb192a17cccf344901149
   AWSCore: 31ae3b5c184d22af33d0f6dbf0245c7100763097
   AWSMobileClient: 1aafa6f159b5ce23253e46f34ea779932b7e097e
-  AWSPluginsCore: fb67ad19a636c6931db23a634dfcebb7eea79ca0
+  AWSPluginsCore: c347f9088e9b327d2e5e0a09fc7de4763e4ea9bc
   AWSS3: 0f71b9524fb0095a02c51edb8e3c5c7c00ae950c
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961

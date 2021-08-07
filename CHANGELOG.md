@@ -1,5 +1,7 @@
 # Changelog
 ## Unreleased
+## 1.13.3 (2021-08-07)
+
 ## 1.13.1 (2021-08-05)
 
 ### Bug Fixes
