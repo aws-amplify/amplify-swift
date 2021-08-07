@@ -2,6 +2,11 @@
 ## Unreleased
 ## 1.13.3 (2021-08-07)
 
+### Bug Fixes
+
+- **DataStore**: add missing SQLite3 import
+- **DataStore**: storage engine doesn't need auth plugin for api key
+
 ## 1.13.1 (2021-08-05)
 
 ### Bug Fixes
