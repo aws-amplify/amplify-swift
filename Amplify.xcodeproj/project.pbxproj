@@ -601,6 +601,7 @@
 		FA6BC87F235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC87E235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift */; };
 		FA76A2D12342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA76A2D02342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift */; };
 		FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA76A2D22342B47100B91ADB /* HubPayloadEventName.swift */; };
+		FA81688226BB2E07007CEBB6 /* NSLocking+Execute.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA81688126BB2E07007CEBB6 /* NSLocking+Execute.swift */; };
 		FA87609324E45091004148C6 /* AmplifyConfigurationInitFromFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87609024E44CCC004148C6 /* AmplifyConfigurationInitFromFileTests.swift */; };
 		FA8EE779238627040097E4F1 /* Model+ModelName.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE778238627040097E4F1 /* Model+ModelName.swift */; };
 		FA8EE77D238627350097E4F1 /* Model+Subscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE77C238627350097E4F1 /* Model+Subscript.swift */; };
@@ -1582,6 +1583,7 @@
 		FA6BC87E235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryInterceptorBehavior.swift; sourceTree = "<group>"; };
 		FA76A2D02342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		FA76A2D22342B47100B91ADB /* HubPayloadEventName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPayloadEventName.swift; sourceTree = "<group>"; };
+		FA81688126BB2E07007CEBB6 /* NSLocking+Execute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLocking+Execute.swift"; sourceTree = "<group>"; };
 		FA87609024E44CCC004148C6 /* AmplifyConfigurationInitFromFileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyConfigurationInitFromFileTests.swift; sourceTree = "<group>"; };
 		FA8EE772238621320097E4F1 /* AnyModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyModelTests.swift; sourceTree = "<group>"; };
 		FA8EE776238626D60097E4F1 /* AnyModel+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnyModel+Codable.swift"; sourceTree = "<group>"; };
@@ -3305,7 +3307,6 @@
 				FA5704C8245F3C6900392C19 /* AmplifyInProcessReportingOperation.swift */,
 				FA249EE624C5FA49009B3CE8 /* AmplifyInProcessReportingOperation+Combine.swift */,
 				FA56F72622B14BF70039754A /* AmplifyOperation.swift */,
-				FA9F939526BAF73F00805607 /* OperationCancelledError.swift */,
 				FAA7A5A524C0CC8F00CA863F /* AmplifyOperation+Combine.swift */,
 				FA5704CA245F58C600392C19 /* AmplifyOperation+Hub.swift */,
 				FAB9D810233BF5F600928AA9 /* AmplifyOperationContext.swift */,
@@ -3323,11 +3324,13 @@
 				FA09B9402321BB78000E064D /* JSONValue.swift */,
 				FACD264F2386E9410068FBE6 /* JSONValue+KeyPath.swift */,
 				FACD264E2386E9410068FBE6 /* JSONValue+Subscript.swift */,
+				FA9F939526BAF73F00805607 /* OperationCancelledError.swift */,
 				FAE4145E23999BC900CE94C2 /* Result+Void.swift */,
 				FA56F72422B14B6A0039754A /* Resumable.swift */,
 				B9FAA174238EFC59009414B4 /* String+Extensions.swift */,
 				B9A329CB243559BF00C5B80C /* TimeInterval+Helper.swift */,
 				219A88EC23F3309800BBC5F2 /* Tree.swift */,
+				FA81688326BB3B40007CEBB6 /* Internal */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -3382,6 +3385,14 @@
 				FA6BC87C235F5D490001A882 /* APICategoryRESTBehavior.swift */,
 			);
 			path = ClientBehavior;
+			sourceTree = "<group>";
+		};
+		FA81688326BB3B40007CEBB6 /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				FA81688126BB2E07007CEBB6 /* NSLocking+Execute.swift */,
+			);
+			path = Internal;
 			sourceTree = "<group>";
 		};
 		FA8EE775238626C70097E4F1 /* AnyModel */ = {
@@ -3674,9 +3685,9 @@
 			isa = PBXGroup;
 			children = (
 				FACA35EA2326B217000E74F6 /* AmplifyConfigurationInitializationTests.swift */,
-				FA1B964D24BF5FA70002B90A /* AmplifyOperationCombineTests.swift */,
-				FA58456824DA29B00028D65A /* AmplifyInProcessReportingOperationCombineTests.swift */,
 				FA58456A24DA31370028D65A /* AmplifyInProcessReportingOperationChainedTests.swift */,
+				FA58456824DA29B00028D65A /* AmplifyInProcessReportingOperationCombineTests.swift */,
+				FA1B964D24BF5FA70002B90A /* AmplifyOperationCombineTests.swift */,
 				B9DCA262240F217C00075E22 /* AnyEncodableTests.swift */,
 				FACF520823298C1200646E10 /* AtomicDictionaryTests.swift */,
 				FAAFAF3023904B75002CF932 /* AtomicValue+BoolTests.swift */,
@@ -5205,6 +5216,7 @@
 				6BDD6320256353F0008D70DF /* Evaluable.swift in Sources */,
 				21FFF997230C96CB005878EA /* StorageRemoveOperation.swift in Sources */,
 				FAC2351C227A053D00424678 /* APICategoryPlugin.swift in Sources */,
+				FA81688226BB2E07007CEBB6 /* NSLocking+Execute.swift in Sources */,
 				FA176ED52385012000C5C5F9 /* DataStoreCategory+HubPayloadEventName.swift in Sources */,
 				210DBC162332B3CB009B9E51 /* StorageDownloadDataOperation.swift in Sources */,
 				B9A329CC243559BF00C5B80C /* TimeInterval+Helper.swift in Sources */,

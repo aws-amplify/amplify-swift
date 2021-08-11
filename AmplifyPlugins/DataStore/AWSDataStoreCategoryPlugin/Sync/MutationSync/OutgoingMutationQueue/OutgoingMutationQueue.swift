@@ -93,8 +93,6 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     func stopSyncingToCloud(_ completion: @escaping BasicClosure) {
         log.verbose(#function)
-        // Technically this should be in a "cancelling" responder, but it's simpler to cancel here and move straight
-        // to .finished. If in the future we need to add more work to the teardown state, move it to a separate method.
         stateMachine.notify(action: .receivedStop(completion))
     }
 
@@ -129,8 +127,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     // MARK: - Lifecycle
 
-    /// Responder method for `starting`. Starts the operation queue and subscribes to the publisher. After subscribing to the
-    /// publisher, return actions:
+    /// Responder method for `starting`. Starts the operation queue and subscribes to
+    /// the publisher. After subscribing to the publisher, return actions:
     /// - receivedSubscription
     private func doStart(api: APICategoryGraphQLBehavior,
                          mutationEventPublisher: MutationEventPublisher) {

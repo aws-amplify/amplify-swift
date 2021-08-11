@@ -36,23 +36,19 @@ final class MutationRetryNotifier {
     }
 
     private func scheduleTimer(at deadline: DispatchTime) {
-        lock.lock()
-        defer {
-            lock.unlock()
+        lock.execute {
+            nextSyncTimer = DispatchSource.makeOneOffDispatchSourceTimer(deadline: deadline, queue: handlerQueue) {
+                self.notifyCallback()
+            }
+            nextSyncTimer?.resume()
         }
-        nextSyncTimer = DispatchSource.makeOneOffDispatchSourceTimer(deadline: deadline, queue: handlerQueue) {
-            self.notifyCallback()
-        }
-        nextSyncTimer?.resume()
     }
 
     func cancel() {
-        lock.lock()
-        defer {
-            lock.unlock()
+        lock.execute {
+            reachabilitySubscription?.cancel()
+            nextSyncTimer?.cancel()
         }
-        reachabilitySubscription?.cancel()
-        nextSyncTimer?.cancel()
     }
 
     func notifyCallback() {
@@ -66,9 +62,9 @@ final class MutationRetryNotifier {
 extension MutationRetryNotifier: Subscriber {
     func receive(subscription: Subscription) {
         log.verbose(#function)
-        lock.lock()
-        reachabilitySubscription = subscription
-        lock.unlock()
+        lock.execute {
+            reachabilitySubscription = subscription
+        }
         subscription.request(.unlimited)
     }
 
@@ -82,11 +78,9 @@ extension MutationRetryNotifier: Subscriber {
 
     func receive(completion: Subscribers.Completion<Never>) {
         log.verbose(#function)
-        lock.lock()
-        defer {
-            lock.unlock()
+        lock.execute {
+            reachabilitySubscription?.cancel()
         }
-        reachabilitySubscription?.cancel()
     }
 }
 

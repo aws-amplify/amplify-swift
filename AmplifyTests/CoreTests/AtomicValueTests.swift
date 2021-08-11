@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import Amplify
+import Amplify
 
 // These tests must be run with ThreadSanitizer enabled
 class AtomicValueTests: XCTestCase {
