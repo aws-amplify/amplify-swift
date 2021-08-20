@@ -45,6 +45,5 @@ end
 
 target "AmplifyTestApp" do
   use_frameworks!
-  pod "AWSMobileClient", $OPTIMISTIC_AWS_SDK_VERSION
   include_test_utilities!
 end
