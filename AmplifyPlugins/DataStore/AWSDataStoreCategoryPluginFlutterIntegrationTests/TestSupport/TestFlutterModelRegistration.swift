@@ -18,7 +18,6 @@ struct TestFlutterModelRegistration: AmplifyModelRegistration {
         } else {
             resolvedDecoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
         }
-
         // Convert jsonstring to object
         let data = jsonString.data(using: .utf8)!
         let jsonValue = try resolvedDecoder.decode(JSONValue.self, from: data)
@@ -33,7 +32,6 @@ struct TestFlutterModelRegistration: AmplifyModelRegistration {
     }
 
     func registerModels(registry: ModelRegistry.Type) {
-
         registry.register(modelType: Post.self, modelSchema: Post.schema, jsonDecoder: decoder)
         registry.register(modelType: Comment.self, modelSchema: Comment.schema, jsonDecoder: decoder)
         registry.register(modelType: Project1.self, modelSchema: Project1.schema, jsonDecoder: decoder)
