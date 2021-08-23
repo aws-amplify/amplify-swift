@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import AWSCore
-
 
 /// AWS Lambda authorizer configuration
 public struct AWSLambdaAuthConfiguration {
