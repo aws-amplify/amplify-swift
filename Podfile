@@ -12,6 +12,7 @@ target "Amplify" do
     include_test_utilities!
     
     target "AmplifyTestCommon" do
+      pod "AWSCore", $OPTIMISTIC_AWS_SDK_VERSION
     end
 
     target "AmplifyTests" do
