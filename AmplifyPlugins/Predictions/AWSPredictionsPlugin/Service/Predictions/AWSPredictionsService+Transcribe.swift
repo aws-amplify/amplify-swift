@@ -7,7 +7,6 @@
 
 import Amplify
 import AWSTranscribeStreaming
-import AWSPluginsCore
 
 extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
 

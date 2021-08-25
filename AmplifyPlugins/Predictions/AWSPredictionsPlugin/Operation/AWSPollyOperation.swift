@@ -7,7 +7,6 @@
 
 import Foundation
 import Amplify
-import AWSPluginsCore
 import AWSPolly
 
 public class AWSPollyOperation: AmplifyOperation<
@@ -17,14 +16,11 @@ public class AWSPollyOperation: AmplifyOperation<
 >, PredictionsTextToSpeechOperation {
 
     let predictionsService: AWSPredictionsService
-    let authService: AWSAuthServiceBehavior
 
     init(_ request: PredictionsTextToSpeechRequest,
          predictionsService: AWSPredictionsService,
-         authService: AWSAuthServiceBehavior,
          resultListener: ResultListener?) {
         self.predictionsService = predictionsService
-        self.authService = authService
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.textToSpeech,
                    request: request,

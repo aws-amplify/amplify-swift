@@ -38,7 +38,6 @@ extension AWSPredictionsPlugin {
 
             let convertOperation = AWSPollyOperation(request,
                                                      predictionsService: predictionsService,
-                                                     authService: authService,
                                                      resultListener: listener)
 
             queue.addOperation(convertOperation)

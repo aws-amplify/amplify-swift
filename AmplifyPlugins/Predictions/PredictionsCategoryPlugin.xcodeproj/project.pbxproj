@@ -172,6 +172,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		B425BE9826D7091000110A48 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B478F6662374DF4D00C4F92B;
+			remoteInfo = CoreMLPredictionsPlugin;
+		};
 		B44A9A722382494C003B0540 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
@@ -1176,6 +1183,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B425BE9926D7091000110A48 /* PBXTargetDependency */,
 				B478F8E92375112C00C4F92B /* PBXTargetDependency */,
 			);
 			name = CoreMLPredictionsPluginIntegrationTests;
@@ -1971,6 +1979,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		B425BE9926D7091000110A48 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B478F6662374DF4D00C4F92B /* CoreMLPredictionsPlugin */;
+			targetProxy = B425BE9826D7091000110A48 /* PBXContainerItemProxy */;
+		};
 		B44A9A732382494C003B0540 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B478F5FA2374DBF400C4F92B /* AWSPredictionsPlugin */;
