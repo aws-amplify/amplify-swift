@@ -2,6 +2,9 @@
 ## Unreleased
 ## 1.13.4 (2021-08-25)
 
+### Features
+- Update AWS SDKs to 2.25.0 (#1395)
+
 ## 1.13.3 (2021-08-07)
 
 ### Bug Fixes
