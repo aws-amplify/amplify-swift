@@ -241,8 +241,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     private func processSuccessEvent(_ mutationEvent: MutationEvent,
                                      mutationSyncMetadata: MutationSync<AnyModel>?) {
         if let mutationSyncMetadata = mutationSyncMetadata {
-            MutationEvent.updatePendingMutationEventVersionIfNil(
-                for: mutationEvent.modelId,
+            MutationEvent.reconcilePendingMutationEventsVersion(
+                mutationEvent: mutationEvent,
                 mutationSync: mutationSyncMetadata,
                 storageAdapter: storageAdapter) { _ in
                 self.completeProcessingEvent(mutationEvent, mutationSyncMetadata: mutationSyncMetadata)

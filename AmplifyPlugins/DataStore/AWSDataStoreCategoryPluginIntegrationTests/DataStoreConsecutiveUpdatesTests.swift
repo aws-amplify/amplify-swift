@@ -255,14 +255,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
 
         let saveSyncReceived = expectation(description: "Received create mutation event on subscription for Post")
         let updateSyncReceived = expectation(description: "Received update mutation event on subscription for Post")
-        // two update events are triggered
-        // 1. update is performed successfully with version 1, and comes back with version 2
-        // 2. delete is performed with version 1, response is conflict resolution, and when processing
-        //    the error reponse, we apply the remote model to local store, triggering a second update
-        updateSyncReceived.expectedFulfillmentCount = 2
-
-        // this can be uncommented once the delete is successfully sent with version 2
-        // let deleteSyncReceived = expectation(description: "Received delete mutation event on subscription for Post")
+        let deleteSyncReceived = expectation(description: "Received delete mutation event on subscription for Post")
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
@@ -292,9 +285,8 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
 
             if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
                 XCTAssertEqual(post, updatedPost)
-                // this needs to be commented out once the bug is fixed
-                // deleteSyncReceived.fulfill()
-                // XCTAssertEqual(mutationEvent.version, 3)
+                deleteSyncReceived.fulfill()
+                XCTAssertEqual(mutationEvent.version, 3)
                 return
             }
         }
@@ -340,19 +332,11 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         let queryResult = queryPost(byId: newPost.id)
         XCTAssertNil(queryResult)
 
-        wait(for: [updateSyncReceived], timeout: networkTimeout)
-        // can be uncommented once delete mutation response is success
-        // wait(for: [deleteSyncExpectation], timeout: networkTimeout)
+        wait(for: [updateSyncReceived, deleteSyncReceived], timeout: networkTimeout)
 
         // query the deleted post
         let queryResultAfterSync = queryPost(byId: updatedPost.id)
-
-        // this should be removed once the bug is fixed
-        XCTAssertNotNil(queryResultAfterSync)
-        XCTAssertEqual(queryResultAfterSync, updatedPost)
-
-        // this is the actual behavior which is currently failing
-        // XCTAssertNil(post)
+        XCTAssertNil(queryResultAfterSync)
 
         let queryRequest =
             GraphQLRequest<MutationSyncResult?>.query(modelName: updatedPost.modelName, byId: updatedPost.id)
@@ -370,14 +354,9 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
                     XCTAssertEqual(post.model["title"] as? String, updatedPost.title)
                     XCTAssertEqual(post.model["content"] as? String, updatedPost.content)
                     XCTAssertEqual(post.model["rating"] as? Double, updatedPost.rating)
-                    // the post should actually be deleted, but this is currently failing
-                    XCTAssertFalse(post.syncMetadata.deleted)
 
-                    // can be uncommented once delete mutation response is success
-                    // currently the API request for delete mutation is sent with version 1, which
-                    // fails with error message "Conflict resolver rejects mutation."
-                    // XCTAssertTrue(post.syncMetadata.deleted)
-                    // XCTAssertEqual(post.syncMetadata.version, 3)
+                    XCTAssertTrue(post.syncMetadata.deleted)
+                    XCTAssertEqual(post.syncMetadata.version, 3)
                     apiQuerySuccess.fulfill()
                 case .failure(let error):
                     XCTFail("Error: \(error)")

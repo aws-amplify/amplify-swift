@@ -14,26 +14,45 @@ import XCTest
 @testable import AWSDataStoreCategoryPlugin
 @testable import AWSPluginsCore
 
+/// swiftlint:disable cyclomatic_complexity
 class MutationEventExtensionsTest: BaseDataStoreTests {
 
     /// - Given: A create mutationSync with a given version
     /// - When: Mutation event table contains an update mutation event with `nil` version, having same model id
     /// - Then: Update mutation event should be updated with version of create mutationSync
-    func testQueryAfterUpdatePendingMutationEventVersionGivenSingleMutationEvent() {
+    func testQueryAfterUpdatePendingMutationEventVersionGivenSingleMutationEvent() throws {
         let modelId = UUID().uuidString
-        let post = AnyModel(Post(id: modelId, title: "title", content: "content", createdAt: .now()))
+        let post = Post(id: modelId, title: "title", content: "content", createdAt: .now())
+        let createMutationEvent = MutationEvent(id: UUID().uuidString,
+                                                modelId: modelId,
+                                                modelName: Post.modelName,
+                                                json: try post.toJSON(),
+                                                mutationType: .create,
+                                                version: nil,
+                                                inProcess: true)
+
         let updateMutationEvent = MutationEvent(id: UUID().uuidString,
                                                         modelId: modelId,
                                                         modelName: Post.modelName,
-                                                        json: "",
+                                                        json: try post.toJSON(),
                                                         mutationType: .update,
                                                         version: nil)
+
         let metadata = MutationSyncMetadata(id: modelId,
                                             deleted: false,
                                             lastChangedAt: Int(Date().timeIntervalSince1970),
                                             version: 1)
 
-        let createMutationSync = MutationSync(model: post, syncMetadata: metadata)
+        let createMutationSync = MutationSync(model: AnyModel(post), syncMetadata: metadata)
+
+        let createMutationExpectation = expectation(description: "save createMutationEvent success")
+        storageAdapter.save(createMutationEvent) { result in
+            guard case .success = result else {
+                XCTFail("Failed to save metadata")
+                return
+            }
+            createMutationExpectation.fulfill()
+        }
 
         let updateMutationExpectation = expectation(description: "save updateMutationEvent success")
         storageAdapter.save(updateMutationEvent) { result in
@@ -44,7 +63,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
             updateMutationExpectation.fulfill()
         }
 
-        wait(for: [updateMutationExpectation], timeout: 1)
+        wait(for: [createMutationExpectation, updateMutationExpectation], timeout: 1)
 
         let queryBeforeUpdatingVersionExpectation = expectation(description: "update mutation should have nil version")
         let queryAfterUpdatingVersionExpectation = expectation(description: "update mutation should be latest version")
@@ -69,7 +88,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
         wait(for: [queryBeforeUpdatingVersionExpectation], timeout: 1)
 
         // update the version of head of mutation event table for given model id to the version of `mutationSync`
-        MutationEvent.updatePendingMutationEventVersionIfNil(for: post.id,
+        MutationEvent.reconcilePendingMutationEventsVersion(mutationEvent: createMutationEvent,
                                                              mutationSync: createMutationSync,
                                                              storageAdapter: storageAdapter) { result in
             switch result {
@@ -104,19 +123,26 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
     /// - When: Mutation event table contains update and delete mutation events added in order with `nil` version,
     ///        having same model id
     /// - Then: Update mutation event should be updated with version of create mutationSync
-    func testQueryAfterUpdatePendingMutationEventVersionGivenMultipleMutationEvents() {
+    func testQueryAfterUpdatePendingMutationEventVersionGivenMultipleMutationEvents() throws{
         let modelId = UUID().uuidString
-        let post = AnyModel(Post(id: modelId, title: "title", content: "content", createdAt: .now()))
+        let post = Post(id: modelId, title: "title", content: "content", createdAt: .now())
+        let createMutationEvent = MutationEvent(id: UUID().uuidString,
+                                                        modelId: modelId,
+                                                        modelName: Post.modelName,
+                                                        json: try post.toJSON(),
+                                                        mutationType: .create,
+                                                        version: nil,
+                                                        inProcess: true)
         let updateMutationEvent = MutationEvent(id: UUID().uuidString,
                                                         modelId: modelId,
                                                         modelName: Post.modelName,
-                                                        json: "",
+                                                        json: try post.toJSON(),
                                                         mutationType: .update,
                                                         version: nil)
         let deleteMutationEvent = MutationEvent(id: UUID().uuidString,
                                                         modelId: modelId,
                                                         modelName: Post.modelName,
-                                                        json: "",
+                                                        json: try post.toJSON(),
                                                         mutationType: .delete,
                                                         version: nil)
         let metadata = MutationSyncMetadata(id: modelId,
@@ -124,7 +150,16 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                                             lastChangedAt: Int(Date().timeIntervalSince1970),
                                             version: 1)
 
-        let createMutationSync = MutationSync(model: post, syncMetadata: metadata)
+        let createMutationSync = MutationSync(model: AnyModel(post), syncMetadata: metadata)
+
+        let createMutationExpectation = expectation(description: "save createMutationEvent success")
+        storageAdapter.save(createMutationEvent) { result in
+            guard case .success = result else {
+                XCTFail("Failed to save metadata")
+                return
+            }
+            createMutationExpectation.fulfill()
+        }
 
         let updateMutationExpectation = expectation(description: "save updateMutationEvent success")
         storageAdapter.save(updateMutationEvent) { result in
@@ -143,7 +178,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
             }
             deleteMutationExpectation.fulfill()
         }
-        wait(for: [updateMutationExpectation, deleteMutationExpectation], timeout: 1)
+        wait(for: [createMutationExpectation, updateMutationExpectation, deleteMutationExpectation], timeout: 1)
 
         let queryBeforeUpdatingVersionExpectation = expectation(description: "update mutation should have nil version")
         let queryAfterUpdatingVersionExpectation = expectation(description: "update mutation should be latest version")
@@ -168,7 +203,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
         wait(for: [queryBeforeUpdatingVersionExpectation], timeout: 1)
 
         // update the version of head of mutation event table for given model id to the version of `mutationSync`
-        MutationEvent.updatePendingMutationEventVersionIfNil(for: post.id,
+        MutationEvent.reconcilePendingMutationEventsVersion(mutationEvent: createMutationEvent,
                                                              mutationSync: createMutationSync,
                                                              storageAdapter: storageAdapter) { result in
             switch result {
