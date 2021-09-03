@@ -60,7 +60,7 @@ extension Statement: StatementModelConvertible {
         // parse each row of the result
 
         while let row = try self.failableNext() {
-            let modelDictionary = try convert(row: row, to: modelType, using: statement)
+            let modelDictionary = try convert(row: row, withSchema: modelSchema, using: statement)
             elements.append(modelDictionary)
         }
 
