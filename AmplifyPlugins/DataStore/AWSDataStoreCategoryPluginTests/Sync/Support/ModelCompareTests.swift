@@ -39,7 +39,7 @@ class ModelCompareTests: BaseDataStoreTests {
                          draft: draft,
                          rating: rating,
                          status: status)
-        XCTAssertTrue(ModelSchema.isEqual(post1, post2, Post.schema))
+        XCTAssertTrue(Post.schema.isEqual(post1, post2))
     }
 
     func testPostsAreEqualWithSameCollection() {
@@ -69,7 +69,7 @@ class ModelCompareTests: BaseDataStoreTests {
         let comment2 = Comment(id: commentId, content: "This is a comment.", createdAt: createdAt, post: post2)
         post1.comments = [comment1]
         post2.comments = [comment2]
-        XCTAssertTrue(ModelSchema.isEqual(post1, post2, Post.schema))
+        XCTAssertTrue(Post.schema.isEqual(post1, post2))
     }
 
     func testCommentsAreEqualWithDifferentPosts() {
@@ -100,7 +100,7 @@ class ModelCompareTests: BaseDataStoreTests {
         let comment2 = Comment(id: id, content: "This is a comment.", createdAt: createdAt, post: post2)
         post1.comments = [comment1]
         post2.comments = [comment2]
-        XCTAssertTrue(ModelSchema.isEqual(comment1, comment2, Comment.schema))
+        XCTAssertTrue(Comment.schema.isEqual(comment1, comment2))
     }
 
     func testPostsAreNotEqualWithDifferentId() {
@@ -124,7 +124,7 @@ class ModelCompareTests: BaseDataStoreTests {
                          draft: draft,
                          rating: rating,
                          status: status)
-        XCTAssertFalse(ModelSchema.isEqual(post1, post2, Post.schema))
+        XCTAssertFalse(Post.schema.isEqual(post1, post2))
     }
 
     func testPostsAreNotEqualWithDifferentStringField() {
@@ -150,7 +150,7 @@ class ModelCompareTests: BaseDataStoreTests {
                          draft: draft,
                          rating: rating,
                          status: status)
-        XCTAssertFalse(ModelSchema.isEqual(post1, post2, Post.schema))
+        XCTAssertFalse(Post.schema.isEqual(post1, post2))
     }
 
     func testPostsAreNotEqualWithDifferentDoubleField() {
@@ -176,7 +176,7 @@ class ModelCompareTests: BaseDataStoreTests {
                          draft: draft,
                          rating: rating2,
                          status: status)
-        XCTAssertFalse(ModelSchema.isEqual(post1, post2, Post.schema))
+        XCTAssertFalse(Post.schema.isEqual(post1, post2))
     }
 
     func testPostsAreNotEqualWithDifferentDateField() {
@@ -204,7 +204,7 @@ class ModelCompareTests: BaseDataStoreTests {
                          draft: draft,
                          rating: rating,
                          status: status)
-        XCTAssertFalse(ModelSchema.isEqual(post1, post2, Post.schema))
+        XCTAssertFalse(Post.schema.isEqual(post1, post2))
     }
 
     func testPostsAreNotEqualWithDifferentEnumField() {
@@ -230,7 +230,7 @@ class ModelCompareTests: BaseDataStoreTests {
                          draft: draft,
                          rating: rating,
                          status: status2)
-        XCTAssertFalse(ModelSchema.isEqual(post1, post2, Post.schema))
+        XCTAssertFalse(Post.schema.isEqual(post1, post2))
     }
 
     func testPostsAreNotEqualWithDifferentBoolField() {
@@ -256,7 +256,7 @@ class ModelCompareTests: BaseDataStoreTests {
                          draft: draft2,
                          rating: rating,
                          status: status)
-        XCTAssertFalse(ModelSchema.isEqual(post1, post2, Post.schema))
+        XCTAssertFalse(Post.schema.isEqual(post1, post2))
     }
 
     func testTodosAreEqualWithSameEmbeddedable() {
@@ -265,7 +265,7 @@ class ModelCompareTests: BaseDataStoreTests {
         let section = Section(name: "MySection", number: 10)
         let todo1 = Todo(id: id, name: name, section: section)
         let todo2 = Todo(id: id, name: name, section: section)
-        XCTAssertTrue(ModelSchema.isEqual(todo1, todo2, Todo.schema))
+        XCTAssertTrue(Todo.schema.isEqual(todo1, todo2))
     }
 
     func testTodosAreNotEqualWithDifferentEmbeddedable() {
@@ -275,7 +275,7 @@ class ModelCompareTests: BaseDataStoreTests {
         let section2 = Section(name: "MySection2", number: 20)
         let todo1 = Todo(id: id, name: name, section: section1)
         let todo2 = Todo(id: id, name: name, section: section2)
-        XCTAssertFalse(ModelSchema.isEqual(todo1, todo2, Todo.schema))
+        XCTAssertFalse(Todo.schema.isEqual(todo1, todo2))
     }
 
     func testTodosAreEqualWithSameEmbeddedableCollection() {
@@ -287,7 +287,7 @@ class ModelCompareTests: BaseDataStoreTests {
         let category2 = Category(name: "Category1", color: color2)
         let todo1 = Todo(id: id, name: name, categories: [category1, category2])
         let todo2 = Todo(id: id, name: name, categories: [category1, category2])
-        XCTAssertTrue(ModelSchema.isEqual(todo1, todo2, Todo.schema))
+        XCTAssertTrue(Todo.schema.isEqual(todo1, todo2))
     }
 
     func testTodosAreNotEqualWithDifferentEmbeddedableCollection() {
@@ -299,6 +299,19 @@ class ModelCompareTests: BaseDataStoreTests {
         let category2 = Category(name: "Category1", color: color2)
         let todo1 = Todo(id: id, name: name, categories: [category1])
         let todo2 = Todo(id: id, name: name, categories: [category2])
-        XCTAssertFalse(ModelSchema.isEqual(todo1, todo2, Todo.schema))
+        XCTAssertFalse(Todo.schema.isEqual(todo1, todo2))
+    }
+
+    func testRecordCoversAreEqualWithDifferentReadOnlyFields() {
+        let id = UUID().uuidString
+        let artist = "Artist"
+        let formatter = DateFormatter()
+        formatter.dateFormat = TemporalFormat.short.dateFormat
+        let createdAt1 = Temporal.DateTime(formatter.date(from: "2021-09-01")!)
+        let createdAt2 = Temporal.DateTime(formatter.date(from: "2020-09-01")!)
+        let recordCover1 = RecordCover(id: id, artist: artist, createdAt: createdAt1)
+        let recordCover2 = RecordCover(id: id, artist: artist, createdAt: createdAt2)
+        XCTAssertTrue(RecordCover.schema.isEqual(recordCover1, recordCover2))
+
     }
 }

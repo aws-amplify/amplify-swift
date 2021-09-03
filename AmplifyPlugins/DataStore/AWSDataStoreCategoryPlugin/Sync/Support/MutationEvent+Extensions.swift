@@ -29,8 +29,9 @@ extension MutationEvent {
                     return
                 }
 
-                // check if version returned from API is not nil and <= version sent in the request
-                if existingEvent.version != nil && mutationSync.syncMetadata.version <= existingEvent.version! {
+                // return if version of the pending mutation event is not nil and
+                // is >= version contained in the response
+                if existingEvent.version != nil && existingEvent.version! >= mutationSync.syncMetadata.version {
                     completion(.success(()))
                     return
                 }
@@ -41,19 +42,20 @@ extension MutationEvent {
 
                     // check if the data sent in the request is the same as the response
                     // if it is, update the pending mutation event version to the response version
-                    if let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName),
-                       ModelSchema.isEqual(responseModel, requestModel, modelSchema) {
-                        existingEvent.version = mutationSync.syncMetadata.version
-                        storageAdapter.save(existingEvent, condition: nil) { result in
-                            switch result {
-                            case .failure(let dataStoreError):
-                                completion(.failure(dataStoreError))
-                            case .success:
-                                completion(.success(()))
-                            }
-                        }
-                    } else {
+                    guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName),
+                          modelSchema.isEqual(responseModel, requestModel) else {
                         completion(.success(()))
+                        return
+                    }
+
+                    existingEvent.version = mutationSync.syncMetadata.version
+                    storageAdapter.save(existingEvent, condition: nil) { result in
+                        switch result {
+                        case .failure(let dataStoreError):
+                            completion(.failure(dataStoreError))
+                        case .success:
+                            completion(.success(()))
+                        }
                     }
                 } catch {
                     Amplify.log.verbose("Error decoding models: \(error)")

@@ -14,11 +14,9 @@ extension ModelSchema {
 
     /// Compare two `Model` based on a given `ModelSchema`
     /// Returns true if equal, false otherwise
-    public static func isEqual(_ model1: Model,
-                               _ model2: Model,
-                               _ modelSchema: ModelSchema) -> Bool {
-        for (fieldName, modelField) in modelSchema.fields {
-            // skip read only fields
+    public func isEqual(_ model1: Model, _ model2: Model) -> Bool {
+        for (fieldName, modelField) in fields {
+            // read only fields are skipped for eqaulity check as they are created by the service
             if modelField.isReadOnly {
                 continue
             }
