@@ -61,8 +61,9 @@ struct TestJsonModelRegistration: AmplifyModelRegistration {
                                               status.name: status,
                                               comments.name: comments])
 
-        ModelRegistry.register(modelType: DynamicModel.self, modelSchema: postSchema) { (_, _) -> Model in
-            DynamicModel(id: "", values: [:])
+        ModelRegistry.register(modelType: DynamicModel.self,
+                               modelSchema: postSchema) { (jsonString, decoder) -> Model in
+            try DynamicModel.from(json: jsonString, decoder: decoder)
         }
 
         // Comment
@@ -81,9 +82,9 @@ struct TestJsonModelRegistration: AmplifyModelRegistration {
                                             commentContent.name: commentContent,
                                             commentCreatedAt.name: commentCreatedAt,
                                             belongsTo.name: belongsTo])
-        ModelRegistry.register(modelType: DynamicModel.self, modelSchema: commentSchema
-        ) { (_, _) -> Model in
-            DynamicModel(id: "", values: [:])
+        ModelRegistry.register(modelType: DynamicModel.self,
+                               modelSchema: commentSchema) { (jsonString, decoder) -> Model in
+            try DynamicModel.from(json: jsonString, decoder: decoder)
         }
     }
 

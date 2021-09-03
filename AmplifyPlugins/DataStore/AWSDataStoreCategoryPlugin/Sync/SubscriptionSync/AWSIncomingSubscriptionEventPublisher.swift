@@ -39,8 +39,12 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
         self.mapper = mapper
 
         asyncEvents.subscribe(subscriber: mapper)
-        self.mapperSink = mapper.publisher.sink(receiveCompletion: onReceiveCompletion(receiveCompletion:),
-                                                receiveValue: onReceive(receiveValue:))
+        self.mapperSink = mapper
+            .publisher
+            .sink(
+                receiveCompletion: { [weak self] in self?.onReceiveCompletion(receiveCompletion: $0) },
+                receiveValue: { [weak self] in self?.onReceive(receiveValue: $0) }
+            )
     }
 
     private func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
@@ -73,13 +77,19 @@ extension AWSIncomingSubscriptionEventPublisher: Resettable {
         let group = DispatchGroup()
 
         group.enter()
-        DispatchQueue.global().async {
-            self.asyncEvents.reset { group.leave() }
+        Amplify.log.verbose("Resetting asyncEvents")
+        asyncEvents.reset {
+            Amplify.log.verbose("Resetting asyncEvents: finished")
+            group.leave()
         }
 
-        group.enter()
-        DispatchQueue.global().async {
-            self.mapper?.reset { group.leave() }
+        if let mapper = mapper {
+            Amplify.log.verbose("Resetting mapper")
+            group.enter()
+            mapper.reset {
+                Amplify.log.verbose("Resetting mapper: finished")
+                group.leave()
+            }
         }
 
         group.wait()

@@ -10,9 +10,9 @@ target "Amplify" do
 
   abstract_target "AmplifyTestConfigs" do
     include_test_utilities!
-    pod "AWSMobileClient", $OPTIMISTIC_AWS_SDK_VERSION
     
     target "AmplifyTestCommon" do
+      pod "AWSCore", $OPTIMISTIC_AWS_SDK_VERSION
     end
 
     target "AmplifyTests" do
@@ -45,6 +45,5 @@ end
 
 target "AmplifyTestApp" do
   use_frameworks!
-  pod "AWSMobileClient", $OPTIMISTIC_AWS_SDK_VERSION
   include_test_utilities!
 end

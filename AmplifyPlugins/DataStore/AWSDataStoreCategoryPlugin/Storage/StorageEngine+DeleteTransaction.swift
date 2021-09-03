@@ -32,10 +32,10 @@ extension StorageEngine {
 
     func queryAndDeleteTransaction<M: Model>(_ modelType: M.Type,
                                              modelSchema: ModelSchema,
-                                             deleteInput: DeleteInput) -> DataStoreResult<([M], [Model])> {
+                                             deleteInput: DeleteInput) -> DataStoreResult<([M], [ModelName: [Model]])> {
         var queriedResult: DataStoreResult<[M]>?
         var deletedResult: DataStoreResult<[M]>?
-        var associatedModels: [Model] = []
+        var associatedModels: [(ModelName, Model)] = []
 
         let queryCompletionBlock: DataStoreCallback<[M]> = { queryResult in
             queriedResult = queryResult
@@ -93,11 +93,11 @@ extension StorageEngine {
 
         return collapseResults(queryResult: queriedResult,
                                deleteResult: deletedResult,
-                               associatedModels: associatedModels)
+                               associatedModelsMap: getAssociatedModelsMap(associatedModels: associatedModels))
     }
 
-    func recurseQueryAssociatedModels(modelSchema: ModelSchema, ids: [Model.Identifier]) -> [Model] {
-        var associatedModels: [Model] = []
+    func recurseQueryAssociatedModels(modelSchema: ModelSchema, ids: [Model.Identifier]) -> [(ModelName, Model)] {
+        var associatedModels: [(ModelName, Model)] = []
         for (_, modelField) in modelSchema.fields {
             guard modelField.hasAssociation,
                 modelField.isOneToOne || modelField.isOneToMany,
@@ -109,20 +109,23 @@ extension StorageEngine {
             let queriedModels = queryAssociatedModels(modelName: associatedModelName,
                                                       associatedField: associatedField,
                                                       ids: ids)
-            let associatedModelIds = queriedModels.map {$0.id}
+            let associatedModelIds = queriedModels.map { $0.1.id }
             associatedModels.append(contentsOf: queriedModels)
-            associatedModels.append(contentsOf: recurseQueryAssociatedModels(modelSchema: associatedModelSchema, ids: associatedModelIds))
+            associatedModels.append(contentsOf: recurseQueryAssociatedModels(modelSchema: associatedModelSchema,
+                                                                            ids: associatedModelIds))
         }
         return associatedModels
     }
 
-    func queryAssociatedModels(modelName: ModelName, associatedField: ModelField, ids: [Model.Identifier]) -> [Model] {
-        guard let modelType = ModelRegistry.modelType(from: modelName) else {
+    func queryAssociatedModels(modelName: ModelName,
+                               associatedField: ModelField,
+                               ids: [Model.Identifier]) -> [(ModelName, Model)] {
+        guard let modelSchema = ModelRegistry.modelSchema(from: modelName) else {
             log.error("Failed to lookup \(modelName)")
             return []
         }
 
-        var queriedModels: [Model] = []
+        var queriedModels: [(ModelName, Model)] = []
         let chunkedArrays = ids.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
         for chunkedArray in chunkedArrays {
             // TODO: Add conveinence to queryPredicate where we have a list of items, to be all or'ed
@@ -130,19 +133,20 @@ extension StorageEngine {
             for id in chunkedArray {
                 queryPredicates.append(QueryPredicateOperation(field: associatedField.name, operator: .equals(id)))
             }
-            let groupedQueryPredicates =  QueryPredicateGroup(type: .or, predicates: queryPredicates)
+            let groupedQueryPredicates = QueryPredicateGroup(type: .or, predicates: queryPredicates)
 
             let sempahore = DispatchSemaphore(value: 0)
-            storageAdapter.query(untypedModel: modelType, predicate: groupedQueryPredicates) { result in
+            storageAdapter.query(modelSchema: modelSchema, predicate: groupedQueryPredicates) { result in
                 defer {
                     sempahore.signal()
                 }
                 switch result {
                 case .success(let models):
-                    queriedModels.append(contentsOf: models)
-
+                    queriedModels.append(contentsOf: models.map { model in
+                        (modelName, model)
+                    })
                 case .failure(let error):
-                    log.error("Failed to query \(modelType) on mutation event generation: \(error)")
+                    log.error("Failed to query \(modelSchema) on mutation event generation: \(error)")
                 }
             }
             sempahore.wait()
@@ -150,16 +154,24 @@ extension StorageEngine {
         return queriedModels
     }
 
+    private func getAssociatedModelsMap(associatedModels: [(ModelName, Model)]) -> [ModelName: [Model]] {
+        var associatedModelsMap = [ModelName: [Model]]()
+        for (modelName, model) in associatedModels {
+            associatedModelsMap[modelName, default: []].append(model)
+        }
+        return associatedModelsMap
+    }
+
     private func collapseResults<M: Model>(queryResult: DataStoreResult<[M]>?,
                                            deleteResult: DataStoreResult<[M]>?,
-                                           associatedModels: [Model]) -> DataStoreResult<([M], [Model])> {
+                                           associatedModelsMap: [ModelName: [Model]]) -> DataStoreResult<([M], [ModelName: [Model]])> {
         if let queryResult = queryResult {
             switch queryResult {
             case .success(let models):
                 if let deleteResult = deleteResult {
                     switch deleteResult {
                     case .success:
-                        return .success((models, associatedModels))
+                        return .success((models, associatedModelsMap))
                     case .failure(let error):
                         return .failure(error)
                     }
@@ -174,7 +186,7 @@ extension StorageEngine {
         }
     }
 
-    func collapseMResult<M: Model>(_ result: DataStoreResult<([M], [Model])>) -> DataStoreResult<[M]> {
+    func collapseMResult<M: Model>(_ result: DataStoreResult<([M], [ModelName: [Model]])>) -> DataStoreResult<[M]> {
         switch result {
         case .success(let results):
             return .success(results.0)
@@ -183,12 +195,13 @@ extension StorageEngine {
         }
     }
 
-    func resolveAssociatedModels<M: Model>(_ result: DataStoreResult<([M], [Model])>) -> [Model] {
+    func resolveAssociatedModels<M: Model>(
+        _ result: DataStoreResult<([M], [ModelName: [Model]])>) -> [ModelName: [Model]] {
         switch result {
         case .success(let results):
             return results.1
         case .failure:
-            return []
+            return [:]
         }
     }
 }

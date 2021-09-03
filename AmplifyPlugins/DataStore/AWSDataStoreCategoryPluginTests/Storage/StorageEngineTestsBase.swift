@@ -95,7 +95,7 @@ class StorageEngineTestsBase: XCTestCase {
     func deleteModelSynchronous<M: Model>(modelType: M.Type,
                                           withId id: String,
                                           where predicate: QueryPredicate? = nil,
-                                          timeout: TimeInterval = 1) -> DataStoreResult<M?> {
+                                          timeout: TimeInterval = 10) -> DataStoreResult<M?> {
         let deleteFinished = expectation(description: "Delete Finished")
         var result: DataStoreResult<M?>?
 

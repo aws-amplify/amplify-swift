@@ -270,6 +270,35 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
     }
 
+    /// Ensure the DataStore is automatically started when querying for the first time
+    ///
+    /// - Given: DataStore is configured but not started
+    /// - When:
+    ///   - I call DataStore.query()
+    /// - Then:
+    ///   - DataStore is automatically started
+    func testQueryImplicitlyStarts() throws {
+        let dataStoreStarted = expectation(description: "dataStoreStarted")
+        let sink = Amplify
+            .Hub
+            .publisher(for: .dataStore)
+            .filter { $0.eventName == HubPayload.EventName.DataStore.ready }
+            .sink { _ in dataStoreStarted.fulfill() }
+
+        let amplifyStarted = expectation(description: "amplifyStarted")
+        try startAmplify {
+            amplifyStarted.fulfill()
+        }
+        wait(for: [amplifyStarted], timeout: 1.0)
+
+        // We expect the query to complete, but not to return a value. Thus, we'll ignore the error
+        let queryCompleted = expectation(description: "queryCompleted")
+        Amplify.DataStore.query(Post.self, byId: "123") { _ in queryCompleted.fulfill() }
+
+        wait(for: [dataStoreStarted, queryCompleted], timeout: networkTimeout)
+        sink.cancel()
+    }
+
     /// Ensure DataStore.clear followed by DataStore.start is successful
     ///
     /// - Given:  DataStore has completely started

@@ -80,7 +80,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         XCTAssertEqual(finalLocalMetadata?.version, 2)
         XCTAssertEqual(finalLocalMetadata?.deleted, true)
 
-        storageAdapter.query(untypedModel: MockSynced.self) { results in
+        storageAdapter.query(modelSchema: MockSynced.schema) { results in
             switch results {
             case .failure(let error):
                 XCTAssertNil(error)
@@ -179,7 +179,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         XCTAssertEqual(finalLocalMetadata?.version, 2)
         XCTAssertEqual(finalLocalMetadata?.deleted, true)
 
-        storageAdapter.query(untypedModel: MockSynced.self) { results in
+        storageAdapter.query(modelSchema: MockSynced.schema) { results in
             switch results {
             case .failure(let error):
                 XCTAssertNil(error)

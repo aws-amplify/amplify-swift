@@ -1,5 +1,38 @@
 # Changelog
 ## Unreleased
+## 1.13.4 (2021-08-25)
+
+### Features
+- Update AWS SDKs to 2.25.0 (#1395)
+
+## 1.13.3 (2021-08-07)
+
+### Bug Fixes
+
+ - **DataStore**: add missing SQLite3 import (#1368)
+ - **DataStore**: storage engine doesn't need auth plugin for api key (#1366)
+
+## 1.13.1 (2021-08-05)
+
+### Bug Fixes
+
+- **Datastore**: consecutive updates nil version scenario (#1333)
+- **DataStore**: Various mutation sync fixes (#1355)
+- **DataStore**: do not send completion event to publisher on DataStore.clear() and DataStore.stop() (#1273)
+- Fix data store mutation when restoring network (#1345)
+- **DataStore**: drop failed constraint violation reconciliations (#1321)
+
+## 1.13.0 (2021-07-30)
+
+### Features
+
+- support for lambda authorizer (#1334)
+
+### Bug Fixes
+
+- **amplify-xcode**: add files to primary target (#1313)
+- **DataStore**: dynamic model support for cascade delete (#1296)
+
 ## 1.12.0 (2021-06-28)
 
 ### Features

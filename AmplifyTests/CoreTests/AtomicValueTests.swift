@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import Amplify
+import Amplify
 
 // These tests must be run with ThreadSanitizer enabled
 class AtomicValueTests: XCTestCase {
@@ -70,12 +70,36 @@ class AtomicValueTests: XCTestCase {
         }
     }
 
+    func testWithNullable() {
+        let deinitialized = expectation(description: "deinitialized")
+        let atomicNotifier = AtomicValue<InvocationCounter?>(
+            initialValue: InvocationCounter(fulfillingOnDeinit: deinitialized)
+        )
+        DispatchQueue.concurrentPerform(iterations: 1_000) { iter in
+            if iter == 500 {
+                atomicNotifier.with { $0 = nil }
+            } else {
+                atomicNotifier.atomicallyPerform { $0?.invoke() }
+            }
+        }
+
+        waitForExpectations(timeout: 1.0)
+    }
 }
 
 final class InvocationCounter {
     private(set) var invocationCount = 0
+    private let deinitExpectation: XCTestExpectation?
+
+    init(fulfillingOnDeinit deinitExpectation: XCTestExpectation? = nil) {
+        self.deinitExpectation = deinitExpectation
+    }
 
     func invoke() {
         invocationCount += 1
+    }
+
+    deinit {
+        deinitExpectation?.fulfill()
     }
 }

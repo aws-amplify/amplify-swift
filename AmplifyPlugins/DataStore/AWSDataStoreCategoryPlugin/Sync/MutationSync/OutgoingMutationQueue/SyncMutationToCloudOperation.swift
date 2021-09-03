@@ -14,17 +14,20 @@ import AWSPluginsCore
 /// not a retriable error. If it is, attempts a retry until either success or terminal failure. Upon success or
 /// terminal failure, publishes the event response to the appropriate ModelReconciliationQueue subject.
 @available(iOS 13.0, *)
-class SyncMutationToCloudOperation: Operation {
+class SyncMutationToCloudOperation: AsynchronousOperation {
 
     typealias MutationSyncCloudResult = GraphQLOperation<MutationSync<AnyModel>>.OperationResult
 
     private weak var api: APICategoryGraphQLBehavior?
     private let mutationEvent: MutationEvent
-    private var mutationOperation: GraphQLOperation<MutationSync<AnyModel>>?
-    private var networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?
     private let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener
+    private let requestRetryablePolicy: RequestRetryablePolicy
+
+    private let lock: NSRecursiveLock
+
+    private var networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?
+    private var mutationOperation: GraphQLOperation<MutationSync<AnyModel>>?
     private var mutationRetryNotifier: MutationRetryNotifier?
-    private var requestRetryablePolicy: RequestRetryablePolicy
     private var currentAttemptNumber: Int
     private var authTypesIterator: AWSAuthorizationTypeIterator?
 
@@ -41,12 +44,14 @@ class SyncMutationToCloudOperation: Operation {
         self.completion = completion
         self.currentAttemptNumber = currentAttemptNumber
         self.requestRetryablePolicy = requestRetryablePolicy ?? RequestRetryablePolicy()
+        self.lock = NSRecursiveLock()
 
         if let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName),
            let mutationType = GraphQLMutationType(rawValue: mutationEvent.mutationType) {
             self.authTypesIterator = authModeStrategy.authTypesFor(schema: modelSchema,
                                                                    operation: mutationType.toModelOperation())
         }
+
         super.init()
     }
 
@@ -56,17 +61,20 @@ class SyncMutationToCloudOperation: Operation {
     }
 
     override func cancel() {
-        mutationOperation?.cancel()
-        mutationRetryNotifier?.cancel()
-        let apiError = APIError.unknown("Operation cancelled", "")
+        log.verbose(#function)
+        lock.execute {
+            mutationOperation?.cancel()
+            mutationRetryNotifier?.cancel()
+            mutationRetryNotifier = nil
+        }
+
+        let apiError = APIError(error: OperationCancelledError())
         finish(result: .failure(apiError))
     }
 
+    /// Does not require a locking context. Member access is read-only.
     private func sendMutationToCloud(withAuthType authType: AWSAuthorizationType? = nil) {
         guard !isCancelled else {
-            mutationOperation?.cancel()
-            let apiError = APIError.unknown("Operation cancelled", "")
-            finish(result: .failure(apiError))
             return
         }
 
@@ -87,7 +95,7 @@ class SyncMutationToCloudOperation: Operation {
         }
 
         if let apiRequest = createAPIRequest(mutationType: mutationType, authType: authType) {
-            makeAPIRequest(apiRequest)
+            sendMutation(describedBy: apiRequest)
         }
     }
 
@@ -96,8 +104,10 @@ class SyncMutationToCloudOperation: Operation {
     ///   - mutationType: mutation type
     ///   - authType: authorization type, if provided overrides the auth used to perform the API request
     /// - Returns: a GraphQL request
-    func createAPIRequest(mutationType: GraphQLMutationType,
-                          authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSync<AnyModel>>? {
+    private func createAPIRequest(
+        mutationType: GraphQLMutationType,
+        authType: AWSAuthorizationType? = nil
+    ) -> GraphQLRequest<MutationSync<AnyModel>>? {
         var request: GraphQLRequest<MutationSync<AnyModel>>
 
         do {
@@ -154,27 +164,45 @@ class SyncMutationToCloudOperation: Operation {
         return request
     }
 
-    func makeAPIRequest(_ apiRequest: GraphQLRequest<MutationSync<AnyModel>>) {
+    /// Creates and invokes a GraphQL mutation operation for `apiRequest` to the
+    /// service, and invokes `respond(toCloudResult:withAPIRequest:)` in the mutation's
+    /// completion handler
+    /// - Parameter apiRequest: The GraphQLRequest used to create the mutation operation
+    private func sendMutation(describedBy apiRequest: GraphQLRequest<MutationSync<AnyModel>>) {
         guard let api = api else {
-            // TODO: This should be part of our error handling routines
             log.error("\(#function): API unexpectedly nil")
             let apiError = APIError.unknown("API unexpectedly nil", "")
             finish(result: .failure(apiError))
             return
         }
         log.verbose("\(#function) sending mutation with sync data: \(apiRequest)")
-        mutationOperation = api.mutate(request: apiRequest) { result in
-            self.log.verbose("sendMutationToCloud received result: \(result)")
-            self.validate(cloudResult: result, request: apiRequest)
+        lock.execute {
+            mutationOperation = api.mutate(request: apiRequest) { [weak self] result in
+                self?.respond(toCloudResult: result, withAPIRequest: apiRequest)
+            }
         }
     }
 
+    /// Initiates a locking context
+    private func respond(
+        toCloudResult result: GraphQLOperation<MutationSync<AnyModel>>.OperationResult,
+        withAPIRequest apiRequest: GraphQLRequest<MutationSync<AnyModel>>
+    ) {
+        lock.execute {
+            guard !self.isCancelled else {
+                Amplify.log.debug("SyncMutationToCloudOperation cancelled, aborting")
+                return
+            }
+
+            log.verbose("GraphQL mutation operation received result: \(result)")
+            validate(cloudResult: result, request: apiRequest)
+        }
+    }
+
+    /// - Warning: Must be invoked from a locking context
     private func validate(cloudResult: MutationSyncCloudResult,
                           request: GraphQLRequest<MutationSync<AnyModel>>) {
         guard !isCancelled else {
-            mutationOperation?.cancel()
-            let apiError = APIError.unknown("Operation cancelled", "")
-            finish(result: .failure(apiError))
             return
         }
 
@@ -182,16 +210,16 @@ class SyncMutationToCloudOperation: Operation {
             let advice = getRetryAdviceIfRetryable(error: error)
 
             guard advice.shouldRetry else {
-                self.finish(result: .failure(error))
+                finish(result: .failure(error))
                 return
             }
 
             resolveReachabilityPublisher(request: request)
             if let pluginOptions = request.options?.pluginOptions as? AWSPluginOptions, pluginOptions.authType != nil,
                let nextAuthType = authTypesIterator?.next() {
-                self.scheduleRetry(advice: advice, withAuthType: nextAuthType)
+                scheduleRetry(advice: advice, withAuthType: nextAuthType)
             } else {
-                self.scheduleRetry(advice: advice)
+                scheduleRetry(advice: advice)
             }
             return
         }
@@ -199,6 +227,7 @@ class SyncMutationToCloudOperation: Operation {
         finish(result: cloudResult)
     }
 
+    /// - Warning: Must be invoked from a locking context
     private func resolveReachabilityPublisher(request: GraphQLRequest<MutationSync<AnyModel>>) {
         if networkReachabilityPublisher == nil {
             if let reachability = api as? APICategoryReachabilityBehavior {
@@ -211,11 +240,7 @@ class SyncMutationToCloudOperation: Operation {
         }
     }
 
-    private func shouldRetryWithDifferentAuthType() -> RequestRetryAdvice {
-        let shouldRetry = (authTypesIterator?.count ?? 0) > 0
-        return RequestRetryAdvice(shouldRetry: shouldRetry, retryInterval: .milliseconds(0))
-    }
-
+    /// - Warning: Must be invoked from a locking context
     private func getRetryAdviceIfRetryable(error: APIError) -> RequestRetryAdvice {
         var advice = RequestRetryAdvice(shouldRetry: false, retryInterval: DispatchTimeInterval.never)
 
@@ -245,34 +270,48 @@ class SyncMutationToCloudOperation: Operation {
         return advice
     }
 
-    private func scheduleRetry(advice: RequestRetryAdvice) {
-        log.verbose("\(#function) scheduling retry for mutation")
-        mutationRetryNotifier = MutationRetryNotifier(advice: advice,
-                                                      networkReachabilityPublisher: networkReachabilityPublisher) {
-            self.sendMutationToCloud()
-            self.mutationRetryNotifier = nil
-        }
-        currentAttemptNumber += 1
+    /// - Warning: Must be invoked from a locking context
+    private func shouldRetryWithDifferentAuthType() -> RequestRetryAdvice {
+        let shouldRetry = (authTypesIterator?.count ?? 0) > 0
+        return RequestRetryAdvice(shouldRetry: shouldRetry, retryInterval: .milliseconds(0))
     }
 
+    /// - Warning: Must be invoked from a locking context
     private func scheduleRetry(advice: RequestRetryAdvice,
                                withAuthType authType: AWSAuthorizationType? = nil) {
         log.verbose("\(#function) scheduling retry for mutation")
-        mutationRetryNotifier = MutationRetryNotifier(advice: advice,
-                                                      networkReachabilityPublisher: networkReachabilityPublisher) {
-            self.sendMutationToCloud(withAuthType: authType)
-            self.mutationRetryNotifier = nil
+        mutationRetryNotifier = MutationRetryNotifier(
+            advice: advice,
+            networkReachabilityPublisher: networkReachabilityPublisher
+        ) { [weak self] in
+            self?.respondToMutationNotifierTriggered(withAuthType: authType)
         }
         currentAttemptNumber += 1
     }
 
+    /// Initiates a locking context
+    private func respondToMutationNotifierTriggered(withAuthType authType: AWSAuthorizationType?) {
+        log.verbose("\(#function) mutationRetryNotifier triggered")
+        lock.execute {
+            sendMutationToCloud(withAuthType: authType)
+            mutationRetryNotifier = nil
+        }
+    }
+
+    /// Cleans up operation resources, finalizes AsynchronousOperation states, and invokes `completion` with `result`
+    /// - Parameter result: The MutationSyncCloudResult to pass to `completion`
     private func finish(result: MutationSyncCloudResult) {
-        mutationOperation?.removeResultListener()
-        mutationOperation = nil
+        log.verbose(#function)
+        lock.execute {
+            mutationOperation?.removeResultListener()
+            mutationOperation = nil
+        }
 
         DispatchQueue.global().async {
             self.completion(result)
         }
+
+        finish()
     }
 }
 

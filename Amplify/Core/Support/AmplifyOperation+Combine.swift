@@ -60,7 +60,7 @@ extension AmplifyOperation {
     /// - Returns: A publisher that either completes successfully (if the underlying
     ///   error of `error` is a cancellation) or re-emits the existing error
     private func interceptCancellation(error: Failure) -> AnyPublisher<Success, Failure> {
-        if error.underlyingError is OperationCancelledError {
+        if error.isOperationCancelledError {
             return Empty<Success, Failure>(completeImmediately: true).eraseToAnyPublisher()
         } else {
             return Fail<Success, Failure>(error: error).eraseToAnyPublisher()

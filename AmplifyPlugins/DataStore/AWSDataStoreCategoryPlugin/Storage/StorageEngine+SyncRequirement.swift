@@ -20,7 +20,7 @@ extension StorageEngine {
             return
         }
 
-        let authPluginRequired = requiresAuthPlugin(api: api)
+        let authPluginRequired = requiresAuthPlugin()
 
         guard authPluginRequired else {
             syncEngine?.start(api: api, auth: nil)
@@ -54,24 +54,31 @@ extension StorageEngine {
         }
     }
 
-    private func requiresAuthPlugin(api: APICategoryGraphQLBehavior?) -> Bool {
-        let containsAuthEnabledSyncableModels = ModelRegistry.modelSchemas.contains {
-            $0.isSyncable && $0.hasAuthenticationRules
+    private func requiresAuthPlugin() -> Bool {
+        let modelsRequireAuthPlugin = ModelRegistry.modelSchemas.contains {
+            $0.isSyncable && $0.hasAuthenticationRules && $0.authRules.requireAuthPlugin
         }
+        return modelsRequireAuthPlugin
+    }
+}
 
-        if containsAuthEnabledSyncableModels,
-           let apiCategoryAuthProviderBehavior = api as? APICategoryAuthProviderFactoryBehavior,
-           apiCategoryAuthProviderBehavior.apiAuthProviderFactory().oidcAuthProvider() != nil {
-            if tryGetAuthPlugin() != nil {
-                log.warn(
-                    """
-                    Detected OIDC Auth Provider & Auth Plugin Category available.
-                    This is not a supported use case.
-                    """)
-            }
+internal extension AuthRule {
+    var requiresAuthPlugin: Bool {
+        switch provider {
+        // OIDC, Function and API key providers don't need
+        // Auth plugin
+        case .oidc, .function, .apiKey, .none:
             return false
+        case .userPools, .iam:
+            return true
         }
+    }
+}
 
-        return containsAuthEnabledSyncableModels
+internal extension AuthRules {
+    /// Convenience method to check whether we need Auth plugin
+    /// - Returns: true  If **any** of the rules uses a provider that requires the Auth plugin
+    var requireAuthPlugin: Bool {
+        contains { $0.requiresAuthPlugin }
     }
 }

@@ -363,30 +363,12 @@ final class StorageEngine: StorageEngineBehavior {
         }
     }
 
-    func reset(onComplete: () -> Void) {
-        // TOOD: Perform cleanup on StorageAdapter, including releasing its `Connection` if needed
-        let group = DispatchGroup()
-        if #available(iOS 13.0, *) {
-
-            if let resettable = syncEngine as? Resettable {
-                group.enter()
-                DispatchQueue.global().async {
-                    resettable.reset {
-                        group.leave()
-                    }
-                }
-            }
-        }
-        group.wait()
-        onComplete()
-    }
-
     @available(iOS 13.0, *)
     private func syncDeletions<M: Model>(of modelType: M.Type,
                                          modelSchema: ModelSchema,
                                          withModels models: [M],
                                          predicate: QueryPredicate? = nil,
-                                         associatedModels: [Model],
+                                         associatedModels: [ModelName: [Model]],
                                          syncEngine: RemoteSyncEngineBehavior,
                                          completion: @escaping DataStoreCallback<Void>) {
         var graphQLFilterJSON: String?
@@ -443,11 +425,11 @@ final class StorageEngine: StorageEngineBehavior {
     }
 
     @available(iOS 13.0, *)
-    private func syncDeletions(of associatedModels: [Model],
+    private func syncDeletions(of associatedModelsMap: [ModelName: [Model]],
                                syncEngine: RemoteSyncEngineBehavior,
                                dataStoreError: DataStoreError?,
                                completion: @escaping DataStoreCallback<Void>) {
-        guard !associatedModels.isEmpty else {
+        guard !associatedModelsMap.isEmpty else {
             if let savedDataStoreError = dataStoreError {
                 completion(.failure(savedDataStoreError))
             } else {
@@ -457,42 +439,48 @@ final class StorageEngine: StorageEngineBehavior {
         }
 
         var mutationEventsSubmitCompleted = 0
+        let associatedModelsCount = associatedModelsMap.values.reduce(0) { totalCount, models in
+            totalCount + models.count
+        }
         var savedDataStoreError = dataStoreError
+        for (modelName, associatedModels) in associatedModelsMap {
+            for associatedModel in associatedModels {
+                let mutationEvent: MutationEvent
+                do {
+                    mutationEvent = try MutationEvent(untypedModel: associatedModel,
+                                                      modelName: modelName,
+                                                      mutationType: .delete)
+                } catch {
+                    let dataStoreError = DataStoreError(error: error)
+                    completion(.failure(dataStoreError))
+                    return
+                }
 
-        for associatedModel in associatedModels {
-            let mutationEvent: MutationEvent
-            do {
-                mutationEvent = try MutationEvent(untypedModel: associatedModel, mutationType: .delete)
-            } catch {
-                let dataStoreError = DataStoreError(error: error)
-                completion(.failure(dataStoreError))
-                return
-            }
-
-            let mutationEventCallback: DataStoreCallback<MutationEvent> = { result in
-                self.serialQueueSyncDeletions.async {
-                    mutationEventsSubmitCompleted += 1
-                    switch result {
-                    case .failure(let dataStoreError):
-                        self.log.error("\(#function) failed to submit to sync engine \(mutationEvent)")
-                        if savedDataStoreError == nil {
-                            savedDataStoreError = dataStoreError
+                let mutationEventCallback: DataStoreCallback<MutationEvent> = { result in
+                    self.serialQueueSyncDeletions.async {
+                        mutationEventsSubmitCompleted += 1
+                        switch result {
+                        case .failure(let dataStoreError):
+                            self.log.error("\(#function) failed to submit to sync engine \(mutationEvent)")
+                            if savedDataStoreError == nil {
+                                savedDataStoreError = dataStoreError
+                            }
+                        case .success(let mutationEvent):
+                            self.log.verbose("\(#function) successfully submitted to sync engine \(mutationEvent)")
                         }
-                    case .success(let mutationEvent):
-                        self.log.verbose("\(#function) successfully submitted to sync engine \(mutationEvent)")
-                    }
-                    if mutationEventsSubmitCompleted == associatedModels.count {
-                        if let lastEmittedDataStoreError = savedDataStoreError {
-                            completion(.failure(lastEmittedDataStoreError))
-                        } else {
-                            completion(.successfulVoid)
+                        if mutationEventsSubmitCompleted == associatedModelsCount {
+                            if let lastEmittedDataStoreError = savedDataStoreError {
+                                completion(.failure(lastEmittedDataStoreError))
+                            } else {
+                                completion(.successfulVoid)
+                            }
                         }
                     }
                 }
+                submitToSyncEngine(mutationEvent: mutationEvent,
+                                   syncEngine: syncEngine,
+                                   completion: mutationEventCallback)
             }
-            submitToSyncEngine(mutationEvent: mutationEvent,
-                               syncEngine: syncEngine,
-                               completion: mutationEventCallback)
         }
     }
 
@@ -561,6 +549,24 @@ final class StorageEngine: StorageEngineBehavior {
                 })
     }
 
+}
+
+extension StorageEngine: Resettable {
+    func reset(onComplete: @escaping BasicClosure) {
+        // TOOD: Perform cleanup on StorageAdapter, including releasing its `Connection` if needed
+        let group = DispatchGroup()
+        if #available(iOS 13.0, *), let resettable = syncEngine as? Resettable {
+            log.verbose("Resetting syncEngine")
+            group.enter()
+            resettable.reset {
+                self.log.verbose("Resetting syncEngine: finished")
+                group.leave()
+            }
+        }
+
+        group.wait()
+        onComplete()
+    }
 }
 
 extension StorageEngine: DefaultLogger { }

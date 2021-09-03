@@ -54,7 +54,7 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
     // MARK: Private methods
 
     private func getOrCreateAuthConfiguration(from endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
-                                                       authType: AWSAuthorizationType?) throws -> AWSAuthorizationConfiguration {
+                                              authType: AWSAuthorizationType?) throws -> AWSAuthorizationConfiguration {
         // create a configuration if there's an override auth type
         if let authType = authType {
             return try endpointConfig.authorizationConfigurationFor(authType: authType)
@@ -79,12 +79,19 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
                                                  region: awsIAMConfiguration.region)
         case .openIDConnect:
             guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
-                throw APIError.invalidConfiguration("Using openIDConnect requires passing in an APIAuthProvider with an OIDC AuthProvider",
-                                                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider",
-                                                    nil)
+                throw APIError.invalidConfiguration(
+                    "Using openIDConnect requires passing in an APIAuthProvider with an OIDC AuthProvider",
+                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil)
             }
-            let wrappedProvider = OIDCAuthProviderWrapper(oidcAuthProvider: oidcAuthProvider)
+            let wrappedProvider = OIDCAuthProviderWrapper(authTokenProvider: oidcAuthProvider)
             authInterceptor = OIDCAuthInterceptor(wrappedProvider)
+        case .function:
+            guard let functionAuthProvider = apiAuthProviderFactory.functionAuthProvider() else {
+                throw APIError.invalidConfiguration(
+                    "Using function as auth provider requires passing in an APIAuthProvider with a Function AuthProvider",
+                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil)
+            }
+            authInterceptor = AuthenticationTokenAuthInterceptor(authTokenProvider: functionAuthProvider)
         case .none:
             throw APIError.unknown("Cannot create AppSync subscription for none auth mode", "")
         }

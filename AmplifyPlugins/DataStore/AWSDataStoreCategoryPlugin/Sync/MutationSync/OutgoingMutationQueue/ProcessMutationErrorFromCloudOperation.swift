@@ -26,7 +26,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
     private let graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>?
     private let apiError: APIError?
     private let completion: (Result<MutationEvent?, Error>) -> Void
-    private var mutationOperation: GraphQLOperation<MutationSync<AnyModel>>?
+    private var mutationOperation: AtomicValue<GraphQLOperation<MutationSync<AnyModel>>?>
     private weak var api: APICategoryGraphQLBehavior?
 
     init(dataStoreConfiguration: DataStoreConfiguration,
@@ -43,6 +43,8 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         self.graphQLResponseError = graphQLResponseError
         self.apiError = apiError
         self.completion = completion
+        self.mutationOperation = AtomicValue(initialValue: nil)
+
         super.init()
     }
 
@@ -50,8 +52,6 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         log.verbose(#function)
 
         guard !isCancelled else {
-            let error = DataStoreError.unknown("Operation cancelled", "")
-            finish(result: .failure(error))
             return
         }
 
@@ -162,7 +162,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         }
     }
 
-    func getRemoteModel(_ extensions: [String: JSONValue]) -> Result<MutationSync<AnyModel>, Error> {
+    private func getRemoteModel(_ extensions: [String: JSONValue]) -> Result<MutationSync<AnyModel>, Error> {
         guard case let .object(data) = extensions["data"] else {
             let error = DataStoreError.unknown("Missing remote model from the response from AppSync.",
                                                "This indicates something unexpected was returned from the service")
@@ -178,7 +178,11 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         }
     }
 
-    func processLocalModelDeleted(localModel: Model, remoteModel: MutationSync<AnyModel>, latestVersion: Int) {
+    private func processLocalModelDeleted(
+        localModel: Model,
+        remoteModel: MutationSync<AnyModel>,
+        latestVersion: Int
+    ) {
         guard !remoteModel.syncMetadata.deleted else {
             log.debug("Conflict Unhandled for data deleted in local and remote. Nothing to do, skip processing.")
             finish(result: .success(nil))
@@ -194,7 +198,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                 let request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: localModel,
                                                                                 modelSchema: localModel.schema,
                                                                                 version: latestVersion)
-                self.makeAPIRequest(request)
+                self.sendMutation(describedBy: request)
             case .retry(let model):
                 guard let modelSchema = ModelRegistry.modelSchema(from: self.mutationEvent.modelName) else {
                     preconditionFailure("""
@@ -205,12 +209,16 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                 let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
                                                                                 modelSchema: modelSchema,
                                                                                 version: latestVersion)
-                self.makeAPIRequest(request)
+                self.sendMutation(describedBy: request)
             }
         }
     }
 
-    func processLocalModelUpdated(localModel: Model, remoteModel: MutationSync<AnyModel>, latestVersion: Int) {
+    private func processLocalModelUpdated(
+        localModel: Model,
+        remoteModel: MutationSync<AnyModel>,
+        latestVersion: Int
+    ) {
         guard !remoteModel.syncMetadata.deleted else {
             log.debug("Conflict Unhandled for updated local and deleted remote. Reconcile by deleting local")
             saveDeleteMutation(remoteModel: remoteModel)
@@ -233,7 +241,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                 let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: localModel,
                                                                                 modelSchema: modelSchema,
                                                                                 version: latestVersion)
-                self.makeAPIRequest(request)
+                self.sendMutation(describedBy: request)
             case .retry(let model):
                 guard let modelSchema = ModelRegistry.modelSchema(from: self.mutationEvent.modelName) else {
                     preconditionFailure("""
@@ -244,37 +252,39 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                 let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
                                                                                 modelSchema: modelSchema,
                                                                                 version: latestVersion)
-                self.makeAPIRequest(request)
+                self.sendMutation(describedBy: request)
             }
         }
     }
 
     // MARK: Sync to cloud
 
-    func makeAPIRequest(_ apiRequest: MutationSyncAPIRequest) {
+    private func sendMutation(describedBy apiRequest: MutationSyncAPIRequest) {
         guard !isCancelled else {
-            let error = DataStoreError.unknown("Operation cancelled", "")
-            finish(result: .failure(error))
             return
         }
 
-        guard let api = api else {
+        guard let api = self.api else {
             log.error("\(#function): API unexpectedly nil")
             let apiError = APIError.unknown("API unexpectedly nil", "")
             finish(result: .failure(apiError))
             return
         }
+
         log.verbose("\(#function) sending mutation with data: \(apiRequest)")
-        mutationOperation = api.mutate(request: apiRequest) { result in
+        let graphQLOperation = api.mutate(request: apiRequest) { [weak self] result in
+            guard let self = self, !self.isCancelled else {
+                return
+            }
+
             self.log.verbose("sendMutationToCloud received asyncEvent: \(result)")
             self.validate(cloudResult: result, request: apiRequest)
         }
+        mutationOperation = AtomicValue(initialValue: graphQLOperation)
     }
 
     private func validate(cloudResult: MutationSyncCloudResult, request: MutationSyncAPIRequest) {
         guard !isCancelled else {
-            let error = DataStoreError.unknown("Operation cancelled", "")
-            finish(result: .failure(error))
             return
         }
 
@@ -367,8 +377,6 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         log.verbose(#function)
 
         guard !isCancelled else {
-            let error = DataStoreError.unknown("Operation cancelled", "")
-            finish(result: .failure(error))
             return
         }
 
@@ -399,15 +407,16 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
     }
 
     override func cancel() {
-        mutationOperation?.cancel()
-        let error = DataStoreError.unknown("Operation cancelled", "")
+        mutationOperation.get()?.cancel()
+        let error = DataStoreError(error: OperationCancelledError())
         finish(result: .failure(error))
     }
 
     private func finish(result: Result<MutationEvent?, Error>) {
-        mutationOperation?.removeResultListener()
-        mutationOperation = nil
-
+        mutationOperation.with { operation in
+            operation?.removeResultListener()
+            operation = nil
+        }
         DispatchQueue.global().async {
             self.completion(result)
         }

@@ -226,4 +226,4 @@ reported the issue. Please try to include as much information as you can. Detail
 
 ## Open Source Contributions
 
-We welcome any and all contributions from the community! Make sure you read through our contribution guide [here](./CONTRIBUTING.md) before submitting any PR's. Thanks! <3
+We welcome any and all contributions from the community! Make sure you read through our contribution guide [here](./CONTRIBUTING.md) before submitting any PR's. Thanks! ♥️

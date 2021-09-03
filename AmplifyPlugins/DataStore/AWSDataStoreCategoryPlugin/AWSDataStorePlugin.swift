@@ -143,21 +143,21 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     @available(iOS 13.0, *)
     private func setupStorageSink() {
-        storageEngineSink = storageEngine.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
-                                                         receiveValue: onRecieveValue(receiveValue:))
+        storageEngineSink = storageEngine
+            .publisher
+            .sink(
+                receiveCompletion: { [weak self] in self?.onReceiveCompletion(completed: $0) },
+                receiveValue: { [weak self] in self?.onRecieveValue(receiveValue: $0) }
+            )
     }
 
     @available(iOS 13.0, *)
     private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
-        guard let dataStorePublisher = self.dataStorePublisher else {
-            log.error("Data store publisher not initalized")
-            return
-        }
         switch completed {
         case .failure(let dataStoreError):
-            dataStorePublisher.send(dataStoreError: dataStoreError)
+            log.error("StorageEngine completed with error: \(dataStoreError)")
         case .finished:
-            dataStorePublisher.sendFinished()
+            break
         }
     }
 
@@ -176,11 +176,11 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     public func reset(onComplete: @escaping (() -> Void)) {
         let group = DispatchGroup()
         if let resettable = storageEngine as? Resettable {
+            log.verbose("Resetting storageEngine")
             group.enter()
-            DispatchQueue.global().async {
-                resettable.reset {
-                    group.leave()
-                }
+            resettable.reset {
+                self.log.verbose("Resetting storageEngine: finished")
+                group.leave()
             }
         }
 

@@ -277,33 +277,33 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
             let publishers = dispositions.map { disposition ->
                 Publishers.FlatMap<Future<Void, DataStoreError>,
-                                   Future<ReconcileAndLocalSaveOperation.RemoteModel, DataStoreError>> in
+                                   Future<ReconcileAndLocalSaveOperation.ApplyRemoteModelResult, DataStoreError>> in
 
                 switch disposition {
                 case .create(let remoteModel):
                     let publisher = self.save(storageAdapter: storageAdapter,
                                               remoteModel: remoteModel)
-                        .flatMap { inProcessModel in
+                        .flatMap { applyResult in
                             self.saveMetadata(storageAdapter: storageAdapter,
-                                              inProcessModel: inProcessModel,
+                                              applyResult: applyResult,
                                               mutationType: .create)
                         }
                     return publisher
                 case .update(let remoteModel):
                     let publisher = self.save(storageAdapter: storageAdapter,
                                               remoteModel: remoteModel)
-                        .flatMap { inProcessModel in
+                        .flatMap { applyResult in
                             self.saveMetadata(storageAdapter: storageAdapter,
-                                              inProcessModel: inProcessModel,
+                                              applyResult: applyResult,
                                               mutationType: .update)
                         }
                     return publisher
                 case .delete(let remoteModel):
                     let publisher = self.delete(storageAdapter: storageAdapter,
                                                 remoteModel: remoteModel)
-                        .flatMap { inProcessModel in
+                        .flatMap { applyResult in
                             self.saveMetadata(storageAdapter: storageAdapter,
-                                              inProcessModel: inProcessModel,
+                                              applyResult: applyResult,
                                               mutationType: .delete)
                         }
                     return publisher
@@ -326,9 +326,14 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         }
     }
 
+    enum ApplyRemoteModelResult {
+        case applied(RemoteModel)
+        case dropped
+    }
+
     private func delete(storageAdapter: StorageEngineAdapter,
-                        remoteModel: RemoteModel) -> Future<RemoteModel, DataStoreError> {
-        Future<RemoteModel, DataStoreError> { promise in
+                        remoteModel: RemoteModel) -> Future<ApplyRemoteModelResult, DataStoreError> {
+        Future<ApplyRemoteModelResult, DataStoreError> { promise in
             guard let modelType = ModelRegistry.modelType(from: self.modelSchema.name) else {
                 let error = DataStoreError.invalidModelName(self.modelSchema.name)
                 promise(.failure(error))
@@ -341,21 +346,31 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                                   predicate: nil) { response in
                 switch response {
                 case .failure(let dataStoreError):
-                    promise(.failure(dataStoreError))
+                    if storageAdapter.shouldIgnoreError(error: dataStoreError) {
+                        self.notifyDropped(modelName: remoteModel.model.modelName)
+                        promise(.success(.dropped))
+                    } else {
+                        promise(.failure(dataStoreError))
+                    }
                 case .success:
-                    promise(.success(remoteModel))
+                    promise(.success(.applied(remoteModel)))
                 }
             }
         }
     }
 
     private func save(storageAdapter: StorageEngineAdapter,
-                      remoteModel: RemoteModel) -> Future<RemoteModel, DataStoreError> {
-        Future<RemoteModel, DataStoreError> { promise in
+                      remoteModel: RemoteModel) -> Future<ApplyRemoteModelResult, DataStoreError> {
+        Future<ApplyRemoteModelResult, DataStoreError> { promise in
             storageAdapter.save(untypedModel: remoteModel.model.instance) { response in
                 switch response {
                 case .failure(let dataStoreError):
-                    promise(.failure(dataStoreError))
+                    if storageAdapter.shouldIgnoreError(error: dataStoreError) {
+                        self.notifyDropped(modelName: remoteModel.model.modelName)
+                        promise(.success(.dropped))
+                    } else {
+                        promise(.failure(dataStoreError))
+                    }
                 case .success(let savedModel):
                     let anyModel: AnyModel
                     do {
@@ -366,16 +381,21 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                         return
                     }
                     let inProcessModel = MutationSync(model: anyModel, syncMetadata: remoteModel.syncMetadata)
-                    promise(.success(inProcessModel))
+                    promise(.success(.applied(inProcessModel)))
                 }
             }
         }
     }
 
     private func saveMetadata(storageAdapter: StorageEngineAdapter,
-                              inProcessModel: AppliedModel,
+                              applyResult: ApplyRemoteModelResult,
                               mutationType: MutationEvent.MutationType) -> Future<Void, DataStoreError> {
         Future<Void, DataStoreError> { promise in
+            guard case let .applied(inProcessModel) = applyResult else {
+                promise(.successfulVoid)
+                return
+            }
+
             storageAdapter.save(inProcessModel.syncMetadata, condition: nil) { result in
                 switch result {
                 case .failure(let dataStoreError):

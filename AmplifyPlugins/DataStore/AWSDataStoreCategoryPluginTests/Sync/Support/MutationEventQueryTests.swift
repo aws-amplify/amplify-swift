@@ -12,6 +12,7 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
+@testable import AWSPluginsCore
 
 class MutationEventQueryTests: BaseDataStoreTests {
 
@@ -107,5 +108,4 @@ class MutationEventQueryTests: BaseDataStoreTests {
 
         wait(for: [querySuccess], timeout: 1)
     }
-
 }

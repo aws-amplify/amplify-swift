@@ -25,39 +25,47 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
     func testSubscribeReceivesCreateMutateDelete() throws {
         try startAmplifyAndWaitForSync()
 
+        // Filter all events to ensure they have this ID. This prevents us from overfulfilling on
+        // unrelated subscriptions
+        let id = UUID().uuidString
+
         let originalContent = "Original content from SubscriptionTests at \(Date())"
         let updatedContent = "UPDATED CONTENT from SubscriptionTests at \(Date())"
 
-        let createReceived = expectation(description: "Create notification received")
-        let updateReceived = expectation(description: "Create notification received")
-        let deleteReceived = expectation(description: "Create notification received")
+        let createReceived = expectation(description: "createReceived")
+        let updateReceived = expectation(description: "updateReceived")
+        let deleteReceived = expectation(description: "deleteReceived")
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-                guard let mutationEvent = payload.data as? MutationEvent else {
-                        XCTFail("Can't cast payload as mutation event")
-                        return
-                }
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
+            guard let mutationEvent = payload.data as? MutationEvent else {
+                XCTFail("Can't cast payload as mutation event")
+                return
+            }
 
-                switch mutationEvent.mutationType {
-                case GraphQLMutationType.create.rawValue:
-                    createReceived.fulfill()
-                case GraphQLMutationType.update.rawValue:
-                    updateReceived.fulfill()
-                case GraphQLMutationType.delete.rawValue:
-                    deleteReceived.fulfill()
-                default:
-                    break
-                }
+            guard mutationEvent.modelId == id else {
+                print("Received unrelated mutation, skipping \(mutationEvent)")
+                return
+            }
+
+            switch mutationEvent.mutationType {
+            case GraphQLMutationType.create.rawValue:
+                createReceived.fulfill()
+            case GraphQLMutationType.update.rawValue:
+                updateReceived.fulfill()
+            case GraphQLMutationType.delete.rawValue:
+                deleteReceived.fulfill()
+            default:
+                break
+            }
         }
 
         guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
-
-        let id = UUID().uuidString
 
         sendCreateRequest(withId: id, content: originalContent)
         wait(for: [createReceived], timeout: networkTimeout)

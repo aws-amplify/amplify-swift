@@ -37,7 +37,7 @@ typealias SaveModelCompletionResponder<M: Model> = MockResponder<(M, DataStoreCa
 
 typealias SaveUntypedModelResponder = MockResponder<(Model, DataStoreCallback<Model>), Void>
 
-typealias DeleteUntypedModelCompletionResponder = MockResponder<(Model.Type, String), Void>
+typealias DeleteUntypedModelCompletionResponder = MockResponder<(Model.Type, String), DataStoreResult<Void>>
 
 extension MockStorageEngineBehavior {
     enum ResponderKeys {
