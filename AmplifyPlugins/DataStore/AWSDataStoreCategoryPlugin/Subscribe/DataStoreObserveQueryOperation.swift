@@ -109,7 +109,7 @@ public class AWSDataStoreObseverQueryOperation<M: Model>: AsynchronousOperation,
     let modelType: M.Type
     let modelSchema: ModelSchema
     let predicate: QueryPredicate?
-    let sortInput: QuerySortInput?
+    let sortInput: [QuerySortDescriptor]?
 
     let storageEngine: StorageEngineBehavior
     var dataStorePublisher: ModelSubcriptionBehavior
@@ -132,7 +132,7 @@ public class AWSDataStoreObseverQueryOperation<M: Model>: AsynchronousOperation,
     init(modelType: M.Type,
          modelSchema: ModelSchema,
          predicate: QueryPredicate?,
-         sortInput: QuerySortInput?,
+         sortInput: [QuerySortDescriptor]?,
          storageEngine: StorageEngineBehavior,
          dataStorePublisher: ModelSubcriptionBehavior) {
         self.modelType = modelType
@@ -233,7 +233,7 @@ public class AWSDataStoreObseverQueryOperation<M: Model>: AsynchronousOperation,
             modelType,
             modelSchema: modelSchema,
             predicate: predicate,
-            sort: sortInput?.asSortDescriptors(),
+            sort: sortInput,
             paginationInput: nil,
             completion: { queryResult in
                 if isCancelled || isFinished {
@@ -305,7 +305,7 @@ public class AWSDataStoreObseverQueryOperation<M: Model>: AsynchronousOperation,
         updateCurrentItems(with: itemsChanged)
         var currentItems = Array(currentItemsMap.values.map { $0 }) as [M]
         if let sort = sortInput {
-            sort.inputs.forEach { currentItems.sortModels(by: $0, modelSchema: modelSchema) }
+            sort.forEach { currentItems.sortModels(by: $0, modelSchema: modelSchema) }
         }
         publish(items: currentItems, isSynced: isSynced.get(), itemsChanged: itemsChanged)
     }

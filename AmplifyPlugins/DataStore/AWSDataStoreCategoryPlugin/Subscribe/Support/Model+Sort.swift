@@ -9,7 +9,7 @@ import Amplify
 import CoreGraphics
 
 extension Array where Element: Model {
-    mutating func sortModels(by sortBy: QuerySortBy, modelSchema: ModelSchema) {
+    mutating func sortModels(by sortBy: QuerySortDescriptor, modelSchema: ModelSchema) {
         sort { modelSchema.comparator(model1: $0, model2: $1, sortBy: sortBy) }
     }
 }
@@ -55,9 +55,9 @@ extension ModelSchema {
     // swiftlint:disable:next cyclomatic_complexity
     func comparator(model1: Model,
                     model2: Model,
-                    sortBy: QuerySortBy) -> Bool {
+                    sortBy: QuerySortDescriptor) -> Bool {
         let fieldName = sortBy.fieldName
-        let sortOrder = sortBy.fieldOrder
+        let sortOrder = sortBy.order
         guard let modelField = field(withName: fieldName) else {
             return false
         }
