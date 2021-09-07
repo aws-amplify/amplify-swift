@@ -35,14 +35,17 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
     -> AnyPublisher<DataStoreQuerySnapshot<M>, DataStoreError> {
         reinitStorageEngineIfNeeded()
 
-        return observeQuery(for: modelType, modelSchema: modelType.schema, where: predicate, sort: sortInput)
+        return observeQuery(for: modelType,
+                            modelSchema: modelType.schema,
+                            where: predicate,
+                            sort: sortInput?.asSortDescriptors())
     }
 
     @available(iOS 13.0, *)
     public func observeQuery<M: Model>(for modelType: M.Type,
                                        modelSchema: ModelSchema,
                                        where predicate: QueryPredicate? = nil,
-                                       sort sortInput: QuerySortInput? = nil)
+                                       sort sortInput: [QuerySortDescriptor]? = nil)
     -> AnyPublisher<DataStoreQuerySnapshot<M>, DataStoreError> {
         reinitStorageEngineIfNeeded()
 
