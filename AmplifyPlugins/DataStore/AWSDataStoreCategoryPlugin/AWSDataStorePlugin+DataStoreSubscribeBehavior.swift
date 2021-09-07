@@ -27,4 +27,34 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
     public func publisher(for modelName: ModelName) -> AnyPublisher<MutationEvent, DataStoreError> {
         return publisher.filter { $0.modelName == modelName }.eraseToAnyPublisher()
     }
+
+    @available(iOS 13.0, *)
+    public func observeQuery<M: Model>(for modelType: M.Type,
+                                       where predicate: QueryPredicate? = nil,
+                                       sort sortInput: QuerySortInput? = nil)
+    -> AnyPublisher<DataStoreQuerySnapshot<M>, DataStoreError> {
+        reinitStorageEngineIfNeeded()
+
+        return observeQuery(for: modelType, modelSchema: modelType.schema, where: predicate, sort: sortInput)
+    }
+
+    @available(iOS 13.0, *)
+    public func observeQuery<M: Model>(for modelType: M.Type,
+                                       modelSchema: ModelSchema,
+                                       where predicate: QueryPredicate? = nil,
+                                       sort sortInput: QuerySortInput? = nil)
+    -> AnyPublisher<DataStoreQuerySnapshot<M>, DataStoreError> {
+        reinitStorageEngineIfNeeded()
+
+        // Force-unwrapping: The optional 'dataStorePublisher' is expected
+        // to exist for deployment targets >=iOS13.0
+        let operation = AWSDataStoreObseverQueryOperation(modelType: modelType,
+                                                          modelSchema: modelSchema,
+                                                          predicate: predicate,
+                                                          sortInput: sortInput,
+                                                          storageEngine: storageEngine,
+                                                          dataStorePublisher: dataStorePublisher!)
+        operationQueue.addOperation(operation)
+        return operation.publisher
+    }
 }

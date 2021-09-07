@@ -315,9 +315,11 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>) {
-        completion(.success([]))
-        if let responder = responders[.query] as? QueryResponder {
-            return responder.callback("")
+        if let responder = responders[.query] as? QueryResponder<M> {
+            let result = responder.callback(())
+            completion(result)
+        } else {
+            completion(.success([]))
         }
     }
 
@@ -327,9 +329,12 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
                          completion: (DataStoreResult<[M]>) -> Void) {
-        completion(.success([]))
-        if let responder = responders[.query] as? QueryResponder {
-            return responder.callback("")
+
+        if let responder = responders[.query] as? QueryResponder<M> {
+            let result = responder.callback(())
+            completion(result)
+        } else {
+            completion(.success([]))
         }
     }
 
