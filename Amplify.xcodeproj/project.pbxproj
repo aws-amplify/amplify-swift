@@ -16,6 +16,7 @@
 		210DBC142332B3C6009B9E51 /* StorageGetURLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC132332B3C6009B9E51 /* StorageGetURLOperation.swift */; };
 		210DBC162332B3CB009B9E51 /* StorageDownloadDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC152332B3CB009B9E51 /* StorageDownloadDataOperation.swift */; };
 		210DBC472332F0C5009B9E51 /* StorageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC462332F0C5009B9E51 /* StorageError.swift */; };
+		211FFEE326CD650500F0DB75 /* DataStoreQuerySnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211FFEE226CD650500F0DB75 /* DataStoreQuerySnapshot.swift */; };
 		2125E2542319EC3100B3DEB5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2532319EC3100B3DEB5 /* AppDelegate.swift */; };
 		2125E2562319EC3100B3DEB5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2552319EC3100B3DEB5 /* ViewController.swift */; };
 		2125E2592319EC3100B3DEB5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2125E2572319EC3100B3DEB5 /* Main.storyboard */; };
@@ -159,6 +160,8 @@
 		21A905372616446F00EC141D /* EnumTestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A9052A2616446F00EC141D /* EnumTestModel.swift */; };
 		21A905382616446F00EC141D /* TestEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A9052B2616446F00EC141D /* TestEnum.swift */; };
 		21A905602616484A00EC141D /* Scalar+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A9055F2616484A00EC141D /* Scalar+Equatable.swift */; };
+		21AAE24026DFE94B007BA909 /* ModelSyncMetadata+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AAE23E26DFE94B007BA909 /* ModelSyncMetadata+Schema.swift */; };
+		21AAE24126DFE94B007BA909 /* ModelSyncMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AAE23F26DFE94B007BA909 /* ModelSyncMetadata.swift */; };
 		21AD424B249BF0DA0016FE95 /* AnyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACBAD522386160100E29E56 /* AnyModel.swift */; };
 		21AD424C249BF0DE0016FE95 /* AnyModel+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE776238626D60097E4F1 /* AnyModel+Codable.swift */; };
 		21AD424D249BF0E50016FE95 /* AnyModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE78223862DDB0097E4F1 /* AnyModel+Schema.swift */; };
@@ -847,6 +850,7 @@
 		210DBC132332B3C6009B9E51 /* StorageGetURLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageGetURLOperation.swift; sourceTree = "<group>"; };
 		210DBC152332B3CB009B9E51 /* StorageDownloadDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageDownloadDataOperation.swift; sourceTree = "<group>"; };
 		210DBC462332F0C5009B9E51 /* StorageError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageError.swift; sourceTree = "<group>"; };
+		211FFEE226CD650500F0DB75 /* DataStoreQuerySnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreQuerySnapshot.swift; sourceTree = "<group>"; };
 		2125E2102318D73B00B3DEB5 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		2125E2512319EC3000B3DEB5 /* AmplifyTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmplifyTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2125E2532319EC3100B3DEB5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -1001,6 +1005,8 @@
 		21A9052A2616446F00EC141D /* EnumTestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumTestModel.swift; sourceTree = "<group>"; };
 		21A9052B2616446F00EC141D /* TestEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEnum.swift; sourceTree = "<group>"; };
 		21A9055F2616484A00EC141D /* Scalar+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Scalar+Equatable.swift"; sourceTree = "<group>"; };
+		21AAE23E26DFE94B007BA909 /* ModelSyncMetadata+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelSyncMetadata+Schema.swift"; sourceTree = "<group>"; };
+		21AAE23F26DFE94B007BA909 /* ModelSyncMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelSyncMetadata.swift; sourceTree = "<group>"; };
 		21AD4255249BFFDF0016FE95 /* DeprecatedTodo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DeprecatedTodo.swift; path = Deprecated/DeprecatedTodo.swift; sourceTree = "<group>"; };
 		21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorType.swift; sourceTree = "<group>"; };
 		21D79FD9237617C60057D00D /* SubscriptionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionEvent.swift; sourceTree = "<group>"; };
@@ -1935,6 +1941,7 @@
 		2129BE3F23948909006363A1 /* Sync */ = {
 			isa = PBXGroup;
 			children = (
+				21AAE23D26DFE94B007BA909 /* ModelSync */,
 				2129BE4023948912006363A1 /* MutationSync */,
 				2129BE542395CAEF006363A1 /* PaginatedList.swift */,
 			);
@@ -2178,6 +2185,15 @@
 				21A9052B2616446F00EC141D /* TestEnum.swift */,
 			);
 			path = Scalar;
+			sourceTree = "<group>";
+		};
+		21AAE23D26DFE94B007BA909 /* ModelSync */ = {
+			isa = PBXGroup;
+			children = (
+				21AAE23E26DFE94B007BA909 /* ModelSyncMetadata+Schema.swift */,
+				21AAE23F26DFE94B007BA909 /* ModelSyncMetadata.swift */,
+			);
+			path = ModelSync;
 			sourceTree = "<group>";
 		};
 		21AD424A249BEC440016FE95 /* Internal */ = {
@@ -3858,6 +3874,7 @@
 			isa = PBXGroup;
 			children = (
 				FAD393702381FD3C00463F5E /* DataStoreCategory+Subscribe.swift */,
+				211FFEE226CD650500F0DB75 /* DataStoreQuerySnapshot.swift */,
 				FA9FD2332381CD0000A7CAF5 /* MutationEvent.swift */,
 				FA8F4D232395B1B600861D91 /* MutationEvent+Model.swift */,
 				FACBAD4F2386101100E29E56 /* MutationEvent+MutationType.swift */,
@@ -4760,6 +4777,7 @@
 			files = (
 				2129BE4423948951006363A1 /* MutationSyncMetadata.swift in Sources */,
 				B9675A2E24752621002FC843 /* GraphQLRequest+Model.swift in Sources */,
+				21AAE24026DFE94B007BA909 /* ModelSyncMetadata+Schema.swift in Sources */,
 				2129BE1E2394806B006363A1 /* QueryPredicate+GraphQL.swift in Sources */,
 				21420A8F237222A900FA140C /* AWSIAMConfiguration.swift in Sources */,
 				219A888523EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift in Sources */,
@@ -4793,6 +4811,7 @@
 				7608EE14268142F300FEC9CD /* AWSPluginOptions.swift in Sources */,
 				6BBECD7123ADA7E100C8DFBE /* AmplifyAWSServiceConfiguration.swift in Sources */,
 				21AD424F249BF0EC0016FE95 /* Model+AnyModel.swift in Sources */,
+				21AAE24126DFE94B007BA909 /* ModelSyncMetadata.swift in Sources */,
 				B4EBEB682462050B00D06375 /* AuthCognitoIdentityProvider.swift in Sources */,
 				21AD424C249BF0DE0016FE95 /* AnyModel+Codable.swift in Sources */,
 				212CE6FE23E9E5A2007D8E71 /* GraphQLDocumentnputValue.swift in Sources */,
@@ -5243,6 +5262,7 @@
 				B4251A0124250369007F59EF /* AuthConfirmResetPasswordRequest.swift in Sources */,
 				FAAFAF2F23904B14002CF932 /* AtomicValue+Bool.swift in Sources */,
 				B9B50DC823DA15890086F1E1 /* DataStoreError+Temporal.swift in Sources */,
+				211FFEE326CD650500F0DB75 /* DataStoreQuerySnapshot.swift in Sources */,
 				FA249EEB24C5FE66009B3CE8 /* AmplifyAPICategory+GraphQLBehavior+Combine.swift in Sources */,
 				FACD26502386E9410068FBE6 /* JSONValue+Subscript.swift in Sources */,
 				B450741324115C260098F02D /* AuthSignInRequest.swift in Sources */,
