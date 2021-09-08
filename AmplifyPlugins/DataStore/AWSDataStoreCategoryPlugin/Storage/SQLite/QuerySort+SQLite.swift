@@ -26,6 +26,15 @@ extension QuerySortBy {
             return QuerySortOrder.descending
         }
     }
+
+    var sortDescriptor: QuerySortDescriptor {
+        switch self {
+        case .ascending(let key):
+            return .init(fieldName: key.stringValue, order: .ascending)
+        case .descending(let key):
+            return .init(fieldName: key.stringValue, order: .descending)
+        }
+    }
 }
 
 extension QuerySortInput {

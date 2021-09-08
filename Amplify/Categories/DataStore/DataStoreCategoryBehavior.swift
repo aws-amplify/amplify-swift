@@ -65,4 +65,16 @@ public protocol DataStoreSubscribeBehavior {
     /// - Parameter modelType: The model type to observe
     @available(iOS 13.0, *)
     func publisher<M: Model>(for modelType: M.Type) -> AnyPublisher<MutationEvent, DataStoreError>
+
+    /// Returns a Publisher for query snapshots.
+    ///
+    /// - Parameters:
+    ///   - modelType: The model type to observe
+    ///   - predicate: The predicate to match for filtered results
+    ///   - sortInput: The field and order of data to be returned
+    @available(iOS 13.0, *)
+    func observeQuery<M: Model>(for modelType: M.Type,
+                                where predicate: QueryPredicate?,
+                                sort sortInput: QuerySortInput?)
+    -> AnyPublisher<DataStoreQuerySnapshot<M>, DataStoreError>
 }
