@@ -9,14 +9,14 @@ import Foundation
 import Amplify
 
 // swiftlint:disable cyclomatic_complexity
-// swiftlint:disable syntactic_sugar
 extension ModelSchema {
 
     /// Compare two `Model` based on a given `ModelSchema`
     /// Returns true if equal, false otherwise
-    public func isEqual(_ model1: Model, _ model2: Model) -> Bool {
+    func isEqual(_ model1: Model, _ model2: Model) -> Bool {
         for (fieldName, modelField) in fields {
-            // read only fields are skipped for eqaulity check as they are created by the service
+            // read only fields are skipped for equality check
+            // examples of such fields include `createdAt`, `updatedAt` and `coverId` in `Record`
             if modelField.isReadOnly {
                 continue
             }
@@ -30,76 +30,60 @@ extension ModelSchema {
                 guard let value1Optional = value1 as? String?, let value2Optional = value2 as? String? else {
                     return false
                 }
-                if let value1 = value1Optional, let value2 = value2Optional, value1 != value2 {
+                if !modelCompareHelper(value1Optional, value2Optional) {
                     return false
-                } else {
-                    continue
                 }
             case .int:
                 guard let value1Optional = value1 as? Int?, let value2Optional = value2 as? Int? else {
                     return false
                 }
-                if let value1 = value1Optional, let value2 = value2Optional, value1 != value2 {
+                if !modelCompareHelper(value1Optional, value2Optional) {
                     return false
-                } else {
-                    continue
                 }
             case .double:
                 guard let value1Optional = value1 as? Double?, let value2Optional = value2 as? Double? else {
                     return false
                 }
-                if let value1 = value1Optional, let value2 = value2Optional, value1 != value2 {
+                if !modelCompareHelper(value1Optional, value2Optional) {
                     return false
-                } else {
-                    continue
                 }
             case .date:
                 guard let value1Optional = value1 as? Temporal.Date?,
                       let value2Optional = value2 as? Temporal.Date? else {
                     return false
                 }
-                if let value1 = value1Optional, let value2 = value2Optional, value1 != value2 {
+                if !modelCompareHelper(value1Optional, value2Optional) {
                     return false
-                } else {
-                    continue
                 }
             case .dateTime:
                 guard let value1Optional = value1 as? Temporal.DateTime?,
                       let value2Optional = value2 as? Temporal.DateTime? else {
                     return false
                 }
-                if let value1 = value1Optional, let value2 = value2Optional, value1 != value2 {
+                if !modelCompareHelper(value1Optional, value2Optional) {
                     return false
-                } else {
-                    continue
                 }
             case .time:
                 guard let value1Optional = value1 as? Temporal.Time?,
                       let value2Optional = value2 as? Temporal.Time? else {
                     return false
                 }
-                if let value1 = value1Optional, let value2 = value2Optional, value1 != value2 {
+                if !modelCompareHelper(value1Optional, value2Optional) {
                     return false
-                } else {
-                    continue
                 }
             case .timestamp:
                 guard let value1Optional = value1 as? String?, let value2Optional = value2 as? String? else {
                     return false
                 }
-                if let value1 = value1Optional, let value2 = value2Optional, value1 != value2 {
+                if !modelCompareHelper(value1Optional, value2Optional) {
                     return false
-                } else {
-                    continue
                 }
             case .bool:
                 guard let value1Optional = value1 as? Bool?, let value2Optional = value2 as? Bool? else {
                     return false
                 }
-                if let value1 = value1Optional, let value2 = value2Optional, value1 != value2 {
+                if !modelCompareHelper(value1Optional?.intValue, value2Optional?.intValue) {
                     return false
-                } else {
-                    continue
                 }
             case .enum:
                 guard case .some(Optional<Any>.some(let value1Optional)) = value1,
@@ -111,10 +95,8 @@ extension ModelSchema {
                 }
                 let enumValue1Optional = (value1Optional as? EnumPersistable)?.rawValue
                 let enumValue2Optional = (value2Optional as? EnumPersistable)?.rawValue
-                if enumValue1Optional != enumValue2Optional {
+                if !modelCompareHelper(enumValue1Optional, enumValue2Optional) {
                     return false
-                } else {
-                    continue
                 }
             case .embedded, .embeddedCollection:
                 do {
@@ -122,21 +104,35 @@ extension ModelSchema {
                        let encodable2 = value2 as? Encodable {
                         let json1 = try SQLiteModelValueConverter.toJSON(encodable1)
                         let json2 = try SQLiteModelValueConverter.toJSON(encodable2)
-                        if let value1 = json1, let value2 = json2, value1 != value2 {
+                        if !modelCompareHelper(json1, json2) {
                             return false
-                        } else {
-                            continue
                         }
                     }
                 } catch {
                     continue
                 }
-            case .model:
-                continue
-            case .collection:
+            // only the first level of data is used for comparison of models
+            // and deeper levels(associated models/connections) are ignored
+            // e.g. The graphql request contains only the information needed in the graphql variables which is sent to
+            // the service. In such a case, the request model may have multiple levels of data while the response
+            // model will have just one.
+            case .model, .collection:
                 continue
             }
         }
         return true
+    }
+
+    private func modelCompareHelper<T: Comparable>(_ optional1: T?, _ optional2: T?) -> Bool {
+        switch (optional1, optional2) {
+        case(nil, nil):
+            return true
+        case(nil, .some):
+            return false
+        case (.some, nil):
+            return false
+        case (.some(let val1), .some(let val2)):
+            return val1 == val2 ? true : false
+        }
     }
 }

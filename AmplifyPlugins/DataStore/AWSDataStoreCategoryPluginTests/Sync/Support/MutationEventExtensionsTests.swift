@@ -20,12 +20,11 @@ import XCTest
 // swiftlint:disable line_length
 class MutationEventExtensionsTest: BaseDataStoreTests {
 
-    /// - Given: A create mutationSync with version 1
-    /// - When: Mutation event table contains a create mutation event with `nil` version, inProcess` as true
-    ///        and an update mutation event with `nil` version, having the same model
-    /// - Then: After reconciliation of versions, Update mutation event should be updated with version of
-    ///   create mutationSync
-    func testQueryAfterReconcilePendingMutationEventVersionGivenSingleMutationEvent() throws {
+    /// - Given: A pending mutation events queue with event containing `nil` version, a sent mutation event model that matches
+    ///         the received mutation sync model. The received mutation sync has version 1.
+    /// - When: The sent model matches the received model and the first pending mutation event version is `nil`.
+    /// - Then: The pending mutation event version should be updated to the received model version of 1.
+    func testSentModelWithNilVersion_Reconciled() throws {
         let modelId = UUID().uuidString
         let post = Post(id: modelId, title: "title", content: "content", createdAt: .now())
         let createMutationEvent = MutationEvent(id: UUID().uuidString,
@@ -85,16 +84,15 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                     XCTFail("Failure while updating version")
                     return
                 }
-                XCTAssertNil(head.version)
-                XCTAssertEqual(head.mutationType, MutationEvent.MutationType.update.rawValue)
+                XCTAssertEqual(head, updateMutationEvent)
                 queryBeforeUpdatingVersionExpectation.fulfill()
             }
         }
         wait(for: [queryBeforeUpdatingVersionExpectation], timeout: 1)
 
         // update the version of head of mutation event table for given model id to the version of `mutationSync`
-        MutationEvent.reconcilePendingMutationEventsVersion(mutationEvent: createMutationEvent,
-                                                             mutationSync: createMutationSync,
+        MutationEvent.reconcilePendingMutationEventsVersion(sent: createMutationEvent,
+                                                             received: createMutationSync,
                                                              storageAdapter: storageAdapter) { result in
             switch result {
             case .failure(let error):
@@ -112,23 +110,25 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
             case .failure(let error):
                 XCTFail("Error : \(error)")
             case .success(let mutationEvents):
-                guard !mutationEvents.isEmpty, let updatedEvent = mutationEvents.first else {
+                guard !mutationEvents.isEmpty, let head = mutationEvents.first else {
                     XCTFail("Failure while updating version")
                     return
                 }
-                XCTAssertEqual(updatedEvent.version, createMutationSync.syncMetadata.version)
-                XCTAssertEqual(updatedEvent.mutationType, MutationEvent.MutationType.update.rawValue)
+                XCTAssertEqual(head.version, createMutationSync.syncMetadata.version)
+                XCTAssertEqual(head.mutationType, MutationEvent.MutationType.update.rawValue)
                 queryAfterUpdatingVersionExpectation.fulfill()
             }
         }
         wait(for: [queryAfterUpdatingVersionExpectation], timeout: 1)
     }
 
-    /// - Given: A create mutationSync with version 1
-    /// - When: Mutation event table contains a create mutation event with `nil` version, inProcess` as true;
-    ///        and update and delete mutation events added in order with `nil` version, having the same model
-    /// - Then: After reconciliation of versions, Update mutation event should be updated with version of create mutationSync
-    func testQueryAfterReconcilePendingMutationEventVersionGivenMultipleMutationEvents() throws {
+    /// - Given: A pending mutation events queue with two events(update and delete) containing `nil` version, a sent mutation event
+    ///         model that matches the received mutation sync model. The received mutation sync has version 1.
+    /// - When: The sent model matches the received model, the first pending mutation event(update) version is `nil` and
+    ///         the second pending mutation event(delete) version is `nil`.
+    /// - Then: The first pending mutation event(update) version should be updated to the received model version of 1 and the second
+    ///         pending mutation event version(delete) should not be updated.
+    func testSentModelWithNilVersion_SecondPendingEventNotReconciled() throws {
         let modelId = UUID().uuidString
         let post = Post(id: modelId, title: "title", content: "content", createdAt: .now())
         let createMutationEvent = MutationEvent(id: UUID().uuidString,
@@ -196,20 +196,20 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
             case .failure(let error):
                 XCTFail("Error : \(error)")
             case .success(let mutationEvents):
-                guard !mutationEvents.isEmpty, let head = mutationEvents.first else {
+                guard !mutationEvents.isEmpty, let head = mutationEvents.first, let last = mutationEvents.last else {
                     XCTFail("Failure while updating version")
                     return
                 }
-                XCTAssertNil(head.version)
-                XCTAssertEqual(head.mutationType, MutationEvent.MutationType.update.rawValue)
+                XCTAssertEqual(head, updateMutationEvent)
+                XCTAssertEqual(last, deleteMutationEvent)
                 queryBeforeUpdatingVersionExpectation.fulfill()
             }
         }
         wait(for: [queryBeforeUpdatingVersionExpectation], timeout: 1)
 
         // update the version of head of mutation event table for given model id to the version of `mutationSync`
-        MutationEvent.reconcilePendingMutationEventsVersion(mutationEvent: createMutationEvent,
-                                                             mutationSync: createMutationSync,
+        MutationEvent.reconcilePendingMutationEventsVersion(sent: createMutationEvent,
+                                                             received: createMutationSync,
                                                              storageAdapter: storageAdapter) { result in
             switch result {
             case .failure(let error):
@@ -227,28 +227,28 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
             case .failure(let error):
                 XCTFail("Error : \(error)")
             case .success(let mutationEvents):
-                guard !mutationEvents.isEmpty, let updatedEvent = mutationEvents.first else {
+                guard !mutationEvents.isEmpty, let head = mutationEvents.first, let last = mutationEvents.last else {
                     XCTFail("Failure while updating version")
                     return
                 }
-                XCTAssertEqual(updatedEvent.version, createMutationSync.syncMetadata.version)
-                XCTAssertEqual(updatedEvent.mutationType, MutationEvent.MutationType.update.rawValue)
+                XCTAssertEqual(head.version, createMutationSync.syncMetadata.version)
+                XCTAssertEqual(head.mutationType, MutationEvent.MutationType.update.rawValue)
+                XCTAssertEqual(last, deleteMutationEvent)
                 queryAfterUpdatingVersionExpectation.fulfill()
             }
         }
         wait(for: [queryAfterUpdatingVersionExpectation], timeout: 1)
     }
 
-    /// - Given: A update mutationSync with version 1
-    /// - When: Mutation event table contains a update mutation event with version 2, `inProcess` as true
-    ///        and an update mutation event with version 2. The pending mutation event with `inProcess` set to true has the
-    ///        same model contained in update mutationSync
-    /// - Then: After reconciliation of versions, Update mutation event should NOT be updated with version of create mutationSync
-    func testQueryAfterReconcilePendingMutationEventVersionGivenOldVersionInResponse() throws {
+    /// - Given: A pending mutation events queue with event containing version 2, a sent mutation event model that matches the
+    ///         received mutation sync model having version 2. The received mutation sync has version 1.
+    /// - When: The sent model matches the received model and the first pending mutation event version is 2.
+    /// - Then: The first pending mutation event version should NOT be updated.
+    func testSentModelVersionNewerThanResponseVersion_PendingEventNotReconciled() throws {
         let modelId = UUID().uuidString
         let post1 = Post(id: modelId, title: "title1", content: "content1", createdAt: .now())
         let post2 = Post(id: modelId, title: "title2", content: "content2", createdAt: .now())
-        let updateMutationEvent1 = MutationEvent(id: UUID().uuidString,
+        let requestMutationEvent = MutationEvent(id: UUID().uuidString,
                                                 modelId: modelId,
                                                 modelName: Post.modelName,
                                                 json: try post1.toJSON(),
@@ -256,7 +256,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                                                 version: 2,
                                                 inProcess: true)
 
-        let updateMutationEvent2 = MutationEvent(id: UUID().uuidString,
+        let pendingMutationEvent = MutationEvent(id: UUID().uuidString,
                                                         modelId: modelId,
                                                         modelName: Post.modelName,
                                                         json: try post2.toJSON(),
@@ -268,27 +268,27 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                                             lastChangedAt: Int(Date().timeIntervalSince1970),
                                             version: 1)
 
-        let updateMutationSync = MutationSync(model: AnyModel(post1), syncMetadata: metadata)
+        let responseMutationSync = MutationSync(model: AnyModel(post1), syncMetadata: metadata)
 
-        let updateMutationExpectation1 = expectation(description: "save updateMutationEvent1 success")
-        storageAdapter.save(updateMutationEvent1) { result in
+        let requestMutationEventExpectation = expectation(description: "save requestMutationEvent success")
+        storageAdapter.save(requestMutationEvent) { result in
             guard case .success = result else {
                 XCTFail("Failed to save metadata")
                 return
             }
-            updateMutationExpectation1.fulfill()
+            requestMutationEventExpectation.fulfill()
         }
 
-        let updateMutationExpectation2 = expectation(description: "save updateMutationEvent2 success")
-        storageAdapter.save(updateMutationEvent2) { result in
+        let pendingMutationEventExpectation = expectation(description: "save pendingMutationEvent success")
+        storageAdapter.save(pendingMutationEvent) { result in
             guard case .success = result else {
                 XCTFail("Failed to save metadata")
                 return
             }
-            updateMutationExpectation2.fulfill()
+            pendingMutationEventExpectation.fulfill()
         }
 
-        wait(for: [updateMutationExpectation1, updateMutationExpectation2], timeout: 1)
+        wait(for: [requestMutationEventExpectation, pendingMutationEventExpectation], timeout: 1)
 
         let queryBeforeUpdatingVersionExpectation = expectation(description: "update mutation should have version 2")
         let queryAfterUpdatingVersionExpectation = expectation(description: "update mutation should have version 2")
@@ -304,15 +304,14 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                     XCTFail("Failure while updating version")
                     return
                 }
-                XCTAssertEqual(head.version, 2)
-                XCTAssertEqual(head.mutationType, MutationEvent.MutationType.update.rawValue)
+                XCTAssertEqual(head, pendingMutationEvent)
                 queryBeforeUpdatingVersionExpectation.fulfill()
             }
         }
         wait(for: [queryBeforeUpdatingVersionExpectation], timeout: 1)
 
-        MutationEvent.reconcilePendingMutationEventsVersion(mutationEvent: updateMutationEvent1,
-                                                             mutationSync: updateMutationSync,
+        MutationEvent.reconcilePendingMutationEventsVersion(sent: requestMutationEvent,
+                                                             received: responseMutationSync,
                                                              storageAdapter: storageAdapter) { result in
             switch result {
             case .failure(let error):
@@ -330,31 +329,28 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
             case .failure(let error):
                 XCTFail("Error : \(error)")
             case .success(let mutationEvents):
-                guard !mutationEvents.isEmpty, let updatedEvent = mutationEvents.first else {
+                guard !mutationEvents.isEmpty, let head = mutationEvents.first else {
                     XCTFail("Failure while updating version")
                     return
                 }
-                XCTAssertNotEqual(updatedEvent.version, updateMutationSync.syncMetadata.version)
-                XCTAssertEqual(updatedEvent.version, 2)
-                XCTAssertEqual(updatedEvent.mutationType, MutationEvent.MutationType.update.rawValue)
+                XCTAssertNotEqual(head.version, responseMutationSync.syncMetadata.version)
+                XCTAssertEqual(head, pendingMutationEvent)
                 queryAfterUpdatingVersionExpectation.fulfill()
             }
         }
         wait(for: [queryAfterUpdatingVersionExpectation], timeout: 1)
     }
 
-    /// - Given: A update mutationSync with version 2
-    /// - When: Mutation event table contains a update mutation event with version 1, `inProcess` as true
-    ///        and an update mutation event with version 1. Both pending mutation events have different model than contained
-    ///        in update mutationSync
-    /// - Then: After reconciliation of versions, Update mutation event with `inProcess` set to false
-    ///        should NOT be updated with version of update mutationSync
-    func testQueryAfterReconcilePendingMutationEventVersionGivenDifferentModelInResponse() throws {
+    /// - Given: A pending mutation events queue with event containing version 1, a sent mutation event model that doesn't match
+    ///         the received mutation sync model having version 1. The received mutation sync has version 2.
+    /// - When: The sent model doesn't match the received model and the first pending mutation event version is 1.
+    /// - Then: The first pending mutation event version should NOT be updated.
+    func testSentModelNotEqualToResponseModel_PendingEventNotReconciled() throws {
         let modelId = UUID().uuidString
         let post1 = Post(id: modelId, title: "title1", content: "content1", createdAt: .now())
         let post2 = Post(id: modelId, title: "title2", content: "content2", createdAt: .now())
         let post3 = Post(id: modelId, title: "title3", content: "content3", createdAt: .now())
-        let updateMutationEvent1 = MutationEvent(id: UUID().uuidString,
+        let requestMutationEvent = MutationEvent(id: UUID().uuidString,
                                                 modelId: modelId,
                                                 modelName: Post.modelName,
                                                 json: try post1.toJSON(),
@@ -362,7 +358,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                                                 version: 1,
                                                 inProcess: true)
 
-        let updateMutationEvent2 = MutationEvent(id: UUID().uuidString,
+        let pendingMutationEvent = MutationEvent(id: UUID().uuidString,
                                                         modelId: modelId,
                                                         modelName: Post.modelName,
                                                         json: try post2.toJSON(),
@@ -374,27 +370,27 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                                             lastChangedAt: Int(Date().timeIntervalSince1970),
                                             version: 2)
 
-        let updateMutationSync = MutationSync(model: AnyModel(post3), syncMetadata: metadata)
+        let responseMutationSync = MutationSync(model: AnyModel(post3), syncMetadata: metadata)
 
-        let updateMutationExpectation1 = expectation(description: "save updateMutationEvent1 success")
-        storageAdapter.save(updateMutationEvent1) { result in
+        let requestMutationEventExpectation = expectation(description: "save requestMutationEvent success")
+        storageAdapter.save(requestMutationEvent) { result in
             guard case .success = result else {
                 XCTFail("Failed to save metadata")
                 return
             }
-            updateMutationExpectation1.fulfill()
+            requestMutationEventExpectation.fulfill()
         }
 
-        let updateMutationExpectation2 = expectation(description: "save updateMutationEvent2 success")
-        storageAdapter.save(updateMutationEvent2) { result in
+        let pendingMutationEventExpectation = expectation(description: "save pendingMutationEvent success")
+        storageAdapter.save(pendingMutationEvent) { result in
             guard case .success = result else {
                 XCTFail("Failed to save metadata")
                 return
             }
-            updateMutationExpectation2.fulfill()
+            pendingMutationEventExpectation.fulfill()
         }
 
-        wait(for: [updateMutationExpectation1, updateMutationExpectation2], timeout: 1)
+        wait(for: [requestMutationEventExpectation, pendingMutationEventExpectation], timeout: 1)
 
         let queryBeforeUpdatingVersionExpectation = expectation(description: "update mutation should have version 1")
         let queryAfterUpdatingVersionExpectation = expectation(description: "update mutation should have version 1")
@@ -410,15 +406,14 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                     XCTFail("Failure while updating version")
                     return
                 }
-                XCTAssertEqual(head.version, 1)
-                XCTAssertEqual(head.mutationType, MutationEvent.MutationType.update.rawValue)
+                XCTAssertEqual(head, pendingMutationEvent)
                 queryBeforeUpdatingVersionExpectation.fulfill()
             }
         }
         wait(for: [queryBeforeUpdatingVersionExpectation], timeout: 1)
 
-        MutationEvent.reconcilePendingMutationEventsVersion(mutationEvent: updateMutationEvent1,
-                                                             mutationSync: updateMutationSync,
+        MutationEvent.reconcilePendingMutationEventsVersion(sent: requestMutationEvent,
+                                                             received: responseMutationSync,
                                                              storageAdapter: storageAdapter) { result in
             switch result {
             case .failure(let error):
@@ -436,30 +431,27 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
             case .failure(let error):
                 XCTFail("Error : \(error)")
             case .success(let mutationEvents):
-                guard !mutationEvents.isEmpty, let updatedEvent = mutationEvents.first else {
+                guard !mutationEvents.isEmpty, let head = mutationEvents.first else {
                     XCTFail("Failure while updating version")
                     return
                 }
-                XCTAssertNotEqual(updatedEvent.version, updateMutationSync.syncMetadata.version)
-                XCTAssertEqual(updatedEvent.version, 1)
-                XCTAssertEqual(updatedEvent.mutationType, MutationEvent.MutationType.update.rawValue)
+                XCTAssertNotEqual(head.version, responseMutationSync.syncMetadata.version)
+                XCTAssertEqual(head, pendingMutationEvent)
                 queryAfterUpdatingVersionExpectation.fulfill()
             }
         }
         wait(for: [queryAfterUpdatingVersionExpectation], timeout: 1)
     }
 
-    /// - Given: A update mutationSync with version 2
-    /// - When: Mutation event table contains a update mutation event with version 1, `inProcess` as true
-    ///        and an update mutation event with version 1. The pending mutation event with `inProcess` set to true has the
-    ///        same model contained in update mutationSync
-    /// - Then: After reconciliation of versions, Update mutation event with `inProcess` set to false
-    ///        should be updated with version of update mutationSync
-    func testQueryAfterReconcilePendingMutationEventVersionGivenSameModelInResponse() throws {
+    /// - Given: A pending mutation events queue with event containing version 1, a sent mutation event model that matches
+    ///         the received mutation sync model having version 1. The received mutation sync has version 2.
+    /// - When: The sent model matches the received model and the first pending mutation event version is 1.
+    /// - Then: The first pending mutation event version should be updated to received mutation sync version i.e. 2.
+    func testPendingVersionReconciledSuccess() throws {
         let modelId = UUID().uuidString
         let post1 = Post(id: modelId, title: "title1", content: "content1", createdAt: .now())
         let post2 = Post(id: modelId, title: "title2", content: "content2", createdAt: .now())
-        let updateMutationEvent1 = MutationEvent(id: UUID().uuidString,
+        let requestMutationEvent = MutationEvent(id: UUID().uuidString,
                                                 modelId: modelId,
                                                 modelName: Post.modelName,
                                                 json: try post1.toJSON(),
@@ -467,7 +459,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                                                 version: 1,
                                                 inProcess: true)
 
-        let updateMutationEvent2 = MutationEvent(id: UUID().uuidString,
+        let pendingMutationEvent = MutationEvent(id: UUID().uuidString,
                                                         modelId: modelId,
                                                         modelName: Post.modelName,
                                                         json: try post2.toJSON(),
@@ -479,27 +471,27 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                                             lastChangedAt: Int(Date().timeIntervalSince1970),
                                             version: 2)
 
-        let updateMutationSync = MutationSync(model: AnyModel(post1), syncMetadata: metadata)
+        let responseMutationSync = MutationSync(model: AnyModel(post1), syncMetadata: metadata)
 
-        let updateMutationExpectation1 = expectation(description: "save updateMutationEvent1 success")
-        storageAdapter.save(updateMutationEvent1) { result in
+        let requestMutationEventExpectation = expectation(description: "save requestMutationEvent success")
+        storageAdapter.save(requestMutationEvent) { result in
             guard case .success = result else {
                 XCTFail("Failed to save metadata")
                 return
             }
-            updateMutationExpectation1.fulfill()
+            requestMutationEventExpectation.fulfill()
         }
 
-        let updateMutationExpectation2 = expectation(description: "save updateMutationEvent2 success")
-        storageAdapter.save(updateMutationEvent2) { result in
+        let pendingMutationEventExpectation = expectation(description: "save pendingMutationEvent success")
+        storageAdapter.save(pendingMutationEvent) { result in
             guard case .success = result else {
                 XCTFail("Failed to save metadata")
                 return
             }
-            updateMutationExpectation2.fulfill()
+            pendingMutationEventExpectation.fulfill()
         }
 
-        wait(for: [updateMutationExpectation1, updateMutationExpectation2], timeout: 1)
+        wait(for: [requestMutationEventExpectation, pendingMutationEventExpectation], timeout: 1)
 
         let queryBeforeUpdatingVersionExpectation = expectation(description: "update mutation should have version 1")
         let queryAfterUpdatingVersionExpectation = expectation(description: "update mutation should have version 2")
@@ -515,15 +507,14 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                     XCTFail("Failure while updating version")
                     return
                 }
-                XCTAssertEqual(head.version, 1)
-                XCTAssertEqual(head.mutationType, MutationEvent.MutationType.update.rawValue)
+                XCTAssertEqual(head, pendingMutationEvent)
                 queryBeforeUpdatingVersionExpectation.fulfill()
             }
         }
         wait(for: [queryBeforeUpdatingVersionExpectation], timeout: 1)
 
-        MutationEvent.reconcilePendingMutationEventsVersion(mutationEvent: updateMutationEvent1,
-                                                             mutationSync: updateMutationSync,
+        MutationEvent.reconcilePendingMutationEventsVersion(sent: requestMutationEvent,
+                                                             received: responseMutationSync,
                                                              storageAdapter: storageAdapter) { result in
             switch result {
             case .failure(let error):
@@ -541,12 +532,12 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
             case .failure(let error):
                 XCTFail("Error : \(error)")
             case .success(let mutationEvents):
-                guard !mutationEvents.isEmpty, let updatedEvent = mutationEvents.first else {
+                guard !mutationEvents.isEmpty, let head = mutationEvents.first else {
                     XCTFail("Failure while updating version")
                     return
                 }
-                XCTAssertEqual(updatedEvent.version, updateMutationSync.syncMetadata.version)
-                XCTAssertEqual(updatedEvent.mutationType, MutationEvent.MutationType.update.rawValue)
+                XCTAssertEqual(head.version, responseMutationSync.syncMetadata.version)
+                XCTAssertEqual(head.mutationType, MutationEvent.MutationType.update.rawValue)
                 queryAfterUpdatingVersionExpectation.fulfill()
             }
         }

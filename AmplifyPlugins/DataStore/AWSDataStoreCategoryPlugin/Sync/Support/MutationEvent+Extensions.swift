@@ -10,11 +10,17 @@ import Dispatch
 import AWSPluginsCore
 
 extension MutationEvent {
-
-    // Updates the version of the head of pending mutation event queue for a given model `id`
-    // with syncMetadata version in `mutationSync` and saves it in the mutation event table
-    static func reconcilePendingMutationEventsVersion(mutationEvent: MutationEvent,
-                                                      mutationSync: MutationSync<AnyModel>,
+    // Reconciles the version of pending mutation events in mutation event table with the
+    // API response version for the following consecutive update scenarios :
+    //  - Save, then update
+    //  - Save, then delete
+    //  - Save, sync, then update and delete
+    //
+    // For a given model `id`, checks the version of the head of pending mutation event queue
+    // against the API response version in `mutationSync` and saves it in the mutation event table if
+    // the response version is a newer one
+    static func reconcilePendingMutationEventsVersion(sent mutationEvent: MutationEvent,
+                                                      received mutationSync: MutationSync<AnyModel>,
                                                       storageAdapter: StorageEngineAdapter,
                                                       completion: @escaping DataStoreCallback<Void>) {
         MutationEvent.pendingMutationEvents(

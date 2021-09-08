@@ -103,6 +103,33 @@ class ModelCompareTests: BaseDataStoreTests {
         XCTAssertTrue(Comment.schema.isEqual(comment1, comment2))
     }
 
+    func testPostsAreNotEqualWithNilFields() {
+        let id = UUID().uuidString
+        let createdAt = Temporal.DateTime.now()
+        let title = "MyFirstPost"
+        let content = "This is my first post."
+        let draft = false
+        let rating = 4.0
+        let status = PostStatus.published
+        let post1 = Post(id: id,
+                         title: title,
+                         content: content,
+                         createdAt: createdAt,
+                         draft: draft,
+                         rating: rating,
+                         status: status)
+
+        // rating is nil
+        let post2 = Post(id: id,
+                         title: title,
+                         content: content,
+                         createdAt: createdAt,
+                         draft: draft,
+                         rating: nil,
+                         status: status)
+        XCTAssertFalse(Post.schema.isEqual(post1, post2))
+    }
+
     func testPostsAreNotEqualWithDifferentId() {
         let createdAt = Temporal.DateTime.now()
         let title = "MyFirstPost"
@@ -302,6 +329,8 @@ class ModelCompareTests: BaseDataStoreTests {
         XCTAssertFalse(Todo.schema.isEqual(todo1, todo2))
     }
 
+    // This tests for equality when two models have different read only fields.
+    // In this case, `createdAt` is a read only field.
     func testRecordCoversAreEqualWithDifferentReadOnlyFields() {
         let id = UUID().uuidString
         let artist = "Artist"
@@ -312,6 +341,5 @@ class ModelCompareTests: BaseDataStoreTests {
         let recordCover1 = RecordCover(id: id, artist: artist, createdAt: createdAt1)
         let recordCover2 = RecordCover(id: id, artist: artist, createdAt: createdAt2)
         XCTAssertTrue(RecordCover.schema.isEqual(recordCover1, recordCover2))
-
     }
 }
