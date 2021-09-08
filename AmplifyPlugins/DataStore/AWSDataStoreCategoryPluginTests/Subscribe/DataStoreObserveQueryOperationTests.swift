@@ -37,7 +37,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         let firstSnapshot = expectation(description: "first query snapshots")
         let secondSnapshot = expectation(description: "second query snapshots")
         var querySnapshots = [DataStoreQuerySnapshot<Post>]()
-        let operation = AWSDataStoreObseverQueryOperation(
+        let operation = AWSDataStoreObserveQueryOperation(
             modelType: Post.self,
             modelSchema: Post.schema,
             predicate: nil,
@@ -87,7 +87,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         let secondSnapshot = expectation(description: "second query snapshot")
 
         var querySnapshots = [DataStoreQuerySnapshot<Post>]()
-        let operation = AWSDataStoreObseverQueryOperation(
+        let operation = AWSDataStoreObserveQueryOperation(
             modelType: Post.self,
             modelSchema: Post.schema,
             predicate: nil,
@@ -144,7 +144,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         let thirdSnapshot = expectation(description: "third query snapshot")
 
         var querySnapshots = [DataStoreQuerySnapshot<Post>]()
-        let operation = AWSDataStoreObseverQueryOperation(
+        let operation = AWSDataStoreObserveQueryOperation(
             modelType: Post.self,
             modelSchema: Post.schema,
             predicate: nil,
@@ -200,7 +200,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         let secondSnapshot = expectation(description: "second query snapshot")
         secondSnapshot.isInverted = true
         var querySnapshots = [DataStoreQuerySnapshot<Post>]()
-        let operation = AWSDataStoreObseverQueryOperation(
+        let operation = AWSDataStoreObserveQueryOperation(
             modelType: Post.self,
             modelSchema: Post.schema,
             predicate: nil,
@@ -251,7 +251,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         secondSnapshot.isInverted = true
         let completedEvent = expectation(description: "should have completed")
         var querySnapshots = [DataStoreQuerySnapshot<Post>]()
-        let operation = AWSDataStoreObseverQueryOperation(
+        let operation = AWSDataStoreObserveQueryOperation(
             modelType: Post.self,
             modelSchema: Post.schema,
             predicate: nil,
@@ -294,7 +294,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         let firstSnapshot = expectation(description: "first query snapshot")
         let secondSnapshot = expectation(description: "second query snapshot")
         var querySnapshots = [DataStoreQuerySnapshot<Post>]()
-        let operation = AWSDataStoreObseverQueryOperation(
+        let operation = AWSDataStoreObserveQueryOperation(
             modelType: Post.self,
             modelSchema: Post.schema,
             predicate: nil,
@@ -339,7 +339,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         let thirdSnapshot = expectation(description: "third query snapshot")
         thirdSnapshot.isInverted = true
         var querySnapshots = [DataStoreQuerySnapshot<Post>]()
-        let operation = AWSDataStoreObseverQueryOperation(
+        let operation = AWSDataStoreObserveQueryOperation(
             modelType: Post.self,
             modelSchema: Post.schema,
             predicate: nil,
@@ -381,7 +381,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         let firstSnapshot = expectation(description: "first query snapshot")
         var querySnapshots = [DataStoreQuerySnapshot<Post>]()
 
-        let operation1 = AWSDataStoreObseverQueryOperation(
+        let operation1 = AWSDataStoreObserveQueryOperation(
             modelType: Post.self,
             modelSchema: Post.schema,
             predicate: nil,
@@ -389,7 +389,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher)
 
-        let operation2 = AWSDataStoreObseverQueryOperation(
+        let operation2 = AWSDataStoreObserveQueryOperation(
             modelType: Post.self,
             modelSchema: Post.schema,
             predicate: nil,
@@ -431,9 +431,57 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         sink.cancel()
     }
 
+    func testConcurrent() {
+        let completeReceived = expectation(description: "complete received")
+        completeReceived.isInverted = true
+        let operation = AWSDataStoreObserveQueryOperation(
+            modelType: Post.self,
+            modelSchema: Post.schema,
+            predicate: nil,
+            sortInput: nil,
+            storageEngine: storageEngine,
+            dataStorePublisher: dataStorePublisher)
+        let post = Post(title: "model1",
+                        content: "content1",
+                        createdAt: .now())
+        storageEngine.responders[.query] = QueryResponder<Post>(callback: { _ in
+            return .success([post, Post(title: "model1", content: "content1", createdAt: .now())])
+        })
+        let sink = operation.publisher.sink { completed in
+            switch completed {
+            case .finished:
+                completeReceived.fulfill()
+            case .failure(let error):
+                XCTFail("Failed with error \(error)")
+            }
+        } receiveValue: { _ in
+
+        }
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+        DispatchQueue.concurrentPerform(iterations: 3_000) { _ in
+            let index = Int.random(in: 1 ... 5)
+            if index == 1 {
+                operation.resetState()
+            } else if index == 2 {
+                operation.startObserveQuery()
+            } else {
+                do {
+                    let itemChange = try createPost(id: post.id)
+                    let itemChange2 = try createPost()
+                    operation.onItemChanges(mutationEvents: [itemChange, itemChange2])
+                } catch {
+                    XCTFail("Failed to create post")
+                }
+            }
+        }
+        wait(for: [completeReceived], timeout: 10)
+        sink.cancel()
+    }
+
     // MARK: - Helpers
 
-    func createPost(id: String) throws -> MutationEvent {
+    func createPost(id: String = UUID().uuidString) throws -> MutationEvent {
         try MutationEvent(model: Post(id: id,
                                       title: "model1",
                                       content: "content1",

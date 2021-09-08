@@ -7,6 +7,8 @@
 
 import Foundation
 
+/// A snapshot of the items from DataStore, the changes since last snapshot, and whether this model has
+/// finished syncing and subscriptions are active
 public struct DataStoreQuerySnapshot<M: Model> {
 
     /// All model instances from the local store

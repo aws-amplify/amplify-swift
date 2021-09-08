@@ -19,19 +19,17 @@ enum ModelValueCompare<T: Comparable> {
     case leftNil(value2: T)
     case rightNil(value1: T)
     case values(value1: T, value2: T)
-    case unknown
 
     init(value1Optional: T?, value2Optional: T?) {
-        if value1Optional == nil && value2Optional == nil {
+        switch (value1Optional, value2Optional) {
+        case (nil, nil):
             self = .bothNil
-        } else if value1Optional == nil, let value2 = value2Optional {
-            self = .leftNil(value2: value2)
-        } else if value2Optional == nil, let value1 = value1Optional {
-            self = .rightNil(value1: value1)
-        } else if let value1 = value1Optional, let value2 = value2Optional {
-            self = .values(value1: value1, value2: value2)
-        } else {
-            self = .unknown
+        case (nil, .some(let val2)):
+            self = .leftNil(value2: val2)
+        case (.some(let val1), nil):
+            self = .rightNil(value1: val1)
+        case (.some(let val1), .some(let val2)):
+            self = .values(value1: val1, value2: val2)
         }
     }
 
@@ -45,13 +43,34 @@ enum ModelValueCompare<T: Comparable> {
             return sortOrder == .descending
         case .values(let value1, let value2):
             return sortOrder == .ascending ? value1 < value2 : value1 > value2
-        case .unknown:
-            return false
         }
     }
 }
 
 extension ModelSchema {
+
+    /// Compares two model's specified by the field and returns the sort direction based on the `sortBy` sort direction.
+    ///
+    /// Models are compared with basic operators on their field values when the field type corresponds to a `Comparable`
+    /// type such as String, Int, Double, Date. When the field cannot be compared using the basic operators, it will be
+    /// turned to its String or Int representation for the comparison. For example, EnumPersistable's String
+    /// value and bool's Int value are used instead. For Bool, this means `nil` is less than `false`, and `false`
+    /// is less than `true`.
+    ///
+    /// `nil` or non-existent values (values which do not exist on the model instance) are treated as less than the
+    /// values which do exist/non-nil. This returns true when sort is ascending (false if descending) when the
+    /// `model1`'s field value is `nil` and `model2`'s field value is some value.
+    ///
+    /// Sorting on field types such as `.embedded`, `.embeddedCollection`, `.model`, `.collection`
+    /// is undetermined behavior and is currently not supported.
+    ///
+    /// - Note: Maintainers need to keep this utility updated when new field types are added.
+    ///
+    /// - Parameters:
+    ///   - model1: model instance to be compared
+    ///   - model2: model instance to be compared
+    ///   - sortBy: The field and direction used to compare the two models
+    /// - Returns: The resutting comparison between the two models based on `sortBy`
     // swiftlint:disable:next cyclomatic_complexity
     func comparator(model1: Model,
                     model2: Model,
@@ -114,16 +133,9 @@ extension ModelSchema {
             guard let value1Optional = value1 as? Bool?, let value2Optional = value2 as? Bool? else {
                 return false
             }
-            if value1Optional == nil && value2Optional == nil {
-                return sortOrder == .ascending
-            } else if value1Optional == nil, value2Optional != nil {
-                return sortOrder == .ascending
-            } else if value1Optional != nil, value2Optional == nil {
-                return sortOrder == .descending
-            } else if let value1 = value1Optional, let value2 = value2Optional {
-                return sortOrder == .ascending ?
-                    value1.intValue < value2.intValue : value1.intValue > value2.intValue
-            }
+            return ModelValueCompare(value1Optional: value1Optional?.intValue,
+                                     value2Optional: value2Optional?.intValue)
+                .sortComparator(sortOrder: sortOrder)
         case .enum:
             guard case .some(Optional<Any>.some(let value1Optional)) = value1,
                   case .some(Optional<Any>.some(let value2Optional)) = value2 else {
@@ -136,21 +148,15 @@ extension ModelSchema {
             }
             let enumValue1Optional = (value1Optional as? EnumPersistable)?.rawValue
             let enumValue2Optional = (value2Optional as? EnumPersistable)?.rawValue
-            if enumValue1Optional == nil && enumValue2Optional == nil {
-                return sortOrder == .ascending
-            } else if enumValue1Optional == nil, enumValue2Optional != nil {
-                return sortOrder == .ascending
-            } else if enumValue1Optional != nil, enumValue2Optional == nil {
-                return sortOrder == .descending
-            } else if let enumValue1 = enumValue1Optional, let enumValue2 = enumValue2Optional {
-                return sortOrder == .ascending ?
-                enumValue1 < enumValue2 : enumValue1 > enumValue2
-            }
+            return ModelValueCompare(value1Optional: enumValue1Optional,
+                                     value2Optional: enumValue2Optional)
+                .sortComparator(sortOrder: sortOrder)
         case .embedded, .embeddedCollection, .model, .collection:
             // Behavior is undetermined
+            log.warn("Sorting on field type \(modelField.type) is unsupported")
             return false
         }
-        return false
     }
-
 }
+
+extension ModelSchema: DefaultLogger { }
