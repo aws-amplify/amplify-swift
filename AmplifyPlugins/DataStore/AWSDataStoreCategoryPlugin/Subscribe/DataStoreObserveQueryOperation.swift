@@ -102,10 +102,10 @@ extension ObserveQuerySubscription: DefaultLogger { }
 ///     - Subscribe to Item changes
 ///     - Perform initial query to set up the internal state of the items
 ///     - Generate first snapshot based on the internal state
-///     When the operation receives item changs
+///     When the operation receives item changes
 ///     - Batch them into batches of up to 1000 items or when 2 seconds have elapsed (`.collect(2s,1000)`)`
 ///     - Update internal state of items based on the changed items
-///     - Generate new snapshot based on lates state of the items, with the items changed dedupped.
+///     - Generate new snapshot based on latest state of the items, with the items changed dedupped.
 @available(iOS 13.0, *)
 public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation, DataStoreObserveQueryOperation {
 
@@ -166,6 +166,10 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     override public func cancel() {
         if let itemsChangedSink = itemsChangedSink {
             itemsChangedSink.cancel()
+        }
+
+        if let dataStoreEventSink = dataStoreEventSink {
+            dataStoreEventSink.cancel()
         }
         passthroughPublisher.send(completion: .finished)
         super.cancel()

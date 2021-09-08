@@ -70,7 +70,7 @@ extension ModelSchema {
     ///   - model1: model instance to be compared
     ///   - model2: model instance to be compared
     ///   - sortBy: The field and direction used to compare the two models
-    /// - Returns: The resutting comparison between the two models based on `sortBy`
+    /// - Returns: The resulting comparison between the two models based on `sortBy`
     // swiftlint:disable:next cyclomatic_complexity
     func comparator(model1: Model,
                     model2: Model,
