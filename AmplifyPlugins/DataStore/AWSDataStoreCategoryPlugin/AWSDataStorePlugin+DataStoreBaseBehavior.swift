@@ -181,7 +181,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func stop(completion: @escaping DataStoreCallback<Void>) {
         operationQueue.operations.forEach { operation in
-            if let operation = operation as? DataStoreObseverQueryOperation {
+            if let operation = operation as? DataStoreObserveQueryOperation {
                 operation.resetState()
             }
         }
@@ -200,7 +200,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func clear(completion: @escaping DataStoreCallback<Void>) {
         operationQueue.operations.forEach { operation in
-            if let operation = operation as? DataStoreObseverQueryOperation {
+            if let operation = operation as? DataStoreObserveQueryOperation {
                 operation.resetState()
             }
         }

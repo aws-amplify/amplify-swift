@@ -121,7 +121,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             storageEngine.startSync { result in
 
                 self.operationQueue.operations.forEach { operation in
-                    if let operation = operation as? DataStoreObseverQueryOperation {
+                    if let operation = operation as? DataStoreObserveQueryOperation {
                         operation.startObserveQuery()
                     }
                 }

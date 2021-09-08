@@ -49,14 +49,19 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
     -> AnyPublisher<DataStoreQuerySnapshot<M>, DataStoreError> {
         reinitStorageEngineIfNeeded()
 
+        guard let dataStorePublisher = dataStorePublisher else {
+            return Fail(error: DataStoreError.unknown(
+                            "`dataStorePublisher` is expected to exist for deployment targets >=iOS13.0",
+                            "", nil)).eraseToAnyPublisher()
+        }
         // Force-unwrapping: The optional 'dataStorePublisher' is expected
         // to exist for deployment targets >=iOS13.0
-        let operation = AWSDataStoreObseverQueryOperation(modelType: modelType,
+        let operation = AWSDataStoreObserveQueryOperation(modelType: modelType,
                                                           modelSchema: modelSchema,
                                                           predicate: predicate,
                                                           sortInput: sortInput,
                                                           storageEngine: storageEngine,
-                                                          dataStorePublisher: dataStorePublisher!)
+                                                          dataStorePublisher: dataStorePublisher)
         operationQueue.addOperation(operation)
         return operation.publisher
     }
