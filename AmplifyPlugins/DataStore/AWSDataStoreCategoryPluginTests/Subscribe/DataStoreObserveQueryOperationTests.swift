@@ -431,6 +431,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         sink.cancel()
     }
 
+    /// ObserveQuery operation entry points are `resetState`, `startObserveQuery`, and `onItemChanges(mutationEvents)`.
+    /// Ensure concurrent random sequences of these API calls do not cause issues such as data race.
     func testConcurrent() {
         let completeReceived = expectation(description: "complete received")
         completeReceived.isInverted = true
@@ -454,9 +456,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             case .failure(let error):
                 XCTFail("Failed with error \(error)")
             }
-        } receiveValue: { _ in
-
-        }
+        } receiveValue: { _ in }
         let queue = OperationQueue()
         queue.addOperation(operation)
         DispatchQueue.concurrentPerform(iterations: 3_000) { _ in

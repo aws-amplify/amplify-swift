@@ -283,6 +283,7 @@ class ModelSortTests: XCTestCase {
                      createPost(rating: 2.0, createdAt: dateTime3)]
 
         posts.sortModels(by: QuerySortBy.ascending(Post.keys.rating).sortDescriptor, modelSchema: Post.schema)
+        // order does not change since ratings are already in asecnding order
         XCTAssertEqual(posts[0].rating, 1.0)
         XCTAssertEqual(posts[0].createdAt, dateTime2)
         XCTAssertEqual(posts[1].rating, 1.0)
