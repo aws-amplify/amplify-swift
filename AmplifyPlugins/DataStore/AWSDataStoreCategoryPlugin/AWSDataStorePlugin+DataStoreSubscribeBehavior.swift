@@ -54,8 +54,6 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
                             "`dataStorePublisher` is expected to exist for deployment targets >=iOS13.0",
                             "", nil)).eraseToAnyPublisher()
         }
-        // Force-unwrapping: The optional 'dataStorePublisher' is expected
-        // to exist for deployment targets >=iOS13.0
         let operation = AWSDataStoreObserveQueryOperation(modelType: modelType,
                                                           modelSchema: modelSchema,
                                                           predicate: predicate,
