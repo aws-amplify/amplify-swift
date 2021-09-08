@@ -33,8 +33,6 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
                                        where predicate: QueryPredicate? = nil,
                                        sort sortInput: QuerySortInput? = nil)
     -> AnyPublisher<DataStoreQuerySnapshot<M>, DataStoreError> {
-        reinitStorageEngineIfNeeded()
-
         return observeQuery(for: modelType,
                             modelSchema: modelType.schema,
                             where: predicate,

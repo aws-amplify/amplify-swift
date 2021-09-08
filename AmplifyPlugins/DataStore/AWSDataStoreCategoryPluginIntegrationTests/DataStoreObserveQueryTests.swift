@@ -60,7 +60,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         }
         wait(for: [started], timeout: 2)
         _ = Amplify.DataStore.clear()
-        let post = Post(title: "title", content: "content", createdAt: .now())
+        let post1 = Post(title: "title", content: "content", createdAt: .now())
+        let post2 = Post(title: "title", content: "content", createdAt: .now().add(value: 1, to: .second))
         let snapshotWithSavedPost = expectation(description: "query snapshot with saved post")
         let sink = Amplify.DataStore.observeQuery(for: Post.self,
                                                   sort: .ascending(Post.keys.createdAt))
@@ -73,17 +74,19 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 }
             } receiveValue: { querySnapshot in
                 if querySnapshot.itemsChanged.contains(where: { mutationEvent in
-                    mutationEvent.modelId == post.id
+                    mutationEvent.modelId == post2.id
                 }) {
-
-                    if let lastPost = querySnapshot.items.last {
-                        XCTAssertEqual(lastPost.id, post.id)
-                        snapshotWithSavedPost.fulfill()
-                    }
+                    var items = querySnapshot.items
+                    let actualPost2 = items.removeLast()
+                    let actualPost1 = items.removeLast()
+                    XCTAssertEqual(actualPost2.id, post2.id)
+                    XCTAssertEqual(actualPost1.id, post1.id)
+                    snapshotWithSavedPost.fulfill()
                 }
             }
 
-        _ = Amplify.DataStore.save(post)
+        _ = Amplify.DataStore.save(post1)
+        _ = Amplify.DataStore.save(post2)
         wait(for: [snapshotWithSavedPost], timeout: 100)
         sink.cancel()
     }
@@ -125,7 +128,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         let sink = Amplify.DataStore.observeQuery(for: Post.self).sink { completed in
             switch completed {
             case .finished:
-                XCTFail("Should not finish")
+                observeQueryReceivedCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
             }
@@ -164,7 +167,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         let sink = Amplify.DataStore.observeQuery(for: Post.self).sink { completed in
             switch completed {
             case .finished:
-                XCTFail("Should not finish")
+                observeQueryReceivedCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
             }
@@ -191,14 +194,13 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         try startAmplifyAndWaitForReady()
         let firstSnapshot = expectation(description: "first query snapshot")
         let secondSnapshot = expectation(description: "second query snapshot")
-        let newPost = Post(title: "title", content: "content", createdAt: .now())
         let observeQueryReceivedCompleted = expectation(description: "observeQuery received completed")
         observeQueryReceivedCompleted.isInverted = true
         var querySnapshots = [DataStoreQuerySnapshot<Post>]()
         let sink = Amplify.DataStore.observeQuery(for: Post.self).sink { completed in
             switch completed {
             case .finished:
-                XCTFail("Should not finish")
+                observeQueryReceivedCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
             }
@@ -221,7 +223,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             }
         }
         wait(for: [stopCompleted, observeQueryReceivedCompleted], timeout: 10)
-        let startCompleted = expectation(description: "DataStore stop completed")
+        let startCompleted = expectation(description: "DataStore start completed")
         Amplify.DataStore.start { result in
             switch result {
             case .success:

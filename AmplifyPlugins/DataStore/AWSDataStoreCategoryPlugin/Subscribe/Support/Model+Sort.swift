@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import CoreGraphics
 
 extension Array where Element: Model {
     mutating func sortModels(by sortBy: QuerySortDescriptor, modelSchema: ModelSchema) {
