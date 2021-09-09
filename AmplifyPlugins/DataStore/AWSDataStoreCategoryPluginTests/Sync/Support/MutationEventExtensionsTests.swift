@@ -29,7 +29,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                                                            version: nil,
                                                            inProcess: true)
         let pendingMutationEvent = try createMutationEvent(model: post, mutationType: .update, version: nil)
-        let responseMutationSync = createMutationSync(model: post, deleted: false, version: 1)
+        let responseMutationSync = createMutationSync(model: post, version: 1)
 
         setUpPendingMutationQueue(modelId, [requestMutationEvent, pendingMutationEvent], pendingMutationEvent)
 
@@ -88,7 +88,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
             try createMutationEvent(model: post, mutationType: .create, version: nil, inProcess: true)
         let pendingUpdateMutationEvent = try createMutationEvent(model: post, mutationType: .update, version: nil)
         let pendingDeleteMutationEvent = try createMutationEvent(model: post, mutationType: .delete, version: nil)
-        let responseMutationSync = createMutationSync(model: post, deleted: false, version: 1)
+        let responseMutationSync = createMutationSync(model: post, version: 1)
 
         setUpPendingMutationQueue(modelId,
                                   [requestMutationEvent, pendingUpdateMutationEvent, pendingDeleteMutationEvent],
@@ -148,7 +148,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
         let requestMutationEvent =
             try createMutationEvent(model: post1, mutationType: .create, version: 2, inProcess: true)
         let pendingMutationEvent = try createMutationEvent(model: post2, mutationType: .update, version: 2)
-        let responseMutationSync = createMutationSync(model: post1, deleted: false, version: 1)
+        let responseMutationSync = createMutationSync(model: post1, version: 1)
 
         setUpPendingMutationQueue(modelId, [requestMutationEvent, pendingMutationEvent], pendingMutationEvent)
 
@@ -205,7 +205,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
         let requestMutationEvent =
             try createMutationEvent(model: post1, mutationType: .update, version: 1, inProcess: true)
         let pendingMutationEvent = try createMutationEvent(model: post2, mutationType: .update, version: 1)
-        let responseMutationSync = createMutationSync(model: post3, deleted: false, version: 2)
+        let responseMutationSync = createMutationSync(model: post3, version: 2)
 
         setUpPendingMutationQueue(modelId, [requestMutationEvent, pendingMutationEvent], pendingMutationEvent)
 
@@ -261,7 +261,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
         let requestMutationEvent =
             try createMutationEvent(model: post1, mutationType: .update, version: 1, inProcess: true)
         let pendingMutationEvent = try createMutationEvent(model: post2, mutationType: .update, version: 1)
-        let responseMutationSync = createMutationSync(model: post1, deleted: false, version: 2)
+        let responseMutationSync = createMutationSync(model: post1, version: 2)
 
         setUpPendingMutationQueue(modelId, [requestMutationEvent, pendingMutationEvent], pendingMutationEvent)
 
@@ -318,11 +318,9 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                              inProcess: inProcess)
     }
 
-    private func createMutationSync(model: Model,
-                                    deleted: Bool = false,
-                                    version: Int = 1) -> MutationSync<AnyModel> {
+    private func createMutationSync(model: Model, version: Int = 1) -> MutationSync<AnyModel> {
         let metadata = MutationSyncMetadata(id: model.id,
-                                            deleted: deleted,
+                                            deleted: false,
                                             lastChangedAt: Int(Date().timeIntervalSince1970),
                                             version: version)
         return MutationSync(model: AnyModel(model), syncMetadata: metadata)
