@@ -342,7 +342,6 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///    - Ensure the expected mutation event with version 2 (synced from cloud) is received
     ///
     func testConcurrentSave() throws {
-
         try startAmplifyAndWaitForReady()
 
         var posts = [Post]()
@@ -365,28 +364,23 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 XCTFail("\(error)")
             }
         } receiveValue: { mutationEvent in
-            do {
-                let receivedPost = try mutationEvent.decodeModel(as: Post.self)
-                if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
-                   posts.contains(where: { $0.id == receivedPost.id }),
-                   mutationEvent.version == 1 {
-                    postsSyncedToCloudCount += 1
-                    self.log.debug("Post saved and synced from cloud \(receivedPost.id) \(postsSyncedToCloudCount)")
-                    if postsSyncedToCloudCount == count {
-                        postsSyncedToCloud.fulfill()
-                    }
-                } else if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
-                          posts.contains(where: { $0.id == receivedPost.id }),
-                          mutationEvent.version == 2 {
-                    postsDeletedFromCloudCount += 1
-                    self.log.debug(
-                        "Post deleted and synced from cloud \(receivedPost.id) \(postsDeletedFromCloudCount)")
-                    if postsDeletedFromCloudCount == count {
-                        postsDeletedFromCloud.fulfill()
-                    }
+            if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
+               posts.contains(where: { $0.id == mutationEvent.modelId }),
+               mutationEvent.version == 1 {
+                postsSyncedToCloudCount += 1
+                self.log.debug("Post saved and synced from cloud \(mutationEvent.modelId) \(postsSyncedToCloudCount)")
+                if postsSyncedToCloudCount == count {
+                    postsSyncedToCloud.fulfill()
                 }
-            } catch {
-                XCTFail("\(error)")
+            } else if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
+                      posts.contains(where: { $0.id == mutationEvent.modelId }),
+                      mutationEvent.version == 2 {
+                postsDeletedFromCloudCount += 1
+                self.log.debug(
+                    "Post deleted and synced from cloud \(mutationEvent.modelId) \(postsDeletedFromCloudCount)")
+                if postsDeletedFromCloudCount == count {
+                    postsDeletedFromCloud.fulfill()
+                }
             }
         }
 
