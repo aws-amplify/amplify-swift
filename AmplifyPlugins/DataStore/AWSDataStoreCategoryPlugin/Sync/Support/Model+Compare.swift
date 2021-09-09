@@ -11,13 +11,15 @@ import Amplify
 // swiftlint:disable cyclomatic_complexity
 extension ModelSchema {
 
+    private static let serviceUpdatedFields: Set = ["updatedAt"]
+
     /// Compare two `Model` based on a given `ModelSchema`
     /// Returns true if equal, false otherwise
     func isEqual(_ model1: Model, _ model2: Model) -> Bool {
         for (fieldName, modelField) in fields {
-            // read only fields are skipped for equality check
+            // read only fields or fields updated from the service are skipped for equality check
             // examples of such fields include `createdAt`, `updatedAt` and `coverId` in `Record`
-            if modelField.isReadOnly {
+            if modelField.isReadOnly || ModelSchema.serviceUpdatedFields.contains(modelField.name) {
                 continue
             }
 
