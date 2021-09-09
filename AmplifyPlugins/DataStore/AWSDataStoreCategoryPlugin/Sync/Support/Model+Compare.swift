@@ -11,7 +11,7 @@ import Amplify
 // swiftlint:disable cyclomatic_complexity
 extension ModelSchema {
 
-    private static let serviceUpdatedFields: Set = ["updatedAt"]
+    private static let serviceUpdatedFields: Set = ["updatedAt", "createdAt"]
 
     /// Compare two `Model` based on a given `ModelSchema`
     /// Returns true if equal, false otherwise

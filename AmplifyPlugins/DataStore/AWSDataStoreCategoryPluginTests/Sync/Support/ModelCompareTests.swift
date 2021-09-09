@@ -206,32 +206,36 @@ class ModelCompareTests: BaseDataStoreTests {
         XCTAssertFalse(Post.schema.isEqual(post1, post2))
     }
 
-    func testPostsAreNotEqualWithDifferentDateField() {
+    func testQpredGensAreNotEqualWithDifferentDateTimeField() {
         let id = UUID().uuidString
-        let title = "MyFirstPost"
-        let content = "This is my first post."
-        let draft = false
-        let rating = 4.0
-        let status = PostStatus.published
+        let name = "QPredGenName"
         let formatter = DateFormatter()
         formatter.dateFormat = TemporalFormat.short.dateFormat
-        let createdAt1 = Temporal.DateTime(formatter.date(from: "2021-09-01")!)
-        let createdAt2 = Temporal.DateTime(formatter.date(from: "2020-09-01")!)
-        let post1 = Post(id: id,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt1,
-                         draft: draft,
-                         rating: rating,
-                         status: status)
-        let post2 = Post(id: id,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt2,
-                         draft: draft,
-                         rating: rating,
-                         status: status)
-        XCTAssertFalse(Post.schema.isEqual(post1, post2))
+        let dateTime1 = Temporal.DateTime(formatter.date(from: "2021-09-01")!)
+        let dateTime2 = Temporal.DateTime(formatter.date(from: "2020-09-01")!)
+        let qPredGen1 = QPredGen(id: id, name: name, myDateTime: dateTime1)
+        let qPredGen2 = QPredGen(id: id, name: name, myDateTime: dateTime2)
+        XCTAssertFalse(QPredGen.schema.isEqual(qPredGen1, qPredGen2))
+    }
+
+    func testQpredGensAreNotEqualWithDifferentDateField() throws {
+        let id = UUID().uuidString
+        let name = "QPredGenName"
+        let date1 = try Temporal.Date(iso8601String: "2021-09-01")
+        let date2 = try Temporal.Date(iso8601String: "2020-09-01")
+        let qPredGen1 = QPredGen(id: id, name: name, myDate: date1)
+        let qPredGen2 = QPredGen(id: id, name: name, myDate: date2)
+        XCTAssertFalse(QPredGen.schema.isEqual(qPredGen1, qPredGen2))
+    }
+
+    func testQpredGensAreNotEqualWithDifferentTimeField() throws {
+        let id = UUID().uuidString
+        let name = "QPredGenName"
+        let time1 = try Temporal.Time(iso8601String: "08:00")
+        let time2 = try Temporal.Time(iso8601String: "08:01")
+        let qPredGen1 = QPredGen(id: id, name: name, myTime: time1)
+        let qPredGen2 = QPredGen(id: id, name: name, myTime: time2)
+        XCTAssertFalse(QPredGen.schema.isEqual(qPredGen1, qPredGen2))
     }
 
     func testPostsAreNotEqualWithDifferentEnumField() {
