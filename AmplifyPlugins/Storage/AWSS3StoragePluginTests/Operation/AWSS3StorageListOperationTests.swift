@@ -20,6 +20,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
+                                                  storageConfiguration: testStorageConfiguration,
                                                   storageService: mockStorageService,
                                                   authService: mockAuthService) { result in
                                                     switch result {
@@ -48,6 +49,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
+                                                  storageConfiguration: testStorageConfiguration,
                                                   storageService: mockStorageService,
                                                   authService: mockAuthService) { result in
                                                       switch result {
@@ -76,6 +78,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         let expectedPrefix = StorageAccessLevel.guest.serviceAccessPrefix + "/"
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
+                                                  storageConfiguration: testStorageConfiguration,
                                                   storageService: mockStorageService,
                                                   authService: mockAuthService) { result in
                                                     switch result {
@@ -101,6 +104,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         let expectedPrefix = StorageAccessLevel.guest.serviceAccessPrefix + "/"
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
+                                                  storageConfiguration: testStorageConfiguration,
                                                   storageService: mockStorageService,
                                                   authService: mockAuthService) { result in
                                                     switch result {
@@ -128,6 +132,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         let expectedPrefix = StorageAccessLevel.protected.rawValue + "/" + testTargetIdentityId + "/"
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
+                                                  storageConfiguration: testStorageConfiguration,
                                                   storageService: mockStorageService,
                                                   authService: mockAuthService) { result in
                                                     switch result {

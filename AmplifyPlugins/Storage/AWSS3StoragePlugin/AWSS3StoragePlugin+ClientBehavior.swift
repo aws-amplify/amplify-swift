@@ -31,6 +31,7 @@ extension AWSS3StoragePlugin {
         let options = options ?? StorageGetURLRequest.Options()
         let request = StorageGetURLRequest(key: key, options: options)
         let getURLOperation = AWSS3StorageGetURLOperation(request,
+                                                          storageConfiguration: storageConfiguration,
                                                           storageService: storageService,
                                                           authService: authService,
                                                           resultListener: resultListener)
@@ -59,6 +60,7 @@ extension AWSS3StoragePlugin {
         let options = options ?? StorageDownloadDataRequest.Options()
         let request = StorageDownloadDataRequest(key: key, options: options)
         let downloadDataOperation = AWSS3StorageDownloadDataOperation(request,
+                                                                      storageConfiguration: storageConfiguration,
                                                                       storageService: storageService,
                                                                       authService: authService,
                                                                       progressListener: progressListener,
@@ -90,6 +92,7 @@ extension AWSS3StoragePlugin {
         let options = options ?? StorageDownloadFileRequest.Options()
         let request = StorageDownloadFileRequest(key: key, local: local, options: options)
         let downloadFileOperation = AWSS3StorageDownloadFileOperation(request,
+                                                                      storageConfiguration: storageConfiguration,
                                                                       storageService: storageService,
                                                                       authService: authService,
                                                                       progressListener: progressListener,
@@ -122,10 +125,11 @@ extension AWSS3StoragePlugin {
         let request = StorageUploadDataRequest(key: key, data: data, options: options)
 
         let uploadDataOperation = AWSS3StorageUploadDataOperation(request,
-                                                            storageService: storageService,
-                                                            authService: authService,
-                                                            progressListener: progressListener,
-                                                            resultListener: resultListener)
+                                                                  storageConfiguration: storageConfiguration,
+                                                                  storageService: storageService,
+                                                                  authService: authService,
+                                                                  progressListener: progressListener,
+                                                                  resultListener: resultListener)
 
         queue.addOperation(uploadDataOperation)
 
@@ -154,6 +158,7 @@ extension AWSS3StoragePlugin {
         let request = StorageUploadFileRequest(key: key, local: local, options: options)
 
         let uploadFileOperation = AWSS3StorageUploadFileOperation(request,
+                                                                  storageConfiguration: storageConfiguration,
                                                                   storageService: storageService,
                                                                   authService: authService,
                                                                   progressListener: progressListener,
@@ -182,6 +187,7 @@ extension AWSS3StoragePlugin {
         let options = options ?? StorageRemoveRequest.Options()
         let request = StorageRemoveRequest(key: key, options: options)
         let removeOperation = AWSS3StorageRemoveOperation(request,
+                                                          storageConfiguration: storageConfiguration,
                                                           storageService: storageService,
                                                           authService: authService,
                                                           resultListener: resultListener)
@@ -205,6 +211,7 @@ extension AWSS3StoragePlugin {
         let options = options ?? StorageListRequest.Options()
         let request = StorageListRequest(options: options)
         let listOperation = AWSS3StorageListOperation(request,
+                                                      storageConfiguration: storageConfiguration,
                                                       storageService: storageService,
                                                       authService: authService,
                                                       resultListener: resultListener)

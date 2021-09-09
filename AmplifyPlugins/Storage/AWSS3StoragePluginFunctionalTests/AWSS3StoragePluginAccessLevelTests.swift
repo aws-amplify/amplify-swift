@@ -7,11 +7,11 @@
 
 import XCTest
 import Amplify
-@testable import AWSS3StoragePlugin
 import AWSS3
-import AWSCognitoIdentityProvider
-@testable import AmplifyTestCommon
 import AWSPluginsCore
+
+@testable import AWSS3StoragePlugin
+@testable import AmplifyTestCommon
 
 class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 

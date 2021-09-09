@@ -19,6 +19,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageRemoveOperation(request,
+                                                    storageConfiguration: testStorageConfiguration,
                                                     storageService: mockStorageService,
                                                     authService: mockAuthService) { result in
             switch result {
@@ -46,6 +47,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         let request = StorageRemoveRequest(key: testKey, options: options)
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageRemoveOperation(request,
+                                                    storageConfiguration: testStorageConfiguration,
                                                     storageService: mockStorageService,
                                                     authService: mockAuthService) { result in
             switch result {
@@ -74,6 +76,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         let expectedServiceKey = StorageAccessLevel.guest.serviceAccessPrefix + "/" + testKey
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageRemoveOperation(request,
+                                                    storageConfiguration: testStorageConfiguration,
                                                     storageService: mockStorageService,
                                                     authService: mockAuthService) { result in
             switch result {
@@ -99,6 +102,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         let expectedServiceKey = StorageAccessLevel.guest.serviceAccessPrefix + "/" + testKey
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageRemoveOperation(request,
+                                                    storageConfiguration: testStorageConfiguration,
                                                     storageService: mockStorageService,
                                                     authService: mockAuthService) { result in
             switch result {
@@ -125,6 +129,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         let expectedServiceKey = StorageAccessLevel.private.rawValue + "/" + testIdentityId + "/" + testKey
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageRemoveOperation(request,
+                                                    storageConfiguration: testStorageConfiguration,
                                                     storageService: mockStorageService,
                                                     authService: mockAuthService) { result in
             switch result {
