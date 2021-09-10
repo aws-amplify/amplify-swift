@@ -15,6 +15,18 @@ extension ModelSchema {
 
     /// Compare two `Model` based on a given `ModelSchema`
     /// Returns true if equal, false otherwise
+    /// Currently, schemas where system timestamps fields (createdAt, updatedAt)
+    /// are changed with `timestamps` attribute to model directive and also added
+    /// to model schema are not covered. This will cause `isEqual` to fail in
+    /// such cases.
+    /// for e.g.
+    /// type Post @model(timestamps:{createdAt: "createdOn", updatedAt: "updatedOn"}) {
+    ///  id: ID!
+    ///  title: String!
+    ///  tags: [String!]!
+    ///  createdOn: AWSDateTime
+    ///  updatedOn: AWSDateTime
+    /// }
     func isEqual(_ model1: Model, _ model2: Model) -> Bool {
         for (fieldName, modelField) in fields {
             // read only fields or fields updated from the service are skipped for equality check
