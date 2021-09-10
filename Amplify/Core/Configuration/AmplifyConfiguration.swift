@@ -14,6 +14,7 @@ public struct AmplifyConfiguration: Codable {
         case api
         case auth
         case dataStore
+        case geo
         case hub
         case logging
         case predictions
@@ -32,6 +33,9 @@ public struct AmplifyConfiguration: Codable {
     /// Configurations for the Amplify DataStore category
     let dataStore: DataStoreCategoryConfiguration?
 
+    /// Configurations for the Amplify Geo category
+    let geo: GeoCategoryConfiguration?
+
     /// Configurations for the Amplify Hub category
     let hub: HubCategoryConfiguration?
 
@@ -48,6 +52,7 @@ public struct AmplifyConfiguration: Codable {
                 api: APICategoryConfiguration? = nil,
                 auth: AuthCategoryConfiguration? = nil,
                 dataStore: DataStoreCategoryConfiguration? = nil,
+                geo: GeoCategoryConfiguration? = nil,
                 hub: HubCategoryConfiguration? = nil,
                 logging: LoggingCategoryConfiguration? = nil,
                 predictions: PredictionsCategoryConfiguration? = nil,
@@ -56,6 +61,7 @@ public struct AmplifyConfiguration: Codable {
         self.api = api
         self.auth = auth
         self.dataStore = dataStore
+        self.geo = geo
         self.hub = hub
         self.logging = logging
         self.predictions = predictions
@@ -120,6 +126,8 @@ extension Amplify {
                 try configure(API, using: configuration)
             case .dataStore:
                 try configure(DataStore, using: configuration)
+            case .geo:
+                try configure(Geo, using: configuration)
             case .predictions:
                 try configure(Predictions, using: configuration)
             case .storage:
