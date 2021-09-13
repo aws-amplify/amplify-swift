@@ -16,9 +16,10 @@ extension ModelSchema {
     /// Compare two `Model` based on a given `ModelSchema`
     /// Returns true if equal, false otherwise
     /// Currently, schemas where system timestamps fields (createdAt, updatedAt)
-    /// are changed with `timestamps` attribute to model directive and also added
-    /// to model schema are not covered. This will cause `isEqual` to fail in
-    /// such cases.
+    /// are renamed using with `@model`'s `timestamps` attribute and explicitly
+    /// added to the input schema are not supported by this check since they are
+    /// marked as "read-only" fields and will fail the check when the service generates
+    /// and returns the value of `createdAt` or `updatedAt`.
     /// for e.g.
     /// type Post @model(timestamps:{createdAt: "createdOn", updatedAt: "updatedOn"}) {
     ///  id: ID!
@@ -27,7 +28,14 @@ extension ModelSchema {
     ///  createdOn: AWSDateTime
     ///  updatedOn: AWSDateTime
     /// }
-    func isEqual(_ model1: Model, _ model2: Model) -> Bool {
+    func compare(_ model1: Model, _ model2: Model) -> Bool {
+        let modelType1 = ModelRegistry.modelType(from: model1.modelName)
+        let modelType2 = ModelRegistry.modelType(from: model2.modelName)
+        if modelType1 != modelType2 {
+            // no need to compare models as they have different type
+            return false
+        }
+
         for (fieldName, modelField) in fields {
             // read only fields or fields updated from the service are skipped for equality check
             // examples of such fields include `createdAt`, `updatedAt` and `coverId` in `Record`
@@ -44,21 +52,21 @@ extension ModelSchema {
                 guard let value1Optional = value1 as? String?, let value2Optional = value2 as? String? else {
                     return false
                 }
-                if !isEqual(value1Optional, value2Optional) {
+                if !compare(value1Optional, value2Optional) {
                     return false
                 }
             case .int:
                 guard let value1Optional = value1 as? Int?, let value2Optional = value2 as? Int? else {
                     return false
                 }
-                if !isEqual(value1Optional, value2Optional) {
+                if !compare(value1Optional, value2Optional) {
                     return false
                 }
             case .double:
                 guard let value1Optional = value1 as? Double?, let value2Optional = value2 as? Double? else {
                     return false
                 }
-                if !isEqual(value1Optional, value2Optional) {
+                if !compare(value1Optional, value2Optional) {
                     return false
                 }
             case .date:
@@ -66,7 +74,7 @@ extension ModelSchema {
                       let value2Optional = value2 as? Temporal.Date? else {
                     return false
                 }
-                if !isEqual(value1Optional, value2Optional) {
+                if !compare(value1Optional, value2Optional) {
                     return false
                 }
             case .dateTime:
@@ -74,7 +82,7 @@ extension ModelSchema {
                       let value2Optional = value2 as? Temporal.DateTime? else {
                     return false
                 }
-                if !isEqual(value1Optional, value2Optional) {
+                if !compare(value1Optional, value2Optional) {
                     return false
                 }
             case .time:
@@ -82,21 +90,21 @@ extension ModelSchema {
                       let value2Optional = value2 as? Temporal.Time? else {
                     return false
                 }
-                if !isEqual(value1Optional, value2Optional) {
+                if !compare(value1Optional, value2Optional) {
                     return false
                 }
             case .timestamp:
                 guard let value1Optional = value1 as? String?, let value2Optional = value2 as? String? else {
                     return false
                 }
-                if !isEqual(value1Optional, value2Optional) {
+                if !compare(value1Optional, value2Optional) {
                     return false
                 }
             case .bool:
                 guard let value1Optional = value1 as? Bool?, let value2Optional = value2 as? Bool? else {
                     return false
                 }
-                if !isEqual(value1Optional?.intValue, value2Optional?.intValue) {
+                if !compare(value1Optional?.intValue, value2Optional?.intValue) {
                     return false
                 }
             case .enum:
@@ -109,7 +117,7 @@ extension ModelSchema {
                 }
                 let enumValue1Optional = (value1Optional as? EnumPersistable)?.rawValue
                 let enumValue2Optional = (value2Optional as? EnumPersistable)?.rawValue
-                if !isEqual(enumValue1Optional, enumValue2Optional) {
+                if !compare(enumValue1Optional, enumValue2Optional) {
                     return false
                 }
             case .embedded, .embeddedCollection:
@@ -118,7 +126,7 @@ extension ModelSchema {
                        let encodable2 = value2 as? Encodable {
                         let json1 = try SQLiteModelValueConverter.toJSON(encodable1)
                         let json2 = try SQLiteModelValueConverter.toJSON(encodable2)
-                        if !isEqual(json1, json2) {
+                        if !compare(json1, json2) {
                             return false
                         }
                     }
@@ -137,7 +145,7 @@ extension ModelSchema {
         return true
     }
 
-    private func isEqual<T: Comparable>(_ value1: T?, _ value2: T?) -> Bool {
+    private func compare<T: Comparable>(_ value1: T?, _ value2: T?) -> Bool {
         switch (value1, value2) {
         case(nil, nil):
             return true

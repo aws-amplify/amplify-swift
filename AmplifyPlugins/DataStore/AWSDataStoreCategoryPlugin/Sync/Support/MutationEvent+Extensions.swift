@@ -87,7 +87,7 @@ extension MutationEvent {
             // check if the data sent in the request is the same as the response
             // if it is, update the pending mutation event version to the response version
             guard let modelSchema = ModelRegistry.modelSchema(from: requestMutationEvent.modelName),
-                  modelSchema.isEqual(responseModel, requestModel) else {
+                  modelSchema.compare(responseModel, requestModel) else {
                 return nil
             }
 
