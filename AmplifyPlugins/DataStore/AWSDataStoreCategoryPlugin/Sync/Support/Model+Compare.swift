@@ -17,7 +17,7 @@ extension ModelSchema {
     /// Returns true if equal, false otherwise
     /// Currently, schemas where system timestamps fields (createdAt, updatedAt)
     /// are renamed using with `@model`'s `timestamps` attribute and explicitly
-    /// added to the input schema are not supported by this check since they are
+    /// added to the input schema are not supported by this check since they are not
     /// marked as "read-only" fields and will fail the check when the service generates
     /// and returns the value of `createdAt` or `updatedAt`.
     /// for e.g.
