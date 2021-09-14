@@ -58,11 +58,11 @@ public class AWSS3StorageListOperation: AmplifyOperation<
             return
         }
 
-        let prefixResolver = (storageConfiguration.prefixResolver != nil) ? storageConfiguration.prefixResolver! :
+        let prefixResolver = storageConfiguration.prefixResolver ??
             StorageAccessLevelAwarePrefixResolver(authService: authService)
-        let prefix = prefixResolver.resolvePrefix(for: request.options.accessLevel,
-                                                  targetIdentityId: request.options.targetIdentityId)
-        switch prefix {
+        let prefixResolution = prefixResolver.resolvePrefix(for: request.options.accessLevel,
+                                                            targetIdentityId: request.options.targetIdentityId)
+        switch prefixResolution {
         case .success(let prefix):
             storageService.list(prefix: prefix, path: request.options.path) { [weak self] event in
                 self?.onServiceEvent(event: event)

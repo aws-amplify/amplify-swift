@@ -98,11 +98,11 @@ public class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation
             return
         }
 
-        let prefixResolver = (storageConfiguration.prefixResolver != nil) ? storageConfiguration.prefixResolver! :
+        let prefixResolver = storageConfiguration.prefixResolver ??
             StorageAccessLevelAwarePrefixResolver(authService: authService)
-        let prefix = prefixResolver.resolvePrefix(for: request.options.accessLevel,
-                                                  targetIdentityId: request.options.targetIdentityId)
-        switch prefix {
+        let prefixResolution = prefixResolver.resolvePrefix(for: request.options.accessLevel,
+                                                            targetIdentityId: request.options.targetIdentityId)
+        switch prefixResolution {
         case .success(let prefix):
             let serviceKey = prefix + request.key
             let serviceMetadata = StorageRequestUtils.getServiceMetadata(request.options.metadata)

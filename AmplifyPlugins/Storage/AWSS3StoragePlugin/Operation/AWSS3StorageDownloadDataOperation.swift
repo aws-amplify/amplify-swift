@@ -85,11 +85,11 @@ public class AWSS3StorageDownloadDataOperation: AmplifyInProcessReportingOperati
             return
         }
 
-        let prefixResolver = (storageConfiguration.prefixResolver != nil) ? storageConfiguration.prefixResolver! :
+        let prefixResolver = storageConfiguration.prefixResolver ??
             StorageAccessLevelAwarePrefixResolver(authService: authService)
-        let prefix = prefixResolver.resolvePrefix(for: request.options.accessLevel,
-                                                  targetIdentityId: request.options.targetIdentityId)
-        switch prefix {
+        let prefixResolution = prefixResolver.resolvePrefix(for: request.options.accessLevel,
+                                                            targetIdentityId: request.options.targetIdentityId)
+        switch prefixResolution {
         case .success(let prefix):
             let serviceKey = prefix + request.key
             storageService.download(serviceKey: serviceKey, fileURL: nil) { [weak self] event in
