@@ -229,9 +229,8 @@ class AWSAPICategoryPluginTests: XCTestCase {
         let startExpectationOnQuery = expectation(description: "Start Sync should be called again with Query")
         var count = 0
         let storageEngine = MockStorageEngineBehavior()
-        storageEngine.responders[.query] = QueryResponder<ExampleWithEveryType> { _ in
+        storageEngine.responders[.query] = QueryResponder { _ in
             count = self.expect(startExpectation, count, 1)
-            return .success([])
         }
         storageEngine.responders[.clear] = ClearResponder { _ in
             count = self.expect(clearExpectation, count, 2)
@@ -278,9 +277,8 @@ class AWSAPICategoryPluginTests: XCTestCase {
                 semaphore.signal()
             })
             semaphore.wait()
-            storageEngine.responders[.query] = QueryResponder<ExampleWithEveryType> {_ in
+            storageEngine.responders[.query] = QueryResponder {_ in
                 count = self.expect(startExpectationOnQuery, count, 3)
-                return .success([])
             }
 
             plugin.query(ExampleWithEveryType.self, completion: { _ in

@@ -70,20 +70,12 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
     }
 
     func startAmplifyAndWaitForSync() throws {
-        try startAmplifyAndWait(for: HubPayload.EventName.DataStore.syncStarted)
-    }
-
-    func startAmplifyAndWaitForReady() throws {
-        try startAmplifyAndWait(for: HubPayload.EventName.DataStore.ready)
-    }
-
-    private func startAmplifyAndWait(for eventName: String) throws {
-        let eventReceived = expectation(description: "DataStore \(eventName) event")
+        let syncStarted = expectation(description: "Sync started")
 
         var token: UnsubscribeToken!
         token = Amplify.Hub.listen(to: .dataStore,
-                                   eventName: eventName) { _ in
-            eventReceived.fulfill()
+                                   eventName: HubPayload.EventName.DataStore.syncStarted) { _ in
+            syncStarted.fulfill()
             Amplify.Hub.removeListener(token)
         }
 
@@ -100,7 +92,7 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
             }
         }
 
-        wait(for: [eventReceived], timeout: 100.0)
+        wait(for: [syncStarted], timeout: 15.0)
     }
 
 }
