@@ -330,6 +330,73 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         try validateSavePost()
     }
 
+    /// Perform concurrent saves and observe the data successfuly synced from cloud. Then delete the items afterwards
+    /// and ensure they have successfully synced from cloud
+    ///
+    /// - Given: DataStore is in ready state
+    /// - When:
+    ///    - Concurrently perform Save's
+    /// - Then:
+    ///    - Ensure the expected mutation event with version 1 (synced from cloud) is received
+    ///    - Clean up: Concurrently perform Delete's
+    ///    - Ensure the expected mutation event with version 2 (synced from cloud) is received
+    ///
+    func testConcurrentSave() throws {
+        try startAmplifyAndWaitForReady()
+
+        var posts = [Post]()
+        let count = 5
+        for _ in 0 ..< count {
+            let post = Post(title: "title",
+                            content: "content",
+                            createdAt: .now())
+            posts.append(post)
+        }
+        let postsSyncedToCloud = expectation(description: "All posts saved and synced to cloud")
+        var postsSyncedToCloudCount = 0
+        let postsDeletedFromCloud = expectation(description: "All posts deleted and synced to cloud")
+        var postsDeletedFromCloudCount = 0
+        let sink = Amplify.DataStore.publisher(for: Post.self).sink { completed in
+            switch completed {
+            case .finished:
+                break
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        } receiveValue: { mutationEvent in
+            if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
+               posts.contains(where: { $0.id == mutationEvent.modelId }),
+               mutationEvent.version == 1 {
+                postsSyncedToCloudCount += 1
+                self.log.debug("Post saved and synced from cloud \(mutationEvent.modelId) \(postsSyncedToCloudCount)")
+                if postsSyncedToCloudCount == count {
+                    postsSyncedToCloud.fulfill()
+                }
+            } else if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
+                      posts.contains(where: { $0.id == mutationEvent.modelId }),
+                      mutationEvent.version == 2 {
+                postsDeletedFromCloudCount += 1
+                self.log.debug(
+                    "Post deleted and synced from cloud \(mutationEvent.modelId) \(postsDeletedFromCloudCount)")
+                if postsDeletedFromCloudCount == count {
+                    postsDeletedFromCloud.fulfill()
+                }
+            }
+        }
+
+        DispatchQueue.concurrentPerform(iterations: count) { index in
+            _ = Amplify.DataStore.save(posts[index])
+        }
+
+        wait(for: [postsSyncedToCloud], timeout: 100)
+
+        DispatchQueue.concurrentPerform(iterations: count) { index in
+            _ = Amplify.DataStore.delete(posts[index])
+        }
+        wait(for: [postsDeletedFromCloud], timeout: 100)
+        sink.cancel()
+    }
+
     // MARK: - Helpers
 
     func validateSavePost() throws {
@@ -370,4 +437,9 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         Amplify.DataStore.save(newPost) { _ in }
         wait(for: [createReceived], timeout: networkTimeout)
     }
+}
+
+@available(iOS 13.0, *)
+extension DataStoreEndToEndTests: DefaultLogger {
+
 }
