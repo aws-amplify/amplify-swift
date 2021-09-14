@@ -126,6 +126,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         do {
             try storageAdapter.transaction {
                 queryPendingMutations(forModelIds: remoteModelIds)
+                    .subscribe(on: workQueue)
                     .flatMap { mutationEvents -> Future<([RemoteModel], [LocalMetadata]), DataStoreError> in
                         let remoteModelsToApply = self.reconcile(remoteModels, pendingMutations: mutationEvents)
                         return self.queryLocalMetadata(remoteModelsToApply)
