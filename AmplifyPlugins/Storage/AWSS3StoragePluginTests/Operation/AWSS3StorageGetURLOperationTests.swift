@@ -21,6 +21,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
         let request = StorageGetURLRequest(key: "", options: options)
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageGetURLOperation(request,
+                                                    storageConfiguration: testStorageConfiguration,
                                                     storageService: mockStorageService,
                                                     authService: mockAuthService) { result in
             switch result {
@@ -48,8 +49,9 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageGetURLOperation(request,
-                                                 storageService: mockStorageService,
-                                                 authService: mockAuthService) { result in
+                                                    storageConfiguration: testStorageConfiguration,
+                                                    storageService: mockStorageService,
+                                                    authService: mockAuthService) { result in
             switch result {
             case .failure(let error):
                 guard case .authError = error else {
@@ -80,6 +82,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageGetURLOperation(request,
+                                                    storageConfiguration: testStorageConfiguration,
                                                     storageService: mockStorageService,
                                                     authService: mockAuthService) { result in
             switch result {
@@ -110,6 +113,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageGetURLOperation(request,
+                                                    storageConfiguration: testStorageConfiguration,
                                                     storageService: mockStorageService,
                                                     authService: mockAuthService) { result in
             switch result {
@@ -138,6 +142,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testTargetIdentityId + "/" + testKey
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageGetURLOperation(request,
+                                                    storageConfiguration: testStorageConfiguration,
                                                     storageService: mockStorageService,
                                                     authService: mockAuthService) { event in
             switch event {

@@ -18,6 +18,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         let request = StorageDownloadDataRequest(key: "", options: StorageDownloadDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageDownloadDataOperation(request,
+                                                          storageConfiguration: testStorageConfiguration,
                                                           storageService: mockStorageService,
                                                           authService: mockAuthService,
                                                           progressListener: nil) { event in
@@ -43,6 +44,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         let request = StorageDownloadDataRequest(key: testKey, options: StorageDownloadDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageDownloadDataOperation(request,
+                                                          storageConfiguration: testStorageConfiguration,
                                                           storageService: mockStorageService,
                                                           authService: mockAuthService,
                                                           progressListener: nil) { event in
@@ -75,6 +77,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageDownloadDataOperation(
             request,
+            storageConfiguration: testStorageConfiguration,
             storageService: mockStorageService,
             authService: mockAuthService,
             progressListener: { _ in
@@ -106,6 +109,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         let failInvoked = expectation(description: "fail was invoked on operation")
         let operation = AWSS3StorageDownloadDataOperation(
             request,
+            storageConfiguration: testStorageConfiguration,
             storageService: mockStorageService,
             authService: mockAuthService,
             progressListener: { _ in
@@ -139,6 +143,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageDownloadDataOperation(
             request,
+            storageConfiguration: testStorageConfiguration,
             storageService: mockStorageService,
             authService: mockAuthService,
             progressListener: { _ in

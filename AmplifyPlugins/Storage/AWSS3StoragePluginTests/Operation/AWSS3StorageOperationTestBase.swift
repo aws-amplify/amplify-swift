@@ -25,6 +25,7 @@ class AWSS3StorageOperationTestBase: XCTestCase {
     let testContentType = "TestContentType"
     let testExpires = 10
     let testURL = URL(fileURLWithPath: "path")
+    let testStorageConfiguration = AWSS3StoragePluginConfiguration()
 
     override func setUp() {
         let mockAmplifyConfig = AmplifyConfiguration()

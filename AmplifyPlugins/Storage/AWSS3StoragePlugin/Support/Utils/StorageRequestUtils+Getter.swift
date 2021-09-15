@@ -11,16 +11,6 @@ import Amplify
 extension StorageRequestUtils {
     // MARK: Getter methods
 
-    static func getServiceKey(accessLevel: StorageAccessLevel,
-                              identityId: String,
-                              key: String,
-                              targetIdentityId: String? = nil) -> String {
-
-        return getAccessLevelPrefix(accessLevel: accessLevel,
-                                    identityId: identityId,
-                                    targetIdentityId: targetIdentityId) + key
-    }
-
     static func getAccessLevelPrefix(accessLevel: StorageAccessLevel,
                                      identityId: String,
                                      targetIdentityId: String?) -> String {

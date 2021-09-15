@@ -29,8 +29,13 @@ final public class AWSS3StoragePlugin: StorageCategoryPlugin {
         return PluginConstants.awsS3StoragePluginKey
     }
 
+    /// The storage plugin configuration
+    let storageConfiguration: AWSS3StoragePluginConfiguration
+
     /// Instantiates an instance of the AWSS3StoragePlugin.
-    public init() {
+    public init(configuration
+                    storageConfiguration: AWSS3StoragePluginConfiguration = AWSS3StoragePluginConfiguration()) {
+        self.storageConfiguration = storageConfiguration
     }
 }
 

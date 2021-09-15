@@ -21,14 +21,17 @@ public class AWSS3StorageListOperation: AmplifyOperation<
     StorageError
 >, StorageListOperation {
 
+    let storageConfiguration: AWSS3StoragePluginConfiguration
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
 
     init(_ request: StorageListRequest,
+         storageConfiguration: AWSS3StoragePluginConfiguration,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
          resultListener: ResultListener?) {
 
+        self.storageConfiguration = storageConfiguration
         self.storageService = storageService
         self.authService = authService
         super.init(categoryType: .storage,
@@ -55,29 +58,18 @@ public class AWSS3StorageListOperation: AmplifyOperation<
             return
         }
 
-        let identityIdResult = authService.getIdentityId()
-
-        guard case let .success(identityId) = identityIdResult else {
-            if case let .failure(error) = identityIdResult {
-                dispatch(StorageError.authError(error.errorDescription, error.recoverySuggestion))
+        let prefixResolver = storageConfiguration.prefixResolver ??
+            StorageAccessLevelAwarePrefixResolver(authService: authService)
+        let prefixResolution = prefixResolver.resolvePrefix(for: request.options.accessLevel,
+                                                            targetIdentityId: request.options.targetIdentityId)
+        switch prefixResolution {
+        case .success(let prefix):
+            storageService.list(prefix: prefix, path: request.options.path) { [weak self] event in
+                self?.onServiceEvent(event: event)
             }
-
+        case .failure(let error):
+            dispatch(error)
             finish()
-            return
-        }
-
-        let accessLevelPrefix = StorageRequestUtils
-            .getAccessLevelPrefix(accessLevel: request.options.accessLevel,
-                                  identityId: identityId,
-                                  targetIdentityId: request.options.targetIdentityId)
-
-        if isCancelled {
-            finish()
-            return
-        }
-
-        storageService.list(prefix: accessLevelPrefix, path: request.options.path) { [weak self] event in
-            self?.onServiceEvent(event: event)
         }
     }
 
