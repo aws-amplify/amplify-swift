@@ -2460,15 +2460,15 @@
 		5C09CCA826CEDE1200CDCA9F /* Geo */ = {
 			isa = PBXGroup;
 			children = (
-				5C09CCAA26CEDE1200CDCA9F /* Internal */,
-				5C09CCB226CEDE1200CDCA9F /* Error */,
-				5C09CCA926CEDE1200CDCA9F /* GeoCategory+HubPayloadEventName.swift */,
-				5C09CCAE26CEDE1200CDCA9F /* GeoCategoryConfiguration.swift */,
-				5C09CCAF26CEDE1200CDCA9F /* GeoCategoryPlugin.swift */,
 				5C09CCB026CEDE1200CDCA9F /* GeoCategory.swift */,
 				5C09CCB126CEDE1200CDCA9F /* GeoCategory+ClientBehavior.swift */,
+				5C09CCA926CEDE1200CDCA9F /* GeoCategory+HubPayloadEventName.swift */,
 				5C09CCB426CEDE1200CDCA9F /* GeoCategoryBehavior.swift */,
+				5C09CCAE26CEDE1200CDCA9F /* GeoCategoryConfiguration.swift */,
+				5C09CCAF26CEDE1200CDCA9F /* GeoCategoryPlugin.swift */,
 				5C09CCAD26CEDE1200CDCA9F /* GeoCategoryTypes.swift */,
+				5C09CCB226CEDE1200CDCA9F /* Error */,
+				5C09CCAA26CEDE1200CDCA9F /* Internal */,
 			);
 			path = Geo;
 			sourceTree = "<group>";
@@ -3707,11 +3707,11 @@
 		FAC2354C227A056600424678 /* CategoryTests */ = {
 			isa = PBXGroup;
 			children = (
-				5C09CCBF26D0733700CDCA9F /* Geo */,
 				FAC2355D227A056600424678 /* Analytics */,
 				FAC23555227A056600424678 /* API */,
 				B4F3E9F624314E1300F23296 /* Auth */,
 				FAD3937B23820CE200463F5E /* DataStore */,
+				5C09CCBF26D0733700CDCA9F /* Geo */,
 				FAC23584227A442000424678 /* Hub */,
 				FAC23559227A056600424678 /* Logging */,
 				B4D38541236C9BF40014653D /* Predictions */,

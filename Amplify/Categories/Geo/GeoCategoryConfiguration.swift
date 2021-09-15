@@ -9,11 +9,12 @@ import Foundation
 
 /// Geo category configuration
 public struct GeoCategoryConfiguration: CategoryConfiguration {
-    /// Plugins
+
+    /// Dictionary of plugin keys to plugin configurations
     public let plugins: [String: JSONValue]
 
     /// Initializer
-    /// - Parameter plugins: Plugins
+    /// - Parameter plugins: Plugin configuration dictionary
     public init(plugins: [String: JSONValue] = [:]) {
         self.plugins = plugins
     }

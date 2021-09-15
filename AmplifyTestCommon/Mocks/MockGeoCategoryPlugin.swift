@@ -60,8 +60,8 @@ class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
     }
 
     private func createPlace() -> Place {
-        Place(label: "Place Label",
-              coordinates: Coordinates(latitude: 0, longitude: 0),
+        Place(coordinates: Coordinates(latitude: 0, longitude: 0),
+              label: "Place Label",
               addressNumber: nil,
               street: nil,
               municipality: nil,

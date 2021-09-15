@@ -63,7 +63,7 @@ extension GeoCategory: GeoCategoryBehavior {
         plugin.getAvailableMaps()
     }
 
-    /// Retrieves the default Map resource (first map in amplifyconfiguration.json).
+    /// Retrieves the default Map resource.
     /// - Parameter completionHandler: The completion handler receives a Response
     /// object.  The success case provides an array of available Map resources.
     public func getDefaultMap() -> MapStyle {

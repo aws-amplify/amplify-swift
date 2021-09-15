@@ -75,13 +75,12 @@ public extension SearchArea {
     }
 }
 
-/// A place defined by a label, location (point), and optional additional locality
-/// information.
+/// A place defined by coordinates and optional additional locality information.
 public struct Place {
-    /// The full name and address of the place.
-    public let label: String?
     /// The coordinates of the place. (required)
     public let coordinates: Coordinates
+    /// The full name and address of the place.
+    public let label: String?
     /// The numerical portion of the address of the place, such as a building number.
     public let addressNumber: String?
     /// The name for the street or road of the place. For example, Main Street.
@@ -96,14 +95,12 @@ public struct Place {
     /// A group of numbers and letters in a country-specific format, which accompanies
     /// the address for the purpose of identifying the place.
     public let postalCode: String?
-    /// The country of the place.  Specified using <a
-    /// href="https://www.iso.org/iso-3166-country-codes.html">ISO 3166 3-digit
-    /// country/region code. For example, CAN.
+    /// The country of the place.
     public let country: String?
 
     /// Initializer
-    public init(label: String?,
-                coordinates: Coordinates,
+    public init(coordinates: Coordinates,
+                label: String?,
                 addressNumber: String?,
                 street: String?,
                 municipality: String?,
@@ -111,8 +108,8 @@ public struct Place {
                 subRegion: String?,
                 postalCode: String?,
                 country: String?) {
-        self.label = label
         self.coordinates = coordinates
+        self.label = label
         self.addressNumber = addressNumber
         self.street = street
         self.municipality = municipality

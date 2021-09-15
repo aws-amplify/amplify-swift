@@ -54,7 +54,7 @@ final public class GeoCategory: Category {
         let key = plugin.key
         guard !key.isEmpty else {
             let pluginDescription = String(describing: plugin)
-            let error = AnalyticsError.configuration(
+            let error = GeoError.configuration(
                 "Plugin \(pluginDescription) has an empty `key`.",
                 "Set the `key` property for \(String(describing: plugin))")
             throw error
