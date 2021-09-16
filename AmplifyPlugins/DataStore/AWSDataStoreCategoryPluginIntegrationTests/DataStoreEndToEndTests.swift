@@ -342,7 +342,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///    - Ensure the expected mutation event with version 2 (synced from cloud) is received
     ///
     func testConcurrentSave() throws {
-        try startAmplifyAndWaitForReady()
+        try startAmplifyAndWaitForSync()
 
         var posts = [Post]()
         let count = 5
