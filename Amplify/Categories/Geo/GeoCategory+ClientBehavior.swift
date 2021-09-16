@@ -21,11 +21,11 @@ extension GeoCategory: GeoCategoryBehavior {
     ///   - completionHandler: The completion handler receives a Response object.  The
     ///   success case provides a Place array.
     public func search(for text: String,
-                       area: SearchArea? = nil,
+                       area: Geo.SearchArea? = nil,
                        countries: [String]? = nil,
                        maxResults: Int? = nil,
                        placeIndexName: String? = nil,
-                       completionHandler: @escaping GeoResultsHandler<[Place]>) {
+                       completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
         plugin.search(for: text,
                       area: area,
                       countries: countries,
@@ -44,10 +44,10 @@ extension GeoCategory: GeoCategoryBehavior {
     ///   default Place Index in amplifyconfiguration.json)
     ///   - completionHandler: The completion handler receives a Response object.  The
     ///   success case provides a Place array.
-    public func search(for coordinates: Coordinates,
+    public func search(for coordinates: Geo.Coordinates,
                        maxResults: Int? = nil,
                        placeIndexName: String? = nil,
-                       completionHandler: @escaping GeoResultsHandler<[Place]>) {
+                       completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
         plugin.search(for: coordinates,
                       maxResults: maxResults,
                       placeIndexName: placeIndexName,
@@ -59,14 +59,14 @@ extension GeoCategory: GeoCategoryBehavior {
     /// Retrieves metadata for available Map resources.
     /// - Parameter completionHandler: The completion handler receives a Response
     /// object.  The success case provides an array of available Map resources.
-    public func getAvailableMaps() -> [MapStyle] {
+    public func getAvailableMaps() -> [Geo.MapStyle] {
         plugin.getAvailableMaps()
     }
 
     /// Retrieves the default Map resource.
     /// - Parameter completionHandler: The completion handler receives a Response
     /// object.  The success case provides an array of available Map resources.
-    public func getDefaultMap() -> MapStyle {
+    public func getDefaultMap() -> Geo.MapStyle {
         plugin.getDefaultMap()
     }
 }

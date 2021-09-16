@@ -22,45 +22,45 @@ class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
     }
 
     func search(for text: String,
-                area: SearchArea? = nil,
+                area: Geo.SearchArea? = nil,
                 countries: [String]? = nil,
                 maxResults: Int? = nil,
                 placeIndexName: String? = nil,
-                completionHandler: @escaping GeoResultsHandler<[Place]>) {
+                completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
 
         notify("search(for text:\(text))")
         completionHandler(.success([createPlace()]))
     }
 
-    func search(for coordinates: Coordinates,
+    func search(for coordinates: Geo.Coordinates,
                 maxResults: Int?,
                 placeIndexName: String?,
-                completionHandler: @escaping GeoResultsHandler<[Place]>) {
+                completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
 
         notify("search(for coordinates:\(coordinates))")
         completionHandler(.success([createPlace()]))
     }
 
-    func getAvailableMaps() -> [MapStyle] {
+    func getAvailableMaps() -> [Geo.MapStyle] {
         notify()
 
         return [createMapStyle()]
     }
 
-    func getDefaultMap() -> MapStyle {
+    func getDefaultMap() -> Geo.MapStyle {
         notify()
 
         return createMapStyle()
     }
 
-    private func createMapStyle() -> MapStyle {
-        MapStyle(mapName: "MapName",
+    private func createMapStyle() -> Geo.MapStyle {
+        Geo.MapStyle(mapName: "MapName",
                  style: "MapStyle",
                  styleURL: URL(string: "http://MapStyleURL")!)
     }
 
-    private func createPlace() -> Place {
-        Place(coordinates: Coordinates(latitude: 0, longitude: 0),
+    private func createPlace() -> Geo.Place {
+        Geo.Place(coordinates: Geo.Coordinates(latitude: 0, longitude: 0),
               label: "Place Label",
               addressNumber: nil,
               street: nil,

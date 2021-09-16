@@ -48,7 +48,7 @@ class GeoCategoryClientAPITests: XCTestCase {
     }
 
     func testSearchForCoords() throws {
-        let coordinates = Coordinates(latitude: 0, longitude: 0)
+        let coordinates = Geo.Coordinates(latitude: 0, longitude: 0)
         let expectedMessage = "search(for coordinates:\(coordinates))"
         let methodInvoked = expectation(description: "Expected method was invoked on plugin")
         plugin.listeners.append { message in

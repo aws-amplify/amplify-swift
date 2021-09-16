@@ -25,11 +25,11 @@ public protocol GeoCategoryBehavior {
     ///   - completionHandler: The completion handler receives a Response object.  The
     ///   success case provides a Place array.
     func search(for text: String, // swiftlint:disable:this function_parameter_count
-                area: SearchArea?,
+                area: Geo.SearchArea?,
                 countries: [String]?,
                 maxResults: Int?,
                 placeIndexName: String?,
-                completionHandler: @escaping GeoResultsHandler<[Place]>)
+                completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>)
 
     /// Reverse geocodes a given pair of coordinates and returns a list of Places
     /// closest to the specified position.
@@ -41,20 +41,20 @@ public protocol GeoCategoryBehavior {
     ///   default Place Index in amplifyconfiguration.json)
     ///   - completionHandler: The completion handler receives a Response object.  The
     ///   success case provides a Place array.
-    func search(for coordinates: Coordinates,
+    func search(for coordinates: Geo.Coordinates,
                 maxResults: Int?,
                 placeIndexName: String?,
-                completionHandler: @escaping GeoResultsHandler<[Place]>)
+                completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>)
 
     // MARK: - Maps
 
     /// Retrieves metadata for available Map resources.
     /// - Parameter completionHandler: The completion handler receives a Response
     /// object.  The success case provides an array of available Map resources.
-    func getAvailableMaps() -> [MapStyle]
+    func getAvailableMaps() -> [Geo.MapStyle]
 
     /// Retrieves the default Map resource (first map in amplifyconfiguration.json).
     /// - Parameter completionHandler: The completion handler receives a Response
     /// object.  The success case provides an array of available Map resources.
-    func getDefaultMap() -> MapStyle
+    func getDefaultMap() -> Geo.MapStyle
 }
