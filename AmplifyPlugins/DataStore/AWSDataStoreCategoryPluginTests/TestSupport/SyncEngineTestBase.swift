@@ -41,14 +41,14 @@ class SyncEngineTestBase: XCTestCase {
 
     // MARK: - Setup
 
-    override func tearDown() {
-        Amplify.reset()
+    override func setUp() {
+        Amplify.Logging.logLevel = .verbose
     }
 
     override func setUpWithError() throws {
         continueAfterFailure = false
 
-        Amplify.Logging.logLevel = .verbose
+        Amplify.reset()
 
         let apiConfig = APICategoryConfiguration(plugins: [
             "MockAPICategoryPlugin": true
