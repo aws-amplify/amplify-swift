@@ -150,7 +150,6 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         let team = try TestTeam(name: "name1")
         var anotherTeam = try TestTeam(name: "name1")
         var project = try TestProject(team: team.model)
-//        let expectedUpdatedProject = Project1(id: project.id, name: project.name, team: anotherTeam)
         let expectedUpdatedProject = project.copy() as! TestProject
 >>>>>>> flutter integ tests initial commit
         try expectedUpdatedProject.setTeam(team: anotherTeam.model)
