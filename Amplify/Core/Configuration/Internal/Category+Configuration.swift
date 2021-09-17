@@ -21,6 +21,8 @@ extension CategoryTypeable {
             return amplifyConfiguration.api
         case .dataStore:
             return amplifyConfiguration.dataStore
+        case .geo:
+            return amplifyConfiguration.geo
         case .hub:
             return amplifyConfiguration.hub
         case .logging:

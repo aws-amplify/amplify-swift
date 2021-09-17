@@ -134,6 +134,8 @@ class AmplifyConfigurationInitializationTests: XCTestCase {
             case .dataStore:
                 // TODO assert
                 XCTAssert(true)
+            case .geo:
+                XCTAssertNil(amplifyConfig.geo)
             case .hub:
                 XCTAssertNil(amplifyConfig.hub)
             case .logging:
