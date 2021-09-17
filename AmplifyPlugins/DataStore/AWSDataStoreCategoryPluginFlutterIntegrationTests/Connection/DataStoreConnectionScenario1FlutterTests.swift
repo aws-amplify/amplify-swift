@@ -107,10 +107,17 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
     func testUpdateProjectWithAnotherTeam() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
+<<<<<<< HEAD
         let team = try TeamWrapper(name: "name1")
         let anotherTeam = try TeamWrapper(name: "name1")
         let project = try Project1Wrapper(team: team.model)
         let expectedUpdatedProject = project.copy() as! Project1Wrapper
+=======
+        let team = try TestTeam(name: "name1")
+        var anotherTeam = try TestTeam(name: "name1")
+        var project = try TestProject(team: team.model)
+        let expectedUpdatedProject = project.copy() as! TestProject
+>>>>>>> rebasing
         try expectedUpdatedProject.setTeam(team: anotherTeam.model)
         
         let syncUpdatedProjectReceived = expectation(description: "received updated project from sync path")

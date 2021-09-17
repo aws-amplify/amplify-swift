@@ -37,8 +37,13 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
     func testSaveTeamAndProjectSyncToCloud() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
+<<<<<<< HEAD
         let team = try TeamWrapper(name: "name1")
         let project = try Project2Wrapper(name: "project1", team: team.model, teamID: team.idString())
+=======
+        let team = try TestTeam(name: "name1")
+        let project = try TestProject2(name: "project1", team: team.model, teamID: team.idString())
+>>>>>>> rebasing
         let syncedTeamReceived = expectation(description: "received team from sync event")
         let syncProjectReceived = expectation(description: "received project from sync event")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
@@ -48,10 +53,17 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
                 return
             }
 
+<<<<<<< HEAD
             if let syncedTeam = mutationEvent.modelId as String?,
                syncedTeam == team.idString() {
                 syncedTeamReceived.fulfill()
             } else if let syncedProject = mutationEvent.modelId as String?,
+=======
+            if let syncedTeam = try? mutationEvent.modelId as String,
+               syncedTeam == team.idString() {
+                syncedTeamReceived.fulfill()
+            } else if let syncedProject = try? mutationEvent.modelId as String,
+>>>>>>> rebasing
                       syncedProject == project.idString() {
                 syncProjectReceived.fulfill()
             }
@@ -88,7 +100,11 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where: Project2.keys.id.eq(project.model.id)) { result in
             switch result {
             case .success(let queriedProjectList):
+<<<<<<< HEAD
                 let queriedProject = Project2Wrapper(model: queriedProjectList[0])
+=======
+                let queriedProject = TestProject(model: queriedProjectList[0])
+>>>>>>> rebasing
                 XCTAssertEqual(queriedProject.idString(), project.idString())
                 queriedProjectCompleted.fulfill()
             case .failure(let error):
@@ -101,11 +117,19 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
     func testUpdateProjectWithAnotherTeam() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
+<<<<<<< HEAD
         let team = try TeamWrapper(name: "name1")
         var anotherTeam = try TeamWrapper(name: "name1")
         let project = try Project2Wrapper(name: "project1", team: team.model, teamID: team.idString())
         let expectedUpdatedProject = project.copy() as! Project2Wrapper
         try expectedUpdatedProject.setTeam(name: "project1", team: anotherTeam.model, teamID: anotherTeam.idString())
+=======
+        let team = try TestTeam(name: "name1")
+        let anotherTeam = try TestTeam(name: "name1")
+        var project = try TestProject2(name: "project1", team: team.model, teamID: team.idString())
+        let expectedUpdatedProject = project.copy() as! TestProject
+        try expectedUpdatedProject.setTeam(team: anotherTeam.model)
+>>>>>>> rebasing
         
         let syncUpdatedProjectReceived = expectation(description: "received updated project from sync path")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
@@ -115,7 +139,11 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
                 return
             }
 
+<<<<<<< HEAD
             if let syncedUpdatedProject = mutationEvent.modelId as String?,
+=======
+            if let syncedUpdatedProject = try? mutationEvent.modelId as String,
+>>>>>>> rebasing
                expectedUpdatedProject.idString() == syncedUpdatedProject {
                 syncUpdatedProjectReceived.fulfill()
             }
@@ -128,8 +156,12 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         let saveTeamCompleted = expectation(description: "save team completed")
         plugin.save(team.model, modelSchema: Team2.schema) { result in
             switch result {
+<<<<<<< HEAD
             case .success(let savedTeam):
                 anotherTeam = TeamWrapper(model: savedTeam)
+=======
+            case .success:
+>>>>>>> rebasing
                 saveTeamCompleted.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
@@ -178,9 +210,15 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
                     XCTFail("project query failed")
                     return
                 }
+<<<<<<< HEAD
                 let queriedProject = Project2Wrapper(model: queriedProjectList[0])
                 XCTAssertEqual(queriedProject.idString(), project.idString())
                 XCTAssertEqual(queriedProject.teamID(), anotherTeam.id())
+=======
+                let queriedProject = TestProject2(model: queriedProjectList[0])
+                XCTAssertEqual(queriedProject.idString(), project.idString())
+//                XCTAssertEqual(queriedProject.teamID(), anotherTeam.idString())
+>>>>>>> rebasing
                 queriedProjectCompleted.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
@@ -191,15 +229,24 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
 
     func testDeleteAndGetProject() throws {
         try startAmplifyAndWaitForSync()
+<<<<<<< HEAD
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         guard let team = try saveTeam(name: "name", plugin: plugin),
               let project = try saveProject(teamID: team.idString(), team: team, plugin: plugin) else {
+=======
+        guard let team = saveTeam(name: "name"),
+              let project = saveProject(teamID: team.id, team: team) else {
+>>>>>>> rebasing
             XCTFail("Could not save team and project")
             return
         }
 
         let deleteProjectSuccessful = expectation(description: "delete project")
+<<<<<<< HEAD
         plugin.delete(project.model, modelSchema: Project2.schema) { result in
+=======
+        Amplify.DataStore.delete(project) { result in
+>>>>>>> rebasing
             switch result {
             case .success:
                 deleteProjectSuccessful.fulfill()
@@ -209,10 +256,17 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
+<<<<<<< HEAD
         plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where: Project2.keys.id.eq(project.model.id)) { result in
             switch result {
             case .success(let project2):
                 XCTAssert(project2.isEmpty)
+=======
+        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+            switch result {
+            case .success(let project2):
+                XCTAssertNil(project2)
+>>>>>>> rebasing
                 getProjectAfterDeleteCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
@@ -223,12 +277,23 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
 
     func testDeleteWithValidCondition() throws {
         try startAmplifyAndWaitForSync()
+<<<<<<< HEAD
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         let team = try saveTeam(name: "name", plugin: plugin)
         let project = try saveProject(teamID: team!.idString(), team: team!, plugin: plugin)
         
         let deleteProjectSuccessful = expectation(description: "delete project")
         plugin.delete(project!.model, modelSchema: Project2.schema, where: Project2.keys.teamID.eq(team!.idString())) { result in
+=======
+        guard let team = saveTeam(name: "name"),
+              let project = saveProject(teamID: team.id, team: team) else {
+            XCTFail("Could not save team and project")
+            return
+        }
+
+        let deleteProjectSuccessful = expectation(description: "delete project")
+        Amplify.DataStore.delete(project, where: Project2.keys.team.eq(team.id)) { result in
+>>>>>>> rebasing
             switch result {
             case .success:
                 deleteProjectSuccessful.fulfill()
@@ -238,10 +303,17 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
+<<<<<<< HEAD
         plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where:  Project2.keys.id.eq(project!.model.id)) { result in
             switch result {
             case .success(let project2):
                 XCTAssert(project2.isEmpty)
+=======
+        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+            switch result {
+            case .success(let project2):
+                XCTAssertNil(project2)
+>>>>>>> rebasing
                 getProjectAfterDeleteCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
@@ -252,15 +324,24 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
 
     func testDeleteWithInvalidCondition() throws {
         try startAmplifyAndWaitForSync()
+<<<<<<< HEAD
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         guard let team = try saveTeam(name: "name", plugin: plugin),
               let project = try saveProject(teamID: team.idString(), team: team, plugin: plugin) else {
+=======
+        guard let team = saveTeam(name: "name"),
+              let project = saveProject(teamID: team.id, team: team) else {
+>>>>>>> rebasing
             XCTFail("Could not save team and project")
             return
         }
 
         let deleteProjectFailed = expectation(description: "delete project")
+<<<<<<< HEAD
         plugin.delete(project.model, modelSchema: Project2.schema, where: Project2.keys.id.eq("invalidTeamId")) { result in
+=======
+        Amplify.DataStore.delete(project, where: Project2.keys.team.eq("invalidTeamId")) { result in
+>>>>>>> rebasing
             switch result {
             case .success:
                 XCTFail("Should have failed")
@@ -274,7 +355,11 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [deleteProjectFailed], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
+<<<<<<< HEAD
         plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where:  Project2.keys.id.eq(project.model.id)) { result in
+=======
+        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+>>>>>>> rebasing
             switch result {
             case .success(let project2):
                 XCTAssertNotNil(project2)
@@ -288,14 +373,23 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
 
     func testDeleteAlreadyDeletedItemWithCondition() throws {
         try startAmplifyAndWaitForSync()
+<<<<<<< HEAD
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         guard let team = try saveTeam(name: "name", plugin: plugin),
               let project = try saveProject(teamID: team.idString(), team: team, plugin: plugin) else {
+=======
+        guard let team = saveTeam(name: "name"),
+              let project = saveProject(teamID: team.id, team: team) else {
+>>>>>>> rebasing
             XCTFail("Could not save team and project")
             return
         }
         let deleteProjectSuccessful = expectation(description: "delete project")
+<<<<<<< HEAD
         plugin.delete(project.model, modelSchema: Project2.schema) { result in
+=======
+        Amplify.DataStore.delete(project) { result in
+>>>>>>> rebasing
             switch result {
             case .success:
                 deleteProjectSuccessful.fulfill()
@@ -305,18 +399,31 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
+<<<<<<< HEAD
         plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where:  Project2.keys.id.eq(project.model.id)) { result in
             switch result {
             case .success(let project2):
                 XCTAssert(project2.isEmpty)
+=======
+        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+            switch result {
+            case .success(let project2):
+                XCTAssertNil(project2)
+>>>>>>> rebasing
                 getProjectAfterDeleteCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
             }
         }
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
+<<<<<<< HEAD
         let deleteProjectSuccessful2 = expectation(description: "delete project")
         plugin.delete(project.model, modelSchema: Project2.schema, where: Project2.keys.teamID.eq(team.idString())) { result in
+=======
+
+        let deleteProjectSuccessful2 = expectation(description: "delete project")
+        Amplify.DataStore.delete(project, where: Project2.keys.teamID == team.id) { result in
+>>>>>>> rebasing
             switch result {
             case .success:
                 deleteProjectSuccessful2.fulfill()
@@ -329,6 +436,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> flutter integ tests
     func testListProjectsByTeamID() throws {
@@ -339,10 +447,20 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
             return
         }
         guard let project = try saveProject(teamID: team.idString(), team: team, plugin: plugin) else {
+=======
+    func testListProjectsByTeamID() throws {
+        try startAmplifyAndWaitForSync()
+        guard let team = saveTeam(name: "name") else {
+            XCTFail("Could not save team")
+            return
+        }
+        guard let project = saveProject(teamID: team.id, team: team) else {
+>>>>>>> rebasing
             XCTFail("Could not save project")
             return
         }
         let listProjectByTeamIDCompleted = expectation(description: "list projects completed")
+<<<<<<< HEAD
         let predicate = Project2.keys.teamID.eq(team.idString())
         plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where: predicate) { result in
             switch result {
@@ -364,6 +482,15 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTAssertEqual(returnedProject.idString(), project.idString())
                 XCTAssertEqual(returnedProject.teamID(), team.id())
 >>>>>>> flutter integ tests
+=======
+        let predicate = Project2.keys.teamID.eq(team.id)
+        Amplify.DataStore.query(Project2.self, where: predicate) { result in
+            switch result {
+            case .success(let projects):
+                XCTAssertEqual(projects.count, 1)
+                XCTAssertEqual(projects[0].id, project.id)
+                XCTAssertEqual(projects[0].teamID, team.id)
+>>>>>>> rebasing
                 listProjectByTeamIDCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
@@ -371,6 +498,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 //    func testListProjectsByTeamID() throws {
@@ -430,6 +558,17 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
 =======
                 result = TeamWrapper(model: team)
 >>>>>>> flutter integ tests
+=======
+
+    func saveTeam(id: String = UUID().uuidString, name: String) -> Team2? {
+        let team = Team2(id: id, name: name)
+        var result: Team2?
+        let completeInvoked = expectation(description: "request completed")
+        Amplify.DataStore.save(team) { event in
+            switch event {
+            case .success(let team):
+                result = team
+>>>>>>> rebasing
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
@@ -440,6 +579,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
     }
 
     func saveProject(id: String = UUID().uuidString,
+<<<<<<< HEAD
                      name: String? = "TestTeam",
                      teamID: String,
 <<<<<<< HEAD
@@ -472,6 +612,18 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
 =======
                 result = Project2Wrapper(model: project)
 >>>>>>> flutter integ tests
+=======
+                     name: String? = nil,
+                     teamID: String,
+                     team: Team2? = nil) -> Project2? {
+        let project = Project2(id: id, name: name, teamID: teamID, team: team)
+        var result: Project2?
+        let completeInvoked = expectation(description: "request completed")
+        Amplify.DataStore.save(project) { event in
+            switch event {
+            case .success(let project):
+                result = project
+>>>>>>> rebasing
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
@@ -481,3 +633,21 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         return result
     }
 }
+<<<<<<< HEAD
+=======
+
+extension Team2: Equatable {
+    public static func == (lhs: Team2,
+                           rhs: Team2) -> Bool {
+        return lhs.id == rhs.id
+            && lhs.name == rhs.name
+    }
+}
+extension Project2: Equatable {
+    public static func == (lhs: Project2, rhs: Project2) -> Bool {
+        return lhs.id == rhs.id
+            && lhs.name == rhs.name
+            && lhs.teamID == rhs.teamID
+    }
+}
+>>>>>>> rebasing
