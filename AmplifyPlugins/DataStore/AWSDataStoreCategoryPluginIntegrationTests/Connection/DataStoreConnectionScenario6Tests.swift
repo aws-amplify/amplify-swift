@@ -99,7 +99,6 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
             return
         }
 
-        // fetch comment
         let getCommentCompleted = expectation(description: "get comment complete")
         var resultComment: Comment6?
         Amplify.DataStore.query(Comment6.self, byId: comment.id) { result in
@@ -149,7 +148,6 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
             return
         }
 
-        // fetch post
         let getPostCompleted = expectation(description: "get post complete")
         var resultPost: Post6?
         Amplify.DataStore.query(Post6.self, byId: post.id) { result in
@@ -188,7 +186,6 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
             XCTAssertEqual(postsInEagerlyLoadedBlog[0].id, post.id)
         }
 
-
         guard let lazilyLoadedComments = fetchedPost.comments else {
             XCTFail("Could not get comments")
             return
@@ -199,9 +196,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
             return
         }
         XCTAssertEqual(lazilyLoadedComments.count, 1)
-        XCTAssertTrue(lazilyLoadedComments.contains(where: { (commentIn) -> Bool in
-            commentIn.id == comment.id
-        }))
+        XCTAssertEqual(lazilyLoadedComments[0].id, comment.id)
         if let fetchedPost = lazilyLoadedComments[0].post {
             XCTAssertEqual(fetchedPost.id, post.id)
             XCTAssertEqual(fetchedPost.comments?.count, 1)
