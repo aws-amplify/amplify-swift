@@ -203,6 +203,9 @@
 		97406B382666DC0200C41E19 /* DataStoreCustomPrimaryKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97406B372666DC0200C41E19 /* DataStoreCustomPrimaryKeyTests.swift */; };
 		97DB735426B49ED6004708B8 /* MutationEvent+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DB735326B49ED6004708B8 /* MutationEvent+Extensions.swift */; };
 		97DB735B26B4A229004708B8 /* MutationEventExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DB735A26B4A229004708B8 /* MutationEventExtensionsTests.swift */; };
+		9C1A53DC26E6BF7500DFE127 /* DataStoreConnectionScenario2FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1A53DB26E6BF7500DFE127 /* DataStoreConnectionScenario2FlutterTests.swift */; };
+		9C1A53E426E6C24900DFE127 /* TestProject2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1A53E326E6C24900DFE127 /* TestProject2.swift */; };
+		9C1A53F326E80B8100DFE127 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 9C1A53F226E80B8100DFE127 /* amplifyconfiguration.json */; };
 		9C73569B26CAE9C600A149C7 /* FlutterDataStoreRequestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C73569A26CAE9C600A149C7 /* FlutterDataStoreRequestUtils.swift */; };
 		9C7356B326CC12C300A149C7 /* TestTeam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C7356B226CC12C300A149C7 /* TestTeam.swift */; };
 		9C7356BB26CC15F700A149C7 /* TestProject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C7356BA26CC15F700A149C7 /* TestProject.swift */; };
@@ -593,6 +596,10 @@
 		97406B372666DC0200C41E19 /* DataStoreCustomPrimaryKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreCustomPrimaryKeyTests.swift; sourceTree = "<group>"; };
 		97DB735326B49ED6004708B8 /* MutationEvent+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MutationEvent+Extensions.swift"; sourceTree = "<group>"; };
 		97DB735A26B4A229004708B8 /* MutationEventExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEventExtensionsTests.swift; sourceTree = "<group>"; };
+		9C1A53DB26E6BF7500DFE127 /* DataStoreConnectionScenario2FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario2FlutterTests.swift; sourceTree = "<group>"; };
+		9C1A53E326E6C24900DFE127 /* TestProject2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestProject2.swift; sourceTree = "<group>"; };
+		9C1A53EB26E80AD600DFE127 /* amplifyconfiguration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
+		9C1A53F226E80B8100DFE127 /* amplifyconfiguration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 		9C73569A26CAE9C600A149C7 /* FlutterDataStoreRequestUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlutterDataStoreRequestUtils.swift; sourceTree = "<group>"; };
 		9C7356B226CC12C300A149C7 /* TestTeam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTeam.swift; sourceTree = "<group>"; };
 		9C7356BA26CC15F700A149C7 /* TestProject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestProject.swift; sourceTree = "<group>"; };
@@ -972,6 +979,7 @@
 				2149E61023886C7F00873955 /* Assets.xcassets */,
 				2149E61223886C7F00873955 /* LaunchScreen.storyboard */,
 				2149E61523886C7F00873955 /* Info.plist */,
+				9C1A53EB26E80AD600DFE127 /* amplifyconfiguration.json */,
 			);
 			path = HostApp;
 			sourceTree = "<group>";
@@ -1225,6 +1233,7 @@
 				9C7356B226CC12C300A149C7 /* TestTeam.swift */,
 				9C7356BA26CC15F700A149C7 /* TestProject.swift */,
 				9C740D6926CEC31E0053636A /* TestPost.swift */,
+				9C1A53E326E6C24900DFE127 /* TestProject2.swift */,
 			);
 			path = SerializedModelWrappers;
 			sourceTree = "<group>";
@@ -1256,6 +1265,7 @@
 				9CA29C4626C5BC2900458692 /* AWSDataStorePluginFlutterConfigurationTests.swift */,
 				9CA29CF026C5E12F00458692 /* DataStoreFlutterConfigurationTests.swift */,
 				9C740D5526CEC2A30053636A /* DataStoreFlutterEndToEndTests.swift */,
+				9C1A53F226E80B8100DFE127 /* amplifyconfiguration.json */,
 			);
 			path = AWSDataStoreCategoryPluginFlutterIntegrationTests;
 			sourceTree = "<group>";
@@ -1276,6 +1286,7 @@
 			isa = PBXGroup;
 			children = (
 				9CB6AA1226C6FA83003A7008 /* DataStoreConnectionScenario1FlutterTests.swift */,
+				9C1A53DB26E6BF7500DFE127 /* DataStoreConnectionScenario2FlutterTests.swift */,
 			);
 			path = Connection;
 			sourceTree = "<group>";
@@ -1778,6 +1789,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C1A53F326E80B8100DFE127 /* amplifyconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2503,6 +2515,7 @@
 				9C740D6A26CEC31E0053636A /* TestPost.swift in Sources */,
 				9C73569B26CAE9C600A149C7 /* FlutterDataStoreRequestUtils.swift in Sources */,
 				9C740D4E26CEC15C0053636A /* FlutterModelFieldType.swift in Sources */,
+				9C1A53DC26E6BF7500DFE127 /* DataStoreConnectionScenario2FlutterTests.swift in Sources */,
 				9CA29CE926C5E0BB00458692 /* DataStoreTestBase.swift in Sources */,
 				9CA29C4726C5BC2900458692 /* AWSDataStorePluginFlutterConfigurationTests.swift in Sources */,
 				9C740D2026CEC0150053636A /* FlutterTemporal.swift in Sources */,
@@ -2518,6 +2531,7 @@
 				9C7356B326CC12C300A149C7 /* TestTeam.swift in Sources */,
 				9C740D3026CEC0640053636A /* FlutterModelField.swift in Sources */,
 				9CA29CF126C5E12F00458692 /* DataStoreFlutterConfigurationTests.swift in Sources */,
+				9C1A53E426E6C24900DFE127 /* TestProject2.swift in Sources */,
 				9C7356BB26CC15F700A149C7 /* TestProject.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
