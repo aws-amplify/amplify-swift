@@ -23,7 +23,7 @@ class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
 
     func search(for text: String,
                 area: Geo.SearchArea? = nil,
-                countries: [String]? = nil,
+                countries: [Geo.Country]? = nil,
                 maxResults: Int? = nil,
                 placeIndexName: String? = nil,
                 completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {

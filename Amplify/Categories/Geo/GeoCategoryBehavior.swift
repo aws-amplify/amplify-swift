@@ -16,17 +16,14 @@ public protocol GeoCategoryBehavior {
     /// - Parameters:
     ///   - text: The place name or address to be used in the search. (case insensitive)
     ///   - area: The area (.near or .boundingBox) for the search. (optional)
-    ///   - countries: Limits the search to the given a list of countries/regions. Use
-    ///   ISO-3166 3-digit country codes. (optional)
-    ///   - maxResults: The maximum number of results returned per request. (optional,
-    ///   default: 50)
-    ///   - placeIndexName: The name of the Place Index to query. (optional, default: The
-    ///   default Place Index in amplifyconfiguration.json)
+    ///   - countries: Limits the search to the given a list of countries/regions. (optional)
+    ///   - maxResults: The maximum number of results returned per request. (optional)
+    ///   - placeIndexName: The name of the Place Index to query. (optional)
     ///   - completionHandler: The completion handler receives a Response object.  The
     ///   success case provides a Place array.
     func search(for text: String, // swiftlint:disable:this function_parameter_count
                 area: Geo.SearchArea?,
-                countries: [String]?,
+                countries: [Geo.Country]?,
                 maxResults: Int?,
                 placeIndexName: String?,
                 completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>)
@@ -35,10 +32,8 @@ public protocol GeoCategoryBehavior {
     /// closest to the specified position.
     /// - Parameters:
     ///   - coordinates: Specifies a coordinate for the query.
-    ///   - maxResults: The maximum number of results returned per request. (optional,
-    ///   default: 50)
-    ///   - placeIndexName: The name of the Place Index to query. (optional, default: The
-    ///   default Place Index in amplifyconfiguration.json)
+    ///   - maxResults: The maximum number of results returned per request. (optional)
+    ///   - placeIndexName: The name of the Place Index to query. (optional)
     ///   - completionHandler: The completion handler receives a Response object.  The
     ///   success case provides a Place array.
     func search(for coordinates: Geo.Coordinates,

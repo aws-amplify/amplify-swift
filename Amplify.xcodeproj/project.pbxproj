@@ -202,6 +202,7 @@
 		5C09CCC226D0733700CDCA9F /* GeoCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCC026D0733700CDCA9F /* GeoCategoryClientAPITests.swift */; };
 		5C09CCC326D0733700CDCA9F /* GeoCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCC126D0733700CDCA9F /* GeoCategoryConfigurationTests.swift */; };
 		5C09CCC526D074B100CDCA9F /* MockGeoCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCC426D074B100CDCA9F /* MockGeoCategoryPlugin.swift */; };
+		5C2D791526F5172E00420798 /* Geo+Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2D791426F5172E00420798 /* Geo+Country.swift */; };
 		5C763DA026F2CAF5006650E7 /* Geo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763D9F26F2CAF5006650E7 /* Geo.swift */; };
 		5C763DA226F2CB6A006650E7 /* Geo+Coordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763DA126F2CB6A006650E7 /* Geo+Coordinates.swift */; };
 		5C763DA426F2CCDF006650E7 /* CLocationCoordinate2D+Geo.Coordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763DA326F2CCDF006650E7 /* CLocationCoordinate2D+Geo.Coordinates.swift */; };
@@ -1098,6 +1099,7 @@
 		5C09CCC026D0733700CDCA9F /* GeoCategoryClientAPITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoCategoryClientAPITests.swift; sourceTree = "<group>"; };
 		5C09CCC126D0733700CDCA9F /* GeoCategoryConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoCategoryConfigurationTests.swift; sourceTree = "<group>"; };
 		5C09CCC426D074B100CDCA9F /* MockGeoCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockGeoCategoryPlugin.swift; sourceTree = "<group>"; };
+		5C2D791426F5172E00420798 /* Geo+Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Geo+Country.swift"; sourceTree = "<group>"; };
 		5C763D9F26F2CAF5006650E7 /* Geo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geo.swift; sourceTree = "<group>"; };
 		5C763DA126F2CB6A006650E7 /* Geo+Coordinates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Geo+Coordinates.swift"; sourceTree = "<group>"; };
 		5C763DA326F2CCDF006650E7 /* CLocationCoordinate2D+Geo.Coordinates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLocationCoordinate2D+Geo.Coordinates.swift"; sourceTree = "<group>"; };
@@ -2520,6 +2522,7 @@
 				5C763D9F26F2CAF5006650E7 /* Geo.swift */,
 				5C763DA526F2CD95006650E7 /* Geo+BoundingBox.swift */,
 				5C763DA126F2CB6A006650E7 /* Geo+Coordinates.swift */,
+				5C2D791426F5172E00420798 /* Geo+Country.swift */,
 				5C763DAB26F2CFC2006650E7 /* Geo+MapStyle.swift */,
 				5C763DA926F2CF66006650E7 /* Geo+Place.swift */,
 				5C763DAD26F2D00F006650E7 /* Geo+ResultsHandler.swift */,
@@ -4992,6 +4995,7 @@
 			files = (
 				B912D1B6242960D40028F05C /* QueryPaginationInput.swift in Sources */,
 				974FF18324B54B500050D01B /* DeviceInfoDetailView.swift in Sources */,
+				5C2D791526F5172E00420798 /* Geo+Country.swift in Sources */,
 				B4C499022415E0CA00067992 /* AuthWebUISignInOperation.swift in Sources */,
 				B92E03AE2367CE7A006CEB8D /* DataStoreCategoryPlugin.swift in Sources */,
 				FAD3936B2381F91100463F5E /* MutationEvent.swift in Sources */,

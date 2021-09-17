@@ -19,7 +19,7 @@ extension GeoCategory: GeoCategoryBehavior {
     ///   success case provides a Place array.
     public func search(for text: String,
                        area: Geo.SearchArea? = nil,
-                       countries: [String]? = nil,
+                       countries: [Geo.Country]? = nil,
                        maxResults: Int? = nil,
                        placeIndexName: String? = nil,
                        completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
