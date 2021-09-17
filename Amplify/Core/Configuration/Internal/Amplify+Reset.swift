@@ -32,6 +32,8 @@ extension Amplify {
                 reset(Auth, in: group) { group.leave() }
             case .dataStore:
                 reset(DataStore, in: group) { group.leave() }
+            case .geo:
+                reset(Geo, in: group) { group.leave() }
             case .storage:
                 reset(Storage, in: group) { group.leave() }
             case .predictions:
@@ -80,6 +82,8 @@ extension Amplify {
                 Auth = AuthCategory()
             case .dataStore:
                 DataStore = DataStoreCategory()
+            case .geo:
+                Geo = GeoCategory()
             case .predictions:
                 Predictions = PredictionsCategory()
             case .storage:

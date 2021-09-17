@@ -195,6 +195,27 @@
 		2861F5F799C24671B5C4DB8D /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C448F4F6DD01A268675E1C68 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework */; };
 		2CFB61C7E80D065C0A885A2F /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5363CAF9EFAA822FED56808 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */; };
 		3263D332138415AF42E64FF7 /* Pods_AmplifyTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDC7F1C368154B364CB74742 /* Pods_AmplifyTestApp.framework */; };
+		5C09CCB526CEDE1200CDCA9F /* GeoCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCA926CEDE1200CDCA9F /* GeoCategory+HubPayloadEventName.swift */; };
+		5C09CCB626CEDE1200CDCA9F /* GeoCategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCAB26CEDE1200CDCA9F /* GeoCategory+CategoryConfigurable.swift */; };
+		5C09CCB726CEDE1200CDCA9F /* GeoCategory+Resettable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCAC26CEDE1200CDCA9F /* GeoCategory+Resettable.swift */; };
+		5C09CCB926CEDE1200CDCA9F /* GeoCategoryConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCAE26CEDE1200CDCA9F /* GeoCategoryConfiguration.swift */; };
+		5C09CCBA26CEDE1200CDCA9F /* GeoCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCAF26CEDE1200CDCA9F /* GeoCategoryPlugin.swift */; };
+		5C09CCBB26CEDE1200CDCA9F /* GeoCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCB026CEDE1200CDCA9F /* GeoCategory.swift */; };
+		5C09CCBC26CEDE1200CDCA9F /* GeoCategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCB126CEDE1200CDCA9F /* GeoCategory+ClientBehavior.swift */; };
+		5C09CCBD26CEDE1200CDCA9F /* GeoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCB326CEDE1200CDCA9F /* GeoError.swift */; };
+		5C09CCBE26CEDE1200CDCA9F /* GeoCategoryBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCB426CEDE1200CDCA9F /* GeoCategoryBehavior.swift */; };
+		5C09CCC226D0733700CDCA9F /* GeoCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCC026D0733700CDCA9F /* GeoCategoryClientAPITests.swift */; };
+		5C09CCC326D0733700CDCA9F /* GeoCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCC126D0733700CDCA9F /* GeoCategoryConfigurationTests.swift */; };
+		5C09CCC526D074B100CDCA9F /* MockGeoCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCC426D074B100CDCA9F /* MockGeoCategoryPlugin.swift */; };
+		5C2D791526F5172E00420798 /* Geo+Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2D791426F5172E00420798 /* Geo+Country.swift */; };
+		5C763DA026F2CAF5006650E7 /* Geo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763D9F26F2CAF5006650E7 /* Geo.swift */; };
+		5C763DA226F2CB6A006650E7 /* Geo+Coordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763DA126F2CB6A006650E7 /* Geo+Coordinates.swift */; };
+		5C763DA426F2CCDF006650E7 /* CLocationCoordinate2D+Geo.Coordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763DA326F2CCDF006650E7 /* CLocationCoordinate2D+Geo.Coordinates.swift */; };
+		5C763DA626F2CD95006650E7 /* Geo+BoundingBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763DA526F2CD95006650E7 /* Geo+BoundingBox.swift */; };
+		5C763DA826F2CE28006650E7 /* Geo+SearchArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763DA726F2CE28006650E7 /* Geo+SearchArea.swift */; };
+		5C763DAA26F2CF66006650E7 /* Geo+Place.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763DA926F2CF66006650E7 /* Geo+Place.swift */; };
+		5C763DAC26F2CFC2006650E7 /* Geo+MapStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763DAB26F2CFC2006650E7 /* Geo+MapStyle.swift */; };
+		5C763DAE26F2D00F006650E7 /* Geo+ResultsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763DAD26F2D00F006650E7 /* Geo+ResultsHandler.swift */; };
 		6B33896823AAACC900561E5B /* ReachabilityUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B33896723AAACC900561E5B /* ReachabilityUpdate.swift */; };
 		6B452B8225A7D0F600A1A811 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B452B8125A7D0F600A1A811 /* Array+Extensions.swift */; };
 		6B5087BD2565E5AD000AB673 /* QueryPredicateEvaluateGeneratedDoubleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B5087BC2565E5AD000AB673 /* QueryPredicateEvaluateGeneratedDoubleTests.swift */; };
@@ -1074,6 +1095,27 @@
 		590F2A08ED60BB9A54788F50 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_CoreMLPredictionsPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_CoreMLPredictionsPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A112B8C39AC37F0FB71AF54 /* Pods-Amplify.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify.debug.xcconfig"; path = "Target Support Files/Pods-Amplify/Pods-Amplify.debug.xcconfig"; sourceTree = "<group>"; };
 		5AEF4A900CAE6A541D752A6E /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
+		5C09CCA926CEDE1200CDCA9F /* GeoCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GeoCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
+		5C09CCAB26CEDE1200CDCA9F /* GeoCategory+CategoryConfigurable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GeoCategory+CategoryConfigurable.swift"; sourceTree = "<group>"; };
+		5C09CCAC26CEDE1200CDCA9F /* GeoCategory+Resettable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GeoCategory+Resettable.swift"; sourceTree = "<group>"; };
+		5C09CCAE26CEDE1200CDCA9F /* GeoCategoryConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoCategoryConfiguration.swift; sourceTree = "<group>"; };
+		5C09CCAF26CEDE1200CDCA9F /* GeoCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoCategoryPlugin.swift; sourceTree = "<group>"; };
+		5C09CCB026CEDE1200CDCA9F /* GeoCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoCategory.swift; sourceTree = "<group>"; };
+		5C09CCB126CEDE1200CDCA9F /* GeoCategory+ClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GeoCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
+		5C09CCB326CEDE1200CDCA9F /* GeoError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoError.swift; sourceTree = "<group>"; };
+		5C09CCB426CEDE1200CDCA9F /* GeoCategoryBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoCategoryBehavior.swift; sourceTree = "<group>"; };
+		5C09CCC026D0733700CDCA9F /* GeoCategoryClientAPITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoCategoryClientAPITests.swift; sourceTree = "<group>"; };
+		5C09CCC126D0733700CDCA9F /* GeoCategoryConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoCategoryConfigurationTests.swift; sourceTree = "<group>"; };
+		5C09CCC426D074B100CDCA9F /* MockGeoCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockGeoCategoryPlugin.swift; sourceTree = "<group>"; };
+		5C2D791426F5172E00420798 /* Geo+Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Geo+Country.swift"; sourceTree = "<group>"; };
+		5C763D9F26F2CAF5006650E7 /* Geo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geo.swift; sourceTree = "<group>"; };
+		5C763DA126F2CB6A006650E7 /* Geo+Coordinates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Geo+Coordinates.swift"; sourceTree = "<group>"; };
+		5C763DA326F2CCDF006650E7 /* CLocationCoordinate2D+Geo.Coordinates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLocationCoordinate2D+Geo.Coordinates.swift"; sourceTree = "<group>"; };
+		5C763DA526F2CD95006650E7 /* Geo+BoundingBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Geo+BoundingBox.swift"; sourceTree = "<group>"; };
+		5C763DA726F2CE28006650E7 /* Geo+SearchArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Geo+SearchArea.swift"; sourceTree = "<group>"; };
+		5C763DA926F2CF66006650E7 /* Geo+Place.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Geo+Place.swift"; sourceTree = "<group>"; };
+		5C763DAB26F2CFC2006650E7 /* Geo+MapStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Geo+MapStyle.swift"; sourceTree = "<group>"; };
+		5C763DAD26F2D00F006650E7 /* Geo+ResultsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Geo+ResultsHandler.swift"; sourceTree = "<group>"; };
 		5FFB62449226244D696DAA73 /* Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin/Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		5FFE6F3EF19A7DA9F6B5024A /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.release.xcconfig"; sourceTree = "<group>"; };
 		61CE693182BF781FBC4D3411 /* Pods-AWSS3StoragePlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePlugin/Pods-AWSS3StoragePlugin.release.xcconfig"; sourceTree = "<group>"; };
@@ -2441,6 +2483,64 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		5C09CCA826CEDE1200CDCA9F /* Geo */ = {
+			isa = PBXGroup;
+			children = (
+				5C09CCB026CEDE1200CDCA9F /* GeoCategory.swift */,
+				5C09CCB126CEDE1200CDCA9F /* GeoCategory+ClientBehavior.swift */,
+				5C09CCA926CEDE1200CDCA9F /* GeoCategory+HubPayloadEventName.swift */,
+				5C09CCB426CEDE1200CDCA9F /* GeoCategoryBehavior.swift */,
+				5C09CCAE26CEDE1200CDCA9F /* GeoCategoryConfiguration.swift */,
+				5C09CCAF26CEDE1200CDCA9F /* GeoCategoryPlugin.swift */,
+				5C09CCB226CEDE1200CDCA9F /* Error */,
+				5C09CCAA26CEDE1200CDCA9F /* Internal */,
+				5C763D9E26F2CA9F006650E7 /* Types */,
+			);
+			path = Geo;
+			sourceTree = "<group>";
+		};
+		5C09CCAA26CEDE1200CDCA9F /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				5C09CCAB26CEDE1200CDCA9F /* GeoCategory+CategoryConfigurable.swift */,
+				5C09CCAC26CEDE1200CDCA9F /* GeoCategory+Resettable.swift */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
+		5C09CCB226CEDE1200CDCA9F /* Error */ = {
+			isa = PBXGroup;
+			children = (
+				5C09CCB326CEDE1200CDCA9F /* GeoError.swift */,
+			);
+			path = Error;
+			sourceTree = "<group>";
+		};
+		5C09CCBF26D0733700CDCA9F /* Geo */ = {
+			isa = PBXGroup;
+			children = (
+				5C09CCC026D0733700CDCA9F /* GeoCategoryClientAPITests.swift */,
+				5C09CCC126D0733700CDCA9F /* GeoCategoryConfigurationTests.swift */,
+			);
+			path = Geo;
+			sourceTree = "<group>";
+		};
+		5C763D9E26F2CA9F006650E7 /* Types */ = {
+			isa = PBXGroup;
+			children = (
+				5C763DA326F2CCDF006650E7 /* CLocationCoordinate2D+Geo.Coordinates.swift */,
+				5C763D9F26F2CAF5006650E7 /* Geo.swift */,
+				5C763DA526F2CD95006650E7 /* Geo+BoundingBox.swift */,
+				5C763DA126F2CB6A006650E7 /* Geo+Coordinates.swift */,
+				5C2D791426F5172E00420798 /* Geo+Country.swift */,
+				5C763DAB26F2CFC2006650E7 /* Geo+MapStyle.swift */,
+				5C763DA926F2CF66006650E7 /* Geo+Place.swift */,
+				5C763DAD26F2D00F006650E7 /* Geo+ResultsHandler.swift */,
+				5C763DA726F2CE28006650E7 /* Geo+SearchArea.swift */,
+			);
+			path = Types;
+			sourceTree = "<group>";
+		};
 		6B33896623AAAC9600561E5B /* Reachability */ = {
 			isa = PBXGroup;
 			children = (
@@ -3541,6 +3641,7 @@
 				FAC234FB227A053D00424678 /* API */,
 				B4A19DA424101E9D00DE2E55 /* Auth */,
 				B9DD3F0B23552C4E00D62C65 /* DataStore */,
+				5C09CCA826CEDE1200CDCA9F /* Geo */,
 				FAC2358B227A46A900424678 /* Hub */,
 				FAC23503227A053D00424678 /* Logging */,
 				B4D38515236C97350014653D /* Predictions */,
@@ -3654,6 +3755,7 @@
 				FAC23555227A056600424678 /* API */,
 				B4F3E9F624314E1300F23296 /* Auth */,
 				FAD3937B23820CE200463F5E /* DataStore */,
+				5C09CCBF26D0733700CDCA9F /* Geo */,
 				FAC23584227A442000424678 /* Hub */,
 				FAC23559227A056600424678 /* Logging */,
 				B4D38541236C9BF40014653D /* Predictions */,
@@ -3739,6 +3841,7 @@
 				FAD3937E23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift */,
 				21A7C90125ACC4D1004355D6 /* MockDataStoreResponders.swift */,
 				975751B324D21DE000FA0A6E /* MockDevMenuContextProvider.swift */,
+				5C09CCC426D074B100CDCA9F /* MockGeoCategoryPlugin.swift */,
 				FAC23589227A45D500424678 /* MockHubCategoryPlugin.swift */,
 				FAC0A2BB22B4603800B50912 /* MockLoggingCategoryPlugin.swift */,
 				B4BD6B3623708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift */,
@@ -4909,6 +5012,7 @@
 			files = (
 				B912D1B6242960D40028F05C /* QueryPaginationInput.swift in Sources */,
 				974FF18324B54B500050D01B /* DeviceInfoDetailView.swift in Sources */,
+				5C2D791526F5172E00420798 /* Geo+Country.swift in Sources */,
 				B4C499022415E0CA00067992 /* AuthWebUISignInOperation.swift in Sources */,
 				B92E03AE2367CE7A006CEB8D /* DataStoreCategoryPlugin.swift in Sources */,
 				FAD3936B2381F91100463F5E /* MutationEvent.swift in Sources */,
@@ -4945,6 +5049,7 @@
 				97CB860024AA451B000C65FB /* DevMenuRow.swift in Sources */,
 				FA9FB780232AA11A00C04D32 /* HubChannelDispatcher.swift in Sources */,
 				FA315298233D644F00DE78E7 /* StorageDownloadDataRequest.swift in Sources */,
+				5C763DA226F2CB6A006650E7 /* Geo+Coordinates.swift in Sources */,
 				FA4E730A232828EA003B8EEB /* Amplify+Reset.swift in Sources */,
 				B4FA336624105DCD00E1C659 /* AuthCategory+ClientBehavior.swift in Sources */,
 				FAA7A5A624C0CC8F00CA863F /* AmplifyOperation+Combine.swift in Sources */,
@@ -4956,8 +5061,11 @@
 				FA00F69224DA4087003E8A71 /* PredictionsCategoryBehavior+Combine.swift in Sources */,
 				FAC23542227A055200424678 /* Foundation+Utils.swift in Sources */,
 				B4A19DAD24101F7100DE2E55 /* AuthSignUpOperation.swift in Sources */,
+				5C09CCBB26CEDE1200CDCA9F /* GeoCategory.swift in Sources */,
 				B46884182460A92900221268 /* AuthFetchDevicesRequest.swift in Sources */,
+				5C09CCBA26CEDE1200CDCA9F /* GeoCategoryPlugin.swift in Sources */,
 				FAA2E8D023A02AAD00E420EA /* StorageCategory+Resettable.swift in Sources */,
+				5C09CCB726CEDE1200CDCA9F /* GeoCategory+Resettable.swift in Sources */,
 				6B767FB723AC092800C683ED /* AmplifyAPICategory+ReachabilityBehavior.swift in Sources */,
 				FAD393712381FD3C00463F5E /* DataStoreCategory+Subscribe.swift in Sources */,
 				FAA64FC32397294600B9C3C6 /* ModelSchema+Attributes.swift in Sources */,
@@ -4965,9 +5073,11 @@
 				95DAAB28237E63370028544F /* Celebrity.swift in Sources */,
 				FA0933812384749A00C2FD5F /* LoggingCategory+Logger.swift in Sources */,
 				97DC3D5024C1FCEE00D79E24 /* LogEntryRow.swift in Sources */,
+				5C09CCBE26CEDE1200CDCA9F /* GeoCategoryBehavior.swift in Sources */,
 				B4926F6E24250219007B769C /* AuthResetPasswordOperation.swift in Sources */,
 				FA6BC87F235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift in Sources */,
 				FA15EB8924DB19E100370C05 /* AmplifyOperation+PredictionsPublishers.swift in Sources */,
+				5C09CCB926CEDE1200CDCA9F /* GeoCategoryConfiguration.swift in Sources */,
 				B9FAA175238EFC5A009414B4 /* String+Extensions.swift in Sources */,
 				B4B5CC992457B7FA0019C783 /* AuthFetchUserAttributeOperation.swift in Sources */,
 				95DAAB25237E63370028544F /* Entity.swift in Sources */,
@@ -4975,8 +5085,10 @@
 				FA09337C23844E9F00C2FD5F /* GraphQLOperationRequest.swift in Sources */,
 				FAC23545227A055200424678 /* AmplifyConfiguration.swift in Sources */,
 				FA00F68C24DA3A8F003E8A71 /* AuthCategoryUserBehavior+Combine.swift in Sources */,
+				5C763DA626F2CD95006650E7 /* Geo+BoundingBox.swift in Sources */,
 				95DAAB84237F13940028544F /* VoiceType.swift in Sources */,
 				FAA2E8C223A00D5800E420EA /* APICategory+Resettable.swift in Sources */,
+				5C09CCB526CEDE1200CDCA9F /* GeoCategory+HubPayloadEventName.swift in Sources */,
 				B4FA336324105D1800E1C659 /* AuthCategoryPlugin.swift in Sources */,
 				B4B1E0E524733687007F3261 /* AuthEventName.swift in Sources */,
 				6B33896823AAACC900561E5B /* ReachabilityUpdate.swift in Sources */,
@@ -5039,6 +5151,7 @@
 				FA56F72322B14B420039754A /* Cancellable.swift in Sources */,
 				95DAAB4B237E639E0028544F /* TranslateTextResult.swift in Sources */,
 				B9485E9923F40877009C4F93 /* Date+Operation.swift in Sources */,
+				5C763DA026F2CAF5006650E7 /* Geo.swift in Sources */,
 				FA6BC872235F5BD60001A882 /* GraphQLOperation.swift in Sources */,
 				974FF1A524BE18460050D01B /* PluginInfoHelper.swift in Sources */,
 				FAF1B88423392F7C007F1435 /* ConcurrentDispatcher.swift in Sources */,
@@ -5107,6 +5220,7 @@
 				FA09B9472322CBA7000E064D /* APICategoryConfiguration.swift in Sources */,
 				21FFF995230C96CB005878EA /* StorageListOperation.swift in Sources */,
 				95DAAB33237E63370028544F /* KeyPhrase.swift in Sources */,
+				5C763DAC26F2CFC2006650E7 /* Geo+MapStyle.swift in Sources */,
 				21409C552384C55D000A53C9 /* LabelType.swift in Sources */,
 				FA315295233D634900DE78E7 /* StorageDownloadFileRequest.swift in Sources */,
 				95DAAB26237E63370028544F /* Sentiment.swift in Sources */,
@@ -5121,6 +5235,7 @@
 				95DAAB4A237E639E0028544F /* InterpretResult.swift in Sources */,
 				B4FA76082416E87E006F59CE /* AuthFetchSessionOperation.swift in Sources */,
 				B49A02F92410BEBE00B42A25 /* AuthCategory+CategoryConfigurable.swift in Sources */,
+				5C763DA426F2CCDF006650E7 /* CLocationCoordinate2D+Geo.Coordinates.swift in Sources */,
 				B92E03B12367CE7A006CEB8D /* DataStoreError.swift in Sources */,
 				95DAAB48237E639E0028544F /* IdentifyCelebritiesResult.swift in Sources */,
 				210922522359634C00CEC295 /* AnalyticsPropertyValue.swift in Sources */,
@@ -5136,6 +5251,7 @@
 				FAAFAF2B23904AAF002CF932 /* AtomicValue.swift in Sources */,
 				B4B5CCA12458A0490019C783 /* AuthUpdateAttributeResult.swift in Sources */,
 				95DAAB89237F13B70028544F /* IdentifyEntityMatchesResult.swift in Sources */,
+				5C763DAE26F2D00F006650E7 /* Geo+ResultsHandler.swift in Sources */,
 				FAC428A2235F80000000F221 /* AmplifyAPICategory+GraphQLBehavior.swift in Sources */,
 				95DAAB37237E63370028544F /* Attribute.swift in Sources */,
 				6B50C91C253E2B57007B16DD /* APICategoryAuthProviderFactoryBehavior.swift in Sources */,
@@ -5177,6 +5293,7 @@
 				FA09B94D2322CC05000E064D /* StorageCategoryConfiguration.swift in Sources */,
 				950A26DF23D15D9800D92B19 /* SpeechToTextResult.swift in Sources */,
 				B92E03AF2367CE7A006CEB8D /* DataStoreCategoryBehavior.swift in Sources */,
+				5C09CCBC26CEDE1200CDCA9F /* GeoCategory+ClientBehavior.swift in Sources */,
 				FA31529C233D645400DE78E7 /* StorageListRequest.swift in Sources */,
 				95DAAB1D237E63370028544F /* IdentifiedWord.swift in Sources */,
 				B92E03B62367CE7A006CEB8D /* ModelSchema.swift in Sources */,
@@ -5206,6 +5323,7 @@
 				FA58456724D9D6960028D65A /* AmplifyOperation+APIPublishers.swift in Sources */,
 				950A26DB23D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift in Sources */,
 				B46884162460A8ED00221268 /* AuthRememberDeviceOperation.swift in Sources */,
+				5C09CCB626CEDE1200CDCA9F /* GeoCategory+CategoryConfigurable.swift in Sources */,
 				974FF19D24BE0B4B0050D01B /* InfoItemProvider.swift in Sources */,
 				B4D38530236C97360014653D /* PredictionsInterpretOperation.swift in Sources */,
 				FAD3936D2381FA1700463F5E /* MutationEvent+Schema.swift in Sources */,
@@ -5237,6 +5355,7 @@
 				21A4ED4B259CD21700E1047D /* ModelListProvider.swift in Sources */,
 				B473B54A245E09B600C45C72 /* AuthSignOutRequest.swift in Sources */,
 				B92E03B52367CE7A006CEB8D /* Model.swift in Sources */,
+				5C763DAA26F2CF66006650E7 /* Geo+Place.swift in Sources */,
 				95DAAB31237E63370028544F /* PartOfSpeech.swift in Sources */,
 				B91A87A023D18A320049A12F /* Temporal.swift in Sources */,
 				97CB85FE24AA451B000C65FB /* AmplifyDevMenu.swift in Sources */,
@@ -5256,6 +5375,7 @@
 				FAC235A3227A5ED000424678 /* HubChannel.swift in Sources */,
 				FAA2E8CE23A02A8100E420EA /* PredictionsCategory+Resettable.swift in Sources */,
 				FAC23516227A053D00424678 /* StorageCategoryBehavior.swift in Sources */,
+				5C09CCBD26CEDE1200CDCA9F /* GeoError.swift in Sources */,
 				FA4E730E232829F1003B8EEB /* Resettable.swift in Sources */,
 				FAC23518227A053D00424678 /* StorageCategoryPlugin.swift in Sources */,
 				B42B3D3B246AE178007211E0 /* AuthInvalidateCredentialBehavior.swift in Sources */,
@@ -5279,6 +5399,7 @@
 				B450741324115C260098F02D /* AuthSignInRequest.swift in Sources */,
 				974FF12F24B043780050D01B /* TriggerDelegate.swift in Sources */,
 				B4FA336A24105EB700E1C659 /* AuthCategoryConfiguration.swift in Sources */,
+				5C763DA826F2CE28006650E7 /* Geo+SearchArea.swift in Sources */,
 				FAC23523227A053D00424678 /* LoggingCategoryPlugin.swift in Sources */,
 				D8DD7A1D24A1CCCD001C49FD /* QuerySortInput.swift in Sources */,
 				B9FB05F82383740D00DE1FD4 /* DataStoreStatement.swift in Sources */,
@@ -5322,6 +5443,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FAC2356F227A056600424678 /* AnalyticsCategoryConfigurationTests.swift in Sources */,
+				5C09CCC226D0733700CDCA9F /* GeoCategoryClientAPITests.swift in Sources */,
 				FAC23566227A056600424678 /* StorageCategoryConfigurationTests.swift in Sources */,
 				B4BD6B3523708C1200A1F0A7 /* PredictionsCategoryConfigurationTests.swift in Sources */,
 				FAA9FC3E236210840012638A /* APICategoryClientInterceptorTests.swift in Sources */,
@@ -5338,6 +5460,7 @@
 				B4B34C55255B725F00033033 /* ModelFieldAssociationTests.swift in Sources */,
 				219A88EF23F3358F00BBC5F2 /* TreeTests.swift in Sources */,
 				FACA35EB2326B217000E74F6 /* AmplifyConfigurationInitializationTests.swift in Sources */,
+				5C09CCC326D0733700CDCA9F /* GeoCategoryConfigurationTests.swift in Sources */,
 				FAD3937A23820CDB00463F5E /* DataStoreCategoryClientAPITests.swift in Sources */,
 				FAC23599227A598B00424678 /* DefaultHubPluginTests.swift in Sources */,
 				FAC23575227A056B00424678 /* FoundationUtilsTests.swift in Sources */,
@@ -5494,6 +5617,7 @@
 				21AD4257249BFFE00016FE95 /* DeprecatedTodo.swift in Sources */,
 				6B7743E325906FD3001469F5 /* Restaurant+Schema.swift in Sources */,
 				216E45EF248E914F0035E3CE /* Todo+Schema.swift in Sources */,
+				5C09CCC526D074B100CDCA9F /* MockGeoCategoryPlugin.swift in Sources */,
 				FACA361E2327FC8E000E74F6 /* MockAnalyticsCategoryPlugin.swift in Sources */,
 				2129BE012394627B006363A1 /* PostCommentModelRegistration.swift in Sources */,
 				217D5EB42577F9DF009F0639 /* Comment4+Schema.swift in Sources */,
