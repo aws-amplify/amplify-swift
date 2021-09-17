@@ -18,6 +18,8 @@ public enum HubChannel {
 
     case dataStore
 
+    case geo
+
     case hub
 
     case logging
@@ -51,6 +53,8 @@ extension HubChannel: Equatable {
             return true
         case (.dataStore, .dataStore):
             return true
+        case (.geo, .geo):
+            return true
         case (.hub, .hub):
             return true
         case (.logging, .logging):
@@ -78,6 +82,8 @@ extension HubChannel {
             self = .auth
         case .dataStore:
             self = .dataStore
+        case .geo:
+            self = .geo
         case .hub:
             self = .hub
         case .logging:

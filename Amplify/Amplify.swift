@@ -29,6 +29,7 @@ public class Amplify {
     public static internal(set) var API: APICategory = AmplifyAPICategory()
     public static internal(set) var Auth = AuthCategory()
     public static internal(set) var DataStore = DataStoreCategory()
+    public static internal(set) var Geo = GeoCategory()
     public static internal(set) var Hub = HubCategory()
     public static internal(set) var Predictions = PredictionsCategory()
     public static internal(set) var Storage = StorageCategory()
@@ -45,9 +46,9 @@ public class Amplify {
     }
     private static let loggingAtomic = AtomicValue<LoggingCategory>(initialValue: LoggingCategory())
 
-    /// Adds `plugin` to the Analytics category
+    /// Adds `plugin` to the category
     ///
-    /// - Parameter plugin: The AnalyticsCategoryPlugin to add
+    /// - Parameter plugin: The plugin to add
     public static func add<P: Plugin>(plugin: P) throws {
         log.debug("Adding plugin: \(plugin))")
         switch plugin {
@@ -59,6 +60,8 @@ public class Amplify {
             try Auth.add(plugin: plugin)
         case let plugin as DataStoreCategoryPlugin:
             try DataStore.add(plugin: plugin)
+        case let plugin as GeoCategoryPlugin:
+            try Geo.add(plugin: plugin)
         case let plugin as HubCategoryPlugin:
             try Hub.add(plugin: plugin)
         case let plugin as LoggingCategoryPlugin:
