@@ -41,10 +41,6 @@ class SyncEngineTestBase: XCTestCase {
 
     // MARK: - Setup
 
-    override func setUp() {
-        Amplify.Logging.logLevel = .verbose
-    }
-
     override func setUpWithError() throws {
         continueAfterFailure = false
 
@@ -77,6 +73,7 @@ class SyncEngineTestBase: XCTestCase {
         authPlugin = MockAuthCategoryPlugin()
         try Amplify.add(plugin: apiPlugin)
         try Amplify.add(plugin: authPlugin)
+        Amplify.Logging.logLevel = .verbose
     }
 
     /// Sets up a StorageAdapter backed by `connection`. Optionally registers and sets up models in

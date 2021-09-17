@@ -101,7 +101,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
 
         // fetch comment
         let getCommentCompleted = expectation(description: "get comment complete")
-        var resultPost: Post6?
+        var resultComment: Comment6?
         Amplify.DataStore.query(Comment6.self, byId: comment.id) { result in
             switch result {
             case .success(let queriedCommentOptional):
@@ -110,7 +110,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
                     return
                 }
                 XCTAssertEqual(queriedComment.id, comment.id)
-                resultPost = queriedComment.post
+                resultComment = queriedComment
                 getCommentCompleted.fulfill()
             case .failure(let response):
                 XCTFail("Failed with: \(response)")
@@ -118,21 +118,24 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         }
         wait(for: [getCommentCompleted], timeout: TestCommonConstants.networkTimeout)
 
-        guard let fetchedPost = resultPost else {
-            XCTFail("Could not get post")
+        guard let fetchedComment = resultComment else {
+            XCTFail("Could not get comment")
+            return
+        }
+
+        guard let fetchedPost = fetchedComment.post else {
+            XCTFail("Post is nil, should be loaded")
             return
         }
 
         guard let fetchedBlog = fetchedPost.blog else {
-            XCTFail("Could not get blog")
+            XCTFail("Blog is nil, should be loaded")
             return
         }
 
-        // check if post was eagerly loaded
         XCTAssertEqual(fetchedPost.id, post.id)
         XCTAssertEqual(fetchedPost.title, post.title)
 
-        // check if blog was eagerly loaded
         XCTAssertEqual(fetchedBlog.id, blog.id)
         XCTAssertEqual(fetchedBlog.name, blog.name)
     }
@@ -148,18 +151,16 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
 
         // fetch post
         let getPostCompleted = expectation(description: "get post complete")
-        var resultComments: List<Comment6>?
-        var resultBlog: Blog6?
+        var resultPost: Post6?
         Amplify.DataStore.query(Post6.self, byId: post.id) { result in
             switch result {
             case .success(let queriedPostOptional):
                 guard let queriedPost = queriedPostOptional else {
-                    XCTFail("Could not get comment")
+                    XCTFail("Could not get post")
                     return
                 }
                 XCTAssertEqual(queriedPost.id, post.id)
-                resultComments = queriedPost.comments
-                resultBlog = queriedPost.blog
+                resultPost = queriedPost
                 getPostCompleted.fulfill()
             case .failure(let response):
                 XCTFail("Failed with: \(response)")
@@ -167,37 +168,41 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         }
         wait(for: [getPostCompleted], timeout: TestCommonConstants.networkTimeout)
 
-        guard let fetchedBlog = resultBlog else {
-            XCTFail("Could not get blog")
+        guard let fetchedPost = resultPost else {
+            XCTFail("Could not get post")
             return
         }
 
-        guard let fetchedComments = resultComments else {
+        guard let eagerlyLoadedBlog = fetchedPost.blog else {
+            XCTFail("Blog is nil, should be loaded")
+            return
+        }
+
+        XCTAssertEqual(eagerlyLoadedBlog.id, blog.id)
+        XCTAssertEqual(eagerlyLoadedBlog.name, blog.name)
+        if let postsInEagerlyLoadedBlog = eagerlyLoadedBlog.posts {
+            XCTAssertEqual(postsInEagerlyLoadedBlog.count, 1)
+            XCTAssertTrue(postsInEagerlyLoadedBlog.contains(where: {(postIn) -> Bool in
+                postIn.id == post.id
+            }))
+            XCTAssertEqual(postsInEagerlyLoadedBlog[0].id, post.id)
+        }
+
+
+        guard let lazilyLoadedComments = fetchedPost.comments else {
             XCTFail("Could not get comments")
             return
         }
 
-        // check if blog was eagerly loaded
-        XCTAssertEqual(fetchedBlog.id, blog.id)
-        XCTAssertEqual(fetchedBlog.name, blog.name)
-        if let fetchedPosts = fetchedBlog.posts {
-            XCTAssertEqual(fetchedPosts.count, 1)
-            XCTAssertTrue(fetchedPosts.contains(where: {(postIn) -> Bool in
-                postIn.id == post.id
-            }))
-            XCTAssertEqual(fetchedPosts[0].id, post.id)
-        }
-
-        // check if comments were lazily loaded
-        guard case .notLoaded = fetchedComments.loadedState else {
+        guard case .notLoaded = lazilyLoadedComments.loadedState else {
             XCTFail("Should not be in loaded state")
             return
         }
-        XCTAssertEqual(fetchedComments.count, 1)
-        XCTAssertTrue(fetchedComments.contains(where: { (commentIn) -> Bool in
+        XCTAssertEqual(lazilyLoadedComments.count, 1)
+        XCTAssertTrue(lazilyLoadedComments.contains(where: { (commentIn) -> Bool in
             commentIn.id == comment.id
         }))
-        if let fetchedPost = fetchedComments[0].post {
+        if let fetchedPost = lazilyLoadedComments[0].post {
             XCTAssertEqual(fetchedPost.id, post.id)
             XCTAssertEqual(fetchedPost.comments?.count, 1)
         }
