@@ -4,7 +4,7 @@ version: 2.1
 
 defaults: &defaults
   macos:
-    xcode: '12.0.0'
+    xcode: '13.0.0'
   working_directory: ~/amplify-ios
   environment:
     BUNDLE_PATH: vendor/bundle
