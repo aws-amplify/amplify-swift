@@ -22,8 +22,11 @@ final public class LoggingCategory: Category {
 
     let concurrencyQueue = DispatchQueue(label: "com.amazonaws.Amplify.Logging.concurrency",
                                          target: DispatchQueue.global())
+    let lock: NSLocking = NSLock()
 
     public let categoryType = CategoryType.logging
+
+    private var _logLevel = LogLevel.error
 
     /// The global logLevel. Messages logged at a priority less than or equal to this value will be logged (e.g., if
     /// `logLevel` is set to `.info`, then messages sent at `.error`, `.warn`, and `.info` will be logged, but messages
@@ -38,7 +41,18 @@ final public class LoggingCategory: Category {
     /// viewLogger.info("A view loaded") // Will not be logged
     /// networkLogger.info("A network operation started") // Will be logged
     /// ```
-    public var logLevel = LogLevel.error
+    public var logLevel: LogLevel {
+        get {
+            lock.execute {
+                _logLevel
+            }
+        }
+        set {
+            lock.execute {
+                _logLevel = newValue
+            }
+        }
+    }
 
     var configurationState = ConfigurationState.default
 
