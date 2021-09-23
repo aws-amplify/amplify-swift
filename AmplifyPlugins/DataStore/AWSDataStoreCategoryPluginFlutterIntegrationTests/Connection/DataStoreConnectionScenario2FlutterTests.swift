@@ -343,10 +343,16 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where: predicate) { result in
             switch result {
             case .success(let projects):
+                let project = TestProject2(model: projects[0])
                 XCTAssertEqual(projects.count, 1)
+<<<<<<< HEAD
                 let returnedProject = Project2Wrapper(model: projects[0])
                 XCTAssertEqual(returnedProject.idString(), project.idString())
                 XCTAssertEqual(returnedProject.teamID(), team.id())
+=======
+                XCTAssertEqual(project.idString(), project.idString())
+                XCTAssertEqual(project.teamID(), team.id())
+>>>>>>> more flutter integ tests
                 listProjectByTeamIDCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
@@ -355,14 +361,24 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
     
+<<<<<<< HEAD
     func saveTeam(name: String, plugin: AWSDataStorePlugin) throws -> TeamWrapper? {
         let team = try TeamWrapper(name: name)
         var result: TeamWrapper?
+=======
+    func saveTeam(name: String, plugin: AWSDataStorePlugin) throws -> TestTeam? {
+        let team = try TestTeam(name: name)
+        var result: TestTeam?
+>>>>>>> more flutter integ tests
         let completeInvoked = expectation(description: "request completed")
         plugin.save(team.model, modelSchema: Team2.schema) { event in
             switch event {
             case .success(let team):
+<<<<<<< HEAD
                 result = TeamWrapper(model: team)
+=======
+                result = TestTeam(model: team)
+>>>>>>> more flutter integ tests
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
@@ -375,15 +391,26 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
     func saveProject(id: String = UUID().uuidString,
                      name: String? = "TestTeam",
                      teamID: String,
+<<<<<<< HEAD
                      team: TeamWrapper,
                      plugin: AWSDataStorePlugin) throws -> Project2Wrapper? {
         let project = try Project2Wrapper(name: name!, team: team.model, teamID: teamID)
         var result: Project2Wrapper?
+=======
+                     team: TestTeam,
+                     plugin: AWSDataStorePlugin) throws -> TestProject2? {
+        let project = try TestProject2(name: name!, team: team.model, teamID: teamID)
+        var result: TestProject2?
+>>>>>>> more flutter integ tests
         let completeInvoked = expectation(description: "request completed")
         plugin.save(project.model, modelSchema: Project2.schema) { event in
             switch event {
             case .success(let project):
+<<<<<<< HEAD
                 result = Project2Wrapper(model: project)
+=======
+                result = TestProject2(model: project)
+>>>>>>> more flutter integ tests
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")

@@ -247,7 +247,25 @@
 		9C1A53DC26E6BF7500DFE127 /* DataStoreConnectionScenario2FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1A53DB26E6BF7500DFE127 /* DataStoreConnectionScenario2FlutterTests.swift */; };
 		9C1A53E426E6C24900DFE127 /* TestProject2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1A53E326E6C24900DFE127 /* TestProject2.swift */; };
 		9C1A53F326E80B8100DFE127 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 9C1A53F226E80B8100DFE127 /* amplifyconfiguration.json */; };
+<<<<<<< HEAD
 >>>>>>> rebasing
+=======
+		9C48111F26FA52D60041AACB /* Model+Compare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C48111E26FA52D60041AACB /* Model+Compare.swift */; };
+		9C48112F26FA81D90041AACB /* DataStoreConnectionScenario3FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C48112E26FA81D90041AACB /* DataStoreConnectionScenario3FlutterTests.swift */; };
+		9C48113D26FA82D00041AACB /* TestComment3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C48113C26FA82D00041AACB /* TestComment3.swift */; };
+		9C48115426FB86750041AACB /* TestPost3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C48115326FB86750041AACB /* TestPost3.swift */; };
+		9C48116226FBA5BD0041AACB /* DataStoreConnectionScenario4FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C48116126FBA5BD0041AACB /* DataStoreConnectionScenario4FlutterTests.swift */; };
+		9C48116A26FBAB820041AACB /* TestComment4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C48116926FBAB820041AACB /* TestComment4.swift */; };
+		9C48117226FBC0790041AACB /* DataStoreConnectionScenario5FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C48117126FBC0790041AACB /* DataStoreConnectionScenario5FlutterTests.swift */; };
+		9C48117A26FBC0B40041AACB /* TestPost5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C48117926FBC0B40041AACB /* TestPost5.swift */; };
+		9C48118226FBC1180041AACB /* TestUser5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C48118126FBC1180041AACB /* TestUser5.swift */; };
+		9C48118A26FBC1460041AACB /* TestPostEditor5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C48118926FBC1460041AACB /* TestPostEditor5.swift */; };
+		9C48119226FBCC490041AACB /* DataStoreConnectionScenario6FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C48119126FBCC490041AACB /* DataStoreConnectionScenario6FlutterTests.swift */; };
+		9C4811A826FBD74C0041AACB /* TestPost6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4811A726FBD74C0041AACB /* TestPost6.swift */; };
+		9C4811B026FBD8A90041AACB /* TestBlog6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4811AF26FBD8A90041AACB /* TestBlog6.swift */; };
+		9C4811B826FBD9C10041AACB /* TestComment6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4811B726FBD9C10041AACB /* TestComment6.swift */; };
+		9C4811C026FBEB0D0041AACB /* DataStoreFlutterConsecutiveUpdatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4811BF26FBEB0D0041AACB /* DataStoreFlutterConsecutiveUpdatesTests.swift */; };
+>>>>>>> more flutter integ tests
 		9C73569B26CAE9C600A149C7 /* FlutterDataStoreRequestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C73569A26CAE9C600A149C7 /* FlutterDataStoreRequestUtils.swift */; };
 		9C7356B326CC12C300A149C7 /* TestTeam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C7356B226CC12C300A149C7 /* TestTeam.swift */; };
 		9C7356BB26CC15F700A149C7 /* TestProject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C7356BA26CC15F700A149C7 /* TestProject.swift */; };
@@ -682,7 +700,25 @@
 		9C1A53E326E6C24900DFE127 /* TestProject2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestProject2.swift; sourceTree = "<group>"; };
 		9C1A53EB26E80AD600DFE127 /* amplifyconfiguration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 		9C1A53F226E80B8100DFE127 /* amplifyconfiguration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
+<<<<<<< HEAD
 >>>>>>> rebasing
+=======
+		9C48111E26FA52D60041AACB /* Model+Compare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Model+Compare.swift"; path = "Sync/Support/Model+Compare.swift"; sourceTree = "<group>"; };
+		9C48112E26FA81D90041AACB /* DataStoreConnectionScenario3FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario3FlutterTests.swift; sourceTree = "<group>"; };
+		9C48113C26FA82D00041AACB /* TestComment3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestComment3.swift; sourceTree = "<group>"; };
+		9C48115326FB86750041AACB /* TestPost3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPost3.swift; sourceTree = "<group>"; };
+		9C48116126FBA5BD0041AACB /* DataStoreConnectionScenario4FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario4FlutterTests.swift; sourceTree = "<group>"; };
+		9C48116926FBAB820041AACB /* TestComment4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestComment4.swift; sourceTree = "<group>"; };
+		9C48117126FBC0790041AACB /* DataStoreConnectionScenario5FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario5FlutterTests.swift; sourceTree = "<group>"; };
+		9C48117926FBC0B40041AACB /* TestPost5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPost5.swift; sourceTree = "<group>"; };
+		9C48118126FBC1180041AACB /* TestUser5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestUser5.swift; sourceTree = "<group>"; };
+		9C48118926FBC1460041AACB /* TestPostEditor5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPostEditor5.swift; sourceTree = "<group>"; };
+		9C48119126FBCC490041AACB /* DataStoreConnectionScenario6FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario6FlutterTests.swift; sourceTree = "<group>"; };
+		9C4811A726FBD74C0041AACB /* TestPost6.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPost6.swift; sourceTree = "<group>"; };
+		9C4811AF26FBD8A90041AACB /* TestBlog6.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestBlog6.swift; sourceTree = "<group>"; };
+		9C4811B726FBD9C10041AACB /* TestComment6.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestComment6.swift; sourceTree = "<group>"; };
+		9C4811BF26FBEB0D0041AACB /* DataStoreFlutterConsecutiveUpdatesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreFlutterConsecutiveUpdatesTests.swift; sourceTree = "<group>"; };
+>>>>>>> more flutter integ tests
 		9C73569A26CAE9C600A149C7 /* FlutterDataStoreRequestUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlutterDataStoreRequestUtils.swift; sourceTree = "<group>"; };
 		9C7356B226CC12C300A149C7 /* TestTeam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTeam.swift; sourceTree = "<group>"; };
 		9C7356BA26CC15F700A149C7 /* TestProject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestProject.swift; sourceTree = "<group>"; };
@@ -1345,7 +1381,19 @@
 >>>>>>> flutter integ tests initial commit
 =======
 				9C1A53E326E6C24900DFE127 /* TestProject2.swift */,
+<<<<<<< HEAD
 >>>>>>> rebasing
+=======
+				9C48113C26FA82D00041AACB /* TestComment3.swift */,
+				9C48115326FB86750041AACB /* TestPost3.swift */,
+				9C48116926FBAB820041AACB /* TestComment4.swift */,
+				9C48117926FBC0B40041AACB /* TestPost5.swift */,
+				9C48118126FBC1180041AACB /* TestUser5.swift */,
+				9C48118926FBC1460041AACB /* TestPostEditor5.swift */,
+				9C4811A726FBD74C0041AACB /* TestPost6.swift */,
+				9C4811AF26FBD8A90041AACB /* TestBlog6.swift */,
+				9C4811B726FBD9C10041AACB /* TestComment6.swift */,
+>>>>>>> more flutter integ tests
 			);
 			path = SerializedModelWrappers;
 			sourceTree = "<group>";
@@ -1387,12 +1435,15 @@
 <<<<<<< HEAD
 				9C1A53F226E80B8100DFE127 /* amplifyconfiguration.json */,
 				9C4811BF26FBEB0D0041AACB /* DataStoreFlutterConsecutiveUpdatesTests.swift */,
+<<<<<<< HEAD
 				9C2D885E2748540C005525C2 /* README.md */,
 =======
 >>>>>>> flutter integ tests initial commit
 =======
 				9C1A53F226E80B8100DFE127 /* amplifyconfiguration.json */,
 >>>>>>> rebasing
+=======
+>>>>>>> more flutter integ tests
 			);
 			path = AWSDataStoreCategoryPluginFlutterIntegrationTests;
 			sourceTree = "<group>";
@@ -1424,7 +1475,14 @@
 >>>>>>> flutter integ tests initial commit
 =======
 				9C1A53DB26E6BF7500DFE127 /* DataStoreConnectionScenario2FlutterTests.swift */,
+<<<<<<< HEAD
 >>>>>>> rebasing
+=======
+				9C48112E26FA81D90041AACB /* DataStoreConnectionScenario3FlutterTests.swift */,
+				9C48116126FBA5BD0041AACB /* DataStoreConnectionScenario4FlutterTests.swift */,
+				9C48117126FBC0790041AACB /* DataStoreConnectionScenario5FlutterTests.swift */,
+				9C48119126FBCC490041AACB /* DataStoreConnectionScenario6FlutterTests.swift */,
+>>>>>>> more flutter integ tests
 			);
 			path = Connection;
 			sourceTree = "<group>";
@@ -2710,26 +2768,43 @@
 				9CA29C6F26C5C04000458692 /* FlutterModels.swift in Sources */,
 				9C740D6A26CEC31E0053636A /* TestPost.swift in Sources */,
 				9C73569B26CAE9C600A149C7 /* FlutterDataStoreRequestUtils.swift in Sources */,
+				9C48116A26FBAB820041AACB /* TestComment4.swift in Sources */,
+				9C48118226FBC1180041AACB /* TestUser5.swift in Sources */,
 				9C740D4E26CEC15C0053636A /* FlutterModelFieldType.swift in Sources */,
 				9C1A53DC26E6BF7500DFE127 /* DataStoreConnectionScenario2FlutterTests.swift in Sources */,
 				9CA29CE926C5E0BB00458692 /* DataStoreTestBase.swift in Sources */,
 				9CA29C4726C5BC2900458692 /* AWSDataStorePluginFlutterConfigurationTests.swift in Sources */,
+				9C4811A826FBD74C0041AACB /* TestPost6.swift in Sources */,
+				9C48117A26FBC0B40041AACB /* TestPost5.swift in Sources */,
+				9C48113D26FA82D00041AACB /* TestComment3.swift in Sources */,
+				9C48115426FB86750041AACB /* TestPost3.swift in Sources */,
 				9C740D2026CEC0150053636A /* FlutterTemporal.swift in Sources */,
 				9C740D5626CEC2A30053636A /* DataStoreFlutterEndToEndTests.swift in Sources */,
 				9CA29C5026C5BC8500458692 /* TestFlutterModelRegistration.swift in Sources */,
 				9C740D2826CEC0540053636A /* ModelSchemaError.swift in Sources */,
 				9C740D3E26CEC0D90053636A /* FlutterModelAssociation.swift in Sources */,
+				9C48118A26FBC1460041AACB /* TestPostEditor5.swift in Sources */,
 				9C73570326CD906200A149C7 /* FlutterSerializedSchemas.swift in Sources */,
 				9CB6AA1326C6FA83003A7008 /* DataStoreConnectionScenario1FlutterTests.swift in Sources */,
 				9C740D1826CEBFF30053636A /* FlutterSerializedModel.swift in Sources */,
+				9C4811C026FBEB0D0041AACB /* DataStoreFlutterConsecutiveUpdatesTests.swift in Sources */,
+				9C48112F26FA81D90041AACB /* DataStoreConnectionScenario3FlutterTests.swift in Sources */,
 				9C73570B26CD91ED00A149C7 /* FlutterModelSchema.swift in Sources */,
+				9C48119226FBCC490041AACB /* DataStoreConnectionScenario6FlutterTests.swift in Sources */,
 				9CB6AA1B26C6FAC6003A7008 /* SyncEngineFlutterIntegrationTestBase.swift in Sources */,
+				9C48116226FBA5BD0041AACB /* DataStoreConnectionScenario4FlutterTests.swift in Sources */,
+				9C48117226FBC0790041AACB /* DataStoreConnectionScenario5FlutterTests.swift in Sources */,
 				9C7356B326CC12C300A149C7 /* TestTeam.swift in Sources */,
 				9C740D3026CEC0640053636A /* FlutterModelField.swift in Sources */,
 				9CA29CF126C5E12F00458692 /* DataStoreFlutterConfigurationTests.swift in Sources */,
 				9C1A53E426E6C24900DFE127 /* TestProject2.swift in Sources */,
 				9C7356BB26CC15F700A149C7 /* TestProject.swift in Sources */,
+<<<<<<< HEAD
 >>>>>>> flutter integ tests initial commit
+=======
+				9C4811B826FBD9C10041AACB /* TestComment6.swift in Sources */,
+				9C4811B026FBD8A90041AACB /* TestBlog6.swift in Sources */,
+>>>>>>> more flutter integ tests
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
