@@ -148,8 +148,8 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
 >>>>>>> flutter integ tests
 =======
         let team = try TestTeam(name: "name1")
-        var anotherTeam = try TestTeam(name: "name1")
-        var project = try TestProject(team: team.model)
+        let anotherTeam = try TestTeam(name: "name1")
+        let project = try TestProject(team: team.model)
         let expectedUpdatedProject = project.copy() as! TestProject
 >>>>>>> flutter integ tests initial commit
         try expectedUpdatedProject.setTeam(team: anotherTeam.model)
@@ -297,10 +297,14 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         
         let deleteProjectSuccessful = expectation(description: "delete project")
 <<<<<<< HEAD
+<<<<<<< HEAD
         plugin.delete(project.model, modelSchema: Project1.schema,  where: Project1.keys.id.eq(project.idString())) { result in
 =======
         plugin.delete(project.model, modelSchema: Project1.schema) { result in
 >>>>>>> flutter integ tests initial commit
+=======
+        plugin.delete(project.model, modelSchema: Project1.schema,  where: Project1.keys.id.eq(project.idString())) { result in
+>>>>>>> more flutter integ tests
             switch result {
             case .success:
                 deleteProjectSuccessful.fulfill()
@@ -321,6 +325,9 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> more flutter integ tests
     func testDeleteWithInvalidCondition() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
@@ -365,6 +372,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
+<<<<<<< HEAD
 =======
 //    func testDeleteWithInvalidCondition() throws {
 //        try startAmplifyAndWaitForSync()
@@ -407,6 +415,8 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
 //        wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
 //    }
 >>>>>>> flutter integ tests initial commit
+=======
+>>>>>>> more flutter integ tests
 
     func testListProjectsByTeamID() throws {
         try startAmplifyAndWaitForSync()
