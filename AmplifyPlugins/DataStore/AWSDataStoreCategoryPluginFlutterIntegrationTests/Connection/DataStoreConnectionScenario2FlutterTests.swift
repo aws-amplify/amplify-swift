@@ -190,14 +190,15 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
 
     func testDeleteAndGetProject() throws {
         try startAmplifyAndWaitForSync()
-        guard let team = saveTeam(name: "name"),
-              let project = saveProject(teamID: team.id, team: team) else {
+        let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
+        guard let team = try saveTeam(name: "name", plugin: plugin),
+              let project = try saveProject(teamID: team.idString(), team: team, plugin: plugin) else {
             XCTFail("Could not save team and project")
             return
         }
 
         let deleteProjectSuccessful = expectation(description: "delete project")
-        Amplify.DataStore.delete(project) { result in
+        plugin.delete(project.model, modelSchema: Project2.schema) { result in
             switch result {
             case .success:
                 deleteProjectSuccessful.fulfill()
@@ -207,10 +208,10 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+        plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where: Project2.keys.id.eq(project.model.id)) { result in
             switch result {
             case .success(let project2):
-                XCTAssertNil(project2)
+                XCTAssert(project2.isEmpty)
                 getProjectAfterDeleteCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
@@ -221,14 +222,12 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
 
     func testDeleteWithValidCondition() throws {
         try startAmplifyAndWaitForSync()
-        guard let team = saveTeam(name: "name"),
-              let project = saveProject(teamID: team.id, team: team) else {
-            XCTFail("Could not save team and project")
-            return
-        }
-
+        let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
+        let team = try saveTeam(name: "name", plugin: plugin)
+        let project = try saveProject(teamID: team!.idString(), team: team!, plugin: plugin)
+        
         let deleteProjectSuccessful = expectation(description: "delete project")
-        Amplify.DataStore.delete(project, where: Project2.keys.team.eq(team.id)) { result in
+        plugin.delete(project!.model, modelSchema: Project2.schema, where: Project2.keys.teamID.eq(team!.idString())) { result in
             switch result {
             case .success:
                 deleteProjectSuccessful.fulfill()
@@ -238,10 +237,10 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+        plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where:  Project2.keys.id.eq(project!.model.id)) { result in
             switch result {
             case .success(let project2):
-                XCTAssertNil(project2)
+                XCTAssert(project2.isEmpty)
                 getProjectAfterDeleteCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
@@ -252,14 +251,15 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
 
     func testDeleteWithInvalidCondition() throws {
         try startAmplifyAndWaitForSync()
-        guard let team = saveTeam(name: "name"),
-              let project = saveProject(teamID: team.id, team: team) else {
+        let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
+        guard let team = try saveTeam(name: "name", plugin: plugin),
+              let project = try saveProject(teamID: team.idString(), team: team, plugin: plugin) else {
             XCTFail("Could not save team and project")
             return
         }
 
         let deleteProjectFailed = expectation(description: "delete project")
-        Amplify.DataStore.delete(project, where: Project2.keys.team.eq("invalidTeamId")) { result in
+        plugin.delete(project.model, modelSchema: Project2.schema, where: Project2.keys.id.eq("invalidTeamId")) { result in
             switch result {
             case .success:
                 XCTFail("Should have failed")
@@ -273,7 +273,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [deleteProjectFailed], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+        plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where:  Project2.keys.id.eq(project.model.id)) { result in
             switch result {
             case .success(let project2):
                 XCTAssertNotNil(project2)
@@ -287,13 +287,14 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
 
     func testDeleteAlreadyDeletedItemWithCondition() throws {
         try startAmplifyAndWaitForSync()
-        guard let team = saveTeam(name: "name"),
-              let project = saveProject(teamID: team.id, team: team) else {
+        let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
+        guard let team = try saveTeam(name: "name", plugin: plugin),
+              let project = try saveProject(teamID: team.idString(), team: team, plugin: plugin) else {
             XCTFail("Could not save team and project")
             return
         }
         let deleteProjectSuccessful = expectation(description: "delete project")
-        Amplify.DataStore.delete(project) { result in
+        plugin.delete(project.model, modelSchema: Project2.schema) { result in
             switch result {
             case .success:
                 deleteProjectSuccessful.fulfill()
@@ -303,19 +304,18 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+        plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where:  Project2.keys.id.eq(project.model.id)) { result in
             switch result {
             case .success(let project2):
-                XCTAssertNil(project2)
+                XCTAssert(project2.isEmpty)
                 getProjectAfterDeleteCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
             }
         }
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
-
         let deleteProjectSuccessful2 = expectation(description: "delete project")
-        Amplify.DataStore.delete(project, where: Project2.keys.teamID == team.id) { result in
+        plugin.delete(project.model, modelSchema: Project2.schema, where: Project2.keys.teamID.eq(team.idString())) { result in
             switch result {
             case .success:
                 deleteProjectSuccessful2.fulfill()
@@ -328,22 +328,24 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
 
     func testListProjectsByTeamID() throws {
         try startAmplifyAndWaitForSync()
-        guard let team = saveTeam(name: "name") else {
+        let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
+        guard let team = try saveTeam(name: "name", plugin: plugin) else {
             XCTFail("Could not save team")
             return
         }
-        guard let project = saveProject(teamID: team.id, team: team) else {
+        guard let project = try saveProject(teamID: team.idString(), team: team, plugin: plugin) else {
             XCTFail("Could not save project")
             return
         }
         let listProjectByTeamIDCompleted = expectation(description: "list projects completed")
-        let predicate = Project2.keys.teamID.eq(team.id)
-        Amplify.DataStore.query(Project2.self, where: predicate) { result in
+        let predicate = Project2.keys.teamID.eq(team.idString())
+        plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where: predicate) { result in
             switch result {
             case .success(let projects):
+                let project = TestProject2(model: projects[0])
                 XCTAssertEqual(projects.count, 1)
-                XCTAssertEqual(projects[0].id, project.id)
-                XCTAssertEqual(projects[0].teamID, team.id)
+                XCTAssertEqual(project.idString(), project.idString())
+                XCTAssertEqual(project.teamID(), team.id())
                 listProjectByTeamIDCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
@@ -351,15 +353,15 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
-
-    func saveTeam(id: String = UUID().uuidString, name: String) -> Team2? {
-        let team = Team2(id: id, name: name)
-        var result: Team2?
+    
+    func saveTeam(name: String, plugin: AWSDataStorePlugin) throws -> TestTeam? {
+        let team = try TestTeam(name: name)
+        var result: TestTeam?
         let completeInvoked = expectation(description: "request completed")
-        Amplify.DataStore.save(team) { event in
+        plugin.save(team.model, modelSchema: Team2.schema) { event in
             switch event {
             case .success(let team):
-                result = team
+                result = TestTeam(model: team)
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
@@ -370,16 +372,17 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
     }
 
     func saveProject(id: String = UUID().uuidString,
-                     name: String? = nil,
+                     name: String? = "TestTeam",
                      teamID: String,
-                     team: Team2? = nil) -> Project2? {
-        let project = Project2(id: id, name: name, teamID: teamID, team: team)
-        var result: Project2?
+                     team: TestTeam,
+                     plugin: AWSDataStorePlugin) throws -> TestProject2? {
+        let project = try TestProject2(name: name!, team: team.model, teamID: teamID)
+        var result: TestProject2?
         let completeInvoked = expectation(description: "request completed")
-        Amplify.DataStore.save(project) { event in
+        plugin.save(project.model, modelSchema: Project2.schema) { event in
             switch event {
             case .success(let project):
-                result = project
+                result = TestProject2(model: project)
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
@@ -387,20 +390,5 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
-    }
-}
-
-extension Team2: Equatable {
-    public static func == (lhs: Team2,
-                           rhs: Team2) -> Bool {
-        return lhs.id == rhs.id
-            && lhs.name == rhs.name
-    }
-}
-extension Project2: Equatable {
-    public static func == (lhs: Project2, rhs: Project2) -> Bool {
-        return lhs.id == rhs.id
-            && lhs.name == rhs.name
-            && lhs.teamID == rhs.teamID
     }
 }

@@ -13,11 +13,12 @@ import AmplifyTestCommon
 class TestPost: NSCopying {
     var model: FlutterSerializedModel
     
-    init(id: String = UUID().uuidString, title: String, content: String, createdAt: String) throws {
+    init(id: String = UUID().uuidString, title: String, content: String, createdAt: String, rating: Double = 1) throws {
         let map: [String: Any] = [
             "title": title,
             "content": content,
-            "createdAt": createdAt
+            "createdAt": createdAt,
+            "rating": rating,
         ]
         self.model = FlutterSerializedModel(id: id, map: try FlutterDataStoreRequestUtils.getJSONValue(map))
     }
@@ -32,6 +33,29 @@ class TestPost: NSCopying {
         self.model = FlutterSerializedModel(id: map!["id"] as! String, map: try FlutterDataStoreRequestUtils.getJSONValue(map!))
     }
     
+    init(post: Post) throws {
+        let map: [String: Any] = [
+            "title": post.title,
+            "content": post.content,
+            "createdAt": post.createdAt.iso8601String,
+            "rating": post.rating
+        ]
+        self.model = FlutterSerializedModel(id: post.id, map: try FlutterDataStoreRequestUtils.getJSONValue(map))
+    }
+    
+    func updateRating(rating: Double) throws {
+        var map = self.model.values
+        map["rating"] = JSONValue.init(floatLiteral: rating)
+        self.model = FlutterSerializedModel(id: self.model.id, map: map)
+    }
+    
+    func updateStringProp(key: String, value: String) throws {
+        var map = self.model.values
+        map[key] = JSONValue.string(value)
+        self.model = FlutterSerializedModel(id: self.model.id, map: map)
+    }
+
+    
     func idString() -> String {
         return self.model.id
     }
@@ -42,6 +66,10 @@ class TestPost: NSCopying {
 
     func title() -> JSONValue? {
         return self.model.values["title"]
+    }
+    
+    func rating() -> JSONValue? {
+        return self.model.values["rating"]
     }
     
     func content() -> JSONValue? {

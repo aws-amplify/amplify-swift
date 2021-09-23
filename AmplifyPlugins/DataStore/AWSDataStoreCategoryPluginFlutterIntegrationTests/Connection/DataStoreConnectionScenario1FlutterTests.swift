@@ -110,8 +110,8 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         let team = try TestTeam(name: "name1")
-        var anotherTeam = try TestTeam(name: "name1")
-        var project = try TestProject(team: team.model)
+        let anotherTeam = try TestTeam(name: "name1")
+        let project = try TestProject(team: team.model)
         let expectedUpdatedProject = project.copy() as! TestProject
         try expectedUpdatedProject.setTeam(team: anotherTeam.model)
         
@@ -251,7 +251,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
 
         
         let deleteProjectSuccessful = expectation(description: "delete project")
-        plugin.delete(project.model, modelSchema: Project1.schema) { result in
+        plugin.delete(project.model, modelSchema: Project1.schema,  where: Project1.keys.id.eq(project.idString())) { result in
             switch result {
             case .success:
                 deleteProjectSuccessful.fulfill()
@@ -271,46 +271,50 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-//    func testDeleteWithInvalidCondition() throws {
-//        try startAmplifyAndWaitForSync()
-//        let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-//        guard let team = try saveTeam(name: "name"),
-//              let project = try saveProject(team: team) else {
-//            XCTFail("Could not save team and project")
-//            return
-//        }
-//
-//        let queriedProjectExpect1Successful = expectation(description: "delete project")
-//        let queriedProjectExpect1 = queryProject(id: project.model.id)
-//        XCTAssertNotNil(queriedProjectExpect1)
-//        XCTAssertEqual(1, queriedProjectExpect1!.count)
-//        XCTAssertEqual(project.idString(), queriedProjectExpect1![0].id)
-//        if (queriedProjectExpect1!.count == 1) {
-//            queriedProjectExpect1Successful.fulfill()
-//        }
-//        wait(for: [queriedProjectExpect1Successful], timeout: TestCommonConstants.networkTimeout)
-//
-//        let deleteProjectVoidReturn = expectation(description: "delete project")
-//        plugin.delete(project.model, modelSchema: Project1.schema, where: Project1.keys.id.eq("invalid")) { result in
-//            switch result {
-//            case .success:
-//                deleteProjectVoidReturn.fulfill()
-//            case .failure(let error):
-//                XCTFail("\(error)")
-//            }
-//        }
-//        wait(for: [deleteProjectVoidReturn], timeout: TestCommonConstants.networkTimeout)
-//
-//        let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-//        let queriedProjectExpectUnDeleted = queryProject(id: project.model.id)
-//        XCTAssertNotNil(queriedProjectExpectUnDeleted)
-//        XCTAssertEqual(1, queriedProjectExpectUnDeleted!.count)
-//        XCTAssertEqual(project.idString(), queriedProjectExpectUnDeleted![0].id)
-//        if (queriedProjectExpectUnDeleted!.count == 1) {
-//            getProjectAfterDeleteCompleted.fulfill()
-//        }
-//        wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
-//    }
+    func testDeleteWithInvalidCondition() throws {
+        try startAmplifyAndWaitForSync()
+        let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
+        guard let team = try saveTeam(name: "name"),
+              let project = try saveProject(team: team) else {
+            XCTFail("Could not save team and project")
+            return
+        }
+
+        let queriedProjectExpect1Successful = expectation(description: "delete project")
+        let queriedProjectExpect1 = queryProject(id: project.model.id)
+        XCTAssertNotNil(queriedProjectExpect1)
+        XCTAssertEqual(1, queriedProjectExpect1!.count)
+        XCTAssertEqual(project.idString(), queriedProjectExpect1![0].id)
+        if (queriedProjectExpect1!.count == 1) {
+            queriedProjectExpect1Successful.fulfill()
+        }
+        wait(for: [queriedProjectExpect1Successful], timeout: TestCommonConstants.networkTimeout)
+
+        let deleteProjectFailed = expectation(description: "delete project")
+        plugin.delete(project.model, modelSchema: Project1.schema, where: Project1.keys.id.eq("invalid")) { result in
+            switch result {
+            case .success:
+                XCTFail("Should have failed")
+            case .failure(let error):
+                guard case .invalidCondition = error else {
+                    XCTFail("\(error)")
+                    return
+                }
+                deleteProjectFailed.fulfill()
+            }
+        }
+        wait(for: [deleteProjectFailed], timeout: TestCommonConstants.networkTimeout)
+
+        let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
+        let queriedProjectExpectUnDeleted = queryProject(id: project.model.id)
+        XCTAssertNotNil(queriedProjectExpectUnDeleted)
+        XCTAssertEqual(1, queriedProjectExpectUnDeleted!.count)
+        XCTAssertEqual(project.idString(), queriedProjectExpectUnDeleted![0].id)
+        if (queriedProjectExpectUnDeleted!.count == 1) {
+            getProjectAfterDeleteCompleted.fulfill()
+        }
+        wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
+    }
 
     func testListProjectsByTeamID() throws {
         try startAmplifyAndWaitForSync()
