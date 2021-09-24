@@ -327,6 +327,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         wait(for: [deleteProjectSuccessful2], timeout: TestCommonConstants.networkTimeout)
     }
 
+<<<<<<< HEAD
     func testListProjectsByTeamID() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
@@ -360,6 +361,35 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
+=======
+//    func testListProjectsByTeamID() throws {
+//        try startAmplifyAndWaitForSync()
+//        let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
+//        guard let team = try saveTeam(name: "name", plugin: plugin) else {
+//            XCTFail("Could not save team")
+//            return
+//        }
+//        guard let project = try saveProject(teamID: team.idString(), team: team, plugin: plugin) else {
+//            XCTFail("Could not save project")
+//            return
+//        }
+//        let listProjectByTeamIDCompleted = expectation(description: "list projects completed")
+//        let predicate = Project2.keys.teamID.eq(team.idString())
+//        plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where: predicate) { result in
+//            switch result {
+//            case .success(let projects):
+//                let project = TestProject2(model: projects[0])
+//                XCTAssertEqual(projects.count, 1)
+//                XCTAssertEqual(project.idString(), project.idString())
+//                XCTAssertEqual(project.teamID(), team.id())
+//                listProjectByTeamIDCompleted.fulfill()
+//            case .failure(let error):
+//                XCTFail("\(error)")
+//            }
+//        }
+//        wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
+//    }
+>>>>>>> registration changes
     
 <<<<<<< HEAD
     func saveTeam(name: String, plugin: AWSDataStorePlugin) throws -> TeamWrapper? {
