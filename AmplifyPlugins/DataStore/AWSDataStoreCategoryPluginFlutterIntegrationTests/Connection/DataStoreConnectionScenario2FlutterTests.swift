@@ -709,6 +709,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> flutter integ tests
 =======
@@ -844,6 +845,8 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
 =======
 =======
 >>>>>>> registration changes
+=======
+>>>>>>> registration changes
 //    func testListProjectsByTeamID() throws {
 //        try startAmplifyAndWaitForSync()
 //        let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
@@ -871,6 +874,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
 //        }
 //        wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
 //    }
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> registration changes
     
@@ -911,6 +915,8 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         var result: Team2?
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> registration changes
 =======
 >>>>>>> registration changes
     
