@@ -12,7 +12,7 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
 
     @available(iOS 13.0, *)
     public var publisher: AnyPublisher<MutationEvent, DataStoreError> {
-        reinitStorageEngineIfNeeded()
+        initStorageEngineAndStartSync()
         // Force-unwrapping: The optional 'dataStorePublisher' is expected
         // to exist for deployment targets >=iOS13.0
         return dataStorePublisher!.publisher

@@ -21,7 +21,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                where condition: QueryPredicate? = nil,
                                completion: @escaping DataStoreCallback<M>) {
         log.verbose("Saving: \(model) with condition: \(String(describing: condition))")
-        reinitStorageEngineIfNeeded()
+        initStorageEngineAndStartSync()
 
         // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
         // mutation type
@@ -63,7 +63,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     public func query<M: Model>(_ modelType: M.Type,
                                 byId id: String,
                                 completion: DataStoreCallback<M?>) {
-        reinitStorageEngineIfNeeded()
+        initStorageEngineAndStartSync()
         let predicate: QueryPredicate = field("id") == id
         query(modelType, where: predicate, paginate: .firstResult) {
             switch $0 {
@@ -99,7 +99,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                 sort sortInput: [QuerySortDescriptor]? = nil,
                                 paginate paginationInput: QueryPaginationInput? = nil,
                                 completion: DataStoreCallback<[M]>) {
-        reinitStorageEngineIfNeeded()
+        initStorageEngineAndStartSync()
         storageEngine.query(modelType,
                             modelSchema: modelSchema,
                             predicate: predicate,
@@ -120,7 +120,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  withId id: String,
                                  where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) {
-        reinitStorageEngineIfNeeded()
+        initStorageEngineAndStartSync()
         storageEngine.delete(modelType, modelSchema: modelSchema, withId: id, predicate: predicate) { result in
             self.onDeleteCompletion(result: result, modelSchema: modelSchema, completion: completion)
         }
@@ -136,7 +136,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  modelSchema: ModelSchema,
                                  where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) {
-        reinitStorageEngineIfNeeded()
+        initStorageEngineAndStartSync()
         storageEngine.delete(type(of: model),
                              modelSchema: modelSchema,
                              withId: model.id,
@@ -155,7 +155,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  modelSchema: ModelSchema,
                                  where predicate: QueryPredicate,
                                  completion: @escaping DataStoreCallback<Void>) {
-        reinitStorageEngineIfNeeded()
+        initStorageEngineAndStartSync()
         let onCompletion: DataStoreCallback<[M]> = { result in
             switch result {
             case .success(let models):
@@ -174,7 +174,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     }
 
     public func start(completion: @escaping DataStoreCallback<Void>) {
-        reinitStorageEngineIfNeeded(completion: completion)
+        initStorageEngineAndStartSync(completion: completion)
     }
 
     public func stop(completion: @escaping DataStoreCallback<Void>) {
@@ -192,13 +192,10 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     }
 
     public func clear(completion: @escaping DataStoreCallback<Void>) {
-        storageEngineInitSemaphore.wait()
-        if storageEngine == nil {
-            storageEngineInitSemaphore.signal()
-            completion(.successfulVoid)
+        if case let .failure(error) = initStorageEngine() {
+            completion(.failure(causedBy: error))
             return
         }
-        storageEngineInitSemaphore.signal()
         storageEngine.clear { result in
             self.storageEngine = nil
             completion(result)
