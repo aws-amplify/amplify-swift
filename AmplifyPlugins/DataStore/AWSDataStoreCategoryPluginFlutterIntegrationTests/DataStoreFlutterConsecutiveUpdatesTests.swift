@@ -201,7 +201,6 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         let queryResult = queryPost(id: newPost.idString(), plugin: plugin)
         XCTAssertNil(queryResult)
 
-        /// TODO: Investigate delete sync issue
         wait(for: [saveSyncReceived, deleteSyncReceived], timeout: networkTimeout)
 
         // query the deleted post in eventual consistent state
