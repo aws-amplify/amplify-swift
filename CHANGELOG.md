@@ -5,7 +5,6 @@
 ### Features
 
 - **Storage**: AWSS3PluginPrefixResolver (#1277)
-- **DataStore**: observe query API (#1389)
 
 ### Bug Fixes
 
