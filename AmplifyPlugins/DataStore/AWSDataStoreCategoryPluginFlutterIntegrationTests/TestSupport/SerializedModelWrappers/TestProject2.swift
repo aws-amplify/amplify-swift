@@ -10,7 +10,7 @@ import Foundation
 import Amplify
 import AmplifyTestCommon
 
-class TestProject2: NSCopying {
+class Project2Wrapper: NSCopying {
     var model: FlutterSerializedModel
         
     init(name: String, team: FlutterSerializedModel, teamID: String) throws {
@@ -21,8 +21,8 @@ class TestProject2: NSCopying {
         self.model = model;
     }
     
-    func setTeam(name: String, team: FlutterSerializedModel, teamID: String) throws {
-        self.model = FlutterSerializedModel(id: self.model.id, map: try FlutterDataStoreRequestUtils.getJSONValue(["name": name, "team": team.toMap(modelSchema: Team1.schema), "teamID": teamID]))
+    func setTeam(team: FlutterSerializedModel, teamID: String) throws {
+        self.model = FlutterSerializedModel(id: self.model.id, map: try FlutterDataStoreRequestUtils.getJSONValue(["name": self.model.values["name"], "team": team.toMap(modelSchema: Team1.schema), "teamID": teamID]))
     }
     
     func idString() -> String {
@@ -42,7 +42,7 @@ class TestProject2: NSCopying {
     }
 
     func copy(with zone: NSZone? = nil) -> Any {
-        let copy = TestProject(model: model)
+        let copy = Project2Wrapper(model: model)
         return copy
     }
 }

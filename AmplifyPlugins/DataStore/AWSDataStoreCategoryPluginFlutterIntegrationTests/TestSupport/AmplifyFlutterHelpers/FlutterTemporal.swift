@@ -13,12 +13,16 @@ import Foundation
 struct FlutterTemporal: TemporalSpec {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> flutter integ tests
 =======
     
 >>>>>>> flutter integ tests initial commit
+=======
+
+>>>>>>> flutter integ tests
     let iso8601: String
     init(iso8601String: String) {
         self.iso8601 = iso8601String
@@ -29,12 +33,16 @@ struct FlutterTemporal: TemporalSpec {
     }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> flutter integ tests
 =======
     
 >>>>>>> flutter integ tests initial commit
+=======
+
+>>>>>>> flutter integ tests
     // Not needed functions
     // In order to properly adhere to "TemporalSpec" these functions must be implemented
     // This class is solely for transmitting a ISO 8601 Date String to Appsync so these other functions are not needed
