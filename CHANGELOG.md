@@ -1,5 +1,18 @@
 # Changelog
 ## Unreleased
+## 1.14.0 (2021-09-28)
+
+### Features
+
+- **Storage**: AWSS3PluginPrefixResolver (#1277)
+- **DataStore**: observe query API (#1389)
+
+### Bug Fixes
+
+- **Logging**: fix concurrency issues with logLevel (#1431)
+- **Datastore**: Consecutive Updates (Save, Sync, Update and Immediately Delete Scenario) (#1407)
+- **DataStore**: ReconcileAndLocalSave schedule on internal queue (#1415)
+
 ## 1.13.4 (2021-08-25)
 
 ### Features
