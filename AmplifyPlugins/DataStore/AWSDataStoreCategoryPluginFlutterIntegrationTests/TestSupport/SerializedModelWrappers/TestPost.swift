@@ -10,7 +10,12 @@ import Foundation
 import Amplify
 import AmplifyTestCommon
 
-class TestPost: NSCopying {
+/**
+ Creates a convenience wrapper for non-model type instantiations so that tests do not need to directly access json.
+ 
+ Wraps: Team1 and Team 2
+ */
+class PostWrapper: NSCopying {
     var model: FlutterSerializedModel
     
     init(id: String = UUID().uuidString, title: String, content: String, createdAt: String, rating: Double = 1) throws {
@@ -81,7 +86,7 @@ class TestPost: NSCopying {
     }
 
     func copy(with zone: NSZone? = nil) -> Any {
-        let copy = TestPost(model: model)
+        let copy = PostWrapper(model: model)
         return copy
     }
 }
