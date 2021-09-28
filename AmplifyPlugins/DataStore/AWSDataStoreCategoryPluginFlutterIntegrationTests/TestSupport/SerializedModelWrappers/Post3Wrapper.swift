@@ -12,12 +12,7 @@ import AmplifyTestCommon
 
 /**
  Creates a convenience wrapper for non-model type instantiations so that tests do not need to directly access json.
- 
-<<<<<<< HEAD
  Wraps: Post3 
-=======
- Wraps: Post3 and Post4
->>>>>>> flutter integ tests
  */
 class Post3Wrapper: NSCopying {
     var model: FlutterSerializedModel
