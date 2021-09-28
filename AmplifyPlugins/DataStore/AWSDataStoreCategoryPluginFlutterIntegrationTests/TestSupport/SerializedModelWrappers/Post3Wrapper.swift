@@ -13,7 +13,7 @@ import AmplifyTestCommon
 /**
  Creates a convenience wrapper for non-model type instantiations so that tests do not need to directly access json.
  
- Wraps: Post3 and Post4
+ Wraps: Post3 
  */
 class Post3Wrapper: NSCopying {
     var model: FlutterSerializedModel
