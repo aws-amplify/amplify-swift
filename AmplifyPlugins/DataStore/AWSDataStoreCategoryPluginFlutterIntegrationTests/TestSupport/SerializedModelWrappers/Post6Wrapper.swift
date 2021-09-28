@@ -10,11 +10,20 @@ import Foundation
 import Amplify
 import AmplifyTestCommon
 
-class TestComment4: NSCopying {
+/**
+ Creates a convenience wrapper for non-model type instantiations so that tests do not need to directly access json.
+ 
+ Wraps: Post6
+ */
+class Post6Wrapper: NSCopying {
     var model: FlutterSerializedModel
     
-    init(id: String = UUID().uuidString, content: String, post: FlutterSerializedModel) throws {
-        self.model = FlutterSerializedModel(id: UUID().uuidString, map: try FlutterDataStoreRequestUtils.getJSONValue(["content": content, "post": post.toMap(modelSchema: Post4.schema)]))
+    init(title: String, blog: FlutterSerializedModel) throws {
+        let map: [String: Any] = [
+            "title": title,
+            "blog": blog.toMap(modelSchema: Blog6.schema)
+        ]
+        self.model = FlutterSerializedModel(id: UUID().uuidString, map: try FlutterDataStoreRequestUtils.getJSONValue(map))
     }
     
     init(model: FlutterSerializedModel) {
@@ -26,10 +35,7 @@ class TestComment4: NSCopying {
         let map = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
         self.model = FlutterSerializedModel(id: map!["id"] as! String, map: try FlutterDataStoreRequestUtils.getJSONValue(map!))
     }
-    
-    func setPost(post: FlutterSerializedModel) throws {
-        self.model = FlutterSerializedModel(id: self.model.id, map: try FlutterDataStoreRequestUtils.getJSONValue(["content": "content", "post": post.toMap(modelSchema: Post4.schema)]))
-    }
+
     
     func idString() -> String {
         return self.model.id
@@ -39,12 +45,16 @@ class TestComment4: NSCopying {
         return self.model.values["id"]
     }
 
-    func post() -> JSONValue? {
-        return self.model.values["post"]
+    func title() -> JSONValue? {
+        return self.model.values["title"]
+    }
+    
+    func blog() -> JSONValue? {
+        return self.model.values["blog"]
     }
 
     func copy(with zone: NSZone? = nil) -> Any {
-        let copy = TestComment4(model: model)
+        let copy = Post6Wrapper(model: model)
         return copy
     }
 }

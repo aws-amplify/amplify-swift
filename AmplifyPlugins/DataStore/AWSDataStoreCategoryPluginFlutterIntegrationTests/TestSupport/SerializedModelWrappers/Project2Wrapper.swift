@@ -10,19 +10,24 @@ import Foundation
 import Amplify
 import AmplifyTestCommon
 
+/**
+ Creates a convenience wrapper for non-model type instantiations so that tests do not need to directly access json.
+ 
+ Wraps: Project2
+ */
 class Project2Wrapper: NSCopying {
     var model: FlutterSerializedModel
         
     init(name: String, team: FlutterSerializedModel, teamID: String) throws {
-        self.model = FlutterSerializedModel(id: UUID().uuidString, map: try FlutterDataStoreRequestUtils.getJSONValue(["name": name, "team": team.toMap(modelSchema: Team1.schema), "teamID": teamID]))
+        self.model = FlutterSerializedModel(id: UUID().uuidString, map: try FlutterDataStoreRequestUtils.getJSONValue(["name": name, "team": team.toMap(modelSchema: Team2.schema), "teamID": teamID]))
     }
     
     init(model: FlutterSerializedModel) {
         self.model = model;
     }
     
-    func setTeam(team: FlutterSerializedModel, teamID: String) throws {
-        self.model = FlutterSerializedModel(id: self.model.id, map: try FlutterDataStoreRequestUtils.getJSONValue(["name": self.model.values["name"], "team": team.toMap(modelSchema: Team1.schema), "teamID": teamID]))
+    func setTeam(name: String, team: FlutterSerializedModel, teamID: String) throws {
+        self.model = FlutterSerializedModel(id: self.model.id, map: try FlutterDataStoreRequestUtils.getJSONValue(["name": name, "team": team.toMap(modelSchema: Team2.schema), "teamID": teamID]))
     }
     
     func idString() -> String {
@@ -34,7 +39,7 @@ class Project2Wrapper: NSCopying {
     }
 
     func teamID() -> JSONValue? {
-        return self.model.values["team"]!["id"]
+        return self.model.values["teamID"]
     }
     
     func teamName() -> JSONValue? {

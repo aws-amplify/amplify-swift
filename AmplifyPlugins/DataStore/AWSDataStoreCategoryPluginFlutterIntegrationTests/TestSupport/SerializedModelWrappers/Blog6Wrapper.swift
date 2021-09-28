@@ -10,13 +10,17 @@ import Foundation
 import Amplify
 import AmplifyTestCommon
 
-class TestComment6: NSCopying {
+/**
+ Creates a convenience wrapper for non-model type instantiations so that tests do not need to directly access json.
+ 
+ Wraps: Blog6
+ */
+class Blog6Wrapper: NSCopying {
     var model: FlutterSerializedModel
-
-    init(content: String, post: FlutterSerializedModel) throws {
+    
+    init(name: String) throws {
         let map: [String: Any] = [
-            "content": content,
-            "post": post.toMap(modelSchema: Post6.schema)
+            "name": name
         ]
         self.model = FlutterSerializedModel(id: UUID().uuidString, map: try FlutterDataStoreRequestUtils.getJSONValue(map))
     }
@@ -33,16 +37,18 @@ class TestComment6: NSCopying {
         return self.model.values["id"]
     }
 
-    func content() -> JSONValue? {
-        return self.model.values["content"]
+    func name() -> JSONValue? {
+        return self.model.values["name"]
     }
-    func post() -> JSONValue? {
-        return self.model.values["post"]
+    
+    func posts() -> JSONValue? {
+        return self.model.values["posts"]
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        let copy = TestBlog6(model: model)
+        let copy = Blog6Wrapper(model: model)
         return copy
     }
 }
+
 

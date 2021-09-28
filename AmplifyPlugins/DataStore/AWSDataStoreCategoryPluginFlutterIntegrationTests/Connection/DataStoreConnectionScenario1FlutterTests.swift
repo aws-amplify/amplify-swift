@@ -36,8 +36,8 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
     func testSaveTeamAndProjectSyncToCloud() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        let team = try TestTeam(name: "team1")
-        let project = try TestProject(team: team.model)
+        let team = try TeamWrapper(name: "team1")
+        let project = try Project1Wrapper(team: team.model)
         
         let syncedTeamReceived = expectation(description: "received team from sync path")
         let syncProjectReceived = expectation(description: "received project from sync path")
@@ -49,12 +49,11 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                 return
             }
 
-            // TODO: Should this be modelId, or id?
-            if let syncedTeam = try? mutationEvent.modelId as String,
+            if let syncedTeam = mutationEvent.modelId as String?,
                syncedTeam == team.idString() {
                 syncedTeamReceived.fulfill()
             }
-            else if let syncedProject = try? mutationEvent.modelId as String,
+            else if let syncedProject = mutationEvent.modelId as String?,
                     syncedProject == project.idString() {
                 syncProjectReceived.fulfill()
             }
@@ -93,10 +92,9 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                     XCTFail("project query failed")
                     return
                 }
-                let queriedProject = TestProject(model: queriedProjectList[0])
+                let queriedProject = Project1Wrapper(model: queriedProjectList[0])
                 XCTAssertEqual(queriedProject.idString(), project.idString())
                 XCTAssertEqual(queriedProject.teamId(), project.teamId())
-                // TODO: Investigate null non-id values
                 queriedProjectCompleted.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
@@ -109,10 +107,10 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
     func testUpdateProjectWithAnotherTeam() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        let team = try TestTeam(name: "name1")
-        let anotherTeam = try TestTeam(name: "name1")
-        let project = try TestProject(team: team.model)
-        let expectedUpdatedProject = project.copy() as! TestProject
+        let team = try TeamWrapper(name: "name1")
+        let anotherTeam = try TeamWrapper(name: "name1")
+        let project = try Project1Wrapper(team: team.model)
+        let expectedUpdatedProject = project.copy() as! Project1Wrapper
         try expectedUpdatedProject.setTeam(team: anotherTeam.model)
         
         let syncUpdatedProjectReceived = expectation(description: "received updated project from sync path")
@@ -186,10 +184,9 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                     XCTFail("project query failed")
                     return
                 }
-                let queriedProject = TestProject(model: queriedProjectList[0])
+                let queriedProject = Project1Wrapper(model: queriedProjectList[0])
                 XCTAssertEqual(queriedProject.idString(), project.idString())
 
-                // TODO: Investigate null non-id values
                 queriedProjectCompleted.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
@@ -343,9 +340,9 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func saveTeam(name: String) throws -> TestTeam? {
+    func saveTeam(name: String) throws -> TeamWrapper? {
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        let team = try TestTeam(name: name)
+        let team = try TeamWrapper(name: name)
         var result: FlutterSerializedModel?
         let completeInvoked = expectation(description: "request completed")
         plugin.save(team.model, modelSchema: Team1.schema) { event in
@@ -358,13 +355,13 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
             }
         }
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return TestTeam(model: result!)
+        return TeamWrapper(model: result!)
     }
 
     func saveProject(name: String = "project",
-                     team: TestTeam) throws -> TestProject? {
+                     team: TeamWrapper) throws -> Project1Wrapper? {
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        let project = try TestProject(name: name, team: team.model)
+        let project = try Project1Wrapper(name: name, team: team.model)
         var result: FlutterSerializedModel?
         let completeInvoked = expectation(description: "request completed")
         plugin.save(project.model, modelSchema: Project1.schema) { event in
@@ -377,7 +374,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
             }
         }
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return TestProject(model: result!)
+        return Project1Wrapper(model: result!)
     }
     
     func queryProject(id: String) -> [FlutterSerializedModel]? {

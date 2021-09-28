@@ -94,7 +94,7 @@ class DataStoreConnectionScenario5FlutterTests: SyncEngineFlutterIntegrationTest
         let predicateByUserId = PostEditor5.keys.editor.eq(user.idString())
         plugin.query(FlutterSerializedModel.self, modelSchema: PostEditor5.schema, where: predicateByUserId) { result in
             switch result {
-            case .success(let projects):
+            case .success:
                 listPostEditorByEditorIdCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
@@ -103,103 +103,16 @@ class DataStoreConnectionScenario5FlutterTests: SyncEngineFlutterIntegrationTest
         wait(for: [listPostEditorByEditorIdCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-//    func testGetPostThenLoadPostEditors() throws {
-//        try startAmplifyAndWaitForSync()
-//        let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-//        guard let post = try savePost(title: "title", plugin: plugin) else {
-//            XCTFail("Could not create post")
-//            return
-//        }
-//        guard let user = try saveUser(username: "username", plugin: plugin) else {
-//            XCTFail("Could not create user")
-//            return
-//        }
-//        guard let postEditor = try savePostEditor(post: post, editor: user, plugin: plugin) else {
-//            XCTFail("Could not create user")
-//            return
-//        }
-//        let getPostCompleted = expectation(description: "get post complete")
-//        let getPostEditorsCompleted = expectation(description: "get postEditors complete")
-//        plugin.query(FlutterSerializedModel.self, modelSchema: Post5.schema, where: Post5.keys.id.eq(post.idString())) { result in
-//            switch result {
-//            case .success(let queriedPostOptional):
-//                let queriedPost = TestPost5(model: queriedPostOptional[0])
-//                XCTAssertEqual(queriedPost.idString(), post.idString())
-//                getPostCompleted.fulfill()
-//                guard let editors = queriedPost.editors() else {
-//                    XCTFail("Missing editors")
-//                    return
-//                }
-//                editors.load { result in
-//                    switch result {
-//                    case .success(let postEditors):
-//                        XCTAssertEqual(postEditors.count, 1)
-//                        getPostEditorsCompleted.fulfill()
-//                    case .failure(let error):
-//                        XCTFail("\(error)")
-//                    }
-//                }
-//            case .failure(let error):
-//                XCTFail("\(error)")
-//            }
-//        }
-//        wait(for: [getPostCompleted, getPostEditorsCompleted], timeout: TestCommonConstants.networkTimeout)
-//    }
+    /// TODO: Include testGetPostThenLoadPostEditors when nested model lazy loading is implemented
 
-//    func testGetUserThenLoadPostEditors() throws {
-//        try startAmplifyAndWaitForSync()
-//        let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-//        guard let post = try savePost(title: "title", plugin: plugin) else {
-//            XCTFail("Could not create post")
-//            return
-//        }
-//        guard let user = try saveUser(username: "username", plugin: plugin) else {
-//            XCTFail("Could not create user")
-//            return
-//        }
-//        guard let postEditor = try savePostEditor(post: post, editor: user, plugin: plugin) else {
-//            XCTFail("Could not create user")
-//            return
-//        }
-//        let getUserCompleted = expectation(description: "get user complete")
-//        let getPostsCompleted = expectation(description: "get postEditors complete")
-//        plugin.query(FlutterSerializedModel.self, modelSchema: User5.schema, where: Post5.keys.id.eq(user.idString())) { result in
-//            switch result {
-//            case .success(let queriedUserOptional):
-//                guard let queriedUser = queriedUserOptional else {
-//                    XCTFail("Missing queried user")
-//                    return
-//                }
-//                XCTAssertEqual(queriedUser.id, user.id())
-//                getUserCompleted.fulfill()
-//                guard let posts = queriedUser.posts else {
-//                    XCTFail("Missing posts")
-//                    return
-//                }
-//                posts.load { result in
-//                    switch result {
-//                    case .success(let posts):
-//                        XCTAssertEqual(posts.count, 1)
-//                        getPostsCompleted.fulfill()
-//                    case .failure(let error):
-//                        XCTFail("\(error)")
-//                    }
-//                }
-//            case .failure(let error):
-//                XCTFail("\(error)")
-//            }
-//        }
-//        wait(for: [getUserCompleted, getPostsCompleted], timeout: TestCommonConstants.networkTimeout)
-//    }
-
-    func savePost(id: String = UUID().uuidString, title: String, plugin: AWSDataStorePlugin) throws -> TestPost5? {
-        let post = try TestPost5(title: title)
-        var result: TestPost5?
+    func savePost(id: String = UUID().uuidString, title: String, plugin: AWSDataStorePlugin) throws -> Post5Wrapper? {
+        let post = try Post5Wrapper(title: title)
+        var result: Post5Wrapper?
         let completeInvoked = expectation(description: "request completed")
         plugin.save(post.model, modelSchema: Post5.schema) { event in
             switch event {
             case .success(let queriedPost):
-                result = TestPost5(model: queriedPost)
+                result = Post5Wrapper(model: queriedPost)
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
@@ -209,14 +122,14 @@ class DataStoreConnectionScenario5FlutterTests: SyncEngineFlutterIntegrationTest
         return result
     }
 
-    func saveUser(id: String = UUID().uuidString, username: String, plugin: AWSDataStorePlugin) throws -> TestUser5? {
-        let user = try TestUser5(id: id, username: username)
-        var result: TestUser5?
+    func saveUser(id: String = UUID().uuidString, username: String, plugin: AWSDataStorePlugin) throws -> User5Wrapper? {
+        let user = try User5Wrapper(id: id, username: username)
+        var result: User5Wrapper?
         let completeInvoked = expectation(description: "request completed")
         plugin.save(user.model, modelSchema: User5.schema) { event in
             switch event {
             case .success(let user):
-                result = TestUser5(model: user)
+                result = User5Wrapper(model: user)
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
@@ -226,14 +139,14 @@ class DataStoreConnectionScenario5FlutterTests: SyncEngineFlutterIntegrationTest
         return result
     }
 
-    func savePostEditor(id: String = UUID().uuidString, post: TestPost5, editor: TestUser5, plugin: AWSDataStorePlugin) throws -> TestPostEditor5? {
-        let postEditor = try TestPostEditor5(post: post.model, editor: editor.model)
-        var result: TestPostEditor5?
+    func savePostEditor(id: String = UUID().uuidString, post: Post5Wrapper, editor: User5Wrapper, plugin: AWSDataStorePlugin) throws -> PostEditor5Wrapper? {
+        let postEditor = try PostEditor5Wrapper(post: post.model, editor: editor.model)
+        var result: PostEditor5Wrapper?
         let completeInvoked = expectation(description: "request completed")
         plugin.save(postEditor.model, modelSchema: PostEditor5.schema) { event in
             switch event {
             case .success(let queriedPostEditor):
-                result = TestPostEditor5(model: queriedPostEditor)
+                result = PostEditor5Wrapper(model: queriedPostEditor)
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")

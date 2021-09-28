@@ -14,7 +14,7 @@ import AmplifyTestCommon
 /**
  Creates a convenience wrapper for non-model type instantiations so that tests do not need to directly access json.
  
- Wraps: Team1 and Team2
+ Wraps: Team1 and Team 2
  */
 class TeamWrapper: NSCopying {
     var model: FlutterSerializedModel

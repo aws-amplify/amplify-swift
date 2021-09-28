@@ -10,7 +10,13 @@ import Foundation
 import Amplify
 import AmplifyTestCommon
 
-class TestProject: NSCopying {
+
+/**
+ Creates a convenience wrapper for non-model type instantiations so that tests do not need to directly access json.
+ 
+ Wraps: Project1
+ */
+class Project1Wrapper: NSCopying {
     var model: FlutterSerializedModel
     
     init(team: FlutterSerializedModel) throws {
@@ -46,7 +52,7 @@ class TestProject: NSCopying {
     }
 
     func copy(with zone: NSZone? = nil) -> Any {
-        let copy = TestProject(model: model)
+        let copy = Project1Wrapper(model: model)
         return copy
     }
 }

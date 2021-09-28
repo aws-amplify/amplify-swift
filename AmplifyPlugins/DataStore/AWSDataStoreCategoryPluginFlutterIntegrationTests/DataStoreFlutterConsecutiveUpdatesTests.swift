@@ -23,10 +23,8 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
     func testSaveAndImmediatelyUpdate() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        let newPost = try TestPost(title: "MyPost",
-                          content: "This is my post.",
-                          createdAt: Temporal.DateTime.now().iso8601String,
-                          rating: 3)
+        let newPost = try PostWrapper(title: "MyPost",
+                          content: "This is my post.")
 
         let updatedPost = newPost
         try updatedPost.updateRating(rating: 5)
@@ -44,7 +42,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
                 return
             }
 
-            guard let post = try? TestPost(json: mutationEvent.json) as! TestPost, post.idString() == newPost.idString() else {
+            guard let post = try? PostWrapper(json: mutationEvent.json) as! PostWrapper, post.idString() == newPost.idString() else {
                 return
             }
 
@@ -140,7 +138,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
     func testSaveAndImmediatelyDelete() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        let newPost = try TestPost(title: "MyPost",
+        let newPost = try PostWrapper(title: "MyPost",
                           content: "This is my post.",
                           createdAt: Temporal.DateTime.now().iso8601String,
                           rating: 3)
@@ -156,7 +154,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
                 return
             }
 
-            guard let post = try? TestPost(json: mutationEvent.json) as! TestPost, post.idString() == newPost.idString() else {
+            guard let post = try? PostWrapper(json: mutationEvent.json) as! PostWrapper, post.idString() == newPost.idString() else {
                 return
             }
 
@@ -248,7 +246,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
 
-        let newPost = try TestPost(title: "MyPost",
+        let newPost = try PostWrapper(title: "MyPost",
                           content: "This is my post.",
                           createdAt: Temporal.DateTime.now().iso8601String,
                           rating: 3)
@@ -271,7 +269,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
                 return
             }
 
-            guard let post = try? TestPost(json: mutationEvent.json) as! TestPost, post.idString() == newPost.idString() else {
+            guard let post = try? PostWrapper(json: mutationEvent.json) as! PostWrapper, post.idString() == newPost.idString() else {
                 return
             }
 
@@ -376,14 +374,14 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         wait(for: [apiQuerySuccess], timeout: networkTimeout)
     }
 
-    private func queryPost(id: String, plugin: AWSDataStorePlugin) -> TestPost? {
+    private func queryPost(id: String, plugin: AWSDataStorePlugin) -> PostWrapper? {
         let queryExpectation = expectation(description: "Query is successful")
-        var queryResult: TestPost?
+        var queryResult: PostWrapper?
         plugin.query(FlutterSerializedModel.self, modelSchema: Post.schema, where: Post.keys.id.eq(id)) { result in
             switch result {
             case .success(let post):
                 if (!post.isEmpty) {
-                    queryResult = TestPost(model: post[0])
+                    queryResult = PostWrapper(model: post[0])
                 }
                 queryExpectation.fulfill()
             case .failure(let error):
@@ -394,10 +392,10 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         return queryResult
     }
 
-    private func convertToTestPost(model: Post) -> TestPost? {
-        var result: TestPost? = nil;
+    private func convertToTestPost(model: Post) -> PostWrapper? {
+        var result: PostWrapper? = nil;
         do {
-            result = try TestPost(post: model)
+            result = try PostWrapper(post: model)
         } catch {
             print(error)
         }

@@ -24,17 +24,14 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
         let title = "This is a new post I created"
         let date = Temporal.DateTime.now().iso8601String
         
-        let newPost = try TestPost(
+        let newPost = try PostWrapper(
             title: title,
-            content: "Original content from DataStoreEndToEndTests at \(date)",
-            createdAt: date)
+            content: "Original content from DataStoreEndToEndTests at \(date)")
 
-        let updatedPost = try TestPost(
+        let updatedPost = try PostWrapper(
             id: newPost.idString(),
             title: title,
-            content: "UPDATED CONTENT from DataStoreEndToEndTests at \(date)",
-            createdAt: date
-        )
+            content: "UPDATED CONTENT from DataStoreEndToEndTests at \(date)")
 
         let createReceived = expectation(description: "Create notification received")
         let updateReceived = expectation(description: "Update notification received")
@@ -49,7 +46,7 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
                         return
                 }
             
-                guard let post = try? TestPost(json: mutationEvent.json), mutationEvent.modelName == "Post", post.idString() == newPost.idString() else {
+                guard let post = try? PostWrapper(json: mutationEvent.json), mutationEvent.modelName == "Post", post.idString() == newPost.idString() else {
                     return
                 }
 
@@ -106,12 +103,12 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
         
         let post = Post.keys
 
-        let newPost = try TestPost(
+        let newPost = try PostWrapper(
             title: title,
             content: "Original content from DataStoreEndToEndTests at \(date)",
             createdAt: date)
 
-        let updatedPost = try TestPost(
+        let updatedPost = try PostWrapper(
             id: newPost.idString(),
             title: title,
             content: "UPDATED CONTENT from DataStoreEndToEndTests at \(date)",
@@ -132,7 +129,7 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
 
                 // This check is to protect against stray events being processed after the test has completed,
                 // and it shouldn't be construed as a pattern necessary for production applications.
-                guard let post = try? TestPost(json: mutationEvent.json), mutationEvent.modelName == "Post", post.idString() == newPost.idString() else {
+                guard let post = try? PostWrapper(json: mutationEvent.json), mutationEvent.modelName == "Post", post.idString() == newPost.idString() else {
                     return
                 }
 
@@ -264,7 +261,7 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
 
     func validateSavePost(plugin: AWSDataStorePlugin) throws {
         let date = Temporal.DateTime.now()
-        let newPost = try TestPost(
+        let newPost = try PostWrapper(
             title: "This is a new post I created",
             content: "Original content from DataStoreEndToEndTests at \(date)",
             createdAt: Temporal.DateTime.now().iso8601String)
@@ -280,7 +277,7 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
 
                 // This check is to protect against stray events being processed after the test has completed,
                 // and it shouldn't be construed as a pattern necessary for production applications.
-                guard let post = try? TestPost(json: mutationEvent.json), mutationEvent.modelName == "Post", post.idString() == newPost.idString() else {
+                guard let post = try? PostWrapper(json: mutationEvent.json), mutationEvent.modelName == "Post", post.idString() == newPost.idString() else {
                     return
                 }
 

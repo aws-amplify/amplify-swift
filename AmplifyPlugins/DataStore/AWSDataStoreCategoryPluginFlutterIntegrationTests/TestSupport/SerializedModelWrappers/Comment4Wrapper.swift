@@ -10,14 +10,16 @@ import Foundation
 import Amplify
 import AmplifyTestCommon
 
-class TestPost5: NSCopying {
+/**
+ Creates a convenience wrapper for non-model type instantiations so that tests do not need to directly access json.
+ 
+ Wraps: Comment4
+ */
+class Comment4Wrapper: NSCopying {
     var model: FlutterSerializedModel
     
-    init(id: String = UUID().uuidString, title: String) throws {
-        let map: [String: Any] = [
-            "title": title
-        ]
-        self.model = FlutterSerializedModel(id: id, map: try FlutterDataStoreRequestUtils.getJSONValue(map))
+    init(id: String = UUID().uuidString, content: String, post: FlutterSerializedModel) throws {
+        self.model = FlutterSerializedModel(id: UUID().uuidString, map: try FlutterDataStoreRequestUtils.getJSONValue(["content": content, "post": post.toMap(modelSchema: Post4.schema)]))
     }
     
     init(model: FlutterSerializedModel) {
@@ -30,6 +32,10 @@ class TestPost5: NSCopying {
         self.model = FlutterSerializedModel(id: map!["id"] as! String, map: try FlutterDataStoreRequestUtils.getJSONValue(map!))
     }
     
+    func setPost(post: FlutterSerializedModel) throws {
+        self.model = FlutterSerializedModel(id: self.model.id, map: try FlutterDataStoreRequestUtils.getJSONValue(["content": "content", "post": post.toMap(modelSchema: Post4.schema)]))
+    }
+    
     func idString() -> String {
         return self.model.id
     }
@@ -38,16 +44,12 @@ class TestPost5: NSCopying {
         return self.model.values["id"]
     }
 
-    func title() -> JSONValue? {
-        return self.model.values["title"]
-    }
-    
-    func editors() -> JSONValue? {
-        return self.model.values["editors"]
+    func post() -> JSONValue? {
+        return self.model.values["post"]
     }
 
     func copy(with zone: NSZone? = nil) -> Any {
-        let copy = TestPost3(model: model)
+        let copy = Comment4Wrapper(model: model)
         return copy
     }
 }

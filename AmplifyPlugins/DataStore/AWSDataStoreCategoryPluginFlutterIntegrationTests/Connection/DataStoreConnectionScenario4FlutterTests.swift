@@ -51,7 +51,7 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
         plugin.query(FlutterSerializedModel.self, modelSchema: Comment4.schema, where: Comment4.keys.id.eq(comment.idString())) { result in
             switch result {
             case .success(let queriedCommentOptional):
-                let queriedComment = TestComment4(model: queriedCommentOptional[0])
+                let queriedComment = Comment4Wrapper(model: queriedCommentOptional[0])
                 XCTAssertEqual(queriedComment.idString(), comment.idString())
                 XCTAssertEqual(queriedComment.post()!["id"], post.id())
                 getCommentCompleted.fulfill()
@@ -63,48 +63,8 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
         wait(for: [getCommentCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-//    func testCreateCommentAndGetPostWithComments() throws {
-//        try startAmplifyAndWaitForSync()
-//        let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-//
-//        guard let post = try savePost(title: "title", plugin: plugin) else {
-//            XCTFail("Could not create post")
-//            return
-//        }
-//        guard let comment = try saveComment(content: "content", post: post, plugin: plugin) else {
-//            XCTFail("Could not create comment")
-//            return
-//        }
-//
-//        let getPostCompleted = expectation(description: "get post complete")
-//        let getCommentsCompleted = expectation(description: "get comments complete")
-//        plugin.query(FlutterSerializedModel.self, modelSchema: Post4.schema, where: Post4.keys.id.eq(post.idString())) { result in
-//            switch result {
-//            case .success(let queriedPostOptional):
-//                let queriedPost = TestPost3(model: queriedPostOptional[0])
-//
-//                XCTAssertEqual(queriedPost.id(), post.id())
-//                getPostCompleted.fulfill()
-//                guard let queriedComments = queriedPost.comments else {
-//                    XCTFail("Could not get comments")
-//                    return
-//                }
-//                queriedComments.load { result in
-//                    switch result {
-//                    case .success(let comments):
-//                        XCTAssertEqual(comments.count, 1)
-//                        getCommentsCompleted.fulfill()
-//                    case .failure(let error):
-//                        XCTFail("\(error)")
-//                    }
-//                }
-//            case .failure(let error):
-//                XCTFail("\(error)")
-//            }
-//        }
-//        wait(for: [getPostCompleted, getCommentsCompleted], timeout: TestCommonConstants.networkTimeout)
-//    }
-
+    /// TODO: Include testCreateCommentAndGetPostWithComments when nested model lazy loading is implemented
+    
     func testUpdateComment() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
@@ -129,7 +89,7 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
         plugin.save(comment.model, modelSchema: Comment4.schema ) { result in
             switch result {
             case .success(let updatedComment):
-                let queriedComment = TestComment4(model: updatedComment)
+                let queriedComment = Comment4Wrapper(model: updatedComment)
                 XCTAssertEqual(queriedComment.post()!["id"], anotherPost.id())
                 updateCommentSuccessful.fulfill()
             case .failure(let error):
@@ -204,14 +164,14 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
         wait(for: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
     
-    func savePost(id: String = UUID().uuidString, title: String, plugin: AWSDataStorePlugin) throws -> TestPost3? {
-        let post = try TestPost3(id: id, title: title, content: "content")
-        var result: TestPost3?
+    func savePost(id: String = UUID().uuidString, title: String, plugin: AWSDataStorePlugin) throws -> Post4Wrapper? {
+        let post = try Post4Wrapper(id: id, title: title)
+        var result: Post4Wrapper?
         let completeInvoked = expectation(description: "request completed")
         plugin.save(post.model, modelSchema: Post4.schema) { event in
             switch event {
             case .success(let queriedPost):
-                result = TestPost3(model: queriedPost)
+                result = Post4Wrapper(model: queriedPost)
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
@@ -221,14 +181,14 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
         return result
     }
 
-    func saveComment(id: String = UUID().uuidString, content: String, post: TestPost3, plugin: AWSDataStorePlugin) throws -> TestComment4? {
-        let comment = try TestComment4(id: id, content: "content", post: post.model)
-        var result: TestComment4?
+    func saveComment(id: String = UUID().uuidString, content: String, post: Post4Wrapper, plugin: AWSDataStorePlugin) throws -> Comment4Wrapper? {
+        let comment = try Comment4Wrapper(id: id, content: "content", post: post.model)
+        var result: Comment4Wrapper?
         let completeInvoked = expectation(description: "request completed")
         plugin.save(comment.model, modelSchema: Comment4.schema) { event in
             switch event {
             case .success(let queriedComment):
-                result = TestComment4(model: queriedComment)
+                result = Comment4Wrapper(model: queriedComment)
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
