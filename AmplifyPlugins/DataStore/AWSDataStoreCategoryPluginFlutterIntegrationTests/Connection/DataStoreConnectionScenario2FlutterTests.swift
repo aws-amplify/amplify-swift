@@ -328,6 +328,9 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> flutter integ tests
     func testListProjectsByTeamID() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
@@ -344,6 +347,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where: predicate) { result in
             switch result {
             case .success(let projects):
+<<<<<<< HEAD
                 let project = TestProject2(model: projects[0])
                 XCTAssertEqual(projects.count, 1)
 <<<<<<< HEAD
@@ -354,6 +358,12 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTAssertEqual(project.idString(), project.idString())
                 XCTAssertEqual(project.teamID(), team.id())
 >>>>>>> more flutter integ tests
+=======
+                XCTAssertEqual(projects.count, 1)
+                let returnedProject = Project2Wrapper(model: projects[0])
+                XCTAssertEqual(returnedProject.idString(), project.idString())
+                XCTAssertEqual(returnedProject.teamID(), team.id())
+>>>>>>> flutter integ tests
                 listProjectByTeamIDCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
@@ -361,6 +371,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
+<<<<<<< HEAD
 =======
 //    func testListProjectsByTeamID() throws {
 //        try startAmplifyAndWaitForSync()
@@ -400,15 +411,25 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         let team = try TestTeam(name: name)
         var result: TestTeam?
 >>>>>>> more flutter integ tests
+=======
+    
+    func saveTeam(name: String, plugin: AWSDataStorePlugin) throws -> TeamWrapper? {
+        let team = try TeamWrapper(name: name)
+        var result: TeamWrapper?
+>>>>>>> flutter integ tests
         let completeInvoked = expectation(description: "request completed")
         plugin.save(team.model, modelSchema: Team2.schema) { event in
             switch event {
             case .success(let team):
 <<<<<<< HEAD
+<<<<<<< HEAD
                 result = TeamWrapper(model: team)
 =======
                 result = TestTeam(model: team)
 >>>>>>> more flutter integ tests
+=======
+                result = TeamWrapper(model: team)
+>>>>>>> flutter integ tests
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
@@ -422,25 +443,35 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
                      name: String? = "TestTeam",
                      teamID: String,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> flutter integ tests
                      team: TeamWrapper,
                      plugin: AWSDataStorePlugin) throws -> Project2Wrapper? {
         let project = try Project2Wrapper(name: name!, team: team.model, teamID: teamID)
         var result: Project2Wrapper?
+<<<<<<< HEAD
 =======
                      team: TestTeam,
                      plugin: AWSDataStorePlugin) throws -> TestProject2? {
         let project = try TestProject2(name: name!, team: team.model, teamID: teamID)
         var result: TestProject2?
 >>>>>>> more flutter integ tests
+=======
+>>>>>>> flutter integ tests
         let completeInvoked = expectation(description: "request completed")
         plugin.save(project.model, modelSchema: Project2.schema) { event in
             switch event {
             case .success(let project):
 <<<<<<< HEAD
+<<<<<<< HEAD
                 result = Project2Wrapper(model: project)
 =======
                 result = TestProject2(model: project)
 >>>>>>> more flutter integ tests
+=======
+                result = Project2Wrapper(model: project)
+>>>>>>> flutter integ tests
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
