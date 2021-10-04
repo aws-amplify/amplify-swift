@@ -7,7 +7,6 @@
 
 import Foundation
 import Amplify
-import AWSPluginsCore
 
 public class IdentifyOperation: AmplifyOperation<
     PredictionsIdentifyRequest,
