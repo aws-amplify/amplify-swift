@@ -236,7 +236,6 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             finish()
             return
         }
-        log.verbose("Initial Query")
         storageEngine.query(
             modelType,
             modelSchema: modelSchema,
@@ -327,9 +326,10 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         for item in itemsChanged {
             do {
                 let model = try item.decodeModel(as: modelType)
-                if item.mutationType == MutationEvent.MutationType.delete.rawValue,
-                    let index = currentItems.firstIndex(where: { $0.id == model.id }) {
-                    currentItems.remove(at: index)
+                if item.mutationType == MutationEvent.MutationType.delete.rawValue {
+                    if let index = currentItems.firstIndex(where: { $0.id == model.id }) {
+                        currentItems.remove(at: index)
+                    }
                 } else if let index = currentItems.firstIndex(where: { $0.id == model.id }) {
                     currentItems[index] = model
                 } else {
