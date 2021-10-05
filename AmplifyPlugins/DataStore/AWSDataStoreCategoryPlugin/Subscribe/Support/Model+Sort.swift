@@ -7,6 +7,14 @@
 
 import Amplify
 
+extension Array where Element == QuerySortDescriptor {
+    func sortModels<M: Model>(models: inout [M], modelSchema: ModelSchema) {
+        forEach { sortInput in
+            models.sortModels(by: sortInput, modelSchema: modelSchema)
+        }
+    }
+}
+
 extension Array where Element: Model {
     mutating func sortModels(by sortBy: QuerySortDescriptor, modelSchema: ModelSchema) {
         sort { modelSchema.comparator(model1: $0, model2: $1, sortBy: sortBy) }

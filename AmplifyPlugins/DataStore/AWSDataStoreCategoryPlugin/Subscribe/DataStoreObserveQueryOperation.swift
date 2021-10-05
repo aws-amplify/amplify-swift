@@ -312,7 +312,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     func generateQuerySnapshot(itemsChanged: [MutationEvent] = []) {
         updateCurrentItems(with: itemsChanged)
         if let sort = sortInput {
-            sort.forEach { currentItems.sortModels(by: $0, modelSchema: modelSchema) }
+            sort.sortModels(models: &currentItems, modelSchema: modelSchema)
         }
         passthroughPublisher.send(currentSnapshot)
     }
@@ -321,17 +321,14 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         for item in itemsChanged {
             do {
                 let model = try item.decodeModel(as: modelType)
-                if item.mutationType == MutationEvent.MutationType.delete.rawValue {
-                    if let index = currentItems.firstIndex(where: { $0.id == model.id }) {
-                        currentItems.remove(at: index)
-                    }
+                if item.mutationType == MutationEvent.MutationType.delete.rawValue,
+                    let index = currentItems.firstIndex(where: { $0.id == model.id }) {
+                    currentItems.remove(at: index)
+                } else if let index = currentItems.firstIndex(where: { $0.id == model.id }) {
+                    currentItems[index] = model
                 } else {
-                    if let index = currentItems.firstIndex(where: { $0.id == model.id }) {
-                        currentItems[index] = model
-                    } else {
-                        // TODO: append it to the list in the correct position
-                        currentItems.append(model)
-                    }
+                    // TODO: if sorted, append it to the list in the correct position
+                    currentItems.append(model)
                 }
             } catch {
                 log.error(error: error)
