@@ -24,7 +24,8 @@ extension RecordCover {
   public static let schema = defineSchema { model in
     let recordCover = RecordCover.keys
 
-    model.pluralName = "RecordCovers"
+    model.listPluralName = "RecordCovers"
+    model.syncPluralName = "RecordCovers"
 
     model.fields(
         .id(),

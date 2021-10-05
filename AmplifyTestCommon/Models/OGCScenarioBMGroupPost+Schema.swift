@@ -28,7 +28,8 @@ extension OGCScenarioBMGroupPost {
       rule(allow: .groups, groupClaim: "cognito:groups", groups: ["Admins", "HR"], operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "OGCScenarioBMGroupPosts"
+    model.listPluralName = "OGCScenarioBMGroupPosts"
+    model.syncPluralName = "OGCScenarioBMGroupPosts"
 
     model.fields(
       .id(),

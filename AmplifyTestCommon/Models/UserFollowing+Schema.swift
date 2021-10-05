@@ -23,7 +23,8 @@ extension UserFollowing {
   public static let schema = defineSchema { model in
     let userFollowing = UserFollowing.keys
 
-    model.pluralName = "UserFollowings"
+    model.listPluralName = "UserFollowings"
+    model.syncPluralName = "UserFollowings"
 
     model.fields(
       .id(),

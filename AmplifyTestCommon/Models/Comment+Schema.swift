@@ -23,8 +23,9 @@ extension Comment {
 
   public static let schema = defineSchema { model in
     let comment = Comment.keys
-
-    model.pluralName = "Comments"
+      
+    model.listPluralName = "Comments"
+    model.syncPluralName = "Comments"
 
     model.fields(
       .id(),
