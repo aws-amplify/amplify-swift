@@ -182,7 +182,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
         let items = syncQueryResult.items
         recordsReceived += UInt(items.count)
-
+        log.verbose("[AWSDataStoreObserveQueryOperation] Initial Sync current count: \(recordsReceived)")
         reconciliationQueue.offer(items, modelSchema: modelSchema)
         for item in items {
             initialSyncOperationTopic.send(.enqueued(item))

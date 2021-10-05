@@ -105,6 +105,7 @@ final class ModelSyncedEventEmitter {
                 dispatchModelSyncedEvent()
             }
         }
+        log.verbose("[AWSDataStoreObserveQueryOperation] ModelSyncedEventEmitter record received \(recordsReceived)")
     }
 
     private func onReceiveReconciliationEvent(value: IncomingEventReconciliationQueueEvent) {
@@ -126,6 +127,7 @@ final class ModelSyncedEventEmitter {
         default:
             return
         }
+        log.verbose("[AWSDataStoreObserveQueryOperation] ModelSyncedEventEmitter record reconciled \(reconciledReceived)")
 
         if initialSyncOperationFinished && reconciledReceived == recordsReceived {
             dispatchModelSyncedEvent()
