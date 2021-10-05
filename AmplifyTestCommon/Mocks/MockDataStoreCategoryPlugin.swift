@@ -142,7 +142,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
                                        sort sortInput: QuerySortInput? = nil)
     -> AnyPublisher<DataStoreQuerySnapshot<M>, DataStoreError> {
         notify("observeQuery")
-        let snapshot = DataStoreQuerySnapshot<M>(items: [], isSynced: false, itemsChanged: [])
+        let snapshot = DataStoreQuerySnapshot<M>(items: [], isSynced: false)
         return Result.Publisher(snapshot).eraseToAnyPublisher()
     }
 }

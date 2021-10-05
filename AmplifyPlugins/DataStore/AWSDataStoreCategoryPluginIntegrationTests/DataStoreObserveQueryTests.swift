@@ -73,8 +73,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                     XCTFail("\(error)")
                 }
             } receiveValue: { querySnapshot in
-                if querySnapshot.itemsChanged.contains(where: { mutationEvent in
-                    mutationEvent.modelId == post2.id
+                if querySnapshot.items.contains(where: { model in
+                    model.id == post2.id
                 }) {
                     var items = querySnapshot.items
                     let actualPost2 = items.removeLast()

@@ -43,7 +43,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             predicate: nil,
             sortInput: nil,
             storageEngine: storageEngine,
-            dataStorePublisher: dataStorePublisher)
+            dataStorePublisher: dataStorePublisher,
+            dataStoreConfiguration: .default)
 
         let sink = operation.publisher.sink { completed in
             switch completed {
@@ -69,8 +70,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         wait(for: [secondSnapshot], timeout: 10)
 
         XCTAssertEqual(querySnapshots.count, 2)
-        XCTAssertEqual(querySnapshots[0].itemsChanged.count, 0)
-        XCTAssertEqual(querySnapshots[1].itemsChanged.count, 1)
+        XCTAssertEqual(querySnapshots[0].items.count, 0)
+        XCTAssertEqual(querySnapshots[1].items.count, 1)
         sink.cancel()
     }
 
@@ -93,7 +94,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             predicate: nil,
             sortInput: nil,
             storageEngine: storageEngine,
-            dataStorePublisher: dataStorePublisher)
+            dataStorePublisher: dataStorePublisher,
+            dataStoreConfiguration: .default)
 
         let sink = operation.publisher.sink { completed in
             switch completed {
@@ -123,8 +125,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         wait(for: [secondSnapshot], timeout: 10)
 
         XCTAssertEqual(querySnapshots.count, 2)
-        XCTAssertEqual(querySnapshots[0].itemsChanged.count, 0)
-        XCTAssertEqual(querySnapshots[1].itemsChanged.count, 3)
+        XCTAssertEqual(querySnapshots[0].items.count, 0)
+        XCTAssertEqual(querySnapshots[1].items.count, 3)
         sink.cancel()
     }
 
@@ -135,7 +137,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
     /// - When:
     ///    -  Observe 1100 item changes (beyond the `.collect` count of 1000)
     /// - Then:
-    ///    - The items observed will perform a query and return 1000  items changed in the second query and the
+    ///    - The items observed will perform a query and return 1000 items changed in the second query and the
     ///     remaining in the third query
     ///
     func testCollectOverMaxItemCountLimit() throws {
@@ -150,7 +152,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             predicate: nil,
             sortInput: nil,
             storageEngine: storageEngine,
-            dataStorePublisher: dataStorePublisher)
+            dataStorePublisher: dataStorePublisher,
+            dataStoreConfiguration: .default)
 
         let sink = operation.publisher.sink { completed in
             switch completed {
@@ -181,9 +184,9 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         wait(for: [secondSnapshot, thirdSnapshot], timeout: 10)
 
         XCTAssertEqual(querySnapshots.count, 3)
-        XCTAssertEqual(querySnapshots[0].itemsChanged.count, 0)
-        XCTAssertEqual(querySnapshots[1].itemsChanged.count, 1_000)
-        XCTAssertEqual(querySnapshots[2].itemsChanged.count, 100)
+        XCTAssertTrue(querySnapshots[0].items.count <= querySnapshots[1].items.count)
+        XCTAssertTrue(querySnapshots[1].items.count <= querySnapshots[2].items.count)
+        XCTAssertTrue(querySnapshots[2].items.count <= 1_100)
         sink.cancel()
     }
 
@@ -206,7 +209,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             predicate: nil,
             sortInput: nil,
             storageEngine: storageEngine,
-            dataStorePublisher: dataStorePublisher)
+            dataStorePublisher: dataStorePublisher,
+            dataStoreConfiguration: .default)
 
         let sink = operation.publisher.sink { completed in
             switch completed {
@@ -257,7 +261,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             predicate: nil,
             sortInput: nil,
             storageEngine: storageEngine,
-            dataStorePublisher: dataStorePublisher)
+            dataStorePublisher: dataStorePublisher,
+            dataStoreConfiguration: .default)
 
         let sink = operation.publisher.sink { completed in
             switch completed {
@@ -300,7 +305,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             predicate: nil,
             sortInput: nil,
             storageEngine: storageEngine,
-            dataStorePublisher: dataStorePublisher)
+            dataStorePublisher: dataStorePublisher,
+            dataStoreConfiguration: .default)
 
         var sink = operation.publisher.sink { completed in
             switch completed {
@@ -322,7 +328,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
 
         wait(for: [firstSnapshot], timeout: 1)
         operation.resetState()
-        operation.startObserveQuery()
+        operation.startObserveQuery(with: storageEngine)
         wait(for: [secondSnapshot], timeout: 1)
     }
 
@@ -345,7 +351,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             predicate: nil,
             sortInput: nil,
             storageEngine: storageEngine,
-            dataStorePublisher: dataStorePublisher)
+            dataStorePublisher: dataStorePublisher,
+            dataStoreConfiguration: .default)
 
         var sink = operation.publisher.sink { completed in
             switch completed {
@@ -370,8 +377,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
 
         operation.resetState()
 
-        operation.startObserveQuery()
-        operation.startObserveQuery()
+        operation.startObserveQuery(with: storageEngine)
+        operation.startObserveQuery(with: storageEngine)
         wait(for: [secondSnapshot], timeout: 1)
         wait(for: [thirdSnapshot], timeout: 1)
         XCTAssertTrue(operation.observeQueryStarted.get())
@@ -387,7 +394,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             predicate: nil,
             sortInput: nil,
             storageEngine: storageEngine,
-            dataStorePublisher: dataStorePublisher)
+            dataStorePublisher: dataStorePublisher,
+            dataStoreConfiguration: .default)
 
         let operation2 = AWSDataStoreObserveQueryOperation(
             modelType: Post.self,
@@ -395,7 +403,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             predicate: nil,
             sortInput: nil,
             storageEngine: storageEngine,
-            dataStorePublisher: dataStorePublisher)
+            dataStorePublisher: dataStorePublisher,
+            dataStoreConfiguration: .default)
 
         var sink = operation1.publisher.sink { completed in
             switch completed {
@@ -442,7 +451,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             predicate: nil,
             sortInput: nil,
             storageEngine: storageEngine,
-            dataStorePublisher: dataStorePublisher)
+            dataStorePublisher: dataStorePublisher,
+            dataStoreConfiguration: .default)
         let post = Post(title: "model1",
                         content: "content1",
                         createdAt: .now())
@@ -464,7 +474,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             if index == 1 {
                 operation.resetState()
             } else if index == 2 {
-                operation.startObserveQuery()
+                operation.startObserveQuery(with: storageEngine)
             } else {
                 do {
                     let itemChange = try createPost(id: post.id)

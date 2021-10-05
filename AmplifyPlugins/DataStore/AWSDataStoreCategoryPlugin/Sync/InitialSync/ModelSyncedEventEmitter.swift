@@ -34,6 +34,8 @@ final class ModelSyncedEventEmitter {
         return modelSyncedEventTopic.eraseToAnyPublisher()
     }
 
+    var dispatchedModelSyncedEvent: AtomicValue<Bool>
+
     init(modelSchema: ModelSchema,
          initialSyncOrchestrator: InitialSyncOrchestrator?,
          reconciliationQueue: IncomingEventReconciliationQueue?) {
@@ -41,7 +43,7 @@ final class ModelSyncedEventEmitter {
         self.recordsReceived = 0
         self.reconciledReceived = 0
         self.initialSyncOperationFinished = false
-
+        self.dispatchedModelSyncedEvent = AtomicValue(initialValue: false)
         self.modelSyncedEventBuilder = ModelSyncedEvent.Builder()
 
         self.modelSyncedEventTopic = PassthroughSubject<Never, Never>()
@@ -135,6 +137,7 @@ final class ModelSyncedEventEmitter {
         let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
                                                  data: modelSyncedEventBuilder.build())
         Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
+        dispatchedModelSyncedEvent.set(true)
         modelSyncedEventTopic.send(completion: .finished)
         cancel()
     }

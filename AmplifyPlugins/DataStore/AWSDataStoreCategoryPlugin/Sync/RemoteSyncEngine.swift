@@ -28,7 +28,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private var initialSyncOrchestrator: InitialSyncOrchestrator?
     private let initialSyncOrchestratorFactory: InitialSyncOrchestratorFactory
 
-    private var syncEventEmitter: SyncEventEmitter?
+    var syncEventEmitter: SyncEventEmitter?
     private var readyEventEmitter: ReadyEventEmitter?
 
     private let mutationEventIngester: MutationEventIngester
@@ -307,7 +307,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
         readyEventEmitter = ReadyEventEmitter(
             remoteSyncEnginePublisher: publisher,
-            completion: { [weak self] in self?.cancelEmitters() }
+            completion: { }
         )
 
         // TODO: This should be an AsynchronousOperation, not a semaphore-waited block

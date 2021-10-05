@@ -17,12 +17,8 @@ public struct DataStoreQuerySnapshot<M: Model> {
     /// Indicates whether all sync queries for this model are complete, and subscriptions are active
     public let isSynced: Bool
 
-    /// Latest changes since last snapshot
-    public let itemsChanged: [MutationEvent]
-
-    public init(items: [M], isSynced: Bool, itemsChanged: [MutationEvent]) {
+    public init(items: [M], isSynced: Bool) {
         self.items = items
         self.isSynced = isSynced
-        self.itemsChanged = itemsChanged
     }
 }

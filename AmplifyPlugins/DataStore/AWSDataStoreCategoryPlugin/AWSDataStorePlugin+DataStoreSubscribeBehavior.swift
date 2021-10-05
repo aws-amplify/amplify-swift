@@ -57,7 +57,8 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
                                                           predicate: predicate,
                                                           sortInput: sortInput,
                                                           storageEngine: storageEngine,
-                                                          dataStorePublisher: dataStorePublisher)
+                                                          dataStorePublisher: dataStorePublisher,
+                                                          dataStoreConfiguration: dataStoreConfiguration)
         operationQueue.addOperation(operation)
         return operation.publisher
     }

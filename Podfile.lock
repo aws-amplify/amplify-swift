@@ -1,5 +1,5 @@
 PODS:
-  - AWSCore (2.26.0)
+  - AWSCore (2.26.1)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
@@ -36,7 +36,7 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  AWSCore: b6d8dda67f24c6fc4c354334ec6d34238f37b735
+  AWSCore: 0f855e20ccb13e028932b737f0706023a9561399
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4

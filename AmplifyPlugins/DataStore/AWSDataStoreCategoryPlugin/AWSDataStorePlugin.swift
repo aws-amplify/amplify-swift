@@ -122,7 +122,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
                 self.operationQueue.operations.forEach { operation in
                     if let operation = operation as? DataStoreObserveQueryOperation {
-                        operation.startObserveQuery()
+                        operation.startObserveQuery(with: self.storageEngine)
                     }
                 }
                 completion(result)

@@ -11,7 +11,7 @@ import Combine
 
 protocol DataStoreObserveQueryOperation {
     func resetState()
-    func startObserveQuery()
+    func startObserveQuery(with storageEngine: StorageEngineBehavior)
 }
 
 @available(iOS 13.0, *)
@@ -112,21 +112,19 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     private let serialQueue = DispatchQueue(label: "com.amazonaws.AWSDataStoreObseverQueryOperation.serialQueue",
                                             target: DispatchQueue.global())
     private let itemsChangedPeriodicPublishTimeInSeconds: DispatchQueue.SchedulerTimeType.Stride = 2
-    private let itemsChangedMaxSize = 1_000
 
     let modelType: M.Type
     let modelSchema: ModelSchema
     let predicate: QueryPredicate?
     let sortInput: [QuerySortDescriptor]?
-
-    let storageEngine: StorageEngineBehavior
+    var storageEngine: StorageEngineBehavior
     var dataStorePublisher: ModelSubcriptionBehavior
+    let itemsChangedMaxSize: Int
 
     let observeQueryStarted: AtomicValue<Bool>
-    let isSynced: AtomicValue<Bool>
-    var currentItemsMap: [Model.Identifier: M]
+    var currentItems: [M]
+    var batchItemsChangedSink: AnyCancellable?
     var itemsChangedSink: AnyCancellable?
-    var dataStoreEventSink: AnyCancellable?
 
     /// Internal publisher for `ObserveQueryPublisher` to pass events back to subscribers
     let passthroughPublisher: PassthroughSubject<DataStoreQuerySnapshot<M>, DataStoreError>
@@ -137,22 +135,37 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         return observeQueryPublisher.eraseToAnyPublisher()
     }
 
+    var isSynced: Bool {
+        if let storageAdapter = storageEngine as? StorageEngine,
+           let remoteSyncEngine = storageAdapter.syncEngine as? RemoteSyncEngine,
+           let modelSyncedEventEmitter = remoteSyncEngine
+            .syncEventEmitter?.modelSyncedEventEmitters[modelType.modelName] {
+            return modelSyncedEventEmitter.dispatchedModelSyncedEvent.get()
+        }
+        return false
+    }
+
+    var currentSnapshot: DataStoreQuerySnapshot<M> {
+        DataStoreQuerySnapshot<M>(items: currentItems, isSynced: isSynced)
+    }
+
     init(modelType: M.Type,
          modelSchema: ModelSchema,
          predicate: QueryPredicate?,
          sortInput: [QuerySortDescriptor]?,
          storageEngine: StorageEngineBehavior,
-         dataStorePublisher: ModelSubcriptionBehavior) {
+         dataStorePublisher: ModelSubcriptionBehavior,
+         dataStoreConfiguration: DataStoreConfiguration) {
         self.modelType = modelType
         self.modelSchema = modelSchema
         self.predicate = predicate
         self.sortInput = sortInput
         self.storageEngine = storageEngine
         self.dataStorePublisher = dataStorePublisher
+        self.itemsChangedMaxSize = Int(dataStoreConfiguration.syncPageSize)
 
         self.observeQueryStarted = AtomicValue(initialValue: false)
-        self.isSynced = AtomicValue(initialValue: false)
-        self.currentItemsMap = [:]
+        self.currentItems = []
         self.passthroughPublisher = PassthroughSubject<DataStoreQuerySnapshot<M>, DataStoreError>()
         self.observeQueryPublisher = ObserveQueryPublisher()
         super.init()
@@ -168,8 +181,8 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             itemsChangedSink.cancel()
         }
 
-        if let dataStoreEventSink = dataStoreEventSink {
-            dataStoreEventSink.cancel()
+        if let batchItemsChangedSink = batchItemsChangedSink {
+            batchItemsChangedSink.cancel()
         }
         passthroughPublisher.send(completion: .finished)
         super.cancel()
@@ -182,14 +195,17 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
                 return
             }
             self.log.verbose("Resetting state")
-            self.isSynced.set(false)
-            self.currentItemsMap.removeAll()
+            self.currentItems.removeAll()
             self.itemsChangedSink = nil
-            self.dataStoreEventSink = nil
+            self.batchItemsChangedSink = nil
         }
     }
 
-    func startObserveQuery() {
+    func startObserveQuery(with storageEngine: StorageEngineBehavior) {
+        startObserveQuery(storageEngine)
+    }
+
+    private func startObserveQuery(_ storageEngine: StorageEngineBehavior? = nil) {
         serialQueue.async {
             if self.isCancelled || self.isFinished {
                 self.finish()
@@ -198,41 +214,12 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             if self.observeQueryStarted.getAndSet(true) {
                 return
             }
+            if let storageEngine = storageEngine {
+                self.storageEngine = storageEngine
+            }
             self.log.verbose("Start ObserveQuery")
-            self.dataStoreEventSink = Amplify.Hub.publisher(for: .dataStore)
-                .sink(receiveValue: self.onDataStoreEvent(hubPayload:))
             self.subscribeToItemChanges()
-            self.setInitialIsSyncedState()
             self.initialQuery()
-        }
-    }
-
-    // MARK: - Initial IsSynced state
-
-    func setInitialIsSyncedState() {
-        // if the sync engine is active, then `.ready` event has already fired, set isSynced to true
-        if let storageAdapter = storageEngine as? StorageEngine,
-           let remoteSyncEngine = storageAdapter.syncEngine as? RemoteSyncEngine,
-           case .syncEngineActive = remoteSyncEngine.stateMachine.state {
-            isSynced.set(true)
-        }
-    }
-
-    // MARK: - Observe DataStore events
-
-    func onDataStoreEvent(hubPayload: HubPayload) {
-        if isCancelled || isFinished {
-            finish()
-            return
-        }
-
-        if hubPayload.eventName == HubPayload.EventName.DataStore.modelSynced && !isSynced.get(),
-           let modelSynced = hubPayload.data as? ModelSyncedEvent, modelSynced.modelName == modelSchema.name {
-            isSynced.set(true)
-            log.verbose("Received .modelSynced event")
-        } else if hubPayload.eventName == HubPayload.EventName.DataStore.ready && !isSynced.get() {
-            isSynced.set(true)
-            log.verbose("Received .ready event")
         }
     }
 
@@ -243,7 +230,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             finish()
             return
         }
-
+        log.verbose("Initial Query")
         storageEngine.query(
             modelType,
             modelSchema: modelSchema,
@@ -258,7 +245,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
 
                 switch queryResult {
                 case .success(let queriedModels):
-                    storeCurrentItems(queriedModels: queriedModels)
+                    currentItems = queriedModels
                     generateQuerySnapshot()
                 case .failure(let error):
                     self.passthroughPublisher.send(completion: .failure(error))
@@ -268,20 +255,22 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             })
     }
 
-    func storeCurrentItems(queriedModels: [M]) {
-        for model in queriedModels {
-            currentItemsMap.updateValue(model, forKey: model.id)
-        }
-    }
-
     // MARK: Observe item changes
 
     func subscribeToItemChanges() {
-        itemsChangedSink = dataStorePublisher.publisher
+        batchItemsChangedSink = dataStorePublisher.publisher
+            .filter { _ in !self.isSynced }
             .filter(onItemChangedFilter(mutationEvent:))
             .collect(.byTimeOrCount(serialQueue, itemsChangedPeriodicPublishTimeInSeconds, itemsChangedMaxSize))
             .sink(receiveCompletion: onReceiveCompletion(completed:),
                   receiveValue: onItemChanges(mutationEvents:))
+
+        itemsChangedSink = dataStorePublisher.publisher
+            .filter { _ in self.isSynced }
+            .filter(onItemChangedFilter(mutationEvent:))
+            .receive(on: serialQueue)
+            .sink(receiveCompletion: onReceiveCompletion(completed:),
+                  receiveValue: onItemChange(mutationEvent:))
     }
 
     func onItemChangedFilter(mutationEvent: MutationEvent) -> Bool {
@@ -302,6 +291,10 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         }
     }
 
+    func onItemChange(mutationEvent: MutationEvent) {
+        onItemChanges(mutationEvents: [mutationEvent])
+    }
+
     func onItemChanges(mutationEvents: [MutationEvent]) {
         serialQueue.async {
             if self.isCancelled || self.isFinished {
@@ -318,11 +311,10 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
 
     func generateQuerySnapshot(itemsChanged: [MutationEvent] = []) {
         updateCurrentItems(with: itemsChanged)
-        var currentItems = Array(currentItemsMap.values.map { $0 }) as [M]
         if let sort = sortInput {
             sort.forEach { currentItems.sortModels(by: $0, modelSchema: modelSchema) }
         }
-        publishSnapshot(ofItems: currentItems, isSynced: isSynced.get(), itemsChanged: itemsChanged)
+        passthroughPublisher.send(currentSnapshot)
     }
 
     func updateCurrentItems(with itemsChanged: [MutationEvent]) {
@@ -330,9 +322,16 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             do {
                 let model = try item.decodeModel(as: modelType)
                 if item.mutationType == MutationEvent.MutationType.delete.rawValue {
-                    currentItemsMap.removeValue(forKey: model.id)
+                    if let index = currentItems.firstIndex(where: { $0.id == model.id }) {
+                        currentItems.remove(at: index)
+                    }
                 } else {
-                    currentItemsMap.updateValue(model, forKey: model.id)
+                    if let index = currentItems.firstIndex(where: { $0.id == model.id }) {
+                        currentItems[index] = model
+                    } else {
+                        // TODO: append it to the list in the correct position
+                        currentItems.append(model)
+                    }
                 }
             } catch {
                 log.error(error: error)
@@ -353,25 +352,6 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             passthroughPublisher.send(completion: .failure(error))
         }
         finish()
-    }
-
-    // MARK: - Helpers
-
-    func publishSnapshot(ofItems items: [M], isSynced: Bool, itemsChanged: [MutationEvent]) {
-        let querySnapshot = DataStoreQuerySnapshot(items: items,
-                                                   isSynced: isSynced,
-                                                   itemsChanged: dedup(mutationEvents: itemsChanged))
-        log.verbose("items: \(querySnapshot.items.count) changed: \(querySnapshot.itemsChanged.count) isSynced: \(querySnapshot.isSynced)")
-        passthroughPublisher.send(querySnapshot)
-    }
-
-    /// Remove duplicate MutationEvents based on the model identifier, keeping the latest one.
-    func dedup(mutationEvents: [MutationEvent]) -> [MutationEvent] {
-        var itemsChangedMap: [Model.Identifier: MutationEvent] = [:]
-        for mutationEvent in mutationEvents {
-            itemsChangedMap.updateValue(mutationEvent, forKey: mutationEvent.modelId)
-        }
-        return Array(itemsChangedMap.values.map { $0 })
     }
 }
 
