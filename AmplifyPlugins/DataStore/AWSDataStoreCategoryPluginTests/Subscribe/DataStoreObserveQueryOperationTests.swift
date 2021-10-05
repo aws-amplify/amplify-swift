@@ -381,7 +381,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         operation.startObserveQuery(with: storageEngine)
         wait(for: [secondSnapshot], timeout: 1)
         wait(for: [thirdSnapshot], timeout: 1)
-        XCTAssertTrue(operation.observeQueryStarted.get())
+        XCTAssertTrue(operation.observeQueryStarted)
     }
 
     func testObserveQueryOperationIsRemovedWhenPreviousSubscriptionIsRemoved() {
@@ -479,7 +479,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
                 do {
                     let itemChange = try createPost(id: post.id)
                     let itemChange2 = try createPost()
-                    operation.onItemChanges(mutationEvents: [itemChange, itemChange2])
+                    operation.onItemsChange(mutationEvents: [itemChange, itemChange2])
                 } catch {
                     XCTFail("Failed to create post")
                 }

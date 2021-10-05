@@ -121,7 +121,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     var dataStorePublisher: ModelSubcriptionBehavior
     let itemsChangedMaxSize: Int
 
-    let observeQueryStarted: AtomicValue<Bool>
+    var observeQueryStarted: Bool
     var currentItems: [M]
     var batchItemsChangedSink: AnyCancellable?
     var itemsChangedSink: AnyCancellable?
@@ -164,7 +164,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         self.dataStorePublisher = dataStorePublisher
         self.itemsChangedMaxSize = Int(dataStoreConfiguration.syncPageSize)
 
-        self.observeQueryStarted = AtomicValue(initialValue: false)
+        self.observeQueryStarted = false
         self.currentItems = []
         self.passthroughPublisher = PassthroughSubject<DataStoreQuerySnapshot<M>, DataStoreError>()
         self.observeQueryPublisher = ObserveQueryPublisher()
@@ -191,8 +191,10 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
 
     func resetState() {
         serialQueue.async {
-            if !self.observeQueryStarted.getAndSet(false) {
+            if !self.observeQueryStarted {
                 return
+            } else {
+                self.observeQueryStarted = false
             }
             self.log.verbose("Resetting state")
             self.currentItems.removeAll()
@@ -211,9 +213,13 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
                 self.finish()
                 return
             }
-            if self.observeQueryStarted.getAndSet(true) {
+
+            if self.observeQueryStarted {
                 return
+            } else {
+                self.observeQueryStarted = true
             }
+
             if let storageEngine = storageEngine {
                 self.storageEngine = storageEngine
             }
@@ -263,7 +269,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             .filter(onItemChangedFilter(mutationEvent:))
             .collect(.byTimeOrCount(serialQueue, itemsChangedPeriodicPublishTimeInSeconds, itemsChangedMaxSize))
             .sink(receiveCompletion: onReceiveCompletion(completed:),
-                  receiveValue: onItemChanges(mutationEvents:))
+                  receiveValue: onItemsChange(mutationEvents:))
 
         itemsChangedSink = dataStorePublisher.publisher
             .filter { _ in self.isSynced }
@@ -292,16 +298,16 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     }
 
     func onItemChange(mutationEvent: MutationEvent) {
-        onItemChanges(mutationEvents: [mutationEvent])
+        onItemsChange(mutationEvents: [mutationEvent])
     }
 
-    func onItemChanges(mutationEvents: [MutationEvent]) {
+    func onItemsChange(mutationEvents: [MutationEvent]) {
         serialQueue.async {
             if self.isCancelled || self.isFinished {
                 self.finish()
                 return
             }
-            guard self.observeQueryStarted.get(), !mutationEvents.isEmpty else {
+            guard self.observeQueryStarted, !mutationEvents.isEmpty else {
                 return
             }
 
