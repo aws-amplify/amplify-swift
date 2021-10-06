@@ -185,7 +185,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
         reconciliationQueue.offer(items, modelSchema: modelSchema)
         for item in items {
-            initialSyncOperationTopic.send(.enqueued(item))
+            initialSyncOperationTopic.send(.enqueued(item, modelName: modelSchema.name))
         }
 
         if let nextToken = syncQueryResult.nextToken, recordsReceived < syncMaxRecords {
