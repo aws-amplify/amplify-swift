@@ -51,4 +51,4 @@ extension MockStorageEngineBehavior {
 typealias StartSyncResponder = MockResponder<String, Void>
 typealias StopSyncResponder = MockResponder<String, Void>
 typealias ClearResponder = MockResponder<String, Void>
-typealias QueryResponder = MockResponder<String, Void>
+typealias QueryResponder<M: Model> = MockResponder<Void, DataStoreResult<[M]>>

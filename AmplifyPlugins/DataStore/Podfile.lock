@@ -23,18 +23,18 @@ PODS:
     - AWSPluginsCore (= 1.14.0)
   - AppSyncRealTimeClient (1.5.0):
     - Starscream (~> 3.1.1)
-  - AWSAuthCore (2.26.0):
-    - AWSCore (= 2.26.0)
-  - AWSCognitoIdentityProvider (2.26.0):
-    - AWSCognitoIdentityProviderASF (= 2.26.0)
-    - AWSCore (= 2.26.0)
-  - AWSCognitoIdentityProviderASF (2.26.0)
-  - AWSCore (2.26.0)
-  - AWSMobileClient (2.26.0):
-    - AWSAuthCore (= 2.26.0)
-    - AWSCognitoIdentityProvider (= 2.26.0)
-    - AWSCognitoIdentityProviderASF (= 2.26.0)
-    - AWSCore (= 2.26.0)
+  - AWSAuthCore (2.26.1):
+    - AWSCore (= 2.26.1)
+  - AWSCognitoIdentityProvider (2.26.1):
+    - AWSCognitoIdentityProviderASF (= 2.26.1)
+    - AWSCore (= 2.26.1)
+  - AWSCognitoIdentityProviderASF (2.26.1)
+  - AWSCore (2.26.1)
+  - AWSMobileClient (2.26.1):
+    - AWSAuthCore (= 2.26.1)
+    - AWSCognitoIdentityProvider (= 2.26.1)
+    - AWSCognitoIdentityProviderASF (= 2.26.1)
+    - AWSCore (= 2.26.1)
   - AWSPluginsCore (1.14.0):
     - Amplify (= 1.14.0)
     - AWSCore (~> 2.26.0)
@@ -103,11 +103,11 @@ SPEC CHECKSUMS:
   AmplifyPlugins: 94bb3e7e006b41f82e8a0a1dbbc48925d9edbe4c
   AmplifyTestCommon: cf9d5a7a3bb697f8cd5fe4d8fae0f968033abdd0
   AppSyncRealTimeClient: 2b4482b1770a3e5cf64f9714a6d198550017b5a2
-  AWSAuthCore: e33e7d1c2a7e6c08a026865f9396b0ef870faac3
-  AWSCognitoIdentityProvider: 4119e1492b23fc408a18c6dafe06888ef03c96e3
-  AWSCognitoIdentityProviderASF: a7f1e8cbafbac53ea1150ca50eac870d5c04dacf
-  AWSCore: b6d8dda67f24c6fc4c354334ec6d34238f37b735
-  AWSMobileClient: a9a498884df72531e3e73c9d7bb087f72364204d
+  AWSAuthCore: 264faaa6af5990af2c77effe8f398a4b80e6c44e
+  AWSCognitoIdentityProvider: 5df455775b57eb4e61862acd88d93e56113950c4
+  AWSCognitoIdentityProviderASF: b2c180f69537d57ff485f7314fd266032ca3f898
+  AWSCore: 0f855e20ccb13e028932b737f0706023a9561399
+  AWSMobileClient: ba255030a481b8a123b21585548e761456efc64b
   AWSPluginsCore: 75950cfd39535b0a3654096cb472a7ee5b2ce0fa
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961

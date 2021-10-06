@@ -136,6 +136,15 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         return Result.Publisher(mutationEvent).eraseToAnyPublisher()
     }
 
+    @available(iOS 13.0, *)
+    public func observeQuery<M: Model>(for modelType: M.Type,
+                                       where predicate: QueryPredicate? = nil,
+                                       sort sortInput: QuerySortInput? = nil)
+    -> AnyPublisher<DataStoreQuerySnapshot<M>, DataStoreError> {
+        notify("observeQuery")
+        let snapshot = DataStoreQuerySnapshot<M>(items: [], isSynced: false)
+        return Result.Publisher(snapshot).eraseToAnyPublisher()
+    }
 }
 
 class MockSecondDataStoreCategoryPlugin: MockDataStoreCategoryPlugin {
