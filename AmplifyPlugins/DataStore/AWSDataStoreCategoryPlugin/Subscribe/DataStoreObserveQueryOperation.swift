@@ -314,7 +314,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         }
     }
 
-    func generateQuerySnapshot(itemsChanged: [MutationEvent] = []) {
+    private func generateQuerySnapshot(itemsChanged: [MutationEvent] = []) {
         updateCurrentItems(with: itemsChanged)
         if let sort = sortInput {
             sort.sortModels(models: &currentItems, modelSchema: modelSchema)
@@ -322,7 +322,9 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         passthroughPublisher.send(currentSnapshot)
     }
 
-    func updateCurrentItems(with itemsChanged: [MutationEvent]) {
+    /// Update `curentItems` list with the changed items.
+    /// This method is not thread safe unless executed under the serial DispatchQueue `serialQueue`.
+    private func updateCurrentItems(with itemsChanged: [MutationEvent]) {
         for item in itemsChanged {
             do {
                 let model = try item.decodeModel(as: modelType)
@@ -343,7 +345,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         }
     }
 
-    func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
+    private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
         if isCancelled || isFinished {
             finish()
             return
