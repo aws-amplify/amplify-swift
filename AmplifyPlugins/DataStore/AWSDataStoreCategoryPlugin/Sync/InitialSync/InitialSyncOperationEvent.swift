@@ -15,7 +15,7 @@ enum InitialSyncOperationEvent {
 
     /// Published when a remote model is enqueued for local store reconciliation.
     /// Used by `ModelSyncedEventEmitter` for record counting.
-    case enqueued(MutationSync<AnyModel>)
+    case enqueued(MutationSync<AnyModel>, modelName: ModelName)
 
     /// Published when the sync operation has completed and all remote models have been enqueued for reconciliation.
     /// Used by `ModelSyncedEventEmitter` to determine when to send `ModelSyncedEvent`

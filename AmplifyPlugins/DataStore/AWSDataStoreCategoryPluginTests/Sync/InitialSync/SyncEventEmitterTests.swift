@@ -83,7 +83,8 @@ class SyncEventEmitterTests: XCTestCase {
 
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Post.modelName,
                                                                             syncType: .fullSync))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync,
+                                                                             modelName: Post.modelName))
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelName: Post.modelName))
 
         reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))
@@ -255,12 +256,14 @@ class SyncEventEmitterTests: XCTestCase {
 
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Post.modelName,
                                                                             syncType: .fullSync))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync,
+                                                                             modelName: Post.modelName))
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelName: Post.modelName))
 
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Comment.modelName,
                                                                             syncType: .fullSync))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyCommentMutationSync))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyCommentMutationSync,
+                                                                             modelName: Comment.modelName))
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelName: Comment.modelName))
 
         reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))

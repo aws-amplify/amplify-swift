@@ -72,8 +72,8 @@ final class ModelSyncedEventEmitter {
         switch value {
         case .started(let modelName, _):
             return modelSchema.name == modelName
-        case .enqueued(let mutationSync):
-            return modelSchema.name == mutationSync.model.modelName
+        case .enqueued(_, let modelName):
+            return modelSchema.name == modelName
         case .finished(let modelName):
             return modelSchema.name == modelName
         }

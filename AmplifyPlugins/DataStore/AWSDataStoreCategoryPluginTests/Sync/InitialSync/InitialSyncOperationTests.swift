@@ -302,8 +302,9 @@ class InitialSyncOperationTests: XCTestCase {
                     XCTAssertEqual(modelName, "MockSynced")
                     XCTAssertEqual(syncType, .fullSync)
                     syncStartedReceived.fulfill()
-                case .enqueued(let returnedValue):
+                case .enqueued(let returnedValue, let modelName):
                     XCTAssertTrue(returnedValue.syncMetadata == mutationSync.syncMetadata)
+                    XCTAssertEqual(modelName, "MockSynced")
                     offeredValueReceived.fulfill()
                 case .finished(modelName: let modelName):
                     XCTAssertEqual(modelName, "MockSynced")
