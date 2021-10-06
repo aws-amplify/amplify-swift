@@ -23,6 +23,9 @@ let package = Package(
         .library(name: "AWSDataStorePlugin",
                  targets: ["AWSDataStorePlugin"]),
         
+        .library(name: "AWSLocationGeoPlugin",
+                 targets: ["AWSLocationGeoPlugin"]),
+        
         .library(name: "AWSPinpointAnalyticsPlugin",
                  targets: ["AWSPinpointAnalyticsPlugin"]),
         
@@ -91,6 +94,19 @@ let package = Package(
             path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin",
             exclude: [
                 "Info.plist"
+            ]
+        ),
+        .target(
+            name: "AWSLocationGeoPlugin",
+            dependencies: [
+                .target(name: "Amplify"),
+                .target(name: "AWSPluginsCore"),
+                .product(name: "AWSCore", package: "AWSiOSSDKV2"),
+                .product(name: "AWSLocationXCF", package: "AWSiOSSDKV2")
+            ],
+            path: "AmplifyPlugins/Geo/AWSLocationGeoPlugin",
+            exclude: [
+                "Resources/Info.plist"
             ]
         ),
         .target(
