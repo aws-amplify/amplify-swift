@@ -152,6 +152,8 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         DataStoreQuerySnapshot<M>(items: currentItems, isSynced: isSynced)
     }
 
+    let stopwatch: Stopwatch
+
     init(modelType: M.Type,
          modelSchema: ModelSchema,
          predicate: QueryPredicate?,
@@ -166,7 +168,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         self.storageEngine = storageEngine
         self.dataStorePublisher = dataStorePublisher
         self.itemsChangedMaxSize = Int(dataStoreConfiguration.syncPageSize)
-
+        self.stopwatch = Stopwatch()
         self.observeQueryStarted = false
         self.currentItems = []
         self.passthroughPublisher = PassthroughSubject<DataStoreQuerySnapshot<M>, DataStoreError>()
@@ -239,6 +241,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             finish()
             return
         }
+        stopwatch.start()
         storageEngine.query(
             modelType,
             modelSchema: modelSchema,
@@ -312,7 +315,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             guard self.observeQueryStarted, !mutationEvents.isEmpty else {
                 return
             }
-
+            self.stopwatch.start()
             self.generateQuerySnapshot(itemsChanged: mutationEvents)
         }
     }
@@ -323,6 +326,8 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             sort.sortModels(models: &currentItems, modelSchema: modelSchema)
         }
         passthroughPublisher.send(currentSnapshot)
+        let time = stopwatch.stop()
+        log.verbose("Time to generate snapshot: \(time)")
     }
 
     /// Update `curentItems` list with the changed items.
