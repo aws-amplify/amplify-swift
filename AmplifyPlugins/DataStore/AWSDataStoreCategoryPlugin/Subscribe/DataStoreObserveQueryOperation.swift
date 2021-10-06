@@ -105,7 +105,10 @@ extension ObserveQuerySubscription: DefaultLogger { }
 ///     When the operation receives item changes
 ///     - Batch them into batches of up to 1000 items or when 2 seconds have elapsed (`.collect(2s,1000)`)`
 ///     - Update internal state of items based on the changed items
-///     - Generate new snapshot based on latest state of the items, with the items changed dedupped.
+///     - Generate new snapshot based on latest state of the items.
+///
+/// This operation should perform its methods under the serial DispatchQueue `serialQueue` to ensure all its properties
+/// remain thread-safe.
 @available(iOS 13.0, *)
 public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation, DataStoreObserveQueryOperation {
 
