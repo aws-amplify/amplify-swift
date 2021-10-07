@@ -27,7 +27,8 @@ extension NestedTypeTestModel {
   public static let schema = defineSchema { model in
     let nestedTypeTestModel = NestedTypeTestModel.keys
 
-    model.pluralName = "NestedTypeTestModels"
+    model.listPluralName = "NestedTypeTestModels"
+    model.syncPluralName = "NestedTypeTestModels"
 
     model.fields(
       .id(),

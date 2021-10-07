@@ -62,7 +62,8 @@ public struct OIDCGroupPost: Model {
              operations: [.create, .update, .delete, .read])
       ]
 
-      model.pluralName = "OIDCGroupPosts"
+      model.listPluralName = "OIDCGroupPosts"
+      model.syncPluralName = "OIDCGroupPosts"
 
       model.fields(
         .id(),

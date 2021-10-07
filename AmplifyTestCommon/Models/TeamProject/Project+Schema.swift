@@ -23,7 +23,8 @@ extension Project {
   public static let schema = defineSchema { model in
     let project = Project.keys
 
-    model.pluralName = "Projects"
+    model.listPluralName = "Projects"
+    model.syncPluralName = "Projects"
 
     model.fields(
       .id(),

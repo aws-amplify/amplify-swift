@@ -23,7 +23,8 @@ extension Blog6 {
   public static let schema = defineSchema { model in
     let blog6 = Blog6.keys
 
-    model.pluralName = "Blog6s"
+    model.listPluralName = "Blog6s"
+    model.syncPluralName = "Blog6s"
 
     model.fields(
       .id(),

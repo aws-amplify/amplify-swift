@@ -22,7 +22,8 @@ extension Team {
   public static let schema = defineSchema { model in
     let team = Team.keys
 
-    model.pluralName = "Teams"
+    model.listPluralName = "Teams"
+    model.syncPluralName = "Teams"
 
     model.fields(
       .id(),

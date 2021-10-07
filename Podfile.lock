@@ -1,10 +1,10 @@
 PODS:
-  - AWSCore (2.26.1)
+  - AWSCore (2.26.2)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
   - SwiftFormat/CLI (0.44.17)
-  - SwiftLint (0.44.0)
+  - SwiftLint (0.45.0)
 
 DEPENDENCIES:
   - AWSCore (~> 2.26.1)
@@ -36,11 +36,11 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  AWSCore: 0f855e20ccb13e028932b737f0706023a9561399
+  AWSCore: dd7f74ab3f354aad435f83afdbfac91bcb7d44c2
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
-  SwiftLint: e96c0a8c770c7ebbc4d36c55baf9096bb65c4584
+  SwiftLint: e5c7f1fba68eccfc51509d5b2ce1699f5502e0c7
 
 PODFILE CHECKSUM: 5e20e56b8ef40444b018a3736b7b726ff9772f00
 

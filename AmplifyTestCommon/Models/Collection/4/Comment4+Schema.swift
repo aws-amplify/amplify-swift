@@ -23,7 +23,8 @@ extension Comment4 {
   public static let schema = defineSchema { model in
     let comment4 = Comment4.keys
 
-    model.pluralName = "Comment4s"
+    model.listPluralName = "Comment4s"
+    model.syncPluralName = "Comment4s"
 
     model.fields(
       .id(),

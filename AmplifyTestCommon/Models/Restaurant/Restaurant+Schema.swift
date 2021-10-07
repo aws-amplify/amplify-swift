@@ -23,7 +23,8 @@ extension Restaurant {
   public static let schema = defineSchema { model in
     let restaurant = Restaurant.keys
 
-    model.pluralName = "Restaurants"
+    model.listPluralName = "Restaurants"
+    model.syncPluralName = "Restaurants"
 
     model.fields(
       .id(),

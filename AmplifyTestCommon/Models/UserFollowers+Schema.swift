@@ -24,7 +24,7 @@ extension UserFollowers {
     let userFollowers = UserFollowers.keys
 
     model.listPluralName = "UserFollowers"
-    model.SyncPluralName = "UserFollowers"
+    model.syncPluralName = "UserFollowers"
 
     model.fields(
       .id(),

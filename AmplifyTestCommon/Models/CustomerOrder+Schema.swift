@@ -23,7 +23,8 @@ extension CustomerOrder {
   public static let schema = defineSchema { model in
     let customerOrder = CustomerOrder.keys
 
-    model.pluralName = "CustomerOrders"
+    model.listPluralName = "CustomerOrders"
+    model.syncPluralName = "CustomerOrders"
     model.attributes(.index(fields: ["orderId", "id"], name: nil))
     model.fields(
       .id(),

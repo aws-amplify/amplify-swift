@@ -23,7 +23,8 @@ extension M2MPost {
   public static let schema = defineSchema { model in
     let m2MPost = M2MPost.keys
 
-    model.pluralName = "M2MPosts"
+    model.listPluralName = "M2MPosts"
+    model.syncPluralName = "M2MPosts"
 
     model.fields(
       .id(),

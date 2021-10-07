@@ -67,7 +67,8 @@ public struct OIDCMultiGroupPost: Model {
                  groups: ["Moderators", "Editors"],
                  operations: [.create, .update, .delete, .read])
         ]
-        model.pluralName = "OIDCMultiGroupPosts"
+        model.listPluralName = "OIDCMultiGroupPosts"
+        model.syncPluralName = "OIDCMultiGroupPosts"
         model.fields(
             .id(),
             .field(oIDCMultiGroupPost.title, is: .required, ofType: .string),

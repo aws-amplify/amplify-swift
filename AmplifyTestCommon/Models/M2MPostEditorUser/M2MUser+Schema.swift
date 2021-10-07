@@ -23,7 +23,8 @@ extension M2MUser {
   public static let schema = defineSchema { model in
     let m2MUser = M2MUser.keys
 
-    model.pluralName = "M2MUsers"
+    model.listPluralName = "M2MUsers"
+    model.syncPluralName = "M2MUsers"
 
     model.fields(
       .id(),
