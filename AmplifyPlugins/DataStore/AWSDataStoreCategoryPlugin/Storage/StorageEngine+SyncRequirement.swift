@@ -63,17 +63,22 @@ extension StorageEngine {
                 return rulesRequireAuthPlugin
             }
             
+#if canImport(AWSAPIPlugin)
             // Fall back to the plugin configuration if a determination cannot be made from the auth rules.
             guard let awsPlugin = apiPlugin as? AWSAPIPlugin else {
                 // No determination can be made. Throw error?
                 return false
             }
             return awsPlugin.hasAuthPluginRequirement
+#else
+            return false
+#endif
         }
         return modelsRequireAuthPlugin
     }
 }
 
+#if canImport(AWSAPIPlugin)
 internal extension AWSAPIPlugin {
     var hasAuthPluginRequirement: Bool {
         return pluginConfig.endpoints.values.contains {
@@ -81,6 +86,7 @@ internal extension AWSAPIPlugin {
         }
     }
 }
+#endif
 
 internal extension AWSAuthorizationType {
     var requiresAuthPlugin: Bool {
