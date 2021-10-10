@@ -19,6 +19,7 @@ extension StorageEngine {
                                                "Ensure the API category has been setup and configured for your project", nil)))
             return
         }
+
         let authPluginRequired = requiresAuthPlugin(api)
 
         guard authPluginRequired else {
