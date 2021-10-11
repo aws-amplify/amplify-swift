@@ -21,7 +21,7 @@ class StorageEngineSyncRequirementsTests: XCTestCase {
             AuthRule(allow: .private, provider: .iam),
             AuthRule(allow: .owner, provider: .userPools)
         ]
-        XCTAssertTrue(authRules.requireAuthPlugin)
+        XCTAssertTrue(authRules.requireAuthPlugin!)
     }
 
     /// Given: a list of auth rules
@@ -32,7 +32,7 @@ class StorageEngineSyncRequirementsTests: XCTestCase {
             AuthRule(allow: .owner, provider: .function),
             AuthRule(allow: .owner, provider: .iam)
         ]
-        XCTAssertTrue(authRules.requireAuthPlugin)
+        XCTAssertTrue(authRules.requireAuthPlugin!)
     }
 
     func testDoesNotRequireAuthPlugin() {
@@ -41,6 +41,6 @@ class StorageEngineSyncRequirementsTests: XCTestCase {
             AuthRule(allow: .owner, provider: .function),
             AuthRule(allow: .public, provider: .apiKey)
         ]
-        XCTAssertFalse(authRules.requireAuthPlugin)
+        XCTAssertFalse(authRules.requireAuthPlugin!)
     }
 }

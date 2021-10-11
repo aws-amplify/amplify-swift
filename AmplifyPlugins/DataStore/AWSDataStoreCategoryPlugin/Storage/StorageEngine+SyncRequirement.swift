@@ -20,7 +20,7 @@ extension StorageEngine {
             return
         }
 
-        let authPluginRequired = requiresAuthPlugin()
+        let authPluginRequired = requiresAuthPlugin(api)
 
         guard authPluginRequired else {
             syncEngine?.start(api: api, auth: nil)
@@ -38,7 +38,7 @@ extension StorageEngine {
         completion(.successfulVoid)
     }
 
-    private func tryGetAPIPlugin() -> APICategoryGraphQLBehavior? {
+    private func tryGetAPIPlugin() -> APICategoryPlugin? {
         do {
             return try Amplify.API.getPlugin(for: validAPIPluginKey)
         } catch {
@@ -54,20 +54,60 @@ extension StorageEngine {
         }
     }
 
-    private func requiresAuthPlugin() -> Bool {
-        let modelsRequireAuthPlugin = ModelRegistry.modelSchemas.contains {
-            $0.isSyncable && $0.hasAuthenticationRules && $0.authRules.requireAuthPlugin
+    private func requiresAuthPlugin(_ apiPlugin: APICategoryPlugin) -> Bool {
+        let modelsRequireAuthPlugin = ModelRegistry.modelSchemas.contains { schema in
+            guard schema.isSyncable && schema.hasAuthenticationRules else {
+                return false
+            }
+            if let rulesRequireAuthPlugin = schema.authRules.requireAuthPlugin {
+                return rulesRequireAuthPlugin
+            }
+
+#if canImport(AWSAPIPlugin)
+            // Fall back to the plugin configuration if a determination cannot be made from the auth rules.
+            guard let awsPlugin = apiPlugin as? AWSAPIPlugin else {
+                // No determination can be made. Throw error?
+                return false
+            }
+            return awsPlugin.hasAuthPluginRequirement
+#else
+            return false
+#endif
         }
         return modelsRequireAuthPlugin
     }
 }
 
-internal extension AuthRule {
+#if canImport(AWSAPIPlugin)
+internal extension AWSAPIPlugin {
+    var hasAuthPluginRequirement: Bool {
+        return pluginConfig.endpoints.values.contains {
+            $0.authorizationType.requiresAuthPlugin
+        }
+    }
+}
+#endif
+
+internal extension AWSAuthorizationType {
     var requiresAuthPlugin: Bool {
+        switch self {
+        case .none, .apiKey, .openIDConnect, .function:
+            return false
+        case .awsIAM, .amazonCognitoUserPools:
+            return true
+        }
+    }
+}
+
+internal extension AuthRule {
+    var requiresAuthPlugin: Bool? {
+        guard let provider = provider else {
+            return nil
+        }
         switch provider {
         // OIDC, Function and API key providers don't need
         // Auth plugin
-        case .oidc, .function, .apiKey, .none:
+        case .oidc, .function, .apiKey:
             return false
         case .userPools, .iam:
             return true
@@ -77,8 +117,16 @@ internal extension AuthRule {
 
 internal extension AuthRules {
     /// Convenience method to check whether we need Auth plugin
-    /// - Returns: true  If **any** of the rules uses a provider that requires the Auth plugin
-    var requireAuthPlugin: Bool {
-        contains { $0.requiresAuthPlugin }
+    /// - Returns: true  If **any** of the rules uses a provider that requires the Auth plugin, `nil` if a determination cannot be made
+    var requireAuthPlugin: Bool? {
+        for rule in self {
+            guard let requiresAuthPlugin = rule.requiresAuthPlugin else {
+                return nil
+            }
+            if requiresAuthPlugin {
+                return true
+            }
+        }
+        return false
     }
 }
