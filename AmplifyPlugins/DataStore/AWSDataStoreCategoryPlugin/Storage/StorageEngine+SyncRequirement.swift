@@ -62,7 +62,7 @@ extension StorageEngine {
             if let rulesRequireAuthPlugin = schema.authRules.requireAuthPlugin {
                 return rulesRequireAuthPlugin
             }
-            
+
 #if canImport(AWSAPIPlugin)
             // Fall back to the plugin configuration if a determination cannot be made from the auth rules.
             guard let awsPlugin = apiPlugin as? AWSAPIPlugin else {
