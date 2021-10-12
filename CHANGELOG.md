@@ -1,5 +1,17 @@
 # Changelog
 ## Unreleased
+## 1.15.0 (2021-10-12)
+
+### Features
+
+- **DataStore**: ObserveQuery API (#1422)
+
+### Bug Fixes
+
+- **datastore**: require auth plugin if provider is nil in sync-requirements (#1461)
+- **datastore**: Sync engine fallback to API plugin config (#1460)
+- **DataStore**: Avoid model name from mutation sync in ModelSyncedEventEmitter (#1454)
+
 ## 1.14.0 (2021-09-28)
 
 ### Features

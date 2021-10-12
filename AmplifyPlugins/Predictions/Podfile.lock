@@ -1,14 +1,14 @@
 PODS:
-  - Amplify (1.14.0):
-    - Amplify/Default (= 1.14.0)
-  - Amplify/Default (1.14.0)
-  - AmplifyPlugins/AWSCognitoAuthPlugin (1.14.0):
+  - Amplify (1.15.0):
+    - Amplify/Default (= 1.15.0)
+  - Amplify/Default (1.15.0)
+  - AmplifyPlugins/AWSCognitoAuthPlugin (1.15.0):
     - AWSAuthCore (~> 2.26.1)
     - AWSCognitoIdentityProvider (~> 2.26.1)
     - AWSCognitoIdentityProviderASF (~> 2.26.1)
     - AWSCore (~> 2.26.1)
     - AWSMobileClient (~> 2.26.1)
-    - AWSPluginsCore (= 1.14.0)
+    - AWSPluginsCore (= 1.15.0)
   - AWSAuthCore (2.26.1):
     - AWSCore (= 2.26.1)
   - AWSCognitoIdentityProvider (2.26.1):
@@ -23,8 +23,8 @@ PODS:
     - AWSCognitoIdentityProvider (= 2.26.1)
     - AWSCognitoIdentityProviderASF (= 2.26.1)
     - AWSCore (= 2.26.1)
-  - AWSPluginsCore (1.14.0):
-    - Amplify (= 1.14.0)
+  - AWSPluginsCore (1.15.0):
+    - Amplify (= 1.15.0)
     - AWSCore (~> 2.26.1)
   - AWSPolly (2.26.1):
     - AWSCore (= 2.26.1)
@@ -96,15 +96,15 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  Amplify: 6402de6b8e46f3228b59fef3dfe379ebbfb0e0f1
-  AmplifyPlugins: e70f25e5f4f765c53328b18f19c21576d8e3fddf
+  Amplify: 179693b7a2f0de70cdd81c6376cd8aca23d5ea01
+  AmplifyPlugins: a6f9114f4845045b296cb6b6af341aea4a2f7c2f
   AWSAuthCore: 264faaa6af5990af2c77effe8f398a4b80e6c44e
   AWSCognitoIdentityProvider: 5df455775b57eb4e61862acd88d93e56113950c4
   AWSCognitoIdentityProviderASF: b2c180f69537d57ff485f7314fd266032ca3f898
   AWSComprehend: bc1f0c311614ae4797201f673ff5a42574b04ed6
   AWSCore: 0f855e20ccb13e028932b737f0706023a9561399
   AWSMobileClient: ba255030a481b8a123b21585548e761456efc64b
-  AWSPluginsCore: 210690e20dc27b2a3ad22794556d5adfe6de94f8
+  AWSPluginsCore: 232922894e6c02715e71d8bea992add1f8a0d91a
   AWSPolly: a0a0901b2988927c67812731329bd4f6b4f5be1f
   AWSRekognition: 663768f4d03f543235d8cdaa9c143a60fb0ffc9e
   AWSTextract: 7357b4a62ed66636d8aa5252148614ecab351b16
@@ -117,4 +117,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 359e5e54f0b35ed310c3d521aa35d3d628630460
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.10.1
