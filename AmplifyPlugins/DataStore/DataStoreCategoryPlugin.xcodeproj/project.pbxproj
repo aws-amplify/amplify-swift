@@ -11,6 +11,8 @@
 		2102DD47260D87BC00B80FE2 /* ReconcileAndLocalSaveQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2102DD46260D87BB00B80FE2 /* ReconcileAndLocalSaveQueue.swift */; };
 		2102DD53260E2BC800B80FE2 /* ReconcileAndSaveQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2102DD52260E2BC800B80FE2 /* ReconcileAndSaveQueueTests.swift */; };
 		210E218226601C1C00D90ED8 /* MutationEventQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210E218126601C1C00D90ED8 /* MutationEventQueryTests.swift */; };
+		211A81D7270F787200C5483D /* SortedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A81D6270F787200C5483D /* SortedList.swift */; };
+		211A81D9270F78B100C5483D /* SortedListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A81D8270F78B100C5483D /* SortedListTests.swift */; };
 		211FFEDA26CC270100F0DB75 /* DataStoreObserveQueryOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211FFED926CC270100F0DB75 /* DataStoreObserveQueryOperation.swift */; };
 		211FFEDD26CD621400F0DB75 /* DataStoreObserveQueryOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211FFEDC26CD621300F0DB75 /* DataStoreObserveQueryOperationTests.swift */; };
 		21233DD8247591D100039337 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21233DD7247591D100039337 /* amplifyconfiguration.json */; };
@@ -344,6 +346,8 @@
 		2102DD46260D87BB00B80FE2 /* ReconcileAndLocalSaveQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconcileAndLocalSaveQueue.swift; sourceTree = "<group>"; };
 		2102DD52260E2BC800B80FE2 /* ReconcileAndSaveQueueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconcileAndSaveQueueTests.swift; sourceTree = "<group>"; };
 		210E218126601C1C00D90ED8 /* MutationEventQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEventQueryTests.swift; sourceTree = "<group>"; };
+		211A81D6270F787200C5483D /* SortedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedList.swift; sourceTree = "<group>"; };
+		211A81D8270F78B100C5483D /* SortedListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedListTests.swift; sourceTree = "<group>"; };
 		211FFED926CC270100F0DB75 /* DataStoreObserveQueryOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreObserveQueryOperation.swift; sourceTree = "<group>"; };
 		211FFEDC26CD621300F0DB75 /* DataStoreObserveQueryOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreObserveQueryOperationTests.swift; sourceTree = "<group>"; };
 		21233DD7247591D100039337 /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
@@ -904,6 +908,7 @@
 			isa = PBXGroup;
 			children = (
 				216B69D226DD542D005D97AD /* Model+Sort.swift */,
+				211A81D6270F787200C5483D /* SortedList.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -912,6 +917,7 @@
 			isa = PBXGroup;
 			children = (
 				216B69D526DD594E005D97AD /* ModelSortTests.swift */,
+				211A81D8270F78B100C5483D /* SortedListTests.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -2065,6 +2071,7 @@
 				6BB93F07244BA44B00ED1FC3 /* MutationEventClearState.swift in Sources */,
 				D8FF6207250EB4C3000BFB4B /* NetworkStatusEvent.swift in Sources */,
 				2149E5C82388684F00873955 /* SQLStatement.swift in Sources */,
+				211A81D7270F787200C5483D /* SortedList.swift in Sources */,
 				D838AB4C2500330000BF4940 /* ModelSyncedEvent.swift in Sources */,
 				FAED5742238B52CE008EBED8 /* ModelStorageBehavior.swift in Sources */,
 				2149E5C62388684F00873955 /* StorageEngineAdapter.swift in Sources */,
@@ -2103,6 +2110,7 @@
 				B9E010E4239167E000DCE8C8 /* TestModelRegistration.swift in Sources */,
 				6B3381BC239778E90036F046 /* AWSMutationDatabaseAdapterTests.swift in Sources */,
 				216B69D626DD594E005D97AD /* ModelSortTests.swift in Sources */,
+				211A81D9270F78B100C5483D /* SortedListTests.swift in Sources */,
 				2149E5FC238869CF00873955 /* LocalSubscriptionTests.swift in Sources */,
 				B40EF02824BF68C900F2264C /* ConfigurationTests.swift in Sources */,
 				FA23345C23955CEF009BEFE9 /* NoOpMutationQueue.swift in Sources */,

@@ -14,12 +14,13 @@ import Combine
 @testable import AWSPluginsCore
 @testable import AWSDataStoreCategoryPlugin
 
+// swiftlint:disable type_body_length
 class ModelSortTests: XCTestCase {
 
     func testSortModelString() throws {
         var posts = [createPost(id: "1"),
-                     createPost(id: "2"),
-                     createPost(id: "3")]
+                     createPost(id: "3"),
+                     createPost(id: "2")]
         posts.sortModels(by: QuerySortBy.ascending(Post.keys.id).sortDescriptor, modelSchema: Post.schema)
         XCTAssertEqual(posts[0].id, "1")
         XCTAssertEqual(posts[1].id, "2")
@@ -283,11 +284,11 @@ class ModelSortTests: XCTestCase {
                      createPost(rating: 2.0, createdAt: dateTime3)]
 
         posts.sortModels(by: QuerySortBy.ascending(Post.keys.rating).sortDescriptor, modelSchema: Post.schema)
-        // order does not change since ratings are already in asecnding order
+        // overall order does not change since ratings are already in asecnding order
         XCTAssertEqual(posts[0].rating, 1.0)
-        XCTAssertEqual(posts[0].createdAt, dateTime2)
+        XCTAssertEqual(posts[0].createdAt, dateTime1)
         XCTAssertEqual(posts[1].rating, 1.0)
-        XCTAssertEqual(posts[1].createdAt, dateTime1)
+        XCTAssertEqual(posts[1].createdAt, dateTime2)
         XCTAssertEqual(posts[2].rating, 2.0)
         XCTAssertEqual(posts[2].createdAt, dateTime3)
 
@@ -312,7 +313,7 @@ class ModelSortTests: XCTestCase {
              content: "content",
              createdAt: createdAt,
              updatedAt: .now(),
-             draft: false,
+             draft: draft,
              rating: rating,
              status: status,
              comments: nil)
