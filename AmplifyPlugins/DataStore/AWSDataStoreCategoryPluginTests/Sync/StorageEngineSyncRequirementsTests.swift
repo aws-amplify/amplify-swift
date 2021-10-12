@@ -43,4 +43,19 @@ class StorageEngineSyncRequirementsTests: XCTestCase {
         ]
         XCTAssertFalse(authRules.requireAuthPlugin)
     }
+
+    func testRequireAuthPluginIfProvideIsNil() {
+        let authRules: AuthRules = [
+            AuthRule(allow: .owner, provider: nil)
+        ]
+        XCTAssertTrue(authRules.requireAuthPlugin)
+    }
+
+    func testRequireAuthPluginIfOneProvideIsNil() {
+        let authRules: AuthRules = [
+            AuthRule(allow: .owner, provider: nil),
+            AuthRule(allow: .public, provider: .apiKey)
+        ]
+        XCTAssertTrue(authRules.requireAuthPlugin)
+    }
 }

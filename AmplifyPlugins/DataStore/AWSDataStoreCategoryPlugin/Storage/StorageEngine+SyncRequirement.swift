@@ -64,10 +64,14 @@ extension StorageEngine {
 
 internal extension AuthRule {
     var requiresAuthPlugin: Bool {
+        guard let provider = self.provider else {
+            return true
+        }
+
         switch provider {
         // OIDC, Function and API key providers don't need
         // Auth plugin
-        case .oidc, .function, .apiKey, .none:
+        case .oidc, .function, .apiKey:
             return false
         case .userPools, .iam:
             return true
