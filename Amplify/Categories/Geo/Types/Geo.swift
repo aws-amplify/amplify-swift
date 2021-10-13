@@ -8,4 +8,4 @@
 import Foundation
 
 /// Namespace for GeoCategory Types
-public struct Geo {}
+public enum Geo {}

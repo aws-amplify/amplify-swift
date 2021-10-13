@@ -213,6 +213,7 @@
 		5C763DAA26F2CF66006650E7 /* Geo+Place.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763DA926F2CF66006650E7 /* Geo+Place.swift */; };
 		5C763DAC26F2CFC2006650E7 /* Geo+MapStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763DAB26F2CFC2006650E7 /* Geo+MapStyle.swift */; };
 		5C763DAE26F2D00F006650E7 /* Geo+ResultsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763DAD26F2D00F006650E7 /* Geo+ResultsHandler.swift */; };
+		5CB5DD27271707780078CCA2 /* Geo+SearchOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB5DD26271707780078CCA2 /* Geo+SearchOptions.swift */; };
 		6B33896823AAACC900561E5B /* ReachabilityUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B33896723AAACC900561E5B /* ReachabilityUpdate.swift */; };
 		6B452B8225A7D0F600A1A811 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B452B8125A7D0F600A1A811 /* Array+Extensions.swift */; };
 		6B5087BD2565E5AD000AB673 /* QueryPredicateEvaluateGeneratedDoubleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B5087BC2565E5AD000AB673 /* QueryPredicateEvaluateGeneratedDoubleTests.swift */; };
@@ -1063,6 +1064,15 @@
 		5C763DAB26F2CFC2006650E7 /* Geo+MapStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Geo+MapStyle.swift"; sourceTree = "<group>"; };
 		5C763DAD26F2D00F006650E7 /* Geo+ResultsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Geo+ResultsHandler.swift"; sourceTree = "<group>"; };
 		614D1E66BBE236DDD4F8E2E0 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.debug.xcconfig"; sourceTree = "<group>"; };
+		5CB5DD26271707780078CCA2 /* Geo+SearchOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Geo+SearchOptions.swift"; sourceTree = "<group>"; };
+		5FFB62449226244D696DAA73 /* Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin/Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
+		5FFE6F3EF19A7DA9F6B5024A /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.release.xcconfig"; sourceTree = "<group>"; };
+		61CE693182BF781FBC4D3411 /* Pods-AWSS3StoragePlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePlugin/Pods-AWSS3StoragePlugin.release.xcconfig"; sourceTree = "<group>"; };
+		63D5F7A8E12E88C68E9BB3FA /* Pods_AWSPlugins_AWSAuthService_AWSAuthServiceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSPlugins_AWSAuthService_AWSAuthServiceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		64BD51ED9D8A946DDFEFE8BA /* Pods-Amplify-AmplifyFunctionalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyFunctionalTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyFunctionalTests/Pods-Amplify-AmplifyFunctionalTests.debug.xcconfig"; sourceTree = "<group>"; };
+		65CCD77CBA8619E2E9D41196 /* Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPluginTests/Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
+		687B09E9348F8D29979A2404 /* Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
+		6AF0E4775809F0866F9C44D9 /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6B33896723AAACC900561E5B /* ReachabilityUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityUpdate.swift; sourceTree = "<group>"; };
 		6B452B8125A7D0F600A1A811 /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
 		6B5087BC2565E5AD000AB673 /* QueryPredicateEvaluateGeneratedDoubleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryPredicateEvaluateGeneratedDoubleTests.swift; sourceTree = "<group>"; };
@@ -2266,6 +2276,7 @@
 				5C763DA926F2CF66006650E7 /* Geo+Place.swift */,
 				5C763DAD26F2D00F006650E7 /* Geo+ResultsHandler.swift */,
 				5C763DA726F2CE28006650E7 /* Geo+SearchArea.swift */,
+				5CB5DD26271707780078CCA2 /* Geo+SearchOptions.swift */,
 			);
 			path = Types;
 			sourceTree = "<group>";
@@ -4891,6 +4902,7 @@
 				974FF18724B54E590050D01B /* DeviceInfoItem.swift in Sources */,
 				97CB860624ABA023000C65FB /* LongPressGestureRecognizer.swift in Sources */,
 				FA5704C7245F368200392C19 /* ProgressListener.swift in Sources */,
+				5CB5DD27271707780078CCA2 /* Geo+SearchOptions.swift in Sources */,
 				FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */,
 				FA5704C9245F3C6900392C19 /* AmplifyInProcessReportingOperation.swift in Sources */,
 				FA09B9332321A305000E064D /* HubCategory+CategoryConfigurable.swift in Sources */,

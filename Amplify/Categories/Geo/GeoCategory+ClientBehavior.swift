@@ -40,14 +40,16 @@ extension GeoCategory: GeoCategoryBehavior {
     // MARK: - Maps
 
     /// Retrieves metadata for available Map resources.
-    /// - Returns: Metadata for all available map resources.
-    public func getAvailableMaps() -> [Geo.MapStyle] {
-        plugin.getAvailableMaps()
+    /// - Parameter completionHandler: The completion handler receives a Response
+    /// object.  The success case provides an array of available Map resources.
+    public func availableMaps(completionHandler: @escaping Geo.ResultsHandler<[Geo.MapStyle]>) {
+        plugin.availableMaps(completionHandler: completionHandler)
     }
 
     /// Retrieves the default Map resource.
-    /// - Returns: Metadata for the default map resource.
-    public func getDefaultMap() -> Geo.MapStyle? {
-        plugin.getDefaultMap()
+    /// - Parameter completionHandler: The completion handler receives a Response
+    /// object.  The success case provides the default Map resource.
+    public func defaultMap(completionHandler: @escaping Geo.ResultsHandler<Geo.MapStyle>) {
+        plugin.defaultMap(completionHandler: completionHandler)
     }
 }

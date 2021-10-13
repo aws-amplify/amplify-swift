@@ -1,8 +1,8 @@
 //
-//  Geo+SearchForTextOptions.swift
-//  Amplify
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Ameter, Christopher on 10/13/21.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
@@ -12,7 +12,9 @@ public extension Geo {
     struct SearchForTextOptions {
         /// The area (.near or .boundingBox) for the search.
         public var area: Geo.SearchArea?
-        /// Limits the search to the given a list of countries/regions.
+        /// Limits the search to the given a list of countries/regions. Specified using [ISO
+        /// 3166 3-digit country/region
+        /// code](https://www.iso.org/iso-3166-country-codes.html). For example, CAN.
         public var countries: [Geo.Country]?
         /// The maximum number of results returned per request.
         public var maxResults: Int?
@@ -20,7 +22,7 @@ public extension Geo {
         /// existing options do not provide a way to utilize the underlying Geo plugin
         /// functionality. See plugin documentation for expected key/values.
         public var pluginOptions: Any?
-        
+
         public init(area: Geo.SearchArea? = nil,
                     countries: [Geo.Country]? = nil,
                     maxResults: Int? = nil,
@@ -42,8 +44,8 @@ public extension Geo {
         /// existing options do not provide a way to utilize the underlying Geo plugin
         /// functionality. See plugin documentation for expected key/values.
         public var pluginOptions: Any?
-        
-        internal init(maxResults: Int? = nil,
+
+        public init(maxResults: Int? = nil,
                       pluginOptions: Any? = nil) {
             self.maxResults = maxResults
             self.pluginOptions = pluginOptions

@@ -36,10 +36,12 @@ public protocol GeoCategoryBehavior {
     // MARK: - Maps
 
     /// Retrieves metadata for available Map resources.
-    /// - Returns: Metadata for all available map resources.
-    func getAvailableMaps() -> [Geo.MapStyle]
+    /// - Parameter completionHandler: The completion handler receives a Response
+    /// object.  The success case provides an array of available Map resources.
+    func availableMaps(completionHandler: @escaping Geo.ResultsHandler<[Geo.MapStyle]>)
 
-    /// Retrieves the default Map resource (first map in amplifyconfiguration.json).
-    /// - Returns: Metadata for the default map resource.
-    func getDefaultMap() -> Geo.MapStyle?
+    /// Retrieves the default Map resource.
+    /// - Parameter completionHandler: The completion handler receives a Response
+    /// object.  The success case provides the default Map resource.
+    func defaultMap(completionHandler: @escaping Geo.ResultsHandler<Geo.MapStyle>)
 }
