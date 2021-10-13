@@ -12,43 +12,73 @@ import XCTest
 
 class StorageEngineSyncRequirementsTests: XCTestCase {
 
+    // MARK: - AuthRule tests
+    
     /// Given: a list of auth rules
-    /// When: if one or more provider is not of type function/oidc
+    /// When: if at least one provider requires auth plugin
     /// Then: Auth plugin is required
+    func testRequireAuthPluginWithOneRequird() {
+        let authRules: AuthRules = [
+            AuthRule(allow: .owner, provider: .oidc), // does not require auth plugin
+            AuthRule(allow: .private, provider: .iam), // requires auth plugin
+            AuthRule(allow: .owner, provider: .userPools) // requires auth plugin
+        ]
+        XCTAssertTrue(authRules.requireAuthPlugin!)
+    }
+
+    /// Given: a list of auth rules
+    /// When: If all providers do not require auth plugin
+    /// Then: Auth plugin is not required
+    func testRequireAuthPluginWithAllNotRequired() {
+        let authRules: AuthRules = [
+            AuthRule(allow: .owner, provider: .function),
+            AuthRule(allow: .owner, provider: .apiKey),
+            AuthRule(allow: .owner, provider: .oidc)
+        ]
+        XCTAssertFalse(authRules.requireAuthPlugin!)
+    }
+    
     func testRequireAuthPluginWithOIDCProvider() {
         let authRules: AuthRules = [
-            AuthRule(allow: .owner, provider: .oidc),
-            AuthRule(allow: .private, provider: .iam),
-            AuthRule(allow: .owner, provider: .userPools)
+            AuthRule(allow: .owner, provider: .oidc)
         ]
-        XCTAssertTrue(authRules.requireAuthPlugin)
+        XCTAssertFalse(authRules.requireAuthPlugin!)
     }
-
-    /// Given: a list of auth rules
-    /// When: if one or more provider is not of type function/oidc
-    /// Then: Auth plugin is required
+    
     func testRequireAuthPluginWithFunctionProvider() {
         let authRules: AuthRules = [
-            AuthRule(allow: .owner, provider: .function),
+            AuthRule(allow: .owner, provider: .function)
+        ]
+        XCTAssertFalse(authRules.requireAuthPlugin!)
+    }
+    
+    func testRequireAuthPluginWithAPIKeyProvider() {
+        let authRules: AuthRules = [
+            AuthRule(allow: .owner, provider: .apiKey)
+        ]
+        XCTAssertFalse(authRules.requireAuthPlugin!)
+    }
+    
+    func testRequireAuthPluginWithUserPoolsProvider() {
+        let authRules: AuthRules = [
+            AuthRule(allow: .owner, provider: .userPools)
+        ]
+        XCTAssertTrue(authRules.requireAuthPlugin!)
+    }
+    
+    func testRequireAuthPluginWithIAMProvider() {
+        let authRules: AuthRules = [
             AuthRule(allow: .owner, provider: .iam)
         ]
-        XCTAssertTrue(authRules.requireAuthPlugin)
+        XCTAssertTrue(authRules.requireAuthPlugin!)
     }
 
-    func testDoesNotRequireAuthPlugin() {
-        let authRules: AuthRules = [
-            AuthRule(allow: .owner, provider: .oidc),
-            AuthRule(allow: .owner, provider: .function),
-            AuthRule(allow: .public, provider: .apiKey)
-        ]
-        XCTAssertFalse(authRules.requireAuthPlugin)
-    }
 
     func testRequireAuthPluginIfProviderIsNil() {
         let authRules: AuthRules = [
             AuthRule(allow: .owner, provider: nil)
         ]
-        XCTAssertTrue(authRules.requireAuthPlugin)
+        XCTAssertNil(authRules.requireAuthPlugin)
     }
 
     func testRequireAuthPluginIfOneRulHasProviderNil() {
@@ -56,6 +86,6 @@ class StorageEngineSyncRequirementsTests: XCTestCase {
             AuthRule(allow: .owner, provider: nil),
             AuthRule(allow: .public, provider: .apiKey)
         ]
-        XCTAssertTrue(authRules.requireAuthPlugin)
+        XCTAssertNil(authRules.requireAuthPlugin)
     }
 }
