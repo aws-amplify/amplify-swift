@@ -470,6 +470,10 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
                     XCTAssertEqual(post.model["title"] as? String, updatedPost.title)
                     XCTAssertEqual(post.model["content"] as? String, updatedPost.content)
                     XCTAssertEqual(post.model["rating"] as? Double, updatedPost.rating)
+                    // version can be anything between 3 to 11 depending on how many
+                    // pending mutations are overwritten in pending mutation queue
+                    // while the first update mutation is being processed
+                    XCTAssertTrue(post.syncMetadata.version >= 3 && post.syncMetadata.version <= 11)
                     apiQuerySuccess.fulfill()
                 case .failure(let error):
                     XCTFail("Error: \(error)")
