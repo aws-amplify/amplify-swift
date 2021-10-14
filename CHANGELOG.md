@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.15.2 (2021-10-14)
+
+### Bug Fixes
+
+- **DataStore**: Fallback when missing auth rule providers to API requirements (#1465)
+
 ## 1.15.1 (2021-10-14)
 
 ### Bug Fixes
