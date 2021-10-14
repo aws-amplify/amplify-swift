@@ -20,7 +20,7 @@ extension StorageEngine {
             return
         }
 
-        let authPluginRequired = requiresAuthPlugin(api)
+        let authPluginRequired = StorageEngine.requiresAuthPlugin(api)
 
         guard authPluginRequired else {
             syncEngine?.start(api: api, auth: nil)
@@ -54,45 +54,73 @@ extension StorageEngine {
         }
     }
 
-    private func requiresAuthPlugin(_ apiPlugin: APICategoryPlugin) -> Bool {
+    static func requiresAuthPlugin(_ apiPlugin: APICategoryPlugin) -> Bool {
         let modelsRequireAuthPlugin = ModelRegistry.modelSchemas.contains { schema in
-            guard schema.isSyncable && schema.hasAuthenticationRules else {
+            guard schema.isSyncable  else {
                 return false
             }
-
-            if let rulesRequireAuthPlugin = schema.authRules.requireAuthPlugin {
-                return rulesRequireAuthPlugin
-            }
-
-            // Fall back to the plugin configuration if a determination cannot be made from the auth rules.
-            // This occurs for single auth mode use cases, where provider information is not present in the auth rules
-            if let awsAPIInfo = apiPlugin as? AWSAPIInformation {
-                do {
-                    return try awsAPIInfo.defaultAuthType().requiresAuthPlugin
-                } catch {
-                    log.error(error: error)
-                }
-            }
-
-            log.error("""
-                Could not determine whether auth plugin is required or not. The auth rules present
-                may be missing provider information. When this happens, the API Plugin is used to determine
-                whether the default auth type requires the auth plugin (used for single auth model endpoints).
-            """)
-
-            // It would be quite impossible to fall back to this scenario where the auth type cannot be determined
-            // from both the providers from the auth rules and the default endpoint's auth type. However, in such a
-            // case, say there are multiple default APIs configured and the default endpoint could not be found, so
-            // the follow logic maintains the previous behavior.
-            let apiAuthProvider = (apiPlugin as APICategoryAuthProviderFactoryBehavior).apiAuthProviderFactory()
-            if apiAuthProvider.oidcAuthProvider() != nil {
-                return false
-            }
-            // There are auth rules and no ODIC provider on the API plugin, then return true.
-            return true
+            return StorageEngine.requiresAuthPlugin(apiPlugin, authRules: schema.authRules)
         }
 
         return modelsRequireAuthPlugin
+    }
+
+    static func requiresAuthPlugin(_ apiPlugin: APICategoryPlugin, authRules: [AuthRule]) -> Bool {
+        if let rulesRequireAuthPlugin = authRules.requireAuthPlugin {
+            return rulesRequireAuthPlugin
+        }
+
+        // Fall back to the endpoint's auth type if a determination cannot be made from the auth rules. This can
+        // occur for older generation of the auth rules which do not have provider information such as the initial
+        // single auth rule use cases. The auth type from the API is used to determine whether or not the auth
+        // plugin is required.
+        if let awsAPIAuthInfo = apiPlugin as? AWSAPIAuthInformation {
+            do {
+                return try awsAPIAuthInfo.defaultAuthType().requiresAuthPlugin
+            } catch {
+                log.error(error: error)
+            }
+        }
+
+        log.warn("""
+            Could not determine whether the auth plugin is required or not. The auth rules present
+            may be missing provider information. When this happens, the API Plugin is used to determine
+            whether the default auth type requires the auth plugin. The default auth type could not be determined.
+        """)
+
+        // It would be quite impossible to fall back to this scenario where the auth type cannot be determined
+        // from both the providers from the auth rules and the default endpoint's auth type. However, in such a
+        // case, say there are multiple default APIs configured and the default endpoint could not be found, so
+        // the follow logic maintains the previous behavior.
+        let apiAuthProvider = (apiPlugin as APICategoryAuthProviderFactoryBehavior).apiAuthProviderFactory()
+        if apiAuthProvider.oidcAuthProvider() != nil {
+            log.verbose("Found OIDC Auth Provider from the API Plugin.")
+            return false
+        }
+
+        if apiAuthProvider.functionAuthProvider() != nil {
+            log.verbose("Found Function Auth Provider from the API Plugin.")
+            return false
+        }
+
+        // There are auth rules and no ODIC/Function providers on the API plugin, then return true.
+        return true
+    }
+}
+
+internal extension AuthRules {
+    /// Convenience method to check whether we need Auth plugin
+    /// - Returns: true  If **any** of the rules uses a provider that requires the Auth plugin, `nil` otherwise
+    var requireAuthPlugin: Bool? {
+        for rule in self {
+            guard let requiresAuthPlugin = rule.requiresAuthPlugin else {
+                return nil
+            }
+            if requiresAuthPlugin {
+                return true
+            }
+        }
+        return false
     }
 }
 
@@ -110,21 +138,5 @@ internal extension AuthRule {
         case .userPools, .iam:
             return true
         }
-    }
-}
-
-internal extension AuthRules {
-    /// Convenience method to check whether we need Auth plugin
-    /// - Returns: true  If **any** of the rules uses a provider that requires the Auth plugin, `nil` otherwise
-    var requireAuthPlugin: Bool? {
-        for rule in self {
-            guard let requiresAuthPlugin = rule.requiresAuthPlugin else {
-                return nil
-            }
-            if requiresAuthPlugin {
-                return true
-            }
-        }
-        return false
     }
 }

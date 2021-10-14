@@ -8,11 +8,24 @@
 import Amplify
 import Combine
 import Foundation
+import AWSPluginsCore
 
-class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin, APICategoryReachabilityBehavior {
+class MockAPICategoryPlugin: MessageReporter,
+                             APICategoryPlugin,
+                             APICategoryReachabilityBehavior,
+                             AWSAPIAuthInformation {
+
+    var authType: AWSAuthorizationType?
+
+    var defaultAuthTypeError: APIError?
+
+    var authProviderFactory: APIAuthProviderFactory?
+
     var responders = [ResponderKeys: Any]()
 
     private var _reachabilityPublisher: Any?
+
+    private var oidcProvider: Any?
 
     @available(iOS 13.0, *)
     init(reachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>) {
@@ -209,8 +222,30 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin, APICategoryReac
         notify("addInterceptor")
     }
 
+    // MARK: - APICategoryAuthProviderFactoryBehavior
+
     func apiAuthProviderFactory() -> APIAuthProviderFactory {
-        return APIAuthProviderFactory()
+        if let authProviderFactory = authProviderFactory {
+            return authProviderFactory
+        } else {
+            return APIAuthProviderFactory()
+        }
+    }
+
+    // MARK: - AWSAPIAuthInformation
+
+    func defaultAuthType() throws -> AWSAuthorizationType {
+        try defaultAuthType(for: nil)
+    }
+
+    func defaultAuthType(for apiName: String?) throws -> AWSAuthorizationType {
+        if let error = defaultAuthTypeError {
+            throw error
+        } else if let authType = authType {
+            return authType
+        } else {
+            return .amazonCognitoUserPools
+        }
     }
 }
 
@@ -262,5 +297,48 @@ class MockAPIOperation: AmplifyOperation<RESTOperationRequest, Data, APIError>, 
         super.init(categoryType: .api,
                    eventName: request.operationType.hubEventName,
                    request: request)
+    }
+}
+
+class MockAPIAuthProviderFactory: APIAuthProviderFactory {
+    let oidcProvider: AmplifyOIDCAuthProvider?
+    let functionProvider: AmplifyFunctionAuthProvider?
+
+    init(oidcProvider: AmplifyOIDCAuthProvider? = nil,
+         functionProvider: AmplifyFunctionAuthProvider? = nil) {
+        self.oidcProvider = oidcProvider
+        self.functionProvider = functionProvider
+    }
+
+    override func functionAuthProvider() -> AmplifyFunctionAuthProvider? {
+        return functionProvider
+    }
+
+    override func oidcAuthProvider() -> AmplifyOIDCAuthProvider? {
+        return oidcProvider
+    }
+}
+
+class MockOIDCAuthProvider: AmplifyOIDCAuthProvider {
+    var result: Result<AuthToken, Error>?
+
+    func getLatestAuthToken() -> Result<AuthToken, Error> {
+        if let result = result {
+            return result
+        } else {
+            return .success("token")
+        }
+    }
+}
+
+class MockFunctionAuthProvider: AmplifyFunctionAuthProvider {
+    var result: Result<AuthToken, Error>?
+
+    func getLatestAuthToken() -> Result<AuthToken, Error> {
+        if let result = result {
+            return result
+        } else {
+            return .success("token")
+        }
     }
 }
