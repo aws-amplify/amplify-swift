@@ -58,6 +58,8 @@ type SocialNote
 
 ```
 
+### Creating users through AWS Console
+
 7. `amplify console auth`
 ```perl
 ? Which console `User Pool`
@@ -69,5 +71,17 @@ type SocialNote
 
 10. `amplify console api`
 Click on Queries tab, and click on Log in. This will prompt you to enter the app client id, username, and temporary password. After logging in successfully, it will ask you to enter a new password. Make sure those are the same as the one specified in the credentials json file from step 5. Do this for both users.
+
+
+### Creating users through AWS CLI
+
+7. Run the following commands
+
+```
+aws cognito-idp admin-create-user --user-pool-id [POOL_ID] --username [USER EMAIL]
+aws cognito-idp admin-set-user-password --user-pool-id [POOL_ID] --username [USER EMAIL] --password [PASSWORD] --permanent
+```
+
+The `[POOL_ID]` can be found in `amplifyconfiguration.json` under `auth.plugsin.awsCognitoAuthPlugin.CognitoUserPool.Default.PoolId`
 
 Now you can run the AWSDataStoreCategoryPluginAuthIntegrationTests

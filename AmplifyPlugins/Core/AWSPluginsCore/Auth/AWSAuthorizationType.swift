@@ -44,3 +44,15 @@ public enum AWSAuthorizationType: String {
 // swiftlint:enable line_length
 
 extension AWSAuthorizationType: CaseIterable { }
+
+/// Indicates whether the authotization type requires the auth plugin to operate.
+extension AWSAuthorizationType {
+    public var requiresAuthPlugin: Bool {
+        switch self {
+        case .none, .apiKey, .openIDConnect, .function:
+            return false
+        case .awsIAM, .amazonCognitoUserPools:
+            return true
+        }
+    }
+}

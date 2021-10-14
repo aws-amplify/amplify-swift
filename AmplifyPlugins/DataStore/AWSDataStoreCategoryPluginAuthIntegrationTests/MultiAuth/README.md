@@ -72,4 +72,5 @@ Do you want to enable any of the following capabilities?
 Do you want to use an OAuth flow? `No`
 ? Do you want to configure Lambda Triggers for Cognito? `No`
 ```
+Then `amplify push`
 

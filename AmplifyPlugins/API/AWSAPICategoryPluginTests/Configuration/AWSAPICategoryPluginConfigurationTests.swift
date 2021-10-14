@@ -34,6 +34,7 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
     }
 
     func testThrowsOnMissingConfig() throws {
+        Amplify.reset()
         let plugin = AWSAPIPlugin()
         try Amplify.add(plugin: plugin)
 

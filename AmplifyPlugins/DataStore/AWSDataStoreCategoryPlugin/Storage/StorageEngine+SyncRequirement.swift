@@ -20,7 +20,7 @@ extension StorageEngine {
             return
         }
 
-        let authPluginRequired = requiresAuthPlugin()
+        let authPluginRequired = StorageEngine.requiresAuthPlugin(api)
 
         guard authPluginRequired else {
             syncEngine?.start(api: api, auth: nil)
@@ -38,7 +38,7 @@ extension StorageEngine {
         completion(.successfulVoid)
     }
 
-    private func tryGetAPIPlugin() -> APICategoryGraphQLBehavior? {
+    private func tryGetAPIPlugin() -> APICategoryPlugin? {
         do {
             return try Amplify.API.getPlugin(for: validAPIPluginKey)
         } catch {
@@ -54,18 +54,77 @@ extension StorageEngine {
         }
     }
 
-    private func requiresAuthPlugin() -> Bool {
-        let modelsRequireAuthPlugin = ModelRegistry.modelSchemas.contains {
-            $0.isSyncable && $0.hasAuthenticationRules && $0.authRules.requireAuthPlugin
+    static func requiresAuthPlugin(_ apiPlugin: APICategoryPlugin) -> Bool {
+        let modelsRequireAuthPlugin = ModelRegistry.modelSchemas.contains { schema in
+            guard schema.isSyncable  else {
+                return false
+            }
+            return StorageEngine.requiresAuthPlugin(apiPlugin, authRules: schema.authRules)
         }
+
         return modelsRequireAuthPlugin
+    }
+
+    static func requiresAuthPlugin(_ apiPlugin: APICategoryPlugin, authRules: [AuthRule]) -> Bool {
+        if let rulesRequireAuthPlugin = authRules.requireAuthPlugin {
+            return rulesRequireAuthPlugin
+        }
+
+        // Fall back to the endpoint's auth type if a determination cannot be made from the auth rules. This can
+        // occur for older generation of the auth rules which do not have provider information such as the initial
+        // single auth rule use cases. The auth type from the API is used to determine whether or not the auth
+        // plugin is required.
+        if let awsAPIAuthInfo = apiPlugin as? AWSAPIAuthInformation {
+            do {
+                return try awsAPIAuthInfo.defaultAuthType().requiresAuthPlugin
+            } catch {
+                log.error(error: error)
+            }
+        }
+
+        log.warn("""
+            Could not determine whether the auth plugin is required or not. The auth rules present
+            may be missing provider information. When this happens, the API Plugin is used to determine
+            whether the default auth type requires the auth plugin. The default auth type could not be determined.
+        """)
+
+        // If both checks above cannot determine if auth plugin is required, fallback to previous logic
+        let apiAuthProvider = (apiPlugin as APICategoryAuthProviderFactoryBehavior).apiAuthProviderFactory()
+        if apiAuthProvider.oidcAuthProvider() != nil {
+            log.verbose("Found OIDC Auth Provider from the API Plugin.")
+            return false
+        }
+
+        if apiAuthProvider.functionAuthProvider() != nil {
+            log.verbose("Found Function Auth Provider from the API Plugin.")
+            return false
+        }
+
+        // There are auth rules and no ODIC/Function providers on the API plugin, then return true.
+        return true
+    }
+}
+
+internal extension AuthRules {
+    /// Convenience method to check whether we need Auth plugin
+    /// - Returns: true  If **any** of the rules uses a provider that requires the Auth plugin, `nil` otherwise
+    var requireAuthPlugin: Bool? {
+        for rule in self {
+            guard let requiresAuthPlugin = rule.requiresAuthPlugin else {
+                return nil
+            }
+            if requiresAuthPlugin {
+                return true
+            }
+        }
+        return false
     }
 }
 
 internal extension AuthRule {
-    var requiresAuthPlugin: Bool {
+    var requiresAuthPlugin: Bool? {
         guard let provider = self.provider else {
-            return true
+            return nil
         }
 
         switch provider {
@@ -76,13 +135,5 @@ internal extension AuthRule {
         case .userPools, .iam:
             return true
         }
-    }
-}
-
-internal extension AuthRules {
-    /// Convenience method to check whether we need Auth plugin
-    /// - Returns: true  If **any** of the rules uses a provider that requires the Auth plugin
-    var requireAuthPlugin: Bool {
-        contains { $0.requiresAuthPlugin }
     }
 }
