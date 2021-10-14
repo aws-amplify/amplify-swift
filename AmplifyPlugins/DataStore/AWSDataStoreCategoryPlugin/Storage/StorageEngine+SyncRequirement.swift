@@ -88,10 +88,7 @@ extension StorageEngine {
             whether the default auth type requires the auth plugin. The default auth type could not be determined.
         """)
 
-        // It would be quite impossible to fall back to this scenario where the auth type cannot be determined
-        // from both the providers from the auth rules and the default endpoint's auth type. However, in such a
-        // case, say there are multiple default APIs configured and the default endpoint could not be found, so
-        // the follow logic maintains the previous behavior.
+        // If both checks above cannot determine if auth plugin is required, fallback to previous logic
         let apiAuthProvider = (apiPlugin as APICategoryAuthProviderFactoryBehavior).apiAuthProviderFactory()
         if apiAuthProvider.oidcAuthProvider() != nil {
             log.verbose("Found OIDC Auth Provider from the API Plugin.")
