@@ -8,16 +8,12 @@
 import Amplify
 import Combine
 import Foundation
-import AWSPluginsCore
 
 class MockAPICategoryPlugin: MessageReporter,
                              APICategoryPlugin,
-                             APICategoryReachabilityBehavior,
-                             AWSAPIAuthInformation {
+                             APICategoryReachabilityBehavior {
 
-    var authType: AWSAuthorizationType?
 
-    var defaultAuthTypeError: APIError?
 
     var authProviderFactory: APIAuthProviderFactory?
 
@@ -229,22 +225,6 @@ class MockAPICategoryPlugin: MessageReporter,
             return authProviderFactory
         } else {
             return APIAuthProviderFactory()
-        }
-    }
-
-    // MARK: - AWSAPIAuthInformation
-
-    func defaultAuthType() throws -> AWSAuthorizationType {
-        try defaultAuthType(for: nil)
-    }
-
-    func defaultAuthType(for apiName: String?) throws -> AWSAuthorizationType {
-        if let error = defaultAuthTypeError {
-            throw error
-        } else if let authType = authType {
-            return authType
-        } else {
-            return .amazonCognitoUserPools
         }
     }
 }

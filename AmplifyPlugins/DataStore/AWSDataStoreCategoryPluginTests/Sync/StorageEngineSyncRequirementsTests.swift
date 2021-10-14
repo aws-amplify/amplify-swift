@@ -53,49 +53,49 @@ class StorageEngineSyncRequirementsTests: XCTestCase {
 
     func testRequiresAuthPluginNoProvidersWithAuthTypeFunction() {
         let authRules = [AuthRule(allow: .owner)]
-        let apiPlugin = MockAPICategoryPlugin()
+        let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.authType = .function
         XCTAssertFalse(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginNoProvidersWithAuthTypeAPIKey() {
         let authRules = [AuthRule(allow: .owner)]
-        let apiPlugin = MockAPICategoryPlugin()
+        let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.authType = .apiKey
         XCTAssertFalse(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginNoProvidersWithAuthTypeUserPools() {
         let authRules = [AuthRule(allow: .owner)]
-        let apiPlugin = MockAPICategoryPlugin()
+        let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.authType = .amazonCognitoUserPools
         XCTAssertTrue(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginNoProvidersWithAuthTypeIAM() {
         let authRules = [AuthRule(allow: .owner)]
-        let apiPlugin = MockAPICategoryPlugin()
+        let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.authType = .awsIAM
         XCTAssertTrue(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginNoProvidersWithAuthTypeODIC() {
         let authRules = [AuthRule(allow: .owner)]
-        let apiPlugin = MockAPICategoryPlugin()
+        let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.authType = .openIDConnect
         XCTAssertFalse(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginNoProvidersWithAuthTypeNone() {
         let authRules = [AuthRule(allow: .owner)]
-        let apiPlugin = MockAPICategoryPlugin()
+        let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.authType = AWSAuthorizationType.none
         XCTAssertFalse(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginOIDCProvider() {
         let authRules = [AuthRule(allow: .owner)]
-        let apiPlugin = MockAPICategoryPlugin()
+        let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.defaultAuthTypeError = APIError.unknown("Could not get default auth type", "", nil)
         let oidcProvider = MockOIDCAuthProvider()
         apiPlugin.authProviderFactory = MockAPIAuthProviderFactory(oidcProvider: oidcProvider)
@@ -104,7 +104,7 @@ class StorageEngineSyncRequirementsTests: XCTestCase {
 
     func testRequiresAuthPluginFunctionProvider() {
         let authRules = [AuthRule(allow: .owner)]
-        let apiPlugin = MockAPICategoryPlugin()
+        let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.defaultAuthTypeError = APIError.unknown("Could not get default auth type", "", nil)
         let functionProvider = MockFunctionAuthProvider()
         apiPlugin.authProviderFactory = MockAPIAuthProviderFactory(functionProvider: functionProvider)
@@ -113,7 +113,7 @@ class StorageEngineSyncRequirementsTests: XCTestCase {
 
     func testRequiresAuthPluginWithAuthRules() {
         let authRules = [AuthRule(allow: .owner)]
-        let apiPlugin = MockAPICategoryPlugin()
+        let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.defaultAuthTypeError = APIError.unknown("Could not get default auth type", "", nil)
         XCTAssertTrue(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
@@ -174,5 +174,28 @@ class StorageEngineSyncRequirementsTests: XCTestCase {
             AuthRule(allow: .public, provider: .apiKey)
         ]
         XCTAssertNil(authRules.requireAuthPlugin)
+    }
+
+    // MARK: - Helpers
+
+    class MockAPIAuthInformationPlugin: MockAPICategoryPlugin, AWSAPIAuthInformation {
+
+        var authType: AWSAuthorizationType?
+
+        var defaultAuthTypeError: APIError?
+
+        func defaultAuthType() throws -> AWSAuthorizationType {
+            try defaultAuthType(for: nil)
+        }
+
+        func defaultAuthType(for apiName: String?) throws -> AWSAuthorizationType {
+            if let error = defaultAuthTypeError {
+                throw error
+            } else if let authType = authType {
+                return authType
+            } else {
+                return .amazonCognitoUserPools
+            }
+        }
     }
 }
