@@ -13,11 +13,7 @@ extension Array where Element: Model {
     /// order, such as `true` for ascending and `false` for descending.
     mutating func sortModels(by sortBy: QuerySortDescriptor, modelSchema: ModelSchema) {
         sort {
-            if let compare = modelSchema.comparator(model1: $0, model2: $1, sortBy: sortBy) {
-                return compare
-            } else {
-                return sortBy.order == .ascending
-            }
+            modelSchema.comparator(model1: $0, model2: $1, sortBy: sortBy) ?? (sortBy.order == .ascending)
         }
     }
 }
