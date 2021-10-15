@@ -125,8 +125,9 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     var dataStorePublisher: ModelSubcriptionBehavior
     let itemsChangedMaxSize: Int
 
+    let stopwatch: Stopwatch
     var observeQueryStarted: Bool
-    var currentItems: [M]
+    var currentItems: SortedList<M>
     var batchItemsChangedSink: AnyCancellable?
     var itemsChangedSink: AnyCancellable?
 
@@ -150,7 +151,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     }
 
     var currentSnapshot: DataStoreQuerySnapshot<M> {
-        DataStoreQuerySnapshot<M>(items: currentItems, isSynced: isSynced)
+        DataStoreQuerySnapshot<M>(items: currentItems.sortedModels, isSynced: isSynced)
     }
 
     init(modelType: M.Type,
@@ -167,9 +168,9 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         self.storageEngine = storageEngine
         self.dataStorePublisher = dataStorePublisher
         self.itemsChangedMaxSize = Int(dataStoreConfiguration.syncPageSize)
-
+        self.stopwatch = Stopwatch()
         self.observeQueryStarted = false
-        self.currentItems = []
+        self.currentItems = SortedList(sortInput: sortInput, modelSchema: modelSchema)
         self.passthroughPublisher = PassthroughSubject<DataStoreQuerySnapshot<M>, DataStoreError>()
         self.observeQueryPublisher = ObserveQueryPublisher()
         super.init()
@@ -201,7 +202,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
                 self.observeQueryStarted = false
             }
             self.log.verbose("Resetting state")
-            self.currentItems.removeAll()
+            self.currentItems.sortedModels.removeAll()
             self.itemsChangedSink = nil
             self.batchItemsChangedSink = nil
         }
@@ -240,6 +241,9 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             finish()
             return
         }
+        if log.logLevel >= .debug {
+            stopwatch.start()
+        }
         storageEngine.query(
             modelType,
             modelSchema: modelSchema,
@@ -254,7 +258,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
 
                 switch queryResult {
                 case .success(let queriedModels):
-                    currentItems = queriedModels
+                    currentItems.sortedModels = queriedModels
                     generateQuerySnapshot()
                 case .failure(let error):
                     self.passthroughPublisher.send(completion: .failure(error))
@@ -313,17 +317,20 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             guard self.observeQueryStarted, !mutationEvents.isEmpty else {
                 return
             }
-
+            if self.log.logLevel >= .debug {
+                self.stopwatch.start()
+            }
             self.generateQuerySnapshot(itemsChanged: mutationEvents)
         }
     }
 
     private func generateQuerySnapshot(itemsChanged: [MutationEvent] = []) {
         updateCurrentItems(with: itemsChanged)
-        if let sort = sortInput {
-            sort.sortModels(models: &currentItems, modelSchema: modelSchema)
-        }
         passthroughPublisher.send(currentSnapshot)
+        if log.logLevel >= .debug {
+            let time = stopwatch.stop()
+            log.debug("Time to generate snapshot: \(time) seconds")
+        }
     }
 
     /// Update `curentItems` list with the changed items.
@@ -332,16 +339,10 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         for item in itemsChanged {
             do {
                 let model = try item.decodeModel(as: modelType)
-                if item.mutationType == MutationEvent.MutationType.delete.rawValue {
-                    if let index = currentItems.firstIndex(where: { $0.id == model.id }) {
-                        currentItems.remove(at: index)
-                    }
-                } else if let index = currentItems.firstIndex(where: { $0.id == model.id }) {
-                    currentItems[index] = model
-                } else {
-                    // TODO: if sorted, append it to the list in the correct position
-                    currentItems.append(model)
+                guard let mutationType = MutationEvent.MutationType(rawValue: item.mutationType) else {
+                    return
                 }
+                currentItems.apply(model: model, mutationType: mutationType)
             } catch {
                 log.error(error: error)
                 continue

@@ -7,17 +7,14 @@
 
 import Amplify
 
-extension Array where Element == QuerySortDescriptor {
-    func sortModels<M: Model>(models: inout [M], modelSchema: ModelSchema) {
-        forEach { sortInput in
-            models.sortModels(by: sortInput, modelSchema: modelSchema)
-        }
-    }
-}
-
 extension Array where Element: Model {
+
+    /// If the models are equal in terms of their sort order (`compare` is `nil`), return the order based on the sort
+    /// order, such as `true` for ascending and `false` for descending.
     mutating func sortModels(by sortBy: QuerySortDescriptor, modelSchema: ModelSchema) {
-        sort { modelSchema.comparator(model1: $0, model2: $1, sortBy: sortBy) }
+        sort {
+            modelSchema.comparator(model1: $0, model2: $1, sortBy: sortBy) ?? (sortBy.order == .ascending)
+        }
     }
 }
 
@@ -40,16 +37,24 @@ enum ModelValueCompare<T: Comparable> {
         }
     }
 
-    /// Treat `nil` as less than non `nil`values, so return asecnding when left side is `nil` and descending when right
-    /// is nil.
-    func sortComparator(sortOrder: QuerySortOrder) -> Bool {
+    /// Return `true` when they are in the correct order. For example, if ascending and the left value is less than
+    /// right value, then return `true`. If descending and the left value is larger than the right
+    /// value, return `true`. Treat `nil` values as less than non `nil` values. If the values are both nil or equal,
+    /// then return `nil`
+    func sortComparator(sortOrder: QuerySortOrder) -> Bool? {
         switch self {
-        case .bothNil, .leftNil:
+        case .bothNil:
+            return nil
+        case .leftNil:
             return sortOrder == .ascending
         case .rightNil:
             return sortOrder == .descending
         case .values(let value1, let value2):
-            return sortOrder == .ascending ? value1 < value2 : value1 > value2
+            if value1 == value2 {
+                return nil
+            } else {
+                return sortOrder == .ascending ? value1 < value2 : value1 > value2
+            }
         }
     }
 }
@@ -81,7 +86,7 @@ extension ModelSchema {
     // swiftlint:disable:next cyclomatic_complexity
     func comparator(model1: Model,
                     model2: Model,
-                    sortBy: QuerySortDescriptor) -> Bool {
+                    sortBy: QuerySortDescriptor) -> Bool? {
         let fieldName = sortBy.fieldName
         let sortOrder = sortBy.order
         guard let modelField = field(withName: fieldName) else {
