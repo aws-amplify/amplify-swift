@@ -240,10 +240,9 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             finish()
             return
         }
-        if log.logLevel == .debug {
+        if log.logLevel >= .debug {
             stopwatch.start()
         }
-
         storageEngine.query(
             modelType,
             modelSchema: modelSchema,
@@ -317,7 +316,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             guard self.observeQueryStarted, !mutationEvents.isEmpty else {
                 return
             }
-            if self.log.logLevel == .debug {
+            if self.log.logLevel >= .debug {
                 self.stopwatch.start()
             }
             self.generateQuerySnapshot(itemsChanged: mutationEvents)
@@ -327,7 +326,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     private func generateQuerySnapshot(itemsChanged: [MutationEvent] = []) {
         updateCurrentItems(with: itemsChanged)
         passthroughPublisher.send(currentSnapshot)
-        if log.logLevel == .debug {
+        if log.logLevel >= .debug {
             let time = stopwatch.stop()
             log.debug("Time to generate snapshot: \(time) seconds")
         }

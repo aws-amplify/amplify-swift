@@ -37,9 +37,8 @@ class SortedList<ModelType: Model> {
     /// Add the incoming `model` to the sorted array based on the sort input, or at the end if none is provided.
     /// Search for the index by comparing the incoming model with the current model in the binary search traversal.
     /// If the models are equal in terms of their sort order (comparator returns `nil`), then move onto the next sort
-    /// input. If all sort comparators return `nil`, the the index returned will be of current model from the traversal.
-    /// The index found from the binary search is the index which the incoming model can be inserted at to maintain
-    /// the sorted array.
+    /// input. If all sort comparators return `nil`, then the incoming model is equal to the current model on all
+    /// sort inputs,  and inserting at the index will maintain the overall sort order.
     func add(model: ModelType) {
         guard let sortInputs = sortInput else {
             sortedModels.append(model)
@@ -51,6 +50,8 @@ class SortedList<ModelType: Model> {
             var sortIndex: Int = 0
             while sortOrder == nil && sortIndex < sortInputs.endIndex {
                 let sortInput = sortInputs[sortIndex]
+                // `existingModel` is passed as left argument so the binarySearch's `predicate` criteria is met, ie.
+                // if `existingModel` should come before the `model`, keep searching the right half of the array
                 sortOrder = modelSchema.comparator(model1: existingModel, model2: model, sortBy: sortInput)
                 sortIndex += 1
             }

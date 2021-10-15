@@ -43,7 +43,7 @@ enum ModelValueCompare<T: Comparable> {
 
     /// Return `true` when they are in the correct order. For example, if ascending and the left value is less than
     /// right value, then return `true`. If descending and the left value is larger than the right
-    /// value, return `false`. Treat `nil` values as less than non `nil` values. If the values are both nil or equal,
+    /// value, return `true`. Treat `nil` values as less than non `nil` values. If the values are both nil or equal,
     /// then return `nil`
     func sortComparator(sortOrder: QuerySortOrder) -> Bool? {
         switch self {

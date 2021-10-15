@@ -96,6 +96,21 @@ class SortedListTests: XCTestCase {
         assertPost(list.sortedModels[6], id: "1", rating: 30.0)
     }
 
+    func testSortedListAllEqual() {
+        let posts = [createPost(id: "1", rating: 5.0),
+                     createPost(id: "2", rating: 5.0),
+                     createPost(id: "3", rating: 5.0),
+                     createPost(id: "4", rating: 5.0)]
+
+        let list = SortedList<Post>(sortInput: [QuerySortBy.ascending(Post.keys.rating).sortDescriptor],
+                                    modelSchema: Post.schema)
+        list.sortedModels = posts
+
+        // Since this is a binary search, the first index where the predicate returns `nil` is the middle index
+        list.add(model: createPost(id: "5", rating: 5.0))
+        assertPosts(list.sortedModels, expectedIds: ["1", "2", "5", "3", "4"])
+    }
+
     // MARK: - Helpers
 
     func assertPosts(_ posts: [Post], expectedIds: [String]) {
