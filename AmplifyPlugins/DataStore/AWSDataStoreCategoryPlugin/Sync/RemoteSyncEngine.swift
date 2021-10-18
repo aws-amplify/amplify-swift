@@ -29,7 +29,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private let initialSyncOrchestratorFactory: InitialSyncOrchestratorFactory
 
     var syncEventEmitter: SyncEventEmitter?
-    private var readyEventEmitter: ReadyEventEmitter?
+    var readyEventEmitter: ReadyEventEmitter?
 
     private let mutationEventIngester: MutationEventIngester
     let mutationEventPublisher: MutationEventPublisher
@@ -37,6 +37,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private var outgoingMutationQueueSink: AnyCancellable?
 
     private var reconciliationQueueSink: AnyCancellable?
+    private var syncEventEmitterSink: AnyCancellable?
 
     let remoteSyncTopicPublisher: PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>
     var publisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError> {
@@ -230,7 +231,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     func terminate() {
         remoteSyncTopicPublisher.send(completion: .finished)
-        cancelEmitters()
+        cleanup()
         if let completionBlock = finishedCompletionBlock {
             completionBlock(.successfulVoid)
             finishedCompletionBlock = nil
@@ -305,6 +306,13 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
                                             reconciliationQueue: reconciliationQueue)
 
+        syncEventEmitterSink = syncEventEmitter?
+            .publisher
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] in self?.onReceive(receiveValue: $0) }
+            )
+
         readyEventEmitter = ReadyEventEmitter(
             remoteSyncEnginePublisher: publisher,
             completion: { }
@@ -358,8 +366,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     private func cleanup(error: AmplifyError) {
-        reconciliationQueue?.cancel()
-        reconciliationQueue = nil
+        cleanup()
         outgoingMutationQueue.stopSyncingToCloud {
             self.remoteSyncTopicPublisher.send(.cleanedUp)
             self.stateMachine.notify(action: .cleanedUp(error))
@@ -367,8 +374,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     private func cleanupForTermination() {
-        reconciliationQueue?.cancel()
-        reconciliationQueue = nil
+        cleanup()
         outgoingMutationQueue.stopSyncingToCloud {
             self.mutationEventPublisher.cancel()
             self.remoteSyncTopicPublisher.send(.cleanedUpForTermination)
@@ -394,8 +400,12 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     /// Must be invoked from workQueue (as during a `respond` call)
-    func cancelEmitters() {
+    func cleanup() {
+        reconciliationQueue?.cancel()
+        reconciliationQueue = nil
+        reconciliationQueueSink = nil
         syncEventEmitter = nil
+        syncEventEmitterSink = nil
         readyEventEmitter = nil
     }
 }

@@ -154,12 +154,16 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
                 }
 
                 if modelSyncedEvents.count == 2 {
-                    XCTAssertEqual(modelSyncedEvents[0].modelName, expectedSyncedModelNames[0])
-                    XCTAssertTrue(modelSyncedEvents[0].isFullSync)
-                    XCTAssertFalse(modelSyncedEvents[0].isDeltaSync)
-                    XCTAssertEqual(modelSyncedEvents[1].modelName, expectedSyncedModelNames[1])
-                    XCTAssertTrue(modelSyncedEvents[1].isFullSync)
-                    XCTAssertFalse(modelSyncedEvents[1].isDeltaSync)
+                    guard let postModelSyncedEvent = modelSyncedEvents.first(where: { $0.modelName == "Post" }),
+                            let commentModelSyncedEvent = modelSyncedEvents.first(where: { $0.modelName == "Comment" }) else {
+                        XCTFail("Could not get modelSyncedEvent for Post and Comment")
+                        return
+                    }
+
+                    XCTAssertTrue(postModelSyncedEvent.isFullSync)
+                    XCTAssertFalse(postModelSyncedEvent.isDeltaSync)
+                    XCTAssertTrue(commentModelSyncedEvent.isFullSync)
+                    XCTAssertFalse(commentModelSyncedEvent.isDeltaSync)
                     modelSyncedReceived.fulfill()
                 }
             }

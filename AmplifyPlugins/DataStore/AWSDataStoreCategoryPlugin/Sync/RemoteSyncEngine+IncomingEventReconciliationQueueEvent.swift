@@ -46,6 +46,13 @@ extension RemoteSyncEngine {
             }
         case .paused:
             remoteSyncTopicPublisher.send(.subscriptionsPaused)
+        case .mutationEventDropped, .mutationEventApplied:
+            break
+        }
+    }
+
+    func onReceive(receiveValue: IncomingSyncEventEmitterEvent) {
+        switch receiveValue {
         case .mutationEventApplied(let mutationEvent):
             remoteSyncTopicPublisher.send(.mutationEvent(mutationEvent))
         case .mutationEventDropped:
