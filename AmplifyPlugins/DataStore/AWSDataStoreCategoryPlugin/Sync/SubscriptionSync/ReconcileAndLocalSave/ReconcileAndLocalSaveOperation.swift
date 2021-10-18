@@ -198,7 +198,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                                                               pendingMutations: pendingMutations)
 
         for _ in 0 ..< (remoteModels.count - remoteModelsToApply.count) {
-            notifyDropped(modelName: remoteModel.model.modelName)
+            notifyDropped()
         }
 
         return remoteModelsToApply
@@ -246,7 +246,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         let dispositions = RemoteSyncReconciler.getDispositions(remoteModels,
                                                                 localMetadatas: localMetadatas)
         for _ in 0 ..< (remoteModels.count - dispositions.count) {
-            notifyDropped(modelName: remoteModel.model.modelName)
+            notifyDropped()
         }
 
         return dispositions
@@ -348,7 +348,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 switch response {
                 case .failure(let dataStoreError):
                     if storageAdapter.shouldIgnoreError(error: dataStoreError) {
-                        self.notifyDropped(modelName: remoteModel.model.modelName)
+                        self.notifyDropped()
                         promise(.success(.dropped))
                     } else {
                         promise(.failure(dataStoreError))
@@ -367,7 +367,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 switch response {
                 case .failure(let dataStoreError):
                     if storageAdapter.shouldIgnoreError(error: dataStoreError) {
-                        self.notifyDropped(modelName: remoteModel.model.modelName)
+                        self.notifyDropped()
                         promise(.success(.dropped))
                     } else {
                         promise(.failure(dataStoreError))
@@ -410,8 +410,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         }
     }
 
-    private func notifyDropped(modelName: String) {
-        mutationEventPublisher.send(.mutationEventDropped(modelName: modelName))
+    private func notifyDropped() {
+        mutationEventPublisher.send(.mutationEventDropped(modelName: modelSchema.name))
     }
 
     private func notify(savedModel: AppliedModel,
