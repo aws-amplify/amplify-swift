@@ -19,7 +19,7 @@ public protocol GeoCategoryBehavior {
     ///   - completionHandler: The completion handler receives a Response object.  The
     ///   success case provides a Place array.
     func search(for text: String,
-                options: Geo.SearchForTextOptions,
+                options: Geo.SearchForTextOptions?,
                 completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>)
 
     /// Reverse geocodes a given pair of coordinates and returns a list of Places
@@ -30,7 +30,7 @@ public protocol GeoCategoryBehavior {
     ///   - completionHandler: The completion handler receives a Response object.  The
     ///   success case provides a Place array.
     func search(for coordinates: Geo.Coordinates,
-                options: Geo.SearchForCoordinatesOptions,
+                options: Geo.SearchForCoordinatesOptions?,
                 completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>)
 
     // MARK: - Maps

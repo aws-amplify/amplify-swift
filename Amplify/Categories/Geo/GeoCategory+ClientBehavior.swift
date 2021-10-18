@@ -15,7 +15,7 @@ extension GeoCategory: GeoCategoryBehavior {
     ///   - completionHandler: The completion handler receives a Response object.  The
     ///   success case provides a Place array.
     public func search(for text: String,
-                       options: Geo.SearchForTextOptions,
+                       options: Geo.SearchForTextOptions? = nil,
                        completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
         plugin.search(for: text,
                       options: options,
@@ -30,7 +30,7 @@ extension GeoCategory: GeoCategoryBehavior {
     ///   - completionHandler: The completion handler receives a Response object.  The
     ///   success case provides a Place array.
     public func search(for coordinates: Geo.Coordinates,
-                       options: Geo.SearchForCoordinatesOptions,
+                       options: Geo.SearchForCoordinatesOptions? = nil,
                        completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
         plugin.search(for: coordinates,
                       options: options,
