@@ -45,11 +45,11 @@ extension AWSLocationGeoPlugin {
             case .near(let coordinates):
                 request.biasPosition = [coordinates.longitude as NSNumber,
                                         coordinates.latitude as NSNumber]
-            case .within(let bbox):
-                request.filterBBox = [bbox.southwest.longitude as NSNumber,
-                                      bbox.southwest.latitude as NSNumber,
-                                      bbox.northeast.longitude as NSNumber,
-                                      bbox.northeast.latitude as NSNumber]
+            case .within(let boundingBox):
+                request.filterBBox = [boundingBox.southwest.longitude as NSNumber,
+                                      boundingBox.southwest.latitude as NSNumber,
+                                      boundingBox.northeast.longitude as NSNumber,
+                                      boundingBox.northeast.latitude as NSNumber]
             }
         }
 
