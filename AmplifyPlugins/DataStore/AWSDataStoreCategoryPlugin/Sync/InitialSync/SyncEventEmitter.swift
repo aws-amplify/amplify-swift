@@ -33,6 +33,10 @@ final class SyncEventEmitter {
         return syncEventEmitterTopic.eraseToAnyPublisher()
     }
 
+    var shouldDispatchSyncQueriesReadyEvent: Bool {
+        syncableModels == modelSyncedReceived
+    }
+
     init(initialSyncOrchestrator: InitialSyncOrchestrator?,
          reconciliationQueue: IncomingEventReconciliationQueue?) {
         self.modelSyncedEventEmitters = [String: ModelSyncedEventEmitter]()
@@ -68,7 +72,7 @@ final class SyncEventEmitter {
             syncEventEmitterTopic.send(.mutationEventDropped(modelName: modelName))
         case .modelSyncedEvent:
             modelSyncedReceived += 1
-            if syncableModels == modelSyncedReceived {
+            if shouldDispatchSyncQueriesReadyEvent {
                 dispatchSyncQueriesReady()
             }
         }

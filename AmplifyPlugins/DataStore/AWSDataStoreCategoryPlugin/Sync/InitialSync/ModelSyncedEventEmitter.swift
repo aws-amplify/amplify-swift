@@ -21,7 +21,7 @@ enum IncomingModelSyncedEmitterEvent {
 /// `InitialSyncOrchestrator` and `IncomingEventReconciliationQueue` to have matching counts
 /// for the events they enqueue and process, respectively. Always send back the reconciled event
 /// (`.mutationEventApplied`, `.mutationEventDropped`). The flow also provides a guaranteed sequence of events for the
-/// mutation event which causes the `ModelSyncedEvent` to be emitted to be emitted afterwards by
+/// mutation event which causes the `ModelSyncedEvent` to be emitted afterwards by
 ///     - Check if it `ModelSyncedEvent` should be emitted, if so, emit it.
 ///     - Then send the mutation event which was used in the check above.
 @available(iOS 13.0, *)
@@ -101,8 +101,8 @@ final class ModelSyncedEventEmitter {
             return modelSchema.name == event.modelName
         case .mutationEventDropped(let modelName):
             return modelSchema.name == modelName
-        default:
-            return true
+        case .initialized, .started, .paused:
+            return false
         }
     }
 
@@ -128,7 +128,7 @@ final class ModelSyncedEventEmitter {
                 modelSyncedEventTopic.send(.mutationEventApplied(event))
             case .mutationEventDropped(let modelName):
                 modelSyncedEventTopic.send(.mutationEventDropped(modelName: modelName))
-            default:
+            case .initialized, .started, .paused:
                 return
             }
             return
@@ -161,7 +161,7 @@ final class ModelSyncedEventEmitter {
             }
 
             modelSyncedEventTopic.send(.mutationEventDropped(modelName: modelName))
-        default:
+        case .initialized, .started, .paused:
             return
         }
     }
