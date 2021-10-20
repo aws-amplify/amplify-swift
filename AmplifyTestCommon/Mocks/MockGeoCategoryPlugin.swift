@@ -47,7 +47,7 @@ class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
         return [createMapStyle()]
     }
 
-    func getDefaultMap() -> Geo.MapStyle {
+    func getDefaultMap() -> Geo.MapStyle? {
         notify()
 
         return createMapStyle()

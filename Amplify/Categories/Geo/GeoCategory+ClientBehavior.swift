@@ -52,16 +52,14 @@ extension GeoCategory: GeoCategoryBehavior {
     // MARK: - Maps
 
     /// Retrieves metadata for available Map resources.
-    /// - Parameter completionHandler: The completion handler receives a Response
-    /// object.  The success case provides an array of available Map resources.
+    /// - Returns: Metadata for all available map resources.
     public func getAvailableMaps() -> [Geo.MapStyle] {
         plugin.getAvailableMaps()
     }
 
     /// Retrieves the default Map resource.
-    /// - Parameter completionHandler: The completion handler receives a Response
-    /// object.  The success case provides an array of available Map resources.
-    public func getDefaultMap() -> Geo.MapStyle {
+    /// - Returns: Metadata for the default map resource.
+    public func getDefaultMap() -> Geo.MapStyle? {
         plugin.getDefaultMap()
     }
 }
