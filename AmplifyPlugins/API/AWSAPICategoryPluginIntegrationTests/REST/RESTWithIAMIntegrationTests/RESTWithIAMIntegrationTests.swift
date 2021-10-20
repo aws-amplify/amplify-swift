@@ -14,7 +14,7 @@ import AmplifyPlugins
 
 class RESTWithIAMIntegrationTests: XCTestCase {
 
-    static let amplifyConfiguration = "RESTWithIAMIntegrationTests-amplifyconfiguration"
+    static let amplifyConfiguration = "testconfiguration/RESTWithIAMIntegrationTests-amplifyconfiguration"
 
     override func setUp() {
 

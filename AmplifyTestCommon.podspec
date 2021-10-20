@@ -32,6 +32,26 @@ Pod::Spec.new do |s|
 
   s.dependency 'Amplify', $AMPLIFY_VERSION
 
+  s.script_phases = [
+    { 
+      :name => 'Copy Configuration folder', 
+      :script => '
+      TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.
+      DEST_PATH="${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/"
+
+      if [[ ! -d $TEMP_FILE ]] ; then
+          echo "${TEMP_FILE} does not exist. Using empty configuration."
+          exit 0
+      fi
+      
+      if [[ -f $DEST_PATH ]] ; then
+          rm $DEST_PATH
+      fi
+      
+      cp -r $TEMP_FILE $DEST_PATH
+      ' 
+    }
+  ]
   s.subspec 'AWSPluginsTestCommon' do |ss|
     ss.source_files = 'AmplifyPlugins/Core/AWSPluginsTestCommon/**/*.swift'
     ss.dependency 'AWSPluginsCore', $AMPLIFY_VERSION

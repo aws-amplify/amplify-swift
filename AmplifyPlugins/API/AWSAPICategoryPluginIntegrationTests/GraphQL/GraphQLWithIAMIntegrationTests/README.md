@@ -26,7 +26,7 @@ The following steps demonstrate how to set up an GraphQL endpoint with AppSync. 
 
 4. `amplify push`
 
-5. Copy `amplifyconfiguration.json` over as `GraphQLWithIAMIntegrationTests-amplifyconfiguration.json`
+5. Copy `amplifyconfiguration.json` over as `GraphQLWithIAMIntegrationTests-amplifyconfiguration.json` to `~/.aws-amplify/amplify-ios/testconfiguration/`
 
 6. `amplify console auth` and choose `Identity Pool`. Click on **Edit Identity pool** and make note of IAM Role that is assigned for the Authenticated role.
 
@@ -36,7 +36,7 @@ The following steps demonstrate how to set up an GraphQL endpoint with AppSync. 
 
 9. Click on Attach Policies, choose **AWSAppSyncInvokeFullAccess**, and attach the policy. This will allow users that are signed into the app to have access to invoke AppSync APIs.
 
-10. Create `GraphQLWithIAMIntegrationTests-credentials.json` with a json object containing `username`, and `password`, used to create the cognito user in the userpool. 
+10. Create `GraphQLWithIAMIntegrationTests-credentials.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/` with a json object containing `username`, and `password`, used to create the cognito user in the userpool. 
 
 ```json
 {

@@ -21,8 +21,8 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         let password: String
     }
 
-    let amplifyConfigurationFile = "GraphQLWithUserPoolIntegrationTests-amplifyconfiguration"
-    let credentialsFile = "GraphQLWithUserPoolIntegrationTests-credentials"
+    let amplifyConfigurationFile = "testconfiguration/GraphQLWithUserPoolIntegrationTests-amplifyconfiguration"
+    let credentialsFile = "testconfiguration/GraphQLWithUserPoolIntegrationTests-credentials"
     var user: User!
 
     override func setUp() {

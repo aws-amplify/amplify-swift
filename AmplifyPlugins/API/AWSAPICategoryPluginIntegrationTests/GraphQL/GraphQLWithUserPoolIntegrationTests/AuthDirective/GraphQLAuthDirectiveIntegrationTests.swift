@@ -20,8 +20,8 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         let password: String
     }
 
-    let amplifyConfigurationFile = "GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration"
-    let credentialsFile = "GraphQLAuthDirectiveIntegrationTests-credentials"
+    let amplifyConfigurationFile = "testconfiguration/GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration"
+    let credentialsFile = "testconfiguration/GraphQLAuthDirectiveIntegrationTests-credentials"
     var user1: User!
     var user2: User!
 

@@ -20,8 +20,8 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         let password: String
     }
 
-    let amplifyConfigurationFile = "GraphQLWithIAMIntegrationTests-amplifyconfiguration"
-    let credentialsFile = "GraphQLWithIAMIntegrationTests-credentials"
+    let amplifyConfigurationFile = "testconfiguration/GraphQLWithIAMIntegrationTests-amplifyconfiguration"
+    let credentialsFile = "testconfiguration/GraphQLWithIAMIntegrationTests-credentials"
     var user: User!
 
     override func setUp() {

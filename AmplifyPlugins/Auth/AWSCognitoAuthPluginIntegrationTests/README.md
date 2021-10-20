@@ -67,39 +67,42 @@ amplify add auth
 Succesfully added the Lambda function locally
 ? Do you want to edit your custom function now? Yes
 Please edit the file in your editor: 
+```
 
 For Pre Sign-up lambda
+
 ```
-exports.handler = (event, context, callback) => {
+exports.handler = (event) => {
     event.response.autoConfirmUser = true;
-    console.log(event);
-    console.log(context);
-    callback(null, event);
 };
 ```
 
 For Custom Message and any other lambdas
+
 ```
 // you can simply set them to log the input so you can verify valid and correct validationData/clientMetadata
-exports.handler = (event, context, callback) => {
-    event.response.autoConfirmUser = true;
-    console.log(event);
-    console.log(context);
-    callback(null, event);
+exports.handler = (event) => {
+    console.log("Reached custom message lambda"); 
 };
+```
+
+Continue in the terminal;
+
 ```
 ? Press enter to continue
 Successfully added resource amplifyintegtest locally
 
 amplify push
 ```
-This will create a amplifyconfiguration.json file in your local, drag that into the folder path AWSCognitoAuthPluginIntegrationTests/Configuration and give `AWSCognitoAuthPluginIntegrationTests` as the target.
 
-Next create `credentials.json` and add it to the same folder path, with the following values
+This will create a amplifyconfiguration.json file in your local, copy that file to `~/.aws-amplify/amplify-ios/testconfiguration/` and rename as `AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json`.
+
+Next create `AWSCognitoAuthPluginIntegrationTests-credentials.json` and add it to the same folder path, with the following values:
+
 ```
 {
-    "email": [YOUR_EMAIL],
-    "email2": [ANOTHER_EMAIL]
+    "test_email_1": [YOUR_EMAIL],
+    "test_email_2": [ANOTHER_EMAIL]
 }
 ```
 

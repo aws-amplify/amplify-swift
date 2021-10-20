@@ -22,8 +22,8 @@ class AWSDataStoreMultiAuthBaseTest: XCTestCase {
     var user1: TestUser?
     var user2: TestUser?
 
-    static let amplifyConfigurationFile = "AWSDataStoreCategoryPluginMultiAuthIntegrationTests-amplifyconfiguration"
-    static let credentialsFile = "AWSDataStoreCategoryPluginMultiAuthIntegrationTests-credentials"
+    static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginMultiAuthIntegrationTests-amplifyconfiguration"
+    static let credentialsFile = "testconfiguration/AWSDataStoreCategoryPluginMultiAuthIntegrationTests-credentials"
 
     var authRecorderInterceptor: AuthRecorderInterceptor!
 

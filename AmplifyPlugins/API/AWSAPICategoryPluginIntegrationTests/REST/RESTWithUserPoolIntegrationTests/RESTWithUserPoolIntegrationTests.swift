@@ -17,8 +17,8 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
         let username: String
         let password: String
     }
-    let amplifyConfigurationFile = "RESTWithUserPoolIntegrationTests-amplifyconfiguration"
-    let credentialsFile = "RESTWithUserPoolIntegrationTests-credentials"
+    let amplifyConfigurationFile = "testconfiguration/RESTWithUserPoolIntegrationTests-amplifyconfiguration"
+    let credentialsFile = "testconfiguration/RESTWithUserPoolIntegrationTests-credentials"
     var user1: User!
 
     override func setUp() {
