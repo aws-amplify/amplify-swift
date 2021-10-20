@@ -191,13 +191,11 @@ extension AuthorizationProviderAdapter {
                                                         awsCredentialsResult: .success(amplifyCredentials),
                                                         cognitoTokensResult: tokenResult)
                 completionHandler(.success(authSession))
-                return nil
-
             } catch {
                 let authError = AuthErrorHelper.toAuthError(error)
                 self.fetchSignedInSession(withError: authError, completionHandler)
-                return nil
             }
+            return nil
         }
     }
 

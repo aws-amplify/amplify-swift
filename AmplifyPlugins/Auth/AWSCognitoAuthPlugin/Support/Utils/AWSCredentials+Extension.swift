@@ -25,12 +25,11 @@ extension AWSCredentials {
                       Could not retreive AWS credentials, credential value is nil or empty.
                       """)
                   throw error
-        }
+              }
 
-        let credentials = AuthAWSCognitoCredentials(accessKey: nonNilAccessKey,
-                                                    secretKey: nonNilSecretKey,
-                                                    sessionKey: nonNilSessionKey,
-                                                    expiration: nonNilExpiration)
-        return credentials
+        return AuthAWSCognitoCredentials(accessKey: nonNilAccessKey,
+                                         secretKey: nonNilSecretKey,
+                                         sessionKey: nonNilSessionKey,
+                                         expiration: nonNilExpiration)
     }
 }
