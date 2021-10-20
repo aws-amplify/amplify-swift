@@ -10,11 +10,21 @@ import AWSPluginsCore
 import Combine
 import Foundation
 
-@available(iOS 13.0, *)
+enum IncomingModelSyncedEmitterEvent {
+    case mutationEventApplied(MutationEvent)
+    case mutationEventDropped(modelName: String)
+    case modelSyncedEvent
+}
+
 /// Listens to events published by both the `InitialSyncOrchestrator` and `IncomingEventReconciliationQueue`,
 /// and emits a `ModelSyncedEvent` when the initial sync is complete. This class expects
 /// `InitialSyncOrchestrator` and `IncomingEventReconciliationQueue` to have matching counts
-/// for the events they enqueue and process, respectively.
+/// for the events they enqueue and process, respectively. Always send back the reconciled event
+/// (`.mutationEventApplied`, `.mutationEventDropped`). The flow also provides a guaranteed sequence of events for the
+/// mutation event which causes the `ModelSyncedEvent` to be emitted afterwards by
+///     - Check if it `ModelSyncedEvent` should be emitted, if so, emit it.
+///     - Then send the mutation event which was used in the check above.
+@available(iOS 13.0, *)
 final class ModelSyncedEventEmitter {
     private let queue = DispatchQueue(label: "com.amazonaws.ModelSyncedEventEmitterQueue",
                                       target: DispatchQueue.global())
@@ -29,9 +39,13 @@ final class ModelSyncedEventEmitter {
 
     private var modelSyncedEventBuilder: ModelSyncedEvent.Builder
 
-    private var modelSyncedEventTopic: PassthroughSubject<Never, Never>
-    var publisher: AnyPublisher<Never, Never> {
+    private var modelSyncedEventTopic: PassthroughSubject<IncomingModelSyncedEmitterEvent, Never>
+    var publisher: AnyPublisher<IncomingModelSyncedEmitterEvent, Never> {
         return modelSyncedEventTopic.eraseToAnyPublisher()
+    }
+
+    var shouldDispatchModelSyncedEvent: Bool {
+        initialSyncOperationFinished && reconciledReceived == recordsReceived
     }
 
     var dispatchedModelSyncedEvent: AtomicValue<Bool>
@@ -46,7 +60,7 @@ final class ModelSyncedEventEmitter {
         self.dispatchedModelSyncedEvent = AtomicValue(initialValue: false)
         self.modelSyncedEventBuilder = ModelSyncedEvent.Builder()
 
-        self.modelSyncedEventTopic = PassthroughSubject<Never, Never>()
+        self.modelSyncedEventTopic = PassthroughSubject<IncomingModelSyncedEmitterEvent, Never>()
 
         self.syncOrchestratorSink = initialSyncOrchestrator?
             .publisher
@@ -87,8 +101,8 @@ final class ModelSyncedEventEmitter {
             return modelSchema.name == event.modelName
         case .mutationEventDropped(let modelName):
             return modelSchema.name == modelName
-        default:
-            return true
+        case .initialized, .started, .paused:
+            return false
         }
     }
 
@@ -108,6 +122,18 @@ final class ModelSyncedEventEmitter {
     }
 
     private func onReceiveReconciliationEvent(value: IncomingEventReconciliationQueueEvent) {
+        guard !dispatchedModelSyncedEvent.get() else {
+            switch value {
+            case .mutationEventApplied(let event):
+                modelSyncedEventTopic.send(.mutationEventApplied(event))
+            case .mutationEventDropped(let modelName):
+                modelSyncedEventTopic.send(.mutationEventDropped(modelName: modelName))
+            case .initialized, .started, .paused:
+                return
+            }
+            return
+        }
+
         switch value {
         case .mutationEventApplied(let event):
             reconciledReceived += 1
@@ -121,14 +147,22 @@ final class ModelSyncedEventEmitter {
             default:
                 log.error("Unexpected mutationType received: \(event.mutationType)")
             }
-        case .mutationEventDropped:
-            reconciledReceived += 1
-        default:
-            return
-        }
 
-        if initialSyncOperationFinished && reconciledReceived == recordsReceived {
-            dispatchModelSyncedEvent()
+            if shouldDispatchModelSyncedEvent {
+                dispatchModelSyncedEvent()
+            }
+
+            modelSyncedEventTopic.send(.mutationEventApplied(event))
+        case .mutationEventDropped(let modelName):
+            reconciledReceived += 1
+
+            if shouldDispatchModelSyncedEvent {
+                dispatchModelSyncedEvent()
+            }
+
+            modelSyncedEventTopic.send(.mutationEventDropped(modelName: modelName))
+        case .initialized, .started, .paused:
+            return
         }
     }
 
@@ -138,13 +172,8 @@ final class ModelSyncedEventEmitter {
                                                  data: modelSyncedEventBuilder.build())
         Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
         dispatchedModelSyncedEvent.set(true)
-        modelSyncedEventTopic.send(completion: .finished)
-        cancel()
-    }
-
-    func cancel() {
+        modelSyncedEventTopic.send(.modelSyncedEvent)
         syncOrchestratorSink?.cancel()
-        reconciliationQueueSink?.cancel()
     }
 }
 

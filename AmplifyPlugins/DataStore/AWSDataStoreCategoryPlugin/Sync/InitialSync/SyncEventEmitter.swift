@@ -9,18 +9,44 @@ import Amplify
 import AWSPluginsCore
 import Combine
 
+enum IncomingSyncEventEmitterEvent {
+    case mutationEventApplied(MutationEvent)
+    case mutationEventDropped(modelName: String)
+}
+
+/// SyncEventEmitter holds onto one ModelSyncedEventEmitter per model. It counts the number of `modelSyncedEvent` to
+/// emit the `syncQueriesReady` and sends back the reconciliation events (`.mutationEventApplied`,
+/// `.mutationEventDropped`) to its subscribers.
 @available(iOS 13.0, *)
 final class SyncEventEmitter {
+    private let queue = DispatchQueue(label: "com.amazonaws.SyncEventEmitter",
+                                      target: DispatchQueue.global())
+
     var modelSyncedEventEmitters: [String: ModelSyncedEventEmitter]
     var initialSyncCompleted: AnyCancellable?
+
+    private var syncableModels: Int
+    private var modelSyncedReceived: Int
+
+    private var syncEventEmitterTopic: PassthroughSubject<IncomingSyncEventEmitterEvent, Never>
+    var publisher: AnyPublisher<IncomingSyncEventEmitterEvent, Never> {
+        return syncEventEmitterTopic.eraseToAnyPublisher()
+    }
+
+    var shouldDispatchSyncQueriesReadyEvent: Bool {
+        syncableModels == modelSyncedReceived
+    }
 
     init(initialSyncOrchestrator: InitialSyncOrchestrator?,
          reconciliationQueue: IncomingEventReconciliationQueue?) {
         self.modelSyncedEventEmitters = [String: ModelSyncedEventEmitter]()
+        self.syncEventEmitterTopic = PassthroughSubject<IncomingSyncEventEmitterEvent, Never>()
+        self.modelSyncedReceived = 0
 
         let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
+        self.syncableModels = syncableModelSchemas.count
 
-        var publishers = [AnyPublisher<Never, Never>]()
+        var publishers = [AnyPublisher<IncomingModelSyncedEmitterEvent, Never>]()
         for syncableModelSchema in syncableModelSchemas {
             let modelSyncedEventEmitter = ModelSyncedEventEmitter(modelSchema: syncableModelSchema,
                                                                   initialSyncOrchestrator: initialSyncOrchestrator,
@@ -31,16 +57,31 @@ final class SyncEventEmitter {
 
         self.initialSyncCompleted = Publishers
             .MergeMany(publishers)
-            .sink(receiveCompletion: { [weak self] _ in
-                self?.dispatchSyncQueriesReady()
-            }, receiveValue: { _ in })
+            .receive(on: queue)
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: { [weak self] value in
+                self?.onReceiveModelSyncedEmitterEvent(value: value)
+            })
+    }
+
+    private func onReceiveModelSyncedEmitterEvent(value: IncomingModelSyncedEmitterEvent) {
+        switch value {
+        case .mutationEventApplied(let mutationEvent):
+            syncEventEmitterTopic.send(.mutationEventApplied(mutationEvent))
+        case .mutationEventDropped(let modelName):
+            syncEventEmitterTopic.send(.mutationEventDropped(modelName: modelName))
+        case .modelSyncedEvent:
+            modelSyncedReceived += 1
+            if shouldDispatchSyncQueriesReadyEvent {
+                dispatchSyncQueriesReady()
+            }
+        }
     }
 
     private func dispatchSyncQueriesReady() {
         let syncQueriesReadyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
         Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesReadyEventPayload)
     }
-
 }
 
 @available(iOS 13.0, *)

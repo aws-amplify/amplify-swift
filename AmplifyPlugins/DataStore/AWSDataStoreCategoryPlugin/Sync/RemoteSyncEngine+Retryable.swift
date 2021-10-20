@@ -22,7 +22,6 @@ extension RemoteSyncEngine {
             scheduleRestart(advice: advice)
         } else {
             remoteSyncTopicPublisher.send(completion: .failure(DataStoreError.api(error)))
-            cancelEmitters()
             if let completionBlock = finishedCompletionBlock {
                 completionBlock(.failure(causedBy: error))
                 finishedCompletionBlock = nil
