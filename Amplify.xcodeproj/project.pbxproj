@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		061FD5B1AF28D70F20D52407 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE4710DB0051BDB010053AA /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework */; };
 		210922502359634C00CEC295 /* AnalyticsProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210922492359634B00CEC295 /* AnalyticsProfile.swift */; };
 		210922522359634C00CEC295 /* AnalyticsPropertyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2109224B2359634C00CEC295 /* AnalyticsPropertyValue.swift */; };
 		210922572359693900CEC295 /* BasicAnalyticsEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210922562359693800CEC295 /* BasicAnalyticsEvent.swift */; };
@@ -192,9 +193,8 @@
 		21FFF995230C96CB005878EA /* StorageListOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF990230C96CB005878EA /* StorageListOperation.swift */; };
 		21FFF997230C96CB005878EA /* StorageRemoveOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF992230C96CB005878EA /* StorageRemoveOperation.swift */; };
 		21FFF9A2230C9731005878EA /* StorageListResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9A1230C9730005878EA /* StorageListResult.swift */; };
-		2861F5F799C24671B5C4DB8D /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C448F4F6DD01A268675E1C68 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework */; };
-		2CFB61C7E80D065C0A885A2F /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5363CAF9EFAA822FED56808 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */; };
-		3263D332138415AF42E64FF7 /* Pods_AmplifyTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDC7F1C368154B364CB74742 /* Pods_AmplifyTestApp.framework */; };
+		36039812C19DFAEF666C5C63 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1234630A0E88F1E681D4302 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework */; };
+		376F5077123FA6732A404280 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9791D4B5420256E0866B708 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */; };
 		5C09CCB526CEDE1200CDCA9F /* GeoCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCA926CEDE1200CDCA9F /* GeoCategory+HubPayloadEventName.swift */; };
 		5C09CCB626CEDE1200CDCA9F /* GeoCategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCAB26CEDE1200CDCA9F /* GeoCategory+CategoryConfigurable.swift */; };
 		5C09CCB726CEDE1200CDCA9F /* GeoCategory+Resettable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCAC26CEDE1200CDCA9F /* GeoCategory+Resettable.swift */; };
@@ -284,9 +284,7 @@
 		76B17DD8264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B17DD7264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift */; };
 		76C0F4EC26797F4500F0E6AB /* AuthModeStrategyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C0F4EA26797F3C00F0E6AB /* AuthModeStrategyTests.swift */; };
 		76FFFC91267966D9001EC92B /* RetryableGraphQLOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FFFC90267966D9001EC92B /* RetryableGraphQLOperationTests.swift */; };
-		7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */; platformFilter = ios; };
-		7F27B1DCE59C1E674172CCD6 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */; };
-		881246F5DCC59436DC932469 /* Pods_Amplify_AWSPluginsCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35D92182B8445C8F9B0FAE94 /* Pods_Amplify_AWSPluginsCore.framework */; };
+		8484A17AAAFE78545A932849 /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1769ED39B45A981FD1D8AC /* Pods_Amplify.framework */; };
 		950A26DB23D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26D823D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift */; };
 		950A26DC23D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26D923D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift */; };
 		950A26DD23D15D7E00D92B19 /* PredictionsSpeechToTextOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26DA23D15D7E00D92B19 /* PredictionsSpeechToTextOperation.swift */; };
@@ -333,7 +331,6 @@
 		95DAAB89237F13B70028544F /* IdentifyEntityMatchesResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB87237F13B70028544F /* IdentifyEntityMatchesResult.swift */; };
 		95DAAB8A237F13B70028544F /* TextToSpeechResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB88237F13B70028544F /* TextToSpeechResult.swift */; };
 		95DAAB8C237F13D10028544F /* PredictionsTextToSpeechRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB8B237F13D10028544F /* PredictionsTextToSpeechRequest.swift */; };
-		972D1CA72316922ECE530571 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 934ECFB4BB156267C1BC067A /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework */; };
 		974FF12D24B0434B0050D01B /* DevMenuPresentationContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF12C24B0434B0050D01B /* DevMenuPresentationContextProvider.swift */; };
 		974FF12F24B043780050D01B /* TriggerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF12E24B043780050D01B /* TriggerDelegate.swift */; };
 		974FF13124B043B90050D01B /* TriggerRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974FF13024B043B90050D01B /* TriggerRecognizer.swift */; };
@@ -376,6 +373,7 @@
 		97DC3D5024C1FCEE00D79E24 /* LogEntryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC3D4F24C1FCEE00D79E24 /* LogEntryRow.swift */; };
 		97DC3D5224C1FE4100D79E24 /* LogViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC3D5124C1FE4100D79E24 /* LogViewer.swift */; };
 		97DC3D5424C200A600D79E24 /* LogEntryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC3D5324C200A600D79E24 /* LogEntryHelper.swift */; };
+		A5BD5B125AE6AAD604092274 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5009041CDAAB46551245D381 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */; };
 		B4251A0124250369007F59EF /* AuthConfirmResetPasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A0024250369007F59EF /* AuthConfirmResetPasswordRequest.swift */; };
 		B4251A05242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A04242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift */; };
 		B4251A072425047D007F59EF /* AuthChangePasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A062425047D007F59EF /* AuthChangePasswordRequest.swift */; };
@@ -472,7 +470,6 @@
 		B4FA76082416E87E006F59CE /* AuthFetchSessionOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FA76042416E0F0006F59CE /* AuthFetchSessionOperation.swift */; };
 		B4FEA92124635BFB0009B47B /* AuthCategoryDeviceBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEA92024635BFB0009B47B /* AuthCategoryDeviceBehavior.swift */; };
 		B4FEA92324635CA40009B47B /* AuthCategory+DeviceBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEA92224635CA40009B47B /* AuthCategory+DeviceBehavior.swift */; };
-		B8E8D759314BE9D6BD462E87 /* Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B868B395CBEDBAE5565C25D5 /* Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework */; };
 		B912D1B6242960D40028F05C /* QueryPaginationInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = B912D1B5242960D40028F05C /* QueryPaginationInput.swift */; };
 		B91A879C23D125A50049A12F /* DateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A879B23D125A50049A12F /* DateTime.swift */; };
 		B91A879E23D12B730049A12F /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A879D23D12B730049A12F /* Time.swift */; };
@@ -542,8 +539,11 @@
 		B9FAA175238EFC5A009414B4 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA174238EFC59009414B4 /* String+Extensions.swift */; };
 		B9FAA180238FBB5D009414B4 /* Model+Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA17F238FBB5D009414B4 /* Model+Array.swift */; };
 		B9FB05F82383740D00DE1FD4 /* DataStoreStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FB05F72383740D00DE1FD4 /* DataStoreStatement.swift */; };
+		BBAF02CB202B4249563C52FF /* Pods_AmplifyTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 578572740EB3CA2D58C35F77 /* Pods_AmplifyTestApp.framework */; };
 		D83C5160248964780091548E /* ModelGraphQLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83C515F248964780091548E /* ModelGraphQLTests.swift */; };
 		D8DD7A1D24A1CCCD001C49FD /* QuerySortInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD7A1C24A1CCCD001C49FD /* QuerySortInput.swift */; };
+		DB46924D8467766E9D0C3A2E /* Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AEC36EE65BA1C2777AF7F0E /* Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework */; };
+		F891F54DC16A956D8DE9C1B5 /* Pods_Amplify_AWSPluginsCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA3BDDD92B2ECE8EECC6E0AA /* Pods_Amplify_AWSPluginsCore.framework */; };
 		FA00F68824DA37EE003E8A71 /* AuthCategoryBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00F68724DA37EE003E8A71 /* AuthCategoryBehavior+Combine.swift */; };
 		FA00F68A24DA3A43003E8A71 /* AuthCategoryDeviceBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00F68924DA3A43003E8A71 /* AuthCategoryDeviceBehavior+Combine.swift */; };
 		FA00F68C24DA3A8F003E8A71 /* AuthCategoryUserBehavior+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00F68B24DA3A8F003E8A71 /* AuthCategoryUserBehavior+Combine.swift */; };
@@ -851,19 +851,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		008BFFD1C24CCA788C88CF4C /* Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin-AWSS3StoragePluginTests/Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		031438953280EA4A537D2817 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		04764F685DBE17F7CEC92A62 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		082C9C1A32F62C25D01A1AB2 /* Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin/Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin.release.xcconfig"; sourceTree = "<group>"; };
-		0B4A80CD25A9E5E6A518A314 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.release.xcconfig"; sourceTree = "<group>"; };
-		1466763FF4DA7F67EC5092AA /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.debug.xcconfig"; sourceTree = "<group>"; };
-		1AEE54C5DD1856A3C9251736 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTests/Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
-		1C23249CCA99AACFE0A2E5D9 /* Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin/Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		1C4F08891CECABC699AB133D /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPredictionsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPredictionsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPredictionsPluginTests/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPredictionsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		1C6DDB91072543DBE60E1140 /* Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		1D3F4AB441751E78E4C1D482 /* Pods-Amplify-AmplifyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTests/Pods-Amplify-AmplifyTests.release.xcconfig"; sourceTree = "<group>"; };
-		1D47F178B0FEC9059BC72C3B /* Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin/Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin.release.xcconfig"; sourceTree = "<group>"; };
-		1D74984AC23B0E746D9C2A5C /* Pods-AWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests/Pods-AWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig"; sourceTree = "<group>"; };
+		0671E539A66859A57E071091 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTests/Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig"; sourceTree = "<group>"; };
+		09D90ABD9EDED6D6B1780253 /* Pods-Amplify-AWSPluginsCore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore/Pods-Amplify-AWSPluginsCore.release.xcconfig"; sourceTree = "<group>"; };
+		1FA86170C161C5E46E57A5F9 /* Pods-Amplify-AWSPluginsCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore/Pods-Amplify-AWSPluginsCore.debug.xcconfig"; sourceTree = "<group>"; };
 		210922492359634B00CEC295 /* AnalyticsProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsProfile.swift; sourceTree = "<group>"; };
 		2109224B2359634C00CEC295 /* AnalyticsPropertyValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsPropertyValue.swift; sourceTree = "<group>"; };
 		210922562359693800CEC295 /* BasicAnalyticsEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicAnalyticsEvent.swift; sourceTree = "<group>"; };
@@ -1052,49 +1042,10 @@
 		21FFF990230C96CB005878EA /* StorageListOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageListOperation.swift; sourceTree = "<group>"; };
 		21FFF992230C96CB005878EA /* StorageRemoveOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageRemoveOperation.swift; sourceTree = "<group>"; };
 		21FFF9A1230C9730005878EA /* StorageListResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageListResult.swift; sourceTree = "<group>"; };
-		2592CB41D8BEE8051CAD8841 /* Pods-Amplify-AWSPluginsCore-AWSDataStoreCategoryPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSDataStoreCategoryPlugin.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSDataStoreCategoryPlugin/Pods-Amplify-AWSPluginsCore-AWSDataStoreCategoryPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		259CBD765D3CF26D41A04914 /* Pods-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests/Pods-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		263EE84D0728C793C6181869 /* Pods_AmplifyAppExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyAppExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		268A7CEAC9F265E3C9594FE5 /* Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		27E795E8B15B579ADCB978F4 /* Pods-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPluginTests/Pods-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		2828E86F90E8C918A55C1696 /* Pods_Amplify_AmplifyAWSPlugins_AWSPluginsCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyAWSPlugins_AWSPluginsCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		28586668BF1BFF6BC803DBEE /* Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		28611CE5D571C1838DA8EDC1 /* Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin/Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		2B3D832985467EBF31C56BC7 /* Pods-AmplifyTestApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyTestApp-AWSDataStoreCategoryPluginIntegrationTests/Pods-AmplifyTestApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
-		2BC291E73D2FFB00D3F51A62 /* Pods-AmplifyAppExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAppExample.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAppExample/Pods-AmplifyAppExample.debug.xcconfig"; sourceTree = "<group>"; };
-		2C7DCEEA645473A2F2E5DD7D /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTests/Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig"; sourceTree = "<group>"; };
-		3544C5721B19BB5697C99763 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPredictionsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPredictionsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPredictionsPluginTests/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPredictionsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		35D92182B8445C8F9B0FAE94 /* Pods_Amplify_AWSPluginsCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		36E795204EA20B3CFFCC506F /* Pods-AmplifyTestCommon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestCommon.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyTestCommon/Pods-AmplifyTestCommon.debug.xcconfig"; sourceTree = "<group>"; };
-		3849521147E79A1C960F0FA7 /* Pods-AmplifyTestApp-CoreMLPredictionsPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestApp-CoreMLPredictionsPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyTestApp-CoreMLPredictionsPluginIntegrationTests/Pods-AmplifyTestApp-CoreMLPredictionsPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
-		3A701A7BDEC4F0F422684E06 /* Pods-AWSS3StoragePluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePluginIntegrationTests/Pods-AWSS3StoragePluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
-		3CD2E9C1907DD49C41F5AF62 /* Pods-AWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests/Pods-AWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		3DC2B7D365B42B3A832601FA /* Pods-AmplifyTestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestApp.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyTestApp/Pods-AmplifyTestApp.debug.xcconfig"; sourceTree = "<group>"; };
-		3FDEE8544633265649C2F425 /* Pods-AmplifyAWSPlugins-AWSPluginsCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore/Pods-AmplifyAWSPlugins-AWSPluginsCore.debug.xcconfig"; sourceTree = "<group>"; };
-		40A966226A014DB2AE173E70 /* Pods-AWSPlugins-AWSAPICategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAPICategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAPICategoryPlugin/Pods-AWSPlugins-AWSAPICategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		4148B4F4A49CCC0F81A06425 /* Pods-AWSS3StoragePluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePluginIntegrationTests/Pods-AWSS3StoragePluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
-		41CE93C1FF019C1C76574E80 /* Pods-AmplifyTestApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyTestApp-AWSDataStoreCategoryPluginIntegrationTests/Pods-AmplifyTestApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
-		420A17B989F28811046A9E53 /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		428D972790F226B59B4FD227 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		42EF6EBD583BCAD0AB218836 /* Pods-AmplifyExampleApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyExampleApp.release.xcconfig"; path = "Target Support Files/Pods-AmplifyExampleApp/Pods-AmplifyExampleApp.release.xcconfig"; sourceTree = "<group>"; };
-		452106DB5FD5ED7691633E12 /* Pods-Amplify-AmplifyTestCommon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestCommon.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestCommon/Pods-Amplify-AmplifyTestCommon.debug.xcconfig"; sourceTree = "<group>"; };
-		486B1E23E6FFC462A82A9345 /* Pods_AmplifyExampleApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyExampleApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		49ED6A10A50CD95420A1652E /* Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		4A107C56FFDCF66870F8D7F6 /* Pods-AWSPlugins-AWSS3StoragePlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSS3StoragePlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSS3StoragePlugin/Pods-AWSPlugins-AWSS3StoragePlugin.release.xcconfig"; sourceTree = "<group>"; };
-		4C5AEAB2A2D90298524BE592 /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig"; sourceTree = "<group>"; };
-		4DCC1382CE9452BE8D34084D /* Pods-AWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-AWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		4EE8540013F84C5E0F8C20D3 /* Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		4F355FC2C0F239E49B01FF0C /* Pods-Amplify-AWSPluginsCore-AWSDataStoreCategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSDataStoreCategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSDataStoreCategoryPlugin/Pods-Amplify-AWSPluginsCore-AWSDataStoreCategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		508B2A7C439EFD0AFD99679E /* Pods-Amplify-AmplifyTestCommon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestCommon.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestCommon/Pods-Amplify-AmplifyTestCommon.release.xcconfig"; sourceTree = "<group>"; };
-		51D11872D41EA9310D1B9D42 /* Pods-AWSPlugins-AWSPinpointAnalyticsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSPinpointAnalyticsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		5217259A0A97B12D4E90E09B /* Pods_AWSPlugins_AWSAuthService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSPlugins_AWSAuthService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5572BBB2A874AEDC7E2E9ABF /* Pods-AmplifyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests.release.xcconfig"; sourceTree = "<group>"; };
-		5711DE48D8DB04B90039E300 /* Pods-AWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-AWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		57531C9A48BA42FA1B628CBF /* Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		58A0C326E8764A774A5E99A1 /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		590F2A08ED60BB9A54788F50 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_CoreMLPredictionsPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_CoreMLPredictionsPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5A112B8C39AC37F0FB71AF54 /* Pods-Amplify.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify.debug.xcconfig"; path = "Target Support Files/Pods-Amplify/Pods-Amplify.debug.xcconfig"; sourceTree = "<group>"; };
-		5AEF4A900CAE6A541D752A6E /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
+		27B4FF5750F7B7A69BE8C7EB /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.release.xcconfig"; sourceTree = "<group>"; };
+		5009041CDAAB46551245D381 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		578572740EB3CA2D58C35F77 /* Pods_AmplifyTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		59EF2A4B56BB7A50508F6F2C /* Pods-AmplifyTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestApp.release.xcconfig"; path = "Target Support Files/Pods-AmplifyTestApp/Pods-AmplifyTestApp.release.xcconfig"; sourceTree = "<group>"; };
 		5C09CCA926CEDE1200CDCA9F /* GeoCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GeoCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		5C09CCAB26CEDE1200CDCA9F /* GeoCategory+CategoryConfigurable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GeoCategory+CategoryConfigurable.swift"; sourceTree = "<group>"; };
 		5C09CCAC26CEDE1200CDCA9F /* GeoCategory+Resettable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GeoCategory+Resettable.swift"; sourceTree = "<group>"; };
@@ -1116,14 +1067,7 @@
 		5C763DA926F2CF66006650E7 /* Geo+Place.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Geo+Place.swift"; sourceTree = "<group>"; };
 		5C763DAB26F2CFC2006650E7 /* Geo+MapStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Geo+MapStyle.swift"; sourceTree = "<group>"; };
 		5C763DAD26F2D00F006650E7 /* Geo+ResultsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Geo+ResultsHandler.swift"; sourceTree = "<group>"; };
-		5FFB62449226244D696DAA73 /* Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin/Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		5FFE6F3EF19A7DA9F6B5024A /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.release.xcconfig"; sourceTree = "<group>"; };
-		61CE693182BF781FBC4D3411 /* Pods-AWSS3StoragePlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePlugin/Pods-AWSS3StoragePlugin.release.xcconfig"; sourceTree = "<group>"; };
-		63D5F7A8E12E88C68E9BB3FA /* Pods_AWSPlugins_AWSAuthService_AWSAuthServiceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSPlugins_AWSAuthService_AWSAuthServiceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		64BD51ED9D8A946DDFEFE8BA /* Pods-Amplify-AmplifyFunctionalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyFunctionalTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyFunctionalTests/Pods-Amplify-AmplifyFunctionalTests.debug.xcconfig"; sourceTree = "<group>"; };
-		65CCD77CBA8619E2E9D41196 /* Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPluginTests/Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		687B09E9348F8D29979A2404 /* Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		6AF0E4775809F0866F9C44D9 /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig"; sourceTree = "<group>"; };
+		614D1E66BBE236DDD4F8E2E0 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6B33896723AAACC900561E5B /* ReachabilityUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityUpdate.swift; sourceTree = "<group>"; };
 		6B452B8125A7D0F600A1A811 /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
 		6B5087BC2565E5AD000AB673 /* QueryPredicateEvaluateGeneratedDoubleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryPredicateEvaluateGeneratedDoubleTests.swift; sourceTree = "<group>"; };
@@ -1154,7 +1098,6 @@
 		6B9F7C532526864800F1F71C /* ScenarioATest6Post+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ScenarioATest6Post+Schema.swift"; sourceTree = "<group>"; };
 		6B9F7C542526864800F1F71C /* ScenarioATest6Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScenarioATest6Post.swift; sourceTree = "<group>"; };
 		6B9F7C572526875A00F1F71C /* GraphQLRequestAuthIdentityClaimTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestAuthIdentityClaimTests.swift; sourceTree = "<group>"; };
-		6BAC32194A15ACB56F07DC87 /* Pods-AWSS3StoragePlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePlugin/Pods-AWSS3StoragePlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		6BAF4F37256893B900A811BA /* QueryPredicateEvaluateGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryPredicateEvaluateGenerator.swift; sourceTree = "<group>"; };
 		6BB7440F23A9954900B0EB6C /* DispatchSource+MakeOneOff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DispatchSource+MakeOneOff.swift"; sourceTree = "<group>"; };
 		6BBECD7023ADA7E100C8DFBE /* AmplifyAWSServiceConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyAWSServiceConfiguration.swift; sourceTree = "<group>"; };
@@ -1178,18 +1121,6 @@
 		6BEE081B2533CCFA00133961 /* OGCScenarioBPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OGCScenarioBPost.swift; sourceTree = "<group>"; };
 		6BEE08222533D30800133961 /* OGCScenarioBMGroupPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OGCScenarioBMGroupPost.swift; sourceTree = "<group>"; };
 		6BEE08232533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OGCScenarioBMGroupPost+Schema.swift"; sourceTree = "<group>"; };
-		6C41D3730B7ED4FD62A43E40 /* Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		6D51240C78418B733FFA6829 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		6D62C9C57736C3BEADEB1E30 /* Pods-AWSPinpointAnalyticsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPlugin/Pods-AWSPinpointAnalyticsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		6ED8ADAEA02A1EA2A9DC45FF /* Pods_AmplifyTestApp_CoreMLPredictionsPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyTestApp_CoreMLPredictionsPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		6F8D367581F19D64597623F9 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-CoreMLPredictionsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-CoreMLPredictionsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-CoreMLPredictionsPluginTests/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-CoreMLPredictionsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		6F9E71B7E7A7829E02450E5E /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		7022880A6C411C38F5B016A3 /* Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin/Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		70BEBEE9EC6164DC2C9F6CFB /* Pods-AWSPinpointAnalyticsPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPluginIntegrationTests/Pods-AWSPinpointAnalyticsPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
-		714614E1FAB6C4EE80C07148 /* Pods-AWSS3StoragePluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		71B6F506E5F3F00B0743A9BF /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig"; sourceTree = "<group>"; };
-		73C2E5FA55C85539AD9E39EE /* Pods_Amplify_AWSPluginsCore_CoreMLPredictionsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_CoreMLPredictionsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		7503342A8C13588E2B0DDBDE /* Pods-AmplifyFunctionalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyFunctionalTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyFunctionalTests/Pods-AmplifyFunctionalTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7608EE13268142F300FEC9CD /* AWSPluginOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSPluginOptions.swift; sourceTree = "<group>"; };
 		762167CB261542F70033FCD2 /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
 		762167D42615435C0033FCD2 /* Record+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Record+Schema.swift"; sourceTree = "<group>"; };
@@ -1205,31 +1136,12 @@
 		76B17DD7264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelSchema+AuthRulesByOperation.swift"; sourceTree = "<group>"; };
 		76C0F4EA26797F3C00F0E6AB /* AuthModeStrategyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModeStrategyTests.swift; sourceTree = "<group>"; };
 		76FFFC90267966D9001EC92B /* RetryableGraphQLOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryableGraphQLOperationTests.swift; sourceTree = "<group>"; };
-		77A2D125114EA0FFA11A7EFD /* Pods-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
-		7A238096BAB328655B5E388F /* Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin/Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		7A7FD9B3CFF63FD16788A990 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		7C3FEC43EAE7679472832809 /* Pods-AmplifyExampleApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyExampleApp.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyExampleApp/Pods-AmplifyExampleApp.debug.xcconfig"; sourceTree = "<group>"; };
-		7C6784D9B812E539494FE86B /* Pods-AmplifyTestApp-AWSPredictionsPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestApp-AWSPredictionsPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyTestApp-AWSPredictionsPluginIntegrationTests/Pods-AmplifyTestApp-AWSPredictionsPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
-		7CE2971718A9CA64EF8D10BE /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.debug.xcconfig"; sourceTree = "<group>"; };
-		7D0D6B9DC4C64E1EA75D21B3 /* Pods-AmplifyTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestApp.release.xcconfig"; path = "Target Support Files/Pods-AmplifyTestApp/Pods-AmplifyTestApp.release.xcconfig"; sourceTree = "<group>"; };
-		7DE8D2BB5CD0D32765907A31 /* Pods-AWSPlugins-AWSAuthService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService/Pods-AWSPlugins-AWSAuthService.release.xcconfig"; sourceTree = "<group>"; };
-		7FC218BC0D378A7C23917420 /* Pods-AWSPlugins-AWSAPICategoryPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAPICategoryPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAPICategoryPlugin/Pods-AWSPlugins-AWSAPICategoryPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		8245CA6A436F89C37F7A3116 /* Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin/Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		854C8E1C5075968A06BBEEBD /* Pods_AmplifyTestApp_AWSDataStoreCategoryPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyTestApp_AWSDataStoreCategoryPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8663196667FA4EF8123BA5F9 /* Pods-Amplify-AWSPluginsCore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore/Pods-Amplify-AWSPluginsCore.release.xcconfig"; sourceTree = "<group>"; };
-		86BCC6EBE7D59DAA5C291612 /* Pods-AmplifyAWSPlugins-AWSS3StoragePlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSS3StoragePlugin.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSS3StoragePlugin/Pods-AmplifyAWSPlugins-AWSS3StoragePlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		87B646CA7E1275886F141E45 /* Pods-AmplifyAWSPlugins-AWSS3StoragePlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSS3StoragePlugin.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSS3StoragePlugin/Pods-AmplifyAWSPlugins-AWSS3StoragePlugin.release.xcconfig"; sourceTree = "<group>"; };
-		8B8B8AC2A12C47722F8743E1 /* Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin/Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		8D7F0EFA5EA2CFBD75059039 /* Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		8DE58872F08B5825C71434DE /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.release.xcconfig"; sourceTree = "<group>"; };
-		8DF37FD4E8315E7842E59789 /* Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin-AWSS3StoragePluginTests/Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		8E5A835C6F073BCBC3203C7A /* Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin/Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		8EE255764A61CAE9609E9BEF /* Pods-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests/Pods-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		8F9F738758795A2F55B445C5 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		907D65D1445983A5B10AED95 /* Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin/Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		934ECFB4BB156267C1BC067A /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		941C4FA7EED42C093243D628 /* Pods-Amplify-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTests/Pods-Amplify-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
+		7A1769ED39B45A981FD1D8AC /* Pods_Amplify.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7AEC36EE65BA1C2777AF7F0E /* Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7B9806D365E82306EE138710 /* Pods-Amplify.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify.debug.xcconfig"; path = "Target Support Files/Pods-Amplify/Pods-Amplify.debug.xcconfig"; sourceTree = "<group>"; };
+		7D502982E80B9B2796D71A48 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig"; sourceTree = "<group>"; };
+		852B5530E9E8794DAC86E44E /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig"; sourceTree = "<group>"; };
+		8E125EAA66C26B6F0705BB0C /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig"; sourceTree = "<group>"; };
 		950A26D823D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsTranslateTextOperation.swift; sourceTree = "<group>"; };
 		950A26D923D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsTextToSpeechOperation.swift; sourceTree = "<group>"; };
 		950A26DA23D15D7E00D92B19 /* PredictionsSpeechToTextOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsSpeechToTextOperation.swift; sourceTree = "<group>"; };
@@ -1305,7 +1217,6 @@
 		976D4D5024DC8A370083F5AC /* GestureRecognizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureRecognizerTests.swift; sourceTree = "<group>"; };
 		976D4D5224DC90610083F5AC /* PersistentLogWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentLogWrapperTests.swift; sourceTree = "<group>"; };
 		976D4D5424DCA3F80083F5AC /* PersistentLoggingPluginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentLoggingPluginTests.swift; sourceTree = "<group>"; };
-		976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		977007E224C1585100848468 /* LogEntryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEntryItem.swift; sourceTree = "<group>"; };
 		97943A06265B7A5F0097DBBA /* GraphQLRequestSyncCustomPrimaryKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestSyncCustomPrimaryKeyTests.swift; sourceTree = "<group>"; };
 		97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentLoggingPlugin.swift; sourceTree = "<group>"; };
@@ -1319,17 +1230,7 @@
 		97DC3D4F24C1FCEE00D79E24 /* LogEntryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEntryRow.swift; sourceTree = "<group>"; };
 		97DC3D5124C1FE4100D79E24 /* LogViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewer.swift; sourceTree = "<group>"; };
 		97DC3D5324C200A600D79E24 /* LogEntryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEntryHelper.swift; sourceTree = "<group>"; };
-		9883B94C1A1C9D551AC012AE /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSDataStoreCategoryPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSDataStoreCategoryPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		99CFDB8E55EADE7A74938E6C /* Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		9AC75D55C68207254CB859A9 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPredictionsPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPredictionsPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9BA7EF90A3772FDEF0F82F46 /* Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		9D9F0724CC2944C9FE67304A /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.debug.xcconfig"; sourceTree = "<group>"; };
-		9ED013FD8A569C8E3D67506B /* Pods_Amplify_AWSPluginsCore_AWSDataStoreCategoryPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSDataStoreCategoryPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A52F652BA6B16F5BD47939CF /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.release.xcconfig"; sourceTree = "<group>"; };
-		A5E5DED2AB6A8EE16DCFAFF8 /* Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		AB74666B4E8B096CB3305EAE /* Pods-AmplifyAppExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAppExample.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAppExample/Pods-AmplifyAppExample.release.xcconfig"; sourceTree = "<group>"; };
-		AE1BE989582A3F5BB378AF15 /* Pods-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPlugin/Pods-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		B2CF34EB93BFDE1F02457D5E /* Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
+		AF4FA69A23AEB42CF7BB8336 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTests/Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B4251A0024250369007F59EF /* AuthConfirmResetPasswordRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmResetPasswordRequest.swift; sourceTree = "<group>"; };
 		B4251A04242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmResetPasswordOperation.swift; sourceTree = "<group>"; };
 		B4251A062425047D007F59EF /* AuthChangePasswordRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthChangePasswordRequest.swift; sourceTree = "<group>"; };
@@ -1426,10 +1327,6 @@
 		B4FA76062416E82B006F59CE /* AuthFetchSessionRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFetchSessionRequest.swift; sourceTree = "<group>"; };
 		B4FEA92024635BFB0009B47B /* AuthCategoryDeviceBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCategoryDeviceBehavior.swift; sourceTree = "<group>"; };
 		B4FEA92224635CA40009B47B /* AuthCategory+DeviceBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthCategory+DeviceBehavior.swift"; sourceTree = "<group>"; };
-		B671BDC60D796AB1C118F365 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig"; sourceTree = "<group>"; };
-		B6F4EFBF6DBF29A324CC0A27 /* Pods-AWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		B7871B77B520892E343E9F0A /* Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin/Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		B868B395CBEDBAE5565C25D5 /* Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B912D1B5242960D40028F05C /* QueryPaginationInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryPaginationInput.swift; sourceTree = "<group>"; };
 		B91A879B23D125A50049A12F /* DateTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTime.swift; sourceTree = "<group>"; };
 		B91A879D23D12B730049A12F /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
@@ -1465,7 +1362,6 @@
 		B9521830237E21B900F53237 /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		B9521831237E21B900F53237 /* Post+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post+Schema.swift"; sourceTree = "<group>"; };
 		B9521832237E21B900F53237 /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
-		B98A93BFFD5E72827BDCC750 /* Pods_AmplifyTestApp_AWSPredictionsPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyTestApp_AWSPredictionsPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B98E9D062372236200934B51 /* ModelKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelKey.swift; sourceTree = "<group>"; };
 		B98E9D072372236200934B51 /* QueryOperator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryOperator.swift; sourceTree = "<group>"; };
 		B98E9D082372236200934B51 /* QueryPredicate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryPredicate.swift; sourceTree = "<group>"; };
@@ -1507,46 +1403,16 @@
 		B9FAA174238EFC59009414B4 /* String+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		B9FAA17F238FBB5D009414B4 /* Model+Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+Array.swift"; sourceTree = "<group>"; };
 		B9FB05F72383740D00DE1FD4 /* DataStoreStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreStatement.swift; sourceTree = "<group>"; };
-		BAFD88194E245D6B82399825 /* Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		BB548811E9281F8547D83681 /* Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		BCF5BF94BA714000C1C44713 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore.debug.xcconfig"; sourceTree = "<group>"; };
-		BDD362469B9E22FC083FE7E6 /* Pods-AWSPinpointAnalyticsPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPluginIntegrationTests/Pods-AWSPinpointAnalyticsPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
-		BF5EBE1C799376B9AEB109A0 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore.release.xcconfig"; sourceTree = "<group>"; };
-		C0B511C8A95808A43B4D835A /* Pods-AmplifyFunctionalTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyFunctionalTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyFunctionalTests/Pods-AmplifyFunctionalTests.release.xcconfig"; sourceTree = "<group>"; };
-		C1442E62F2DE66706DC83419 /* Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		C448F4F6DD01A268675E1C68 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C47D2C6EE9D4659ECC201E0C /* Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin/Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		C6603353B66E0CA1B7DA9549 /* Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests/Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests.release.xcconfig"; sourceTree = "<group>"; };
-		C7FF8ED8D1C35C1AAF146C24 /* Pods-AmplifyTestApp-AWSPredictionsPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestApp-AWSPredictionsPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyTestApp-AWSPredictionsPluginIntegrationTests/Pods-AmplifyTestApp-AWSPredictionsPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
-		C823AF111EEDFFEBC82936FE /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		C8CDC2C2141DE57CDAD5976B /* Pods-AWSPlugins-AWSS3StoragePlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSS3StoragePlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSS3StoragePlugin/Pods-AWSPlugins-AWSS3StoragePlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		C92F36DDB48E42EC3E1DB43C /* Pods_Amplify_AWSPluginsCore_AWSPredictionsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPredictionsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CDA13A23FBBBBB64D8FCA8C1 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		CDC7F1C368154B364CB74742 /* Pods_AmplifyTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CE59D98B4D60E273F4FAF2FB /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		D0BBEF4305CBF73E587E709B /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		D2A0246D3621B503C915A5D1 /* Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		D5363CAF9EFAA822FED56808 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D5521D5FA66340943C39C451 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
+		C1234630A0E88F1E681D4302 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4D30E30A8210AC1B2F74F4C /* Pods-Amplify.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify.release.xcconfig"; path = "Target Support Files/Pods-Amplify/Pods-Amplify.release.xcconfig"; sourceTree = "<group>"; };
+		D7F68696805B8C5835897413 /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D83C515F248964780091548E /* ModelGraphQLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelGraphQLTests.swift; sourceTree = "<group>"; };
 		D8DD7A1C24A1CCCD001C49FD /* QuerySortInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuerySortInput.swift; sourceTree = "<group>"; };
-		DD2486414D63230FF39130C7 /* Pods-Amplify-AWSPluginsCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore/Pods-Amplify-AWSPluginsCore.debug.xcconfig"; sourceTree = "<group>"; };
-		DEEB82A328223C60557B75C1 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		E1306F31E45EE7C6B6048F89 /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		E163CCBB8EB65FC80602EC2B /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		E259110B7AC20BBA34B49FBB /* Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		E525BACD638CA2C070983756 /* Pods-AmplifyTestCommon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestCommon.release.xcconfig"; path = "Target Support Files/Pods-AmplifyTestCommon/Pods-AmplifyTestCommon.release.xcconfig"; sourceTree = "<group>"; };
-		E5ACA3446D45A4622167122C /* Pods-Amplify.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify.release.xcconfig"; path = "Target Support Files/Pods-Amplify/Pods-Amplify.release.xcconfig"; sourceTree = "<group>"; };
-		E60A7D29526222C07780A03B /* Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		E684599DABE1C5FF50C7FC66 /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		EA022680CE55C67801F3EB9B /* Pods-Amplify-AmplifyFunctionalTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyFunctionalTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyFunctionalTests/Pods-Amplify-AmplifyFunctionalTests.release.xcconfig"; sourceTree = "<group>"; };
-		EB8D4C04395F71F6806E4609 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		ECE7971DFBA3CD58DFAF5D7A /* Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		EF6FDEE067E1B4DE95448A54 /* Pods-AmplifyTestApp-CoreMLPredictionsPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestApp-CoreMLPredictionsPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyTestApp-CoreMLPredictionsPluginIntegrationTests/Pods-AmplifyTestApp-CoreMLPredictionsPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
-		F2DDFB959501735121A13925 /* Pods-AWSS3StoragePluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		F5014B80CBDA10DF841239AC /* Pods-AWSPlugins-AWSAuthService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService/Pods-AWSPlugins-AWSAuthService.debug.xcconfig"; sourceTree = "<group>"; };
-		F7454B40E5C7C39F6C119E6A /* Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin/Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		F9667716F7B167C1C2DFD881 /* Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests/Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests.debug.xcconfig"; sourceTree = "<group>"; };
+		D8E97116B6F802BA10E02A92 /* Pods-AmplifyTestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestApp.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyTestApp/Pods-AmplifyTestApp.debug.xcconfig"; sourceTree = "<group>"; };
+		DA3BDDD92B2ECE8EECC6E0AA /* Pods_Amplify_AWSPluginsCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9791D4B5420256E0866B708 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F782B97D62DBD8A0597E5AA9 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.release.xcconfig"; sourceTree = "<group>"; };
+		F8459E074A4A470F48829BEE /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.debug.xcconfig"; sourceTree = "<group>"; };
 		FA00F68724DA37EE003E8A71 /* AuthCategoryBehavior+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthCategoryBehavior+Combine.swift"; sourceTree = "<group>"; };
 		FA00F68924DA3A43003E8A71 /* AuthCategoryDeviceBehavior+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthCategoryDeviceBehavior+Combine.swift"; sourceTree = "<group>"; };
 		FA00F68B24DA3A8F003E8A71 /* AuthCategoryUserBehavior+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthCategoryUserBehavior+Combine.swift"; sourceTree = "<group>"; };
@@ -1772,18 +1638,13 @@
 		FADB3A6723612940006D6FE9 /* BasicClosure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicClosure.swift; sourceTree = "<group>"; };
 		FAE4145E23999BC900CE94C2 /* Result+Void.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Void.swift"; sourceTree = "<group>"; };
 		FAE414602399A6A500CE94C2 /* ModelRegistryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelRegistryTests.swift; sourceTree = "<group>"; };
+		FAE4710DB0051BDB010053AA /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAEF831F24CF24300068912D /* DataStoreCategory+Behavior+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataStoreCategory+Behavior+Combine.swift"; sourceTree = "<group>"; };
 		FAF1B88323392F7C007F1435 /* ConcurrentDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentDispatcher.swift; sourceTree = "<group>"; };
 		FAF1B88523392F96007F1435 /* SerialDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialDispatcher.swift; sourceTree = "<group>"; };
 		FAF1B8872339633C007F1435 /* ConcurrentDispatcherPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentDispatcherPerformanceTests.swift; sourceTree = "<group>"; };
 		FAF1B88A23397791007F1435 /* DefaultHubPluginPerformanceTestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHubPluginPerformanceTestHelpers.swift; sourceTree = "<group>"; };
 		FAF512AD23986791001ADF4E /* AmplifyModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyModels.swift; sourceTree = "<group>"; };
-		FB27CE76D3C7526F86D611E4 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		FE19AE082A70778C6F19B605 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-CoreMLPredictionsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-CoreMLPredictionsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-CoreMLPredictionsPluginTests/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-CoreMLPredictionsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		FE200974D381DEE6E0C3EFC3 /* Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		FE5132F92E4FA0BACED37BB7 /* Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		FE61CF08E3C349D59DB07D1E /* Pods-AmplifyAWSPlugins-AWSPluginsCore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore/Pods-AmplifyAWSPlugins-AWSPluginsCore.release.xcconfig"; sourceTree = "<group>"; };
-		FE85145BD46099A7B0C670D8 /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1792,8 +1653,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				FACA360B2327FBD4000E74F6 /* AmplifyTestCommon.framework in Frameworks */,
-				3263D332138415AF42E64FF7 /* Pods_AmplifyTestApp.framework in Frameworks */,
 				FA131ABF2360FE070008381C /* AWSPluginsCore.framework in Frameworks */,
+				BBAF02CB202B4249563C52FF /* Pods_AmplifyTestApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1801,7 +1662,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				881246F5DCC59436DC932469 /* Pods_Amplify_AWSPluginsCore.framework in Frameworks */,
+				F891F54DC16A956D8DE9C1B5 /* Pods_Amplify_AWSPluginsCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1810,7 +1671,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA131AB32360FE070008381C /* AWSPluginsCore.framework in Frameworks */,
-				972D1CA72316922ECE530571 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework in Frameworks */,
+				36039812C19DFAEF666C5C63 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1818,7 +1679,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CFB61C7E80D065C0A885A2F /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework in Frameworks */,
+				376F5077123FA6732A404280 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1826,7 +1687,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */,
+				8484A17AAAFE78545A932849 /* Pods_Amplify.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1835,7 +1696,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FAC234DC2279F8DA00424678 /* Amplify.framework in Frameworks */,
-				7F27B1DCE59C1E674172CCD6 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework in Frameworks */,
+				A5BD5B125AE6AAD604092274 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1844,7 +1705,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FACA35F72327FB14000E74F6 /* Amplify.framework in Frameworks */,
-				B8E8D759314BE9D6BD462E87 /* Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework in Frameworks */,
+				DB46924D8467766E9D0C3A2E /* Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1852,7 +1713,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2861F5F799C24671B5C4DB8D /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework in Frameworks */,
+				061FD5B1AF28D70F20D52407 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2337,148 +2198,22 @@
 		3687F9047D3AA33BCC710C97 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				64BD51ED9D8A946DDFEFE8BA /* Pods-Amplify-AmplifyFunctionalTests.debug.xcconfig */,
-				EA022680CE55C67801F3EB9B /* Pods-Amplify-AmplifyFunctionalTests.release.xcconfig */,
-				452106DB5FD5ED7691633E12 /* Pods-Amplify-AmplifyTestCommon.debug.xcconfig */,
-				508B2A7C439EFD0AFD99679E /* Pods-Amplify-AmplifyTestCommon.release.xcconfig */,
-				7CE2971718A9CA64EF8D10BE /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.debug.xcconfig */,
-				4C5AEAB2A2D90298524BE592 /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig */,
-				9D9F0724CC2944C9FE67304A /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.debug.xcconfig */,
-				B671BDC60D796AB1C118F365 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig */,
-				1AEE54C5DD1856A3C9251736 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig */,
-				2C7DCEEA645473A2F2E5DD7D /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig */,
-				941C4FA7EED42C093243D628 /* Pods-Amplify-AmplifyTests.debug.xcconfig */,
-				1D3F4AB441751E78E4C1D482 /* Pods-Amplify-AmplifyTests.release.xcconfig */,
-				5A112B8C39AC37F0FB71AF54 /* Pods-Amplify.debug.xcconfig */,
-				E5ACA3446D45A4622167122C /* Pods-Amplify.release.xcconfig */,
-				2BC291E73D2FFB00D3F51A62 /* Pods-AmplifyAppExample.debug.xcconfig */,
-				AB74666B4E8B096CB3305EAE /* Pods-AmplifyAppExample.release.xcconfig */,
-				7C3FEC43EAE7679472832809 /* Pods-AmplifyExampleApp.debug.xcconfig */,
-				42EF6EBD583BCAD0AB218836 /* Pods-AmplifyExampleApp.release.xcconfig */,
-				7503342A8C13588E2B0DDBDE /* Pods-AmplifyFunctionalTests.debug.xcconfig */,
-				C0B511C8A95808A43B4D835A /* Pods-AmplifyFunctionalTests.release.xcconfig */,
-				3DC2B7D365B42B3A832601FA /* Pods-AmplifyTestApp.debug.xcconfig */,
-				7D0D6B9DC4C64E1EA75D21B3 /* Pods-AmplifyTestApp.release.xcconfig */,
-				36E795204EA20B3CFFCC506F /* Pods-AmplifyTestCommon.debug.xcconfig */,
-				E525BACD638CA2C070983756 /* Pods-AmplifyTestCommon.release.xcconfig */,
-				77A2D125114EA0FFA11A7EFD /* Pods-AmplifyTests.debug.xcconfig */,
-				5572BBB2A874AEDC7E2E9ABF /* Pods-AmplifyTests.release.xcconfig */,
-				6D62C9C57736C3BEADEB1E30 /* Pods-AWSPinpointAnalyticsPlugin.debug.xcconfig */,
-				AE1BE989582A3F5BB378AF15 /* Pods-AWSPinpointAnalyticsPlugin.release.xcconfig */,
-				BDD362469B9E22FC083FE7E6 /* Pods-AWSPinpointAnalyticsPluginIntegrationTests.debug.xcconfig */,
-				70BEBEE9EC6164DC2C9F6CFB /* Pods-AWSPinpointAnalyticsPluginIntegrationTests.release.xcconfig */,
-				65CCD77CBA8619E2E9D41196 /* Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig */,
-				27E795E8B15B579ADCB978F4 /* Pods-AWSPinpointAnalyticsPluginTests.release.xcconfig */,
-				4DCC1382CE9452BE8D34084D /* Pods-AWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */,
-				5711DE48D8DB04B90039E300 /* Pods-AWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig */,
-				40A966226A014DB2AE173E70 /* Pods-AWSPlugins-AWSAPICategoryPlugin.debug.xcconfig */,
-				7FC218BC0D378A7C23917420 /* Pods-AWSPlugins-AWSAPICategoryPlugin.release.xcconfig */,
-				F9667716F7B167C1C2DFD881 /* Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests.debug.xcconfig */,
-				C6603353B66E0CA1B7DA9549 /* Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests.release.xcconfig */,
-				F5014B80CBDA10DF841239AC /* Pods-AWSPlugins-AWSAuthService.debug.xcconfig */,
-				7DE8D2BB5CD0D32765907A31 /* Pods-AWSPlugins-AWSAuthService.release.xcconfig */,
-				268A7CEAC9F265E3C9594FE5 /* Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig */,
-				B2CF34EB93BFDE1F02457D5E /* Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */,
-				51D11872D41EA9310D1B9D42 /* Pods-AWSPlugins-AWSPinpointAnalyticsPlugin.debug.xcconfig */,
-				B6F4EFBF6DBF29A324CC0A27 /* Pods-AWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig */,
-				1D74984AC23B0E746D9C2A5C /* Pods-AWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig */,
-				3CD2E9C1907DD49C41F5AF62 /* Pods-AWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig */,
-				C8CDC2C2141DE57CDAD5976B /* Pods-AWSPlugins-AWSS3StoragePlugin.debug.xcconfig */,
-				4A107C56FFDCF66870F8D7F6 /* Pods-AWSPlugins-AWSS3StoragePlugin.release.xcconfig */,
-				6BAC32194A15ACB56F07DC87 /* Pods-AWSS3StoragePlugin.debug.xcconfig */,
-				61CE693182BF781FBC4D3411 /* Pods-AWSS3StoragePlugin.release.xcconfig */,
-				3A701A7BDEC4F0F422684E06 /* Pods-AWSS3StoragePluginIntegrationTests.debug.xcconfig */,
-				4148B4F4A49CCC0F81A06425 /* Pods-AWSS3StoragePluginIntegrationTests.release.xcconfig */,
-				714614E1FAB6C4EE80C07148 /* Pods-AWSS3StoragePluginTests.debug.xcconfig */,
-				F2DDFB959501735121A13925 /* Pods-AWSS3StoragePluginTests.release.xcconfig */,
-				99CFDB8E55EADE7A74938E6C /* Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.debug.xcconfig */,
-				D2A0246D3621B503C915A5D1 /* Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.release.xcconfig */,
-				A5E5DED2AB6A8EE16DCFAFF8 /* Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */,
-				1C6DDB91072543DBE60E1140 /* Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig */,
-				1C23249CCA99AACFE0A2E5D9 /* Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin.debug.xcconfig */,
-				907D65D1445983A5B10AED95 /* Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin.release.xcconfig */,
-				4EE8540013F84C5E0F8C20D3 /* Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig */,
-				8D7F0EFA5EA2CFBD75059039 /* Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */,
-				28611CE5D571C1838DA8EDC1 /* Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin.debug.xcconfig */,
-				1D47F178B0FEC9059BC72C3B /* Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin.release.xcconfig */,
-				8DF37FD4E8315E7842E59789 /* Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig */,
-				008BFFD1C24CCA788C88CF4C /* Pods-AWSPlugins-AWSAuthService-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig */,
-				8B8B8AC2A12C47722F8743E1 /* Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin.debug.xcconfig */,
-				8E5A835C6F073BCBC3203C7A /* Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin.release.xcconfig */,
-				C1442E62F2DE66706DC83419 /* Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */,
-				ECE7971DFBA3CD58DFAF5D7A /* Pods-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig */,
-				E60A7D29526222C07780A03B /* Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin.debug.xcconfig */,
-				28586668BF1BFF6BC803DBEE /* Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig */,
-				57531C9A48BA42FA1B628CBF /* Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig */,
-				BB548811E9281F8547D83681 /* Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */,
-				86BCC6EBE7D59DAA5C291612 /* Pods-AmplifyAWSPlugins-AWSS3StoragePlugin.debug.xcconfig */,
-				87B646CA7E1275886F141E45 /* Pods-AmplifyAWSPlugins-AWSS3StoragePlugin.release.xcconfig */,
-				259CBD765D3CF26D41A04914 /* Pods-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig */,
-				8EE255764A61CAE9609E9BEF /* Pods-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig */,
-				3FDEE8544633265649C2F425 /* Pods-AmplifyAWSPlugins-AWSPluginsCore.debug.xcconfig */,
-				FE61CF08E3C349D59DB07D1E /* Pods-AmplifyAWSPlugins-AWSPluginsCore.release.xcconfig */,
-				58A0C326E8764A774A5E99A1 /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig */,
-				E684599DABE1C5FF50C7FC66 /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.release.xcconfig */,
-				6F9E71B7E7A7829E02450E5E /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */,
-				E163CCBB8EB65FC80602EC2B /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig */,
-				FE85145BD46099A7B0C670D8 /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.debug.xcconfig */,
-				215F4BCAAB89FA54AA121BDE /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig */,
-				420A17B989F28811046A9E53 /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig */,
-				CE59D98B4D60E273F4FAF2FB /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */,
-				C823AF111EEDFFEBC82936FE /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.debug.xcconfig */,
-				8DE58872F08B5825C71434DE /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.release.xcconfig */,
-				6AF0E4775809F0866F9C44D9 /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig */,
-				E1306F31E45EE7C6B6048F89 /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig */,
-				BCF5BF94BA714000C1C44713 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore.debug.xcconfig */,
-				BF5EBE1C799376B9AEB109A0 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore.release.xcconfig */,
-				D5521D5FA66340943C39C451 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.debug.xcconfig */,
-				8F9F738758795A2F55B445C5 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin.release.xcconfig */,
-				D0BBEF4305CBF73E587E709B /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */,
-				04764F685DBE17F7CEC92A62 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig */,
-				5AEF4A900CAE6A541D752A6E /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.debug.xcconfig */,
-				DEEB82A328223C60557B75C1 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig */,
-				031438953280EA4A537D2817 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig */,
-				7A7FD9B3CFF63FD16788A990 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */,
-				FB27CE76D3C7526F86D611E4 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.debug.xcconfig */,
-				5FFE6F3EF19A7DA9F6B5024A /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.release.xcconfig */,
-				CDA13A23FBBBBB64D8FCA8C1 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig */,
-				428D972790F226B59B4FD227 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig */,
-				8245CA6A436F89C37F7A3116 /* Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin.debug.xcconfig */,
-				F7454B40E5C7C39F6C119E6A /* Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin.release.xcconfig */,
-				6C41D3730B7ED4FD62A43E40 /* Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */,
-				FE200974D381DEE6E0C3EFC3 /* Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig */,
-				FE5132F92E4FA0BACED37BB7 /* Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin.debug.xcconfig */,
-				9BA7EF90A3772FDEF0F82F46 /* Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig */,
-				687B09E9348F8D29979A2404 /* Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig */,
-				BAFD88194E245D6B82399825 /* Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */,
-				C47D2C6EE9D4659ECC201E0C /* Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin.debug.xcconfig */,
-				082C9C1A32F62C25D01A1AB2 /* Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin.release.xcconfig */,
-				E259110B7AC20BBA34B49FBB /* Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig */,
-				49ED6A10A50CD95420A1652E /* Pods-Amplify-AmplifyAWSPlugins-AWSS3StoragePlugin-AWSS3StoragePluginTests.release.xcconfig */,
-				DD2486414D63230FF39130C7 /* Pods-Amplify-AWSPluginsCore.debug.xcconfig */,
-				8663196667FA4EF8123BA5F9 /* Pods-Amplify-AWSPluginsCore.release.xcconfig */,
-				4F355FC2C0F239E49B01FF0C /* Pods-Amplify-AWSPluginsCore-AWSDataStoreCategoryPlugin.debug.xcconfig */,
-				2592CB41D8BEE8051CAD8841 /* Pods-Amplify-AWSPluginsCore-AWSDataStoreCategoryPlugin.release.xcconfig */,
-				6D51240C78418B733FFA6829 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.debug.xcconfig */,
-				EB8D4C04395F71F6806E4609 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.release.xcconfig */,
-				41CE93C1FF019C1C76574E80 /* Pods-AmplifyTestApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig */,
-				2B3D832985467EBF31C56BC7 /* Pods-AmplifyTestApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig */,
-				5FFB62449226244D696DAA73 /* Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin.debug.xcconfig */,
-				7022880A6C411C38F5B016A3 /* Pods-Amplify-AWSPluginsCore-AWSPredictionsPlugin.release.xcconfig */,
-				7A238096BAB328655B5E388F /* Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.debug.xcconfig */,
-				B7871B77B520892E343E9F0A /* Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.release.xcconfig */,
-				3544C5721B19BB5697C99763 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPredictionsPluginTests.debug.xcconfig */,
-				1C4F08891CECABC699AB133D /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPredictionsPluginTests.release.xcconfig */,
-				6F8D367581F19D64597623F9 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-CoreMLPredictionsPluginTests.debug.xcconfig */,
-				FE19AE082A70778C6F19B605 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-CoreMLPredictionsPluginTests.release.xcconfig */,
-				C7FF8ED8D1C35C1AAF146C24 /* Pods-AmplifyTestApp-AWSPredictionsPluginIntegrationTests.debug.xcconfig */,
-				7C6784D9B812E539494FE86B /* Pods-AmplifyTestApp-AWSPredictionsPluginIntegrationTests.release.xcconfig */,
-				EF6FDEE067E1B4DE95448A54 /* Pods-AmplifyTestApp-CoreMLPredictionsPluginIntegrationTests.debug.xcconfig */,
-				3849521147E79A1C960F0FA7 /* Pods-AmplifyTestApp-CoreMLPredictionsPluginIntegrationTests.release.xcconfig */,
-				1466763FF4DA7F67EC5092AA /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.debug.xcconfig */,
-				A52F652BA6B16F5BD47939CF /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.release.xcconfig */,
-				71B6F506E5F3F00B0743A9BF /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig */,
-				0B4A80CD25A9E5E6A518A314 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.release.xcconfig */,
+				7B9806D365E82306EE138710 /* Pods-Amplify.debug.xcconfig */,
+				D4D30E30A8210AC1B2F74F4C /* Pods-Amplify.release.xcconfig */,
+				1FA86170C161C5E46E57A5F9 /* Pods-Amplify-AWSPluginsCore.debug.xcconfig */,
+				09D90ABD9EDED6D6B1780253 /* Pods-Amplify-AWSPluginsCore.release.xcconfig */,
+				614D1E66BBE236DDD4F8E2E0 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.debug.xcconfig */,
+				27B4FF5750F7B7A69BE8C7EB /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.release.xcconfig */,
+				7D502982E80B9B2796D71A48 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig */,
+				F782B97D62DBD8A0597E5AA9 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.release.xcconfig */,
+				D7F68696805B8C5835897413 /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.debug.xcconfig */,
+				8E125EAA66C26B6F0705BB0C /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig */,
+				F8459E074A4A470F48829BEE /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.debug.xcconfig */,
+				852B5530E9E8794DAC86E44E /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig */,
+				AF4FA69A23AEB42CF7BB8336 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig */,
+				0671E539A66859A57E071091 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig */,
+				D8E97116B6F802BA10E02A92 /* Pods-AmplifyTestApp.debug.xcconfig */,
+				59EF2A4B56BB7A50508F6F2C /* Pods-AmplifyTestApp.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -3225,28 +2960,14 @@
 			children = (
 				FA2492462391A3BF0004B379 /* XCTest.framework */,
 				FAB2C9DD2384E034008EE879 /* Starscream.framework */,
-				84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */,
-				263EE84D0728C793C6181869 /* Pods_AmplifyAppExample.framework */,
-				486B1E23E6FFC462A82A9345 /* Pods_AmplifyExampleApp.framework */,
-				CDC7F1C368154B364CB74742 /* Pods_AmplifyTestApp.framework */,
-				B868B395CBEDBAE5565C25D5 /* Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework */,
-				C448F4F6DD01A268675E1C68 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework */,
-				976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */,
-				5217259A0A97B12D4E90E09B /* Pods_AWSPlugins_AWSAuthService.framework */,
-				63D5F7A8E12E88C68E9BB3FA /* Pods_AWSPlugins_AWSAuthService_AWSAuthServiceTests.framework */,
-				2828E86F90E8C918A55C1696 /* Pods_Amplify_AmplifyAWSPlugins_AWSPluginsCore.framework */,
-				35D92182B8445C8F9B0FAE94 /* Pods_Amplify_AWSPluginsCore.framework */,
-				9ED013FD8A569C8E3D67506B /* Pods_Amplify_AWSPluginsCore_AWSDataStoreCategoryPlugin.framework */,
-				9883B94C1A1C9D551AC012AE /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSDataStoreCategoryPluginTests.framework */,
-				854C8E1C5075968A06BBEEBD /* Pods_AmplifyTestApp_AWSDataStoreCategoryPluginIntegrationTests.framework */,
-				C92F36DDB48E42EC3E1DB43C /* Pods_Amplify_AWSPluginsCore_AWSPredictionsPlugin.framework */,
-				73C2E5FA55C85539AD9E39EE /* Pods_Amplify_AWSPluginsCore_CoreMLPredictionsPlugin.framework */,
-				9AC75D55C68207254CB859A9 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPredictionsPluginTests.framework */,
-				590F2A08ED60BB9A54788F50 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_CoreMLPredictionsPluginTests.framework */,
-				B98A93BFFD5E72827BDCC750 /* Pods_AmplifyTestApp_AWSPredictionsPluginIntegrationTests.framework */,
-				6ED8ADAEA02A1EA2A9DC45FF /* Pods_AmplifyTestApp_CoreMLPredictionsPluginIntegrationTests.framework */,
-				934ECFB4BB156267C1BC067A /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework */,
-				D5363CAF9EFAA822FED56808 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */,
+				7A1769ED39B45A981FD1D8AC /* Pods_Amplify.framework */,
+				DA3BDDD92B2ECE8EECC6E0AA /* Pods_Amplify_AWSPluginsCore.framework */,
+				C1234630A0E88F1E681D4302 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework */,
+				E9791D4B5420256E0866B708 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */,
+				7AEC36EE65BA1C2777AF7F0E /* Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework */,
+				FAE4710DB0051BDB010053AA /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework */,
+				5009041CDAAB46551245D381 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */,
+				578572740EB3CA2D58C35F77 /* Pods_AmplifyTestApp.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -4067,12 +3788,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2125E2602319EC3200B3DEB5 /* Build configuration list for PBXNativeTarget "AmplifyTestApp" */;
 			buildPhases = (
-				147B8F635A2C239DA64255BC /* [CP] Check Pods Manifest.lock */,
+				34065D08A7793C37E90D6B15 /* [CP] Check Pods Manifest.lock */,
 				2125E24D2319EC3000B3DEB5 /* Sources */,
 				2125E24E2319EC3000B3DEB5 /* Frameworks */,
 				2125E24F2319EC3000B3DEB5 /* Resources */,
-				360F766AA21C261B2891BADD /* [CP] Embed Pods Frameworks */,
 				FACA36102327FBD4000E74F6 /* Embed Frameworks */,
+				C7E6E8623192F0B0ADD3EE25 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -4088,7 +3809,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FA131AC12360FE070008381C /* Build configuration list for PBXNativeTarget "AWSPluginsCore" */;
 			buildPhases = (
-				2F8DAE72BD3C0F67BA5CAD60 /* [CP] Check Pods Manifest.lock */,
+				EC25FA14E52589E097F322FC /* [CP] Check Pods Manifest.lock */,
 				FA131AA52360FE070008381C /* Headers */,
 				FA131AA62360FE070008381C /* Sources */,
 				FA131AD12360FF310008381C /* SwiftFormat */,
@@ -4110,13 +3831,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FA131AC42360FE070008381C /* Build configuration list for PBXNativeTarget "AWSPluginsCoreTests" */;
 			buildPhases = (
-				7D4CF667DD4C9B57983C0ED0 /* [CP] Check Pods Manifest.lock */,
+				CEE4737ED88429CF48595A4F /* [CP] Check Pods Manifest.lock */,
 				FA131AAE2360FE070008381C /* Sources */,
 				FA131ACF2360FED30008381C /* SwiftFormat */,
 				FA131AD02360FEF20008381C /* SwiftLint */,
 				FA131AAF2360FE070008381C /* Frameworks */,
 				FA131AB02360FE070008381C /* Resources */,
-				3CCCB184AF53E34B4DDA73B4 /* [CP] Embed Pods Frameworks */,
+				26B35382D756F1A8BCB4CD44 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -4133,7 +3854,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FAB2C9A12384B108008EE879 /* Build configuration list for PBXNativeTarget "AWSPluginsTestCommon" */;
 			buildPhases = (
-				1738E575674762DA4F3DA08A /* [CP] Check Pods Manifest.lock */,
+				4AF13E91A720CBFBF0FEDE47 /* [CP] Check Pods Manifest.lock */,
 				FAB2C9952384B108008EE879 /* Headers */,
 				FAB2C9962384B108008EE879 /* Sources */,
 				FAB2C9A22384B11B008EE879 /* SwiftFormat */,
@@ -4154,7 +3875,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FAC234E62279F8DA00424678 /* Build configuration list for PBXNativeTarget "Amplify" */;
 			buildPhases = (
-				5F9B8F5FB2FC02D2CEA5EFD6 /* [CP] Check Pods Manifest.lock */,
+				EE8870F55F60C5382050F244 /* [CP] Check Pods Manifest.lock */,
 				FAC234CD2279F8DA00424678 /* Headers */,
 				FAC234CE2279F8DA00424678 /* Sources */,
 				FAF8AC86233AB5CF009FBF97 /* SwiftFormat */,
@@ -4175,13 +3896,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FAC234E92279F8DA00424678 /* Build configuration list for PBXNativeTarget "AmplifyTests" */;
 			buildPhases = (
-				A4E096288FFA1CCB41E64D9F /* [CP] Check Pods Manifest.lock */,
+				9236828DB79113CD71C02139 /* [CP] Check Pods Manifest.lock */,
 				FAC234D72279F8DA00424678 /* Sources */,
 				21578BF1234D459B00FF0F03 /* SwiftFormat */,
 				21578BEE234D433800FF0F03 /* SwiftLint */,
 				FAC234D82279F8DA00424678 /* Frameworks */,
 				FAC234D92279F8DA00424678 /* Resources */,
-				9D7A6AE98E5582ADB1124CD3 /* [CP] Embed Pods Frameworks */,
+				8F456176785A5E7366F20D70 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -4198,13 +3919,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FACA35FA2327FB14000E74F6 /* Build configuration list for PBXNativeTarget "AmplifyFunctionalTests" */;
 			buildPhases = (
-				5EBB35ADE01DB9AE7CEB06C3 /* [CP] Check Pods Manifest.lock */,
+				4019D862A0A8AD47D3B33690 /* [CP] Check Pods Manifest.lock */,
 				FACA35EE2327FB14000E74F6 /* Sources */,
 				21578BF2234D45BF00FF0F03 /* SwiftFormat */,
 				21578BEF234D43E600FF0F03 /* SwiftLint */,
 				FACA35EF2327FB14000E74F6 /* Frameworks */,
 				FACA35F02327FB14000E74F6 /* Resources */,
-				AA34B99F75451DF4C72791D2 /* [CP] Embed Pods Frameworks */,
+				5B8B7573FD7784C03DC03D72 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -4222,7 +3943,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FACA360D2327FBD4000E74F6 /* Build configuration list for PBXNativeTarget "AmplifyTestCommon" */;
 			buildPhases = (
-				8934CE3BAE4AA68651840D9C /* [CP] Check Pods Manifest.lock */,
+				62A3FF5C3DB83EC9E7066E31 /* [CP] Check Pods Manifest.lock */,
 				FACA35FF2327FBD4000E74F6 /* Headers */,
 				FACA36002327FBD4000E74F6 /* Sources */,
 				215A84AA234D330400109930 /* SwiftFormat */,
@@ -4372,50 +4093,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		147B8F635A2C239DA64255BC /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-AmplifyTestApp-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		1738E575674762DA4F3DA08A /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		21578BEE234D433800FF0F03 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -4524,46 +4201,7 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
-		2F8DAE72BD3C0F67BA5CAD60 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Amplify-AWSPluginsCore-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		360F766AA21C261B2891BADD /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AmplifyTestApp/Pods-AmplifyTestApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AmplifyTestApp/Pods-AmplifyTestApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AmplifyTestApp/Pods-AmplifyTestApp-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		3CCCB184AF53E34B4DDA73B4 /* [CP] Embed Pods Frameworks */ = {
+		26B35382D756F1A8BCB4CD44 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -4580,7 +4218,29 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		5EBB35ADE01DB9AE7CEB06C3 /* [CP] Check Pods Manifest.lock */ = {
+		34065D08A7793C37E90D6B15 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AmplifyTestApp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4019D862A0A8AD47D3B33690 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -4602,7 +4262,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		5F9B8F5FB2FC02D2CEA5EFD6 /* [CP] Check Pods Manifest.lock */ = {
+		4AF13E91A720CBFBF0FEDE47 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -4617,36 +4277,31 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Amplify-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		7D4CF667DD4C9B57983C0ED0 /* [CP] Check Pods Manifest.lock */ = {
+		5B8B7573FD7784C03DC03D72 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
+			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests-checkManifestLockResult.txt",
+				"${PODS_ROOT}/Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8934CE3BAE4AA68651840D9C /* [CP] Check Pods Manifest.lock */ = {
+		62A3FF5C3DB83EC9E7066E31 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -4668,7 +4323,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9D7A6AE98E5582ADB1124CD3 /* [CP] Embed Pods Frameworks */ = {
+		8F456176785A5E7366F20D70 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -4685,7 +4340,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTests/Pods-Amplify-AmplifyTestConfigs-AmplifyTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A4E096288FFA1CCB41E64D9F /* [CP] Check Pods Manifest.lock */ = {
+		9236828DB79113CD71C02139 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -4707,21 +4362,87 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		AA34B99F75451DF4C72791D2 /* [CP] Embed Pods Frameworks */ = {
+		C7E6E8623192F0B0ADD3EE25 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-AmplifyTestApp/Pods-AmplifyTestApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-AmplifyTestApp/Pods-AmplifyTestApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AmplifyTestApp/Pods-AmplifyTestApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CEE4737ED88429CF48595A4F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EC25FA14E52589E097F322FC /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Amplify-AWSPluginsCore-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EE8870F55F60C5382050F244 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Amplify-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FA131ACF2360FED30008381C /* SwiftFormat */ = {
@@ -5731,7 +5452,7 @@
 /* Begin XCBuildConfiguration section */
 		2125E2612319EC3200B3DEB5 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3DC2B7D365B42B3A832601FA /* Pods-AmplifyTestApp.debug.xcconfig */;
+			baseConfigurationReference = D8E97116B6F802BA10E02A92 /* Pods-AmplifyTestApp.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -5756,7 +5477,7 @@
 		};
 		2125E2622319EC3200B3DEB5 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7D0D6B9DC4C64E1EA75D21B3 /* Pods-AmplifyTestApp.release.xcconfig */;
+			baseConfigurationReference = 59EF2A4B56BB7A50508F6F2C /* Pods-AmplifyTestApp.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -5781,7 +5502,7 @@
 		};
 		FA131AC22360FE070008381C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DD2486414D63230FF39130C7 /* Pods-Amplify-AWSPluginsCore.debug.xcconfig */;
+			baseConfigurationReference = 1FA86170C161C5E46E57A5F9 /* Pods-Amplify-AWSPluginsCore.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -5809,7 +5530,7 @@
 		};
 		FA131AC32360FE070008381C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8663196667FA4EF8123BA5F9 /* Pods-Amplify-AWSPluginsCore.release.xcconfig */;
+			baseConfigurationReference = 09D90ABD9EDED6D6B1780253 /* Pods-Amplify-AWSPluginsCore.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -5836,7 +5557,7 @@
 		};
 		FA131AC52360FE070008381C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1466763FF4DA7F67EC5092AA /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.debug.xcconfig */;
+			baseConfigurationReference = 614D1E66BBE236DDD4F8E2E0 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -5858,7 +5579,7 @@
 		};
 		FA131AC62360FE070008381C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A52F652BA6B16F5BD47939CF /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.release.xcconfig */;
+			baseConfigurationReference = 27B4FF5750F7B7A69BE8C7EB /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsCoreTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -5880,7 +5601,7 @@
 		};
 		FAB2C99F2384B108008EE879 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 71B6F506E5F3F00B0743A9BF /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig */;
+			baseConfigurationReference = 7D502982E80B9B2796D71A48 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -5906,7 +5627,7 @@
 		};
 		FAB2C9A02384B108008EE879 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0B4A80CD25A9E5E6A518A314 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.release.xcconfig */;
+			baseConfigurationReference = F782B97D62DBD8A0597E5AA9 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -6054,7 +5775,7 @@
 		};
 		FAC234E72279F8DA00424678 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5A112B8C39AC37F0FB71AF54 /* Pods-Amplify.debug.xcconfig */;
+			baseConfigurationReference = 7B9806D365E82306EE138710 /* Pods-Amplify.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -6081,7 +5802,7 @@
 		};
 		FAC234E82279F8DA00424678 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E5ACA3446D45A4622167122C /* Pods-Amplify.release.xcconfig */;
+			baseConfigurationReference = D4D30E30A8210AC1B2F74F4C /* Pods-Amplify.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -6108,7 +5829,7 @@
 		};
 		FAC234EA2279F8DA00424678 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1AEE54C5DD1856A3C9251736 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig */;
+			baseConfigurationReference = AF4FA69A23AEB42CF7BB8336 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
@@ -6127,7 +5848,7 @@
 		};
 		FAC234EB2279F8DA00424678 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2C7DCEEA645473A2F2E5DD7D /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig */;
+			baseConfigurationReference = 0671E539A66859A57E071091 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
@@ -6146,7 +5867,7 @@
 		};
 		FACA35FB2327FB14000E74F6 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7CE2971718A9CA64EF8D10BE /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.debug.xcconfig */;
+			baseConfigurationReference = D7F68696805B8C5835897413 /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
@@ -6167,7 +5888,7 @@
 		};
 		FACA35FC2327FB14000E74F6 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4C5AEAB2A2D90298524BE592 /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig */;
+			baseConfigurationReference = 8E125EAA66C26B6F0705BB0C /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
@@ -6188,7 +5909,7 @@
 		};
 		FACA360E2327FBD4000E74F6 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9D9F0724CC2944C9FE67304A /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.debug.xcconfig */;
+			baseConfigurationReference = F8459E074A4A470F48829BEE /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -6215,7 +5936,7 @@
 		};
 		FACA360F2327FBD4000E74F6 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B671BDC60D796AB1C118F365 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig */;
+			baseConfigurationReference = 852B5530E9E8794DAC86E44E /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;

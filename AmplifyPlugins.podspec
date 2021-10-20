@@ -55,6 +55,11 @@ Pod::Spec.new do |s|
     ss.dependency 'SQLite.swift', '0.12.2'
   end
 
+  s.subspec 'AWSLocationGeoPlugin' do |ss|
+    ss.source_files = 'AmplifyPlugins/Geo/AWSLocationGeoPlugin/**/*.swift'
+    ss.dependency 'AWSLocation', $OPTIMISTIC_AWS_SDK_VERSION
+  end
+
   s.subspec 'AWSPinpointAnalyticsPlugin' do |ss|
     ss.source_files = 'AmplifyPlugins/Analytics/AWSPinpointAnalyticsPlugin/**/*.swift'
     ss.dependency 'AWSPinpoint', $OPTIMISTIC_AWS_SDK_VERSION
