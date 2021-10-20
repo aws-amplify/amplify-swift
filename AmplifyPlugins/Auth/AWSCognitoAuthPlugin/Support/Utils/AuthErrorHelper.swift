@@ -171,6 +171,8 @@ struct AuthErrorHelper {
     static func toAuthError(_ error: Error) -> AuthError {
         if let awsMobileClientError = error as? AWSMobileClientError {
             return toAuthError(awsMobileClientError: awsMobileClientError)
+        } else if let authError = error as? AuthError {
+            return authError
         }
         return AuthError.unknown("An unknown error occurred", error)
 

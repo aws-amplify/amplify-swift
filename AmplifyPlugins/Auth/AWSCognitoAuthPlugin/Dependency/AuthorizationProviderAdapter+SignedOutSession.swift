@@ -61,11 +61,22 @@ extension AuthorizationProviderAdapter {
                 completionHandler(.success(authSession))
                 return nil
             }
-            let authSession = AuthCognitoSignedOutSessionHelper.makeSignedOutSession(
-                identityId: identityId,
-                awsCredentials: awsCredentials.toAmplifyAWSCredentials())
-            completionHandler(.success(authSession))
-            return nil
+
+            do {
+                let amplifyAWSCredentials = try awsCredentials.toAmplifyAWSCredentials()
+                let authSession = AuthCognitoSignedOutSessionHelper.makeSignedOutSession(
+                    identityId: identityId,
+                    awsCredentials: amplifyAWSCredentials
+                )
+                completionHandler(.success(authSession))
+                return nil
+
+            } catch {
+                let authSession = AuthCognitoSignedOutSessionHelper.makeSignedOutSession(withError: error)
+                completionHandler(.success(authSession))
+                return nil
+            }
+
         }
     }
 }

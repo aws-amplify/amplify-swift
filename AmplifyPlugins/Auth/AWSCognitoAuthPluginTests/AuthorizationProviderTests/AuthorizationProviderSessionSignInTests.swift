@@ -713,4 +713,61 @@ class AuthorizationProviderSessionSignInTests: BaseAuthorizationProviderTest {
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
+
+    /// Test signedIn session with nil values in AWS credentials
+    ///
+    /// - Given: Given an auth plugin with signedIn state
+    /// - When:
+    ///    - I invoke fetchAuthSession and mock nil values for aws credentials
+    /// - Then:
+    ///    - I should get an a valid session with the following details:
+    ///         - isSignedIn = true
+    ///         - aws credentails = unknown error
+    ///         - identity id = unknown error
+    ///         - cognito tokens = unknown error
+    ///
+    func testSignInSessionWithNilValuesAWSCredentials() {
+        mockAWSCredentials()
+        mockCognitoTokens()
+        mockIdentityId()
+        mockAWSMobileClient.awsCredentialsMockResult = .success(AWSCredentials(accessKey: "mockAccess",
+                                                                               secretKey: "mockSecret",
+                                                                               sessionKey: "mockSession",
+                                                                               expiration: nil))
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options()) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+            switch result {
+            case .success(let session):
+
+                XCTAssertTrue(session.isSignedIn)
+
+                let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
+                guard case .failure(let error) = credentialsResult,
+                      case .unknown = error else {
+                    XCTFail("Should return unknown error")
+                    return
+                }
+
+                let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
+                guard case .failure(let identityIdError) = identityIdResult,
+                      case .unknown = identityIdError else {
+                    XCTFail("Should return unknown error")
+                    return
+                }
+
+                let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
+                guard case .failure(let tokenError) = tokensResult,
+                      case .unknown = tokenError else {
+                    XCTFail("Should return unknown error")
+                    return
+                }
+            case .failure(let error):
+                XCTFail("Received failure with error \(error)")
+            }
+        }
+        wait(for: [resultExpectation], timeout: apiTimeout)
+    }
 }
