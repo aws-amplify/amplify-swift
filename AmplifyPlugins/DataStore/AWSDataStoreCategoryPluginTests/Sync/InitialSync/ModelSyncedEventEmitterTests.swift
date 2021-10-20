@@ -153,8 +153,7 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         DispatchQueue.concurrentPerform(iterations: 1_000) { _ in
             let index = Int.random(in: 1 ... 10)
             if index == 1 {
-                initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync,
-                                                                                     modelName: Post.modelName))
+                reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))
             } else if index == 2 {
                 reconciliationQueue?.incomingEventSubject.send(.mutationEventDropped(modelName: Post.modelName))
             } else {
