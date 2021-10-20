@@ -46,7 +46,7 @@ public extension Geo {
         public var pluginOptions: Any?
 
         public init(maxResults: Int? = nil,
-                      pluginOptions: Any? = nil) {
+                    pluginOptions: Any? = nil) {
             self.maxResults = maxResults
             self.pluginOptions = pluginOptions
         }
