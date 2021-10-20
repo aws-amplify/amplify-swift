@@ -28,6 +28,7 @@ enum IncomingModelSyncedEmitterEvent {
 final class ModelSyncedEventEmitter {
     private let queue = DispatchQueue(label: "com.amazonaws.ModelSyncedEventEmitterQueue",
                                       target: DispatchQueue.global())
+    private let dispatchedModelSyncedEventLock = NSLock()
 
     private var syncOrchestratorSink: AnyCancellable?
     private var reconciliationQueueSink: AnyCancellable?
@@ -53,7 +54,22 @@ final class ModelSyncedEventEmitter {
     private var _dispatchedModelSyncedEvent: Bool
 
     /// Used by other internal classes for checking state in a thread-safe way.
-    var dispatchedModelSyncedEvent: AtomicValue<Bool>
+    var dispatchedModelSyncedEvent: Bool {
+        get {
+            dispatchedModelSyncedEventLock.lock()
+            defer {
+                dispatchedModelSyncedEventLock.unlock()
+            }
+            return _dispatchedModelSyncedEvent
+        }
+        set {
+            dispatchedModelSyncedEventLock.lock()
+            defer {
+                dispatchedModelSyncedEventLock.unlock()
+            }
+            _dispatchedModelSyncedEvent = newValue
+        }
+    }
 
     init(modelSchema: ModelSchema,
          initialSyncOrchestrator: InitialSyncOrchestrator?,
@@ -62,7 +78,6 @@ final class ModelSyncedEventEmitter {
         self.recordsReceived = 0
         self.reconciledReceived = 0
         self.initialSyncOperationFinished = false
-        self.dispatchedModelSyncedEvent = AtomicValue(initialValue: false)
         self._dispatchedModelSyncedEvent = false
         self.modelSyncedEventBuilder = ModelSyncedEvent.Builder()
 
@@ -177,8 +192,7 @@ final class ModelSyncedEventEmitter {
         let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
                                                  data: modelSyncedEventBuilder.build())
         Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
-        dispatchedModelSyncedEvent.set(true)
-        _dispatchedModelSyncedEvent = true
+        dispatchedModelSyncedEvent = true
         modelSyncedEventTopic.send(.modelSyncedEvent)
         syncOrchestratorSink?.cancel()
     }

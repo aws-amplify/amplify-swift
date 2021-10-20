@@ -145,7 +145,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
            let remoteSyncEngine = storageAdapter.syncEngine as? RemoteSyncEngine,
            let modelSyncedEventEmitter = remoteSyncEngine
             .syncEventEmitter?.modelSyncedEventEmitters[modelType.modelName] {
-            return modelSyncedEventEmitter.dispatchedModelSyncedEvent.get()
+            return modelSyncedEventEmitter.dispatchedModelSyncedEvent
         }
         return false
     }
