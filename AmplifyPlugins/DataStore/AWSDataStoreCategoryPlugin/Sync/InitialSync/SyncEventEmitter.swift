@@ -8,6 +8,7 @@
 import Amplify
 import AWSPluginsCore
 import Combine
+import Foundation
 
 enum IncomingSyncEventEmitterEvent {
     case mutationEventApplied(MutationEvent)
