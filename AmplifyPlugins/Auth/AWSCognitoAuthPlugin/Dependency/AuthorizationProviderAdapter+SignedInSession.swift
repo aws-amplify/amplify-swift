@@ -182,13 +182,19 @@ extension AuthorizationProviderAdapter {
                 self.fetchSignedInSession(withError: error, completionHandler)
                 return nil
             }
-            let amplifyCredentials = credentials.toAmplifyAWSCredentials()
-            let authSession = AWSAuthCognitoSession(isSignedIn: true,
-                                                    userSubResult: userSubResult,
-                                                    identityIdResult: .success(identityId),
-                                                    awsCredentialsResult: .success(amplifyCredentials),
-                                                    cognitoTokensResult: tokenResult)
-            completionHandler(.success(authSession))
+
+            do {
+                let amplifyCredentials = try credentials.toAmplifyAWSCredentials()
+                let authSession = AWSAuthCognitoSession(isSignedIn: true,
+                                                        userSubResult: userSubResult,
+                                                        identityIdResult: .success(identityId),
+                                                        awsCredentialsResult: .success(amplifyCredentials),
+                                                        cognitoTokensResult: tokenResult)
+                completionHandler(.success(authSession))
+            } catch {
+                let authError = AuthErrorHelper.toAuthError(error)
+                self.fetchSignedInSession(withError: authError, completionHandler)
+            }
             return nil
         }
     }

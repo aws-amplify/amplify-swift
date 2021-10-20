@@ -7,16 +7,29 @@
 
 import Foundation
 import AWSCore
+import Amplify
 
 extension AWSCredentials {
 
-    func toAmplifyAWSCredentials() -> AuthAWSCognitoCredentials {
+    func toAmplifyAWSCredentials() throws -> AuthAWSCognitoCredentials {
+
         // Credentials are fetched through Cognito Identity Pool and thus these are temporary credentials
-        // so sessionKey and expiration date will not be nil.
-        let credentials = AuthAWSCognitoCredentials(accessKey: accessKey,
-                                                    secretKey: secretKey,
-                                                    sessionKey: sessionKey!,
-                                                    expiration: expiration!)
-        return credentials
+        // so sessionKey and expiration date should not be nil.
+        let nonNilAccessKey = accessKey
+        let nonNilSecretKey = secretKey
+        guard let nonNilSessionKey = sessionKey,
+              let nonNilExpiration = expiration,
+              !nonNilAccessKey.isEmpty,
+              !nonNilSecretKey.isEmpty else {
+                  let error = AuthError.unknown("""
+                      Could not retreive AWS credentials, credential value is nil or empty.
+                      """)
+                  throw error
+              }
+
+        return AuthAWSCognitoCredentials(accessKey: nonNilAccessKey,
+                                         secretKey: nonNilSecretKey,
+                                         sessionKey: nonNilSessionKey,
+                                         expiration: nonNilExpiration)
     }
 }
