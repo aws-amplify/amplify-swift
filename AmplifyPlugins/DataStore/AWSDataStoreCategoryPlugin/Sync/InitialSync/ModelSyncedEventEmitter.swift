@@ -48,6 +48,11 @@ final class ModelSyncedEventEmitter {
         initialSyncOperationFinished && reconciledReceived == recordsReceived
     }
 
+    /// Used internally within ModelSyncedEventEmitter instances, not thread-safe, is accessed serially under the
+    /// DispatchQueue. Exists to avoid using `dispatchedModelSyncedEvent` which requires acquiring a lock each time.
+    private var _dispatchedModelSyncedEvent: Bool
+
+    /// Used by other internal classes for checking state in a thread-safe way.
     var dispatchedModelSyncedEvent: AtomicValue<Bool>
 
     init(modelSchema: ModelSchema,
@@ -58,6 +63,7 @@ final class ModelSyncedEventEmitter {
         self.reconciledReceived = 0
         self.initialSyncOperationFinished = false
         self.dispatchedModelSyncedEvent = AtomicValue(initialValue: false)
+        self._dispatchedModelSyncedEvent = false
         self.modelSyncedEventBuilder = ModelSyncedEvent.Builder()
 
         self.modelSyncedEventTopic = PassthroughSubject<IncomingModelSyncedEmitterEvent, Never>()
@@ -122,7 +128,7 @@ final class ModelSyncedEventEmitter {
     }
 
     private func onReceiveReconciliationEvent(value: IncomingEventReconciliationQueueEvent) {
-        guard !dispatchedModelSyncedEvent.get() else {
+        guard !_dispatchedModelSyncedEvent else {
             switch value {
             case .mutationEventApplied(let event):
                 modelSyncedEventTopic.send(.mutationEventApplied(event))
@@ -172,6 +178,7 @@ final class ModelSyncedEventEmitter {
                                                  data: modelSyncedEventBuilder.build())
         Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
         dispatchedModelSyncedEvent.set(true)
+        _dispatchedModelSyncedEvent = true
         modelSyncedEventTopic.send(.modelSyncedEvent)
         syncOrchestratorSink?.cancel()
     }
