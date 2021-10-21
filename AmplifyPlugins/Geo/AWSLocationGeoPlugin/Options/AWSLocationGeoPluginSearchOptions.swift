@@ -7,6 +7,6 @@
 
 import Foundation
 
-public struct AWSLocationGeoPluginOptions {
-    public let searchIndex: String?
+public struct AWSLocationGeoPluginSearchOptions {
+    public var searchIndex: String?
 }

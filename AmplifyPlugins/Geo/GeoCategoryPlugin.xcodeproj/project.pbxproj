@@ -13,7 +13,7 @@
 		5C1978DF27055D2700F9C11E /* GeoPluginConfigError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1978DE27055D2700F9C11E /* GeoPluginConfigError.swift */; };
 		5C1979042707D2A200F9C11E /* AWSLocationGeoPluginConfiguration+Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1979032707D2A200F9C11E /* AWSLocationGeoPluginConfiguration+Keys.swift */; };
 		5CA877902720FEBD0005D46D /* GeoErrorHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA8778F2720FEBD0005D46D /* GeoErrorHelper.swift */; };
-		5CA877932721CD090005D46D /* AWSLocationGeoPluginOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA877922721CD090005D46D /* AWSLocationGeoPluginOptions.swift */; };
+		5CA877932721CD090005D46D /* AWSLocationGeoPluginSearchOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA877922721CD090005D46D /* AWSLocationGeoPluginSearchOptions.swift */; };
 		5CB2BEA626FD377000C030C6 /* AWSLocationGeoPlugin+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB2BEA126FD377000C030C6 /* AWSLocationGeoPlugin+ClientBehavior.swift */; };
 		5CB2BEA726FD377000C030C6 /* AWSLocationGeoPlugin+Configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB2BEA226FD377000C030C6 /* AWSLocationGeoPlugin+Configure.swift */; };
 		5CB2BEA826FD377000C030C6 /* AWSLocationGeoPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB2BEA326FD377000C030C6 /* AWSLocationGeoPlugin.swift */; };
@@ -77,7 +77,7 @@
 		5C1978DE27055D2700F9C11E /* GeoPluginConfigError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoPluginConfigError.swift; sourceTree = "<group>"; };
 		5C1979032707D2A200F9C11E /* AWSLocationGeoPluginConfiguration+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSLocationGeoPluginConfiguration+Keys.swift"; sourceTree = "<group>"; };
 		5CA8778F2720FEBD0005D46D /* GeoErrorHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoErrorHelper.swift; sourceTree = "<group>"; };
-		5CA877922721CD090005D46D /* AWSLocationGeoPluginOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSLocationGeoPluginOptions.swift; sourceTree = "<group>"; };
+		5CA877922721CD090005D46D /* AWSLocationGeoPluginSearchOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSLocationGeoPluginSearchOptions.swift; sourceTree = "<group>"; };
 		5CB2BEA126FD377000C030C6 /* AWSLocationGeoPlugin+ClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSLocationGeoPlugin+ClientBehavior.swift"; sourceTree = "<group>"; };
 		5CB2BEA226FD377000C030C6 /* AWSLocationGeoPlugin+Configure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSLocationGeoPlugin+Configure.swift"; sourceTree = "<group>"; };
 		5CB2BEA326FD377000C030C6 /* AWSLocationGeoPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSLocationGeoPlugin.swift; sourceTree = "<group>"; };
@@ -194,7 +194,7 @@
 		5CA877912721CCBB0005D46D /* Options */ = {
 			isa = PBXGroup;
 			children = (
-				5CA877922721CD090005D46D /* AWSLocationGeoPluginOptions.swift */,
+				5CA877922721CD090005D46D /* AWSLocationGeoPluginSearchOptions.swift */,
 			);
 			path = Options;
 			sourceTree = "<group>";
@@ -833,7 +833,7 @@
 				5CB2BEA626FD377000C030C6 /* AWSLocationGeoPlugin+ClientBehavior.swift in Sources */,
 				5CB2BEAA26FD377000C030C6 /* AWSLocationGeoPlugin+Reset.swift in Sources */,
 				5CB2BEAC26FD378F00C030C6 /* AWSLocationGeoPluginConfiguration.swift in Sources */,
-				5CA877932721CD090005D46D /* AWSLocationGeoPluginOptions.swift in Sources */,
+				5CA877932721CD090005D46D /* AWSLocationGeoPluginSearchOptions.swift in Sources */,
 				B478F74C2375014E00C4F92B /* AWSLocationAdapter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

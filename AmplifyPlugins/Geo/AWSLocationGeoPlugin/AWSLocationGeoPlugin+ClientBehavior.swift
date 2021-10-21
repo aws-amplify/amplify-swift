@@ -31,12 +31,17 @@ extension AWSLocationGeoPlugin {
                        options: Geo.SearchForTextOptions? = nil,
                        completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
 
-        assert(pluginConfig.defaultSearchIndex != nil, GeoPluginConfigError.searchConfigMissing)
-
         let request = AWSLocationSearchPlaceIndexForTextRequest()!
 
-        request.indexName = (options?.pluginOptions as? AWSLocationGeoPluginOptions)?
+        request.indexName = (options?.pluginOptions as? AWSLocationGeoPluginSearchOptions)?
             .searchIndex ?? pluginConfig.defaultSearchIndex
+
+        guard request.indexName != nil else {
+            completionHandler(.failure(.invalidConfiguration(
+                "No default search index was found.",
+                "Please ensure you have added search to your project before calling search functions.")))
+            return
+        }
 
         request.text = text
 
@@ -55,7 +60,7 @@ extension AWSLocationGeoPlugin {
 
         if let countries = options?.countries {
             request.filterCountries = countries.map { country in
-                String(describing: country)
+                country.code
             }
         }
 
@@ -80,12 +85,17 @@ extension AWSLocationGeoPlugin {
                        options: Geo.SearchForCoordinatesOptions? = nil,
                        completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
 
-        assert(pluginConfig.defaultSearchIndex != nil, GeoPluginConfigError.searchConfigMissing)
-
         let request = AWSLocationSearchPlaceIndexForPositionRequest()!
 
-        request.indexName = (options?.pluginOptions as? AWSLocationGeoPluginOptions)?
+        request.indexName = (options?.pluginOptions as? AWSLocationGeoPluginSearchOptions)?
             .searchIndex ?? pluginConfig.defaultSearchIndex
+
+        guard request.indexName != nil else {
+            completionHandler(.failure(.invalidConfiguration(
+                "No default search index was found.",
+                "Please ensure you have added search to your project before calling search functions.")))
+            return
+        }
 
         request.position = [coordinates.longitude as NSNumber,
                             coordinates.latitude as NSNumber]
