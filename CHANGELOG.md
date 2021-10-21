@@ -1,5 +1,16 @@
 # Changelog
 ## Unreleased
+## 1.15.3 (2021-10-21)
+
+### Bug Fixes
+
+- **DataStore**: Optimize mutation event propagation after model synced in ModelSyncEventEmitter (#1479)
+- **datastore**: Fixes SPM build error due to missing import Foundation in SyncEventEmitter.swift (#1481)
+- **auth**: Replace force unwrap to throw an error in AWS credentials (#1476)
+- **DataStore**: ModelSyncedEvent before last MutationEvent (#1472)
+- **DataStore**: Reconciliation path avoid model.modelName (#1475)
+- **DataStore**: Improve ObserveQuery for multiple sort input (#1464)
+
 ## 1.15.2 (2021-10-14)
 
 ### Bug Fixes
