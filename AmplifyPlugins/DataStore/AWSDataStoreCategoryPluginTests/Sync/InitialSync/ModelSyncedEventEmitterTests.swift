@@ -185,6 +185,7 @@ class ModelSyncedEventEmitterTests: XCTestCase {
             } else if index == 2 {
                 reconciliationQueue?.incomingEventSubject.send(.mutationEventDropped(modelName: Post.modelName))
             }
+            _ = emitter.dispatchedModelSyncedEvent
         }
 
         waitForExpectations(timeout: 10)
