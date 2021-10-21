@@ -37,7 +37,8 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
     func testSearchForText() {
         let expResult = expectation(description: "Receive result")
 
-        Amplify.Geo.search(for: searchText, area: .near(coordinates)) { result in
+        let options = Geo.SearchForTextOptions(area: .near(coordinates))
+        Amplify.Geo.search(for: searchText, options: options) { result in
             switch result {
             case .failure(let error):
                 XCTFail("Failed with error: \(error)")
@@ -67,20 +68,42 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
         waitForExpectations(timeout: timeout)
     }
 
-    func testGetDefaultMap() {
-        let map = Amplify.Geo.getDefaultMap()
-        XCTAssertNotNil(map)
-        XCTAssertNotNil(map?.mapName)
-        XCTAssertNotNil(map?.style)
-        XCTAssertNotNil(map?.styleURL)
+    func testDefaultMap() {
+        let expResult = expectation(description: "Receive result")
+
+        Amplify.Geo.defaultMap { result in
+            switch result {
+            case .failure(let error):
+                XCTFail("Failed with error: \(error)")
+            case .success(let map):
+                XCTAssertNotNil(map)
+                XCTAssertNotNil(map.mapName)
+                XCTAssertNotNil(map.style)
+                XCTAssertNotNil(map.styleURL)
+                expResult.fulfill()
+            }
+        }
+
+        waitForExpectations(timeout: timeout)
     }
 
-    func testGetAvailtableMaps() {
-        let maps = Amplify.Geo.getAvailableMaps()
-        XCTAssertFalse(maps.isEmpty)
-        XCTAssertNotNil(maps.first?.mapName)
-        XCTAssertNotNil(maps.first?.style)
-        XCTAssertNotNil(maps.first?.styleURL)
+    func testAvailtableMaps() {
+        let expResult = expectation(description: "Receive result")
+
+        Amplify.Geo.availableMaps { result in
+            switch result {
+            case .failure(let error):
+                XCTFail("Failed with error: \(error)")
+            case .success(let maps):
+                XCTAssertFalse(maps.isEmpty)
+                XCTAssertNotNil(maps.first?.mapName)
+                XCTAssertNotNil(maps.first?.style)
+                XCTAssertNotNil(maps.first?.styleURL)
+                expResult.fulfill()
+            }
+        }
+
+        waitForExpectations(timeout: timeout)
     }
 
     func testGetEscapeHatch() throws {
