@@ -5,7 +5,7 @@
 *Check points: (check or cross out if not relevant)*
 
 - [ ] Added new tests to cover change, if needed
-- [ ] Build relevant target to cover code changes using Package.swift
+- [ ] Build succeeds with all target using Swift Package Manager
 - [ ] All unit tests pass
 - [ ] All integration tests pass
 - [ ] Documentation update for the change if required
