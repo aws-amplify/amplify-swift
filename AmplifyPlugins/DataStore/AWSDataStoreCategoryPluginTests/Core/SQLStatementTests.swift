@@ -85,7 +85,7 @@ class SQLStatementTests: XCTestCase {
           "content" text not null,
           "createdAt" text not null,
           "commentPostId" text not null,
-          foreign key("commentPostId") references Post("id")
+          foreign key("commentPostId") references "Post"("id")
             on delete cascade
         );
         """
@@ -106,7 +106,7 @@ class SQLStatementTests: XCTestCase {
         create table if not exists "UserProfile" (
           "id" text primary key not null,
           "accountId" text not null unique,
-          foreign key("accountId") references UserAccount("id")
+          foreign key("accountId") references "UserAccount"("id")
             on delete cascade
         );
         """
@@ -128,9 +128,9 @@ class SQLStatementTests: XCTestCase {
           "id" text primary key not null,
           "authorId" text not null,
           "bookId" text not null,
-          foreign key("authorId") references Author("id")
+          foreign key("authorId") references "Author"("id")
             on delete cascade
-          foreign key("bookId") references Book("id")
+          foreign key("bookId") references "Book"("id")
             on delete cascade
         );
         """

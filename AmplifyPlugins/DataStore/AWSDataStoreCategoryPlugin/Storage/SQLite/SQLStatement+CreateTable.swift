@@ -57,7 +57,7 @@ struct CreateTableStatement: SQLStatement {
             }
             let associatedId = schema.primaryKey
             let associatedModelName = schema.name
-            statement += "references \(associatedModelName)(\"\(associatedId.sqlName)\")\n"
+            statement += "references \"\(associatedModelName)\"(\"\(associatedId.sqlName)\")\n"
             statement += "    on delete cascade"
             let isNotLastKey = index < foreignKeys.endIndex - 1
             if isNotLastKey {
