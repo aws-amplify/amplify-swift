@@ -14,7 +14,7 @@ import AWSPluginsCore
 
 class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
 
-    static let amplifyConfiguration = "GraphQLSyncBasedTests-amplifyconfiguration"
+    static let amplifyConfiguration = "testconfiguration/GraphQLSyncBasedTests-amplifyconfiguration"
 
     override func setUp() {
         Amplify.reset()
