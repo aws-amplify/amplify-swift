@@ -39,7 +39,8 @@ extension SocialNote {
       rule(allow: .owner, ownerField: "owner", identityClaim: "cognito:username", operations: [.create, .update, .delete])
     ]
 
-    model.pluralName = "SocialNotes"
+    model.listPluralName = "SocialNotes"
+    model.syncPluralName = "SocialNotes"
 
     model.fields(
       .id(),

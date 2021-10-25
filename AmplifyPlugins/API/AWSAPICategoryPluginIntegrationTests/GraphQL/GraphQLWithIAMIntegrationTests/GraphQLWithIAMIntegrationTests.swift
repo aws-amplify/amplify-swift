@@ -303,7 +303,8 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         static let schema = defineSchema { model in
             let todo = Todo.keys
 
-            model.pluralName = "Todos"
+            model.listPluralName = "Todos"
+            model.syncPluralName = "Todos"
 
             model.fields(
                 .id(),

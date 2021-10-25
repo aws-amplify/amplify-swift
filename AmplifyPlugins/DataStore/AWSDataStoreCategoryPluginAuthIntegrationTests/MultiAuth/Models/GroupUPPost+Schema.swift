@@ -28,7 +28,8 @@ extension GroupUPPost {
       rule(allow: .groups, groupClaim: "cognito:groups", groups: ["Admins"], provider: .userPools, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "GroupUPPosts"
+    model.listPluralName = "GroupUPPosts"
+    model.syncPluralName = "GroupUPPosts"
 
     model.fields(
       .id(),

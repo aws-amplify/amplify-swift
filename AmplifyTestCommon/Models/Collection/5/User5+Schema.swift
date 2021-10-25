@@ -24,7 +24,7 @@ extension User5 {
     let user5 = User5.keys
 
     model.listPluralName = "User5s"
-    model.syncPluralName = "PostEditor5s"
+    model.syncPluralName = "User5s"
 
     model.fields(
       .id(),

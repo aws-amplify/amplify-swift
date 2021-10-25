@@ -28,7 +28,8 @@ extension PrivatePublicComboUPPost {
       rule(allow: .owner, ownerField: "owner", identityClaim: "cognito:username", provider: .userPools, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "PrivatePublicComboUPPosts"
+    model.listPluralName = "PrivatePublicComboUPPosts"
+    model.syncPluralName = "PrivatePublicComboUPPosts"
 
     model.fields(
       .id(),

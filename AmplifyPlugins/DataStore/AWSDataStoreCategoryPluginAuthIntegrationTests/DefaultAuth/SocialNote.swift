@@ -41,7 +41,8 @@ extension SocialNote {
            operations: [.create, .update, .delete])
     ]
 
-    model.pluralName = "SocialNotes"
+    model.listPluralName = "SocialNotes"
+    model.syncPluralName = "SocialNotes"
 
     model.fields(
       .id(),

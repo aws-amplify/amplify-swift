@@ -28,7 +28,8 @@ extension OwnerUPPost {
       rule(allow: .owner, ownerField: "owner", identityClaim: "cognito:username", provider: .userPools, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "OwnerUPPosts"
+    model.listPluralName = "OwnerUPPosts"
+    model.syncPluralName = "OwnerUPPosts"
 
     model.fields(
       .id(),
