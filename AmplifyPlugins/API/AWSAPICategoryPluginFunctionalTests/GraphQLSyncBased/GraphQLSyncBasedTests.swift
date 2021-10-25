@@ -15,7 +15,7 @@ import AWSPluginsCore
 // swiftlint:disable type_body_length
 class GraphQLSyncBasedTests: XCTestCase {
 
-    static let amplifyConfiguration = "GraphQLSyncBasedTests-amplifyconfiguration"
+    static let amplifyConfiguration = "testconfiguration/GraphQLSyncBasedTests-amplifyconfiguration"
 
     override func setUp() {
         Amplify.reset()

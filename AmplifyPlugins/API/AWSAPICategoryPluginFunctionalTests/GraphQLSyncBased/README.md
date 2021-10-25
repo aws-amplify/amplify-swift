@@ -58,3 +58,5 @@ type CustomerOrder @model
 ```
 
 3. `amplify push`
+
+4. Copy `amplifyconfiguration.json` over as `GraphQLSyncBasedTests-amplifyconfiguration.json` to `~/.aws-amplify/amplify-ios/testconfiguration/`
