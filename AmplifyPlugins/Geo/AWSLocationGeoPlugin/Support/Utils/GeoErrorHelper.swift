@@ -7,7 +7,11 @@
 
 import Amplify
 import Foundation
+#if COCOAPODS
 import AWSLocation
+#else
+import AWSLocationXCF
+#endif
 
 class GeoErrorHelper {
     static func getDefaultError(_ error: Error) -> Geo.Error {
