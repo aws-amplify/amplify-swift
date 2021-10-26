@@ -17,82 +17,55 @@ class GeoErrorHelper {
     static func getDefaultError(_ error: Error) -> Geo.Error {
         let error = error as NSError
         let errorMessage = """
-        Domain: [\(error.domain)
-        Code: [\(error.code)
-        LocalizedDescription: [\(error.localizedDescription)
-        LocalizedFailureReason: [\(error.localizedFailureReason ?? "")
-        LocalizedRecoverySuggestion: [\(error.localizedRecoverySuggestion ?? "")
+        Domain: [\(error.domain)]
+        Code: [\(error.code)]
+        LocalizedDescription: [\(error.localizedDescription)]
+        LocalizedFailureReason: [\(error.localizedFailureReason ?? "")]
+        LocalizedRecoverySuggestion: [\(error.localizedRecoverySuggestion ?? "")]
         """
 
         return Geo.Error.unknown(errorMessage, "")
     }
 
-    static func mapServiceError(_ error: Error) -> Geo.Error {
+    static func mapAWSLocationError(_ error: Error) -> Geo.Error {
         let error = error as NSError
         let defaultError = GeoErrorHelper.getDefaultError(error)
 
-        guard error.domain == AWSServiceErrorDomain else {
+        print(defaultError)
+
+        guard error.domain == AWSLocationErrorDomain else {
             return defaultError
         }
 
-        let errorTypeOptional = AWSServiceErrorType.init(rawValue: error.code)
+        let errorTypeOptional = AWSLocationErrorType.init(rawValue: error.code)
         guard let errorType = errorTypeOptional else {
             return defaultError
         }
 
-        return GeoErrorHelper.map(errorType) ?? defaultError
+        return GeoErrorHelper.mapError(description: error.localizedDescription, type: errorType) ?? defaultError
     }
 
-    // swiftlint:disable cyclomatic_complexity
-    static func map(_ errorType: AWSServiceErrorType) -> Geo.Error? {
-        switch errorType {
-        case .unknown:
-            break
-        case .requestTimeTooSkewed:
-            break
-        case .invalidSignatureException:
-            break
-        case .signatureDoesNotMatch:
-            break
-        case .requestExpired:
-            break
-        case .authFailure:
-            break
-        case .accessDeniedException:
-            return Geo.Error.accessDenied("StorageErrorConstants.accessDenied.errorDescription",
-                                             "StorageErrorConstants.accessDenied.recoverySuggestion")
-        case .unrecognizedClientException:
-            break
-        case .incompleteSignature:
-            break
-        case .invalidClientTokenId:
-            break
-        case .missingAuthenticationToken:
-            break
+    static func mapError(description: ErrorDescription, type: AWSLocationErrorType) -> Geo.Error? {
+        switch type {
         case .accessDenied:
-            return Geo.Error.accessDenied("StorageErrorConstants.accessDenied.errorDescription",
-                                             "StorageErrorConstants.accessDenied.recoverySuggestion")
-        case .expiredToken:
+            return Geo.Error.accessDenied(description, GeoPluginErrorConstants.accessDenied)
+        case .conflict:
             break
-        case .invalidAccessKeyId:
+        case .internalServer:
             break
-        case .invalidToken:
+        case .resourceNotFound:
             break
-        case .tokenRefreshRequired:
-            break
-        case .accessFailure:
-            return Geo.Error.accessDenied("StorageErrorConstants.accessDenied.errorDescription",
-                                             "StorageErrorConstants.accessDenied.recoverySuggestion")
-        case .authMissingFailure:
+        case .serviceQuotaExceeded:
             break
         case .throttling:
             break
-        case .throttlingException:
+        case .validation:
+            break
+        case .unknown:
             break
         @unknown default:
             break
         }
-
         return nil
     }
 }

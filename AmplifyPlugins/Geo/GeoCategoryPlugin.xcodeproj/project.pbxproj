@@ -22,6 +22,7 @@
 		5CB2BEAC26FD378F00C030C6 /* AWSLocationGeoPluginConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB2BEAB26FD378F00C030C6 /* AWSLocationGeoPluginConfiguration.swift */; };
 		5CC7F8E92709F5D900EB2C0C /* GeoPluginTestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC7F8E82709F5D900EB2C0C /* GeoPluginTestConfig.swift */; };
 		5CE2F0B8270CE917002B32AC /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 5CE2F0B7270CE917002B32AC /* amplifyconfiguration.json */; };
+		5CF43D072728C41300F636E1 /* GeoPluginErrorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF43D062728C41300F636E1 /* GeoPluginErrorConstants.swift */; };
 		7BB09495AD6E3BEC74F2D3CA /* Pods_HostApp_AWSLocationGeoPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16192D28F462AAC393BB7C19 /* Pods_HostApp_AWSLocationGeoPluginTests.framework */; };
 		7CC1D91561823C05661AEFDA /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C78EDC76E7C7F3345E10230 /* Pods_HostApp.framework */; };
 		874435006CEC72469F96E24F /* Pods_HostApp_AWSLocationGeoPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95C9C9145B14780AA3CE71A9 /* Pods_HostApp_AWSLocationGeoPluginIntegrationTests.framework */; };
@@ -87,6 +88,7 @@
 		5CC7F8E82709F5D900EB2C0C /* GeoPluginTestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoPluginTestConfig.swift; sourceTree = "<group>"; };
 		5CE2F0B0270CCDF4002B32AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5CE2F0B7270CE917002B32AC /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = SOURCE_ROOT; };
+		5CF43D062728C41300F636E1 /* GeoPluginErrorConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoPluginErrorConstants.swift; sourceTree = "<group>"; };
 		7429F6FCF542E2C1BB198156 /* Pods-HostApp-AWSLocationGeoPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSLocationGeoPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSLocationGeoPluginTests/Pods-HostApp-AWSLocationGeoPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		84D6296108A99E8CF1A509DF /* Pods-HostApp-AWSLocationGeoPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSLocationGeoPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSLocationGeoPluginIntegrationTests/Pods-HostApp-AWSLocationGeoPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		8CEFFE4A5BF563C353673F77 /* Pods-HostApp-AWSLocationGeoPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSLocationGeoPluginTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSLocationGeoPluginTests/Pods-HostApp-AWSLocationGeoPluginTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -178,6 +180,7 @@
 		5CA8778D2720FE600005D46D /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				5CF43D052728C41300F636E1 /* Constants */,
 				5CA8778E2720FE890005D46D /* Utils */,
 			);
 			path = Support;
@@ -203,6 +206,14 @@
 			isa = PBXGroup;
 			children = (
 				5CC7F8E82709F5D900EB2C0C /* GeoPluginTestConfig.swift */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
+		5CF43D052728C41300F636E1 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				5CF43D062728C41300F636E1 /* GeoPluginErrorConstants.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -832,6 +843,7 @@
 				5CB2BEA726FD377000C030C6 /* AWSLocationGeoPlugin+Configure.swift in Sources */,
 				5CB2BEA626FD377000C030C6 /* AWSLocationGeoPlugin+ClientBehavior.swift in Sources */,
 				5CB2BEAA26FD377000C030C6 /* AWSLocationGeoPlugin+Reset.swift in Sources */,
+				5CF43D072728C41300F636E1 /* GeoPluginErrorConstants.swift in Sources */,
 				5CB2BEAC26FD378F00C030C6 /* AWSLocationGeoPluginConfiguration.swift in Sources */,
 				5CA877932721CD090005D46D /* AWSLocationGeoPluginSearchOptions.swift in Sources */,
 				B478F74C2375014E00C4F92B /* AWSLocationAdapter.swift in Sources */,

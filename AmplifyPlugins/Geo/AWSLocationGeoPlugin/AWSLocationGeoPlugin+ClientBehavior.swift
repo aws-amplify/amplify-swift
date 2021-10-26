@@ -68,6 +68,8 @@ extension AWSLocationGeoPlugin {
             request.maxResults = maxResults as NSNumber
         }
 
+        request.indexName = "blah"
+
         locationService.searchPlaceIndex(forText: request) { response, error in
             completionHandler(AWSLocationGeoPlugin.parsePlaceResponse(response: response, error: error))
         }
@@ -111,7 +113,7 @@ extension AWSLocationGeoPlugin {
 
     static private func parsePlaceResponse(response: AWSModel?, error: Error?) -> Result<[Geo.Place], Geo.Error> {
         if let error = error {
-            let geoError = GeoErrorHelper.mapServiceError(error)
+            let geoError = GeoErrorHelper.mapAWSLocationError(error)
             return .failure(geoError)
         }
 
