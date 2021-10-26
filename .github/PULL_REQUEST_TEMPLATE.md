@@ -10,5 +10,6 @@
 - [ ] All integration tests pass
 - [ ] Documentation update for the change if required
 - [ ] PR title conforms to conventional commit style
+- [ ] If breaking change, documentation/changelog update with migration instructions
 
 By submitting this pull request, I confirm that my contribution is made under the terms of the Apache 2.0 license.
