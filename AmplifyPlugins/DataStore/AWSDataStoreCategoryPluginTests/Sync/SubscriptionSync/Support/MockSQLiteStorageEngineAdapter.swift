@@ -131,7 +131,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         XCTFail("Not expected to execute")
     }
 
-    func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>] {
+    func queryMutationSync(for models: [Model], modelName: String) throws -> [MutationSync<AnyModel>] {
         XCTFail("Not expected to execute")
         return []
     }
@@ -197,7 +197,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         completion(.success([]))
     }
 
-    func queryMutationSyncMetadata(for modelId: String) throws -> MutationSyncMetadata? {
+    func queryMutationSyncMetadata(for modelId: String, modelName: String) throws -> MutationSyncMetadata? {
         if let responder = responders[.queryMutationSyncMetadata] as? QueryMutationSyncMetadataResponder {
             return try responder.callback(modelId)
         }
@@ -209,7 +209,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         return resultForQueryMutationSyncMetadata
     }
 
-    func queryMutationSyncMetadata(for modelIds: [String]) throws -> [MutationSyncMetadata] {
+    func queryMutationSyncMetadata(for modelIds: [String], modelName: String) throws -> [MutationSyncMetadata] {
         if let responder = responders[.queryMutationSyncMetadatas] as? QueryMutationSyncMetadatasResponder {
             return try responder.callback(modelIds)
         }

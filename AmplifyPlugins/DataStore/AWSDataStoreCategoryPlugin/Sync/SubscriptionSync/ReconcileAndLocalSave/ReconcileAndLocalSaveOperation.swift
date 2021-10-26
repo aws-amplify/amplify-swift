@@ -228,7 +228,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
             do {
                 let localMetadatas = try storageAdapter.queryMutationSyncMetadata(
-                    for: remoteModels.map { $0.model.id })
+                    for: remoteModels.map { $0.model.id },
+                       modelName: self.modelSchema.name)
                 result = .success((remoteModels, localMetadatas))
             } catch {
                 result = .failure(DataStoreError(error: error))

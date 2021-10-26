@@ -270,11 +270,11 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>? {
         let model = anyModel.instance
-        let results = try queryMutationSync(for: [model])
+        let results = try queryMutationSync(for: [model], modelName: anyModel.modelName)
         return results.first
     }
 
-    func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>] {
+    func queryMutationSync(for models: [Model], modelName: String) throws -> [MutationSync<AnyModel>] {
         let statement = SelectStatement(from: MutationSyncMetadata.schema)
         let primaryKey = MutationSyncMetadata.schema.primaryKey.sqlName
         // This is a temp workaround since we don't currently support the "in" operator
@@ -283,7 +283,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let sql = statement.stringValue + "\nwhere \(primaryKey) in (\(placeholders))"
 
         // group models by id for fast access when creating the tuple
-        let modelById = Dictionary(grouping: models, by: { $0.id }).mapValues { $0.first! }
+        let modelById = Dictionary(grouping: models,
+                                   by: { MutationSyncMetadata.identifier(modelName: modelName, modelId: $0.id) })
+            .mapValues { $0.first! }
         let ids = [String](modelById.keys)
         let rows = try connection.prepare(sql).bind(ids)
 
@@ -300,12 +302,12 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         return mutationSyncList
     }
 
-    func queryMutationSyncMetadata(for modelId: Model.Identifier) throws -> MutationSyncMetadata? {
-        let results = try queryMutationSyncMetadata(for: [modelId])
+    func queryMutationSyncMetadata(for modelId: Model.Identifier, modelName: String) throws -> MutationSyncMetadata? {
+        let results = try queryMutationSyncMetadata(for: [modelId], modelName: modelName)
         return try results.unique()
     }
 
-    func queryMutationSyncMetadata(for modelIds: [Model.Identifier]) throws -> [MutationSyncMetadata] {
+    func queryMutationSyncMetadata(for modelIds: [Model.Identifier], modelName: String) throws -> [MutationSyncMetadata] {
         let modelType = MutationSyncMetadata.self
         let modelSchema = MutationSyncMetadata.schema
         let fields = MutationSyncMetadata.keys
@@ -314,7 +316,10 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         for chunkedModelIds in chunkedModelIdsArr {
             var queryPredicates: [QueryPredicateOperation] = []
             for id in chunkedModelIds {
-                queryPredicates.append(QueryPredicateOperation(field: fields.id.stringValue, operator: .equals(id)))
+                let mutationSyncMetadataId = MutationSyncMetadata.identifier(modelName: modelName,
+                                                                             modelId: id)
+                queryPredicates.append(QueryPredicateOperation(field: fields.id.stringValue,
+                                                               operator: .equals(mutationSyncMetadataId)))
             }
             let groupedQueryPredicates = QueryPredicateGroup(type: .or, predicates: queryPredicates)
             let statement = SelectStatement(from: modelSchema, predicate: groupedQueryPredicates)

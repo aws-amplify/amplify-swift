@@ -32,10 +32,11 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         }
 
         let model = MockSynced(id: "id-1")
-        let localSyncMetadata = MutationSyncMetadata(id: model.id,
-                                                        deleted: true,
-                                                        lastChangedAt: Date().unixSeconds,
-                                                        version: 2)
+        let localSyncMetadata = MutationSyncMetadata(modelId: model.id,
+                                                     modelName: MockSynced.modelName,
+                                                     deleted: true,
+                                                     lastChangedAt: Date().unixSeconds,
+                                                     version: 2)
         let localMetadataSaved = expectation(description: "Local metadata saved")
         storageAdapter.save(localSyncMetadata) { _ in localMetadataSaved.fulfill() }
         wait(for: [localMetadataSaved], timeout: 1.0)
@@ -65,7 +66,8 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         }
 
         let anyModel = try model.eraseToAnyModel()
-        let remoteSyncMetadata = MutationSyncMetadata(id: model.id,
+        let remoteSyncMetadata = MutationSyncMetadata(modelId: model.id,
+                                                      modelName: MockSynced.modelName,
                                                       deleted: false,
                                                       lastChangedAt: Date().unixSeconds,
                                                       version: 1)
@@ -76,7 +78,8 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         // we have to brute-force this wait
         Thread.sleep(forTimeInterval: 1.0)
 
-        let finalLocalMetadata = try storageAdapter.queryMutationSyncMetadata(for: model.id)
+        let finalLocalMetadata = try storageAdapter.queryMutationSyncMetadata(for: model.id,
+                                                                                 modelName: MockSynced.modelName)
         XCTAssertEqual(finalLocalMetadata?.version, 2)
         XCTAssertEqual(finalLocalMetadata?.deleted, true)
 
@@ -166,7 +169,8 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
 
         let model = MockSynced(id: "id-1")
         let anyModel = try model.eraseToAnyModel()
-        let remoteSyncMetadata = MutationSyncMetadata(id: model.id,
+        let remoteSyncMetadata = MutationSyncMetadata(modelId: model.id,
+                                                      modelName: MockSynced.modelName,
                                                       deleted: true,
                                                       lastChangedAt: Date().unixSeconds,
                                                       version: 2)
@@ -175,7 +179,8 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
 
         wait(for: [syncReceivedNotification], timeout: 1.0)
 
-        let finalLocalMetadata = try storageAdapter.queryMutationSyncMetadata(for: model.id)
+        let finalLocalMetadata = try storageAdapter.queryMutationSyncMetadata(for: model.id,
+                                                                                 modelName: MockSynced.modelName)
         XCTAssertEqual(finalLocalMetadata?.version, 2)
         XCTAssertEqual(finalLocalMetadata?.deleted, true)
 
