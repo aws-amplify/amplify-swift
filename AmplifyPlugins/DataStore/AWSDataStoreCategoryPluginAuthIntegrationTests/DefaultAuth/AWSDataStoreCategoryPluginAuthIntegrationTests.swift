@@ -244,4 +244,88 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
 
         XCTAssertEqual(owner, remoteNoteOwner)
     }
+
+    func testThrowingIteratorError() throws {
+        // sign in
+        signIn(username: user1.username, password: user1.password)
+
+        // save 5 notes
+        let numOfPosts = 5
+        let syncReceivedInvoked = expectation(description: "received SyncReceived event")
+        syncReceivedInvoked.expectedFulfillmentCount = numOfPosts
+        let syncReceivedListener = Amplify.Hub.listen(to: .dataStore, eventName: syncReceived) { payload in
+            guard let mutationEvent = payload.data as? MutationEvent,
+                  let _ = try? mutationEvent.decodeModel() as? SocialNote else {
+                    XCTFail("Can't cast payload as mutation event")
+                    return
+            }
+            syncReceivedInvoked.fulfill()
+        }
+        guard try HubListenerTestUtilities.waitForListener(with: syncReceivedListener, timeout: 5.0) else {
+            XCTFail("syncReceivedListener registered for hub")
+            return
+        }
+
+        for index in 1 ... numOfPosts {
+            let localNote = SocialNote(id: UUID().uuidString, content: "content" + String(index), owner: nil)
+            let localNoteSaveInvoked = expectation(description: "local note \(index) was saved")
+            Amplify.DataStore.save(localNote) { result in
+                switch result {
+                case .success(let note):
+                    print(note)
+                    localNoteSaveInvoked.fulfill()
+                case .failure(let error):
+                    XCTFail("Failed to save note \(error)")
+                }
+            }
+            wait(for: [localNoteSaveInvoked], timeout: TestCommonConstants.networkTimeout)
+        }
+
+        wait(for: [syncReceivedInvoked], timeout: TestCommonConstants.networkTimeout)
+        Amplify.Hub.removeListener(syncReceivedListener)
+
+        signOut()
+
+        let clearCompletedInvoked = expectation(description: "clear completed")
+        Amplify.DataStore.clear { result in
+            switch result {
+            case .success:
+                clearCompletedInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Failed to clear \(error)")
+            }
+        }
+
+        wait(for: [clearCompletedInvoked], timeout: TestCommonConstants.networkTimeout)
+
+        // sign in and out multiple times and call clear on signedOut event
+        for ind in 1 ... 20 {
+            signIn(username: user1.username, password: user1.password)
+
+            let signOutReceived = expectation(description: "received signedOut event")
+            let signOutReceivedListener =
+            Amplify.Hub.listen(to: .auth, eventName: HubPayload.EventName.Auth.signedOut) { _ in
+                print("received signout for \(ind)")
+                let clearCompletedInvoked = self.expectation(description: "clear completed")
+                Amplify.DataStore.clear { result in
+                    switch result {
+                    case .success:
+                        clearCompletedInvoked.fulfill()
+                    case .failure(let error):
+                        XCTFail("Failed to clear \(error)")
+                    }
+                }
+                self.wait(for: [clearCompletedInvoked], timeout: TestCommonConstants.networkTimeout)
+                signOutReceived.fulfill()
+            }
+            guard try HubListenerTestUtilities.waitForListener(with: signOutReceivedListener, timeout: 5.0) else {
+                XCTFail("signOutReceivedListener registered for hub")
+                return
+            }
+
+            signOut()
+            wait(for: [signOutReceived], timeout: TestCommonConstants.networkTimeout)
+            Amplify.Hub.removeListener(signOutReceivedListener)
+        }
+    }
 }
