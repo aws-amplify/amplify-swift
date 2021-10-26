@@ -30,6 +30,6 @@ Successfully added auth resource locally.
 ? Do you want to add another path? `No`
 Successfully added resource api1ed65adc locally
 ```
-3. Replace `RESTWithIAMIntegrationTests-amplifyconfiguration.json` and `RESTWithIAMIntegrationTests-awsconfiguration.json` with the generated `amplifyconfiguration.json` and `awsconfiguration.json` 
+3. Create a file `RESTWithIAMIntegrationTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/` and copy `amplifyconfiguration.json` 
 
 4. Run the tests

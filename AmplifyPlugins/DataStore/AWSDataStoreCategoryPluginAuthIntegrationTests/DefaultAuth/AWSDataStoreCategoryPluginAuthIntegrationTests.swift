@@ -19,8 +19,8 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
         let password: String
     }
 
-    let amplifyConfigurationFile = "AWSDataStoreCategoryPluginAuthIntegrationTests-amplifyconfiguration"
-    let credentialsFile = "AWSDataStoreCategoryPluginAuthIntegrationTests-credentials"
+    let amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginAuthIntegrationTests-amplifyconfiguration"
+    let credentialsFile = "testconfiguration/AWSDataStoreCategoryPluginAuthIntegrationTests-credentials"
     var user1: User!
     var user2: User!
 

@@ -5,10 +5,9 @@ The following steps demonstrate how to set up a GraphQL endpoint with AppSync. T
 
 ### Set-up
 
-1. `amplify-init`
+1. `amplify init`
 
 2. `amplify add api`
-
 
 ```perl
 ? Please select from one of the below mentioned services: `GraphQL`
@@ -226,7 +225,8 @@ type Nested {
   valueTwo: String
 }
 
-
 ```
 
 3.  `amplify push`
+
+4. Copy `amplifyconfiguration.json` over as `GraphQLModelBasedTests-amplifyconfiguration.json` to `~/.aws-amplify/amplify-ios/testconfiguration/`

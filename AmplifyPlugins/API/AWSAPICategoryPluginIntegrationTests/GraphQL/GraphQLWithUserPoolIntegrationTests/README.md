@@ -37,7 +37,7 @@ type Todo @model {
 ? Do you want to generate code for your newly created GraphQL API `No`
 ```
 
-4. Create `GraphQLWithUserPoolIntegrationTests-credentials.json` with a json object containing `user1`, and `password`, used to create the cognito user in the userpool. In step 2, the cognito userpool is configured to allow users to sign up with their email as the username.
+4. Create `GraphQLWithUserPoolIntegrationTests-credentials.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/` with a json object containing `user1`, and `password`, used to create the cognito user in the userpool. In step 2, the cognito userpool is configured to allow users to sign up with their email as the username.
 
 ```json
 {

@@ -45,8 +45,8 @@ type SocialNote
 ? Do you want to generate code for your newly created GraphQL API `No`
 ```
 
-5. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreCategoryPluginAuthIntegrationTests-amplifyconfiguration.json`
-6. Create `AWSDataStoreCategoryPluginAuthIntegrationTests-credentials.json` with a json object containing `user1`, and `password`, used to create the cognito user in the userpool. In step 2, the cognito userpool is configured to allow users to sign up with their email as the username.
+5. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreCategoryPluginAuthIntegrationTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
+6. Create `AWSDataStoreCategoryPluginAuthIntegrationTests-credentials.json` inside the same folder with a json object containing `user1`, and `password`, used to create the cognito user in the userpool. In step 2, the cognito userpool is configured to allow users to sign up with their email as the username.
 
 ```json
 {

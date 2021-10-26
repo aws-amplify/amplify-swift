@@ -14,8 +14,8 @@ import AmplifyPlugins
 
 class AWSS3StoragePluginTestBase: XCTestCase {
 
-    static let amplifyConfiguration = "AWSS3StoragePluginTests-amplifyconfiguration"
-    static let credentials = "AWSS3StoragePluginTests-credentials"
+    static let amplifyConfiguration = "testconfiguration/AWSS3StoragePluginTests-amplifyconfiguration"
+    static let credentials = "testconfiguration/AWSS3StoragePluginTests-credentials"
 
     static let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * 6) // 6MB
 

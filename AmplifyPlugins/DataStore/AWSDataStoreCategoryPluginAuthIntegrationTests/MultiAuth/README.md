@@ -30,8 +30,8 @@
 ? Do you want to generate code for your newly created GraphQL API `No`
 ```
 
-5. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreCategoryPluginMultiAuthIntegrationTests-amplifyconfiguration.json`
-6. Create `AWSDataStoreCategoryPluginMultiAuthIntegrationTests-credentials.json` with the following value
+5. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreCategoryPluginMultiAuthIntegrationTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
+6. Create `AWSDataStoreCategoryPluginMultiAuthIntegrationTests-credentials.json` inside the same folder with the following value
 ```json
 {
     "user1": "<USER1_EMAIL>",

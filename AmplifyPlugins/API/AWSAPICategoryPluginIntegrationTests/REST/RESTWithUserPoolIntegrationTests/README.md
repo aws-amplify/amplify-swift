@@ -42,7 +42,7 @@ Successfully added resource restwithuserpoolintea05fdd00 locally
 
 4. Provision the resources. Run `amplify push` to provision the API Gateway, Lambda, and the Cognito User Pool.
 
-5. Replace `RESTWithUserPoolIntegrationTests-amplifyconfiguration.json` with the generated `amplifyconfiguration.json`. 
+5. Copy `amplifyconfiguration.json` over as `RESTWithUserPoolIntegrationTests-amplifyconfiguration.json` to `~/.aws-amplify/amplify-ios/testconfiguration/`
 
 6. In `RESTWithUserPoolIntegrationTests-amplifyconfiguration.json`. update `authorizationType` to `AMAZON_COGNITO_USER_POOLS` like so
 ```
@@ -81,7 +81,7 @@ aws cognito-idp admin-set-user-password --user-pool-id [POOL_ID] --username [USE
 ```
 See https://docs.aws.amazon.com/cli/latest/reference/cognito-idp/index.html#cli-aws-cognito-idp for more details using AWS CLI
 
-8. Update `RESTWithUserPoolIntegrationTests-credentials.json` with a json object containing `user1` and `password` with the crendentials of the user that was created in the previous step 
+8. Update `RESTWithUserPoolIntegrationTests-credentials.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/` with a json object containing `user1` and `password` with the crendentials of the user that was created in the previous step 
 
 ```json
 {

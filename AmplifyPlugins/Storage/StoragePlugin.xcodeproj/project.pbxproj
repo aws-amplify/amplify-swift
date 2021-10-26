@@ -20,8 +20,6 @@
 		2149E6C9238CA47500873955 /* AWSS3StoragePluginOptionsUsabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB7052375DA2200818CD2 /* AWSS3StoragePluginOptionsUsabilityTests.swift */; };
 		2149E6CA238CA47500873955 /* AWSS3StoragePluginConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB7042375DA2200818CD2 /* AWSS3StoragePluginConfigurationTests.swift */; };
 		21635BE52678344B00CCE0A2 /* AWSS3StoragePluginPrefixKeyResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21635BE42678344B00CCE0A2 /* AWSS3StoragePluginPrefixKeyResolverTests.swift */; };
-		21A3EFC423A939D70095D8E6 /* AWSS3StoragePluginTests-credentials.json in Resources */ = {isa = PBXBuildFile; fileRef = 21A3EFC323A939D70095D8E6 /* AWSS3StoragePluginTests-credentials.json */; };
-		21F40A3623A293DE0074678E /* AWSS3StoragePluginTests-amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21F40A3423A293DE0074678E /* AWSS3StoragePluginTests-amplifyconfiguration.json */; };
 		21FF4E38268B8F68009F5E5E /* AWSS3StoragePluginConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FF4E37268B8F68009F5E5E /* AWSS3StoragePluginConfiguration.swift */; };
 		21FF4E3B268B9920009F5E5E /* AWSS3PluginPrefixResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FF4E3A268B9920009F5E5E /* AWSS3PluginPrefixResolver.swift */; };
 		21FF4E3E268B9D78009F5E5E /* AWSS3PluginPrefixResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FF4E3D268B9D78009F5E5E /* AWSS3PluginPrefixResolverTests.swift */; };
@@ -152,8 +150,6 @@
 		2149E6B4238CA23900873955 /* AWSS3StoragePluginFunctionalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSS3StoragePluginFunctionalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2149E6B8238CA23900873955 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21635BE42678344B00CCE0A2 /* AWSS3StoragePluginPrefixKeyResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginPrefixKeyResolverTests.swift; sourceTree = "<group>"; };
-		21A3EFC323A939D70095D8E6 /* AWSS3StoragePluginTests-credentials.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "AWSS3StoragePluginTests-credentials.json"; sourceTree = "<group>"; };
-		21F40A3423A293DE0074678E /* AWSS3StoragePluginTests-amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "AWSS3StoragePluginTests-amplifyconfiguration.json"; sourceTree = "<group>"; };
 		21FF4E37268B8F68009F5E5E /* AWSS3StoragePluginConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginConfiguration.swift; sourceTree = "<group>"; };
 		21FF4E3A268B9920009F5E5E /* AWSS3PluginPrefixResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3PluginPrefixResolver.swift; sourceTree = "<group>"; };
 		21FF4E3D268B9D78009F5E5E /* AWSS3PluginPrefixResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3PluginPrefixResolverTests.swift; sourceTree = "<group>"; };
@@ -335,8 +331,6 @@
 				B4FEB7052375DA2200818CD2 /* AWSS3StoragePluginOptionsUsabilityTests.swift */,
 				FA106A3E261F9B2B00032EF8 /* AWSS3StoragePluginProgressTests.swift */,
 				B4FEB7012375DA2200818CD2 /* AWSS3StoragePluginTestBase.swift */,
-				21F40A3423A293DE0074678E /* AWSS3StoragePluginTests-amplifyconfiguration.json */,
-				21A3EFC323A939D70095D8E6 /* AWSS3StoragePluginTests-credentials.json */,
 				2149E6B8238CA23900873955 /* Info.plist */,
 				B4FEB7062375DA2200818CD2 /* README.md */,
 				B4FEB70A2375DA2200818CD2 /* ResumabilityTests */,
@@ -888,8 +882,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B478F6E32374E0CF00C4F92B /* Main.storyboard in Resources */,
-				21A3EFC423A939D70095D8E6 /* AWSS3StoragePluginTests-credentials.json in Resources */,
-				21F40A3623A293DE0074678E /* AWSS3StoragePluginTests-amplifyconfiguration.json in Resources */,
 				B478F6E12374E0CF00C4F92B /* Assets.xcassets in Resources */,
 				B478F6E22374E0CF00C4F92B /* LaunchScreen.storyboard in Resources */,
 			);

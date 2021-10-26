@@ -14,7 +14,7 @@ import AmplifyPlugins
 @testable import AWSAPICategoryPluginTestCommon
 
 class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
-    let amplifyConfigurationFile = "GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration"
+    let amplifyConfigurationFile = "testconfiguration/GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration"
     override func setUp() {
         do {
             try Amplify.add(plugin: AWSAPIPlugin(apiAuthProviderFactory: TestAPIAuthProviderFactory()))
