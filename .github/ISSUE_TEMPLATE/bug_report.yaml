@@ -93,11 +93,22 @@ body:
         Include any relevant log output under
         `~/.amplify/logs/amplify-cli-<issue-date>.log`
       render: shell
-  - type: textarea
+  - type: dropdown
     id: regression
     attributes:
-      label: Is this a regression? (i.e. was this working before a version upgrade)
-      placeholder: If applicable provide the versions used before and after the upgrade.
+      label: Is this a regression?
+      multiple: false
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: true
+  - type: textarea
+    id: regression-info
+    attributes:
+      label: Regression additional context
+      placeholder: If it was a regression provide the versions used before and after the upgrade.
+    
   - type: input
     id: device
     attributes:
