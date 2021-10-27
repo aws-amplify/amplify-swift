@@ -12,9 +12,7 @@ public extension Geo {
     struct SearchForTextOptions {
         /// The area (.near or .boundingBox) for the search.
         public var area: Geo.SearchArea?
-        /// Limits the search to the given a list of countries/regions. Specified using [ISO
-        /// 3166 3-digit country/region
-        /// code](https://www.iso.org/iso-3166-country-codes.html). For example, CAN.
+        /// Limits the search to the given a list of countries/regions.
         public var countries: [Geo.Country]?
         /// The maximum number of results returned per request.
         public var maxResults: Int?

@@ -17,15 +17,17 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
     let timeout = 30.0
     let searchText = "coffee shop"
     let coordinates = Geo.Coordinates(latitude: 39.7392, longitude: -104.9903)
+    let amplifyConfigurationFile = "testconfiguration/AWSLocationGeoPluginIntegrationTests-amplifyconfiguration"
 
     override func setUp() {
         continueAfterFailure = false
         do {
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSLocationGeoPlugin())
-            try Amplify.configure()
+            let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(forResource:amplifyConfigurationFile)
+            try Amplify.configure(configuration)
         } catch {
-            XCTFail("Failed to initialize and configure Amplify \(error)")
+            XCTFail("Failed to initialize and configure Amplify: \(error)")
         }
         XCTAssertNotNil(Amplify.Geo.plugin)
     }
