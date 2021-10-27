@@ -37,10 +37,10 @@ public protocol GeoCategoryBehavior {
 
     /// Retrieves metadata for available Map resources.
     /// - Parameter completionHandler: The completion handler receives a Response
-    /// object.  The success case provides an array of available Map resources.
+    /// object. The success case provides an array of available Map resources.
     func availableMaps(completionHandler: @escaping Geo.ResultsHandler<[Geo.MapStyle]>)
 
-    /// Retrieves the default Map resource.
+    /// Retrieves metadata for the default Map resource.
     /// - Parameter completionHandler: The completion handler receives a Response
     /// object.  The success case provides the default Map resource.
     func defaultMap(completionHandler: @escaping Geo.ResultsHandler<Geo.MapStyle>)

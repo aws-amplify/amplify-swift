@@ -14,7 +14,7 @@ public extension Geo {
         case invalidConfiguration(ErrorDescription, RecoverySuggestion, Swift.Error? = nil)
         /// Network Error - Request failed or network unavailable.
         case networkError(ErrorDescription, RecoverySuggestion, Swift.Error? = nil)
-        // Access Denied - request authorization issue
+        /// Access Denied - request authorization issue
         case accessDenied(ErrorDescription, RecoverySuggestion, Swift.Error? = nil)
         /// Service Error - Service may be down [500, 503]
         case serviceError(ErrorDescription, RecoverySuggestion, Swift.Error? = nil)
