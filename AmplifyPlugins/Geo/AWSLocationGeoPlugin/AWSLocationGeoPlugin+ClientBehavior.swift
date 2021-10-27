@@ -38,8 +38,8 @@ extension AWSLocationGeoPlugin {
 
         guard request.indexName != nil else {
             completionHandler(.failure(.invalidConfiguration(
-                "No default search index was found.",
-                "Please ensure you have added search to your project before calling search functions.")))
+                GeoPluginErrorConstants.missingDefaultSearchIndex.errorDescription,
+                GeoPluginErrorConstants.missingDefaultSearchIndex.recoverySuggestion)))
             return
         }
 
@@ -68,8 +68,6 @@ extension AWSLocationGeoPlugin {
             request.maxResults = maxResults as NSNumber
         }
 
-        request.indexName = "blah"
-
         locationService.searchPlaceIndex(forText: request) { response, error in
             completionHandler(AWSLocationGeoPlugin.parsePlaceResponse(response: response, error: error))
         }
@@ -94,8 +92,8 @@ extension AWSLocationGeoPlugin {
 
         guard request.indexName != nil else {
             completionHandler(.failure(.invalidConfiguration(
-                "No default search index was found.",
-                "Please ensure you have added search to your project before calling search functions.")))
+                GeoPluginErrorConstants.missingDefaultSearchIndex.errorDescription,
+                GeoPluginErrorConstants.missingDefaultSearchIndex.recoverySuggestion)))
             return
         }
 
@@ -161,8 +159,8 @@ extension AWSLocationGeoPlugin {
         let mapStyles = Array(pluginConfig.maps.values)
         guard !mapStyles.isEmpty else {
             completionHandler(.failure(.invalidConfiguration(
-                "No maps are available.",
-                "Please ensure you have added maps to your project before calling map-related functions.")))
+                GeoPluginErrorConstants.missingMaps.errorDescription,
+                GeoPluginErrorConstants.missingMaps.recoverySuggestion)))
             return
         }
         completionHandler(.success(mapStyles))
@@ -173,8 +171,8 @@ extension AWSLocationGeoPlugin {
     public func defaultMap(completionHandler: @escaping Geo.ResultsHandler<Geo.MapStyle>) {
         guard let mapName = pluginConfig.defaultMap, let mapStyle = pluginConfig.maps[mapName] else {
             completionHandler(.failure(.invalidConfiguration(
-                "No default map was found.",
-                "Please ensure you have added maps to your project before calling map-related functions.")))
+                GeoPluginErrorConstants.missingDefaultMap.errorDescription,
+                GeoPluginErrorConstants.missingDefaultMap.recoverySuggestion)))
             return
         }
         completionHandler(.success(mapStyle))

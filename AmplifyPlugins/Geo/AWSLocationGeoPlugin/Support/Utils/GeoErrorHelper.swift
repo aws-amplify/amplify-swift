@@ -31,8 +31,6 @@ class GeoErrorHelper {
         let error = error as NSError
         let defaultError = GeoErrorHelper.getDefaultError(error)
 
-        print(defaultError)
-
         guard error.domain == AWSLocationErrorDomain else {
             return defaultError
         }
@@ -42,25 +40,25 @@ class GeoErrorHelper {
             return defaultError
         }
 
-        return GeoErrorHelper.mapError(description: error.localizedDescription, type: errorType) ?? defaultError
+        return GeoErrorHelper.mapError(description: error.localizedDescription, type: errorType, error: error) ?? defaultError
     }
 
-    static func mapError(description: ErrorDescription, type: AWSLocationErrorType) -> Geo.Error? {
+    static func mapError(description: ErrorDescription, type: AWSLocationErrorType, error: Error) -> Geo.Error? {
         switch type {
         case .accessDenied:
-            return Geo.Error.accessDenied(description, GeoPluginErrorConstants.accessDenied)
+            return Geo.Error.accessDenied(description, GeoPluginErrorConstants.accessDenied, error)
         case .conflict:
-            break
+            return Geo.Error.accessDenied(description, GeoPluginErrorConstants.conflict, error)
         case .internalServer:
-            break
+            return Geo.Error.serviceError(description, GeoPluginErrorConstants.internalServer, error)
         case .resourceNotFound:
-            break
+            return Geo.Error.serviceError(description, GeoPluginErrorConstants.resourceNotFound, error)
         case .serviceQuotaExceeded:
-            break
+            return Geo.Error.serviceError(description, GeoPluginErrorConstants.serviceQuotaExceeded, error)
         case .throttling:
-            break
+            return Geo.Error.serviceError(description, GeoPluginErrorConstants.throttling, error)
         case .validation:
-            break
+            return Geo.Error.serviceError(description, GeoPluginErrorConstants.validation, error)
         case .unknown:
             break
         @unknown default:
