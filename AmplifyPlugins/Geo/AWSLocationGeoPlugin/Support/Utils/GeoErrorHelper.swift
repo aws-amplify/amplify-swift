@@ -16,15 +16,12 @@ import AWSLocationXCF
 class GeoErrorHelper {
     static func getDefaultError(_ error: Error) -> Geo.Error {
         let error = error as NSError
-        let errorMessage = """
-        Domain: [\(error.domain)]
-        Code: [\(error.code)]
-        LocalizedDescription: [\(error.localizedDescription)]
-        LocalizedFailureReason: [\(error.localizedFailureReason ?? "")]
-        LocalizedRecoverySuggestion: [\(error.localizedRecoverySuggestion ?? "")]
-        """
 
-        return Geo.Error.unknown(errorMessage, "")
+        if error.domain == NSURLErrorDomain {
+            return Geo.Error.networkError(error.localizedDescription, "See underlying error.", error)
+        } else {
+            return Geo.Error.unknown(error.localizedDescription, "See underlying error.", error)
+        }
     }
 
     static func mapAWSLocationError(_ error: Error) -> Geo.Error {
@@ -40,7 +37,9 @@ class GeoErrorHelper {
             return defaultError
         }
 
-        return GeoErrorHelper.mapError(description: error.localizedDescription, type: errorType, error: error) ?? defaultError
+        return GeoErrorHelper.mapError(description: error.localizedDescription,
+                                       type: errorType,
+                                       error: error) ?? defaultError
     }
 
     static func mapError(description: ErrorDescription, type: AWSLocationErrorType, error: Error) -> Geo.Error? {
