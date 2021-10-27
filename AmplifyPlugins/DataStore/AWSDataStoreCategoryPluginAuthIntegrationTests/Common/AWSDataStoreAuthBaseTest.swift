@@ -16,41 +16,17 @@ import AWSPluginsCore
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-class AWSDataStoreMultiAuthBaseTest: XCTestCase {
+class AWSDataStoreAuthBaseTest: XCTestCase {
     var requests: Set<AnyCancellable> = []
 
+    var amplifyConfig: AmplifyConfiguration!
     var user1: TestUser?
     var user2: TestUser?
-
-    static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginMultiAuthIntegrationTests-amplifyconfiguration"
-    static let credentialsFile = "testconfiguration/AWSDataStoreCategoryPluginMultiAuthIntegrationTests-credentials"
-
     var authRecorderInterceptor: AuthRecorderInterceptor!
 
     override func setUp() {
         continueAfterFailure = false
-
         Amplify.Logging.logLevel = .verbose
-
-        do {
-            let credentials = try TestConfigHelper.retrieveCredentials(forResource: Self.credentialsFile)
-
-            guard let user1 = credentials["user1"],
-                  let user2 = credentials["user2"],
-                  let passwordUser1 = credentials["passwordUser1"],
-                  let passwordUser2 = credentials["passwordUser2"] else {
-                XCTFail("Invalid \(Self.credentialsFile).json data")
-                return
-            }
-
-            self.user1 = TestUser(username: user1, password: passwordUser1)
-            self.user2 = TestUser(username: user2, password: passwordUser2)
-
-            authRecorderInterceptor = AuthRecorderInterceptor()
-
-        } catch {
-            XCTFail("Error during setup: \(error)")
-        }
     }
 
     override func tearDownWithError() throws {
@@ -82,11 +58,51 @@ class AWSDataStoreMultiAuthBaseTest: XCTestCase {
         )
     }
 
+    func setupCredentials(forAuthStrategy authModeStrategy: AuthModeStrategyType) {
+        let amplifyConfigurationFile: String
+        let credentialsFile: String
+
+        switch authModeStrategy {
+        case .default:
+            amplifyConfigurationFile = "AWSDataStoreCategoryPluginAuthIntegrationTests-amplifyconfiguration"
+            credentialsFile = "AWSDataStoreCategoryPluginAuthIntegrationTests-credentials"
+        case .multiAuth:
+            amplifyConfigurationFile = "AWSDataStoreCategoryPluginMultiAuthIntegrationTests-amplifyconfiguration"
+            credentialsFile = "AWSDataStoreCategoryPluginMultiAuthIntegrationTests-credentials"
+        }
+
+        do {
+            let credentials = try TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
+
+            guard let user1 = credentials["user1"],
+                  let user2 = credentials["user2"],
+                  let passwordUser1 = credentials["passwordUser1"],
+                  let passwordUser2 = credentials["passwordUser2"] else {
+                XCTFail("Invalid \(credentialsFile).json data")
+                return
+            }
+
+            self.user1 = TestUser(username: user1, password: passwordUser1)
+            self.user2 = TestUser(username: user2, password: passwordUser2)
+
+            authRecorderInterceptor = AuthRecorderInterceptor()
+
+            amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
+
+        } catch {
+            XCTFail("Error during setup: \(error)")
+        }
+
+    }
+
     /// Setup DataStore with given models
     /// - Parameter models: DataStore models
-    func setup(withModels models: AmplifyModelRegistration) {
+    func setup(withModels models: AmplifyModelRegistration,
+               authStrategy: AuthModeStrategyType) {
         do {
-            let datastoreConfig = DataStoreConfiguration.custom(authModeStrategy: .multiAuth)
+            setupCredentials(forAuthStrategy: authStrategy)
+
+            let datastoreConfig = DataStoreConfiguration.custom(authModeStrategy: authStrategy)
 
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models,
                                                        configuration: datastoreConfig))
@@ -96,7 +112,6 @@ class AWSDataStoreMultiAuthBaseTest: XCTestCase {
             try Amplify.add(plugin: apiPlugin)
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
 
-            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
             try Amplify.configure(amplifyConfig)
 
             // register auth recorder interceptor
@@ -122,7 +137,7 @@ class AWSDataStoreMultiAuthBaseTest: XCTestCase {
 }
 
 // MARK: - Auth helpers
-extension AWSDataStoreMultiAuthBaseTest {
+extension AWSDataStoreAuthBaseTest {
     /// Signin given user
     /// - Parameter user
     func signIn(user: TestUser?) {
@@ -162,7 +177,7 @@ extension AWSDataStoreMultiAuthBaseTest {
 }
 
 // MARK: - DataStore behavior assert helpers
-extension AWSDataStoreMultiAuthBaseTest {
+extension AWSDataStoreAuthBaseTest {
     /// Asserts that query with given `Model` succeeds
     /// - Parameters:
     ///   - modelType: model type
@@ -307,7 +322,7 @@ extension AWSDataStoreMultiAuthBaseTest {
 }
 
 // MARK: - Expectations
-extension AWSDataStoreMultiAuthBaseTest {
+extension AWSDataStoreAuthBaseTest {
     struct MultiAuthTestExpectations {
         var subscriptionsEstablished: XCTestExpectation
         var modelsSynced: XCTestExpectation

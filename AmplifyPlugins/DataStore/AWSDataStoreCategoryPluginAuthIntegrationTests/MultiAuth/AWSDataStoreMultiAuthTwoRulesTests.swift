@@ -14,14 +14,14 @@ import XCTest
 @testable import AmplifyTestCommon
 
 // swiftlint:disable file_length
-class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreMultiAuthBaseTest {
+class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreAuthBaseTest {
     // MARK: - owner/private - UserPools & IAM
 
     /// Given: a user signed in with CognitoUserPools
     /// When: DataStore query/mutation operations
     /// Then: DataStore is successfully initialized, are sent with CognitoUserPools auth for authenticated users.
     func testOwnerPrivateUserPoolsIAM() {
-        setup(withModels: OwnerPrivateUserPoolsIAMModels())
+        setup(withModels: OwnerPrivateUserPoolsIAMModels(), authStrategy: .multiAuth)
         signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -52,7 +52,7 @@ class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreMultiAuthBaseTest {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with Cognito
     ///   for authenticated users
     func testOwnerPublicUserPoolsAPIKeyAuthenticatedUsers() {
-        setup(withModels: OwnerPublicUserPoolsAPIModels())
+        setup(withModels: OwnerPublicUserPoolsAPIModels(), authStrategy: .multiAuth)
         signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -80,7 +80,7 @@ class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreMultiAuthBaseTest {
     /// Then:
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with API key
     func testOwnerPublicUserPoolsAPIKeyUnauthenticatedUsers() {
-        setup(withModels: OwnerPublicUserPoolsAPIModels())
+        setup(withModels: OwnerPublicUserPoolsAPIModels(), authStrategy: .multiAuth)
         signOut()
 
         let expectations = makeExpectations()
@@ -111,7 +111,7 @@ class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreMultiAuthBaseTest {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent
     ///   with Cognito auth for authenticated users
     func testOwnerPublicUserPoolsIAMAuthenticatedUsers() {
-        setup(withModels: OwnerPublicUserPoolsIAMModels())
+        setup(withModels: OwnerPublicUserPoolsIAMModels(), authStrategy: .multiAuth)
         signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -138,7 +138,7 @@ class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreMultiAuthBaseTest {
     /// Then:
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with IAM
     func testOwnerPublicUserPoolsIAMUnauthenticatedUsers() {
-        setup(withModels: OwnerPublicUserPoolsIAMModels())
+        setup(withModels: OwnerPublicUserPoolsIAMModels(), authStrategy: .multiAuth)
         signOut()
 
         let expectations = makeExpectations()
@@ -179,7 +179,7 @@ class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreMultiAuthBaseTest {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent
     ///   with API key for unauthenticated users.
     func testOwnerPublicOIDCAPIUnauthenticatedUsers() {
-        setup(withModels: OwnerPublicOIDCAPIModels())
+        setup(withModels: OwnerPublicOIDCAPIModels(), authStrategy: .multiAuth)
 
         let expectations = makeExpectations()
 
@@ -209,7 +209,7 @@ class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreMultiAuthBaseTest {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent
     ///   with Cognito User Pools auth for authenticated users in the “Admins” group.
     func testGroupPrivateUserPoolsIAM() {
-        setup(withModels: GroupPrivateUserPoolsIAMModels())
+        setup(withModels: GroupPrivateUserPoolsIAMModels(), authStrategy: .multiAuth)
         signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -241,7 +241,7 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent
     ///   with Cognito auth for authenticated users
     func testGroupPublicUserPoolsAPIKeyAuthenticatedUsers() {
-        setup(withModels: GroupPublicUserPoolsAPIModels())
+        setup(withModels: GroupPublicUserPoolsAPIModels(), authStrategy: .multiAuth)
         signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -269,7 +269,7 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
     /// Then:
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with API Key
     func testGroupPublicUserPoolsAPIKeyUnauthenticatedUsers() {
-        setup(withModels: GroupPublicUserPoolsAPIModels())
+        setup(withModels: GroupPublicUserPoolsAPIModels(), authStrategy: .multiAuth)
         signOut()
 
         let expectations = makeExpectations()
@@ -301,7 +301,7 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent
     ///   with Cognito auth for authenticated users
     func testGroupPublicUserPoolsIAMAuthenticatedUsers() {
-        setup(withModels: GroupPublicUserPoolsIAMModels())
+        setup(withModels: GroupPublicUserPoolsIAMModels(), authStrategy: .multiAuth)
         signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -329,7 +329,7 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
     /// Then:
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with IAM
     func testGroupPublicUserPoolsIAMUnauthenticatedUsers() {
-        setup(withModels: GroupPublicUserPoolsIAMModels())
+        setup(withModels: GroupPublicUserPoolsIAMModels(), authStrategy: .multiAuth)
         signOut()
 
         let expectations = makeExpectations()
@@ -361,7 +361,7 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent
     ///   with Cognito auth for authenticated users
     func testPrivatePrivateUserPoolsIAMAuthenticatedUsers() {
-        setup(withModels: PrivateUserPoolsIAMModels())
+        setup(withModels: PrivateUserPoolsIAMModels(), authStrategy: .multiAuth)
         signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -392,7 +392,7 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with Cognito
     ///   for authenticated users
     func testPrivatePublicUserPoolsAPIKeyAuthenticatedUsers() {
-        setup(withModels: PrivatePublicUserPoolsAPIModels())
+        setup(withModels: PrivatePublicUserPoolsAPIModels(), authStrategy: .multiAuth)
         signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -420,7 +420,7 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
     /// Then:
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with API key
     func testPrivatePublicUserPoolsAPIKeyUnauthenticatedUsers() {
-        setup(withModels: PrivatePublicUserPoolsAPIModels())
+        setup(withModels: PrivatePublicUserPoolsAPIModels(), authStrategy: .multiAuth)
         signOut()
 
         let expectations = makeExpectations()
@@ -453,7 +453,7 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with Cognito
     ///   for authenticated users
     func testPrivatePublicUserPoolsIAMAuthenticatedUsers() {
-        setup(withModels: PrivatePublicUserPoolsIAMModels())
+        setup(withModels: PrivatePublicUserPoolsIAMModels(), authStrategy: .multiAuth)
         signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -481,7 +481,7 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
     /// Then:
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with IAM
     func testPrivatePublicUserPoolsIAMUnauthenticatedUsers() {
-        setup(withModels: PrivatePublicUserPoolsIAMModels())
+        setup(withModels: PrivatePublicUserPoolsIAMModels(), authStrategy: .multiAuth)
         signOut()
 
         let expectations = makeExpectations()
@@ -514,7 +514,7 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with IAM
     ///   for authenticated users
     func testPrivatePublicIAMAPIKeyAuthenticatedUsers() {
-        setup(withModels: PrivatePublicIAMAPIModels())
+        setup(withModels: PrivatePublicIAMAPIModels(), authStrategy: .multiAuth)
         signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -542,7 +542,7 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
     /// Then:
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with API Key
     func testPrivatePublicIAMAPIKeyUnauthenticatedUsers() {
-        setup(withModels: PrivatePublicIAMAPIModels())
+        setup(withModels: PrivatePublicIAMAPIModels(), authStrategy: .multiAuth)
         signOut()
 
         let expectations = makeExpectations()
@@ -571,7 +571,7 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with IAM
     ///   for unauthenticated users
     func testPublicPublicAPIKeyIAMUnauthenticatedUsers() {
-        setup(withModels: PublicPublicAPIIAMModels())
+        setup(withModels: PublicPublicAPIIAMModels(), authStrategy: .multiAuth)
 
         let expectations = makeExpectations()
 

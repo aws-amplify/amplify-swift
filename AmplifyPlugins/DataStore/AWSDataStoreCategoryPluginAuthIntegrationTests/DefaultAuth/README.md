@@ -82,6 +82,6 @@ aws cognito-idp admin-create-user --user-pool-id [POOL_ID] --username [USER EMAI
 aws cognito-idp admin-set-user-password --user-pool-id [POOL_ID] --username [USER EMAIL] --password [PASSWORD] --permanent
 ```
 
-The `[POOL_ID]` can be found in `amplifyconfiguration.json` under `auth.plugsin.awsCognitoAuthPlugin.CognitoUserPool.Default.PoolId`
+The `[POOL_ID]` can be found in `amplifyconfiguration.json` under `auth.plugin.awsCognitoAuthPlugin.CognitoUserPool.Default.PoolId`
 
 Now you can run the AWSDataStoreCategoryPluginAuthIntegrationTests
