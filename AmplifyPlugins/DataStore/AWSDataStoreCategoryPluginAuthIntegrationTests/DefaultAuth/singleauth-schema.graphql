@@ -1,0 +1,15 @@
+type TodoExplicitOwnerField
+    @model
+    @auth(rules: [{ allow: owner, ownerField: "owner" }]) {
+    id: ID!
+    content: String!
+    owner: String
+}
+
+type TodoImplicitOwnerField
+    @model
+    @auth(rules: [ { allow: owner } ]) {
+    id: ID!
+    content: String!
+}
+

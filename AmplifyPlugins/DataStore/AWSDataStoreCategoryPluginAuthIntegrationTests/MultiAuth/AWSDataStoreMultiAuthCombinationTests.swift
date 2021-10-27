@@ -13,13 +13,13 @@ import XCTest
 @testable import AmplifyPlugins
 @testable import AmplifyTestCommon
 
-class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreMultiAuthBaseTest {
+class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
 
     /// Given: an unauthenticated user
     /// When: DataStore start is called
     /// Then: DataStore is successfully initialized.
     func testDataStoreReadyState() {
-        setup(withModels: PrivatePublicComboModels())
+        setup(withModels: PrivatePublicComboModels(), authStrategy: .multiAuth)
         signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -59,7 +59,7 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreMultiAuthBaseTest {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests f
     ///   or PrivatePublicComboUPPost are sent with IAM auth for authenticated users.
     func testOperationsForPrivatePublicComboUPPost() {
-        setup(withModels: PrivatePublicComboModels())
+        setup(withModels: PrivatePublicComboModels(), authStrategy: .multiAuth)
         signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -87,7 +87,7 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreMultiAuthBaseTest {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests
     ///   for PrivatePublicComboAPIPost are sent with API key auth for authenticated users.
     func testOperationsForPrivatePublicComboAPIPostAuthenticatedUser() {
-        setup(withModels: PrivatePublicComboModels())
+        setup(withModels: PrivatePublicComboModels(), authStrategy: .multiAuth)
         signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -117,7 +117,7 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreMultiAuthBaseTest {
     ///   PrivatePublicComboUPPost does not sync for unauthenticated users, but it does not block the other models
     ///   from syncing and DataStore getting to a “ready” state.
     func testOperationsForPrivatePublicComboAPIPost() {
-        setup(withModels: PrivatePublicComboModels())
+        setup(withModels: PrivatePublicComboModels(), authStrategy: .multiAuth)
         signOut()
 
         let expectations = makeExpectations()
