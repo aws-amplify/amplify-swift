@@ -169,19 +169,19 @@ final class ModelSyncedEventEmitter {
                 log.error("Unexpected mutationType received: \(event.mutationType)")
             }
 
+            modelSyncedEventTopic.send(.mutationEventApplied(event))
+
             if shouldDispatchModelSyncedEvent {
                 dispatchModelSyncedEvent()
             }
-
-            modelSyncedEventTopic.send(.mutationEventApplied(event))
         case .mutationEventDropped(let modelName):
             reconciledReceived += 1
 
+            modelSyncedEventTopic.send(.mutationEventDropped(modelName: modelName))
+
             if shouldDispatchModelSyncedEvent {
                 dispatchModelSyncedEvent()
             }
-
-            modelSyncedEventTopic.send(.mutationEventDropped(modelName: modelName))
         case .initialized, .started, .paused:
             return
         }

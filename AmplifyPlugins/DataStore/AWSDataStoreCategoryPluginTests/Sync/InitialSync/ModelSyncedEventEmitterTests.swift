@@ -32,6 +32,98 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         ModelRegistry.register(modelType: Post.self)
     }
 
+    /// The last mutation event from the reconciliation queue should be sent before the model synced event.
+    ///
+    /// - Given: 5 events during sync, 5 reconciliation events (3 applied, 2 dropped)
+    /// - When:
+    ///    - The events are sent to the emitter, the events from the emitter are received
+    /// - Then:
+    ///    - the order of the events received should be all the mutation events followed by the modelSyncedEvent.
+    ///
+    func testRecieveLastMutationEventBeforeModelSyncedEvent() throws {
+        let modelSyncedReceived = expectation(description: "modelSynced received")
+        let modelSyncedReceivedFromHub = expectation(description: " modelSynced received from Hub")
+        let mutationEventAppliedReceived = expectation(description: "mutationEventApplied received")
+        mutationEventAppliedReceived.expectedFulfillmentCount = 3
+        let mutationEventDroppedReceived = expectation(description: "mutationEventDropped received")
+        mutationEventDroppedReceived.expectedFulfillmentCount = 2
+        let anyPostMetadata = MutationSyncMetadata(id: "1",
+                                                   deleted: false,
+                                                   lastChangedAt: Int(Date().timeIntervalSince1970),
+                                                   version: 1)
+        let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
+        let anyPost = AnyModel(testPost)
+        let anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
+        let postMutationEvent = try MutationEvent(untypedModel: testPost, mutationType: .create)
+        var receivedMutationEventsCount = 0
+        var modelSyncedEventReceivedLast = false
+        let listener = Amplify.Hub.publisher(for: .dataStore).sink { payload in
+            switch payload.eventName {
+            case HubPayload.EventName.DataStore.modelSynced:
+                guard let modelSyncedEventPayload = payload.data as? ModelSyncedEvent else {
+                    XCTFail("Couldn't cast payload data as ModelSyncedEvent")
+                    return
+                }
+                let expectedModelSyncedEventPayload = ModelSyncedEvent(modelName: "Post",
+                                                                       isFullSync: true,
+                                                                       isDeltaSync: false,
+                                                                       added: 3,
+                                                                       updated: 0,
+                                                                       deleted: 0)
+                XCTAssertEqual(modelSyncedEventPayload, expectedModelSyncedEventPayload)
+                if receivedMutationEventsCount == 5 {
+                    modelSyncedEventReceivedLast = true
+                }
+                modelSyncedReceivedFromHub.fulfill()
+            default:
+                break
+            }
+        }
+
+        let emitter = ModelSyncedEventEmitter(modelSchema: Post.schema,
+                                              initialSyncOrchestrator: initialSyncOrchestrator,
+                                              reconciliationQueue: reconciliationQueue)
+
+        var emitterSink: AnyCancellable?
+        emitterSink = emitter.publisher.sink { _ in
+            XCTFail("Should not have completed")
+        } receiveValue: { value in
+            switch value {
+            case .modelSyncedEvent:
+                modelSyncedReceived.fulfill()
+            case .mutationEventApplied:
+                receivedMutationEventsCount += 1
+                mutationEventAppliedReceived.fulfill()
+            case .mutationEventDropped:
+                receivedMutationEventsCount += 1
+                mutationEventDroppedReceived.fulfill()
+            }
+        }
+
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Post.modelName,
+                                                                            syncType: .fullSync))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync,
+                                                                             modelName: Post.modelName))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync,
+                                                                             modelName: Post.modelName))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync,
+                                                                             modelName: Post.modelName))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync,
+                                                                             modelName: Post.modelName))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync,
+                                                                             modelName: Post.modelName))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelName: Post.modelName))
+        reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))
+        reconciliationQueue?.incomingEventSubject.send(.mutationEventDropped(modelName: Post.modelName))
+        reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))
+        reconciliationQueue?.incomingEventSubject.send(.mutationEventDropped(modelName: Post.modelName))
+        reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(modelSyncedEventReceivedLast)
+        emitterSink?.cancel()
+        listener.cancel()
+    }
+
     /// ModelSyncedEventEmitter should continue to send `mutationEventApplied` and `mutationEventDropped` events even
     /// after ModelSyncedEvent has been emitted.
     ///
