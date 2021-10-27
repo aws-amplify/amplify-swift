@@ -21,7 +21,6 @@
 		5CB2BEAA26FD377000C030C6 /* AWSLocationGeoPlugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB2BEA526FD377000C030C6 /* AWSLocationGeoPlugin+Reset.swift */; };
 		5CB2BEAC26FD378F00C030C6 /* AWSLocationGeoPluginConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB2BEAB26FD378F00C030C6 /* AWSLocationGeoPluginConfiguration.swift */; };
 		5CC7F8E92709F5D900EB2C0C /* GeoPluginTestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC7F8E82709F5D900EB2C0C /* GeoPluginTestConfig.swift */; };
-		5CE2F0B8270CE917002B32AC /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 5CE2F0B7270CE917002B32AC /* amplifyconfiguration.json */; };
 		5CF43D072728C41300F636E1 /* GeoPluginErrorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF43D062728C41300F636E1 /* GeoPluginErrorConstants.swift */; };
 		7BB09495AD6E3BEC74F2D3CA /* Pods_HostApp_AWSLocationGeoPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16192D28F462AAC393BB7C19 /* Pods_HostApp_AWSLocationGeoPluginTests.framework */; };
 		7CC1D91561823C05661AEFDA /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C78EDC76E7C7F3345E10230 /* Pods_HostApp.framework */; };
@@ -87,7 +86,6 @@
 		5CB2BEAB26FD378F00C030C6 /* AWSLocationGeoPluginConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSLocationGeoPluginConfiguration.swift; sourceTree = "<group>"; };
 		5CC7F8E82709F5D900EB2C0C /* GeoPluginTestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoPluginTestConfig.swift; sourceTree = "<group>"; };
 		5CE2F0B0270CCDF4002B32AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5CE2F0B7270CE917002B32AC /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = SOURCE_ROOT; };
 		5CF43D062728C41300F636E1 /* GeoPluginErrorConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoPluginErrorConstants.swift; sourceTree = "<group>"; };
 		7429F6FCF542E2C1BB198156 /* Pods-HostApp-AWSLocationGeoPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSLocationGeoPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSLocationGeoPluginTests/Pods-HostApp-AWSLocationGeoPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		84D6296108A99E8CF1A509DF /* Pods-HostApp-AWSLocationGeoPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSLocationGeoPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSLocationGeoPluginIntegrationTests/Pods-HostApp-AWSLocationGeoPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -260,7 +258,6 @@
 		B478F6BD2374E0B500C4F92B /* HostApp */ = {
 			isa = PBXGroup;
 			children = (
-				B478F6DB2374E0CF00C4F92B /* Configuration */,
 				B478F6D42374E0CF00C4F92B /* Resources */,
 				B478F6D02374E0CE00C4F92B /* Source */,
 			);
@@ -286,14 +283,6 @@
 				B478F6DA2374E0CF00C4F92B /* Info.plist */,
 			);
 			path = Resources;
-			sourceTree = "<group>";
-		};
-		B478F6DB2374E0CF00C4F92B /* Configuration */ = {
-			isa = PBXGroup;
-			children = (
-				5CE2F0B7270CE917002B32AC /* amplifyconfiguration.json */,
-			);
-			path = Configuration;
 			sourceTree = "<group>";
 		};
 		B478F7242375014D00C4F92B /* AWSLocationGeoPlugin */ = {
@@ -565,7 +554,6 @@
 				B478F6E32374E0CF00C4F92B /* Main.storyboard in Resources */,
 				B478F6E12374E0CF00C4F92B /* Assets.xcassets in Resources */,
 				B478F6E22374E0CF00C4F92B /* LaunchScreen.storyboard in Resources */,
-				5CE2F0B8270CE917002B32AC /* amplifyconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -24,7 +24,7 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
         do {
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSLocationGeoPlugin())
-            let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(forResource:amplifyConfigurationFile)
+            let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
             try Amplify.configure(configuration)
         } catch {
             XCTFail("Failed to initialize and configure Amplify: \(error)")
