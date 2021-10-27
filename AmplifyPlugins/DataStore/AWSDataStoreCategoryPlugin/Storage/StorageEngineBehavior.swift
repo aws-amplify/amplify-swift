@@ -12,6 +12,9 @@ import Combine
 enum StorageEngineEvent {
     case started
     case mutationEvent(MutationEvent)
+    case modelSyncedEvent(ModelSyncedEvent)
+    case syncQueriesReady
+    case ready
 }
 
 protocol StorageEngineBehavior: AnyObject, ModelStorageBehavior {

@@ -123,6 +123,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     let sortInput: [QuerySortDescriptor]?
     var storageEngine: StorageEngineBehavior
     var dataStorePublisher: ModelSubcriptionBehavior
+    let dispatchedModelSyncedEvent: AtomicValue<Bool>
     let itemsChangedMaxSize: Int
 
     let stopwatch: Stopwatch
@@ -140,18 +141,8 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         return observeQueryPublisher.eraseToAnyPublisher()
     }
 
-    var isSynced: Bool {
-        if let storageAdapter = storageEngine as? StorageEngine,
-           let remoteSyncEngine = storageAdapter.syncEngine as? RemoteSyncEngine,
-           let modelSyncedEventEmitter = remoteSyncEngine
-            .syncEventEmitter?.modelSyncedEventEmitters[modelType.modelName] {
-            return modelSyncedEventEmitter.dispatchedModelSyncedEvent
-        }
-        return false
-    }
-
     var currentSnapshot: DataStoreQuerySnapshot<M> {
-        DataStoreQuerySnapshot<M>(items: currentItems.sortedModels, isSynced: isSynced)
+        DataStoreQuerySnapshot<M>(items: currentItems.sortedModels, isSynced: dispatchedModelSyncedEvent.get())
     }
 
     init(modelType: M.Type,
@@ -160,13 +151,15 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
          sortInput: [QuerySortDescriptor]?,
          storageEngine: StorageEngineBehavior,
          dataStorePublisher: ModelSubcriptionBehavior,
-         dataStoreConfiguration: DataStoreConfiguration) {
+         dataStoreConfiguration: DataStoreConfiguration,
+         dispatchedModelSyncedEvent: AtomicValue<Bool>) {
         self.modelType = modelType
         self.modelSchema = modelSchema
         self.predicate = predicate
         self.sortInput = sortInput
         self.storageEngine = storageEngine
         self.dataStorePublisher = dataStorePublisher
+        self.dispatchedModelSyncedEvent = dispatchedModelSyncedEvent
         self.itemsChangedMaxSize = Int(dataStoreConfiguration.syncPageSize)
         self.stopwatch = Stopwatch()
         self.observeQueryStarted = false
@@ -272,14 +265,14 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
 
     func subscribeToItemChanges() {
         batchItemsChangedSink = dataStorePublisher.publisher
-            .filter { _ in !self.isSynced }
+            .filter { _ in !self.dispatchedModelSyncedEvent.get() }
             .filter(onItemChangedFilter(mutationEvent:))
             .collect(.byTimeOrCount(serialQueue, itemsChangedPeriodicPublishTimeInSeconds, itemsChangedMaxSize))
             .sink(receiveCompletion: onReceiveCompletion(completed:),
                   receiveValue: onItemsChange(mutationEvents:))
 
         itemsChangedSink = dataStorePublisher.publisher
-            .filter { _ in self.isSynced }
+            .filter { _ in self.dispatchedModelSyncedEvent.get() }
             .filter(onItemChangedFilter(mutationEvent:))
             .receive(on: serialQueue)
             .sink(receiveCompletion: onReceiveCompletion(completed:),

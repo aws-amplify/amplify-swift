@@ -52,13 +52,19 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
                             "`dataStorePublisher` is expected to exist for deployment targets >=iOS13.0",
                             "", nil)).eraseToAnyPublisher()
         }
+        guard let dispatchedModelSyncedEvent = dispatchedModelSyncedEvents[modelSchema.name] else {
+            return Fail(error: DataStoreError.unknown(
+                            "`dispatchedModelSyncedEvent` is expected to exist for \(modelSchema.name)",
+                            "", nil)).eraseToAnyPublisher()
+        }
         let operation = AWSDataStoreObserveQueryOperation(modelType: modelType,
                                                           modelSchema: modelSchema,
                                                           predicate: predicate,
                                                           sortInput: sortInput,
                                                           storageEngine: storageEngine,
                                                           dataStorePublisher: dataStorePublisher,
-                                                          dataStoreConfiguration: dataStoreConfiguration)
+                                                          dataStoreConfiguration: dataStoreConfiguration,
+                                                          dispatchedModelSyncedEvent: dispatchedModelSyncedEvent)
         operationQueue.addOperation(operation)
         return operation.publisher
     }

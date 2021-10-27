@@ -42,7 +42,6 @@ class ModelSyncedEventEmitterTests: XCTestCase {
     ///
     func testRecieveLastMutationEventBeforeModelSyncedEvent() throws {
         let modelSyncedReceived = expectation(description: "modelSynced received")
-        let modelSyncedReceivedFromHub = expectation(description: " modelSynced received from Hub")
         let mutationEventAppliedReceived = expectation(description: "mutationEventApplied received")
         mutationEventAppliedReceived.expectedFulfillmentCount = 3
         let mutationEventDroppedReceived = expectation(description: "mutationEventDropped received")
@@ -57,28 +56,6 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         let postMutationEvent = try MutationEvent(untypedModel: testPost, mutationType: .create)
         var receivedMutationEventsCount = 0
         var modelSyncedEventReceivedLast = false
-        let listener = Amplify.Hub.publisher(for: .dataStore).sink { payload in
-            switch payload.eventName {
-            case HubPayload.EventName.DataStore.modelSynced:
-                guard let modelSyncedEventPayload = payload.data as? ModelSyncedEvent else {
-                    XCTFail("Couldn't cast payload data as ModelSyncedEvent")
-                    return
-                }
-                let expectedModelSyncedEventPayload = ModelSyncedEvent(modelName: "Post",
-                                                                       isFullSync: true,
-                                                                       isDeltaSync: false,
-                                                                       added: 3,
-                                                                       updated: 0,
-                                                                       deleted: 0)
-                XCTAssertEqual(modelSyncedEventPayload, expectedModelSyncedEventPayload)
-                if receivedMutationEventsCount == 5 {
-                    modelSyncedEventReceivedLast = true
-                }
-                modelSyncedReceivedFromHub.fulfill()
-            default:
-                break
-            }
-        }
 
         let emitter = ModelSyncedEventEmitter(modelSchema: Post.schema,
                                               initialSyncOrchestrator: initialSyncOrchestrator,
@@ -89,7 +66,17 @@ class ModelSyncedEventEmitterTests: XCTestCase {
             XCTFail("Should not have completed")
         } receiveValue: { value in
             switch value {
-            case .modelSyncedEvent:
+            case .modelSyncedEvent(let modelSyncedEvent):
+                let expectedModelSyncedEventPayload = ModelSyncedEvent(modelName: "Post",
+                                                                       isFullSync: true,
+                                                                       isDeltaSync: false,
+                                                                       added: 3,
+                                                                       updated: 0,
+                                                                       deleted: 0)
+                XCTAssertEqual(modelSyncedEvent, expectedModelSyncedEventPayload)
+                if receivedMutationEventsCount == 5 {
+                    modelSyncedEventReceivedLast = true
+                }
                 modelSyncedReceived.fulfill()
             case .mutationEventApplied:
                 receivedMutationEventsCount += 1
@@ -121,7 +108,6 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         waitForExpectations(timeout: 1)
         XCTAssertTrue(modelSyncedEventReceivedLast)
         emitterSink?.cancel()
-        listener.cancel()
     }
 
     /// ModelSyncedEventEmitter should continue to send `mutationEventApplied` and `mutationEventDropped` events even
@@ -135,7 +121,6 @@ class ModelSyncedEventEmitterTests: XCTestCase {
     ///
     func testSuccess() throws {
         let modelSyncedReceived = expectation(description: "modelSynced received")
-        let modelSyncedReceivedFromHub = expectation(description: "modelSynced received from Hub")
         let mutationEventAppliedReceived = expectation(description: "mutationEventApplied received")
         mutationEventAppliedReceived.expectedFulfillmentCount = 5
         let mutationEventDroppedReceived = expectation(description: "mutationEventDropped received")
@@ -148,27 +133,6 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         let anyPost = AnyModel(testPost)
         let anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
         let postMutationEvent = try MutationEvent(untypedModel: testPost, mutationType: .create)
-
-        let listener = Amplify.Hub.publisher(for: .dataStore).sink { payload in
-            switch payload.eventName {
-            case HubPayload.EventName.DataStore.modelSynced:
-                guard let modelSyncedEventPayload = payload.data as? ModelSyncedEvent else {
-                    XCTFail("Couldn't cast payload data as ModelSyncedEvent")
-                    return
-                }
-                let expectedModelSyncedEventPayload = ModelSyncedEvent(modelName: "Post",
-                                                                       isFullSync: true,
-                                                                       isDeltaSync: false,
-                                                                       added: 2,
-                                                                       updated: 0,
-                                                                       deleted: 0)
-                XCTAssertEqual(modelSyncedEventPayload, expectedModelSyncedEventPayload)
-                modelSyncedReceivedFromHub.fulfill()
-            default:
-                break
-            }
-        }
-
         let emitter = ModelSyncedEventEmitter(modelSchema: Post.schema,
                                               initialSyncOrchestrator: initialSyncOrchestrator,
                                               reconciliationQueue: reconciliationQueue)
@@ -178,7 +142,14 @@ class ModelSyncedEventEmitterTests: XCTestCase {
             XCTFail("Should not have completed")
         } receiveValue: { value in
             switch value {
-            case .modelSyncedEvent:
+            case .modelSyncedEvent(let modelSyncedEvent):
+                let expectedModelSyncedEventPayload = ModelSyncedEvent(modelName: "Post",
+                                                                       isFullSync: true,
+                                                                       isDeltaSync: false,
+                                                                       added: 2,
+                                                                       updated: 0,
+                                                                       deleted: 0)
+                XCTAssertEqual(modelSyncedEvent, expectedModelSyncedEventPayload)
                 modelSyncedReceived.fulfill()
             case .mutationEventApplied:
                 mutationEventAppliedReceived.fulfill()
@@ -205,7 +176,6 @@ class ModelSyncedEventEmitterTests: XCTestCase {
 
         waitForExpectations(timeout: 1)
         emitterSink?.cancel()
-        listener.cancel()
     }
 
     /// Send randomly 80% of the events from `initialSyncOrchestrator`, and 20% of the events from

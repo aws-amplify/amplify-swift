@@ -57,6 +57,17 @@ extension RemoteSyncEngine {
             remoteSyncTopicPublisher.send(.mutationEvent(mutationEvent))
         case .mutationEventDropped:
             break
+        case .modelSyncedEvent(let modelSyncedEvent):
+            remoteSyncTopicPublisher.send(.modelSyncedEvent(modelSyncedEvent))
+        case .syncQueriesReady:
+            remoteSyncTopicPublisher.send(.syncQueriesReady)
+        }
+    }
+
+    func onReceive(receiveValue: IncomingReadyEventEmitter) {
+        switch receiveValue {
+        case .ready:
+            remoteSyncTopicPublisher.send(.ready)
         }
     }
 }
