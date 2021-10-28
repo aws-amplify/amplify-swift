@@ -15,6 +15,15 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
     let coordinates = Geo.Coordinates(latitude: 39.7392, longitude: -104.9903)
 
     // MARK: - Search
+
+    /// Test if search(for: text) calls the location service correctly.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke search(for: text)
+    /// - Then:
+    ///    - Correct serivce call is made.
+    ///
     func testSearchForText() {
         let expResult = expectation(description: "Receive result")
 
@@ -33,6 +42,14 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         waitForExpectations(timeout: GeoPluginTestConfig.timeout)
     }
 
+    /// Test if search(for: text) calls the location service correctly and sets the correct options.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke search(for: text) with options
+    /// - Then:
+    ///    - Correct serivce call is made with correct parameters.
+    ///
     func testSearchForTextWithOptions() {
         var options = Geo.SearchForTextOptions()
         options.countries = [.usa, .can]
@@ -59,6 +76,14 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         waitForExpectations(timeout: GeoPluginTestConfig.timeout)
     }
 
+    /// Test if search(for: text) fails when configuration is invalid.
+    ///
+    /// - Given: Geo plugin with a missing configuration.
+    /// - When:
+    ///    - I invoke search(for: text)
+    /// - Then:
+    ///    - Expected error is returned.
+    ///
     func testSearchForTextWithoutConfigFails() {
         geoPlugin.pluginConfig = emptyPluginConfig
 
@@ -77,6 +102,14 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         waitForExpectations(timeout: GeoPluginTestConfig.timeout)
     }
 
+    /// Test if search(for: coordinates) calls the location service correctly.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke search(for: coordinates)
+    /// - Then:
+    ///    - Correct serivce call is made.
+    ///
     func testSearchForCoordinates() {
         let expResult = expectation(description: "Receive result")
 
@@ -95,6 +128,14 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         waitForExpectations(timeout: GeoPluginTestConfig.timeout)
     }
 
+    /// Test if search(for: coordinates) calls the location service correctly and sets the correct options.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke search(for: coordinates) with options
+    /// - Then:
+    ///    - Correct serivce call is made with correct parameters.
+    ///
     func testSearchForCoordinatesWithOptions() {
         var options = Geo.SearchForCoordinatesOptions()
         options.maxResults = 5
@@ -119,6 +160,14 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         waitForExpectations(timeout: GeoPluginTestConfig.timeout)
     }
 
+    /// Test if search(for: coordinates) fails when configuration is invalid.
+    ///
+    /// - Given: Geo plugin with a missing configuration.
+    /// - When:
+    ///    - I invoke search(for: coordinates).
+    /// - Then:
+    ///    - Expected error is returned.
+    ///
     func testSearchForCoordinatesWithoutConfigFails() {
         geoPlugin.pluginConfig = emptyPluginConfig
 
@@ -138,6 +187,15 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
     }
 
     // MARK: - Maps
+
+    /// Test if availableMaps() calls the location service correctly.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke availableMaps().
+    /// - Then:
+    ///    - Correct serivce call is made.
+    ///
     func testAvailableMaps() {
         let expResult = expectation(description: "Receive result")
 
@@ -157,6 +215,14 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         waitForExpectations(timeout: GeoPluginTestConfig.timeout)
     }
 
+    /// Test if availableMaps() fails when configuration is invalid.
+    ///
+    /// - Given: Geo plugin with a missing configuration.
+    /// - When:
+    ///    - I invoke availableMaps().
+    /// - Then:
+    ///    - Expected error is returned.
+    ///
     func testAvailableMapsWithoutConfigFails() {
         geoPlugin.pluginConfig = emptyPluginConfig
         let expResult = expectation(description: "Receive result")
@@ -174,6 +240,14 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         waitForExpectations(timeout: GeoPluginTestConfig.timeout)
     }
 
+    /// Test if defaultMap() calls the location service correctly.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke defaultMap().
+    /// - Then:
+    ///    - Correct serivce call is made.
+    ///
     func testDefaultMap() {
         let expResult = expectation(description: "Receive result")
 
@@ -190,6 +264,14 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         waitForExpectations(timeout: GeoPluginTestConfig.timeout)
     }
 
+    /// Test if defaultMap() fails when configuration is invalid.
+    ///
+    /// - Given: Geo plugin with a missing configuration.
+    /// - When:
+    ///    - I invoke defaultMap().
+    /// - Then:
+    ///    - Expected error is returned.
+    ///
     func testDefaultMapWithoutConfigFails() {
         geoPlugin.pluginConfig = emptyPluginConfig
 
