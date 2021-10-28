@@ -20,6 +20,8 @@ public extension Geo {
         public let street: String?
         /// The name of the local area of the place, such as a city or town name. For example, Toronto.
         public let municipality: String?
+        /// The name of a community district.
+        public let neighborhood: String?
         /// The name for the area or geographical division, such as a province or state
         /// name, of the place. For example, British Columbia.
         public let region: String?
@@ -37,6 +39,7 @@ public extension Geo {
                     addressNumber: String?,
                     street: String?,
                     municipality: String?,
+                    neighborhood: String?,
                     region: String?,
                     subRegion: String?,
                     postalCode: String?,
@@ -46,6 +49,7 @@ public extension Geo {
             self.addressNumber = addressNumber
             self.street = street
             self.municipality = municipality
+            self.neighborhood = neighborhood
             self.region = region
             self.subRegion = subRegion
             self.postalCode = postalCode

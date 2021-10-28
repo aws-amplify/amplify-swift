@@ -72,10 +72,10 @@ class GeoCategoryConfigurationTests: XCTestCase {
         Amplify.reset()
         XCTAssertThrowsError(try Amplify.Geo.getPlugin(for: "MockGeoCategoryPlugin"),
                              "Getting a plugin after reset() should throw") { error in
-                                guard case GeoError.configuration = error else {
-                                    XCTFail("Expected PluginError.noSuchPlugin")
-                                    return
-                                }
+            guard case Geo.Error.invalidConfiguration = error else {
+                XCTFail("Expected PluginError.noSuchPlugin")
+                return
+            }
         }
     }
 
@@ -179,7 +179,7 @@ class GeoCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Geo.getPlugin(for: "MockSecondGeoCategoryPlugin")
-            .search(for: "test", area: nil, countries: nil, maxResults: nil, placeIndexName: nil) { _ in }
+            .search(for: "test", options: nil) { _ in }
         waitForExpectations(timeout: 1.0)
     }
 

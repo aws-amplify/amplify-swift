@@ -28,19 +28,24 @@ extension AWSLocationGeoPlugin {
     ///   - completionHandler: The completion handler receives a Response object.  The
     ///   success case provides a Place array.
     public func search(for text: String,
-                       area: Geo.SearchArea? = nil,
-                       countries: [Geo.Country]? = nil,
-                       maxResults: Int? = nil,
-                       placeIndexName: String? = nil,
+                       options: Geo.SearchForTextOptions? = nil,
                        completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
 
-        assert(pluginConfig.defaultSearchIndex != nil, GeoPluginConfigError.searchConfigMissing)
-
         let request = AWSLocationSearchPlaceIndexForTextRequest()!
-        request.indexName = placeIndexName ?? pluginConfig.defaultSearchIndex
+
+        request.indexName = (options?.pluginOptions as? AWSLocationGeoPluginSearchOptions)?
+            .searchIndex ?? pluginConfig.defaultSearchIndex
+
+        guard request.indexName != nil else {
+            completionHandler(.failure(.invalidConfiguration(
+                GeoPluginErrorConstants.missingDefaultSearchIndex.errorDescription,
+                GeoPluginErrorConstants.missingDefaultSearchIndex.recoverySuggestion)))
+            return
+        }
+
         request.text = text
 
-        if let area = area {
+        if let area = options?.area {
             switch area {
             case .near(let coordinates):
                 request.biasPosition = [coordinates.longitude as NSNumber,
@@ -53,13 +58,13 @@ extension AWSLocationGeoPlugin {
             }
         }
 
-        if let countries = countries {
+        if let countries = options?.countries {
             request.filterCountries = countries.map { country in
-                String(describing: country)
+                country.code
             }
         }
 
-        if let maxResults = maxResults {
+        if let maxResults = options?.maxResults {
             request.maxResults = maxResults as NSNumber
         }
 
@@ -77,18 +82,25 @@ extension AWSLocationGeoPlugin {
     ///   - completionHandler: The completion handler receives a Response object.  The
     ///   success case provides a Place array.
     public func search(for coordinates: Geo.Coordinates,
-                       maxResults: Int? = nil,
-                       placeIndexName: String? = nil,
+                       options: Geo.SearchForCoordinatesOptions? = nil,
                        completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
 
-        assert(pluginConfig.defaultSearchIndex != nil, GeoPluginConfigError.searchConfigMissing)
-
         let request = AWSLocationSearchPlaceIndexForPositionRequest()!
-        request.indexName = placeIndexName ?? pluginConfig.defaultSearchIndex
+
+        request.indexName = (options?.pluginOptions as? AWSLocationGeoPluginSearchOptions)?
+            .searchIndex ?? pluginConfig.defaultSearchIndex
+
+        guard request.indexName != nil else {
+            completionHandler(.failure(.invalidConfiguration(
+                GeoPluginErrorConstants.missingDefaultSearchIndex.errorDescription,
+                GeoPluginErrorConstants.missingDefaultSearchIndex.recoverySuggestion)))
+            return
+        }
+
         request.position = [coordinates.longitude as NSNumber,
                             coordinates.latitude as NSNumber]
 
-        if let maxResults = maxResults {
+        if let maxResults = options?.maxResults {
             request.maxResults = maxResults as NSNumber
         }
 
@@ -97,9 +109,10 @@ extension AWSLocationGeoPlugin {
         }
     }
 
-    static private func parsePlaceResponse(response: AWSModel?, error: Error?) -> Result<[Geo.Place], Error> {
+    static private func parsePlaceResponse(response: AWSModel?, error: Error?) -> Result<[Geo.Place], Geo.Error> {
         if let error = error {
-            return .failure(error)
+            let geoError = GeoErrorHelper.mapAWSLocationError(error)
+            return .failure(geoError)
         }
 
         var results = [AWSLocationPlace]()
@@ -128,6 +141,7 @@ extension AWSLocationGeoPlugin {
                              addressNumber: $0.addressNumber,
                              street: $0.street,
                              municipality: $0.municipality,
+                             neighborhood: $0.neighborhood,
                              region: $0.region,
                              subRegion: $0.subRegion,
                              postalCode: $0.postalCode,
@@ -141,21 +155,26 @@ extension AWSLocationGeoPlugin {
 
     /// Retrieves metadata for available map resources.
     /// - Returns: Metadata for all available map resources.
-    public func getAvailableMaps()  -> [Geo.MapStyle] {
+    public func availableMaps(completionHandler: @escaping Geo.ResultsHandler<[Geo.MapStyle]>) {
         let mapStyles = Array(pluginConfig.maps.values)
-        assert(!mapStyles.isEmpty, GeoPluginConfigError.mapConfigMissing)
-
-        return mapStyles
+        guard !mapStyles.isEmpty else {
+            completionHandler(.failure(.invalidConfiguration(
+                GeoPluginErrorConstants.missingMaps.errorDescription,
+                GeoPluginErrorConstants.missingMaps.recoverySuggestion)))
+            return
+        }
+        completionHandler(.success(mapStyles))
     }
 
     /// Retrieves the default map resource.
     /// - Returns: Metadata for the default map resource.
-    public func getDefaultMap() -> Geo.MapStyle? {
+    public func defaultMap(completionHandler: @escaping Geo.ResultsHandler<Geo.MapStyle>) {
         guard let mapName = pluginConfig.defaultMap, let mapStyle = pluginConfig.maps[mapName] else {
-            assertionFailure(GeoPluginConfigError.mapConfigMissing)
-            return nil
+            completionHandler(.failure(.invalidConfiguration(
+                GeoPluginErrorConstants.missingDefaultMap.errorDescription,
+                GeoPluginErrorConstants.missingDefaultMap.recoverySuggestion)))
+            return
         }
-
-        return mapStyle
+        completionHandler(.success(mapStyle))
     }
 }

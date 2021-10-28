@@ -7,5 +7,6 @@
 
 import Foundation
 
-/// Namespace for GeoCategory Types
-public enum Geo {}
+public struct AWSLocationGeoPluginSearchOptions {
+    public var searchIndex: String?
+}
