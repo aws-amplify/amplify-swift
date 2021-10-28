@@ -36,6 +36,26 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
         Amplify.reset()
     }
 
+    func testGetEscapeHatch() throws {
+        let plugin = try Amplify.Geo.getPlugin(for: "awsLocationGeoPlugin")
+        guard let locationPlugin = plugin as? AWSLocationGeoPlugin else {
+            XCTFail("Could not get plugin of type AWSLocationGeoPlugin")
+            return
+        }
+        let awsLocation = locationPlugin.getEscapeHatch()
+        XCTAssertNotNil(awsLocation)
+    }
+
+    // MARK: - Search
+
+    /// Test if search(for: text) successfully gets Place results.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke search(for: text)
+    /// - Then:
+    ///    - Place results are returned.
+    ///
     func testSearchForText() {
         let expResult = expectation(description: "Receive result")
 
@@ -53,6 +73,14 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
         waitForExpectations(timeout: timeout)
     }
 
+    /// Test if search(for: coordinates) successfully gets Place results.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke search(for: coordinates)
+    /// - Then:
+    ///    - Place results are returned.
+    ///
     func testSearchForCoordinates() {
         let expResult = expectation(description: "Receive result")
 
@@ -70,6 +98,16 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
         waitForExpectations(timeout: timeout)
     }
 
+    // MARK: - Maps
+
+    /// Test if defaultMap() successfully gets the default map metadata.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke defaultMap().
+    /// - Then:
+    ///    - Default map metadata is returned.
+    ///
     func testDefaultMap() {
         let expResult = expectation(description: "Receive result")
 
@@ -89,6 +127,14 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
         waitForExpectations(timeout: timeout)
     }
 
+    /// Test if availableMaps() successfully gets metadata for all available maps.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke availableMaps().
+    /// - Then:
+    ///    - Metadata for all available maps is returned.
+    ///
     func testAvailtableMaps() {
         let expResult = expectation(description: "Receive result")
 
@@ -106,15 +152,5 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
         }
 
         waitForExpectations(timeout: timeout)
-    }
-
-    func testGetEscapeHatch() throws {
-        let plugin = try Amplify.Geo.getPlugin(for: "awsLocationGeoPlugin")
-        guard let locationPlugin = plugin as? AWSLocationGeoPlugin else {
-            XCTFail("Could not get plugin of type AWSLocationGeoPlugin")
-            return
-        }
-        let awsLocation = locationPlugin.getEscapeHatch()
-        XCTAssertNotNil(awsLocation)
     }
 }
