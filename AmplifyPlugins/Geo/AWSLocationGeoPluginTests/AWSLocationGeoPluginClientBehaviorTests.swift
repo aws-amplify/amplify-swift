@@ -8,7 +8,6 @@
 import Amplify
 import AWSLocation
 @testable import AWSLocationGeoPlugin
-import CwlPreconditionTesting
 import XCTest
 
 class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
