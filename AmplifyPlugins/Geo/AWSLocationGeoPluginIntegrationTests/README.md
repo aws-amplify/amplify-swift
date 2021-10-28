@@ -32,6 +32,6 @@ The following steps demonstrate how to set up Geo. Auth category is also require
 
 4. `amplify push`
 
-5. Import `amplifyconfiguration.json` into Xcode under `HostApp/Configuration` to add it to the `HostApp` target.
+5. Copy `amplifyconfiguration.json` to a new file named `AWSLocationGeoPluginIntegrationTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`.
 
 6. You can now run all of the integration tests. 

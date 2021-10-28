@@ -11,23 +11,14 @@ extension GeoCategory: GeoCategoryBehavior {
     /// Search for places or points of interest.
     /// - Parameters:
     ///   - text: The place name or address to be used in the search. (case insensitive)
-    ///   - area: The area (.near or .boundingBox) for the search. (optional)
-    ///   - countries: Limits the search to the given a list of countries/regions. (optional)
-    ///   - maxResults: The maximum number of results returned per request. (optional)
-    ///   - placeIndexName: The name of the Place Index to query. (optional)
+    ///   - options: Optional parameters when searching for text.
     ///   - completionHandler: The completion handler receives a Response object.  The
     ///   success case provides a Place array.
     public func search(for text: String,
-                       area: Geo.SearchArea? = nil,
-                       countries: [Geo.Country]? = nil,
-                       maxResults: Int? = nil,
-                       placeIndexName: String? = nil,
+                       options: Geo.SearchForTextOptions? = nil,
                        completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
         plugin.search(for: text,
-                      area: area,
-                      countries: countries,
-                      maxResults: maxResults,
-                      placeIndexName: placeIndexName,
+                      options: options,
                       completionHandler: completionHandler)
     }
 
@@ -35,31 +26,30 @@ extension GeoCategory: GeoCategoryBehavior {
     /// closest to the specified position.
     /// - Parameters:
     ///   - coordinates: Specifies a coordinate for the query.
-    ///   - maxResults: The maximum number of results returned per request. (optional)
-    ///   - placeIndexName: The name of the Place Index to query. (optional)
+    ///   - options: Optional parameters when searching for coorinates.
     ///   - completionHandler: The completion handler receives a Response object.  The
     ///   success case provides a Place array.
     public func search(for coordinates: Geo.Coordinates,
-                       maxResults: Int? = nil,
-                       placeIndexName: String? = nil,
+                       options: Geo.SearchForCoordinatesOptions? = nil,
                        completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
         plugin.search(for: coordinates,
-                      maxResults: maxResults,
-                      placeIndexName: placeIndexName,
+                      options: options,
                       completionHandler: completionHandler)
     }
 
     // MARK: - Maps
 
     /// Retrieves metadata for available Map resources.
-    /// - Returns: Metadata for all available map resources.
-    public func getAvailableMaps() -> [Geo.MapStyle] {
-        plugin.getAvailableMaps()
+    /// - Parameter completionHandler: The completion handler receives a Response
+    /// object.  The success case provides an array of available Map resources.
+    public func availableMaps(completionHandler: @escaping Geo.ResultsHandler<[Geo.MapStyle]>) {
+        plugin.availableMaps(completionHandler: completionHandler)
     }
 
     /// Retrieves the default Map resource.
-    /// - Returns: Metadata for the default map resource.
-    public func getDefaultMap() -> Geo.MapStyle? {
-        plugin.getDefaultMap()
+    /// - Parameter completionHandler: The completion handler receives a Response
+    /// object.  The success case provides the default Map resource.
+    public func defaultMap(completionHandler: @escaping Geo.ResultsHandler<Geo.MapStyle>) {
+        plugin.defaultMap(completionHandler: completionHandler)
     }
 }

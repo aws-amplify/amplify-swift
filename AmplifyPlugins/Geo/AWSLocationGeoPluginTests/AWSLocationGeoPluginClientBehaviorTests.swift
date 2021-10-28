@@ -8,7 +8,6 @@
 import Amplify
 import AWSLocation
 @testable import AWSLocationGeoPlugin
-import CwlPreconditionTesting
 import XCTest
 
 class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
@@ -16,6 +15,15 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
     let coordinates = Geo.Coordinates(latitude: 39.7392, longitude: -104.9903)
 
     // MARK: - Search
+
+    /// Test if search(for: text) calls the location service correctly.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke search(for: text)
+    /// - Then:
+    ///    - Correct serivce call is made.
+    ///
     func testSearchForText() {
         let expResult = expectation(description: "Receive result")
 
@@ -34,17 +42,22 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         waitForExpectations(timeout: GeoPluginTestConfig.timeout)
     }
 
+    /// Test if search(for: text) calls the location service correctly and sets the correct options.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke search(for: text) with options
+    /// - Then:
+    ///    - Correct serivce call is made with correct parameters.
+    ///
     func testSearchForTextWithOptions() {
-        let countries: [Geo.Country] = [.USA, .CAN]
-        let maxResults = 5
-        let searchIndex = GeoPluginTestConfig.searchIndex
+        var options = Geo.SearchForTextOptions()
+        options.countries = [.usa, .can]
+        options.maxResults = 5
+        options.area = .near(coordinates)
+        options.pluginOptions = AWSLocationGeoPluginSearchOptions(searchIndex: GeoPluginTestConfig.searchIndex)
         let expResult = expectation(description: "Receive result")
-        geoPlugin.search(for: searchText,
-                         area: .near(coordinates),
-                         countries: countries,
-                         maxResults: maxResults,
-                         placeIndexName: searchIndex) { [weak self] result in
-
+        geoPlugin.search(for: searchText, options: options) { [weak self] result in
             switch result {
             case .failure(let error):
                 XCTFail("Failed with error: \(error)")
@@ -53,9 +66,9 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
                 request.text = self?.searchText
                 request.biasPosition = [(self?.coordinates.longitude ?? 0) as NSNumber,
                                         (self?.coordinates.latitude ?? 0) as NSNumber]
-                request.filterCountries = countries.map { String(describing: $0) }
-                request.maxResults = maxResults as NSNumber
-                request.indexName = searchIndex
+                request.filterCountries = options.countries?.map { $0.code }
+                request.maxResults = options.maxResults as NSNumber?
+                request.indexName = (options.pluginOptions as? AWSLocationGeoPluginSearchOptions)?.searchIndex
                 self?.mockLocation.verifySearchPlaceIndexForText(request)
                 expResult.fulfill()
             }
@@ -63,21 +76,40 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         waitForExpectations(timeout: GeoPluginTestConfig.timeout)
     }
 
+    /// Test if search(for: text) fails when configuration is invalid.
+    ///
+    /// - Given: Geo plugin with a missing configuration.
+    /// - When:
+    ///    - I invoke search(for: text)
+    /// - Then:
+    ///    - Expected error is returned.
+    ///
     func testSearchForTextWithoutConfigFails() {
         geoPlugin.pluginConfig = emptyPluginConfig
 
-        var reachedPoint1 = false
-        var reachedPoint2 = false
-        let missingConfigAssertion = CwlPreconditionTesting.catchBadInstruction {
-            reachedPoint1 = true
-            self.geoPlugin.search(for: self.searchText) { _ in }
-            reachedPoint2 = true
+        let expResult = expectation(description: "Receive result")
+
+        geoPlugin.search(for: searchText) { result in
+            switch result {
+            case .failure(let error):
+                XCTAssertEqual(error.errorDescription, "No default search index was found.")
+                expResult.fulfill()
+            case .success:
+                XCTFail("This call returned success when a failure was expected.")
+            }
         }
-        XCTAssertNotNil(missingConfigAssertion)
-        XCTAssertTrue(reachedPoint1)
-        XCTAssertFalse(reachedPoint2)
+
+        waitForExpectations(timeout: GeoPluginTestConfig.timeout)
     }
 
+    /// Test if search(for: coordinates) calls the location service correctly.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke search(for: coordinates)
+    /// - Then:
+    ///    - Correct serivce call is made.
+    ///
     func testSearchForCoordinates() {
         let expResult = expectation(description: "Receive result")
 
@@ -96,13 +128,21 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         waitForExpectations(timeout: GeoPluginTestConfig.timeout)
     }
 
+    /// Test if search(for: coordinates) calls the location service correctly and sets the correct options.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke search(for: coordinates) with options
+    /// - Then:
+    ///    - Correct serivce call is made with correct parameters.
+    ///
     func testSearchForCoordinatesWithOptions() {
-        let maxResults = 5
-        let searchIndex = GeoPluginTestConfig.searchIndex
+        var options = Geo.SearchForCoordinatesOptions()
+        options.maxResults = 5
+        options.pluginOptions = AWSLocationGeoPluginSearchOptions(searchIndex: GeoPluginTestConfig.searchIndex)
         let expResult = expectation(description: "Receive result")
         geoPlugin.search(for: coordinates,
-                         maxResults: maxResults,
-                         placeIndexName: searchIndex) { [weak self] result in
+                         options: options) { [weak self] result in
 
             switch result {
             case .failure(let error):
@@ -111,8 +151,8 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
                 let request = AWSLocationSearchPlaceIndexForPositionRequest()!
                 request.position = [(self?.coordinates.longitude ?? 0) as NSNumber,
                                     (self?.coordinates.latitude ?? 0) as NSNumber]
-                request.maxResults = maxResults as NSNumber
-                request.indexName = searchIndex
+                request.maxResults = options.maxResults as NSNumber?
+                request.indexName = (options.pluginOptions as? AWSLocationGeoPluginSearchOptions)?.searchIndex
                 self?.mockLocation.verifySearchPlaceIndexForPosition(request)
                 expResult.fulfill()
             }
@@ -120,64 +160,133 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         waitForExpectations(timeout: GeoPluginTestConfig.timeout)
     }
 
+    /// Test if search(for: coordinates) fails when configuration is invalid.
+    ///
+    /// - Given: Geo plugin with a missing configuration.
+    /// - When:
+    ///    - I invoke search(for: coordinates).
+    /// - Then:
+    ///    - Expected error is returned.
+    ///
     func testSearchForCoordinatesWithoutConfigFails() {
         geoPlugin.pluginConfig = emptyPluginConfig
 
-        var reachedPoint1 = false
-        var reachedPoint2 = false
-        let missingConfigAssertion = CwlPreconditionTesting.catchBadInstruction {
-            reachedPoint1 = true
-            self.geoPlugin.search(for: self.coordinates) { _ in }
-            reachedPoint2 = true
+        let expResult = expectation(description: "Receive result")
+
+        geoPlugin.search(for: coordinates) { result in
+            switch result {
+            case .failure(let error):
+                XCTAssertEqual(error.errorDescription, "No default search index was found.")
+                expResult.fulfill()
+            case .success:
+                XCTFail("This call returned success when a failure was expected.")
+            }
         }
-        XCTAssertNotNil(missingConfigAssertion)
-        XCTAssertTrue(reachedPoint1)
-        XCTAssertFalse(reachedPoint2)
+
+        waitForExpectations(timeout: GeoPluginTestConfig.timeout)
     }
 
     // MARK: - Maps
-    func testGetAvailableMaps() {
-        let maps = geoPlugin.getAvailableMaps()
 
-        XCTAssertEqual(maps.count, GeoPluginTestConfig.maps.count)
-        for map in maps {
-            XCTAssertEqual(GeoPluginTestConfig.maps[map.mapName], map)
+    /// Test if availableMaps() calls the location service correctly.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke availableMaps().
+    /// - Then:
+    ///    - Correct serivce call is made.
+    ///
+    func testAvailableMaps() {
+        let expResult = expectation(description: "Receive result")
+
+        geoPlugin.availableMaps { result in
+            switch result {
+            case .failure(let error):
+                XCTFail("Failed with error: \(error)")
+            case .success(let maps):
+                XCTAssertEqual(maps.count, GeoPluginTestConfig.maps.count)
+                for map in maps {
+                    XCTAssertEqual(GeoPluginTestConfig.maps[map.mapName], map)
+                }
+                expResult.fulfill()
+            }
         }
+
+        waitForExpectations(timeout: GeoPluginTestConfig.timeout)
     }
 
-    func testGetAvailableMapsWithoutConfigFails() {
+    /// Test if availableMaps() fails when configuration is invalid.
+    ///
+    /// - Given: Geo plugin with a missing configuration.
+    /// - When:
+    ///    - I invoke availableMaps().
+    /// - Then:
+    ///    - Expected error is returned.
+    ///
+    func testAvailableMapsWithoutConfigFails() {
+        geoPlugin.pluginConfig = emptyPluginConfig
+        let expResult = expectation(description: "Receive result")
+
+        geoPlugin.availableMaps { result in
+            switch result {
+            case .failure(let error):
+                XCTAssertEqual(error.errorDescription, "No maps are available.")
+                expResult.fulfill()
+            case .success:
+                XCTFail("This call returned success when a failure was expected.")
+            }
+        }
+
+        waitForExpectations(timeout: GeoPluginTestConfig.timeout)
+    }
+
+    /// Test if defaultMap() calls the location service correctly.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke defaultMap().
+    /// - Then:
+    ///    - Correct serivce call is made.
+    ///
+    func testDefaultMap() {
+        let expResult = expectation(description: "Receive result")
+
+        geoPlugin.defaultMap { result in
+            switch result {
+            case .failure(let error):
+                XCTFail("Failed with error: \(error)")
+            case .success(let map):
+                XCTAssertEqual(map.mapName, GeoPluginTestConfig.map)
+                expResult.fulfill()
+            }
+        }
+
+        waitForExpectations(timeout: GeoPluginTestConfig.timeout)
+    }
+
+    /// Test if defaultMap() fails when configuration is invalid.
+    ///
+    /// - Given: Geo plugin with a missing configuration.
+    /// - When:
+    ///    - I invoke defaultMap().
+    /// - Then:
+    ///    - Expected error is returned.
+    ///
+    func testDefaultMapWithoutConfigFails() {
         geoPlugin.pluginConfig = emptyPluginConfig
 
-        var reachedPoint1 = false
-        var reachedPoint2 = false
-        let missingConfigAssertion = CwlPreconditionTesting.catchBadInstruction {
-            reachedPoint1 = true
-            _ = self.geoPlugin.getAvailableMaps()
-            reachedPoint2 = true
+        let expResult = expectation(description: "Receive result")
+
+        geoPlugin.defaultMap { result in
+            switch result {
+            case .failure(let error):
+                XCTAssertEqual(error.errorDescription, "No default map was found.")
+                expResult.fulfill()
+            case .success:
+                XCTFail("This call returned success when a failure was expected.")
+            }
         }
-        XCTAssertNotNil(missingConfigAssertion)
-        XCTAssertTrue(reachedPoint1)
-        XCTAssertFalse(reachedPoint2)
-    }
 
-    func testGetDefaultMap() {
-        let map = geoPlugin.getDefaultMap()
-
-        XCTAssertEqual(map, GeoPluginTestConfig.mapStyle)
-    }
-
-    func testGetDefaultMapWithoutConfigFails() {
-        geoPlugin.pluginConfig = emptyPluginConfig
-
-        var reachedPoint1 = false
-        var reachedPoint2 = false
-        let missingConfigAssertion = CwlPreconditionTesting.catchBadInstruction {
-            reachedPoint1 = true
-            _ = self.geoPlugin.getDefaultMap()
-            reachedPoint2 = true
-        }
-        XCTAssertNotNil(missingConfigAssertion)
-        XCTAssertTrue(reachedPoint1)
-        XCTAssertFalse(reachedPoint2)
+        waitForExpectations(timeout: GeoPluginTestConfig.timeout)
     }
 }

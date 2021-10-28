@@ -81,7 +81,7 @@ struct GeoPluginConfigError {
     // MARK: - Maps
     static let mapConfigMissing = """
                                      Map configuration is missing from amplifyconfiguration.json.
-                                     Make amplifyconfiguration.json includes a `maps` section.
+                                     Make sure amplifyconfiguration.json includes a `maps` section.
                                      """
 
     static func mapInvalid(mapName: String) -> PluginError {

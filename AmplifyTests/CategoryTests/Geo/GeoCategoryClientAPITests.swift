@@ -61,7 +61,7 @@ class GeoCategoryClientAPITests: XCTestCase {
     }
 
     func testGetAvailableMaps() throws {
-        let expectedMessage = "getAvailableMaps()"
+        let expectedMessage = "availableMaps"
         let methodInvoked = expectation(description: "Expected method was invoked on plugin")
         plugin.listeners.append { message in
             print(message)
@@ -70,12 +70,12 @@ class GeoCategoryClientAPITests: XCTestCase {
             }
         }
 
-        _ = geo.getAvailableMaps()
+        geo.availableMaps { _ in }
         waitForExpectations(timeout: 1.0)
     }
 
     func testGetDefaultMap() throws {
-        let expectedMessage = "getDefaultMap()"
+        let expectedMessage = "defaultMap"
         let methodInvoked = expectation(description: "Expected method was invoked on plugin")
         plugin.listeners.append { message in
             print(message)
@@ -84,7 +84,7 @@ class GeoCategoryClientAPITests: XCTestCase {
             }
         }
 
-        _ = geo.getDefaultMap()
+        geo.defaultMap { _ in }
         waitForExpectations(timeout: 1.0)
     }
 }

@@ -22,10 +22,7 @@ class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
     }
 
     func search(for text: String,
-                area: Geo.SearchArea? = nil,
-                countries: [Geo.Country]? = nil,
-                maxResults: Int? = nil,
-                placeIndexName: String? = nil,
+                options: Geo.SearchForTextOptions? = nil,
                 completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
 
         notify("search(for text:\(text))")
@@ -33,24 +30,21 @@ class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
     }
 
     func search(for coordinates: Geo.Coordinates,
-                maxResults: Int?,
-                placeIndexName: String?,
+                options: Geo.SearchForCoordinatesOptions? = nil,
                 completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
 
         notify("search(for coordinates:\(coordinates))")
         completionHandler(.success([createPlace()]))
     }
 
-    func getAvailableMaps() -> [Geo.MapStyle] {
-        notify()
-
-        return [createMapStyle()]
+    func availableMaps(completionHandler: @escaping Geo.ResultsHandler<[Geo.MapStyle]>) {
+        notify("availableMaps")
+        completionHandler(.success([createMapStyle()]))
     }
 
-    func getDefaultMap() -> Geo.MapStyle? {
-        notify()
-
-        return createMapStyle()
+    func defaultMap(completionHandler: @escaping Geo.ResultsHandler<Geo.MapStyle>) {
+        notify("defaultMap")
+        completionHandler(.success(createMapStyle()))
     }
 
     private func createMapStyle() -> Geo.MapStyle {
@@ -61,14 +55,15 @@ class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
 
     private func createPlace() -> Geo.Place {
         Geo.Place(coordinates: Geo.Coordinates(latitude: 0, longitude: 0),
-              label: "Place Label",
-              addressNumber: nil,
-              street: nil,
-              municipality: nil,
-              region: nil,
-              subRegion: nil,
-              postalCode: nil,
-              country: nil
+                  label: "Place Label",
+                  addressNumber: nil,
+                  street: nil,
+                  municipality: nil,
+                  neighborhood: nil,
+                  region: nil,
+                  subRegion: nil,
+                  postalCode: nil,
+                  country: nil
         )
     }
 }
