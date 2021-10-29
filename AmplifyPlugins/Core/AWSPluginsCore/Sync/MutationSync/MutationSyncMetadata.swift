@@ -20,7 +20,6 @@ public struct MutationSyncMetadata: Model {
         id.components(separatedBy: "|").first ?? ""
     }
     
-    @available(*, deprecated, message: "Use of init(modelId:modelName:deleted:lastChangedAt:version) instead.")
     public init(id: Model.Identifier, deleted: Bool, lastChangedAt: Int, version: Int) {
         self.id = id
         self.deleted = deleted
@@ -29,10 +28,8 @@ public struct MutationSyncMetadata: Model {
     }
     
     public init(modelId: Model.Identifier, modelName: String, deleted: Bool, lastChangedAt: Int, version: Int) {
-        self.id = Self.identifier(modelName: modelName, modelId: modelId)
-        self.deleted = deleted
-        self.lastChangedAt = lastChangedAt
-        self.version = version
+        let id = Self.identifier(modelName: modelName, modelId: modelId)
+        self.init(id: id, deleted: deleted, lastChangedAt: lastChangedAt, version: version)
     }
     
     public static func identifier(modelName: String, modelId: Model.Identifier) -> String {

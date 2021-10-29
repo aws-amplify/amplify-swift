@@ -10,6 +10,8 @@ import Amplify
 protocol ModelStorageBehavior {
     func setUp(modelSchemas: [ModelSchema]) throws
 
+    func applyModelMigrations(modelSchemas: [ModelSchema]) throws
+
     func save<M: Model>(_ model: M,
                         modelSchema: ModelSchema,
                         condition: QueryPredicate?,

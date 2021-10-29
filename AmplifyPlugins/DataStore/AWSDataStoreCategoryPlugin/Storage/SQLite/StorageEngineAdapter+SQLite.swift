@@ -103,6 +103,15 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
+    func applyModelMigrations(modelSchemas: [ModelSchema]) throws {
+        let modelMigrations = ModelMigrations(connection: connection, modelSchemas: modelSchemas)
+        do {
+            try modelMigrations.apply()
+        } catch {
+            throw DataStoreError.invalidOperation(causedBy: error)
+        }
+    }
+
     func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: @escaping DataStoreCallback<M>) {
          save(model, modelSchema: model.schema, condition: condition, completion: completion)
      }
@@ -377,18 +386,18 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     static func clearIfNewVersion(version: String,
                                   dbFilePath: URL,
                                   userDefaults: UserDefaults = UserDefaults.standard,
-                                  fileManager: FileManager = FileManager.default) throws {
+                                  fileManager: FileManager = FileManager.default) throws -> Bool {
 
         guard let previousVersion = userDefaults.string(forKey: dbVersionKey) else {
-            return
+            return false
         }
 
         if previousVersion == version {
-            return
+            return false
         }
 
         guard fileManager.fileExists(atPath: dbFilePath.path) else {
-            return
+            return false
         }
 
         log.verbose("\(#function) Warning: Schema change detected, removing your previous database")
@@ -398,6 +407,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             log.error("\(#function) Failed to delete database file located at: \(dbFilePath), error: \(error)")
             throw DataStoreError.invalidDatabase(path: dbFilePath.path, error)
         }
+        return true
     }
 }
 

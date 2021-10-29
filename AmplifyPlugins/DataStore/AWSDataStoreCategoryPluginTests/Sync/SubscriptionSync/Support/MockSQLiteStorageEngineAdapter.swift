@@ -44,6 +44,10 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         XCTFail("Not expected to execute")
     }
 
+    func applyModelMigrations(modelSchemas: [ModelSchema]) throws {
+        XCTFail("Not expected to execute")
+    }
+
     // MARK: - Responses
 
     func returnOnQuery(dataStoreResult: DataStoreResult<[Model]>?) {
@@ -282,6 +286,9 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     }
 
     func setUp(modelSchemas: [ModelSchema]) throws {
+    }
+
+    func applyModelMigrations(modelSchemas: [ModelSchema]) throws {
     }
 
     func save<M: Model>(_ model: M, condition: QueryPredicate?, completion: @escaping DataStoreCallback<M>) {
