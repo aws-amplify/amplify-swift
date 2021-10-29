@@ -175,6 +175,8 @@
 		21C395B3245729EC00597EA2 /* AppSyncErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */; };
 		21D79FDA237617C60057D00D /* SubscriptionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FD9237617C60057D00D /* SubscriptionEvent.swift */; };
 		21D79FE32377F4120057D00D /* SubscriptionConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FE22377F4120057D00D /* SubscriptionConnectionState.swift */; };
+		21DDCDF7272C3D7400D9B297 /* ModelSchemaGraphQLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DDCDF5272C3D6A00D9B297 /* ModelSchemaGraphQLTests.swift */; };
+		21DDCDF8272C3D8300D9B297 /* AuthRuleExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762F70A326683EE2001F8252 /* AuthRuleExtensionTests.swift */; };
 		21F40A3A23A294770074678E /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3923A294770074678E /* TestConfigHelper.swift */; };
 		21F40A4023A295470074678E /* TestCommonConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3F23A295470074678E /* TestCommonConstants.swift */; };
 		21FDBB612587D7A30086FCDC /* Blog6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FDBB5B2587D7A30086FCDC /* Blog6.swift */; };
@@ -250,7 +252,6 @@
 		762167D52615435C0033FCD2 /* Record+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762167D42615435C0033FCD2 /* Record+Schema.swift */; };
 		762C978526210F6400798FA3 /* RecordCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762C978426210F6400798FA3 /* RecordCover.swift */; };
 		762C978E26210FF100798FA3 /* RecordCover+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762C978D26210FF100798FA3 /* RecordCover+Schema.swift */; };
-		762F70A426683EE2001F8252 /* AuthRuleExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762F70A326683EE2001F8252 /* AuthRuleExtensionTests.swift */; };
 		7638895326A7A9AC0061AF0B /* AWSLambdaAuthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7638895226A7A9AC0061AF0B /* AWSLambdaAuthConfiguration.swift */; };
 		7678B38426017D5300B4917F /* AppSyncErrorTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */; };
 		7678B38526017D5300B4917F /* AppSyncErrorTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */; };
@@ -1013,6 +1014,7 @@
 		21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorType.swift; sourceTree = "<group>"; };
 		21D79FD9237617C60057D00D /* SubscriptionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionEvent.swift; sourceTree = "<group>"; };
 		21D79FE22377F4120057D00D /* SubscriptionConnectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionConnectionState.swift; sourceTree = "<group>"; };
+		21DDCDF5272C3D6A00D9B297 /* ModelSchemaGraphQLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSchemaGraphQLTests.swift; sourceTree = "<group>"; };
 		21F40A3923A294770074678E /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		21F40A3F23A295470074678E /* TestCommonConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestCommonConstants.swift; sourceTree = "<group>"; };
 		21FDBB5B2587D7A30086FCDC /* Blog6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog6.swift; sourceTree = "<group>"; };
@@ -1917,6 +1919,7 @@
 				2129BE2F2394828A006363A1 /* QueryPredicateGraphQLTests.swift */,
 				D83C515F248964780091548E /* ModelGraphQLTests.swift */,
 				762F70A326683EE2001F8252 /* AuthRuleExtensionTests.swift */,
+				21DDCDF5272C3D6A00D9B297 /* ModelSchemaGraphQLTests.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -4869,6 +4872,7 @@
 				219A888723EB89C200BBC5F2 /* GraphQLRequestAnyModelWithSyncTests.swift in Sources */,
 				2183A56423EA4A7F00232880 /* GraphQLGetQueryTests.swift in Sources */,
 				6B5087C7256638EA000AB673 /* QueryPredicateEvaluateGeneratedDateTests.swift in Sources */,
+				21DDCDF8272C3D8300D9B297 /* AuthRuleExtensionTests.swift in Sources */,
 				6BBECD7423ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift in Sources */,
 				6BAF4F38256893B900A811BA /* QueryPredicateEvaluateGenerator.swift in Sources */,
 				6B9F7C5225267E1500F1F71C /* MockAWSAuthUser.swift in Sources */,
@@ -4882,6 +4886,7 @@
 				6B5087C3256630DB000AB673 /* QueryPredicateEvaluateGeneratedIntTests.swift in Sources */,
 				21AD425B249C0DBE0016FE95 /* AnyModelTests.swift in Sources */,
 				D83C5160248964780091548E /* ModelGraphQLTests.swift in Sources */,
+				21DDCDF7272C3D7400D9B297 /* ModelSchemaGraphQLTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5338,7 +5343,6 @@
 				FAC23564227A056600424678 /* StorageCategoryClientAPITests.swift in Sources */,
 				FAAFAF3123904B75002CF932 /* AtomicValue+BoolTests.swift in Sources */,
 				B9AF547E23F37DF20059E6C4 /* TemporalOperationTests.swift in Sources */,
-				762F70A426683EE2001F8252 /* AuthRuleExtensionTests.swift in Sources */,
 				FAD3937D23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift in Sources */,
 				FA607FE2233D131B00DFEA24 /* AmplifyOperationHubTests.swift in Sources */,
 				B4944D52251C141200BF0BFE /* JSONValueHolderTest.swift in Sources */,
