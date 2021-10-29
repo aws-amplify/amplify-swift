@@ -19,7 +19,9 @@ public class AWSAuthService: AWSAuthServiceBehavior {
     
     #if compiler(>=5.5) && canImport(_Concurrency)
     @available(iOS 13, *)
-    public func identityID() async -> Result<String, AuthError> {
+    /// Retrieves the identity identifier for this authentication session from Cognito
+    /// - Returns: The identity token or an error.
+    public func getIdentityId() async -> Result<String, AuthError> {
         await withCheckedContinuation {
             getIdentityId(completion: $0.resume(returning:))
         }
@@ -47,6 +49,11 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         }
     }
 
+    @available(*, deprecated, message: """
+            Use getIdentityId(completion: (Result<String, AuthError>) -> Void)
+            -- or --
+            getIdentityId() async -> Result<String, AuthError> instead.
+            """)
     public func getIdentityId() -> Result<String, AuthError> {
         var result: Result<String, AuthError>?
         let semaphore = DispatchSemaphore(value: 0)
@@ -116,7 +123,9 @@ public class AWSAuthService: AWSAuthServiceBehavior {
     
     #if compiler(>=5.5) && canImport(_Concurrency)
     @available(iOS 13, *)
-    public func token() async -> Result<String, AuthError> {
+    /// Retrieves the Cognito token from the AuthCognitoTokensProvider
+    /// - Returns: The Cognito token or an error.
+    public func getToken() async -> Result<String, AuthError> {
         await withCheckedContinuation {
             getToken(completion: $0.resume(returning:))
         }
@@ -143,6 +152,11 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         }
     }
 
+    @available(*, deprecated, message: """
+            Use getToken(completion: (Result<String, AuthError>) -> Void)
+            -- or --
+            getToken() async -> Result<String, AuthError> instead.
+            """)
     public func getToken() -> Result<String, AuthError> {
         var result: Result<String, AuthError>?
         let semaphore = DispatchSemaphore(value: 0)
