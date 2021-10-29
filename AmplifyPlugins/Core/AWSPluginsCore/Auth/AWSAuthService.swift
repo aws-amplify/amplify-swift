@@ -16,6 +16,36 @@ public class AWSAuthService: AWSAuthServiceBehavior {
     public func getCredentialsProvider() -> AWSCredentialsProvider {
         return AmplifyAWSCredentialsProvider()
     }
+    
+    #if compiler(>=5.5) && canImport(_Concurrency)
+    @available(iOS 13, *)
+    public func identityID() async -> Result<String, AuthError> {
+        await withCheckedContinuation {
+            getIdentityId(completion: $0.resume(returning:))
+        }
+    }
+    #endif
+    
+    /// Retrieves the identity identifier for this authentication session from Cognito.
+    /// - Parameter completion: Completion handler defined for the input `Result<String, AuthError>`
+    public func getIdentityId(completion: @escaping (Result<String, AuthError>) -> Void) {
+        Amplify.Auth.fetchAuthSession { event in
+            switch event {
+            case .success(let session):
+                guard
+                    let identityID = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
+                else {
+                    return completion(.failure(.unknown("""
+                    Did not receive a valid response from fetchAuthSession for identityId.
+                    """)))
+                }
+                
+                completion(identityID)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
 
     public func getIdentityId() -> Result<String, AuthError> {
         var result: Result<String, AuthError>?
@@ -82,6 +112,35 @@ public class AWSAuthService: AWSAuthServiceBehavior {
                             "", nil))
         }
         return .success(convertedDictionary)
+    }
+    
+    #if compiler(>=5.5) && canImport(_Concurrency)
+    @available(iOS 13, *)
+    public func token() async -> Result<String, AuthError> {
+        await withCheckedContinuation {
+            getToken(completion: $0.resume(returning:))
+        }
+    }
+    #endif
+    
+    /// Retrieves the Cognito token from the AuthCognitoTokensProvider
+    /// - Parameter completion: Completion handler defined for the input `Result<String, AuthError>`
+    public func getToken(completion: @escaping (Result<String, AuthError>) -> Void) {
+        Amplify.Auth.fetchAuthSession { [weak self] event in
+            switch event {
+            case .success(let session):
+                guard
+                    let tokenResult = self?.getTokenString(from: session)
+                else {
+                    return completion(.failure(.unknown("""
+                    Did not receive a valid response from fetchAuthSession for get token.
+                    """)))
+                }
+                completion(tokenResult)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 
     public func getToken() -> Result<String, AuthError> {
