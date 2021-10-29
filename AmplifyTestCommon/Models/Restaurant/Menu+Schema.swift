@@ -25,7 +25,8 @@ extension Menu {
   public static let schema = defineSchema { model in
     let menu = Menu.keys
 
-    model.pluralName = "Menus"
+    model.listPluralName = "Menus"
+    model.syncPluralName = "Menus"
 
     model.fields(
       .id(),

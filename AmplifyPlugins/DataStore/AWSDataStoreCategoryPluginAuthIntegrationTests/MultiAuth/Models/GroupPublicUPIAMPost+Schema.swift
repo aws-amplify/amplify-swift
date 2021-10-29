@@ -29,7 +29,8 @@ extension GroupPublicUPIAMPost {
       rule(allow: .public, provider: .iam, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "GroupPublicUPIAMPosts"
+    model.listPluralName = "GroupPublicUPIAMPosts"
+    model.syncPluralName = "GroupPublicUPIAMPosts"
 
     model.fields(
       .id(),

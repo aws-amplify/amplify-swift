@@ -29,7 +29,8 @@ extension OwnerPublicOIDAPIPost {
       rule(allow: .public, provider: .apiKey, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "OwnerPublicOIDAPIPosts"
+    model.listPluralName = "OwnerPublicOIDAPIPosts"
+    model.syncPluralName = "OwnerPublicOIDAPIPosts"
 
     model.fields(
       .id(),

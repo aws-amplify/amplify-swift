@@ -29,7 +29,8 @@ extension OwnerPublicUPAPIPost {
       rule(allow: .public, provider: .apiKey, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "OwnerPublicUPAPIPosts"
+    model.listPluralName = "OwnerPublicUPAPIPosts"
+    model.syncPluralName = "OwnerPublicUPAPIPosts"
 
     model.fields(
       .id(),

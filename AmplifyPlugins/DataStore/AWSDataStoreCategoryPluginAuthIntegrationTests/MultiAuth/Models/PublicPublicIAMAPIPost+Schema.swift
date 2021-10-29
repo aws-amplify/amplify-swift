@@ -29,7 +29,8 @@ extension PublicPublicIAMAPIPost {
       rule(allow: .public, provider: .apiKey, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "PublicPublicIAMAPIPosts"
+    model.listPluralName = "PublicPublicIAMAPIPosts"
+    model.syncPluralName = "PublicPublicIAMAPIPosts"
 
     model.fields(
       .id(),

@@ -26,7 +26,8 @@ extension ScenarioATest6Post {
       rule(allow: .owner, ownerField: "owner", identityClaim: "sub", operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "ScenarioATest6Posts"
+    model.listPluralName = "ScenarioATest6Posts"
+    model.syncPluralName = "ScenarioATest6Posts"
 
     model.fields(
       .id(),

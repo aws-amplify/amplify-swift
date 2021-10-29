@@ -41,7 +41,8 @@ class GraphQLResponseDecoderTests: XCTestCase {
 
         static let schema = defineSchema { model in
             let post = Post.keys
-            model.pluralName = "SimpleModels"
+            model.listPluralName = "SimpleModels"
+            model.syncPluralName = "SimpleModels"
             model.fields(
                 .id()
             )

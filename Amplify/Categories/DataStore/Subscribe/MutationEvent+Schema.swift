@@ -27,7 +27,8 @@ extension MutationEvent {
     public static let schema = defineSchema { definition in
         let mutation = MutationEvent.keys
 
-        definition.pluralName = "MutationEvents"
+        definition.listPluralName = "MutationEvents"
+        definition.syncPluralName = "MutationEvents"
         definition.attributes(.isSystem)
 
         definition.fields(

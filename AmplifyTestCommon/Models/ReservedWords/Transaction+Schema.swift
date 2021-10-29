@@ -21,7 +21,8 @@ extension Transaction {
     public static let schema = defineSchema { model in
         let transaction = Transaction.keys
 
-        model.pluralName = "Transactions"
+        model.listPluralName = "Transactions"
+        model.syncPluralName = "Transactions"
 
         model.fields(
             .id()

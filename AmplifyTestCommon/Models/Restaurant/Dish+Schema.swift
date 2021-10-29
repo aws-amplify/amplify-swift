@@ -23,7 +23,8 @@ extension Dish {
   public static let schema = defineSchema { model in
     let dish = Dish.keys
 
-    model.pluralName = "Dishes"
+    model.listPluralName = "Dishes"
+    model.syncPluralName = "Dishes"
 
     model.fields(
       .id(),

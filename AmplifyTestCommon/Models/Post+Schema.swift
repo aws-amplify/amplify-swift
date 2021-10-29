@@ -29,7 +29,8 @@ extension Post {
   public static let schema = defineSchema { model in
     let post = Post.keys
 
-    model.pluralName = "Posts"
+    model.listPluralName = "Posts"
+    model.syncPluralName = "Posts"
 
     model.fields(
       .id(),

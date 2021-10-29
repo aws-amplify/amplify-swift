@@ -25,7 +25,8 @@ extension Article {
     public static let schema = defineSchema { model in
         let article = Article.keys
 
-        model.pluralName = "Articles"
+        model.listPluralName = "Articles"
+        model.syncPluralName = "Articles"
 
         model.authRules = [
             rule(allow: .owner, ownerField: "owner", operations: [.create, .read]),

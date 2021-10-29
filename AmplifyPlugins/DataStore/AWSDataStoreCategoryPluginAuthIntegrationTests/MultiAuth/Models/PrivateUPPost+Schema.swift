@@ -28,7 +28,8 @@ extension PrivateUPPost {
       rule(allow: .private, provider: .userPools, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "PrivateUPPosts"
+    model.listPluralName = "PrivateUPPosts"
+    model.syncPluralName = "PrivateUPPosts"
 
     model.fields(
       .id(),

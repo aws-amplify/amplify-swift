@@ -29,7 +29,8 @@ extension GroupPublicUPAPIPost {
       rule(allow: .public, provider: .apiKey, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "GroupPublicUPAPIPosts"
+    model.listPluralName = "GroupPublicUPAPIPosts"
+    model.syncPluralName = "GroupPublicUPAPIPosts"
 
     model.fields(
       .id(),

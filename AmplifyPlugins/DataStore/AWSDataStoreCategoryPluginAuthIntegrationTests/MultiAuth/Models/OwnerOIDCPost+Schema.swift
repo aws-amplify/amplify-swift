@@ -28,7 +28,8 @@ extension OwnerOIDCPost {
       rule(allow: .owner, ownerField: "owner", identityClaim: "sub", provider: .oidc, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "OwnerOIDCPosts"
+    model.listPluralName = "OwnerOIDCPosts"
+    model.syncPluralName = "OwnerOIDCPosts"
 
     model.fields(
       .id(),

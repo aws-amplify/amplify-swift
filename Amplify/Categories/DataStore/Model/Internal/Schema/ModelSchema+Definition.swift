@@ -124,17 +124,27 @@ public enum ModelFieldNullability {
 public struct ModelSchemaDefinition {
 
     internal let name: String
+
+    @available(*, deprecated, message: "Use of pluralName is deprecated, use syncPluralName instead.")
     public var pluralName: String?
+
+    public var listPluralName: String?
+    public var syncPluralName: String?
+
     public var authRules: AuthRules
     internal var fields: ModelFields
     internal var attributes: [ModelAttribute]
 
     init(name: String,
          pluralName: String? = nil,
+         listPluralName: String? = nil,
+         syncPluralName: String? = nil,
          authRules: AuthRules = [],
          attributes: [ModelAttribute] = []) {
         self.name = name
         self.pluralName = pluralName
+        self.listPluralName = listPluralName
+        self.syncPluralName = syncPluralName
         self.fields = [:] as ModelFields
         self.authRules = authRules
         self.attributes = attributes
@@ -154,6 +164,8 @@ public struct ModelSchemaDefinition {
     internal func build() -> ModelSchema {
         return ModelSchema(name: name,
                            pluralName: pluralName,
+                           listPluralName: listPluralName,
+                           syncPluralName: syncPluralName,
                            authRules: authRules,
                            attributes: attributes,
                            fields: fields)

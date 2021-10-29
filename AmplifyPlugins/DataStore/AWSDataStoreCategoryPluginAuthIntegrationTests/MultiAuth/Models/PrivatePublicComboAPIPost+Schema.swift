@@ -28,7 +28,8 @@ extension PrivatePublicComboAPIPost {
       rule(allow: .public, provider: .apiKey, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "PrivatePublicComboAPIPosts"
+    model.listPluralName = "PrivatePublicComboAPIPosts"
+    model.syncPluralName = "PrivatePublicComboAPIPosts"
 
     model.fields(
       .id(),

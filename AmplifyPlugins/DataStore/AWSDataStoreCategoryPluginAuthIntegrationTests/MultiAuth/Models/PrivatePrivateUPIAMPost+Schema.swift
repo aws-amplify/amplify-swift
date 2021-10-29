@@ -29,7 +29,8 @@ extension PrivatePrivateUPIAMPost {
       rule(allow: .private, provider: .iam, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "PrivatePrivateUPIAMPosts"
+    model.listPluralName = "PrivatePrivateUPIAMPosts"
+    model.syncPluralName = "PrivatePrivateUPIAMPosts"
 
     model.fields(
       .id(),

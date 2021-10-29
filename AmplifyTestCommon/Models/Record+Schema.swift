@@ -27,7 +27,8 @@ extension Record {
   public static let schema = defineSchema { model in
     let record = Record.keys
 
-    model.pluralName = "Records"
+    model.listPluralName = "Records"
+    model.listPluralName = "Records"
 
     model.fields(
         .id(),

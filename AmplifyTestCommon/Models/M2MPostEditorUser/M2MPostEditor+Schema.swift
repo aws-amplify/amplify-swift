@@ -23,7 +23,8 @@ extension M2MPostEditor {
   public static let schema = defineSchema { model in
     let m2MPostEditor = M2MPostEditor.keys
 
-    model.pluralName = "M2MPostEditors"
+    model.listPluralName = "M2MPostEditors"
+    model.syncPluralName = "M2MPostEditors"
 
     model.fields(
       .id(),

@@ -31,7 +31,8 @@ extension ExampleWithEveryType {
     public static let schema = defineSchema { model in
         let example = ExampleWithEveryType.keys
 
-        model.pluralName = "ExampleWithEveryTypes"
+        model.listPluralName = "ExampleWithEveryTypes"
+        model.syncPluralName = "ExampleWithEveryTypes"
 
         model.fields(
             .id(),

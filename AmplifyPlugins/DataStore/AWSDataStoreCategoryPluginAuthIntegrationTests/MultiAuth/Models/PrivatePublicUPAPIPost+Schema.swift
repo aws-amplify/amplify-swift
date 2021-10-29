@@ -29,7 +29,8 @@ extension PrivatePublicUPAPIPost {
       rule(allow: .public, provider: .apiKey, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "PrivatePublicUPAPIPosts"
+    model.listPluralName = "PrivatePublicUPAPIPosts"
+    model.syncPluralName = "PrivatePublicUPAPIPosts"
 
     model.fields(
       .id(),

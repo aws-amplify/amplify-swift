@@ -29,7 +29,8 @@ extension QPredGen {
   public static let schema = defineSchema { model in
     let qPredGen = QPredGen.keys
 
-    model.pluralName = "QPredGens"
+    model.listPluralName = "QPredGens"
+    model.syncPluralName = "QPredGens"
 
     model.fields(
       .id(),

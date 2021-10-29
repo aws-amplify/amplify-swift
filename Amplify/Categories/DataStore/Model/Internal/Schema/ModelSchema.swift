@@ -75,7 +75,12 @@ public typealias ModelName = String
 public struct ModelSchema {
 
     public let name: String
+
+    @available(*, deprecated, message: "Use of pluralName is deprecated, use syncPluralName instead.")
     public let pluralName: String?
+
+    public let listPluralName: String?
+    public let syncPluralName: String?
     public let authRules: AuthRules
     public let fields: ModelFields
     public let attributes: [ModelAttribute]
@@ -91,11 +96,15 @@ public struct ModelSchema {
 
     public init(name: String,
                 pluralName: String? = nil,
+                listPluralName: String? = nil,
+                syncPluralName: String? = nil,
                 authRules: AuthRules = [],
                 attributes: [ModelAttribute] = [],
                 fields: ModelFields = [:]) {
         self.name = name
         self.pluralName = pluralName
+        self.listPluralName = listPluralName
+        self.syncPluralName = syncPluralName
         self.authRules = authRules
         self.attributes = attributes
         self.fields = fields

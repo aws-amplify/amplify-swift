@@ -24,7 +24,7 @@ class GraphQLRequestEmbeddableTypeJSONTests: XCTestCase {
         let colorR =  ModelField(name: "red", type: .int, isRequired: true)
         let colorG =  ModelField(name: "green", type: .int, isRequired: true)
         let colorB =  ModelField(name: "blue", type: .int, isRequired: true)
-        let colorSchema = ModelSchema(name: "Color", pluralName: "Colors",
+        let colorSchema = ModelSchema(name: "Color", listPluralName: "Colors", syncPluralName: "Colors",
                                       fields: [colorName.name: colorName,
                                                colorR.name: colorR,
                                                colorG.name: colorG,
@@ -34,7 +34,7 @@ class GraphQLRequestEmbeddableTypeJSONTests: XCTestCase {
         let categoryColor = ModelField(name: "color",
                                        type: .embeddedCollection(of: DynamicEmbedded.self, schema: colorSchema),
                                        isRequired: true)
-        let categorySchema = ModelSchema(name: "Category", pluralName: "Categories",
+        let categorySchema = ModelSchema(name: "Category", listPluralName: "Categories", syncPluralName: "Categories",
                                          fields: [categoryName.name: categoryName,
                                                   categoryColor.name: categoryColor])
 
@@ -47,7 +47,8 @@ class GraphQLRequestEmbeddableTypeJSONTests: XCTestCase {
                                      type: .embedded(type: DynamicEmbedded.self, schema: sectionSchema))
         let todoStickies = ModelField(name: "stickies", type: .embedded(type: String.self))
         let todoSchema = ModelSchema(name: "Todo",
-                                     pluralName: "Todos",
+                                     listPluralName: "Todos",
+                                     syncPluralName: "Todos",
                                      fields: [todoId.name: todoId,
                                               todoName.name: todoName,
                                               todoDescription.name: todoDescription,

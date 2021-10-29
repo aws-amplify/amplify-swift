@@ -28,7 +28,8 @@ extension PublicAPIPost {
       rule(allow: .public, provider: .apiKey, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "PublicAPIPosts"
+    model.listPluralName = "PublicAPIPosts"
+    model.syncPluralName = "PublicAPIPosts"
 
     model.fields(
       .id(),
