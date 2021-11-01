@@ -133,6 +133,19 @@ jobs:
           path: build/reports
       - upload_artifacts
 
+  build_amplify_spm:
+    <<: *defaults
+    working_directory: ~/amplify-ios/.swiftpm/xcode
+    steps:
+      - *restore_repo
+      - pre_start_simulator
+      - restore_gems
+      - check_bundle
+      - make_artifacts_directory
+      - run:
+          name: Build amplify for SPM
+          command: xcodebuild build-for-testing -workspace package.xcworkspace -scheme Amplify-Package -sdk iphonesimulator -destination "${destination}" | tee "artifacts/build-Ampify-for-SPM.log" | xcpretty
+
   build_test_aws_plugins_core:
     <<: *defaults
     steps:
@@ -212,6 +225,7 @@ jobs:
 deploy_requires: &deploy_requires
   requires:
     - build_test_amplify
+    - build_amplify_spm
     - build_test_aws_plugins_core
     - unit_test_analytics
     - unit_test_api
@@ -232,6 +246,9 @@ workflows:
           requires:
             - install_gems
       - build_test_aws_plugins_core:
+          requires:
+            - install_gems
+      - build_amplify_spm:
           requires:
             - install_gems
       - plugin_unit_test:
