@@ -132,7 +132,7 @@ final class StorageEngine: StorageEngineBehavior {
     }
 
     @available(iOS 13.0, *)
-    private func onReceive(receiveValue: RemoteSyncEngineEvent) {
+    func onReceive(receiveValue: RemoteSyncEngineEvent) {
         switch receiveValue {
         case .storageAdapterAvailable:
             break
@@ -160,10 +160,10 @@ final class StorageEngine: StorageEngineBehavior {
             storageEnginePublisher.send(.mutationEvent(mutationEvent))
         case .modelSyncedEvent(let modelSyncedEvent):
             storageEnginePublisher.send(.modelSyncedEvent(modelSyncedEvent))
-        case .syncQueriesReady:
-            storageEnginePublisher.send(.syncQueriesReady)
-        case .ready:
-            storageEnginePublisher.send(.ready)
+        case .syncQueriesReadyEvent:
+            storageEnginePublisher.send(.syncQueriesReadyEvent)
+        case .readyEvent:
+            storageEnginePublisher.send(.readyEvent)
         }
     }
 

@@ -35,7 +35,7 @@ class ReadyEventEmitterTests: XCTestCase {
             XCTFail("Should not receive completion")
         }, receiveValue: { event in
             switch event {
-            case .ready:
+            case .readyEvent:
                 readyReceived.fulfill()
             }
         })

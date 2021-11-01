@@ -187,7 +187,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     @available(iOS 13.0, *)
-    private func onRecieveValue(receiveValue: StorageEngineEvent) {
+    func onRecieveValue(receiveValue: StorageEngineEvent) {
         guard let dataStorePublisher = self.dataStorePublisher else {
             log.error("Data store publisher not initalized")
             return
@@ -203,10 +203,10 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
                                                      data: modelSyncedEvent)
             Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
             dispatchedModelSyncedEvents[modelSyncedEvent.modelName]?.set(true)
-        case .syncQueriesReady:
+        case .syncQueriesReadyEvent:
             let syncQueriesReadyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
             Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesReadyEventPayload)
-        case .ready:
+        case .readyEvent:
             let readyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.ready)
             Amplify.Hub.dispatch(to: .dataStore, payload: readyEventPayload)
         }

@@ -10,7 +10,7 @@ import AWSPluginsCore
 import Combine
 
 enum IncomingReadyEventEmitter {
-    case ready
+    case readyEvent
 }
 
 @available(iOS 13.0, *)
@@ -34,7 +34,7 @@ final class ReadyEventEmitter {
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
-                    self.readyEventTopic.send(.ready)
+                    self.readyEventTopic.send(.readyEvent)
                 case .failure(let dataStoreError):
                     self.log.error("Failed to emit ready event, error: \(dataStoreError)")
                 }

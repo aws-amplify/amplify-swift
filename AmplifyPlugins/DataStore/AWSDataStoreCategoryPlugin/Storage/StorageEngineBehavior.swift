@@ -13,8 +13,8 @@ enum StorageEngineEvent {
     case started
     case mutationEvent(MutationEvent)
     case modelSyncedEvent(ModelSyncedEvent)
-    case syncQueriesReady
-    case ready
+    case syncQueriesReadyEvent
+    case readyEvent
 }
 
 protocol StorageEngineBehavior: AnyObject, ModelStorageBehavior {

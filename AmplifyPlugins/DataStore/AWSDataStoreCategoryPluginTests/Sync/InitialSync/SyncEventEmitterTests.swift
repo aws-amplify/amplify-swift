@@ -67,9 +67,9 @@ class SyncEventEmitterTests: XCTestCase {
             XCTFail("Should not have completed: \(completion)")
         }, receiveValue: { event in
             switch event {
-            case .mutationEventApplied(let mutationEvent):
+            case .mutationEventApplied:
                 break
-            case .mutationEventDropped(let modelName):
+            case .mutationEventDropped:
                 break
             case .modelSyncedEvent(let modelSyncedEvent):
                 let expectedModelSyncedEventPayload = ModelSyncedEvent(modelName: "Post",
@@ -77,7 +77,7 @@ class SyncEventEmitterTests: XCTestCase {
                                                                        added: 1, updated: 0, deleted: 0)
                 XCTAssertTrue(modelSyncedEvent == expectedModelSyncedEventPayload)
                 modelSyncedReceived.fulfill()
-            case .syncQueriesReady:
+            case .syncQueriesReadyEvent:
                 syncQueriesReadyReceived.fulfill()
             }
         })
@@ -157,7 +157,7 @@ class SyncEventEmitterTests: XCTestCase {
                     XCTAssertEqual(modelSyncedEventPayloads[1], expectedModelSyncedEventPayloads[1])
                     modelSyncedReceived.fulfill()
                 }
-            case .syncQueriesReady:
+            case .syncQueriesReadyEvent:
                 syncQueriesReadyReceived.fulfill()
             }
         })
@@ -254,7 +254,7 @@ class SyncEventEmitterTests: XCTestCase {
                     XCTAssertTrue(modelSyncedEventPayloads[1] == expectedModelSyncedEventPayloads[1])
                     modelSyncedReceived.fulfill()
                 }
-            case .syncQueriesReady:
+            case .syncQueriesReadyEvent:
                 syncQueriesReadyReceived.fulfill()
             }
         })

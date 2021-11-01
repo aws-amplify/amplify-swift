@@ -59,15 +59,15 @@ extension RemoteSyncEngine {
             break
         case .modelSyncedEvent(let modelSyncedEvent):
             remoteSyncTopicPublisher.send(.modelSyncedEvent(modelSyncedEvent))
-        case .syncQueriesReady:
-            remoteSyncTopicPublisher.send(.syncQueriesReady)
+        case .syncQueriesReadyEvent:
+            remoteSyncTopicPublisher.send(.syncQueriesReadyEvent)
         }
     }
 
     func onReceive(receiveValue: IncomingReadyEventEmitter) {
         switch receiveValue {
-        case .ready:
-            remoteSyncTopicPublisher.send(.ready)
+        case .readyEvent:
+            remoteSyncTopicPublisher.send(.readyEvent)
         }
     }
 }

@@ -14,7 +14,7 @@ enum IncomingSyncEventEmitterEvent {
     case mutationEventApplied(MutationEvent)
     case mutationEventDropped(modelName: String)
     case modelSyncedEvent(ModelSyncedEvent)
-    case syncQueriesReady
+    case syncQueriesReadyEvent
 }
 
 /// SyncEventEmitter holds onto one ModelSyncedEventEmitter per model. It counts the number of `modelSyncedEvent` to
@@ -77,7 +77,7 @@ final class SyncEventEmitter {
             modelSyncedReceived += 1
             syncEventEmitterTopic.send(.modelSyncedEvent(modelSyncedEvent))
             if shouldDispatchSyncQueriesReadyEvent {
-                syncEventEmitterTopic.send(.syncQueriesReady)
+                syncEventEmitterTopic.send(.syncQueriesReadyEvent)
             }
         }
     }
