@@ -16,18 +16,7 @@ public class AWSAuthService: AWSAuthServiceBehavior {
     public func getCredentialsProvider() -> AWSCredentialsProvider {
         return AmplifyAWSCredentialsProvider()
     }
-    
-    #if compiler(>=5.5) && canImport(_Concurrency)
-    @available(iOS 13, *)
-    /// Retrieves the identity identifier for this authentication session from Cognito
-    /// - Returns: The identity token or an error.
-    public func getIdentityId() async -> Result<String, AuthError> {
-        await withCheckedContinuation {
-            getIdentityId(completion: $0.resume(returning:))
-        }
-    }
-    #endif
-    
+
     /// Retrieves the identity identifier for this authentication session from Cognito.
     /// - Parameter completion: Completion handler defined for the input `Result<String, AuthError>`
     public func getIdentityId(completion: @escaping (Result<String, AuthError>) -> Void) {
@@ -41,7 +30,7 @@ public class AWSAuthService: AWSAuthServiceBehavior {
                     Did not receive a valid response from fetchAuthSession for identityId.
                     """)))
                 }
-                
+
                 completion(identityID)
             case .failure(let error):
                 completion(.failure(error))
@@ -49,11 +38,7 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         }
     }
 
-    @available(*, deprecated, message: """
-            Use getIdentityId(completion: (Result<String, AuthError>) -> Void)
-            -- or --
-            getIdentityId() async -> Result<String, AuthError> instead.
-            """)
+    @available(*, deprecated, message: "Use getIdentityId(completion: (Result<String, AuthError>) -> Void) instead")
     public func getIdentityId() -> Result<String, AuthError> {
         var result: Result<String, AuthError>?
         let semaphore = DispatchSemaphore(value: 0)
@@ -120,18 +105,7 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         }
         return .success(convertedDictionary)
     }
-    
-    #if compiler(>=5.5) && canImport(_Concurrency)
-    @available(iOS 13, *)
-    /// Retrieves the Cognito token from the AuthCognitoTokensProvider
-    /// - Returns: The Cognito token or an error.
-    public func getToken() async -> Result<String, AuthError> {
-        await withCheckedContinuation {
-            getToken(completion: $0.resume(returning:))
-        }
-    }
-    #endif
-    
+
     /// Retrieves the Cognito token from the AuthCognitoTokensProvider
     /// - Parameter completion: Completion handler defined for the input `Result<String, AuthError>`
     public func getToken(completion: @escaping (Result<String, AuthError>) -> Void) {
@@ -152,11 +126,7 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         }
     }
 
-    @available(*, deprecated, message: """
-            Use getToken(completion: (Result<String, AuthError>) -> Void)
-            -- or --
-            getToken() async -> Result<String, AuthError> instead.
-            """)
+    @available(*, deprecated, message: "Use getToken(completion: (Result<String, AuthError>) -> Void) instead")
     public func getToken() -> Result<String, AuthError> {
         var result: Result<String, AuthError>?
         let semaphore = DispatchSemaphore(value: 0)
@@ -194,4 +164,31 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         }
         return nil
     }
+}
+
+// MARK: Swift Concurrency Async Methods
+// These currently cannot be a part of the `AWSAuthServiceBehavior` protocol
+// due to the compiler being unable to handle async overloads in protocol conformance contexts.
+extension AWSAuthService {
+    #if compiler(>=5.5.2)
+    /// Retrieves the identity identifier of for the Auth service.
+    /// - Returns: The identifier or an `AuthError`.
+    /// - Warning: Swift Concurrency langauge features in Amplify are currently in an expiremental phase.
+    @available(iOS 13, *)
+    public func getIdentityId() async -> Result<String, AuthError> {
+        await withCheckedContinuation {
+            getIdentityId(completion: $0.resume(returning:))
+        }
+    }
+
+    /// Retrieves the token from the the Auth token provider.
+    /// - Returns: The token or an `AuthError`.
+    /// - Warning: Swift Concurrency langauge features in Amplify are currently in an expiremental phase.
+    @available(iOS 13, *)
+    public func getToken() async -> Result<String, AuthError> {
+        await withCheckedContinuation {
+            getToken(completion: $0.resume(returning:))
+        }
+    }
+    #endif
 }
