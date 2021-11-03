@@ -13,9 +13,16 @@ import SQLite
 @testable import AWSDataStoreCategoryPlugin
 @testable import AWSPluginsCore
 
-class AddModelNameToMutationSyncMetadataTests: AddModelNameToMutationSyncMetadataTestBase {
+class SQLiteMutationSyncMetadataMigrationDelegateTests: MutationSyncMetadataMigrationTestBase {
 
-    // MARK: - Delete tables
+    // MARK: - Clear tests
+
+    func testClearSuccess() throws {
+        try setUpAllModels()
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
+                                                                   modelSchemas: modelSchemas)
+        try delegate.clear()
+    }
 
     /// Ensure the deleted MutationSyncMetadata table is query-ably and empty after deleting all the records
     func testDeleteMutationSyncMetadata() throws {
@@ -28,8 +35,9 @@ class AddModelNameToMutationSyncMetadataTests: AddModelNameToMutationSyncMetadat
         }
         XCTAssertEqual(mutationSyncMetadatas.count, 1)
 
-        let migration = AddModelNameToMutationSyncMetadataMigration(connection: connection, modelSchemas: modelSchemas)
-        let sql = try migration.deleteMutationSyncMetadata()
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
+                                                                   modelSchemas: modelSchemas)
+        let sql = try delegate.deleteMutationSyncMetadata()
         XCTAssertEqual(sql, "delete from MutationSyncMetadata as root")
         guard let mutationSyncMetadatas = queryMutationSyncMetadata() else {
             XCTFail("Could not get metadata")
@@ -49,8 +57,9 @@ class AddModelNameToMutationSyncMetadataTests: AddModelNameToMutationSyncMetadat
         }
         XCTAssertEqual(modelSyncMetadatas.count, 1)
 
-        let migration = AddModelNameToMutationSyncMetadataMigration(connection: connection, modelSchemas: modelSchemas)
-        let sql = try migration.deleteModelSyncMetadata()
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
+                                                                   modelSchemas: modelSchemas)
+        let sql = try delegate.deleteModelSyncMetadata()
         XCTAssertEqual(sql, "delete from ModelSyncMetadata as root")
         guard let modelSyncMetadatasDeleted = queryModelSyncMetadata() else {
             XCTFail("Could not get metadata")
@@ -59,41 +68,9 @@ class AddModelNameToMutationSyncMetadataTests: AddModelNameToMutationSyncMetadat
         XCTAssertTrue(modelSyncMetadatasDeleted.isEmpty)
     }
 
-    // MARK: - Migration
+    // MARK: - Migration tests
 
-    /// Ensure creating and dropping the MutationSyncMetadataCopy works as expected
-    func testDropMutationSyncMetadataCopyIfExists() throws {
-        let migration = AddModelNameToMutationSyncMetadataMigration(connection: connection, modelSchemas: modelSchemas)
-        try migration.dropMutationSyncMetadataCopyIfExists()
-
-        // Dropping the table without the table in the database is successful
-        let drop = try migration.dropMutationSyncMetadataCopyIfExists()
-
-        XCTAssertEqual(drop, "DROP TABLE IF EXISTS MutationSyncMetadataCopy")
-
-        // Creating the table is successful
-        let create = try migration.createMutationSyncMetadataCopyTable()
-        let exectedCreateSQL = """
-        create table if not exists "MutationSyncMetadataCopy" (
-          "id" text primary key not null,
-          "deleted" integer not null,
-          "lastChangedAt" integer not null,
-          "version" integer not null
-        );
-        """
-        XCTAssertEqual(create, exectedCreateSQL)
-
-        // A second create does not throw if the table has already been created
-        try migration.createMutationSyncMetadataCopyTable()
-
-        // A drop is successful when the table has been created
-        try migration.dropMutationSyncMetadataCopyIfExists()
-
-        // Dropping twice is successfully
-        try migration.dropMutationSyncMetadataCopyIfExists()
-    }
-
-    func testBackfillMutationSyncMetadata() throws {
+    func testMigrate() throws {
         try setUpAllModels()
         let restaurant = Restaurant(restaurantName: "name")
         save(restaurant)
@@ -106,12 +83,10 @@ class AddModelNameToMutationSyncMetadataTests: AddModelNameToMutationSyncMetadat
         XCTAssertEqual(mutationSyncMetadatas.count, 1)
         XCTAssertEqual(mutationSyncMetadatas[0].id, restaurant.id)
 
-        let migration = AddModelNameToMutationSyncMetadataMigration(connection: connection, modelSchemas: modelSchemas)
-        try migration.dropMutationSyncMetadataCopyIfExists()
-        try migration.createMutationSyncMetadataCopyTable()
-        try migration.backfillMutationSyncMetadata()
-        try migration.dropMutationSyncMetadata()
-        try migration.renameMutationSyncMetadataCopy()
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
+                                                                   modelSchemas: modelSchemas)
+
+        try delegate.migrate()
 
         guard let mutationSyncMetadatasBackfilled = queryMutationSyncMetadata() else {
             XCTFail("Could not get metadata")
@@ -130,4 +105,38 @@ class AddModelNameToMutationSyncMetadataTests: AddModelNameToMutationSyncMetadat
         XCTAssertEqual(restaurantMetadata.modelId, restaurant.id)
         XCTAssertEqual(restaurantMetadata.modelName, Restaurant.modelName)
     }
+
+    /// Ensure creating and dropping the MutationSyncMetadataCopy works as expected
+    func testDropMutationSyncMetadataCopyIfExists() throws {
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
+                                                                   modelSchemas: modelSchemas)
+        try delegate.dropMutationSyncMetadataCopyIfExists()
+
+        // Dropping the table without the table in the database is successful
+        let drop = try delegate.dropMutationSyncMetadataCopyIfExists()
+
+        XCTAssertEqual(drop, "DROP TABLE IF EXISTS MutationSyncMetadataCopy")
+
+        // Creating the table is successful
+        let create = try delegate.createMutationSyncMetadataCopyTable()
+        let exectedCreateSQL = """
+        create table if not exists "MutationSyncMetadataCopy" (
+          "id" text primary key not null,
+          "deleted" integer not null,
+          "lastChangedAt" integer not null,
+          "version" integer not null
+        );
+        """
+        XCTAssertEqual(create, exectedCreateSQL)
+
+        // A second create does not throw if the table has already been created
+        try delegate.createMutationSyncMetadataCopyTable()
+
+        // A drop is successful when the table has been created
+        try delegate.dropMutationSyncMetadataCopyIfExists()
+
+        // Dropping twice is successfully
+        try delegate.dropMutationSyncMetadataCopyIfExists()
+    }
+
 }

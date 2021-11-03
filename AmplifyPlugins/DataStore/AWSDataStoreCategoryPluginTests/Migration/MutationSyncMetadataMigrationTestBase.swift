@@ -13,8 +13,7 @@ import SQLite
 @testable import AWSDataStoreCategoryPlugin
 @testable import AWSPluginsCore
 
-class AddModelNameToMutationSyncMetadataTestBase: XCTestCase {
-    var connection: Connection!
+class MutationSyncMetadataMigrationTestBase: XCTestCase {
     var storageAdapter: SQLiteStorageEngineAdapter!
     var modelSchemas: [ModelSchema]!
 
@@ -22,7 +21,7 @@ class AddModelNameToMutationSyncMetadataTestBase: XCTestCase {
         super.setUp()
         Amplify.Logging.logLevel = .debug
         do {
-            connection = try Connection(.inMemory)
+            let connection = try Connection(.inMemory)
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
             modelSchemas = [Restaurant.schema, Menu.schema, Dish.schema]
         } catch {

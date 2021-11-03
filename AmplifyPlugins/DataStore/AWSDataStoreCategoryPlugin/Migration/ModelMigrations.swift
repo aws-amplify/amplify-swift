@@ -16,8 +16,8 @@ protocol ModelMigration {
 class ModelMigrations {
     var modelMigrations: [ModelMigration]
 
-    init(connection: Connection, modelSchemas: [ModelSchema]) {
-        self.modelMigrations = [AddModelNameToMutationSyncMetadataMigration(connection: connection, modelSchemas: modelSchemas)]
+    init(modelMigrations: [ModelMigration]) {
+        self.modelMigrations = modelMigrations
     }
 
     func apply() throws {

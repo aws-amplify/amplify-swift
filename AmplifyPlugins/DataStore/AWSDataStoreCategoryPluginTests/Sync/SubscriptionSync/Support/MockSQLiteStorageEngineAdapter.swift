@@ -239,11 +239,31 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {
-        XCTFail("Not expected to execute")
+
     }
 
     func shouldIgnoreError(error: DataStoreError) -> Bool {
         return shouldIgnoreError
+    }
+
+    func removeStore(for modelSchema: ModelSchema) throws -> String {
+        XCTFail("Not expected to execute")
+        return ""
+    }
+
+    func createStore(for modelSchema: ModelSchema) throws -> String {
+        XCTFail("Not expected to execute")
+        return ""
+    }
+
+    func emptyStore(for modelSchema: ModelSchema) throws -> String {
+        XCTFail("Not expected to execute")
+        return ""
+    }
+
+    func renameStore(from: ModelSchema, toModelSchema: ModelSchema) throws -> String {
+        XCTFail("Not expected to execute")
+        return ""
     }
 }
 

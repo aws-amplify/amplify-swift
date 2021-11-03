@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 import AWSPluginsCore
 
-protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErrorBehavior {
+protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErrorBehavior, StorageEngineMigrationAdapter {
 
     static var maxNumberOfPredicates: Int { get }
 
@@ -56,6 +56,17 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErro
     func transaction(_ basicClosure: BasicThrowableClosure) throws
 
     func clear(completion: @escaping DataStoreCallback<Void>)
+}
+
+protocol StorageEngineMigrationAdapter {
+
+    @discardableResult func removeStore(for modelSchema: ModelSchema) throws -> String
+
+    @discardableResult func createStore(for modelSchema: ModelSchema) throws -> String
+
+    @discardableResult func emptyStore(for modelSchema: ModelSchema) throws -> String
+
+    @discardableResult func renameStore(from: ModelSchema, toModelSchema: ModelSchema) throws -> String
 }
 
 extension StorageEngineAdapter {

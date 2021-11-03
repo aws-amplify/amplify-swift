@@ -13,14 +13,23 @@ import SQLite
 @testable import AWSDataStoreCategoryPlugin
 @testable import AWSPluginsCore
 
-class AddModelNameToMutationSyncMetadataValidationTests: AddModelNameToMutationSyncMetadataTestBase {
+class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMigrationTestBase {
+
+    // MARK: - Precondition tests
+    func testPreconditionSuccess() throws {
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
+                                                                   modelSchemas: modelSchemas)
+        try delegate.preconditionCheck()
+    }
+
+    // MARK: - Needs Migration tests
 
     func testSelectMutationSyncMetadataWithoutTableShouldThrow() {
         let shouldCatchFailure = expectation(description: "select MutationSyncMetadata without table should fail")
         do {
-            let migration = AddModelNameToMutationSyncMetadataMigration(connection: connection,
-                                                                        modelSchemas: modelSchemas)
-            _ = try migration.selectMutationSyncMetadataRecords()
+            let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
+                                                                       modelSchemas: modelSchemas)
+            _ = try delegate.selectMutationSyncMetadataRecords()
         } catch {
             guard let resultError = error as? Result,
                   case .error(let message, let code, _) = resultError else {
@@ -40,12 +49,10 @@ class AddModelNameToMutationSyncMetadataValidationTests: AddModelNameToMutationS
         try setUpAllModels()
         let metadata = MutationSyncMetadata(id: UUID().uuidString, deleted: false, lastChangedAt: 1, version: 1)
         save(metadata)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
+                                                                   modelSchemas: modelSchemas)
 
-        let migration = AddModelNameToMutationSyncMetadataMigration(connection: connection, modelSchemas: modelSchemas)
-
-        let results = try migration.selectMutationSyncMetadataRecords()
-        XCTAssertTrue(migration.needsMigration(metadataCount: results.metadataCount,
-                                               metadataIdMatchNewKeyCount: results.metadataIdMatchNewKeyCount))
+        XCTAssertTrue(try delegate.needsMigration())
     }
 
     /// Set up MutationSyncMetadata records where the id is in the correct format. Check that it does not need migration
@@ -57,19 +64,21 @@ class AddModelNameToMutationSyncMetadataValidationTests: AddModelNameToMutationS
                                             lastChangedAt: 1,
                                             version: 1)
         save(metadata)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
+                                                                   modelSchemas: modelSchemas)
 
-        let migration = AddModelNameToMutationSyncMetadataMigration(connection: connection, modelSchemas: modelSchemas)
 
-        let results = try migration.selectMutationSyncMetadataRecords()
-        XCTAssertFalse(migration.needsMigration(metadataCount: results.metadataCount,
-                                                metadataIdMatchNewKeyCount: results.metadataIdMatchNewKeyCount))
+        XCTAssertFalse(try delegate.needsMigration())
     }
+
+    // MARK: - Cannot Migrate tests
 
     func testSelectDuplicateIdCountAcrossModelsWithoutTableShouldThrow() {
         let shouldCatchFailure = expectation(description: "select duplicate id count without model tables should fail")
-        let migration = AddModelNameToMutationSyncMetadataMigration(connection: connection, modelSchemas: modelSchemas)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
+                                                                   modelSchemas: modelSchemas)
         do {
-            _ = try migration.containsDuplicateIdsAcrossModels()
+            _ = try delegate.cannotMigrate()
         } catch {
             guard let resultError = error as? Result,
                   case .error(let message, let code, _) = resultError else {
@@ -86,19 +95,20 @@ class AddModelNameToMutationSyncMetadataValidationTests: AddModelNameToMutationS
 
     func testSelectDuplicateIdAcrossModelsStatement() throws {
         try setUpAllModels()
-        let migration = AddModelNameToMutationSyncMetadataMigration(connection: connection, modelSchemas: modelSchemas)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
+                                                                   modelSchemas: modelSchemas)
         let expected = "SELECT id, tableName, count(id) as count FROM " +
         "(SELECT id, 'Restaurant' as tableName FROM Restaurant UNION ALL " +
         "SELECT id, 'Menu' as tableName FROM Menu UNION ALL " +
         "SELECT id, 'Dish' as tableName FROM Dish) GROUP BY id HAVING count > 1"
-        XCTAssertEqual(migration.selectDuplicateIdAcrossModels(), expected)
+        XCTAssertEqual(delegate.selectDuplicateIdAcrossModels(), expected)
     }
 
     func testSelectDuplicateIdCountAcrossModels_NoData() throws {
         try setUpAllModels()
-        let migration = AddModelNameToMutationSyncMetadataMigration(connection: connection, modelSchemas: modelSchemas)
-
-        XCTAssertFalse(try migration.containsDuplicateIdsAcrossModels())
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
+                                                                   modelSchemas: modelSchemas)
+        XCTAssertFalse(try delegate.cannotMigrate())
     }
 
     func testSelectDuplicateIdCountAcrossModels_ModelWithUniqueIds() throws {
@@ -109,9 +119,9 @@ class AddModelNameToMutationSyncMetadataValidationTests: AddModelNameToMutationS
         save(menu)
         let dish = Dish(dishName: "name", menu: menu)
         save(dish)
-
-        let migration = AddModelNameToMutationSyncMetadataMigration(connection: connection, modelSchemas: modelSchemas)
-        XCTAssertFalse(try migration.containsDuplicateIdsAcrossModels())
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
+                                                                   modelSchemas: modelSchemas)
+        XCTAssertFalse(try delegate.cannotMigrate())
     }
 
     func testSelectDuplicateIdCountAcrossModels_ModelWithDuplicateIds() throws {
@@ -124,9 +134,8 @@ class AddModelNameToMutationSyncMetadataValidationTests: AddModelNameToMutationS
         save(menu)
         let dish = Dish(id: "1", dishName: "name", menu: menu)
         save(dish)
-
-        let migration = AddModelNameToMutationSyncMetadataMigration(connection: connection, modelSchemas: modelSchemas)
-        XCTAssertTrue(try migration.containsDuplicateIdsAcrossModels())
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
+                                                                   modelSchemas: modelSchemas)
+        XCTAssertTrue(try delegate.cannotMigrate())
     }
-
 }
