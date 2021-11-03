@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.15.4 (2021-11-03)
+
+### Bug Fixes
+
+- Support new list name pluralization (#1451)
+
 ## 1.15.3 (2021-10-21)
 
 ### Bug Fixes
