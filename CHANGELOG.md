@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.15.5 (2021-11-04)
+
+### Bug Fixes
+
+- **DataStore**: ModelSyncedEventEmitter event order (#1494)
+
 ## 1.15.4 (2021-11-03)
 
 ### Bug Fixes
