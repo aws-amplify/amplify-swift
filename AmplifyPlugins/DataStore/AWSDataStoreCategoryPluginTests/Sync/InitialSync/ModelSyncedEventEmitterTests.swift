@@ -40,7 +40,7 @@ class ModelSyncedEventEmitterTests: XCTestCase {
     /// - Then:
     ///    - the order of the events received should be all the mutation events followed by the modelSyncedEvent.
     ///
-    func testRecieveLastMutationEventBeforeModelSyncedEvent() throws {
+    func testReceiveLastMutationEventBeforeModelSyncedEvent() throws {
         let modelSyncedReceived = expectation(description: "modelSynced received")
         let mutationEventAppliedReceived = expectation(description: "mutationEventApplied received")
         mutationEventAppliedReceived.expectedFulfillmentCount = 3

@@ -37,14 +37,14 @@ class AWSDataStorePluginBaseBehaviorTests: BaseDataStoreTests {
             }
         }
 
-        guard let dispathcedModelSyncedEvent = dataStorePlugin.dispatchedModelSyncedEvents[Post.modelName] else {
+        guard let dispatchedModelSyncedEvent = dataStorePlugin.dispatchedModelSyncedEvents[Post.modelName] else {
             XCTFail("Missing `dispatchedModelSyncedEvent` for `Post` model")
             return
         }
-        XCTAssertFalse(dispathcedModelSyncedEvent.get())
+        XCTAssertFalse(dispatchedModelSyncedEvent.get())
 
-        dataStorePlugin.onRecieveValue(receiveValue: .modelSyncedEvent(modelSyncedEvent))
-        XCTAssertTrue(dispathcedModelSyncedEvent.get())
+        dataStorePlugin.onReceiveValue(receiveValue: .modelSyncedEvent(modelSyncedEvent))
+        XCTAssertTrue(dispatchedModelSyncedEvent.get())
         wait(for: [modelSyncedReceivedFromHub], timeout: 1)
         listener.cancel()
     }
@@ -56,13 +56,13 @@ class AWSDataStorePluginBaseBehaviorTests: BaseDataStoreTests {
                                                 added: 10,
                                                 updated: 1,
                                                 deleted: 1)
-        guard let dispathcedModelSyncedEvent = dataStorePlugin.dispatchedModelSyncedEvents[Post.modelName] else {
+        guard let dispatchedModelSyncedEvent = dataStorePlugin.dispatchedModelSyncedEvents[Post.modelName] else {
             XCTFail("Missing `dispatchedModelSyncedEvent` for `Post` model")
             return
         }
-        XCTAssertFalse(dispathcedModelSyncedEvent.get())
-        dataStorePlugin.onRecieveValue(receiveValue: .modelSyncedEvent(modelSyncedEvent))
-        XCTAssertTrue(dispathcedModelSyncedEvent.get())
+        XCTAssertFalse(dispatchedModelSyncedEvent.get())
+        dataStorePlugin.onReceiveValue(receiveValue: .modelSyncedEvent(modelSyncedEvent))
+        XCTAssertTrue(dispatchedModelSyncedEvent.get())
 
         let dataStoreStopSuccess = expectation(description: "Stop successfully")
         dataStorePlugin.stop { result in
@@ -75,7 +75,7 @@ class AWSDataStorePluginBaseBehaviorTests: BaseDataStoreTests {
         }
 
         wait(for: [dataStoreStopSuccess], timeout: 1)
-        XCTAssertFalse(dispathcedModelSyncedEvent.get())
+        XCTAssertFalse(dispatchedModelSyncedEvent.get())
     }
 
     func testDispatchReadyEventToHub() {
@@ -92,8 +92,8 @@ class AWSDataStorePluginBaseBehaviorTests: BaseDataStoreTests {
             }
         }
 
-        dataStorePlugin.onRecieveValue(receiveValue: .syncQueriesReadyEvent)
-        dataStorePlugin.onRecieveValue(receiveValue: .readyEvent)
+        dataStorePlugin.onReceiveValue(receiveValue: .syncQueriesReadyEvent)
+        dataStorePlugin.onReceiveValue(receiveValue: .readyEvent)
 
         wait(for: [syncQueriesReadyFromHub, readyReceivedFromHub], timeout: 1)
         listener.cancel()

@@ -172,7 +172,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             .publisher
             .sink(
                 receiveCompletion: { [weak self] in self?.onReceiveCompletion(completed: $0) },
-                receiveValue: { [weak self] in self?.onRecieveValue(receiveValue: $0) }
+                receiveValue: { [weak self] in self?.onReceiveValue(receiveValue: $0) }
             )
     }
 
@@ -187,7 +187,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     @available(iOS 13.0, *)
-    func onRecieveValue(receiveValue: StorageEngineEvent) {
+    func onReceiveValue(receiveValue: StorageEngineEvent) {
         guard let dataStorePublisher = self.dataStorePublisher else {
             log.error("Data store publisher not initalized")
             return

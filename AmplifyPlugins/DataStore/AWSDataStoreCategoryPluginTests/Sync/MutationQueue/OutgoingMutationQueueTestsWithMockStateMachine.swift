@@ -132,7 +132,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    func testRecievedStartActionWhileExpectingEventProcessedAction() throws {
+    func testReceivedStartActionWhileExpectingEventProcessedAction() throws {
         //Ensure subscription is setup
         let receivedSubscription = expectation(description: "receivedSubscription")
         stateMachine.pushExpectActionCriteria { action in
