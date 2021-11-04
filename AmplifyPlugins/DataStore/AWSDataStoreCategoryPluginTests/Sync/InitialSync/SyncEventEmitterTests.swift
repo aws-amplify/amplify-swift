@@ -7,6 +7,7 @@
 
 import Foundation
 import XCTest
+import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -48,25 +49,6 @@ class SyncEventEmitterTests: XCTestCase {
         let anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
         let postMutationEvent = try MutationEvent(untypedModel: testPost, mutationType: .create)
 
-        let expectedModelSyncedEventPayload = ModelSyncedEvent(modelName: "Post",
-                                                               isFullSync: true, isDeltaSync: false,
-                                                               added: 1, updated: 0, deleted: 0)
-        let listener = Amplify.Hub.publisher(for: .dataStore).sink { payload in
-            switch payload.eventName {
-            case HubPayload.EventName.DataStore.modelSynced:
-                guard let modelSyncedEventPayload = payload.data as? ModelSyncedEvent else {
-                    XCTFail("Couldn't cast payload data as ModelSyncedEvent")
-                    return
-                }
-                XCTAssertTrue(modelSyncedEventPayload == expectedModelSyncedEventPayload)
-                modelSyncedReceived.fulfill()
-            case HubPayload.EventName.DataStore.syncQueriesReady:
-                syncQueriesReadyReceived.fulfill()
-            default:
-                break
-            }
-        }
-
         reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelSchemas: [Post.schema],
                                                                       api: nil,
                                                                       storageAdapter: nil,
@@ -80,6 +62,25 @@ class SyncEventEmitterTests: XCTestCase {
 
         syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
                                             reconciliationQueue: reconciliationQueue)
+        var syncEventEmitterSink: AnyCancellable?
+        syncEventEmitterSink = syncEventEmitter?.publisher.sink(receiveCompletion: { completion in
+            XCTFail("Should not have completed: \(completion)")
+        }, receiveValue: { event in
+            switch event {
+            case .mutationEventApplied:
+                break
+            case .mutationEventDropped:
+                break
+            case .modelSyncedEvent(let modelSyncedEvent):
+                let expectedModelSyncedEventPayload = ModelSyncedEvent(modelName: "Post",
+                                                                       isFullSync: true, isDeltaSync: false,
+                                                                       added: 1, updated: 0, deleted: 0)
+                XCTAssertTrue(modelSyncedEvent == expectedModelSyncedEventPayload)
+                modelSyncedReceived.fulfill()
+            case .syncQueriesReadyEvent:
+                syncQueriesReadyReceived.fulfill()
+            }
+        })
 
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Post.modelName,
                                                                             syncType: .fullSync))
@@ -91,7 +92,7 @@ class SyncEventEmitterTests: XCTestCase {
 
         waitForExpectations(timeout: 1)
         syncEventEmitter = nil
-        listener.cancel()
+        syncEventEmitterSink?.cancel()
     }
 
     /// - Given: A SyncEventEmitter
@@ -120,28 +121,6 @@ class SyncEventEmitterTests: XCTestCase {
                ModelSyncedEvent(modelName: "Post",
                                 isFullSync: true, isDeltaSync: false,
                                 added: 0, updated: 0, deleted: 0)]
-        let listener = Amplify.Hub.publisher(for: .dataStore).sink { payload in
-            switch payload.eventName {
-            case HubPayload.EventName.DataStore.modelSynced:
-                guard let modelSyncedEventPayload = payload.data as? ModelSyncedEvent else {
-                    XCTFail("Couldn't cast payload data as ModelSyncedEvent")
-                    return
-                }
-                modelSyncedEventPayloads.append(modelSyncedEventPayload)
-                if modelSyncedEventPayloads.count == 2 {
-                    modelSyncedEventPayloads.sort {
-                        $0.modelName < $1.modelName
-                    }
-                    XCTAssertEqual(modelSyncedEventPayloads[0], expectedModelSyncedEventPayloads[0])
-                    XCTAssertEqual(modelSyncedEventPayloads[1], expectedModelSyncedEventPayloads[1])
-                    modelSyncedReceived.fulfill()
-                }
-            case HubPayload.EventName.DataStore.syncQueriesReady:
-                syncQueriesReadyReceived.fulfill()
-            default:
-                break
-            }
-        }
 
         let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
 
@@ -159,6 +138,30 @@ class SyncEventEmitterTests: XCTestCase {
         syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
                                             reconciliationQueue: reconciliationQueue)
 
+        var syncEventEmitterSink: AnyCancellable?
+        syncEventEmitterSink = syncEventEmitter?.publisher.sink(receiveCompletion: { completion in
+            XCTFail("Should not have completed: \(completion)")
+        }, receiveValue: { event in
+            switch event {
+            case .mutationEventApplied(let mutationEvent):
+                break
+            case .mutationEventDropped(let modelName):
+                break
+            case .modelSyncedEvent(let modelSyncedEvent):
+                modelSyncedEventPayloads.append(modelSyncedEvent)
+                if modelSyncedEventPayloads.count == 2 {
+                    modelSyncedEventPayloads.sort {
+                        $0.modelName < $1.modelName
+                    }
+                    XCTAssertEqual(modelSyncedEventPayloads[0], expectedModelSyncedEventPayloads[0])
+                    XCTAssertEqual(modelSyncedEventPayloads[1], expectedModelSyncedEventPayloads[1])
+                    modelSyncedReceived.fulfill()
+                }
+            case .syncQueriesReadyEvent:
+                syncQueriesReadyReceived.fulfill()
+            }
+        })
+
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Post.modelName, syncType: .fullSync))
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelName: Post.modelName))
 
@@ -167,7 +170,7 @@ class SyncEventEmitterTests: XCTestCase {
 
         waitForExpectations(timeout: 1)
         syncEventEmitter = nil
-        listener.cancel()
+        syncEventEmitterSink?.cancel()
     }
 
     /// - Given: A SyncEventEmitter
@@ -214,29 +217,6 @@ class SyncEventEmitterTests: XCTestCase {
                                 isFullSync: true, isDeltaSync: false,
                                 added: 1, updated: 0, deleted: 0)]
         var modelSyncedEventPayloads = [ModelSyncedEvent]()
-        let listener = Amplify.Hub.publisher(for: .dataStore).sink { payload in
-            switch payload.eventName {
-            case HubPayload.EventName.DataStore.modelSynced:
-                guard let modelSyncedEventPayload = payload.data as? ModelSyncedEvent else {
-                    XCTFail("Couldn't cast payload data as ModelSyncedEvent")
-                    return
-                }
-                modelSyncedEventPayloads.append(modelSyncedEventPayload)
-
-                if modelSyncedEventPayloads.count == 2 {
-                    modelSyncedEventPayloads.sort {
-                        $0.modelName < $1.modelName
-                    }
-                    XCTAssertTrue(modelSyncedEventPayloads[0] == expectedModelSyncedEventPayloads[0])
-                    XCTAssertTrue(modelSyncedEventPayloads[1] == expectedModelSyncedEventPayloads[1])
-                    modelSyncedReceived.fulfill()
-                }
-            case HubPayload.EventName.DataStore.syncQueriesReady:
-                syncQueriesReadyReceived.fulfill()
-            default:
-                break
-            }
-        }
 
         let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
 
@@ -253,6 +233,31 @@ class SyncEventEmitterTests: XCTestCase {
 
         syncEventEmitter = SyncEventEmitter(initialSyncOrchestrator: initialSyncOrchestrator,
                                             reconciliationQueue: reconciliationQueue)
+
+        var syncEventEmitterSink: AnyCancellable?
+        syncEventEmitterSink = syncEventEmitter?.publisher.sink(receiveCompletion: { completion in
+            XCTFail("Should not have completed: \(completion)")
+        }, receiveValue: { event in
+            switch event {
+            case .mutationEventApplied(let mutationEvent):
+                break
+            case .mutationEventDropped(let modelName):
+                break
+            case .modelSyncedEvent(let modelSyncedEvent):
+                modelSyncedEventPayloads.append(modelSyncedEvent)
+
+                if modelSyncedEventPayloads.count == 2 {
+                    modelSyncedEventPayloads.sort {
+                        $0.modelName < $1.modelName
+                    }
+                    XCTAssertTrue(modelSyncedEventPayloads[0] == expectedModelSyncedEventPayloads[0])
+                    XCTAssertTrue(modelSyncedEventPayloads[1] == expectedModelSyncedEventPayloads[1])
+                    modelSyncedReceived.fulfill()
+                }
+            case .syncQueriesReadyEvent:
+                syncQueriesReadyReceived.fulfill()
+            }
+        })
 
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Post.modelName,
                                                                             syncType: .fullSync))
@@ -271,6 +276,6 @@ class SyncEventEmitterTests: XCTestCase {
 
         waitForExpectations(timeout: 1)
         syncEventEmitter = nil
-        listener.cancel()
+        syncEventEmitterSink?.cancel()
     }
 }

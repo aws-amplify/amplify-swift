@@ -13,6 +13,8 @@ import Foundation
 enum IncomingSyncEventEmitterEvent {
     case mutationEventApplied(MutationEvent)
     case mutationEventDropped(modelName: String)
+    case modelSyncedEvent(ModelSyncedEvent)
+    case syncQueriesReadyEvent
 }
 
 /// SyncEventEmitter holds onto one ModelSyncedEventEmitter per model. It counts the number of `modelSyncedEvent` to
@@ -71,17 +73,13 @@ final class SyncEventEmitter {
             syncEventEmitterTopic.send(.mutationEventApplied(mutationEvent))
         case .mutationEventDropped(let modelName):
             syncEventEmitterTopic.send(.mutationEventDropped(modelName: modelName))
-        case .modelSyncedEvent:
+        case .modelSyncedEvent(let modelSyncedEvent):
             modelSyncedReceived += 1
+            syncEventEmitterTopic.send(.modelSyncedEvent(modelSyncedEvent))
             if shouldDispatchSyncQueriesReadyEvent {
-                dispatchSyncQueriesReady()
+                syncEventEmitterTopic.send(.syncQueriesReadyEvent)
             }
         }
-    }
-
-    private func dispatchSyncQueriesReady() {
-        let syncQueriesReadyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
-        Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesReadyEventPayload)
     }
 }
 

@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -32,6 +33,63 @@ class AWSDataStorePluginSubscribeBehaviorTests: BaseDataStoreTests {
 
         wait(for: [snapshotReceived], timeout: 3)
         sink.cancel()
+    }
 
+    func testObserveQueryResetAfterDataStoreStop() {
+        let sink = dataStorePlugin.observeQuery(for: Post.self).sink { completion in
+            switch completion {
+            case .finished:
+                XCTFail("ObserveQueries should not be completed")
+            case .failure(let error):
+                XCTFail("\(error.localizedDescription)")
+            }
+        } receiveValue: { snapshot in
+            print(snapshot)
+        }
+
+        XCTAssertEqual(dataStorePlugin.operationQueue.operations.count, 1)
+
+        guard let operation = dataStorePlugin.operationQueue.operations.first,
+              let observeQueryOperation = operation as? AWSDataStoreObserveQueryOperation<Post> else {
+            XCTFail("Couldn't get observe query operation")
+            return
+        }
+
+        let dataStoreStopSuccess = expectation(description: "Stop successfully")
+        dataStorePlugin.stop { result in
+            switch result {
+            case .success:
+                dataStoreStopSuccess.fulfill()
+            case .failure(let error):
+                XCTFail("\(error.localizedDescription)")
+            }
+        }
+
+        wait(for: [dataStoreStopSuccess], timeout: 1)
+
+        XCTAssertEqual(dataStorePlugin.operationQueue.operations.count, 1)
+        XCTAssertFalse(observeQueryOperation.observeQueryStarted)
+        sink.cancel()
+    }
+
+    func testObserveQueryFailOnMissingDispatchedModelSyncedEvent() {
+        dataStorePlugin.dispatchedModelSyncedEvents[Post.modelName] = nil
+        let failReceived = expectation(description: "ObserveQuery failure received")
+        let sink = Amplify.DataStore.observeQuery(for: Post.self)
+            .sink { completed in
+                switch completed {
+                case .finished:
+                    break
+                case .failure(let error):
+                    guard case .unknown = error else {
+                        XCTFail("Expected to be `unknown` error")
+                        return
+                    }
+                    failReceived.fulfill()
+                }
+            } receiveValue: { _ in }
+
+        wait(for: [failReceived], timeout: 3)
+        sink.cancel()
     }
 }

@@ -132,9 +132,38 @@ final class StorageEngine: StorageEngineBehavior {
     }
 
     @available(iOS 13.0, *)
-    private func onReceive(receiveValue: RemoteSyncEngineEvent) {
-        if case .mutationEvent(let mutationEvent) = receiveValue {
-            self.storageEnginePublisher.send(.mutationEvent(mutationEvent))
+    func onReceive(receiveValue: RemoteSyncEngineEvent) {
+        switch receiveValue {
+        case .storageAdapterAvailable:
+            break
+        case .subscriptionsPaused:
+            break
+        case .mutationsPaused:
+            break
+        case .clearedStateOutgoingMutations:
+            break
+        case .subscriptionsInitialized:
+            break
+        case .performedInitialSync:
+            break
+        case .subscriptionsActivated:
+            break
+        case .mutationQueueStarted:
+            break
+        case .syncStarted:
+            break
+        case .cleanedUp:
+            break
+        case .cleanedUpForTermination:
+            break
+        case .mutationEvent(let mutationEvent):
+            storageEnginePublisher.send(.mutationEvent(mutationEvent))
+        case .modelSyncedEvent(let modelSyncedEvent):
+            storageEnginePublisher.send(.modelSyncedEvent(modelSyncedEvent))
+        case .syncQueriesReadyEvent:
+            storageEnginePublisher.send(.syncQueriesReadyEvent)
+        case .readyEvent:
+            storageEnginePublisher.send(.readyEvent)
         }
     }
 

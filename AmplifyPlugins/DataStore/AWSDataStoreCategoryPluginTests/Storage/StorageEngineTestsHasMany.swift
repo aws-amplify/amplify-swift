@@ -100,17 +100,17 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         }
         XCTAssertEqual(dishes.count, 2)
 
-        let recievedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
-        recievedMutationEvent.expectedFulfillmentCount = 6
+        let receivedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
+        receivedMutationEvent.expectedFulfillmentCount = 6
         syncEngine.setCallbackOnSubmit(callback: { _ in
-            recievedMutationEvent.fulfill()
+            receivedMutationEvent.fulfill()
         })
         guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: Restaurant.self,
                                                                     withId: dreamRestaurant.id) else {
             XCTFail("Failed to delete restaurant")
             return
         }
-        wait(for: [recievedMutationEvent], timeout: defaultTimeout)
+        wait(for: [receivedMutationEvent], timeout: defaultTimeout)
     }
 
     /*
@@ -191,10 +191,10 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
 
         //let startTime = CFAbsoluteTimeGetCurrent()
         // Delete Top level of restaurant
-        let recievedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
-        recievedMutationEvent.expectedFulfillmentCount = numberOfMenus + numberOfDishes + 1
+        let receivedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
+        receivedMutationEvent.expectedFulfillmentCount = numberOfMenus + numberOfDishes + 1
         syncEngine.setCallbackOnSubmit(callback: { _ in
-            recievedMutationEvent.fulfill()
+            receivedMutationEvent.fulfill()
         })
         guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: Restaurant.self,
                                                                     withId: restaurant1.id,
@@ -202,7 +202,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
                                                                         XCTFail("Failed to delete restaurant")
                                                                         return
         }
-        wait(for: [recievedMutationEvent], timeout: 10)
+        wait(for: [receivedMutationEvent], timeout: 10)
         //let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
         //print("Time elapsed time to delete: \(timeElapsed) s.")
     }
@@ -219,15 +219,15 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
                  return
          }
 
-        let recievedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
-        recievedMutationEvent.expectedFulfillmentCount = 3
+        let receivedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
+        receivedMutationEvent.expectedFulfillmentCount = 3
         let expectedFailures = expectation(description: "Simulated failure on mutation event submitted to sync engine")
         expectedFailures.expectedFulfillmentCount = 2
         let expectedSuccess = expectation(description: "Simulated success on mutation event submitted to sync engine")
         expectedSuccess.expectedFulfillmentCount = 1
 
         syncEngine.setCallbackOnSubmit(callback: { _ in
-            recievedMutationEvent.fulfill()
+            receivedMutationEvent.fulfill()
         })
 
         syncEngine.setReturnOnSubmit { submittedMutationEvent in
@@ -249,7 +249,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
                                                                                 XCTFail("Deleting should have failed due to our mock")
                                                                                 return
         }
-        wait(for: [recievedMutationEvent, expectedFailures, expectedSuccess], timeout: defaultTimeout)
+        wait(for: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: defaultTimeout)
         XCTAssertEqual(error.errorDescription, "mockError")
     }
 

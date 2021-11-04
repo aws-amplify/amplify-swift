@@ -23,6 +23,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// The Publisher that sends mutation events to subscribers
     var dataStorePublisher: ModelSubcriptionBehavior?
 
+    var dispatchedModelSyncedEvents: [ModelName: AtomicValue<Bool>]
+
     let modelRegistration: AmplifyModelRegistration
 
     /// The DataStore configuration
@@ -70,6 +72,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         } else {
             self.dataStorePublisher = nil
         }
+        self.dispatchedModelSyncedEvents = [:]
         self.storageEngineInitSemaphore = DispatchSemaphore(value: 1)
     }
 
@@ -88,6 +91,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.storageEngineBehaviorFactory = storageEngineBehaviorFactory ??
             StorageEngine.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:)
         self.dataStorePublisher = dataStorePublisher
+        self.dispatchedModelSyncedEvents = [:]
         self.validAPIPluginKey = validAPIPluginKey
         self.validAuthPluginKey = validAuthPluginKey
         self.storageEngineInitSemaphore = DispatchSemaphore(value: 1)
@@ -98,6 +102,9 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// them to `StorageEngine.setUp(modelSchemas:)`
     public func configure(using amplifyConfiguration: Any?) throws {
         modelRegistration.registerModels(registry: ModelRegistry.self)
+        for modelSchema in ModelRegistry.modelSchemas {
+            dispatchedModelSyncedEvents[modelSchema.name] = AtomicValue(initialValue: false)
+        }
         resolveSyncEnabled()
         ModelListDecoderRegistry.registerDecoder(DataStoreListDecoder.self)
     }
@@ -165,7 +172,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             .publisher
             .sink(
                 receiveCompletion: { [weak self] in self?.onReceiveCompletion(completed: $0) },
-                receiveValue: { [weak self] in self?.onRecieveValue(receiveValue: $0) }
+                receiveValue: { [weak self] in self?.onReceiveValue(receiveValue: $0) }
             )
     }
 
@@ -180,14 +187,28 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     @available(iOS 13.0, *)
-    private func onRecieveValue(receiveValue: StorageEngineEvent) {
+    func onReceiveValue(receiveValue: StorageEngineEvent) {
         guard let dataStorePublisher = self.dataStorePublisher else {
             log.error("Data store publisher not initalized")
             return
         }
 
-        if case .mutationEvent(let mutationEvent) = receiveValue {
+        switch receiveValue {
+        case .started:
+            break
+        case .mutationEvent(let mutationEvent):
             dataStorePublisher.send(input: mutationEvent)
+        case .modelSyncedEvent(let modelSyncedEvent):
+            let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
+                                                     data: modelSyncedEvent)
+            Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
+            dispatchedModelSyncedEvents[modelSyncedEvent.modelName]?.set(true)
+        case .syncQueriesReadyEvent:
+            let syncQueriesReadyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
+            Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesReadyEventPayload)
+        case .readyEvent:
+            let readyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.ready)
+            Amplify.Hub.dispatch(to: .dataStore, payload: readyEventPayload)
         }
     }
 
@@ -195,6 +216,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         if operationQueue != nil {
             operationQueue = nil
         }
+        dispatchedModelSyncedEvents = [:]
         if let listener = hubListener {
             Amplify.Hub.removeListener(listener)
             hubListener = nil

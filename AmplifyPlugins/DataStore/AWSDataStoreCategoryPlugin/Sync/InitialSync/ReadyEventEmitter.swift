@@ -9,13 +9,22 @@ import Amplify
 import AWSPluginsCore
 import Combine
 
+enum IncomingReadyEventEmitter {
+    case readyEvent
+}
+
 @available(iOS 13.0, *)
 final class ReadyEventEmitter {
     var readySink: AnyCancellable?
-    let completion: BasicClosure
-    init(remoteSyncEnginePublisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError>,
-         completion: @escaping BasicClosure) {
-        self.completion = completion
+
+    private var readyEventTopic: PassthroughSubject<IncomingReadyEventEmitter, Never>
+    var publisher: AnyPublisher<IncomingReadyEventEmitter, Never> {
+        return readyEventTopic.eraseToAnyPublisher()
+    }
+
+    init(remoteSyncEnginePublisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError>) {
+        self.readyEventTopic = PassthroughSubject<IncomingReadyEventEmitter, Never>()
+
         let queriesReadyPublisher = ReadyEventEmitter.makeSyncQueriesReadyPublisher()
         let syncEngineStartedPublisher = ReadyEventEmitter.makeRemoteSyncEngineStartedPublisher(
             remoteSyncEnginePublisher: remoteSyncEnginePublisher
@@ -25,11 +34,10 @@ final class ReadyEventEmitter {
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
-                    self.dispatchReady()
+                    self.readyEventTopic.send(.readyEvent)
                 case .failure(let dataStoreError):
                     self.log.error("Failed to emit ready event, error: \(dataStoreError)")
                 }
-                self.completion()
             }, receiveValue: { _ in })
     }
 
@@ -52,12 +60,6 @@ final class ReadyEventEmitter {
             .map { _ in () }
             .eraseToAnyPublisher()
     }
-
-    private func dispatchReady() {
-        let readyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.ready)
-        Amplify.Hub.dispatch(to: .dataStore, payload: readyEventPayload)
-    }
-
 }
 
 @available(iOS 13.0, *)

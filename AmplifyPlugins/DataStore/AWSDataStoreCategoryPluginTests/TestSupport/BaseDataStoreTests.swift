@@ -19,6 +19,7 @@ class BaseDataStoreTests: XCTestCase {
     var connection: Connection!
     var storageEngine: StorageEngine!
     var storageAdapter: SQLiteStorageEngineAdapter!
+    var dataStorePlugin: AWSDataStorePlugin!
 
     // MARK: - Lifecycle
 
@@ -50,7 +51,7 @@ class BaseDataStoreTests: XCTestCase {
             return self.storageEngine
         }
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
+        dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                  storageEngineBehaviorFactory: storageEngineBehaviorFactory,
                                                  dataStorePublisher: dataStorePublisher,
                                                  validAPIPluginKey: validAPIPluginKey,
@@ -70,6 +71,7 @@ class BaseDataStoreTests: XCTestCase {
             try Amplify.add(plugin: apiPlugin)
             try Amplify.add(plugin: dataStorePlugin)
             try Amplify.configure(amplifyConfig)
+            XCTAssertEqual(dataStorePlugin.dispatchedModelSyncedEvents.count, ModelRegistry.modelSchemas.count)
             Amplify.DataStore.start(completion: {_ in})
         } catch {
             XCTFail(String(describing: error))

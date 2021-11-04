@@ -38,6 +38,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     private var reconciliationQueueSink: AnyCancellable?
     private var syncEventEmitterSink: AnyCancellable?
+    private var readyEventEmitterSink: AnyCancellable?
 
     let remoteSyncTopicPublisher: PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>
     var publisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError> {
@@ -313,10 +314,12 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                 receiveValue: { [weak self] in self?.onReceive(receiveValue: $0) }
             )
 
-        readyEventEmitter = ReadyEventEmitter(
-            remoteSyncEnginePublisher: publisher,
-            completion: { }
-        )
+        readyEventEmitter = ReadyEventEmitter(remoteSyncEnginePublisher: publisher)
+        readyEventEmitterSink = readyEventEmitter?
+            .publisher.sink(
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] in self?.onReceive(receiveValue: $0) }
+            )
 
         // TODO: This should be an AsynchronousOperation, not a semaphore-waited block
         let semaphore = DispatchSemaphore(value: 0)

@@ -232,7 +232,7 @@ class RequestRetryablePolicyTests: XCTestCase {
             XCTAssertGreaterThanOrEqual(milliseconds, greaterThan)
             XCTAssertLessThanOrEqual(milliseconds, lessThan)
         default:
-            XCTFail("Expected milliseconds, but recieved \(retryInterval)")
+            XCTFail("Expected milliseconds, but received \(retryInterval)")
         }
     }
 
@@ -246,7 +246,7 @@ class RequestRetryablePolicyTests: XCTestCase {
         case .seconds(let seconds):
             XCTAssertEqual(seconds, expectedSeconds)
         default:
-            XCTFail("Expected seconds, but recieved \(retryInterval)")
+            XCTFail("Expected seconds, but received \(retryInterval)")
         }
     }
 }

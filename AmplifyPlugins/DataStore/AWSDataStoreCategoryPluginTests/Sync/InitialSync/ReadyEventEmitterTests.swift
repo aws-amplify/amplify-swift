@@ -28,20 +28,17 @@ class ReadyEventEmitterTests: XCTestCase {
         let readyReceived = expectation(description: "ready received")
         readyReceived.assertForOverFulfill = false
 
-        readyEventSink = Amplify.Hub.publisher(for: .dataStore).sink { payload in
-            switch payload.eventName {
-            case HubPayload.EventName.DataStore.ready:
-                readyReceived.fulfill()
-            default:
-                break
-            }
-        }
-
         let remoteSyncTopicPublisher = PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>()
         readyEventEmitter =
-            ReadyEventEmitter(remoteSyncEnginePublisher: remoteSyncTopicPublisher.eraseToAnyPublisher(),
-                              completion: { self.readyEventEmitter = nil })
-
+            ReadyEventEmitter(remoteSyncEnginePublisher: remoteSyncTopicPublisher.eraseToAnyPublisher())
+        readyEventSink = readyEventEmitter?.publisher.sink(receiveCompletion: { completion in
+            XCTFail("Should not receive completion")
+        }, receiveValue: { event in
+            switch event {
+            case .readyEvent:
+                readyReceived.fulfill()
+            }
+        })
         remoteSyncTopicPublisher.send(.syncStarted)
         let syncQueriesReadyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
         Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesReadyEventPayload)

@@ -13,7 +13,7 @@ import Foundation
 enum IncomingModelSyncedEmitterEvent {
     case mutationEventApplied(MutationEvent)
     case mutationEventDropped(modelName: String)
-    case modelSyncedEvent
+    case modelSyncedEvent(ModelSyncedEvent)
 }
 
 /// Listens to events published by both the `InitialSyncOrchestrator` and `IncomingEventReconciliationQueue`,
@@ -45,31 +45,12 @@ final class ModelSyncedEventEmitter {
         return modelSyncedEventTopic.eraseToAnyPublisher()
     }
 
-    var shouldDispatchModelSyncedEvent: Bool {
+    var shouldSendModelSyncedEvent: Bool {
         initialSyncOperationFinished && reconciledReceived == recordsReceived
     }
 
-    /// Used internally within ModelSyncedEventEmitter instances, not thread-safe, is accessed serially under the
-    /// DispatchQueue. Exists to avoid using `dispatchedModelSyncedEvent` which requires acquiring a lock each time.
-    private var _dispatchedModelSyncedEvent: Bool
-
-    /// Used by other internal classes for checking state in a thread-safe way.
-    var dispatchedModelSyncedEvent: Bool {
-        get {
-            dispatchedModelSyncedEventLock.lock()
-            defer {
-                dispatchedModelSyncedEventLock.unlock()
-            }
-            return _dispatchedModelSyncedEvent
-        }
-        set {
-            dispatchedModelSyncedEventLock.lock()
-            defer {
-                dispatchedModelSyncedEventLock.unlock()
-            }
-            _dispatchedModelSyncedEvent = newValue
-        }
-    }
+    /// Used within ModelSyncedEventEmitter instances, not thread-safe, is accessed serially under DispatchQueue.
+    var dispatchedModelSyncedEvent: Bool
 
     init(modelSchema: ModelSchema,
          initialSyncOrchestrator: InitialSyncOrchestrator?,
@@ -78,7 +59,7 @@ final class ModelSyncedEventEmitter {
         self.recordsReceived = 0
         self.reconciledReceived = 0
         self.initialSyncOperationFinished = false
-        self._dispatchedModelSyncedEvent = false
+        self.dispatchedModelSyncedEvent = false
         self.modelSyncedEventBuilder = ModelSyncedEvent.Builder()
 
         self.modelSyncedEventTopic = PassthroughSubject<IncomingModelSyncedEmitterEvent, Never>()
@@ -137,13 +118,13 @@ final class ModelSyncedEventEmitter {
         case .finished:
             initialSyncOperationFinished = true
             if recordsReceived == 0 {
-                dispatchModelSyncedEvent()
+                sendModelSyncedEvent()
             }
         }
     }
 
     private func onReceiveReconciliationEvent(value: IncomingEventReconciliationQueueEvent) {
-        guard !_dispatchedModelSyncedEvent else {
+        guard !dispatchedModelSyncedEvent else {
             switch value {
             case .mutationEventApplied(let event):
                 modelSyncedEventTopic.send(.mutationEventApplied(event))
@@ -169,31 +150,29 @@ final class ModelSyncedEventEmitter {
                 log.error("Unexpected mutationType received: \(event.mutationType)")
             }
 
-            if shouldDispatchModelSyncedEvent {
-                dispatchModelSyncedEvent()
-            }
-
             modelSyncedEventTopic.send(.mutationEventApplied(event))
+
+            if shouldSendModelSyncedEvent {
+                sendModelSyncedEvent()
+            }
         case .mutationEventDropped(let modelName):
             reconciledReceived += 1
 
-            if shouldDispatchModelSyncedEvent {
-                dispatchModelSyncedEvent()
-            }
-
             modelSyncedEventTopic.send(.mutationEventDropped(modelName: modelName))
+
+            if shouldSendModelSyncedEvent {
+                sendModelSyncedEvent()
+            }
         case .initialized, .started, .paused:
             return
         }
     }
 
-    private func dispatchModelSyncedEvent() {
+    private func sendModelSyncedEvent() {
         modelSyncedEventBuilder.modelName = modelSchema.name
-        let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
-                                                 data: modelSyncedEventBuilder.build())
-        Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
+        let modelSyncedEvent = modelSyncedEventBuilder.build()
+        modelSyncedEventTopic.send(.modelSyncedEvent(modelSyncedEvent))
         dispatchedModelSyncedEvent = true
-        modelSyncedEventTopic.send(.modelSyncedEvent)
         syncOrchestratorSink?.cancel()
     }
 }

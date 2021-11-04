@@ -14,6 +14,7 @@ import Combine
 @testable import AWSPluginsCore
 @testable import AWSDataStoreCategoryPlugin
 
+// swiftlint:disable type_body_length
 class DataStoreObserveQueryOperationTests: XCTestCase {
 
     var storageEngine: MockStorageEngineBehavior!
@@ -44,7 +45,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default)
+            dataStoreConfiguration: .default,
+            dispatchedModelSyncedEvent: AtomicValue(initialValue: false))
 
         let sink = operation.publisher.sink { completed in
             switch completed {
@@ -95,7 +97,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default)
+            dataStoreConfiguration: .default,
+            dispatchedModelSyncedEvent: AtomicValue(initialValue: false))
 
         let sink = operation.publisher.sink { completed in
             switch completed {
@@ -153,7 +156,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default)
+            dataStoreConfiguration: .default,
+            dispatchedModelSyncedEvent: AtomicValue(initialValue: false))
 
         let sink = operation.publisher.sink { completed in
             switch completed {
@@ -210,7 +214,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default)
+            dataStoreConfiguration: .default,
+            dispatchedModelSyncedEvent: AtomicValue(initialValue: false))
 
         let sink = operation.publisher.sink { completed in
             switch completed {
@@ -262,7 +267,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default)
+            dataStoreConfiguration: .default,
+            dispatchedModelSyncedEvent: AtomicValue(initialValue: false))
 
         let sink = operation.publisher.sink { completed in
             switch completed {
@@ -306,7 +312,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default)
+            dataStoreConfiguration: .default,
+            dispatchedModelSyncedEvent: AtomicValue(initialValue: false))
 
         var sink = operation.publisher.sink { completed in
             switch completed {
@@ -352,7 +359,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default)
+            dataStoreConfiguration: .default,
+            dispatchedModelSyncedEvent: AtomicValue(initialValue: false))
 
         var sink = operation.publisher.sink { completed in
             switch completed {
@@ -387,7 +395,6 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
     func testObserveQueryOperationIsRemovedWhenPreviousSubscriptionIsRemoved() {
         let firstSnapshot = expectation(description: "first query snapshot")
         var querySnapshots = [DataStoreQuerySnapshot<Post>]()
-
         let operation1 = AWSDataStoreObserveQueryOperation(
             modelType: Post.self,
             modelSchema: Post.schema,
@@ -395,7 +402,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default)
+            dataStoreConfiguration: .default,
+            dispatchedModelSyncedEvent: AtomicValue(initialValue: false))
 
         let operation2 = AWSDataStoreObserveQueryOperation(
             modelType: Post.self,
@@ -404,7 +412,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default)
+            dataStoreConfiguration: .default,
+            dispatchedModelSyncedEvent: AtomicValue(initialValue: false))
 
         var sink = operation1.publisher.sink { completed in
             switch completed {
@@ -452,7 +461,8 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default)
+            dataStoreConfiguration: .default,
+            dispatchedModelSyncedEvent: AtomicValue(initialValue: false))
         let post = Post(title: "model1",
                         content: "content1",
                         createdAt: .now())
