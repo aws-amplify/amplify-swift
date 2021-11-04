@@ -216,6 +216,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         if operationQueue != nil {
             operationQueue = nil
         }
+        dispatchedModelSyncedEvents = [:]
         if let listener = hubListener {
             Amplify.Hub.removeListener(listener)
             hubListener = nil

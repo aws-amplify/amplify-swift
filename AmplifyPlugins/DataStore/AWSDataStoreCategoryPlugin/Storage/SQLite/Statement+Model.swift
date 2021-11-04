@@ -58,7 +58,7 @@ extension Statement: StatementModelConvertible {
         var elements: [ModelValues] = []
 
         // parse each row of the result
-        let iter = self.makeIterator()
+        let iter = makeIterator()
         while let row = try iter.failableNext() {
             let modelDictionary = try convert(row: row, withSchema: modelSchema, using: statement)
             elements.append(modelDictionary)
