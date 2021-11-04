@@ -45,8 +45,9 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         let mutationEventAppliedReceived = expectation(description: "mutationEventApplied received")
         mutationEventAppliedReceived.expectedFulfillmentCount = 3
         let mutationEventDroppedReceived = expectation(description: "mutationEventDropped received")
-        mutationEventDroppedReceived.expectedFulfillmentCount = 2
-        let anyPostMetadata = MutationSyncMetadata(id: "1",
+        mutationEventDroppedReceived.expectedFulfillmentCount = 3
+        let anyPostMetadata = MutationSyncMetadata(modelId: "1",
+                                                   modelName: Post.modelName,
                                                    deleted: false,
                                                    lastChangedAt: Int(Date().timeIntervalSince1970),
                                                    version: 1)
@@ -197,7 +198,8 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         mutationEventAppliedReceived.assertForOverFulfill = false
         let mutationEventDroppedReceived = expectation(description: "mutationEventDropped received")
         mutationEventDroppedReceived.assertForOverFulfill = false
-        let anyPostMetadata = MutationSyncMetadata(id: "1",
+        let anyPostMetadata = MutationSyncMetadata(modelId: "1",
+                                                   modelName: Post.modelName,
                                                    deleted: false,
                                                    lastChangedAt: Int(Date().timeIntervalSince1970),
                                                    version: 1)

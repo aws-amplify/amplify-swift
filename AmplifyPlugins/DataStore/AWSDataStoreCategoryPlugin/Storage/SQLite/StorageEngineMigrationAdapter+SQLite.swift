@@ -8,7 +8,6 @@
 import Amplify
 import Foundation
 import SQLite
-import AWSPluginsCore
 
 extension SQLiteStorageEngineAdapter {
 

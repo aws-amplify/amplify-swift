@@ -48,9 +48,12 @@ class ModelSortTests: XCTestCase {
     }
 
     func testSortModelInt() {
-        var models = [MutationSyncMetadata(id: UUID().uuidString, deleted: false, lastChangedAt: 1, version: 1),
-                      MutationSyncMetadata(id: UUID().uuidString, deleted: false, lastChangedAt: 1, version: 2),
-                      MutationSyncMetadata(id: UUID().uuidString, deleted: false, lastChangedAt: 1, version: 3)]
+        var models = [MutationSyncMetadata(
+                        modelId: UUID().uuidString, modelName: "", deleted: false, lastChangedAt: 1, version: 1),
+                      MutationSyncMetadata(
+                        modelId: UUID().uuidString, modelName: "", deleted: false, lastChangedAt: 1, version: 2),
+                      MutationSyncMetadata(
+                        modelId: UUID().uuidString, modelName: "", deleted: false, lastChangedAt: 1, version: 3)]
         models.sortModels(by: QuerySortBy.ascending(MutationSyncMetadata.keys.version).sortDescriptor,
                           modelSchema: MutationSyncMetadata.schema)
         XCTAssertEqual(models[0].version, 1)

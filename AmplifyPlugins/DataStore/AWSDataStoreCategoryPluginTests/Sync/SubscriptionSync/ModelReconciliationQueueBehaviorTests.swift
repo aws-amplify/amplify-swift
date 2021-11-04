@@ -42,7 +42,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         for iteration in 1 ... 3 {
             let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()
-            let syncMetadata = MutationSyncMetadata(id: model.id,
+            let syncMetadata = MutationSyncMetadata(modelId: model.id,
+                                                    modelName: model.modelName,
                                                     deleted: false,
                                                     lastChangedAt: Date().unixSeconds,
                                                     version: 1)
@@ -88,7 +89,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         for iteration in 1 ... 3 {
             let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()
-            let syncMetadata = MutationSyncMetadata(id: model.id,
+            let syncMetadata = MutationSyncMetadata(modelId: model.id,
+                                                    modelName: model.modelName,
                                                     deleted: false,
                                                     lastChangedAt: Date().unixSeconds,
                                                     version: 1)
@@ -162,7 +164,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         for iteration in 1 ... 3 {
             let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()
-            let syncMetadata = MutationSyncMetadata(id: model.id,
+            let syncMetadata = MutationSyncMetadata(modelId: model.id,
+                                                    modelName: model.modelName,
                                                     deleted: false,
                                                     lastChangedAt: Date().unixSeconds,
                                                     version: 1)
@@ -218,8 +221,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         // Return a successful MutationSyncMetadata save, and also assert the event states
         let allEventsProcessed = expectation(description: "All events processed")
         storageAdapter.responders[.saveModelCompletion] =
-            SaveModelCompletionResponder<MutationSyncMetadata> { model, completion in
-                switch model.id {
+            SaveModelCompletionResponder<MutationSyncMetadata> { mutationSyncMetadata, completion in
+                switch mutationSyncMetadata.modelId {
                 case "id-1":
                     XCTAssertEqual(event1State.get(), .notStarted)
                     XCTAssertEqual(event2State.get(), .notStarted)
@@ -241,7 +244,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 default:
                     break
                 }
-                completion(.success(model))
+                completion(.success(mutationSyncMetadata))
         }
 
         let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
@@ -254,7 +257,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
         for iteration in 1 ... 3 {
             let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()
-            let syncMetadata = MutationSyncMetadata(id: model.id,
+            let syncMetadata = MutationSyncMetadata(modelId: model.id,
+                                                    modelName: model.modelName,
                                                     deleted: false,
                                                     lastChangedAt: Date().unixSeconds,
                                                     version: 1)
@@ -305,8 +309,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let event1ShouldBeProcessed = expectation(description: "Event 1 should be processed")
         let event2ShouldBeProcessed = expectation(description: "Event 2 should be processed")
         storageAdapter.responders[.saveModelCompletion] =
-            SaveModelCompletionResponder<MutationSyncMetadata> { model, completion in
-                switch model.id {
+            SaveModelCompletionResponder<MutationSyncMetadata> { mutationSyncMetadata, completion in
+                switch mutationSyncMetadata.modelId {
                 case "id-1":
                     event1ShouldBeProcessed.fulfill()
                 case "id-2":
@@ -314,7 +318,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 default:
                     break
                 }
-                completion(.success(model))
+                completion(.success(mutationSyncMetadata))
         }
 
         let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
@@ -327,7 +331,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
         for iteration in 1 ... 2 {
             let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()
-            let syncMetadata = MutationSyncMetadata(id: model.id,
+            let syncMetadata = MutationSyncMetadata(modelId: model.id,
+                                                    modelName: model.modelName,
                                                     deleted: false,
                                                     lastChangedAt: Date().unixSeconds,
                                                     version: 1)
@@ -365,8 +370,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         event2ShouldNotBeProcessed.isInverted = true
         let event3ShouldBeProcessed = expectation(description: "Event 3 should be processed")
         storageAdapter.responders[.saveModelCompletion] =
-            SaveModelCompletionResponder<MutationSyncMetadata> { model, completion in
-                switch model.id {
+            SaveModelCompletionResponder<MutationSyncMetadata> { mutationSyncMetadata, completion in
+                switch mutationSyncMetadata.modelId {
                 case "id-1":
                     event1ShouldNotBeProcessed.fulfill()
                 case "id-2":
@@ -376,7 +381,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 default:
                     break
                 }
-                completion(.success(model))
+                completion(.success(mutationSyncMetadata))
         }
 
         let eventsSentViaPublisher3 = expectation(description: "id-3 sent via publisher")
@@ -391,7 +396,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         })
 
         let model = try MockSynced(id: "id-3").eraseToAnyModel()
-        let syncMetadata = MutationSyncMetadata(id: model.id,
+        let syncMetadata = MutationSyncMetadata(modelId: model.id,
+                                                modelName: model.modelName,
                                                 deleted: false,
                                                 lastChangedAt: Date().unixSeconds,
                                                 version: 1)

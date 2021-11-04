@@ -252,7 +252,8 @@ class InitialSyncOperationTests: XCTestCase {
         let startedAtMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
         let model = MockSynced(id: "1")
         let anyModel = AnyModel(model)
-        let metadata = MutationSyncMetadata(id: "1",
+        let metadata = MutationSyncMetadata(modelId: "1",
+                                            modelName: MockSynced.modelName,
                                             deleted: false,
                                             lastChangedAt: Int(Date().timeIntervalSince1970),
                                             version: 1)
