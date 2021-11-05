@@ -45,7 +45,7 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         let mutationEventAppliedReceived = expectation(description: "mutationEventApplied received")
         mutationEventAppliedReceived.expectedFulfillmentCount = 3
         let mutationEventDroppedReceived = expectation(description: "mutationEventDropped received")
-        mutationEventDroppedReceived.expectedFulfillmentCount = 3
+        mutationEventDroppedReceived.expectedFulfillmentCount = 2
         let anyPostMetadata = MutationSyncMetadata(modelId: "1",
                                                    modelName: Post.modelName,
                                                    deleted: false,
