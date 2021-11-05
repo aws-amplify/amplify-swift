@@ -95,6 +95,14 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
 
     }
 
+    func apiEndpointName() throws -> String {
+        guard let apiPlugin = amplifyConfig.api?.plugins["awsAPIPlugin"],
+              case .object(let value) = apiPlugin else {
+            throw APIError.invalidConfiguration("API endpoint not found.", "Check the provided configuration")
+        }
+        return value.keys.first!
+    }
+
     /// Setup DataStore with given models
     /// - Parameter models: DataStore models
     func setup(withModels models: AmplifyModelRegistration,
@@ -115,7 +123,8 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
             try Amplify.configure(amplifyConfig)
 
             // register auth recorder interceptor
-            try apiPlugin.add(interceptor: authRecorderInterceptor, for: "datastoreintegtestmu")
+            let apiName = try apiEndpointName()
+            try apiPlugin.add(interceptor: authRecorderInterceptor, for: apiName)
 
             signOut()
             clearDataStore()
@@ -173,6 +182,87 @@ extension AWSDataStoreAuthBaseTest {
             }
         }
         wait(for: [signoutInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    func isSignedIn() -> Bool {
+        let checkIsSignedInCompleted = expectation(description: "retrieve auth session completed")
+        var resultOptional: Bool?
+        _ = Amplify.Auth.fetchAuthSession { event in
+            switch event {
+            case .success(let authSession):
+                resultOptional = authSession.isSignedIn
+                checkIsSignedInCompleted.fulfill()
+            case .failure(let error):
+                fatalError("Failed to get auth session \(error)")
+            }
+        }
+        wait(for: [checkIsSignedInCompleted], timeout: TestCommonConstants.networkTimeout)
+        guard let result = resultOptional else {
+            XCTFail("Could not get isSignedIn for user")
+            return false
+        }
+
+        return result
+    }
+
+    func getUserSub() -> String {
+        let retrieveUserSubCompleted = expectation(description: "retrieve userSub completed")
+        var resultOptional: String?
+        _ = Amplify.Auth.fetchAuthSession(listener: { event in
+            switch event {
+            case .success(let authSession):
+                guard let cognitoAuthSession = authSession as? AuthCognitoIdentityProvider else {
+                    XCTFail("Could not get auth session as AuthCognitoIdentityProvider")
+                    return
+                }
+                switch cognitoAuthSession.getUserSub() {
+                case .success(let userSub):
+                    resultOptional = userSub
+                    retrieveUserSubCompleted.fulfill()
+                case .failure(let error):
+                    XCTFail("Failed to get auth session \(error)")
+                }
+            case .failure(let error):
+                XCTFail("Failed to get auth session \(error)")
+            }
+        })
+        wait(for: [retrieveUserSubCompleted], timeout: TestCommonConstants.networkTimeout)
+        guard let result = resultOptional else {
+            XCTFail("Could not get userSub for user")
+            return ""
+        }
+
+        return result
+    }
+
+    func getIdentityId() -> String {
+        let retrieveIdentityCompleted = expectation(description: "retrieve identity completed")
+        var resultOptional: String?
+        _ = Amplify.Auth.fetchAuthSession(listener: { event in
+            switch event {
+            case .success(let authSession):
+                guard let cognitoAuthSession = authSession as? AuthCognitoIdentityProvider else {
+                    XCTFail("Could not get auth session as AuthCognitoIdentityProvider")
+                    return
+                }
+                switch cognitoAuthSession.getIdentityId() {
+                case .success(let identityId):
+                    resultOptional = identityId
+                    retrieveIdentityCompleted.fulfill()
+                case .failure(let error):
+                    XCTFail("Failed to get auth session \(error)")
+                }
+            case .failure(let error):
+                XCTFail("Failed to get auth session \(error)")
+            }
+        })
+        wait(for: [retrieveIdentityCompleted], timeout: TestCommonConstants.networkTimeout)
+        guard let result = resultOptional else {
+            XCTFail("Could not get identityId for user")
+            return ""
+        }
+
+        return result
     }
 }
 

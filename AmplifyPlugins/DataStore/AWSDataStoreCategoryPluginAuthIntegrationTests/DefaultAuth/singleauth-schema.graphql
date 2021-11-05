@@ -1,6 +1,6 @@
 type TodoExplicitOwnerField
     @model
-    @auth(rules: [{ allow: owner, ownerField: "owner" }]) {
+    @auth(rules: [{ allow: owner, ownerField: "owner", operations: [create, update, delete] }]) {
     id: ID!
     content: String!
     owner: String
