@@ -22,5 +22,13 @@ protocol MutationSyncMetadataMigrationDelegate: AnyObject {
 
     func clear() throws
 
-    func migrate() throws
+    @discardableResult func removeMutationSyncMetadataCopyStore() throws -> String
+
+    @discardableResult func createMutationSyncMetadataCopyStore() throws -> String
+
+    @discardableResult func backfillMutationSyncMetadata() throws -> String
+
+    @discardableResult func removeMutationSyncMetadataStore() throws -> String
+
+    @discardableResult func renameMutationSyncMetadataCopy() throws -> String
 }

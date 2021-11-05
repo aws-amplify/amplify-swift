@@ -7,7 +7,6 @@
 
 import Amplify
 import Foundation
-import SQLite
 
 protocol ModelMigration {
     func apply() throws

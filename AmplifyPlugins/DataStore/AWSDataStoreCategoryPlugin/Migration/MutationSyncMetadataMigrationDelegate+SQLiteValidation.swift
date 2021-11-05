@@ -17,25 +17,31 @@ extension SQLiteMutationSyncMetadataMigrationDelegate {
     /// Migration requires some hardcoded SQL statements that may break if the schema changes
     /// Ensure that the schemas used in this migration are as expected
     func preconditionCheck() throws {
-        guard MutationSyncMetadata.schema.fields.count == 4 else {
+        let fieldCount = 4
+        let idField = "id"
+        let deletedField = "deleted"
+        let lastChangedAtField = "lastChangedAt"
+        let versionField = "version"
+
+        guard MutationSyncMetadata.schema.fields.count == fieldCount else {
             throw DataStoreError.internalOperation("MutationSyncMetadata schema has changed from 4 fields", "", nil)
         }
 
-        guard MutationSyncMetadata.schema.fields["id"] != nil,
-              MutationSyncMetadata.schema.fields["deleted"] != nil,
-              MutationSyncMetadata.schema.fields["lastChangedAt"] != nil,
-              MutationSyncMetadata.schema.fields["version"] != nil else {
+        guard MutationSyncMetadata.schema.fields[idField] != nil,
+              MutationSyncMetadata.schema.fields[deletedField] != nil,
+              MutationSyncMetadata.schema.fields[lastChangedAtField] != nil,
+              MutationSyncMetadata.schema.fields[versionField] != nil else {
             throw DataStoreError.internalOperation("MutationSyncMetadata schema missing expected fields", "", nil)
         }
 
-        guard MutationSyncMetadataCopy.schema.fields.count == 4 else {
+        guard MutationSyncMetadataMigration.MutationSyncMetadataCopy.schema.fields.count == fieldCount else {
             throw DataStoreError.internalOperation("MutationSyncMetadataCopy schema has changed from 4 fields", "", nil)
         }
 
-        guard MutationSyncMetadataCopy.schema.fields["id"] != nil,
-              MutationSyncMetadataCopy.schema.fields["deleted"] != nil,
-              MutationSyncMetadataCopy.schema.fields["lastChangedAt"] != nil,
-              MutationSyncMetadataCopy.schema.fields["version"] != nil else {
+        guard MutationSyncMetadataMigration.MutationSyncMetadataCopy.schema.fields[idField] != nil,
+              MutationSyncMetadataMigration.MutationSyncMetadataCopy.schema.fields[deletedField] != nil,
+              MutationSyncMetadataMigration.MutationSyncMetadataCopy.schema.fields[lastChangedAtField] != nil,
+              MutationSyncMetadataMigration.MutationSyncMetadataCopy.schema.fields[versionField] != nil else {
             throw DataStoreError.internalOperation("MutationSyncMetadataCopy schema missing expected fields", "", nil)
         }
     }

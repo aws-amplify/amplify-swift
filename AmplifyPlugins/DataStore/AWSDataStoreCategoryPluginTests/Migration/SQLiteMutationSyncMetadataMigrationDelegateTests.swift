@@ -86,7 +86,11 @@ class SQLiteMutationSyncMetadataMigrationDelegateTests: MutationSyncMetadataMigr
         let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
                                                                    modelSchemas: modelSchemas)
 
-        try delegate.migrate()
+        try delegate.removeMutationSyncMetadataCopyStore()
+        try delegate.createMutationSyncMetadataCopyStore()
+        try delegate.backfillMutationSyncMetadata()
+        try delegate.removeMutationSyncMetadataStore()
+        try delegate.renameMutationSyncMetadataCopy()
 
         guard let mutationSyncMetadatasBackfilled = queryMutationSyncMetadata() else {
             XCTFail("Could not get metadata")
@@ -110,15 +114,15 @@ class SQLiteMutationSyncMetadataMigrationDelegateTests: MutationSyncMetadataMigr
     func testDropMutationSyncMetadataCopyIfExists() throws {
         let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
                                                                    modelSchemas: modelSchemas)
-        try delegate.dropMutationSyncMetadataCopyIfExists()
+        try delegate.removeMutationSyncMetadataCopyStore()
 
         // Dropping the table without the table in the database is successful
-        let drop = try delegate.dropMutationSyncMetadataCopyIfExists()
+        let drop = try delegate.removeMutationSyncMetadataCopyStore()
 
         XCTAssertEqual(drop, "DROP TABLE IF EXISTS MutationSyncMetadataCopy")
 
         // Creating the table is successful
-        let create = try delegate.createMutationSyncMetadataCopyTable()
+        let create = try delegate.createMutationSyncMetadataCopyStore()
         let exectedCreateSQL = """
         create table if not exists "MutationSyncMetadataCopy" (
           "id" text primary key not null,
@@ -130,13 +134,13 @@ class SQLiteMutationSyncMetadataMigrationDelegateTests: MutationSyncMetadataMigr
         XCTAssertEqual(create, exectedCreateSQL)
 
         // A second create does not throw if the table has already been created
-        try delegate.createMutationSyncMetadataCopyTable()
+        try delegate.createMutationSyncMetadataCopyStore()
 
         // A drop is successful when the table has been created
-        try delegate.dropMutationSyncMetadataCopyIfExists()
+        try delegate.removeMutationSyncMetadataCopyStore()
 
         // Dropping twice is successfully
-        try delegate.dropMutationSyncMetadataCopyIfExists()
+        try delegate.removeMutationSyncMetadataCopyStore()
     }
 
 }

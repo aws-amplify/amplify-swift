@@ -13,6 +13,20 @@ class MutationSyncMetadataMigration: ModelMigration {
 
     weak var delegate: MutationSyncMetadataMigrationDelegate?
 
+    enum MutationSyncMetadataMigrationStep {
+        case removeMutationSyncMetadataCopyStore
+        case createMutationSyncMetadataCopyStore
+        case backfillMutationSyncMetadata
+        case removeMutationSyncMetadataStore
+        case renameMutationSyncMetadataCopy
+    }
+
+    let migrationSteps: [MutationSyncMetadataMigrationStep] = [.removeMutationSyncMetadataCopyStore,
+                                                               .createMutationSyncMetadataCopyStore,
+                                                               .backfillMutationSyncMetadata,
+                                                               .removeMutationSyncMetadataStore,
+                                                               .renameMutationSyncMetadataCopy]
+
     init(delegate: MutationSyncMetadataMigrationDelegate) {
         self.delegate = delegate
     }
@@ -31,8 +45,28 @@ class MutationSyncMetadataMigration: ModelMigration {
             if try delegate.cannotMigrate() {
                 try delegate.clear()
             } else {
-                try delegate.migrate()
+                log.debug("Modifying and backfilling MutationSyncMetadata")
+                for step in migrationSteps {
+                    try applyMigrationStep(step, delegate: delegate)
+                }
+
             }
+        }
+    }
+
+    func applyMigrationStep(_ step: MutationSyncMetadataMigrationStep,
+                            delegate: MutationSyncMetadataMigrationDelegate) throws {
+        switch step {
+        case .removeMutationSyncMetadataCopyStore:
+            try delegate.removeMutationSyncMetadataCopyStore()
+        case .createMutationSyncMetadataCopyStore:
+            try delegate.createMutationSyncMetadataCopyStore()
+        case .backfillMutationSyncMetadata:
+            try delegate.backfillMutationSyncMetadata()
+        case .removeMutationSyncMetadataStore:
+            try delegate.removeMutationSyncMetadataStore()
+        case .renameMutationSyncMetadataCopy:
+            try delegate.renameMutationSyncMetadataCopy()
         }
     }
 }

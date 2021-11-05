@@ -18,28 +18,36 @@ class MockMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMigrationDe
     var cannotMigrateError: DataStoreError?
     var cannotMigrateResult: Bool = false
     var clearError: DataStoreError?
-    var migrateError: DataStoreError?
+    var removeMutationSyncMetadataCopyStoreError: DataStoreError?
+    var createMutationSyncMetadataCopyStoreError: DataStoreError?
+    var backfillMutationSyncMetadataError: DataStoreError?
+    var removeMutationSyncMetadataStoreError: DataStoreError?
+    var renameMutationSyncMetadataCopyError: DataStoreError?
 
-    var migrationStepsCalled: [MigrationStep] = []
+    var stepsCalled: [DelegateStep] = []
 
-    enum MigrationStep {
+    enum DelegateStep {
         case precondition
         case transaction
         case needsMigration
         case cannotMigrate
         case clear
-        case migrate
+        case removeMutationSyncMetadataCopyStore
+        case createMutationSyncMetadataCopyStore
+        case backfillMutationSyncMetadata
+        case removeMutationSyncMetadataStore
+        case renameMutationSyncMetadataCopy
     }
 
     func preconditionCheck() throws {
-        migrationStepsCalled.append(.precondition)
+        stepsCalled.append(.precondition)
         if let preconditionCheckError = preconditionCheckError {
             throw preconditionCheckError
         }
     }
 
     func transaction(_ basicClosure: () throws -> Void) throws {
-        migrationStepsCalled.append(.transaction)
+        stepsCalled.append(.transaction)
         if let transactionError = transactionError {
             throw transactionError
         }
@@ -48,7 +56,7 @@ class MockMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMigrationDe
     }
 
     func needsMigration() throws -> Bool {
-        migrationStepsCalled.append(.needsMigration)
+        stepsCalled.append(.needsMigration)
         if let needsMigrationError = needsMigrationError {
             throw needsMigrationError
         }
@@ -56,7 +64,7 @@ class MockMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMigrationDe
     }
 
     func cannotMigrate() throws -> Bool {
-        migrationStepsCalled.append(.cannotMigrate)
+        stepsCalled.append(.cannotMigrate)
         if let cannotMigrateError = cannotMigrateError {
             throw cannotMigrateError
         }
@@ -64,16 +72,49 @@ class MockMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMigrationDe
     }
 
     func clear() throws {
-        migrationStepsCalled.append(.clear)
+        stepsCalled.append(.clear)
         if let clearError = clearError {
             throw clearError
         }
     }
 
-    func migrate() throws {
-        migrationStepsCalled.append(.migrate)
-        if let migrateError = migrateError {
-            throw migrateError
+    func removeMutationSyncMetadataCopyStore() throws -> String {
+        stepsCalled.append(.removeMutationSyncMetadataCopyStore)
+        if let error = removeMutationSyncMetadataCopyStoreError {
+            throw error
         }
+        return ""
+    }
+
+    func createMutationSyncMetadataCopyStore() throws -> String {
+        stepsCalled.append(.createMutationSyncMetadataCopyStore)
+        if let error = createMutationSyncMetadataCopyStoreError {
+            throw error
+        }
+        return ""
+    }
+
+    func backfillMutationSyncMetadata() throws -> String {
+        stepsCalled.append(.backfillMutationSyncMetadata)
+        if let error = backfillMutationSyncMetadataError {
+            throw error
+        }
+        return ""
+    }
+
+    func removeMutationSyncMetadataStore() throws -> String {
+        stepsCalled.append(.removeMutationSyncMetadataStore)
+        if let error = removeMutationSyncMetadataCopyStoreError {
+            throw error
+        }
+        return ""
+    }
+
+    func renameMutationSyncMetadataCopy() throws -> String {
+        stepsCalled.append(.renameMutationSyncMetadataCopy)
+        if let error = renameMutationSyncMetadataCopyError {
+            throw error
+        }
+        return ""
     }
 }

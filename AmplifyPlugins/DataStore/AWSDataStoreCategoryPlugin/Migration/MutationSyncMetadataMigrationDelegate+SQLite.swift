@@ -52,31 +52,22 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
 
     // MARK: - Migration
 
-    func migrate() throws {
-        log.debug("Modifying and backfilling MutationSyncMetadata")
-        try dropMutationSyncMetadataCopyIfExists()
-        try createMutationSyncMetadataCopyTable()
-        try backfillMutationSyncMetadata()
-        try dropMutationSyncMetadata()
-        try renameMutationSyncMetadataCopy()
-    }
-
-    @discardableResult func dropMutationSyncMetadataCopyIfExists() throws -> String {
+    @discardableResult func removeMutationSyncMetadataCopyStore() throws -> String {
         guard let storageAdapter = storageAdapter else {
             log.debug("Missing SQLiteStorageEngineAdapter")
             throw DataStoreError.unknown("Missing storage adapter for model migration", "", nil)
         }
 
-        return try storageAdapter.removeStore(for: MutationSyncMetadataCopy.schema)
+        return try storageAdapter.removeStore(for: MutationSyncMetadataMigration.MutationSyncMetadataCopy.schema)
     }
 
-    @discardableResult func createMutationSyncMetadataCopyTable() throws -> String {
+    @discardableResult func createMutationSyncMetadataCopyStore() throws -> String {
         guard let storageAdapter = storageAdapter else {
             log.debug("Missing SQLiteStorageEngineAdapter")
             throw DataStoreError.unknown("Missing storage adapter for model migration", "", nil)
         }
 
-        return try storageAdapter.createStore(for: MutationSyncMetadataCopy.schema)
+        return try storageAdapter.createStore(for: MutationSyncMetadataMigration.MutationSyncMetadataCopy.schema)
     }
 
     @discardableResult func backfillMutationSyncMetadata() throws -> String {
@@ -89,14 +80,14 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
             }
             sql += "SELECT id, \'\(modelName)\' as tableName FROM \(modelName)"
         }
-        sql = "INSERT INTO \(MutationSyncMetadataCopy.modelName) (id,deleted,lastChangedAt,version) " +
+        sql = "INSERT INTO \(MutationSyncMetadataMigration.MutationSyncMetadataCopy.modelName) (id,deleted,lastChangedAt,version) " +
         "select models.tableName || '|' || mm.id, mm.deleted, mm.lastChangedAt, mm.version " +
         "from MutationSyncMetadata mm INNER JOIN (" + sql + ") as models on mm.id=models.id"
         try storageAdapter?.connection.execute(sql)
         return sql
     }
 
-    @discardableResult func dropMutationSyncMetadata() throws -> String {
+    @discardableResult func removeMutationSyncMetadataStore() throws -> String {
         guard let storageAdapter = storageAdapter else {
             log.debug("Missing SQLiteStorageEngineAdapter")
             throw DataStoreError.unknown("Missing storage adapter for model migration", "", nil)
@@ -111,7 +102,7 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
             throw DataStoreError.unknown("Missing storage adapter for model migration", "", nil)
         }
 
-        return try storageAdapter.renameStore(from: MutationSyncMetadataCopy.schema,
+        return try storageAdapter.renameStore(from: MutationSyncMetadataMigration.MutationSyncMetadataCopy.schema,
                                               toModelSchema: MutationSyncMetadata.schema)
     }
 }

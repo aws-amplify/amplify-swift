@@ -8,38 +8,37 @@
 import Foundation
 import Amplify
 
-public struct MutationSyncMetadataCopy: Model {
-    public let id: String
-    public var deleted: Bool
-    public var lastChangedAt: Int
-    public var version: Int
-}
+extension MutationSyncMetadataMigration {
+    public struct MutationSyncMetadataCopy: Model {
+        public let id: String
+        public var deleted: Bool
+        public var lastChangedAt: Int
+        public var version: Int
 
-extension MutationSyncMetadataCopy {
+        // MARK: - CodingKeys
 
-    // MARK: - CodingKeys
+        public enum CodingKeys: String, ModelKey {
+            case id
+            case deleted
+            case lastChangedAt
+            case version
+        }
 
-    public enum CodingKeys: String, ModelKey {
-        case id
-        case deleted
-        case lastChangedAt
-        case version
-    }
+        public static let keys = CodingKeys.self
 
-    public static let keys = CodingKeys.self
+        // MARK: - ModelSchema
 
-    // MARK: - ModelSchema
+        public static let schema = defineSchema { definition in
+            let sync = MutationSyncMetadataCopy.keys
 
-    public static let schema = defineSchema { definition in
-        let sync = MutationSyncMetadataCopy.keys
+            definition.attributes(.isSystem)
 
-        definition.attributes(.isSystem)
-
-        definition.fields(
-            .id(),
-            .field(sync.deleted, is: .required, ofType: .bool),
-            .field(sync.lastChangedAt, is: .required, ofType: .int),
-            .field(sync.version, is: .required, ofType: .int)
-        )
+            definition.fields(
+                .id(),
+                .field(sync.deleted, is: .required, ofType: .bool),
+                .field(sync.lastChangedAt, is: .required, ofType: .int),
+                .field(sync.version, is: .required, ofType: .int)
+            )
+        }
     }
 }

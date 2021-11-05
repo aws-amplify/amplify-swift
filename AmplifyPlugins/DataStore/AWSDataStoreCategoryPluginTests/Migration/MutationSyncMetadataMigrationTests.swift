@@ -22,7 +22,7 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
         do {
             try migration.apply()
         } catch {
-            XCTAssertEqual(delegate.migrationStepsCalled, [])
+            XCTAssertEqual(delegate.stepsCalled, [])
             return
         }
         XCTFail("Should catch error")
@@ -36,7 +36,7 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
         do {
             try migration.apply()
         } catch {
-            XCTAssertEqual(delegate.migrationStepsCalled, [.precondition])
+            XCTAssertEqual(delegate.stepsCalled, [.precondition])
             return
         }
         XCTFail("Should catch error")
@@ -50,7 +50,7 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
         do {
             try migration.apply()
         } catch {
-            XCTAssertEqual(delegate.migrationStepsCalled, [.precondition, .transaction])
+            XCTAssertEqual(delegate.stepsCalled, [.precondition, .transaction])
             return
         }
         XCTFail("Should catch error")
@@ -64,7 +64,7 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
         do {
             try migration.apply()
         } catch {
-            XCTAssertEqual(delegate.migrationStepsCalled, [.precondition, .transaction, .needsMigration])
+            XCTAssertEqual(delegate.stepsCalled, [.precondition, .transaction, .needsMigration])
             return
         }
         XCTFail("Should catch error")
@@ -78,10 +78,10 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
         do {
             try migration.apply()
         } catch {
-            XCTAssertEqual(delegate.migrationStepsCalled, [.precondition,
-                                                     .transaction,
-                                                     .needsMigration,
-                                                     .cannotMigrate])
+            XCTAssertEqual(delegate.stepsCalled, [.precondition,
+                                                  .transaction,
+                                                  .needsMigration,
+                                                  .cannotMigrate])
 
             return
         }
@@ -97,11 +97,11 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
         do {
             try migration.apply()
         } catch {
-            XCTAssertEqual(delegate.migrationStepsCalled, [.precondition,
-                                                     .transaction,
-                                                     .needsMigration,
-                                                     .cannotMigrate,
-                                                     .clear])
+            XCTAssertEqual(delegate.stepsCalled, [.precondition,
+                                                  .transaction,
+                                                  .needsMigration,
+                                                  .cannotMigrate,
+                                                  .clear])
             return
         }
         XCTFail("Should catch error")
@@ -111,17 +111,17 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
         let delegate = MockMutationSyncMetadataMigrationDelegate()
         delegate.needsMigrationResult = true
         delegate.cannotMigrateResult = false
-        delegate.migrateError = DataStoreError.internalOperation("Failure", "", nil)
+        delegate.removeMutationSyncMetadataCopyStoreError = DataStoreError.internalOperation("Failure", "", nil)
         let migration = MutationSyncMetadataMigration(delegate: delegate)
 
         do {
             try migration.apply()
         } catch {
-            XCTAssertEqual(delegate.migrationStepsCalled, [.precondition,
-                                                     .transaction,
-                                                     .needsMigration,
-                                                     .cannotMigrate,
-                                                     .migrate])
+            XCTAssertEqual(delegate.stepsCalled, [.precondition,
+                                                  .transaction,
+                                                  .needsMigration,
+                                                  .cannotMigrate,
+                                                  .removeMutationSyncMetadataCopyStore])
             return
         }
         XCTFail("Should catch error")
@@ -133,11 +133,52 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
         delegate.cannotMigrateResult = false
         let migration = MutationSyncMetadataMigration(delegate: delegate)
         try migration.apply()
-        XCTAssertEqual(delegate.migrationStepsCalled, [.precondition,
-                                                 .transaction,
-                                                 .needsMigration,
-                                                 .cannotMigrate,
-                                                 .migrate])
+        XCTAssertEqual(delegate.stepsCalled, [.precondition,
+                                              .transaction,
+                                              .needsMigration,
+                                              .cannotMigrate,
+                                              .removeMutationSyncMetadataCopyStore,
+                                              .createMutationSyncMetadataCopyStore,
+                                              .backfillMutationSyncMetadata,
+                                              .removeMutationSyncMetadataStore,
+                                              .renameMutationSyncMetadataCopy])
+    }
+
+    func testApply() throws {
+        try setUpAllModels()
+        let restaurant = Restaurant(restaurantName: "name")
+        save(restaurant)
+        let metadata = MutationSyncMetadata(id: restaurant.id, deleted: false, lastChangedAt: 1, version: 1)
+        saveMutationSyncMetadata(metadata)
+        guard let mutationSyncMetadatas = queryMutationSyncMetadata() else {
+            XCTFail("Could not get metadata")
+            return
+        }
+        XCTAssertEqual(mutationSyncMetadatas.count, 1)
+        XCTAssertEqual(mutationSyncMetadatas[0].id, restaurant.id)
+
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
+                                                                   modelSchemas: modelSchemas)
+        let migration = MutationSyncMetadataMigration(delegate: delegate)
+
+        try migration.apply()
+
+        guard let mutationSyncMetadatasBackfilled = queryMutationSyncMetadata() else {
+            XCTFail("Could not get metadata")
+            return
+        }
+        XCTAssertEqual(mutationSyncMetadatasBackfilled.count, 1)
+
+        XCTAssertEqual(mutationSyncMetadatasBackfilled[0].id, "\(Restaurant.modelName)|\(restaurant.id)")
+
+        guard let restaurantMetadata = try storageAdapter.queryMutationSyncMetadata(
+            for: restaurant.id,
+               modelName: Restaurant.modelName) else {
+                   XCTFail("Could not get metadata")
+                   return
+        }
+        XCTAssertEqual(restaurantMetadata.modelId, restaurant.id)
+        XCTAssertEqual(restaurantMetadata.modelName, Restaurant.modelName)
     }
 
     func testApplyClear() throws {
@@ -146,10 +187,10 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
         delegate.cannotMigrateResult = true
         let migration = MutationSyncMetadataMigration(delegate: delegate)
         try migration.apply()
-        XCTAssertEqual(delegate.migrationStepsCalled, [.precondition,
-                                                 .transaction,
-                                                 .needsMigration,
-                                                 .cannotMigrate,
-                                                 .clear])
+        XCTAssertEqual(delegate.stepsCalled, [.precondition,
+                                              .transaction,
+                                              .needsMigration,
+                                              .cannotMigrate,
+                                              .clear])
     }
 }
