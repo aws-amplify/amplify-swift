@@ -13,3 +13,7 @@ type TodoImplicitOwnerField
     content: String!
 }
 
+type TodoCustomOwnerImplicit @model @auth(rules: [{ allow: owner, ownerField: "dominus" }]) {
+  id: ID!
+  title: String!
+}
