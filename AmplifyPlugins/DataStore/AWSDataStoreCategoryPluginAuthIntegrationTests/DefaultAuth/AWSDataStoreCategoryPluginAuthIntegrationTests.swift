@@ -30,7 +30,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
         setup(withModels: ModelsRegistration(), authStrategy: .default)
 
         let savedLocalTodo = saveModel(content: "owner saved model")
-        let queriedNoteOptional = queryModel(byId: savedLocalTodo.id)
+        let queriedNoteOptional = queryModel(TodoExplicitOwnerField.self, byId: savedLocalTodo.id)
         guard let model = queriedNoteOptional else {
             XCTFail("Failed to query local model")
             return
@@ -150,7 +150,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
 
         wait(for: [clearCompletedInvoked], timeout: TestCommonConstants.networkTimeout)
 
-        let localNoteOptional = queryModel(byId: id)
+        let localNoteOptional = queryModel(TodoExplicitOwnerField.self, byId: id)
         XCTAssertNil(localNoteOptional)
 
         let syncStartedInvoked2 = expectation(description: "Sync started after other sign in")

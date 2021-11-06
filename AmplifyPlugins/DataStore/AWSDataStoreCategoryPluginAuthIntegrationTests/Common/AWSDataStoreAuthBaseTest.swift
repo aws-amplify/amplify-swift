@@ -264,6 +264,27 @@ extension AWSDataStoreAuthBaseTest {
 
         return result
     }
+
+    func queryModel<M: Model>(_ model: M.Type,
+                              byId id: String,
+                              file: StaticString = #file,
+                              line: UInt = #line) -> M? {
+        var queriedModel: M?
+        let queriedInvoked = expectation(description: "Model queried")
+
+        Amplify.DataStore.query(M.self, byId: id) { result in
+            switch result {
+            case .success(let model):
+                queriedModel = model
+                queriedInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Failed to query model \(error)", file: file, line: line)
+            }
+        }
+
+        wait(for: [queriedInvoked], timeout: TestCommonConstants.networkTimeout)
+        return queriedModel
+    }
 }
 
 // MARK: - DataStore behavior assert helpers

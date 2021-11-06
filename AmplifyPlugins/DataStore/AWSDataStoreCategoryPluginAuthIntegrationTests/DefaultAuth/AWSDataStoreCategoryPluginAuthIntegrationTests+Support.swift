@@ -31,20 +31,4 @@ extension AWSDataStoreCategoryPluginAuthIntegrationTests {
         }
         return savedTodo
     }
-
-    func queryModel(byId id: String) -> TodoExplicitOwnerField? {
-        var queriedTodoOptional: TodoExplicitOwnerField?
-        let localTodoQueriedInvoked = expectation(description: "todo was queried")
-        Amplify.DataStore.query(TodoExplicitOwnerField.self, byId: id) { result in
-            switch result {
-            case .success(let todoOptional):
-                queriedTodoOptional = todoOptional
-                localTodoQueriedInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Failed to query todo \(error)")
-            }
-        }
-        wait(for: [localTodoQueriedInvoked], timeout: TestCommonConstants.networkTimeout)
-        return queriedTodoOptional
-    }
 }
