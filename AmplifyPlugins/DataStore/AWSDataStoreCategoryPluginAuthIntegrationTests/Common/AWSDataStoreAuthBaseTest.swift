@@ -64,11 +64,11 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
 
         switch authModeStrategy {
         case .default:
-            amplifyConfigurationFile = "AWSDataStoreCategoryPluginAuthIntegrationTests-amplifyconfiguration"
-            credentialsFile = "AWSDataStoreCategoryPluginAuthIntegrationTests-credentials"
+            amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginAuthIntegrationTests-amplifyconfiguration"
+            credentialsFile = "testconfiguration/AWSDataStoreCategoryPluginAuthIntegrationTests-credentials"
         case .multiAuth:
-            amplifyConfigurationFile = "AWSDataStoreCategoryPluginMultiAuthIntegrationTests-amplifyconfiguration"
-            credentialsFile = "AWSDataStoreCategoryPluginMultiAuthIntegrationTests-credentials"
+            amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginMultiAuthIntegrationTests-amplifyconfiguration"
+            credentialsFile = "testconfiguration/AWSDataStoreCategoryPluginMultiAuthIntegrationTests-credentials"
         }
 
         do {
