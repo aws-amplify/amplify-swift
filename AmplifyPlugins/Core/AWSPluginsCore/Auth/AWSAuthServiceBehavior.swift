@@ -30,6 +30,30 @@ public protocol AWSAuthServiceBehavior: AnyObject {
 }
 
 extension AWSAuthServiceBehavior {
+    // MARK: List of Amplify internal usages of now deprecated AWSAuthServiceBehavior methods.
+    /**
+     `StorageAccessLevelAwarePrefixResolver`
+        - File Path: `AmplifyPlugins/Storage/AWSS3StoragePlugin/Configuration/AWSS3PluginPrefixResolver.swift`
+        - Uses: `getIdentityId()`
+     
+     `IncomingAsyncSubscriptionEventPublisher`
+        - File Path: `AmplifyPlugins/Core/AWSPluginsCore/Auth/AWSAuthServiceBehavior.swift`
+        - Uses: `getToken()`
+     
+     `BasicUserPoolTokenProvider`
+        - File Path: `AmplifyPlugins/Core/AWSPluginsCore/Auth/Provider/AuthTokenProvider.swift`
+        - Uses: `getToken()`
+     
+     `AWSOIDCAuthProvider`
+        - File Path: `AmplifyPlugins/API/AWSAPICategoryPlugin/SubscriptionFactory/AWSOIDCAuthProvider.swift`
+        - Uses: `getToken()`
+     
+     `AWSAuthServiceBehavior` protocol extension. Default implementation of new completion handler APIs to prevent breaking change.
+         - File Path: `AmplifyPlugins/Core/AWSPluginsCore/Auth/AWSAuthServiceBehavior.swift`
+         - Uses: `getToken()`, `getIdentityId()`
+     */
+    
+    
     /// Retrieves the identity identifier of for the Auth service
     /// - Parameter completion: Completion handler defined for the input `Result<String, AuthError>`
     /// - Note: This default implementation was added to prevent a breaking change,
