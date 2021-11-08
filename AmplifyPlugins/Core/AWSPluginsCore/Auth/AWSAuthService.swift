@@ -165,30 +165,3 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         return nil
     }
 }
-
-// MARK: Swift Concurrency Async Methods
-// These currently cannot be a part of the `AWSAuthServiceBehavior` protocol
-// due to the compiler being unable to handle async overloads in protocol conformance contexts.
-extension AWSAuthService {
-    #if compiler(>=5.5.2)
-    /// Retrieves the identity identifier of for the Auth service.
-    /// - Returns: The identifier or an `AuthError`.
-    /// - Warning: Swift Concurrency langauge features in Amplify are currently in an expiremental phase.
-    @available(iOS 13, *)
-    public func getIdentityId() async -> Result<String, AuthError> {
-        await withCheckedContinuation {
-            getIdentityId(completion: $0.resume(returning:))
-        }
-    }
-
-    /// Retrieves the token from the the Auth token provider.
-    /// - Returns: The token or an `AuthError`.
-    /// - Warning: Swift Concurrency langauge features in Amplify are currently in an expiremental phase.
-    @available(iOS 13, *)
-    public func getToken() async -> Result<String, AuthError> {
-        await withCheckedContinuation {
-            getToken(completion: $0.resume(returning:))
-        }
-    }
-    #endif
-}
