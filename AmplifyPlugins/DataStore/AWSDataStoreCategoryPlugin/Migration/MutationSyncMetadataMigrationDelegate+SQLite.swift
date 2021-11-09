@@ -24,7 +24,7 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
         try storageAdapter?.transaction(basicClosure)
     }
 
-    func applyMigration(_ step: MutationSyncMetadataMigrationStep) throws {
+    func applyMigrationStep(_ step: MutationSyncMetadataMigrationStep) throws {
         switch step {
         case .emptyMutationSyncMetadataStore:
             try emptyMutationSyncMetadataStore()

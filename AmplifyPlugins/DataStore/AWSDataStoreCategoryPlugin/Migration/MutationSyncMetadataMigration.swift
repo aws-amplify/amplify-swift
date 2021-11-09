@@ -31,16 +31,16 @@ class MutationSyncMetadataMigration: ModelMigration {
             if try delegate.containsDuplicateIdsAcrossModels() {
                 log.debug("Duplicate IDs found across different model types.")
                 log.debug("Clearing MutationSyncMetadata and ModelSyncMetadata to force full sync.")
-                try delegate.applyMigration(.emptyMutationSyncMetadataStore)
-                try delegate.applyMigration(.emptyModelSyncMetadataStore)
+                try delegate.applyMigrationStep(.emptyMutationSyncMetadataStore)
+                try delegate.applyMigrationStep(.emptyModelSyncMetadataStore)
             } else {
                 log.debug("No duplicate IDs found.")
                 log.debug("Modifying and backfilling MutationSyncMetadata")
-                try delegate.applyMigration(.removeMutationSyncMetadataCopyStore)
-                try delegate.applyMigration(.createMutationSyncMetadataCopyStore)
-                try delegate.applyMigration(.backfillMutationSyncMetadata)
-                try delegate.applyMigration(.removeMutationSyncMetadataStore)
-                try delegate.applyMigration(.renameMutationSyncMetadataCopy)
+                try delegate.applyMigrationStep(.removeMutationSyncMetadataCopyStore)
+                try delegate.applyMigrationStep(.createMutationSyncMetadataCopyStore)
+                try delegate.applyMigrationStep(.backfillMutationSyncMetadata)
+                try delegate.applyMigrationStep(.removeMutationSyncMetadataStore)
+                try delegate.applyMigrationStep(.renameMutationSyncMetadataCopy)
             }
         }
     }

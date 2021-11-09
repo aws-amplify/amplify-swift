@@ -30,5 +30,5 @@ protocol MutationSyncMetadataMigrationDelegate: AnyObject {
 
     func containsDuplicateIdsAcrossModels() throws -> Bool
 
-    func applyMigration(_ step: MutationSyncMetadataMigrationStep) throws
+    func applyMigrationStep(_ step: MutationSyncMetadataMigrationStep) throws
 }

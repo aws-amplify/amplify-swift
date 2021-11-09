@@ -47,7 +47,7 @@ extension SQLiteMutationSyncMetadataMigrationDelegate {
     }
 
     // MARK: - Needs Migration
-    
+
     /// If there are no MutationSyncMetadata records, then it is not necessary to apply the migration since there is no
     /// data to migrate. If there is data, and the id's have already been migrated ( > 0 keys), then no migration needed
     func mutationSyncMetadataStoreEmptyOrMigrated() throws -> Bool {
