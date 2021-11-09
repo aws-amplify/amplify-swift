@@ -36,6 +36,8 @@ class AWSDataStorePluginSubscribeBehaviorTests: BaseDataStoreTests {
     }
 
     func testObserveQueryResetAfterDataStoreStop() {
+        let snapshotReceived = expectation(description: "query snapshot received")
+
         let sink = dataStorePlugin.observeQuery(for: Post.self).sink { completion in
             switch completion {
             case .finished:
@@ -43,9 +45,10 @@ class AWSDataStorePluginSubscribeBehaviorTests: BaseDataStoreTests {
             case .failure(let error):
                 XCTFail("\(error.localizedDescription)")
             }
-        } receiveValue: { snapshot in
-            print(snapshot)
+        } receiveValue: { _ in
+            snapshotReceived.fulfill()
         }
+        wait(for: [snapshotReceived], timeout: 3)
 
         XCTAssertEqual(dataStorePlugin.operationQueue.operations.count, 1)
 
@@ -54,6 +57,7 @@ class AWSDataStorePluginSubscribeBehaviorTests: BaseDataStoreTests {
             XCTFail("Couldn't get observe query operation")
             return
         }
+        XCTAssertTrue(observeQueryOperation.observeQueryStarted)
 
         let dataStoreStopSuccess = expectation(description: "Stop successfully")
         dataStorePlugin.stop { result in

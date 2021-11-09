@@ -13,20 +13,6 @@ class MutationSyncMetadataMigration: ModelMigration {
 
     weak var delegate: MutationSyncMetadataMigrationDelegate?
 
-    enum MutationSyncMetadataMigrationStep {
-        case removeMutationSyncMetadataCopyStore
-        case createMutationSyncMetadataCopyStore
-        case backfillMutationSyncMetadata
-        case removeMutationSyncMetadataStore
-        case renameMutationSyncMetadataCopy
-    }
-
-    let migrationSteps: [MutationSyncMetadataMigrationStep] = [.removeMutationSyncMetadataCopyStore,
-                                                               .createMutationSyncMetadataCopyStore,
-                                                               .backfillMutationSyncMetadata,
-                                                               .removeMutationSyncMetadataStore,
-                                                               .renameMutationSyncMetadataCopy]
-
     init(delegate: MutationSyncMetadataMigrationDelegate) {
         self.delegate = delegate
     }
@@ -38,35 +24,24 @@ class MutationSyncMetadataMigration: ModelMigration {
         }
         try delegate.preconditionCheck()
         try delegate.transaction {
-            guard try delegate.needsMigration() else {
+            if try delegate.mutationSyncMetadataStoreEmptyOrMigrated() {
                 return
             }
 
-            if try delegate.cannotMigrate() {
-                try delegate.clear()
+            if try delegate.containsDuplicateIdsAcrossModels() {
+                log.debug("Duplicate IDs found across different model types.")
+                log.debug("Clearing MutationSyncMetadata and ModelSyncMetadata to force full sync.")
+                try delegate.applyMigration(.emptyMutationSyncMetadataStore)
+                try delegate.applyMigration(.emptyModelSyncMetadataStore)
             } else {
+                log.debug("No duplicate IDs found.")
                 log.debug("Modifying and backfilling MutationSyncMetadata")
-                for step in migrationSteps {
-                    try applyMigrationStep(step, delegate: delegate)
-                }
-
+                try delegate.applyMigration(.removeMutationSyncMetadataCopyStore)
+                try delegate.applyMigration(.createMutationSyncMetadataCopyStore)
+                try delegate.applyMigration(.backfillMutationSyncMetadata)
+                try delegate.applyMigration(.removeMutationSyncMetadataStore)
+                try delegate.applyMigration(.renameMutationSyncMetadataCopy)
             }
-        }
-    }
-
-    func applyMigrationStep(_ step: MutationSyncMetadataMigrationStep,
-                            delegate: MutationSyncMetadataMigrationDelegate) throws {
-        switch step {
-        case .removeMutationSyncMetadataCopyStore:
-            try delegate.removeMutationSyncMetadataCopyStore()
-        case .createMutationSyncMetadataCopyStore:
-            try delegate.createMutationSyncMetadataCopyStore()
-        case .backfillMutationSyncMetadata:
-            try delegate.backfillMutationSyncMetadata()
-        case .removeMutationSyncMetadataStore:
-            try delegate.removeMutationSyncMetadataStore()
-        case .renameMutationSyncMetadataCopy:
-            try delegate.renameMutationSyncMetadataCopy()
         }
     }
 }

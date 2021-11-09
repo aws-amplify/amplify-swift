@@ -11,13 +11,15 @@ import XCTest
 @testable import AWSDataStoreCategoryPlugin
 
 class MockMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMigrationDelegate {
+
     var preconditionCheckError: DataStoreError?
     var transactionError: DataStoreError?
-    var needsMigrationError: DataStoreError?
-    var needsMigrationResult: Bool = true
-    var cannotMigrateError: DataStoreError?
-    var cannotMigrateResult: Bool = false
-    var clearError: DataStoreError?
+    var mutationSyncMetadataStoreEmptyOrMigratedError: DataStoreError?
+    var mutationSyncMetadataStoreEmptyOrMigratedResult: Bool = false
+    var containsDuplicateIdsAcrossModelsError: DataStoreError?
+    var containsDuplicateIdsAcrossModelsResult: Bool = false
+    var emptyMutationSyncMetadataStoreError: DataStoreError?
+    var emptyModelSyncMetadataStoreError: DataStoreError?
     var removeMutationSyncMetadataCopyStoreError: DataStoreError?
     var createMutationSyncMetadataCopyStoreError: DataStoreError?
     var backfillMutationSyncMetadataError: DataStoreError?
@@ -29,9 +31,10 @@ class MockMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMigrationDe
     enum DelegateStep {
         case precondition
         case transaction
-        case needsMigration
-        case cannotMigrate
-        case clear
+        case mutationSyncMetadataStoreEmptyOrMigrated
+        case containsDuplicateIdsAcrossModels
+        case emptyMutationSyncMetadataStore
+        case emptyModelSyncMetadataStore
         case removeMutationSyncMetadataCopyStore
         case createMutationSyncMetadataCopyStore
         case backfillMutationSyncMetadata
@@ -55,66 +58,87 @@ class MockMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMigrationDe
         try basicClosure()
     }
 
-    func needsMigration() throws -> Bool {
-        stepsCalled.append(.needsMigration)
-        if let needsMigrationError = needsMigrationError {
-            throw needsMigrationError
-        }
-        return needsMigrationResult
-    }
-
-    func cannotMigrate() throws -> Bool {
-        stepsCalled.append(.cannotMigrate)
-        if let cannotMigrateError = cannotMigrateError {
-            throw cannotMigrateError
-        }
-        return cannotMigrateResult
-    }
-
-    func clear() throws {
-        stepsCalled.append(.clear)
-        if let clearError = clearError {
-            throw clearError
+    func applyMigration(_ step: MutationSyncMetadataMigrationStep) throws {
+        switch step {
+        case .emptyMutationSyncMetadataStore:
+            try emptyMutationSyncMetadataStore()
+        case .emptyModelSyncMetadataStore:
+            try emptyModelSyncMetadataStore()
+        case .removeMutationSyncMetadataCopyStore:
+            try removeMutationSyncMetadataCopyStore()
+        case .createMutationSyncMetadataCopyStore:
+            try createMutationSyncMetadataCopyStore()
+        case .backfillMutationSyncMetadata:
+            try backfillMutationSyncMetadata()
+        case .removeMutationSyncMetadataStore:
+            try removeMutationSyncMetadataStore()
+        case .renameMutationSyncMetadataCopy:
+            try renameMutationSyncMetadataCopy()
         }
     }
 
-    func removeMutationSyncMetadataCopyStore() throws -> String {
+    func mutationSyncMetadataStoreEmptyOrMigrated() throws -> Bool {
+        stepsCalled.append(.mutationSyncMetadataStoreEmptyOrMigrated)
+        if let error = mutationSyncMetadataStoreEmptyOrMigratedError {
+            throw error
+        }
+        return mutationSyncMetadataStoreEmptyOrMigratedResult
+    }
+
+    func containsDuplicateIdsAcrossModels() throws -> Bool {
+        stepsCalled.append(.containsDuplicateIdsAcrossModels)
+        if let error = containsDuplicateIdsAcrossModelsError {
+            throw error
+        }
+        return containsDuplicateIdsAcrossModelsResult
+    }
+
+    private func emptyMutationSyncMetadataStore() throws {
+        stepsCalled.append(.emptyMutationSyncMetadataStore)
+        if let error = emptyMutationSyncMetadataStoreError {
+            throw error
+        }
+    }
+
+    private func emptyModelSyncMetadataStore() throws {
+        stepsCalled.append(.emptyModelSyncMetadataStore)
+        if let error = emptyModelSyncMetadataStoreError {
+            throw error
+        }
+    }
+
+    private func removeMutationSyncMetadataCopyStore() throws {
         stepsCalled.append(.removeMutationSyncMetadataCopyStore)
         if let error = removeMutationSyncMetadataCopyStoreError {
             throw error
         }
-        return ""
     }
 
-    func createMutationSyncMetadataCopyStore() throws -> String {
+    private func createMutationSyncMetadataCopyStore() throws {
         stepsCalled.append(.createMutationSyncMetadataCopyStore)
         if let error = createMutationSyncMetadataCopyStoreError {
             throw error
         }
-        return ""
     }
 
-    func backfillMutationSyncMetadata() throws -> String {
+    private func backfillMutationSyncMetadata() throws {
         stepsCalled.append(.backfillMutationSyncMetadata)
         if let error = backfillMutationSyncMetadataError {
             throw error
         }
-        return ""
     }
 
-    func removeMutationSyncMetadataStore() throws -> String {
+    private func removeMutationSyncMetadataStore() throws {
         stepsCalled.append(.removeMutationSyncMetadataStore)
         if let error = removeMutationSyncMetadataCopyStoreError {
             throw error
         }
-        return ""
     }
 
-    func renameMutationSyncMetadataCopy() throws -> String {
+    private func renameMutationSyncMetadataCopy() throws {
         stepsCalled.append(.renameMutationSyncMetadataCopy)
         if let error = renameMutationSyncMetadataCopyError {
             throw error
         }
-        return ""
     }
 }

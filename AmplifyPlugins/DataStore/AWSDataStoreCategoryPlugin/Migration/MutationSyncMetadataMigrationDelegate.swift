@@ -8,6 +8,16 @@
 import Amplify
 import Foundation
 
+enum MutationSyncMetadataMigrationStep {
+    case emptyMutationSyncMetadataStore
+    case emptyModelSyncMetadataStore
+    case removeMutationSyncMetadataCopyStore
+    case createMutationSyncMetadataCopyStore
+    case backfillMutationSyncMetadata
+    case removeMutationSyncMetadataStore
+    case renameMutationSyncMetadataCopy
+}
+
 /// Delegate used by `MutationSyncMetadataMigration` which can be implemented by different
 /// storage adapters.
 protocol MutationSyncMetadataMigrationDelegate: AnyObject {
@@ -16,19 +26,9 @@ protocol MutationSyncMetadataMigrationDelegate: AnyObject {
 
     func transaction(_ basicClosure: BasicThrowableClosure) throws
 
-    func needsMigration() throws -> Bool
+    func mutationSyncMetadataStoreEmptyOrMigrated() throws -> Bool
 
-    func cannotMigrate() throws -> Bool
+    func containsDuplicateIdsAcrossModels() throws -> Bool
 
-    func clear() throws
-
-    @discardableResult func removeMutationSyncMetadataCopyStore() throws -> String
-
-    @discardableResult func createMutationSyncMetadataCopyStore() throws -> String
-
-    @discardableResult func backfillMutationSyncMetadata() throws -> String
-
-    @discardableResult func removeMutationSyncMetadataStore() throws -> String
-
-    @discardableResult func renameMutationSyncMetadataCopy() throws -> String
+    func applyMigration(_ step: MutationSyncMetadataMigrationStep) throws
 }

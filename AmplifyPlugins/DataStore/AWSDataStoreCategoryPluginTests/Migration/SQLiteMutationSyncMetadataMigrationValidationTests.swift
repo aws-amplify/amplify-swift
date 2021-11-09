@@ -45,18 +45,18 @@ class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMi
     }
 
     /// Set up MutationSyncMetadata records where the id is in the incorrect format. Check that it needs migration.
-    func testNeedsMigrationTrue() throws {
+    func testMutationSyncMetadataStoreIsNotEmptyAndNotMigrated() throws {
         try setUpAllModels()
         let metadata = MutationSyncMetadata(id: UUID().uuidString, deleted: false, lastChangedAt: 1, version: 1)
         save(metadata)
         let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
                                                                    modelSchemas: modelSchemas)
 
-        XCTAssertTrue(try delegate.needsMigration())
+        XCTAssertFalse(try delegate.mutationSyncMetadataStoreEmptyOrMigrated())
     }
 
     /// Set up MutationSyncMetadata records where the id is in the correct format. Check that it does not need migration
-    func testNeedMigrationFalse() throws {
+    func testMutationSyncMetadataStoreNotEmptyAndMigrated() throws {
         try setUpAllModels()
         let metadata = MutationSyncMetadata(modelId: UUID().uuidString,
                                             modelName: "modelName",
@@ -67,8 +67,7 @@ class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMi
         let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
                                                                    modelSchemas: modelSchemas)
 
-
-        XCTAssertFalse(try delegate.needsMigration())
+        XCTAssertTrue(try delegate.mutationSyncMetadataStoreEmptyOrMigrated())
     }
 
     // MARK: - Cannot Migrate tests
@@ -78,7 +77,7 @@ class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMi
         let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
                                                                    modelSchemas: modelSchemas)
         do {
-            _ = try delegate.cannotMigrate()
+            _ = try delegate.containsDuplicateIdsAcrossModels()
         } catch {
             guard let resultError = error as? Result,
                   case .error(let message, let code, _) = resultError else {
@@ -108,7 +107,7 @@ class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMi
         try setUpAllModels()
         let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
                                                                    modelSchemas: modelSchemas)
-        XCTAssertFalse(try delegate.cannotMigrate())
+        XCTAssertFalse(try delegate.containsDuplicateIdsAcrossModels())
     }
 
     func testSelectDuplicateIdCountAcrossModels_ModelWithUniqueIds() throws {
@@ -121,7 +120,7 @@ class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMi
         save(dish)
         let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
                                                                    modelSchemas: modelSchemas)
-        XCTAssertFalse(try delegate.cannotMigrate())
+        XCTAssertFalse(try delegate.containsDuplicateIdsAcrossModels())
     }
 
     func testSelectDuplicateIdCountAcrossModels_ModelWithDuplicateIds() throws {
@@ -136,6 +135,6 @@ class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMi
         save(dish)
         let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
                                                                    modelSchemas: modelSchemas)
-        XCTAssertTrue(try delegate.cannotMigrate())
+        XCTAssertTrue(try delegate.containsDuplicateIdsAcrossModels())
     }
 }

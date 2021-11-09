@@ -47,17 +47,17 @@ extension SQLiteMutationSyncMetadataMigrationDelegate {
     }
 
     // MARK: - Needs Migration
-
+    
     /// If there are no MutationSyncMetadata records, then it is not necessary to apply the migration since there is no
     /// data to migrate. If there is data, and the id's have already been migrated ( > 0 keys), then no migration needed
-    func needsMigration() throws -> Bool {
+    func mutationSyncMetadataStoreEmptyOrMigrated() throws -> Bool {
         let records = try selectMutationSyncMetadataRecords()
         if records.metadataCount == 0 || records.metadataIdMatchNewKeyCount > 0 {
             log.debug("No MutationSyncMetadata migration needed.")
-            return false
+            return true
         }
         log.debug("Migration is needed. MutationSyncMetadata IDs need to be migrated to new key format.")
-        return true
+        return false
     }
 
     /// Retrieve the record count from the MutationSyncMetadata table for
@@ -89,25 +89,20 @@ extension SQLiteMutationSyncMetadataMigrationDelegate {
 
     // MARK: - Cannot Migrate
 
-    func cannotMigrate() throws -> Bool {
-        if try containsDuplicateIdsAcrossModels() {
-            log.debug("Duplicate IDs found across different model types.")
-            return true
+    func containsDuplicateIdsAcrossModels() throws -> Bool {
+        guard let storageAdapter = storageAdapter else {
+            log.debug("Missing SQLiteStorageEngineAdapter")
+            throw DataStoreError.unknown("Missing storage adapter for model migration", "", nil)
         }
-        log.debug("No duplicate IDs found.")
-        return false
-    }
+        let sql = selectDuplicateIdAcrossModels()
+        log.debug("Checking for duplicate IDs, SQL: \(sql)")
+        let rows = try storageAdapter.connection.run(sql)
+        let iter = rows.makeIterator()
+        while let row = try iter.failableNext() {
+            return !row.isEmpty
+        }
 
-    func selectDuplicateIdAcrossModels() -> String {
-        var sql = ""
-        for modelSchema in modelSchemas {
-            let modelName = modelSchema.name
-            if sql != "" {
-                sql += " UNION ALL "
-            }
-            sql += "SELECT id, \'\(modelName)\' as tableName FROM \(modelName)"
-        }
-        return "SELECT id, tableName, count(id) as count FROM (" + sql + ") GROUP BY id HAVING count > 1"
+        return false
     }
 
     /// Retrieve results where `id` is the same across multiple tables.
@@ -125,19 +120,15 @@ extension SQLiteMutationSyncMetadataMigrationDelegate {
     /// [Optional("1"), Optional("Restaurant"), Optional(3)]
     /// ```
     /// As long as there is one resulting duplicate id, the entire function will return true
-    func containsDuplicateIdsAcrossModels() throws -> Bool {
-        guard let storageAdapter = storageAdapter else {
-            log.debug("Missing SQLiteStorageEngineAdapter")
-            throw DataStoreError.unknown("Missing storage adapter for model migration", "", nil)
+    func selectDuplicateIdAcrossModels() -> String {
+        var sql = ""
+        for modelSchema in modelSchemas {
+            let modelName = modelSchema.name
+            if sql != "" {
+                sql += " UNION ALL "
+            }
+            sql += "SELECT id, \'\(modelName)\' as tableName FROM \(modelName)"
         }
-        let sql = selectDuplicateIdAcrossModels()
-        log.debug("Checking for duplicate IDs, SQL: \(sql)")
-        let rows = try storageAdapter.connection.run(sql)
-        let iter = rows.makeIterator()
-        while let row = try iter.failableNext() {
-            return !row.isEmpty
-        }
-
-        return false
+        return "SELECT id, tableName, count(id) as count FROM (" + sql + ") GROUP BY id HAVING count > 1"
     }
 }

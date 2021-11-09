@@ -24,15 +24,28 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
         try storageAdapter?.transaction(basicClosure)
     }
 
-    // MARK: - Clear
-
-    func clear() throws {
-        log.debug("Clearing MutationSyncMetadata and ModelSyncMetadata to force full sync.")
-        try deleteMutationSyncMetadata()
-        try deleteModelSyncMetadata()
+    func applyMigration(_ step: MutationSyncMetadataMigrationStep) throws {
+        switch step {
+        case .emptyMutationSyncMetadataStore:
+            try emptyMutationSyncMetadataStore()
+        case .emptyModelSyncMetadataStore:
+            try emptyMutationSyncMetadataStore()
+        case .removeMutationSyncMetadataCopyStore:
+            try removeMutationSyncMetadataCopyStore()
+        case .createMutationSyncMetadataCopyStore:
+            try createMutationSyncMetadataCopyStore()
+        case .backfillMutationSyncMetadata:
+            try backfillMutationSyncMetadata()
+        case .removeMutationSyncMetadataStore:
+            try removeMutationSyncMetadataStore()
+        case .renameMutationSyncMetadataCopy:
+            try renameMutationSyncMetadataCopy()
+        }
     }
 
-    @discardableResult func deleteMutationSyncMetadata() throws -> String {
+    // MARK: - Clear
+
+    @discardableResult func emptyMutationSyncMetadataStore() throws -> String {
         guard let storageAdapter = storageAdapter else {
             log.debug("Missing SQLiteStorageEngineAdapter")
             throw DataStoreError.unknown("Missing storage adapter for model migration", "", nil)
@@ -41,7 +54,7 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
         return try storageAdapter.emptyStore(for: MutationSyncMetadata.schema)
     }
 
-    @discardableResult func deleteModelSyncMetadata() throws -> String {
+    @discardableResult func emptyModelSyncMetadataStore() throws -> String {
         guard let storageAdapter = storageAdapter else {
             log.debug("Missing SQLiteStorageEngineAdapter")
             throw DataStoreError.unknown("Missing storage adapter for model migration", "", nil)

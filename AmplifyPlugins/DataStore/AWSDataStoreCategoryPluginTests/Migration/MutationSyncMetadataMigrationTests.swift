@@ -58,13 +58,13 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
 
     func testApply_NeedsMigrationFailure() {
         let delegate = MockMutationSyncMetadataMigrationDelegate()
-        delegate.needsMigrationError = DataStoreError.internalOperation("Failure", "", nil)
+        delegate.mutationSyncMetadataStoreEmptyOrMigratedError = DataStoreError.internalOperation("Failure", "", nil)
         let migration = MutationSyncMetadataMigration(delegate: delegate)
 
         do {
             try migration.apply()
         } catch {
-            XCTAssertEqual(delegate.stepsCalled, [.precondition, .transaction, .needsMigration])
+            XCTAssertEqual(delegate.stepsCalled, [.precondition, .transaction, .mutationSyncMetadataStoreEmptyOrMigrated])
             return
         }
         XCTFail("Should catch error")
@@ -72,7 +72,7 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
 
     func testApply_CannotMigrateFailure() {
         let delegate = MockMutationSyncMetadataMigrationDelegate()
-        delegate.cannotMigrateError = DataStoreError.internalOperation("Failure", "", nil)
+        delegate.containsDuplicateIdsAcrossModelsError = DataStoreError.internalOperation("Failure", "", nil)
         let migration = MutationSyncMetadataMigration(delegate: delegate)
 
         do {
@@ -80,18 +80,18 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
         } catch {
             XCTAssertEqual(delegate.stepsCalled, [.precondition,
                                                   .transaction,
-                                                  .needsMigration,
-                                                  .cannotMigrate])
+                                                  .mutationSyncMetadataStoreEmptyOrMigrated,
+                                                  .containsDuplicateIdsAcrossModels])
 
             return
         }
         XCTFail("Should catch error")
     }
 
-    func testApply_ClearFailure() {
+    func testApply_emptyMutationSyncMetadataStoreFailure() {
         let delegate = MockMutationSyncMetadataMigrationDelegate()
-        delegate.cannotMigrateResult = true
-        delegate.clearError = DataStoreError.internalOperation("Failure", "", nil)
+        delegate.containsDuplicateIdsAcrossModelsResult = true
+        delegate.emptyMutationSyncMetadataStoreError = DataStoreError.internalOperation("Failure", "", nil)
         let migration = MutationSyncMetadataMigration(delegate: delegate)
 
         do {
@@ -99,9 +99,29 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
         } catch {
             XCTAssertEqual(delegate.stepsCalled, [.precondition,
                                                   .transaction,
-                                                  .needsMigration,
-                                                  .cannotMigrate,
-                                                  .clear])
+                                                  .mutationSyncMetadataStoreEmptyOrMigrated,
+                                                  .containsDuplicateIdsAcrossModels,
+                                                  .emptyMutationSyncMetadataStore])
+            return
+        }
+        XCTFail("Should catch error")
+    }
+
+    func testApply_emptyModelSyncMetadataStoreFailure() {
+        let delegate = MockMutationSyncMetadataMigrationDelegate()
+        delegate.containsDuplicateIdsAcrossModelsResult = true
+        delegate.emptyModelSyncMetadataStoreError = DataStoreError.internalOperation("Failure", "", nil)
+        let migration = MutationSyncMetadataMigration(delegate: delegate)
+
+        do {
+            try migration.apply()
+        } catch {
+            XCTAssertEqual(delegate.stepsCalled, [.precondition,
+                                                  .transaction,
+                                                  .mutationSyncMetadataStoreEmptyOrMigrated,
+                                                  .containsDuplicateIdsAcrossModels,
+                                                  .emptyMutationSyncMetadataStore,
+                                                  .emptyModelSyncMetadataStore])
             return
         }
         XCTFail("Should catch error")
@@ -109,8 +129,8 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
 
     func testApply_MigrateFailure() {
         let delegate = MockMutationSyncMetadataMigrationDelegate()
-        delegate.needsMigrationResult = true
-        delegate.cannotMigrateResult = false
+        delegate.mutationSyncMetadataStoreEmptyOrMigratedResult = false
+        delegate.containsDuplicateIdsAcrossModelsResult = false
         delegate.removeMutationSyncMetadataCopyStoreError = DataStoreError.internalOperation("Failure", "", nil)
         let migration = MutationSyncMetadataMigration(delegate: delegate)
 
@@ -119,8 +139,8 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
         } catch {
             XCTAssertEqual(delegate.stepsCalled, [.precondition,
                                                   .transaction,
-                                                  .needsMigration,
-                                                  .cannotMigrate,
+                                                  .mutationSyncMetadataStoreEmptyOrMigrated,
+                                                  .containsDuplicateIdsAcrossModels,
                                                   .removeMutationSyncMetadataCopyStore])
             return
         }
@@ -129,14 +149,14 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
 
     func testApplyMigrate() throws {
         let delegate = MockMutationSyncMetadataMigrationDelegate()
-        delegate.needsMigrationResult = true
-        delegate.cannotMigrateResult = false
+        delegate.mutationSyncMetadataStoreEmptyOrMigratedResult = false
+        delegate.containsDuplicateIdsAcrossModelsResult = false
         let migration = MutationSyncMetadataMigration(delegate: delegate)
         try migration.apply()
         XCTAssertEqual(delegate.stepsCalled, [.precondition,
                                               .transaction,
-                                              .needsMigration,
-                                              .cannotMigrate,
+                                              .mutationSyncMetadataStoreEmptyOrMigrated,
+                                              .containsDuplicateIdsAcrossModels,
                                               .removeMutationSyncMetadataCopyStore,
                                               .createMutationSyncMetadataCopyStore,
                                               .backfillMutationSyncMetadata,
@@ -176,21 +196,22 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
                modelName: Restaurant.modelName) else {
                    XCTFail("Could not get metadata")
                    return
-        }
+               }
         XCTAssertEqual(restaurantMetadata.modelId, restaurant.id)
         XCTAssertEqual(restaurantMetadata.modelName, Restaurant.modelName)
     }
 
     func testApplyClear() throws {
         let delegate = MockMutationSyncMetadataMigrationDelegate()
-        delegate.needsMigrationResult = true
-        delegate.cannotMigrateResult = true
+        delegate.mutationSyncMetadataStoreEmptyOrMigratedResult = false
+        delegate.containsDuplicateIdsAcrossModelsResult = true
         let migration = MutationSyncMetadataMigration(delegate: delegate)
         try migration.apply()
         XCTAssertEqual(delegate.stepsCalled, [.precondition,
                                               .transaction,
-                                              .needsMigration,
-                                              .cannotMigrate,
-                                              .clear])
+                                              .mutationSyncMetadataStoreEmptyOrMigrated,
+                                              .containsDuplicateIdsAcrossModels,
+                                              .emptyMutationSyncMetadataStore,
+                                              .emptyModelSyncMetadataStore])
     }
 }
