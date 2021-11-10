@@ -124,6 +124,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             }
             try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
             try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
+            try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
             storageEngineInitSemaphore.signal()
             storageEngine.startSync { result in
 

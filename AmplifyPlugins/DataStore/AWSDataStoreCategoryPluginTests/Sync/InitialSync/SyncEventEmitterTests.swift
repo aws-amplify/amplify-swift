@@ -42,7 +42,8 @@ class SyncEventEmitterTests: XCTestCase {
         ModelRegistry.register(modelType: Post.self)
         let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
         let anyPost = AnyModel(testPost)
-        let anyPostMetadata = MutationSyncMetadata(id: "1",
+        let anyPostMetadata = MutationSyncMetadata(modelId: "1",
+                                                   modelName: Post.modelName,
                                                    deleted: false,
                                                    lastChangedAt: Int(Date().timeIntervalSince1970),
                                                    version: 1)
@@ -192,7 +193,8 @@ class SyncEventEmitterTests: XCTestCase {
         ModelRegistry.register(modelType: Comment.self)
         let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
         let anyPost = AnyModel(testPost)
-        let anyPostMetadata = MutationSyncMetadata(id: "1",
+        let anyPostMetadata = MutationSyncMetadata(modelId: "1",
+                                                   modelName: Post.modelName,
                                                    deleted: false,
                                                    lastChangedAt: Int(Date().timeIntervalSince1970),
                                                    version: 1)
@@ -202,7 +204,8 @@ class SyncEventEmitterTests: XCTestCase {
 
         let testComment = Comment(id: "1", content: "content", createdAt: .now(), post: testPost)
         let anyComment = AnyModel(testComment)
-        let anyCommentMetadata = MutationSyncMetadata(id: "1",
+        let anyCommentMetadata = MutationSyncMetadata(modelId: "1",
+                                                      modelName: Comment.modelName,
                                                       deleted: true,
                                                       lastChangedAt: Int(Date().timeIntervalSince1970),
                                                       version: 2)

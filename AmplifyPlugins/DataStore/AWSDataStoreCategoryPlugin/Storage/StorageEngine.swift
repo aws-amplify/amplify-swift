@@ -171,6 +171,10 @@ final class StorageEngine: StorageEngineBehavior {
         try storageAdapter.setUp(modelSchemas: modelSchemas)
     }
 
+    func applyModelMigrations(modelSchemas: [ModelSchema]) throws {
+        try storageAdapter.applyModelMigrations(modelSchemas: modelSchemas)
+    }
+
     public func save<M: Model>(_ model: M,
                                modelSchema: ModelSchema,
                                condition: QueryPredicate? = nil,

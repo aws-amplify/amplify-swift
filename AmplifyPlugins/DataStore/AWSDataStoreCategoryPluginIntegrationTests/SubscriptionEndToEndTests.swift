@@ -225,7 +225,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
             return nil
         }
 
-        let mutationSync = try? storageAdapter.queryMutationSync(for: [post]).first
+        let mutationSync = try? storageAdapter.queryMutationSync(for: [post], modelName: Post.modelName).first
 
         return mutationSync
     }

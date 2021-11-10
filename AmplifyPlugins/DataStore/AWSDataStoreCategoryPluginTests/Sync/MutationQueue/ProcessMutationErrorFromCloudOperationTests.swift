@@ -361,7 +361,11 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
         }
-        let updatedMetadata = MutationSyncMetadata(id: remotePost.id, deleted: true, lastChangedAt: 0, version: 3)
+        let updatedMetadata = MutationSyncMetadata(modelId: remotePost.id,
+                                                   modelName: remotePost.modelName,
+                                                   deleted: true,
+                                                   lastChangedAt: 0,
+                                                   version: 3)
         let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
         eventListener(.success(.success(mockResponse)))
 
@@ -439,7 +443,11 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
         }
-        let updatedMetadata = MutationSyncMetadata(id: remotePost.id, deleted: false, lastChangedAt: 0, version: 3)
+        let updatedMetadata = MutationSyncMetadata(modelId: remotePost.id,
+                                                   modelName: remotePost.modelName,
+                                                   deleted: false,
+                                                   lastChangedAt: 0,
+                                                   version: 3)
         let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
         eventListener(.success(.success(mockResponse)))
 
@@ -735,7 +743,11 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
         }
-        let updatedMetadata = MutationSyncMetadata(id: remotePost.id, deleted: false, lastChangedAt: 0, version: 3)
+        let updatedMetadata = MutationSyncMetadata(modelId: remotePost.id,
+                                                   modelName: remotePost.modelName,
+                                                   deleted: false,
+                                                   lastChangedAt: 0,
+                                                   version: 3)
         let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
         eventListener(.success(.success(mockResponse)))
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
@@ -811,7 +823,11 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
         }
-        let updatedMetadata = MutationSyncMetadata(id: remotePost.id, deleted: false, lastChangedAt: 0, version: 3)
+        let updatedMetadata = MutationSyncMetadata(modelId: remotePost.id,
+                                                   modelName: remotePost.modelName,
+                                                   deleted: false,
+                                                   lastChangedAt: 0,
+                                                   version: 3)
         let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
         eventListener(.success(.success(mockResponse)))
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)

@@ -29,7 +29,8 @@ class StorageAdapterMutationSyncTests: BaseDataStoreTests {
 
         // then create sync metadata for them
         let syncMetadataList = posts.map {
-            MutationSyncMetadata(id: $0.id,
+            MutationSyncMetadata(modelId: $0.id,
+                                 modelName: Post.modelName,
                                  deleted: false,
                                  lastChangedAt: Int(Date().timeIntervalSince1970),
                                  version: 1)
@@ -37,9 +38,9 @@ class StorageAdapterMutationSyncTests: BaseDataStoreTests {
         populateData(syncMetadataList)
 
         do {
-            let mutationSync = try storageAdapter.queryMutationSync(for: posts)
+            let mutationSync = try storageAdapter.queryMutationSync(for: posts, modelName: Post.modelName)
             mutationSync.forEach {
-                XCTAssertEqual($0.model.id, $0.syncMetadata.id)
+                XCTAssertEqual($0.model.id, $0.syncMetadata.modelId)
                 let post = $0.model.instance as? Post
                 XCTAssertNotNil(post)
             }

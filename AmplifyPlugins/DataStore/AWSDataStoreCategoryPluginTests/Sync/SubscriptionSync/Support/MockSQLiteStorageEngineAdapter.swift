@@ -44,6 +44,10 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         XCTFail("Not expected to execute")
     }
 
+    func applyModelMigrations(modelSchemas: [ModelSchema]) throws {
+        XCTFail("Not expected to execute")
+    }
+
     // MARK: - Responses
 
     func returnOnQuery(dataStoreResult: DataStoreResult<[Model]>?) {
@@ -131,7 +135,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         XCTFail("Not expected to execute")
     }
 
-    func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>] {
+    func queryMutationSync(for models: [Model], modelName: String) throws -> [MutationSync<AnyModel>] {
         XCTFail("Not expected to execute")
         return []
     }
@@ -197,7 +201,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         completion(.success([]))
     }
 
-    func queryMutationSyncMetadata(for modelId: String) throws -> MutationSyncMetadata? {
+    func queryMutationSyncMetadata(for modelId: String, modelName: String) throws -> MutationSyncMetadata? {
         if let responder = responders[.queryMutationSyncMetadata] as? QueryMutationSyncMetadataResponder {
             return try responder.callback(modelId)
         }
@@ -209,7 +213,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         return resultForQueryMutationSyncMetadata
     }
 
-    func queryMutationSyncMetadata(for modelIds: [String]) throws -> [MutationSyncMetadata] {
+    func queryMutationSyncMetadata(for modelIds: [String], modelName: String) throws -> [MutationSyncMetadata] {
         if let responder = responders[.queryMutationSyncMetadatas] as? QueryMutationSyncMetadatasResponder {
             return try responder.callback(modelIds)
         }
@@ -235,11 +239,31 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {
-        XCTFail("Not expected to execute")
+
     }
 
     func shouldIgnoreError(error: DataStoreError) -> Bool {
         return shouldIgnoreError
+    }
+
+    func removeStore(for modelSchema: ModelSchema) throws -> String {
+        XCTFail("Not expected to execute")
+        return ""
+    }
+
+    func createStore(for modelSchema: ModelSchema) throws -> String {
+        XCTFail("Not expected to execute")
+        return ""
+    }
+
+    func emptyStore(for modelSchema: ModelSchema) throws -> String {
+        XCTFail("Not expected to execute")
+        return ""
+    }
+
+    func renameStore(from: ModelSchema, toModelSchema: ModelSchema) throws -> String {
+        XCTFail("Not expected to execute")
+        return ""
     }
 }
 
@@ -282,6 +306,9 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     }
 
     func setUp(modelSchemas: [ModelSchema]) throws {
+    }
+
+    func applyModelMigrations(modelSchemas: [ModelSchema]) throws {
     }
 
     func save<M: Model>(_ model: M, condition: QueryPredicate?, completion: @escaping DataStoreCallback<M>) {

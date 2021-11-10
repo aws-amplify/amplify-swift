@@ -572,7 +572,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     func testQueryMutationSyncMetadata_EmptyResult() {
         let modelIds = [UUID().uuidString, UUID().uuidString]
         do {
-            let results = try storageAdapter.queryMutationSyncMetadata(for: modelIds)
+            let results = try storageAdapter.queryMutationSyncMetadata(for: modelIds, modelName: "modelName")
             XCTAssertTrue(results.isEmpty)
         } catch {
             XCTFail("\(error)")
@@ -581,7 +581,10 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
 
     func testQueryMutationSyncMetadata() {
         let querySuccess = expectation(description: "query for metadata success")
-        let metadata = MutationSyncMetadata(id: UUID().uuidString,
+        let modelId = UUID().uuidString
+        let modelName = "modelName"
+        let metadata = MutationSyncMetadata(modelId: modelId,
+                                            modelName: modelName,
                                             deleted: false,
                                             lastChangedAt: Int(Date().timeIntervalSince1970),
                                             version: 1)
@@ -590,7 +593,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             switch result {
             case .success:
                 do {
-                    let result = try self.storageAdapter.queryMutationSyncMetadata(for: metadata.id)
+                    let result = try self.storageAdapter.queryMutationSyncMetadata(for: modelId, modelName: modelName)
                     XCTAssertEqual(result?.id, metadata.id)
                     querySuccess.fulfill()
                 } catch {
@@ -603,14 +606,17 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     }
 
     func testQueryMutationSyncMetadataForModelIds() {
-        let metadata1 = MutationSyncMetadata(id: UUID().uuidString,
-                                            deleted: false,
-                                            lastChangedAt: Int(Date().timeIntervalSince1970),
-                                            version: 1)
-        let metadata2 = MutationSyncMetadata(id: UUID().uuidString,
-                                            deleted: false,
-                                            lastChangedAt: Int(Date().timeIntervalSince1970),
-                                            version: 1)
+        let modelName = "modelName"
+        let metadata1 = MutationSyncMetadata(modelId: UUID().uuidString,
+                                             modelName: modelName,
+                                             deleted: false,
+                                             lastChangedAt: Int(Date().timeIntervalSince1970),
+                                             version: 1)
+        let metadata2 = MutationSyncMetadata(modelId: UUID().uuidString,
+                                             modelName: modelName,
+                                             deleted: false,
+                                             lastChangedAt: Int(Date().timeIntervalSince1970),
+                                             version: 1)
 
         let saveMetadata1 = expectation(description: "save metadata1 success")
         storageAdapter.save(metadata1) { result in
@@ -633,11 +639,11 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         wait(for: [saveMetadata2], timeout: 1)
 
         let querySuccess = expectation(description: "query for metadata success")
-        var modelIds = [metadata1.id]
+        var modelIds = [metadata1.modelId]
         modelIds.append(contentsOf: (1 ... 999).map { _ in UUID().uuidString })
-        modelIds.append(metadata2.id)
+        modelIds.append(metadata2.modelId)
         do {
-            let results = try storageAdapter.queryMutationSyncMetadata(for: modelIds)
+            let results = try storageAdapter.queryMutationSyncMetadata(for: modelIds, modelName: modelName)
             XCTAssertEqual(results.count, 2)
             querySuccess.fulfill()
         } catch {

@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 import AWSPluginsCore
 
-protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErrorBehavior {
+protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErrorBehavior, StorageEngineMigrationAdapter {
 
     static var maxNumberOfPredicates: Int { get }
 
@@ -43,19 +43,30 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErro
                 withId id: Model.Identifier,
                 predicate: QueryPredicate?) throws -> Bool
 
-    func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>]
+    func queryMutationSync(for models: [Model], modelName: String) throws -> [MutationSync<AnyModel>]
 
     func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>?
 
-    func queryMutationSyncMetadata(for modelId: Model.Identifier) throws -> MutationSyncMetadata?
+    func queryMutationSyncMetadata(for modelId: Model.Identifier, modelName: String) throws -> MutationSyncMetadata?
 
-    func queryMutationSyncMetadata(for modelIds: [Model.Identifier]) throws -> [MutationSyncMetadata]
+    func queryMutationSyncMetadata(for modelIds: [Model.Identifier], modelName: String) throws -> [MutationSyncMetadata]
 
     func queryModelSyncMetadata(for modelSchema: ModelSchema) throws -> ModelSyncMetadata?
 
     func transaction(_ basicClosure: BasicThrowableClosure) throws
 
     func clear(completion: @escaping DataStoreCallback<Void>)
+}
+
+protocol StorageEngineMigrationAdapter {
+
+    @discardableResult func removeStore(for modelSchema: ModelSchema) throws -> String
+
+    @discardableResult func createStore(for modelSchema: ModelSchema) throws -> String
+
+    @discardableResult func emptyStore(for modelSchema: ModelSchema) throws -> String
+
+    @discardableResult func renameStore(from: ModelSchema, toModelSchema: ModelSchema) throws -> String
 }
 
 extension StorageEngineAdapter {

@@ -30,6 +30,8 @@ public struct MutationSync<ModelType: Model>: Decodable {
         let modelType = ModelType.self
         let json = try JSONValue(from: decoder)
 
+        var resolvedModelName = modelType.modelName
+
         // in case of `AnyModel`, decode the underlying type and erase to `AnyModel`
         if modelType == AnyModel.self {
             guard case let .string(modelName) = json["__typename"] else {
@@ -53,6 +55,7 @@ public struct MutationSync<ModelType: Model>: Decodable {
                     """)
             }
             self.model = anyModel
+            resolvedModelName = modelName
         } else {
             self.model = try modelType.init(from: decoder)
         }
@@ -74,7 +77,8 @@ public struct MutationSync<ModelType: Model>: Decodable {
                   )
               }
 
-        self.syncMetadata = MutationSyncMetadata(id: model.id,
+        self.syncMetadata = MutationSyncMetadata(modelId: model.id,
+                                                 modelName: resolvedModelName,
                                                  deleted: deleted,
                                                  lastChangedAt: Int(lastChangedAt),
                                                  version: Int(version))

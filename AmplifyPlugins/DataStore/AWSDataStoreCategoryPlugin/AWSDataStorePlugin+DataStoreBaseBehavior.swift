@@ -247,8 +247,9 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
             return
         }
         let metadata = MutationSyncMetadata.keys
+        let metadataId = MutationSyncMetadata.identifier(modelName: modelSchema.name, modelId: model.id)
         storageEngine.query(MutationSyncMetadata.self,
-                            predicate: metadata.id == model.id,
+                            predicate: metadata.id == metadataId,
                             sort: nil,
                             paginationInput: .firstResult) {
             do {

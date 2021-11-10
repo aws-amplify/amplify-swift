@@ -110,7 +110,8 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
 
         let model = MockSynced(id: "id-1")
         let anyModel = try model.eraseToAnyModel()
-        let remoteSyncMetadata = MutationSyncMetadata(id: model.id,
+        let remoteSyncMetadata = MutationSyncMetadata(modelId: model.id,
+                                                      modelName: MockSynced.modelName,
                                                       deleted: false,
                                                       lastChangedAt: Date().unixSeconds,
                                                       version: 2)
@@ -202,7 +203,8 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
 
         let model = MockSynced(id: "id-1")
         let anyModel = try model.eraseToAnyModel()
-        let remoteSyncMetadata = MutationSyncMetadata(id: model.id,
+        let remoteSyncMetadata = MutationSyncMetadata(modelId: model.id,
+                                                      modelName: MockSynced.modelName,
                                                       deleted: false,
                                                       lastChangedAt: Date().unixSeconds,
                                                       version: 2)

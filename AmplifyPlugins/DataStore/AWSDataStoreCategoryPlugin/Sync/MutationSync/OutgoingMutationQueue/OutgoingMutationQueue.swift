@@ -221,7 +221,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         if case let .success(graphQLResponse) = result {
             if case let .success(graphQLResult) = graphQLResponse {
                 processSuccessEvent(mutationEvent,
-                                        mutationSyncMetadata: graphQLResult)
+                                    mutationSync: graphQLResult)
             } else if case let .failure(graphQLResponseError) = graphQLResponse {
                 processMutationErrorFromCloud(mutationEvent: mutationEvent,
                                               api: api,
@@ -239,16 +239,16 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     /// Process the successful response from API by updating the mutation events in
     /// mutation event table having `nil` version
     private func processSuccessEvent(_ mutationEvent: MutationEvent,
-                                     mutationSyncMetadata: MutationSync<AnyModel>?) {
-        if let mutationSyncMetadata = mutationSyncMetadata {
+                                     mutationSync: MutationSync<AnyModel>?) {
+        if let mutationSync = mutationSync {
             MutationEvent.reconcilePendingMutationEventsVersion(
                 sent: mutationEvent,
-                received: mutationSyncMetadata,
+                received: mutationSync,
                 storageAdapter: storageAdapter) { _ in
-                self.completeProcessingEvent(mutationEvent, mutationSyncMetadata: mutationSyncMetadata)
+                self.completeProcessingEvent(mutationEvent, mutationSync: mutationSync)
             }
         } else {
-            completeProcessingEvent(mutationEvent, mutationSyncMetadata: mutationSyncMetadata)
+            completeProcessingEvent(mutationEvent)
         }
     }
 
@@ -277,14 +277,13 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                let outgoingMutationEvent = mutationEventOptional {
                 self.outgoingMutationQueueSubject.send(outgoingMutationEvent)
             }
-            self.completeProcessingEvent(mutationEvent,
-                                         mutationSyncMetadata: nil)
+            self.completeProcessingEvent(mutationEvent)
         }
         operationQueue.addOperation(processMutationErrorFromCloudOperation)
     }
 
     private func completeProcessingEvent(_ mutationEvent: MutationEvent,
-                                         mutationSyncMetadata: MutationSync<AnyModel>?) {
+                                         mutationSync: MutationSync<AnyModel>? = nil) {
         // TODO: We shouldn't be inspecting state, we should be using granular enough states to
         // ensure we don't encounter forbidden transitions.
         if case .stopped = stateMachine.state {
@@ -301,9 +300,9 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                 self.log.verbose("mutationEvent deleted successfully")
             }
 
-            if let mutationSyncMetadata = mutationSyncMetadata {
+            if let mutationSync = mutationSync {
                 self.dispatchOutboxMutationProcessedEvent(mutationEvent: mutationEvent,
-                                                          mutationSync: mutationSyncMetadata)
+                                                          mutationSync: mutationSync)
             }
             self.queryMutationEventsFromStorage {
                 self.stateMachine.notify(action: .processedEvent)

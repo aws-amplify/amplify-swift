@@ -20,7 +20,8 @@ class ReconcileAndSaveQueueTests: XCTestCase {
         ModelRegistry.register(modelType: Post.self)
         let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
         let anyPost = AnyModel(testPost)
-        anyPostMetadata = MutationSyncMetadata(id: "1",
+        anyPostMetadata = MutationSyncMetadata(modelId: "1",
+                                               modelName: testPost.modelName,
                                                deleted: false,
                                                lastChangedAt: Int(Date().timeIntervalSince1970),
                                                version: 1)
