@@ -36,6 +36,8 @@ extension AWSS3StoragePlugin {
             let bucket = try AWSS3StoragePlugin.getBucket(configObject)
             let region = try AWSS3StoragePlugin.getRegionType(configObject)
             let defaultAccessLevel = try AWSS3StoragePlugin.getDefaultAccessLevel(configObject)
+            let queue = OperationQueue()
+            queue.maxConcurrentOperationCount = ProcessInfo.processInfo.activeProcessorCount
 
             let authService = AWSAuthService()
             let credentialsProvider = authService.getCredentialsProvider()
@@ -44,7 +46,7 @@ extension AWSS3StoragePlugin {
                                                          credentialsProvider: credentialsProvider,
                                                          identifier: key)
 
-            configure(storageService: storageService, authService: authService, defaultAccessLevel: defaultAccessLevel)
+            configure(storageService: storageService, authService: authService, defaultAccessLevel: defaultAccessLevel, queue: queue)
         } catch let storageError as StorageError {
             throw storageError
         } catch {

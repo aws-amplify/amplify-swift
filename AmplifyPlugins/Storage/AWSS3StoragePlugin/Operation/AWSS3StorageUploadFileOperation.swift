@@ -98,10 +98,12 @@ public class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation
             return
         }
 
-        let prefixResolver = storageConfiguration.prefixResolver ??
-            StorageAccessLevelAwarePrefixResolver(authService: authService)
-        let prefixResolution = prefixResolver.resolvePrefix(for: request.options.accessLevel,
-                                                            targetIdentityId: request.options.targetIdentityId)
+        resolvePrefix(accessLevel: request.options.accessLevel, targetIdentityId: request.options.targetIdentityId) { prefixResolution in
+            self.beginUpload(prefixResolution: prefixResolution, uploadSize: uploadSize)
+        }
+    }
+
+    private func beginUpload(prefixResolution: Result<String, StorageError>, uploadSize: UInt64) {
         switch prefixResolution {
         case .success(let prefix):
             let serviceKey = prefix + request.key
@@ -124,6 +126,18 @@ public class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation
         case .failure(let error):
             dispatch(error)
             finish()
+        }
+    }
+
+    private func resolvePrefix(accessLevel: StorageAccessLevel,
+                               targetIdentityId: String?,
+                               completion: @escaping (Result<String, StorageError>) -> Void) {
+        let prefixResolver = storageConfiguration.prefixResolver ??
+        StorageAccessLevelAwarePrefixResolver(authService: authService)
+        DispatchQueue.global().async {
+            let prefixResolution = prefixResolver.resolvePrefix(for: accessLevel,
+                                                                   targetIdentityId: targetIdentityId)
+            completion(prefixResolution)
         }
     }
 
