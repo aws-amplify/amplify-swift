@@ -130,6 +130,7 @@ public class QueryPredicateOperation: QueryPredicate {
         guard let fieldValue = target[field] else {
             return false
         }
+
         guard let value = fieldValue else {
             return false
         }
@@ -145,8 +146,13 @@ public class QueryPredicateOperation: QueryPredicate {
         if let intValue = value as? Int {
             return self.operator.evaluate(target: intValue)
         }
+
         if let timeValue = value as? Temporal.Time {
             return self.operator.evaluate(target: timeValue)
+        }
+
+        if let enumValue = value as? EnumPersistable {
+            return self.operator.evaluate(target: enumValue.rawValue)
         }
 
         return self.operator.evaluate(target: value)
