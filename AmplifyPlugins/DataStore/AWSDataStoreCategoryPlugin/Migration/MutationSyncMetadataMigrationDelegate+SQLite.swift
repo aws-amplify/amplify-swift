@@ -29,7 +29,7 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
         case .emptyMutationSyncMetadataStore:
             try emptyMutationSyncMetadataStore()
         case .emptyModelSyncMetadataStore:
-            try emptyMutationSyncMetadataStore()
+            try emptyModelSyncMetadataStore()
         case .removeMutationSyncMetadataCopyStore:
             try removeMutationSyncMetadataCopyStore()
         case .createMutationSyncMetadataCopyStore:
