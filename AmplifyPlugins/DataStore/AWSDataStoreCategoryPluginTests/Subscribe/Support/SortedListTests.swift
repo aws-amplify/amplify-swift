@@ -21,28 +21,29 @@ class SortedListTests: XCTestCase {
                      createPost(id: "2"),
                      createPost(id: "5"),
                      createPost(id: "6")]
-        let list = SortedList<Post>(sortInput: [QuerySortBy.ascending(Post.keys.id).sortDescriptor],
+        let sortInput = [QuerySortBy.ascending(Post.keys.id).sortDescriptor]
+        let list = SortedList<Post>(sortInput: sortInput,
                                     modelSchema: Post.schema)
         list.sortedModels = posts
 
         // insert into the middle of the sorted list
-        list.add(model: createPost(id: "3"))
+        list.add(model: createPost(id: "3"), sortInputs: sortInput)
         assertPosts(list.sortedModels, expectedIds: ["1", "2", "3", "5", "6"])
 
         // insert into the middle
-        list.add(model: createPost(id: "4"))
+        list.add(model: createPost(id: "4"), sortInputs: sortInput)
         assertPosts(list.sortedModels, expectedIds: ["1", "2", "3", "4", "5", "6"])
 
         // insert at the beginning
-        list.add(model: createPost(id: "0"))
+        list.add(model: createPost(id: "0"), sortInputs: sortInput)
         assertPosts(list.sortedModels, expectedIds: ["0", "1", "2", "3", "4", "5", "6"])
 
         // insert at the end
-        list.add(model: createPost(id: "7"))
+        list.add(model: createPost(id: "7"), sortInputs: sortInput)
         assertPosts(list.sortedModels, expectedIds: ["0", "1", "2", "3", "4", "5", "6", "7"])
 
         // insert into where the equal model is found, at the beginning
-        list.add(model: createPost(id: "0", draft: true))
+        list.add(model: createPost(id: "0", draft: true), sortInputs: sortInput)
         XCTAssertEqual(list.sortedModels[0].id, "0")
         XCTAssertEqual(list.sortedModels[0].draft, true)
         XCTAssertEqual(list.sortedModels[1].id, "0")
@@ -50,7 +51,7 @@ class SortedListTests: XCTestCase {
         assertPosts(list.sortedModels, expectedIds: ["0", "0", "1", "2", "3", "4", "5", "6", "7"])
 
         // insert into where the equal model is found, at the end
-        list.add(model: createPost(id: "7", draft: true))
+        list.add(model: createPost(id: "7", draft: true), sortInputs: sortInput)
         assertPosts(list.sortedModels, expectedIds: ["0", "0", "1", "2", "3", "4", "5", "6", "7", "7"])
         XCTAssertEqual(list.sortedModels[8].id, "7")
         XCTAssertEqual(list.sortedModels[8].draft, true)
@@ -63,13 +64,14 @@ class SortedListTests: XCTestCase {
                      createPost(id: "2", rating: 10.0),
                      createPost(id: "6", rating: 10.0),
                      createPost(id: "5", rating: 20.0)]
-        let list = SortedList<Post>(sortInput: [QuerySortBy.ascending(Post.keys.rating).sortDescriptor,
-                                                QuerySortBy.ascending(Post.keys.id).sortDescriptor],
+        let sortInput = [QuerySortBy.ascending(Post.keys.rating).sortDescriptor,
+                         QuerySortBy.ascending(Post.keys.id).sortDescriptor]
+        let list = SortedList<Post>(sortInput: sortInput,
                                     modelSchema: Post.schema)
         list.sortedModels = posts
 
         // After id: "1", rating: 5.0
-        list.add(model: createPost(id: "1", rating: 10.0))
+        list.add(model: createPost(id: "1", rating: 10.0), sortInputs: sortInput)
         assertPost(list.sortedModels[0], id: "1", rating: 5.0)
         assertPost(list.sortedModels[1], id: "1", rating: 10.0)
         assertPost(list.sortedModels[2], id: "2", rating: 10.0)
@@ -77,7 +79,7 @@ class SortedListTests: XCTestCase {
         assertPost(list.sortedModels[4], id: "5", rating: 20.0)
 
         // Before id: "1", rating: 5.0
-        list.add(model: createPost(id: "1", rating: 1.0))
+        list.add(model: createPost(id: "1", rating: 1.0), sortInputs: sortInput)
         assertPost(list.sortedModels[0], id: "1", rating: 1.0)
         assertPost(list.sortedModels[1], id: "1", rating: 5.0)
         assertPost(list.sortedModels[2], id: "1", rating: 10.0)
@@ -86,7 +88,7 @@ class SortedListTests: XCTestCase {
         assertPost(list.sortedModels[5], id: "5", rating: 20.0)
 
         // Since it is sorted by rating then id, the highest rating with lowest id is still places at the end.
-        list.add(model: createPost(id: "1", rating: 30.0))
+        list.add(model: createPost(id: "1", rating: 30.0), sortInputs: sortInput)
         assertPost(list.sortedModels[0], id: "1", rating: 1.0)
         assertPost(list.sortedModels[1], id: "1", rating: 5.0)
         assertPost(list.sortedModels[2], id: "1", rating: 10.0)
@@ -102,12 +104,13 @@ class SortedListTests: XCTestCase {
                      createPost(id: "3", rating: 5.0),
                      createPost(id: "4", rating: 5.0)]
 
+        let sortInput = [QuerySortBy.ascending(Post.keys.rating).sortDescriptor]
         let list = SortedList<Post>(sortInput: [QuerySortBy.ascending(Post.keys.rating).sortDescriptor],
                                     modelSchema: Post.schema)
         list.sortedModels = posts
 
         // Since this is a binary search, the first index where the predicate returns `nil` is the middle index
-        list.add(model: createPost(id: "5", rating: 5.0))
+        list.add(model: createPost(id: "5", rating: 5.0), sortInputs: sortInput)
         assertPosts(list.sortedModels, expectedIds: ["1", "2", "5", "3", "4"])
     }
 

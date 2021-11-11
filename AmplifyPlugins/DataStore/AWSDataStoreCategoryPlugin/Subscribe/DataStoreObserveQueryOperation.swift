@@ -234,9 +234,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             finish()
             return
         }
-        if log.logLevel >= .debug {
-            stopwatch.start()
-        }
+        startSnapshotStopWatch()
         storageEngine.query(
             modelType,
             modelSchema: modelSchema,
@@ -252,7 +250,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
                 switch queryResult {
                 case .success(let queriedModels):
                     currentItems.sortedModels = queriedModels
-                    generateQuerySnapshot()
+                    sendSnapshot()
                 case .failure(let error):
                     self.passthroughPublisher.send(completion: .failure(error))
                     self.finish()
@@ -263,33 +261,42 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
 
     // MARK: Observe item changes
 
+    /// Subscribe to item changes with two subscribers (During Sync and After Sync). During Sync, the items are filtered
+    /// by name and predicate, then collected by the timeOrCount grouping, before sent for processing the snapshot.
+    /// After Sync, the item is only filtered by name, and not the predicate filter because updates to the item may
+    /// make it so that the item no longer matches the predicate and requires to be removed from `currentItems`.
+    /// This check is defered until `onItemChangedAfterSync` where the predicate is then used, and `currentItems` is
+    /// accessed under the serial queue.
     func subscribeToItemChanges() {
         batchItemsChangedSink = dataStorePublisher.publisher
             .filter { _ in !self.dispatchedModelSyncedEvent.get() }
-            .filter(onItemChangedFilter(mutationEvent:))
+            .filter(modelNameFilter(mutationEvent:))
+            .filter(predicateMatchFilter(mutationEvent:))
             .collect(.byTimeOrCount(serialQueue, itemsChangedPeriodicPublishTimeInSeconds, itemsChangedMaxSize))
             .sink(receiveCompletion: onReceiveCompletion(completed:),
-                  receiveValue: onItemsChange(mutationEvents:))
+                  receiveValue: onItemsChangeDuringSync(mutationEvents:))
 
         itemsChangedSink = dataStorePublisher.publisher
             .filter { _ in self.dispatchedModelSyncedEvent.get() }
-            .filter(onItemChangedFilter(mutationEvent:))
+            .filter(modelNameFilter(mutationEvent:))
             .receive(on: serialQueue)
             .sink(receiveCompletion: onReceiveCompletion(completed:),
-                  receiveValue: onItemChange(mutationEvent:))
+                  receiveValue: onItemChangeAfterSync(mutationEvent:))
     }
 
-    func onItemChangedFilter(mutationEvent: MutationEvent) -> Bool {
-        guard mutationEvent.modelName == modelSchema.name else {
-            return false
-        }
+    func modelNameFilter(mutationEvent: MutationEvent) -> Bool {
+        // Filter in the model when it matches the model name for this operation
+        mutationEvent.modelName == modelSchema.name
+    }
 
+    func predicateMatchFilter(mutationEvent: MutationEvent) -> Bool {
+        // Filter in the model when there is no predicate to check against.
         guard let predicate = self.predicate else {
             return true
         }
-
         do {
             let model = try mutationEvent.decodeModel(as: modelType)
+            // Filter in the model when the predicate matches, otherwise filter out
             return predicate.evaluate(target: model)
         } catch {
             log.error(error: error)
@@ -297,11 +304,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         }
     }
 
-    func onItemChange(mutationEvent: MutationEvent) {
-        onItemsChange(mutationEvents: [mutationEvent])
-    }
-
-    func onItemsChange(mutationEvents: [MutationEvent]) {
+    func onItemsChangeDuringSync(mutationEvents: [MutationEvent]) {
         serialQueue.async {
             if self.isCancelled || self.isFinished {
                 self.finish()
@@ -310,36 +313,96 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             guard self.observeQueryStarted, !mutationEvents.isEmpty else {
                 return
             }
-            if self.log.logLevel >= .debug {
-                self.stopwatch.start()
-            }
-            self.generateQuerySnapshot(itemsChanged: mutationEvents)
+
+            self.startSnapshotStopWatch()
+            self.apply(itemsChanged: mutationEvents)
+            self.sendSnapshot()
         }
     }
 
-    private func generateQuerySnapshot(itemsChanged: [MutationEvent] = []) {
-        updateCurrentItems(with: itemsChanged)
-        passthroughPublisher.send(currentSnapshot)
-        if log.logLevel >= .debug {
-            let time = stopwatch.stop()
-            log.debug("Time to generate snapshot: \(time) seconds")
+    // Item changes after sync is more elaborate than item changes during sync because the item was never filtered out
+    // by the predicate (unlike during sync). An item that no longer matches the predicate may already exist in the
+    // snapshot and now needs to be removed. The evaluation is done here under the serial queue since checking to
+    // remove the item requires that check on `currentItems` and is required to be performed under the serial queue.
+    func onItemChangeAfterSync(mutationEvent: MutationEvent) {
+        serialQueue.async {
+            if self.isCancelled || self.isFinished {
+                self.finish()
+                return
+            }
+            guard self.observeQueryStarted else {
+                return
+            }
+            self.startSnapshotStopWatch()
+
+            do {
+                let model = try mutationEvent.decodeModel(as: self.modelType)
+                guard let mutationType = MutationEvent.MutationType(rawValue: mutationEvent.mutationType) else {
+                    return
+                }
+
+                guard let predicate = self.predicate else {
+                    // 1. If there is no predicate, this item should be applied to the snapshot
+                    if self.currentItems.apply(model: model, mutationType: mutationType) {
+                        self.sendSnapshot()
+                    }
+                    return
+                }
+
+                // 2. When there is a predicate, evaluate further
+                let modelMatchesPredicate = predicate.evaluate(target: model)
+
+                guard !modelMatchesPredicate else {
+                    // 3. When the item matchs the predicate, the item should be applied to the snapshot
+                    if self.currentItems.apply(model: model, mutationType: mutationType) {
+                        self.sendSnapshot()
+                    }
+                    return
+                }
+
+                // 4. When the item does not match the predicate, and is an update/delete, then the item needs to be
+                // removed from `currentItems` because it no longer should be in the snapshot. If removing it was
+                // was successfully, then send a new snapshot
+                if mutationType == .update || mutationType == .delete, self.currentItems.remove(model) {
+                    self.sendSnapshot()
+                }
+            } catch {
+                self.log.error(error: error)
+                return
+            }
+
         }
     }
 
     /// Update `curentItems` list with the changed items.
     /// This method is not thread safe unless executed under the serial DispatchQueue `serialQueue`.
-    private func updateCurrentItems(with itemsChanged: [MutationEvent]) {
+    private func apply(itemsChanged: [MutationEvent]) {
         for item in itemsChanged {
             do {
                 let model = try item.decodeModel(as: modelType)
                 guard let mutationType = MutationEvent.MutationType(rawValue: item.mutationType) else {
                     return
                 }
+
                 currentItems.apply(model: model, mutationType: mutationType)
             } catch {
                 log.error(error: error)
                 continue
             }
+        }
+    }
+
+    private func startSnapshotStopWatch() {
+        if log.logLevel >= .debug {
+            stopwatch.start()
+        }
+    }
+
+    private func sendSnapshot() {
+        passthroughPublisher.send(currentSnapshot)
+        if log.logLevel >= .debug {
+            let time = stopwatch.stop()
+            log.debug("Time to generate snapshot: \(time) seconds")
         }
     }
 

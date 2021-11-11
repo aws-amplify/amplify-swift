@@ -376,15 +376,61 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         }
     }
 
+    /// DataStore without sync to cloud enabled.
+    ///
+    /// - Given: DataStore is set up with models, and local store is populated with models
+    /// - When:
+    ///    - ObserveQuery is called, add more models
+    /// - Then:
+    ///    - The first snapshot will have initial models and may have additional models
+    ///    - There may be subsequent snapshots based on how the items are batched
+    ///    - The last snapshot will have a total of initial plus additional models
+    @available(iOS 13.0, *)
+    func testObserveQuery() throws {
+        let cleared = expectation(description: "DataStore cleared")
+        Amplify.DataStore.clear { result in
+            switch result {
+            case .success:
+                cleared.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [cleared], timeout: 2)
+        _ = setUpLocalStore(numberOfPosts: 14)
+        var snapshotCount = 0
+        let allSnapshotsReceived = expectation(description: "query snapshots received")
+
+        let sink = Amplify.DataStore.observeQuery(for: Post.self).sink { completed in
+            switch completed {
+            case .finished:
+                break
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        } receiveValue: { querySnapshot in
+            snapshotCount += 1
+            XCTAssertFalse(querySnapshot.isSynced)
+            if querySnapshot.items.count == 30 {
+                allSnapshotsReceived.fulfill()
+            }
+        }
+        _ = setUpLocalStore(numberOfPosts: 15)
+        wait(for: [allSnapshotsReceived], timeout: 100)
+        XCTAssertTrue(snapshotCount >= 2)
+        sink.cancel()
+    }
+
     func setUpLocalStore(numberOfPosts: Int) -> [Post] {
         var savedPosts = [Post]()
-        for _ in 0 ..< numberOfPosts {
+        for id in 0 ..< numberOfPosts {
             let saveSuccess = expectation(description: "Save post completed")
             let post = Post(title: "title\(Int.random(in: 0 ... 5))",
                             content: "content",
                             createdAt: .now(),
                             rating: Double(Int.random(in: 0 ... 5)))
             savedPosts.append(post)
+            print("\(id) \(post.id)")
             Amplify.DataStore.save(post) { result in
                 switch result {
                 case .success:
@@ -395,6 +441,7 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
             }
             wait(for: [saveSuccess], timeout: 10)
         }
+
         return savedPosts
     }
 
