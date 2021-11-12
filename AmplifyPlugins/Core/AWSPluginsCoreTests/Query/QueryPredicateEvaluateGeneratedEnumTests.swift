@@ -13,7 +13,7 @@ import XCTest
 
 class QueryPredicateEvaluateGeneratedEnumTests: XCTestCase {
 
-    func testEnumNotEqual_True() throws {
+    func testEnumNotEqual_False() throws {
         let predicate = Post.keys.status.ne(PostStatus.published)
         let instance = Post(title: "title",
                             content: "content",
@@ -26,7 +26,7 @@ class QueryPredicateEvaluateGeneratedEnumTests: XCTestCase {
         XCTAssertFalse(evaluation)
     }
 
-    func testEnumNotEqual_False() throws {
+    func testEnumNotEqual_True() throws {
         let predicate = Post.keys.status.ne(PostStatus.published)
         let instance = Post(title: "title",
                             content: "content",
@@ -36,7 +36,7 @@ class QueryPredicateEvaluateGeneratedEnumTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssert(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testEnumEquals_True() throws {
@@ -49,7 +49,7 @@ class QueryPredicateEvaluateGeneratedEnumTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssert(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testEnumEquals_False() throws {
@@ -63,5 +63,61 @@ class QueryPredicateEvaluateGeneratedEnumTests: XCTestCase {
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
         XCTAssertFalse(evaluation)
+    }
+
+    /// Draft is not greater than published, evaluates to false
+    func testEnumToStringGreaterThan_False() throws {
+        let predicate = Post.keys.status.gt(PostStatus.published.rawValue)
+        let instance = Post(title: "title",
+                            content: "content",
+                            createdAt: .now(),
+                            updatedAt: .now(),
+                            status: .draft)
+
+        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+        XCTAssertFalse(evaluation)
+    }
+
+    /// Published is greater than draft, evaluates to true
+    func testEnumToStringGreaterThan_True() throws {
+        let predicate = Post.keys.status.gt(PostStatus.draft.rawValue)
+        let instance = Post(title: "title",
+                            content: "content",
+                            createdAt: .now(),
+                            updatedAt: .now(),
+                            status: .published)
+
+        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+        XCTAssertTrue(evaluation)
+    }
+
+    /// Published is not less than draft, evalutates to false
+    func testEnumToStringLessThan_False() throws {
+        let predicate = Post.keys.status.lt(PostStatus.draft.rawValue)
+        let instance = Post(title: "title",
+                            content: "content",
+                            createdAt: .now(),
+                            updatedAt: .now(),
+                            status: .published)
+
+        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+        XCTAssertFalse(evaluation)
+    }
+
+    /// Draft is less than publshed, evaluates to true
+    func testEnumToStringLessThan_True() throws {
+        let predicate = Post.keys.status.lt(PostStatus.published.rawValue)
+        let instance = Post(title: "title",
+                            content: "content",
+                            createdAt: .now(),
+                            updatedAt: .now(),
+                            status: .draft)
+
+        let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
+
+        XCTAssertTrue(evaluation)
     }
 }
