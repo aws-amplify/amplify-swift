@@ -177,7 +177,12 @@ extension Array where Element == ModelSchema {
             }
         }
 
-        let sortedStartList = sorted { $0.name < $1.name }
+        let sortedStartList = sorted {
+            if $0.priority == $1.priority {
+                return $0.name < $1.name
+            }
+            return $0.priority < $1.priority
+        }
         sortedStartList.forEach(walkAssociatedModels(of:))
         return sortedKeys.map { sortMap[$0]! }
     }

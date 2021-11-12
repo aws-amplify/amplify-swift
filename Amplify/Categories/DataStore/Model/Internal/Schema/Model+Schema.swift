@@ -15,7 +15,7 @@ extension Model {
     ///   breaking change.
     public static var schema: ModelSchema {
         // TODO load schema from JSON when this it not overridden by specific models
-        ModelSchema(name: modelName, fields: [:])
+        ModelSchema(name: modelName, priority: .low, fields: [:])
     }
 
     /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
@@ -50,6 +50,7 @@ extension Model {
                                     attributes: ModelAttribute...,
                                     define: (inout ModelSchemaDefinition) -> Void) -> ModelSchema {
         var definition = ModelSchemaDefinition(name: name ?? modelName,
+                                               priority: .low,
                                                attributes: attributes)
         define(&definition)
         return definition.build()

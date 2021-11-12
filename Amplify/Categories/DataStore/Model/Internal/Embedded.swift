@@ -28,6 +28,7 @@ extension Embeddable {
                                     attributes: ModelAttribute...,
                                     define: (inout ModelSchemaDefinition) -> Void) -> ModelSchema {
         var definition = ModelSchemaDefinition(name: name ?? "",
+                                               priority: .low,
                                                attributes: attributes)
         define(&definition)
         return definition.build()

@@ -134,14 +134,18 @@ public struct ModelSchemaDefinition {
     public var authRules: AuthRules
     internal var fields: ModelFields
     internal var attributes: [ModelAttribute]
+    
+    public var priority: ModelSyncPriority = .low
 
     init(name: String,
          pluralName: String? = nil,
          listPluralName: String? = nil,
          syncPluralName: String? = nil,
+         priority: ModelSyncPriority,
          authRules: AuthRules = [],
          attributes: [ModelAttribute] = []) {
         self.name = name
+        self.priority = priority
         self.pluralName = pluralName
         self.listPluralName = listPluralName
         self.syncPluralName = syncPluralName
@@ -166,6 +170,7 @@ public struct ModelSchemaDefinition {
                            pluralName: pluralName,
                            listPluralName: listPluralName,
                            syncPluralName: syncPluralName,
+                           priority: priority,
                            authRules: authRules,
                            attributes: attributes,
                            fields: fields)

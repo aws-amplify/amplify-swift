@@ -26,6 +26,18 @@ public enum ModelFieldAttribute {
     case primaryKey
 }
 
+/// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+///   by host applications. The behavior of this may change without warning.
+public enum ModelSyncPriority:Int, Comparable {
+    case high = 0
+    case medium = 1
+    case low = 2
+    
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+      return lhs.rawValue < rhs.rawValue
+    }
+}
+
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
 public struct ModelField {
@@ -93,15 +105,19 @@ public struct ModelSchema {
         }
         return primaryKey.value
     }
+    
+    public var priority: ModelSyncPriority = .low
 
     public init(name: String,
                 pluralName: String? = nil,
                 listPluralName: String? = nil,
                 syncPluralName: String? = nil,
+                priority: ModelSyncPriority,
                 authRules: AuthRules = [],
                 attributes: [ModelAttribute] = [],
                 fields: ModelFields = [:]) {
         self.name = name
+        self.priority = priority
         self.pluralName = pluralName
         self.listPluralName = listPluralName
         self.syncPluralName = syncPluralName
