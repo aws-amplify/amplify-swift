@@ -1,5 +1,12 @@
 # Changelog
 ## Unreleased
+## 1.15.6 (2021-11-15)
+
+### Bug Fixes
+
+- **DataStore**: clear ModelSyncMetadata on duplicate ids found (#1515)
+- **DataStore**: Allow different model types with the same ID (#1490)
+
 ## 1.15.5 (2021-11-04)
 
 ### Bug Fixes
