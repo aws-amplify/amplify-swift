@@ -83,6 +83,7 @@
 		214F49CE24898E8500DA616C /* Article+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49CC24898E8500DA616C /* Article+Schema.swift */; };
 		21558E3E237BB4BF0032A5BB /* GraphQLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */; };
 		21558E40237CB8640032A5BB /* GraphQLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21558E3F237CB8640032A5BB /* GraphQLError.swift */; };
+		2163356E273C799900F0DF3F /* QueryPredicateEvaluateGeneratedEnumTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2163356C273C799000F0DF3F /* QueryPredicateEvaluateGeneratedEnumTests.swift */; };
 		21644B7C2588258100C548A5 /* ModelListDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21644B7A2588258100C548A5 /* ModelListDecoder.swift */; };
 		21665EF5259A947100841696 /* ListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21665EF4259A947100841696 /* ListTests.swift */; };
 		21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A3D236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift */; };
@@ -932,6 +933,7 @@
 		21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequest.swift; sourceTree = "<group>"; };
 		21558E3F237CB8640032A5BB /* GraphQLError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLError.swift; sourceTree = "<group>"; };
 		215F4BCAAB89FA54AA121BDE /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
+		2163356C273C799000F0DF3F /* QueryPredicateEvaluateGeneratedEnumTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryPredicateEvaluateGeneratedEnumTests.swift; sourceTree = "<group>"; };
 		21644B7A2588258100C548A5 /* ModelListDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelListDecoder.swift; sourceTree = "<group>"; };
 		21665EF4259A947100841696 /* ListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTests.swift; sourceTree = "<group>"; };
 		21687A3D236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AnalyticsCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
@@ -2458,17 +2460,18 @@
 		6B59798B2564DB210038C3E2 /* Query */ = {
 			isa = PBXGroup;
 			children = (
-				6B5087CE25674F99000AB673 /* QueryPredicateEvaluateTests.swift */,
-				6BAF4F37256893B900A811BA /* QueryPredicateEvaluateGenerator.swift */,
 				6B5979CA2565D18B0038C3E2 /* QueryPredicateEvaluateGeneratedBoolTests.swift */,
-				6B5087BC2565E5AD000AB673 /* QueryPredicateEvaluateGeneratedDoubleTests.swift */,
+				6B5087C6256638EA000AB673 /* QueryPredicateEvaluateGeneratedDateTests.swift */,
+				6B5087CA2566F70F000AB673 /* QueryPredicateEvaluateGeneratedDateTimeTests.swift */,
 				6B5087C025662DC3000AB673 /* QueryPredicateEvaluateGeneratedDoubleIntTests.swift */,
+				6B5087BC2565E5AD000AB673 /* QueryPredicateEvaluateGeneratedDoubleTests.swift */,
+				2163356C273C799000F0DF3F /* QueryPredicateEvaluateGeneratedEnumTests.swift */,
 				6B5087C82566F0FF000AB673 /* QueryPredicateEvaluateGeneratedIntDoubleTests.swift */,
 				6B5087C2256630DB000AB673 /* QueryPredicateEvaluateGeneratedIntTests.swift */,
 				6B5087C4256632D3000AB673 /* QueryPredicateEvaluateGeneratedStringTests.swift */,
-				6B5087C6256638EA000AB673 /* QueryPredicateEvaluateGeneratedDateTests.swift */,
-				6B5087CA2566F70F000AB673 /* QueryPredicateEvaluateGeneratedDateTimeTests.swift */,
 				6B5087CC25673AC8000AB673 /* QueryPredicateEvaluateGeneratedTimeTests.swift */,
+				6BAF4F37256893B900A811BA /* QueryPredicateEvaluateGenerator.swift */,
+				6B5087CE25674F99000AB673 /* QueryPredicateEvaluateTests.swift */,
 			);
 			path = Query;
 			sourceTree = "<group>";
@@ -4887,6 +4890,7 @@
 				21AD425B249C0DBE0016FE95 /* AnyModelTests.swift in Sources */,
 				D83C5160248964780091548E /* ModelGraphQLTests.swift in Sources */,
 				21DDCDF7272C3D7400D9B297 /* ModelSchemaGraphQLTests.swift in Sources */,
+				2163356E273C799900F0DF3F /* QueryPredicateEvaluateGeneratedEnumTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
