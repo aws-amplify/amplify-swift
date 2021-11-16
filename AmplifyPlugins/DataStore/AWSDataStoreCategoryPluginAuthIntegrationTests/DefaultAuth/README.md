@@ -19,21 +19,12 @@ This configuration is used to run the tests in `AWSDataStoreCategoryPluginAuthIn
 ? Do you want to configure advanced settings for the GraphQL API `No, I am done.`
 ? Do you have an annotated GraphQL schema? `No`
 ? Do you want a guided schema creation? `Yes`
-? Do you want to edit the schema now? `No`
+? Do you want to edit the schema now? `Yes`
+? Choose a schema template: [Pick any as we'll be editting the schema afterwards]
+? Do you want to edit the schema now? `Yes`
 ```
 
-The guided schema provided should look like this: 
-```json
-type SocialNote
-    @model
-    @auth(rules: [
-        { allow: owner, ownerField: "owner", operations: [create, update, delete] },
-    ]) {
-    id: ID!
-    content: String!
-    owner: String
-}
-```
+Replace the schema with `singleauth-schema.graphql` and save the file.
 
 3. `amplify update api`
 ? Please select from one of the below mentioned services: `GraphQL`
@@ -46,7 +37,12 @@ type SocialNote
 ```
 
 5. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreCategoryPluginAuthIntegrationTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
-6. Create `AWSDataStoreCategoryPluginAuthIntegrationTests-credentials.json` inside the same folder with a json object containing `user1`, and `password`, used to create the cognito user in the userpool. In step 2, the cognito userpool is configured to allow users to sign up with their email as the username.
+
+```
+cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSDataStoreCategoryPluginAuthIntegrationTests-amplifyconfiguration.json
+```
+
+6. Create `~/.aws-amplify/amplify-ios/testconfiguration/AWSDataStoreCategoryPluginAuthIntegrationTests-credentials.json` inside the same folder with a json object containing `user1`, and `password`, used to create the cognito user in the userpool. In step 2, the cognito userpool is configured to allow users to sign up with their email as the username.
 
 ```json
 {
@@ -84,4 +80,4 @@ aws cognito-idp admin-set-user-password --user-pool-id [POOL_ID] --username [USE
 
 The `[POOL_ID]` can be found in `amplifyconfiguration.json` under `auth.plugin.awsCognitoAuthPlugin.CognitoUserPool.Default.PoolId`
 
-Now you can run the AWSDataStoreCategoryPluginAuthIntegrationTests
+Now you can run the tests under DefaultAuth folder (AWSDataStoreCategoryPluginAuthIntegrationTests, AWSDataStoreAuthImplicitExplicitOwnerTests, etc)
