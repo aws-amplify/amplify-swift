@@ -18,6 +18,7 @@ Our default implementation works with Amazon Web Services (AWS), but AWS Amplify
 - [API (REST)](https://docs.amplify.aws/lib/restapi/getting-started/q/platform/ios) - for adding a REST endpoint to your app.
 - [Authentication](https://docs.amplify.aws/lib/auth/getting-started/q/platform/ios) - for managing your users.
 - [DataStore](https://docs.amplify.aws/lib/datastore/getting-started/q/platform/ios) - for making it easier to program for a distributed data store for offline and online scenarios.
+- [Geo](https://docs.amplify.aws/lib/geo/getting-started/q/platform/ios) - for adding location-based capabilities to your app.
 - [Predictions](https://docs.amplify.aws/lib/predictions/getting-started/q/platform/ios) - to detect text, images, and more!
 - [Storage](https://docs.amplify.aws/lib/storage/getting-started/q/platform/ios) - store complex objects like pictures and videos to the cloud.
 
@@ -42,7 +43,7 @@ if let request = request {
 
 ## Platform Support
 
-Amplify supports iOS 11 and above and iOS 13 for certain categories such as Predictions. There are currently no plans to support Amplify on WatchOS, tvOS, or MacOS.
+Amplify supports iOS 11 and above and iOS 13 for certain categories such as Predictions and Geo. There are currently no plans to support Amplify on WatchOS, tvOS, or MacOS.
 
 ## License
 
@@ -52,7 +53,7 @@ This library is licensed under the Apache 2.0 License.
 
 Amplify requires Xcode 11.4 or higher to build.
 
-| :information_source: For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/lib/q/platform/ios)   |
+| For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/lib/q/platform/ios)   |
 |-------------------------------------------------|
 
 ### Swift Package Manager
