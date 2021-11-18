@@ -1,5 +1,18 @@
 # Changelog
 ## Unreleased
+## 1.16.0 (2021-11-18)
+
+### Features
+
+- **geo**: Add Geo category to README. (#1525)
+- **geo**: Incorporate API review updates into geo category API. (#1491)
+- **geo**: add AWSLocationGeoPlugin (#1453)
+- **geo**: add Geo category (#1417)
+
+### Bug Fixes
+
+- **DataStore**: support predicate evaluation on model with Enum (#1516)
+
 ## 1.15.6 (2021-11-15)
 
 ### Bug Fixes
