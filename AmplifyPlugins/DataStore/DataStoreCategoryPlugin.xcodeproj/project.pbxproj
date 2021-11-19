@@ -608,6 +608,7 @@
 		9C1A53E326E6C24900DFE127 /* Project2Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project2Wrapper.swift; sourceTree = "<group>"; };
 		9C1A53EB26E80AD600DFE127 /* amplifyconfiguration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 		9C1A53F226E80B8100DFE127 /* amplifyconfiguration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
+		9C2D885E2748540C005525C2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9C48111E26FA52D60041AACB /* Model+Compare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Model+Compare.swift"; path = "Sync/Support/Model+Compare.swift"; sourceTree = "<group>"; };
 		9C48112E26FA81D90041AACB /* DataStoreConnectionScenario3FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario3FlutterTests.swift; sourceTree = "<group>"; };
 		9C48113C26FA82D00041AACB /* Comment3Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment3Wrapper.swift; sourceTree = "<group>"; };
@@ -1286,6 +1287,7 @@
 				9C740D5526CEC2A30053636A /* DataStoreFlutterEndToEndTests.swift */,
 				9C1A53F226E80B8100DFE127 /* amplifyconfiguration.json */,
 				9C4811BF26FBEB0D0041AACB /* DataStoreFlutterConsecutiveUpdatesTests.swift */,
+				9C2D885E2748540C005525C2 /* README.md */,
 			);
 			path = AWSDataStoreCategoryPluginFlutterIntegrationTests;
 			sourceTree = "<group>";

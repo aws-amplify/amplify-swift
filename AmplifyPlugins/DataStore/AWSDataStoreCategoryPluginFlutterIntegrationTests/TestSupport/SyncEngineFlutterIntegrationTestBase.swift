@@ -72,7 +72,6 @@ class SyncEngineFlutterIntegrationTestBase: DataStoreFlutterTestBase {
         let syncStarted = expectation(description: "Sync started")
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
 
-
         var token: UnsubscribeToken!
         token = Amplify.Hub.listen(to: .dataStore,
                                    eventName: HubPayload.EventName.DataStore.syncStarted) { _ in

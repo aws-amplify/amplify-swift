@@ -85,11 +85,11 @@ class DataStoreConfigurationTests: XCTestCase {
 
     func testConfigureWithDifferentSchemaClearsDatabase() throws {
 
-        let prevoisVersion = "previousVersion"
+        let previousVersion = "previousVersion"
         let saveSuccess = expectation(description: "Save was successful")
 
         do {
-            let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: prevoisVersion))
+            let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: previousVersion))
             try Amplify.add(plugin: dataStorePlugin)
             try Amplify.configure(AmplifyConfiguration(dataStore: nil))
         } catch {
