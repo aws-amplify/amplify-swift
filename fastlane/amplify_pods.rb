@@ -42,6 +42,7 @@ module AmplifyPods
         "AmplifyPlugins/API/AWSAPICategoryPlugin/Info.plist",
         "AmplifyPlugins/Auth/AWSCognitoAuthPlugin/Resources/Info.plist",
         "AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin/Info.plist",
+        "AmplifyPlugins/Geo/AWSLocationGeoPlugin/Resources/Info.plist",
         "AmplifyPlugins/Storage/AWSS3StoragePlugin/Resources/Info.plist"
       ]
     },
@@ -52,7 +53,7 @@ module AmplifyPods
       no_push: true
     }
   ]
-  @@plugins = ['API', 'Analytics', 'Auth', 'DataStore', 'Predictions', 'Storage']
+  @@plugins = ['API', 'Analytics', 'Auth', 'DataStore', 'Geo', 'Predictions', 'Storage']
   def self.pods
     @@pods
   end
