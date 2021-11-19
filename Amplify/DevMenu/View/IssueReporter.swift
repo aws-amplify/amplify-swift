@@ -107,7 +107,7 @@ struct IssueReporter: View {
             return
         }
 
-        UIApplication.shared.open(urlToOpen)
+        //UIApplication.shared.open(urlToOpen)
     }
 
     /// Copy issue as a markdown string to clipboard
@@ -162,8 +162,8 @@ final class MultilineTextField: UIViewRepresentable {
     }
 
     @objc func dismissKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
-                                        to: nil, from: nil, for: nil)
+        /*UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                        to: nil, from: nil, for: nil)*/
     }
 
     func updateUIView(_ uiView: UITextView, context: Context) {
