@@ -59,7 +59,7 @@ extension AWSAuthServiceBehavior {
     /// - Note: This default implementation was added to prevent a breaking change,
     /// and will be removed when the blocking API versions are removed.
     public func getIdentityId(completion: @escaping (Result<String, AuthError>) -> Void) {
-        DispatchQueue.global(qos: .utility).async { [weak self] in
+        DispatchQueue.global().async { [weak self] in
             guard let identityIdResult = self?.getIdentityId() else { return }
             completion(identityIdResult)
         }
@@ -70,7 +70,7 @@ extension AWSAuthServiceBehavior {
     /// - Note: This default implementation was added to prevent a breaking change,
     ///  and will be removed when the blocking API versions are removed.
     public func getToken(completion: @escaping (Result<String, AuthError>) -> Void) {
-        DispatchQueue.global(qos: .utility).async { [weak self] in
+        DispatchQueue.global().async { [weak self] in
             guard let tokenResult = self?.getToken() else { return }
             completion(tokenResult)
         }
