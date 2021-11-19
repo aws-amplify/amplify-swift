@@ -4,10 +4,7 @@
 
 ### Features
 
-- **geo**: Add Geo category to README. (#1525)
-- **geo**: Incorporate API review updates into geo category API. (#1491)
-- **geo**: add AWSLocationGeoPlugin (#1453)
-- **geo**: add Geo category (#1417)
+- **Geo**: Add Amplify Geo Category. Amplify Geo provides APIs for mobile app development such that you can add maps and search to your app with just a few lines of code.
 
 ### Bug Fixes
 
