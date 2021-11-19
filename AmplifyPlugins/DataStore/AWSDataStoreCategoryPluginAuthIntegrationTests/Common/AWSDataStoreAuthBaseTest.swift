@@ -30,19 +30,15 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
     }
 
     override func tearDownWithError() throws {
-        let stopped = expectation(description: "stopped")
-        Amplify.DataStore.stop { _ in stopped.fulfill() }
-        waitForExpectations(timeout: 1.0)
-
-        requests.forEach { $0.cancel() }
+        clearDataStore()
         requests = []
-
+        signOut()
         Amplify.reset()
     }
 
     // MARK: - Test Helpers
-    func makeExpectations() -> MultiAuthTestExpectations {
-        MultiAuthTestExpectations(
+    func makeExpectations() -> AuthTestExpectations {
+        AuthTestExpectations(
             subscriptionsEstablished: expectation(description: "Subscriptions established"),
             modelsSynced: expectation(description: "Models synced"),
 
@@ -59,16 +55,19 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
     }
 
     func setupCredentials(forAuthStrategy authModeStrategy: AuthModeStrategyType) {
-        let amplifyConfigurationFile: String
+        let configFile: String
         let credentialsFile: String
+        let basePath = "testconfiguration"
 
         switch authModeStrategy {
         case .default:
-            amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginAuthIntegrationTests-amplifyconfiguration"
-            credentialsFile = "testconfiguration/AWSDataStoreCategoryPluginAuthIntegrationTests-credentials"
+            let baseFileName = "AWSDataStoreCategoryPluginAuthIntegrationTests"
+            configFile = "\(basePath)/\(baseFileName)-amplifyconfiguration"
+            credentialsFile = "\(basePath)/\(baseFileName)-credentials"
         case .multiAuth:
-            amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginMultiAuthIntegrationTests-amplifyconfiguration"
-            credentialsFile = "testconfiguration/AWSDataStoreCategoryPluginMultiAuthIntegrationTests-credentials"
+            let baseFileName = "AWSDataStoreCategoryPluginMultiAuthIntegrationTests"
+            configFile = "\(basePath)/\(baseFileName)-amplifyconfiguration"
+            credentialsFile = "\(basePath)/\(baseFileName)-credentials"
         }
 
         do {
@@ -87,7 +86,7 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
 
             authRecorderInterceptor = AuthRecorderInterceptor()
 
-            amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
+            amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: configFile)
 
         } catch {
             XCTFail("Error during setup: \(error)")
@@ -127,7 +126,6 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
             try apiPlugin.add(interceptor: authRecorderInterceptor, for: apiName)
 
             signOut()
-            clearDataStore()
         } catch {
             XCTFail("Error during setup: \(error)")
         }
@@ -295,7 +293,7 @@ extension AWSDataStoreAuthBaseTest {
     ///   - expectation: success XCTestExpectation
     ///   - onFailure: on failure callback
     func assertQuerySuccess<M: Model>(modelType: M.Type,
-                                      _ expectations: MultiAuthTestExpectations,
+                                      _ expectations: AuthTestExpectations,
                                       onFailure: @escaping (_ error: DataStoreError) -> Void) {
         Amplify.DataStore.query(modelType).sink {
             if case let .failure(error) = $0 {
@@ -312,7 +310,7 @@ extension AWSDataStoreAuthBaseTest {
 
     /// Asserts that DataStore is in a ready state and subscriptions are established
     /// - Parameter events: DataStore Hub events
-    func assertDataStoreReady(_ expectations: MultiAuthTestExpectations,
+    func assertDataStoreReady(_ expectations: AuthTestExpectations,
                               expectedModelSynced: Int = 1) {
         var modelSyncedCount = 0
         let dataStoreEvents = HubPayload.EventName.DataStore.self
@@ -325,7 +323,7 @@ extension AWSDataStoreAuthBaseTest {
                     expectations.subscriptionsEstablished.fulfill()
                 }
 
-                // syncQueryReady fulfilled
+                // modelsSynced fulfilled
                 if event.eventName == dataStoreEvents.modelSynced {
                     modelSyncedCount += 1
                     if modelSyncedCount == expectedModelSynced {
@@ -354,7 +352,7 @@ extension AWSDataStoreAuthBaseTest {
     ///   - expectations: test expectatinos
     ///   - onFailure: failure callback
     func assertMutations<M: Model>(model: M,
-                                   _ expectations: MultiAuthTestExpectations,
+                                   _ expectations: AuthTestExpectations,
                                    onFailure: @escaping (_ error: DataStoreError) -> Void) {
         Amplify
             .Hub
@@ -434,7 +432,7 @@ extension AWSDataStoreAuthBaseTest {
 
 // MARK: - Expectations
 extension AWSDataStoreAuthBaseTest {
-    struct MultiAuthTestExpectations {
+    struct AuthTestExpectations {
         var subscriptionsEstablished: XCTestExpectation
         var modelsSynced: XCTestExpectation
         var query: XCTestExpectation

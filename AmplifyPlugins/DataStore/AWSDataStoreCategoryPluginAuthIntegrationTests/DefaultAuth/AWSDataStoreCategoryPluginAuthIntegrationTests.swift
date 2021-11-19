@@ -28,8 +28,8 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
     ///    - The todo now it contains the ownerId
     func testUnauthenticatedSavesToLocalStoreIsReconciledWithCloudStoreAfterAuthentication() throws {
         setup(withModels: ModelsRegistration(), authStrategy: .default)
-
-        let savedLocalTodo = saveModel(content: "owner saved model")
+        let savedLocalTodo = TodoExplicitOwnerField(content: "owner saved model")
+        saveModel(savedLocalTodo)
         let queriedNoteOptional = queryModel(TodoExplicitOwnerField.self, byId: savedLocalTodo.id)
         guard let model = queriedNoteOptional else {
             XCTFail("Failed to query local model")
