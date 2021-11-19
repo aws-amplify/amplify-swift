@@ -232,6 +232,7 @@ deploy_requires: &deploy_requires
     - unit_test_auth
     - unit_test_core_ml
     - unit_test_datastore
+    - unit_test_geo
     - unit_test_predictions
     - unit_test_storage
 
@@ -277,6 +278,13 @@ workflows:
           path: DataStore
           workspace: DataStoreCategoryPlugin
           scheme: AWSDataStoreCategoryPlugin
+          requires:
+            - install_gems
+      - plugin_unit_test:
+          name: unit_test_geo
+          path: Geo
+          workspace: GeoCategoryPlugin
+          scheme: AWSLocationGeoPlugin
           requires:
             - install_gems
       - plugin_unit_test:
