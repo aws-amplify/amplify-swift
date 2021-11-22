@@ -14,6 +14,8 @@ import AWSMobileClient
 @testable import AWSDataStoreCategoryPlugin
 
 class SyncEngineFlutterIntegrationTestBase: DataStoreFlutterTestBase {
+    
+    static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration"
 
     static let networkTimeout = TimeInterval(180)
     let networkTimeout = SyncEngineFlutterIntegrationTestBase.networkTimeout
@@ -47,14 +49,7 @@ class SyncEngineFlutterIntegrationTestBase: DataStoreFlutterTestBase {
     }
 
     func startAmplify(_ completion: BasicClosure? = nil) throws {
-        let bundle = Bundle(for: type(of: self))
-        guard let configFile = bundle.url(forResource: "amplifyconfiguration", withExtension: "json") else {
-            XCTFail("Could not get URL for amplifyconfiguration.json from \(bundle)")
-            return
-        }
-
-        let configData = try Data(contentsOf: configFile)
-        let amplifyConfig = try JSONDecoder().decode(AmplifyConfiguration.self, from: configData)
+        let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
 
         DispatchQueue.global().async {
             do {

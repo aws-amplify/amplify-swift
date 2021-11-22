@@ -363,7 +363,6 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    
     func saveTeam(name: String, plugin: AWSDataStorePlugin) throws -> TeamWrapper? {
         let team = try TeamWrapper(name: name)
         var result: TeamWrapper?
@@ -371,6 +370,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         plugin.save(team.model, modelSchema: Team2.schema) { event in
             switch event {
             case .success(let team):
+                result = TeamWrapper(model: team)
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
