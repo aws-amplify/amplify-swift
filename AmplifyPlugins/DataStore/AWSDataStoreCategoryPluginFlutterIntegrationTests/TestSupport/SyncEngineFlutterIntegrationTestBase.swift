@@ -13,7 +13,7 @@ import AWSMobileClient
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
-class SyncEngineFlutterIntegrationTestBase: DataStoreFlutterTestBase {
+class SyncEngineFlutterIntegrationTestBase: XCTestCase {
     
     static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration"
 

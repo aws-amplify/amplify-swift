@@ -46,7 +46,6 @@ class DataStoreConnectionScenario5FlutterTests: SyncEngineFlutterIntegrationTest
     func testListPostEditorByPost() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-
         guard let post = try savePost(title: "title", plugin: plugin) else {
             XCTFail("Could not create post")
             return

@@ -61,25 +61,20 @@ class DataStoreConnectionScenario6FlutterTests: SyncEngineFlutterIntegrationTest
             }
         }
         wait(for: [getCommentCompleted], timeout: TestCommonConstants.networkTimeout)
-
         guard let fetchedComment = resultComment else {
             XCTFail("Could not get comment")
             return
         }
-
         guard let fetchedPost = fetchedComment.post() else {
             XCTFail("Post is nil, should be loaded")
             return
         }
-
         guard let fetchedBlog = fetchedPost["blog"] else {
             XCTFail("Blog is nil, should be loaded")
             return
         }
-
         XCTAssertEqual(fetchedPost["id"], post.id())
         XCTAssertEqual(fetchedPost["title"], post.title())
-
         XCTAssertEqual(fetchedBlog["id"], blog.id())
         XCTAssertEqual(fetchedBlog["name"], blog.name())
     }

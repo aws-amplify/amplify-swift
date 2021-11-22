@@ -44,7 +44,6 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
             XCTFail("Could not create comment")
             return
         }
-
         let getCommentCompleted = expectation(description: "get comment complete")
         plugin.query(FlutterSerializedModel.self, modelSchema: Comment4.schema, where: Comment4.keys.id.eq(comment.idString())) { result in
             switch result {
@@ -60,28 +59,22 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [getCommentCompleted], timeout: TestCommonConstants.networkTimeout)
     }
-
-    /// TODO: Include testCreateCommentAndGetPostWithComments when nested model lazy loading is implemented
     
     func testUpdateComment() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-
         guard let post =  try savePost(title: "post", plugin: plugin) else {
             XCTFail("Could not create post")
             return
         }
-        
         guard let comment =  try saveComment(content: "content", post: post, plugin: plugin) else {
             XCTFail("Could not create comment")
             return
         }
-        
         guard let anotherPost =  try savePost(title: "anotherPost", plugin: plugin) else {
             XCTFail("Could not create post")
             return
         }
-        
         let updateCommentSuccessful = expectation(description: "update comment")
         try comment.setPost(post: anotherPost.model)
         plugin.save(comment.model, modelSchema: Comment4.schema ) { result in
@@ -109,7 +102,6 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
             XCTFail("Could not create comment")
             return
         }
-
         let deleteCommentSuccessful = expectation(description: "delete comment")
         plugin.delete(comment.model, modelSchema: Comment4.schema) { result in
             switch result {
@@ -139,7 +131,6 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
     func testListCommentsByPostID() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-
         guard let post = try savePost(title: "title", plugin: plugin) else {
             XCTFail("Could not create post")
             return

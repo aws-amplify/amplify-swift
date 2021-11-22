@@ -9,7 +9,6 @@ import AmplifyTestCommon
 
 struct TestFlutterModelRegistration: AmplifyModelRegistration {
     var version: String = "1"
-
     private let decoder: (String, JSONDecoder?) throws -> Model = { (jsonString, decoder) -> Model in
         let resolvedDecoder: JSONDecoder
         if let decoder = decoder {
@@ -29,7 +28,6 @@ struct TestFlutterModelRegistration: AmplifyModelRegistration {
         throw DataStoreError.decodingError(
             "Error in decoding \(jsonString)", "Please create an issue to amplify-flutter repo.")
     }
-
     func registerModels(registry: ModelRegistry.Type) {
         registry.register(modelType: Post.self, modelSchema: Post.schema, jsonDecoder: decoder)
         registry.register(modelType: Comment.self, modelSchema: Comment.schema, jsonDecoder: decoder)

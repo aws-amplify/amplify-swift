@@ -37,7 +37,6 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         let team = try TeamWrapper(name: "name1")
         let project = try Project2Wrapper(name: "project1", team: team.model, teamID: team.idString())
-
         let syncedTeamReceived = expectation(description: "received team from sync event")
         let syncProjectReceived = expectation(description: "received project from sync event")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
@@ -46,8 +45,6 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
-
-
             if let syncedTeam = mutationEvent.modelId as String?,
                syncedTeam == team.idString() {
                 syncedTeamReceived.fulfill()
@@ -60,9 +57,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
             XCTFail("Listener not registered for hub")
             return
         }
-
         let saveTeamCompleted = expectation(description: "save team completed")
-
         plugin.save(team.model, modelSchema: Team1.schema) { result in
             switch result {
             case .success:
@@ -81,9 +76,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-
         wait(for: [saveProjectCompleted, syncProjectReceived], timeout: networkTimeout)
-
         let queriedProjectCompleted = expectation(description: "query project completed")
         plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where: Project2.keys.id.eq(project.model.id)) { result in
             switch result {
@@ -114,7 +107,6 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
-            
             if let syncedUpdatedProject = mutationEvent.modelId as String?,
 
                expectedUpdatedProject.idString() == syncedUpdatedProject {
@@ -125,7 +117,6 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
             XCTFail("Listener not registered for hub")
             return
         }
-
         let saveTeamCompleted = expectation(description: "save team completed")
         plugin.save(team.model, modelSchema: Team2.schema) { result in
             switch result {
@@ -147,7 +138,6 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
             }
         }
         wait(for: [saveAnotherTeamCompleted], timeout: networkTimeout)
-
         let saveProjectCompleted = expectation(description: "save project completed")
         plugin.save(project.model, modelSchema: Project2.schema) { result in
             switch result {
@@ -158,7 +148,6 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
             }
         }
         wait(for: [saveProjectCompleted], timeout: networkTimeout)
-
         let updateProjectCompleted = expectation(description: "save project completed")
         try project.setTeam(name: "project1", team: anotherTeam.model, teamID: anotherTeam.idString())
         plugin.save(project.model, modelSchema: Project2.schema) { result in
@@ -170,7 +159,6 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
             }
         }
         wait(for: [updateProjectCompleted], timeout: networkTimeout)
-
         let queriedProjectCompleted = expectation(description: "query project completed")
         plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where: Project2.keys.id.eq(project.model.id)) { result in
             switch result {
@@ -199,7 +187,6 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
             XCTFail("Could not save team and project")
             return
         }
-
         let deleteProjectSuccessful = expectation(description: "delete project")
         plugin.delete(project.model, modelSchema: Project2.schema) { result in
             switch result {
@@ -211,7 +198,6 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-        
         plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where: Project2.keys.id.eq(project.model.id)) { result in
             switch result {
             case .success(let project2):
@@ -230,7 +216,6 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         let team = try saveTeam(name: "name", plugin: plugin)
         let project = try saveProject(teamID: team!.idString(), team: team!, plugin: plugin)
-
         let deleteProjectSuccessful = expectation(description: "delete project")
         plugin.delete(project!.model, modelSchema: Project2.schema, where: Project2.keys.teamID.eq(team!.idString())) { result in
             switch result {
@@ -262,7 +247,6 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
             XCTFail("Could not save team and project")
             return
         }
-
         let deleteProjectFailed = expectation(description: "delete project")
         plugin.delete(project.model, modelSchema: Project2.schema, where: Project2.keys.id.eq("invalidTeamId")) { result in
             switch result {
@@ -278,7 +262,6 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [deleteProjectFailed], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-
         plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where:  Project2.keys.id.eq(project.model.id)) { result in
             switch result {
             case .success(let project2):
@@ -321,7 +304,6 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
             }
         }
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
-
         let deleteProjectSuccessful2 = expectation(description: "delete project")
         plugin.delete(project.model, modelSchema: Project2.schema, where: Project2.keys.teamID.eq(team.idString())) { result in
             switch result {

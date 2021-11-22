@@ -45,7 +45,6 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("Could not cast payload to mutation event")
                 return
             }
-
             if let syncedPost = mutationEvent.modelId as String?,
                syncedPost == post.idString() {
                 syncedPostReceived.fulfill()
@@ -97,7 +96,6 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
     func testUpdateComment() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        
         guard let post = try savePost(title: "title", plugin: plugin) else {
             XCTFail("Could not create post")
             return
@@ -128,7 +126,6 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
     func testDeleteAndGetComment() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        
         guard let post = try savePost(title: "title", plugin: plugin) else {
             XCTFail("Could not create post")
             return
@@ -166,7 +163,6 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
     func testListCommentsByPostID() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        
         guard let post = try savePost(title: "title", plugin: plugin) else {
             XCTFail("Could not create post")
             return
