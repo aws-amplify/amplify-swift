@@ -629,6 +629,7 @@
 		9CD8425B274C00EB00502D92 /* DataStoreConnectionScenario7FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario7FlutterTests.swift; sourceTree = "<group>"; };
 		9CD84263274C014D00502D92 /* DataStoreFlutterConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreFlutterConfigurationTests.swift; sourceTree = "<group>"; };
 		9CD84271274C0F1300502D92 /* DataStoreFlutterEndToEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreFlutterEndToEndTests.swift; sourceTree = "<group>"; };
+		9CECD26F274C324C0031F775 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9D42A96449A4B73735566C07 /* Pods-AWSDataStoreCategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin/Pods-AWSDataStoreCategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		9F987EC33AAD7C0904A598CA /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B40EF02724BF68C900F2264C /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
@@ -1229,6 +1230,7 @@
 				9C0CA55B274874A4001C70CD /* DataStoreFlutterConsecutiveUpdatesTests.swift */,
 				9CD84263274C014D00502D92 /* DataStoreFlutterConfigurationTests.swift */,
 				9CD84271274C0F1300502D92 /* DataStoreFlutterEndToEndTests.swift */,
+				9CECD26F274C324C0031F775 /* README.md */,
 			);
 			path = AWSDataStoreCategoryPluginFlutterIntegrationTests;
 			sourceTree = "<group>";
