@@ -30,6 +30,10 @@ Successfully added auth resource
 
 4. Copy `amplifyconfiguration.json` as `AWSS3StoragePluginTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
 
+```
+cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSS3StoragePluginTests-amplifyconfiguration.json
+```
+
 5. Create two new users in the userpool. First, retrieve the Cognito User Pool's Pool Id, you can find this in `amplifyconfiguration.json` under
 ```
 "CognitoUserPool": {
@@ -46,7 +50,7 @@ aws cognito-idp admin-set-user-password --user-pool-id [POOL_ID] --username [USE
 ```
 See https://docs.aws.amazon.com/cli/latest/reference/cognito-idp/index.html#cli-aws-cognito-idp for more details using AWS CLI. 
 
-6. Create `AWSS3StoragePluginTests-credentials.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`, add a json object containing `user1`, `user2`, and `password`.
+6. Create `AWSS3StoragePluginTests-credentials.json`, place it inside `~/.aws-amplify/amplify-ios/testconfiguration/`, add a json object containing `user1`, `user2`, and `password`.
 
 ```json
 {
@@ -56,4 +60,7 @@ See https://docs.aws.amazon.com/cli/latest/reference/cognito-idp/index.html#cli-
 }
 ```
 
+```
+cp AWSS3StoragePluginTests-credentials.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSS3StoragePluginTests-credentials.json
+```
 You should now be able to run all of the tests from AWSS3StoragePluginAccessLevelTests 

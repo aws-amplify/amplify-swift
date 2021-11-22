@@ -17,11 +17,11 @@ class AWSS3StoragePluginKeyResolverTests: XCTestCase {
     static let amplifyConfiguration = "AWSS3StoragePluginTests-amplifyconfiguration"
 
     override func setUp() {
+        Amplify.reset()
         do {
-            Amplify.reset()
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSS3StoragePlugin(
-                                configuration: .prefixResolver(MockGuestOverridePrefixResolver())))
+                configuration: .prefixResolver(MockGuestOverridePrefixResolver())))
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
@@ -32,19 +32,28 @@ class AWSS3StoragePluginKeyResolverTests: XCTestCase {
 
     override func tearDown() {
         Amplify.reset()
+        // Unforunately, `sleep` has been added here to get more consistent test runs. The SDK will be used with
+        // same key to create a URLSession. The `sleep` helps avoid the error:
+        // ```
+        // A background URLSession with identifier
+        // com.amazonaws.AWSS3TransferUtility.Default.Identifier.awsS3StoragePlugin already exists!`
+        // ```
+        // TODO: Remove in the future when the plugin no longer depends on the SDK and have addressed this problem.
+        sleep(5)
     }
 
     // This mock resolver shows how to perform an upload to the `.guest` access level with a custom prefix value.
     struct MockGuestOverridePrefixResolver: AWSS3PluginPrefixResolver {
         func resolvePrefix(for accessLevel: StorageAccessLevel,
-                           targetIdentityId: String?) -> Result<String, StorageError> {
+                           targetIdentityId: String?,
+                           completion: @escaping (Result<String, StorageError>) -> Void) {
             switch accessLevel {
             case .guest:
-                return .success("public/customPublic/")
+                completion(.success("public/customPublic/"))
             case .protected:
-                return .failure(.configuration("`.protected` StorageAccessLevel is not used", "", nil))
+                completion(.failure(.configuration("`.protected` StorageAccessLevel is not used", "", nil)))
             case .private:
-                return .failure(.configuration("`.protected` StorageAccessLevel is not used", "", nil))
+                completion(.failure(.configuration("`.protected` StorageAccessLevel is not used", "", nil)))
             }
         }
     }
