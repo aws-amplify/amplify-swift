@@ -527,6 +527,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
 
     func savePostAndWaitForSync(_ post: Post) {
         let receivedPost = expectation(description: "received Post")
+        // Wait for a fulfillment count of 2 (first event due to the locally source mutation saved to the local store
+        // and the second event due to the subscription event received from the remote store)
         receivedPost.expectedFulfillmentCount = 2
         let sink = Amplify.DataStore.publisher(for: Post.self).sink { completion in
             switch completion {
@@ -546,8 +548,10 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     }
 
     func deletePostAndWaitForSync(_ post: Post) {
-        let receivedPost = expectation(description: "received Post")
-        receivedPost.expectedFulfillmentCount = 2
+        let deletedPost = expectation(description: "deleted Post")
+        // Wait for a fulfillment count of 2 (first event due to the locally source mutation deleted from the local
+        // store and the second event due to the subscription event received from the remote store)
+        deletedPost.expectedFulfillmentCount = 2
         let sink = Amplify.DataStore.publisher(for: Post.self).sink { completion in
             switch completion {
             case .finished:
@@ -557,11 +561,11 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             }
         } receiveValue: { mutationEvent in
             if mutationEvent.modelId == post.id {
-                receivedPost.fulfill()
+                deletedPost.fulfill()
             }
         }
         _ = Amplify.DataStore.delete(post)
-        wait(for: [receivedPost], timeout: 100)
+        wait(for: [deletedPost], timeout: 100)
         sink.cancel()
     }
 

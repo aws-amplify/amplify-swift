@@ -32,12 +32,7 @@ class SortedList<ModelType: Model> {
 
         guard let sortInputs = sortInput else {
             // If there is no sort order, check if it exists to replace, otherwise add it to the end
-            if modelIds.contains(model.id), let index = sortedModels.firstIndex(where: { $0.id == model.id }) {
-                sortedModels[index] = model
-            } else {
-                sortedModels.append(model)
-                modelIds.insert(model.id)
-            }
+            appendOrReplace(model)
             return true
         }
 
@@ -80,6 +75,16 @@ class SortedList<ModelType: Model> {
             return true
         } else {
             return false
+        }
+    }
+
+    /// Tries to replace the model with `model` if it already exists, otherwise append it to at the end
+    func appendOrReplace(_ model: ModelType) {
+        if modelIds.contains(model.id), let index = sortedModels.firstIndex(where: { $0.id == model.id }) {
+            sortedModels[index] = model
+        } else {
+            sortedModels.append(model)
+            modelIds.insert(model.id)
         }
     }
 }

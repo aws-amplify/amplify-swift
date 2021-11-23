@@ -270,26 +270,26 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     func subscribeToItemChanges() {
         batchItemsChangedSink = dataStorePublisher.publisher
             .filter { _ in !self.dispatchedModelSyncedEvent.get() }
-            .filter(modelNameFilter(mutationEvent:))
-            .filter(predicateMatchFilter(mutationEvent:))
+            .filter(filterByModelName(mutationEvent:))
+            .filter(filterByPredicateMatch(mutationEvent:))
             .collect(.byTimeOrCount(serialQueue, itemsChangedPeriodicPublishTimeInSeconds, itemsChangedMaxSize))
             .sink(receiveCompletion: onReceiveCompletion(completed:),
                   receiveValue: onItemsChangeDuringSync(mutationEvents:))
 
         itemsChangedSink = dataStorePublisher.publisher
             .filter { _ in self.dispatchedModelSyncedEvent.get() }
-            .filter(modelNameFilter(mutationEvent:))
+            .filter(filterByModelName(mutationEvent:))
             .receive(on: serialQueue)
             .sink(receiveCompletion: onReceiveCompletion(completed:),
                   receiveValue: onItemChangeAfterSync(mutationEvent:))
     }
 
-    func modelNameFilter(mutationEvent: MutationEvent) -> Bool {
+    func filterByModelName(mutationEvent: MutationEvent) -> Bool {
         // Filter in the model when it matches the model name for this operation
         mutationEvent.modelName == modelSchema.name
     }
 
-    func predicateMatchFilter(mutationEvent: MutationEvent) -> Bool {
+    func filterByPredicateMatch(mutationEvent: MutationEvent) -> Bool {
         // Filter in the model when there is no predicate to check against.
         guard let predicate = self.predicate else {
             return true
