@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import CwlPreconditionTesting
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -158,10 +157,9 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             Amplify.DataStore.save(TestModel.make()) { _ in }
         }
-        XCTAssertNotNil(exception)
     }
 
     func testCanUseSpecifiedPlugin() throws {
@@ -237,10 +235,9 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
         try Amplify.add(plugin: plugin)
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             Amplify.DataStore.save(TestModel.make()) { _ in }
         }
-        XCTAssertNotNil(exception)
     }
 
     // MARK: - Test internal config behavior guarantees
@@ -271,9 +268,11 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
 
         try Amplify.DataStore.configure(using: categoryConfig)
 
-        let semaphore = DispatchSemaphore(value: 0)
-        Amplify.DataStore.reset { semaphore.signal() }
-        semaphore.wait()
+        let exp = expectation(description: #function)
+        Amplify.DataStore.reset {
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
 
         XCTAssertNoThrow(try Amplify.DataStore.configure(using: categoryConfig))
     }

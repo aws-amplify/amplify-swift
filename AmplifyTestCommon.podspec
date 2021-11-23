@@ -31,6 +31,13 @@ Pod::Spec.new do |s|
   s.source_files = 'AmplifyTestCommon/**/*.swift'
 
   s.dependency 'Amplify', $AMPLIFY_VERSION
+  s.dependency 'CwlPreconditionTesting', "~> 2.0"
+
+  s.pod_target_xcconfig = { 
+    'ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES' => 'YES',
+    'ENABLE_TESTING_SEARCH_PATHS' => 'YES',
+    'SYSTEM_FRAMEWORK_SEARCH_PATHS' => '$(CORRESPONDING_DEVICE_PLATFORM_DIR)/Developer/Library/Frameworks $(inherited)'
+  }
 
   s.script_phases = [
     { 

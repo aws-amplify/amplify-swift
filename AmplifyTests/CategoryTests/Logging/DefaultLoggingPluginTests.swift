@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import CwlPreconditionTesting
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -108,11 +107,12 @@ class DefaultLoggingPluginTests: XCTestCase {
     ///    - I obtain a category-specific log
     /// - Then:
     ///    - I can send messages to it
-    func testCategorySpecificLog() {
+    func testCategorySpecificLog() throws {
+        #if os(iOS) && arch(x86_64)
         let logger1MessageCorrectlyEvaluated = expectation(description: "logger1 message was correctly evaluated")
         let logger2MessageCorrectlyEvaluated = expectation(description: "logger2 message was correctly evaluated")
 
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             let logger1 = Amplify.Logging.logger(forCategory: "Logger1")
             let logger2 = Amplify.Logging.logger(forCategory: "Logger2")
 
@@ -120,9 +120,11 @@ class DefaultLoggingPluginTests: XCTestCase {
             logger2.error("logger2 \(logger2MessageCorrectlyEvaluated.fulfill())")
         }
 
-        XCTAssertNil(exception)
-
         waitForExpectations(timeout: 0.1)
+
+        #else
+            throw XCTSkip("XCTAssertThrowFatalError is only available on x86_64 architecture.")
+        #endif
     }
 
     /// - Given: default configuration

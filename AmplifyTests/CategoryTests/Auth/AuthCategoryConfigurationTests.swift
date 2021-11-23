@@ -6,10 +6,9 @@
 //
 
 import XCTest
-import CwlPreconditionTesting
 
-@testable import AmplifyTestCommon
 @testable import Amplify
+@testable import AmplifyTestCommon
 
 class AuthCategoryConfigurationTests: XCTestCase {
 
@@ -237,10 +236,9 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             _ = Amplify.Auth.update(oldPassword: "current", to: "new", listener: nil)
         }
-        XCTAssertNotNil(exception)
     }
 
     /// Test if configuration Auth plugin with getPlugin() works
@@ -295,10 +293,9 @@ class AuthCategoryConfigurationTests: XCTestCase {
         try Amplify.add(plugin: plugin)
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             _ = Amplify.Auth.update(oldPassword: "current", to: "new", listener: nil)
         }
-        XCTAssertNotNil(exception)
     }
 
     // MARK: - Test internal config behavior guarantees
@@ -346,16 +343,17 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
         XCTAssertNoThrow(try Amplify.Auth.configure(using: config))
 
-        let semaphore = DispatchSemaphore(value: 0)
-        Amplify.Auth.reset { semaphore.signal() }
-        semaphore.wait()
+        let exp = expectation(description: #function)
+        Amplify.Auth.reset {
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
 
         XCTAssertNoThrow(try Amplify.Auth.configure(using: config))
 
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertNoThrowFatalError {
             _ = Amplify.Auth.update(oldPassword: "current", to: "new", listener: nil)
         }
-        XCTAssertNil(exception)
     }
 
     /// Test that Amplify logs a warning if it encounters a plugin configuration key without a corresponding plugin

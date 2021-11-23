@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import CwlPreconditionTesting
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -140,10 +139,9 @@ class GeoCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             Amplify.Geo.search(for: "test") { _ in }
         }
-        XCTAssertNotNil(exception)
     }
 
     func testCanUseSpecifiedPlugin() throws {
@@ -219,10 +217,9 @@ class GeoCategoryConfigurationTests: XCTestCase {
         try Amplify.add(plugin: plugin)
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             Amplify.Geo.search(for: "test") { _ in }
         }
-        XCTAssertNotNil(exception)
     }
 
     // MARK: - Test internal config behavior guarantees
@@ -253,9 +250,11 @@ class GeoCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Geo.configure(using: categoryConfig)
 
-        let semaphore = DispatchSemaphore(value: 0)
-        Amplify.Geo.reset { semaphore.signal() }
-        semaphore.wait()
+        let exp = expectation(description: #function)
+        Amplify.Geo.reset {
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
 
         XCTAssertNoThrow(try Amplify.Geo.configure(using: categoryConfig))
     }

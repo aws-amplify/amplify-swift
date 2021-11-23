@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import CwlPreconditionTesting
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -21,10 +20,9 @@ class ConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration()
         try Amplify.configure(amplifyConfig)
 
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             _ = Amplify.API.get(request: RESTRequest()) { _ in }
         }
-        XCTAssertNotNil(exception)
     }
 
     // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
@@ -33,10 +31,9 @@ class ConfigurationTests: XCTestCase {
         try Amplify.add(plugin: plugin)
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             _ = Amplify.API.get(request: RESTRequest()) { _ in }
         }
-        XCTAssertNotNil(exception)
     }
 
     func testConfigureDelegatesToPlugins() throws {

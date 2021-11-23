@@ -6,11 +6,9 @@
 //
 
 import XCTest
-import CwlPreconditionTesting
-
-@testable import AmplifyTestCommon
 
 @testable import Amplify
+@testable import AmplifyTestCommon
 
 class StorageCategoryConfigurationTests: XCTestCase {
     override func setUp() {
@@ -177,10 +175,9 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             _ = Amplify.Storage.downloadData(key: "", options: nil, resultListener: nil)
         }
-        XCTAssertNotNil(exception)
     }
 
     func testCanConfigurePluginDirectly() throws {
@@ -219,10 +216,9 @@ class StorageCategoryConfigurationTests: XCTestCase {
         try Amplify.add(plugin: plugin)
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             _ = Amplify.Storage.downloadData(key: "foo", options: nil, resultListener: nil)
         }
-        XCTAssertNotNil(exception)
     }
 
     // MARK: - Test internal config behavior guarantees
@@ -253,9 +249,11 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Storage.configure(using: categoryConfig)
 
-        let semaphore = DispatchSemaphore(value: 0)
-        Amplify.Storage.reset { semaphore.signal() }
-        semaphore.wait()
+        let exp = expectation(description: #function)
+        Amplify.Storage.reset {
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
 
         XCTAssertNoThrow(try Amplify.Storage.configure(using: categoryConfig))
     }
