@@ -51,6 +51,32 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
         }
     }
 
+    func stopDataStore() {
+        let stopped = expectation(description: "DataStore stopped")
+        Amplify.DataStore.stop { result in
+            switch result {
+            case .success:
+                stopped.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [stopped], timeout: 2)
+    }
+
+    func clearDataStore() {
+        let cleared = expectation(description: "DataStore cleared")
+        Amplify.DataStore.clear { result in
+            switch result {
+            case .success:
+                cleared.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [cleared], timeout: 2)
+    }
+
     func startAmplify(_ completion: BasicClosure? = nil) throws {
         let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
 

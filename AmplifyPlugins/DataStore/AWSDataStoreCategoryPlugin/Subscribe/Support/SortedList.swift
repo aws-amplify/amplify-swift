@@ -9,29 +9,39 @@ import Amplify
 
 class SortedList<ModelType: Model> {
     var sortedModels: [ModelType]
+    var modelIds: Set<Model.Identifier>
     private let sortInput: [QuerySortDescriptor]?
     private let modelSchema: ModelSchema
 
     init(sortInput: [QuerySortDescriptor]?, modelSchema: ModelSchema) {
         self.sortedModels = []
+        self.modelIds = []
         self.sortInput = sortInput
         self.modelSchema = modelSchema
     }
 
     /// Apply the incoming `model` to the sorted array based on the mutation type. This logic accounts for duplicate
     /// events since identical events may have different sources (local and remote). When the mutation type is delete,
-    /// remove it if it exists in the array. When create/update, replace it if it exists in the array. If it does not
-    /// exist in the array, then add the model to the array in the correct position.
-    func apply(model: ModelType, mutationType: MutationEvent.MutationType) {
+    /// remove it if it exists in the array. When create/update and it has an sort order, then remove and add it back in the
+    /// correct sort order. if there is no sort order, replace it.
+    /// Return `true` if something occured (added, replaced, deleted), otherwise `false`
+    @discardableResult func apply(model: ModelType, mutationType: MutationEvent.MutationType) -> Bool {
         if mutationType == MutationEvent.MutationType.delete {
-            if let index = sortedModels.firstIndex(where: { $0.id == model.id }) {
-                sortedModels.remove(at: index)
-            }
-        } else if let index = sortedModels.firstIndex(where: { $0.id == model.id }) {
-            sortedModels[index] = model
-        } else {
-            add(model: model)
+            return remove(model)
         }
+
+        guard let sortInputs = sortInput else {
+            // If there is no sort order, check if it exists to replace, otherwise add it to the end
+            appendOrReplace(model)
+            return true
+        }
+
+        // When there is a sort input, always attempt to remove it before adding to the correct position.
+        // If we had simply replaced it, and the update if applied to a field on the model that is the same as the
+        // sort field, then it may no longer be in the correct position.
+        _ = remove(model)
+        add(model: model, sortInputs: sortInputs)
+        return true
     }
 
     /// Add the incoming `model` to the sorted array based on the sort input, or at the end if none is provided.
@@ -39,12 +49,7 @@ class SortedList<ModelType: Model> {
     /// If the models are equal in terms of their sort order (comparator returns `nil`), then move onto the next sort
     /// input. If all sort comparators return `nil`, then the incoming model is equal to the current model on all
     /// sort inputs,  and inserting at the index will maintain the overall sort order.
-    func add(model: ModelType) {
-        guard let sortInputs = sortInput else {
-            sortedModels.append(model)
-            return
-        }
-
+    func add(model: ModelType, sortInputs: [QuerySortDescriptor]) {
         let index = sortedModels.binarySearch { existingModel in
             var sortOrder: Bool?
             var sortIndex: Int = 0
@@ -59,6 +64,28 @@ class SortedList<ModelType: Model> {
         }
 
         sortedModels.insert(model, at: index)
+        modelIds.insert(model.id)
+    }
+
+    /// Tries to remove the `model`, if removed then return `true`, otherwise `false`
+    func remove(_ model: ModelType) -> Bool {
+        if modelIds.contains(model.id), let index = sortedModels.firstIndex(where: { $0.id == model.id }) {
+            sortedModels.remove(at: index)
+            modelIds.remove(model.id)
+            return true
+        } else {
+            return false
+        }
+    }
+
+    /// Tries to replace the model with `model` if it already exists, otherwise append it to at the end
+    func appendOrReplace(_ model: ModelType) {
+        if modelIds.contains(model.id), let index = sortedModels.firstIndex(where: { $0.id == model.id }) {
+            sortedModels[index] = model
+        } else {
+            sortedModels.append(model)
+            modelIds.insert(model.id)
+        }
     }
 }
 
