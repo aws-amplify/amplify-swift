@@ -42,11 +42,14 @@ extension AWSCognitoAuthPlugin {
             let userService = AuthUserServiceAdapter(awsMobileClient: awsMobileClient)
             let deviceService = AuthDeviceServiceAdapter(awsMobileClient: awsMobileClient)
             let hubEventHandler = AuthHubEventHandler()
+            let operationQueue = OperationQueue()
+            operationQueue.maxConcurrentOperationCount = 1
             configure(authenticationProvider: authenticationProvider,
                       authorizationProvider: authorizationProvider,
                       userService: userService,
                       deviceService: deviceService,
-                      hubEventHandler: hubEventHandler)
+                      hubEventHandler: hubEventHandler,
+                      queue: operationQueue)
         } catch let authError as AuthError {
             throw authError
 
