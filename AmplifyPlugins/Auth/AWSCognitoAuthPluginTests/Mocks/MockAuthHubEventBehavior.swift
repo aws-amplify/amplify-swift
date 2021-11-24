@@ -20,6 +20,4 @@ class MockAuthHubEventBehavior: AuthHubEventBehavior {
     func sendSessionExpiredEvent() {
         // Incomplete implementation
     }
-
-
 }

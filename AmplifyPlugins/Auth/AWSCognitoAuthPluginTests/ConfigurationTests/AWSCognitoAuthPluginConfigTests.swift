@@ -146,11 +146,11 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
             "awsCognitoAuthPlugin": [
                 "CredentialsProvider": ["CognitoIdentity": ["Default":
                     ["xx": "xx",
-                     "xx": "us-east-1"]
+                     "xx2": "us-east-1"]
                     ]],
                 "CognitoUserPool": ["Default": [
                     "xx": "xx",
-                    "xx": "us-east-1"
+                    "xx2": "us-east-1"
                     ]]
             ]
         ])
