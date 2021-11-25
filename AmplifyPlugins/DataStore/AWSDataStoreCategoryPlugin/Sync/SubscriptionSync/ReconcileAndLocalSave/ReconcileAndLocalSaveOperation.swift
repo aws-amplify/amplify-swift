@@ -148,8 +148,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                     )
                     .store(in: &cancellables)
             }
-        } catch let dataSotoreError as DataStoreError {
-            stateMachine.notify(action: .errored(dataSotoreError))
+        } catch let dataStoreError as DataStoreError {
+            stateMachine.notify(action: .errored(dataStoreError))
         } catch {
             let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
             stateMachine.notify(action: .errored(dataStoreError))

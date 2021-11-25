@@ -118,7 +118,6 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
     ///   from syncing and DataStore getting to a “ready” state.
     func testOperationsForPrivatePublicComboAPIPost() {
         setup(withModels: PrivatePublicComboModels(), authStrategy: .multiAuth)
-        signOut()
 
         let expectations = makeExpectations()
 

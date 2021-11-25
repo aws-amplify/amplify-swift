@@ -54,7 +54,6 @@ class AWSDataStoreMultiAuthThreeRulesTests: AWSDataStoreAuthBaseTest {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with API Key
     func testOwnerPrivatePublicUserPoolsIAMAPIKeyUnauthenticatedUsers() {
         setup(withModels: OwnerPrivatePublicUserPoolsAPIKeyModels(), authStrategy: .multiAuth)
-        signOut()
 
         let expectations = makeExpectations()
 
@@ -115,7 +114,6 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with API Key
     func testGroupPrivatePublicUserPoolsIAMAPIKeyUnauthenticatedUsers() {
         setup(withModels: GroupPrivatePublicUserPoolsAPIKeyModels(), authStrategy: .multiAuth)
-        signOut()
 
         let expectations = makeExpectations()
 
@@ -173,7 +171,6 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with IAM
     func testPrivatePrivatePublicUserPoolsIAMIAMUnauthenticatedUsers() {
         setup(withModels: PrivatePrivatePublicUserPoolsIAMIAM(), authStrategy: .multiAuth)
-        signOut()
 
         let expectations = makeExpectations()
 
@@ -235,7 +232,6 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
     ///     User Pool auth but succeed with IAM auth for an authenticated user.
     func testPrivatePrivatePublicUserPoolsIAMApiKeyUnauthenticatedUsers() {
         setup(withModels: PrivatePrivatePublicUserPoolsIAMAPiKey(), authStrategy: .multiAuth)
-        signOut()
 
         let expectations = makeExpectations()
 
@@ -297,7 +293,6 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
     ///     public IAM auth but succeed with API key auth.
     func testPrivatePublicPublicUserPoolsAPIKeyIAMUnauthenticatedUsers() {
         setup(withModels: PrivatePublicPublicUserPoolsAPIKeyIAM(), authStrategy: .multiAuth)
-        signOut()
 
         let expectations = makeExpectations()
 

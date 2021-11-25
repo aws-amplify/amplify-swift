@@ -26,13 +26,13 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
 
     override func setUp() {
         continueAfterFailure = false
-        Amplify.Logging.logLevel = .verbose
     }
 
     override func tearDownWithError() throws {
         clearDataStore()
         requests = []
         signOut()
+        authRecorderInterceptor.reset()
         Amplify.reset()
     }
 
@@ -119,6 +119,8 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
             try Amplify.add(plugin: apiPlugin)
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
 
+            Amplify.Logging.logLevel = .verbose
+
             try Amplify.configure(amplifyConfig)
 
             // register auth recorder interceptor
@@ -147,9 +149,11 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
 extension AWSDataStoreAuthBaseTest {
     /// Signin given user
     /// - Parameter user
-    func signIn(user: TestUser?) {
+    func signIn(user: TestUser?,
+                file: StaticString = #file,
+                line: UInt = #line) {
         guard let user = user else {
-            XCTFail("Invalid user")
+            XCTFail("Invalid user", file: file, line: line)
             return
         }
         let signInInvoked = expectation(description: "sign in completed")
@@ -157,22 +161,24 @@ extension AWSDataStoreAuthBaseTest {
                                 password: user.password, options: nil) { result in
             switch result {
             case .failure(let error):
-                XCTFail("Signin failure \(error)")
+                XCTFail("Signin failure \(error)", file: file, line: line)
                 signInInvoked.fulfill() // won't count as pass
             case .success:
                 signInInvoked.fulfill()
             }
         }
         wait(for: [signInInvoked], timeout: TestCommonConstants.networkTimeout)
+        XCTAssert(isSignedIn(), file: file, line: line)
     }
 
     /// Signout current signed-in user
-    func signOut() {
+    func signOut(file: StaticString = #file,
+                 line: UInt = #line) {
         let signoutInvoked = expectation(description: "sign out completed")
         _ = Amplify.Auth.signOut { result in
             switch result {
             case .failure(let error):
-                XCTFail("Signout failure \(error)")
+                XCTFail("Signout failure \(error)", file: file, line: line)
                 signoutInvoked.fulfill() // won't count as pass
 
             case .success:
@@ -180,6 +186,7 @@ extension AWSDataStoreAuthBaseTest {
             }
         }
         wait(for: [signoutInvoked], timeout: TestCommonConstants.networkTimeout)
+        XCTAssert(!isSignedIn(), file: file, line: line)
     }
 
     func isSignedIn() -> Bool {
@@ -349,7 +356,7 @@ extension AWSDataStoreAuthBaseTest {
     /// Assert that a save and a delete mutation complete successfully.
     /// - Parameters:
     ///   - model: model instance saved and then deleted
-    ///   - expectations: test expectatinos
+    ///   - expectations: test expectations
     ///   - onFailure: failure callback
     func assertMutations<M: Model>(model: M,
                                    _ expectations: AuthTestExpectations,
@@ -399,25 +406,6 @@ extension AWSDataStoreAuthBaseTest {
         }.store(in: &requests)
 
         wait(for: [expectations.mutationDelete, expectations.mutationDeleteProcessed], timeout: 60)
-    }
-
-    /// Asserts that save mutation with given `Model` succeeds
-    /// - Parameters:
-    ///   - model: model type
-    ///   - expectation: success XCTestExpectation
-    ///   - onFailure: on failure callback
-    func assertMutations<M: Model>(model: M,
-                                   _ expectation: XCTestExpectation,
-                                   onFailure: @escaping (_ error: DataStoreError) -> Void) {
-        Amplify.DataStore.save(model).sink {
-            if case let .failure(error) = $0 {
-                onFailure(error)
-            }
-        }
-        receiveValue: { posts in
-            XCTAssertNotNil(posts)
-            expectation.fulfill()
-        }.store(in: &requests)
     }
 
     func assertUsedAuthTypes(_ authTypes: [AWSAuthorizationType],
