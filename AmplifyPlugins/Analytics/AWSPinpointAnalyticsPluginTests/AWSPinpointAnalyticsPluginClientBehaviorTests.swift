@@ -291,7 +291,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         let keyTooLong = String(repeating: "1", count: 51)
         let properties = [keyTooLong: "value"]
 
-        try XCTAssertThrowsFatalError {
+        try XCTAssertThrowFatalError {
             self.analyticsPlugin.registerGlobalProperties(properties)
         }
     }

@@ -131,7 +131,7 @@ class AppSyncListDecoderTests: XCTestCase {
     func testInvalidPayloadShouldAssert() throws {
         let json = "json"
         let data = try encoder.encode(json)
-        try XCTAssertThrowsFatalError {
+        try XCTAssertThrowFatalError {
             _ = try? self.decoder.decode(AppSyncListDecoderHarness<Comment4>.self, from: data)
         }
     }

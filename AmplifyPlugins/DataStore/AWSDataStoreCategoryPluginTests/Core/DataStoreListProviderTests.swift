@@ -106,7 +106,7 @@ class DataStoreListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        try XCTAssertThrowsFatalError {
+        try XCTAssertThrowFatalError {
             _ = provider.load()
         }
     }
