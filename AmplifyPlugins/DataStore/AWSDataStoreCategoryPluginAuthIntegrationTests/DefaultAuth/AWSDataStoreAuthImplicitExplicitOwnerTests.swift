@@ -46,6 +46,35 @@ class AWSDataStoreAuthImplicitExplicitOwnerTests: AWSDataStoreAuthBaseTest {
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
+    func testExplicitCustomOwner() {
+        setup(withModels: CustomOwnerExplicitModelRegistration(), authStrategy: .default)
+
+        signIn(user: user1)
+
+        let expectations = makeExpectations()
+
+        assertDataStoreReady(expectations)
+
+        // Query
+        assertQuerySuccess(modelType: TodoCustomOwnerExplicit.self,
+                           expectations) { error in
+            XCTFail("Error query \(error)")
+        }
+
+        let todo = TodoCustomOwnerExplicit(title: "title")
+
+        // Mutations
+        assertMutations(model: todo, expectations) { error in
+            XCTFail("Error mutation \(error)")
+        }
+
+        assertUsedAuthTypes([.amazonCognitoUserPools])
+    }
+
+    /// Given: a user signed in with CognitoUserPools
+    /// When: DataStore query/mutation operations are sent with CognitoUserPools
+    /// Then: DataStore is successfully initialized, query returns a result,
+    ///      mutation is processed for an authenticated users
     func testExplicitOwner() {
         setup(withModels: ExplicitOwnerModelRegistration(), authStrategy: .default)
 
@@ -112,6 +141,13 @@ extension AWSDataStoreAuthImplicitExplicitOwnerTests {
         }
     }
 
+    struct CustomOwnerExplicitModelRegistration: AmplifyModelRegistration {
+        public let version: String = "version"
+        func registerModels(registry: ModelRegistry.Type) {
+            ModelRegistry.register(modelType: TodoCustomOwnerExplicit.self)
+        }
+    }
+
     struct ExplicitOwnerModelRegistration: AmplifyModelRegistration {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
@@ -125,4 +161,5 @@ extension AWSDataStoreAuthImplicitExplicitOwnerTests {
             ModelRegistry.register(modelType: TodoImplicitOwnerField.self)
         }
     }
+
 }
