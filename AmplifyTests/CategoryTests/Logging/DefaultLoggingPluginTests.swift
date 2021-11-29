@@ -108,11 +108,10 @@ class DefaultLoggingPluginTests: XCTestCase {
     /// - Then:
     ///    - I can send messages to it
     func testCategorySpecificLog() throws {
-        #if os(iOS) && arch(x86_64)
         let logger1MessageCorrectlyEvaluated = expectation(description: "logger1 message was correctly evaluated")
         let logger2MessageCorrectlyEvaluated = expectation(description: "logger2 message was correctly evaluated")
 
-        try XCTAssertThrowFatalError {
+        try XCTAssertNoThrowFatalError {
             let logger1 = Amplify.Logging.logger(forCategory: "Logger1")
             let logger2 = Amplify.Logging.logger(forCategory: "Logger2")
 
@@ -121,10 +120,6 @@ class DefaultLoggingPluginTests: XCTestCase {
         }
 
         waitForExpectations(timeout: 0.1)
-
-        #else
-            throw XCTSkip("XCTAssertThrowFatalError is only available on x86_64 architecture.")
-        #endif
     }
 
     /// - Given: default configuration
