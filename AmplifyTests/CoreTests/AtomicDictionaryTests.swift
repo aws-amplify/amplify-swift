@@ -123,7 +123,7 @@ class AtomicDictionaryTests: XCTestCase {
     func testConcurrentModifications() {
         let atomicDictionary = AtomicDictionary<Int, Int>()
 
-        let semaphore = DispatchSemaphore(value: 0)
+        let exp = expectation(description: #function)
 
         DispatchQueue.concurrentPerform(iterations: 6_000) { iteration in
             atomicDictionary.set(value: iteration, forKey: iteration)
@@ -144,10 +144,10 @@ class AtomicDictionaryTests: XCTestCase {
                     atomicDictionary.set(value: newId, forKey: newId)
                 }
             }
-            semaphore.signal()
+            exp.fulfill()
         }
 
-        semaphore.wait()
+        wait(for: [exp], timeout: 5.0)
 
         // Expect each of these elements to be nil
         for key in 0 ..< 2_000 {

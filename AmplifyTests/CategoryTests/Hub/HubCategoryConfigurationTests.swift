@@ -6,8 +6,6 @@
 //
 
 import XCTest
-import Foundation
-import CwlPreconditionTesting
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -141,11 +139,10 @@ class HubCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             let unsubscribeToken = UnsubscribeToken(channel: .storage, id: UUID())
             Amplify.Hub.removeListener(unsubscribeToken)
         }
-        XCTAssertNotNil(exception)
     }
 
     func testCanUseSpecifiedPlugin() throws {
@@ -221,10 +218,9 @@ class HubCategoryConfigurationTests: XCTestCase {
         try Amplify.add(plugin: plugin)
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             Amplify.Hub.dispatch(to: .storage, payload: HubPayload(eventName: "foo"))
         }
-        XCTAssertNotNil(exception)
     }
 
     // MARK: - Test internal config behavior guarantees
@@ -255,9 +251,11 @@ class HubCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Hub.configure(using: categoryConfig)
 
-        let semaphore = DispatchSemaphore(value: 0)
-        Amplify.Hub.reset { semaphore.signal() }
-        semaphore.wait()
+        let exp = expectation(description: #function)
+        Amplify.Hub.reset {
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
 
         XCTAssertNoThrow(try Amplify.Hub.configure(using: categoryConfig))
     }

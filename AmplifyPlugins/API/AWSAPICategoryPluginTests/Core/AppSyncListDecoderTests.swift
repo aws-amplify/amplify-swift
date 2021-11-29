@@ -7,10 +7,9 @@
 
 import XCTest
 import Amplify
-import AmplifyTestCommon
+@testable import AmplifyTestCommon
 @testable import AWSAPICategoryPlugin
 import AWSPluginsCore
-import CwlPreconditionTesting
 
 class AppSyncListDecoderTests: XCTestCase {
 
@@ -132,9 +131,8 @@ class AppSyncListDecoderTests: XCTestCase {
     func testInvalidPayloadShouldAssert() throws {
         let json = "json"
         let data = try encoder.encode(json)
-        let caughtAssert = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             _ = try? self.decoder.decode(AppSyncListDecoderHarness<Comment4>.self, from: data)
         }
-        XCTAssertNotNil(caughtAssert)
     }
 }

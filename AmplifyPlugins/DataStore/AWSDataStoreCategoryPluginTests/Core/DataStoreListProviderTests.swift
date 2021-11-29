@@ -9,7 +9,6 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
-import CwlPreconditionTesting
 
 class DataStoreListProviderTests: XCTestCase {
 
@@ -96,7 +95,7 @@ class DataStoreListProviderTests: XCTestCase {
         }
     }
 
-    func testNotLoadedStateSynchronousLoadAssert() {
+    func testNotLoadedStateSynchronousLoadAssert() throws {
         mockDataStorePlugin.responders[.queryModelsListener] =
             QueryModelsResponder<Comment4> { _, _, _, _ in
                 return .failure(DataStoreError.internalOperation("", "", nil))
@@ -107,10 +106,9 @@ class DataStoreListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let caughtAssert = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             _ = provider.load()
         }
-        XCTAssertNotNil(caughtAssert)
     }
 
     func testLoadedStateLoadWithCompletionSuccess() {

@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import CwlPreconditionTesting
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -108,19 +107,17 @@ class DefaultLoggingPluginTests: XCTestCase {
     ///    - I obtain a category-specific log
     /// - Then:
     ///    - I can send messages to it
-    func testCategorySpecificLog() {
+    func testCategorySpecificLog() throws {
         let logger1MessageCorrectlyEvaluated = expectation(description: "logger1 message was correctly evaluated")
         let logger2MessageCorrectlyEvaluated = expectation(description: "logger2 message was correctly evaluated")
 
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertNoThrowFatalError {
             let logger1 = Amplify.Logging.logger(forCategory: "Logger1")
             let logger2 = Amplify.Logging.logger(forCategory: "Logger2")
 
             logger1.error("logger1 \(logger1MessageCorrectlyEvaluated.fulfill())")
             logger2.error("logger2 \(logger2MessageCorrectlyEvaluated.fulfill())")
         }
-
-        XCTAssertNil(exception)
 
         waitForExpectations(timeout: 0.1)
     }

@@ -8,7 +8,7 @@
 import Amplify
 import AWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
-import CwlPreconditionTesting
+@testable import AmplifyTestCommon
 import XCTest
 
 // swiftlint:disable:next type_name
@@ -287,14 +287,13 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Given: An invalid property key with length greater than 50
     /// When: AnalyticsPlugin.registerGlobalProperties is invoked
     /// Then: PreconditionFailure is thrown for invalid key
-    func testRegisterGlobalPropertiesWithInvalidKeys() {
+    func testRegisterGlobalPropertiesWithInvalidKeys() throws {
         let keyTooLong = String(repeating: "1", count: 51)
         let properties = [keyTooLong: "value"]
 
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             self.analyticsPlugin.registerGlobalProperties(properties)
         }
-        XCTAssertNotNil(exception)
     }
 
     // MARK: UnregisterGlobalProperties API

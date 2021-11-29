@@ -6,10 +6,9 @@
 //
 
 import XCTest
-import CwlPreconditionTesting
 
-@testable import AmplifyTestCommon
 @testable import Amplify
+@testable import AmplifyTestCommon
 
 class PredictionsCategoryConfigurationTests: XCTestCase {
 
@@ -248,14 +247,13 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             _ = Amplify.Predictions.convert(textToTranslate: "Sample",
                                             language: nil,
                                             targetLanguage: nil,
                                             options: nil,
                                             listener: nil)
         }
-        XCTAssertNotNil(exception)
     }
 
     /// Test if configuration Prediction plugin directly works
@@ -310,14 +308,13 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         try Amplify.add(plugin: plugin)
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
-        let exception: BadInstructionException? = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             _ = Amplify.Predictions.convert(textToTranslate: "Sample",
                                             language: nil,
                                             targetLanguage: nil,
                                             options: nil,
                                             listener: nil)
         }
-        XCTAssertNotNil(exception)
     }
 
     // MARK: - Test internal config behavior guarantees
@@ -364,9 +361,11 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Predictions.configure(using: config)
 
-        let semaphore = DispatchSemaphore(value: 0)
-        Amplify.Predictions.reset { semaphore.signal() }
-        semaphore.wait()
+        let exp = expectation(description: #function)
+        Amplify.Predictions.reset {
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
 
         XCTAssertNoThrow(try Amplify.Predictions.configure(using: config))
     }

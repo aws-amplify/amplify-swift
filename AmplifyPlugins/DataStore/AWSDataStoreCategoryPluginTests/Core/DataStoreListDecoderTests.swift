@@ -12,7 +12,6 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
-import CwlPreconditionTesting
 
 class DataStoreListDecoderTests: BaseDataStoreTests {
 
@@ -88,10 +87,9 @@ class DataStoreListDecoderTests: BaseDataStoreTests {
             "associatedField": ["invalidField"]
         ]
         let data = try encoder.encode(json)
-        let caughtAssert = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             _ = try? self.decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
         }
-        XCTAssertNotNil(caughtAssert)
     }
 
     func testDataStoreListDecoderShouldNotDecodeFromMissingAssociationData() throws {
@@ -99,18 +97,16 @@ class DataStoreListDecoderTests: BaseDataStoreTests {
             "associatedId": "123"
         ]
         let data = try encoder.encode(json)
-        let caughtAssert = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             _ = try? self.decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
         }
-        XCTAssertNotNil(caughtAssert)
     }
 
     func testDataStoreListDecoderShouldNotDecodeJSONString() throws {
         let json: JSONValue = "JSONString"
         let data = try encoder.encode(json)
-        let caughtAssert = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             _ = try? self.decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
         }
-        XCTAssertNotNil(caughtAssert)
     }
 }

@@ -7,7 +7,6 @@
 
 import XCTest
 import SQLite
-import CwlPreconditionTesting
 
 @testable import Amplify
 @testable import AmplifyTestCommon

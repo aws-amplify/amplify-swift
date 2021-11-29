@@ -6,8 +6,9 @@
 //
 
 import XCTest
+
 @testable import Amplify
-import CwlPreconditionTesting
+@testable import AmplifyTestCommon
 
 class ListTests: XCTestCase {
 
@@ -329,15 +330,14 @@ class ListTests: XCTestCase {
         XCTAssertEqual(list.count, 2)
     }
 
-    func testSynchronousLoadFailWithAssert() {
+    func testSynchronousLoadFailWithAssert() throws {
         let mockListProvider = MockListProvider<BasicModel>(
             elements: [BasicModel](),
             error: .listOperation("", "", nil)).eraseToAnyModelListProvider()
         let list = List(listProvider: mockListProvider)
-        let caughtAssert = catchBadInstruction {
+        try XCTAssertThrowFatalError {
             list.load()
         }
-        XCTAssertNotNil(caughtAssert)
     }
 
     // MARK: - Helpers
