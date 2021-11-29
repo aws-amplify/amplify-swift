@@ -13,7 +13,7 @@ import XCTest
 
 class AWSDataStoreAuthImplicitExplicitOwnerTests: AWSDataStoreAuthBaseTest {
 
-    /// Given: a user signed in with CognitoUserPools
+    /// Given: a user signed in with CognitoUserPools, a model with a custom implicit owner
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
@@ -42,7 +42,7 @@ class AWSDataStoreAuthImplicitExplicitOwnerTests: AWSDataStoreAuthBaseTest {
         assertUsedAuthTypes([.amazonCognitoUserPools])
     }
 
-    /// Given: a user signed in with CognitoUserPools
+    /// Given: a user signed in with CognitoUserPools, a model with a custom explicit owner
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
@@ -71,7 +71,7 @@ class AWSDataStoreAuthImplicitExplicitOwnerTests: AWSDataStoreAuthBaseTest {
         assertUsedAuthTypes([.amazonCognitoUserPools])
     }
 
-    /// Given: a user signed in with CognitoUserPools
+    /// Given: a user signed in with CognitoUserPools, a model with an explicit owner field
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
@@ -100,7 +100,7 @@ class AWSDataStoreAuthImplicitExplicitOwnerTests: AWSDataStoreAuthBaseTest {
         assertUsedAuthTypes([.amazonCognitoUserPools])
     }
 
-    /// Given: a user signed in with CognitoUserPools
+    /// Given: a user signed in with CognitoUserPools, a model with an implicit owner field
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
