@@ -11,46 +11,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 
-/*
- type ModelWithOwnerField
-   @model
-   @auth(rules: [ { allow: owner, ownerField: "author" } ])
- {
-   id: ID!
-   content: String!
-   author: String
- }
-*/
-public struct ModelWithOwnerField: Model {
-    public let id: String
-    public var content: String
-    public var author: String?
-    public init(id: String = UUID().uuidString,
-                content: String,
-                author: String?) {
-        self.id = id
-        self.content = content
-        self.author = author
-    }
-    public enum CodingKeys: String, ModelKey {
-        case id
-        case content
-        case author
-    }
-    public static let keys = CodingKeys.self
-
-    public static let schema = defineSchema { model in
-        let modelWithOwnerField = ModelWithOwnerField.keys
-        model.authRules = [
-            rule(allow: .owner, ownerField: "author")
-        ]
-        model.fields(
-            .id(),
-            .field(modelWithOwnerField.content, is: .required, ofType: .string),
-            .field(modelWithOwnerField.author, is: .optional, ofType: .string))
-    }
-}
-
+// swiftlint:disable type_body_length
 class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     override func setUp() {
@@ -285,5 +246,129 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
             return
         }
         XCTAssertEqual(variables["author"] as? String, "user1")
+    }
+
+    func testModelWithMultipleAuthRules_Subscription() {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithMultipleAuthRules.schema,
+                                                               operationType: .subscription)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, nil)))
+        let document = documentBuilder.build()
+        let expectedQueryDocument = """
+        subscription OnCreateModelWithMultipleAuthRules($author: String!) {
+          onCreateModelWithMultipleAuthRules(author: $author) {
+            id
+            author
+            content
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "onCreateModelWithMultipleAuthRules")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+    }
+
+    func testModelWithMultipleAuthRulesAPIKey_Subscription() {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithMultipleAuthRules.schema,
+                                                               operationType: .subscription)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, nil),
+                                                         authType: .apiKey))
+        let document = documentBuilder.build()
+        let expectedQueryDocument = """
+        subscription OnCreateModelWithMultipleAuthRules {
+          onCreateModelWithMultipleAuthRules {
+            id
+            author
+            content
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "onCreateModelWithMultipleAuthRules")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+    }
+}
+
+// MARK: Test schemas
+
+/*
+ type ModelWithOwnerField
+   @model
+   @auth(rules: [ { allow: owner, ownerField: "author" } ])
+ {
+   id: ID!
+   content: String!
+   author: String
+ }
+*/
+public struct ModelWithOwnerField: Model {
+    public let id: String
+    public var content: String
+    public var author: String?
+    public init(id: String = UUID().uuidString,
+                content: String,
+                author: String?) {
+        self.id = id
+        self.content = content
+        self.author = author
+    }
+    public enum CodingKeys: String, ModelKey {
+        case id
+        case content
+        case author
+    }
+    public static let keys = CodingKeys.self
+
+    public static let schema = defineSchema { model in
+        let modelWithOwnerField = ModelWithOwnerField.keys
+        model.authRules = [
+            rule(allow: .owner, ownerField: "author")
+        ]
+        model.fields(
+            .id(),
+            .field(modelWithOwnerField.content, is: .required, ofType: .string),
+            .field(modelWithOwnerField.author, is: .optional, ofType: .string))
+    }
+}
+
+/*
+ type ModelWithOwnerField
+   @model
+   @auth(rules: [ { allow: owner, ownerField: "author" } ])
+ {
+   id: ID!
+   content: String!
+   author: String
+ }
+*/
+public struct ModelWithMultipleAuthRules: Model {
+    public let id: String
+    public var content: String
+    public var author: String?
+    public init(id: String = UUID().uuidString,
+                content: String,
+                author: String?) {
+        self.id = id
+        self.content = content
+        self.author = author
+    }
+    public enum CodingKeys: String, ModelKey {
+        case id
+        case content
+        case author
+    }
+    public static let keys = CodingKeys.self
+
+    public static let schema = defineSchema { model in
+        let modelWithMultipleAuthRules = ModelWithMultipleAuthRules.keys
+        model.authRules = [
+            rule(allow: .owner, ownerField: "author", provider: .userPools),
+            rule(allow: .public, provider: .apiKey)
+        ]
+        model.fields(
+            .id(),
+            .field(modelWithMultipleAuthRules.content, is: .required, ofType: .string),
+            .field(modelWithMultipleAuthRules.author, is: .optional, ofType: .string))
     }
 }
