@@ -106,7 +106,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
                     XCTFail("Can't cast payload as mutation event")
                     return
             }
-            if todo.id == localTodo.id {
+            if todo.id == localTodo.id, remoteTodoOptional == nil {
                 remoteTodoOptional = todo
                 syncReceivedInvoked.fulfill()
             }
@@ -126,7 +126,6 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
         }
         wait(for: [localTodoSaveInvoked], timeout: TestCommonConstants.networkTimeout)
         wait(for: [syncReceivedInvoked], timeout: TestCommonConstants.networkTimeout)
-        Amplify.Hub.removeListener(syncReceivedListener)
         guard let remoteTodo = remoteTodoOptional else {
             XCTFail("Should have received a SyncReceived event with the remote note reconciled to local store")
             return
@@ -149,6 +148,15 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
         }
 
         wait(for: [clearCompletedInvoked], timeout: TestCommonConstants.networkTimeout)
+
+        let modelSyncedInvoked = expectation(description: "Model fully synced")
+        Amplify
+            .Hub
+            .publisher(for: .dataStore)
+            .filter { $0.eventName == HubPayload.EventName.DataStore.ready }
+            .sink { _ in
+                modelSyncedInvoked.fulfill()
+            }.store(in: &requests)
 
         let localNoteOptional = queryModel(TodoExplicitOwnerField.self, byId: id)
         XCTAssertNil(localNoteOptional)
@@ -187,14 +195,13 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
         XCTAssertNotEqual(currentUser.username, owner)
         wait(for: [syncStartedInvoked2], timeout: TestCommonConstants.networkTimeout)
         wait(for: [syncReceivedInvoked2], timeout: TestCommonConstants.networkTimeout)
-        Amplify.Hub.removeListener(syncStartedListener2)
-        Amplify.Hub.removeListener(syncReceivedListener2)
         guard let ownerRemoteNote = remoteNoteOptional2, let remoteNoteOwner = ownerRemoteNote.owner else {
             XCTFail("Should have received a SyncReceived event with the remote note reconciled to local store")
             return
         }
 
         XCTAssertEqual(owner, remoteNoteOwner)
+        wait(for: [modelSyncedInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 }
 

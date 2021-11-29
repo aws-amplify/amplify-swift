@@ -32,7 +32,6 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
         clearDataStore()
         requests = []
         signOut()
-        authRecorderInterceptor.reset()
         Amplify.reset()
     }
 
@@ -105,7 +104,8 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
     /// Setup DataStore with given models
     /// - Parameter models: DataStore models
     func setup(withModels models: AmplifyModelRegistration,
-               authStrategy: AuthModeStrategyType) {
+               authStrategy: AuthModeStrategyType,
+               apiPluginFactory: () -> AWSAPIPlugin = { AWSAPIPlugin() }) {
         do {
             setupCredentials(forAuthStrategy: authStrategy)
 
@@ -114,7 +114,7 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models,
                                                        configuration: datastoreConfig))
 
-            let apiPlugin = AWSAPIPlugin()
+            let apiPlugin = apiPluginFactory()
 
             try Amplify.add(plugin: apiPlugin)
             try Amplify.add(plugin: AWSCognitoAuthPlugin())

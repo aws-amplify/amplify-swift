@@ -177,7 +177,9 @@ class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreAuthBaseTest {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent
     ///   with API key for unauthenticated users.
     func testOwnerPublicOIDCAPIUnauthenticatedUsers() {
-        setup(withModels: OwnerPublicOIDCAPIModels(), authStrategy: .multiAuth)
+        setup(withModels: OwnerPublicOIDCAPIModels(),
+              authStrategy: .multiAuth,
+              apiPluginFactory: { AWSAPIPlugin(apiAuthProviderFactory: TestAuthProviderFactory()) })
 
         let expectations = makeExpectations()
 
@@ -586,4 +588,18 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
         assertUsedAuthTypes([.awsIAM])
     }
 
+}
+
+// MARK: - TestAuthProviderFactory
+class TestAuthProviderFactory: APIAuthProviderFactory {
+
+    class TestOIDCAuthProvider: AmplifyOIDCAuthProvider {
+        func getLatestAuthToken() -> Result<AuthToken, Error> {
+            .failure(DataStoreError.unknown("Not implemented", "Expected, we're testing unauthorized users."))
+        }
+    }
+
+    override func oidcAuthProvider() -> AmplifyOIDCAuthProvider? {
+        TestOIDCAuthProvider()
+    }
 }
