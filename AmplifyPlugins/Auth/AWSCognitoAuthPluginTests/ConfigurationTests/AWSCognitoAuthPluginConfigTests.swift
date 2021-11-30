@@ -146,11 +146,11 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
             "awsCognitoAuthPlugin": [
                 "CredentialsProvider": ["CognitoIdentity": ["Default":
                     ["xx": "xx",
-                     "xx": "us-east-1"]
+                     "xx2": "us-east-1"]
                     ]],
                 "CognitoUserPool": ["Default": [
                     "xx": "xx",
-                    "xx": "us-east-1"
+                    "xx2": "us-east-1"
                     ]]
             ]
         ])
@@ -188,4 +188,61 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
         }
     }
 
+    /// Test Auth configuration order of execution of apis
+    ///
+    /// - Given: Given valid config for user pool and identity pool
+    /// - When:
+    ///    - I call different auth apis after configuration
+    /// - Then:
+    ///    - I should get the result back based on the order in which the calls where made.
+    ///
+    func testAPIExecutionOrder() throws {
+        let plugin = AWSCognitoAuthPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let categoryConfig = AuthCategoryConfiguration(plugins: [
+            "awsCognitoAuthPlugin": [
+                "CredentialsProvider": ["CognitoIdentity": ["Default":
+                    ["PoolId": "xx",
+                     "Region": "us-east-1"]
+                    ]],
+                "CognitoUserPool": ["Default": [
+                    "PoolId": "xx",
+                    "Region": "us-east-1",
+                    "AppClientId": "xx",
+                    "AppClientSecret": "xx"]]
+            ]
+        ])
+        let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
+        do {
+            try Amplify.configure(amplifyConfig)
+        } catch {
+            XCTFail("Should not throw error. \(error)")
+        }
+
+        let signUpExpectation = expectation(description: "Should receive a result")
+        _ = plugin.signUp(username: "mockUsername", password: "", options: nil) { _ in
+            signUpExpectation.fulfill()
+        }
+
+        var expectationList = [signUpExpectation]
+
+        for _ in 1 ... 50 {
+            let fetchSessionExpectation = expectation(description: "Should receive a result")
+            _ = plugin.fetchAuthSession(options: nil) { _ in
+                fetchSessionExpectation.fulfill()
+            }
+            expectationList.append(fetchSessionExpectation)
+        }
+
+        let signUpExpectation2 = expectation(description: "Should receive a result")
+        DispatchQueue.global().async {
+
+            _ = plugin.signUp(username: "mockUsername", password: "", options: nil) { _ in
+                signUpExpectation2.fulfill()
+            }
+        }
+        expectationList.append(signUpExpectation2)
+        wait(for: expectationList, timeout: 10, enforceOrder: true)
+    }
 }

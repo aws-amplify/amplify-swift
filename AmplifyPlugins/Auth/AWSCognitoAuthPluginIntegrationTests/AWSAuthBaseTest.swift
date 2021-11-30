@@ -11,14 +11,14 @@ import AWSCognitoAuthPlugin
 @testable import AmplifyTestCommon
 
 class AWSAuthBaseTest: XCTestCase {
-    
+
     let networkTimeout = TimeInterval(10)
     var email = UUID().uuidString + "@" + UUID().uuidString + ".com"
     var email2 = UUID().uuidString + "@" + UUID().uuidString + ".com"
-    
+
     let amplifyConfigurationFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration"
     let credentialsFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-credentials"
-    
+
     func initializeAmplify() {
         do {
             let credentialsConfiguration = try TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
