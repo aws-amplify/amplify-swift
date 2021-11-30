@@ -220,29 +220,29 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
             XCTFail("Should not throw error. \(error)")
         }
 
-        let resultExpectation1 = expectation(description: "Should receive a result")
+        let signUpExpectation = expectation(description: "Should receive a result")
         _ = plugin.signUp(username: "mockUsername", password: "", options: nil) { _ in
-            resultExpectation1.fulfill()
+            signUpExpectation.fulfill()
         }
 
-        var expectationList = [resultExpectation1]
+        var expectationList = [signUpExpectation]
 
         for _ in 1 ... 50 {
-            let resultExpectation2 = expectation(description: "Should receive a result")
+            let fetchSessionExpectation = expectation(description: "Should receive a result")
             _ = plugin.fetchAuthSession(options: nil) { _ in
-                resultExpectation2.fulfill()
+                fetchSessionExpectation.fulfill()
             }
-            expectationList.append(resultExpectation2)
+            expectationList.append(fetchSessionExpectation)
         }
 
-        let resultExpectation3 = expectation(description: "Should receive a result")
+        let signUpExpectation2 = expectation(description: "Should receive a result")
         DispatchQueue.global().async {
 
             _ = plugin.signUp(username: "mockUsername", password: "", options: nil) { _ in
-                resultExpectation3.fulfill()
+                signUpExpectation2.fulfill()
             }
         }
-        expectationList.append(resultExpectation3)
+        expectationList.append(signUpExpectation2)
         wait(for: expectationList, timeout: 10, enforceOrder: true)
     }
 }
