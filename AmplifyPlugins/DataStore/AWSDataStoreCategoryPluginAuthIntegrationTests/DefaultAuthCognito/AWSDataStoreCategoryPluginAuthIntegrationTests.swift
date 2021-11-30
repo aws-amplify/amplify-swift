@@ -27,7 +27,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
     ///    - User signs in, retrieves tods, sync engine is started and reconciles local store with the ownerId
     ///    - The todo now it contains the ownerId
     func testUnauthenticatedSavesToLocalStoreIsReconciledWithCloudStoreAfterAuthentication() throws {
-        setup(withModels: ModelsRegistration(), authStrategy: .default)
+        setup(withModels: ModelsRegistration(), testType: .defaultAuthCognito)
         let savedLocalTodo = TodoExplicitOwnerField(content: "owner saved model")
         saveModel(savedLocalTodo)
         let queriedNoteOptional = queryModel(TodoExplicitOwnerField.self, byId: savedLocalTodo.id)
@@ -90,7 +90,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
     ///    - The other user signs in, sync engine is started and does a full sync
     ///    - The other user is able to retrieve the owner's todo
     func testOwnerCreatedDataCanBeReadByOtherUsersForReadableModel() throws {
-        setup(withModels: ModelsRegistration(), authStrategy: .default)
+        setup(withModels: ModelsRegistration(), testType: .defaultAuthCognito)
 
         signIn(user: user1)
 

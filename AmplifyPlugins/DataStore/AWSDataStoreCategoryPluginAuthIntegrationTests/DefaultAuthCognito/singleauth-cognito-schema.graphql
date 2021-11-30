@@ -17,3 +17,20 @@ type TodoCustomOwnerImplicit @model @auth(rules: [{ allow: owner, ownerField: "d
   id: ID!
   title: String!
 }
+
+type TodoCustomOwnerExplicit @model @auth(rules: [{ allow: owner, ownerField: "dominus" }]) {
+  id: ID!
+  title: String!
+  dominus: String
+}
+
+type TodoCognitoExplicitOperations @model
+  @auth(rules: [{ allow: owner, operations: [create, delete] }]) {
+  id: ID!
+  title: String!
+}
+
+type TodoCognitoPrivate @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  title: String!
+}

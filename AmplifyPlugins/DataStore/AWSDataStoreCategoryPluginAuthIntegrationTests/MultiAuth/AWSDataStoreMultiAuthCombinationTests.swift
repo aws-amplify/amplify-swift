@@ -19,7 +19,8 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
     /// When: DataStore start is called
     /// Then: DataStore is successfully initialized.
     func testDataStoreReadyState() {
-        setup(withModels: PrivatePublicComboModels(), authStrategy: .multiAuth)
+        setup(withModels: PrivatePublicComboModels(),
+              testType: .multiAuth)
         signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -59,7 +60,8 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests f
     ///   or PrivatePublicComboUPPost are sent with IAM auth for authenticated users.
     func testOperationsForPrivatePublicComboUPPost() {
-        setup(withModels: PrivatePublicComboModels(), authStrategy: .multiAuth)
+        setup(withModels: PrivatePublicComboModels(),
+              testType: .multiAuth)
         signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -87,7 +89,8 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests
     ///   for PrivatePublicComboAPIPost are sent with API key auth for authenticated users.
     func testOperationsForPrivatePublicComboAPIPostAuthenticatedUser() {
-        setup(withModels: PrivatePublicComboModels(), authStrategy: .multiAuth)
+        setup(withModels: PrivatePublicComboModels(),
+              testType: .multiAuth)
         signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -117,7 +120,8 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
     ///   PrivatePublicComboUPPost does not sync for unauthenticated users, but it does not block the other models
     ///   from syncing and DataStore getting to a “ready” state.
     func testOperationsForPrivatePublicComboAPIPost() {
-        setup(withModels: PrivatePublicComboModels(), authStrategy: .multiAuth)
+        setup(withModels: PrivatePublicComboModels(),
+              testType: .multiAuth)
 
         let expectations = makeExpectations()
 

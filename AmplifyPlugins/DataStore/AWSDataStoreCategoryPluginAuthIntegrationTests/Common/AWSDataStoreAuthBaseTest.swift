@@ -53,16 +53,22 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
         )
     }
 
-    func setupCredentials(forAuthStrategy authModeStrategy: AuthModeStrategyType) {
+    func setupCredentials(forAuthStrategy testType: DataStoreAuthTestType) {
         let configFile: String
         let credentialsFile: String
         let basePath = "testconfiguration"
 
-        switch authModeStrategy {
-        case .default:
+        switch testType {
+        case .defaultAuthCognito:
             let baseFileName = "AWSDataStoreCategoryPluginAuthIntegrationTests"
             configFile = "\(basePath)/\(baseFileName)-amplifyconfiguration"
             credentialsFile = "\(basePath)/\(baseFileName)-credentials"
+
+        case .defaultAuthIAM:
+            let baseFileName = "AWSDataStoreCategoryPluginAuthIAMIntegrationTests"
+            configFile = "\(basePath)/\(baseFileName)-amplifyconfiguration"
+            credentialsFile = "\(basePath)/\(baseFileName)-credentials"
+
         case .multiAuth:
             let baseFileName = "AWSDataStoreCategoryPluginMultiAuthIntegrationTests"
             configFile = "\(basePath)/\(baseFileName)-amplifyconfiguration"
@@ -104,12 +110,12 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
     /// Setup DataStore with given models
     /// - Parameter models: DataStore models
     func setup(withModels models: AmplifyModelRegistration,
-               authStrategy: AuthModeStrategyType,
+               testType: DataStoreAuthTestType,
                apiPluginFactory: () -> AWSAPIPlugin = { AWSAPIPlugin() }) {
         do {
-            setupCredentials(forAuthStrategy: authStrategy)
+            setupCredentials(forAuthStrategy: testType)
 
-            let datastoreConfig = DataStoreConfiguration.custom(authModeStrategy: authStrategy)
+            let datastoreConfig = DataStoreConfiguration.custom(authModeStrategy: testType.authStrategy)
 
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models,
                                                        configuration: datastoreConfig))
@@ -436,6 +442,23 @@ extension AWSDataStoreAuthBaseTest {
                     mutationSave,
                     mutationSaveProcessed
             ]
+        }
+    }
+
+    enum DataStoreAuthTestType {
+        case defaultAuthCognito
+        case defaultAuthIAM
+        case multiAuth
+
+        var authStrategy: AuthModeStrategyType {
+            switch self {
+            case .defaultAuthCognito:
+                return .default
+            case .defaultAuthIAM:
+                return .default
+            case .multiAuth:
+                return .multiAuth
+            }
         }
     }
 }

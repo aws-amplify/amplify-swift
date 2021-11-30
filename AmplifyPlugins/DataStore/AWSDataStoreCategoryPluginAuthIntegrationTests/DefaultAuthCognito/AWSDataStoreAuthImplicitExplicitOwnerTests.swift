@@ -18,7 +18,8 @@ class AWSDataStoreAuthImplicitExplicitOwnerTests: AWSDataStoreAuthBaseTest {
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
     func testImplicitCustomOwner() {
-        setup(withModels: CustomOwnerImplicitModelRegistration(), authStrategy: .default)
+        setup(withModels: CustomOwnerImplicitModelRegistration(),
+              testType: .defaultAuthCognito)
 
         signIn(user: user1)
 
@@ -47,7 +48,8 @@ class AWSDataStoreAuthImplicitExplicitOwnerTests: AWSDataStoreAuthBaseTest {
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
     func testExplicitCustomOwner() {
-        setup(withModels: CustomOwnerExplicitModelRegistration(), authStrategy: .default)
+        setup(withModels: CustomOwnerExplicitModelRegistration(),
+              testType: .defaultAuthCognito)
 
         signIn(user: user1)
 
@@ -76,7 +78,8 @@ class AWSDataStoreAuthImplicitExplicitOwnerTests: AWSDataStoreAuthBaseTest {
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
     func testExplicitOwner() {
-        setup(withModels: ExplicitOwnerModelRegistration(), authStrategy: .default)
+        setup(withModels: ExplicitOwnerModelRegistration(),
+              testType: .defaultAuthCognito)
 
         signIn(user: user1)
 
@@ -105,7 +108,8 @@ class AWSDataStoreAuthImplicitExplicitOwnerTests: AWSDataStoreAuthBaseTest {
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
     func testImplicitOwner() {
-        setup(withModels: ImplicitOwnerModelRegistration(), authStrategy: .default)
+        setup(withModels: ImplicitOwnerModelRegistration(),
+              testType: .defaultAuthCognito)
 
         signIn(user: user1)
 
