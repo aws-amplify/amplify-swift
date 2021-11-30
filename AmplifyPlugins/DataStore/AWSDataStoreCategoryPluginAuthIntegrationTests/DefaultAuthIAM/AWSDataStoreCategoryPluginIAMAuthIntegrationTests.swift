@@ -13,7 +13,7 @@ import XCTest
 
 class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTest {
 
-    /// Given: a user signed in with IAM, a model an `allow private` rule with IAM as provider
+    /// Given: a user signed in with IAM, a model with `allow private`  auth rule with IAM as provider
     /// When: DataStore query/mutation operations are sent with IAM
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for authenticated users
@@ -43,7 +43,7 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
         assertUsedAuthTypes([.awsIAM])
     }
 
-    /// Given: a guest user,  a model an `allow private` rule with IAM as provider
+    /// Given: a guest user,  a model with `allow public` auth rule with IAM as provider
     /// When: DataStore query/mutation operations are sent with IAM
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for unauthenticated users

@@ -25,7 +25,7 @@ extension TodoIAMPrivate {
     let todoIAMPrivate = TodoIAMPrivate.keys
 
     model.authRules = [
-      rule(allow: .private, operations: [.create, .update, .delete, .read])
+        rule(allow: .private, provider: .iam, operations: [.create, .update, .delete, .read])
     ]
 
     model.pluralName = "TodoIAMPrivates"

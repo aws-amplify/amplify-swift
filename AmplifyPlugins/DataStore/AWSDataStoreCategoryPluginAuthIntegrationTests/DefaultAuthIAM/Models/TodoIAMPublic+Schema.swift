@@ -25,7 +25,7 @@ extension TodoIAMPublic {
     let todoIAMPublic = TodoIAMPublic.keys
 
     model.authRules = [
-      rule(allow: .public, operations: [.create, .update, .delete, .read])
+      rule(allow: .public, provider: .iam, operations: [.create, .update, .delete, .read])
     ]
 
     model.pluralName = "TodoIAMPublics"

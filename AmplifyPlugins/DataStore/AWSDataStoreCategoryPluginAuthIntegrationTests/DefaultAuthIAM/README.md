@@ -64,7 +64,7 @@ Copy the content of the schema from `AWSDataStoreCategoryPluginAuthIntegrationTe
 
 10. `amplify console api`
 Click on Queries tab, and click on Log in. This will prompt you to enter the app client id, username, and temporary password. After logging in successfully, it will ask you to enter a new password. Make sure those are the same as the one specified in the credentials json file from step 5. Do this for both users.
-
+11. Some test cases require IAM to allow guest access. To do so run `amplify update auth` and follow the instructions
 
 ### Creating users through AWS CLI
 
