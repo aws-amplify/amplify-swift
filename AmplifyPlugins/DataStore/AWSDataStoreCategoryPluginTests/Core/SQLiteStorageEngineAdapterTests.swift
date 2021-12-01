@@ -671,3 +671,74 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         XCTAssertFalse(storageAdapter.shouldIgnoreError(error: dataStoreError))
     }
 }
+
+// MARK: Reserved words tests
+extension SQLiteStorageEngineAdapterTests {
+    func testSaveWithReservedWords() {
+        // "Transaction"
+        let transactionSaved = expectation(description: "Transaction model saved")
+        storageAdapter.save(Transaction()) { result in
+            guard case .success = result else {
+                XCTFail("Failed to save transaction")
+                return
+            }
+            transactionSaved.fulfill()
+        }
+
+        // "Group"
+        let groupSaved = expectation(description: "Group model saved")
+        let group = Group()
+        storageAdapter.save(group) { result in
+            guard case .success = result else {
+                XCTFail("Failed to save group")
+                return
+            }
+            groupSaved.fulfill()
+        }
+
+        // "Row"
+        let rowSaved = expectation(description: "Row model saved")
+        storageAdapter.save(Row(group: group)) { result in
+            guard case .success = result else {
+                XCTFail("Failed to save Row")
+                return
+            }
+            rowSaved.fulfill()
+        }
+
+        wait(for: [transactionSaved, groupSaved, rowSaved], timeout: 1)
+    }
+
+    func testQueryWithReservedWords() {
+        // "Transaction"
+        let transactionQueried = expectation(description: "Transaction model queried")
+        storageAdapter.query(Transaction.self) { result in
+            guard case .success = result else {
+                XCTFail("Failed to query Transaction")
+                return
+            }
+            transactionQueried.fulfill()
+        }
+
+        // "Group"
+        let groupQueried = expectation(description: "Group model queried")
+        storageAdapter.query(Group.self) { result in
+            guard case .success = result else {
+                XCTFail("Failed to query Group")
+                return
+            }
+            groupQueried.fulfill()
+        }
+
+        // "Row"
+        let rowQueried = expectation(description: "Row model queried")
+        storageAdapter.query(Row.self) { result in
+            guard case .success = result else {
+                XCTFail("Failed to query Row")
+                return
+            }
+            rowQueried.fulfill()
+        }
+        wait(for: [transactionQueried, groupQueried, rowQueried], timeout: 1)
+    }
+}

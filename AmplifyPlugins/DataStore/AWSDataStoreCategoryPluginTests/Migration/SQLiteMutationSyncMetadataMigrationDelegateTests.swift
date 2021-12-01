@@ -39,7 +39,7 @@ class SQLiteMutationSyncMetadataMigrationDelegateTests: MutationSyncMetadataMigr
         let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
                                                                    modelSchemas: modelSchemas)
         let sql = try delegate.emptyMutationSyncMetadataStore()
-        XCTAssertEqual(sql, "delete from MutationSyncMetadata as root")
+        XCTAssertEqual(sql, "delete from \"MutationSyncMetadata\" as root")
         guard let mutationSyncMetadatas = queryMutationSyncMetadata() else {
             XCTFail("Could not get metadata")
             return
@@ -61,7 +61,7 @@ class SQLiteMutationSyncMetadataMigrationDelegateTests: MutationSyncMetadataMigr
         let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
                                                                    modelSchemas: modelSchemas)
         let sql = try delegate.emptyModelSyncMetadataStore()
-        XCTAssertEqual(sql, "delete from ModelSyncMetadata as root")
+        XCTAssertEqual(sql, "delete from \"ModelSyncMetadata\" as root")
         guard let modelSyncMetadatasDeleted = queryModelSyncMetadata() else {
             XCTFail("Could not get metadata")
             return
