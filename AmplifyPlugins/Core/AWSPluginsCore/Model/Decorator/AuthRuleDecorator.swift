@@ -36,7 +36,8 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
     /// Initializes a new AuthRuleDecorator
     /// - Parameters:
     ///   - authRuleDecoratorInput: decorator input
-    ///   - authType: authentication type, if provided will be used to filter the auth rules based on the provider field
+    ///   - authType: authentication type, if provided will be used to filter the auth rules based on the provider field.
+    ///               Only use when multi-auth is enabled.
     public init(_ authRuleDecoratorInput: AuthRuleDecoratorInput,
                 authType: AWSAuthorizationType? = nil) {
         self.input = authRuleDecoratorInput
