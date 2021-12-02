@@ -333,9 +333,15 @@ public struct ModelWithOwnerField: Model {
 }
 
 /*
+ Example of model with multiple authorization rules,
+ and one of them doesn't require an `owner`.
+ 
  type ModelWithOwnerField
    @model
-   @auth(rules: [ { allow: owner, ownerField: "author" } ])
+   @auth(rules: [
+        { allow: owner, ownerField: "author" },
+        { allow: public, provider: "apiKey" }
+    ])
  {
    id: ID!
    content: String!

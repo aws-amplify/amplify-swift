@@ -187,6 +187,9 @@ private extension AuthRules {
 
         return filter {
             guard let provider = $0.provider else {
+                // if an authType is available but not a provider
+                // means DataStore is using multi-auth with an outdated
+                // version of models (prior to codegen v2.26.0).
                 return true
             }
             return authType == provider.toAWSAuthorizationType()
