@@ -199,6 +199,206 @@ class DataStoreConnectionScenario7V2Tests: SyncEngineIntegrationV2TestBase {
         }
     }
 
+    func testSaveBlog() throws {
+        try startAmplifyAndWaitForSync()
+        guard let blog = saveBlog(name: "name") else {
+            XCTFail("Could not create blog")
+            return
+        }
+        let createReceived = expectation(description: "Create notification received")
+        let hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                guard let mutationEvent = payload.data as? MutationEvent
+                    else {
+                        XCTFail("Can't cast payload as mutation event")
+                        return
+                }
+                guard let blogEvent = try? mutationEvent.decodeModel() as? Blog7V2, blogEvent.id == blog.id else {
+                    return
+                }
+
+                if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                    XCTAssertEqual(blogEvent.name, blog.name)
+                    XCTAssertEqual(mutationEvent.version, 1)
+                    createReceived.fulfill()
+                    return
+                }
+        }
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+        let getBlogCompleted = expectation(description: "get blog complete")
+        Amplify.DataStore.query(Blog7V2.self, byId: blog.id) { result in
+            switch result {
+            case .success(let queriedBlogOptional):
+                guard let queriedBlog = queriedBlogOptional else {
+                    XCTFail("Could not get blog")
+                    return
+                }
+                XCTAssertEqual(queriedBlog.id, blog.id)
+                getBlogCompleted.fulfill()
+            case .failure(let response): XCTFail("Failed with: \(response)")
+            }
+        }
+
+        wait(for: [getBlogCompleted, createReceived], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    func testSaveBlogPost() throws {
+        try startAmplifyAndWaitForSync()
+        guard let blog = saveBlog(name: "name"),
+              let post1 = savePost(title: "title", blog: blog),
+              let post2 = savePost(title: "title", blog: blog) else {
+            XCTFail("Could not create blog, posts")
+            return
+        }
+        let createReceived = expectation(description: "Create notification received")
+        createReceived.expectedFulfillmentCount = 3 // 3 models (1 blog and 2 posts)
+        let hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                guard let mutationEvent = payload.data as? MutationEvent
+                    else {
+                        XCTFail("Can't cast payload as mutation event")
+                        return
+                }
+                if let blogEvent = try? mutationEvent.decodeModel() as? Blog7V2, blogEvent.id == blog.id {
+                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                        XCTAssertEqual(blogEvent.name, blog.name)
+                        XCTAssertEqual(mutationEvent.version, 1)
+                        createReceived.fulfill()
+                        return
+                    }
+                }
+                if let postEvent = try? mutationEvent.decodeModel() as? Post7V2, postEvent.id == post1.id {
+                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                        XCTAssertEqual(postEvent.title, post1.title)
+                        XCTAssertEqual(mutationEvent.version, 1)
+                        createReceived.fulfill()
+                        return
+                    }
+                }
+                if let postEvent = try? mutationEvent.decodeModel() as? Post7V2, postEvent.id == post2.id {
+                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                        XCTAssertEqual(postEvent.title, post2.title)
+                        XCTAssertEqual(mutationEvent.version, 1)
+                        createReceived.fulfill()
+                        return
+                    }
+                }
+        }
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+
+        let getBlogCompleted = expectation(description: "get blog complete")
+        var resultPosts: List<Post7V2>?
+        Amplify.DataStore.query(Blog7V2.self, byId: blog.id) { result in
+            switch result {
+            case .success(let queriedBlogOptional):
+                guard let queriedBlog = queriedBlogOptional else {
+                    XCTFail("Could not get blog")
+                    return
+                }
+                XCTAssertEqual(queriedBlog.id, blog.id)
+                resultPosts = queriedBlog.posts
+                getBlogCompleted.fulfill()
+            case .failure(let response): XCTFail("Failed with: \(response)")
+            }
+        }
+        wait(for: [getBlogCompleted], timeout: TestCommonConstants.networkTimeout)
+        guard let posts = resultPosts else {
+            XCTFail("Could not get posts")
+            return
+        }
+        XCTAssertEqual(posts.count, 2)
+        wait(for: [createReceived], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    func testSaveBlogPostComment() throws {
+        try startAmplifyAndWaitForSync()
+        guard let blog = saveBlog(name: "name"),
+              let post = savePost(title: "title", blog: blog),
+              let comment = saveComment(post: post, content: "content") else {
+            XCTFail("Could not create blog, posts, and comments")
+            return
+        }
+        let createReceived = expectation(description: "Create notification received")
+        createReceived.expectedFulfillmentCount = 3 // 3 models (1 blog and 1 post and 1 comment)
+        let hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                guard let mutationEvent = payload.data as? MutationEvent
+                    else {
+                        XCTFail("Can't cast payload as mutation event")
+                        return
+                }
+                if let blogEvent = try? mutationEvent.decodeModel() as? Blog7V2, blogEvent.id == blog.id {
+                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                        XCTAssertEqual(blogEvent.name, blog.name)
+                        XCTAssertEqual(mutationEvent.version, 1)
+                        createReceived.fulfill()
+                        return
+                    }
+                }
+                if let postEvent = try? mutationEvent.decodeModel() as? Post7V2, postEvent.id == post.id {
+                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                        XCTAssertEqual(postEvent.title, post.title)
+                        XCTAssertEqual(mutationEvent.version, 1)
+                        createReceived.fulfill()
+                        return
+                    }
+                }
+                if let commentEvent = try? mutationEvent.decodeModel() as? Comment7V2, commentEvent.id == comment.id {
+                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                        XCTAssertEqual(commentEvent.content, comment.content)
+                        XCTAssertEqual(mutationEvent.version, 1)
+                        createReceived.fulfill()
+                        return
+                    }
+                }
+        }
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+        let getBlogCompleted = expectation(description: "get blog complete")
+        var resultPosts: List<Post7V2>?
+        Amplify.DataStore.query(Blog7V2.self, byId: blog.id) { result in
+            switch result {
+            case .success(let queriedBlogOptional):
+                guard let queriedBlog = queriedBlogOptional else {
+                    XCTFail("Could not get blog")
+                    return
+                }
+                XCTAssertEqual(queriedBlog.id, blog.id)
+                resultPosts = queriedBlog.posts
+                getBlogCompleted.fulfill()
+            case .failure(let response): XCTFail("Failed with: \(response)")
+            }
+        }
+        wait(for: [getBlogCompleted], timeout: TestCommonConstants.networkTimeout)
+        guard let posts = resultPosts else {
+            XCTFail("Could not get posts")
+            return
+        }
+        XCTAssertEqual(posts.count, 1)
+        guard let fetchedPost = posts.first(where: { (postFetched) -> Bool in
+            postFetched.id == post.id
+        }), let comments = fetchedPost.comments else {
+            XCTFail("Could not set up - failed to get a post and its comments")
+            return
+        }
+        XCTAssertEqual(comments.count, 1)
+        XCTAssertTrue(comments.contains(where: { (commentFetched) -> Bool in
+            commentFetched.id == comment.id
+        }))
+        wait(for: [createReceived], timeout: TestCommonConstants.networkTimeout)
+    }
+
     func saveBlog(id: String = UUID().uuidString, name: String) -> Blog7V2? {
         let blog = Blog7V2(id: id, name: name)
         var result: Blog7V2?
