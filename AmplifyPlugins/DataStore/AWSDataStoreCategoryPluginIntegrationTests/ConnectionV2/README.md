@@ -87,8 +87,37 @@ type Comment3V2 @model @auth(rules: [{allow: public}]) {
   content: String!
 }
 
-# 
+# Belongs to (Implicit, Explicit, bi-directional)
 
+# Belongs-to Implicit
+
+type Project4aV2 @model {
+  id: ID!
+  name: String
+  team: Team4aV2 @hasOne
+}
+
+type Team4aV2 @model {
+  id: ID!
+  name: String!
+  project: Project4aV2 @belongsTo
+}
+
+# Belongs-to Explicit
+type Project4bV2 @model {
+  id: ID!
+  name: String
+  team: Team4bV2 @hasOne
+}
+
+type Team4bV2 @model {
+  id: ID!
+  name: String!
+  projectID: ID
+  project: Project4bV2 @belongsTo(fields: ["projectID"])
+}
+
+#Belongs-to bi-directional
 type Post4V2 @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String!
