@@ -234,6 +234,7 @@ type CustomerOrder @model
    orderId: String!
    email: String!
 }
+
 ```
 3. `amplify push`
 
