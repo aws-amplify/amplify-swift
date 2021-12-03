@@ -30,6 +30,10 @@ struct TestModelV2Registration: AmplifyModelRegistration {
         registry.register(modelType: Blog7V2.self)
         registry.register(modelType: Post7V2.self)
         registry.register(modelType: Comment7V2.self)
+
+        registry.register(modelType: CustomerSecondaryIndexV2.self)
+        registry.register(modelType: TodoWithDefaultValueV2.self)
+        registry.register(modelType: TodoCustomTimestampV2.self)
     }
 
     let version: String = "1"

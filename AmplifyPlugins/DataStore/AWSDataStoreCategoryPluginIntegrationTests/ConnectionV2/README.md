@@ -156,6 +156,29 @@ type Comment7V2 @model {
   post: Post7V2 @belongsTo
 }
 
+
+# Secondary index
+
+type CustomerSecondaryIndexV2 @model {
+  id: ID!
+  name: String!
+  phoneNumber: String
+  accountRepresentativeID: ID! @index(name: "byRepresentative", queryField: "customerByRepresentative")
+}
+
+# Assign Default Values for fields
+
+type TodoWithDefaultValueV2 @model {
+  content: String @default(value: "My new Todo")
+}
+
+# Customize creation and update timestamp
+
+type TodoCustomTimestampV2 @model(timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" }) {
+  content: String
+}
+
+
 ```
 3. `amplify push`
 
