@@ -46,7 +46,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
         }
 
         let getCommentCompleted = expectation(description: "get comment complete")
-        Amplify.DataStore.query(Comment4.self, byId: comment.id) { result in
+        Amplify.DataStore.query(Comment4V2.self, byId: comment.id) { result in
             switch result {
             case .success(let queriedCommentOptional):
                 guard let queriedComment = queriedCommentOptional else {
@@ -77,7 +77,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
 
         let getPostCompleted = expectation(description: "get post complete")
         let getCommentsCompleted = expectation(description: "get comments complete")
-        Amplify.DataStore.query(Post4.self, byId: post.id) { result in
+        Amplify.DataStore.query(Post4V2.self, byId: post.id) { result in
             switch result {
             case .success(let queriedPostOptional):
                 guard let queriedPost = queriedPostOptional else {
@@ -156,7 +156,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
         }
         wait(for: [deleteCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getCommentAfterDeleteCompleted = expectation(description: "get comment after deleted complete")
-        Amplify.DataStore.query(Comment4.self, byId: comment.id) { result in
+        Amplify.DataStore.query(Comment4V2.self, byId: comment.id) { result in
             switch result {
             case .success(let comment):
                 guard comment == nil else {
@@ -182,8 +182,8 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         let listCommentByPostIDCompleted = expectation(description: "list projects completed")
-        let predicate = Comment4.keys.post.eq(post.id)
-        Amplify.DataStore.query(Comment4.self, where: predicate) { result in
+        let predicate = Comment4V2.keys.post.eq(post.id)
+        Amplify.DataStore.query(Comment4V2.self, where: predicate) { result in
             switch result {
             case .success(let comments):
                 XCTAssertEqual(comments.count, 1)
@@ -194,9 +194,9 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
         }
         wait(for: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
-    func savePost(id: String = UUID().uuidString, title: String) -> Post4? {
-        let post = Post4(id: id, title: title)
-        var result: Post4?
+    func savePost(id: String = UUID().uuidString, title: String) -> Post4V2? {
+        let post = Post4V2(id: id, title: title)
+        var result: Post4V2?
         let completeInvoked = expectation(description: "request completed")
         Amplify.DataStore.save(post) { event in
             switch event {
@@ -211,9 +211,9 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
         return result
     }
 
-    func saveComment(id: String = UUID().uuidString, content: String, post: Post4) -> Comment4? {
-        let comment = Comment4(id: id, content: content, post: post)
-        var result: Comment4?
+    func saveComment(id: String = UUID().uuidString, content: String, post: Post4V2) -> Comment4V2? {
+        let comment = Comment4V2(id: id, content: content, post: post)
+        var result: Comment4V2?
         let completeInvoked = expectation(description: "request completed")
         Amplify.DataStore.save(comment) { event in
             switch event {
