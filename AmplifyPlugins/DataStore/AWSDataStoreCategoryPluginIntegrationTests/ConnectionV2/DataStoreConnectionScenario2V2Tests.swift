@@ -36,8 +36,8 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testSaveTeamAndProjectSyncToCloud() throws {
         try startAmplifyAndWaitForSync()
-        let team = Team2(name: "name1")
-        let project = Project2(teamID: team.id, team: team)
+        let team = Team2V2(name: "name1")
+        let project = Project2V2(teamID: team.id, team: team)
         let syncedTeamReceived = expectation(description: "received team from sync event")
         let syncProjectReceived = expectation(description: "received project from sync event")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
@@ -47,10 +47,10 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
                 return
             }
 
-            if let syncedTeam = try? mutationEvent.decodeModel() as? Team2,
+            if let syncedTeam = try? mutationEvent.decodeModel() as? Team2V2,
                syncedTeam == team {
                 syncedTeamReceived.fulfill()
-            } else if let syncedProject = try? mutationEvent.decodeModel() as? Project2,
+            } else if let syncedProject = try? mutationEvent.decodeModel() as? Project2V2,
                       syncedProject == project {
                 syncProjectReceived.fulfill()
             }
@@ -84,7 +84,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [saveProjectCompleted, syncProjectReceived], timeout: networkTimeout)
 
         let queriedProjectCompleted = expectation(description: "query project completed")
-        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+        Amplify.DataStore.query(Project2V2.self, byId: project.id) { result in
             switch result {
             case .success(let queriedProject):
                 XCTAssertEqual(queriedProject, project)
@@ -98,10 +98,10 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testUpdateProjectWithAnotherTeam() throws {
         try startAmplifyAndWaitForSync()
-        let team = Team2(name: "name1")
-        let anotherTeam = Team2(name: "name1")
-        var project = Project2(teamID: team.id, team: team)
-        let expectedUpdatedProject = Project2(id: project.id, name: project.name, teamID: anotherTeam.id)
+        let team = Team2V2(name: "name1")
+        let anotherTeam = Team2V2(name: "name1")
+        var project = Project2V2(teamID: team.id, team: team)
+        let expectedUpdatedProject = Project2V2(id: project.id, name: project.name, teamID: anotherTeam.id)
         let syncUpdatedProjectReceived = expectation(description: "received updated project from sync path")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
@@ -110,7 +110,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
                 return
             }
 
-            if let syncedUpdatedProject = try? mutationEvent.decodeModel() as? Project2,
+            if let syncedUpdatedProject = try? mutationEvent.decodeModel() as? Project2V2,
                expectedUpdatedProject == syncedUpdatedProject {
                 syncUpdatedProjectReceived.fulfill()
             }
@@ -166,7 +166,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [updateProjectCompleted], timeout: networkTimeout)
 
         let queriedProjectCompleted = expectation(description: "query project completed")
-        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+        Amplify.DataStore.query(Project2V2.self, byId: project.id) { result in
             switch result {
             case .success(let queriedProjectOptional):
                 XCTAssertNotNil(queriedProjectOptional)
@@ -202,10 +202,10 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+        Amplify.DataStore.query(Project2V2.self, byId: project.id) { result in
             switch result {
-            case .success(let project2):
-                XCTAssertNil(project2)
+            case .success(let project2V2):
+                XCTAssertNil(project2V2)
                 getProjectAfterDeleteCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
@@ -223,7 +223,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         }
 
         let deleteProjectSuccessful = expectation(description: "delete project")
-        Amplify.DataStore.delete(project, where: Project2.keys.team.eq(team.id)) { result in
+        Amplify.DataStore.delete(project, where: Project2V2.keys.team.eq(team.id)) { result in
             switch result {
             case .success:
                 deleteProjectSuccessful.fulfill()
@@ -233,7 +233,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+        Amplify.DataStore.query(Project2V2.self, byId: project.id) { result in
             switch result {
             case .success(let project2):
                 XCTAssertNil(project2)
@@ -254,7 +254,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         }
 
         let deleteProjectFailed = expectation(description: "delete project")
-        Amplify.DataStore.delete(project, where: Project2.keys.team.eq("invalidTeamId")) { result in
+        Amplify.DataStore.delete(project, where: Project2V2.keys.team.eq("invalidTeamId")) { result in
             switch result {
             case .success:
                 XCTFail("Should have failed")
@@ -268,7 +268,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         }
         wait(for: [deleteProjectFailed], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+        Amplify.DataStore.query(Project2V2.self, byId: project.id) { result in
             switch result {
             case .success(let project2):
                 XCTAssertNotNil(project2)
@@ -298,10 +298,10 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-        Amplify.DataStore.query(Project2.self, byId: project.id) { result in
+        Amplify.DataStore.query(Project2V2.self, byId: project.id) { result in
             switch result {
-            case .success(let project2):
-                XCTAssertNil(project2)
+            case .success(let project2V2):
+                XCTAssertNil(project2V2)
                 getProjectAfterDeleteCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
@@ -310,7 +310,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
 
         let deleteProjectSuccessful2 = expectation(description: "delete project")
-        Amplify.DataStore.delete(project, where: Project2.keys.teamID == team.id) { result in
+        Amplify.DataStore.delete(project, where: Project2V2.keys.teamID == team.id) { result in
             switch result {
             case .success:
                 deleteProjectSuccessful2.fulfill()
@@ -332,8 +332,8 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         let listProjectByTeamIDCompleted = expectation(description: "list projects completed")
-        let predicate = Project2.keys.teamID.eq(team.id)
-        Amplify.DataStore.query(Project2.self, where: predicate) { result in
+        let predicate = Project2V2.keys.teamID.eq(team.id)
+        Amplify.DataStore.query(Project2V2.self, where: predicate) { result in
             switch result {
             case .success(let projects):
                 XCTAssertEqual(projects.count, 1)
@@ -347,9 +347,9 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func saveTeam(id: String = UUID().uuidString, name: String) -> Team2? {
-        let team = Team2(id: id, name: name)
-        var result: Team2?
+    func saveTeam(id: String = UUID().uuidString, name: String) -> Team2V2? {
+        let team = Team2V2(id: id, name: name)
+        var result: Team2V2?
         let completeInvoked = expectation(description: "request completed")
         Amplify.DataStore.save(team) { event in
             switch event {
@@ -367,9 +367,9 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
     func saveProject(id: String = UUID().uuidString,
                      name: String? = nil,
                      teamID: String,
-                     team: Team2? = nil) -> Project2? {
-        let project = Project2(id: id, name: name, teamID: teamID, team: team)
-        var result: Project2?
+                     team: Team2V2? = nil) -> Project2V2? {
+        let project = Project2V2(id: id, name: name, teamID: teamID, team: team)
+        var result: Project2V2?
         let completeInvoked = expectation(description: "request completed")
         Amplify.DataStore.save(project) { event in
             switch event {
