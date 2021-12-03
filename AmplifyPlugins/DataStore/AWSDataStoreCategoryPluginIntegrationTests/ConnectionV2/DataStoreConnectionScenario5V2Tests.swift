@@ -14,27 +14,18 @@ import AWSMobileClient
 @testable import AWSDataStoreCategoryPlugin
 
 /*
- (Many-to-many) Using two one-to-many connections, an @key, and a joining @model, you can create a many-to-many
- connection.
+ Many-to-many
  ```
- type Post5V2 @model @auth(rules: [{allow: public}]) {
+ type Post5V2 @model {
    id: ID!
    title: String!
-   editors: [PostEditor5V2] @hasMany(indexName: "byPost5", fields: ["id"])
+   editors: [User5V2] @manyToMany(relationName: "PostEditor5V2")
  }
 
- type PostEditor5V2 @model @auth(rules: [{allow: public}]) {
-   id: ID!
-   postID: ID! @index(name: "byPost5", sortKeyFields: ["editorID"])
-   editorID: ID! @index(name: "byEditor5", sortKeyFields: ["postID"])
-   post: Post5V2! @belongsTo(fields: ["postID"])
-   editor: User5V2! @belongsTo(fields: ["editorID"])
- }
-
- type User5V2 @model @auth(rules: [{allow: public}]) {
+ type User5V2 @model {
    id: ID!
    username: String!
-   posts: [PostEditor5V2] @hasMany(indexName: "byEditor5", fields: ["id"])
+   posts: [Post5V2] @manyToMany(relationName: "PostEditor5V2")
  }
  ```
  See https://docs.amplify.aws/cli/graphql-transformer/connection for more details.
@@ -52,13 +43,13 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Could not create user")
             return
         }
-        guard savePostEditor(post: post, editor: user) != nil else {
+        guard savePostEditor(post5V2: post, user5V2: user) != nil else {
             XCTFail("Could not create user")
             return
         }
         let listPostEditorByPostIDCompleted = expectation(description: "list postEditor by postID complete")
-        let predicateByPostId = PostEditor5.keys.post.eq(post.id)
-        Amplify.DataStore.query(PostEditor5.self, where: predicateByPostId) { result in
+        let predicateByPostId = PostEditor5V2.keys.post5V2.eq(post.id)
+        Amplify.DataStore.query(PostEditor5V2.self, where: predicateByPostId) { result in
             switch result {
             case .success:
                 listPostEditorByPostIDCompleted.fulfill()
@@ -79,13 +70,13 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Could not create user")
             return
         }
-        guard savePostEditor(post: post, editor: user) != nil else {
+        guard savePostEditor(post5V2: post, user5V2: user) != nil else {
             XCTFail("Could not create user")
             return
         }
         let listPostEditorByEditorIdCompleted = expectation(description: "list postEditor by editorID complete")
-        let predicateByUserId = PostEditor5.keys.editor.eq(user.id)
-        Amplify.DataStore.query(PostEditor5.self, where: predicateByUserId) { result in
+        let predicateByUserId = PostEditor5V2.keys.user5V2.eq(user.id)
+        Amplify.DataStore.query(PostEditor5V2.self, where: predicateByUserId) { result in
             switch result {
             case .success(let projects):
                 listPostEditorByEditorIdCompleted.fulfill()
@@ -106,13 +97,13 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Could not create user")
             return
         }
-        guard let postEditor = savePostEditor(post: post, editor: user) else {
+        guard let postEditor = savePostEditor(post5V2: post, user5V2: user) else {
             XCTFail("Could not create user")
             return
         }
         let getPostCompleted = expectation(description: "get post complete")
         let getPostEditorsCompleted = expectation(description: "get postEditors complete")
-        Amplify.DataStore.query(Post5.self, byId: post.id) { result in
+        Amplify.DataStore.query(Post5V2.self, byId: post.id) { result in
             switch result {
             case .success(let queriedPostOptional):
                 guard let queriedPost = queriedPostOptional else {
@@ -153,13 +144,13 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Could not create user")
             return
         }
-        guard let postEditor = savePostEditor(post: post, editor: user) else {
+        guard let postEditor = savePostEditor(post5V2: post, user5V2: user) else {
             XCTFail("Could not create user")
             return
         }
         let getUserCompleted = expectation(description: "get user complete")
         let getPostsCompleted = expectation(description: "get postEditors complete")
-        Amplify.DataStore.query(User5.self, byId: user.id) { result in
+        Amplify.DataStore.query(User5V2.self, byId: user.id) { result in
             switch result {
             case .success(let queriedUserOptional):
                 guard let queriedUser = queriedUserOptional else {
@@ -188,9 +179,9 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getUserCompleted, getPostsCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func savePost(id: String = UUID().uuidString, title: String) -> Post5? {
-        let post = Post5(id: id, title: title)
-        var result: Post5?
+    func savePost(id: String = UUID().uuidString, title: String) -> Post5V2? {
+        let post = Post5V2(id: id, title: title)
+        var result: Post5V2?
         let completeInvoked = expectation(description: "request completed")
         Amplify.DataStore.save(post) { event in
             switch event {
@@ -205,9 +196,9 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
         return result
     }
 
-    func saveUser(id: String = UUID().uuidString, username: String) -> User5? {
-        let user = User5(id: id, username: username)
-        var result: User5?
+    func saveUser(id: String = UUID().uuidString, username: String) -> User5V2? {
+        let user = User5V2(id: id, username: username)
+        var result: User5V2?
         let completeInvoked = expectation(description: "request completed")
         Amplify.DataStore.save(user) { event in
             switch event {
@@ -222,9 +213,9 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
         return result
     }
 
-    func savePostEditor(id: String = UUID().uuidString, post: Post5, editor: User5) -> PostEditor5? {
-        let postEditor = PostEditor5(id: id, post: post, editor: editor)
-        var result: PostEditor5?
+    func savePostEditor(id: String = UUID().uuidString, post5V2: Post5V2, user5V2: User5V2) -> PostEditor5V2? {
+        let postEditor = PostEditor5V2(id: id, post5V2: post5V2, user5V2: user5V2)
+        var result: PostEditor5V2?
         let completeInvoked = expectation(description: "request completed")
         Amplify.DataStore.save(postEditor) { event in
             switch event {

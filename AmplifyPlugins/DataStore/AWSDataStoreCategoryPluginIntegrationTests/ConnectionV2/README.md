@@ -88,6 +88,7 @@ type Comment3V2 @model @auth(rules: [{allow: public}]) {
 }
 
 # 
+
 type Post4V2 @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String!
@@ -100,6 +101,22 @@ type Comment4V2 @model @auth(rules: [{allow: public}]) {
   content: String!
   post: Post4V2 @belongsTo(fields: ["postID"])
 }
+
+# Many to Many
+
+type Post5V2 @model {
+  id: ID!
+  title: String!
+  editors: [User5V2] @manyToMany(relationName: "PostEditor5V2")
+}
+
+type User5V2 @model {
+  id: ID!
+  username: String!
+  posts: [Post5V2] @manyToMany(relationName: "PostEditor5V2")
+}
+
+# 
 
 type Blog6V2 @model @auth(rules: [{allow: public}]) {
   id: ID!

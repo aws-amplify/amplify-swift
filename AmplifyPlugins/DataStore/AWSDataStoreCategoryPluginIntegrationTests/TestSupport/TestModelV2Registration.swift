@@ -21,16 +21,15 @@ struct TestModelV2Registration: AmplifyModelRegistration {
         registry.register(modelType: Comment3V2.self)
         registry.register(modelType: Post4V2.self)
         registry.register(modelType: Comment4V2.self)
-        // registry.register(modelType: Post5.self)
-        // registry.register(modelType: PostEditor5.self)
-        // registry.register(modelType: User5.self)
+        registry.register(modelType: Post5V2.self)
+        registry.register(modelType: PostEditor5V2.self)
+        registry.register(modelType: User5V2.self)
         registry.register(modelType: Blog6V2.self)
         registry.register(modelType: Post6V2.self)
         registry.register(modelType: Comment6V2.self)
         registry.register(modelType: Blog7V2.self)
         registry.register(modelType: Post7V2.self)
         registry.register(modelType: Comment7V2.self)
-
     }
 
     let version: String = "1"
