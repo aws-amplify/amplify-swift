@@ -35,8 +35,9 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testSaveTeamAndProjectSyncToCloud() throws {
         try startAmplifyAndWaitForSync()
-        let team = Team1(name: "name1")
-        let project = Project1(team: team)
+        let team = Team1V2(name: "name1")
+        // TODO: No need to add the `team` into the project, it is using explicit field `project1V2TeamId`
+        let project = Project1V2(team: team, project1V2TeamId: team.id)
         let syncedTeamReceived = expectation(description: "received team from sync path")
         let syncProjectReceived = expectation(description: "received project from sync path")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
@@ -46,11 +47,12 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
                 return
             }
 
-            if let syncedTeam = try? mutationEvent.decodeModel() as? Team1,
-               syncedTeam == team {
+            if let syncedTeam = try? mutationEvent.decodeModel() as? Team1V2, syncedTeam.id == team.id {
+                XCTAssertTrue(syncedTeam == team)
                 syncedTeamReceived.fulfill()
-            } else if let syncedProject = try? mutationEvent.decodeModel() as? Project1,
-                      syncedProject == project {
+            } else if let syncedProject = try? mutationEvent.decodeModel() as? Project1V2,
+                        syncedProject.id == project.id {
+                XCTAssertTrue(syncedProject == project)
                 syncProjectReceived.fulfill()
             }
         }
@@ -82,7 +84,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [saveProjectCompleted, syncProjectReceived], timeout: networkTimeout)
 
         let queriedProjectCompleted = expectation(description: "query project completed")
-        Amplify.DataStore.query(Project1.self, byId: project.id) { result in
+        Amplify.DataStore.query(Project1V2.self, byId: project.id) { result in
             switch result {
             case .success(let queriedProjectOptional):
                 guard let queriedProject = queriedProjectOptional else {
@@ -90,7 +92,11 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
                     return
                 }
                 XCTAssertEqual(queriedProject.id, project.id)
-                XCTAssertEqual(queriedProject.team, team)
+                // TODO: Should the queried project eager load the has-one team?
+                // XCTAssertEqual(queriedProject.team, team)
+                // or
+                // access explicit field like this?
+                XCTAssertEqual(queriedProject.project1V2TeamId, team.id)
                 queriedProjectCompleted.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
@@ -101,10 +107,14 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testUpdateProjectWithAnotherTeam() throws {
         try startAmplifyAndWaitForSync()
-        let team = Team1(name: "name1")
-        let anotherTeam = Team1(name: "name1")
-        var project = Project1(team: team)
-        let expectedUpdatedProject = Project1(id: project.id, name: project.name, team: anotherTeam)
+        let team = Team1V2(name: "name1")
+        let anotherTeam = Team1V2(name: "name1")
+        // TODO: No need to add the `team` into the project, it is using explicit field `project1V2TeamId`
+        var project = Project1V2(team: team, project1V2TeamId: team.id)
+        let expectedUpdatedProject = Project1V2(id: project.id,
+                                                name: project.name,
+                                                team: anotherTeam, // Not needed
+                                                project1V2TeamId: anotherTeam.id)
         let syncUpdatedProjectReceived = expectation(description: "received updated project from sync path")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
@@ -113,8 +123,9 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
                 return
             }
 
-            if let syncedUpdatedProject = try? mutationEvent.decodeModel() as? Project1,
-               expectedUpdatedProject == syncedUpdatedProject {
+            if let syncedUpdatedProject = try? mutationEvent.decodeModel() as? Project1V2,
+                syncedUpdatedProject.id == expectedUpdatedProject.id,
+               syncedUpdatedProject.project1V2TeamId == expectedUpdatedProject.project1V2TeamId {
                 syncUpdatedProjectReceived.fulfill()
             }
         }
@@ -156,7 +167,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [saveProjectCompleted], timeout: networkTimeout)
 
         let updateProjectCompleted = expectation(description: "save project completed")
-        project.team = anotherTeam
+        project.project1V2TeamId = anotherTeam.id
         Amplify.DataStore.save(project) { result in
             switch result {
             case .success:
@@ -168,13 +179,17 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [updateProjectCompleted], timeout: networkTimeout)
 
         let queriedProjectCompleted = expectation(description: "query project completed")
-        Amplify.DataStore.query(Project1.self, byId: project.id) { result in
+        Amplify.DataStore.query(Project1V2.self, byId: project.id) { result in
             switch result {
             case .success(let queriedProjectOptional):
                 XCTAssertNotNil(queriedProjectOptional)
                 if let queriedProject = queriedProjectOptional {
                     XCTAssertEqual(queriedProject, project)
-                    XCTAssertEqual(queriedProject.team, anotherTeam)
+                    // TODO: Should the queried project eager load the has-one team?
+                    // XCTAssertEqual(queriedProject.team, anotherTeam)
+                    // or
+                    // access explicit field like this?
+                    XCTAssertEqual(queriedProject.project1V2TeamId, anotherTeam.id)
                 }
 
                 queriedProjectCompleted.fulfill()
@@ -188,7 +203,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
     func testDeleteAndGetProject() throws {
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
-              let project = saveProject(teamID: team.id, team: team) else {
+              let project = saveProject(project1V2TeamId: team.id) else {
             XCTFail("Could not save team and project")
             return
         }
@@ -204,7 +219,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-        Amplify.DataStore.query(Project1.self, byId: project.id) { result in
+        Amplify.DataStore.query(Project1V2.self, byId: project.id) { result in
             switch result {
             case .success(let project):
                 XCTAssertNil(project)
@@ -219,13 +234,13 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
     func testDeleteWithValidCondition() throws {
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
-              let project = saveProject(teamID: team.id, team: team) else {
+              let project = saveProject(project1V2TeamId: team.id) else {
             XCTFail("Could not save team and project")
             return
         }
 
         let deleteProjectSuccessful = expectation(description: "delete project")
-        Amplify.DataStore.delete(project, where: Project1.keys.team.eq(team.id)) { result in
+        Amplify.DataStore.delete(project, where: Project1V2.keys.team.eq(team.id)) { result in
             switch result {
             case .success:
                 deleteProjectSuccessful.fulfill()
@@ -235,7 +250,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-        Amplify.DataStore.query(Project1.self, byId: project.id) { result in
+        Amplify.DataStore.query(Project1V2.self, byId: project.id) { result in
             switch result {
             case .success(let project):
                 XCTAssertNil(project)
@@ -250,13 +265,13 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
     func testDeleteWithInvalidCondition() throws {
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
-              let project = saveProject(teamID: team.id, team: team) else {
+              let project = saveProject(project1V2TeamId: team.id) else {
             XCTFail("Could not save team and project")
             return
         }
 
         let deleteProjectFailed = expectation(description: "delete project")
-        Amplify.DataStore.delete(project, where: Project1.keys.team.eq("invalidTeamId")) { result in
+        Amplify.DataStore.delete(project, where: Project1V2.keys.team.eq("invalidTeamId")) { result in
             switch result {
             case .success:
                 XCTFail("Should have failed")
@@ -270,7 +285,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         }
         wait(for: [deleteProjectFailed], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-        Amplify.DataStore.query(Project1.self, byId: project.id) { result in
+        Amplify.DataStore.query(Project1V2.self, byId: project.id) { result in
             switch result {
             case .success(let project):
                 XCTAssertNotNil(project)
@@ -288,18 +303,18 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Could not save team")
             return
         }
-        guard let project = saveProject(teamID: team.id, team: team) else {
+        guard let project = saveProject(project1V2TeamId: team.id) else {
             XCTFail("Could not save project")
             return
         }
         let listProjectByTeamIDCompleted = expectation(description: "list projects completed")
-        let predicate = Project1.keys.team.eq(team.id)
-        Amplify.DataStore.query(Project1.self, where: predicate) { result in
+        let predicate = Project1V2.keys.team.eq(team.id)
+        Amplify.DataStore.query(Project1V2.self, where: predicate) { result in
             switch result {
             case .success(let projects):
                 XCTAssertEqual(projects.count, 1)
                 XCTAssertEqual(projects[0].id, project.id)
-                XCTAssertEqual(projects[0].team, team)
+                XCTAssertEqual(projects[0].project1V2TeamId, team.id)
                 listProjectByTeamIDCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
@@ -308,9 +323,9 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func saveTeam(id: String = UUID().uuidString, name: String) -> Team1? {
-        let team = Team1(id: id, name: name)
-        var result: Team1?
+    func saveTeam(id: String = UUID().uuidString, name: String) -> Team1V2? {
+        let team = Team1V2(id: id, name: name)
+        var result: Team1V2?
         let completeInvoked = expectation(description: "request completed")
         Amplify.DataStore.save(team) { event in
             switch event {
@@ -327,10 +342,10 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
 
     func saveProject(id: String = UUID().uuidString,
                      name: String? = nil,
-                     teamID: String,
-                     team: Team1? = nil) -> Project1? {
-        let project = Project1(id: id, name: name, team: team)
-        var result: Project1?
+                     project1V2TeamId: String?,
+                     team: Team1V2? = nil) -> Project1V2? {
+        let project = Project1V2(id: id, name: name, team: team, project1V2TeamId: project1V2TeamId)
+        var result: Project1V2?
         let completeInvoked = expectation(description: "request completed")
         Amplify.DataStore.save(project) { event in
             switch event {
@@ -356,7 +371,9 @@ extension Team1V2: Equatable {
 extension Project1V2: Equatable {
     public static func == (lhs: Project1V2, rhs: Project1V2) -> Bool {
         return lhs.id == rhs.id
-            && lhs.name == rhs.name
-            && lhs.team == rhs.team
+        && lhs.name == rhs.name
+        && lhs.project1V2TeamId == rhs.project1V2TeamId
+            // && lhs.team == rhs.team // TODO: Should the Project have the team?
+
     }
 }
