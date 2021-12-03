@@ -33,6 +33,8 @@ When asked to provide the schema, create the `schema.graphql` file
 ```
 input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
+# Has One (Implicit Field)
+
 type Project1V2 @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String
@@ -43,6 +45,8 @@ type Team1V2 @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String!
 }
+
+# Has One (Explicit Field)
 
 type Project2V2 @model @auth(rules: [{allow: public}]) {
   id: ID!
@@ -56,6 +60,21 @@ type Team2V2 @model @auth(rules: [{allow: public}]) {
   name: String!
 }
 
+# Has Many `@hasMany` Implicit
+
+type Post3aV2 @model {
+  id: ID!
+  title: String!
+  comments: [Comment3aV2] @hasMany
+}
+
+type Comment3aV2 @model {
+  id: ID!
+  content: String!
+}
+
+# Has Many `@hasMany` Explicit
+
 type Post3V2 @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String!
@@ -68,6 +87,7 @@ type Comment3V2 @model @auth(rules: [{allow: public}]) {
   content: String!
 }
 
+# 
 type Post4V2 @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String!

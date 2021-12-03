@@ -156,6 +156,10 @@
 		218F787B275A64400042334B /* Comment7V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218F7875275A643F0042334B /* Comment7V2.swift */; };
 		218F787C275A64400042334B /* Blog7V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218F7876275A64400042334B /* Blog7V2.swift */; };
 		218F787E275A7F0C0042334B /* Team1V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218F787D275A7F0C0042334B /* Team1V2.swift */; };
+		218F7899275AB1F60042334B /* Comment3aV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218F7895275AB1F60042334B /* Comment3aV2.swift */; };
+		218F789A275AB1F60042334B /* Post3aV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218F7896275AB1F60042334B /* Post3aV2.swift */; };
+		218F789B275AB1F60042334B /* Comment3aV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218F7897275AB1F60042334B /* Comment3aV2+Schema.swift */; };
+		218F789C275AB1F60042334B /* Post3aV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218F7898275AB1F60042334B /* Post3aV2+Schema.swift */; };
 		219A887F23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A887E23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift */; };
 		219A888123EB629800BBC5F2 /* ModelBasedGraphQLDocumentDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A888023EB629800BBC5F2 /* ModelBasedGraphQLDocumentDecorator.swift */; };
 		219A888523EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A888423EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift */; };
@@ -1045,6 +1049,10 @@
 		218F7875275A643F0042334B /* Comment7V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment7V2.swift; sourceTree = "<group>"; };
 		218F7876275A64400042334B /* Blog7V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog7V2.swift; sourceTree = "<group>"; };
 		218F787D275A7F0C0042334B /* Team1V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team1V2.swift; sourceTree = "<group>"; };
+		218F7895275AB1F60042334B /* Comment3aV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment3aV2.swift; sourceTree = "<group>"; };
+		218F7896275AB1F60042334B /* Post3aV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post3aV2.swift; sourceTree = "<group>"; };
+		218F7897275AB1F60042334B /* Comment3aV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment3aV2+Schema.swift"; sourceTree = "<group>"; };
+		218F7898275AB1F60042334B /* Post3aV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post3aV2+Schema.swift"; sourceTree = "<group>"; };
 		219A887E23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelBasedGraphQLDocumentBuilder.swift; sourceTree = "<group>"; };
 		219A888023EB629800BBC5F2 /* ModelBasedGraphQLDocumentDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelBasedGraphQLDocumentDecorator.swift; sourceTree = "<group>"; };
 		219A888423EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLRequest+AnyModelWithSync.swift"; sourceTree = "<group>"; };
@@ -2108,6 +2116,7 @@
 			children = (
 				218F7839275A62840042334B /* 1V2 */,
 				218F783A275A628D0042334B /* 2V2 */,
+				218F7894275AB06D0042334B /* 3aV2 */,
 				218F783B275A62920042334B /* 3V2 */,
 				218F783C275A62970042334B /* 4V2 */,
 				218F783D275A629B0042334B /* 5V2 */,
@@ -2143,9 +2152,9 @@
 			isa = PBXGroup;
 			children = (
 				218F7869275A638B0042334B /* Comment3V2.swift */,
+				218F784D275A63260042334B /* Comment3V2+Schema.swift */,
 				218F785B275A63500042334B /* Post3V2.swift */,
 				218F7853275A63380042334B /* Post3V2+Schema.swift */,
-				218F784D275A63260042334B /* Comment3V2+Schema.swift */,
 			);
 			path = 3V2;
 			sourceTree = "<group>";
@@ -2154,9 +2163,9 @@
 			isa = PBXGroup;
 			children = (
 				218F7863275A636B0042334B /* Comment4V2.swift */,
+				218F7849275A631A0042334B /* Comment4V2+Schema.swift */,
 				218F785D275A63540042334B /* Post4V2.swift */,
 				218F7855275A633C0042334B /* Post4V2+Schema.swift */,
-				218F7849275A631A0042334B /* Comment4V2+Schema.swift */,
 			);
 			path = 4V2;
 			sourceTree = "<group>";
@@ -2172,10 +2181,10 @@
 			isa = PBXGroup;
 			children = (
 				218F7867275A63790042334B /* Blog6V2.swift */,
-				218F7865275A63710042334B /* Comment6V2.swift */,
 				218F7857275A63430042334B /* Blog6V2+Schema.swift */,
-				218F7851275A63310042334B /* Post6V2.swift */,
+				218F7865275A63710042334B /* Comment6V2.swift */,
 				218F784B275A63200042334B /* Comment6V2+Schema.swift */,
+				218F7851275A63310042334B /* Post6V2.swift */,
 				218F7843275A63090042334B /* Post6V2+Schema.swift */,
 			);
 			path = 6V2;
@@ -2192,6 +2201,17 @@
 				218F7873275A643E0042334B /* Post7V2+Schema.swift */,
 			);
 			path = 7V2;
+			sourceTree = "<group>";
+		};
+		218F7894275AB06D0042334B /* 3aV2 */ = {
+			isa = PBXGroup;
+			children = (
+				218F7895275AB1F60042334B /* Comment3aV2.swift */,
+				218F7897275AB1F60042334B /* Comment3aV2+Schema.swift */,
+				218F7896275AB1F60042334B /* Post3aV2.swift */,
+				218F7898275AB1F60042334B /* Post3aV2+Schema.swift */,
+			);
+			path = 3aV2;
 			sourceTree = "<group>";
 		};
 		21A3FDAD24630D4200E76120 /* Decorator */ = {
@@ -5413,6 +5433,7 @@
 				B4F3543525361E0E0050FEE0 /* DynamicModel.swift in Sources */,
 				218F7864275A636C0042334B /* Comment4V2.swift in Sources */,
 				6B7743E025906FD3001469F5 /* Menu.swift in Sources */,
+				218F789C275AB1F60042334B /* Post3aV2+Schema.swift in Sources */,
 				217D5EC02577F9DF009F0639 /* Post3.swift in Sources */,
 				217D5EB02577F9DF009F0639 /* Post4.swift in Sources */,
 				217D5EB22577F9DF009F0639 /* PostEditor5+Schema.swift in Sources */,
@@ -5536,10 +5557,13 @@
 				214F49CE24898E8500DA616C /* Article+Schema.swift in Sources */,
 				265B3E32274CBE7400883DCE /* AmplifyAssertions.swift in Sources */,
 				216E460A249183230035E3CE /* Section.swift in Sources */,
+				218F789B275AB1F60042334B /* Comment3aV2+Schema.swift in Sources */,
 				21FDBB622587D7A30086FCDC /* Post6.swift in Sources */,
 				217D5EBA2577F9DF009F0639 /* Post4+Schema.swift in Sources */,
 				21A7C90225ACC4D1004355D6 /* MockDataStoreResponders.swift in Sources */,
 				218F784A275A631A0042334B /* Comment4V2+Schema.swift in Sources */,
+				218F789A275AB1F60042334B /* Post3aV2.swift in Sources */,
+				218F7899275AB1F60042334B /* Comment3aV2.swift in Sources */,
 				FA32C428264F35390057272F /* Transaction.swift in Sources */,
 				767F85FE2649FFCC0076D633 /* CustomerOrder+Schema.swift in Sources */,
 				218F787C275A64400042334B /* Blog7V2.swift in Sources */,

@@ -14,29 +14,28 @@ import AWSMobileClient
 @testable import AWSDataStoreCategoryPlugin
 
 /*
-(HasMany) A Post that can have many comments (Explicit)
+(HasMany) A Post that can have many comments (Implicit)
 ```
- type Post3V2 @model @auth(rules: [{allow: public}]) {
+ type Post3aV2 @model {
    id: ID!
    title: String!
-   comments: [Comment3V2] @hasMany(indexName: "byPost3", fields: ["id"])
+   comments: [Comment3aV2] @hasMany
  }
 
- type Comment3V2 @model @auth(rules: [{allow: public}]) {
+ type Comment3aV2 @model {
    id: ID!
-   postID: ID! @index(name: "byPost3", sortKeyFields: ["content"])
    content: String!
  }
 ```
 See https://docs.amplify.aws/cli/graphql-transformer/connection for more details
 */
 
-class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
+class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
 
     func testSavePostAndCommentSyncToCloud() throws {
         try startAmplifyAndWaitForSync()
-        let post = Post3V2(title: "title")
-        let comment = Comment3V2(postID: post.id, content: "content")
+        let post = Post3aV2(title: "title")
+        let comment = Comment3aV2(content: "content", post3aV2CommentsId: post.id)
         let syncedPostReceived = expectation(description: "received post from sync event")
         let syncCommentReceived = expectation(description: "received comment from sync event")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
@@ -46,10 +45,10 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
                 return
             }
 
-            if let syncedPost = try? mutationEvent.decodeModel() as? Post3V2,
+            if let syncedPost = try? mutationEvent.decodeModel() as? Post3aV2,
                syncedPost == post {
                 syncedPostReceived.fulfill()
-            } else if let syncComment = try? mutationEvent.decodeModel() as? Comment3V2,
+            } else if let syncComment = try? mutationEvent.decodeModel() as? Comment3aV2,
                       syncComment == comment {
                 syncCommentReceived.fulfill()
             }
@@ -79,7 +78,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
         }
         wait(for: [saveCommentCompleted, syncCommentReceived], timeout: networkTimeout)
         let queriedCommentCompleted = expectation(description: "query comment completed")
-        Amplify.DataStore.query(Comment3V2.self, byId: comment.id) { result in
+        Amplify.DataStore.query(Comment3aV2.self, byId: comment.id) { result in
             switch result {
             case .success(let queriedComment):
                 XCTAssertEqual(queriedComment, comment)
@@ -98,14 +97,14 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Could not create post")
             return
         }
-        guard saveComment(postID: post.id, content: "content") != nil else {
+        guard saveComment(post3aV2CommentsId: post.id, content: "content") != nil else {
             XCTFail("Could not create comment")
             return
         }
 
         let getPostCompleted = expectation(description: "get post complete")
         let getCommentsCompleted = expectation(description: "get comments complete")
-        Amplify.DataStore.query(Post3V2.self, byId: post.id) { result in
+        Amplify.DataStore.query(Post3aV2.self, byId: post.id) { result in
             switch result {
             case .success(let queriedPostOptional):
                 guard let queriedPost = queriedPostOptional else {
@@ -141,7 +140,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Could not create post")
             return
         }
-        guard var comment = saveComment(postID: post.id, content: "content") else {
+        guard var comment = saveComment(post3aV2CommentsId: post.id, content: "content") else {
             XCTFail("Could not create comment")
             return
         }
@@ -150,11 +149,11 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         let updateCommentSuccessful = expectation(description: "update comment")
-        comment.postID = anotherPost.id
+        comment.post3aV2CommentsId = anotherPost.id
         Amplify.DataStore.save(comment) { result in
             switch result {
             case .success(let updatedComment):
-                XCTAssertEqual(updatedComment.postID, anotherPost.id)
+                XCTAssertEqual(updatedComment.post3aV2CommentsId, anotherPost.id)
                 updateCommentSuccessful.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
@@ -169,7 +168,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Could not create post")
             return
         }
-        guard let comment = saveComment(postID: post.id, content: "content") else {
+        guard let comment = saveComment(post3aV2CommentsId: post.id, content: "content") else {
             XCTFail("Could not create comment")
             return
         }
@@ -184,7 +183,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
         }
         wait(for: [deleteCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getCommentAfterDeleteCompleted = expectation(description: "get comment after deleted complete")
-        Amplify.DataStore.query(Comment3V2.self, byId: comment.id) { result in
+        Amplify.DataStore.query(Comment3aV2.self, byId: comment.id) { result in
             switch result {
             case .success(let comment):
                 guard comment == nil else {
@@ -206,13 +205,13 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Could not create post")
             return
         }
-        guard saveComment(postID: post.id, content: "content") != nil else {
+        guard saveComment(post3aV2CommentsId: post.id, content: "content") != nil else {
             XCTFail("Could not create comment")
             return
         }
         let listCommentByPostIDCompleted = expectation(description: "list projects completed")
-        let predicate = Comment3V2.keys.postID.eq(post.id)
-        Amplify.DataStore.query(Comment3V2.self, where: predicate) { result in
+        let predicate = Comment3aV2.keys.post3aV2CommentsId.eq(post.id)
+        Amplify.DataStore.query(Comment3aV2.self, where: predicate) { result in
             switch result {
             case .success(let projects):
                 XCTAssertEqual(projects.count, 1)
@@ -224,9 +223,9 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func savePost(id: String = UUID().uuidString, title: String) -> Post3V2? {
-        let post = Post3V2(id: id, title: title)
-        var result: Post3V2?
+    func savePost(id: String = UUID().uuidString, title: String) -> Post3aV2? {
+        let post = Post3aV2(id: id, title: title)
+        var result: Post3aV2?
         let completeInvoked = expectation(description: "request completed")
         Amplify.DataStore.save(post) { event in
             switch event {
@@ -241,9 +240,9 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
         return result
     }
 
-    func saveComment(id: String = UUID().uuidString, postID: String, content: String) -> Comment3V2? {
-        let comment = Comment3V2(id: id, postID: postID, content: content)
-        var result: Comment3V2?
+    func saveComment(id: String = UUID().uuidString, post3aV2CommentsId: String, content: String) -> Comment3aV2? {
+        let comment = Comment3aV2(id: id, content: content, post3aV2CommentsId: post3aV2CommentsId)
+        var result: Comment3aV2?
         let completeInvoked = expectation(description: "request completed")
         Amplify.DataStore.save(comment) { event in
             switch event {
@@ -259,16 +258,16 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
     }
 }
 
-extension Post3V2: Equatable {
-    public static func == (lhs: Post3V2, rhs: Post3V2) -> Bool {
+extension Post3aV2: Equatable {
+    public static func == (lhs: Post3aV2, rhs: Post3aV2) -> Bool {
         return lhs.id == rhs.id
             && lhs.title == rhs.title
     }
 }
-extension Comment3V2: Equatable {
-    public static func == (lhs: Comment3V2, rhs: Comment3V2) -> Bool {
+extension Comment3aV2: Equatable {
+    public static func == (lhs: Comment3aV2, rhs: Comment3aV2) -> Bool {
         return lhs.id == rhs.id
-            && lhs.postID == rhs.postID
+            && lhs.post3aV2CommentsId == rhs.post3aV2CommentsId
             && lhs.content == rhs.content
     }
 }

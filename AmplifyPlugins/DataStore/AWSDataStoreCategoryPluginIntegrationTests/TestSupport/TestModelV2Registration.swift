@@ -15,6 +15,8 @@ struct TestModelV2Registration: AmplifyModelRegistration {
         registry.register(modelType: Team1V2.self)
         registry.register(modelType: Project2V2.self)
         registry.register(modelType: Team2V2.self)
+        registry.register(modelType: Post3aV2.self)
+        registry.register(modelType: Comment3aV2.self)
         registry.register(modelType: Post3V2.self)
         registry.register(modelType: Comment3V2.self)
         registry.register(modelType: Post4V2.self)
