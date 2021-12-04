@@ -30,7 +30,6 @@ extension Blog7V2 {
     model.fields(
       .id(),
       .field(blog7V2.name, is: .required, ofType: .string),
-      // .hasMany(blog7V2.posts, is: .optional, ofType: Post7V2.self, associatedWith: Post7V2.keys.blog7V2PostsId),
       .hasMany(blog7V2.posts, is: .optional, ofType: Post7V2.self, associatedWith: Post7V2.keys.blog),
       .field(blog7V2.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(blog7V2.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
