@@ -11,7 +11,7 @@ import XCTest
 @testable import AmplifyPlugins
 @testable import AmplifyTestCommon
 
-class AWSDataStoreAuthImplicitExplicitOwnerTests: AWSDataStoreAuthBaseTest {
+class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseTest {
 
     /// Given: a user signed in with CognitoUserPools, a model with a custom implicit owner
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
@@ -133,10 +133,40 @@ class AWSDataStoreAuthImplicitExplicitOwnerTests: AWSDataStoreAuthBaseTest {
         assertUsedAuthTypes([.amazonCognitoUserPools])
     }
 
+    /// Given: a user signed in with CognitoUserPools, a model with `allow:private` auth rule
+    /// When: DataStore query/mutation operations are sent with CognitoUserPools
+    /// Then: DataStore is successfully initialized, query returns a result,
+    ///      mutation is processed for an authenticated users
+    func testAllowPrivate() {
+        setup(withModels: AllowPrivateModelRegistration(),
+              testType: .defaultAuthCognito)
+
+        signIn(user: user1)
+
+        let expectations = makeExpectations()
+
+        assertDataStoreReady(expectations)
+
+        // Query
+        assertQuerySuccess(modelType: TodoCognitoPrivate.self,
+                           expectations) { error in
+            XCTFail("Error query \(error)")
+        }
+
+        let todo = TodoCognitoPrivate(title: "title")
+
+        // Mutations
+        assertMutations(model: todo, expectations) { error in
+            XCTFail("Error mutation \(error)")
+        }
+
+        assertUsedAuthTypes([.amazonCognitoUserPools])
+    }
+
 }
 
 // MARK: - Models registration
-extension AWSDataStoreAuthImplicitExplicitOwnerTests {
+extension AWSDataStoreCategoryPluginAuthOwnerIntegrationTests {
 
     struct CustomOwnerImplicitModelRegistration: AmplifyModelRegistration {
         public let version: String = "version"
@@ -163,6 +193,13 @@ extension AWSDataStoreAuthImplicitExplicitOwnerTests {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: TodoImplicitOwnerField.self)
+        }
+    }
+
+    struct AllowPrivateModelRegistration: AmplifyModelRegistration {
+        public let version: String = "version"
+        func registerModels(registry: ModelRegistry.Type) {
+            ModelRegistry.register(modelType: TodoCognitoPrivate.self)
         }
     }
 

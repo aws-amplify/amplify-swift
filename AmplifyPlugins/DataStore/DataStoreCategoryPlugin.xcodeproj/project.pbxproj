@@ -132,6 +132,9 @@
 		7617929127559554001EABD6 /* TodoIAMPrivate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7617928D27559554001EABD6 /* TodoIAMPrivate.swift */; };
 		7617929227559554001EABD6 /* TodoIAMPrivate+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7617928E27559554001EABD6 /* TodoIAMPrivate+Schema.swift */; };
 		7617929327559554001EABD6 /* TodoIAMPublic+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7617928F27559554001EABD6 /* TodoIAMPublic+Schema.swift */; };
+		761792A327594339001EABD6 /* TodoCognitoPrivate+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761792A127594339001EABD6 /* TodoCognitoPrivate+Schema.swift */; };
+		761792A427594339001EABD6 /* TodoCognitoPrivate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761792A227594339001EABD6 /* TodoCognitoPrivate.swift */; };
+		761792A62759443E001EABD6 /* AWSDataStoreCategoryPluginAuthOwnerIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761792A52759443E001EABD6 /* AWSDataStoreCategoryPluginAuthOwnerIntegrationTests.swift */; };
 		762383A527501EBC00EAF1C7 /* RemoteSyncEngine+AuthModeStrategyDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762383A427501EBC00EAF1C7 /* RemoteSyncEngine+AuthModeStrategyDelegate.swift */; };
 		7625470C2735FCC400E5F6A3 /* AWSDataStoreAuthBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625470B2735FCC400E5F6A3 /* AWSDataStoreAuthBaseTest.swift */; };
 		762547C02735FD0C00E5F6A3 /* GroupPublicUPAPIPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625478A2735FD0C00E5F6A3 /* GroupPublicUPAPIPost+Schema.swift */; };
@@ -203,7 +206,6 @@
 		76C009142736061200ADA120 /* TodoImplicitOwnerField+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C009102736061200ADA120 /* TodoImplicitOwnerField+Schema.swift */; };
 		76C0091D2736198700ADA120 /* TodoCustomOwnerImplicit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C0091B2736198700ADA120 /* TodoCustomOwnerImplicit.swift */; };
 		76C0091E2736198700ADA120 /* TodoCustomOwnerImplicit+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C0091C2736198700ADA120 /* TodoCustomOwnerImplicit+Schema.swift */; };
-		76C0092027361A8200ADA120 /* AWSDataStoreAuthImplicitExplicitOwnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C0091F27361A8200ADA120 /* AWSDataStoreAuthImplicitExplicitOwnerTests.swift */; };
 		8141657E756CC7B2EE1CE851 /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA320D973669D3843FDF755E /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework */; };
 		9728F2B02683D98D00A506A8 /* DataStoreConsecutiveUpdatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9728F2AF2683D98D00A506A8 /* DataStoreConsecutiveUpdatesTests.swift */; };
 		973AF1AF26E016EC00BED353 /* ModelCompareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973AF1AE26E016EC00BED353 /* ModelCompareTests.swift */; };
@@ -499,6 +501,9 @@
 		7617928F27559554001EABD6 /* TodoIAMPublic+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TodoIAMPublic+Schema.swift"; sourceTree = "<group>"; };
 		7617929527559BD7001EABD6 /* singleauth-iam-schema.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = "singleauth-iam-schema.graphql"; sourceTree = "<group>"; };
 		7617929727559BF5001EABD6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		761792A127594339001EABD6 /* TodoCognitoPrivate+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TodoCognitoPrivate+Schema.swift"; sourceTree = "<group>"; };
+		761792A227594339001EABD6 /* TodoCognitoPrivate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoCognitoPrivate.swift; sourceTree = "<group>"; };
+		761792A52759443E001EABD6 /* AWSDataStoreCategoryPluginAuthOwnerIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSDataStoreCategoryPluginAuthOwnerIntegrationTests.swift; sourceTree = "<group>"; };
 		7618ABC62728CCB300712E86 /* TodoExplicitOwnerField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoExplicitOwnerField.swift; sourceTree = "<group>"; };
 		7618ABC72728CCB300712E86 /* TodoImplicitOwnerField+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TodoImplicitOwnerField+Schema.swift"; sourceTree = "<group>"; };
 		7618ABC82728CCB300712E86 /* TodoImplicitOwnerField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoImplicitOwnerField.swift; sourceTree = "<group>"; };
@@ -578,7 +583,6 @@
 		76C009102736061200ADA120 /* TodoImplicitOwnerField+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TodoImplicitOwnerField+Schema.swift"; sourceTree = "<group>"; };
 		76C0091B2736198700ADA120 /* TodoCustomOwnerImplicit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoCustomOwnerImplicit.swift; sourceTree = "<group>"; };
 		76C0091C2736198700ADA120 /* TodoCustomOwnerImplicit+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TodoCustomOwnerImplicit+Schema.swift"; sourceTree = "<group>"; };
-		76C0091F27361A8200ADA120 /* AWSDataStoreAuthImplicitExplicitOwnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreAuthImplicitExplicitOwnerTests.swift; sourceTree = "<group>"; };
 		9728F2AF2683D98D00A506A8 /* DataStoreConsecutiveUpdatesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConsecutiveUpdatesTests.swift; sourceTree = "<group>"; };
 		973AF1AE26E016EC00BED353 /* ModelCompareTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCompareTests.swift; sourceTree = "<group>"; };
 		97406B372666DC0200C41E19 /* DataStoreCustomPrimaryKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreCustomPrimaryKeyTests.swift; sourceTree = "<group>"; };
@@ -1140,12 +1144,12 @@
 		769CF226266AF63E007843A0 /* DefaultAuthCognito */ = {
 			isa = PBXGroup;
 			children = (
+				21233DDF2475935600039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests.swift */,
+				21233E142476EFC400039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests+Support.swift */,
+				761792A52759443E001EABD6 /* AWSDataStoreCategoryPluginAuthOwnerIntegrationTests.swift */,
 				76C0090C2736061200ADA120 /* Models */,
 				762547132735FCD800E5F6A3 /* README.md */,
 				762547142735FCD800E5F6A3 /* singleauth-cognito-schema.graphql */,
-				21233DDF2475935600039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests.swift */,
-				21233E142476EFC400039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests+Support.swift */,
-				76C0091F27361A8200ADA120 /* AWSDataStoreAuthImplicitExplicitOwnerTests.swift */,
 			);
 			path = DefaultAuthCognito;
 			sourceTree = "<group>";
@@ -1163,6 +1167,8 @@
 		76C0090C2736061200ADA120 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				761792A227594339001EABD6 /* TodoCognitoPrivate.swift */,
+				761792A127594339001EABD6 /* TodoCognitoPrivate+Schema.swift */,
 				7617928627558BFA001EABD6 /* TodoCustomOwnerExplicit.swift */,
 				7617928727558BFA001EABD6 /* TodoCustomOwnerExplicit+Schema.swift */,
 				76C0091B2736198700ADA120 /* TodoCustomOwnerImplicit.swift */,
@@ -2032,6 +2038,7 @@
 				762547CB2735FD0C00E5F6A3 /* PrivatePrivatePublicUPIAMAPIPost+Schema.swift in Sources */,
 				76C0091E2736198700ADA120 /* TodoCustomOwnerImplicit+Schema.swift in Sources */,
 				7617928827558BFA001EABD6 /* TodoCustomOwnerExplicit.swift in Sources */,
+				761792A62759443E001EABD6 /* AWSDataStoreCategoryPluginAuthOwnerIntegrationTests.swift in Sources */,
 				762547E42735FD0C00E5F6A3 /* GroupUPPost.swift in Sources */,
 				762547EF2735FD0C00E5F6A3 /* GroupPublicUPAPIPost.swift in Sources */,
 				762547E22735FD0C00E5F6A3 /* GroupPrivateUPIAMPost+Schema.swift in Sources */,
@@ -2067,6 +2074,7 @@
 				762547E72735FD0C00E5F6A3 /* PrivatePrivatePublicUPIAMIAMPost+Schema.swift in Sources */,
 				762547D12735FD0C00E5F6A3 /* OwnerPublicOIDAPIPost.swift in Sources */,
 				762547DD2735FD0C00E5F6A3 /* PrivatePrivateUPIAMPost+Schema.swift in Sources */,
+				761792A327594339001EABD6 /* TodoCognitoPrivate+Schema.swift in Sources */,
 				762547E12735FD0C00E5F6A3 /* GroupPublicUPIAMPost.swift in Sources */,
 				762547EC2735FD0C00E5F6A3 /* OwnerPrivateUPIAMPost+Schema.swift in Sources */,
 				76C0091D2736198700ADA120 /* TodoCustomOwnerImplicit.swift in Sources */,
@@ -2079,7 +2087,6 @@
 				21233DE02475935600039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests.swift in Sources */,
 				762547C12735FD0C00E5F6A3 /* PrivatePublicUPIAMPost+Schema.swift in Sources */,
 				762547D32735FD0C00E5F6A3 /* GroupPrivatePublicUPIAMAPIPost.swift in Sources */,
-				76C0092027361A8200ADA120 /* AWSDataStoreAuthImplicitExplicitOwnerTests.swift in Sources */,
 				7617929127559554001EABD6 /* TodoIAMPrivate.swift in Sources */,
 				762547D42735FD0C00E5F6A3 /* OwnerUPPost.swift in Sources */,
 				767C398B266EE4DA00CB64B9 /* AWSDataStoreMultiAuthThreeRulesTests.swift in Sources */,
@@ -2095,6 +2102,7 @@
 				21233E152476EFC400039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests+Support.swift in Sources */,
 				769B2A1C267BEF7B00A084CD /* AuthRecorderInterceptor.swift in Sources */,
 				762547E02735FD0C00E5F6A3 /* PrivatePublicComboAPIPost+Schema.swift in Sources */,
+				761792A427594339001EABD6 /* TodoCognitoPrivate.swift in Sources */,
 				7617928927558BFA001EABD6 /* TodoCustomOwnerExplicit+Schema.swift in Sources */,
 				762547D62735FD0C00E5F6A3 /* PublicAPIPost+Schema.swift in Sources */,
 				762547E52735FD0C00E5F6A3 /* PrivatePublicPublicUPAPIIAMPost+Schema.swift in Sources */,
