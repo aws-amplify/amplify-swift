@@ -1,0 +1,9 @@
+type TodoIAMPublic @model @auth(rules: [{ allow: public, provider: iam }]) {
+  id: ID!
+  title: String!
+}
+
+type TodoIAMPrivate @model @auth(rules: [{ allow: private, provider: iam }]) {
+  id: ID!
+  title: String!
+}

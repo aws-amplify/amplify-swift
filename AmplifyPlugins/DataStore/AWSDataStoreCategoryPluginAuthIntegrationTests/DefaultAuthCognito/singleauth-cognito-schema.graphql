@@ -1,0 +1,36 @@
+type TodoExplicitOwnerField
+    @model
+    @auth(rules: [{ allow: owner, ownerField: "owner", operations: [create, update, delete] }]) {
+    id: ID!
+    content: String!
+    owner: String
+}
+
+type TodoImplicitOwnerField
+    @model
+    @auth(rules: [ { allow: owner } ]) {
+    id: ID!
+    content: String!
+}
+
+type TodoCustomOwnerImplicit @model @auth(rules: [{ allow: owner, ownerField: "dominus" }]) {
+  id: ID!
+  title: String!
+}
+
+type TodoCustomOwnerExplicit @model @auth(rules: [{ allow: owner, ownerField: "dominus" }]) {
+  id: ID!
+  title: String!
+  dominus: String
+}
+
+type TodoCognitoExplicitOperations @model
+  @auth(rules: [{ allow: owner, operations: [create, delete] }]) {
+  id: ID!
+  title: String!
+}
+
+type TodoCognitoPrivate @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  title: String!
+}

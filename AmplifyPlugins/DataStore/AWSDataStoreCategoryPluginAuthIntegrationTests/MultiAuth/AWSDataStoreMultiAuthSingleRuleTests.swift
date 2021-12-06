@@ -13,13 +13,13 @@ import Combine
 @testable import AmplifyPlugins
 @testable import AmplifyTestCommon
 
-class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreMultiAuthBaseTest {
+class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
     /// Given: a user signed in with CognitoUserPools
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
     func testOwnerUserPools() {
-        setup(withModels: UserPoolsOwnerModels())
+        setup(withModels: UserPoolsOwnerModels(), testType: .multiAuth)
 
         signIn(user: user1)
 
@@ -55,7 +55,7 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreMultiAuthBaseTest {
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
     func testGroupUserPools() {
-        setup(withModels: UserPoolsGroupModels())
+        setup(withModels: UserPoolsGroupModels(), testType: .multiAuth)
 
         // user1 is part of the "Admins" group
         signIn(user: user1)
@@ -82,7 +82,7 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreMultiAuthBaseTest {
     /// When: DataStore.start is called
     /// Then: DataStore is successfully initialized
     func testGroupUserPoolsWithNonAdminsUser() {
-        setup(withModels: UserPoolsGroupModels())
+        setup(withModels: UserPoolsGroupModels(), testType: .multiAuth)
 
         // user2 is not part of the "Admins" group
         signIn(user: user2)
@@ -121,7 +121,7 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreMultiAuthBaseTest {
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for authenticated users
     func testPrivateUserPools() {
-        setup(withModels: UserPoolsPrivateModels())
+        setup(withModels: UserPoolsPrivateModels(), testType: .multiAuth)
 
         signIn(user: user1)
 
@@ -148,7 +148,7 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreMultiAuthBaseTest {
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for authenticated users
     func testPrivateIAM() {
-        setup(withModels: IAMPrivateModels())
+        setup(withModels: IAMPrivateModels(), testType: .multiAuth)
 
         signIn(user: user1)
 
@@ -175,7 +175,7 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreMultiAuthBaseTest {
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for all users
     func testPublicIAM() {
-        setup(withModels: IAMPublicModels())
+        setup(withModels: IAMPublicModels(), testType: .multiAuth)
 
         let expectations = makeExpectations()
 
@@ -201,7 +201,7 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreMultiAuthBaseTest {
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed
     func testPublicAPIKey() {
-        setup(withModels: APIKeyPublicModels())
+        setup(withModels: APIKeyPublicModels(), testType: .multiAuth)
 
         let expectations = makeExpectations()
 

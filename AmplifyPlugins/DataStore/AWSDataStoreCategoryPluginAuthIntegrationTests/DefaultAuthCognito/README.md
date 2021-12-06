@@ -10,30 +10,20 @@ This configuration is used to run the tests in `AWSDataStoreCategoryPluginAuthIn
 2. `amplify add api`
 
 ```perl
-? Please select from one of the below mentioned services: GraphQL
-? Provide API name: `<APIName>`
-? Choose the default authorization type for the API `Amazon Cognito User Pool`
-? Do you want to use the default authentication and security configuration? `Default configuration`
-? How do you want users to be able to sign in? `Email`
-? Do you want to configure advanced settings? `No, I am done.`
-? Do you want to configure advanced settings for the GraphQL API `No, I am done.`
-? Do you have an annotated GraphQL schema? `No`
-? Do you want a guided schema creation? `Yes`
+? Select from one of the below mentioned services: GraphQL
+? Here is the GraphQL API that we will create. Select a setting to edit or continue Authorization modes: API key (default, expiration time: 7 days fro
+m now)
+? Choose the default authorization type for the API: Cognito User Pools
+? Configure additional auth types? No
+? Here is the GraphQL API that we will create. Select a setting to edit or continue Conflict detection (required for DataStore): Disabled
+? Enable conflict detection? Yes
+? Select the default resolution strategy Auto Merge
+? Here is the GraphQL API that we will create. Select a setting to edit or continue Continue
+? Choose a schema template: Blank Schema
 ? Do you want to edit the schema now? `No`
 ```
 
-The guided schema provided should look like this: 
-```json
-type SocialNote
-    @model
-    @auth(rules: [
-        { allow: owner, ownerField: "owner", operations: [create, update, delete] },
-    ]) {
-    id: ID!
-    content: String!
-    owner: String
-}
-```
+Copy the content of the schema from `AWSDataStoreCategoryPluginAuthIntegrationTests/DefaultAuthCognito/singleauth-cognito-schema.graphql` into the newly created `schema.graphql` file
 
 3. `amplify update api`
 ? Please select from one of the below mentioned services: `GraphQL`
@@ -82,6 +72,6 @@ aws cognito-idp admin-create-user --user-pool-id [POOL_ID] --username [USER EMAI
 aws cognito-idp admin-set-user-password --user-pool-id [POOL_ID] --username [USER EMAIL] --password [PASSWORD] --permanent
 ```
 
-The `[POOL_ID]` can be found in `amplifyconfiguration.json` under `auth.plugsin.awsCognitoAuthPlugin.CognitoUserPool.Default.PoolId`
+The `[POOL_ID]` can be found in `amplifyconfiguration.json` under `auth.plugin.awsCognitoAuthPlugin.CognitoUserPool.Default.PoolId`
 
 Now you can run the AWSDataStoreCategoryPluginAuthIntegrationTests
