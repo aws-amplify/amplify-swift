@@ -1,6 +1,11 @@
 # Changelog
 ## Unreleased
 
+### Features
+
+- **Core**: Supports SwiftUI by not running `Amplify.configure` while running for Previews #1509
+
+
 ## 1.16.1 (2021-11-19)
 
 ## 1.16.0 (2021-11-18)

@@ -95,6 +95,10 @@ extension Amplify {
     ///
     /// - Parameter configuration: The AmplifyConfiguration for specified Categories
     public static func configure(_ configuration: AmplifyConfiguration? = nil) throws {
+        guard !isRunningForSwiftUIPreviews else {
+            log.info("Running for SwiftUI reviews, skipping configuration.")
+            return
+        }
         log.info("Configuring")
         log.debug("Configuration: \(String(describing: configuration))")
         guard !isConfigured else {
@@ -176,6 +180,11 @@ extension Amplify {
                 log.warn("No plugin found for configuration key `\(unusedPluginKey)`. Add a plugin for that key.")
             }
         }
+    }
+
+    //// Indicates is the runtime is for SwiftUI Previews
+    private static var isRunningForSwiftUIPreviews: Bool {
+        ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] != nil
     }
 
 }
