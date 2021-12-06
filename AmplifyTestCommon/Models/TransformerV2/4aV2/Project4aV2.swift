@@ -9,6 +9,10 @@
 import Amplify
 import Foundation
 
+// This was manually modified to compile - currently codegen will generate `structs`
+// which will fail with error:
+// <>
+
 public class Project4aV2: Model {
   public let id: String
   public var name: String?

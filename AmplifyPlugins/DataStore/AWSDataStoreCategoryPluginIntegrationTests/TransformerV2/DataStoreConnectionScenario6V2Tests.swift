@@ -39,6 +39,7 @@ import AWSMobileClient
  ```
  */
 
+// swiftlint:disable type_body_length
 class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testGetBlogThenFetchPostsThenFetchComments() throws {
@@ -401,6 +402,75 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
             commentFetched.id == comment.id
         }))
         wait(for: [createReceived], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    func testCascadeDeleteBlogDeletesPostAndComments() throws {
+        try startAmplifyAndWaitForSync()
+        guard let blog = saveBlog(name: "name"),
+              let post = savePost(title: "title", blog: blog),
+              let comment = saveComment(post: post, content: "content") else {
+            XCTFail("Could not create blog, posts, and comments")
+            return
+        }
+        let createReceived = expectation(description: "Create notification received")
+        createReceived.expectedFulfillmentCount = 3 // 3 models (1 blog and 1 post and 1 comment)
+        let deleteReceived = expectation(description: "Delete notification received")
+        deleteReceived.expectedFulfillmentCount = 3 // 3 models due to cascade delete behavior
+        let hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                guard let mutationEvent = payload.data as? MutationEvent
+                    else {
+                        XCTFail("Can't cast payload as mutation event")
+                        return
+                }
+                if let blogEvent = try? mutationEvent.decodeModel() as? Blog6V2, blogEvent.id == blog.id {
+                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                        XCTAssertEqual(blogEvent.name, blog.name)
+                        XCTAssertEqual(mutationEvent.version, 1)
+                        createReceived.fulfill()
+                    } else if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
+                        XCTAssertEqual(mutationEvent.version, 2)
+                        deleteReceived.fulfill()
+                    }
+                } else if let postEvent = try? mutationEvent.decodeModel() as? Post6V2, postEvent.id == post.id {
+                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                        XCTAssertEqual(postEvent.title, post.title)
+                        XCTAssertEqual(mutationEvent.version, 1)
+                        createReceived.fulfill()
+                    } else if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
+                        XCTAssertEqual(mutationEvent.version, 2)
+                        deleteReceived.fulfill()
+                    }
+                } else if let commentEvent = try? mutationEvent.decodeModel() as? Comment6V2, commentEvent.id == comment.id {
+                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                        XCTAssertEqual(commentEvent.content, comment.content)
+                        XCTAssertEqual(mutationEvent.version, 1)
+                        createReceived.fulfill()
+                    } else if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
+                        XCTAssertEqual(mutationEvent.version, 2)
+                        deleteReceived.fulfill()
+                    }
+                }
+        }
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+        wait(for: [createReceived], timeout: TestCommonConstants.networkTimeout)
+
+        let deleteBlogCompleted = expectation(description: "delete blog complete")
+        Amplify.DataStore.delete(Blog6V2.self, withId: blog.id) { result in
+            switch result {
+            case .success:
+                print("Deleted")
+                deleteBlogCompleted.fulfill()
+            case .failure(let response):
+                XCTFail("Failed with: \(response)")
+            }
+        }
+        wait(for: [deleteBlogCompleted, deleteReceived], timeout: TestCommonConstants.networkTimeout)
+
     }
 
     func saveBlog(id: String = UUID().uuidString, name: String) -> Blog6V2? {
