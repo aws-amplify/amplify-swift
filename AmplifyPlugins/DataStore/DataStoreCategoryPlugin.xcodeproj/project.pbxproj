@@ -1046,7 +1046,7 @@
 			children = (
 				FA6B0EA9249445D50062AA59 /* AWSDataStorePluginConfigurationTests.swift */,
 				217D61552578AEB0009F0639 /* Connection */,
-				218F787F275A80F50042334B /* ConnectionV2 */,
+				218F787F275A80F50042334B /* TransformerV2 */,
 				D8C5BA58249815A6007C3A68 /* DataStoreConfigurationTests.swift */,
 				9728F2AF2683D98D00A506A8 /* DataStoreConsecutiveUpdatesTests.swift */,
 				97406B372666DC0200C41E19 /* DataStoreCustomPrimaryKeyTests.swift */,
@@ -1107,7 +1107,7 @@
 			path = Connection;
 			sourceTree = "<group>";
 		};
-		218F787F275A80F50042334B /* ConnectionV2 */ = {
+		218F787F275A80F50042334B /* TransformerV2 */ = {
 			isa = PBXGroup;
 			children = (
 				218F7884275A81410042334B /* DataStoreConnectionScenario1V2Tests.swift */,
@@ -1120,7 +1120,7 @@
 				218F7886275A81410042334B /* DataStoreConnectionScenario7V2Tests.swift */,
 				218F788E275A825A0042334B /* README.md */,
 			);
-			path = ConnectionV2;
+			path = TransformerV2;
 			sourceTree = "<group>";
 		};
 		218F78D0275AC7840042334B /* V2 */ = {

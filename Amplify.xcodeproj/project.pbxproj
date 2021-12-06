@@ -1093,6 +1093,7 @@
 		218F78E2275AD0310042334B /* Team4aV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team4aV2+Schema.swift"; sourceTree = "<group>"; };
 		218F78E3275AD0310042334B /* Project4aV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project4aV2.swift; sourceTree = "<group>"; };
 		218F78E4275AD0310042334B /* Project4aV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project4aV2+Schema.swift"; sourceTree = "<group>"; };
+		218F78E9275E6C080042334B /* schema.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
 		219A887E23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelBasedGraphQLDocumentBuilder.swift; sourceTree = "<group>"; };
 		219A888023EB629800BBC5F2 /* ModelBasedGraphQLDocumentDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelBasedGraphQLDocumentDecorator.swift; sourceTree = "<group>"; };
 		219A888423EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLRequest+AnyModelWithSync.swift"; sourceTree = "<group>"; };
@@ -2151,7 +2152,7 @@
 			path = 5;
 			sourceTree = "<group>";
 		};
-		218F7838275A62770042334B /* CollectionV2 */ = {
+		218F7838275A62770042334B /* TransformerV2 */ = {
 			isa = PBXGroup;
 			children = (
 				218F7839275A62840042334B /* 1V2 */,
@@ -2164,9 +2165,15 @@
 				218F783D275A629B0042334B /* 5V2 */,
 				218F783E275A62A00042334B /* 6V2 */,
 				218F7840275A62AA0042334B /* 7V2 */,
-				218F78C3275AC67D0042334B /* V2 */,
+				218F78C6275AC6B30042334B /* CustomerSecondaryIndexV2.swift */,
+				218F78C8275AC6B30042334B /* CustomerSecondaryIndexV2+Schema.swift */,
+				218F78E9275E6C080042334B /* schema.graphql */,
+				218F78C7275AC6B30042334B /* TodoCustomTimestampV2.swift */,
+				218F78C9275AC6B30042334B /* TodoCustomTimestampV2+Schema.swift */,
+				218F78C4275AC6B30042334B /* TodoWithDefaultValueV2.swift */,
+				218F78C5275AC6B30042334B /* TodoWithDefaultValueV2+Schema.swift */,
 			);
-			path = CollectionV2;
+			path = TransformerV2;
 			sourceTree = "<group>";
 		};
 		218F7839275A62840042334B /* 1V2 */ = {
@@ -2261,19 +2268,6 @@
 				218F7898275AB1F60042334B /* Post3aV2+Schema.swift */,
 			);
 			path = 3aV2;
-			sourceTree = "<group>";
-		};
-		218F78C3275AC67D0042334B /* V2 */ = {
-			isa = PBXGroup;
-			children = (
-				218F78C6275AC6B30042334B /* CustomerSecondaryIndexV2.swift */,
-				218F78C8275AC6B30042334B /* CustomerSecondaryIndexV2+Schema.swift */,
-				218F78C7275AC6B30042334B /* TodoCustomTimestampV2.swift */,
-				218F78C9275AC6B30042334B /* TodoCustomTimestampV2+Schema.swift */,
-				218F78C4275AC6B30042334B /* TodoWithDefaultValueV2.swift */,
-				218F78C5275AC6B30042334B /* TodoWithDefaultValueV2+Schema.swift */,
-			);
-			path = V2;
 			sourceTree = "<group>";
 		};
 		218F78D7275ACFA60042334B /* 4aV2 */ = {
@@ -3074,7 +3068,7 @@
 				214F49CC24898E8500DA616C /* Article+Schema.swift */,
 				B9FAA10C23878BD6009414B4 /* Associations */,
 				217D5E992577F95D009F0639 /* Collection */,
-				218F7838275A62770042334B /* CollectionV2 */,
+				218F7838275A62770042334B /* TransformerV2 */,
 				B9521830237E21B900F53237 /* Comment.swift */,
 				B952182E237E21B900F53237 /* Comment+Schema.swift */,
 				767F85FB2649FF540076D633 /* CustomerOrder.swift */,
