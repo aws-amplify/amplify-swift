@@ -30,9 +30,18 @@ public enum AuthRuleDecoratorInput {
 public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
 
     private let input: AuthRuleDecoratorInput
+    private let authType: AWSAuthorizationType?
 
-    public init(_ authRuleDecoratorInput: AuthRuleDecoratorInput) {
+
+    /// Initializes a new AuthRuleDecorator
+    /// - Parameters:
+    ///   - authRuleDecoratorInput: decorator input
+    ///   - authType: authentication type, if provided will be used to filter the auth rules based on the provider field.
+    ///               Only use when multi-auth is enabled.
+    public init(_ authRuleDecoratorInput: AuthRuleDecoratorInput,
+                authType: AWSAuthorizationType? = nil) {
         self.input = authRuleDecoratorInput
+        self.authType = authType
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
@@ -42,7 +51,7 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
                          modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
-        let authRules = modelSchema.authRules
+        let authRules = modelSchema.authRules.filterBy(authType: authType)
         guard !authRules.isEmpty else {
             return document
         }
@@ -168,6 +177,24 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         }
 
         return selectionSet
+    }
+}
+
+private extension AuthRules {
+    func filterBy(authType: AWSAuthorizationType?) -> AuthRules {
+        guard let authType = authType else {
+            return self
+        }
+
+        return filter {
+            guard let provider = $0.provider else {
+                // if an authType is available but not a provider
+                // means DataStore is using multi-auth with an outdated
+                // version of models (prior to codegen v2.26.0).
+                return true
+            }
+            return authType == provider.toAWSAuthorizationType()
+        }
     }
 }
 
