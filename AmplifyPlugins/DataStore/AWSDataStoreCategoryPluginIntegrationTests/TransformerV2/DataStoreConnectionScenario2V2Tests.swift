@@ -13,7 +13,7 @@ import AWSMobileClient
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
-/*
+/* Has One (Explicit Field)
  A one-to-one connection where a project has one team,
  with a field you would like to use for the connection.
  ```

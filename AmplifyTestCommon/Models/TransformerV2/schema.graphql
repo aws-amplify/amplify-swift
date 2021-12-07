@@ -84,7 +84,8 @@ type Team4bV2 @model {
   project: Project4bV2 @belongsTo(fields: ["projectID"])
 }
 
-#Belongs-to bi-directional
+# Belongs-to bi-directional - Explicit Has Many relationship
+
 type Post4V2 @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String!
