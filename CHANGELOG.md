@@ -1,5 +1,17 @@
 # Changelog
 ## Unreleased
+## 1.17.0 (2021-12-07)
+
+### Features
+
+- **Storage**: Add async resolvePrefix (#1539)
+
+### Bug Fixes
+
+- **datastore**: fix owner based subscriptions queries w/ multiauth (#1553)
+- **auth**: Update the Auth plugin to enforce ordering of api calls (#1549)
+- **DataStore**: Remove from snapshot when item no longer matches predicate (#1522)
+
 
 ### Features
 
