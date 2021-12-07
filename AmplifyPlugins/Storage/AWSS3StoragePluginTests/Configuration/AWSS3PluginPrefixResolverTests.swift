@@ -24,6 +24,34 @@ class AWSS3PluginPrefixResolverTests: XCTestCase {
                            expectedPrefix: "")
         assertPrefixEquals(prefixResolver.resolvePrefix(for: .private, targetIdentityId: "identityId"),
                            expectedPrefix: "")
+
+        let resolveComplete = expectation(description: "resolvePrefix completed")
+        resolveComplete.expectedFulfillmentCount = 6
+        prefixResolver.resolvePrefix(for: .guest, targetIdentityId: nil, completion: { result in
+            self.assertPrefixEquals(result, expectedPrefix: "")
+            resolveComplete.fulfill()
+        })
+        prefixResolver.resolvePrefix(for: .protected, targetIdentityId: nil, completion: { result in
+            self.assertPrefixEquals(result, expectedPrefix: "")
+            resolveComplete.fulfill()
+        })
+        prefixResolver.resolvePrefix(for: .private, targetIdentityId: nil, completion: { result in
+            self.assertPrefixEquals(result, expectedPrefix: "")
+            resolveComplete.fulfill()
+        })
+        prefixResolver.resolvePrefix(for: .guest, targetIdentityId: "targetUserId", completion: { result in
+            self.assertPrefixEquals(result, expectedPrefix: "")
+            resolveComplete.fulfill()
+        })
+        prefixResolver.resolvePrefix(for: .protected, targetIdentityId: "targetUserId", completion: { result in
+            self.assertPrefixEquals(result, expectedPrefix: "")
+            resolveComplete.fulfill()
+        })
+        prefixResolver.resolvePrefix(for: .private, targetIdentityId: "targetUserId", completion: { result in
+            self.assertPrefixEquals(result, expectedPrefix: "")
+            resolveComplete.fulfill()
+        })
+        wait(for: [resolveComplete], timeout: 1)
     }
 
     func testStorageAccessLevelAwarePrefixResolver() {
@@ -31,19 +59,33 @@ class AWSS3PluginPrefixResolverTests: XCTestCase {
         mockAuthService.identityId = "userId"
         let prefixResolver = StorageAccessLevelAwarePrefixResolver(authService: mockAuthService)
 
-        assertPrefixEquals(prefixResolver.resolvePrefix(for: .guest, targetIdentityId: nil),
-                           expectedPrefix: "public/")
-        assertPrefixEquals(prefixResolver.resolvePrefix(for: .protected, targetIdentityId: nil),
-                           expectedPrefix: "protected/userId/")
-        assertPrefixEquals(prefixResolver.resolvePrefix(for: .private, targetIdentityId: nil),
-                           expectedPrefix: "private/userId/")
-        assertPrefixEquals(prefixResolver.resolvePrefix(for: .guest, targetIdentityId: "targetUserId"),
-                           expectedPrefix: "public/")
-        assertPrefixEquals(prefixResolver.resolvePrefix(for: .protected, targetIdentityId: "targetUserId"),
-                           expectedPrefix: "protected/targetUserId/")
-        assertPrefixEquals(prefixResolver.resolvePrefix(for: .private, targetIdentityId: "targetUserId"),
-                           expectedPrefix: "private/targetUserId/")
-
+        let resolveComplete = expectation(description: "resolvePrefix completed")
+        resolveComplete.expectedFulfillmentCount = 6
+        prefixResolver.resolvePrefix(for: .guest, targetIdentityId: nil, completion: { result in
+            self.assertPrefixEquals(result, expectedPrefix: "public/")
+            resolveComplete.fulfill()
+        })
+        prefixResolver.resolvePrefix(for: .protected, targetIdentityId: nil, completion: { result in
+            self.assertPrefixEquals(result, expectedPrefix: "protected/userId/")
+            resolveComplete.fulfill()
+        })
+        prefixResolver.resolvePrefix(for: .private, targetIdentityId: nil, completion: { result in
+            self.assertPrefixEquals(result, expectedPrefix: "private/userId/")
+            resolveComplete.fulfill()
+        })
+        prefixResolver.resolvePrefix(for: .guest, targetIdentityId: "targetUserId", completion: { result in
+            self.assertPrefixEquals(result, expectedPrefix: "public/")
+            resolveComplete.fulfill()
+        })
+        prefixResolver.resolvePrefix(for: .protected, targetIdentityId: "targetUserId", completion: { result in
+            self.assertPrefixEquals(result, expectedPrefix: "protected/targetUserId/")
+            resolveComplete.fulfill()
+        })
+        prefixResolver.resolvePrefix(for: .private, targetIdentityId: "targetUserId", completion: { result in
+            self.assertPrefixEquals(result, expectedPrefix: "private/targetUserId/")
+            resolveComplete.fulfill()
+        })
+        wait(for: [resolveComplete], timeout: 1)
     }
 
     func assertPrefixEquals(_ result: Result<String, StorageError>, expectedPrefix: String) {
