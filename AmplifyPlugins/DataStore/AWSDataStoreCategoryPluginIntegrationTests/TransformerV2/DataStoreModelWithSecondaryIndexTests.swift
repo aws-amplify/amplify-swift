@@ -29,12 +29,14 @@ class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
     func testSaveModelAndSync() throws {
         try startAmplifyAndWaitForSync()
 
-        guard let customer = saveCustomer(name: "name", accountRepresentativeID: "accountId") else {
+        guard var customer = saveCustomer(name: "name", accountRepresentativeID: "accountId") else {
             XCTFail("Could not create blog, posts, and comments")
             return
         }
-
+        let updatedName = "updatedName"
         let createReceived = expectation(description: "Create notification received")
+        let updateReceived = expectation(description: "Update notification received")
+        let deleteReceived = expectation(description: "Delete notification received")
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
@@ -52,7 +54,13 @@ class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
                     XCTAssertEqual(customerEvent.accountRepresentativeID, customer.accountRepresentativeID)
                     XCTAssertEqual(mutationEvent.version, 1)
                     createReceived.fulfill()
-                    return
+                } else if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
+                    XCTAssertEqual(customerEvent.name, updatedName)
+                    XCTAssertEqual(mutationEvent.version, 2)
+                    updateReceived.fulfill()
+                } else if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
+                    XCTAssertEqual(mutationEvent.version, 3)
+                    deleteReceived.fulfill()
                 }
         }
         guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
@@ -64,7 +72,7 @@ class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
             switch result {
             case .success(let queriedCustomerOptional):
                 guard let queriedCustomer = queriedCustomerOptional else {
-                    XCTFail("Could not get todo")
+                    XCTFail("Could not get customer")
                     return
                 }
                 XCTAssertEqual(queriedCustomer.id, customer.id)
@@ -75,6 +83,29 @@ class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
 
         wait(for: [getCustomerCompleted, createReceived], timeout: TestCommonConstants.networkTimeout)
 
+        customer.name = updatedName
+        let updateCompleted = expectation(description: "update completed")
+        Amplify.DataStore.save(customer) { event in
+            switch event {
+            case .success(let customer):
+                XCTAssertEqual(customer.name, updatedName)
+                updateCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("Failed \(error)")
+            }
+        }
+        wait(for: [updateCompleted, updateReceived], timeout: 1)
+
+        let deleteCompleted = expectation(description: "delete completed")
+        Amplify.DataStore.delete(CustomerSecondaryIndexV2.self, withId: customer.id) { event in
+            switch event {
+            case .success:
+                deleteCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("Failed \(error)")
+            }
+        }
+        wait(for: [deleteCompleted, deleteReceived], timeout: 1)
     }
 
     func saveCustomer(name: String, accountRepresentativeID: String) -> CustomerSecondaryIndexV2? {

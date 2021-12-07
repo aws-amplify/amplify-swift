@@ -1060,7 +1060,6 @@
 				FA3841EA23889D6C0070AD5B /* SubscriptionEndToEndTests.swift */,
 				2149E62B23886D3900873955 /* SyncMetadataTests.swift */,
 				FAD2BDF7239583B5006EB065 /* TestSupport */,
-				218F78D0275AC7840042334B /* V2 */,
 			);
 			path = AWSDataStoreCategoryPluginIntegrationTests;
 			sourceTree = "<group>";
@@ -1118,19 +1117,12 @@
 				218F7885275A81410042334B /* DataStoreConnectionScenario5V2Tests.swift */,
 				218F7881275A81400042334B /* DataStoreConnectionScenario6V2Tests.swift */,
 				218F7886275A81410042334B /* DataStoreConnectionScenario7V2Tests.swift */,
-				218F788E275A825A0042334B /* README.md */,
-			);
-			path = TransformerV2;
-			sourceTree = "<group>";
-		};
-		218F78D0275AC7840042334B /* V2 */ = {
-			isa = PBXGroup;
-			children = (
 				218F78D3275AC7CD0042334B /* DataStoreModelWithCustomTimestampTests.swift */,
 				218F78D2275AC7CD0042334B /* DataStoreModelWithDefaultValueTests.swift */,
 				218F78D1275AC7CD0042334B /* DataStoreModelWithSecondaryIndexTests.swift */,
+				218F788E275A825A0042334B /* README.md */,
 			);
-			path = V2;
+			path = TransformerV2;
 			sourceTree = "<group>";
 		};
 		21BBF6312728A88300B8A856 /* Migration */ = {
