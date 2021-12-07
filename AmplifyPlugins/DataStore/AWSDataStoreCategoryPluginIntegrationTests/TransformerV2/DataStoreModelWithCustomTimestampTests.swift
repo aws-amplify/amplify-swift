@@ -24,6 +24,7 @@ import AWSMobileClient
 
 class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
 
+    // TODO: Upates are not working due to CLI provisioning issue. the Update mutation is missing the `id`
     func testSaveModelAndSync() throws {
         try startAmplifyAndWaitForSync()
 

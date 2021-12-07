@@ -201,7 +201,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [queriedProjectCompleted, syncUpdatedProjectReceived], timeout: networkTimeout)
     }
 
-    func testDeleteAndGetProjectReturnsNil() throws {
+    func testCreateUpdateDeleteAndGetProjectReturnsNil() throws {
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               var project = saveProject(project1V2TeamId: team.id) else {
@@ -273,7 +273,6 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    // This test has been disabled, cascade delete is not working as expected. The team is not deleted
     func testDeleteAndGetProjectReturnsNilWithSync() throws {
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
@@ -316,6 +315,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         wait(for: [createReceived], timeout: TestCommonConstants.networkTimeout)
+
         let deleteProjectSuccessful = expectation(description: "delete project")
         Amplify.DataStore.delete(project) { result in
             switch result {
@@ -325,7 +325,20 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
                 XCTFail("\(error)")
             }
         }
-        wait(for: [deleteProjectSuccessful, deleteReceived], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
+
+        // TODO: Delete Team should not be necessary, cascade delete should delete the team when deleting the project.
+        // Once cascade works for hasOne, the following code can be removed.
+        let deleteTeamSuccessful = expectation(description: "delete team")
+        Amplify.DataStore.delete(team) { result in
+            switch result {
+            case .success:
+                deleteTeamSuccessful.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [deleteTeamSuccessful, deleteReceived], timeout: TestCommonConstants.networkTimeout)
 
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
         Amplify.DataStore.query(Project1V2.self, byId: project.id) { result in
