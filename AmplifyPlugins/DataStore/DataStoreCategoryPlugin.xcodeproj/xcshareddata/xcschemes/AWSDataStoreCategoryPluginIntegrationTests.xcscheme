@@ -24,6 +24,9 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "DataStoreConnectionScenario1V2Tests/testDeleteAndGetProjectReturnsNilWithSync()">
+               </Test>
+               <Test
                   Identifier = "SubscriptionTests/testSubscribeAtStartup()">
                </Test>
                <Test

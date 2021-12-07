@@ -463,7 +463,6 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
         Amplify.DataStore.delete(Blog6V2.self, withId: blog.id) { result in
             switch result {
             case .success:
-                print("Deleted")
                 deleteBlogCompleted.fulfill()
             case .failure(let response):
                 XCTFail("Failed with: \(response)")
