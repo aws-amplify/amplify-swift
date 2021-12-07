@@ -94,7 +94,7 @@ class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
                 XCTFail("Failed \(error)")
             }
         }
-        wait(for: [updateCompleted, updateReceived], timeout: 1)
+        wait(for: [updateCompleted, updateReceived], timeout: TestCommonConstants.networkTimeout)
 
         let deleteCompleted = expectation(description: "delete completed")
         Amplify.DataStore.delete(CustomerSecondaryIndexV2.self, withId: customer.id) { event in
@@ -105,7 +105,7 @@ class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
                 XCTFail("Failed \(error)")
             }
         }
-        wait(for: [deleteCompleted, deleteReceived], timeout: 1)
+        wait(for: [deleteCompleted, deleteReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func saveCustomer(name: String, accountRepresentativeID: String) -> CustomerSecondaryIndexV2? {

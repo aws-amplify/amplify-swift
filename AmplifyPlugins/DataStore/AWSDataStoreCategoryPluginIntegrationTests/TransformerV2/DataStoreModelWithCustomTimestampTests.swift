@@ -27,12 +27,15 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
     func testSaveModelAndSync() throws {
         try startAmplifyAndWaitForSync()
 
-        guard let todo = saveTodo(content: "content") else {
+        guard var todo = saveTodo(content: "content") else {
             XCTFail("Could not create blog, posts, and comments")
             return
         }
-
+        let updatedContent = "updatedContent"
         let createReceived = expectation(description: "Create notification received")
+        // let updateReceived = expectation(description: "Update notification received")
+        var receivedTodoResult: TodoCustomTimestampV2?
+        let deleteReceived = expectation(description: "Delete notification received")
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
@@ -47,16 +50,29 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
 
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
                     XCTAssertEqual(todoEvent.content, todo.content)
+                    XCTAssertNotNil(todoEvent.createdOn)
+                    XCTAssertNotNil(todoEvent.updatedOn)
+                    receivedTodoResult = todoEvent
                     XCTAssertEqual(mutationEvent.version, 1)
                     createReceived.fulfill()
                     return
+                } else if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
+                    XCTAssertEqual(mutationEvent.version, 2)
+                    // updateReceived.fulfill()
+                } else if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
+                    // TODO: assert on version 3 once updates are working
+                    // XCTAssertEqual(mutationEvent.version, 3)
+                    XCTAssertEqual(mutationEvent.version, 2)
+                    deleteReceived.fulfill()
                 }
+
         }
         guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
         let getTodoCompleted = expectation(description: "get todo complete")
+
         Amplify.DataStore.query(TodoCustomTimestampV2.self, byId: todo.id) { result in
             switch result {
             case .success(let queriedTodoOptional):
@@ -72,6 +88,37 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
 
         wait(for: [getTodoCompleted, createReceived], timeout: TestCommonConstants.networkTimeout)
 
+        /*
+          This failed with "The variables input contains a field name \'id\' that is not defined for input object
+         type \'UpdateTodoCustomTimestampV2Input\' ", locations: nil, path: nil, extensions: nil)]
+         */
+//        guard var receivedTodo = receivedTodoResult else {
+//            XCTFail("Failed to query todo")
+//            return
+//        }
+//        receivedTodo.content = updatedContent
+//        let updateCompleted = expectation(description: "update completed")
+//        Amplify.DataStore.save(receivedTodo) { event in
+//            switch event {
+//            case .success(let todo):
+//                XCTAssertEqual(todo.content, updatedContent)
+//                updateCompleted.fulfill()
+//            case .failure(let error):
+//                XCTFail("Failed \(error)")
+//            }
+//        }
+//        wait(for: [updateCompleted, updateReceived], timeout: TestCommonConstants.networkTimeout)
+
+        let deleteCompleted = expectation(description: "delete completed")
+        Amplify.DataStore.delete(TodoCustomTimestampV2.self, withId: todo.id) { event in
+            switch event {
+            case .success:
+                deleteCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("Failed \(error)")
+            }
+        }
+        wait(for: [deleteCompleted, deleteReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func saveTodo(content: String) -> TodoCustomTimestampV2? {
