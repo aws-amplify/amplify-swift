@@ -23,7 +23,7 @@ import AWSMobileClient
 
 class DataStoreModelWithDefaultValueTests: SyncEngineIntegrationV2TestBase {
 
-    func testSaveModelAndSync() throws {
+    func testSaveModelWithExplicitContentAndSync() throws {
         try startAmplifyAndWaitForSync()
 
         guard let todo = saveTodo(content: "content") else {
@@ -71,10 +71,59 @@ class DataStoreModelWithDefaultValueTests: SyncEngineIntegrationV2TestBase {
         }
 
         wait(for: [getTodoCompleted, createReceived], timeout: TestCommonConstants.networkTimeout)
-
     }
 
-    func saveTodo(content: String) -> TodoWithDefaultValueV2? {
+    func testSaveModelWithoutExplicitContentAndSync() throws {
+        try startAmplifyAndWaitForSync()
+
+        guard let todo = saveTodo(content: nil) else {
+            XCTFail("Could not create blog, posts, and comments")
+            return
+        }
+
+        let createReceived = expectation(description: "Create notification received")
+        let hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                guard let mutationEvent = payload.data as? MutationEvent
+                    else {
+                        XCTFail("Can't cast payload as mutation event")
+                        return
+                }
+                guard let todoEvent = try? mutationEvent.decodeModel() as? TodoWithDefaultValueV2,
+                        todoEvent.id == todo.id else {
+                    return
+                }
+
+                if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                    XCTAssertEqual(todoEvent.content, "My new Todo")
+                    XCTAssertEqual(mutationEvent.version, 1)
+                    createReceived.fulfill()
+                    return
+                }
+        }
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+        let getTodoCompleted = expectation(description: "get todo complete")
+        Amplify.DataStore.query(TodoWithDefaultValueV2.self, byId: todo.id) { result in
+            switch result {
+            case .success(let queriedTodoOptional):
+                guard let queriedTodo = queriedTodoOptional else {
+                    XCTFail("Could not get todo")
+                    return
+                }
+                XCTAssertEqual(queriedTodo.id, todo.id)
+                getTodoCompleted.fulfill()
+            case .failure(let response): XCTFail("Failed with: \(response)")
+            }
+        }
+
+        wait(for: [getTodoCompleted, createReceived], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    func saveTodo(content: String?) -> TodoWithDefaultValueV2? {
         let todo = TodoWithDefaultValueV2(content: content)
         var result: TodoWithDefaultValueV2?
         let completeInvoked = expectation(description: "request completed")
