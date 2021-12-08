@@ -14,7 +14,7 @@ import AWSMobileClient
 @testable import AWSDataStoreCategoryPlugin
 
 /*
-(HasMany) A Post that can have many comments
+(HasMany) A Post that can have many comments (Explicit)
 ```
 type Post3 @model {
   id: ID!

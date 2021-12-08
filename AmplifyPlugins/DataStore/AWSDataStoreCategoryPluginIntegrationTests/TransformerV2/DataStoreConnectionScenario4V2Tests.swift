@@ -13,7 +13,7 @@ import AWSMobileClient
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
-/*
+/* 11 Explicit Bi-Directional Belongs to Relationship
  (Belongs to) A connection that is bi-directional by adding a many-to-one connection to the type that already have a one-to-many connection.
  ```
  type Post4V2 @model @auth(rules: [{allow: public}]) {
@@ -194,6 +194,19 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
         }
         wait(for: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
+
+    func testSavePostWithSyncAndReadPost() {
+
+    }
+
+    func testUpdatePostWithSync() {
+
+    }
+
+    func testDeletePostWithSync() {
+
+    }
+
     func savePost(id: String = UUID().uuidString, title: String) -> Post4V2? {
         let post = Post4V2(id: id, title: title)
         var result: Post4V2?

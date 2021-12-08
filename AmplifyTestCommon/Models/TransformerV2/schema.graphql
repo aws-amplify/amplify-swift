@@ -27,7 +27,7 @@ type Team2V2 @model @auth(rules: [{allow: public}]) {
   name: String!
 }
 
-# Has Many `@hasMany` Implicit
+# 6 Implicit Has Many Relationship
 
 type Post3aV2 @model {
   id: ID!
@@ -40,7 +40,7 @@ type Comment3aV2 @model {
   content: String!
 }
 
-# Has Many `@hasMany` Explicit
+# 7 Explicit Has Many Relationship
 
 type Post3V2 @model @auth(rules: [{allow: public}]) {
   id: ID!
@@ -56,7 +56,7 @@ type Comment3V2 @model @auth(rules: [{allow: public}]) {
 
 # Belongs to (Implicit, Explicit, bi-directional)
 
-# Belongs-to Implicit
+# 9 Implicit Belongs to Relationship
 
 type Project4aV2 @model {
   id: ID!
@@ -70,7 +70,8 @@ type Team4aV2 @model {
   project: Project4aV2 @belongsTo
 }
 
-# Belongs-to Explicit
+# 10 Explicit Belongs to Relationship
+
 type Project4bV2 @model {
   id: ID!
   name: String
@@ -84,7 +85,7 @@ type Team4bV2 @model {
   project: Project4bV2 @belongsTo(fields: ["projectID"])
 }
 
-# Belongs-to bi-directional - Explicit Has Many relationship
+# 11 Explicit Bi-Directional Belongs to Relationship
 
 type Post4V2 @model @auth(rules: [{allow: public}]) {
   id: ID!
@@ -99,7 +100,7 @@ type Comment4V2 @model @auth(rules: [{allow: public}]) {
   post: Post4V2 @belongsTo(fields: ["postID"])
 }
 
-# Many to Many
+# 8 Many to Many relationship
 
 type Post5V2 @model {
   id: ID!
@@ -135,6 +136,8 @@ type Comment6V2 @model @auth(rules: [{allow: public}]) {
   post: Post6V2 @belongsTo(fields: ["postID"])
   content: String!
 }
+
+12 Belongs to Relationship field and type names don’t align
 
 type Blog7V2 @model {
   id: ID!
