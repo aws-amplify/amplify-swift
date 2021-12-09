@@ -10,7 +10,7 @@ PODS:
     - CwlMachBadInstructionHandler (~> 2.1.0)
     - CwlPosixPreconditionTesting (~> 2.1.0)
   - SwiftFormat/CLI (0.44.17)
-  - SwiftLint (0.45.0)
+  - SwiftLint (0.45.1)
 
 DEPENDENCIES:
   - AWSCore (~> 2.26.5)
@@ -46,7 +46,7 @@ SPEC CHECKSUMS:
   CwlPosixPreconditionTesting: 1ba4471964405941f79b3f06bbcf3c2be782950c
   CwlPreconditionTesting: 73ae5de517a8761e5e40fb4136c6a26365af0440
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
-  SwiftLint: e5c7f1fba68eccfc51509d5b2ce1699f5502e0c7
+  SwiftLint: 06ac37e4d38c7068e0935bb30cda95f093bec761
 
 PODFILE CHECKSUM: 5e20e56b8ef40444b018a3736b7b726ff9772f00
 
