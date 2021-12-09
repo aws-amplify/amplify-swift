@@ -17,6 +17,28 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         return AmplifyAWSCredentialsProvider()
     }
 
+    /// Retrieves the identity identifier for this authentication session from Cognito.
+    /// - Parameter completion: Completion handler defined for the input `Result<String, AuthError>`
+    public func getIdentityID(completion: @escaping (Result<String, AuthError>) -> Void) {
+        Amplify.Auth.fetchAuthSession { event in
+            switch event {
+            case .success(let session):
+                guard
+                    let identityID = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
+                else {
+                    return completion(.failure(.unknown("""
+                    Did not receive a valid response from fetchAuthSession for identityId.
+                    """)))
+                }
+
+                completion(identityID)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    @available(*, deprecated, message: "Use getIdentityID(completion:) instead")
     public func getIdentityId() -> Result<String, AuthError> {
         var result: Result<String, AuthError>?
         let semaphore = DispatchSemaphore(value: 0)
@@ -43,21 +65,22 @@ public class AWSAuthService: AWSAuthServiceBehavior {
     }
 
     // This algorithm was heavily based on the implementation here:
-    // https://github.com/aws-amplify/aws-sdk-ios/blob/main/AWSAuthSDK/Sources/AWSMobileClient/AWSMobileClientExtensions.swift#L29
+    // swiftlint:disable:next line_length
+    //  https://github.com/aws-amplify/aws-sdk-ios/blob/main/AWSAuthSDK/Sources/AWSMobileClient/AWSMobileClientExtensions.swift#L29
     public func getTokenClaims(tokenString: String) -> Result<[String: AnyObject], AuthError> {
         let tokenSplit = tokenString.split(separator: ".")
         guard tokenSplit.count > 2 else {
             return .failure(.validation("", "Token is not valid base64 encoded string.", "", nil))
         }
 
-        //Add ability to do URL decoding
-        //https://stackoverflow.com/questions/40915607/how-can-i-decode-jwt-json-web-token-token-in-swift
+        // Add ability to do URL decoding
+        // https://stackoverflow.com/questions/40915607/how-can-i-decode-jwt-json-web-token-token-in-swift
         let claims = tokenSplit[1]
             .replacingOccurrences(of: "-", with: "+")
             .replacingOccurrences(of: "_", with: "/")
 
         let paddedLength = claims.count + (4 - (claims.count % 4)) % 4
-        //JWT is not padded with =, pad it if necessary
+        // JWT is not padded with =, pad it if necessary
         let updatedClaims = claims.padding(toLength: paddedLength, withPad: "=", startingAt: 0)
         let encodedData = Data(base64Encoded: updatedClaims, options: .ignoreUnknownCharacters)
 
@@ -84,6 +107,27 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         return .success(convertedDictionary)
     }
 
+    /// Retrieves the Cognito token from the AuthCognitoTokensProvider
+    /// - Parameter completion: Completion handler defined for the input `Result<String, AuthError>`
+    public func getUserPoolAccessToken(completion: @escaping (Result<String, AuthError>) -> Void) {
+        Amplify.Auth.fetchAuthSession { [weak self] event in
+            switch event {
+            case .success(let session):
+                guard
+                    let tokenResult = self?.getTokenString(from: session)
+                else {
+                    return completion(.failure(.unknown("""
+                    Did not receive a valid response from fetchAuthSession for get token.
+                    """)))
+                }
+                completion(tokenResult)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    @available(*, deprecated, message: "Use getUserPoolAccessToken(completion:) instead")
     public func getToken() -> Result<String, AuthError> {
         var result: Result<String, AuthError>?
         let semaphore = DispatchSemaphore(value: 0)
