@@ -74,6 +74,7 @@ class OperationTaskMapper {
 
     /// Not inherently thread safe--this must be called from `concurrencyQueue`
     private func removePair(operationId: UUID?, taskId: Int?) {
+        dispatchPrecondition(condition: .onQueue(Self.concurrencyQueue))
         if let operationId = operationId {
             operations[operationId] = nil
             taskIdsByOperationId[operationId] = nil
