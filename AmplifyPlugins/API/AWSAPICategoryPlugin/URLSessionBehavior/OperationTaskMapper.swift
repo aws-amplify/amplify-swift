@@ -74,15 +74,14 @@ class OperationTaskMapper {
 
     /// Not inherently thread safe--this must be called from `concurrencyQueue`
     private func removePair(operationId: UUID?, taskId: Int?) {
-        OperationTaskMapper.concurrencyQueue.sync {
-            if let operationId = operationId {
-                operations[operationId] = nil
-                taskIdsByOperationId[operationId] = nil
-            }
-            if let taskId = taskId {
-                tasks[taskId] = nil
-                operationIdsByTaskId[taskId] = nil
-            }
+        dispatchPrecondition(condition: .onQueue(Self.concurrencyQueue))
+        if let operationId = operationId {
+            operations[operationId] = nil
+            taskIdsByOperationId[operationId] = nil
+        }
+        if let taskId = taskId {
+            tasks[taskId] = nil
+            operationIdsByTaskId[taskId] = nil
         }
     }
 }

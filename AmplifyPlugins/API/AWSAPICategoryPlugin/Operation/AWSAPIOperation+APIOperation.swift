@@ -45,6 +45,8 @@ extension AWSRESTOperation: APIOperation {
             return
         }
 
+        mapper.removePair(for: self)
+
         let apiOperationResponse = APIOperationResponse(error: error, response: response)
         do {
             try apiOperationResponse.validate()
