@@ -1,5 +1,16 @@
 # Changelog
 ## Unreleased
+## 1.18.0 (2021-12-15)
+
+### Features
+
+- **AWSPluginsCore**: Add non-blocking methods to AWSAuthServiceBehavior / deprecate existing blocking methods   (#1502)
+
+### Bug Fixes
+
+- **API**: Memory leak in GraphQLOperation (#1562)
+- **Storage**: Use async getidentityid (#1544)
+
 ## 1.17.0 (2021-12-07)
 
 ### Features
