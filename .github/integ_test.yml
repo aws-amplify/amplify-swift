@@ -1,0 +1,34 @@
+name: integ-testing-actions
+on:
+  push:
+    branches:    
+      - royjit.integ_GHActions
+permissions:
+      id-token: write
+      contents: read   
+jobs:
+  run-integration-test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Xcode version
+        run: /usr/bin/xcodebuild -version
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: IntegrationRoleSession
+      - name: Copy configuration
+        run: aws s3 cp s3://${{ secrets.S3_TESTCONFIGURATION }}/testconfiguration/ ~/.aws-amplify/amplify-ios/testconfiguration/ --recursive
+      - name: List the copied configurations
+        run: ls ~/.aws-amplify/amplify-ios/testconfiguration/
+      - name: CocoaPod Install in Auth
+        run: cd ./AmplifyPlugins/Auth/ && pod install && ls
+      - name: Build Auth
+        run: cd ./AmplifyPlugins/Auth/ && xcodebuild build-for-testing -workspace AWSCognitoAuthPlugin.xcworkspace -scheme AWSCognitoAuthPluginIntegrationTests -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13,OS=15.0' | xcpretty && exit ${PIPESTATUS[0]} 
+      - name: Test Amplify auth
+        run: cd ./AmplifyPlugins/Auth/ && xcodebuild test -workspace AWSCognitoAuthPlugin.xcworkspace -scheme AWSCognitoAuthPluginIntegrationTests -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13,OS=15.0' | xcpretty --simple --color --report junit  && exit ${PIPESTATUS[0]} 
+      
