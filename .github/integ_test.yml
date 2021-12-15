@@ -1,8 +1,10 @@
 name: integ-testing-actions
 on:
   push:
-    branches:    
-      - royjit.integ_GHActions
+    branches: [royjit.integ_GHActions]
+  pull_request:
+    branches: [royjit.integ_GHActions]
+
 permissions:
       id-token: write
       contents: read   
