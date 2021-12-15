@@ -31,4 +31,3 @@ jobs:
         run: cd ./AmplifyPlugins/Auth/ && xcodebuild build-for-testing -workspace AWSCognitoAuthPlugin.xcworkspace -scheme AWSCognitoAuthPluginIntegrationTests -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13,OS=15.0' | xcpretty && exit ${PIPESTATUS[0]} 
       - name: Test Amplify auth
         run: cd ./AmplifyPlugins/Auth/ && xcodebuild test -workspace AWSCognitoAuthPlugin.xcworkspace -scheme AWSCognitoAuthPluginIntegrationTests -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13,OS=15.0' | xcpretty --simple --color --report junit  && exit ${PIPESTATUS[0]} 
-      
