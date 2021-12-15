@@ -11,6 +11,7 @@ permissions:
 jobs:
   run-integration-test:
     runs-on: macos-latest
+    environment: IntegrationTest
     steps:
       - uses: actions/checkout@v2
       - name: Xcode version
@@ -24,7 +25,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           role-session-name: IntegrationRoleSession
       - name: Copy configuration
-        run: aws s3 cp s3://${{ secrets.S3_TESTCONFIGURATION }}/testconfiguration/ ~/.aws-amplify/amplify-ios/testconfiguration/ --recursive
+        run: aws s3 cp s3://${{ secrets.AWS_S3_BUCKET_INTEG }}/testconfiguration/ ~/.aws-amplify/amplify-ios/testconfiguration/ --recursive
       - name: List the copied configurations
         run: ls ~/.aws-amplify/amplify-ios/testconfiguration/
       - name: CocoaPod Install in Auth
