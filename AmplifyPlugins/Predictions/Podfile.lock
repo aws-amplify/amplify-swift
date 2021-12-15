@@ -3,11 +3,11 @@ PODS:
     - Amplify/Default (= 1.18.0)
   - Amplify/Default (1.18.0)
   - AmplifyPlugins/AWSCognitoAuthPlugin (1.18.0):
-    - AWSAuthCore (~> 2.26.5)
-    - AWSCognitoIdentityProvider (~> 2.26.5)
-    - AWSCognitoIdentityProviderASF (~> 2.26.5)
-    - AWSCore (~> 2.26.5)
-    - AWSMobileClient (~> 2.26.5)
+    - AWSAuthCore (~> 2.26.6)
+    - AWSCognitoIdentityProvider (~> 2.26.6)
+    - AWSCognitoIdentityProviderASF (~> 2.26.6)
+    - AWSCore (~> 2.26.6)
+    - AWSMobileClient (~> 2.26.6)
     - AWSPluginsCore (= 1.18.0)
   - AWSAuthCore (2.26.6):
     - AWSCore (= 2.26.6)
@@ -26,7 +26,7 @@ PODS:
     - AWSCore (= 2.26.6)
   - AWSPluginsCore (1.18.0):
     - Amplify (= 1.18.0)
-    - AWSCore (~> 2.26.5)
+    - AWSCore (~> 2.26.6)
   - AWSPolly (2.26.6):
     - AWSCore (= 2.26.6)
   - AWSRekognition (2.26.6):
@@ -52,13 +52,13 @@ PODS:
 DEPENDENCIES:
   - Amplify (from `../../`)
   - AmplifyPlugins/AWSCognitoAuthPlugin (from `../../`)
-  - AWSComprehend (~> 2.26.5)
+  - AWSComprehend (~> 2.26.6)
   - AWSPluginsCore (from `../../`)
-  - AWSPolly (~> 2.26.5)
-  - AWSRekognition (~> 2.26.5)
-  - AWSTextract (~> 2.26.5)
-  - AWSTranscribeStreaming (~> 2.26.5)
-  - AWSTranslate (~> 2.26.5)
+  - AWSPolly (~> 2.26.6)
+  - AWSRekognition (~> 2.26.6)
+  - AWSTextract (~> 2.26.6)
+  - AWSTranscribeStreaming (~> 2.26.6)
+  - AWSTranslate (~> 2.26.6)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `2.1.0`)
   - SwiftFormat/CLI (= 0.44.17)
   - SwiftLint

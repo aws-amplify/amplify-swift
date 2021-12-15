@@ -8,8 +8,8 @@ PODS:
     - CwlPreconditionTesting (~> 2.0)
   - AmplifyTestCommon/AWSPluginsTestCommon (1.18.0):
     - Amplify (= 1.18.0)
-    - AWSCore (~> 2.26.5)
-    - AWSMobileClient (~> 2.26.5)
+    - AWSCore (~> 2.26.6)
+    - AWSMobileClient (~> 2.26.6)
     - AWSPluginsCore (= 1.18.0)
     - CwlPreconditionTesting (~> 2.0)
   - AWSAuthCore (2.26.6):
@@ -27,7 +27,7 @@ PODS:
     - AWSCore (= 2.26.6)
   - AWSPluginsCore (1.18.0):
     - Amplify (= 1.18.0)
-    - AWSCore (~> 2.26.5)
+    - AWSCore (~> 2.26.6)
   - CwlCatchException (2.1.1):
     - CwlCatchExceptionSupport (~> 2.1.1)
   - CwlCatchExceptionSupport (2.1.1)
@@ -43,7 +43,7 @@ PODS:
 DEPENDENCIES:
   - Amplify (from `../../`)
   - AmplifyTestCommon (from `../../`)
-  - AWSMobileClient (~> 2.26.5)
+  - AWSMobileClient (~> 2.26.6)
   - AWSPluginsCore (from `../../`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `2.1.0`)
   - SwiftFormat/CLI (= 0.44.17)

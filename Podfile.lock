@@ -1,5 +1,5 @@
 PODS:
-  - AWSCore (2.26.5)
+  - AWSCore (2.26.6)
   - CwlCatchException (2.1.1):
     - CwlCatchExceptionSupport (~> 2.1.1)
   - CwlCatchExceptionSupport (2.1.1)
@@ -13,7 +13,7 @@ PODS:
   - SwiftLint (0.45.1)
 
 DEPENDENCIES:
-  - AWSCore (~> 2.26.5)
+  - AWSCore (~> 2.26.6)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `2.1.0`)
   - SwiftFormat/CLI (= 0.44.17)
   - SwiftLint
