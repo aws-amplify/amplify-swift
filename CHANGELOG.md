@@ -1,5 +1,7 @@
 # Changelog
 ## Unreleased
+## 1.18.1 (2021-12-15)
+
 ## 1.18.0 (2021-12-15)
 
 ### Features
