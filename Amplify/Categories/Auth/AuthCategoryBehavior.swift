@@ -114,6 +114,12 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
                        options: AuthConfirmSignInOperation.Request.Options?,
                        listener: AuthConfirmSignInOperation.ResultListener?) -> AuthConfirmSignInOperation
 
+    /// Sign out the currently logged-in user.
+    ///
+    /// - Parameters:
+    ///   - options: Parameters specific to plugin behavior.
+    ///   - listener: Triggered when the operation completes.
+    /// - Returns: AuthSignOutOperation
     @discardableResult
     func signOut(options: AuthSignOutOperation.Request.Options?,
                  listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation
