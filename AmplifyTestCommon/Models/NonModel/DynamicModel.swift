@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Foundation
 
 struct DynamicModel: Model, JSONValueHolder {
     public let id: String

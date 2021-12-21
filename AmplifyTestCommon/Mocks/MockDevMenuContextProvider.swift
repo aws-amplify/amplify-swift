@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import UIKit
 
 /// Mock class for presenting UI context to developer menu
 class MockDevMenuContextProvider: DevMenuPresentationContextProvider {
