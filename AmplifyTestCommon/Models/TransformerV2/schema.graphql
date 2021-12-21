@@ -176,3 +176,24 @@ type TodoWithDefaultValueV2 @model {
 type TodoCustomTimestampV2 @model(timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" }) {
   content: String
 }
+
+# 13 Multiple hasOne-hasMany relationships on same type
+
+type Meeting8V2 @model {
+  id: ID!
+  title: String!
+  attendees: [Registration8V2] @hasMany(indexName: "byMeeting", fields: ["id"])
+}
+
+type Attendee8V2 @model {
+  id: ID!
+  meetings: [Registration8V2] @hasMany(indexName: "byAttendee", fields: ["id"])
+}
+
+type Registration8V2 @model {
+  id: ID!
+  meetingId: ID @index(name: "byMeeting", sortKeyFields: ["attendeeId"])
+  meeting: Meeting8V2! @belongsTo(fields: ["meetingId"])
+  attendeeId: ID @index(name: "byAttendee", sortKeyFields: ["meetingId"])
+  attendee: Attendee8V2! @belongsTo(fields: ["attendeeId"])
+}

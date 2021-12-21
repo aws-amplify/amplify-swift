@@ -84,6 +84,12 @@
 		214F49CE24898E8500DA616C /* Article+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F49CC24898E8500DA616C /* Article+Schema.swift */; };
 		21558E3E237BB4BF0032A5BB /* GraphQLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */; };
 		21558E40237CB8640032A5BB /* GraphQLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21558E3F237CB8640032A5BB /* GraphQLError.swift */; };
+		215D40A6277231920077E7DA /* Registration8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215D40A0277231910077E7DA /* Registration8V2.swift */; };
+		215D40A7277231920077E7DA /* Meeting8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215D40A1277231910077E7DA /* Meeting8V2+Schema.swift */; };
+		215D40A8277231920077E7DA /* Attendee8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215D40A2277231920077E7DA /* Attendee8V2+Schema.swift */; };
+		215D40A9277231920077E7DA /* Meeting8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215D40A3277231920077E7DA /* Meeting8V2.swift */; };
+		215D40AA277231920077E7DA /* Attendee8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215D40A4277231920077E7DA /* Attendee8V2.swift */; };
+		215D40AB277231920077E7DA /* Registration8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215D40A5277231920077E7DA /* Registration8V2+Schema.swift */; };
 		2163356E273C799900F0DF3F /* QueryPredicateEvaluateGeneratedEnumTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2163356C273C799000F0DF3F /* QueryPredicateEvaluateGeneratedEnumTests.swift */; };
 		21644B7C2588258100C548A5 /* ModelListDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21644B7A2588258100C548A5 /* ModelListDecoder.swift */; };
 		21665EF5259A947100841696 /* ListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21665EF4259A947100841696 /* ListTests.swift */; };
@@ -1000,6 +1006,12 @@
 		214F49CC24898E8500DA616C /* Article+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Article+Schema.swift"; sourceTree = "<group>"; };
 		21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequest.swift; sourceTree = "<group>"; };
 		21558E3F237CB8640032A5BB /* GraphQLError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLError.swift; sourceTree = "<group>"; };
+		215D40A0277231910077E7DA /* Registration8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Registration8V2.swift; sourceTree = "<group>"; };
+		215D40A1277231910077E7DA /* Meeting8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Meeting8V2+Schema.swift"; sourceTree = "<group>"; };
+		215D40A2277231920077E7DA /* Attendee8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Attendee8V2+Schema.swift"; sourceTree = "<group>"; };
+		215D40A3277231920077E7DA /* Meeting8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Meeting8V2.swift; sourceTree = "<group>"; };
+		215D40A4277231920077E7DA /* Attendee8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Attendee8V2.swift; sourceTree = "<group>"; };
+		215D40A5277231920077E7DA /* Registration8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Registration8V2+Schema.swift"; sourceTree = "<group>"; };
 		2163356C273C799000F0DF3F /* QueryPredicateEvaluateGeneratedEnumTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryPredicateEvaluateGeneratedEnumTests.swift; sourceTree = "<group>"; };
 		21644B7A2588258100C548A5 /* ModelListDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelListDecoder.swift; sourceTree = "<group>"; };
 		21665EF4259A947100841696 /* ListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTests.swift; sourceTree = "<group>"; };
@@ -2049,6 +2061,19 @@
 			path = Provider;
 			sourceTree = "<group>";
 		};
+		215D409F2772317F0077E7DA /* 8V2 */ = {
+			isa = PBXGroup;
+			children = (
+				215D40A4277231920077E7DA /* Attendee8V2.swift */,
+				215D40A2277231920077E7DA /* Attendee8V2+Schema.swift */,
+				215D40A3277231920077E7DA /* Meeting8V2.swift */,
+				215D40A1277231910077E7DA /* Meeting8V2+Schema.swift */,
+				215D40A0277231910077E7DA /* Registration8V2.swift */,
+				215D40A5277231920077E7DA /* Registration8V2+Schema.swift */,
+			);
+			path = 8V2;
+			sourceTree = "<group>";
+		};
 		21665EF2259A944500841696 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -2165,6 +2190,7 @@
 				218F783D275A629B0042334B /* 5V2 */,
 				218F783E275A62A00042334B /* 6V2 */,
 				218F7840275A62AA0042334B /* 7V2 */,
+				215D409F2772317F0077E7DA /* 8V2 */,
 				218F78C6275AC6B30042334B /* CustomerSecondaryIndexV2.swift */,
 				218F78C8275AC6B30042334B /* CustomerSecondaryIndexV2+Schema.swift */,
 				218F78E9275E6C080042334B /* schema.graphql */,
@@ -5507,6 +5533,7 @@
 				216E45EE248E914F0035E3CE /* Todo.swift in Sources */,
 				218F785E275A63540042334B /* Post4V2.swift in Sources */,
 				6BEE081D2533CCFA00133961 /* OGCScenarioBPost.swift in Sources */,
+				215D40A8277231920077E7DA /* Attendee8V2+Schema.swift in Sources */,
 				21FDBB632587D7A30086FCDC /* Comment6.swift in Sources */,
 				217D5EC52577F9DF009F0639 /* Project2.swift in Sources */,
 				B4F3543525361E0E0050FEE0 /* DynamicModel.swift in Sources */,
@@ -5560,6 +5587,7 @@
 				218F7854275A63380042334B /* Post3V2+Schema.swift in Sources */,
 				FACF52042329633500646E10 /* TestExtensions.swift in Sources */,
 				216E460824913D430035E3CE /* Color.swift in Sources */,
+				215D40A7277231920077E7DA /* Meeting8V2+Schema.swift in Sources */,
 				B9FAA11823879A57009414B4 /* Author+Schema.swift in Sources */,
 				B9521836237E21BA00F53237 /* Post+Schema.swift in Sources */,
 				6B7743DE25906FD3001469F5 /* Menu+Schema.swift in Sources */,
@@ -5595,6 +5623,7 @@
 				6B7743DF25906FD3001469F5 /* Dish.swift in Sources */,
 				217D5EB82577F9DF009F0639 /* Project2+Schema.swift in Sources */,
 				218F7848275A63140042334B /* Project2V2+Schema.swift in Sources */,
+				215D40A9277231920077E7DA /* Meeting8V2.swift in Sources */,
 				218F7844275A63090042334B /* Post6V2+Schema.swift in Sources */,
 				214F49792486D8A200DA616C /* UserFollowing+Schema.swift in Sources */,
 				FACA361D2327FC84000E74F6 /* MockAPICategoryPlugin.swift in Sources */,
@@ -5618,6 +5647,7 @@
 				218F787E275A7F0C0042334B /* Team1V2.swift in Sources */,
 				214F497C2486D8A200DA616C /* UserFollowers.swift in Sources */,
 				217D5EB62577F9DF009F0639 /* Comment3+Schema.swift in Sources */,
+				215D40AA277231920077E7DA /* Attendee8V2.swift in Sources */,
 				B9521835237E21BA00F53237 /* Comment.swift in Sources */,
 				21AD4257249BFFE00016FE95 /* DeprecatedTodo.swift in Sources */,
 				6B7743E325906FD3001469F5 /* Restaurant+Schema.swift in Sources */,
@@ -5637,6 +5667,7 @@
 				217D5EB42577F9DF009F0639 /* Comment4+Schema.swift in Sources */,
 				6BE9D73C25A67F7400AB5C9A /* M2MUser.swift in Sources */,
 				6BE9D73825A67F7400AB5C9A /* M2MPostEditor+Schema.swift in Sources */,
+				215D40AB277231920077E7DA /* Registration8V2+Schema.swift in Sources */,
 				218F78CE275AC6B30042334B /* CustomerSecondaryIndexV2+Schema.swift in Sources */,
 				B9FAA10E23878BF3009414B4 /* UserAccount.swift in Sources */,
 				217D5EC12577F9DF009F0639 /* Team2.swift in Sources */,
@@ -5665,6 +5696,7 @@
 				FA32C428264F35390057272F /* Transaction.swift in Sources */,
 				767F85FE2649FFCC0076D633 /* CustomerOrder+Schema.swift in Sources */,
 				218F787C275A64400042334B /* Blog7V2.swift in Sources */,
+				215D40A6277231920077E7DA /* Registration8V2.swift in Sources */,
 				217D5EBD2577F9DF009F0639 /* Post5.swift in Sources */,
 				6B7743E425906FD3001469F5 /* Restaurant.swift in Sources */,
 				FA1846EE23998E44009B9D01 /* MockAPIResponders.swift in Sources */,

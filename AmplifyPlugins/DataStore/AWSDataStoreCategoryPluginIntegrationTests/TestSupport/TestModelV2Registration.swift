@@ -30,6 +30,9 @@ struct TestModelV2Registration: AmplifyModelRegistration {
         registry.register(modelType: Blog7V2.self)
         registry.register(modelType: Post7V2.self)
         registry.register(modelType: Comment7V2.self)
+        registry.register(modelType: Meeting8V2.self)
+        registry.register(modelType: Attendee8V2.self)
+        registry.register(modelType: Registration8V2.self)
 
         registry.register(modelType: CustomerSecondaryIndexV2.self)
         registry.register(modelType: TodoWithDefaultValueV2.self)
