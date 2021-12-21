@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Foundation
 
 class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
     var key: String {
