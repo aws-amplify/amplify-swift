@@ -20,7 +20,7 @@ extension AuthenticationProviderAdapter {
                 completionHandler(.success(()))
                 return
             }
-            
+
             //TODO: Handle error
             assertionFailure(error.localizedDescription)
         }

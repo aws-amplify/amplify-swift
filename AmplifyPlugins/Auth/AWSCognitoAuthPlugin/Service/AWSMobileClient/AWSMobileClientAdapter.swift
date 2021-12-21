@@ -139,7 +139,7 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
     func signOutLocally() {
         awsMobileClient.signOut()
     }
-    
+
     func deleteUser(completionHandler: @escaping ((Error?) -> Void)) {
         awsMobileClient.deleteUser(completionHandler: completionHandler)
     }

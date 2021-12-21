@@ -33,7 +33,7 @@ protocol AuthenticationProviderBehavior {
 
     func deleteUser(request: AuthDeleteUserRequest,
                     completionHandler: @escaping (Result<Void, AuthError>) -> Void)
-    
+
     func getCurrentUser() -> AuthUser?
 
     func resetPassword(request: AuthResetPasswordRequest,

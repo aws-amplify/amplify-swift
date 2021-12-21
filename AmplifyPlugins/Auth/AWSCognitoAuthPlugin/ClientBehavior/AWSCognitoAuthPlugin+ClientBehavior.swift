@@ -117,7 +117,7 @@ extension AWSCognitoAuthPlugin {
             queue.addOperation(signOutOperation)
             return signOutOperation
     }
-    
+
     public func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation {
             let request = AuthDeleteUserRequest()
             let deleteUserOperation = AWSAuthDeleteUserOperation(request,
