@@ -39,7 +39,7 @@ CHECKOUT OPTIONS:
     :tag: 2.1.0
 
 SPEC CHECKSUMS:
-  AWSCore: e84c89bded6fae98ae9c297c71f10f2c87eedc3d
+  AWSCore: c60f9d6bd085bf9186d8629ca7ee7df54db1f494
   CwlCatchException: 86760545af2a490a23e964d76d7c77442dbce79b
   CwlCatchExceptionSupport: a004322095d7101b945442c86adc7cec0650f676
   CwlMachBadInstructionHandler: aa1fe9f2d08b29507c150d099434b2890247e7f8

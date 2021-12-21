@@ -31,7 +31,7 @@ extension Project4aV2 {
     model.fields(
       .id(),
       .field(project4aV2.name, is: .optional, ofType: .string),
-      .hasOne(project4aV2.team, is: .optional, ofType: Team4aV2.self, associatedWith: Team4aV2.keys.id, targetName: "project4aV2TeamId"),
+      .hasOne(project4aV2.team, is: .optional, ofType: Team4aV2.self, associatedWith: Team4aV2.keys.project, targetName: "project4aV2TeamId"),
       .field(project4aV2.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(project4aV2.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(project4aV2.project4aV2TeamId, is: .optional, ofType: .string)

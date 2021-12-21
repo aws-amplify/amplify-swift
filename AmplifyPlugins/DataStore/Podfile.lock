@@ -38,9 +38,15 @@ PODS:
     - AWSCognitoIdentityProvider (= 2.26.6)
     - AWSCognitoIdentityProviderASF (= 2.26.6)
     - AWSCore (= 2.26.6)
+<<<<<<< HEAD
   - AWSPluginsCore (1.18.1):
     - Amplify (= 1.18.1)
     - AWSCore (~> 2.26.6)
+=======
+  - AWSPluginsCore (1.16.1):
+    - Amplify (= 1.16.1)
+    - AWSCore (~> 2.26.5)
+>>>>>>> 7a18aff7 (latest codegen changes for Project4aV2 Project4bV2)
   - CwlCatchException (2.1.1):
     - CwlCatchExceptionSupport (~> 2.1.1)
   - CwlCatchExceptionSupport (2.1.1)
