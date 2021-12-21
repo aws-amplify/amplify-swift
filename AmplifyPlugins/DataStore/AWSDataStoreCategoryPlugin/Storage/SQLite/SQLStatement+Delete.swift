@@ -43,7 +43,7 @@ struct DeleteStatement: SQLStatement {
 
     var stringValue: String {
         let sql = """
-        delete from \(modelSchema.name) as \(namespace)
+        delete from "\(modelSchema.name)" as \(namespace)
         """
 
         if let conditionStatement = conditionStatement {

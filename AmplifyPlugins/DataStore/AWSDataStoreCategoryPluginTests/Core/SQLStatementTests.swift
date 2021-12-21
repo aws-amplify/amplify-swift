@@ -85,7 +85,7 @@ class SQLStatementTests: XCTestCase {
           "content" text not null,
           "createdAt" text not null,
           "commentPostId" text not null,
-          foreign key("commentPostId") references Post("id")
+          foreign key("commentPostId") references "Post"("id")
             on delete cascade
         );
         """
@@ -106,7 +106,7 @@ class SQLStatementTests: XCTestCase {
         create table if not exists "UserProfile" (
           "id" text primary key not null,
           "accountId" text not null unique,
-          foreign key("accountId") references UserAccount("id")
+          foreign key("accountId") references "UserAccount"("id")
             on delete cascade
         );
         """
@@ -128,9 +128,9 @@ class SQLStatementTests: XCTestCase {
           "id" text primary key not null,
           "authorId" text not null,
           "bookId" text not null,
-          foreign key("authorId") references Author("id")
+          foreign key("authorId") references "Author"("id")
             on delete cascade
-          foreign key("bookId") references Book("id")
+          foreign key("bookId") references "Book"("id")
             on delete cascade
         );
         """
@@ -153,7 +153,7 @@ class SQLStatementTests: XCTestCase {
         let statement = InsertStatement(model: post, modelSchema: post.schema)
 
         let expectedStatement = """
-        insert into Post ("id", "content", "createdAt", "draft", "rating", "status", "title", "updatedAt")
+        insert into "Post" ("id", "content", "createdAt", "draft", "rating", "status", "title", "updatedAt")
         values (?, ?, ?, ?, ?, ?, ?, ?)
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
@@ -178,7 +178,7 @@ class SQLStatementTests: XCTestCase {
         let statement = InsertStatement(model: comment, modelSchema: comment.schema)
 
         let expectedStatement = """
-        insert into Comment ("id", "content", "createdAt", "commentPostId")
+        insert into "Comment" ("id", "content", "createdAt", "commentPostId")
         values (?, ?, ?, ?)
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
@@ -265,7 +265,7 @@ class SQLStatementTests: XCTestCase {
         let statement = DeleteStatement(modelSchema: Post.schema, withId: id)
 
         let expectedStatement = """
-        delete from Post as root
+        delete from "Post" as root
         where 1 = 1
           and "root"."id" = ?
         """
@@ -288,7 +288,7 @@ class SQLStatementTests: XCTestCase {
                                         predicate: Post.keys.content == "content")
 
         let expectedStatement = """
-        delete from Post as root
+        delete from "Post" as root
         where 1 = 1
           and (
             "root"."id" = ?
@@ -316,7 +316,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
-        from Post as "root"
+        from "Post" as "root"
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
@@ -337,7 +337,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
-        from Post as "root"
+        from "Post" as "root"
         where 1 = 1
           and (
             "root"."draft" = ?
@@ -373,8 +373,8 @@ class SQLStatementTests: XCTestCase {
           "root"."commentPostId" as "commentPostId", "post"."id" as "post.id", "post"."content" as "post.content",
           "post"."createdAt" as "post.createdAt", "post"."draft" as "post.draft", "post"."rating" as "post.rating",
           "post"."status" as "post.status", "post"."title" as "post.title", "post"."updatedAt" as "post.updatedAt"
-        from Comment as "root"
-        inner join Post as "post"
+        from "Comment" as "root"
+        inner join "Post" as "post"
           on "post"."id" = "root"."commentPostId"
         where 1 = 1
           and (
@@ -406,8 +406,8 @@ class SQLStatementTests: XCTestCase {
           "root"."commentPostId" as "commentPostId", "post"."id" as "post.id", "post"."content" as "post.content",
           "post"."createdAt" as "post.createdAt", "post"."draft" as "post.draft", "post"."rating" as "post.rating",
           "post"."status" as "post.status", "post"."title" as "post.title", "post"."updatedAt" as "post.updatedAt"
-        from Comment as "root"
-        inner join Post as "post"
+        from "Comment" as "root"
+        inner join "Post" as "post"
           on "post"."id" = "root"."commentPostId"
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
@@ -429,7 +429,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
-        from Post as "root"
+        from "Post" as "root"
         limit 20 offset 40
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
@@ -452,7 +452,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
-        from Post as "root"
+        from "Post" as "root"
         order by "root"."id" asc
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
@@ -475,7 +475,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
-        from Post as "root"
+        from "Post" as "root"
         order by "root"."id" asc, "root"."createdAt" desc
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
@@ -498,7 +498,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
-        from Post as "root"
+        from "Post" as "root"
         where 1 = 1
           and "root"."rating" > ?
         order by "root"."id" desc
@@ -524,7 +524,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
-        from Post as "root"
+        from "Post" as "root"
         order by "root"."id" desc
         limit 5 offset 0
         """
@@ -551,7 +551,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
-        from Post as "root"
+        from "Post" as "root"
         where 1 = 1
           and "root"."rating" > ?
         order by "root"."id" desc
@@ -701,7 +701,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
-        from Post as "root"
+        from "Post" as "root"
         where 1 = 1
           and (
             (
@@ -736,7 +736,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
-        from Post as "root"
+        from "Post" as "root"
         where 1 = 1
           and (
             (
@@ -771,7 +771,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
-        from Post as "root"
+        from "Post" as "root"
         where 1 = 1
           and (
             (
@@ -810,7 +810,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
-        from Post as "root"
+        from "Post" as "root"
         where 1 = 1
           and (
             (
@@ -850,7 +850,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
-        from Post as "root"
+        from "Post" as "root"
         where 1 = 1
           and (
             (

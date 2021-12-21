@@ -22,7 +22,7 @@ struct InsertStatement: SQLStatement {
     var stringValue: String {
         let fields = modelSchema.columns
         let columns = fields.map { $0.columnName() }
-        var statement = "insert into \(modelSchema.name) "
+        var statement = "insert into \"\(modelSchema.name)\" "
         statement += "(\(columns.joined(separator: ", ")))\n"
 
         let variablePlaceholders = Array(repeating: "?", count: columns.count).joined(separator: ", ")

@@ -26,6 +26,11 @@ struct TestModelRegistration: AmplifyModelRegistration {
 
         // Models for data conversion testing
         registry.register(modelType: ExampleWithEveryType.self)
+
+        // Reserved words models
+        registry.register(modelType: Group.self)
+        registry.register(modelType: Row.self)
+        registry.register(modelType: Transaction.self)
     }
 
     let version: String = "1"
