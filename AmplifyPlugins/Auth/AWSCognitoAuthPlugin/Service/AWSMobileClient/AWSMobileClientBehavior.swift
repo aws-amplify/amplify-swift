@@ -67,6 +67,8 @@ protocol AWSMobileClientBehavior {
                  completionHandler: @escaping ((Error?) -> Void))
 
     func signOutLocally()
+    
+    func deleteUser(completionHandler: @escaping ((Error?) -> Void))
 
     func getUsername() -> String?
 

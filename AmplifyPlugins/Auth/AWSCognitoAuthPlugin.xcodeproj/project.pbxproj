@@ -7,14 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		17CD56B119F2F31BD4D27C0A /* Pods_AWSCognitoAuthPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58D3E33555611987B753EF2D /* Pods_AWSCognitoAuthPlugin.framework */; };
 		21621E0C24DE1EFE00497A24 /* AWSAuthResendSignUpCodeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21621E0B24DE1EFE00497A24 /* AWSAuthResendSignUpCodeOptions.swift */; };
 		21621E0E24DE1FC300497A24 /* AWSAttributeResendConfirmationCodeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21621E0D24DE1FC300497A24 /* AWSAttributeResendConfirmationCodeOptions.swift */; };
 		21621E1024DE2D5600497A24 /* AWSUpdateUserAttributesOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21621E0F24DE2D5600497A24 /* AWSUpdateUserAttributesOptions.swift */; };
 		21621E1224DE2D6100497A24 /* AWSUpdateUserAttributeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21621E1124DE2D6100497A24 /* AWSUpdateUserAttributeOptions.swift */; };
 		21C2B51224E3381200371597 /* AuthUserAttributesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C2B51124E3381200371597 /* AuthUserAttributesTests.swift */; };
-		3AB72AEC1B90671D652C3F96 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 234C2AFA9205B1766FB8E090 /* Pods_HostApp.framework */; };
-		8337B0CA31C0E650D640B82C /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 242DDB230CE2BA243E395217 /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework */; };
+		5C33248B2772384600F2C47B /* AWSAuthDeleteUserOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C33248A2772384600F2C47B /* AWSAuthDeleteUserOperation.swift */; };
+		5C33248D27723D0800F2C47B /* AuthenticationProviderAdapter+DeleteUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C33248C27723D0800F2C47B /* AuthenticationProviderAdapter+DeleteUser.swift */; };
+		70E42920C1C9027C533FE097 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 079163684273F9FB27298F8F /* Pods_HostApp.framework */; };
+		7B2955116F0489917FC30BE3 /* Pods_AWSCognitoAuthPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB0C6F042059ACEDBC3306C2 /* Pods_AWSCognitoAuthPlugin.framework */; };
+		9B3E7ADD46949E5B8F2CF1BC /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20977603F769B87802DEAEB7 /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework */; };
 		B402C916257700610020B83B /* BaseAuthenticationProviderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B402C915257700610020B83B /* BaseAuthenticationProviderTest.swift */; };
 		B4060295256C21BC00D23D50 /* AuthenticationProviderSignupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4060294256C21BC00D23D50 /* AuthenticationProviderSignupTests.swift */; };
 		B40602A3256C230B00D23D50 /* MockAWSMobileClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40602A2256C230B00D23D50 /* MockAWSMobileClient.swift */; };
@@ -153,9 +155,9 @@
 		B4F9F11E25CB303200742BB3 /* MockUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F9F11D25CB303200742BB3 /* MockUserDefaults.swift */; };
 		D828362C2590527F0016173F /* BaseUserBehaviorTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D828362B2590527F0016173F /* BaseUserBehaviorTest.swift */; };
 		D87D5864257EF27E004617B3 /* BaseAuthDeviceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87D5863257EF27E004617B3 /* BaseAuthDeviceTest.swift */; };
+		E61CAF8F1F384A4ABA2DA812 /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E27F4D65FB435ED5714150DC /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework */; };
 		FA1C817D25868C46006160E9 /* AWSCognitoAuthPluginAmplifyVersionableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1C817C25868C46006160E9 /* AWSCognitoAuthPluginAmplifyVersionableTests.swift */; };
 		FA6B0EA8249443C90062AA59 /* AWSCognitoAuthPluginConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B0EA7249443C90062AA59 /* AWSCognitoAuthPluginConfigTests.swift */; };
-		FECB988C412E46FD5961894A /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1674B6AE81501F6E278CE00B /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -183,26 +185,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0565384F36A2E68843401534 /* Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		1218D5A8F8902BF0D88AFB50 /* Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
-		1674B6AE81501F6E278CE00B /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1E372E3DB1CE31F318AE8281 /* Pods-HostApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.debug.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.debug.xcconfig"; sourceTree = "<group>"; };
+		023722EA7A777BA9084EDD5A /* Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
+		079163684273F9FB27298F8F /* Pods_HostApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		136DF571D762BDF43D0657CC /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
+		205DF25E6B2D524274E542FF /* Pods-HostApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.debug.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.debug.xcconfig"; sourceTree = "<group>"; };
+		20977603F769B87802DEAEB7 /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		21621E0B24DE1EFE00497A24 /* AWSAuthResendSignUpCodeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthResendSignUpCodeOptions.swift; sourceTree = "<group>"; };
 		21621E0D24DE1FC300497A24 /* AWSAttributeResendConfirmationCodeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAttributeResendConfirmationCodeOptions.swift; sourceTree = "<group>"; };
 		21621E0F24DE2D5600497A24 /* AWSUpdateUserAttributesOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSUpdateUserAttributesOptions.swift; sourceTree = "<group>"; };
 		21621E1124DE2D6100497A24 /* AWSUpdateUserAttributeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSUpdateUserAttributeOptions.swift; sourceTree = "<group>"; };
 		21C2B51124E3381200371597 /* AuthUserAttributesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUserAttributesTests.swift; sourceTree = "<group>"; };
-		234C2AFA9205B1766FB8E090 /* Pods_HostApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		242DDB230CE2BA243E395217 /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		351EEBA51873352B4E797CE0 /* Pods-HostApp-AWSAuthPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAuthPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAuthPluginIntegrationTests/Pods-HostApp-AWSAuthPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
-		58D3E33555611987B753EF2D /* Pods_AWSCognitoAuthPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSCognitoAuthPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5F86DF910ABADF7016A5C13C /* Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		62736D575698EC62F333B450 /* Pods-AWSCognitoAuthPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSCognitoAuthPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSCognitoAuthPlugin/Pods-AWSCognitoAuthPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		6C863E653A1417BC3B136CE6 /* Pods-AWSCognitoAuthPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSCognitoAuthPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSCognitoAuthPlugin/Pods-AWSCognitoAuthPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		87E0F02DF08A64CA60DAA028 /* Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
-		8ABFAA71F8388BB455A8B6F3 /* Pods-AWSAuthPlugin-AWSAuthPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAuthPlugin-AWSAuthPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSAuthPlugin-AWSAuthPluginTests/Pods-AWSAuthPlugin-AWSAuthPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		8B2FC5990A6ABD808EA9B984 /* Pods-AWSAuthPlugin-AWSAuthPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAuthPlugin-AWSAuthPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSAuthPlugin-AWSAuthPluginTests/Pods-AWSAuthPlugin-AWSAuthPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		94AE978618BF1C30FD808FB6 /* Pods-HostApp-AWSAuthPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAuthPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAuthPluginIntegrationTests/Pods-HostApp-AWSAuthPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
+		3C1E4C41C0070325353A8C08 /* Pods-AWSCognitoAuthPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSCognitoAuthPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSCognitoAuthPlugin/Pods-AWSCognitoAuthPlugin.debug.xcconfig"; sourceTree = "<group>"; };
+		5C33248A2772384600F2C47B /* AWSAuthDeleteUserOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthDeleteUserOperation.swift; sourceTree = "<group>"; };
+		5C33248C27723D0800F2C47B /* AuthenticationProviderAdapter+DeleteUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AuthenticationProviderAdapter+DeleteUser.swift"; sourceTree = "<group>"; };
+		68CA57EB40AAAB3A1A6756EA /* Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
+		8EAD42CD0F2BB4A5A4B497F6 /* Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		B402C915257700610020B83B /* BaseAuthenticationProviderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAuthenticationProviderTest.swift; sourceTree = "<group>"; };
 		B4060294256C21BC00D23D50 /* AuthenticationProviderSignupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationProviderSignupTests.swift; sourceTree = "<group>"; };
 		B40602A2256C230B00D23D50 /* MockAWSMobileClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAWSMobileClient.swift; sourceTree = "<group>"; };
@@ -353,11 +350,12 @@
 		B4F3EA4D243A782700F23296 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B4F3EA4E243A782700F23296 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		B4F9F11D25CB303200742BB3 /* MockUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserDefaults.swift; sourceTree = "<group>"; };
-		C49A4C812B0F973F5536DCC8 /* Pods-AWSAuthPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAuthPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSAuthPlugin/Pods-AWSAuthPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		C5E50D8021B9740CB511898D /* Pods-AWSAuthPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAuthPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSAuthPlugin/Pods-AWSAuthPlugin.debug.xcconfig"; sourceTree = "<group>"; };
+		BBDECE7BA6AF38E547CC0771 /* Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
+		C2B14A4346E057FF1AB951DE /* Pods-AWSCognitoAuthPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSCognitoAuthPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSCognitoAuthPlugin/Pods-AWSCognitoAuthPlugin.release.xcconfig"; sourceTree = "<group>"; };
+		CB0C6F042059ACEDBC3306C2 /* Pods_AWSCognitoAuthPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSCognitoAuthPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D828362B2590527F0016173F /* BaseUserBehaviorTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseUserBehaviorTest.swift; sourceTree = "<group>"; };
 		D87D5863257EF27E004617B3 /* BaseAuthDeviceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAuthDeviceTest.swift; sourceTree = "<group>"; };
-		E9289652B314AA0AA1F31BC8 /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
+		E27F4D65FB435ED5714150DC /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA1C817C25868C46006160E9 /* AWSCognitoAuthPluginAmplifyVersionableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSCognitoAuthPluginAmplifyVersionableTests.swift; sourceTree = "<group>"; };
 		FA6B0EA7249443C90062AA59 /* AWSCognitoAuthPluginConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSCognitoAuthPluginConfigTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -368,7 +366,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B40F165D24784AE300CDB920 /* AWSCognitoAuthPlugin.framework in Frameworks */,
-				8337B0CA31C0E650D640B82C /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework in Frameworks */,
+				9B3E7ADD46949E5B8F2CF1BC /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,7 +374,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				17CD56B119F2F31BD4D27C0A /* Pods_AWSCognitoAuthPlugin.framework in Frameworks */,
+				7B2955116F0489917FC30BE3 /* Pods_AWSCognitoAuthPlugin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -385,7 +383,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B43DC74F2410572400D40275 /* AWSCognitoAuthPlugin.framework in Frameworks */,
-				FECB988C412E46FD5961894A /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework in Frameworks */,
+				E61CAF8F1F384A4ABA2DA812 /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,7 +391,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3AB72AEC1B90671D652C3F96 /* Pods_HostApp.framework in Frameworks */,
+				70E42920C1C9027C533FE097 /* Pods_HostApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -590,6 +588,7 @@
 				B41D0F3A2475A3960049D08D /* AuthDeviceServiceAdapter.swift */,
 				B41D0F402475A3960049D08D /* AuthDeviceServiceBehavior.swift */,
 				B41D0F3F2475A3960049D08D /* AuthenticationProviderAdapter.swift */,
+				5C33248C27723D0800F2C47B /* AuthenticationProviderAdapter+DeleteUser.swift */,
 				B41D0F392475A3960049D08D /* AuthenticationProviderAdapter+Password.swift */,
 				B41D0F332475A3960049D08D /* AuthenticationProviderAdapter+SignIn.swift */,
 				B41D0F322475A3960049D08D /* AuthenticationProviderAdapter+SignOut.swift */,
@@ -653,6 +652,7 @@
 				B41D0F552475A3960049D08D /* AWSAuthConfirmResetPasswordOperation.swift */,
 				B41D0F602475A3960049D08D /* AWSAuthConfirmSignInOperation.swift */,
 				B41D0F662475A3960049D08D /* AWSAuthConfirmSignUpOperation.swift */,
+				5C33248A2772384600F2C47B /* AWSAuthDeleteUserOperation.swift */,
 				B41D0F622475A3960049D08D /* AWSAuthFetchDevicesOperation.swift */,
 				B41D0F652475A3960049D08D /* AWSAuthFetchSessionOperation.swift */,
 				B41D0F672475A3960049D08D /* AWSAuthForgetDeviceOperation.swift */,
@@ -882,20 +882,14 @@
 		B6EC7ECA3C149FD797F9FC0F /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				C5E50D8021B9740CB511898D /* Pods-AWSAuthPlugin.debug.xcconfig */,
-				C49A4C812B0F973F5536DCC8 /* Pods-AWSAuthPlugin.release.xcconfig */,
-				8ABFAA71F8388BB455A8B6F3 /* Pods-AWSAuthPlugin-AWSAuthPluginTests.debug.xcconfig */,
-				8B2FC5990A6ABD808EA9B984 /* Pods-AWSAuthPlugin-AWSAuthPluginTests.release.xcconfig */,
-				1E372E3DB1CE31F318AE8281 /* Pods-HostApp.debug.xcconfig */,
-				E9289652B314AA0AA1F31BC8 /* Pods-HostApp.release.xcconfig */,
-				94AE978618BF1C30FD808FB6 /* Pods-HostApp-AWSAuthPluginIntegrationTests.debug.xcconfig */,
-				351EEBA51873352B4E797CE0 /* Pods-HostApp-AWSAuthPluginIntegrationTests.release.xcconfig */,
-				62736D575698EC62F333B450 /* Pods-AWSCognitoAuthPlugin.debug.xcconfig */,
-				6C863E653A1417BC3B136CE6 /* Pods-AWSCognitoAuthPlugin.release.xcconfig */,
-				5F86DF910ABADF7016A5C13C /* Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.debug.xcconfig */,
-				0565384F36A2E68843401534 /* Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.release.xcconfig */,
-				87E0F02DF08A64CA60DAA028 /* Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.debug.xcconfig */,
-				1218D5A8F8902BF0D88AFB50 /* Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig */,
+				3C1E4C41C0070325353A8C08 /* Pods-AWSCognitoAuthPlugin.debug.xcconfig */,
+				C2B14A4346E057FF1AB951DE /* Pods-AWSCognitoAuthPlugin.release.xcconfig */,
+				BBDECE7BA6AF38E547CC0771 /* Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.debug.xcconfig */,
+				8EAD42CD0F2BB4A5A4B497F6 /* Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.release.xcconfig */,
+				205DF25E6B2D524274E542FF /* Pods-HostApp.debug.xcconfig */,
+				136DF571D762BDF43D0657CC /* Pods-HostApp.release.xcconfig */,
+				023722EA7A777BA9084EDD5A /* Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.debug.xcconfig */,
+				68CA57EB40AAAB3A1A6756EA /* Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -911,10 +905,10 @@
 				B4672B5A24777C7500C83E96 /* AWSCore.framework */,
 				B4672B5B24777C7500C83E96 /* AWSMobileClient.framework */,
 				B4672B5C24777C7500C83E96 /* AWSPluginsCore.framework */,
-				234C2AFA9205B1766FB8E090 /* Pods_HostApp.framework */,
-				58D3E33555611987B753EF2D /* Pods_AWSCognitoAuthPlugin.framework */,
-				1674B6AE81501F6E278CE00B /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework */,
-				242DDB230CE2BA243E395217 /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework */,
+				CB0C6F042059ACEDBC3306C2 /* Pods_AWSCognitoAuthPlugin.framework */,
+				E27F4D65FB435ED5714150DC /* Pods_AWSCognitoAuthPlugin_AWSCognitoAuthPluginTests.framework */,
+				079163684273F9FB27298F8F /* Pods_HostApp.framework */,
+				20977603F769B87802DEAEB7 /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -936,13 +930,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B40F166024784AE300CDB920 /* Build configuration list for PBXNativeTarget "AWSCognitoAuthPluginIntegrationTests" */;
 			buildPhases = (
-				E4C251656AC1BC4DFCA202D6 /* [CP] Check Pods Manifest.lock */,
+				57F8DBFC748E56E1E9E3FF11 /* [CP] Check Pods Manifest.lock */,
 				B40F168A24784DC200CDB920 /* SwiftFormat */,
 				B40F168B24784DE300CDB920 /* SwiftLint */,
 				B40F165424784AE300CDB920 /* Sources */,
 				B40F165524784AE300CDB920 /* Frameworks */,
 				B40F165624784AE300CDB920 /* Resources */,
-				FCB2E4860FA6F28D9F464CB2 /* [CP] Embed Pods Frameworks */,
+				6F2F301F517B6B63FAA43216 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -959,7 +953,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B43DC7592410572400D40275 /* Build configuration list for PBXNativeTarget "AWSCognitoAuthPlugin" */;
 			buildPhases = (
-				09AAE72ADC99633B8D9D11DD /* [CP] Check Pods Manifest.lock */,
+				52DB10C995291AE22D0CE468 /* [CP] Check Pods Manifest.lock */,
 				B43DC7402410572400D40275 /* Headers */,
 				B43DC7412410572400D40275 /* Sources */,
 				B4F3EA34243A662500F23296 /* SwiftFormat */,
@@ -980,13 +974,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B43DC75C2410572400D40275 /* Build configuration list for PBXNativeTarget "AWSCognitoAuthPluginTests" */;
 			buildPhases = (
-				DB5961DAC6B659656ADBE1CE /* [CP] Check Pods Manifest.lock */,
+				DD88AEBEAB9A572F3EEC280B /* [CP] Check Pods Manifest.lock */,
 				B4F3EA35243A665D00F23296 /* SwiftFormat */,
 				B4F3EA3D243A76E800F23296 /* SwiftLint */,
 				B43DC74A2410572400D40275 /* Sources */,
 				B43DC74B2410572400D40275 /* Frameworks */,
 				B43DC74C2410572400D40275 /* Resources */,
-				56FE45B3711986EF40FA4029 /* [CP] Embed Pods Frameworks */,
+				A1AD17258FCAD83EA9DEF1B7 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1002,13 +996,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B4F3EA31243A65BF00F23296 /* Build configuration list for PBXNativeTarget "HostApp" */;
 			buildPhases = (
-				6AEBA4922D282DC798343AE3 /* [CP] Check Pods Manifest.lock */,
+				5ADFA135F8FC39A56E9E7474 /* [CP] Check Pods Manifest.lock */,
 				B4F3EA3B243A765C00F23296 /* SwiftFormat */,
 				B4F3EA3F243A771800F23296 /* SwiftLint */,
 				B4F3EA1C243A65BD00F23296 /* Sources */,
 				B4F3EA1D243A65BD00F23296 /* Frameworks */,
 				B4F3EA1E243A65BD00F23296 /* Resources */,
-				3445482AE641C0A0C6AC80F7 /* [CP] Embed Pods Frameworks */,
+				20181EE0DB5C11298119E573 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1102,7 +1096,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		09AAE72ADC99633B8D9D11DD /* [CP] Check Pods Manifest.lock */ = {
+		20181EE0DB5C11298119E573 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		52DB10C995291AE22D0CE468 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1124,41 +1135,29 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		3445482AE641C0A0C6AC80F7 /* [CP] Embed Pods Frameworks */ = {
+		57F8DBFC748E56E1E9E3FF11 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		56FE45B3711986EF40FA4029 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6AEBA4922D282DC798343AE3 /* [CP] Check Pods Manifest.lock */ = {
+		5ADFA135F8FC39A56E9E7474 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1178,6 +1177,40 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6F2F301F517B6B63FAA43216 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A1AD17258FCAD83EA9DEF1B7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		B40F168A24784DC200CDB920 /* SwiftFormat */ = {
@@ -1324,7 +1357,7 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/HostApp\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
 		};
-		DB5961DAC6B659656ADBE1CE /* [CP] Check Pods Manifest.lock */ = {
+		DD88AEBEAB9A572F3EEC280B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1344,45 +1377,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E4C251656AC1BC4DFCA202D6 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		FCB2E4860FA6F28D9F464CB2 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1448,6 +1442,7 @@
 				B41D0FB72475A3960049D08D /* AWSAuthConfirmSignInOperation.swift in Sources */,
 				B41D0FAA2475A3960049D08D /* AWSCognitoAuthError.swift in Sources */,
 				B41D10082475AB7E0049D08D /* AWSCognitoAuthPlugin+ClientBehavior.swift in Sources */,
+				5C33248B2772384600F2C47B /* AWSAuthDeleteUserOperation.swift in Sources */,
 				B41D0FA72475A3960049D08D /* SignInResult+Extension.swift in Sources */,
 				B41D0F922475A3960049D08D /* AuthorizationProviderBehavior.swift in Sources */,
 				21621E0E24DE1FC300497A24 /* AWSAttributeResendConfirmationCodeOptions.swift in Sources */,
@@ -1487,6 +1482,7 @@
 				B41D0F972475A3960049D08D /* AuthorizationProviderAdapter+SignedInSession.swift in Sources */,
 				B41D0FB12475A3960049D08D /* AWSAuthChangePasswordOperation.swift in Sources */,
 				B41D0FC52475A3960049D08D /* AuthUserAttributeKey+Extension.swift in Sources */,
+				5C33248D27723D0800F2C47B /* AuthenticationProviderAdapter+DeleteUser.swift in Sources */,
 				B41D10042475AB7E0049D08D /* AWSCognitoAuthPlugin+Reset.swift in Sources */,
 				B41D0F982475A3960049D08D /* AuthenticationProviderBehavior.swift in Sources */,
 				B41D0FB02475A3960049D08D /* AWSAuthConfirmUserAttributeOperation.swift in Sources */,
@@ -1597,7 +1593,7 @@
 /* Begin XCBuildConfiguration section */
 		B40F166124784AE300CDB920 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 87E0F02DF08A64CA60DAA028 /* Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.debug.xcconfig */;
+			baseConfigurationReference = 023722EA7A777BA9084EDD5A /* Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = AWSCognitoAuthPluginIntegrationTests/Resources/Info.plist;
@@ -1617,7 +1613,7 @@
 		};
 		B40F166224784AE300CDB920 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1218D5A8F8902BF0D88AFB50 /* Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig */;
+			baseConfigurationReference = 68CA57EB40AAAB3A1A6756EA /* Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = AWSCognitoAuthPluginIntegrationTests/Resources/Info.plist;
@@ -1757,7 +1753,7 @@
 		};
 		B43DC75A2410572400D40275 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 62736D575698EC62F333B450 /* Pods-AWSCognitoAuthPlugin.debug.xcconfig */;
+			baseConfigurationReference = 3C1E4C41C0070325353A8C08 /* Pods-AWSCognitoAuthPlugin.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1784,7 +1780,7 @@
 		};
 		B43DC75B2410572400D40275 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6C863E653A1417BC3B136CE6 /* Pods-AWSCognitoAuthPlugin.release.xcconfig */;
+			baseConfigurationReference = C2B14A4346E057FF1AB951DE /* Pods-AWSCognitoAuthPlugin.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1810,7 +1806,7 @@
 		};
 		B43DC75D2410572400D40275 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5F86DF910ABADF7016A5C13C /* Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.debug.xcconfig */;
+			baseConfigurationReference = BBDECE7BA6AF38E547CC0771 /* Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1830,7 +1826,7 @@
 		};
 		B43DC75E2410572400D40275 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0565384F36A2E68843401534 /* Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.release.xcconfig */;
+			baseConfigurationReference = 8EAD42CD0F2BB4A5A4B497F6 /* Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1850,7 +1846,7 @@
 		};
 		B4F3EA32243A65BF00F23296 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1E372E3DB1CE31F318AE8281 /* Pods-HostApp.debug.xcconfig */;
+			baseConfigurationReference = 205DF25E6B2D524274E542FF /* Pods-HostApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1870,7 +1866,7 @@
 		};
 		B4F3EA33243A65BF00F23296 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E9289652B314AA0AA1F31BC8 /* Pods-HostApp.release.xcconfig */;
+			baseConfigurationReference = 136DF571D762BDF43D0657CC /* Pods-HostApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";

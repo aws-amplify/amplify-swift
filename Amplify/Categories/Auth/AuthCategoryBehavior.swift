@@ -124,6 +124,14 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     func signOut(options: AuthSignOutOperation.Request.Options?,
                  listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation
 
+    /// Delete the account of the currently logged-in user.
+    ///
+    /// - Parameters:
+    ///   - listener: Triggered when the operation completes.
+    /// - Returns: AuthDeleteUserOperation
+    @discardableResult
+    func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation
+    
     /// Fetch the current authentication session.
     ///
     /// - Parameters:

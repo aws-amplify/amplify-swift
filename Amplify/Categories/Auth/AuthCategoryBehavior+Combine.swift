@@ -136,6 +136,14 @@ public extension AuthCategoryBehavior {
     ) -> AuthSignOutOperation {
         signOut(options: options, listener: nil)
     }
+    
+    /// Delete the account of the currently logged-in user.
+    ///
+    /// - Returns: AuthDeleteUserOperation
+    @discardableResult
+    func deleteUser() -> AuthDeleteUserOperation {
+        deleteUser(listener: nil)
+    }
 
     /// Fetch the current authentication session.
     ///
