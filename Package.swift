@@ -13,12 +13,10 @@ let package = Package(
         
     ],
     dependencies: [
-<<<<<<< HEAD
-        .package(name: "AWSiOSSDKV2", url: "https://github.com/aws-amplify/aws-sdk-ios-spm.git", .upToNextMinor(from: "2.27.0")),
-        .package(name: "AppSyncRealTimeClient", url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "1.8.0"),
-        .package(url: "https://github.com/stephencelis/SQLite.swift.git", .exact("0.13.2"))
-=======
->>>>>>> 6e912590 (chore: Remove dependencies from SPM on ObjC SDK)
+        .package(name: "hierarchical-state-machine-swift", path: "../Hierarchical-state-machine-swift"),
+        .package(url: "https://github.com/libtom/libtommath", branch: "develop"),
+        .package(name: "AWSSwiftSDK", url: "https://github.com/awslabs/aws-sdk-swift", .upToNextMajor(from: "0.1.0")),
+        .package(name: "CwlPreconditionTesting", url: "https://github.com/mattgallagher/CwlPreconditionTesting", .upToNextMinor(from: "2.1.0"))
     ],
     targets: [
         .target(
