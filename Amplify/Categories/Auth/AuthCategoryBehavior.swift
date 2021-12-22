@@ -131,7 +131,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// - Returns: AuthDeleteUserOperation
     @discardableResult
     func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation
-    
+
     /// Fetch the current authentication session.
     ///
     /// - Parameters:

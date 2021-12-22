@@ -87,7 +87,7 @@ extension AuthCategory: AuthCategoryBehavior {
                         listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation {
         plugin.signOut(options: options, listener: listener)
     }
-    
+
     @discardableResult
     public func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation {
         plugin.deleteUser(listener: listener)

@@ -24,7 +24,7 @@ extension AuthenticationProviderAdapter {
                     case .success:
                         completionHandler(.success(()))
                         return
-                        
+
                     case .failure(let error):
                         print("Sign out error:", error)
                         completionHandler(.failure(AuthErrorHelper.toAuthError(error)))

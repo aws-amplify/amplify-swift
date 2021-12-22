@@ -136,7 +136,7 @@ public extension AuthCategoryBehavior {
     ) -> AuthSignOutOperation {
         signOut(options: options, listener: nil)
     }
-    
+
     /// Delete the account of the currently logged-in user.
     ///
     /// - Returns: AuthDeleteUserOperation
