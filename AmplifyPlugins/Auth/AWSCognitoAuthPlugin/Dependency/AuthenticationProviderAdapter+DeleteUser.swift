@@ -15,14 +15,25 @@ import AWSMobileClientXCF
 extension AuthenticationProviderAdapter {
 
     func deleteUser(request: AuthDeleteUserRequest, completionHandler: @escaping (Result<Void, AuthError>) -> Void) {
-        awsMobileClient.deleteUser { error in
+        awsMobileClient.deleteUser { [weak self] error in
             guard let error = error else {
-                completionHandler(.success(()))
+                let signOutOptions = AuthSignOutRequest.Options(globalSignOut: true)
+                let signOutRequest = AuthSignOutRequest(options: signOutOptions)
+                self?.signOut(request: signOutRequest) { result in
+                    switch result {
+                    case .success:
+                        completionHandler(.success(()))
+                        return
+                        
+                    case .failure(let error):
+                        print("Sign out error:", error)
+                        completionHandler(.failure(AuthErrorHelper.toAuthError(error)))
+                        return
+                    }
+                }
                 return
             }
-
-            //TODO: Handle error
-            assertionFailure(error.localizedDescription)
+            completionHandler(.failure(AuthErrorHelper.toAuthError(error)))
         }
     }
 }
