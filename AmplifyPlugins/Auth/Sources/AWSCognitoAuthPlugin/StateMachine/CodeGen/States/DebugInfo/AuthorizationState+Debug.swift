@@ -9,7 +9,24 @@ import Foundation
 
 public extension AuthorizationState {
     var debugDictionary: [String: Any] {
-        return ["AuthorizationState": "unconfigured"]
+        let stateTypeDictionary: [String: Any] = ["AuthorizationState": type]
+        var additionalMetadataDictionary: [String: Any] = [:]
+        
+        switch self {
+        case .notConfigured:
+            additionalMetadataDictionary = [:]
+        case .configured:
+            additionalMetadataDictionary = [:]
+        case .fetchingAuthSession:
+            additionalMetadataDictionary = [:]
+        case .sessionEstablished:
+            additionalMetadataDictionary = [:]
+        case .validatingSession:
+            additionalMetadataDictionary = [:]
+        case .error:
+            additionalMetadataDictionary = [:]
+        }
+        return stateTypeDictionary.merging(additionalMetadataDictionary, uniquingKeysWith: { $1 })
     }
 }
 
