@@ -18,9 +18,13 @@ public struct InitializeAuthorizationConfiguration: Command {
                         environment: Environment)
     {
         let timer = LoggingTimer(identifier).start("### Starting execution")
-        let event = AuthEvent(eventType: .authorizationConfigured(configuration))
-        timer.stop("### sending \(event.type)")
-        dispatcher.send(event)
+        
+        // TODO: Implementation
+
+
+        let authorizationEvent = AuthorizationEvent(eventType: .configure(configuration))
+        timer.stop("### sending \(authorizationEvent.type)")
+        dispatcher.send(authorizationEvent)
     }
 }
 

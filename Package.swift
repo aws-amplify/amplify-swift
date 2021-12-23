@@ -7,10 +7,7 @@ let package = Package(
     name: "Amplify",
     platforms: [.iOS(.v13)],
     products: [
-        .library(
-            name: "Amplify",
-            targets: ["Amplify"])
-        
+        .library(name: "Amplify", targets: ["Amplify"])
     ],
     dependencies: [
         .package(name: "hierarchical-state-machine-swift", path: "../Hierarchical-state-machine-swift"),
@@ -34,6 +31,7 @@ let package = Package(
                 .target(name: "Amplify"),
                 .target(name: "AmplifySRP"),
                 .product(name: "AWSCognitoIdentityProvider", package: "AWSSwiftSDK"),
+                .product(name: "AWSCognitoIdentity", package: "AWSSwiftSDK")
             ],
             path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin",
             exclude: [

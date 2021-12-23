@@ -14,7 +14,7 @@ class AuthStateConfiguringTests: XCTestCase {
         AuthState.Resolver().logging().eraseToAnyResolver()
     }
 
-    let oldState = AuthState.configuring
+    let oldState = AuthState.configuringCredentialStore(CredentialStoreState.notConfigured)
 
     func testConfigureAuthenticationReceived() {
         let expected = AuthState.configuringAuthentication(.notConfigured)
@@ -23,7 +23,7 @@ class AuthStateConfiguringTests: XCTestCase {
     }
 
     func testConfigureAuthorizationReceived() {
-        let expected = AuthState.configuringAuthorization(.notConfigured, .unconfigured)
+        let expected = AuthState.configuringAuthorization(.notConfigured, .notConfigured)
         let resolution = resolver.resolve(oldState: oldState, byApplying: AuthEvent.configureAuthorization)
         XCTAssertEqual(resolution.newState, expected)
     }
