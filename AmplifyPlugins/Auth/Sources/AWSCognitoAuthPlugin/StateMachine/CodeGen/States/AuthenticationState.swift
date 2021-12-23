@@ -17,6 +17,7 @@ public enum AuthenticationState: State {
     /// System is configured and ready for user to sign in
     case signedOut(SignedOutData)
 
+    /// System is trying to sign in
     case signingIn(AuthConfiguration, SignInState)
 
     /// System is signed in

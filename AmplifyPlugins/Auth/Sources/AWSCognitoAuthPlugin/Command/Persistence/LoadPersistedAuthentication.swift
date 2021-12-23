@@ -28,14 +28,16 @@ public struct LoadPersistedAuthentication: Command {
         environment: hierarchical_state_machine_swift.Environment
     ) {
         let timer = LoggingTimer(identifier).start("### Starting execution")
+        
+        //TODO: Implementation
 
         let signedOutData = SignedOutData(authenticationConfiguration: configuration, lastKnownUserName: nil)
         let authenticationEvent = AuthenticationEvent(eventType: .initializedSignedOut(signedOutData))
-
-        timer.stop("### Sending AuthenticationEvent.initializedSignedOut")
+        timer.stop("### sending event \(authenticationEvent.type)")
         dispatcher.send(authenticationEvent)
         
         let authStateEvent = AuthEvent(eventType: .authenticationConfigured(configuration))
+        timer.stop("### sending event \(authStateEvent.type)")
         dispatcher.send(authStateEvent)
     }
 }

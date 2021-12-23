@@ -13,16 +13,20 @@ public struct SignedInData {
     public let userName: String
     public let signedInDate: Date
     public let signInMethod: SignInMethod
+    public let cognitoUserPoolTokens: AWSCognitoUserPoolTokens
+    
     public init(
         userId: String,
         userName: String,
         signedInDate: Date,
-        signInMethod: SignInMethod
+        signInMethod: SignInMethod,
+        cognitoUserPollTokens: AWSCognitoUserPoolTokens
     ) {
         self.userId = userId
         self.userName = userName
         self.signedInDate = signedInDate
         self.signInMethod = signInMethod
+        self.cognitoUserPoolTokens = cognitoUserPollTokens
     }
 }
 
