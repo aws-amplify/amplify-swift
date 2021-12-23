@@ -63,4 +63,3 @@ public class AWSAuthDeleteUserOperation: AmplifyOperation<
         dispatch(result: result)
     }
 }
-

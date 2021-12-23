@@ -45,6 +45,11 @@ class MockAuthenticationProviderBehavior: AuthenticationProviderBehavior {
         // Incomplete implementation
     }
 
+    func deleteUser(request: AuthDeleteUserRequest,
+                    completionHandler: @escaping (Result<Void, AuthError>) -> Void) {
+        // Incomplete implementation
+    }
+
     func getCurrentUser() -> AuthUser? {
         fatalError()
 

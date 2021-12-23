@@ -69,6 +69,10 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
                         listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation {
         fatalError()
     }
+    
+    public func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation {
+        fatalError()
+    }
 
     public func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options? = nil,
                                  listener: AuthFetchSessionOperation.ResultListener?) -> AuthFetchSessionOperation {
