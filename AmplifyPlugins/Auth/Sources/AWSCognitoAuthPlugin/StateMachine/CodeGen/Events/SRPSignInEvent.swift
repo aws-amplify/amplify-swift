@@ -35,22 +35,14 @@ public struct SRPSignInEvent: StateMachineEvent {
 
     public var type: String {
         switch eventType {
-        case .initiateSRP:
-            return "initiateSRP"
-        case .respondPasswordVerifier:
-            return "respondPasswordVerifier"
-        case .throwPasswordVerifierError:
-            return "throwPasswordVerifierError"
-        case .respondNextAuthChallenge:
-            return "respondNextAuthChallenge"
-        case .finalizeSRPSignIn:
-            return "finalizeSRPSignIn"
-        case .cancelSRPSignIn:
-            return "cancelSRPSignIn"
-        case .throwAuthError:
-            return "throwAuthError"
-        case .restoreToNotInitialized:
-            return "restoreToNotInitialized"
+        case .initiateSRP: return "SRPSignInEvent.initiateSRP"
+        case .respondPasswordVerifier: return "SRPSignInEvent.respondPasswordVerifier"
+        case .throwPasswordVerifierError: return "SRPSignInEvent.throwPasswordVerifierError"
+        case .respondNextAuthChallenge: return "SRPSignInEvent.respondNextAuthChallenge"
+        case .finalizeSRPSignIn: return "SRPSignInEvent.finalizeSRPSignIn"
+        case .cancelSRPSignIn: return "SRPSignInEvent.cancelSRPSignIn"
+        case .throwAuthError: return "SRPSignInEvent.throwAuthError"
+        case .restoreToNotInitialized: return "SRPSignInEvent.restoreToNotInitialized"
         }
     }
 

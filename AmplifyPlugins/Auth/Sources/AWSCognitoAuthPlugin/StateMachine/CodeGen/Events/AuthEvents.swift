@@ -13,6 +13,8 @@ public struct AuthEvent: StateMachineEvent {
     public enum EventType: Equatable {
 
         case configureAuth(AuthConfiguration)
+        
+        case configureCredentialStore(AuthConfiguration)
 
         case configureAuthentication(AuthConfiguration)
 
@@ -20,7 +22,7 @@ public struct AuthEvent: StateMachineEvent {
 
         case authenticationConfigured(AuthConfiguration)
 
-        case authorizationConfigured(AuthConfiguration)
+        case authorizationConfigured
     }
 
     public var id: String
@@ -32,10 +34,11 @@ public struct AuthEvent: StateMachineEvent {
     public var type: String {
         switch eventType {
         case .configureAuth: return "AuthEvent.configureAuth"
+        case .configureCredentialStore: return "AuthEvent.configureCredentialStore"
         case .configureAuthentication: return "AuthEvent.configureAuthentication"
         case .configureAuthorization: return "AuthEvent.configureAuthorization"
-        case .authenticationConfigured: return "AuthEvent.configureAuthenticationDone"
-        case .authorizationConfigured: return "AuthEvent.configureAuthorizationDone"
+        case .authenticationConfigured: return "AuthEvent.authenticationConfigured"
+        case .authorizationConfigured: return "AuthEvent.authorizationConfigured"
         }
     }
 

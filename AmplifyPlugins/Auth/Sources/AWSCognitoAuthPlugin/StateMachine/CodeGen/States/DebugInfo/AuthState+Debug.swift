@@ -10,40 +10,39 @@ import Foundation
 extension AuthState: CustomDebugStringConvertible {
 
     public var debugDictionary: [String: Any] {
+        let stateTypeDictionary: [String: Any] = ["AuthorizationState": type]
+        var additionalMetadataDictionary: [String: Any] = [:]
+
         switch self {
         case .notConfigured:
-            return
-             [
-                 "AuthState": "notConfigured"
-             ]
-
-        case .configuring:
-            return
-             [
-                 "AuthState": "configuring"
-             ]
-
+            additionalMetadataDictionary = [
+                "AuthState": "notConfigured"
+            ]
+        case .configuringCredentialStore(let credentialStoreState):
+            additionalMetadataDictionary = [
+                "AuthState": "configuringAuthentication",
+                "- CredentialStoreState": credentialStoreState.debugDictionary
+            ]
         case .configuringAuthentication(let authenticationState):
-           return
-            [
+            additionalMetadataDictionary = [
                 "AuthState": "configuringAuthentication",
                 "- AuthenticationState": authenticationState.debugDictionary
             ]
 
         case .configuringAuthorization(let authenticationState, let authorizationState):
-            return [
+            additionalMetadataDictionary = [
                 "AuthState": "configuringAuthorization",
                 "- AuthenticationState": authenticationState.debugDictionary,
                 "- AuthorizationState": authorizationState.debugDictionary
             ]
-
         case .configured(let authenticationState, let authorizationState):
-            return [
+            additionalMetadataDictionary = [
                 "AuthState": "configured",
                 "- AuthenticationState": authenticationState.debugDictionary,
                 "- AuthorizationState": authorizationState.debugDictionary
             ]
         }
+        return stateTypeDictionary.merging(additionalMetadataDictionary, uniquingKeysWith: { $1 })
     }
 
     public var debugDescription: String {

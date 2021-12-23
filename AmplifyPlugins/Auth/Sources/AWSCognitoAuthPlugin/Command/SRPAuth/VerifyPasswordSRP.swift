@@ -160,11 +160,26 @@ struct VerifyPasswordSRP: Command {
                 switch result {
                 case .success(let response):
                     if let authenticationResult = response.authenticationResult {
+                        
+                        guard let idToken = authenticationResult.idToken,
+                              let accessToken = authenticationResult.accessToken,
+                              let refreshToken = authenticationResult.refreshToken else {
+                            fatalError("TODO: Replace this with a dispatcher.send()")
+                        }
+                        
+                        let userPoolTokens = AWSCognitoUserPoolTokens(
+                            idToken: idToken,
+                            accessToken: accessToken,
+                            refreshToken: refreshToken,
+                            expiresIn: authenticationResult.expiresIn
+                        )
+                        
                         let signedInData = SignedInData(
                             userId: "",
                             userName: stateData.username,
                             signedInDate: Date(),
-                            signInMethod: .srp
+                            signInMethod: .srp,
+                            cognitoUserPollTokens: userPoolTokens
                         )
                         let event = SRPSignInEvent(
                             id: environment.eventIDFactory(),
@@ -174,12 +189,6 @@ struct VerifyPasswordSRP: Command {
                         timer.stop("### sending SRPSignInEvent.done")
                         dispatcher.send(event)
                     }
-//                    let event = SRPSignInEvent(
-//                        id: environment.eventIDFactory(),
-//                        eventType: .respondNextAuthChallenge(response),
-//                        time: Date()
-//                    )
-//                    dispatcher.send(event)
                 case .failure(let error):
                     print(error)
                     let authError = AuthenticationError.service(message: error.localizedDescription)

@@ -32,6 +32,6 @@ extension AuthEvent {
                                                     eventType: .authenticationConfigured(.testData))
 
     static let authorizationConfigured = AuthEvent(id: "configureAuthentication",
-                                                   eventType: .authorizationConfigured(.testData))
+                                                   eventType: .authorizationConfigured)
 }
 

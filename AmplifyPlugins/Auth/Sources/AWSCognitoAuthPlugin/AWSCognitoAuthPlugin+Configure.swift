@@ -8,6 +8,7 @@
 import Foundation
 import Amplify
 import hierarchical_state_machine_swift
+import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 
 extension AWSCognitoAuthPlugin {
@@ -111,6 +112,15 @@ extension AWSCognitoAuthPlugin {
         switch authConfiguration {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
             return try CognitoIdentityProviderClient(region: userPoolConfig.region)
+        default:
+            fatalError()
+        }
+    }
+    
+    func makeIdentityClient() throws -> CognitoIdentityClient {
+        switch authConfiguration {
+        case .identityPools(let identityPoolConfig), .userPoolsAndIdentityPools(_ , let identityPoolConfig):
+            return try CognitoIdentityClient(region: identityPoolConfig.region)
         default:
             fatalError()
         }
