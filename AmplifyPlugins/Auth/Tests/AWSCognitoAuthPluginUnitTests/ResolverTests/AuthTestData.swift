@@ -63,12 +63,18 @@ extension SignInEventData {
     static let testData = SignInEventData(username: "testUserName", password: "testPassword")
 }
 
+extension AWSCognitoUserPoolTokens {
+    static let testData = AWSCognitoUserPoolTokens(
+        idToken: "XX", accessToken: "XX", refreshToken: "XX", expiresIn: 300)
+}
+
 extension SignedInData {
     static let testData = SignedInData(
         userId: "testUserid",
         userName: "testUserName",
         signedInDate: Date(timeIntervalSince1970: 0),
-        signInMethod: .srp
+        signInMethod: .srp,
+        cognitoUserPollTokens: AWSCognitoUserPoolTokens.testData
     )
 }
 
