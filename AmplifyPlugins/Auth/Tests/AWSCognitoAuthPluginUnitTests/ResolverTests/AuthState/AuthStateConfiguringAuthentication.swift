@@ -17,7 +17,7 @@ class AuthStateConfiguringAuthentication: XCTestCase {
     let oldState = AuthState.configuringAuthentication(.notConfigured)
 
     func testAuthenticationConfiguredReceived() {
-        let expected = AuthState.configuringAuthorization(.notConfigured, .unconfigured)
+        let expected = AuthState.configuringAuthorization(.notConfigured, .notConfigured)
         let resolution = resolver.resolve(oldState: oldState, byApplying: AuthEvent.authenticationConfigured)
         XCTAssertEqual(resolution.newState, expected)
     }

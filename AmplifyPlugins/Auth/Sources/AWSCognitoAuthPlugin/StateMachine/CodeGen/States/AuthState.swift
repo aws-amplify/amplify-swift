@@ -11,8 +11,8 @@ import hierarchical_state_machine_swift
 public enum AuthState: State {
 
     case notConfigured
-
-    case configuring
+    
+    case configuringCredentialStore(CredentialStoreState)
 
     case configuringAuthentication(AuthenticationState)
 
@@ -26,7 +26,7 @@ public extension AuthState {
     var type: String {
         switch self {
         case .notConfigured: return "AuthState.notConfigured"
-        case .configuring: return "AuthState.configuring"
+        case .configuringCredentialStore: return "AuthState.configuringCredentialStore"
         case .configuringAuthentication: return "AuthState.configuringAuthentication"
         case .configuringAuthorization: return "AuthState.configuringAuthorization"
         case .configured: return "AuthState.configured"

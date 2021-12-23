@@ -18,7 +18,7 @@ struct InitializeAuthConfiguration: Command {
         let timer = LoggingTimer(identifier).start("### Starting execution")
 
         var event: StateMachineEvent
-        switch authConfiguration{
+        switch authConfiguration {
         case .identityPools:
             event = AuthEvent(eventType: .configureAuthorization(authConfiguration))
         default:
