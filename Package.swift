@@ -7,10 +7,7 @@ let package = Package(
     name: "Amplify",
     platforms: [.iOS(.v11)],
     products: [
-        .library(
-            name: "Amplify",
-            targets: ["Amplify"])
-        
+        .library(name: "Amplify", targets: ["Amplify"])
     ],
     dependencies: [
         .package(name: "hierarchical-state-machine-swift", path: "../Hierarchical-state-machine-swift"),
@@ -26,6 +23,76 @@ let package = Package(
                 "Info.plist",
                 "Categories/DataStore/Model/Temporal/README.md"
             ]
+<<<<<<< HEAD
         )
+=======
+        ),
+        .target(
+            name: "AWSCognitoAuthPlugin",
+            dependencies: [
+                "hierarchical-state-machine-swift",
+                .target(name: "Amplify"),
+                .target(name: "AmplifySRP"),
+                .product(name: "AWSCognitoIdentityProvider", package: "AWSSwiftSDK"),
+                .product(name: "AWSCognitoIdentity", package: "AWSSwiftSDK")
+            ],
+            path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin",
+            exclude: [
+                "Resources/Info.plist"
+            ]
+        ),
+        .target(
+            name: "AmplifySRP",
+            dependencies: [
+                .target(name: "AmplifyBigInteger"),
+            ],
+            path: "AmplifyPlugins/Auth/Sources/AmplifySRP"
+        ),
+        .target(
+            name: "AmplifyBigInteger",
+            dependencies: [
+                "libtommath"
+            ],
+            path: "AmplifyPlugins/Auth/Sources/AmplifyBigInteger"
+        ),
+        .target(
+            name: "AmplifyTestCommon",
+            dependencies: [
+                "Amplify",
+                "CwlPreconditionTesting"
+            ],
+            path: "AmplifyTestCommon"
+        ),
+        .testTarget(
+            name: "AmplifyTests",
+            dependencies: [
+                "Amplify",
+                "AmplifyTestCommon"
+            ],
+            path: "AmplifyTests"
+        ),
+        .testTarget(
+            name: "AmplifyBigIntegerTests",
+            dependencies: [
+                "AmplifyBigInteger"
+            ],
+            path: "AmplifyPlugins/Auth/Tests/AmplifyBigIntegerUnitTests"
+        ),
+        .testTarget(
+            name: "AWSCognitoAuthPluginUnitTests",
+            dependencies: [
+                "AWSCognitoAuthPlugin"
+            ],
+            path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests"
+        ),
+        .testTarget(
+            name: "AWSCognitoAuthPluginIntegrationTests",
+            dependencies: [
+                "AWSCognitoAuthPlugin"
+            ],
+            path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginIntegrationTests"
+        ),
+            
+>>>>>>> 472cc8fa (feat: adding authorization states, events and commands)
     ]
 )
