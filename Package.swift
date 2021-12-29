@@ -25,11 +25,20 @@ let package = Package(
             ]
         ),
         .target(
+            name: "AWSPluginsCore",
+            dependencies: [
+                "Amplify",
+                .product(name: "AWSClientRuntime", package: "AWSSwiftSDK")
+                ],
+            path: "AmplifyPlugins/Core/AWSPluginsCore"
+        ),
+        .target(
             name: "AWSCognitoAuthPlugin",
             dependencies: [
                 "hierarchical-state-machine-swift",
                 .target(name: "Amplify"),
                 .target(name: "AmplifySRP"),
+                .target(name: "AWSPluginsCore"),
                 .product(name: "AWSCognitoIdentityProvider", package: "AWSSwiftSDK"),
                 .product(name: "AWSCognitoIdentity", package: "AWSSwiftSDK")
             ],
@@ -67,6 +76,15 @@ let package = Package(
                 "AmplifyTestCommon"
             ],
             path: "AmplifyTests"
+        ),
+        .testTarget(
+            name: "AWSPluginsCoreTests",
+            dependencies: [
+                "AWSPluginsCore",
+                "AmplifyTestCommon",
+                .product(name: "AWSClientRuntime", package: "AWSSwiftSDK")
+            ],
+            path: "AmplifyPlugins/Core/AWSPluginsCoreTests"
         ),
         .testTarget(
             name: "AmplifyBigIntegerTests",
