@@ -23,9 +23,6 @@ let package = Package(
                 "Info.plist",
                 "Categories/DataStore/Model/Temporal/README.md"
             ]
-<<<<<<< HEAD
-        )
-=======
         ),
         .target(
             name: "AWSCognitoAuthPlugin",
@@ -93,6 +90,5 @@ let package = Package(
             path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginIntegrationTests"
         ),
             
->>>>>>> 472cc8fa (feat: adding authorization states, events and commands)
     ]
 )
