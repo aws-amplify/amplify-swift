@@ -6,15 +6,7 @@
 //
 
 import Foundation
-
-public protocol AuthCognitoTokens {
-
-    var idToken: String {get}
-
-    var accessToken: String {get}
-
-    var refreshToken: String {get}
-}
+import AWSPluginsCore
 
 public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
 
