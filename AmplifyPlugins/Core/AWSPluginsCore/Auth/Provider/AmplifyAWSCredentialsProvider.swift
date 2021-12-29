@@ -6,60 +6,43 @@
 //
 
 import Amplify
-import AWSCore
+import AWSClientRuntime
+import AwsCommonRuntimeKit
 
-public class AmplifyAWSCredentialsProvider: NSObject, AWSCredentialsProvider {
-
-    public func credentials() -> AWSTask<AWSCredentials> {
-        let completionSource = AWSTaskCompletionSource<AWSCredentials>()
-        _  = Amplify.Auth.fetchAuthSession { [weak self] event in
-
-            switch event {
-            case .success(let session):
-                self?.parseAWSCredentialsFromSession(session, completionSource: completionSource)
-            case .failure(let error):
-                completionSource.set(error: error)
+public class AmplifyAWSCredentialsProvider: CredentialsProvider {
+    
+    public func getCredentials() throws -> Future<AWSCredentials> {
+        let future = Future<AWSCredentials>()
+        _  = Amplify.Auth.fetchAuthSession { result in
+            
+            do {
+                let session = try result.get()
+                if let awsCredentialsProvider = session as? AuthAWSCredentialsProvider {
+                    let credentials = try awsCredentialsProvider.getAWSCredentials().get()
+                    future.fulfill(credentials.toAWSSDKCredentials())
+                } else {
+                    let error = AuthError.unknown("Auth session does not include AWS credentials information")
+                    future.fail(error)
+                }
+            } catch {
+                future.fail(error)
             }
         }
-        return completionSource.task
-    }
-
-    public func invalidateCachedTemporaryCredentials() {
-        guard let authPlugin = try? Amplify.Auth.getPlugin(for: "awsCognitoAuthPlugin")
-            as? AuthInvalidateCredentialBehavior else {
-                return
-        }
-
-        authPlugin.invalidateCachedTemporaryCredentials()
-    }
-
-    private func parseAWSCredentialsFromSession(_ session: AuthSession,
-                                                completionSource: AWSTaskCompletionSource<AWSCredentials>) {
-        let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
-        switch credentialsResult {
-        case .success(let credentials):
-            completionSource.set(result: credentials.toAWSCoreCredentials())
-        case .failure(let error):
-            completionSource.set(error: error)
-        case .none:
-            let error = AuthError.unknown("Auth session does not include AWS credentials information")
-            completionSource.set(error: error)
-        }
+        return future
     }
 }
 
 extension AuthAWSCredentials {
-    func toAWSCoreCredentials() -> AWSCredentials {
-        if let tempCredentials = self as? AuthAWSTemporaryCredentials {
+    
+    func toAWSSDKCredentials() -> AWSCredentials {
+        if let tempCredentials = self as? AuthAWSTemporaryCredentials  {
             return AWSCredentials(accessKey: tempCredentials.accessKey,
-                                  secretKey: tempCredentials.secretKey,
-                                  sessionKey: tempCredentials.sessionKey,
-                                  expiration: tempCredentials.expiration)
+                                  secret: tempCredentials.secretKey,
+                                  expirationTimeout: UInt64(tempCredentials.expiration.timeIntervalSinceNow),
+                                  sessionToken: tempCredentials.sessionKey)
         } else {
-            return AWSCredentials(accessKey: accessKey,
-                                  secretKey: secretKey,
-                                  sessionKey: nil,
-                                  expiration: nil)
+            return AWSCredentials(accessKey: accessKey, secret: secretKey, expirationTimeout: 0)
         }
+        
     }
 }

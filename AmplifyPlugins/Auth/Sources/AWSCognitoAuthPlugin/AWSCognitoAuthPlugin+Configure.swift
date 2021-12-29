@@ -10,6 +10,7 @@ import Amplify
 import hierarchical_state_machine_swift
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
+import AWSPluginsCore
 
 extension AWSCognitoAuthPlugin {
 
@@ -107,11 +108,15 @@ extension AWSCognitoAuthPlugin {
               }
         return IdentityPoolConfigurationData(poolId: poolId, region: region)
     }
-
+    
     func makeUserPool() throws -> CognitoUserPoolBehavior {
         switch authConfiguration {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
-            return try CognitoIdentityProviderClient(region: userPoolConfig.region)
+            let configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
+                frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
+                region: userPoolConfig.region)
+            return CognitoIdentityProviderClient(config: configuration)
+            
         default:
             fatalError()
         }
@@ -120,7 +125,10 @@ extension AWSCognitoAuthPlugin {
     func makeIdentityClient() throws -> CognitoIdentityClient {
         switch authConfiguration {
         case .identityPools(let identityPoolConfig), .userPoolsAndIdentityPools(_ , let identityPoolConfig):
-            return try CognitoIdentityClient(region: identityPoolConfig.region)
+            let configuration = try CognitoIdentityClient.CognitoIdentityClientConfiguration(
+                frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
+                region: identityPoolConfig.region)
+            return CognitoIdentityClient(config: configuration)
         default:
             fatalError()
         }
