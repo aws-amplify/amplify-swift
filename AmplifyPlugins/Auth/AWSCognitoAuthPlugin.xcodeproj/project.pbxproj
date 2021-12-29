@@ -14,6 +14,7 @@
 		21C2B51224E3381200371597 /* AuthUserAttributesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C2B51124E3381200371597 /* AuthUserAttributesTests.swift */; };
 		5C33248B2772384600F2C47B /* AWSAuthDeleteUserOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C33248A2772384600F2C47B /* AWSAuthDeleteUserOperation.swift */; };
 		5C33248D27723D0800F2C47B /* AuthenticationProviderAdapter+DeleteUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C33248C27723D0800F2C47B /* AuthenticationProviderAdapter+DeleteUser.swift */; };
+		5CF59BBB277BCD5300E1912D /* AuthenticationProviderDeleteUserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59BBA277BCD5300E1912D /* AuthenticationProviderDeleteUserTests.swift */; };
 		70E42920C1C9027C533FE097 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 079163684273F9FB27298F8F /* Pods_HostApp.framework */; };
 		7B2955116F0489917FC30BE3 /* Pods_AWSCognitoAuthPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB0C6F042059ACEDBC3306C2 /* Pods_AWSCognitoAuthPlugin.framework */; };
 		9B3E7ADD46949E5B8F2CF1BC /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20977603F769B87802DEAEB7 /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework */; };
@@ -198,6 +199,7 @@
 		3C1E4C41C0070325353A8C08 /* Pods-AWSCognitoAuthPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSCognitoAuthPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSCognitoAuthPlugin/Pods-AWSCognitoAuthPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		5C33248A2772384600F2C47B /* AWSAuthDeleteUserOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthDeleteUserOperation.swift; sourceTree = "<group>"; };
 		5C33248C27723D0800F2C47B /* AuthenticationProviderAdapter+DeleteUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AuthenticationProviderAdapter+DeleteUser.swift"; sourceTree = "<group>"; };
+		5CF59BBA277BCD5300E1912D /* AuthenticationProviderDeleteUserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationProviderDeleteUserTests.swift; sourceTree = "<group>"; };
 		68CA57EB40AAAB3A1A6756EA /* Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		8EAD42CD0F2BB4A5A4B497F6 /* Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		B402C915257700610020B83B /* BaseAuthenticationProviderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAuthenticationProviderTest.swift; sourceTree = "<group>"; };
@@ -412,6 +414,7 @@
 				B4136E4D256D79710011210B /* AuthenticationProviderConfirmResetPasswordTests.swift */,
 				B4136E25256D76300011210B /* AuthenticationProviderConfirmSigninTests.swift */,
 				B4136E1F256D757C0011210B /* AuthenticationProviderConfirmSignupTests.swift */,
+				5CF59BBA277BCD5300E1912D /* AuthenticationProviderDeleteUserTests.swift */,
 				B4136E2B256D764B0011210B /* AuthenticationProviderResendSignupCodeTests.swift */,
 				B4136E43256D795B0011210B /* AuthenticationProviderResetPasswordTests.swift */,
 				B4136E19256D73D80011210B /* AuthenticationProviderSigninTests.swift */,
@@ -1526,6 +1529,7 @@
 				B40602A3256C230B00D23D50 /* MockAWSMobileClient.swift in Sources */,
 				B4136E94256D7B630011210B /* AuthDeviceForgetDeviceTests.swift in Sources */,
 				B4136E44256D795B0011210B /* AuthenticationProviderResetPasswordTests.swift in Sources */,
+				5CF59BBB277BCD5300E1912D /* AuthenticationProviderDeleteUserTests.swift in Sources */,
 				B402C916257700610020B83B /* BaseAuthenticationProviderTest.swift in Sources */,
 				B43B4E092565E97D008F345D /* MockAuthHubEventBehavior.swift in Sources */,
 				B4F9F11E25CB303200742BB3 /* MockUserDefaults.swift in Sources */,
