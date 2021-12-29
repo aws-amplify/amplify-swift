@@ -6,49 +6,20 @@
 //
 
 import Foundation
-import AWSCore
+import UIKit
+import AWSClientRuntime
 
-public class AmplifyAWSServiceConfiguration: AWSServiceConfiguration {
-    static let version = "1.22.4"
-
-    override public class func baseUserAgent() -> String! {
-        //TODO: Retrieve this version from a centralized location:
-        //https://github.com/aws-amplify/amplify-ios/issues/276
-        let platformInfo = AmplifyAWSServiceConfiguration.platformInformation()
-        let systemName = UIDevice.current.systemName.replacingOccurrences(of: " ", with: "-")
-        let systemVersion = UIDevice.current.systemVersion
-        let localeIdentifier = Locale.current.identifier
-        return "\(platformInfo) \(systemName)/\(systemVersion) \(localeIdentifier)"
-    }
-
-    override public var userAgent: String {
-        return AmplifyAWSServiceConfiguration.baseUserAgent()
-    }
-
-    override public func copy(with zone: NSZone? = nil) -> Any {
-        return super.copy(with: zone)
-    }
-
-    override init() {
-        super.init(region: .Unknown, credentialsProvider: nil)
-    }
-
-    override public init(region regionType: AWSRegionType,
-                         credentialsProvider: AWSCredentialsProvider) {
-        super.init(region: regionType, credentialsProvider: credentialsProvider)
-    }
-
-    public init(region regionType: AWSRegionType) {
-        super.init(region: regionType, credentialsProvider: nil)
-    }
-
-    override public init(region regionType: AWSRegionType,
-                         endpoint: AWSEndpoint,
-                         credentialsProvider: AWSCredentialsProvider,
-                         localTestingEnabled: Bool) {
-        super.init(region: regionType,
-                   endpoint: endpoint,
-                   credentialsProvider: credentialsProvider,
-                   localTestingEnabled: localTestingEnabled)
+public class AmplifyAWSServiceConfiguration {
+    static let version = "1.22.0-swift-sdk-dev-preview.0"
+    static let platformName = "amplify-ios"
+    
+    public static func frameworkMetaData() -> FrameworkMetadata {
+        
+        guard let flutterVersion = platformMapping[Platform.flutter] else {
+            return FrameworkMetadata(name: platformName, version: version)
+        }
+        return FrameworkMetadata(name: Platform.flutter.rawValue,
+                                 version: flutterVersion,
+                                 extras: [platformName: version])
     }
 }

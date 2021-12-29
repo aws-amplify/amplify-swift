@@ -7,7 +7,6 @@
 
 import Foundation
 import Amplify
-import AWSCore
 
 public enum AWSAuthorizationConfiguration {
     case none
@@ -20,7 +19,7 @@ public enum AWSAuthorizationConfiguration {
 
 // MARK: - AWSAuthorizationConfiguration factory
 extension AWSAuthorizationConfiguration {
-    private static func awsIAMAuthorizationConfiguration(region: AWSRegionType?)
+    private static func awsIAMAuthorizationConfiguration(region: String?)
         throws -> AWSAuthorizationConfiguration {
             guard let region = region else {
                 throw PluginError.pluginConfigurationError("Region is not set for IAM",
@@ -55,7 +54,7 @@ extension AWSAuthorizationConfiguration {
     ///           or if `apiKey` is not valid and `authType` is `apiKey`
     /// - Returns: an `AWSAuthorizationConfiguration` according to the provided `authType`
     public static func makeConfiguration(authType: AWSAuthorizationType,
-                                         region: AWSRegionType?,
+                                         region: String?,
                                          apiKey: String?) throws -> AWSAuthorizationConfiguration {
         switch authType {
         case .none:
