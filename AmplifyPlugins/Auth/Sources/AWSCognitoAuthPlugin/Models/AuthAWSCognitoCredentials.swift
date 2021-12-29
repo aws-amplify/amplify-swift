@@ -6,20 +6,7 @@
 //
 
 import Foundation
-
-public protocol AuthAWSTemporaryCredentials: AuthAWSCredentials {
-
-    var sessionKey: String { get }
-
-    var expiration: Date { get }
-}
-
-public protocol AuthAWSCredentials {
-
-    var accessKey: String { get }
-
-    var secretKey: String { get }
-}
+import AWSPluginsCore
 
 public struct AuthAWSCognitoCredentials: AuthAWSTemporaryCredentials {
 
@@ -31,3 +18,5 @@ public struct AuthAWSCognitoCredentials: AuthAWSTemporaryCredentials {
 
     public let  expiration: Date
 }
+
+extension AuthAWSCognitoCredentials: Codable { }
