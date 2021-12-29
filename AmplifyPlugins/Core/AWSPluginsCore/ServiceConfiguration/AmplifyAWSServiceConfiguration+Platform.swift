@@ -18,10 +18,4 @@ extension AmplifyAWSServiceConfiguration {
     public enum Platform: String {
         case flutter = "amplify-flutter"
     }
-
-    static func platformInformation() -> String {
-        var platformTokens = platformMapping.map { "\($0.rawValue)/\($1)" }
-        platformTokens.append("amplify-iOS/\(AmplifyAWSServiceConfiguration.version)")
-        return platformTokens.joined(separator: " ")
-    }
 }
