@@ -9,7 +9,7 @@ import XCTest
 import AmplifyTestCommon
 
 @testable import Amplify
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 class AWSAPICategoryPluginTests: XCTestCase {
     func testStorageEngineDoesNotStartsOnConfigure() throws {

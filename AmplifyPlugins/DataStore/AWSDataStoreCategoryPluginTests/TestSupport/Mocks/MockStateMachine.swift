@@ -7,7 +7,7 @@
 
 import Foundation
 import Amplify
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 class MockStateMachine<S, A>: StateMachine<S, A> {
     typealias ExpectActionCriteria = (_ action: A) -> Void

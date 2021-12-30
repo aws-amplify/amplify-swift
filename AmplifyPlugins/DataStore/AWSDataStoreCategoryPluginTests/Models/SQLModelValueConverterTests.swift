@@ -9,7 +9,7 @@ import Foundation
 import XCTest
 
 @testable import Amplify
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 @testable import SQLite
 
 class SQLModelValueConverterTests: BaseDataStoreTests {

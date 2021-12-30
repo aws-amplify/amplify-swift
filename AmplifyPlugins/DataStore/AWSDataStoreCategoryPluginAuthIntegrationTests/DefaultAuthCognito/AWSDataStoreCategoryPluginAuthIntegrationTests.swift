@@ -7,7 +7,7 @@
 
 import XCTest
 import AmplifyPlugins
-import AWSDataStoreCategoryPlugin
+import AWSDataStorePlugin
 
 @testable import Amplify
 @testable import AmplifyTestCommon

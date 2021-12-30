@@ -10,7 +10,7 @@ import SQLite
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 class AWSMutationEventIngesterTests: XCTestCase {
     // Used by tests to assert that the MutationEvent table is being updated
