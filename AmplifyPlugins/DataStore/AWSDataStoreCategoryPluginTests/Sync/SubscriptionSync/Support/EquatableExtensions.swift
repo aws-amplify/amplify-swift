@@ -7,7 +7,7 @@
 
 import Amplify
 import AWSPluginsCore
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 extension RemoteSyncReconciler.Disposition: Equatable {
     public static func == (lhs: RemoteSyncReconciler.Disposition,

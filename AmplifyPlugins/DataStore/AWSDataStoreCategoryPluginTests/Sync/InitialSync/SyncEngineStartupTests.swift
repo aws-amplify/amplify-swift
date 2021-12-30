@@ -8,7 +8,7 @@
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 /// Test order of startup operations to ensure SyncEngine is properly following the delta sync merge algorithm
 class SyncEngineStartupTests: SyncEngineTestBase {

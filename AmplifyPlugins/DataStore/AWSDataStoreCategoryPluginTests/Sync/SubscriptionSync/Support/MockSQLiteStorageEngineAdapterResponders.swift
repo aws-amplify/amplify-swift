@@ -8,7 +8,7 @@
 import Amplify
 import AWSPluginsCore
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 extension MockSQLiteStorageEngineAdapter {
     enum ResponderKeys {

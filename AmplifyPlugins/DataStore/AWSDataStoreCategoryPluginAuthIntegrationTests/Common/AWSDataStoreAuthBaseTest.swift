@@ -10,7 +10,7 @@ import XCTest
 import Combine
 
 import AmplifyPlugins
-import AWSDataStoreCategoryPlugin
+import AWSDataStorePlugin
 import AWSPluginsCore
 
 @testable import Amplify

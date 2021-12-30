@@ -9,7 +9,7 @@ import Amplify
 import AWSPluginsCore
 import Combine
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 final class MockReconciliationQueue: MessageReporter, IncomingEventReconciliationQueue {
 
