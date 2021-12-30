@@ -12,7 +12,7 @@ import AWSPluginsCore
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 @available(iOS 13.0, *)
 class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {

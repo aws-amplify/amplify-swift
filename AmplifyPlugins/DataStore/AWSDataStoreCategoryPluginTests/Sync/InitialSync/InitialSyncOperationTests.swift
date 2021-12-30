@@ -11,7 +11,7 @@ import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
 
 // swiftlint:disable type_body_length

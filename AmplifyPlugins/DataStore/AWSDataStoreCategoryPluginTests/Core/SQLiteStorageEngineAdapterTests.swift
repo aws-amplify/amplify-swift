@@ -12,7 +12,7 @@ import SQLite3
 @testable import Amplify
 @testable import AWSPluginsCore
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length

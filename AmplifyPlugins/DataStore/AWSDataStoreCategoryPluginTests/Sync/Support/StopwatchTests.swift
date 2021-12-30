@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 class StopwatchTests: XCTestCase {
 

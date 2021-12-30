@@ -12,7 +12,7 @@ import AWSPluginsCore
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 // swfitlint:disable file_length
 // swiftlint:disable type_body_length
