@@ -94,6 +94,7 @@
 		21DDCE3127332D8100D9B297 /* MockMutationSyncMigrationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DDCE3027332D8100D9B297 /* MockMutationSyncMigrationDelegate.swift */; };
 		21FDBBDB2587DB7A0086FCDC /* DataStoreConnectionScenario6Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FDBBDA2587DB7A0086FCDC /* DataStoreConnectionScenario6Tests.swift */; };
 		21FE027E25890B2F00B81D72 /* DataStoreListProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FE027D25890B2F00B81D72 /* DataStoreListProvider.swift */; };
+		3AC75F1100634561C7A480BE /* Pods_HostApp_AWSDataStoreCategoryPluginFlutterIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3689EBBD76A66F01A7ABFF16 /* Pods_HostApp_AWSDataStoreCategoryPluginFlutterIntegrationTests.framework */; };
 		6B01B71D23A4615900AD0E97 /* SyncMutationToCloudOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B01B71C23A4615900AD0E97 /* SyncMutationToCloudOperationTests.swift */; };
 		6B01B72023A4672500AD0E97 /* RequestRetryable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B01B71E23A4672500AD0E97 /* RequestRetryable.swift */; };
 		6B01B72223A4672500AD0E97 /* RequestRetryablePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B01B71F23A4672500AD0E97 /* RequestRetryablePolicy.swift */; };
@@ -213,6 +214,35 @@
 		97DB735426B49ED6004708B8 /* MutationEvent+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DB735326B49ED6004708B8 /* MutationEvent+Extensions.swift */; };
 		97DB735B26B4A229004708B8 /* MutationEventExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DB735A26B4A229004708B8 /* MutationEventExtensionsTests.swift */; };
 		97ED948A26DEC90A0025FA43 /* Model+Compare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97ED948926DEC90A0025FA43 /* Model+Compare.swift */; };
+		9C0CA4F12748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA4F02748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests.swift */; };
+		9C0CA4F32748705F001C70CD /* AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2149E59B238867E100873955 /* AWSDataStoreCategoryPlugin.framework */; };
+		9C0CA52C274872D5001C70CD /* TestFlutterModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA52B274872D5001C70CD /* TestFlutterModelRegistration.swift */; };
+		9C0CA53527487347001C70CD /* FlutterSerializedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA53427487347001C70CD /* FlutterSerializedModel.swift */; };
+		9C0CA54327487395001C70CD /* FlutterTemporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA54227487395001C70CD /* FlutterTemporal.swift */; };
+		9C0CA54B274873B8001C70CD /* FlutterDataStoreRequestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA54A274873B8001C70CD /* FlutterDataStoreRequestUtils.swift */; };
+		9C0CA5542748740B001C70CD /* DataStoreConnectionScenario1FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA5532748740B001C70CD /* DataStoreConnectionScenario1FlutterTests.swift */; };
+		9C0CA55C274874A4001C70CD /* DataStoreFlutterConsecutiveUpdatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA55B274874A4001C70CD /* DataStoreFlutterConsecutiveUpdatesTests.swift */; };
+		9C0CA565274874F0001C70CD /* PostWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA564274874F0001C70CD /* PostWrapper.swift */; };
+		9C0CA56D2748750F001C70CD /* Blog6Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA56C2748750F001C70CD /* Blog6Wrapper.swift */; };
+		9C0CA57527487533001C70CD /* Comment3Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA57427487533001C70CD /* Comment3Wrapper.swift */; };
+		9C0CA57D2748754D001C70CD /* Comment4Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA57C2748754D001C70CD /* Comment4Wrapper.swift */; };
+		9C0CA58527487568001C70CD /* Comment6Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA58427487568001C70CD /* Comment6Wrapper.swift */; };
+		9C0CA58D2748758E001C70CD /* Post3Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA58C2748758E001C70CD /* Post3Wrapper.swift */; };
+		9C0CA595274875AB001C70CD /* Post4Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA594274875AB001C70CD /* Post4Wrapper.swift */; };
+		9C0CA59D274875CA001C70CD /* Post5Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA59C274875CA001C70CD /* Post5Wrapper.swift */; };
+		9C0CA5A5274875E2001C70CD /* Post6Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA5A4274875E2001C70CD /* Post6Wrapper.swift */; };
+		9C0CA5AD27487602001C70CD /* PostEditor5Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA5AC27487602001C70CD /* PostEditor5Wrapper.swift */; };
+		9C0CA5B52748762C001C70CD /* Project1Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA5B42748762C001C70CD /* Project1Wrapper.swift */; };
+		9C0CA5BD27487644001C70CD /* Project2Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA5BC27487644001C70CD /* Project2Wrapper.swift */; };
+		9C0CA5C52748765C001C70CD /* TeamWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA5C42748765C001C70CD /* TeamWrapper.swift */; };
+		9C0CA5CD27487675001C70CD /* User5Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA5CC27487675001C70CD /* User5Wrapper.swift */; };
+		9C0CA5E327487883001C70CD /* SyncEngineFlutterIntegrationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA5E227487883001C70CD /* SyncEngineFlutterIntegrationTestBase.swift */; };
+		9CD842182748981A00502D92 /* DataStoreConnectionScenario2FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD842172748981A00502D92 /* DataStoreConnectionScenario2FlutterTests.swift */; };
+		9CD842202748A65800502D92 /* DataStoreConnectionScenario3FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD8421F2748A65800502D92 /* DataStoreConnectionScenario3FlutterTests.swift */; };
+		9CD842282748A68800502D92 /* DataStoreConnectionScenario4FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD842272748A68800502D92 /* DataStoreConnectionScenario4FlutterTests.swift */; };
+		9CD84254274C00BA00502D92 /* DataStoreConnectionScenario5FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD84253274C00BA00502D92 /* DataStoreConnectionScenario5FlutterTests.swift */; };
+		9CD8425C274C00EB00502D92 /* DataStoreConnectionScenario6FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD8425B274C00EB00502D92 /* DataStoreConnectionScenario6FlutterTests.swift */; };
+		9CD84272274C0F1300502D92 /* DataStoreFlutterEndToEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD84271274C0F1300502D92 /* DataStoreFlutterEndToEndTests.swift */; };
 		A209418EED69D7B1BB8A55C2 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C63AE18F2569D004E94BD550 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */; };
 		A569484A6FBAE7EC7ADF3FD4 /* Pods_AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A1D332BE6CF885805360B3D /* Pods_AWSDataStoreCategoryPlugin.framework */; };
 		B10BF4A52A1C9840C208C8A8 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19AFF6D00CF3AF927BA90382 /* Pods_HostApp.framework */; };
@@ -356,6 +386,13 @@
 			remoteGlobalIDString = 2149E60423886C7B00873955;
 			remoteInfo = HostApp;
 		};
+		9C0CA4F42748705F001C70CD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2149E592238867E100873955 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2149E59A238867E100873955;
+			remoteInfo = AWSDataStoreCategoryPlugin;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -460,6 +497,8 @@
 		21FE027D25890B2F00B81D72 /* DataStoreListProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreListProvider.swift; sourceTree = "<group>"; };
 		280D7C45F839531215A44B34 /* Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		32AD9436C9FB473423CA9786 /* Pods-AWSDataStoreCategoryPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin/Pods-AWSDataStoreCategoryPlugin.release.xcconfig"; sourceTree = "<group>"; };
+		3689EBBD76A66F01A7ABFF16 /* Pods_HostApp_AWSDataStoreCategoryPluginFlutterIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSDataStoreCategoryPluginFlutterIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5B62423E457D3149264ADA1F /* Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6A1D332BE6CF885805360B3D /* Pods_AWSDataStoreCategoryPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSDataStoreCategoryPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B01B71C23A4615900AD0E97 /* SyncMutationToCloudOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMutationToCloudOperationTests.swift; sourceTree = "<group>"; };
 		6B01B71E23A4672500AD0E97 /* RequestRetryable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestRetryable.swift; sourceTree = "<group>"; };
@@ -589,6 +628,37 @@
 		97DB735326B49ED6004708B8 /* MutationEvent+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MutationEvent+Extensions.swift"; sourceTree = "<group>"; };
 		97DB735A26B4A229004708B8 /* MutationEventExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEventExtensionsTests.swift; sourceTree = "<group>"; };
 		97ED948926DEC90A0025FA43 /* Model+Compare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+Compare.swift"; sourceTree = "<group>"; };
+		9C0CA4EE2748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSDataStoreCategoryPluginFlutterIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9C0CA4F02748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreCategoryPluginFlutterIntegrationTests.swift; sourceTree = "<group>"; };
+		9C0CA4F22748705F001C70CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9C0CA52B274872D5001C70CD /* TestFlutterModelRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFlutterModelRegistration.swift; sourceTree = "<group>"; };
+		9C0CA53427487347001C70CD /* FlutterSerializedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlutterSerializedModel.swift; sourceTree = "<group>"; };
+		9C0CA54227487395001C70CD /* FlutterTemporal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlutterTemporal.swift; sourceTree = "<group>"; };
+		9C0CA54A274873B8001C70CD /* FlutterDataStoreRequestUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlutterDataStoreRequestUtils.swift; sourceTree = "<group>"; };
+		9C0CA5532748740B001C70CD /* DataStoreConnectionScenario1FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario1FlutterTests.swift; sourceTree = "<group>"; };
+		9C0CA55B274874A4001C70CD /* DataStoreFlutterConsecutiveUpdatesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreFlutterConsecutiveUpdatesTests.swift; sourceTree = "<group>"; };
+		9C0CA564274874F0001C70CD /* PostWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostWrapper.swift; sourceTree = "<group>"; };
+		9C0CA56C2748750F001C70CD /* Blog6Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Blog6Wrapper.swift; sourceTree = "<group>"; };
+		9C0CA57427487533001C70CD /* Comment3Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment3Wrapper.swift; sourceTree = "<group>"; };
+		9C0CA57C2748754D001C70CD /* Comment4Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment4Wrapper.swift; sourceTree = "<group>"; };
+		9C0CA58427487568001C70CD /* Comment6Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment6Wrapper.swift; sourceTree = "<group>"; };
+		9C0CA58C2748758E001C70CD /* Post3Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post3Wrapper.swift; sourceTree = "<group>"; };
+		9C0CA594274875AB001C70CD /* Post4Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post4Wrapper.swift; sourceTree = "<group>"; };
+		9C0CA59C274875CA001C70CD /* Post5Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post5Wrapper.swift; sourceTree = "<group>"; };
+		9C0CA5A4274875E2001C70CD /* Post6Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post6Wrapper.swift; sourceTree = "<group>"; };
+		9C0CA5AC27487602001C70CD /* PostEditor5Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostEditor5Wrapper.swift; sourceTree = "<group>"; };
+		9C0CA5B42748762C001C70CD /* Project1Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project1Wrapper.swift; sourceTree = "<group>"; };
+		9C0CA5BC27487644001C70CD /* Project2Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project2Wrapper.swift; sourceTree = "<group>"; };
+		9C0CA5C42748765C001C70CD /* TeamWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamWrapper.swift; sourceTree = "<group>"; };
+		9C0CA5CC27487675001C70CD /* User5Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User5Wrapper.swift; sourceTree = "<group>"; };
+		9C0CA5E227487883001C70CD /* SyncEngineFlutterIntegrationTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngineFlutterIntegrationTestBase.swift; sourceTree = "<group>"; };
+		9CD842172748981A00502D92 /* DataStoreConnectionScenario2FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario2FlutterTests.swift; sourceTree = "<group>"; };
+		9CD8421F2748A65800502D92 /* DataStoreConnectionScenario3FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario3FlutterTests.swift; sourceTree = "<group>"; };
+		9CD842272748A68800502D92 /* DataStoreConnectionScenario4FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario4FlutterTests.swift; sourceTree = "<group>"; };
+		9CD84253274C00BA00502D92 /* DataStoreConnectionScenario5FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario5FlutterTests.swift; sourceTree = "<group>"; };
+		9CD8425B274C00EB00502D92 /* DataStoreConnectionScenario6FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario6FlutterTests.swift; sourceTree = "<group>"; };
+		9CD84271274C0F1300502D92 /* DataStoreFlutterEndToEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreFlutterEndToEndTests.swift; sourceTree = "<group>"; };
+		9CECD26F274C324C0031F775 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9D42A96449A4B73735566C07 /* Pods-AWSDataStoreCategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin/Pods-AWSDataStoreCategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		9F987EC33AAD7C0904A598CA /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B40EF02724BF68C900F2264C /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
@@ -608,6 +678,7 @@
 		B9FAA13F238C600A009414B4 /* ListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTests.swift; sourceTree = "<group>"; };
 		B9FAA141238C6082009414B4 /* BaseDataStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDataStoreTests.swift; sourceTree = "<group>"; };
 		C63AE18F2569D004E94BD550 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D3F25419403F14E7B77BE98B /* Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		D4BB518039D7C264E092363E /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		D59B63DF64CCA73C910ADD66 /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D80064F52499297800935DA3 /* MockFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFileManager.swift; sourceTree = "<group>"; };
@@ -745,6 +816,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9C0CA4EB2748705F001C70CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9C0CA4F32748705F001C70CD /* AWSDataStoreCategoryPlugin.framework in Frameworks */,
+				3AC75F1100634561C7A480BE /* Pods_HostApp_AWSDataStoreCategoryPluginFlutterIntegrationTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -778,6 +858,7 @@
 				21233DDE2475935600039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests */,
 				2149E60623886C7B00873955 /* HostApp */,
 				9B5889A231ECAD33B03B5DF6 /* Pods */,
+				9C0CA4EF2748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests */,
 				2149E59C238867E100873955 /* Products */,
 				FA9C743C238CB493009DAFCF /* Recovered References */,
 				B158D86B8144CD1BD9589BA7 /* Frameworks */,
@@ -792,6 +873,7 @@
 				2149E60523886C7B00873955 /* HostApp.app */,
 				2149E61D23886CEE00873955 /* AWSDataStoreCategoryPluginIntegrationTests.xctest */,
 				21233DDD2475935600039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests.xctest */,
+				9C0CA4EE2748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1194,8 +1276,79 @@
 				280D7C45F839531215A44B34 /* Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.release.xcconfig */,
 				D59B63DF64CCA73C910ADD66 /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.debug.xcconfig */,
 				D4BB518039D7C264E092363E /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig */,
+				5B62423E457D3149264ADA1F /* Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests.debug.xcconfig */,
+				D3F25419403F14E7B77BE98B /* Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		9C0CA4EF2748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests */ = {
+			isa = PBXGroup;
+			children = (
+				9C0CA552274873F3001C70CD /* Connection */,
+				9C0CA52A274872C0001C70CD /* TestSupport */,
+				9C0CA4F02748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests.swift */,
+				9C0CA4F22748705F001C70CD /* Info.plist */,
+				9C0CA55B274874A4001C70CD /* DataStoreFlutterConsecutiveUpdatesTests.swift */,
+				9CD84271274C0F1300502D92 /* DataStoreFlutterEndToEndTests.swift */,
+				9CECD26F274C324C0031F775 /* README.md */,
+			);
+			path = AWSDataStoreCategoryPluginFlutterIntegrationTests;
+			sourceTree = "<group>";
+		};
+		9C0CA52A274872C0001C70CD /* TestSupport */ = {
+			isa = PBXGroup;
+			children = (
+				9C0CA563274874C2001C70CD /* SerializedModelWrappers */,
+				9C0CA53327487332001C70CD /* AmplifyFlutterHelpers */,
+				9C0CA52B274872D5001C70CD /* TestFlutterModelRegistration.swift */,
+				9C0CA5E227487883001C70CD /* SyncEngineFlutterIntegrationTestBase.swift */,
+			);
+			path = TestSupport;
+			sourceTree = "<group>";
+		};
+		9C0CA53327487332001C70CD /* AmplifyFlutterHelpers */ = {
+			isa = PBXGroup;
+			children = (
+				9C0CA53427487347001C70CD /* FlutterSerializedModel.swift */,
+				9C0CA54227487395001C70CD /* FlutterTemporal.swift */,
+				9C0CA54A274873B8001C70CD /* FlutterDataStoreRequestUtils.swift */,
+			);
+			path = AmplifyFlutterHelpers;
+			sourceTree = "<group>";
+		};
+		9C0CA552274873F3001C70CD /* Connection */ = {
+			isa = PBXGroup;
+			children = (
+				9C0CA5532748740B001C70CD /* DataStoreConnectionScenario1FlutterTests.swift */,
+				9CD842172748981A00502D92 /* DataStoreConnectionScenario2FlutterTests.swift */,
+				9CD8421F2748A65800502D92 /* DataStoreConnectionScenario3FlutterTests.swift */,
+				9CD842272748A68800502D92 /* DataStoreConnectionScenario4FlutterTests.swift */,
+				9CD84253274C00BA00502D92 /* DataStoreConnectionScenario5FlutterTests.swift */,
+				9CD8425B274C00EB00502D92 /* DataStoreConnectionScenario6FlutterTests.swift */,
+			);
+			path = Connection;
+			sourceTree = "<group>";
+		};
+		9C0CA563274874C2001C70CD /* SerializedModelWrappers */ = {
+			isa = PBXGroup;
+			children = (
+				9C0CA564274874F0001C70CD /* PostWrapper.swift */,
+				9C0CA56C2748750F001C70CD /* Blog6Wrapper.swift */,
+				9C0CA57427487533001C70CD /* Comment3Wrapper.swift */,
+				9C0CA57C2748754D001C70CD /* Comment4Wrapper.swift */,
+				9C0CA58427487568001C70CD /* Comment6Wrapper.swift */,
+				9C0CA58C2748758E001C70CD /* Post3Wrapper.swift */,
+				9C0CA594274875AB001C70CD /* Post4Wrapper.swift */,
+				9C0CA59C274875CA001C70CD /* Post5Wrapper.swift */,
+				9C0CA5A4274875E2001C70CD /* Post6Wrapper.swift */,
+				9C0CA5AC27487602001C70CD /* PostEditor5Wrapper.swift */,
+				9C0CA5B42748762C001C70CD /* Project1Wrapper.swift */,
+				9C0CA5BC27487644001C70CD /* Project2Wrapper.swift */,
+				9C0CA5C42748765C001C70CD /* TeamWrapper.swift */,
+				9C0CA5CC27487675001C70CD /* User5Wrapper.swift */,
+			);
+			path = SerializedModelWrappers;
 			sourceTree = "<group>";
 		};
 		B158D86B8144CD1BD9589BA7 /* Frameworks */ = {
@@ -1206,6 +1359,7 @@
 				19AFF6D00CF3AF927BA90382 /* Pods_HostApp.framework */,
 				EA320D973669D3843FDF755E /* Pods_HostApp_AWSDataStoreCategoryPluginAuthIntegrationTests.framework */,
 				9F987EC33AAD7C0904A598CA /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */,
+				3689EBBD76A66F01A7ABFF16 /* Pods_HostApp_AWSDataStoreCategoryPluginFlutterIntegrationTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1607,13 +1761,33 @@
 			productReference = 2149E61D23886CEE00873955 /* AWSDataStoreCategoryPluginIntegrationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		9C0CA4ED2748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9C0CA4F62748705F001C70CD /* Build configuration list for PBXNativeTarget "AWSDataStoreCategoryPluginFlutterIntegrationTests" */;
+			buildPhases = (
+				5700884EC67DFAB6CF3F8D55 /* [CP] Check Pods Manifest.lock */,
+				9C0CA4EA2748705F001C70CD /* Sources */,
+				9C0CA4EB2748705F001C70CD /* Frameworks */,
+				9C0CA4EC2748705F001C70CD /* Resources */,
+				CBD26EA4EE99D059295AC9E2 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9C0CA4F52748705F001C70CD /* PBXTargetDependency */,
+			);
+			name = AWSDataStoreCategoryPluginFlutterIntegrationTests;
+			productName = AWSDataStoreCategoryPluginFlutterIntegrationTests;
+			productReference = 9C0CA4EE2748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		2149E592238867E100873955 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1130;
+				LastSwiftUpdateCheck = 1240;
 				LastUpgradeCheck = 1120;
 				ORGANIZATIONNAME = "Amazon Web Services";
 				TargetAttributes = {
@@ -1636,6 +1810,9 @@
 						LastSwiftMigration = 1120;
 						TestTargetID = 2149E60423886C7B00873955;
 					};
+					9C0CA4ED2748705F001C70CD = {
+						CreatedOnToolsVersion = 12.4;
+					};
 				};
 			};
 			buildConfigurationList = 2149E595238867E100873955 /* Build configuration list for PBXProject "DataStoreCategoryPlugin" */;
@@ -1656,6 +1833,7 @@
 				2149E61C23886CEE00873955 /* AWSDataStoreCategoryPluginIntegrationTests */,
 				21233DDC2475935600039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests */,
 				2149E60423886C7B00873955 /* HostApp */,
+				9C0CA4ED2748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1693,6 +1871,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		2149E61B23886CEE00873955 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9C0CA4EC2748705F001C70CD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1813,6 +1998,28 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		5700884EC67DFAB6CF3F8D55 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		7271A3236003399AB5B44010 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1894,6 +2101,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CBD26EA4EE99D059295AC9E2 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		CF72DE9644BC321291D5C479 /* [CP] Embed Pods Frameworks */ = {
@@ -2362,6 +2586,41 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9C0CA4EA2748705F001C70CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9C0CA58D2748758E001C70CD /* Post3Wrapper.swift in Sources */,
+				9C0CA5542748740B001C70CD /* DataStoreConnectionScenario1FlutterTests.swift in Sources */,
+				9C0CA5CD27487675001C70CD /* User5Wrapper.swift in Sources */,
+				9C0CA59D274875CA001C70CD /* Post5Wrapper.swift in Sources */,
+				9CD8425C274C00EB00502D92 /* DataStoreConnectionScenario6FlutterTests.swift in Sources */,
+				9C0CA53527487347001C70CD /* FlutterSerializedModel.swift in Sources */,
+				9C0CA5C52748765C001C70CD /* TeamWrapper.swift in Sources */,
+				9C0CA58527487568001C70CD /* Comment6Wrapper.swift in Sources */,
+				9C0CA4F12748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests.swift in Sources */,
+				9CD84254274C00BA00502D92 /* DataStoreConnectionScenario5FlutterTests.swift in Sources */,
+				9C0CA57527487533001C70CD /* Comment3Wrapper.swift in Sources */,
+				9C0CA565274874F0001C70CD /* PostWrapper.swift in Sources */,
+				9C0CA54B274873B8001C70CD /* FlutterDataStoreRequestUtils.swift in Sources */,
+				9C0CA56D2748750F001C70CD /* Blog6Wrapper.swift in Sources */,
+				9C0CA5A5274875E2001C70CD /* Post6Wrapper.swift in Sources */,
+				9C0CA55C274874A4001C70CD /* DataStoreFlutterConsecutiveUpdatesTests.swift in Sources */,
+				9CD84272274C0F1300502D92 /* DataStoreFlutterEndToEndTests.swift in Sources */,
+				9C0CA54327487395001C70CD /* FlutterTemporal.swift in Sources */,
+				9CD842202748A65800502D92 /* DataStoreConnectionScenario3FlutterTests.swift in Sources */,
+				9C0CA5B52748762C001C70CD /* Project1Wrapper.swift in Sources */,
+				9C0CA57D2748754D001C70CD /* Comment4Wrapper.swift in Sources */,
+				9C0CA5E327487883001C70CD /* SyncEngineFlutterIntegrationTestBase.swift in Sources */,
+				9C0CA595274875AB001C70CD /* Post4Wrapper.swift in Sources */,
+				9C0CA5BD27487644001C70CD /* Project2Wrapper.swift in Sources */,
+				9C0CA5AD27487602001C70CD /* PostEditor5Wrapper.swift in Sources */,
+				9C0CA52C274872D5001C70CD /* TestFlutterModelRegistration.swift in Sources */,
+				9CD842182748981A00502D92 /* DataStoreConnectionScenario2FlutterTests.swift in Sources */,
+				9CD842282748A68800502D92 /* DataStoreConnectionScenario4FlutterTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -2389,6 +2648,11 @@
 			isa = PBXTargetDependency;
 			target = 2149E60423886C7B00873955 /* HostApp */;
 			targetProxy = 2149E62823886CF500873955 /* PBXContainerItemProxy */;
+		};
+		9C0CA4F52748705F001C70CD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2149E59A238867E100873955 /* AWSDataStoreCategoryPlugin */;
+			targetProxy = 9C0CA4F42748705F001C70CD /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2752,6 +3016,48 @@
 			};
 			name = Release;
 		};
+		9C0CA4F72748705F001C70CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5B62423E457D3149264ADA1F /* Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests.debug.xcconfig */;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				INFOPLIST_FILE = AWSDataStoreCategoryPluginFlutterIntegrationTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSDataStoreCategoryPluginFlutterIntegrationTests.AWSDataStoreCategoryPluginFlutterIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9C0CA4F82748705F001C70CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D3F25419403F14E7B77BE98B /* Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests.release.xcconfig */;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				INFOPLIST_FILE = AWSDataStoreCategoryPluginFlutterIntegrationTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSDataStoreCategoryPluginFlutterIntegrationTests.AWSDataStoreCategoryPluginFlutterIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2805,6 +3111,15 @@
 			buildConfigurations = (
 				2149E62623886CEE00873955 /* Debug */,
 				2149E62723886CEE00873955 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9C0CA4F62748705F001C70CD /* Build configuration list for PBXNativeTarget "AWSDataStoreCategoryPluginFlutterIntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9C0CA4F72748705F001C70CD /* Debug */,
+				9C0CA4F82748705F001C70CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
