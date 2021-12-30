@@ -59,6 +59,10 @@ struct AuthPluginErrorConstants {
         "There is no user signed in to retreive user sub",
         "Call Auth.signIn to sign in a user and then call Auth.fetchSession")
 
+    static let deleteUserSignOutError: AuthPluginErrorString = (
+        "There is no user signed in to delete an account",
+        "Call Auth.signIn to sign in a user and then call Auth.deleteUser")
+
     static let identityIdOfflineError: AuthPluginErrorString = (
         "A network error occured while trying to fetch identity id",
         "Try again with exponential backoff")

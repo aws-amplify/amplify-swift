@@ -31,6 +31,13 @@ extension AuthenticationProviderAdapter {
                 }
                 return
             }
+            if case .notSignedIn = error as? AWSMobileClientError {
+                let authError = AuthError.signedOut(AuthPluginErrorConstants.deleteUserSignOutError.errorDescription,
+                                                    AuthPluginErrorConstants.deleteUserSignOutError.recoverySuggestion,
+                                                    error)
+                completionHandler(.failure(authError))
+                return
+            }
             completionHandler(.failure(AuthErrorHelper.toAuthError(error)))
         }
     }
