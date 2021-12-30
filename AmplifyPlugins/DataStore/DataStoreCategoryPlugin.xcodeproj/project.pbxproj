@@ -225,13 +225,12 @@
 		9C0CA5BD27487644001C70CD /* Project2Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA5BC27487644001C70CD /* Project2Wrapper.swift */; };
 		9C0CA5C52748765C001C70CD /* TeamWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA5C42748765C001C70CD /* TeamWrapper.swift */; };
 		9C0CA5CD27487675001C70CD /* User5Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA5CC27487675001C70CD /* User5Wrapper.swift */; };
-		9C0CA5D52748779C001C70CD /* DataStoreTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA5D42748779C001C70CD /* DataStoreTestBase.swift */; };
 		9C0CA5E327487883001C70CD /* SyncEngineFlutterIntegrationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CA5E227487883001C70CD /* SyncEngineFlutterIntegrationTestBase.swift */; };
 		9CD842182748981A00502D92 /* DataStoreConnectionScenario2FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD842172748981A00502D92 /* DataStoreConnectionScenario2FlutterTests.swift */; };
 		9CD842202748A65800502D92 /* DataStoreConnectionScenario3FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD8421F2748A65800502D92 /* DataStoreConnectionScenario3FlutterTests.swift */; };
 		9CD842282748A68800502D92 /* DataStoreConnectionScenario4FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD842272748A68800502D92 /* DataStoreConnectionScenario4FlutterTests.swift */; };
 		9CD84254274C00BA00502D92 /* DataStoreConnectionScenario5FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD84253274C00BA00502D92 /* DataStoreConnectionScenario5FlutterTests.swift */; };
-		9CD8425C274C00EB00502D92 /* DataStoreConnectionScenario7FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD8425B274C00EB00502D92 /* DataStoreConnectionScenario7FlutterTests.swift */; };
+		9CD8425C274C00EB00502D92 /* DataStoreConnectionScenario6FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD8425B274C00EB00502D92 /* DataStoreConnectionScenario6FlutterTests.swift */; };
 		9CD84272274C0F1300502D92 /* DataStoreFlutterEndToEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD84271274C0F1300502D92 /* DataStoreFlutterEndToEndTests.swift */; };
 		A209418EED69D7B1BB8A55C2 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C63AE18F2569D004E94BD550 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */; };
 		A569484A6FBAE7EC7ADF3FD4 /* Pods_AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A1D332BE6CF885805360B3D /* Pods_AWSDataStoreCategoryPlugin.framework */; };
@@ -619,13 +618,12 @@
 		9C0CA5BC27487644001C70CD /* Project2Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project2Wrapper.swift; sourceTree = "<group>"; };
 		9C0CA5C42748765C001C70CD /* TeamWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamWrapper.swift; sourceTree = "<group>"; };
 		9C0CA5CC27487675001C70CD /* User5Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User5Wrapper.swift; sourceTree = "<group>"; };
-		9C0CA5D42748779C001C70CD /* DataStoreTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreTestBase.swift; sourceTree = "<group>"; };
 		9C0CA5E227487883001C70CD /* SyncEngineFlutterIntegrationTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngineFlutterIntegrationTestBase.swift; sourceTree = "<group>"; };
 		9CD842172748981A00502D92 /* DataStoreConnectionScenario2FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario2FlutterTests.swift; sourceTree = "<group>"; };
 		9CD8421F2748A65800502D92 /* DataStoreConnectionScenario3FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario3FlutterTests.swift; sourceTree = "<group>"; };
 		9CD842272748A68800502D92 /* DataStoreConnectionScenario4FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario4FlutterTests.swift; sourceTree = "<group>"; };
 		9CD84253274C00BA00502D92 /* DataStoreConnectionScenario5FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario5FlutterTests.swift; sourceTree = "<group>"; };
-		9CD8425B274C00EB00502D92 /* DataStoreConnectionScenario7FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario7FlutterTests.swift; sourceTree = "<group>"; };
+		9CD8425B274C00EB00502D92 /* DataStoreConnectionScenario6FlutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario6FlutterTests.swift; sourceTree = "<group>"; };
 		9CD84271274C0F1300502D92 /* DataStoreFlutterEndToEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreFlutterEndToEndTests.swift; sourceTree = "<group>"; };
 		9CECD26F274C324C0031F775 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9D42A96449A4B73735566C07 /* Pods-AWSDataStoreCategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin/Pods-AWSDataStoreCategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1238,7 +1236,6 @@
 				9C0CA563274874C2001C70CD /* SerializedModelWrappers */,
 				9C0CA53327487332001C70CD /* AmplifyFlutterHelpers */,
 				9C0CA52B274872D5001C70CD /* TestFlutterModelRegistration.swift */,
-				9C0CA5D42748779C001C70CD /* DataStoreTestBase.swift */,
 				9C0CA5E227487883001C70CD /* SyncEngineFlutterIntegrationTestBase.swift */,
 			);
 			path = TestSupport;
@@ -1262,7 +1259,7 @@
 				9CD8421F2748A65800502D92 /* DataStoreConnectionScenario3FlutterTests.swift */,
 				9CD842272748A68800502D92 /* DataStoreConnectionScenario4FlutterTests.swift */,
 				9CD84253274C00BA00502D92 /* DataStoreConnectionScenario5FlutterTests.swift */,
-				9CD8425B274C00EB00502D92 /* DataStoreConnectionScenario7FlutterTests.swift */,
+				9CD8425B274C00EB00502D92 /* DataStoreConnectionScenario6FlutterTests.swift */,
 			);
 			path = Connection;
 			sourceTree = "<group>";
@@ -2515,7 +2512,7 @@
 				9C0CA5542748740B001C70CD /* DataStoreConnectionScenario1FlutterTests.swift in Sources */,
 				9C0CA5CD27487675001C70CD /* User5Wrapper.swift in Sources */,
 				9C0CA59D274875CA001C70CD /* Post5Wrapper.swift in Sources */,
-				9CD8425C274C00EB00502D92 /* DataStoreConnectionScenario7FlutterTests.swift in Sources */,
+				9CD8425C274C00EB00502D92 /* DataStoreConnectionScenario6FlutterTests.swift in Sources */,
 				9C0CA53527487347001C70CD /* FlutterSerializedModel.swift in Sources */,
 				9C0CA5C52748765C001C70CD /* TeamWrapper.swift in Sources */,
 				9C0CA58527487568001C70CD /* Comment6Wrapper.swift in Sources */,
@@ -2536,7 +2533,6 @@
 				9C0CA595274875AB001C70CD /* Post4Wrapper.swift in Sources */,
 				9C0CA5BD27487644001C70CD /* Project2Wrapper.swift in Sources */,
 				9C0CA5AD27487602001C70CD /* PostEditor5Wrapper.swift in Sources */,
-				9C0CA5D52748779C001C70CD /* DataStoreTestBase.swift in Sources */,
 				9C0CA52C274872D5001C70CD /* TestFlutterModelRegistration.swift in Sources */,
 				9CD842182748981A00502D92 /* DataStoreConnectionScenario2FlutterTests.swift in Sources */,
 				9CD842282748A68800502D92 /* DataStoreConnectionScenario4FlutterTests.swift in Sources */,
