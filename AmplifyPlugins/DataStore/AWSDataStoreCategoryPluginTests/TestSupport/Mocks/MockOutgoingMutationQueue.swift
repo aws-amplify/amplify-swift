@@ -10,7 +10,7 @@ import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 class MockOutgoingMutationQueue: OutgoingMutationQueueBehavior {
     func stopSyncingToCloud(_ completion: @escaping BasicClosure = {}) {

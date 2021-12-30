@@ -11,7 +11,7 @@ import SQLite
 import Combine
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 /// Tests that DataStore invokes proper API methods to fulfill remote sync
 class RemoteSyncAPIInvocationTests: XCTestCase {
