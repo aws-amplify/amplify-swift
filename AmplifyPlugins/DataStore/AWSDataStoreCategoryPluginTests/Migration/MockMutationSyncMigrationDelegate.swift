@@ -8,7 +8,7 @@
 import XCTest
 
 @testable import Amplify
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 class MockMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMigrationDelegate {
 
