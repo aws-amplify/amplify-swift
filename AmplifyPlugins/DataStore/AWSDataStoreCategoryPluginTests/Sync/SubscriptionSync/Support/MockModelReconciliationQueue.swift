@@ -11,7 +11,7 @@ import Combine
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 class MockModelReconciliationQueue: ModelReconciliationQueue {
 
     public static var mockModelReconciliationQueues: [String: MockModelReconciliationQueue] = [:]

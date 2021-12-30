@@ -13,7 +13,7 @@ import AWSMobileClient
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 class HubEventsIntegrationTestBase: XCTestCase {
 

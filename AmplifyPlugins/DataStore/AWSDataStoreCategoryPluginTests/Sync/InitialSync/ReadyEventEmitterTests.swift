@@ -13,7 +13,7 @@ import Combine
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 class ReadyEventEmitterTests: XCTestCase {
     var stateMachine: MockStateMachine<RemoteSyncEngine.State, RemoteSyncEngine.Action>!

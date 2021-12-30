@@ -6,7 +6,7 @@
 //
 
 @testable import Amplify
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 import Combine
 
 /// A mutation queue that takes no action on either pause or start, to let these unit tests operate on the

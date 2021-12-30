@@ -11,7 +11,7 @@ import AWSMobileClient
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 /*
  (Many-to-many) Using two one-to-many connections, an @key, and a joining @model, you can create a many-to-many
