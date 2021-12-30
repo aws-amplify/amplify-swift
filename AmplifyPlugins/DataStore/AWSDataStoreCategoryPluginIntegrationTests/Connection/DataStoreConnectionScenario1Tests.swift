@@ -11,7 +11,7 @@ import AWSMobileClient
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 /*
  A one-to-one connection where a project has a team.

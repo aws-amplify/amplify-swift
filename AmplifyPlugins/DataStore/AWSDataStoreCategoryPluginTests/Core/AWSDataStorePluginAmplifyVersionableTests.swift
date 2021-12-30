@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import AWSDataStoreCategoryPlugin
+import AWSDataStorePlugin
 @testable import AmplifyTestCommon
 
 // swiftlint:disable:next type_name

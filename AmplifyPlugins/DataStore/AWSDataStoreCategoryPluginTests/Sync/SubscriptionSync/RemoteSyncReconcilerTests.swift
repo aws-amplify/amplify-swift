@@ -10,7 +10,7 @@ import SQLite
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
 
 class RemoteSyncReconcilerTests: XCTestCase {

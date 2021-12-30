@@ -11,7 +11,7 @@ import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     static let factory: InitialSyncOrchestratorFactory = {

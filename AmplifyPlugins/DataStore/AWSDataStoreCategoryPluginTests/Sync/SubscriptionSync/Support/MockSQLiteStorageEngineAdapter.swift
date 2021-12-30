@@ -10,7 +10,7 @@ import AWSPluginsCore
 import Combine
 
 @testable import Amplify
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
