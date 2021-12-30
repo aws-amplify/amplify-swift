@@ -51,11 +51,12 @@ struct VerifyPasswordSRP: Command {
         let username = challengeParameters["USERNAME"] ?? stateData.username
         let userIdForSRP = challengeParameters["USER_ID_FOR_SRP"] ?? stateData.username
 
-        guard let saltHex = challengeParameters["SALT"] else {
+        guard let saltHex = challengeParameters["SALT"],
+              !saltHex.isEmpty else {
                   let authError = AuthenticationError.service(message: "Unable to retrieve salt")
                   let event = SRPSignInEvent(
-                      id: environment.eventIDFactory(),
-                      eventType: .throwPasswordVerifierError(authError)
+                    id: environment.eventIDFactory(),
+                    eventType: .throwPasswordVerifierError(authError)
                   )
                   dispatcher.send(event)
                   return

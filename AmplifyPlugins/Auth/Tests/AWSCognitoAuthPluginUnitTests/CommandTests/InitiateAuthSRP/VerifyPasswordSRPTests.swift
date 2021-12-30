@@ -146,9 +146,7 @@ class VerifyPasswordSRPTests: XCTestCase {
 
             if case let .throwPasswordVerifierError(authenticationError) = event.eventType {
                 XCTAssertNotNil(authenticationError)
-                if case let .service(message) = authenticationError {
-                    //TODO: Change the test to look for error type instead of message.
-                    XCTAssertEqual(message, "Unable to retrieve salt")
+                if case .service = authenticationError {
                     passwordVerifierError.fulfill()
                 }
             }
@@ -289,7 +287,7 @@ class VerifyPasswordSRPTests: XCTestCase {
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 respondToAuthChallengeCallback: { input, callback in
-                    callback(.success(RespondToAuthChallengeOutputResponse()))
+                    callback(.success(RespondToAuthChallengeOutputResponse.testData()))
                 })
         }
 
@@ -298,7 +296,8 @@ class VerifyPasswordSRPTests: XCTestCase {
             cognitoUserPoolFactory: identityProviderFactory
         )
 
-        let command = VerifyPasswordSRP(stateData: SRPStateData.testData, authResponse: InitiateAuthOutputResponse.validTestData)
+        let command = VerifyPasswordSRP(stateData: SRPStateData.testData,
+                                        authResponse: InitiateAuthOutputResponse.validTestData)
 
         let passwordVerifierCompletion = expectation(description: "passwordVerifierCompletion")
 
@@ -308,8 +307,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 return
             }
 
-            if case let .respondNextAuthChallenge(verifierResponse) = event.eventType {
-                XCTAssertNotNil(verifierResponse)
+            if case let .finalizeSRPSignIn(signedInData) = event.eventType {
+                XCTAssertNotNil(signedInData)
                 passwordVerifierCompletion.fulfill()
             }
         }
