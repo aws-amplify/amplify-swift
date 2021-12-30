@@ -30,6 +30,7 @@ class SyncEngineFlutterIntegrationTestBase: XCTestCase {
         let storageAdapter = storageEngine.storageAdapter as! SQLiteStorageEngineAdapter
         return storageAdapter
     }
+    
     // swiftlint:enable force_try
     // swiftlint:enable force_cast
     override func setUp() {

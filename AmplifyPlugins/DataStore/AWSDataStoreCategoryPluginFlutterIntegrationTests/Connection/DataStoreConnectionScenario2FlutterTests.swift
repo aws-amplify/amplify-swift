@@ -381,19 +381,3 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         return result
     }
 }
-
-extension Team2: Equatable {
-    public static func == (lhs: Team2,
-                           rhs: Team2) -> Bool {
-        return lhs.id == rhs.id
-            && lhs.name == rhs.name
-    }
-}
-extension Project2: Equatable {
-    public static func == (lhs: Project2, rhs: Project2) -> Bool {
-        return lhs.id == rhs.id
-            && lhs.name == rhs.name
-            && lhs.teamID == rhs.teamID
-    }
-}
-

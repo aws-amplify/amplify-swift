@@ -59,7 +59,6 @@ class PostWrapper: NSCopying {
         self.model = FlutterSerializedModel(id: self.model.id, map: map)
     }
 
-    
     func idString() -> String {
         return self.model.id
     }
@@ -85,7 +84,7 @@ class PostWrapper: NSCopying {
     }
 
     func copy(with zone: NSZone? = nil) -> Any {
-        let copy = Post3Wrapper(model: model)
+        let copy = PostWrapper(model: model)
         return copy
     }
 }

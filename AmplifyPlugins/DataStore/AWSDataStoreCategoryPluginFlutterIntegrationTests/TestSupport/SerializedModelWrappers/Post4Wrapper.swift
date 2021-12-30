@@ -57,7 +57,7 @@ class Post4Wrapper: NSCopying {
     }
 
     func copy(with zone: NSZone? = nil) -> Any {
-        let copy = Post3Wrapper(model: model)
+        let copy = Post4Wrapper(model: model)
         return copy
     }
 }

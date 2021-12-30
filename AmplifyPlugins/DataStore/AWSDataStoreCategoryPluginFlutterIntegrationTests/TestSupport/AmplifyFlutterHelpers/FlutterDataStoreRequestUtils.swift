@@ -41,12 +41,12 @@ public class FlutterDataStoreRequestUtils {
     }
     
     static func getSerializedModelData(methodChannelArguments: [String: Any]) throws -> [String: Any] {
-        guard let serializedModelData = methodChannelArguments["serializedModel"] as? [String: Any] else {
+        guard let serializedData = methodChannelArguments["serializedModel"] as? [String: Any] else {
             throw DataStoreError.decodingError(
                 "The serializedModel was not passed in the arguments",
                 "The request should include the serializedModel as a [String: Any] dictionary")
         }
-        return serializedModelData
+        return serializedData
     }
     
     static func getModelID(serializedModelData: [String: Any]) throws -> String {

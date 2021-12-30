@@ -10,7 +10,7 @@ import AWSDataStoreCategoryPlugin
 
 class AWSDataStorePluginFlutterConfigurationTests: XCTestCase {
 
-    // Note this test requires the ability to write a new database in the Documents directcory, so it must be embedded
+    // Note this test requires the ability to write a new database in the Documents directory, so it must be embedded
     // in a host app
     func testDoesNotThrowOnMissingConfig() throws {
         let plugin = AWSDataStorePlugin(modelRegistration: TestFlutterModelRegistration())

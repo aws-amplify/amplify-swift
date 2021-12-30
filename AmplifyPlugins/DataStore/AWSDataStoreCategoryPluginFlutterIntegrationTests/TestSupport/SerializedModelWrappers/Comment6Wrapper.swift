@@ -46,7 +46,7 @@ class Comment6Wrapper: NSCopying {
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        let copy = Blog6Wrapper(model: model)
+        let copy = Comment6Wrapper(model: model)
         return copy
     }
 }
