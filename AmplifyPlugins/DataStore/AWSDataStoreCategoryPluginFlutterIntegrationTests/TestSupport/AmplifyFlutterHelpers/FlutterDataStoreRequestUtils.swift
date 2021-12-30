@@ -17,44 +17,7 @@ public class FlutterDataStoreRequestUtils {
         guard let jsonValue = try? JSONDecoder().decode(Dictionary<String, JSONValue>.self,
                                                         from: jsonData) else {
             throw DataStoreError.decodingError("Unable to decode json value", "Check the model structure.")
-
         }
         return jsonValue
-    }
-    
-    static func getModelName(methodChannelArguments: [String: Any]) throws -> String {
-        guard let modelName = methodChannelArguments["modelName"] as? String else {
-            throw DataStoreError.decodingError(
-                "The modelName was not passed in the arguments",
-                "The request should include the modelName of type String")
-        }
-        return modelName
-    }
-    
-    static func getModelSchema(modelSchemas: [String: ModelSchema], modelName: String) throws ->  ModelSchema {
-        guard let modelSchema = modelSchemas[modelName] else {
-            throw DataStoreError.decodingError(
-                "ModelSchema for Model \(modelName) is not registered",
-                "Ensure all the ModelSchemas are correctly registered")
-        }
-        return modelSchema
-    }
-    
-    static func getSerializedModelData(methodChannelArguments: [String: Any]) throws -> [String: Any] {
-        guard let serializedData = methodChannelArguments["serializedModel"] as? [String: Any] else {
-            throw DataStoreError.decodingError(
-                "The serializedModel was not passed in the arguments",
-                "The request should include the serializedModel as a [String: Any] dictionary")
-        }
-        return serializedData
-    }
-    
-    static func getModelID(serializedModelData: [String: Any]) throws -> String {
-        guard let modelID = serializedModelData["id"] as? String else {
-            throw DataStoreError.decodingError(
-                "The serializedModel did not contain an id",
-                "All models must contain an id field")
-        }
-        return modelID
     }
 }
