@@ -166,7 +166,7 @@ extension InitiateAuthOutputResponse {
 
     static let invalidChalengeParamsNoSecretBlock: [String: String] = ["SALT": "a", "USER_ID_FOR_SRP": "royji2", "SRP_B": "a", "USERNAME": "a"]
 
-    static let invalidChalengeParamsForException: [String: String] = ["SALT": "a", "SECRET_BLOCK": "", "USER_ID_FOR_SRP": "royji2", "SRP_B": "a", "USERNAME": "a"]
+    static let invalidChalengeParamsForException: [String: String] = ["SALT": "a", "SECRET_BLOCK": "", "USER_ID_FOR_SRP": "royji2", "SRP_B": "za", "USERNAME": "a"]
 
     static let invalidChalengeParamsNoSRPB: [String: String] = [
         "SALT": "a",
