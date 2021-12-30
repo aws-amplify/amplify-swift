@@ -12,7 +12,7 @@ import Combine
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 @available(iOS 13.0, *)
 class SyncMutationToCloudOperationTests: XCTestCase {

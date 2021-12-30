@@ -9,7 +9,7 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 class ReconcileAndSaveQueueTests: XCTestCase {
     var storageAdapter: MockSQLiteStorageEngineAdapter!

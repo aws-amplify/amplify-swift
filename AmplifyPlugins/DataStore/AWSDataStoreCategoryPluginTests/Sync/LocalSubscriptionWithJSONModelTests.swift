@@ -12,7 +12,7 @@ import Combine
 @testable import Amplify
 @testable import AWSPluginsCore
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 /// Tests behavior of local DataStore subscriptions (as opposed to remote API subscription behaviors)
 /// using serialized JSON models

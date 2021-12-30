@@ -11,7 +11,7 @@ import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 /// Base class for Local data store tests
 class BaseDataStoreTests: XCTestCase {
