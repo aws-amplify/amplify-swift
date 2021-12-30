@@ -7,11 +7,26 @@ let package = Package(
     name: "Amplify",
     platforms: [.iOS(.v13)],
     products: [
-        .library(name: "Amplify", targets: ["Amplify"])
+        
+        .library(
+            name: "Amplify",
+            targets: ["Amplify"]
+        ),
+        .library(
+            name: "AWSPluginsCore",
+            targets: ["AWSPluginsCore"]
+        ),
+        .library(
+            name: "AWSCognitoAuthPlugin",
+            targets: ["AWSCognitoAuthPlugin"]
+        ),
+        .library(name: "AWSDataStorePlugin",
+                targets: ["AWSDataStorePlugin"]),
     ],
     dependencies: [
         .package(name: "hierarchical-state-machine-swift", path: "../Hierarchical-state-machine-swift"),
         .package(url: "https://github.com/libtom/libtommath", branch: "develop"),
+        .package(url: "https://github.com/stephencelis/SQLite.swift.git", .exact("0.12.2")),
         .package(name: "AWSSwiftSDK", url: "https://github.com/awslabs/aws-sdk-swift", .upToNextMajor(from: "0.1.0")),
         .package(name: "CwlPreconditionTesting", url: "https://github.com/mattgallagher/CwlPreconditionTesting", .upToNextMinor(from: "2.1.0"))
     ],
@@ -29,7 +44,7 @@ let package = Package(
             dependencies: [
                 "Amplify",
                 .product(name: "AWSClientRuntime", package: "AWSSwiftSDK")
-                ],
+            ],
             path: "AmplifyPlugins/Core/AWSPluginsCore"
         ),
         .target(
@@ -45,6 +60,17 @@ let package = Package(
             path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin",
             exclude: [
                 "Resources/Info.plist"
+            ]
+        ),
+        .target(
+            name: "AWSDataStorePlugin",
+            dependencies: [
+                .target(name: "Amplify"),
+                .target(name: "AWSPluginsCore"),
+                .product(name: "SQLite", package: "SQLite.swift")],
+            path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin",
+            exclude: [
+                "Info.plist"
             ]
         ),
         .target(
@@ -107,6 +133,14 @@ let package = Package(
             ],
             path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginIntegrationTests"
         ),
-            
+        .testTarget(
+            name: "AWSDataStoreCategoryPluginTests",
+            dependencies: [
+                "AWSDataStorePlugin",
+                "AmplifyTestCommon"
+            ],
+            path: "AmplifyPlugins/Datastore/AWSDataStoreCategoryPluginTests"
+        ),
+        
     ]
 )

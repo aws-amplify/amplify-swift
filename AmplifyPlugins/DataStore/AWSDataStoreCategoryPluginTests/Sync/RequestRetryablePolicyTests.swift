@@ -7,7 +7,7 @@
 
 import Foundation
 import XCTest
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 class RequestRetryablePolicyTests: XCTestCase {
     var retryPolicy: RequestRetryablePolicy!

@@ -8,7 +8,7 @@
 import Combine
 
 @testable import Amplify
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 struct NoOpInitialSyncOrchestrator: InitialSyncOrchestrator {
     private let initialSyncOrchestratorTopic: PassthroughSubject<InitialSyncOperationEvent, DataStoreError>
