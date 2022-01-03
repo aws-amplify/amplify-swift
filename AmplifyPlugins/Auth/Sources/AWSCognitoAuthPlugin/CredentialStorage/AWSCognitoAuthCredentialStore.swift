@@ -8,12 +8,6 @@
 import Foundation
 import Amplify
 
-protocol AuthCredentialStorable {
-    func saveCredential(credential: AWSCognitoAuthCredential) throws
-    func retrieveCredential() throws -> AWSCognitoAuthCredential?
-    func deleteCredential() throws
-}
-
 public struct AWSCognitoAuthCredentialStore {
 
     private let service = "com.amplify.credentialStore"
