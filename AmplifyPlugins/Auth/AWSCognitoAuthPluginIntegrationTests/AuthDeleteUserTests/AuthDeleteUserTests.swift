@@ -30,7 +30,7 @@ class AuthDeleteUserTests: AWSAuthBaseTest {
     /// - When:
     ///    - I invoke `deleteUser`
     /// - Then:
-    ///    - I should get successul result, the user should no longer exist, and the auth session should be signedout
+    ///    - I should get successful result, the user should no longer exist, and the auth session should be signedOut
     ///
     func testDeleteUserFromAuthState() {
         let username = "integTest\(UUID().uuidString)"
