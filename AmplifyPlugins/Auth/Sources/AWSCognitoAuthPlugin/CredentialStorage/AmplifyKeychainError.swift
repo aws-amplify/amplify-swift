@@ -16,7 +16,10 @@ public enum AmplifyKeychainError {
 
     /// Caused by trying to convert String to Data or vice-versa
     case conversionError(ErrorDescription, Error? = nil)
-
+    
+    /// Caused by trying encoding/decoding
+    case codingError(ErrorDescription, Error? = nil)
+    
     /// Unable to find the keychain item
     case itemNotFound
 
@@ -43,7 +46,7 @@ extension AmplifyKeychainError: AmplifyError {
     /// Error Description
     public var errorDescription: ErrorDescription {
         switch self {
-        case .conversionError(let errorDescription, _):
+        case .conversionError(let errorDescription, _), .codingError(let errorDescription, _):
             return errorDescription
         case .securityError(let status):
             return "Keychain error occurred with status: \(status)"
@@ -57,7 +60,7 @@ extension AmplifyKeychainError: AmplifyError {
     /// Recovery Suggestion
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
-        case .unknown, .conversionError, .securityError, .itemNotFound:
+        case .unknown, .conversionError, .securityError, .itemNotFound, .codingError:
             return AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
         }
     }
@@ -65,9 +68,7 @@ extension AmplifyKeychainError: AmplifyError {
     /// Underlying Error
     public var underlyingError: Error? {
         switch self {
-        case .conversionError(_, let error):
-            return error
-        case .unknown(_, let error):
+        case .conversionError(_, let error), .codingError(_, let error), .unknown(_, let error):
             return error
         default:
             return nil
