@@ -180,7 +180,7 @@ struct VerifyPasswordSRP: Command {
                             userName: stateData.username,
                             signedInDate: Date(),
                             signInMethod: .srp,
-                            cognitoUserPollTokens: userPoolTokens
+                            cognitoUserPoolTokens: userPoolTokens
                         )
                         let event = SRPSignInEvent(
                             id: environment.eventIDFactory(),

@@ -122,7 +122,7 @@ extension AWSCognitoAuthPlugin {
         }
     }
     
-    func makeIdentityClient() throws -> CognitoIdentityClient {
+    func makeIdentityClient() throws -> CognitoIdentityBehavior {
         switch authConfiguration {
         case .identityPools(let identityPoolConfig), .userPoolsAndIdentityPools(_ , let identityPoolConfig):
             let configuration = try CognitoIdentityClient.CognitoIdentityClientConfiguration(
@@ -139,20 +139,26 @@ extension AWSCognitoAuthPlugin {
         switch authConfiguration {
         case .userPools(let userPoolConfigurationData):
             let authenticationEnvironment = authenticationEnvironment(userPoolConfigData: userPoolConfigurationData)
+            
             return AuthEnvironment(userPoolConfigData: userPoolConfigurationData,
                                    identityPoolConfigData: nil,
-                                   authenticationEnvironment: authenticationEnvironment)
+                                   authenticationEnvironment: authenticationEnvironment,
+                                   authorizationEnvironment: nil)
 
         case .identityPools(let identityPoolConfigurationData):
+            let authorizationEnvironment = authorizationEnvironment(identityPoolConfigData: identityPoolConfigurationData)
             return AuthEnvironment(userPoolConfigData: nil,
                                    identityPoolConfigData: identityPoolConfigurationData,
-                                   authenticationEnvironment: nil)
+                                   authenticationEnvironment: nil,
+                                   authorizationEnvironment: authorizationEnvironment)
 
         case .userPoolsAndIdentityPools(let userPoolConfigurationData, let identityPoolConfigurationData):
             let authenticationEnvironment = authenticationEnvironment(userPoolConfigData: userPoolConfigurationData)
+            let authorizationEnvironment = authorizationEnvironment(identityPoolConfigData: identityPoolConfigurationData)
             return AuthEnvironment(userPoolConfigData: userPoolConfigurationData,
                                    identityPoolConfigData: identityPoolConfigurationData,
-                                   authenticationEnvironment: authenticationEnvironment)
+                                   authenticationEnvironment: authenticationEnvironment,
+                                   authorizationEnvironment: authorizationEnvironment)
         }
     }
 
@@ -163,6 +169,13 @@ extension AWSCognitoAuthPlugin {
         let srpSignInEnvironment = BasicSRPSignInEnvironment(srpAuthEnvironment: srpAuthEnvironment)
         return BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment)
     }
+    
+    func authorizationEnvironment(identityPoolConfigData: IdentityPoolConfigurationData) -> AuthorizationEnvironment {
+        return BasicAuthorizationEnvironment(identityPoolConfiguration: identityPoolConfigData,
+                                             cognitoIdentityFactory: makeIdentityClient)
+    }
 }
 
 extension CognitoIdentityProviderClient: CognitoUserPoolBehavior {}
+
+extension CognitoIdentityClient: CognitoIdentityBehavior {}
