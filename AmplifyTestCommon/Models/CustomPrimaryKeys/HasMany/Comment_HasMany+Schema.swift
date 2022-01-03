@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -11,19 +18,19 @@ extension Comment_HasMany_1toM_Case1_v1 {
     case createdAt
     case updatedAt
   }
-  
+
   public static let keys = CodingKeys.self
   //  MARK: - ModelSchema
-  
+
   public static let schema = defineSchema { model in
     let comment_HasMany_1toM_Case1_v1 = Comment_HasMany_1toM_Case1_v1.keys
-    
+
     model.pluralName = "Comment_HasMany_1toM_Case1_v1s"
-    
+
     model.attributes(
       .index(fields: ["postID", "content"], name: "byPost")
     )
-    
+
     model.fields(
       .id(),
       .field(comment_HasMany_1toM_Case1_v1.postID, is: .required, ofType: .string),
@@ -44,20 +51,20 @@ extension Comment_HasMany_1toM_Case2_v1 {
     case createdAt
     case updatedAt
   }
-  
+
   public static let keys = CodingKeys.self
   //  MARK: - ModelSchema
-  
+
   public static let schema = defineSchema { model in
     let comment_HasMany_1toM_Case2_v1 = Comment_HasMany_1toM_Case2_v1.keys
-    
+
     model.pluralName = "Comment_HasMany_1toM_Case2_v1s"
-    
+
     model.attributes(
       .index(fields: ["commentID"], name: nil),
       .index(fields: ["postID", "content"], name: "byPost")
     )
-    
+
     model.fields(
       .id(),
       .field(comment_HasMany_1toM_Case2_v1.commentID, is: .required, ofType: .string),
@@ -79,20 +86,20 @@ extension Comment_HasMany_1toM_Case3_v1 {
     case createdAt
     case updatedAt
   }
-  
+
   public static let keys = CodingKeys.self
   //  MARK: - ModelSchema
-  
+
   public static let schema = defineSchema { model in
     let comment_HasMany_1toM_Case3_v1 = Comment_HasMany_1toM_Case3_v1.keys
-    
+
     model.pluralName = "Comment_HasMany_1toM_Case3_v1s"
-    
+
     model.attributes(
       .index(fields: ["commentID"], name: nil),
       .index(fields: ["postID", "content"], name: "byPost")
     )
-    
+
     model.fields(
       .id(),
       .field(comment_HasMany_1toM_Case3_v1.commentID, is: .required, ofType: .string),
