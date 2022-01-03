@@ -11,13 +11,11 @@ protocol AuthenticationEnvironment: Environment {
 
     var srpSignInEnvironment: SRPSignInEnvironment { get }
 
-   // var persistenceEnvironment: LoadPersistedAuthentication.Environment { get }
 }
 
 public struct BasicAuthenticationEnvironment: AuthenticationEnvironment {
 
     let srpSignInEnvironment: SRPSignInEnvironment
 
- //   let persistenceEnvironment: LoadPersistedAuthentication.Environment
 }
 
