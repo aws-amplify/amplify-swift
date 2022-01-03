@@ -8,6 +8,7 @@
 import Foundation
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import AWSCognitoIdentity
 import ClientRuntime
 import hierarchical_state_machine_swift
 
@@ -56,6 +57,10 @@ enum Defaults {
     static func makeDefaultUserPool() throws -> CognitoUserPoolBehavior {
         return try CognitoIdentityProviderClient(region: regionString)
     }
+    
+    static func makeIdentity() throws -> CognitoIdentityBehavior {
+        return try CognitoIdentityClient(region: regionString)
+    }
 
     static func makeDefaultUserPoolConfigData() -> UserPoolConfigurationData {
         UserPoolConfigurationData(poolId: userPoolId,
@@ -63,6 +68,11 @@ enum Defaults {
                                   region: regionString,
                                   clientSecret: appClientSecret,
                                   pinpointAppId: "")
+    }
+    
+    static func makeIdentityConfigData() -> IdentityPoolConfigurationData {
+        IdentityPoolConfigurationData(poolId: identityPoolId,
+                                      region: regionString)
     }
 
     static func makeDefaultAuthConfigData() -> AuthConfiguration {
@@ -72,16 +82,21 @@ enum Defaults {
 
     static func makeDefaultAuthEnvironment() -> AuthEnvironment {
         let userPoolConfigData = makeDefaultUserPoolConfigData()
+        let identityPoolConfigData = makeIdentityConfigData()
         let srpAuthEnvironment = BasicSRPAuthEnvironment(
             userPoolConfiguration: userPoolConfigData,
             cognitoUserPoolFactory: makeDefaultUserPool
         )
         let srpSignInEnvironment = BasicSRPSignInEnvironment(srpAuthEnvironment: srpAuthEnvironment)
         let authenticationEnvironment = BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment)
+        let authorizationEnvironment = BasicAuthorizationEnvironment(
+            identityPoolConfiguration: identityPoolConfigData,
+            cognitoIdentityFactory: makeIdentity)
         let authEnv = AuthEnvironment(
             userPoolConfigData: userPoolConfigData,
             identityPoolConfigData: nil,
-            authenticationEnvironment: authenticationEnvironment
+            authenticationEnvironment: authenticationEnvironment,
+            authorizationEnvironment: authorizationEnvironment
         )
         return authEnv
     }

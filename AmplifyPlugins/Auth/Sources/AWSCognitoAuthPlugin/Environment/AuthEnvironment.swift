@@ -13,8 +13,8 @@ public struct AuthEnvironment: Environment {
     let userPoolConfigData: UserPoolConfigurationData?
     let identityPoolConfigData: IdentityPoolConfigurationData?
     let authenticationEnvironment: AuthenticationEnvironment?
+    let authorizationEnvironment: AuthorizationEnvironment?
 }
-
 
 extension AuthEnvironment: AuthenticationEnvironment {
 
