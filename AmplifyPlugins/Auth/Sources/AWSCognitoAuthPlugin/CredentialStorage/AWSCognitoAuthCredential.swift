@@ -8,7 +8,7 @@
 import Foundation
 
 public struct AWSCognitoAuthCredential: Codable {
-    public let userPoolTokens: AWSCognitoUserPoolTokens
-    public let identityId: String
-    public let awsCredential: AuthAWSCognitoCredentials
+    public let userPoolTokens: AWSCognitoUserPoolTokens?
+    public let identityId: String?
+    public let awsCredential: AuthAWSCognitoCredentials?
 }
