@@ -12,3 +12,7 @@ protocol AmplifyAuthCredentialStoreBehavior {
     func retrieveCredential() throws -> AWSCognitoAuthCredential?
     func deleteCredential() throws
 }
+
+protocol AmplifyAuthCredentialStoreProvider {
+    func getCredentialStore() -> CredentialStoreBehavior
+}
