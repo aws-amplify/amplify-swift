@@ -74,7 +74,7 @@ extension SignedInData {
         userName: "testUserName",
         signedInDate: Date(timeIntervalSince1970: 0),
         signInMethod: .srp,
-        cognitoUserPollTokens: AWSCognitoUserPoolTokens.testData
+        cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
     )
 }
 
