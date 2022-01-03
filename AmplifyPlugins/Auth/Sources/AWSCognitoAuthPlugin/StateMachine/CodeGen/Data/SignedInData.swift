@@ -20,13 +20,13 @@ public struct SignedInData {
         userName: String,
         signedInDate: Date,
         signInMethod: SignInMethod,
-        cognitoUserPollTokens: AWSCognitoUserPoolTokens
+        cognitoUserPoolTokens: AWSCognitoUserPoolTokens
     ) {
         self.userId = userId
         self.userName = userName
         self.signedInDate = signedInDate
         self.signInMethod = signInMethod
-        self.cognitoUserPoolTokens = cognitoUserPollTokens
+        self.cognitoUserPoolTokens = cognitoUserPoolTokens
     }
 }
 

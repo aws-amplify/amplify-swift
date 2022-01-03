@@ -33,26 +33,18 @@ struct AmplifyKeychain: CredentialStoreBehavior {
         self.init(attributes: attributes)
     }
 
-    func getString(_ key: String) throws -> String? {
+    func getString(_ key: String) throws -> String {
 
-        do {
-            let data = try getData(key)
+        let data = try getData(key)
 
-            guard let data = data else  {
-                return nil
-            }
-
-            guard let string = String(data: data, encoding: .utf8) else {
-                throw AmplifyKeychainError.conversionError("Unable to create String from Data retrieved")
-            }
-            return string
-        } catch {
-            throw error
+        guard let string = String(data: data, encoding: .utf8) else {
+            throw AmplifyKeychainError.conversionError("Unable to create String from Data retrieved")
         }
+        return string
 
     }
 
-    func getData(_ key: String) throws -> Data? {
+    func getData(_ key: String) throws -> Data {
         var query = attributes.query()
 
         query[AmplifyKeychainConstant.MatchLimit] = AmplifyKeychainConstant.MatchLimitOne
