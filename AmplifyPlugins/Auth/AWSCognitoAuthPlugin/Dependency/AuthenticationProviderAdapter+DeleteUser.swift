@@ -15,6 +15,8 @@ import AWSMobileClientXCF
 extension AuthenticationProviderAdapter {
 
     func deleteUser(request: AuthDeleteUserRequest, completionHandler: @escaping (Result<Void, AuthError>) -> Void) {
+        // By default, ASWMobileClient calls signOut internally during deleteUser.
+        // For Amplify, we instead call Amplify's signOut function, which contains some higher level logic.
         awsMobileClient.deleteUser(signOut: false) { [weak self] error in
             guard let error = error else {
                 let signOutOptions = AuthSignOutRequest.Options(globalSignOut: true)
