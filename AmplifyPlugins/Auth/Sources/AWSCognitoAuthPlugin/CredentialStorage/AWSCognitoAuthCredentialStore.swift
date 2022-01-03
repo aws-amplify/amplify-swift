@@ -51,11 +51,15 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
         try keychain.set(encodedCredentials, key: authCredentialStoreKey)
     }
 
-    func retrieveCredential() throws -> AWSCognitoAuthCredential {
+    func retrieveCredential() throws -> AWSCognitoAuthCredential? {
         let authCredentialStoreKey = try buildAuthCredentialStoreKey()
-        let authCredentialData = try keychain.getData(authCredentialStoreKey)
-        let awsCredential: AWSCognitoAuthCredential = try decode(data: authCredentialData)
-        return awsCredential
+        do {
+            let authCredentialData = try keychain.getData(authCredentialStoreKey)
+            let awsCredential: AWSCognitoAuthCredential = try decode(data: authCredentialData)
+            return awsCredential
+        } catch AmplifyKeychainError.itemNotFound {
+            return nil
+        }
     }
 
     func deleteCredential() throws {
