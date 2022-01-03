@@ -14,6 +14,7 @@ public struct AuthEnvironment: Environment {
     let identityPoolConfigData: IdentityPoolConfigurationData?
     let authenticationEnvironment: AuthenticationEnvironment?
     let authorizationEnvironment: AuthorizationEnvironment?
+    let credentialStoreEnvironment: CredentialStoreEnvironment?
 }
 
 extension AuthEnvironment: AuthenticationEnvironment {
