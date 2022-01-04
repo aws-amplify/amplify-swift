@@ -7,7 +7,7 @@
 
 import Security
 
-struct AmplifyKeychainConstant {
+struct CredentialStoreConstant {
     /** Class Key Constant */
     static let Class = String(kSecClass)
     static let ClassGenericPassword = String(kSecClassGenericPassword)
