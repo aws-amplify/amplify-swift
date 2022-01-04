@@ -135,8 +135,7 @@ extension AWSCognitoAuthPlugin {
     }
     
     func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior & AmplifyAuthCredentialStoreProvider {
-        AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration,
-                                      accessGroup: nil)
+        AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration)
     }
 
     func makeAuthEnvironment(authConfiguration: AuthConfiguration) -> AuthEnvironment {
