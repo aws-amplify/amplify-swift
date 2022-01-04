@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 import Security
 
-public enum AmplifyKeychainError {
+public enum CredentialStoreError {
 
     /// Caused by an unknown reason
     case unknown(ErrorDescription, Error? = nil)
@@ -27,7 +27,7 @@ public enum AmplifyKeychainError {
     case securityError(OSStatus)
 }
 
-extension AmplifyKeychainError: AmplifyError {
+extension CredentialStoreError: AmplifyError {
 
     public init(
         errorDescription: ErrorDescription = "An unknown error occurred",
