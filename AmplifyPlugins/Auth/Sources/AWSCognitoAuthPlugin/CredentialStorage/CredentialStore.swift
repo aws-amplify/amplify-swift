@@ -8,11 +8,11 @@
 import Foundation
 import Security
 
-struct AmplifyKeychain: CredentialStoreBehavior {
+struct CredentialStore: CredentialStoreBehavior {
 
-    let attributes: KeychainAttributes
+    let attributes: CredentialStoreAttributes
 
-    private init(attributes: KeychainAttributes) {
+    private init(attributes: CredentialStoreAttributes) {
         self.attributes = attributes
     }
 
@@ -28,7 +28,7 @@ struct AmplifyKeychain: CredentialStoreBehavior {
     }
 
     init(service: String, accessGroup: String? = nil) {
-        var attributes = KeychainAttributes(service: service)
+        var attributes = CredentialStoreAttributes(service: service)
         attributes.accessGroup = accessGroup
         self.init(attributes: attributes)
     }
@@ -38,7 +38,7 @@ struct AmplifyKeychain: CredentialStoreBehavior {
         let data = try getData(key)
 
         guard let string = String(data: data, encoding: .utf8) else {
-            throw AmplifyKeychainError.conversionError("Unable to create String from Data retrieved")
+            throw CredentialStoreError.conversionError("Unable to create String from Data retrieved")
         }
         return string
 
@@ -47,10 +47,10 @@ struct AmplifyKeychain: CredentialStoreBehavior {
     func getData(_ key: String) throws -> Data {
         var query = attributes.query()
 
-        query[AmplifyKeychainConstant.MatchLimit] = AmplifyKeychainConstant.MatchLimitOne
-        query[AmplifyKeychainConstant.ReturnData] = kCFBooleanTrue
+        query[CredentialStoreConstant.MatchLimit] = CredentialStoreConstant.MatchLimitOne
+        query[CredentialStoreConstant.ReturnData] = kCFBooleanTrue
 
-        query[AmplifyKeychainConstant.AttributeAccount] = key
+        query[CredentialStoreConstant.AttributeAccount] = key
 
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
@@ -58,59 +58,59 @@ struct AmplifyKeychain: CredentialStoreBehavior {
         switch status {
         case errSecSuccess:
             guard let data = result as? Data else {
-                throw AmplifyKeychainError.unknown("The keychain item retrieved is not the correct type")
+                throw CredentialStoreError.unknown("The keychain item retrieved is not the correct type")
             }
             return data
         case errSecItemNotFound:
-            throw AmplifyKeychainError.itemNotFound
+            throw CredentialStoreError.itemNotFound
         default:
-            throw AmplifyKeychainError.securityError(status)
+            throw CredentialStoreError.securityError(status)
         }
     }
 
 
     func set(_ value: String, key: String) throws {
         guard let data = value.data(using: .utf8, allowLossyConversion: false) else {
-            throw AmplifyKeychainError.conversionError("Unable to create Data from String retrieved")
+            throw CredentialStoreError.conversionError("Unable to create Data from String retrieved")
         }
         try set(data, key: key)
     }
 
     func set(_ value: Data, key: String) throws {
         var query = attributes.query()
-        query[AmplifyKeychainConstant.AttributeAccount] = key
+        query[CredentialStoreConstant.AttributeAccount] = key
 
         let fetchStatus = SecItemCopyMatching(query as CFDictionary, nil)
         switch fetchStatus {
         case errSecSuccess:
 
             var attributesToUpdate = [String: Any]()
-            attributesToUpdate[AmplifyKeychainConstant.ValueData] = value
+            attributesToUpdate[CredentialStoreConstant.ValueData] = value
 
             let updateStatus = SecItemUpdate(query as CFDictionary, attributesToUpdate as CFDictionary)
             if updateStatus != errSecSuccess {
-                throw AmplifyKeychainError.securityError(updateStatus)
+                throw CredentialStoreError.securityError(updateStatus)
             }
         case errSecItemNotFound:
             let attributes = attributes.fetchAll(for: key, and: value)
 
             let addStatus = SecItemAdd(attributes as CFDictionary, nil)
             if addStatus != errSecSuccess {
-                throw AmplifyKeychainError.securityError(addStatus)
+                throw CredentialStoreError.securityError(addStatus)
             }
         default:
-            throw AmplifyKeychainError.securityError(fetchStatus)
+            throw CredentialStoreError.securityError(fetchStatus)
         }
     }
 
     // MARK:
     func remove(_ key: String) throws {
         var query = attributes.query()
-        query[AmplifyKeychainConstant.AttributeAccount] = key
+        query[CredentialStoreConstant.AttributeAccount] = key
 
         let status = SecItemDelete(query as CFDictionary)
         if status != errSecSuccess && status != errSecItemNotFound {
-            throw AmplifyKeychainError.securityError(status)
+            throw CredentialStoreError.securityError(status)
         }
     }
 
@@ -122,7 +122,7 @@ struct AmplifyKeychain: CredentialStoreBehavior {
 
         let status = SecItemDelete(query as CFDictionary)
         if status != errSecSuccess && status != errSecItemNotFound {
-            throw AmplifyKeychainError.securityError(status)
+            throw CredentialStoreError.securityError(status)
         }
     }
 
