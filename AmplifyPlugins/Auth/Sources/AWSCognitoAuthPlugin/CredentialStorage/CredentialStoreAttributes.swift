@@ -7,9 +7,9 @@
 
 import Foundation
 
-struct KeychainAttributes {
+struct CredentialStoreAttributes {
 
-    var itemClass: String = AmplifyKeychainConstant.ClassGenericPassword
+    var itemClass: String = CredentialStoreConstant.ClassGenericPassword
     var service: String
     var accessGroup: String? = nil
 
@@ -18,13 +18,13 @@ struct KeychainAttributes {
 
 }
 
-extension KeychainAttributes {
+extension CredentialStoreAttributes {
 
     func query() -> [String: Any] {
         let query: [String: Any] = [
-            AmplifyKeychainConstant.Class: itemClass,
-            AmplifyKeychainConstant.AttributeService: service,
-            AmplifyKeychainConstant.AttributeAccessGroup: accessGroup as Any
+            CredentialStoreConstant.Class: itemClass,
+            CredentialStoreConstant.AttributeService: service,
+            CredentialStoreConstant.AttributeAccessGroup: accessGroup as Any
         ]
 
         return query
@@ -36,18 +36,18 @@ extension KeychainAttributes {
 
         if key != nil {
             attributes = query()
-            attributes[AmplifyKeychainConstant.AttributeAccount] = key
+            attributes[CredentialStoreConstant.AttributeAccount] = key
         } else {
             attributes = [String: Any]()
         }
 
-        attributes[AmplifyKeychainConstant.ValueData] = value
+        attributes[CredentialStoreConstant.ValueData] = value
 
         if label != nil {
-            attributes[AmplifyKeychainConstant.AttributeLabel] = label
+            attributes[CredentialStoreConstant.AttributeLabel] = label
         }
         if comment != nil {
-            attributes[AmplifyKeychainConstant.AttributeComment] = comment
+            attributes[CredentialStoreConstant.AttributeComment] = comment
         }
 
         return attributes
