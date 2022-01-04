@@ -11,6 +11,7 @@ import Amplify
 struct AWSCognitoAuthCredentialStore {
 
     private let service = "com.amplify.credentialStore"
+    private let sessionKey = "session"
     private let authConfiguration: AuthConfiguration
     private let keychain: CredentialStoreBehavior
 
@@ -19,7 +20,7 @@ struct AWSCognitoAuthCredentialStore {
         self.keychain = CredentialStore(service: service, accessGroup: accessGroup)
     }
 
-    private func storeKey() throws -> String {
+    private func storeKey() -> String {
         let prefix = "amplify"
         var suffix = ""
         
@@ -34,19 +35,23 @@ struct AWSCognitoAuthCredentialStore {
         
         return "\(prefix).\(suffix)"
     }
+    
+    private func generateSessionKey() -> String {
+        return "\(storeKey()).\(sessionKey))"
+    }
 
 }
 
 extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
     
     func saveCredential(_ credential: AWSCognitoAuthCredential) throws {
-        let authCredentialStoreKey = try storeKey()
+        let authCredentialStoreKey = generateSessionKey()
         let encodedCredentials = try encode(object: credential)
         try keychain.set(encodedCredentials, key: authCredentialStoreKey)
     }
 
     func retrieveCredential() throws -> AWSCognitoAuthCredential? {
-        let authCredentialStoreKey = try storeKey()
+        let authCredentialStoreKey = generateSessionKey()
         do {
             let authCredentialData = try keychain.getData(authCredentialStoreKey)
             let awsCredential: AWSCognitoAuthCredential = try decode(data: authCredentialData)
@@ -57,7 +62,7 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
     }
 
     func deleteCredential() throws {
-        let authCredentialStoreKey = try storeKey()
+        let authCredentialStoreKey = generateSessionKey()
         try keychain.remove(authCredentialStoreKey)
     }
 
