@@ -88,7 +88,10 @@ enum Defaults {
             cognitoUserPoolFactory: makeDefaultUserPool
         )
         let srpSignInEnvironment = BasicSRPSignInEnvironment(srpAuthEnvironment: srpAuthEnvironment)
-        let authenticationEnvironment = BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment)
+        let userPoolEnvironment = BasicUserPoolEnvironment(userPoolConfiguration: userPoolConfigData,
+                                                           cognitoUserPoolFactory: makeDefaultUserPool)
+        let authenticationEnvironment = BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
+                                                                       userPoolEnvironment: userPoolEnvironment)
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: identityPoolConfigData,
             cognitoIdentityFactory: makeIdentity)
