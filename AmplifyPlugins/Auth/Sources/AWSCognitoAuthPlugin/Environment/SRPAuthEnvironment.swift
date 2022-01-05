@@ -70,14 +70,6 @@ protocol SRPAuthEnvironment: Environment {
 
 extension AuthEnvironment: SRPAuthEnvironment {
 
-    var userPoolConfiguration: UserPoolConfigurationData {
-        srpSignInEnvironment.srpAuthEnvironment.userPoolConfiguration
-    }
-
-    var cognitoUserPoolFactory: CognitoUserPoolFactory {
-        srpSignInEnvironment.srpAuthEnvironment.cognitoUserPoolFactory
-    }
-
     var eventIDFactory: EventIDFactory {
         srpSignInEnvironment.srpAuthEnvironment.eventIDFactory
     }
