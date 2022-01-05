@@ -19,6 +19,14 @@ public struct AuthEnvironment: Environment {
 
 extension AuthEnvironment: AuthenticationEnvironment {
 
+    var userPoolEnvironment: UserPoolEnvironment {
+        guard let authNEnv = authenticationEnvironment else {
+            fatalError("Could not find authentication environment")
+        }
+        return authNEnv.userPoolEnvironment
+    }
+    
+
     var srpSignInEnvironment: SRPSignInEnvironment {
         guard let authNEnv = authenticationEnvironment else {
             fatalError("Could not find authentication environment")
