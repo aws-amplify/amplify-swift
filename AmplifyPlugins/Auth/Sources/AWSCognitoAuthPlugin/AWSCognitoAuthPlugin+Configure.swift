@@ -174,7 +174,10 @@ extension AWSCognitoAuthPlugin {
         let srpAuthEnvironment = BasicSRPAuthEnvironment(userPoolConfiguration: userPoolConfigData,
                                                          cognitoUserPoolFactory: makeUserPool)
         let srpSignInEnvironment = BasicSRPSignInEnvironment(srpAuthEnvironment: srpAuthEnvironment)
-        return BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment)
+        let userPoolEnvironment = BasicUserPoolEnvironment(userPoolConfiguration: userPoolConfigData,
+                                                           cognitoUserPoolFactory: makeUserPool)
+        return BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
+                                              userPoolEnvironment: userPoolEnvironment)
     }
     
     func authorizationEnvironment(identityPoolConfigData: IdentityPoolConfigurationData) -> AuthorizationEnvironment {
