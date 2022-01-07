@@ -60,6 +60,27 @@ extension AuthConfiguration: Codable {
 
 }
 
+extension AuthConfiguration {
+    
+    func getUserPoolConfiguration() -> UserPoolConfigurationData? {
+        switch self {
+        case .userPools(let userPoolConfigurationData),
+                .userPoolsAndIdentityPools(let userPoolConfigurationData, _):
+            return userPoolConfigurationData
+        case .identityPools(_): return nil
+        }
+    }
+    
+    func getIdentityPoolConfiguration() -> IdentityPoolConfigurationData? {
+        switch self {
+        case .identityPools(let identityPoolConfigurationData),
+                .userPoolsAndIdentityPools( _, let identityPoolConfigurationData):
+            return identityPoolConfigurationData
+        case .userPools(_): return nil
+        }
+    }
+}
+
 extension AuthConfiguration: CustomDebugDictionaryConvertible {
     public var debugDictionary: [String: Any] {
         switch self {

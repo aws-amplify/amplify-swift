@@ -8,25 +8,31 @@
 import hierarchical_state_machine_swift
 
 protocol CredentialStoreEnvironment: Environment {
-    typealias CredentialStoreFactory = () -> AmplifyAuthCredentialStoreBehavior & AmplifyAuthCredentialStoreProvider
-    
-    var credentialStoreFactory: CredentialStoreFactory { get }
+    typealias AmplifyAuthCredentialStoreFactory = () -> AmplifyAuthCredentialStoreBehavior & AmplifyAuthCredentialStoreProvider
+    typealias CredentialStoreFactory = (_ service: String) -> CredentialStoreBehavior
+
+    var amplifyCredentialStoreFactory: AmplifyAuthCredentialStoreFactory { get }
+    var legacyCredentialStoreFactory: CredentialStoreFactory { get }
     var eventIDFactory: EventIDFactory { get }
 }
 
 struct BasicCredentialStoreEnvironment: CredentialStoreEnvironment {
     
-    typealias CredentialStoreFactory = () -> AmplifyAuthCredentialStoreBehavior & AmplifyAuthCredentialStoreProvider
-    
+    typealias AmplifyAuthCredentialStoreFactory = () -> AmplifyAuthCredentialStoreBehavior & AmplifyAuthCredentialStoreProvider
+    typealias CredentialStoreFactory = (_ service: String) -> CredentialStoreBehavior
+
     // Required
-    let credentialStoreFactory: CredentialStoreFactory
+    let amplifyCredentialStoreFactory: AmplifyAuthCredentialStoreFactory
+    let legacyCredentialStoreFactory: CredentialStoreFactory
     
     // Optional
     let eventIDFactory: EventIDFactory
     
-    init(credentialStoreFactory: @escaping CredentialStoreFactory,
+    init(amplifyCredentialStoreFactory: @escaping AmplifyAuthCredentialStoreFactory,
+         legacyCredentialStoreFactory: @escaping CredentialStoreFactory,
          eventIDFactory: @escaping EventIDFactory = UUIDFactory.factory) {
-        self.credentialStoreFactory = credentialStoreFactory
+        self.amplifyCredentialStoreFactory = amplifyCredentialStoreFactory
+        self.legacyCredentialStoreFactory = legacyCredentialStoreFactory
         self.eventIDFactory = eventIDFactory
     }
 }
