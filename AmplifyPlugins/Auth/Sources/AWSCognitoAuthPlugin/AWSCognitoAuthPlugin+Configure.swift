@@ -137,6 +137,10 @@ extension AWSCognitoAuthPlugin {
     func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior & AmplifyAuthCredentialStoreProvider {
         AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration)
     }
+    
+    func makeLegacyCredentialStore(service: String) -> CredentialStoreBehavior {
+        CredentialStore(service: service)
+    }
 
     func makeAuthEnvironment(authConfiguration: AuthConfiguration) -> AuthEnvironment {
 
@@ -186,7 +190,8 @@ extension AWSCognitoAuthPlugin {
     }
     
     func credentialStoreEnvironment() -> CredentialStoreEnvironment {
-        BasicCredentialStoreEnvironment(credentialStoreFactory: makeCredentialStore)
+        BasicCredentialStoreEnvironment(amplifyCredentialStoreFactory: makeCredentialStore,
+                                        legacyCredentialStoreFactory: makeLegacyCredentialStore(service:))
     }
     
     
