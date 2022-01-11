@@ -108,7 +108,7 @@ extension AWSCognitoAuthPlugin {
               }
         return IdentityPoolConfigurationData(poolId: poolId, region: region)
     }
-    
+
     func makeUserPool() throws -> CognitoUserPoolBehavior {
         switch authConfiguration {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
@@ -116,15 +116,15 @@ extension AWSCognitoAuthPlugin {
                 frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
                 region: userPoolConfig.region)
             return CognitoIdentityProviderClient(config: configuration)
-            
+
         default:
             fatalError()
         }
     }
-    
+
     func makeIdentityClient() throws -> CognitoIdentityBehavior {
         switch authConfiguration {
-        case .identityPools(let identityPoolConfig), .userPoolsAndIdentityPools(_ , let identityPoolConfig):
+        case .identityPools(let identityPoolConfig), .userPoolsAndIdentityPools(_, let identityPoolConfig):
             let configuration = try CognitoIdentityClient.CognitoIdentityClientConfiguration(
                 frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
                 region: identityPoolConfig.region)
@@ -133,11 +133,11 @@ extension AWSCognitoAuthPlugin {
             fatalError()
         }
     }
-    
+
     func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior & AmplifyAuthCredentialStoreProvider {
         AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration)
     }
-    
+
     func makeLegacyCredentialStore(service: String) -> CredentialStoreBehavior {
         CredentialStore(service: service)
     }
@@ -147,7 +147,7 @@ extension AWSCognitoAuthPlugin {
         switch authConfiguration {
         case .userPools(let userPoolConfigurationData):
             let authenticationEnvironment = authenticationEnvironment(userPoolConfigData: userPoolConfigurationData)
-            
+
             return AuthEnvironment(userPoolConfigData: userPoolConfigurationData,
                                    identityPoolConfigData: nil,
                                    authenticationEnvironment: authenticationEnvironment,
@@ -183,18 +183,18 @@ extension AWSCognitoAuthPlugin {
         return BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
                                               userPoolEnvironment: userPoolEnvironment)
     }
-    
+
     func authorizationEnvironment(identityPoolConfigData: IdentityPoolConfigurationData) -> AuthorizationEnvironment {
         BasicAuthorizationEnvironment(identityPoolConfiguration: identityPoolConfigData,
                                       cognitoIdentityFactory: makeIdentityClient)
     }
-    
+
     func credentialStoreEnvironment() -> CredentialStoreEnvironment {
         BasicCredentialStoreEnvironment(amplifyCredentialStoreFactory: makeCredentialStore,
                                         legacyCredentialStoreFactory: makeLegacyCredentialStore(service:))
     }
-    
-    
+
+
 }
 
 extension CognitoIdentityProviderClient: CognitoUserPoolBehavior {}

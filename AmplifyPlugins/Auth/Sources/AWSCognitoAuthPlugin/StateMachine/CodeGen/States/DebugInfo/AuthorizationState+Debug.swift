@@ -11,7 +11,7 @@ public extension AuthorizationState {
     var debugDictionary: [String: Any] {
         let stateTypeDictionary: [String: Any] = ["AuthorizationState": type]
         var additionalMetadataDictionary: [String: Any] = [:]
-        
+
         switch self {
         case .notConfigured:
             additionalMetadataDictionary = [:]

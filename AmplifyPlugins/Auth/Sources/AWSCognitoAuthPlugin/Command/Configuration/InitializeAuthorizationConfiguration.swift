@@ -18,7 +18,7 @@ public struct InitializeAuthorizationConfiguration: Command {
                         environment: Environment)
     {
         let timer = LoggingTimer(identifier).start("### Starting execution")
-        
+
         // TODO: Implementation
 
 

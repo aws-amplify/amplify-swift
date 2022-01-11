@@ -16,13 +16,13 @@ public struct RefreshAWSCredentials: Command {
                         environment: Environment)
     {
         let timer = LoggingTimer(identifier).start("### Starting execution")
-        
+
         //TODO: Implementation
-        
+
         let fetchedTokenEvent = FetchAWSCredentialEvent(eventType: .fetched)
         timer.stop("### sending \(fetchedTokenEvent.type)")
         dispatcher.send(fetchedTokenEvent)
-        
+
         let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession)
         timer.stop("### sending \(fetchIdentityEvent.type)")
         dispatcher.send(fetchIdentityEvent)

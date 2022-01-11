@@ -13,7 +13,7 @@ public struct AuthEvent: StateMachineEvent {
     public enum EventType: Equatable {
 
         case configureAuth(AuthConfiguration)
-        
+
         case configureCredentialStore(AuthConfiguration)
 
         case configureAuthentication(AuthConfiguration)

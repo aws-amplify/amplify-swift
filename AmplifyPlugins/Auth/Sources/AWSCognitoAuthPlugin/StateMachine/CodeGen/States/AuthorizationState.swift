@@ -11,15 +11,15 @@ import hierarchical_state_machine_swift
 public enum AuthorizationState: State {
 
     case notConfigured
-        
+
     case configured(AuthConfiguration)
-    
+
     case fetchingAuthSession(FetchAuthSessionState)
-    
+
     case sessionEstablished(AuthorizationSessionData)
-    
+
     case validatingSession
-    
+
     case error
 }
 
