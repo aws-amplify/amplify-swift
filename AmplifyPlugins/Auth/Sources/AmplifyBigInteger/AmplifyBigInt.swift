@@ -9,32 +9,32 @@ import Foundation
 import libtommath
 
 
-final public class AmplifyBigInt {
+public final class AmplifyBigInt {
 
     var value = mp_int(used: 0, alloc: 0, sign: MP_ZPOS, dp: nil)
-    
+
     public init() {
-        
+
     }
-    
+
     public init?(_ numericString: String, radix: Int = 10) {
-        if (radix < 2 || radix > 36) {
+        if radix < 2 || radix > 36 {
             print("Error in creating BigInt, radix is out of range")
             return nil
         }
         let uppercasedValue = numericString.uppercased()
         let cString = uppercasedValue.cString(using: .utf8)
-        let error = mp_read_radix(&self.value, cString, Int32(radix))
+        let error = mp_read_radix(&value, cString, Int32(radix))
         if error != MP_OKAY {
             print("Error in creating BigInt - \(error)")
             return nil
         }
     }
-    
+
     public convenience init?(_ numericString: String) {
         self.init(numericString, radix: 10)
     }
-    
+
     /// Creates a signed big integer from the bytes provided
     ///
     /// The first byte determine the sign of the number, if the first byte is
@@ -46,7 +46,7 @@ final public class AmplifyBigInt {
             fatalError("Could not create a signed number from data - \(error)")
         }
     }
-    
+
     /// Creates a un-signed big integer from the bytes provided
     ///
     /// - Parameter data: bytes to represent as un-signed number
@@ -56,31 +56,31 @@ final public class AmplifyBigInt {
             fatalError("Could not create a signed number from data - \(error)")
         }
     }
-    
+
     public required convenience init(integerLiteral value: IntegerLiteralType) {
         self.init(value)
     }
-    
+
     public convenience init(_ int: Int) {
         self.init("\(int)")!
     }
-    
+
     deinit {
-        mp_clear(&value);
+        mp_clear(&value)
     }
-    
+
     public var asString: String {
         return self.asString(radix: 10)
     }
-    
+
     public func asString(radix: Int = 10) -> String {
         // Will be replaced with this method - https://developer.apple.com/documentation/swift/string/2997127-init
         // when moving to `BinaryInteger` conformance.
-        if (radix < 2 || radix > 36) {
+        if radix < 2 || radix > 36 {
             fatalError("Could not convert to string, radix is out of range")
         }
         var stringLength = Int()
-        let lengthResult = mp_radix_size(&self.value, Int32(radix), &stringLength)
+        let lengthResult = mp_radix_size(&value, Int32(radix), &stringLength)
         guard lengthResult == MP_OKAY else {
             fatalError("Could not find the size of the string to represent - \(lengthResult)")
         }
@@ -91,12 +91,12 @@ final public class AmplifyBigInt {
         guard conversionResult == MP_OKAY else {
             fatalError("Could not convert to string - \(conversionResult)")
         }
-        
+
         return String(cString: cString)
     }
 }
 
 enum AmplifyBigIntError: Error {
-    
+
     case conversion(mp_err)
 }

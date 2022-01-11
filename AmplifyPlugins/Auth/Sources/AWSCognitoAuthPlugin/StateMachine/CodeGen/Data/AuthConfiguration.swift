@@ -61,7 +61,7 @@ extension AuthConfiguration: Codable {
 }
 
 extension AuthConfiguration {
-    
+
     func getUserPoolConfiguration() -> UserPoolConfigurationData? {
         switch self {
         case .userPools(let userPoolConfigurationData),
@@ -70,7 +70,7 @@ extension AuthConfiguration {
         case .identityPools(_): return nil
         }
     }
-    
+
     func getIdentityPoolConfiguration() -> IdentityPoolConfigurationData? {
         switch self {
         case .identityPools(let identityPoolConfigurationData),

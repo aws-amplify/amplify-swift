@@ -52,7 +52,8 @@ struct VerifyPasswordSRP: Command {
         let userIdForSRP = challengeParameters["USER_ID_FOR_SRP"] ?? stateData.username
 
         guard let saltHex = challengeParameters["SALT"],
-              !saltHex.isEmpty else {
+              !saltHex.isEmpty
+        else {
                   let authError = AuthenticationError.service(message: "Unable to retrieve salt")
                   let event = SRPSignInEvent(
                     id: environment.eventIDFactory(),
@@ -161,20 +162,21 @@ struct VerifyPasswordSRP: Command {
                 switch result {
                 case .success(let response):
                     if let authenticationResult = response.authenticationResult {
-                        
+
                         guard let idToken = authenticationResult.idToken,
                               let accessToken = authenticationResult.accessToken,
-                              let refreshToken = authenticationResult.refreshToken else {
+                              let refreshToken = authenticationResult.refreshToken
+                        else {
                             fatalError("TODO: Replace this with a dispatcher.send()")
                         }
-                        
+
                         let userPoolTokens = AWSCognitoUserPoolTokens(
                             idToken: idToken,
                             accessToken: accessToken,
                             refreshToken: refreshToken,
                             expiresIn: authenticationResult.expiresIn
                         )
-                        
+
                         let signedInData = SignedInData(
                             userId: "",
                             userName: stateData.username,

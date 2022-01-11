@@ -57,7 +57,7 @@ enum Defaults {
     static func makeDefaultUserPool() throws -> CognitoUserPoolBehavior {
         return try CognitoIdentityProviderClient(region: regionString)
     }
-    
+
     static func makeIdentity() throws -> CognitoIdentityBehavior {
         return try CognitoIdentityClient(region: regionString)
     }
@@ -69,7 +69,7 @@ enum Defaults {
                                   clientSecret: appClientSecret,
                                   pinpointAppId: "")
     }
-    
+
     static func makeIdentityConfigData() -> IdentityPoolConfigurationData {
         IdentityPoolConfigurationData(poolId: identityPoolId,
                                       region: regionString)

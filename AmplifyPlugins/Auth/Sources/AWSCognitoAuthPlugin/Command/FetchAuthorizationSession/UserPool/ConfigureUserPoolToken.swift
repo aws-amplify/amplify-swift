@@ -13,11 +13,11 @@ struct ConfigureUserPoolToken: Command {
     let identifier = "ConfigureUserPoolToken"
 
     public func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-  
+
         let timer = LoggingTimer(identifier).start("### Starting execution")
-        
+
         //TODO: Implementation
-        
+
         let event = FetchUserPoolTokensEvent(eventType: .fetch)
         timer.stop("### sending event \(event.type)")
         dispatcher.send(event)
