@@ -23,7 +23,7 @@ struct AWSCognitoAuthCredentialStore {
     private func storeKey() -> String {
         let prefix = "amplify"
         var suffix = ""
-        
+
         switch authConfiguration {
         case .userPools(let userPoolConfigurationData):
             suffix = userPoolConfigurationData.poolId
@@ -32,10 +32,10 @@ struct AWSCognitoAuthCredentialStore {
         case .userPoolsAndIdentityPools(let userPoolConfigurationData, let identityPoolConfigurationData):
             suffix = "\(userPoolConfigurationData.poolId).\(identityPoolConfigurationData.poolId)"
         }
-        
+
         return "\(prefix).\(suffix)"
     }
-    
+
     private func generateSessionKey() -> String {
         return "\(storeKey()).\(sessionKey))"
     }
@@ -43,7 +43,7 @@ struct AWSCognitoAuthCredentialStore {
 }
 
 extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
-    
+
     func saveCredential(_ credential: AWSCognitoAuthCredential) throws {
         let authCredentialStoreKey = generateSessionKey()
         let encodedCredentials = try encode(object: credential)
@@ -69,34 +69,34 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
     private func clearAllCredentials() throws {
         try keychain.removeAll()
     }
-    
+
 }
 
 extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreProvider {
-    
+
     func getCredentialStore() -> CredentialStoreBehavior {
         return keychain
     }
-    
+
 }
 
 /// Helpers for encode and decoding
-extension AWSCognitoAuthCredentialStore {
-    
-    fileprivate func encode<T: Codable>(object: T) throws -> Data {
+private extension AWSCognitoAuthCredentialStore {
+
+    func encode<T: Codable>(object: T) throws -> Data {
         do {
             return try JSONEncoder().encode(object)
-        } catch let error {
+        } catch {
             throw CredentialStoreError.codingError("Error occurred while encoding AWSCredentials", error)
         }
     }
 
-    fileprivate func decode<T: Decodable>(data: Data) throws -> T {
+    func decode<T: Decodable>(data: Data) throws -> T {
         do {
             return try JSONDecoder().decode(T.self, from: data)
-        } catch let error {
+        } catch {
             throw CredentialStoreError.codingError("Error occurred while decoding AWSCredentials", error)
         }
     }
-    
+
 }

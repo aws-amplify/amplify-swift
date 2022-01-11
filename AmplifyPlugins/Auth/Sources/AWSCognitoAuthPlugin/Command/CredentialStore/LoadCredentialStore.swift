@@ -15,19 +15,19 @@ struct LoadCredentialStore: Command {
     let authConfiguration: AuthConfiguration
 
     public func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-  
+
         let timer = LoggingTimer(identifier).start("### Starting execution")
-        
+
         //TODO: Implementation
-        
-        
+
+
         let event = CredentialStoreEvent(eventType: .successfullyLoadedCredentialStore(authConfiguration))
         timer.stop("### sending event \(event.type)")
         dispatcher.send(event)
-        
+
         dispatcher.send(generateConfigureAuthEvent(authConfiguration: authConfiguration))
     }
-    
+
     private func generateConfigureAuthEvent(authConfiguration: AuthConfiguration) -> StateMachineEvent {
         let timer = LoggingTimer(identifier).start("### Starting execution")
 

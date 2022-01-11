@@ -11,7 +11,7 @@ public extension CredentialStoreState {
     var debugDictionary: [String: Any] {
         let stateTypeDictionary: [String: Any] = ["CredentialStoreState": type]
         var additionalMetadataDictionary: [String: Any] = [:]
-        
+
         switch self {
         case .notConfigured:
             additionalMetadataDictionary = [:]

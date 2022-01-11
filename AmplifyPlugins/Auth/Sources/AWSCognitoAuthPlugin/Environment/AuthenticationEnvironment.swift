@@ -8,7 +8,7 @@
 import hierarchical_state_machine_swift
 
 protocol AuthenticationEnvironment: Environment {
-    
+
     var srpSignInEnvironment: SRPSignInEnvironment { get }
     var userPoolEnvironment: UserPoolEnvironment { get }
 }

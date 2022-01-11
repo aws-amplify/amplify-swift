@@ -9,17 +9,17 @@ import Foundation
 import hierarchical_state_machine_swift
 
 public struct ConfigureFetchAWSCredentials: Command {
-    
+
     public let identifier = "ConfigureFetchAWSCredentials"
-    
+
     public func execute(withDispatcher dispatcher: EventDispatcher,
                         environment: Environment)
     {
         let timer = LoggingTimer(identifier).start("### Starting execution")
-        
+
         //TODO: Implementation
-        
-        
+
+
         // Refresh the session
         let fetchIdentity = FetchAWSCredentialEvent(eventType: .fetch)
         timer.stop("### sending \(fetchIdentity.type)")
