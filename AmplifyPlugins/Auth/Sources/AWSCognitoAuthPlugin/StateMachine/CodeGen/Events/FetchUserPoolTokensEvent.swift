@@ -12,11 +12,11 @@ public struct FetchUserPoolTokensEvent: StateMachineEvent {
     public enum EventType: Equatable {
 
         case fetch
-        
+
         case refresh
-        
+
         case fetched
-        
+
     }
 
     public let id: String

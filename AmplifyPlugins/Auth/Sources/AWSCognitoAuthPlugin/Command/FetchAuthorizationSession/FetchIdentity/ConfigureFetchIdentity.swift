@@ -9,17 +9,17 @@ import Foundation
 import hierarchical_state_machine_swift
 
 public struct ConfigureFetchIdentity: Command {
-    
+
     public let identifier = "ConfigureFetchIdentity"
-    
+
     public func execute(withDispatcher dispatcher: EventDispatcher,
                         environment: Environment)
     {
         let timer = LoggingTimer(identifier).start("### Starting execution")
-        
+
         //TODO: Implementation
-        
-        
+
+
         let fetchIdentity = FetchIdentityEvent(eventType: .fetch)
         timer.stop("### sending event \(fetchIdentity.type)")
         dispatcher.send(fetchIdentity)

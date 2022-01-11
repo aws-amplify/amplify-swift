@@ -16,10 +16,10 @@ public struct RefreshAuthSession: Command {
                         environment: Environment)
     {
         let timer = LoggingTimer(identifier).start("### Starting execution")
-        
-        //TODO: 
-        
-        
+
+        //TODO:
+
+
         // Refresh the session
         let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity)
 
