@@ -8,11 +8,11 @@
 import Foundation
 import libtommath
 
-extension AmplifyBigInt {
-    
-    public func add(bigInteger: AmplifyBigInt) -> AmplifyBigInt {
+public extension AmplifyBigInt {
+
+    func add(bigInteger: AmplifyBigInt) -> AmplifyBigInt {
         let sum = AmplifyBigInt()
-        _ = mp_add(&self.value, &bigInteger.value, &sum.value);
+        _ = mp_add(&value, &bigInteger.value, &sum.value)
         return sum
     }
 }

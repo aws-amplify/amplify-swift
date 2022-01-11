@@ -16,10 +16,10 @@ public enum CredentialStoreError {
 
     /// Caused by trying to convert String to Data or vice-versa
     case conversionError(ErrorDescription, Error? = nil)
-    
+
     /// Caused by trying encoding/decoding
     case codingError(ErrorDescription, Error? = nil)
-    
+
     /// Unable to find the keychain item
     case itemNotFound
 

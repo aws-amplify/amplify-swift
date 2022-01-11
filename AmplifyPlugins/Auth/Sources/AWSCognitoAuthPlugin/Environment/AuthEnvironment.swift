@@ -25,7 +25,7 @@ extension AuthEnvironment: AuthenticationEnvironment {
         }
         return authNEnv.userPoolEnvironment
     }
-    
+
 
     var srpSignInEnvironment: SRPSignInEnvironment {
         guard let authNEnv = authenticationEnvironment else {

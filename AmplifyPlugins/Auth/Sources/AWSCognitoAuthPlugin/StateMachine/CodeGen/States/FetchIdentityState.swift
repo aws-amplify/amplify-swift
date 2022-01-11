@@ -9,15 +9,15 @@ import Foundation
 import hierarchical_state_machine_swift
 
 public enum FetchIdentityState: State {
-    
+
     case configuring
-    
+
     case fetching
 
     case fetched
-    
+
     case error
-    
+
 }
 
 public extension FetchIdentityState {
@@ -30,4 +30,4 @@ public extension FetchIdentityState {
         }
     }
 }
-    
+

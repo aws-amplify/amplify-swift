@@ -9,9 +9,9 @@ import Foundation
 import hierarchical_state_machine_swift
 
 public enum CredentialStoreState: State {
-    
+
     case notConfigured
-    
+
     case migratingLegacyStore(AuthConfiguration)
 
     case loadingStoredCredentials(AuthConfiguration)
@@ -30,4 +30,4 @@ public extension CredentialStoreState {
         }
     }
 }
-    
+

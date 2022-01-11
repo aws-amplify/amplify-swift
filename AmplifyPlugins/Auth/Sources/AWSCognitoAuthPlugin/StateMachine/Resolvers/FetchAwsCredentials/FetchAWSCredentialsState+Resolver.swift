@@ -23,7 +23,7 @@ public extension FetchAWSCredentialsState {
             guard let fetchAWSCredentialEvent = isFetchAWSCredentialEvent(event) else {
                 return .from(oldState)
             }
-            
+
             switch oldState {
             case .configuring:
                 switch fetchAWSCredentialEvent.eventType {
@@ -56,7 +56,7 @@ public extension FetchAWSCredentialsState {
                 return .from(oldState)
             }
         }
-                
+
         private func isFetchAWSCredentialEvent(_ event: StateMachineEvent) -> FetchAWSCredentialEvent? {
             guard let fetchAWSCredentialEvent = event as? FetchAWSCredentialEvent else {
                 return nil

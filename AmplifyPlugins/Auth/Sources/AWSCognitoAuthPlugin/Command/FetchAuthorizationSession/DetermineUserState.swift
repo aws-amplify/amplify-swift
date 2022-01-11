@@ -15,9 +15,9 @@ struct DetermineUserState: Command {
     let authConfiguration: AuthConfiguration
 
     public func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-  
+
         let timer = LoggingTimer(identifier).start("### Starting execution")
-        
+
         //TODO: complete the implementation
         let event = FetchAuthSessionEvent(eventType: .fetchUserPoolTokens)
         //OR
