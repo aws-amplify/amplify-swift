@@ -9,15 +9,15 @@ import Foundation
 import hierarchical_state_machine_swift
 
 public enum FetchAWSCredentialsState: State {
-    
+
     case configuring
-    
+
     case refreshing
-    
+
     case fetching
-    
+
     case fetched
-    
+
     case error
 
 }
@@ -33,4 +33,4 @@ public extension FetchAWSCredentialsState {
         }
     }
 }
-    
+

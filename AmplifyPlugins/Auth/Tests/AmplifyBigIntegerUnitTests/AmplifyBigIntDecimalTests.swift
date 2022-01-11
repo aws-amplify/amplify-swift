@@ -9,7 +9,7 @@ import XCTest
 import AmplifyBigInteger
 
 final class AmplifyBigIntDecimalTests: XCTestCase {
-    
+
     func testConversionDecimal() throws {
         guard let firstInt = AmplifyBigInt("2", radix: 10) else {
             XCTFail("Could not create integer")
@@ -27,7 +27,7 @@ final class AmplifyBigIntDecimalTests: XCTestCase {
         XCTAssertEqual("3", secondInt.asString)
         XCTAssertEqual("-23233", thirdInt.asString)
     }
-    
+
     func testConversionLargeDecimal() throws {
         let largeNumber =
         "23842389473298759348759834759834759834759834759834759834759834759347895734584567" +
@@ -38,7 +38,7 @@ final class AmplifyBigIntDecimalTests: XCTestCase {
         }
         XCTAssertEqual(largeNumber, largeInt.asString)
     }
-    
+
     func testConversionLargeNegativeDecimal() throws {
         let largeNumber =
         "-23842389473298759348759834759834759834759834759834759834759834759347895734584567" +
@@ -49,7 +49,7 @@ final class AmplifyBigIntDecimalTests: XCTestCase {
         }
         XCTAssertEqual(largeNumber, largeInt.asString)
     }
-    
+
     func testConversionLargeNegativeDecimal_2() throws {
         let largeNumber =
         "-23842389473298759348759834759834759834759834759834759834759834759347895734584567" +
@@ -61,19 +61,19 @@ final class AmplifyBigIntDecimalTests: XCTestCase {
         }
         XCTAssertEqual(largeNumber, largeInt.asString)
     }
-    
+
     func testAddition() {
         let number1 = AmplifyBigInt(23)
         let number2 = AmplifyBigInt(67)
-        
+
         let result = number1 + number2
         XCTAssertEqual(result.asString, "90")
     }
-    
+
     func testSubstraction() {
         let number1 = AmplifyBigInt(23)
         let number2 = AmplifyBigInt(67)
-        
+
         let result = number1 - number2
         XCTAssertEqual(result.asString, "-44")
     }

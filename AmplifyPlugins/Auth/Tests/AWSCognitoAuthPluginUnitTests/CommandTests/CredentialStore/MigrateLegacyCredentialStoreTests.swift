@@ -12,7 +12,7 @@ import hierarchical_state_machine_swift
 @testable import AWSCognitoAuthPlugin
 
 class MigrateLegacyCredentialStoreTests: XCTestCase {
-        
+
     /// Test is responsible to check the happy path business logic of migrating the legacy store data.
     ///
     /// - Given: A credential store with legacy data
@@ -22,7 +22,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
     func testSaveLegacyCredentials() {
         let mockedData = "mock"
         let saveCredentialHandlerInvoked = expectation(description: "saveCredentialHandlerInvoked")
-        
+
         let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(data: mockedData)
         let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { service in
             return mockLegacyCredentialStoreBehavior
@@ -39,7 +39,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
                 XCTAssertEqual(credentials.awsCredential?.secretKey, mockedData)
                 XCTAssertEqual(credentials.awsCredential?.accessKey, mockedData)
                 XCTAssertEqual(credentials.awsCredential?.expiration, Date.init(timeIntervalSince1970: 0))
-                
+
                 saveCredentialHandlerInvoked.fulfill()
             }
         )
@@ -49,24 +49,24 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         }
         let authConfig = AuthConfiguration.userPoolsAndIdentityPools(Defaults.makeDefaultUserPoolConfigData(),
                                                                      Defaults.makeIdentityConfigData())
-        
+
         let credentialStoreEnv = BasicCredentialStoreEnvironment(amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
                                                                  legacyCredentialStoreFactory: legacyCredentialStoreFactory)
-        
+
         let environment = AuthEnvironment(
             userPoolConfigData: nil,
             identityPoolConfigData: nil,
             authenticationEnvironment: nil,
             authorizationEnvironment: nil,
             credentialStoreEnvironment: credentialStoreEnv)
-        
+
         let command = MigrateLegacyCredentialStore(authConfiguration: authConfig)
         command.execute(withDispatcher: MockDispatcher { _ in },
                         environment: environment)
-        
+
         waitForExpectations(timeout: 0.1)
     }
-    
+
     /// Test is responsible for making sure that the legacy credential store clearing up is getting called for user pool and identity pool
     ///
     /// - Given: A credential store with legacy data
@@ -76,11 +76,10 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
     func testClearLegacyCredentialStore() {
         let migrationCompletionInvoked = expectation(description: "migrationCompletionInvoked")
         migrationCompletionInvoked.expectedFulfillmentCount = 2
-        
+
         let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(
             data: "mock",
-            removeAllHandler:
-            {
+            removeAllHandler: {
                 migrationCompletionInvoked.fulfill()
             }
         )
@@ -94,21 +93,21 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         }
         let authConfig = AuthConfiguration.userPoolsAndIdentityPools(Defaults.makeDefaultUserPoolConfigData(),
                                                                      Defaults.makeIdentityConfigData())
-        
+
         let credentialStoreEnv = BasicCredentialStoreEnvironment(amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
                                                                  legacyCredentialStoreFactory: legacyCredentialStoreFactory)
-        
+
         let environment = AuthEnvironment(
             userPoolConfigData: nil,
             identityPoolConfigData: nil,
             authenticationEnvironment: nil,
             authorizationEnvironment: nil,
             credentialStoreEnvironment: credentialStoreEnv)
-        
+
         let command = MigrateLegacyCredentialStore(authConfiguration: authConfig)
         command.execute(withDispatcher: MockDispatcher { _ in },
                         environment: environment)
-        
+
         waitForExpectations(timeout: 0.1)
 
     }

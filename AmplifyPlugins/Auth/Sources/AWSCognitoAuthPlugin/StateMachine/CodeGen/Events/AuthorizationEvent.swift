@@ -16,9 +16,9 @@ public struct AuthorizationEvent: StateMachineEvent {
         case fetchAuthSession(AuthConfiguration)
 
         case fetchedAuthSession(AuthorizationSessionData)
-        
+
         case validateSession(AuthConfiguration)
-        
+
         case sessionIsValid
 
         case error

@@ -15,9 +15,9 @@ struct LoadPersistedAuthorization: Command {
     let authConfiguration: AuthConfiguration
 
     public func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-  
+
         let timer = LoggingTimer(identifier).start("### Starting execution")
-        
+
         //TODO: Implementation - If persisted authorization exists, validate otherwise fetch
 
         let event = AuthorizationEvent(eventType: .fetchAuthSession(authConfiguration))

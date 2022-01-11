@@ -14,7 +14,7 @@ public struct SignedInData {
     public let signedInDate: Date
     public let signInMethod: SignInMethod
     public let cognitoUserPoolTokens: AWSCognitoUserPoolTokens
-    
+
     public init(
         userId: String,
         userName: String,

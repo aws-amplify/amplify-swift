@@ -11,7 +11,7 @@ public extension FetchAWSCredentialsState {
     var debugDictionary: [String: Any] {
         let stateTypeDictionary: [String: Any] = ["FetchAWSCredentialsState": type]
         var additionalMetadataDictionary: [String: Any] = [:]
-        
+
         switch self {
         case .configuring:
             additionalMetadataDictionary = [:]

@@ -11,7 +11,7 @@ public extension FetchUserPoolTokensState {
     var debugDictionary: [String: Any] {
         let stateTypeDictionary: [String: Any] = ["FetchUserPoolTokensState": type]
         var additionalMetadataDictionary: [String: Any] = [:]
-        
+
         switch self {
         case .configuring:
             additionalMetadataDictionary = [:]

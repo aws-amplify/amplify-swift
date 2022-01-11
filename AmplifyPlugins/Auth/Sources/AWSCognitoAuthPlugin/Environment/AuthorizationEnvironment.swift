@@ -19,7 +19,7 @@ protocol AuthorizationEnvironment: Environment {
 public struct BasicAuthorizationEnvironment: AuthorizationEnvironment {
 
     typealias CognitoIdentityFactory = () throws -> CognitoIdentityBehavior
-    
+
     // Required
     let identityPoolConfiguration: IdentityPoolConfigurationData
     let cognitoIdentityFactory: CognitoIdentityFactory

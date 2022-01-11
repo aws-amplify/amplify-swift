@@ -8,7 +8,7 @@
 import Foundation
 
 public struct AuthorizationSessionData {
-    
+
 }
 
 extension AuthorizationSessionData: Equatable { }

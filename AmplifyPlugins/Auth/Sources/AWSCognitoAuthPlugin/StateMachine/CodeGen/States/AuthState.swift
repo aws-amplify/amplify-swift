@@ -11,7 +11,7 @@ import hierarchical_state_machine_swift
 public enum AuthState: State {
 
     case notConfigured
-    
+
     case configuringCredentialStore(CredentialStoreState)
 
     case configuringAuthentication(AuthenticationState)

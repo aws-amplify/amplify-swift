@@ -10,14 +10,14 @@ import XCTest
 import AWSCognitoAuthPlugin
 
 class AWSAuthBaseTest: XCTestCase {
-    
+
     let networkTimeout = TimeInterval(20)
     var email = UUID().uuidString + "@" + UUID().uuidString + ".com"
     var email2 = UUID().uuidString + "@" + UUID().uuidString + ".com"
-    
+
     let amplifyConfigurationFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration"
     let credentialsFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-credentials"
-    
+
     func initializeAmplify() {
         do {
             let credentialsConfiguration = try TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
@@ -34,13 +34,13 @@ class AWSAuthBaseTest: XCTestCase {
             initializeWithLocalResources()
         }
     }
-    
+
     func initializeWithLocalResources() {
         let region = JSONValue(stringLiteral: "xx")
         let userPoolID = JSONValue(stringLiteral: "xx")
         let userPooldAppClientID = JSONValue(stringLiteral: "xx")
         let userPooldAppClientSecret = JSONValue(stringLiteral: "xx")
-        
+
         let identityPoolID = JSONValue(stringLiteral: "xx")
         do {
             let authConfiguration = AuthCategoryConfiguration(plugins: [
@@ -79,37 +79,37 @@ class AWSAuthBaseTest: XCTestCase {
 }
 
 class TestConfigHelper {
-    
+
     static func retrieveAmplifyConfiguration(forResource: String) throws -> AmplifyConfiguration {
-        
+
         let data = try retrieve(forResource: forResource)
         return try AmplifyConfiguration.decodeAmplifyConfiguration(from: data)
     }
-    
+
     static func retrieveCredentials(forResource: String) throws -> [String: String] {
         let data = try retrieve(forResource: forResource)
-        
+
         let jsonOptional = try JSONSerialization.jsonObject(with: data, options: []) as? [String: String]
         guard let json = jsonOptional else {
             throw TestConfigError.jsonError("Could not deserialize `\(forResource)` into JSON object")
         }
-        
+
         return json
     }
-    
+
     private static func retrieve(forResource: String) throws -> Data {
         guard let path = Bundle(for: self).path(forResource: forResource, ofType: "json") else {
             throw TestConfigError.bundlePathError("Could not retrieve configuration file: \(forResource)")
         }
-        
+
         let url = URL(fileURLWithPath: path)
         return try Data(contentsOf: url)
     }
 }
 
 enum TestConfigError: Error {
-    
+
     case jsonError(String)
-    
+
     case bundlePathError(String)
 }
