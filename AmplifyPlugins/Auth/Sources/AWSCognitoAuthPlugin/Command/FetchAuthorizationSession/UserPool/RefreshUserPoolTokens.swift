@@ -16,13 +16,13 @@ public struct RefreshUserPoolTokens: Command {
                         environment: Environment)
     {
         let timer = LoggingTimer(identifier).start("### Starting execution")
-        
+
         //TODO: Implemention
-        
+
         let fetchedTokenEvent = FetchUserPoolTokensEvent(eventType: .fetched)
         timer.stop("### sending event \(fetchedTokenEvent.type)")
         dispatcher.send(fetchedTokenEvent)
-        
+
         let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity)
         timer.stop("### sending event \(fetchIdentityEvent.type)")
         dispatcher.send(fetchIdentityEvent)

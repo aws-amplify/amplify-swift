@@ -10,12 +10,13 @@ import XCTest
 
 typealias CompletionType = (Bool, AuthError?) -> Void
 
-struct AuthSignInHelper {
+enum AuthSignInHelper {
 
     static func signUpUser(username: String,
                            password: String,
                            email: String,
-                           completionHandler: @escaping CompletionType) {
+                           completionHandler: @escaping CompletionType)
+    {
 
         let options = AuthSignUpRequest.Options(userAttributes: [AuthUserAttribute(.email, value: email)])
         _ = Amplify.Auth.signUp(username: username, password: password, options: options) { result in
@@ -44,7 +45,8 @@ struct AuthSignInHelper {
     static func registerAndSignInUser(username: String,
                                       password: String,
                                       email: String,
-                                      completionHandler: @escaping CompletionType) {
+                                      completionHandler: @escaping CompletionType)
+    {
 
         AuthSignInHelper.signUpUser(username: username, password: password, email: email) { signUpSuccess, error in
             guard signUpSuccess else {

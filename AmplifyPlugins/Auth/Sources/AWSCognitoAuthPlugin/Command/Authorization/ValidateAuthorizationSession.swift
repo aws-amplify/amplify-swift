@@ -16,7 +16,7 @@ struct ValidateAuthorizationSession: Command {
 
     public func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
         let timer = LoggingTimer(identifier).start("### Starting execution")
-        
+
         //TODO: Implementation - Either session is valid or fetch the session again.
 
         let authorizationEvent = AuthorizationEvent(eventType: .sessionIsValid)

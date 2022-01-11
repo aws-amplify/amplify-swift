@@ -9,7 +9,7 @@ import Foundation
 import libtommath
 
 extension AmplifyBigInt {
-    
+
     func sign() -> AmplifyBigIntSign {
         value.sign == MP_ZPOS ? .positive : .negative
     }

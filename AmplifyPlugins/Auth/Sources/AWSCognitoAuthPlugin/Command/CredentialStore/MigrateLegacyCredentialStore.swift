@@ -27,11 +27,11 @@ struct MigrateLegacyCredentialStore: Command {
     private let AWSCognitoAuthUserIdToken = "idToken"
     private let AWSCognitoAuthUserRefreshToken = "refreshToken"
     private let AWSCognitoAuthUserTokenExpiration = "tokenExpiration"
-    
+
     public func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-        
+
         let timer = LoggingTimer(identifier).start("### Starting execution")
-        
+
         guard let credentialStoreEnvironment = (environment as? AuthEnvironment)?.credentialStoreEnvironment else {
             let event = CredentialStoreEvent(eventType: .loadCredentialStore(authConfiguration))
             timer.stop("### sending event \(event.type)")
@@ -42,7 +42,7 @@ struct MigrateLegacyCredentialStore: Command {
 
         var identityId: String?
         var awsCredentials: AuthAWSCognitoCredentials?
-        
+
         let userPoolTokens = try? getUserPoolTokens(from: credentialStoreEnvironment)
 
         // IdentityId and AWSCredentials should exist together
@@ -50,13 +50,13 @@ struct MigrateLegacyCredentialStore: Command {
             identityId = storeIdentityId
             awsCredentials = storeAWSCredentials
         }
-        
+
         // If everything is nil, probably the store has been migrated
         if !(identityId == nil && awsCredentials == nil && userPoolTokens == nil) {
             let awsCognitoAuthCredentials = AWSCognitoAuthCredential(userPoolTokens: userPoolTokens,
                                                                      identityId: identityId,
                                                                      awsCredential: awsCredentials)
-            
+
             // Save the fetched Credentials
             try? amplifyCredentialStore.saveCredential(awsCognitoAuthCredentials)
         }
@@ -65,16 +65,17 @@ struct MigrateLegacyCredentialStore: Command {
         timer.stop("### sending event \(event.type)")
         dispatcher.send(event)
     }
-    
+
     private func getUserPoolTokens(from credentialStoreEnvironment: CredentialStoreEnvironment) throws -> AWSCognitoUserPoolTokens {
-        
+
         guard let bundleIdentifier = Bundle.main.bundleIdentifier,
-              let userPoolConfig = authConfiguration.getUserPoolConfiguration() else {
+              let userPoolConfig = authConfiguration.getUserPoolConfiguration()
+        else {
             throw AuthError.configuration(
                 "Invalid Configuration when migrating legacy keychain",
                 "Please check if the user pool configuration is correct and up to date.")
         }
-        
+
         let serviceKey = "\(bundleIdentifier).\(cognitoUserPoolClassKey)"
         let legacyCredentialStore = credentialStoreEnvironment.legacyCredentialStoreFactory(serviceKey)
         defer {
@@ -118,21 +119,23 @@ struct MigrateLegacyCredentialStore: Command {
                                         refreshToken: refreshToken,
                                         expiration: tokenExpiration)
     }
-    
+
     private func userPoolNamespace(userPoolConfig: UserPoolConfigurationData, for key: String) -> String {
         return "\(userPoolConfig.clientId).\(key)"
     }
-    
+
     private func getIdentityIdAndAWSCredentials(
-        from credentialStoreEnvironment: CredentialStoreEnvironment) throws -> (identityId: String, awsCredentials: AuthAWSCognitoCredentials) {
-                        
+        from credentialStoreEnvironment: CredentialStoreEnvironment) throws -> (identityId: String, awsCredentials: AuthAWSCognitoCredentials)
+    {
+
             guard let bundleIdentifier = Bundle.main.bundleIdentifier,
-                  let identityPoolConfig = authConfiguration.getIdentityPoolConfiguration() else {
+                  let identityPoolConfig = authConfiguration.getIdentityPoolConfiguration()
+            else {
                       throw AuthError.configuration(
                         "Invalid Configuration when migrating legacy keychain",
                         "Please check if the identity pool configuration is correct and up to date.")
             }
-            
+
             let serviceKey = "\(bundleIdentifier).\(cognitoAWSCredentialsProviderClassKey).\(identityPoolConfig.poolId)"
             let legacyCredentialStore = credentialStoreEnvironment.legacyCredentialStoreFactory(serviceKey)
             defer {
@@ -144,17 +147,17 @@ struct MigrateLegacyCredentialStore: Command {
             let sessionKey = try legacyCredentialStore.getString(AWSCredentialsProviderKeychainSessionToken)
             let expirationString = try legacyCredentialStore.getString(AWSCredentialsProviderKeychainExpiration)
             let identityId = try legacyCredentialStore.getString(AWSCredentialsProviderKeychainIdentityId)
-            
+
             let awsCredentials = AuthAWSCognitoCredentials(
                 accessKey: accessKey,
                 secretKey: secretKey,
                 sessionKey: sessionKey,
                 expiration: Date(timeIntervalSince1970: Double(expirationString) ?? 0)
             )
-            
+
             return (identityId, awsCredentials)
         }
-    
+
     private func dateFormatter() -> DateFormatter {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone.utc

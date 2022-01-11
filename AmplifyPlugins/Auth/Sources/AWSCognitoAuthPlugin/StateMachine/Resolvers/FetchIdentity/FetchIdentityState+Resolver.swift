@@ -23,7 +23,7 @@ public extension FetchIdentityState {
             guard let fetchIdentityEvent = isFetchIdentityEvent(event) else {
                 return .from(oldState)
             }
-            
+
             switch oldState {
             case .configuring:
                 switch fetchIdentityEvent.eventType {
@@ -46,7 +46,7 @@ public extension FetchIdentityState {
                 return .from(oldState)
             }
         }
-                
+
         private func isFetchIdentityEvent(_ event: StateMachineEvent) -> FetchIdentityEvent? {
             guard let fetchIdentityEvent = event as? FetchIdentityEvent else {
                 return nil

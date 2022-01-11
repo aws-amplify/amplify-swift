@@ -12,7 +12,7 @@ public struct FetchIdentityEvent: StateMachineEvent {
     public enum EventType: Equatable {
 
         case fetch
-        
+
         case fetched
 
     }
