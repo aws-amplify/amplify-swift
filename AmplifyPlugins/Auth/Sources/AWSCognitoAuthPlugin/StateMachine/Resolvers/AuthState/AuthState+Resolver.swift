@@ -27,7 +27,7 @@ public extension AuthState {
                 let newState = AuthState.configuringCredentialStore(CredentialStoreState.notConfigured)
                 let command = InitializeCredentialStoreConfiguration(authConfiguration: authConfiguration)
                 return .init(newState: newState, commands: [command])
-                
+
             case .configuringCredentialStore(let credentialStoreState):
                 let credentialStoreResolver = CredentialStoreState.Resolver()
                 let resolution = credentialStoreResolver.resolve(oldState: credentialStoreState, byApplying: event)
@@ -36,7 +36,7 @@ public extension AuthState {
                     let newState = AuthState.configuringCredentialStore(resolution.newState)
                     return .init(newState: newState, commands: resolution.commands)
                 }
-                
+
                 let authEvent = isAuthEvent(event)?.eventType
                 if case .configureAuthentication(let authConfiguration) = authEvent {
                     let newState = AuthState.configuringAuthentication(.notConfigured)
@@ -100,7 +100,7 @@ public extension AuthState {
             }
             return authNEvent
         }
-        
+
         private func isCredentialStoreEvent(_ event: StateMachineEvent) -> CredentialStoreEvent? {
             guard let credentialStore = event as? CredentialStoreEvent else {
                 return nil

@@ -34,7 +34,7 @@ public extension CredentialStoreState {
                 return .from(oldState)
             }
         }
-        
+
         private func resolveNotConfigured(
             byApplying credentialStoreEvent: CredentialStoreEvent
         ) -> StateResolution<StateType> {
@@ -51,7 +51,7 @@ public extension CredentialStoreState {
                 return .from(.notConfigured)
             }
         }
-        
+
         private func resolveMigratingLegacyStore(
             oldState: StateType,
             byApplying credentialStoreEvent: CredentialStoreEvent
@@ -69,7 +69,7 @@ public extension CredentialStoreState {
                 return .from(oldState)
             }
         }
-        
+
         private func resolveLoadingStoredCredentials(
             oldState: StateType,
             byApplying credentialStoreEvent: CredentialStoreEvent
@@ -81,7 +81,7 @@ public extension CredentialStoreState {
                 return .from(oldState)
             }
         }
-        
+
         private func isCredentialStoreEvent(_ event: StateMachineEvent) -> CredentialStoreEvent? {
             guard let credentialStore = event as? CredentialStoreEvent else {
                 return nil

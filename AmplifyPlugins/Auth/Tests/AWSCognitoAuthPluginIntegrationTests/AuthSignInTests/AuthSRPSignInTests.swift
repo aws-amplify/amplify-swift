@@ -10,18 +10,18 @@ import XCTest
 import AWSCognitoAuthPlugin
 
 class AuthSRPSignInTests: AWSAuthBaseTest {
-    
+
     override func setUp() {
         super.setUp()
         initializeAmplify()
     }
-    
+
     override func tearDown() {
         super.tearDown()
         Amplify.reset()
         sleep(2)
     }
-    
+
     /// Test successful signIn of a valid user
     ///
     /// - Given: A user registered in Cognito user pool
@@ -31,12 +31,12 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     ///    - I should get a completed signIn flow.
     ///
     func testSuccessfulSignIn() {
-        
+
         let username = "xxx"
         let password = "xxx"
-        
+
         //TODO: Add `AuthSignInHelper.signUpUser` when signUp api is ready
-        
+
         let operationExpectation = expectation(description: "Operation should complete")
         let operation = Amplify.Auth.signIn(username: username, password: password) { result in
             defer {
@@ -52,7 +52,7 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
         XCTAssertNotNil(operation, "SignIn operation should not be nil")
         wait(for: [operationExpectation], timeout: networkTimeout)
     }
-    
+
     //
     //    /// Test successful signIn of a valid user
     //    /// Internally, Two Cognito APIs will be called, Cognito's `InitiateAuth` and `RespondToAuthChallenge` API.
@@ -218,5 +218,5 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     //        operation.cancel()
     //        wait(for: [operationExpectation], timeout: networkTimeout)
     //    }
-    
+
 }

@@ -20,7 +20,7 @@ public extension AuthorizationState {
             oldState: StateType,
             byApplying event: StateMachineEvent
         ) -> StateResolution<StateType> {
- 
+
             switch oldState {
             case .notConfigured:
                 guard let authZEvent = isAuthorizationEvent(event) else {
@@ -52,7 +52,7 @@ public extension AuthorizationState {
                 return .from(oldState)
             }
         }
-        
+
         private func resolveNotConfigured(
             byApplying authorizationEvent: AuthorizationEvent
         ) -> StateResolution<StateType> {
@@ -68,7 +68,7 @@ public extension AuthorizationState {
                 return .from(.notConfigured)
             }
         }
-        
+
         private func resolveConfigured(
             oldState: StateType,
             byApplying authorizationEvent: AuthorizationEvent
@@ -92,7 +92,7 @@ public extension AuthorizationState {
                 return .from(oldState)
             }
         }
-        
+
         private func resolveValidatingSession(
             oldState: StateType,
             byApplying authorizationEvent: AuthorizationEvent
@@ -112,7 +112,7 @@ public extension AuthorizationState {
                 return .from(oldState)
             }
         }
-        
+
         private func isAuthorizationEvent(_ event: StateMachineEvent) -> AuthorizationEvent? {
             guard let authZEvent = event as? AuthorizationEvent else {
                 return nil
