@@ -9,17 +9,17 @@ import Foundation
 import hierarchical_state_machine_swift
 
 public enum FetchAuthSessionState: State {
-    
+
     case determiningUserState
-    
+
     case fetchingUserPoolTokens(FetchUserPoolTokensState)
-    
+
     case fetchingIdentity(FetchIdentityState)
-    
+
     case fetchingAWSCredentials(FetchAWSCredentialsState)
-    
+
     case sessionEstablished
-    
+
     case error
 
 }
@@ -36,4 +36,4 @@ public extension FetchAuthSessionState {
         }
     }
 }
-    
+

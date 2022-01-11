@@ -13,21 +13,22 @@ public typealias AmplifySignInOperation = AmplifyOperation<AuthSignInRequest, Au
 typealias AWSAuthSignInOperationStateMachine = StateMachine<AuthState, AuthEnvironment>
 
 public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation {
-    
+
     let stateMachine: AWSAuthSignInOperationStateMachine
     var statelistenerToken: AWSAuthSignInOperationStateMachine.StateChangeListenerToken?
-    
+
     init(_ request: AuthSignInRequest,
          stateMachine: AWSAuthSignInOperationStateMachine,
-         resultListener: ResultListener?) {
-        
+         resultListener: ResultListener?)
+    {
+
         self.stateMachine = stateMachine
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.signInAPI,
                    request: request,
                    resultListener: resultListener)
     }
-    
+
     override public func main() {
         if isCancelled {
             finish()
@@ -35,7 +36,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
         }
         doInitialize()
     }
-    
+
     func doInitialize() {
         var token: AWSAuthSignInOperationStateMachine.StateChangeListenerToken?
         token = stateMachine.listen { [weak self] in
@@ -50,7 +51,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
             }
         } onSubscribe: { }
     }
-    
+
     func doSignIn() {
         var token: AWSAuthSignInOperationStateMachine.StateChangeListenerToken?
         token = stateMachine.listen { [weak self] in
@@ -60,7 +61,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
             guard case .configured(let authNState, _) = $0 else {
                 return
             }
-            
+
             switch authNState {
             case .signedIn:
                 self.dispatch(AuthSignInResult(nextStep: .done))
@@ -78,19 +79,19 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
         } onSubscribe: { }
         sendSignInEvent()
     }
-    
-    
+
+
     private func sendSignInEvent() {
         let signInData = SignInEventData(username: request.username, password: request.password)
         let event = AuthenticationEvent.init(eventType: .signInRequested(signInData))
         stateMachine.send(event)
     }
-    
+
     private func dispatch(_ result: AuthSignInResult) {
         let asyncEvent = AWSAuthSignInOperation.OperationResult.success(result)
         dispatch(result: asyncEvent)
     }
-    
+
     private func dispatch(_ error: AuthError) {
         let asyncEvent = AWSAuthSignInOperation.OperationResult.failure(error)
         dispatch(result: asyncEvent)

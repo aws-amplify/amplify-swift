@@ -18,7 +18,7 @@ public final class AWSCognitoAuthPlugin: AuthCategoryPlugin {
 
     /// Configuration for the auth plugin
     var authConfiguration: AuthConfiguration!
-    
+
     /// The unique key of the plugin within the auth category.
     public var key: PluginKey {
         return "awsCognitoAuthPlugin"

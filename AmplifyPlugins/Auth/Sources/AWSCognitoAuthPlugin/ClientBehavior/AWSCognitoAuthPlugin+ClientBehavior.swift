@@ -42,7 +42,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         let request = AuthSignInRequest(username: username,
                                         password: password,
                                         options: options)
-        let signInOperation = AWSAuthSignInOperation(request, stateMachine: stateMachine ,resultListener: listener)
+        let signInOperation = AWSAuthSignInOperation(request, stateMachine: stateMachine, resultListener: listener)
         queue.addOperation(signInOperation)
         return signInOperation
     }

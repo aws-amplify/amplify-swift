@@ -12,9 +12,9 @@ public struct FetchAWSCredentialEvent: StateMachineEvent {
     public enum EventType: Equatable {
 
         case fetch
-        
+
         case refresh
-        
+
         case fetched
 
     }
