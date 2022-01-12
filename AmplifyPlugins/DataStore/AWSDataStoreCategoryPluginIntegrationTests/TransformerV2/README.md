@@ -25,7 +25,13 @@ Then edit your schema and replace it with **AmplifyTestCommon/Models/Transformer
 
 3. `amplify push`
 
-4. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreCategoryPluginIntegrationV2Tests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
+4. Verify that the changes were pushed with the transformer V2 feature flags enabled. In `amplify/cli.json`, the feature flags values should be the following
+```
+features.graphqltransformer.transformerversion: 2
+features.graphqltransformer.useexperimentalpipelinedtransformer: true
+```
+
+5. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreCategoryPluginIntegrationV2Tests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
 ```
 cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSDataStoreCategoryPluginIntegrationV2Tests-amplifyconfiguration.json
 ```
