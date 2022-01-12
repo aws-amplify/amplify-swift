@@ -105,34 +105,37 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     //        wait(for: [operationExpectation], timeout: networkTimeout)
     //    }
     //
-    //    /// Test if user not found error is returned for signIn with unknown user
-    //    ///
-    //    /// - Given: Amplify Auth plugin in signedout state
-    //    /// - When:
-    //    ///    - I try to signIn with an unknown user
-    //    /// - Then:
-    //    ///    - I should get a user not found error
-    //    ///
-    //    func testSignInWithInvalidUser() {
-    //        let operationExpectation = expectation(description: "Operation should complete")
-    //        let operation = Amplify.Auth.signIn(username: "username-doesnot-exist", password: "password") { result in
-    //            defer {
-    //                operationExpectation.fulfill()
-    //            }
-    //            switch result {
-    //            case .success:
-    //                XCTFail("SignIn with unknown user should not succeed")
-    //            case .failure(let error):
-    //                guard let cognitoError = error.underlyingError as? AWSCognitoAuthError,
-    //                      case .userNotFound = cognitoError else {
-    //                    XCTFail("Should return userNotFound error")
-    //                    return
-    //                }
-    //            }
-    //        }
-    //        XCTAssertNotNil(operation, "SignIn operation should not be nil")
-    //        wait(for: [operationExpectation], timeout: networkTimeout)
-    //    }
+
+    /// Test if user not found error is returned for signIn with unknown user
+    ///
+    /// - Given: Amplify Auth plugin in signedout state
+    /// - When:
+    ///    - I try to signIn with an unknown user
+    /// - Then:
+    ///    - I should get a user not found error
+    ///
+    func testSignInWithInvalidUser() {
+        let operationExpectation = expectation(description: "Operation should complete")
+        let operation = Amplify.Auth.signIn(username: "username-doesnot-exist", password: "password") { result in
+            defer {
+                operationExpectation.fulfill()
+            }
+            switch result {
+            case .success:
+                XCTFail("SignIn with unknown user should not succeed")
+            case .failure(let error):
+                guard let cognitoError = error.underlyingError as? AWSCognitoAuthError,
+                      case .userNotFound = cognitoError
+                else {
+                          XCTFail("Should return userNotFound error")
+                          return
+                      }
+            }
+        }
+        XCTAssertNotNil(operation, "SignIn operation should not be nil")
+        wait(for: [operationExpectation], timeout: networkTimeout)
+    }
+
     //
     //    /// Test if signIn to an already signedIn session returns error
     //    ///
@@ -169,33 +172,35 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     //        wait(for: [secondSignInExpectation], timeout: networkTimeout)
     //    }
     //
-    //    /// Test if signIn return validation error
-    //    ///
-    //    /// - Given: An invalid input to signIn like empty username
-    //    /// - When:
-    //    ///    - I invoke signIn with empty username
-    //    /// - Then:
-    //    ///    - I should get validation error.
-    //    ///
-    //    func testSignInValidation() {
-    //        let operationExpectation = expectation(description: "Operation should complete")
-    //        let operation = Amplify.Auth.signIn(username: "", password: "password") { result in
-    //            defer {
-    //                operationExpectation.fulfill()
-    //            }
-    //            switch result {
-    //            case .success:
-    //                XCTFail("SignIn with empty user should not succeed")
-    //            case .failure(let error):
-    //                guard case .validation = error else {
-    //                    XCTFail("Should return validation error")
-    //                    return
-    //                }
-    //            }
-    //        }
-    //        XCTAssertNotNil(operation, "SignIn operation should not be nil")
-    //        wait(for: [operationExpectation], timeout: networkTimeout)
-    //    }
+
+    /// Test if signIn return validation error
+    ///
+    /// - Given: An invalid input to signIn like empty username
+    /// - When:
+    ///    - I invoke signIn with empty username
+    /// - Then:
+    ///    - I should get validation error.
+    ///
+    func testSignInValidation() {
+        let operationExpectation = expectation(description: "Operation should complete")
+        let operation = Amplify.Auth.signIn(username: "", password: "password") { result in
+            defer {
+                operationExpectation.fulfill()
+            }
+            switch result {
+            case .success:
+                XCTFail("SignIn with empty user should not succeed")
+            case .failure(let error):
+                guard case .validation = error else {
+                    XCTFail("Should return validation error")
+                    return
+                }
+            }
+        }
+        XCTAssertNotNil(operation, "SignIn operation should not be nil")
+        wait(for: [operationExpectation], timeout: networkTimeout)
+    }
+
     //
     //    /// Calling cancel in signIn operation should cancel
     //    ///
