@@ -30,7 +30,7 @@ class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
         try startAmplifyAndWaitForSync()
 
         guard var customer = saveCustomer(name: "name", accountRepresentativeID: "accountId") else {
-            XCTFail("Could not create blog, posts, and comments")
+            XCTFail("Could not create customer")
             return
         }
         let updatedName = "updatedName"
