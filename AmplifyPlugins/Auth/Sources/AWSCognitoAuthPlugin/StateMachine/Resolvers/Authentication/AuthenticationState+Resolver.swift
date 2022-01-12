@@ -139,17 +139,8 @@ public extension AuthenticationState {
             currentConfiguration: AuthConfiguration,
             currentSignedOutData: SignedOutData
         ) -> StateResolution<StateType> {
-            guard let _ = signInData.username, let _ = signInData.password else {
-                let error = AuthenticationError.configuration(
-                    message: "Invalid sign in config. TODO: add details"
-                )
-                return .from(.error(currentConfiguration, error))
-            }
-
             let command = StartSRPFlow(signInEventData: signInData)
-
             let signInState = SignInState.signingInWithSRP(.notStarted, signInData)
-
             let resolution = StateResolution(
                 newState: AuthenticationState.signingIn(currentConfiguration, signInState),
                 commands: [command]

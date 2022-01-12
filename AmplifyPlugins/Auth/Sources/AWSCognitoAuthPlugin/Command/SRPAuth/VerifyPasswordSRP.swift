@@ -29,7 +29,7 @@ struct VerifyPasswordSRP: Command {
     ) {
         let timer = LoggingTimer(identifier).start("### Starting execution")
         guard let environment = environment as? SRPAuthEnvironment else {
-            let authError = AuthenticationError.configuration(message: "Environment configured incorrectly")
+            let authError = SRPSignInError.configuration(message: "Environment configured incorrectly")
             let event = SRPSignInEvent(
                 id: UUID().uuidString,
                 eventType: .throwPasswordVerifierError(authError)
@@ -39,7 +39,8 @@ struct VerifyPasswordSRP: Command {
         }
 
         guard let challengeParameters = authResponse.challengeParameters else {
-            let authError = AuthenticationError.service(message: "Unable to retrieve auth response challenge params")
+            //TODO: Change this to a better error
+            let authError = SRPSignInError.configuration(message: "Some messagae")
             let event = SRPSignInEvent(
                 id: environment.eventIDFactory(),
                 eventType: .throwPasswordVerifierError(authError)
@@ -54,7 +55,8 @@ struct VerifyPasswordSRP: Command {
         guard let saltHex = challengeParameters["SALT"],
               !saltHex.isEmpty
         else {
-                  let authError = AuthenticationError.service(message: "Unable to retrieve salt")
+                  //TODO: Change this to a better error
+                  let authError = SRPSignInError.configuration(message: "Unable to retrieve salt")
                   let event = SRPSignInEvent(
                     id: environment.eventIDFactory(),
                     eventType: .throwPasswordVerifierError(authError)
@@ -66,7 +68,8 @@ struct VerifyPasswordSRP: Command {
         guard let secretBlockString = challengeParameters["SECRET_BLOCK"],
               let serverSecretBlock = Data(base64Encoded: secretBlockString)
         else {
-                  let authError = AuthenticationError.service(message: "Unable to retrieve server secrets")
+            //TODO: Change this to a better error
+            let authError = SRPSignInError.configuration(message: "Unable to retrieve server secrets")
                   let event = SRPSignInEvent(
                       id: environment.eventIDFactory(),
                       eventType: .throwPasswordVerifierError(authError)
@@ -76,7 +79,8 @@ struct VerifyPasswordSRP: Command {
               }
 
         guard let serverPublicBHexString = challengeParameters["SRP_B"] else {
-                  let authError = AuthenticationError.service(message: "Unable to retrieve SRP_B")
+            //TODO: Change this to a better error
+            let authError = SRPSignInError.configuration(message: "Unable to retrieve SRP_B")
                   let event = SRPSignInEvent(
                       id: environment.eventIDFactory(),
                       eventType: .throwPasswordVerifierError(authError)
@@ -137,7 +141,8 @@ struct VerifyPasswordSRP: Command {
             challengeResponses["PASSWORD_CLAIM_SIGNATURE"] = signatureString
 
         } catch {
-            let authError = AuthenticationError.service(message: "Exception calculating secret")
+            //TODO: Change this to a better error
+            let authError = SRPSignInError.configuration(message:  "Exception calculating secret")
             let event = SRPSignInEvent(
                 id: environment.eventIDFactory(),
                 eventType: .throwPasswordVerifierError(authError)
@@ -194,7 +199,7 @@ struct VerifyPasswordSRP: Command {
                     }
                 case .failure(let error):
                     print(error)
-                    let authError = AuthenticationError.service(message: error.localizedDescription)
+                    let authError = SRPSignInError.service(error: error)
                     let event = SRPSignInEvent(
                         id: environment.eventIDFactory(),
                         eventType: .throwPasswordVerifierError(authError)
@@ -204,7 +209,7 @@ struct VerifyPasswordSRP: Command {
                 timer.stop("### sending SRPSignInEvent.resondToAuthChallengeResponseReceived")
             }
         } catch {
-            let authError = AuthenticationError.service(message: "Exception responding to auth challenge")
+            let authError = SRPSignInError.service(error: error)
             let event = SRPSignInEvent(
                 id: environment.eventIDFactory(),
                 eventType: .throwPasswordVerifierError(authError)
