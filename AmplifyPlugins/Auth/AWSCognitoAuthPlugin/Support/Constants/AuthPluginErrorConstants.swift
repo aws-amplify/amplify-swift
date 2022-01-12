@@ -61,8 +61,8 @@ struct AuthPluginErrorConstants {
         "Call Auth.signIn to sign in a user and then call Auth.fetchSession")
 
     static let deleteUserSignOutError: AuthPluginErrorString = (
-        "There is no user signed in to delete an account",
-        "Call Auth.signIn to sign in a user and then call Auth.deleteUser")
+        "There is no user signed in to Cognito User Pool to delete an account",
+        "Call Auth.signIn to sign in a user into Cognito User Pool and then call Auth.deleteUser")
 
     static let identityIdOfflineError: AuthPluginErrorString = (
         "A network error occured while trying to fetch identity id",

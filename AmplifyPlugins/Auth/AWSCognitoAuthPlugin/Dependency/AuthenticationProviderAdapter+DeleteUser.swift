@@ -17,30 +17,26 @@ extension AuthenticationProviderAdapter {
     func deleteUser(request: AuthDeleteUserRequest, completionHandler: @escaping (Result<Void, AuthError>) -> Void) {
         // By default, ASWMobileClient calls signOut internally during deleteUser.
         // For Amplify, we instead call Amplify's signOut function, which contains some higher level logic.
-        awsMobileClient.deleteUser(signOut: false) { [weak self] error in
+        awsMobileClient.deleteUser(signOut: true) { [weak self] error in
             guard let error = error else {
-                let signOutOptions = AuthSignOutRequest.Options(globalSignOut: true)
-                let signOutRequest = AuthSignOutRequest(options: signOutOptions)
-                self?.signOut(request: signOutRequest) { result in
-                    switch result {
-                    case .success:
-                        completionHandler(.success(()))
-                        return
-                    case .failure(let error):
-                        completionHandler(.failure(AuthErrorHelper.toAuthError(error)))
-                        return
-                    }
+                if let self = self, self.userdefaults.isPrivateSessionPreferred() {
+                    // Reset the user defaults.
+                    self.userdefaults.storePreferredBrowserSession(privateSessionPrefered: false)
                 }
+
+                completionHandler(.success(()))
+                Amplify.Hub.dispatch(to: .auth, payload: HubPayload(eventName: HubPayload.EventName.Auth.signedOut))
                 return
             }
+
             if case .notSignedIn = error as? AWSMobileClientError {
                 let authError = AuthError.signedOut(AuthPluginErrorConstants.deleteUserSignOutError.errorDescription,
                                                     AuthPluginErrorConstants.deleteUserSignOutError.recoverySuggestion,
                                                     error)
                 completionHandler(.failure(authError))
-                return
+            } else {
+                completionHandler(.failure(AuthErrorHelper.toAuthError(error)))
             }
-            completionHandler(.failure(AuthErrorHelper.toAuthError(error)))
         }
     }
 }
