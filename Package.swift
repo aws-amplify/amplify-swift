@@ -27,7 +27,7 @@ let package = Package(
         .package(name: "hierarchical-state-machine-swift", path: "../Hierarchical-state-machine-swift"),
         .package(url: "https://github.com/libtom/libtommath", branch: "develop"),
         .package(url: "https://github.com/stephencelis/SQLite.swift.git", .exact("0.12.2")),
-        .package(name: "AWSSwiftSDK", url: "https://github.com/awslabs/aws-sdk-swift", .upToNextMajor(from: "0.1.0")),
+        .package(name: "AWSSwiftSDK", url: "https://github.com/awslabs/aws-sdk-swift", .upToNextMajor(from: "0.1.1")),
         .package(name: "CwlPreconditionTesting", url: "https://github.com/mattgallagher/CwlPreconditionTesting", .upToNextMinor(from: "2.1.0"))
     ],
     targets: [
