@@ -48,14 +48,15 @@ public extension SRPSignInState {
         private func resolveNotStarted(byApplying signInEvent: SRPSignInEvent) -> StateResolution<SRPSignInState> {
             switch signInEvent.eventType {
             case .initiateSRP(let signInEventData):
-                guard let username = signInEventData.username, let password = signInEventData.password else {
-                    let error = AuthenticationError.configuration(
-                        message: "Initiate SRP Auth called without Username and password"
+                guard let username = signInEventData.username, !username.isEmpty else {
+                    let error = SRPSignInError.inputValidation(
+                        field: AuthPluginErrorConstants.signInUsernameError.field
                     )
                     return .from(SRPSignInState.error(error))
                 }
-
-                let command = InitiateAuthSRP(username: username, password: password)
+                // Assuming password could be nil
+                let password = signInEventData.password ?? ""
+                let command = InitiateAuthSRP(username: username, password: password ?? "")
                 return StateResolution(
                     newState: SRPSignInState.initiatingSRPA(signInEventData),
                     commands: [command]
