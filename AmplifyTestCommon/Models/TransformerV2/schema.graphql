@@ -137,7 +137,7 @@ type Comment6V2 @model @auth(rules: [{allow: public}]) {
   content: String!
 }
 
-12 Belongs to Relationship field and type names don’t align
+# 12 Belongs to Relationship field and type names don’t align
 
 type Blog7V2 @model {
   id: ID!
