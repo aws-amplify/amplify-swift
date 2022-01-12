@@ -27,7 +27,7 @@ struct InitiateAuthSRP: Command {
     ) {
         let timer = LoggingTimer(identifier).start("### Starting execution")
         guard let environment = environment as? SRPAuthEnvironment else {
-            let authError = AuthenticationError.configuration(message: "Environment configured incorrectly")
+            let authError = SRPSignInError.configuration(message: "Environment configured incorrectly")
             let event = SRPSignInEvent(
                 id: UUID().uuidString,
                 eventType: .throwAuthError(authError)
@@ -92,7 +92,7 @@ struct InitiateAuthSRP: Command {
                     )
                     dispatcher.send(event)
                 case .failure(let error):
-                    let authError = AuthenticationError.service(message: error.localizedDescription)
+                    let authError = SRPSignInError.service(error: error)
                     let event = SRPSignInEvent(
                         id: environment.eventIDFactory(),
                         eventType: .throwAuthError(authError)
@@ -102,7 +102,7 @@ struct InitiateAuthSRP: Command {
                 timer.stop("### sending SRPSignInEvent.initiateAuthResponseReceived")
             }
         } catch {
-            let authError = AuthenticationError.service(message: "Initiate auth exception")
+            let authError = SRPSignInError.service(error: error)
             let event = SRPSignInEvent(
                 id: environment.eventIDFactory(),
                 eventType: .throwAuthError(authError)

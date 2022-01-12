@@ -15,7 +15,7 @@ public enum SRPSignInState: State {
     case nextAuthChallenge(RespondToAuthChallengeOutputResponse)
     case respondingPasswordVerifier(SRPStateData)
     case signedIn(SignedInData)
-    case error(AuthenticationError)
+    case error(SRPSignInError)
     case cancelling
 }
 
