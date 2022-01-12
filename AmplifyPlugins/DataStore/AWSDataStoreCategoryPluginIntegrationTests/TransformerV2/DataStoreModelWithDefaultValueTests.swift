@@ -27,7 +27,7 @@ class DataStoreModelWithDefaultValueTests: SyncEngineIntegrationV2TestBase {
         try startAmplifyAndWaitForSync()
 
         guard let todo = saveTodo(content: "content") else {
-            XCTFail("Could not create blog, posts, and comments")
+            XCTFail("Could not create todo")
             return
         }
 
