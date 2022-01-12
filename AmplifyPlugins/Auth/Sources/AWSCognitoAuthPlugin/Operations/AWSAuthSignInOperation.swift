@@ -8,6 +8,8 @@
 import Foundation
 import Amplify
 import hierarchical_state_machine_swift
+import ClientRuntime
+import AWSCognitoIdentityProvider
 
 public typealias AmplifySignInOperation = AmplifyOperation<AuthSignInRequest, AuthSignInResult, AuthError>
 typealias AWSAuthSignInOperationStateMachine = StateMachine<AuthState, AuthEnvironment>
@@ -73,6 +75,16 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
                 if let token = token {
                     self.stateMachine.cancel(listenerToken: token)
                 }
+            case .signingIn(_, let signInState):
+                if case .signingInWithSRP(let srpState, _) = signInState,
+                   case .error(let signInError) = srpState
+                {
+                    let authError = self.mapToAuthError(signInError)
+                    self.dispatch(authError)
+                    if let token = token {
+                        self.stateMachine.cancel(listenerToken: token)
+                    }
+                }
             default:
                 break
             }
@@ -80,6 +92,23 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
         sendSignInEvent()
     }
 
+    func mapToAuthError(_ srpSignInError: SRPSignInError) -> AuthError {
+        switch srpSignInError {
+        case .configuration(let message):
+            return AuthError.configuration(message, "")
+        case .service(let error):
+            if let initiateAuthError = error as? SdkError<InitiateAuthOutputError> {
+                return initiateAuthError.authError
+            } else {
+                return AuthError.unknown("", error)
+            }
+        case .inputValidation(let field):
+            return AuthError.validation(field,
+                                        AuthPluginErrorConstants.signInUsernameError.errorDescription,
+                                        AuthPluginErrorConstants.signInUsernameError.recoverySuggestion)
+        }
+
+    }
 
     private func sendSignInEvent() {
         let signInData = SignInEventData(username: request.username, password: request.password)

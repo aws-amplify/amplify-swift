@@ -21,11 +21,11 @@ public struct SRPSignInEvent: StateMachineEvent {
 
         case initiateSRP(SignInEventData)
         case respondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse)
-        case throwPasswordVerifierError(AuthenticationError)
+        case throwPasswordVerifierError(SRPSignInError)
         case respondNextAuthChallenge(RespondToAuthChallengeOutputResponse)
         case finalizeSRPSignIn(SignedInData)
         case cancelSRPSignIn(SignedInData)
-        case throwAuthError(AuthenticationError)
+        case throwAuthError(SRPSignInError)
         case restoreToNotInitialized(SRPStateData)
     }
 
