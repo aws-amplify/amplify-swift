@@ -18,6 +18,17 @@ Latest tested with amplify CLI version 8.0.1 `amplify -v`
 ? Do you have an annotated GraphQL schema? `No`
 ? Choose a schema template: `Single object with fields (e.g., “Todo” with ID, name, description)`
 ```
+Edit the schema to
+```
+type Todo @model @auth(rules: [
+  { allow: public, provider: iam }, 
+  { allow: private, provider: iam }]) {
+  id: ID!
+  name: String!
+  description: String
+}
+
+```
 
 3. `amplify add auth`
 ```perl

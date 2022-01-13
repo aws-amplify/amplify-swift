@@ -8,7 +8,6 @@
 import Amplify
 import Foundation
 import AWSPluginsCore
-import AWSCore
 
 struct AWSAPIEndpointInterceptors {
     // API name

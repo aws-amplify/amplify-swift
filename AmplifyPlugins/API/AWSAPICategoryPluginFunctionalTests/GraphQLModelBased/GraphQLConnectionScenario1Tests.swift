@@ -6,10 +6,9 @@
 //
 
 import XCTest
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSAPICategoryPluginTestCommon
 
 /*
  A one-to-one connection where a project has a team.
@@ -30,12 +29,21 @@ import XCTest
  */
 class GraphQLConnectionScenario1Tests: XCTestCase {
 
+    static func retrieveAmplifyConfiguration(forResource: String) throws -> AmplifyConfiguration {
+
+        guard let url = Bundle.module.url(forResource: forResource, withExtension: "json") else {
+            throw "Could not retrieve configuration file: \(forResource)"
+        }
+        let data = try Data(contentsOf: url)
+        return try AmplifyConfiguration.decodeAmplifyConfiguration(from: data)
+    }
+        
     override func setUp() {
         do {
             Amplify.Logging.logLevel = .verbose
             try Amplify.add(plugin: AWSAPIPlugin())
 
-            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
+            let amplifyConfig = try GraphQLConnectionScenario1Tests.retrieveAmplifyConfiguration(
                 forResource: GraphQLModelBasedTests.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
 

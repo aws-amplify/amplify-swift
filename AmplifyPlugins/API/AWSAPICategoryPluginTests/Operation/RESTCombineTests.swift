@@ -8,7 +8,7 @@
 import XCTest
 
 @testable import Amplify
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 @testable import AmplifyTestCommon
 
 @available(iOS 13.0, *)

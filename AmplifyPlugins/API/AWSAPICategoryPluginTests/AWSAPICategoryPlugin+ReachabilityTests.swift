@@ -11,7 +11,8 @@ import AWSPluginsCore
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
+@testable import AWSPluginsTestCommon
 
 @available(iOS 13.0, *)
 class AWSAPICategoryPluginReachabilityTests: XCTestCase {

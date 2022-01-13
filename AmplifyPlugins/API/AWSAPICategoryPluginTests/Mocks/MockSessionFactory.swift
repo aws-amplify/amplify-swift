@@ -6,7 +6,7 @@
 //
 
 @testable import Amplify
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 @testable import AmplifyTestCommon
 
 struct MockSessionFactory: URLSessionBehaviorFactory {
