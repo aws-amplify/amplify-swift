@@ -6,9 +6,7 @@
 
 import Foundation
 
-import hierarchical_state_machine_swift
-
-public extension SignUpState {
+extension SignUpState {
     struct Resolver: StateMachineResolver {
         public typealias StateType = SignUpState
         public let defaultState = SignUpState.notStarted
@@ -16,7 +14,7 @@ public extension SignUpState {
 
         public init() { }
 
-        public func resolve(
+        func resolve(
             oldState: SignUpState,
             byApplying event: StateMachineEvent
         ) -> StateResolution<SignUpState> {
