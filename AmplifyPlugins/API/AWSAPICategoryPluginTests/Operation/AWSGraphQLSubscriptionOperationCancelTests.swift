@@ -8,10 +8,11 @@
 import XCTest
 
 @testable import Amplify
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 @testable import AmplifyTestCommon
 @testable import AppSyncRealTimeClient
 @testable import AWSPluginsCore
+@testable import AWSPluginsTestCommon
 
 // swiftlint:disable:next type_name
 class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
@@ -21,7 +22,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
 
     let apiName = "apiName"
     let baseURL = URL(fileURLWithPath: "path")
-    let region = "us-east-1".aws_regionTypeValue()
+    let region = "us-east-1"
 
     let testDocument = "query { getTodo { id name description }}"
     let testVariables = ["id": 123]

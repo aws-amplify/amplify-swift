@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 import AWSPluginsCore
 
 // swiftlint:disable:next type_name
