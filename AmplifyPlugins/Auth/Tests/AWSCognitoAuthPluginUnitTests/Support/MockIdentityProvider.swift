@@ -11,7 +11,6 @@ import ClientRuntime
 
 struct MockIdentityProvider: CognitoUserPoolBehavior {
 
-
     typealias InitiateAuthCallback = (
         InitiateAuthInput,
         (Result<InitiateAuthOutputResponse,
@@ -24,15 +23,33 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
          SdkError<RespondToAuthChallengeOutputError>>) -> Void
     ) -> Void
 
+    typealias SignUpCallback = (
+        SignUpInput,
+        (Result<SignUpOutputResponse,
+         SdkError<SignUpOutputError>>) -> Void
+    ) -> Void
+
+    typealias ConfirmSignUpCallback = (
+        ConfirmSignUpInput,
+        (Result<ConfirmSignUpOutputResponse,
+         SdkError<ConfirmSignUpOutputError>>) -> Void
+    ) -> Void
+
     let initiateAuthCallback: InitiateAuthCallback?
     let respondToAuthChallengeCallback: RespondToAuthChallengeCallback?
+    let signUpCallback: SignUpCallback?
+    let confirmSignUpCallback: ConfirmSignUpCallback?
 
     init(
         initiateAuthCallback: InitiateAuthCallback? = nil,
-        respondToAuthChallengeCallback: RespondToAuthChallengeCallback? = nil
+        respondToAuthChallengeCallback: RespondToAuthChallengeCallback? = nil,
+        signUpCallback: SignUpCallback? = nil,
+        confirmSignUpCallback: ConfirmSignUpCallback? = nil
     ) {
         self.initiateAuthCallback = initiateAuthCallback
         self.respondToAuthChallengeCallback = respondToAuthChallengeCallback
+        self.signUpCallback = signUpCallback
+        self.confirmSignUpCallback = confirmSignUpCallback
     }
 
     func initiateAuth(input: InitiateAuthInput,
@@ -47,5 +64,13 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
                                                        SdkError<RespondToAuthChallengeOutputError>>) -> Void)
     {
         respondToAuthChallengeCallback?(input, completion)
+    }
+
+    func signUp(input: SignUpInput, completion: @escaping (SdkResult<SignUpOutputResponse, SignUpOutputError>) -> Void) {
+        signUpCallback?(input, completion)
+    }
+
+    func confirmSignUp(input: ConfirmSignUpInput, completion: @escaping (SdkResult<ConfirmSignUpOutputResponse, ConfirmSignUpOutputError>) -> Void) {
+        confirmSignUpCallback?(input, completion)
     }
 }
