@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import hierarchical_state_machine_swift
+
 
 public extension SRPSignInState {
     struct Resolver: StateMachineResolver {
@@ -14,7 +14,7 @@ public extension SRPSignInState {
 
         public init() { }
 
-        public func resolve(
+        func resolve(
             oldState: SRPSignInState,
             byApplying event: StateMachineEvent
         ) -> StateResolution<SRPSignInState> {

@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import hierarchical_state_machine_swift
 
-public enum AuthState: State {
+
+enum AuthState: State {
 
     case notConfigured
 
@@ -22,7 +22,7 @@ public enum AuthState: State {
 
 }
 
-public extension AuthState {
+extension AuthState {
     var type: String {
         switch self {
         case .notConfigured: return "AuthState.notConfigured"

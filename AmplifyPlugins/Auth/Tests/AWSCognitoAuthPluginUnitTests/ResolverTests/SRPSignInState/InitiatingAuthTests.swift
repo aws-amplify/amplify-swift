@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import AWSCognitoAuthPlugin
-import hierarchical_state_machine_swift
+
 import AWSCognitoIdentityProvider
 
 class InitiatingAuthTests: XCTestCase {

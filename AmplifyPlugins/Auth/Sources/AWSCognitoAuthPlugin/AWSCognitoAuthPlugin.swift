@@ -7,7 +7,7 @@
 
 import Foundation
 import Amplify
-import hierarchical_state_machine_swift
+
 
 public final class AWSCognitoAuthPlugin: AuthCategoryPlugin {
 
