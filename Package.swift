@@ -24,7 +24,6 @@ let package = Package(
                 targets: ["AWSDataStorePlugin"]),
     ],
     dependencies: [
-        .package(name: "hierarchical-state-machine-swift", path: "../Hierarchical-state-machine-swift"),
         .package(url: "https://github.com/libtom/libtommath", branch: "develop"),
         .package(url: "https://github.com/stephencelis/SQLite.swift.git", .exact("0.12.2")),
         .package(name: "AWSSwiftSDK", url: "https://github.com/awslabs/aws-sdk-swift", .upToNextMajor(from: "0.1.1")),
@@ -50,7 +49,6 @@ let package = Package(
         .target(
             name: "AWSCognitoAuthPlugin",
             dependencies: [
-                "hierarchical-state-machine-swift",
                 .target(name: "Amplify"),
                 .target(name: "AmplifySRP"),
                 .target(name: "AWSPluginsCore"),

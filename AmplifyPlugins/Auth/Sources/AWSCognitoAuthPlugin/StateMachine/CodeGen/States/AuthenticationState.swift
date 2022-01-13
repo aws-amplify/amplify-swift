@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import hierarchical_state_machine_swift
 
-public enum AuthenticationState: State {
+
+enum AuthenticationState: State {
     /// Initial state
     case notConfigured
 
@@ -28,7 +28,7 @@ public enum AuthenticationState: State {
 
 }
 
-public extension AuthenticationState {
+extension AuthenticationState {
 
     var type: String {
         switch self {
