@@ -18,4 +18,8 @@ public protocol CognitoUserPoolBehavior {
                                 completion: @escaping (Result<RespondToAuthChallengeOutputResponse,
                                                        SdkError<RespondToAuthChallengeOutputError>>) -> Void)
 
+    func signUp(input: SignUpInput, completion: @escaping (ClientRuntime.SdkResult<SignUpOutputResponse, SignUpOutputError>) -> Void)
+
+    func confirmSignUp(input: ConfirmSignUpInput, completion: @escaping (ClientRuntime.SdkResult<ConfirmSignUpOutputResponse, ConfirmSignUpOutputError>) -> Void)
+
 }
