@@ -6,13 +6,13 @@
 //
 
 import Foundation
-import hierarchical_state_machine_swift
 
-public struct ConfigureFetchAWSCredentials: Command {
 
-    public let identifier = "ConfigureFetchAWSCredentials"
+struct ConfigureFetchAWSCredentials: Command {
 
-    public func execute(withDispatcher dispatcher: EventDispatcher,
+    let identifier = "ConfigureFetchAWSCredentials"
+
+    func execute(withDispatcher dispatcher: EventDispatcher,
                         environment: Environment)
     {
         let timer = LoggingTimer(identifier).start("### Starting execution")
@@ -30,7 +30,7 @@ public struct ConfigureFetchAWSCredentials: Command {
 extension ConfigureFetchAWSCredentials: DefaultLogger { }
 
 extension ConfigureFetchAWSCredentials: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         [
             "identifier": identifier
         ]
@@ -38,7 +38,7 @@ extension ConfigureFetchAWSCredentials: CustomDebugDictionaryConvertible {
 }
 
 extension ConfigureFetchAWSCredentials: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         debugDictionary.debugDescription
     }
 }

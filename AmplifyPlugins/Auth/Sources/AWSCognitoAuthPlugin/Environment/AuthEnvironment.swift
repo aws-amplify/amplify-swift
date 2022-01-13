@@ -7,7 +7,7 @@
 
 import Foundation
 
-import hierarchical_state_machine_swift
+
 
 public struct AuthEnvironment: Environment {
     let userPoolConfigData: UserPoolConfigurationData?

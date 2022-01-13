@@ -6,15 +6,14 @@
 //
 
 import Foundation
-import hierarchical_state_machine_swift
 
-public struct InitializeAuthenticationConfiguration: Command {
+struct InitializeAuthenticationConfiguration: Command {
 
-    public let identifier = "InitializeAuthenticationConfiguration"
+    let identifier = "InitializeAuthenticationConfiguration"
 
-    public let configuration: AuthConfiguration
+    let configuration: AuthConfiguration
 
-    public func execute(withDispatcher dispatcher: EventDispatcher,
+    func execute(withDispatcher dispatcher: EventDispatcher,
                         environment: Environment)
     {
         let timer = LoggingTimer(identifier).start("### Starting execution")
@@ -27,7 +26,7 @@ public struct InitializeAuthenticationConfiguration: Command {
 extension InitializeAuthenticationConfiguration: DefaultLogger { }
 
 extension InitializeAuthenticationConfiguration: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
             "configuration": configuration
@@ -36,7 +35,7 @@ extension InitializeAuthenticationConfiguration: CustomDebugDictionaryConvertibl
 }
 
 extension InitializeAuthenticationConfiguration: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         debugDictionary.debugDescription
     }
 }

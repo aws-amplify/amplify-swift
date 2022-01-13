@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import hierarchical_state_machine_swift
+
 
 public extension FetchIdentityState {
 
@@ -16,7 +16,7 @@ public extension FetchIdentityState {
 
         public init() { }
 
-        public func resolve(
+        func resolve(
             oldState: StateType,
             byApplying event: StateMachineEvent
         ) -> StateResolution<StateType> {
