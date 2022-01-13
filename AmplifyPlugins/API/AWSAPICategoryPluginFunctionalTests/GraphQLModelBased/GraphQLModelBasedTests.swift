@@ -6,15 +6,14 @@
 //
 
 import XCTest
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSAPICategoryPluginTestCommon
 
 // swiftlint:disable type_body_length
 class GraphQLModelBasedTests: XCTestCase {
 
-    static let amplifyConfiguration = "testconfiguration/GraphQLModelBasedTests-amplifyconfiguration"
+    static let amplifyConfiguration = "GraphQLModelBasedTests-amplifyconfiguration"
 
     override func setUp() {
         Amplify.reset()

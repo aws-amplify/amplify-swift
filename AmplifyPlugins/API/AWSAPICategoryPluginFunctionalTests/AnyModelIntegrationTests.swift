@@ -7,12 +7,11 @@
 
 import XCTest
 import Foundation
-import AWSAPICategoryPlugin
+import AWSAPIPlugin
 import AWSPluginsCore
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSAPICategoryPluginTestCommon
 
 class AnyModelIntegrationTests: XCTestCase {
     let networkTimeout: TimeInterval = 180.0

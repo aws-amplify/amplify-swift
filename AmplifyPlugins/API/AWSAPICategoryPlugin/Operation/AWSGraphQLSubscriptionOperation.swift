@@ -7,7 +7,6 @@
 
 import Amplify
 import Foundation
-import AWSCore
 import AWSPluginsCore
 import AppSyncRealTimeClient
 
