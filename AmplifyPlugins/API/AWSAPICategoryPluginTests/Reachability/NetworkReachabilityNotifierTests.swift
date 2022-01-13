@@ -8,7 +8,7 @@
 import Foundation
 import XCTest
 import Combine
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 
 @available(iOS 13.0, *)
 class NetworkReachabilityNotifierTests: XCTestCase {

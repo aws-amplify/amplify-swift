@@ -73,3 +73,9 @@ amplify-build-config.json
 amplify-gradle-config.json
 amplifytools.xcconfig
 .secret-*
+
+# Integ test configuration files
+RESTWithIAMIntegrationTests-amplifyconfiguration.json
+GraphQLModelBasedTests-amplifyconfiguration.json
+GraphQLWithIAMIntegrationTests-amplifyconfiguration.json
+GraphQLWithIAMIntegrationTests-credentials.json

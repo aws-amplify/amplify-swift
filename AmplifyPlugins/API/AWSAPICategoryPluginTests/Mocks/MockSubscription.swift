@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 import Amplify
 
 import AWSPluginsCore

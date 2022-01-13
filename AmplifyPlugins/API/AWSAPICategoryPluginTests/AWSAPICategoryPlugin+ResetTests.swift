@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 
 class AWSAPICategoryPluginResetTests: AWSAPICategoryPluginTestBase {
 
