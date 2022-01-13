@@ -6,13 +6,13 @@
 //
 
 import Foundation
-import hierarchical_state_machine_swift
 
-public struct RefreshUserPoolTokens: Command {
+
+struct RefreshUserPoolTokens: Command {
 
     public let identifier = "RefreshUserPoolTokens"
 
-    public func execute(withDispatcher dispatcher: EventDispatcher,
+    func execute(withDispatcher dispatcher: EventDispatcher,
                         environment: Environment)
     {
         let timer = LoggingTimer(identifier).start("### Starting execution")

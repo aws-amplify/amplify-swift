@@ -7,7 +7,7 @@
 
 import Foundation
 import XCTest
-import hierarchical_state_machine_swift
+
 @testable import AWSCognitoAuthPlugin
 
 class SRPClientTests: XCTestCase {
