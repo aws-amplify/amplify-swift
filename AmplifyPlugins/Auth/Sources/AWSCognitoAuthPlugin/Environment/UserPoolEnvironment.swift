@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import hierarchical_state_machine_swift
+
 
 protocol UserPoolEnvironment: Environment {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior

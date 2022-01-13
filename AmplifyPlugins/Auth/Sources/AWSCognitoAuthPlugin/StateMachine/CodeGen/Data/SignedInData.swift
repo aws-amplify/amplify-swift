@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import hierarchical_state_machine_swift
+
 
 public struct SignedInData {
     public let userId: String
