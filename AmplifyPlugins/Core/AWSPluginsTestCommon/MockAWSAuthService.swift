@@ -5,7 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCore
+import ClientRuntime
+import AWSClientRuntime
 import Amplify
 import AWSPluginsCore
 
@@ -24,8 +25,8 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
     public func reset() {
     }
 
-    public func getCredentialsProvider() -> AWSCredentialsProvider {
-        let cognitoCredentialsProvider = AWSCognitoCredentialsProvider()
+    public func getCredentialsProvider() -> CredentialsProvider {
+        let cognitoCredentialsProvider = MyCustomCredentialsProvider()
         return cognitoCredentialsProvider
     }
 
@@ -58,5 +59,13 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
             return .failure(error)
         }
         return .success(tokenClaims ?? ["": "" as AnyObject])
+    }
+}
+
+struct MyCustomCredentialsProvider: CredentialsProvider {
+    func getCredentials() throws -> SdkFuture<AWSCredentials> {
+        let future = SdkFuture<AWSCredentials>()
+        future.fulfill(AWSCredentials(accessKey: "AKIDEXAMPLE", secret: "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY", expirationTimeout: 30))
+        return future
     }
 }

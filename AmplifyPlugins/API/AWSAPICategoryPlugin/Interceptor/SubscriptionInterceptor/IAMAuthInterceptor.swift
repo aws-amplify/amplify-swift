@@ -6,10 +6,11 @@
 //
 
 import Foundation
-import AWSCore
 import AWSPluginsCore
 import Amplify
 import AppSyncRealTimeClient
+import AWSClientRuntime
+import ClientRuntime
 
 class IAMAuthInterceptor: AuthInterceptor {
 
@@ -20,10 +21,10 @@ class IAMAuthInterceptor: AuthInterceptor {
                                                            RealtimeProviderConstants.amzDate.lowercased(),
                                                            RealtimeProviderConstants.iamSecurityTokenKey.lowercased()]
 
-    let authProvider: AWSCredentialsProvider
+    let authProvider: CredentialsProvider
     let region: AWSRegionType
 
-    init(_ authProvider: AWSCredentialsProvider, region: AWSRegionType) {
+    init(_ authProvider: CredentialsProvider, region: AWSRegionType) {
         self.authProvider = authProvider
         self.region = region
     }
@@ -69,75 +70,76 @@ class IAMAuthInterceptor: AuthInterceptor {
         return signedRequest
     }
 
-    final private func getAuthHeader(_ endpoint: URL, with payload: String) -> IAMAuthenticationHeader? {
+    func getAuthHeader(_ endpoint: URL,
+                       with payload: String,
+                       signer: AWSSignatureV4Signer = AmplifyAWSSignatureV4Signer()) -> IAMAuthenticationHeader? {
         guard let host = endpoint.host else {
             return nil
         }
-        let amzDate =  NSDate.aws_clockSkewFixed() as NSDate
-        guard let date = amzDate.aws_stringValue(AWSDateISO8601DateFormat2) else {
+        
+        /// The process of getting the auth header for an IAM based authentication request is as follows:
+        ///
+        /// 1. A request is created with the IAM based auth headers (date,  accept, content encoding, content type, and
+        /// additional headers.
+        let requestBuilder = SdkHttpRequestBuilder()
+            .withHost(endpoint.host ?? "")
+            .withPath(endpoint.path)
+            .withMethod(.post)
+            .withPort(443)
+            .withProtocol(.https)
+            .withHeader(name: RealtimeProviderConstants.acceptKey, value: RealtimeProviderConstants.iamAccept)
+            .withHeader(name: RealtimeProviderConstants.contentEncodingKey, value: RealtimeProviderConstants.iamEncoding)
+            .withHeader(name: URLRequestConstants.Header.contentType, value: RealtimeProviderConstants.iamConentType)
+            .withHeader(name: URLRequestConstants.Header.host, value: host)
+            .withBody(.data(payload.data(using: .utf8)))
+        
+        /// 2. The request is SigV4 signed by using all the available headers on the request. By signing the request, the signature is added to
+        /// the request headers as authorization and security token.
+        do {
+            guard let urlRequest = try signer.sigV4SignedRequest(requestBuilder: requestBuilder,
+                                                                 credentialsProvider: authProvider,
+                                                                 signingName: SubscriptionConstants.appsyncServiceName,
+                                                                 signingRegion: region,
+                                                                 date: Date()) else {
+                Amplify.Logging.error("Unable to sign request")
+                return nil
+            }
+            
+            var authorization: String = ""
+            // TODO: Using long lived credentials without getting a session with security token will fail
+            // since the session token does not exist on the signed request, and is an empty string.
+            // Once Amplify.Auth is ready to be integrated, this code path needs to be re-tested.
+            var securityToken: String = ""
+            var amzDate: String = ""
+            var additionalHeaders: [String: String]? = nil
+            for header in urlRequest.headers.headers {
+                guard let value = header.value.first else {
+                    continue
+                }
+                let headerName = header.name.lowercased()
+                if headerName == SubscriptionConstants.authorizationkey.lowercased() {
+                    authorization = value
+                } else if headerName == RealtimeProviderConstants.amzDate.lowercased() {
+                    amzDate = value
+                } else if headerName == RealtimeProviderConstants.iamSecurityTokenKey.lowercased() {
+                    securityToken = value
+                } else {
+                    additionalHeaders?.updateValue(header.value.joined(separator: ","), forKey: header.name)
+                }
+            }
+            
+            return IAMAuthenticationHeader(host: host,
+                                           authorization: authorization,
+                                           securityToken: securityToken,
+                                           amzDate: amzDate,
+                                           accept: RealtimeProviderConstants.iamAccept,
+                                           contentEncoding: RealtimeProviderConstants.iamEncoding,
+                                           contentType: RealtimeProviderConstants.iamConentType,
+                                           additionalHeaders: additionalHeaders)
+        } catch {
+            Amplify.Logging.error("Unable to sign request")
             return nil
         }
-        guard let awsEndpoint = AWSEndpoint(region: region,
-                                            serviceName: SubscriptionConstants.appsyncServiceName,
-                                            url: endpoint) else {
-            return nil
-        }
-        let signer: AWSSignatureV4Signer = AWSSignatureV4Signer(credentialsProvider: authProvider,
-                                                                endpoint: awsEndpoint)
-        let mutableRequest = NSMutableURLRequest(url: endpoint)
-        return getAuthHeader(host: host,
-                             mutableRequest: mutableRequest,
-                             signer: signer,
-                             amzDate: date,
-                             payload: payload)
-    }
-
-    /// The process of getting the auth header for an IAM based authencation request is as follows:
-    ///
-    /// 1. A request is created with the IAM based auth headers (date,  accept, content encoding, content type, and
-    /// additional headers from the `mutableRequest`.
-    ///
-    /// 2. The request is SigV4 signed by using all the available headers on the request. By signing the request, the signature is added to
-    /// the request headers as authorization and security token.
-    ///
-    /// 3. The signed request headers are stored in an `IAMAuthenticationHeader` object, used for further encoding to
-    /// be added to the request for establishing the subscription connection.
-    func getAuthHeader(host: String,
-                       mutableRequest: NSMutableURLRequest,
-                       signer: AWSSignatureV4Signer,
-                       amzDate: String,
-                       payload: String) -> IAMAuthenticationHeader {
-        let semaphore = DispatchSemaphore(value: 0)
-        mutableRequest.httpMethod = "POST"
-        mutableRequest.addValue(RealtimeProviderConstants.iamAccept,
-                                forHTTPHeaderField: RealtimeProviderConstants.acceptKey)
-        mutableRequest.addValue(amzDate, forHTTPHeaderField: RealtimeProviderConstants.amzDate)
-        mutableRequest.addValue(RealtimeProviderConstants.iamEncoding,
-                                forHTTPHeaderField: RealtimeProviderConstants.contentEncodingKey)
-        mutableRequest.addValue(RealtimeProviderConstants.iamConentType,
-                                forHTTPHeaderField: RealtimeProviderConstants.contentTypeKey)
-        mutableRequest.httpBody = payload.data(using: .utf8)
-
-        signer.interceptRequest(mutableRequest).continueWith { _ in
-            semaphore.signal()
-            return nil
-        }
-        semaphore.wait()
-
-        let authorization = mutableRequest.allHTTPHeaderFields?[SubscriptionConstants.authorizationkey] ?? ""
-        let securityToken = mutableRequest.allHTTPHeaderFields?[RealtimeProviderConstants.iamSecurityTokenKey] ?? ""
-        let additionalHeaders = mutableRequest.allHTTPHeaderFields?.filter {
-            !Self.defaultLowercasedHeaderKeys.contains($0.key.lowercased())
-        }
-
-        return IAMAuthenticationHeader(host: host,
-                                       authorization: authorization,
-                                       securityToken: securityToken,
-                                       amzDate: amzDate,
-                                       accept: RealtimeProviderConstants.iamAccept,
-                                       contentEncoding: RealtimeProviderConstants.iamEncoding,
-                                       contentType: RealtimeProviderConstants.iamConentType,
-                                       additionalHeaders: additionalHeaders)
     }
 }
 
@@ -156,7 +158,7 @@ class IAMAuthenticationHeader: AuthenticationHeader {
     /// Additional headers that are not one of the expected headers in the request, but because additional headers are
     /// also signed (and added the authorization header), they are required to be stored here to be further encoded.
     let additionalHeaders: [String: String]?
-
+    
     init(host: String,
          authorization: String,
          securityToken: String,

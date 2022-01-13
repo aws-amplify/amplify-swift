@@ -7,10 +7,9 @@
 
 import XCTest
 import AWSPluginsCore
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSAPICategoryPluginTestCommon
 
 extension GraphQLModelBasedTests {
 

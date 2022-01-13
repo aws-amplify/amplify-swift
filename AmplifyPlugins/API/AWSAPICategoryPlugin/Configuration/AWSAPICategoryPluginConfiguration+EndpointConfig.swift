@@ -8,7 +8,6 @@
 import Amplify
 import Foundation
 import AWSPluginsCore
-import AWSCore
 
 public extension AWSAPICategoryPluginConfiguration {
     struct EndpointConfig {
@@ -151,12 +150,7 @@ private extension AWSRegionType {
         let region: AWSRegionType?
 
         if case .string(let endpointRegion) = endpointJSON["region"] {
-            let regionType = endpointRegion.aws_regionTypeValue()
-            guard regionType != AWSRegionType.Unknown else {
-                return nil
-            }
-
-            region = regionType
+            region = endpointRegion
         } else {
             region = nil
         }
