@@ -7,36 +7,74 @@
 
 import XCTest
 import AWSPluginsCore
-import AWSAPICategoryPlugin
-import AmplifyPlugins
+import AWSAPIPlugin
+import AWSCognitoAuthPlugin
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSAPICategoryPluginTestCommon
 
 class GraphQLWithIAMIntegrationTests: XCTestCase {
 
-    let amplifyConfigurationFile = "testconfiguration/GraphQLWithIAMIntegrationTests-amplifyconfiguration"
+    let amplifyConfigurationFile = "GraphQLWithIAMIntegrationTests-amplifyconfiguration"
+    let credentialsFile = "GraphQLWithIAMIntegrationTests-credentials"
+    var user: User!
 
-    let username = "integTest\(UUID().uuidString)"
-    let password = "P123@\(UUID().uuidString)"
-    let email = UUID().uuidString + "@" + UUID().uuidString + ".com"
+    enum TestConfigError: Error {
+        
+        case jsonError(String)
+        
+        case bundlePathError(String)
+    }
+    
+    static func retrieveCredentials(forResource: String) throws -> [String: String] {
+        guard let url = Bundle.module.url(forResource: forResource, withExtension: "json") else {
+            throw "Could not retrieve configuration file: \(forResource)"
+        }
+        
+        let data = try Data(contentsOf: url)
+        
+        let jsonOptional = try JSONSerialization.jsonObject(with: data, options: []) as? [String: String]
+        guard let json = jsonOptional else {
+            throw TestConfigError.jsonError("Could not deserialize `\(forResource)` into JSON object")
+        }
+        
+        return json
+    }
+    
+    static func retrieveAmplifyConfiguration(forResource: String) throws -> AmplifyConfiguration {
+
+        guard let url = Bundle.module.url(forResource: forResource, withExtension: "json") else {
+            throw "Could not retrieve configuration file: \(forResource)"
+        }
+        let data = try Data(contentsOf: url)
+        return try AmplifyConfiguration.decodeAmplifyConfiguration(from: data)
+    }
 
     override func setUp() {
         do {
+            let credentials = try GraphQLWithIAMIntegrationTests.retrieveCredentials(forResource: credentialsFile)
+
+            guard let username = credentials["username"],
+                  let password = credentials["password"] else {
+                XCTFail("Missing credentials.json data")
+                return
+            }
+
+            user = User(username: username, password: password)
 
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
-            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
+            let amplifyConfig = try GraphQLWithIAMIntegrationTests.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
             try Amplify.configure(amplifyConfig)
 
             ModelRegistry.register(modelType: Todo.self)
         } catch {
             XCTFail("Error during setup: \(error)")
         }
-        if isSignedIn() {
-            signOut()
-        }
+        // TODO: uncomment this once signIn works
+//        if isSignedIn() {
+//            signOut()
+//        }
     }
 
     override func tearDown() {
@@ -89,7 +127,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
-    /// An unauthenticated user should fail with 401
+    /// An unauthenticated user should not fail
     ///
     /// - Given:  A CreateTodo mutation request, and user is not signed in.
     /// - When:
@@ -98,7 +136,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
     ///    - The operation fails and contains http status error for 401 (Unauthorized)
     ///
     func testCreateTodoMutationWithIAMWithNoUserSignedIn() {
-        let failedInvoked = expectation(description: "request failed")
+        let successInvoked = expectation(description: "request failed")
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
@@ -110,22 +148,91 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
             case .success(let result):
-                XCTFail("Unexpected .completed event: \(result)")
+                print(result)
+                successInvoked.fulfill()
             case .failure(let error):
                 print(error)
-                guard case let .httpStatusError(statusCode, _) = error else {
-                    XCTFail("Should be HttpStatusError")
-                    return
+                if case let .httpStatusError(statusCode, response) = error,
+                    let awsResponse = response as? AWSHTTPURLResponse,
+                    let responseBody = awsResponse.body
+                {
+                    print("Response contains a \(responseBody.count) byte long response body")
                 }
-
-                XCTAssertEqual(statusCode, 401)
-                failedInvoked.fulfill()
+                XCTFail("Failed with error \(error)")
             }
         }
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
+    /// A subscription to onCreate todo should receive an event for each create Todo mutation API called. User is not signed in
+    ///
+    /// - Given:  An onCreate Todo subscription established
+    /// - When:
+    ///    - Create todo mutations API called
+    /// - Then:
+    ///    - The subscription should receive mutation events corresponding to the API calls performed.
+    ///
+    func testOnCreateTodoUnauthRole() {
+        // signIn(username: user.username, password: user.password)
+        let connectedInvoked = expectation(description: "Connection established")
+        let disconnectedInvoked = expectation(description: "Connection disconnected")
+        let completedInvoked = expectation(description: "Completed invoked")
+        let progressInvoked = expectation(description: "progress invoked")
+        progressInvoked.expectedFulfillmentCount = 2
+        let uuid = UUID().uuidString
+        let uuid2 = UUID().uuidString
+        let name = String("\(#function)".dropLast(2))
+
+        let operation = Amplify.API.subscribe(
+            request: .subscription(of: Todo.self, type: .onCreate),
+            valueListener: { event in
+                switch event {
+                case .connection(let state):
+                    switch state {
+                    case .connecting:
+                        break
+                    case .connected:
+                        connectedInvoked.fulfill()
+                    case .disconnected:
+                        disconnectedInvoked.fulfill()
+                    }
+                case .data(let result):
+                    switch result {
+                    case .success(let todo):
+                        if todo.id == uuid || todo.id == uuid2 {
+                            progressInvoked.fulfill()
+                        }
+                    case .failure(let error):
+                        XCTFail("\(error)")
+                    }
+                }
+
+            },
+            completionListener: { event in
+                switch event {
+                case .failure(let error):
+                    XCTFail("Unexpected .failed event: \(error)")
+                case .success:
+                    completedInvoked.fulfill()
+                }
+            })
+
+        XCTAssertNotNil(operation)
+        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+
+        guard createTodo(id: uuid, name: name) != nil,
+              createTodo(id: uuid2, name: name) != nil else {
+            XCTFail("Failed to create post")
+            return
+        }
+
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        operation.cancel()
+        wait(for: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertTrue(operation.isFinished)
+    }
+    
     /// A subscription to onCreate todo should receive an event for each create Todo mutation API called
     ///
     /// - Given:  An onCreate Todo subscription established

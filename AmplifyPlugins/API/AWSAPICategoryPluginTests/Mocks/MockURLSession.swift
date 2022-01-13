@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 @testable import Amplify
 
 class MockURLSession: URLSessionBehavior {

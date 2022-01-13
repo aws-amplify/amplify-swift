@@ -6,10 +6,9 @@
 //
 
 import XCTest
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSAPICategoryPluginTestCommon
 import AWSPluginsCore
 
 class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
