@@ -8,7 +8,7 @@
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 
 @available(iOS 13.0, *)
 class AWSGraphQLOperationTests: AWSAPICategoryPluginTestBase {

@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import AWSAPICategoryPlugin
+import AWSAPIPlugin
 import AmplifyPlugins
 
 @testable import Amplify

@@ -7,7 +7,7 @@
 
 import XCTest
 import Amplify
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 
 class AWSAppSyncGrpahQLResponseTests: XCTestCase {
 

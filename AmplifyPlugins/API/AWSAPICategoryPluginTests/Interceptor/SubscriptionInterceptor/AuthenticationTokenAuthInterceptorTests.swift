@@ -8,8 +8,7 @@
 import XCTest
 import Amplify
 import AppSyncRealTimeClient
-import AWSCore
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 @testable import AmplifyTestCommon
 
 class AuthenticationTokenAuthInterceptorTests: XCTestCase {

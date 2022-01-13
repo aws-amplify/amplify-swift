@@ -9,7 +9,8 @@ import XCTest
 import Foundation
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
+@testable import AWSPluginsTestCommon
 
 import AWSPluginsCore
 
@@ -21,7 +22,7 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
 
     let apiName = "apiName"
     let baseURL = URL(fileURLWithPath: "path")
-    let region = "us-east-1".aws_regionTypeValue()
+    let region = "us-east-1"
 
     let testDocument = "query { getTodo { id name description }}"
     let testVariables = ["id": 123]

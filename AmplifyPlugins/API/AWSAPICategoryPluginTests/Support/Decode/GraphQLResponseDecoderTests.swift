@@ -9,7 +9,7 @@ import XCTest
 @testable import Amplify
 import AWSPluginsCore
 @testable import AmplifyTestCommon
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 
 class GraphQLResponseDecoderTests: XCTestCase {
     static let decoder = JSONDecoder()

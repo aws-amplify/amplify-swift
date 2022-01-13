@@ -16,6 +16,17 @@ The following steps demonstrate how to set up an GraphQL endpoint with AppSync. 
 ? Do you have an annotated GraphQL schema? `No`
 ? Choose a schema template: `Single object with fields (e.g., “Todo” with ID, name, description)`
 ```
+Edit the schema to
+```
+type Todo @model @auth(rules: [
+  { allow: public, provider: iam }, 
+  { allow: private, provider: iam }]) {
+  id: ID!
+  name: String!
+  description: String
+}
+
+```
 
 3. `amplify add auth`
 ```perl

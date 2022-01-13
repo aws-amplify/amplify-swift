@@ -9,7 +9,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 
 class AuthTokenURLRequestInterceptorTests: XCTestCase {
     func testAuthTokenInterceptor() throws {
