@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import hierarchical_state_machine_swift
+
 
 public extension FetchAuthSessionState {
 
@@ -14,7 +14,7 @@ public extension FetchAuthSessionState {
 
         public var defaultState: FetchAuthSessionState = .determiningUserState
 
-        public func resolve(oldState: FetchAuthSessionState,
+        func resolve(oldState: FetchAuthSessionState,
                             byApplying event: StateMachineEvent) -> StateResolution<FetchAuthSessionState>
         {
 

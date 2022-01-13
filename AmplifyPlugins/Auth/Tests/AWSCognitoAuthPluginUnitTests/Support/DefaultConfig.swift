@@ -10,7 +10,7 @@ import Foundation
 import AWSCognitoIdentityProvider
 import AWSCognitoIdentity
 import ClientRuntime
-import hierarchical_state_machine_swift
+
 
 enum Defaults {
 

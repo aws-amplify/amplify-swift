@@ -6,19 +6,19 @@
 //
 
 import Foundation
-import hierarchical_state_machine_swift
 
-public typealias Resolution = StateResolution<AuthState>
 
-public extension AuthState {
+typealias Resolution = StateResolution<AuthState>
+
+extension AuthState {
 
     struct Resolver: StateMachineResolver {
 
-        public typealias StateType = AuthState
+        typealias StateType = AuthState
 
-        public var defaultState: AuthState = .notConfigured
+        var defaultState: AuthState = .notConfigured
 
-        public func resolve(oldState: AuthState, byApplying event: StateMachineEvent) -> Resolution {
+        func resolve(oldState: AuthState, byApplying event: StateMachineEvent) -> Resolution {
             switch oldState {
             case .notConfigured:
                 guard case .configureAuth(let authConfiguration) = isAuthEvent(event)?.eventType else {

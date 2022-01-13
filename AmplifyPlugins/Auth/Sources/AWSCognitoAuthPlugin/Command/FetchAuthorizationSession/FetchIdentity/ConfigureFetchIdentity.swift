@@ -6,13 +6,13 @@
 //
 
 import Foundation
-import hierarchical_state_machine_swift
 
-public struct ConfigureFetchIdentity: Command {
 
-    public let identifier = "ConfigureFetchIdentity"
+struct ConfigureFetchIdentity: Command {
 
-    public func execute(withDispatcher dispatcher: EventDispatcher,
+    let identifier = "ConfigureFetchIdentity"
+
+    func execute(withDispatcher dispatcher: EventDispatcher,
                         environment: Environment)
     {
         let timer = LoggingTimer(identifier).start("### Starting execution")
@@ -29,7 +29,7 @@ public struct ConfigureFetchIdentity: Command {
 extension ConfigureFetchIdentity: DefaultLogger { }
 
 extension ConfigureFetchIdentity: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         [
             "identifier": identifier
         ]
@@ -37,7 +37,7 @@ extension ConfigureFetchIdentity: CustomDebugDictionaryConvertible {
 }
 
 extension ConfigureFetchIdentity: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         debugDictionary.debugDescription
     }
 }

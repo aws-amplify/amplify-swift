@@ -188,6 +188,20 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "hierarchical-state-machine-swift"
+               BuildableName = "hierarchical-state-machine-swift"
+               BlueprintName = "hierarchical-state-machine-swift"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -253,6 +267,16 @@
                BlueprintIdentifier = "AmplifyTests"
                BuildableName = "AmplifyTests"
                BlueprintName = "AmplifyTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "hierarchical-state-machine-swiftTests"
+               BuildableName = "hierarchical-state-machine-swiftTests"
+               BlueprintName = "hierarchical-state-machine-swiftTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

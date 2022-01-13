@@ -6,13 +6,13 @@
 //
 
 import Foundation
-import hierarchical_state_machine_swift
 
-public struct RefreshAWSCredentials: Command {
 
-    public let identifier = "RefreshAWSCredentials"
+struct RefreshAWSCredentials: Command {
 
-    public func execute(withDispatcher dispatcher: EventDispatcher,
+    let identifier = "RefreshAWSCredentials"
+
+    func execute(withDispatcher dispatcher: EventDispatcher,
                         environment: Environment)
     {
         let timer = LoggingTimer(identifier).start("### Starting execution")
