@@ -41,7 +41,7 @@ struct InitiateSignUp: Command {
             client = try environment.cognitoUserPoolFactory()
         } catch {
             let authError = AuthenticationError.configuration(message: "Failed to get CognitoUserPool client: \(error)")
-            let event = SRPSignInEvent(
+            let event = SignUpEvent(
                 id: UUID().uuidString,
                 eventType: .throwAuthError(authError)
             )
