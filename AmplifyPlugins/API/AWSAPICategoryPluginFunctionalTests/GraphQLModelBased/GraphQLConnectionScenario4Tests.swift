@@ -6,10 +6,9 @@
 //
 
 import XCTest
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSAPICategoryPluginTestCommon
 
 /*
  (Belongs to) A connection that is bi-directional by adding a many-to-one connection to the type that already have a one-to-many connection.

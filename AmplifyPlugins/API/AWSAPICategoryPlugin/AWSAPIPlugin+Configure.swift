@@ -8,6 +8,7 @@
 import Amplify
 import AWSPluginsCore
 import AppSyncRealTimeClient
+import AwsCommonRuntimeKit
 
 public extension AWSAPIPlugin {
 
@@ -36,6 +37,9 @@ public extension AWSAPIPlugin {
                                                          apiAuthProviderFactory: authProviderFactory)
         configure(using: dependencies)
 
+        // Initialize SwiftSDK's CRT dependency for SigV4 signing functionality
+        AwsCommonRuntimeKit.initialize()
+        
         log.info("Configure finished")
     }
 }

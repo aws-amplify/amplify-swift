@@ -8,7 +8,7 @@
 import XCTest
 import AmplifyTestCommon
 @testable import Amplify
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 
 class ModelMetadataTests: XCTestCase {
     override func setUp() {

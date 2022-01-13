@@ -9,7 +9,7 @@ import XCTest
 import AmplifyTestCommon
 import AWSPluginsCore
 @testable import Amplify
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 
 class GraphQLRequestToListQueryTests: XCTestCase {
 

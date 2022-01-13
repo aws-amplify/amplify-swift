@@ -20,13 +20,25 @@ let package = Package(
             name: "AWSCognitoAuthPlugin",
             targets: ["AWSCognitoAuthPlugin"]
         ),
-        .library(name: "AWSDataStorePlugin",
-                targets: ["AWSDataStorePlugin"]),
+        .library(
+            name: "AWSDataStorePlugin",
+            targets: ["AWSDataStorePlugin"]
+        ),
+        .library(
+            name: "AWSAPIPlugin",
+            targets: ["AWSAPIPlugin"]
+        ),
+        .library(
+            name: "AWSPluginsTestCommon",
+            targets: ["AWSPluginsTestCommon"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/libtom/libtommath", branch: "develop"),
         .package(url: "https://github.com/stephencelis/SQLite.swift.git", .exact("0.12.2")),
-        .package(name: "AWSSwiftSDK", url: "https://github.com/awslabs/aws-sdk-swift", .upToNextMajor(from: "0.1.1")),
+        .package(name: "AppSyncRealTimeClient", url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "1.4.3"),
+        .package(name: "AWSSwiftSDK", url: "https://github.com/awslabs/aws-sdk-swift", .upToNextMajor(from: "0.1.0")),
+        //.package(name: "AWSSwiftSDK", path: "~/Projects/Amplify/SwiftSDK/aws-sdk-swift"), // Local development
         .package(name: "CwlPreconditionTesting", url: "https://github.com/mattgallagher/CwlPreconditionTesting", .upToNextMinor(from: "2.1.0"))
     ],
     targets: [
@@ -72,6 +84,18 @@ let package = Package(
             ]
         ),
         .target(
+            name: "AWSAPIPlugin",
+            dependencies: [
+                .target(name: "Amplify"),
+                .target(name: "AWSPluginsCore"),
+                .product(name: "AppSyncRealTimeClient", package: "AppSyncRealTimeClient")],
+            path: "AmplifyPlugins/API/AWSAPICategoryPlugin",
+            exclude: [
+                "Info.plist",
+                "AWSAPIPlugin.md"
+            ]
+        ),
+        .target(
             name: "AmplifySRP",
             dependencies: [
                 .target(name: "AmplifyBigInteger"),
@@ -92,6 +116,14 @@ let package = Package(
                 "CwlPreconditionTesting"
             ],
             path: "AmplifyTestCommon"
+        ),
+        .target(
+            name: "AWSPluginsTestCommon",
+            dependencies: [
+                "Amplify",
+                .product(name: "AWSClientRuntime", package: "AWSSwiftSDK")
+            ],
+            path: "AmplifyPlugins/Core/AWSPluginsTestCommon"
         ),
         .testTarget(
             name: "AmplifyTests",
@@ -139,6 +171,50 @@ let package = Package(
             ],
             path: "AmplifyPlugins/Datastore/AWSDataStoreCategoryPluginTests"
         ),
-        
+        .testTarget(
+            name: "AWSAPIPluginTests",
+            dependencies: [
+                "AWSAPIPlugin",
+                "AmplifyTestCommon",
+                "AWSPluginsTestCommon"
+            ],
+            path: "AmplifyPlugins/API/AWSAPICategoryPluginTests"
+        ),
+        .testTarget(
+            name: "AWSAPICategoryPluginFunctionalTests",
+            dependencies: [
+                "AWSAPIPlugin",
+                "AmplifyTestCommon"
+            ],
+            path: "AmplifyPlugins/API/AWSAPICategoryPluginFunctionalTests",
+            resources: [
+                .process("Resources/GraphQLModelBasedTests-amplifyconfiguration.json")
+            ]
+        ),
+        .testTarget(
+            name: "GraphQLWithIAMIntegrationTests",
+            dependencies: [
+                "AWSAPIPlugin",
+                "AWSCognitoAuthPlugin",
+                "AmplifyTestCommon"
+            ],
+            path: "AmplifyPlugins/API/AWSAPICategoryPluginIntegrationTests/GraphQL/GraphQLWithIAMIntegrationTests/",
+            resources: [
+                .process("Resources/GraphQLWithIAMIntegrationTests-amplifyconfiguration.json"),
+                .process("Resources/GraphQLWithIAMIntegrationTests-credentials.json")
+            ]
+        ),
+        .testTarget(
+            name: "RESTWithIAMIntegrationTests",
+            dependencies: [
+                "AWSAPIPlugin",
+                "AWSCognitoAuthPlugin",
+                "AmplifyTestCommon"
+            ],
+            path: "AmplifyPlugins/API/AWSAPICategoryPluginIntegrationTests/REST/RESTWithIAMIntegrationTests/",
+            resources: [
+                .process("Resources/RESTWithIAMIntegrationTests-amplifyconfiguration.json")
+            ]
+        )
     ]
 )

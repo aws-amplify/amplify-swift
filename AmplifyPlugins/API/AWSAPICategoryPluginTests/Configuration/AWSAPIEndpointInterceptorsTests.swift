@@ -9,7 +9,8 @@ import XCTest
 import Amplify
 import AWSPluginsCore
 @testable import AmplifyTestCommon
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
+@testable import AWSPluginsTestCommon
 
 class AWSAPIEndpointInterceptorsTests: XCTestCase {
     let endpointName = "endpointName"
@@ -18,8 +19,8 @@ class AWSAPIEndpointInterceptorsTests: XCTestCase {
 
     override func setUpWithError() throws {
         config = try AWSAuthorizationConfiguration.makeConfiguration(authType: .apiKey,
-                                                                 region: .USWest2,
-                                                                 apiKey: apiKey)
+                                                                     region: "us-west-2",
+                                                                     apiKey: apiKey)
     }
 
     /// Given: an AWSAPIEndpointInterceptors
@@ -48,15 +49,16 @@ class AWSAPIEndpointInterceptorsTests: XCTestCase {
 
     func testaddMultipleAuthInterceptors() throws {
         let apiKeyConfig = try AWSAuthorizationConfiguration.makeConfiguration(authType: .apiKey,
-                                                                               region: .USWest2,
+                                                                               region: "us-west-2",
                                                                                apiKey: apiKey)
 
         let awsIAMConfig = try AWSAuthorizationConfiguration.makeConfiguration(authType: .awsIAM,
-                                                                               region: .USWest2,
+                                                                               region: "us-west-2",
                                                                                apiKey: apiKey)
 
         let userPoolConfig = try AWSAuthorizationConfiguration.makeConfiguration(authType: .amazonCognitoUserPools,
-                                                                                        region: .USWest2, apiKey: nil)
+                                                                                 region: "us-west-2",
+                                                                                 apiKey: nil)
 
         var interceptorConfig = createAPIInterceptorConfig()
         try interceptorConfig.addAuthInterceptorsToEndpoint(endpointType: .graphQL,

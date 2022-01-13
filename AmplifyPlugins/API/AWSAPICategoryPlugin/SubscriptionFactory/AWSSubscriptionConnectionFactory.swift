@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import AWSCore
 import AWSPluginsCore
 import Amplify
 import AppSyncRealTimeClient
