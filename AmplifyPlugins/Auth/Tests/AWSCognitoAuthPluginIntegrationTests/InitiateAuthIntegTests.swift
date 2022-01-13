@@ -15,7 +15,7 @@
 //import XCTest
 //
 //import AWSCognitoIdentityProvider
-//import hierarchical_state_machine_swift
+//
 //
 //@testable import AWSCognitoAuthPlugin
 //

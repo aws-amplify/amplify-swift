@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import hierarchical_state_machine_swift
+
 
 // TODO: Refactor this: shouldn't be depending on HLC constructs like
 // AWSCognitoIdentityUserPoolConfiguration nor AWSServiceInfo, nor even really on

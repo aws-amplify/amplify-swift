@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import AWSCognitoAuthPlugin
-import hierarchical_state_machine_swift
+
 
 class AuthStateNotConfiguredTests: XCTestCase {
     var resolver: AnyResolver<AuthState> {
