@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import AWSCognitoAuthPlugin
-import hierarchical_state_machine_swift
+
 
 class NotStartedTests: XCTestCase {
     var resolver: AnyResolver<SRPSignInState> {

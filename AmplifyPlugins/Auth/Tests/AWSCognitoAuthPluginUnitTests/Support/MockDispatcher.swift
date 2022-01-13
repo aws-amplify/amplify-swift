@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import hierarchical_state_machine_swift
+@testable import AWSCognitoAuthPlugin
 
 struct MockDispatcher: EventDispatcher {
     typealias SendCallback = (StateMachineEvent) -> Void

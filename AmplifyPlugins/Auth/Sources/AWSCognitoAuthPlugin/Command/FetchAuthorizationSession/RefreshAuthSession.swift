@@ -6,13 +6,12 @@
 //
 
 import Foundation
-import hierarchical_state_machine_swift
 
-public struct RefreshAuthSession: Command {
+struct RefreshAuthSession: Command {
 
-    public let identifier = "RefreshAuthSession"
+    let identifier = "RefreshAuthSession"
 
-    public func execute(withDispatcher dispatcher: EventDispatcher,
+    func execute(withDispatcher dispatcher: EventDispatcher,
                         environment: Environment)
     {
         let timer = LoggingTimer(identifier).start("### Starting execution")
@@ -31,7 +30,7 @@ public struct RefreshAuthSession: Command {
 extension RefreshAuthSession: DefaultLogger { }
 
 extension RefreshAuthSession: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         [
             "identifier": identifier
         ]
@@ -39,7 +38,7 @@ extension RefreshAuthSession: CustomDebugDictionaryConvertible {
 }
 
 extension RefreshAuthSession: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         debugDictionary.debugDescription
     }
 }
