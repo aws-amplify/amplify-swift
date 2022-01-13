@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import AWSAPICategoryPlugin
+import AWSAPIPlugin
 
 // swiftlint:disable:next type_name
 class AWSAPICategoryPluginAmplifyVersionableTests: XCTestCase {

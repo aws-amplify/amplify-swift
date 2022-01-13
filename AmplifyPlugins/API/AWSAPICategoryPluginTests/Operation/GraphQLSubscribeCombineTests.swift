@@ -10,7 +10,7 @@ import XCTest
 
 import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 
 import AppSyncRealTimeClient
 

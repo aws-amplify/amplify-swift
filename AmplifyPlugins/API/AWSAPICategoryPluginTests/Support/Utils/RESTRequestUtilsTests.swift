@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import Amplify
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 
 class RESTRequestUtilsTests: XCTestCase {
     private struct ConstructURLTestCase {

@@ -7,7 +7,7 @@
 
 import Amplify
 import Foundation
-import AWSAPICategoryPlugin
+import AWSAPIPlugin
 
 class MockNetworkReachabilityProvidingFactory: NetworkReachabilityProvidingFactory {
     public static func make(for hostname: String) -> NetworkReachabilityProviding? {

@@ -8,8 +8,8 @@
 import XCTest
 import Amplify
 import AppSyncRealTimeClient
-import AWSCore
-@testable import AWSAPICategoryPlugin
+@testable import AWSPluginsTestCommon
+@testable import AWSAPIPlugin
 @testable import AmplifyTestCommon
 
 class IAMAuthInterceptorTests: XCTestCase {
@@ -95,23 +95,20 @@ class IAMAuthInterceptorTests: XCTestCase {
 
     func testInterceptConnection() {
         let mockAuthService = MockAWSAuthService()
-        let interceptor = IAMAuthInterceptor(mockAuthService.getCredentialsProvider(), region: .USWest2)
+        let interceptor = IAMAuthInterceptor(mockAuthService.getCredentialsProvider(), region: "us-west-2")
         let url = URL(string: "https://abc.appsync-api.us-west-2.amazonaws.com/graphql")!
-        let request = NSMutableURLRequest(url: url)
-        request.addValue("headerValue", forHTTPHeaderField: "extra-header")
         let signer = MockAWSSignatureV4Signer()
-        let authHeader = interceptor.getAuthHeader(host: "host",
-                                               mutableRequest: request,
-                                               signer: signer,
-                                               amzDate: "date",
-                                               payload: "payload")
+        guard let authHeader = interceptor.getAuthHeader(url, with: "payload", signer: signer) else {
+            XCTFail("Could not get authHeader")
+            return
+        }
 
         XCTAssertNotNil(authHeader.authorization)
         XCTAssertNotNil(authHeader.securityToken)
-        XCTAssertEqual(authHeader.amzDate, "date")
+        XCTAssertNotNil(authHeader.amzDate)
         XCTAssertEqual(authHeader.accept, "application/json, text/javascript")
         XCTAssertEqual(authHeader.contentEncoding, "amz-1.0")
         XCTAssertEqual(authHeader.contentType, "application/json; charset=UTF-8")
-        XCTAssertEqual(authHeader.additionalHeaders, ["extra-header": "headerValue"])
+        XCTAssertNil(authHeader.additionalHeaders)
     }
 }

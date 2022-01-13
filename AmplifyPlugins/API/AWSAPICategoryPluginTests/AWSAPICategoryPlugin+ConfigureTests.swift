@@ -8,7 +8,7 @@
 import XCTest
 
 @testable import Amplify
-@testable import AWSAPICategoryPlugin
+@testable import AWSAPIPlugin
 
 class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
 

@@ -8,7 +8,6 @@
 import Amplify
 import AWSPluginsCore
 import Foundation
-import AWSCore
 
 struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
 
@@ -23,11 +22,16 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
         guard let mutableRequest = (request as NSURLRequest).mutableCopy() as? NSMutableURLRequest else {
             throw APIError.unknown("Could not get mutable request", "")
         }
-        mutableRequest.setValue(NSDate().aws_stringValue(AWSDateISO8601DateFormat2),
+        let date = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = AWSAPIPluginsCore.AWSDateISO8601DateFormat2
+        let amzDate = dateFormatter.string(from: date)
+        
+        mutableRequest.setValue(amzDate,
                                 forHTTPHeaderField: URLRequestConstants.Header.xAmzDate)
         mutableRequest.setValue(URLRequestConstants.ContentType.applicationJson,
                                 forHTTPHeaderField: URLRequestConstants.Header.contentType)
-        mutableRequest.setValue(AmplifyAWSServiceConfiguration.baseUserAgent(),
+        mutableRequest.setValue(AWSAPIPluginsCore.baseUserAgent(),
                                 forHTTPHeaderField: URLRequestConstants.Header.userAgent)
 
         let tokenResult = authTokenProvider.getToken()
