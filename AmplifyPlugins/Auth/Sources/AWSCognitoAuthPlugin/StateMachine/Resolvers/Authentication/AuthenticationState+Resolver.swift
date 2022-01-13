@@ -5,17 +5,16 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import hierarchical_state_machine_swift
 
-public extension AuthenticationState {
+extension AuthenticationState {
 
     struct Resolver: StateMachineResolver {
-        public typealias StateType = AuthenticationState
-        public let defaultState = AuthenticationState.notConfigured
+        typealias StateType = AuthenticationState
+        let defaultState = AuthenticationState.notConfigured
 
         public init() { }
 
-        public func resolve(
+        func resolve(
             oldState: StateType,
             byApplying event: StateMachineEvent
         ) -> StateResolution<StateType> {

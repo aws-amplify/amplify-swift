@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import hierarchical_state_machine_swift
+
 
 public struct SignedOutData {
     public let authenticationConfiguration: AuthConfiguration

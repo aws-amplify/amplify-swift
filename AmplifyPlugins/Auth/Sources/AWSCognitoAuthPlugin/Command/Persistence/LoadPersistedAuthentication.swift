@@ -5,27 +5,21 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import hierarchical_state_machine_swift
+
 import Foundation
 
-public struct LoadPersistedAuthentication: Command {
-    public let identifier = "LoadPersistedAuthentication"
-    public let configuration: AuthConfiguration
+struct LoadPersistedAuthentication: Command {
+    let identifier = "LoadPersistedAuthentication"
+    let configuration: AuthConfiguration
 
-    public enum PersistedAuthenticationState {
+    enum PersistedAuthenticationState {
         case signedIn(SignedInData)
         case signedOut(SignedOutData)
     }
 
-    public struct Environment: hierarchical_state_machine_swift.Environment {
-        /// Eventually this will probably need to get the Auth configuration so it knows
-        /// what to check
-        let loader: () -> PersistedAuthenticationState
-    }
-
-    public func execute(
+    func execute(
         withDispatcher dispatcher: EventDispatcher,
-        environment: hierarchical_state_machine_swift.Environment
+        environment: Environment
     ) {
         let timer = LoggingTimer(identifier).start("### Starting execution")
 
@@ -45,7 +39,7 @@ public struct LoadPersistedAuthentication: Command {
 extension LoadPersistedAuthentication: DefaultLogger { }
 
 extension LoadPersistedAuthentication: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
             "configuration": configuration.debugDictionary
@@ -54,7 +48,7 @@ extension LoadPersistedAuthentication: CustomDebugDictionaryConvertible {
 }
 
 extension LoadPersistedAuthentication: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         debugDictionary.debugDescription
     }
 }
