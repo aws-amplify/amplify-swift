@@ -9,7 +9,6 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 
 import AWSCognitoIdentityProvider
-import hierarchical_state_machine_swift
 
 struct StateSequence<MyState, MyEvent>: CustomStringConvertible where MyState: State, MyEvent: StateMachineEvent {
     let resolver: AnyResolver<MyState>
