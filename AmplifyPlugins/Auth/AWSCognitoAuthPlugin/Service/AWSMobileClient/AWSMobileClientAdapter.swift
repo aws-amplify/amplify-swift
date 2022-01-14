@@ -140,8 +140,8 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
         awsMobileClient.signOut()
     }
 
-    func deleteUser(signOut: Bool, completionHandler: @escaping ((Error?) -> Void)) {
-        awsMobileClient.deleteUser(signOut: signOut, completionHandler: completionHandler)
+    func deleteUser(completionHandler: @escaping ((Error?) -> Void)) {
+        awsMobileClient.deleteUser(completionHandler: completionHandler)
     }
 
     func getUsername() -> String? {

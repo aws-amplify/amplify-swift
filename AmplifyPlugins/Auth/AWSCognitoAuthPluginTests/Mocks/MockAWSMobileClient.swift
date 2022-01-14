@@ -116,7 +116,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
         // Do nothing
     }
 
-    func deleteUser(signOut: Bool, completionHandler: @escaping ((Error?) -> Void)) {
+    func deleteUser(completionHandler: @escaping ((Error?) -> Void)) {
        completionHandler(deleteUserMockError)
     }
 
