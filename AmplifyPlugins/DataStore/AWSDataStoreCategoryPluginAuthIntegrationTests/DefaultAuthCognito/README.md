@@ -5,7 +5,10 @@ This configuration is used to run the tests in `AWSDataStoreCategoryPluginAuthIn
 
 ### Set-up
 
-1. `amplify init`
+1. `amplify init`. Make sure your amplify CLI version produces ClI.json containing
+```
+"usesubfordefaultidentityclaim": true
+```
 
 2. `amplify add api`
 

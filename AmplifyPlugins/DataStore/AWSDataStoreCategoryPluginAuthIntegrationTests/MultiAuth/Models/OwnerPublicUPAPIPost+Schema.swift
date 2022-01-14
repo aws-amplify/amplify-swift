@@ -25,7 +25,7 @@ extension OwnerPublicUPAPIPost {
     let ownerPublicUPAPIPost = OwnerPublicUPAPIPost.keys
 
     model.authRules = [
-      rule(allow: .owner, ownerField: "owner", identityClaim: "cognito:username", provider: .userPools, operations: [.create, .update, .delete, .read]),
+      rule(allow: .owner, ownerField: "owner", identityClaim: "sub", provider: .userPools, operations: [.create, .update, .delete, .read]),
       rule(allow: .public, provider: .apiKey, operations: [.create, .update, .delete, .read])
     ]
 

@@ -25,7 +25,7 @@ extension OwnerUPPost {
     let ownerUPPost = OwnerUPPost.keys
 
     model.authRules = [
-      rule(allow: .owner, ownerField: "owner", identityClaim: "cognito:username", provider: .userPools, operations: [.create, .update, .delete, .read])
+      rule(allow: .owner, ownerField: "owner", identityClaim: "sub", provider: .userPools, operations: [.create, .update, .delete, .read])
     ]
 
     model.listPluralName = "OwnerUPPosts"

@@ -7,7 +7,10 @@
 
 1. create a `schema.graphql` file with the content of  `MultiAuth/schema.graphql`
 
-2. `amplify init`
+2. `amplify init`. Make sure your amplify CLI version produces ClI.json containing
+```
+"usesubfordefaultidentityclaim": true
+```
 
 3. `amplify add api` (when asked, provide **"datastoreintegtestmu"** as API name)
 ```
