@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CryptoKit
 import hierarchical_state_machine_swift
 import AWSCognitoIdentityProvider
 import Amplify
@@ -49,7 +50,7 @@ struct InitiateSignUp: Command {
             return
         }
 
-        let input = SignUpInput(username: username, password: password)
+        let input = SignUpInput(username: username, password: password, userPoolConfiguration: environment.userPoolConfiguration)
         timer.note("### Starting signUp")
         client.signUp(input: input) { result in
             timer.note("### signUp response received")
@@ -76,8 +77,64 @@ struct InitiateSignUp: Command {
     }
 }
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 extension SignUpInput {
-    init(username: String, password: String) {
-        self.init(password: password, username: username)
+    init(username: String, password: String, userPoolConfiguration: UserPoolConfigurationData) {
+        let secretHash = Self.calculateSecretHash(username: username, userPoolConfiguration: userPoolConfiguration)
+        let validationData = Self.getValidationData()
+
+        self.init(clientId: userPoolConfiguration.clientId,
+                  password: password,
+                  secretHash: secretHash,
+                  username: username,
+                  validationData: validationData)
+    }
+
+    private static func calculateSecretHash(username: String, userPoolConfiguration: UserPoolConfigurationData) -> String? {
+        guard let clientSecret = userPoolConfiguration.clientSecret,
+              !clientSecret.isEmpty,
+              let clientSecretData = clientSecret.data(using: .utf8) else {
+            return nil
+        }
+
+        guard let data = (username + userPoolConfiguration.clientId).data(using: .utf8) else {
+            return nil
+        }
+
+        let clientSecretByteArray = [UInt8](clientSecretData)
+        let key = SymmetricKey(data: clientSecretByteArray)
+
+        let mac = HMAC<SHA256>.authenticationCode(for: data, using: key)
+        let macBase64 = Data(mac).base64EncodedString()
+        return macBase64
+    }
+
+    private static func getValidationData() -> [CognitoIdentityProviderClientTypes.AttributeType]? {
+        cognitoValidationData
+    }
+
+    private static var cognitoValidationData: [CognitoIdentityProviderClientTypes.AttributeType]? {
+        #if canImport(UIKit)
+        let device = UIDevice.current
+        let bundle = Bundle.main
+        let bundleVersion = bundle.object(forInfoDictionaryKey: String(kCFBundleVersionKey)) as? String
+        let bundleShortVersion = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+
+        return [
+            .init(name: "cognito:iOSVersion", value: device.systemVersion),
+            .init(name: "cognito:systemName", value: device.systemName),
+            .init(name: "cognito:deviceName", value: device.name),
+            .init(name: "cognito:model", value: device.model),
+            .init(name: "cognito:idForVendor", value: device.identifierForVendor?.uuidString ?? ""),
+            .init(name: "cognito:bundleId", value: bundle.bundleIdentifier),
+            .init(name: "cognito:bundleVersion", value: bundleVersion ?? ""),
+            .init(name: "cognito:bundleShortV", value: bundleShortVersion ?? ""),
+        ]
+        #else
+        return nil
+        #endif
     }
 }
