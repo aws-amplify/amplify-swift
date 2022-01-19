@@ -7,7 +7,6 @@
 
 import XCTest
 
-import AmplifyPlugins
 import AWSPluginsCore
 import Combine
 
