@@ -6,17 +6,24 @@
 //
 
 import XCTest
-
-import AmplifyPlugins
-import AWSMobileClient
+import AWSAPIPlugin
 
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
-    static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration"
+class SyncEngineIntegrationTestBase: DataStoreTestBase {
+    
+    static func retrieveAmplifyConfiguration(forResource: String) throws -> AmplifyConfiguration {
+        guard let url = Bundle.module.url(forResource: forResource, withExtension: "json") else {
+            throw "Could not retrieve configuration file: \(forResource)"
+        }
+        let data = try Data(contentsOf: url)
+        return try AmplifyConfiguration.decodeAmplifyConfiguration(from: data)
+    }
+    
+    static let amplifyConfigurationFile = "AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration"
 
     static let networkTimeout = TimeInterval(180)
     let networkTimeout = SyncEngineIntegrationTestBase.networkTimeout
@@ -78,7 +85,7 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
     }
 
     func startAmplify(_ completion: BasicClosure? = nil) throws {
-        let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
+        let amplifyConfig = try SyncEngineIntegrationTestBase.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
 
         DispatchQueue.global().async {
             do {
