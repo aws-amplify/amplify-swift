@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.18.2 (2022-01-19)
+
+### Bug Fixes
+
+- **datastore**: quote table name in create table-references SQL statement (#1485)
+
 ## 1.18.1 (2021-12-15)
 
 ## 1.18.0 (2021-12-15)
