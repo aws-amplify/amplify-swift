@@ -79,3 +79,5 @@ RESTWithIAMIntegrationTests-amplifyconfiguration.json
 GraphQLModelBasedTests-amplifyconfiguration.json
 GraphQLWithIAMIntegrationTests-amplifyconfiguration.json
 GraphQLWithIAMIntegrationTests-credentials.json
+
+AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration.json

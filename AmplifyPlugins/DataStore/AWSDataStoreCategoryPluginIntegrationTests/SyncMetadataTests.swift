@@ -7,8 +7,6 @@
 
 import XCTest
 
-import AmplifyPlugins
-import AWSMobileClient
 import SQLite
 
 @testable import Amplify
