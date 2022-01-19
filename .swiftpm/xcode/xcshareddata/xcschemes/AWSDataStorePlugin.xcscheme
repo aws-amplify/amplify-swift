@@ -28,6 +28,39 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSDataStoreCategoryPluginTests"
+               BuildableName = "AWSDataStoreCategoryPluginTests"
+               BlueprintName = "AWSDataStoreCategoryPluginTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "AWSMutationEventIngesterTests/testMutationQueueFailureCausesSaveFailure()">
+               </Test>
+               <Test
+                  Identifier = "DataStoreHubTests">
+               </Test>
+               <Test
+                  Identifier = "OutgoingMutationQueueTests/testLocalMutationUnsubcsribesFromCloud()">
+               </Test>
+               <Test
+                  Identifier = "OutgoingMutationQueueTests/testMutationQueueDeliversPendingMutationsFirst()">
+               </Test>
+               <Test
+                  Identifier = "OutgoingMutationQueueTests/testMutationQueueDequeuesSavedEvents()">
+               </Test>
+               <Test
+                  Identifier = "OutgoingMutationQueueTests/testMutationQueueStoresDeleteEvents()">
+               </Test>
+               <Test
+                  Identifier = "SyncEngineStartupTests">
+               </Test>
+            </SkippedTests>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

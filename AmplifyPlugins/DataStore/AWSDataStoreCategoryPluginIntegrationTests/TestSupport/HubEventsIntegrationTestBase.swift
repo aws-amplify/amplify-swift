@@ -7,9 +7,8 @@
 
 import XCTest
 
-import AmplifyPlugins
+import AWSAPIPlugin
 import AWSPluginsCore
-import AWSMobileClient
 
 @testable import Amplify
 @testable import AmplifyTestCommon
