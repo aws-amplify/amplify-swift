@@ -2,6 +2,11 @@
 ## Unreleased
 ## 1.18.3 (2022-01-20)
 
+### Features
+
+- **auth**: add deleteUser API (#1582)
+- Update AWS SDKs to 2.27.0 (#1596)
+
 ## 1.18.2 (2022-01-19)
 
 ### Bug Fixes
