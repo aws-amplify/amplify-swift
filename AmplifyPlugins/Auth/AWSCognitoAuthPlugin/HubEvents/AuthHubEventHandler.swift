@@ -24,6 +24,10 @@ class AuthHubEventHandler: AuthHubEventBehavior {
         dispatchAuthEvent(HubPayload.EventName.Auth.signedOut)
     }
 
+    func sendUserDeletedEvent() {
+        dispatchAuthEvent(HubPayload.EventName.Auth.userDeleted)
+    }
+
     func sendSessionExpiredEvent() {
         dispatchAuthEvent(HubPayload.EventName.Auth.sessionExpired)
     }
@@ -68,6 +72,13 @@ class AuthHubEventHandler: AuthHubEventBehavior {
                         return
                 }
                 self?.sendUserSignedOutEvent()
+
+            case HubPayload.EventName.Auth.deleteUserAPI:
+                guard let event = payload.data as? AWSAuthDeleteUserOperation.OperationResult,
+                    case .success = event else {
+                        return
+                }
+                self?.sendUserDeletedEvent()
 
             case HubPayload.EventName.Auth.fetchSessionAPI:
                 guard let event = payload.data as? AWSAuthFetchSessionOperation.OperationResult,

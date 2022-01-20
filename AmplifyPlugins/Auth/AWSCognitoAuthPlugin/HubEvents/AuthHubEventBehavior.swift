@@ -13,5 +13,7 @@ protocol AuthHubEventBehavior {
 
     func sendUserSignedOutEvent()
 
+    func sendUserDeletedEvent()
+
     func sendSessionExpiredEvent()
 }

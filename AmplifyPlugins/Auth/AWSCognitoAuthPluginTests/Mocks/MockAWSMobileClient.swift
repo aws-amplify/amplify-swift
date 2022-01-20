@@ -22,6 +22,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     var showSignInMockResult: Result<UserState, Error>?
     var confirmSignInMockResult: Result<SignInResult, Error>?
     var signOutMockError: Error?
+    var deleteUserMockError: Error?
     var usernameMockResult: String?
     var usersubMockResult: String?
 
@@ -113,6 +114,10 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
 
     func signOutLocally() {
         // Do nothing
+    }
+
+    func deleteUser(completionHandler: @escaping ((Error?) -> Void)) {
+       completionHandler(deleteUserMockError)
     }
 
     func getUsername() -> String? {

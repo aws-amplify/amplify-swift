@@ -268,6 +268,8 @@
 		5C09CCC326D0733700CDCA9F /* GeoCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCC126D0733700CDCA9F /* GeoCategoryConfigurationTests.swift */; };
 		5C09CCC526D074B100CDCA9F /* MockGeoCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09CCC426D074B100CDCA9F /* MockGeoCategoryPlugin.swift */; };
 		5C2D791526F5172E00420798 /* Geo+Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2D791426F5172E00420798 /* Geo+Country.swift */; };
+		5C3324912772BCF700F2C47B /* AuthDeleteUserOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3324902772BCF700F2C47B /* AuthDeleteUserOperation.swift */; };
+		5C3324932772BD3D00F2C47B /* AuthDeleteUserRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3324922772BD3D00F2C47B /* AuthDeleteUserRequest.swift */; };
 		5C763DA026F2CAF5006650E7 /* Geo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763D9F26F2CAF5006650E7 /* Geo.swift */; };
 		5C763DA226F2CB6A006650E7 /* Geo+Coordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763DA126F2CB6A006650E7 /* Geo+Coordinates.swift */; };
 		5C763DA426F2CCDF006650E7 /* CLocationCoordinate2D+Geo.Coordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C763DA326F2CCDF006650E7 /* CLocationCoordinate2D+Geo.Coordinates.swift */; };
@@ -1180,6 +1182,8 @@
 		5C09CCC126D0733700CDCA9F /* GeoCategoryConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoCategoryConfigurationTests.swift; sourceTree = "<group>"; };
 		5C09CCC426D074B100CDCA9F /* MockGeoCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockGeoCategoryPlugin.swift; sourceTree = "<group>"; };
 		5C2D791426F5172E00420798 /* Geo+Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Geo+Country.swift"; sourceTree = "<group>"; };
+		5C3324902772BCF700F2C47B /* AuthDeleteUserOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthDeleteUserOperation.swift; sourceTree = "<group>"; };
+		5C3324922772BD3D00F2C47B /* AuthDeleteUserRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthDeleteUserRequest.swift; sourceTree = "<group>"; };
 		5C763D9F26F2CAF5006650E7 /* Geo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geo.swift; sourceTree = "<group>"; };
 		5C763DA126F2CB6A006650E7 /* Geo+Coordinates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Geo+Coordinates.swift"; sourceTree = "<group>"; };
 		5C763DA326F2CCDF006650E7 /* CLocationCoordinate2D+Geo.Coordinates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLocationCoordinate2D+Geo.Coordinates.swift"; sourceTree = "<group>"; };
@@ -2863,6 +2867,7 @@
 				B4251A04242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift */,
 				B473B53D245DE8E100C45C72 /* AuthConfirmSignInOperation.swift */,
 				B450740C2411553D0098F02D /* AuthConfirmSignUpOperation.swift */,
+				5C3324902772BCF700F2C47B /* AuthDeleteUserOperation.swift */,
 				B46884112460A8D600221268 /* AuthFetchDevicesOperation.swift */,
 				B4FA76042416E0F0006F59CE /* AuthFetchSessionOperation.swift */,
 				B46884132460A8E000221268 /* AuthForgetDeviceOperation.swift */,
@@ -2917,6 +2922,7 @@
 				B473B53F245DE93100C45C72 /* AuthConfirmSignInRequest.swift */,
 				B43CD8532411469D00BF5A60 /* AuthConfirmSignUpRequest.swift */,
 				B4B5CC8A2457B32D0019C783 /* AuthConfirmUserAttributeRequest.swift */,
+				5C3324922772BD3D00F2C47B /* AuthDeleteUserRequest.swift */,
 				B46884172460A92900221268 /* AuthFetchDevicesRequest.swift */,
 				B4FA76062416E82B006F59CE /* AuthFetchSessionRequest.swift */,
 				B4B5CC802457B0690019C783 /* AuthFetchUserAttributesRequest.swift */,
@@ -5111,6 +5117,7 @@
 				FAAFAF37239051E6002CF932 /* AtomicDictionary.swift in Sources */,
 				95DAAB2F237E63370028544F /* LanguageType.swift in Sources */,
 				B4D3852E236C97360014653D /* PredictionsIdentifyOperation.swift in Sources */,
+				5C3324932772BD3D00F2C47B /* AuthDeleteUserRequest.swift in Sources */,
 				FA09B9412321BB78000E064D /* JSONValue.swift in Sources */,
 				B9A6A4E024452E0D00AC2792 /* AccessLevel.swift in Sources */,
 				95DAAB2E237E63370028544F /* AgeRange.swift in Sources */,
@@ -5320,6 +5327,7 @@
 				B4507419241166580098F02D /* AuthSession.swift in Sources */,
 				B99EF4B723DB072000D821BC /* Temporal+Hashable.swift in Sources */,
 				B92E03B92367CE7A006CEB8D /* Model+Schema.swift in Sources */,
+				5C3324912772BCF700F2C47B /* AuthDeleteUserOperation.swift in Sources */,
 				FA58456724D9D6960028D65A /* AmplifyOperation+APIPublishers.swift in Sources */,
 				950A26DB23D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift in Sources */,
 				B46884162460A8ED00221268 /* AuthRememberDeviceOperation.swift in Sources */,

@@ -89,6 +89,11 @@ extension AuthCategory: AuthCategoryBehavior {
     }
 
     @discardableResult
+    public func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation {
+        plugin.deleteUser(listener: listener)
+    }
+
+    @discardableResult
     public func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options? = nil,
                                  listener: AuthFetchSessionOperation.ResultListener?) -> AuthFetchSessionOperation {
         return plugin.fetchAuthSession(options: options,
