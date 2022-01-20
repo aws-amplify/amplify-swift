@@ -1,16 +1,16 @@
 PODS:
-  - Amplify (1.18.3):
-    - Amplify/Default (= 1.18.3)
-  - Amplify/Default (1.18.3)
-  - AmplifyTestCommon (1.18.3):
-    - Amplify (= 1.18.3)
-    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.18.3)
+  - Amplify (1.19.0):
+    - Amplify/Default (= 1.19.0)
+  - Amplify/Default (1.19.0)
+  - AmplifyTestCommon (1.19.0):
+    - Amplify (= 1.19.0)
+    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.19.0)
     - CwlPreconditionTesting (~> 2.0)
-  - AmplifyTestCommon/AWSPluginsTestCommon (1.18.3):
-    - Amplify (= 1.18.3)
+  - AmplifyTestCommon/AWSPluginsTestCommon (1.19.0):
+    - Amplify (= 1.19.0)
     - AWSCore (~> 2.27.0)
     - AWSMobileClient (~> 2.27.0)
-    - AWSPluginsCore (= 1.18.3)
+    - AWSPluginsCore (= 1.19.0)
     - CwlPreconditionTesting (~> 2.0)
   - AWSAuthCore (2.27.0):
     - AWSCore (= 2.27.0)
@@ -25,8 +25,8 @@ PODS:
     - AWSCognitoIdentityProvider (= 2.27.0)
     - AWSCognitoIdentityProviderASF (= 2.27.0)
     - AWSCore (= 2.27.0)
-  - AWSPluginsCore (1.18.3):
-    - Amplify (= 1.18.3)
+  - AWSPluginsCore (1.19.0):
+    - Amplify (= 1.19.0)
     - AWSCore (~> 2.27.0)
   - CwlCatchException (2.1.1):
     - CwlCatchExceptionSupport (~> 2.1.1)
@@ -80,14 +80,14 @@ CHECKOUT OPTIONS:
     :tag: 2.1.0
 
 SPEC CHECKSUMS:
-  Amplify: cfc603aca8977ce9550ef165770f507586f14fbf
-  AmplifyTestCommon: e515e9271eb13bac1ccd015a2ede758496af2cef
+  Amplify: 7906ce8bc77c2c9a97545581024eb90ec6f2e03a
+  AmplifyTestCommon: 215d659a122f5b46a03f260870036df152c9df7f
   AWSAuthCore: e030e0d0c6102b5bf4e117601572ac3112b44ffe
   AWSCognitoIdentityProvider: b62f4c11ccc03e4dec804f84820b94235271e103
   AWSCognitoIdentityProviderASF: 0f0b7dfc43977225be9ae809bcc1ac46df217551
   AWSCore: d605449939e5b40704f11ff9f91f905f7d978589
   AWSMobileClient: a408fa2b5e04807de0a4dcd173153edb7ed05958
-  AWSPluginsCore: 0d2c88f803efb686fec882013f18104e509608ec
+  AWSPluginsCore: a74522db575247a0156f97d868713627099f3297
   CwlCatchException: 86760545af2a490a23e964d76d7c77442dbce79b
   CwlCatchExceptionSupport: a004322095d7101b945442c86adc7cec0650f676
   CwlMachBadInstructionHandler: aa1fe9f2d08b29507c150d099434b2890247e7f8

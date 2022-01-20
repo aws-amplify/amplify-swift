@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.19.0 (2022-01-20)
+
+### Features
+
+- **auth**: add deleteUser API (#1598) [skip-ci]
+
 ## 1.18.3 (2022-01-20)
 
 ### Features
