@@ -1,0 +1,30 @@
+name: 'Run Test'
+description: 'Action runs the test specified at project_path for workspace and scheme'
+
+inputs:
+  project_path:
+    required: true
+    type: string
+  workspace:
+    required: true
+    type: string
+  scheme:
+    required: true
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: CocoaPod Install
+      run: |
+        cd ${{ inputs.project_path }}
+        pod install
+        ls ~/.cocoapods
+        ls ~/Library/Caches/CocoaPods
+      shell: bash
+
+    - name: Test ${{ inputs.scheme }}
+      run: |
+        cd ${{ inputs.project_path }} 
+        xcodebuild test -workspace ${{ inputs.workspace }} -scheme ${{ inputs.scheme }} -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13,OS=15.0' | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]} 
+      shell: bash

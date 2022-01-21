@@ -1,0 +1,32 @@
+name: 'Download test configuration'
+description: 'Action downloads the test configuration from the specified folder'
+
+inputs:
+  resource_subfolder:
+    required: true
+    type: string
+  aws_role_to_assume:
+    required: true
+    type: string
+  aws_region:
+    required: true
+    type: string
+  aws_s3_bucket:
+    required: true
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: Configure AWS credentials for {{ inputs.resource_subfolder }}
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+          role-to-assume: ${{ inputs.aws_role_to_assume }}
+          aws-region: ${{ inputs.aws_region }}
+          role-session-name: IntegrationRoleSessions
+          role-duration-seconds: 900
+
+    - name: Copy configuration for {{ inputs.resource_subfolder }}
+      run: | 
+        aws s3 cp ${{ inputs.aws_s3_bucket }}/${{ inputs.resource_subfolder }}/ ~/.aws-amplify/amplify-ios/testconfiguration/ --recursive
+      shell: bash
