@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import hierarchical_state_machine_swift
 import AWSCognitoIdentityProvider
 
 struct ConfirmSignUp: Command {
