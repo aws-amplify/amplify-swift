@@ -10,7 +10,6 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 
 import AWSCognitoIdentityProvider
-import hierarchical_state_machine_swift
 
 class SignUpStateTests: XCTestCase {
     func testSignUpNotStartedResolver() throws {
