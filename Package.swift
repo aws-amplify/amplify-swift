@@ -7,7 +7,6 @@ let package = Package(
     name: "Amplify",
     platforms: [.iOS(.v11)],
     products: [
-        
         .library(
             name: "Amplify",
             targets: ["Amplify"]
@@ -15,6 +14,10 @@ let package = Package(
         .library(
             name: "AWSPluginsCore",
             targets: ["AWSPluginsCore"]
+        ),
+        .library(
+            name: "AWSPluginsTestCommon",
+            targets: ["AWSPluginsTestCommon"]
         ),
         .library(
             name: "AWSCognitoAuthPlugin",
@@ -27,10 +30,6 @@ let package = Package(
         .library(
             name: "AWSAPIPlugin",
             targets: ["AWSAPIPlugin"]
-        ),
-        .library(
-            name: "AWSPluginsTestCommon",
-            targets: ["AWSPluginsTestCommon"]
         ),
     ],
     dependencies: [
@@ -59,10 +58,61 @@ let package = Package(
             path: "AmplifyPlugins/Core/AWSPluginsCore"
         ),
         .target(
+            name: "AmplifyBigInteger",
+            dependencies: [
+                "libtommath"
+            ],
+            path: "AmplifyPlugins/Auth/Sources/AmplifyBigInteger"
+        ),
+        .target(
+            name: "AmplifySRP",
+            dependencies: [
+                .target(name: "AmplifyBigInteger"),
+            ],
+            path: "AmplifyPlugins/Auth/Sources/AmplifySRP"
+        ),
+        .target(
+            name: "AmplifyTestCommon",
+            dependencies: [
+                "Amplify",
+                "CwlPreconditionTesting",
+                "AWSPluginsCore"
+            ],
+            path: "AmplifyTestCommon",
+            exclude: [
+                "Info.plist"
+            ]
+        ),
+        .target(
+            name: "AWSPluginsTestCommon",
+            dependencies: [
+                "Amplify",
+                "AWSPluginsCore",
+                .product(name: "AWSClientRuntime", package: "AWSSwiftSDK")
+            ],
+            path: "AmplifyPlugins/Core/AWSPluginsTestCommon"
+        ),
+        .testTarget(
+            name: "AmplifyTests",
+            dependencies: [
+                "Amplify",
+                "AmplifyTestCommon"
+            ],
+            path: "AmplifyTests"
+        ),
+        .testTarget(
+            name: "AmplifyBigIntegerTests",
+            dependencies: [
+                "AmplifyBigInteger"
+            ],
+            path: "AmplifyPlugins/Auth/Tests/AmplifyBigIntegerUnitTests"
+        ),
+        .target(
             name: "AWSCognitoAuthPlugin",
             dependencies: [
                 .target(name: "Amplify"),
                 .target(name: "AmplifySRP"),
+                .target(name: "AWSPluginsCore"),
                 .product(name: "AWSCognitoIdentityProvider", package: "AWSSwiftSDK"),
                 .product(name: "AWSCognitoIdentity", package: "AWSSwiftSDK")
             ],
@@ -70,6 +120,20 @@ let package = Package(
             exclude: [
                 "Resources/Info.plist"
             ]
+        ),
+        .testTarget(
+            name: "AWSCognitoAuthPluginUnitTests",
+            dependencies: [
+                "AWSCognitoAuthPlugin"
+            ],
+            path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests"
+        ),
+        .testTarget(
+            name: "AWSCognitoAuthPluginIntegrationTests",
+            dependencies: [
+                "AWSCognitoAuthPlugin"
+            ],
+            path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginIntegrationTests"
         ),
         .target(
             name: "AWSDataStorePlugin",
@@ -93,68 +157,6 @@ let package = Package(
                 "Info.plist",
                 "AWSAPIPlugin.md"
             ]
-        ),
-        .target(
-            name: "AmplifySRP",
-            dependencies: [
-                .target(name: "AmplifyBigInteger"),
-            ],
-            path: "AmplifyPlugins/Auth/Sources/AmplifySRP"
-        ),
-        .target(
-            name: "AmplifyBigInteger",
-            dependencies: [
-                "libtommath"
-            ],
-            path: "AmplifyPlugins/Auth/Sources/AmplifyBigInteger"
-        ),
-        .target(
-            name: "AmplifyTestCommon",
-            dependencies: [
-                "Amplify",
-                "CwlPreconditionTesting"
-            ],
-            path: "AmplifyTestCommon",
-            exclude: [
-                "Info.plist"
-            ]
-        ),
-        .target(
-            name: "AWSPluginsTestCommon",
-            dependencies: [
-                "Amplify",
-                .product(name: "AWSClientRuntime", package: "AWSSwiftSDK")
-            ],
-            path: "AmplifyPlugins/Core/AWSPluginsTestCommon"
-        ),
-        .testTarget(
-            name: "AmplifyTests",
-            dependencies: [
-                "Amplify",
-                "AmplifyTestCommon"
-            ],
-            path: "AmplifyTests"
-        ),
-        .testTarget(
-            name: "AmplifyBigIntegerTests",
-            dependencies: [
-                "AmplifyBigInteger"
-            ],
-            path: "AmplifyPlugins/Auth/Tests/AmplifyBigIntegerUnitTests"
-        ),
-        .testTarget(
-            name: "AWSCognitoAuthPluginUnitTests",
-            dependencies: [
-                "AWSCognitoAuthPlugin"
-            ],
-            path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests"
-        ),
-        .testTarget(
-            name: "AWSCognitoAuthPluginIntegrationTests",
-            dependencies: [
-                "AWSCognitoAuthPlugin"
-            ],
-            path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginIntegrationTests"
         ),
         .testTarget(
             name: "AWSDataStoreCategoryPluginTests",
@@ -220,6 +222,6 @@ let package = Package(
             resources: [
                 .process("Resources/RESTWithIAMIntegrationTests-amplifyconfiguration.json")
             ]
-        )
+        ),
     ]
 )
