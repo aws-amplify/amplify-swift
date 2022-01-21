@@ -16,8 +16,6 @@
 // https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ConfirmSignUp.html
 
 import Foundation
-
-import hierarchical_state_machine_swift
 import AWSCognitoIdentityProvider
 
 public struct SignUpEvent: StateMachineEvent {
