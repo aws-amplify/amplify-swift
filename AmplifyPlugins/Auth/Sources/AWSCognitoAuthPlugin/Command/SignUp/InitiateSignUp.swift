@@ -7,7 +7,6 @@
 
 import Foundation
 import CryptoKit
-import hierarchical_state_machine_swift
 import AWSCognitoIdentityProvider
 import Amplify
 
