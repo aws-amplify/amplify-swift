@@ -34,3 +34,18 @@ type TodoCognitoPrivate @model @auth(rules: [{ allow: private }]) {
   id: ID!
   title: String!
 }
+
+type PostDraftCognitoMultiOwner @model
+  @auth(rules: [
+    # Defaults to use the "owner" field.
+    { allow: owner },
+
+    # Authorize both the update mutation and queries.
+    { allow: owner, ownerField: "editors", operations: [update, read] }
+  ]) {
+  id: ID!
+  title: String!
+  content: String
+  owner: String
+  editors: [String]
+}

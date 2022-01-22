@@ -103,6 +103,37 @@ class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseT
         assertUsedAuthTypes([.amazonCognitoUserPools])
     }
 
+    /// Given: a user signed in with CognitoUserPools, a model with multiple rules with
+    ///      explicit owner field
+    /// When: DataStore query/mutation operations are sent with CognitoUserPools
+    /// Then: DataStore is successfully initialized, query returns a result,
+    ///      mutation is processed for an authenticated users
+    func testExplicitMultipleOwner() {
+        setup(withModels: ExplicitMultipleOwnerModelRegistration(),
+              testType: .defaultAuthCognito)
+
+        signIn(user: user1)
+
+        let expectations = makeExpectations()
+
+        assertDataStoreReady(expectations)
+
+        // Query
+        assertQuerySuccess(modelType: PostDraftCognitoMultiOwner.self,
+                           expectations) { error in
+            XCTFail("Error query \(error)")
+        }
+
+        let post = PostDraftCognitoMultiOwner(title: "title")
+
+        // Mutations
+        assertMutations(model: post, expectations) { error in
+            XCTFail("Error mutation \(error)")
+        }
+
+        assertUsedAuthTypes([.amazonCognitoUserPools])
+    }
+
     /// Given: a user signed in with CognitoUserPools, a model with an implicit owner field
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,
@@ -186,6 +217,13 @@ extension AWSDataStoreCategoryPluginAuthOwnerIntegrationTests {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: TodoExplicitOwnerField.self)
+        }
+    }
+
+    struct ExplicitMultipleOwnerModelRegistration: AmplifyModelRegistration {
+        public let version: String = "version"
+        func registerModels(registry: ModelRegistry.Type) {
+            ModelRegistry.register(modelType: PostDraftCognitoMultiOwner.self)
         }
     }
 

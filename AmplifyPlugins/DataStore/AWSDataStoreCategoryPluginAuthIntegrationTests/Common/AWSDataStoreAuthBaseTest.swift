@@ -94,7 +94,7 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
             amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: configFile)
 
         } catch {
-            XCTFail("Error during setup: \(error)")
+            fatalError("Error during setup: \(error)")
         }
 
     }
