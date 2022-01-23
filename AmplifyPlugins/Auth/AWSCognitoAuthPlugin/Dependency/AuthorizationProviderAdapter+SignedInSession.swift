@@ -61,6 +61,7 @@ extension AuthorizationProviderAdapter {
                 } else if (error as NSError?)?.userInfo["__type"] as? String == "UserNotFoundException" {
                     self.awsMobileClient.signOutLocally()
                     self.fetchSignedOutSession(completionHandler)
+                    Amplify.Hub.dispatch(to: .auth, payload: HubPayload(eventName: HubPayload.EventName.Auth.signedOut))
                 } else {
                     self.fetchSignedInSession(withError: AuthErrorHelper.toAuthError(error!), completionHandler)
                 }
