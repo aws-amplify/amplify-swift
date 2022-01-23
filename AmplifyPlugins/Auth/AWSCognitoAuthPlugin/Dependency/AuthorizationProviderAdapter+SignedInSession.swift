@@ -58,6 +58,10 @@ extension AuthorizationProviderAdapter {
                         self.fetchSignedInSession(withError: AuthErrorHelper.toAuthError(error!),
                                                   completionHandler)
                     }
+                } else if (error as NSError?)?.userInfo["__type"] as? String == "UserNotFoundException" {
+                    print("boom")
+                    self.awsMobileClient.signOutLocally()
+                    self.fetchSignedOutSession(completionHandler)
                 } else {
                     self.fetchSignedInSession(withError: AuthErrorHelper.toAuthError(error!), completionHandler)
                 }
