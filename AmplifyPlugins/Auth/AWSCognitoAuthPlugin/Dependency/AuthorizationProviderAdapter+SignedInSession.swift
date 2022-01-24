@@ -58,7 +58,7 @@ extension AuthorizationProviderAdapter {
                         self.fetchSignedInSession(withError: AuthErrorHelper.toAuthError(error!),
                                                   completionHandler)
                     }
-                } else if (error as NSError?)?.userInfo["__type"] as? String == "UserNotFoundException" {
+                } else if self.isErrorCausedByUserNotFound(error) {
                     self.awsMobileClient.signOutLocally()
                     self.fetchSignedOutSession(completionHandler)
                     Amplify.Hub.dispatch(to: .auth, payload: HubPayload(eventName: HubPayload.EventName.Auth.signedOut))
@@ -248,6 +248,15 @@ extension AuthorizationProviderAdapter {
         if let cognitoIdentityPoolError = error as NSError?,
             cognitoIdentityPoolError.domain == AWSCognitoIdentityErrorDomain,
             cognitoIdentityPoolError.code == AWSCognitoIdentityErrorType.notAuthorized.rawValue {
+            return true
+        }
+        return false
+    }
+
+    private func isErrorCausedByUserNotFound(_ error: Error?) -> Bool {
+        if let cognitoIdentityProviderError = error as NSError?,
+            cognitoIdentityProviderError.domain == AWSCognitoIdentityProviderErrorDomain,
+            cognitoIdentityProviderError.code == AWSCognitoIdentityProviderErrorType.userNotFound.rawValue {
             return true
         }
         return false
