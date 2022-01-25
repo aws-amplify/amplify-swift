@@ -63,6 +63,9 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
             guard case .configured(let authNState, _) = $0 else {
                 return
             }
+            defer {
+                self.finish()
+            }
 
             switch authNState {
             case .signedIn:
