@@ -18,7 +18,15 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
         var fields = [String: String]()
         if let customPrimaryKeys = model.schema.customPrimaryIndexFields {
             for key in customPrimaryKeys {
-                fields[key] = model[key] as? String
+                if let date = model[key] as? Temporal.Date {
+                    fields[key] = date.iso8601String
+                } else if let dateTime = model[key] as? Temporal.DateTime {
+                    fields[key] = dateTime.iso8601String
+                } else if let time = model[key] as? Temporal.Time {
+                    fields[key] = time.iso8601String
+                } else {
+                    fields[key] = model[key] as? String
+                }
             }
         }
         self.init(id: model.id, fields: fields)

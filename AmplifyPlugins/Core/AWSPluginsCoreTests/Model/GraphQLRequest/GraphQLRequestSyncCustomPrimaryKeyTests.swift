@@ -14,6 +14,7 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
 
     override func setUp() {
         ModelRegistry.register(modelType: CustomerOrder.self)
+        ModelRegistry.register(modelType: CustomerWithDateInPK.self)
     }
 
     override func tearDown() {
@@ -219,5 +220,66 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
         XCTAssertEqual(input["id"] as? String, expectedInput["id"] as? String)
         XCTAssertEqual(input["orderId"] as? String, expectedInput["orderId"] as? String)
         XCTAssertEqual(input["_version"] as? Int, expectedInput["_version"] as? Int)
+    }
+
+    func testDeleteMutationGraphQLRequestWithDateInPK() throws {
+        do {
+            let datetime = try Temporal.DateTime(iso8601String: "2020-01-20T08:00")
+            let customer = CustomerWithDateInPK(dob: datetime, firstName: "John", lastName: "Doe")
+            var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: customer.modelName,
+                                                                   operationType: .mutation)
+            documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
+            documentBuilder.add(decorator: ModelIdDecorator(model: customer))
+            documentBuilder.add(decorator: ConflictResolutionDecorator(version: 1, lastSync: nil))
+            let document = documentBuilder.build()
+            let documentStringValue = """
+                mutation DeleteCustomerWithDateInPK($input: DeleteCustomerWithDateInPKInput!) {
+                  deleteCustomerWithDateInPK(input: $input) {
+                    id
+                    createdAt
+                    dob
+                    firstName
+                    lastName
+                    updatedAt
+                    __typename
+                    _version
+                    _deleted
+                    _lastChangedAt
+                  }
+                }
+                """
+            XCTAssertEqual(document.stringValue, documentStringValue)
+
+            guard let expectedInput = document.variables?["input"] as? [String: Any] else {
+                XCTFail("The document variables property doesn't contain a valid input")
+                return
+            }
+
+            let request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: customer,
+                                                                            modelSchema: customer.schema,
+                                                                            version: 1)
+
+            XCTAssertEqual(request.document, document.stringValue)
+            XCTAssert(request.responseType == MutationSyncResult.self)
+
+            guard let variables = request.variables else {
+                XCTFail("The request doesn't contain variables")
+                return
+            }
+            guard let input = variables["input"] as? [String: Any] else {
+                XCTFail("The document variables property doesn't contain a valid input")
+                return
+            }
+
+            XCTAssertEqual(input["id"] as? String, customer.id)
+            XCTAssertEqual(input["dob"] as? String, customer.dob.iso8601String)
+            XCTAssertEqual(input["_version"] as? Int, 1)
+
+            XCTAssertEqual(input["id"] as? String, expectedInput["id"] as? String)
+            XCTAssertEqual(input["dob"] as? String, expectedInput["dob"] as? String)
+            XCTAssertEqual(input["_version"] as? Int, expectedInput["_version"] as? Int)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
     }
 }

@@ -197,3 +197,12 @@ type Registration8V2 @model {
   attendeeId: ID @index(name: "byAttendee", sortKeyFields: ["meetingId"])
   attendee: Attendee8V2! @belongsTo(fields: ["attendeeId"])
 }
+
+#14 Custom Primary Key with sortKeyFields
+
+type CustomerWithDateInPK @model {
+  id: ID! @primaryKey(sortKeyFields: ["dob"])
+  dob: AWSDateTime!
+  firstName: String
+  lastName: String
+}

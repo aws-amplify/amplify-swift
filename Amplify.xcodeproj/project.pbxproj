@@ -427,6 +427,8 @@
 		976D4D5524DCA3F80083F5AC /* PersistentLoggingPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976D4D5424DCA3F80083F5AC /* PersistentLoggingPluginTests.swift */; };
 		977007E324C1585100848468 /* LogEntryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977007E224C1585100848468 /* LogEntryItem.swift */; };
 		97943A2E265B7CAB0097DBBA /* GraphQLRequestSyncCustomPrimaryKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97943A06265B7A5F0097DBBA /* GraphQLRequestSyncCustomPrimaryKeyTests.swift */; };
+		97B8147527A35847006EEE4F /* CustomerWithDateInPK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B8147427A35847006EEE4F /* CustomerWithDateInPK.swift */; };
+		97B8147727A35875006EEE4F /* CustomerWithDateInPK+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B8147627A35875006EEE4F /* CustomerWithDateInPK+Schema.swift */; };
 		97CB85FD24AA451B000C65FB /* PersistentLoggingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */; };
 		97CB85FE24AA451B000C65FB /* AmplifyDevMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */; };
 		97CB85FF24AA451B000C65FB /* DevMenuList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB85F824AA451B000C65FB /* DevMenuList.swift */; };
@@ -1347,6 +1349,8 @@
 		976D4D5424DCA3F80083F5AC /* PersistentLoggingPluginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentLoggingPluginTests.swift; sourceTree = "<group>"; };
 		977007E224C1585100848468 /* LogEntryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEntryItem.swift; sourceTree = "<group>"; };
 		97943A06265B7A5F0097DBBA /* GraphQLRequestSyncCustomPrimaryKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestSyncCustomPrimaryKeyTests.swift; sourceTree = "<group>"; };
+		97B8147427A35847006EEE4F /* CustomerWithDateInPK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerWithDateInPK.swift; sourceTree = "<group>"; };
+		97B8147627A35875006EEE4F /* CustomerWithDateInPK+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomerWithDateInPK+Schema.swift"; sourceTree = "<group>"; };
 		97CB85F524AA451B000C65FB /* PersistentLoggingPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentLoggingPlugin.swift; sourceTree = "<group>"; };
 		97CB85F624AA451B000C65FB /* AmplifyDevMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyDevMenu.swift; sourceTree = "<group>"; };
 		97CB85F824AA451B000C65FB /* DevMenuList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevMenuList.swift; sourceTree = "<group>"; };
@@ -2202,6 +2206,8 @@
 				218F78C9275AC6B30042334B /* TodoCustomTimestampV2+Schema.swift */,
 				218F78C4275AC6B30042334B /* TodoWithDefaultValueV2.swift */,
 				218F78C5275AC6B30042334B /* TodoWithDefaultValueV2+Schema.swift */,
+				97B8147427A35847006EEE4F /* CustomerWithDateInPK.swift */,
+				97B8147627A35875006EEE4F /* CustomerWithDateInPK+Schema.swift */,
 			);
 			path = TransformerV2;
 			sourceTree = "<group>";
@@ -5653,6 +5659,7 @@
 				21F40A4023A295470074678E /* TestCommonConstants.swift in Sources */,
 				217D5EB32577F9DF009F0639 /* Comment3.swift in Sources */,
 				218F787E275A7F0C0042334B /* Team1V2.swift in Sources */,
+				97B8147727A35875006EEE4F /* CustomerWithDateInPK+Schema.swift in Sources */,
 				214F497C2486D8A200DA616C /* UserFollowers.swift in Sources */,
 				217D5EB62577F9DF009F0639 /* Comment3+Schema.swift in Sources */,
 				215D40AA277231920077E7DA /* Attendee8V2.swift in Sources */,
@@ -5688,6 +5695,7 @@
 				217D5EB12577F9DF009F0639 /* Team2+Schema.swift in Sources */,
 				B4F3E9FA24314ECC00F23296 /* MockAuthCategoryPlugin.swift in Sources */,
 				21A9052C2616446F00EC141D /* ListStringContainer.swift in Sources */,
+				97B8147527A35847006EEE4F /* CustomerWithDateInPK.swift in Sources */,
 				21FDBB652587D7A30086FCDC /* Comment6+Schema.swift in Sources */,
 				218F78CB275AC6B30042334B /* TodoWithDefaultValueV2+Schema.swift in Sources */,
 				214F49CE24898E8500DA616C /* Article+Schema.swift in Sources */,
