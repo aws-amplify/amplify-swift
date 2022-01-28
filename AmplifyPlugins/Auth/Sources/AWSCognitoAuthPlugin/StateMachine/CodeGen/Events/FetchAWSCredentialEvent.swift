@@ -11,11 +11,11 @@ import Foundation
 public struct FetchAWSCredentialEvent: StateMachineEvent {
     public enum EventType: Equatable {
 
-        case fetch
-
-        case refresh
-
+        case fetch(AWSAuthCognitoSession)
+        
         case fetched
+        
+        case throwError(AuthorizationError)
 
     }
 
@@ -26,8 +26,8 @@ public struct FetchAWSCredentialEvent: StateMachineEvent {
     public var type: String {
         switch eventType {
         case .fetch: return "FetchAWSCredentialEvent.fetch"
-        case .refresh: return "FetchAWSCredentialEvent.refresh"
         case .fetched: return "FetchAWSCredentialEvent.fetched"
+        case .throwError: return "FetchAWSCredentialEvent.throwError"
         }
     }
 

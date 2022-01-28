@@ -8,7 +8,7 @@
 import Foundation
 
 
-public enum CredentialStoreState: State {
+enum CredentialStoreState: State {
 
     case notConfigured
 
@@ -16,17 +16,17 @@ public enum CredentialStoreState: State {
 
     case loadingStoredCredentials(AuthConfiguration)
 
-    case configuredCredentialStore
+    case credentialsLoaded(CognitoCredentials?)
 
 }
 
-public extension CredentialStoreState {
+extension CredentialStoreState {
     var type: String {
         switch self {
         case .notConfigured: return "CredentialStoreState.notConfigured"
         case .migratingLegacyStore: return "CredentialStoreState.migratingLegacyStore"
         case .loadingStoredCredentials: return "CredentialStoreState.loadingStoredCredentials"
-        case .configuredCredentialStore: return "CredentialStoreState.configuredCredentialStore"
+        case .credentialsLoaded: return "CredentialStoreState.credentialsLoaded"
         }
     }
 }

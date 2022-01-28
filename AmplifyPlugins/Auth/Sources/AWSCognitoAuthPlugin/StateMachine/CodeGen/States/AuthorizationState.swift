@@ -11,18 +11,15 @@ import Foundation
 public enum AuthorizationState: State {
 
     case notConfigured
-
-    case configured(AuthConfiguration)
-
+        
+    case configured
+    
     case fetchingAuthSession(FetchAuthSessionState)
 
-    case sessionEstablished(AuthorizationSessionData)
-
-    case validatingSession
-
-    case error
+    case sessionEstablished(AWSAuthCognitoSession)
+    
+    case error(AuthorizationError)
 }
-
 
 public extension AuthorizationState {
     var type: String {
@@ -31,7 +28,6 @@ public extension AuthorizationState {
         case .configured: return "AuthorizationState.configured"
         case .fetchingAuthSession: return "AuthorizationState.fetchingAuthSession"
         case .sessionEstablished: return "AuthorizationState.sessionEstablished"
-        case .validatingSession: return "AuthorizationState.validatingSession"
         case .error: return "AuthorizationState.error"
         }
     }

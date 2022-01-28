@@ -1,6 +1,5 @@
 // swift-tools-version:5.5
 // The swift-tools-version declares the minimum version of Swift required to build this package.
-
 import PackageDescription
 
 let amplifyTargets: [Target] = [
@@ -189,7 +188,7 @@ let dataStoreTargets: [Target] = [
             "AWSDataStorePlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/Datastore/AWSDataStoreCategoryPluginTests"
+        path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPluginTests"
     ),
     .testTarget(
         name: "AWSDataStoreCategoryPluginIntegrationTests",
@@ -198,7 +197,7 @@ let dataStoreTargets: [Target] = [
             "AWSAPIPlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/Datastore/AWSDataStoreCategoryPluginIntegrationTests",
+        path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPluginIntegrationTests",
         resources: [
             .process("Resources/AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration.json")
         ]
