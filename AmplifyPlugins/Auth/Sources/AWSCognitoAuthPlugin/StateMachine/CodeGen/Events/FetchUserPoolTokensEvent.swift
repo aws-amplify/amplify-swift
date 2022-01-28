@@ -11,12 +11,12 @@ import Foundation
 public struct FetchUserPoolTokensEvent: StateMachineEvent {
     public enum EventType: Equatable {
 
-        case fetch
-
-        case refresh
-
+        case refresh(AWSAuthCognitoSession)
+        
         case fetched
-
+        
+        case throwError(AuthorizationError)
+        
     }
 
     public let id: String
@@ -25,9 +25,9 @@ public struct FetchUserPoolTokensEvent: StateMachineEvent {
 
     public var type: String {
         switch eventType {
-        case .fetch: return "FetchUserPoolTokensEvent.fetch"
         case .refresh: return "FetchUserPoolTokensEvent.refresh"
         case .fetched: return "FetchUserPoolTokensEvent.fetched"
+        case .throwError: return "FetchUserPoolTokensEvent.throwError"
         }
     }
 

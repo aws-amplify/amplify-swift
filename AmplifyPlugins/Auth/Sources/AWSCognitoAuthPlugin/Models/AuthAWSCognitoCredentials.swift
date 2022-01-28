@@ -20,3 +20,5 @@ public struct AuthAWSCognitoCredentials: AuthAWSTemporaryCredentials {
 }
 
 extension AuthAWSCognitoCredentials: Codable { }
+
+extension AuthAWSCognitoCredentials: Equatable { }

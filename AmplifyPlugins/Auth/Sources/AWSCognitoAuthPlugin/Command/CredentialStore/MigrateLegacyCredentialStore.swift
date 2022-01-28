@@ -53,7 +53,7 @@ struct MigrateLegacyCredentialStore: Command {
 
         // If everything is nil, probably the store has been migrated
         if !(identityId == nil && awsCredentials == nil && userPoolTokens == nil) {
-            let awsCognitoAuthCredentials = AWSCognitoAuthCredential(userPoolTokens: userPoolTokens,
+            let awsCognitoAuthCredentials = CognitoCredentials(userPoolTokens: userPoolTokens,
                                                                      identityId: identityId,
                                                                      awsCredential: awsCredentials)
 

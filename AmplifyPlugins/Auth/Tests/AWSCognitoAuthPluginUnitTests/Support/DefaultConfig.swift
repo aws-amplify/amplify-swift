@@ -77,7 +77,8 @@ enum Defaults {
 
     static func makeDefaultAuthConfigData() -> AuthConfiguration {
         let userPoolConfigData = makeDefaultUserPoolConfigData()
-        return .userPools(userPoolConfigData)
+        let identityConfigDate = makeIdentityConfigData()
+        return .userPoolsAndIdentityPools(userPoolConfigData, identityConfigDate)
     }
 
     static func makeDefaultAuthEnvironment() -> AuthEnvironment {
@@ -97,7 +98,7 @@ enum Defaults {
             cognitoIdentityFactory: makeIdentity)
         let authEnv = AuthEnvironment(
             userPoolConfigData: userPoolConfigData,
-            identityPoolConfigData: nil,
+            identityPoolConfigData: identityPoolConfigData,
             authenticationEnvironment: authenticationEnvironment,
             authorizationEnvironment: authorizationEnvironment,
             credentialStoreEnvironment: nil

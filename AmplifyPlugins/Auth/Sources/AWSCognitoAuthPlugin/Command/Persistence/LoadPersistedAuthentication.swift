@@ -12,21 +12,36 @@ struct LoadPersistedAuthentication: Command {
     let identifier = "LoadPersistedAuthentication"
     let configuration: AuthConfiguration
 
-    enum PersistedAuthenticationState {
-        case signedIn(SignedInData)
-        case signedOut(SignedOutData)
-    }
-
     func execute(
         withDispatcher dispatcher: EventDispatcher,
         environment: Environment
     ) {
         let timer = LoggingTimer(identifier).start("### Starting execution")
 
-        //TODO: Implementation
-
-        let signedOutData = SignedOutData(authenticationConfiguration: configuration, lastKnownUserName: nil)
-        let authenticationEvent = AuthenticationEvent(eventType: .initializedSignedOut(signedOutData))
+        guard let credentialStoreEnvironment = (environment as? AuthEnvironment)?.credentialStoreEnvironment else {
+            let event = AuthenticationEvent(
+                eventType: .error(AuthenticationError.configuration(message: AuthPluginErrorConstants.configurationError)))
+            timer.stop("### sending event \(event.type)")
+            dispatcher.send(event)
+            return
+        }
+        
+        let amplifyCredentialStore = credentialStoreEnvironment.amplifyCredentialStoreFactory()
+        let storedCredentials = try? amplifyCredentialStore.retrieveCredential()
+        
+        let authenticationEvent: AuthenticationEvent
+        
+        if let userPoolTokens = storedCredentials?.userPoolTokens {
+            let signedInData = SignedInData(userId: "",
+                                            userName: "",
+                                            signedInDate: Date(),
+                                            signInMethod: .srp,
+                                            cognitoUserPoolTokens: userPoolTokens)
+            authenticationEvent = AuthenticationEvent(eventType: .initializedSignedIn(signedInData))
+        } else {
+            let signedOutData = SignedOutData(authenticationConfiguration: configuration, lastKnownUserName: nil)
+            authenticationEvent = AuthenticationEvent(eventType: .initializedSignedOut(signedOutData))
+        }
         timer.stop("### sending event \(authenticationEvent.type)")
         dispatcher.send(authenticationEvent)
 
