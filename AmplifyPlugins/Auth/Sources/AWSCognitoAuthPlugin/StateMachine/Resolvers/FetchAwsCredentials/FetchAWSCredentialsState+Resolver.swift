@@ -27,19 +27,11 @@ public extension FetchAWSCredentialsState {
             switch oldState {
             case .configuring:
                 switch fetchAWSCredentialEvent.eventType {
-                case .fetch:
-                    let command = FetchAuthAWSCredentials()
+                case .fetch(let cognitoSession):
+                    let command = FetchAuthAWSCredentials(cognitoSession: cognitoSession)
                     return .init(newState: FetchAWSCredentialsState.fetching, commands: [command])
-                case .refresh:
-                    let command = RefreshAWSCredentials()
-                    return .init(newState: FetchAWSCredentialsState.refreshing, commands: [command])
-                default:
-                    return .from(oldState)
-                }
-            case .refreshing:
-                switch fetchAWSCredentialEvent.eventType {
                 case .fetched:
-                    return .init(newState: FetchAWSCredentialsState.fetched)
+                    return .init(newState: .fetched)
                 default:
                     return .from(oldState)
                 }
@@ -47,6 +39,8 @@ public extension FetchAWSCredentialsState {
                 switch fetchAWSCredentialEvent.eventType {
                 case .fetched:
                     return .init(newState: FetchAWSCredentialsState.fetched)
+                case .throwError(let authorizationError):
+                    return .init(newState: .error(authorizationError))
                 default:
                     return .from(oldState)
                 }

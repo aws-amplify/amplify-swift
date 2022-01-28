@@ -40,7 +40,7 @@ struct VerifyPasswordSRP: Command {
 
         guard let challengeParameters = authResponse.challengeParameters else {
             //TODO: Change this to a better error
-            let authError = SRPSignInError.configuration(message: "Some messagae")
+            let authError = SRPSignInError.configuration(message: AuthPluginErrorConstants.configurationError)
             let event = SRPSignInEvent(
                 id: environment.eventIDFactory(),
                 eventType: .throwPasswordVerifierError(authError)

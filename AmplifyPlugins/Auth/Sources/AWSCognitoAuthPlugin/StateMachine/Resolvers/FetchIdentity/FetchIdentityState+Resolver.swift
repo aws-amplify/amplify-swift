@@ -27,9 +27,11 @@ public extension FetchIdentityState {
             switch oldState {
             case .configuring:
                 switch fetchIdentityEvent.eventType {
-                case .fetch:
-                    let command = FetchAuthIdentityId()
+                case .fetch(let cognitoSession):
+                    let command = FetchAuthIdentityId(cognitoSession: cognitoSession)
                     return .init(newState: FetchIdentityState.fetching, commands: [command])
+                case .fetched:
+                    return .init(newState: FetchIdentityState.fetched)
                 default:
                     return .from(oldState)
                 }
@@ -37,6 +39,8 @@ public extension FetchIdentityState {
                 switch fetchIdentityEvent.eventType {
                 case .fetched:
                     return .init(newState: FetchIdentityState.fetched, commands: [])
+                case .throwError(let error):
+                    return .init(newState: FetchIdentityState.error(error))
                 default:
                     return .from(oldState)
                 }

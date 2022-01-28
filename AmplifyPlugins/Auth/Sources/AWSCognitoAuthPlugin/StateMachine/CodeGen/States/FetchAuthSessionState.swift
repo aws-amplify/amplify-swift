@@ -10,7 +10,7 @@ import Foundation
 
 public enum FetchAuthSessionState: State {
 
-    case determiningUserState
+    case initializingFetchAuthSession
 
     case fetchingUserPoolTokens(FetchUserPoolTokensState)
 
@@ -20,19 +20,16 @@ public enum FetchAuthSessionState: State {
 
     case sessionEstablished
 
-    case error
-
 }
 
 public extension FetchAuthSessionState {
     var type: String {
         switch self {
-        case .determiningUserState: return "FetchAuthSessionState.determiningUserState"
+        case .initializingFetchAuthSession: return "FetchAuthSessionState.initializingFetchAuthSession"
         case .fetchingUserPoolTokens: return "FetchAuthSessionState.fetchingUserPoolTokens"
         case .fetchingIdentity: return "FetchAuthSessionState.fetchingIdentity"
         case .fetchingAWSCredentials: return "FetchAuthSessionState.fetchingAwsCredentials"
         case .sessionEstablished: return "FetchAuthSessionState.sessionEstablished"
-        case .error: return "FetchAuthSessionState.error"
         }
     }
 }
