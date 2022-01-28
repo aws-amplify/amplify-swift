@@ -78,7 +78,11 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     public func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options?,
                                  listener: AuthFetchSessionOperation.ResultListener?) -> AuthFetchSessionOperation
     {
-        fatalError("Not implemented")
+        let options = options ?? AuthFetchSessionRequest.Options()
+        let request = AuthFetchSessionRequest(options: options)
+        let fetchAuthSessionOperation = AWSAuthFetchSessionOperation(request, stateMachine: stateMachine, resultListener: listener)
+        queue.addOperation(fetchAuthSessionOperation)
+        return fetchAuthSessionOperation
     }
 
     public func resetPassword(for username: String,

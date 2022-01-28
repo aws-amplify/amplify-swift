@@ -11,10 +11,16 @@ import Foundation
 public struct FetchAuthSessionEvent: StateMachineEvent {
     public enum EventType: Equatable {
 
-        case fetchUserPoolTokens
-        case fetchIdentity
-        case fetchAWSCredentials
-        case fetchedAuthSession
+        case fetchUserPoolTokens(AWSAuthCognitoSession)
+        
+        case fetchIdentity(AWSAuthCognitoSession)
+        
+        case fetchAWSCredentials(AWSAuthCognitoSession)
+        
+        case fetchedAuthSession(AWSAuthCognitoSession)
+        
+        case throwError(AuthorizationError)
+
     }
 
     public let id: String
@@ -27,6 +33,7 @@ public struct FetchAuthSessionEvent: StateMachineEvent {
         case .fetchIdentity: return "FetchAuthSessionEvent.fetchIdentity"
         case .fetchAWSCredentials: return "FetchAuthSessionEvent.fetchAWSCredentials"
         case .fetchedAuthSession: return "FetchAuthSessionEvent.fetchedAuthSession"
+        case .throwError: return "FetchAuthSessionEvent.throwError"
         }
     }
 

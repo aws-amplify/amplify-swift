@@ -30,6 +30,12 @@ public struct UserPoolConfigurationData: Equatable {
         self.pinpointAppId = pinpointAppId
         self.hostedUIConfig = hostedUIConfig
     }
+    
+    /// Amazon Cognito user pool: cognito-idp.<region>.amazonaws.com/<YOUR_USER_POOL_ID>,
+    /// for example, cognito-idp.us-east-1.amazonaws.com/us-east-1_123456789.
+    public func getIdentityProviderName() -> String {
+        return "cognito-idp.\(region).amazonaws.com/\(poolId)"
+    }
 
 }
 

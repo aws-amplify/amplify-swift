@@ -43,18 +43,19 @@ struct AWSCognitoAuthCredentialStore {
 }
 
 extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
+    
+    func saveCredential(_ credential: CognitoCredentials) throws {
 
-    func saveCredential(_ credential: AWSCognitoAuthCredential) throws {
         let authCredentialStoreKey = generateSessionKey()
         let encodedCredentials = try encode(object: credential)
         try keychain.set(encodedCredentials, key: authCredentialStoreKey)
     }
 
-    func retrieveCredential() throws -> AWSCognitoAuthCredential? {
+    func retrieveCredential() throws -> CognitoCredentials? {
         let authCredentialStoreKey = generateSessionKey()
         do {
             let authCredentialData = try keychain.getData(authCredentialStoreKey)
-            let awsCredential: AWSCognitoAuthCredential = try decode(data: authCredentialData)
+            let awsCredential: CognitoCredentials = try decode(data: authCredentialData)
             return awsCredential
         } catch CredentialStoreError.itemNotFound {
             return nil
