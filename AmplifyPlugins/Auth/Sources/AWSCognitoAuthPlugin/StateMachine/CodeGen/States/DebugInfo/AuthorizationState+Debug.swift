@@ -21,8 +21,6 @@ public extension AuthorizationState {
             additionalMetadataDictionary = [:]
         case .sessionEstablished:
             additionalMetadataDictionary = [:]
-        case .validatingSession:
-            additionalMetadataDictionary = [:]
         case .error:
             additionalMetadataDictionary = [:]
         }

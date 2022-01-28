@@ -8,7 +8,7 @@
 import Foundation
 
 
-public extension CredentialStoreState {
+extension CredentialStoreState {
 
     struct Resolver: StateMachineResolver {
         public typealias StateType = CredentialStoreState
@@ -75,8 +75,8 @@ public extension CredentialStoreState {
             byApplying credentialStoreEvent: CredentialStoreEvent
         ) -> StateResolution<StateType> {
             switch credentialStoreEvent.eventType {
-            case .successfullyLoadedCredentialStore(let authConfig):
-                return .init(newState: CredentialStoreState.configuredCredentialStore)
+            case .successfullyLoadedCredentialStore(let storedCredentials):
+                return .init(newState: CredentialStoreState.credentialsLoaded(storedCredentials))
             default:
                 return .from(oldState)
             }

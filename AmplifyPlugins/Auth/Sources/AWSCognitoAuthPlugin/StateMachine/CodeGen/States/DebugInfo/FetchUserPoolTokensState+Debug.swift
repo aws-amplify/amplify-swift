@@ -17,8 +17,6 @@ public extension FetchUserPoolTokensState {
             additionalMetadataDictionary = [:]
         case .refreshing:
             additionalMetadataDictionary = [:]
-        case .fetching:
-            additionalMetadataDictionary = [:]
         case .fetched:
             additionalMetadataDictionary = [:]
         case .error:

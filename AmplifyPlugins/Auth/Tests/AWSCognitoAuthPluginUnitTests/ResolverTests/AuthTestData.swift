@@ -5,8 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCognitoAuthPlugin
 import Foundation
+
+@testable import AWSCognitoAuthPlugin
 
 extension AuthenticationEvent {
 
@@ -102,3 +103,10 @@ extension UserPoolConfigurationData {
         pinpointAppId: nil
     )
 }
+
+extension IdentityPoolConfigurationData {
+    static let testData = IdentityPoolConfigurationData(poolId: "poolId",
+                                                        region: "regionId")
+}
+
+struct MockInvalidEnvironment: Environment { }
