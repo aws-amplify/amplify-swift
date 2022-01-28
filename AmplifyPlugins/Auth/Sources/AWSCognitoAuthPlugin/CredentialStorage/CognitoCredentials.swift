@@ -7,9 +7,10 @@
 
 import Foundation
 
-// TODO: Fix this to user enums or session object
-struct AWSCognitoAuthCredential: Codable {
+struct CognitoCredentials: Codable {
     public let userPoolTokens: AWSCognitoUserPoolTokens?
     public let identityId: String?
     public let awsCredential: AuthAWSCognitoCredentials?
 }
+
+extension CognitoCredentials: Equatable { }

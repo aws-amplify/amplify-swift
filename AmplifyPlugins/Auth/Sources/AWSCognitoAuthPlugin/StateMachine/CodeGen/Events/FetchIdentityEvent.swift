@@ -11,9 +11,11 @@ import Foundation
 public struct FetchIdentityEvent: StateMachineEvent {
     public enum EventType: Equatable {
 
-        case fetch
-
+        case fetch(AWSAuthCognitoSession)
+        
         case fetched
+        
+        case throwError(AuthorizationError)
 
     }
 
@@ -25,6 +27,7 @@ public struct FetchIdentityEvent: StateMachineEvent {
         switch eventType {
         case .fetch: return "FetchIdentityEvent.fetch"
         case .fetched: return "FetchIdentityEvent.fetched"
+        case .throwError: return "FetchIdentityEvent.throwError"
         }
     }
 

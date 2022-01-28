@@ -16,11 +16,8 @@ struct InitializeAuthorizationConfiguration: Command {
     func execute(withDispatcher dispatcher: EventDispatcher,
                         environment: Environment)
     {
+        // ATM this is a no-op command
         let timer = LoggingTimer(identifier).start("### Starting execution")
-
-        // TODO: Implementation
-
-
         let authorizationEvent = AuthorizationEvent(eventType: .configure(configuration))
         timer.stop("### sending \(authorizationEvent.type)")
         dispatcher.send(authorizationEvent)

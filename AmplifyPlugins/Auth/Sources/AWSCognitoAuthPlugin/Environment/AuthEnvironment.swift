@@ -7,8 +7,6 @@
 
 import Foundation
 
-
-
 public struct AuthEnvironment: Environment {
     let userPoolConfigData: UserPoolConfigurationData?
     let identityPoolConfigData: IdentityPoolConfigurationData?
@@ -32,5 +30,21 @@ extension AuthEnvironment: AuthenticationEnvironment {
             fatalError("Could not find authentication environment")
         }
         return authNEnv.srpSignInEnvironment
+    }
+}
+
+extension AuthEnvironment: AuthorizationEnvironment {
+    var identityPoolConfiguration: IdentityPoolConfigurationData {
+        guard let authZEnv = authorizationEnvironment else {
+            fatalError("Could not find authorization environment")
+        }
+        return authZEnv.identityPoolConfiguration
+    }
+    
+    var cognitoIdentityFactory: CognitoIdentityFactory {
+        guard let authZEnv = authorizationEnvironment else {
+            fatalError("Could not find authorization environment")
+        }
+        return authZEnv.cognitoIdentityFactory
     }
 }

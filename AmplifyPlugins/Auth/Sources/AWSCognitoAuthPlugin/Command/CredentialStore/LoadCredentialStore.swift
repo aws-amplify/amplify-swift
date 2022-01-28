@@ -14,14 +14,21 @@ struct LoadCredentialStore: Command {
 
     let authConfiguration: AuthConfiguration
 
-    public func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
         let timer = LoggingTimer(identifier).start("### Starting execution")
 
-        //TODO: Implementation
-
-
-        let event = CredentialStoreEvent(eventType: .successfullyLoadedCredentialStore(authConfiguration))
+        guard let credentialStoreEnvironment = (environment as? AuthEnvironment)?.credentialStoreEnvironment else {
+            let event = CredentialStoreEvent(eventType: .loadCredentialStore(authConfiguration))
+            timer.stop("### sending event \(event.type)")
+            dispatcher.send(event)
+            return
+        }
+        
+        let amplifyCredentialStore = credentialStoreEnvironment.amplifyCredentialStoreFactory()
+        let storedCredentials = try? amplifyCredentialStore.retrieveCredential()
+        
+        let event = CredentialStoreEvent(eventType: .successfullyLoadedCredentialStore(storedCredentials))
         timer.stop("### sending event \(event.type)")
         dispatcher.send(event)
 
