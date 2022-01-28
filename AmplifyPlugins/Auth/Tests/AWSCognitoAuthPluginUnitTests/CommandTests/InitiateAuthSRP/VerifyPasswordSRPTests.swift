@@ -63,10 +63,9 @@ class VerifyPasswordSRPTests: XCTestCase {
                 XCTAssertNotNil(authenticationError)
 
                 if case let .configuration(message) = authenticationError {
-                    XCTAssertEqual(message, "Environment configured incorrectly")
+                    XCTAssertEqual(message, AuthPluginErrorConstants.configurationError)
                     passwordVerifierError.fulfill()
                 }
-                passwordVerifierError.fulfill()
             }
         }
 
@@ -104,8 +103,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
             if case let .throwPasswordVerifierError(authenticationError) = event.eventType {
                 XCTAssertNotNil(authenticationError)
-                if case let .service(error) = authenticationError {
-                    XCTAssertEqual(error.localizedDescription, "Unable to retrieve auth response challenge params")
+                if case let .configuration(message) = authenticationError {
+                    XCTAssertEqual(message, AuthPluginErrorConstants.configurationError)
                     passwordVerifierError.fulfill()
                 }
             }
@@ -145,7 +144,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
             if case let .throwPasswordVerifierError(authenticationError) = event.eventType {
                 XCTAssertNotNil(authenticationError)
-                if case .service = authenticationError {
+                if case let .configuration(message) = authenticationError {
+                    XCTAssertEqual(message, "Unable to retrieve salt")
                     passwordVerifierError.fulfill()
                 }
             }
@@ -185,8 +185,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
             if case let .throwPasswordVerifierError(authenticationError) = event.eventType {
                 XCTAssertNotNil(authenticationError)
-                if case let .service(error) = authenticationError {
-                    XCTAssertEqual(error.localizedDescription, "Unable to retrieve server secrets")
+                if case let .configuration(message) = authenticationError {
+                    XCTAssertEqual(message, "Unable to retrieve server secrets")
                     passwordVerifierError.fulfill()
                 }
             }
@@ -226,8 +226,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
             if case let .throwPasswordVerifierError(authenticationError) = event.eventType {
                 XCTAssertNotNil(authenticationError)
-                if case let .service(error) = authenticationError {
-                    XCTAssertEqual(error.localizedDescription, "Unable to retrieve SRP_B")
+                if case let .configuration(message) = authenticationError {
+                    XCTAssertEqual(message, "Unable to retrieve SRP_B")
                     passwordVerifierError.fulfill()
                 }
             }
@@ -267,8 +267,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
             if case let .throwPasswordVerifierError(authenticationError) = event.eventType {
                 XCTAssertNotNil(authenticationError)
-                if case let .service(error) = authenticationError {
-                    XCTAssertEqual(error.localizedDescription, "Exception calculating secret")
+                if case let .configuration(message) = authenticationError {
+                    XCTAssertEqual(message, "Exception calculating secret")
                     passwordVerifierError.fulfill()
                 }
             }
@@ -321,5 +321,3 @@ class VerifyPasswordSRPTests: XCTestCase {
     }
 
 }
-
-private struct MockInvalidEnvironment: Environment { }

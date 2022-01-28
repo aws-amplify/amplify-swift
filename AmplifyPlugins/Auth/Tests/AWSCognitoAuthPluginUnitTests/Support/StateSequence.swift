@@ -7,7 +7,6 @@
 import XCTest
 
 @testable import AWSCognitoAuthPlugin
-
 import AWSCognitoIdentityProvider
 
 struct StateSequence<MyState, MyEvent>: CustomStringConvertible where MyState: State, MyEvent: StateMachineEvent {

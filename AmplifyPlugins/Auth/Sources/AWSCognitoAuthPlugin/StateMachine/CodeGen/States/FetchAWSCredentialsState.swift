@@ -7,18 +7,15 @@
 
 import Foundation
 
-
 public enum FetchAWSCredentialsState: State {
 
     case configuring
-
-    case refreshing
-
+    
     case fetching
 
     case fetched
-
-    case error
+    
+    case error(AuthorizationError)
 
 }
 
@@ -26,7 +23,6 @@ public extension FetchAWSCredentialsState {
     var type: String {
         switch self {
         case .configuring: return "FetchAWSCredentialsState.configuring"
-        case .refreshing: return "FetchAWSCredentialsState.refreshing"
         case .fetching: return "FetchAWSCredentialsState.fetching"
         case .fetched: return "FetchAWSCredentialsState.fetched"
         case .error: return "FetchAWSCredentialsState.error"

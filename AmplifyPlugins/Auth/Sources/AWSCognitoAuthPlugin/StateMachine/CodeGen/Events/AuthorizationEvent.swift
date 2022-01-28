@@ -13,15 +13,12 @@ public struct AuthorizationEvent: StateMachineEvent {
 
         case configure(AuthConfiguration)
 
-        case fetchAuthSession(AuthConfiguration)
+        case fetchAuthSession
 
-        case fetchedAuthSession(AuthorizationSessionData)
-
-        case validateSession(AuthConfiguration)
-
-        case sessionIsValid
-
-        case error
+        case fetchedAuthSession(AWSAuthCognitoSession)
+        
+        case throwError(AuthorizationError)
+        
     }
 
     public let id: String
@@ -33,9 +30,7 @@ public struct AuthorizationEvent: StateMachineEvent {
         case .configure: return "AuthorizationEvent.configure"
         case .fetchAuthSession: return "AuthorizationEvent.fetchAuthSession"
         case .fetchedAuthSession: return "AuthorizationEvent.fetchedAuthSession"
-        case .validateSession: return "AuthorizationEvent.validateSession"
-        case .sessionIsValid: return "AuthorizationEvent.sessionIsValid"
-        case .error: return ""
+        case .throwError: return "AuthorizationEvent.throwError"
         }
     }
 
@@ -49,3 +44,4 @@ public struct AuthorizationEvent: StateMachineEvent {
         self.time = time
     }
 }
+

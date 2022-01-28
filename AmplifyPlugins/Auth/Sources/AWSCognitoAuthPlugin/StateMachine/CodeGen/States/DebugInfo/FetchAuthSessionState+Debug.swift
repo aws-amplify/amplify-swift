@@ -14,23 +14,15 @@ extension FetchAuthSessionState {
         var additionalMetadataDictionary: [String: Any] = [:]
 
         switch self {
-        case .determiningUserState:
+        case .initializingFetchAuthSession:
             additionalMetadataDictionary = [:]
-        case .fetchingUserPoolTokens(let fetchUserPoolTokenState):
-            additionalMetadataDictionary = [
-                "- FetchUserPoolTokensState": fetchUserPoolTokenState.debugDictionary
-            ]
-        case .fetchingIdentity(let fetchIdentityState):
-            additionalMetadataDictionary = [
-                "- FetchIdentityState": fetchIdentityState.debugDictionary
-            ]
-        case .fetchingAWSCredentials(let fetchAWSCredentialState):
-            additionalMetadataDictionary = [
-                "- FetchAWSCredentialsState": fetchAWSCredentialState.debugDictionary
-            ]
+        case .fetchingUserPoolTokens:
+            additionalMetadataDictionary = [:]
+        case .fetchingIdentity:
+            additionalMetadataDictionary = [:]
+        case .fetchingAWSCredentials:
+            additionalMetadataDictionary = [:]
         case .sessionEstablished:
-            additionalMetadataDictionary = [:]
-        case .error:
             additionalMetadataDictionary = [:]
         }
         return stateTypeDictionary.merging(additionalMetadataDictionary, uniquingKeysWith: { $1 })

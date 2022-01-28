@@ -15,8 +15,8 @@ public enum FetchIdentityState: State {
     case fetching
 
     case fetched
-
-    case error
+    
+    case error(AuthorizationError)
 
 }
 
