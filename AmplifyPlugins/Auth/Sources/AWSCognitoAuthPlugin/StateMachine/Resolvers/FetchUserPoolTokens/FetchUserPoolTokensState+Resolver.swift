@@ -29,8 +29,6 @@ public extension FetchUserPoolTokensState {
                 return resolveConfiguringState(byApplying: userPoolTokenEvent, from: oldState)
             case .refreshing:
                 return resolveRefreshingState(byApplying: userPoolTokenEvent, from: oldState)
-            case .fetching:
-                return resolveFetchingState(byApplying: userPoolTokenEvent, from: oldState)
             case .fetched:
                 return .from(oldState)
             case .error:
@@ -44,14 +42,12 @@ public extension FetchUserPoolTokensState {
             from oldState: FetchUserPoolTokensState) -> StateResolution<StateType>
         {
                 switch fetchUserPoolTokenEvent.eventType {
-                case .fetch:
-                    let newState = FetchUserPoolTokensState.fetching
-                    let command = FetchUserPoolTokens()
-                    return .init(newState: newState, commands: [command])
-                case .refresh:
+                case .refresh(let cognitoSession):
                     let newState = FetchUserPoolTokensState.refreshing
-                    let command = RefreshUserPoolTokens()
+                    let command = RefreshUserPoolTokens(cognitoSession: cognitoSession)
                     return .init(newState: newState, commands: [command])
+                case .fetched:
+                    return .init(newState: FetchUserPoolTokensState.fetched)
                 default:
                     return .from(oldState)
                 }
@@ -64,24 +60,13 @@ public extension FetchUserPoolTokensState {
                 switch fetchUserPoolTokenEvent.eventType {
                 case .fetched:
                     return .init(newState: FetchUserPoolTokensState.fetched)
+                case .throwError(let error):
+                    return .init(newState: FetchUserPoolTokensState.error(error))
                 default:
                     return .from(oldState)
                 }
         }
-
-        private func resolveFetchingState(
-            byApplying fetchUserPoolTokenEvent: FetchUserPoolTokensEvent,
-            from oldState: FetchUserPoolTokensState) -> StateResolution<StateType>
-        {
-                switch fetchUserPoolTokenEvent.eventType {
-                case .fetched:
-                    return .init(newState: FetchUserPoolTokensState.fetched)
-                default:
-                    return .from(oldState)
-                }
-        }
-
-
+        
         private func isFetchUserPoolTokenEvent(_ event: StateMachineEvent) -> FetchUserPoolTokensEvent? {
             guard let userPoolTokenEvent = event as? FetchUserPoolTokensEvent else {
                 return nil
