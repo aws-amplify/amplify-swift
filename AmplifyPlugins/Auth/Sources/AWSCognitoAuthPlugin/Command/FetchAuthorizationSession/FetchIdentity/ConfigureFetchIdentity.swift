@@ -5,24 +5,59 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSPluginsCore
 import Foundation
-
 
 struct ConfigureFetchIdentity: Command {
 
     let identifier = "ConfigureFetchIdentity"
+    
+    let cognitoSession: AWSAuthCognitoSession
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                        environment: Environment)
+                 environment: Environment)
     {
+        
+        switch cognitoSession.cognitoTokensResult {
+        case .success: break;
+        case .failure(let authError):
+            guard case .signedOut = authError else {
+                
+                let authZError = AuthorizationError.service(error:authError)
+                let event = FetchIdentityEvent(eventType: .throwError(authZError))
+                dispatcher.send(event)
+                
+                let updateCognitoSession = cognitoSession.copySessionByUpdating(
+                    identityIdResult: .failure(authError))
+                // Move to fetching the AWS Credentials
+                let fetchAwsCredentialsEvent = FetchAuthSessionEvent(
+                    eventType: .fetchAWSCredentials(updateCognitoSession))
+                dispatcher.send(fetchAwsCredentialsEvent)
+                return
+            }
+            break
+        }
+        
         let timer = LoggingTimer(identifier).start("### Starting execution")
-
-        //TODO: Implementation
-
-
-        let fetchIdentity = FetchIdentityEvent(eventType: .fetch)
-        timer.stop("### sending event \(fetchIdentity.type)")
-        dispatcher.send(fetchIdentity)
+        
+        let fetchIdentity: FetchIdentityEvent
+        
+        // If identity already exists return that.
+        if case .success = cognitoSession.identityIdResult {
+            fetchIdentity = FetchIdentityEvent(eventType: .fetched)
+            timer.note("### sending event \(fetchIdentity.type)")
+            dispatcher.send(fetchIdentity)
+            
+            // Move to fetching the AWS Credentials
+            let fetchAwsCredentialsEvent = FetchAuthSessionEvent(
+                eventType: .fetchAWSCredentials(cognitoSession))
+            timer.stop("### sending event \(fetchAwsCredentialsEvent.type)")
+            dispatcher.send(fetchAwsCredentialsEvent)
+        } else {
+            fetchIdentity = FetchIdentityEvent(eventType: .fetch(cognitoSession))
+            timer.stop("### sending event \(fetchIdentity.type)")
+            dispatcher.send(fetchIdentity)
+        }
     }
 }
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public extension CredentialStoreState {
+extension CredentialStoreState {
     var debugDictionary: [String: Any] {
         let stateTypeDictionary: [String: Any] = ["CredentialStoreState": type]
         var additionalMetadataDictionary: [String: Any] = [:]
@@ -23,7 +23,7 @@ public extension CredentialStoreState {
             additionalMetadataDictionary = [
                 "- AuthenticationConfiguration": authenticationConfiguration.debugDictionary,
             ]
-        case .configuredCredentialStore:
+        case .credentialsLoaded:
             additionalMetadataDictionary = [:]
         }
         return stateTypeDictionary.merging(additionalMetadataDictionary, uniquingKeysWith: { $1 })

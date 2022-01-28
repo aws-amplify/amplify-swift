@@ -6,28 +6,22 @@
 //
 
 import Foundation
-
+import Amplify
+import AWSPluginsCore
 
 struct AuthorizationSessionEstablished: Command {
-
+    
     let identifier = "AuthorizationSessionEstablished"
-
+    
+    let cognitoSession: AWSAuthCognitoSession
+    
     func execute(withDispatcher dispatcher: EventDispatcher,
-                        environment: Environment)
+                 environment: Environment)
     {
-        let timer = LoggingTimer(identifier).start("### Starting execution")
-
-        //TODO: Implementation
-
-
-        let authorizationSessionEvent = AuthorizationEvent(eventType: .fetchedAuthSession(AuthorizationSessionData()))
-        timer.stop("### sending \(authorizationSessionEvent.type)")
-        dispatcher.send(authorizationSessionEvent)
-
-        let event = AuthEvent(eventType: .authorizationConfigured)
-        timer.stop("### sending \(event.type)")
-        dispatcher.send(event)
+        let authorizationSessionEvent = AuthorizationEvent(eventType: .fetchedAuthSession(cognitoSession))
+        dispatcher.send(authorizationSessionEvent)   
     }
+
 }
 
 extension AuthorizationSessionEstablished: DefaultLogger { }

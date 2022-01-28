@@ -15,8 +15,6 @@ public extension FetchAWSCredentialsState {
         switch self {
         case .configuring:
             additionalMetadataDictionary = [:]
-        case .refreshing:
-            additionalMetadataDictionary = [:]
         case .fetching:
             additionalMetadataDictionary = [:]
         case .fetched:

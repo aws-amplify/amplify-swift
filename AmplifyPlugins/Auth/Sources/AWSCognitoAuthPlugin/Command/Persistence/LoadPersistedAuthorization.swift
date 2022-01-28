@@ -17,14 +17,12 @@ struct LoadPersistedAuthorization: Command {
     public func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
         let timer = LoggingTimer(identifier).start("### Starting execution")
+        
+        // Send Authorization configured event to move the Auth state to configured
+        let authorizationConfiguredEvent = AuthEvent(eventType: .authorizationConfigured)
+        timer.note("### sending event \(authorizationConfiguredEvent.type)")
+        dispatcher.send(authorizationConfiguredEvent)
 
-        //TODO: Implementation - If persisted authorization exists, validate otherwise fetch
-
-        let event = AuthorizationEvent(eventType: .fetchAuthSession(authConfiguration))
-        //OR
-        //let event = AuthorizationEvent(eventType: .validateSession(authConfiguration))
-        timer.stop("### sending event \(event.type)")
-        dispatcher.send(event)
     }
 }
 
