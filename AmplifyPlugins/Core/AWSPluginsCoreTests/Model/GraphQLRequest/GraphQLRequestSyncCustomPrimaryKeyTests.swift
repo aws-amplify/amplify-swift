@@ -282,4 +282,92 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
             XCTFail(error.localizedDescription)
         }
     }
+
+    func testOnCreateSubscriptionGraphQLRequestWithDateInPK() throws {
+        do {
+            let datetime = try Temporal.DateTime(iso8601String: "2020-01-20T08:00")
+            let customer = CustomerWithDateInPK(dob: datetime, firstName: "John", lastName: "Doe")
+            var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: customer.modelName,
+                                                                   operationType: .subscription)
+            documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
+            documentBuilder.add(decorator: ConflictResolutionDecorator())
+            let document = documentBuilder.build()
+            let documentStringValue = """
+                subscription OnCreateCustomerWithDateInPK {
+                  onCreateCustomerWithDateInPK {
+                    id
+                    createdAt
+                    dob
+                    firstName
+                    lastName
+                    updatedAt
+                    __typename
+                    _version
+                    _deleted
+                    _lastChangedAt
+                  }
+                }
+                """
+            XCTAssertEqual(document.stringValue, documentStringValue)
+
+            let request = GraphQLRequest<MutationSyncResult>.subscription(to: CustomerWithDateInPK.self,
+                                                                          subscriptionType: .onCreate)
+            XCTAssertEqual(document.stringValue, request.document)
+            XCTAssertEqual(documentStringValue, request.document)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
+
+    func testSyncQueryGraphQLRequestWithDateInPK() throws {
+        let nextToken = "nextToken"
+        let limit = 100
+        let lastSync = 123
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: CustomerWithDateInPK.modelName,
+                                                               operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
+        documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync))
+        let document = documentBuilder.build()
+        let documentStringValue = """
+        query SyncCustomerWithDateInPKs($lastSync: AWSTimestamp, $limit: Int, $nextToken: String) {
+          syncCustomerWithDateInPKs(lastSync: $lastSync, limit: $limit, nextToken: $nextToken) {
+            items {
+              id
+              createdAt
+              dob
+              firstName
+              lastName
+              updatedAt
+              __typename
+              _version
+              _deleted
+              _lastChangedAt
+            }
+            nextToken
+            startedAt
+          }
+        }
+        """
+        XCTAssertEqual(document.stringValue, documentStringValue)
+
+        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: CustomerWithDateInPK.schema,
+                                                                limit: limit,
+                                                                nextToken: nextToken,
+                                                                lastSync: lastSync)
+
+        XCTAssertEqual(document.stringValue, request.document)
+        XCTAssertEqual(documentStringValue, request.document)
+        XCTAssert(request.responseType == SyncQueryResult.self)
+        guard let variables = request.variables else {
+            XCTFail("The request doesn't contain variables")
+            return
+        }
+        XCTAssertNotNil(variables["limit"])
+        XCTAssertEqual(variables["limit"] as? Int, limit)
+        XCTAssertNotNil(variables["nextToken"])
+        XCTAssertEqual(variables["nextToken"] as? String, nextToken)
+        XCTAssertNotNil(variables["lastSync"])
+        XCTAssertEqual(variables["lastSync"] as? Int, lastSync)
+    }
 }
