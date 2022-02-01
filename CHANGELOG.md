@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.19.1 (2022-02-01)
+
+### Bug Fixes
+
+- **auth**: handle deleted account when fetching signed in session (#1604)
+
 ## 1.19.0 (2022-01-20)
 
 ### Features

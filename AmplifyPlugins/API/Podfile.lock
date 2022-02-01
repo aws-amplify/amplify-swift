@@ -1,41 +1,41 @@
 PODS:
-  - Amplify (1.19.0):
-    - Amplify/Default (= 1.19.0)
-  - Amplify/Default (1.19.0)
-  - AmplifyPlugins/AWSCognitoAuthPlugin (1.19.0):
+  - Amplify (1.19.1):
+    - Amplify/Default (= 1.19.1)
+  - Amplify/Default (1.19.1)
+  - AmplifyPlugins/AWSCognitoAuthPlugin (1.19.1):
     - AWSAuthCore (~> 2.27.0)
     - AWSCognitoIdentityProvider (~> 2.27.0)
     - AWSCognitoIdentityProviderASF (~> 2.27.0)
     - AWSCore (~> 2.27.0)
     - AWSMobileClient (~> 2.27.0)
-    - AWSPluginsCore (= 1.19.0)
-  - AmplifyTestCommon (1.19.0):
-    - Amplify (= 1.19.0)
-    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.19.0)
+    - AWSPluginsCore (= 1.19.1)
+  - AmplifyTestCommon (1.19.1):
+    - Amplify (= 1.19.1)
+    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.19.1)
     - CwlPreconditionTesting (~> 2.0)
-  - AmplifyTestCommon/AWSPluginsTestCommon (1.19.0):
-    - Amplify (= 1.19.0)
+  - AmplifyTestCommon/AWSPluginsTestCommon (1.19.1):
+    - Amplify (= 1.19.1)
     - AWSCore (~> 2.27.0)
     - AWSMobileClient (~> 2.27.0)
-    - AWSPluginsCore (= 1.19.0)
+    - AWSPluginsCore (= 1.19.1)
     - CwlPreconditionTesting (~> 2.0)
   - AppSyncRealTimeClient (1.6.0):
     - Starscream (~> 3.1.1)
-  - AWSAuthCore (2.27.0):
-    - AWSCore (= 2.27.0)
-  - AWSCognitoIdentityProvider (2.27.0):
-    - AWSCognitoIdentityProviderASF (= 2.27.0)
-    - AWSCore (= 2.27.0)
-  - AWSCognitoIdentityProviderASF (2.27.0):
-    - AWSCore (= 2.27.0)
-  - AWSCore (2.27.0)
-  - AWSMobileClient (2.27.0):
-    - AWSAuthCore (= 2.27.0)
-    - AWSCognitoIdentityProvider (= 2.27.0)
-    - AWSCognitoIdentityProviderASF (= 2.27.0)
-    - AWSCore (= 2.27.0)
-  - AWSPluginsCore (1.19.0):
-    - Amplify (= 1.19.0)
+  - AWSAuthCore (2.27.1):
+    - AWSCore (= 2.27.1)
+  - AWSCognitoIdentityProvider (2.27.1):
+    - AWSCognitoIdentityProviderASF (= 2.27.1)
+    - AWSCore (= 2.27.1)
+  - AWSCognitoIdentityProviderASF (2.27.1):
+    - AWSCore (= 2.27.1)
+  - AWSCore (2.27.1)
+  - AWSMobileClient (2.27.1):
+    - AWSAuthCore (= 2.27.1)
+    - AWSCognitoIdentityProvider (= 2.27.1)
+    - AWSCognitoIdentityProviderASF (= 2.27.1)
+    - AWSCore (= 2.27.1)
+  - AWSPluginsCore (1.19.1):
+    - Amplify (= 1.19.1)
     - AWSCore (~> 2.27.0)
   - CwlCatchException (2.1.1):
     - CwlCatchExceptionSupport (~> 2.1.1)
@@ -48,7 +48,7 @@ PODS:
     - CwlPosixPreconditionTesting (~> 2.1.0)
   - Starscream (3.1.1)
   - SwiftFormat/CLI (0.44.17)
-  - SwiftLint (0.45.1)
+  - SwiftLint (0.46.2)
 
 DEPENDENCIES:
   - Amplify (from `../../`)
@@ -95,16 +95,16 @@ CHECKOUT OPTIONS:
     :tag: 2.1.0
 
 SPEC CHECKSUMS:
-  Amplify: 7906ce8bc77c2c9a97545581024eb90ec6f2e03a
-  AmplifyPlugins: 3f43645652234700ee62aba927a67ff4eebacf46
-  AmplifyTestCommon: 215d659a122f5b46a03f260870036df152c9df7f
+  Amplify: cc137692ff768585ec3751825a10b85686a0f004
+  AmplifyPlugins: fc0cabd7626ca3b5d6ef45dcf4050ef7b9a70120
+  AmplifyTestCommon: 341bee5d527b4294dc256314221d75f9cc7e40be
   AppSyncRealTimeClient: 8b5ec94085b8ee9bb6fb9d9d76a157beb538ec6f
-  AWSAuthCore: e030e0d0c6102b5bf4e117601572ac3112b44ffe
-  AWSCognitoIdentityProvider: b62f4c11ccc03e4dec804f84820b94235271e103
-  AWSCognitoIdentityProviderASF: 0f0b7dfc43977225be9ae809bcc1ac46df217551
-  AWSCore: d605449939e5b40704f11ff9f91f905f7d978589
-  AWSMobileClient: a408fa2b5e04807de0a4dcd173153edb7ed05958
-  AWSPluginsCore: a74522db575247a0156f97d868713627099f3297
+  AWSAuthCore: 9528c60ccdac6df6024fb0af1ed6a43782fd2d3d
+  AWSCognitoIdentityProvider: 4de7f96340be72c1dca35c0ba835c6b9b69a28c0
+  AWSCognitoIdentityProviderASF: 727f7c1c80d667a2da79e408c8c8745eac981d58
+  AWSCore: f859f6955a8e52dcb3e79fac95fef058639d1049
+  AWSMobileClient: 9c1edcbe7088b3c9b910aaf6faf2db43a8f1568d
+  AWSPluginsCore: 02e887063492820f844854f2282d6e2c4d6e5585
   CwlCatchException: 86760545af2a490a23e964d76d7c77442dbce79b
   CwlCatchExceptionSupport: a004322095d7101b945442c86adc7cec0650f676
   CwlMachBadInstructionHandler: aa1fe9f2d08b29507c150d099434b2890247e7f8
@@ -112,7 +112,7 @@ SPEC CHECKSUMS:
   CwlPreconditionTesting: 73ae5de517a8761e5e40fb4136c6a26365af0440
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
-  SwiftLint: 06ac37e4d38c7068e0935bb30cda95f093bec761
+  SwiftLint: 6bc52a21f0fd44cab9aa2dc8e534fb9f5e3ec507
 
 PODFILE CHECKSUM: 0abaf757d71567dcf70f5a3e79b0149917c3bb38
 
