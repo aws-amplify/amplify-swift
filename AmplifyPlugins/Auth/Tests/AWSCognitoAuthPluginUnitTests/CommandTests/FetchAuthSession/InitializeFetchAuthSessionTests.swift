@@ -31,7 +31,7 @@ class InitializeFetchAuthSessionTests: XCTestCase {
         let credentialStoreEnv = BasicCredentialStoreEnvironment(amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
                                                                  legacyCredentialStoreFactory: legacyCredentialStoreFactory)
         
-        let command = InitializeFetchAuthSession()
+        let action = InitializeFetchAuthSession()
         
         let environment = AuthEnvironment(
             userPoolConfigData: nil,
@@ -40,7 +40,7 @@ class InitializeFetchAuthSessionTests: XCTestCase {
             authorizationEnvironment: nil,
             credentialStoreEnvironment: credentialStoreEnv)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 guard let event = event as? FetchAuthSessionEvent else {
@@ -80,7 +80,7 @@ class InitializeFetchAuthSessionTests: XCTestCase {
         let credentialStoreEnv = BasicCredentialStoreEnvironment(amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
                                                                  legacyCredentialStoreFactory: legacyCredentialStoreFactory)
         
-        let command = InitializeFetchAuthSession()
+        let action = InitializeFetchAuthSession()
         
         let environment = AuthEnvironment(
             userPoolConfigData: nil,
@@ -89,7 +89,7 @@ class InitializeFetchAuthSessionTests: XCTestCase {
             authorizationEnvironment: nil,
             credentialStoreEnvironment: credentialStoreEnv)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 guard let event = event as? FetchAuthSessionEvent else {

@@ -10,7 +10,7 @@ import AWSPluginsCore
 import AWSCognitoIdentityProvider
 import Foundation
 
-struct RefreshUserPoolTokens: Command {
+struct RefreshUserPoolTokens: Action {
     
     public let identifier = "RefreshUserPoolTokens"
     
@@ -22,7 +22,7 @@ struct RefreshUserPoolTokens: Command {
         
         guard case let .success(cognitoUserPoolTokens) = cognitoSession.cognitoTokensResult else {
             let authZError = AuthorizationError.invalidState(
-                message: "Refresh User Pool Tokens Command will only be triggered in the success scenario")
+                message: "Refresh User Pool Tokens action will only be triggered in the success scenario")
             let event = FetchUserPoolTokensEvent(eventType: .throwError(authZError))
             dispatcher.send(event)
             

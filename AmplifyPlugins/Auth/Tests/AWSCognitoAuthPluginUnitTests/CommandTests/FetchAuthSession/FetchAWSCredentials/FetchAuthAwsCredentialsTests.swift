@@ -17,9 +17,9 @@ class FetchAuthAwsCredentialsTests: XCTestCase {
         
         let expectation = expectation(description: "noAuthorizationEnvironment")
         
-        let command = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
 
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 guard let event = event as? FetchAWSCredentialEvent else {
@@ -49,9 +49,9 @@ class FetchAuthAwsCredentialsTests: XCTestCase {
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
                                                                      cognitoIdentityFactory: identityProviderFactory)
         
-        let command = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
 
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 guard let event = event as? FetchAWSCredentialEvent else {
@@ -81,9 +81,9 @@ class FetchAuthAwsCredentialsTests: XCTestCase {
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
                                                                      cognitoIdentityFactory: identityProviderFactory)
         
-        let command = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 guard let event = event as? FetchAWSCredentialEvent else {
@@ -126,9 +126,9 @@ class FetchAuthAwsCredentialsTests: XCTestCase {
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
                                                                      cognitoIdentityFactory: identityProviderFactory)
         
-        let command = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
 
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 if let event = event as? FetchAWSCredentialEvent,
@@ -159,9 +159,9 @@ class FetchAuthAwsCredentialsTests: XCTestCase {
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
                                                                      cognitoIdentityFactory: identityProviderFactory)
         
-        let command = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
 
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 if let fetchAWSCredentialEvent = event as? FetchAWSCredentialEvent,

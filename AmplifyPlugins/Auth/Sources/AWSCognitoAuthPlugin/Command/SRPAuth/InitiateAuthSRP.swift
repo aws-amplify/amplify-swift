@@ -10,7 +10,7 @@ import AWSCognitoIdentityProvider
 import Foundation
 import CryptoKit
 
-struct InitiateAuthSRP: Command {
+struct InitiateAuthSRP: Action {
     let identifier = "InitiateAuthSRP"
 
     let username: String
