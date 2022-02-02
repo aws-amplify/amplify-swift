@@ -10,7 +10,7 @@ import AWSCognitoIdentityProvider
 import Foundation
 import CryptoKit
 
-struct VerifyPasswordSRP: Command {
+struct VerifyPasswordSRP: Action {
     let identifier = "VerifyPasswordSRP"
 
     let stateData: SRPStateData

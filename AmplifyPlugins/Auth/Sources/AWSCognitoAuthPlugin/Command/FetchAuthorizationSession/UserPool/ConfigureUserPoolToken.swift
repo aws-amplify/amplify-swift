@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct ConfigureUserPoolToken: Command {
+struct ConfigureUserPoolToken: Action {
     
     let identifier = "ConfigureUserPoolToken"
     
