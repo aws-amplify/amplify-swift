@@ -200,9 +200,15 @@ type Registration8V2 @model {
 
 #14 Custom Primary Key with sortKeyFields
 
-type CustomerWithDateInPK @model {
-  id: ID! @primaryKey(sortKeyFields: ["dob"])
+type CustomerWithMultipleFieldsinPK
+@model {
+  id: ID! @primaryKey(sortKeyFields: ["dob","date","time","phoneNumber","priority","height"])
   dob: AWSDateTime!
+  date: AWSDate!
+  time: AWSTime!
+  phoneNumber: Int!
+  priority: Priority!
+  height: Float!
   firstName: String
   lastName: String
 }

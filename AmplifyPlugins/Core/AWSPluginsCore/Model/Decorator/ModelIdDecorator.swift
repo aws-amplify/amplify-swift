@@ -18,14 +18,8 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
         var fields = [String: String]()
         if let customPrimaryKeys = model.schema.customPrimaryIndexFields {
             for key in customPrimaryKeys {
-                if let date = model[key] as? Temporal.Date {
-                    fields[key] = date.iso8601String
-                } else if let dateTime = model[key] as? Temporal.DateTime {
-                    fields[key] = dateTime.iso8601String
-                } else if let time = model[key] as? Temporal.Time {
-                    fields[key] = time.iso8601String
-                } else {
-                    fields[key] = model[key] as? String
+                if let value = model.graphQLInputForPrimaryKey(modelFieldName: key) {
+                    fields[key] = value
                 }
             }
         }
@@ -67,5 +61,51 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
         }
 
         return document.copy(inputs: inputs)
+    }
+}
+
+extension Model {
+
+    func graphQLInputForPrimaryKey(modelFieldName: ModelFieldName) -> String? {
+
+        guard let modelField = schema.field(withName: modelFieldName) else {
+            return nil
+        }
+
+        let fieldValueOptional = getFieldValue(for: modelField.name, modelSchema: schema)
+
+        guard let fieldValue = fieldValueOptional else {
+            return nil
+        }
+
+        // swiftlint:disable:next syntactic_sugar
+        guard case .some(Optional<Any>.some(let value)) = fieldValue else {
+            return nil
+        }
+
+        switch modelField.type {
+        case .date, .dateTime, .time:
+            if let date = value as? TemporalSpec {
+                return date.iso8601String
+            } else {
+                return nil
+            }
+        case .enum:
+            return (value as? EnumPersistable)?.rawValue
+        case .model, .embedded, .embeddedCollection:
+            return nil
+        case .string, .double, .int:
+            return String(describing: value)
+        default:
+            return nil
+        }
+    }
+
+    private func getFieldValue(for modelFieldName: String, modelSchema: ModelSchema) -> Any?? {
+        if let jsonModel = self as? JSONValueHolder {
+            return jsonModel.jsonValue(for: modelFieldName, modelSchema: modelSchema) ?? nil
+        } else {
+            return self[modelFieldName] ?? nil
+        }
     }
 }
