@@ -15,13 +15,13 @@ class ConcurrentEffectExecutor: EffectExecutor {
     }
 
     func execute(
-        _ commands: [Command],
+        _ actions: [Action],
         dispatchingTo eventDispatcher: EventDispatcher,
         environment: Environment
     ) {
-        commands.forEach { command in
+        actions.forEach { action in
             self.concurrentQueue.async {
-                command.execute(withDispatcher: eventDispatcher, environment: environment)
+                action.execute(withDispatcher: eventDispatcher, environment: environment)
             }
         }
     }

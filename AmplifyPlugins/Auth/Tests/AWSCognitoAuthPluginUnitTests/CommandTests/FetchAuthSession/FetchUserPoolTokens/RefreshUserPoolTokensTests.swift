@@ -18,9 +18,9 @@ class RefreshUserPoolTokensTests: XCTestCase {
         
         let expectation = expectation(description: "noUserPoolEnvironment")
         
-        let command = RefreshUserPoolTokens(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = RefreshUserPoolTokens(cognitoSession: AWSAuthCognitoSession.testData)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 guard let event = event as? FetchUserPoolTokensEvent else {
@@ -43,11 +43,11 @@ class RefreshUserPoolTokensTests: XCTestCase {
         
         let expectation = expectation(description: "noUserPoolTokens")
         
-        let command = RefreshUserPoolTokens(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = RefreshUserPoolTokens(cognitoSession: AWSAuthCognitoSession.testData)
         
         let environment = Defaults.makeDefaultAuthEnvironment()
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 guard let event = event as? FetchUserPoolTokensEvent else {
@@ -82,9 +82,9 @@ class RefreshUserPoolTokensTests: XCTestCase {
         let environment = BasicUserPoolEnvironment(userPoolConfiguration: UserPoolConfigurationData.testData,
                                                    cognitoUserPoolFactory: identityProviderFactory)
         
-        let command = RefreshUserPoolTokens(cognitoSession: cognitoSessionInput)
+        let action = RefreshUserPoolTokens(cognitoSession: cognitoSessionInput)
 
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 guard let event = event as? FetchUserPoolTokensEvent else {
@@ -126,9 +126,9 @@ class RefreshUserPoolTokensTests: XCTestCase {
         let environment = BasicUserPoolEnvironment(userPoolConfiguration: UserPoolConfigurationData.testData,
                                                    cognitoUserPoolFactory: identityProviderFactory)
         
-        let command = RefreshUserPoolTokens(cognitoSession: cognitoSessionInput)
+        let action = RefreshUserPoolTokens(cognitoSession: cognitoSessionInput)
 
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 let fetchedTokens = AWSCognitoUserPoolTokens(
@@ -170,9 +170,9 @@ class RefreshUserPoolTokensTests: XCTestCase {
         let environment = BasicUserPoolEnvironment(userPoolConfiguration: UserPoolConfigurationData.testData,
                                                    cognitoUserPoolFactory: identityProviderFactory)
         
-        let command = RefreshUserPoolTokens(cognitoSession: cognitoSessionInput)
+        let action = RefreshUserPoolTokens(cognitoSession: cognitoSessionInput)
 
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 if let userPoolEvent = event as? FetchUserPoolTokensEvent,

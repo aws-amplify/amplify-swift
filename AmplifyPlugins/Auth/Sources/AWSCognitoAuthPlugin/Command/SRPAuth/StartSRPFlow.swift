@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct StartSRPFlow: Command {
+struct StartSRPFlow: Action {
 
     var identifier: String = "StartSRPFlow"
 

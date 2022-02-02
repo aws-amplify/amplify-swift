@@ -34,7 +34,7 @@ public extension FetchAuthSessionState {
                 guard let fetchAuthSessionEvent = isFetchAuthSessionEvent(event) else {
                     let fetchAuthSessionState = FetchAuthSessionState.fetchingUserPoolTokens(
                         fetchUserPoolTokenResolution.newState)
-                    return .init(newState: fetchAuthSessionState, commands: fetchUserPoolTokenResolution.commands)
+                    return .init(newState: fetchAuthSessionState, actions: fetchUserPoolTokenResolution.actions)
                 }
                 return resolveFetchingUserTokensState(byApplying: fetchAuthSessionEvent,
                                                       from: oldState)
@@ -45,7 +45,7 @@ public extension FetchAuthSessionState {
                 guard let fetchAuthSessionEvent = isFetchAuthSessionEvent(event) else {
                     let fetchAuthSessionState = FetchAuthSessionState.fetchingIdentity(
                         fetchIdentityResolution.newState)
-                    return .init(newState: fetchAuthSessionState, commands: fetchIdentityResolution.commands)
+                    return .init(newState: fetchAuthSessionState, actions: fetchIdentityResolution.actions)
                 }
                 return resolveFetchingIdentityState(byApplying: fetchAuthSessionEvent,
                                                     from: oldState)
@@ -56,7 +56,7 @@ public extension FetchAuthSessionState {
                 guard let fetchAuthSessionEvent = isFetchAuthSessionEvent(event) else {
                     let fetchAuthSessionState = FetchAuthSessionState.fetchingAWSCredentials(
                         fetchAWSCredentialResolution.newState)
-                    return .init(newState: fetchAuthSessionState, commands: fetchAWSCredentialResolution.commands)
+                    return .init(newState: fetchAuthSessionState, actions: fetchAWSCredentialResolution.actions)
                 }
                 return resolveFetchingAWSCredentialsState(byApplying: fetchAuthSessionEvent,
                                                           from: oldState)
@@ -72,12 +72,12 @@ public extension FetchAuthSessionState {
             switch fetchAuthSessionEvent.eventType {
             case .fetchUserPoolTokens(let cognitoSession):
                 let newState = FetchAuthSessionState.fetchingUserPoolTokens(FetchUserPoolTokensState.configuring)
-                let command = ConfigureUserPoolToken(cognitoSession: cognitoSession)
-                return .init(newState: newState, commands: [command])
+                let action = ConfigureUserPoolToken(cognitoSession: cognitoSession)
+                return .init(newState: newState, actions: [action])
             case .fetchIdentity(let cognitoSession):
                 let newState = FetchAuthSessionState.fetchingIdentity(FetchIdentityState.configuring)
-                let command = ConfigureFetchIdentity(cognitoSession: cognitoSession)
-                return .init(newState: newState, commands: [command])
+                let action = ConfigureFetchIdentity(cognitoSession: cognitoSession)
+                return .init(newState: newState, actions: [action])
             default:
                 return .from(oldState)
             }
@@ -93,8 +93,8 @@ public extension FetchAuthSessionState {
             switch fetchAuthSessionEvent.eventType {
             case .fetchIdentity(let cognitoSession):
                 let newState = FetchAuthSessionState.fetchingIdentity( FetchIdentityState.configuring)
-                let command = ConfigureFetchIdentity(cognitoSession: cognitoSession)
-                return .init(newState: newState, commands: [command])
+                let action = ConfigureFetchIdentity(cognitoSession: cognitoSession)
+                return .init(newState: newState, actions: [action])
             default:
                 return .from(oldState)
             }
@@ -110,8 +110,8 @@ public extension FetchAuthSessionState {
             switch fetchAuthSessionEvent.eventType {
             case .fetchAWSCredentials(let cognitoSession):
                 let newState = FetchAuthSessionState.fetchingAWSCredentials(FetchAWSCredentialsState.configuring)
-                let command = ConfigureFetchAWSCredentials(cognitoSession: cognitoSession)
-                return .init(newState: newState, commands: [command])
+                let action = ConfigureFetchAWSCredentials(cognitoSession: cognitoSession)
+                return .init(newState: newState, actions: [action])
             default:
                 return .from(oldState)
             }
@@ -127,8 +127,8 @@ public extension FetchAuthSessionState {
             switch fetchAuthSessionEvent.eventType {
             case .fetchedAuthSession(let cognitoSession):
                 let newState = FetchAuthSessionState.sessionEstablished
-                let command = AuthorizationSessionEstablished(cognitoSession: cognitoSession)
-                return .init(newState: newState, commands: [command])
+                let action = AuthorizationSessionEstablished(cognitoSession: cognitoSession)
+                return .init(newState: newState, actions: [action])
             default:
                 return .from(oldState)
             }
