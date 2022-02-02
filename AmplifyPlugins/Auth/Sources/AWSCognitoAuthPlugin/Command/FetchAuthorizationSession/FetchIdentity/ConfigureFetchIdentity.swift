@@ -8,7 +8,7 @@
 import AWSPluginsCore
 import Foundation
 
-struct ConfigureFetchIdentity: Command {
+struct ConfigureFetchIdentity: Action {
 
     let identifier = "ConfigureFetchIdentity"
     

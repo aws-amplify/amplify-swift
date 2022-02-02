@@ -26,9 +26,9 @@ class InitiateAuthSRPTests: XCTestCase {
             userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
             cognitoUserPoolFactory: identityProviderFactory
         )
-        let command = InitiateAuthSRP(username: "testUser", password: "testPassword")
+        let action = InitiateAuthSRP(username: "testUser", password: "testPassword")
 
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { _ in },
             environment: environment
         )
@@ -51,7 +51,7 @@ class InitiateAuthSRPTests: XCTestCase {
             cognitoUserPoolFactory: identityProviderFactory
         )
 
-        let command = InitiateAuthSRP(username: "testUser", password: "testPassword")
+        let action = InitiateAuthSRP(username: "testUser", password: "testPassword")
 
         let errorEventSent = expectation(description: "errorEventSent")
         let dispatcher = MockDispatcher { event in
@@ -68,7 +68,7 @@ class InitiateAuthSRPTests: XCTestCase {
 
         }
 
-        command.execute(
+        action.execute(
             withDispatcher: dispatcher,
             environment: environment
         )
@@ -91,7 +91,7 @@ class InitiateAuthSRPTests: XCTestCase {
             cognitoUserPoolFactory: identityProviderFactory
         )
 
-        let command = InitiateAuthSRP(username: "testUser", password: "testPassword")
+        let action = InitiateAuthSRP(username: "testUser", password: "testPassword")
 
         let successEventSent = expectation(description: "successEventSent")
 
@@ -107,7 +107,7 @@ class InitiateAuthSRPTests: XCTestCase {
             }
         }
 
-        command.execute(
+        action.execute(
             withDispatcher: dispatcher,
             environment: environment
         )

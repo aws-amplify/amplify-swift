@@ -41,10 +41,10 @@ extension CredentialStoreState {
 
             switch credentialStoreEvent.eventType {
             case .migrateLegacyCredentialStore(let authConfig):
-                let command = MigrateLegacyCredentialStore(authConfiguration: authConfig)
+                let action = MigrateLegacyCredentialStore(authConfiguration: authConfig)
                 let resolution = StateResolution(
                     newState: CredentialStoreState.migratingLegacyStore(authConfig),
-                    commands: [command]
+                    actions: [action]
                 )
                 return resolution
             default:
@@ -59,10 +59,10 @@ extension CredentialStoreState {
 
             switch credentialStoreEvent.eventType {
             case .loadCredentialStore(let authConfig):
-                let command = LoadCredentialStore(authConfiguration: authConfig)
+                let action = LoadCredentialStore(authConfiguration: authConfig)
                 let resolution = StateResolution(
                     newState: CredentialStoreState.loadingStoredCredentials(authConfig),
-                    commands: [command]
+                    actions: [action]
                 )
                 return resolution
             default:

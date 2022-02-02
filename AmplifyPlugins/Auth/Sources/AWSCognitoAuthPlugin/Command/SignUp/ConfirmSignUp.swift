@@ -8,7 +8,7 @@
 import Foundation
 import AWSCognitoIdentityProvider
 
-struct ConfirmSignUp: Command {
+struct ConfirmSignUp: Action {
     let identifier = "ConfirmSignUp"
 
     let username: String

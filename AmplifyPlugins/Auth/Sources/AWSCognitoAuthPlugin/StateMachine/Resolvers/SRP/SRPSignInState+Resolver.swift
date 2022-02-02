@@ -56,10 +56,10 @@ public extension SRPSignInState {
                 }
                 // Assuming password could be nil
                 let password = signInEventData.password ?? ""
-                let command = InitiateAuthSRP(username: username, password: password ?? "")
+                let action = InitiateAuthSRP(username: username, password: password ?? "")
                 return StateResolution(
                     newState: SRPSignInState.initiatingSRPA(signInEventData),
-                    commands: [command]
+                    actions: [action]
                 )
             default:
                 return .from(.notStarted)
@@ -69,10 +69,10 @@ public extension SRPSignInState {
         private func resolveInitiatingSRPA(byApplying signInEvent: SRPSignInEvent, from oldState: SRPSignInState) -> StateResolution<SRPSignInState> {
             switch signInEvent.eventType {
             case .respondPasswordVerifier(let srpStateData, let authResponse):
-                let command = VerifyPasswordSRP(stateData: srpStateData, authResponse: authResponse)
+                let action = VerifyPasswordSRP(stateData: srpStateData, authResponse: authResponse)
                 return StateResolution(
                     newState: SRPSignInState.respondingPasswordVerifier(srpStateData),
-                    commands: [command]
+                    actions: [action]
                 )
             case .throwAuthError(let authError):
                 return .from(.error(authError))

@@ -8,14 +8,14 @@
 import Foundation
 
 
-struct InitializeCredentialStoreConfiguration: Command {
+struct InitializeCredentialStoreConfiguration: Action {
 
     let identifier = "InitializeCredentialStoreConfiguration"
 
     let authConfiguration: AuthConfiguration
 
     public func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-        // ATM this is a no-op command
+        // ATM this is a no-op action
         let timer = LoggingTimer(identifier).start("### Starting execution")
         let event = CredentialStoreEvent(eventType: .migrateLegacyCredentialStore(authConfiguration))
         timer.stop("### sending event \(event.type)")

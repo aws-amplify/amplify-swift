@@ -16,7 +16,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
     /// Test is responsible to check the happy path business logic of migrating the legacy store data.
     ///
     /// - Given: A credential store with legacy data
-    /// - When: The migration legacy store command is executed
+    /// - When: The migration legacy store action is executed
     /// - Then:
     ///    - the new credential store should get the correct identityId, userPoolTokens and awsCredentials
     func testSaveLegacyCredentials() {
@@ -60,8 +60,8 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
             authorizationEnvironment: nil,
             credentialStoreEnvironment: credentialStoreEnv)
 
-        let command = MigrateLegacyCredentialStore(authConfiguration: authConfig)
-        command.execute(withDispatcher: MockDispatcher { _ in },
+        let action = MigrateLegacyCredentialStore(authConfiguration: authConfig)
+        action.execute(withDispatcher: MockDispatcher { _ in },
                         environment: environment)
 
         waitForExpectations(timeout: 0.1)
@@ -70,7 +70,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
     /// Test is responsible for making sure that the legacy credential store clearing up is getting called for user pool and identity pool
     ///
     /// - Given: A credential store with legacy data
-    /// - When: The migration legacy store command is executed
+    /// - When: The migration legacy store action is executed
     /// - Then:
     ///    - The remove all method gets called for both user pool and identity pool
     func testClearLegacyCredentialStore() {
@@ -104,8 +104,8 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
             authorizationEnvironment: nil,
             credentialStoreEnvironment: credentialStoreEnv)
 
-        let command = MigrateLegacyCredentialStore(authConfiguration: authConfig)
-        command.execute(withDispatcher: MockDispatcher { _ in },
+        let action = MigrateLegacyCredentialStore(authConfiguration: authConfig)
+        action.execute(withDispatcher: MockDispatcher { _ in },
                         environment: environment)
 
         waitForExpectations(timeout: 0.1)
