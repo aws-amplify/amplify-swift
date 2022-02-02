@@ -438,6 +438,10 @@
 		97DC3D5024C1FCEE00D79E24 /* LogEntryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC3D4F24C1FCEE00D79E24 /* LogEntryRow.swift */; };
 		97DC3D5224C1FE4100D79E24 /* LogViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC3D5124C1FE4100D79E24 /* LogViewer.swift */; };
 		97DC3D5424C200A600D79E24 /* LogEntryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC3D5324C200A600D79E24 /* LogEntryHelper.swift */; };
+		97F793B427A9CC7E000153D6 /* GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F793B327A9CC7E000153D6 /* GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests.swift */; };
+		97F793B627AA0619000153D6 /* CustomerWithMultipleFieldsinPK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F793B527AA0619000153D6 /* CustomerWithMultipleFieldsinPK.swift */; };
+		97F793B827AA0667000153D6 /* CustomerWithMultipleFieldsinPK+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F793B727AA0667000153D6 /* CustomerWithMultipleFieldsinPK+Schema.swift */; };
+		97F793BA27AA0767000153D6 /* Priority.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F793B927AA0767000153D6 /* Priority.swift */; };
 		A5BD5B125AE6AAD604092274 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5009041CDAAB46551245D381 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */; };
 		B4251A0124250369007F59EF /* AuthConfirmResetPasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A0024250369007F59EF /* AuthConfirmResetPasswordRequest.swift */; };
 		B4251A05242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A04242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift */; };
@@ -1358,6 +1362,10 @@
 		97DC3D4F24C1FCEE00D79E24 /* LogEntryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEntryRow.swift; sourceTree = "<group>"; };
 		97DC3D5124C1FE4100D79E24 /* LogViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewer.swift; sourceTree = "<group>"; };
 		97DC3D5324C200A600D79E24 /* LogEntryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEntryHelper.swift; sourceTree = "<group>"; };
+		97F793B327A9CC7E000153D6 /* GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests.swift; sourceTree = "<group>"; };
+		97F793B527AA0619000153D6 /* CustomerWithMultipleFieldsinPK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerWithMultipleFieldsinPK.swift; sourceTree = "<group>"; };
+		97F793B727AA0667000153D6 /* CustomerWithMultipleFieldsinPK+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomerWithMultipleFieldsinPK+Schema.swift"; sourceTree = "<group>"; };
+		97F793B927AA0767000153D6 /* Priority.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Priority.swift; sourceTree = "<group>"; };
 		AF4FA69A23AEB42CF7BB8336 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTests/Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B4251A0024250369007F59EF /* AuthConfirmResetPasswordRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmResetPasswordRequest.swift; sourceTree = "<group>"; };
 		B4251A04242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmResetPasswordOperation.swift; sourceTree = "<group>"; };
@@ -1972,6 +1980,7 @@
 				6BEE08182533CAA600133961 /* GraphQLRequestOwnerAndGroupTests.swift */,
 				97943A06265B7A5F0097DBBA /* GraphQLRequestSyncCustomPrimaryKeyTests.swift */,
 				6B9F7C5125267E1500F1F71C /* MockAWSAuthUser.swift */,
+				97F793B327A9CC7E000153D6 /* GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests.swift */,
 			);
 			path = GraphQLRequest;
 			sourceTree = "<group>";
@@ -2202,6 +2211,9 @@
 				218F78C9275AC6B30042334B /* TodoCustomTimestampV2+Schema.swift */,
 				218F78C4275AC6B30042334B /* TodoWithDefaultValueV2.swift */,
 				218F78C5275AC6B30042334B /* TodoWithDefaultValueV2+Schema.swift */,
+				97F793B527AA0619000153D6 /* CustomerWithMultipleFieldsinPK.swift */,
+				97F793B727AA0667000153D6 /* CustomerWithMultipleFieldsinPK+Schema.swift */,
+				97F793B927AA0767000153D6 /* Priority.swift */,
 			);
 			path = TransformerV2;
 			sourceTree = "<group>";
@@ -4984,6 +4996,7 @@
 				6B5087C7256638EA000AB673 /* QueryPredicateEvaluateGeneratedDateTests.swift in Sources */,
 				21DDCDF8272C3D8300D9B297 /* AuthRuleExtensionTests.swift in Sources */,
 				6BBECD7423ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift in Sources */,
+				97F793B427A9CC7E000153D6 /* GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests.swift in Sources */,
 				6BAF4F38256893B900A811BA /* QueryPredicateEvaluateGenerator.swift in Sources */,
 				6B9F7C5225267E1500F1F71C /* MockAWSAuthUser.swift in Sources */,
 				6B5087CD25673AC8000AB673 /* QueryPredicateEvaluateGeneratedTimeTests.swift in Sources */,
@@ -5656,6 +5669,7 @@
 				214F497C2486D8A200DA616C /* UserFollowers.swift in Sources */,
 				217D5EB62577F9DF009F0639 /* Comment3+Schema.swift in Sources */,
 				215D40AA277231920077E7DA /* Attendee8V2.swift in Sources */,
+				97F793B827AA0667000153D6 /* CustomerWithMultipleFieldsinPK+Schema.swift in Sources */,
 				B9521835237E21BA00F53237 /* Comment.swift in Sources */,
 				21AD4257249BFFE00016FE95 /* DeprecatedTodo.swift in Sources */,
 				6B7743E325906FD3001469F5 /* Restaurant+Schema.swift in Sources */,
@@ -5683,6 +5697,7 @@
 				214F49782486D8A200DA616C /* UserFollowing.swift in Sources */,
 				6BEE08242533D30800133961 /* OGCScenarioBMGroupPost.swift in Sources */,
 				217D5EC22577F9DF009F0639 /* User5+Schema.swift in Sources */,
+				97F793B627AA0619000153D6 /* CustomerWithMultipleFieldsinPK.swift in Sources */,
 				21FDBB642587D7A30086FCDC /* Post6+Schema.swift in Sources */,
 				218F78E6275AD0310042334B /* Team4aV2+Schema.swift in Sources */,
 				217D5EB12577F9DF009F0639 /* Team2+Schema.swift in Sources */,
@@ -5699,6 +5714,7 @@
 				21A7C90225ACC4D1004355D6 /* MockDataStoreResponders.swift in Sources */,
 				218F784A275A631A0042334B /* Comment4V2+Schema.swift in Sources */,
 				218F78DD275AD0280042334B /* Team4bV2.swift in Sources */,
+				97F793BA27AA0767000153D6 /* Priority.swift in Sources */,
 				218F789A275AB1F60042334B /* Post3aV2.swift in Sources */,
 				218F7899275AB1F60042334B /* Comment3aV2.swift in Sources */,
 				FA32C428264F35390057272F /* Transaction.swift in Sources */,

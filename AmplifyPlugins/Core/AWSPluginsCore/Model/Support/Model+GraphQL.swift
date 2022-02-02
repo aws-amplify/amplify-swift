@@ -115,6 +115,44 @@ extension Model {
         return input
     }
 
+    /// Retrieve the custom primary key's value used for the GraphQL input.
+    /// Only a subset of data types are applicable as custom indexes such as
+    /// `date`, `dateTime`, `time`, `enum`, `string`, `double`, and `int`.
+    func graphQLInputForPrimaryKey(modelFieldName: ModelFieldName) -> String? {
+
+        guard let modelField = schema.field(withName: modelFieldName) else {
+            return nil
+        }
+
+        let fieldValueOptional = getFieldValue(for: modelField.name, modelSchema: schema)
+
+        guard let fieldValue = fieldValueOptional else {
+            return nil
+        }
+
+        // swiftlint:disable:next syntactic_sugar
+        guard case .some(Optional<Any>.some(let value)) = fieldValue else {
+            return nil
+        }
+
+        switch modelField.type {
+        case .date, .dateTime, .time:
+            if let date = value as? TemporalSpec {
+                return date.iso8601String
+            } else {
+                return nil
+            }
+        case .enum:
+            return (value as? EnumPersistable)?.rawValue
+        case .model, .embedded, .embeddedCollection:
+            return nil
+        case .string, .double, .int:
+            return String(describing: value)
+        default:
+            return nil
+        }
+    }
+
     private func getModelId(from value: Any, modelSchema: ModelSchema) -> String? {
         if let modelValue = value as? Model {
             return modelValue.id

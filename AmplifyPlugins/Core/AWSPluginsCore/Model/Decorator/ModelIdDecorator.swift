@@ -18,7 +18,9 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
         var fields = [String: String]()
         if let customPrimaryKeys = model.schema.customPrimaryIndexFields {
             for key in customPrimaryKeys {
-                fields[key] = model[key] as? String
+                if let value = model.graphQLInputForPrimaryKey(modelFieldName: key) {
+                    fields[key] = value
+                }
             }
         }
         self.init(id: model.id, fields: fields)
