@@ -44,8 +44,8 @@ public extension FetchUserPoolTokensState {
                 switch fetchUserPoolTokenEvent.eventType {
                 case .refresh(let cognitoSession):
                     let newState = FetchUserPoolTokensState.refreshing
-                    let command = RefreshUserPoolTokens(cognitoSession: cognitoSession)
-                    return .init(newState: newState, commands: [command])
+                    let action = RefreshUserPoolTokens(cognitoSession: cognitoSession)
+                    return .init(newState: newState, actions: [action])
                 case .fetched:
                     return .init(newState: FetchUserPoolTokensState.fetched)
                 default:

@@ -17,9 +17,9 @@ class FetchAuthIdentityIdTests: XCTestCase {
         
         let expectation = expectation(description: "noIdentityEnvironment")
         
-        let command = FetchAuthIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchAuthIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 guard let event = event as? FetchIdentityEvent else {
@@ -49,9 +49,9 @@ class FetchAuthIdentityIdTests: XCTestCase {
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
                                                                      cognitoIdentityFactory: identityProviderFactory)
         
-        let command = FetchAuthIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchAuthIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 guard let event = event as? FetchIdentityEvent else {
@@ -85,9 +85,9 @@ class FetchAuthIdentityIdTests: XCTestCase {
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
                                                                      cognitoIdentityFactory: identityProviderFactory)
         
-        let command = FetchAuthIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchAuthIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 if let identityEvent = event as? FetchIdentityEvent,
@@ -120,9 +120,9 @@ class FetchAuthIdentityIdTests: XCTestCase {
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
                                                                      cognitoIdentityFactory: identityProviderFactory)
         
-        let command = FetchAuthIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchAuthIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 if let fetchIdentityEvent = event as? FetchIdentityEvent,

@@ -38,7 +38,7 @@ public extension AuthorizationState {
                     oldState: fetchAuthSessionState, byApplying: event)
                 guard case let .fetchedAuthSession(sessionData) = isAuthorizationEvent(event)?.eventType else {
                     let authorizationState = AuthorizationState.fetchingAuthSession(fetchAuthSessionResolution.newState)
-                    return .init(newState: authorizationState, commands: fetchAuthSessionResolution.commands)
+                    return .init(newState: authorizationState, actions: fetchAuthSessionResolution.actions)
                 }
                 return .init(newState: AuthorizationState.sessionEstablished(sessionData))
             }
@@ -49,10 +49,10 @@ public extension AuthorizationState {
         ) -> StateResolution<StateType> {
             switch authorizationEvent.eventType {
             case .configure(let authConfiguration):
-                let command = LoadPersistedAuthorization(authConfiguration: authConfiguration)
+                let action = LoadPersistedAuthorization(authConfiguration: authConfiguration)
                 let resolution = StateResolution(
                     newState: AuthorizationState.configured,
-                    commands: [command]
+                    actions: [action]
                 )
                 return resolution
             case .throwError(let authorizationError):
@@ -63,10 +63,10 @@ public extension AuthorizationState {
         }
         
         private func resolveFetchAuthSessionEvent() -> StateResolution<StateType> {
-            let command = InitializeFetchAuthSession()
+            let action = InitializeFetchAuthSession()
             let resolution = StateResolution(
                 newState: AuthorizationState.fetchingAuthSession(FetchAuthSessionState.initializingFetchAuthSession),
-                commands: [command]
+                actions: [action]
             )
             return resolution
         }

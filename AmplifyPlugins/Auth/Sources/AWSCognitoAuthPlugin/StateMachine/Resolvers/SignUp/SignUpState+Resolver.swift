@@ -44,8 +44,8 @@ extension SignUpState {
         private func resolveNotStarted(byApplying signInEvent: SignUpEvent) -> StateResolution<SignUpState>? {
             switch signInEvent.eventType {
             case .initiateSignUp(let username, let password):
-                let command = InitiateSignUp(username: username, password: password)
-                return StateResolution(newState: SignUpState.initiatingSigningUp, commands: [command])
+                let action = InitiateSignUp(username: username, password: password)
+                return StateResolution(newState: SignUpState.initiatingSigningUp, actions: [action])
             default:
                 return nil
             }
@@ -65,8 +65,8 @@ extension SignUpState {
         private func resolveConfirmingSignUp(byApplying signInEvent: SignUpEvent) -> StateResolution<SignUpState>? {
             switch signInEvent.eventType {
             case .confirmSignUp(let username, let confirmationCode):
-                let command = ConfirmSignUp(username: username, confirmationCode: confirmationCode)
-                return StateResolution(newState: SignUpState.confirmingSignUp, commands: [command])
+                let action = ConfirmSignUp(username: username, confirmationCode: confirmationCode)
+                return StateResolution(newState: SignUpState.confirmingSignUp, actions: [action])
             case .confirmSignUpSuccess:
                 return StateResolution(newState: .signedUp)
             case .confirmSignUpFailure:

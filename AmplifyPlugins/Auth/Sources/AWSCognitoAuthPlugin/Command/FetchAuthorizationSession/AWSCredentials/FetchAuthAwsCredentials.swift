@@ -9,7 +9,7 @@ import AWSCognitoIdentity
 import Foundation
 import Amplify
 
-struct FetchAuthAWSCredentials: Command {
+struct FetchAuthAWSCredentials: Action {
     
     let identifier = "FetchAuthAwsCredentials"
     

@@ -18,7 +18,7 @@ class ConfigureUserPoolTokenTests: XCTestCase {
         let expectation = expectation(description: "throwUserPoolTokensNotPresentError")
         
         let cognitoSessionInput = AWSAuthCognitoSession.testData.copySessionByUpdating(cognitoTokensResult: .failure(AuthError.unknown("", nil)))
-        let command = ConfigureUserPoolToken(cognitoSession: cognitoSessionInput)
+        let action = ConfigureUserPoolToken(cognitoSession: cognitoSessionInput)
         
         let environment = AuthEnvironment(userPoolConfigData: nil,
                                           identityPoolConfigData: nil,
@@ -26,7 +26,7 @@ class ConfigureUserPoolTokenTests: XCTestCase {
                                           authorizationEnvironment: nil,
                                           credentialStoreEnvironment: nil)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 guard let event = event as? FetchUserPoolTokensEvent else {
@@ -57,7 +57,7 @@ class ConfigureUserPoolTokenTests: XCTestCase {
         
         let cognitoSessionInput = AWSAuthCognitoSession.testData.copySessionByUpdating(cognitoTokensResult: .success(cognitoUserPoolTokensInput))
 
-        let command = ConfigureUserPoolToken(cognitoSession: cognitoSessionInput)
+        let action = ConfigureUserPoolToken(cognitoSession: cognitoSessionInput)
         
         let environment = AuthEnvironment(userPoolConfigData: nil,
                                           identityPoolConfigData: nil,
@@ -65,7 +65,7 @@ class ConfigureUserPoolTokenTests: XCTestCase {
                                           authorizationEnvironment: nil,
                                           credentialStoreEnvironment: nil)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 if let event = event as? FetchUserPoolTokensEvent,
@@ -94,7 +94,7 @@ class ConfigureUserPoolTokenTests: XCTestCase {
         
         let cognitoSessionInput = AWSAuthCognitoSession.testData.copySessionByUpdating(cognitoTokensResult: .success(cognitoUserPoolTokensInput))
 
-        let command = ConfigureUserPoolToken(cognitoSession: cognitoSessionInput)
+        let action = ConfigureUserPoolToken(cognitoSession: cognitoSessionInput)
         
         let environment = AuthEnvironment(userPoolConfigData: nil,
                                           identityPoolConfigData: nil,
@@ -102,7 +102,7 @@ class ConfigureUserPoolTokenTests: XCTestCase {
                                           authorizationEnvironment: nil,
                                           credentialStoreEnvironment: nil)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 guard let event = event as? FetchUserPoolTokensEvent else {

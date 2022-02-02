@@ -25,7 +25,7 @@ extension Counter {
         }
 
         private static func resolveStateType(_ oldState: StateType, byApplying event: Counter.Event) -> StateResolution<StateType> {
-            var commands = [Command]()
+            var actions = [Action]()
             var newValue = oldState.value
             switch event.eventType {
             case .decrement:
@@ -36,12 +36,12 @@ extension Counter {
                 newValue += value
             case .set(let value):
                 newValue = value
-            case .incrementAndDoCommands(let eventCommands):
+            case .incrementAndDoActions(let eventActions):
                 newValue += 1
-                commands.append(contentsOf: eventCommands)
+                actions.append(contentsOf: eventActions)
             }
             let newState = Counter(value: newValue)
-            return StateResolution(newState: newState, commands: commands)
+            return StateResolution(newState: newState, actions: actions)
         }
     }
 }
