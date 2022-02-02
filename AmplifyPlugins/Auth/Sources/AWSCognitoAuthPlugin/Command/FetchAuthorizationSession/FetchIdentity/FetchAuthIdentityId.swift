@@ -8,7 +8,7 @@
 import AWSCognitoIdentity
 import Foundation
 
-struct FetchAuthIdentityId: Command {
+struct FetchAuthIdentityId: Action {
 
     let identifier = "FetchAuthIdentityId"
 

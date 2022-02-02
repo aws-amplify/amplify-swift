@@ -28,8 +28,8 @@ public extension FetchAWSCredentialsState {
             case .configuring:
                 switch fetchAWSCredentialEvent.eventType {
                 case .fetch(let cognitoSession):
-                    let command = FetchAuthAWSCredentials(cognitoSession: cognitoSession)
-                    return .init(newState: FetchAWSCredentialsState.fetching, commands: [command])
+                    let action = FetchAuthAWSCredentials(cognitoSession: cognitoSession)
+                    return .init(newState: FetchAWSCredentialsState.fetching, actions: [action])
                 case .fetched:
                     return .init(newState: .fetched)
                 default:

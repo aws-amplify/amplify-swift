@@ -5,22 +5,22 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-typealias CommandClosure = (EventDispatcher, Environment) -> Void
+typealias ActionClosure = (EventDispatcher, Environment) -> Void
 
-protocol Command {
-    /// Used for deduping and cancelling commands
+protocol Action {
+    /// Used for deduping and cancelling actions
     var identifier: String { get }
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment)
 }
 
-extension Command {
-    static func basic(identifier: String, closure: @escaping CommandClosure) -> Command {
-        BasicCommand(identifier: identifier, closure: closure)
+extension Action {
+    static func basic(identifier: String, closure: @escaping ActionClosure) -> Action {
+        BasicAction(identifier: identifier, closure: closure)
     }
 }
 
-struct BasicCommand: Command {
+struct BasicAction: Action {
     let identifier: String
 
     let closure: (EventDispatcher, Environment) -> Void

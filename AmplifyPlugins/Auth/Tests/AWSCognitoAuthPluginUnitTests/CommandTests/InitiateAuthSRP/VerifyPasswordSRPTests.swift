@@ -25,9 +25,9 @@ class VerifyPasswordSRPTests: XCTestCase {
             cognitoUserPoolFactory: identityProviderFactory
         )
 
-        let command = VerifyPasswordSRP(stateData: SRPStateData.testData, authResponse: InitiateAuthOutputResponse.validTestData)
+        let action = VerifyPasswordSRP(stateData: SRPStateData.testData, authResponse: InitiateAuthOutputResponse.validTestData)
 
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { _ in },
             environment: environment
         )
@@ -49,7 +49,7 @@ class VerifyPasswordSRPTests: XCTestCase {
             cognitoUserPoolFactory: identityProviderFactory
         )
 
-        let command = VerifyPasswordSRP(stateData: SRPStateData.testData, authResponse: InitiateAuthOutputResponse.testData)
+        let action = VerifyPasswordSRP(stateData: SRPStateData.testData, authResponse: InitiateAuthOutputResponse.testData)
 
         let passwordVerifierError = expectation(description: "passwordVerifierError")
 
@@ -69,7 +69,7 @@ class VerifyPasswordSRPTests: XCTestCase {
             }
         }
 
-        command.execute(
+        action.execute(
             withDispatcher: dispatcher,
             environment: environment
         )
@@ -91,7 +91,7 @@ class VerifyPasswordSRPTests: XCTestCase {
             cognitoUserPoolFactory: identityProviderFactory
         )
 
-        let command = VerifyPasswordSRP(stateData: SRPStateData.testData, authResponse: InitiateAuthOutputResponse.testData)
+        let action = VerifyPasswordSRP(stateData: SRPStateData.testData, authResponse: InitiateAuthOutputResponse.testData)
 
         let passwordVerifierError = expectation(description: "passwordVerifierError")
 
@@ -110,7 +110,7 @@ class VerifyPasswordSRPTests: XCTestCase {
             }
         }
 
-        command.execute(
+        action.execute(
             withDispatcher: dispatcher,
             environment: environment
         )
@@ -132,7 +132,7 @@ class VerifyPasswordSRPTests: XCTestCase {
             cognitoUserPoolFactory: identityProviderFactory
         )
 
-        let command = VerifyPasswordSRP(stateData: SRPStateData.testData, authResponse: InitiateAuthOutputResponse.invalidTestDataWithNoSalt)
+        let action = VerifyPasswordSRP(stateData: SRPStateData.testData, authResponse: InitiateAuthOutputResponse.invalidTestDataWithNoSalt)
 
         let passwordVerifierError = expectation(description: "passwordVerifierError")
 
@@ -151,7 +151,7 @@ class VerifyPasswordSRPTests: XCTestCase {
             }
         }
 
-        command.execute(
+        action.execute(
             withDispatcher: dispatcher,
             environment: environment
         )
@@ -173,7 +173,7 @@ class VerifyPasswordSRPTests: XCTestCase {
             cognitoUserPoolFactory: identityProviderFactory
         )
 
-        let command = VerifyPasswordSRP(stateData: SRPStateData.testData, authResponse: InitiateAuthOutputResponse.invalidTestDataWithNoSecretBlock)
+        let action = VerifyPasswordSRP(stateData: SRPStateData.testData, authResponse: InitiateAuthOutputResponse.invalidTestDataWithNoSecretBlock)
 
         let passwordVerifierError = expectation(description: "passwordVerifierError")
 
@@ -192,7 +192,7 @@ class VerifyPasswordSRPTests: XCTestCase {
             }
         }
 
-        command.execute(
+        action.execute(
             withDispatcher: dispatcher,
             environment: environment
         )
@@ -214,7 +214,7 @@ class VerifyPasswordSRPTests: XCTestCase {
             cognitoUserPoolFactory: identityProviderFactory
         )
 
-        let command = VerifyPasswordSRP(stateData: SRPStateData.testData, authResponse: InitiateAuthOutputResponse.invalidTestDataWithNoSRPB)
+        let action = VerifyPasswordSRP(stateData: SRPStateData.testData, authResponse: InitiateAuthOutputResponse.invalidTestDataWithNoSRPB)
 
         let passwordVerifierError = expectation(description: "passwordVerifierError")
 
@@ -233,7 +233,7 @@ class VerifyPasswordSRPTests: XCTestCase {
             }
         }
 
-        command.execute(
+        action.execute(
             withDispatcher: dispatcher,
             environment: environment
         )
@@ -255,7 +255,7 @@ class VerifyPasswordSRPTests: XCTestCase {
             cognitoUserPoolFactory: identityProviderFactory
         )
 
-        let command = VerifyPasswordSRP(stateData: SRPStateData.testData, authResponse: InitiateAuthOutputResponse.invalidTestDataForException)
+        let action = VerifyPasswordSRP(stateData: SRPStateData.testData, authResponse: InitiateAuthOutputResponse.invalidTestDataForException)
 
         let passwordVerifierError = expectation(description: "passwordVerifierError")
 
@@ -274,7 +274,7 @@ class VerifyPasswordSRPTests: XCTestCase {
             }
         }
 
-        command.execute(
+        action.execute(
             withDispatcher: dispatcher,
             environment: environment
         )
@@ -295,7 +295,7 @@ class VerifyPasswordSRPTests: XCTestCase {
             cognitoUserPoolFactory: identityProviderFactory
         )
 
-        let command = VerifyPasswordSRP(stateData: SRPStateData.testData,
+        let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                         authResponse: InitiateAuthOutputResponse.validTestData)
 
         let passwordVerifierCompletion = expectation(description: "passwordVerifierCompletion")
@@ -312,7 +312,7 @@ class VerifyPasswordSRPTests: XCTestCase {
             }
         }
 
-        command.execute(
+        action.execute(
             withDispatcher: dispatcher,
             environment: environment
         )

@@ -231,7 +231,7 @@ extension StateMachine: EventDispatcher {
                 subscribers.removeValue(forKey: $0.key)
             }
         }
-        execute(resolution.commands)
+        execute(resolution.actions)
     }
 
     /// Must be invoked on operationQueue
@@ -261,10 +261,10 @@ extension StateMachine: EventDispatcher {
         return true
     }
 
-    private func execute(_ commands: [Command]) {
-        guard !commands.isEmpty else {
+    private func execute(_ actions: [Action]) {
+        guard !actions.isEmpty else {
             return
         }
-        executor.execute(commands, dispatchingTo: self, environment: environment)
+        executor.execute(actions, dispatchingTo: self, environment: environment)
     }
 }

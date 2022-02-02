@@ -41,7 +41,7 @@
 //            byApplying: AuthenticationEvent.signInRequestedTest
 //        )
 //        XCTAssertEqual(resolution.newState, expectedState)
-//        XCTAssert(resolution.commands.first is InitiateAuthSRP)
+//        XCTAssert(resolution.actions.first is InitiateAuthSRP)
 //    }
 //
 //    func testError() {

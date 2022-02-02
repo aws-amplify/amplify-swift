@@ -98,26 +98,26 @@ class StateMachineTests: XCTestCase {
     /// Given:
     /// - A state machine
     /// When:
-    /// - The state machine receives a resolution that includes commands
+    /// - The state machine receives a resolution that includes actions
     /// Then:
-    /// - It executes the command
+    /// - It executes the action
     func testExecutesEffects() {
-        let command1WasExecuted = expectation(description: "command1WasExecuted")
-        let command2WasExecuted = expectation(description: "command2WasExecuted")
+        let action1WasExecuted = expectation(description: "action1WasExecuted")
+        let action2WasExecuted = expectation(description: "action2WasExecuted")
 
-        let command1 = BasicCommand(identifier: "basic") { _, _ in
-            command1WasExecuted.fulfill()
+        let action1 = BasicAction(identifier: "basic") { _, _ in
+            action1WasExecuted.fulfill()
         }
 
-        let command2 = BasicCommand(identifier: "basic") { _, _ in
-            command2WasExecuted.fulfill()
+        let action2 = BasicAction(identifier: "basic") { _, _ in
+            action2WasExecuted.fulfill()
         }
 
         let testMachine = CounterStateMachine.logging()
 
         let event = Counter.Event(
             id: "1",
-            eventType: .incrementAndDoCommands([command1, command2])
+            eventType: .incrementAndDoActions([action1, action2])
         )
 
         testMachine.send(event)
@@ -131,20 +131,20 @@ class StateMachineTests: XCTestCase {
     /// - The effect `dispatches` a new event
     /// Then:
     /// - The StateMachine processes the new event
-    func testDispatchesFromCommand() {
-        let command1WasExecuted = expectation(description: "command1WasExecuted")
-        let command2WasExecuted = expectation(description: "command2WasExecuted")
+    func testDispatchesFromAction() {
+        let action1WasExecuted = expectation(description: "action1WasExecuted")
+        let action2WasExecuted = expectation(description: "action2WasExecuted")
 
-        let command1 = BasicCommand(identifier: "basic") { dispatcher, _ in
-            command1WasExecuted.fulfill()
+        let action1 = BasicAction(identifier: "basic") { dispatcher, _ in
+            action1WasExecuted.fulfill()
 
-            let command2 = BasicCommand(identifier: "basic") { _, _ in
-                command2WasExecuted.fulfill()
+            let action2 = BasicAction(identifier: "basic") { _, _ in
+                action2WasExecuted.fulfill()
             }
 
             let event = Counter.Event(
                 id: "2",
-                eventType: .incrementAndDoCommands([command2])
+                eventType: .incrementAndDoActions([action2])
             )
             dispatcher.send(event)
         }
@@ -153,11 +153,11 @@ class StateMachineTests: XCTestCase {
 
         let event = Counter.Event(
             id: "1",
-            eventType: .incrementAndDoCommands([command1])
+            eventType: .incrementAndDoActions([action1])
         )
 
         testMachine.send(event)
-        wait(for: [command1WasExecuted, command2WasExecuted], timeout: 0.1, enforceOrder: true)
+        wait(for: [action1WasExecuted, action2WasExecuted], timeout: 0.1, enforceOrder: true)
     }
 
 }

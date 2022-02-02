@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct InitializeAuthorizationConfiguration: Command {
+struct InitializeAuthorizationConfiguration: Action {
 
     let identifier = "InitializeAuthorizationConfiguration"
 
@@ -16,7 +16,7 @@ struct InitializeAuthorizationConfiguration: Command {
     func execute(withDispatcher dispatcher: EventDispatcher,
                         environment: Environment)
     {
-        // ATM this is a no-op command
+        // ATM this is a no-op action
         let timer = LoggingTimer(identifier).start("### Starting execution")
         let authorizationEvent = AuthorizationEvent(eventType: .configure(configuration))
         timer.stop("### sending \(authorizationEvent.type)")
