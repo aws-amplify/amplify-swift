@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct LoadPersistedAuthentication: Command {
+struct LoadPersistedAuthentication: Action {
     let identifier = "LoadPersistedAuthentication"
     let configuration: AuthConfiguration
 

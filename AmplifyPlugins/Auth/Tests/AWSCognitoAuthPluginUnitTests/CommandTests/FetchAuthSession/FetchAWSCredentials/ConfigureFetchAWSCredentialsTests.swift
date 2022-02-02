@@ -18,7 +18,7 @@ class ConfigureFetchAWSCredentialsTests: XCTestCase {
         let expectation = expectation(description: "throwIdentityIdError")
         
         let cognitoSessionInput = AWSAuthCognitoSession.testData.copySessionByUpdating(identityIdResult: .failure(AuthError.unknown("", nil)))
-        let command = ConfigureFetchAWSCredentials(cognitoSession: cognitoSessionInput)
+        let action = ConfigureFetchAWSCredentials(cognitoSession: cognitoSessionInput)
         
         let environment = AuthEnvironment(userPoolConfigData: nil,
                                           identityPoolConfigData: nil,
@@ -26,7 +26,7 @@ class ConfigureFetchAWSCredentialsTests: XCTestCase {
                                           authorizationEnvironment: nil,
                                           credentialStoreEnvironment: nil)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 guard let event = event as? FetchAWSCredentialEvent else {
@@ -55,7 +55,7 @@ class ConfigureFetchAWSCredentialsTests: XCTestCase {
                                                             sessionKey: "sessionKey",
                                                             expiration: Date().addingTimeInterval(Double(11 * 60)))
         let cognitoSessionInput = AWSAuthCognitoSession.testData.copySessionByUpdating(awsCredentialsResult: .success(awsCredentialsInput))
-        let command = ConfigureFetchAWSCredentials(cognitoSession: cognitoSessionInput)
+        let action = ConfigureFetchAWSCredentials(cognitoSession: cognitoSessionInput)
 
         let environment = AuthEnvironment(userPoolConfigData: nil,
                                           identityPoolConfigData: nil,
@@ -63,7 +63,7 @@ class ConfigureFetchAWSCredentialsTests: XCTestCase {
                                           authorizationEnvironment: nil,
                                           credentialStoreEnvironment: nil)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 if let event = event as? FetchAWSCredentialEvent,
@@ -89,7 +89,7 @@ class ConfigureFetchAWSCredentialsTests: XCTestCase {
                                                             sessionKey: "sessionKey",
                                                             expiration: Date().addingTimeInterval(Double(119)))
         let cognitoSessionInput = AWSAuthCognitoSession.testData.copySessionByUpdating(awsCredentialsResult: .success(awsCredentialsInput))
-        let command = ConfigureFetchAWSCredentials(cognitoSession: cognitoSessionInput)
+        let action = ConfigureFetchAWSCredentials(cognitoSession: cognitoSessionInput)
         
         let environment = AuthEnvironment(userPoolConfigData: nil,
                                           identityPoolConfigData: nil,
@@ -97,7 +97,7 @@ class ConfigureFetchAWSCredentialsTests: XCTestCase {
                                           authorizationEnvironment: nil,
                                           credentialStoreEnvironment: nil)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 guard let event = event as? FetchAWSCredentialEvent else {
@@ -122,7 +122,7 @@ class ConfigureFetchAWSCredentialsTests: XCTestCase {
         let identityIdInput = "identityId"
         
         let cognitoSessionInput = AWSAuthCognitoSession.testData.copySessionByUpdating(identityIdResult: .success(identityIdInput))
-        let command = ConfigureFetchAWSCredentials(cognitoSession: cognitoSessionInput)
+        let action = ConfigureFetchAWSCredentials(cognitoSession: cognitoSessionInput)
         
         let environment = AuthEnvironment(userPoolConfigData: nil,
                                           identityPoolConfigData: nil,
@@ -130,7 +130,7 @@ class ConfigureFetchAWSCredentialsTests: XCTestCase {
                                           authorizationEnvironment: nil,
                                           credentialStoreEnvironment: nil)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 guard let event = event as? FetchAWSCredentialEvent else {

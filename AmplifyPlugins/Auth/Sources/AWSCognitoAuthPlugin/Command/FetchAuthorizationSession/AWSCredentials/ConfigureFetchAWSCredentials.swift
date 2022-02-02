@@ -8,7 +8,7 @@
 import AWSPluginsCore
 import Foundation
 
-struct ConfigureFetchAWSCredentials: Command {
+struct ConfigureFetchAWSCredentials: Action {
 
     let identifier = "ConfigureFetchAWSCredentials"
     

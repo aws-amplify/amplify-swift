@@ -9,7 +9,7 @@ import Foundation
 
 import Amplify
 
-struct MigrateLegacyCredentialStore: Command {
+struct MigrateLegacyCredentialStore: Action {
 
     let identifier = "MigrateLegacyCredentialStore"
     let authConfiguration: AuthConfiguration
