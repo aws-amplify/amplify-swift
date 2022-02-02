@@ -15,7 +15,7 @@ extension Counter {
             case decrement
             case adjustBy(_ value: Int = 0)
             case set(Int)
-            case incrementAndDoCommands([Command])
+            case incrementAndDoActions([Action])
         }
 
         let id: String
@@ -35,8 +35,8 @@ extension Counter {
                 return "decrement"
             case .set(let value):
                 return "set.\(value)"
-            case .incrementAndDoCommands:
-                return "incrementAndDoCommands"
+            case .incrementAndDoActions:
+                return "incrementAndDoActions"
             }
         }
 

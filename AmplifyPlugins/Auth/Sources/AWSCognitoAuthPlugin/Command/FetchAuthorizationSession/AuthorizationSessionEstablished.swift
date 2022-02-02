@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 
-struct AuthorizationSessionEstablished: Command {
+struct AuthorizationSessionEstablished: Action {
     
     let identifier = "AuthorizationSessionEstablished"
     

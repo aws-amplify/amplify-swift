@@ -7,7 +7,7 @@
 
 protocol EffectExecutor {
     func execute(
-        _ commands: [Command],
+        _ actions: [Action],
         dispatchingTo eventDispatcher: EventDispatcher,
         environment: Environment
     )

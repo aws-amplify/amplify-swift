@@ -10,7 +10,7 @@ import CryptoKit
 import AWSCognitoIdentityProvider
 import Amplify
 
-struct InitiateSignUp: Command {
+struct InitiateSignUp: Action {
     let identifier = "InitiateSignUp"
 
     let username: String

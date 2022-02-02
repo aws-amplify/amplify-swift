@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct InitializeAuthConfiguration: Command {
+struct InitializeAuthConfiguration: Action {
 
     let identifier = "InitializeAuthConfiguration"
 

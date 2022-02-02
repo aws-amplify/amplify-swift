@@ -61,10 +61,10 @@ extension AuthenticationState {
 
             switch authEvent.eventType {
             case .configure(let authConfig):
-                let command = LoadPersistedAuthentication(configuration: authConfig)
+                let action = LoadPersistedAuthentication(configuration: authConfig)
                 let resolution = StateResolution(
                     newState: AuthenticationState.configured(authConfig),
-                    commands: [command]
+                    actions: [action]
                 )
                 return resolution
             default:
@@ -138,11 +138,11 @@ extension AuthenticationState {
             currentConfiguration: AuthConfiguration,
             currentSignedOutData: SignedOutData
         ) -> StateResolution<StateType> {
-            let command = StartSRPFlow(signInEventData: signInData)
+            let action = StartSRPFlow(signInEventData: signInData)
             let signInState = SignInState.signingInWithSRP(.notStarted, signInData)
             let resolution = StateResolution(
                 newState: AuthenticationState.signingIn(currentConfiguration, signInState),
-                commands: [command]
+                actions: [action]
             )
             return resolution
         }
@@ -159,11 +159,11 @@ extension AuthenticationState {
                 let resolution = SRPSignInState.Resolver().resolve(oldState: srpSignInState, byApplying: event)
                 if case .signedIn(let signedInData) = resolution.newState {
                     let newState = AuthenticationState.signedIn(authConfiguration, signedInData)
-                    return .init(newState: newState, commands: resolution.commands)
+                    return .init(newState: newState, actions: resolution.actions)
                 } else {
                     let signingInWithSRP = SignInState.signingInWithSRP(resolution.newState, signInEventData)
                     let newState = AuthenticationState.signingIn(authConfiguration, signingInWithSRP)
-                    return .init(newState: newState, commands: resolution.commands)
+                    return .init(newState: newState, actions: resolution.actions)
                 }
 
             default:

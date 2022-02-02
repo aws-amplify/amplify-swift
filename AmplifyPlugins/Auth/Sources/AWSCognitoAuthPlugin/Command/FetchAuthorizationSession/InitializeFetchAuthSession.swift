@@ -9,7 +9,7 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
-struct InitializeFetchAuthSession: Command {
+struct InitializeFetchAuthSession: Action {
     
     let identifier = "InitializeFetchAuthSession"
     
