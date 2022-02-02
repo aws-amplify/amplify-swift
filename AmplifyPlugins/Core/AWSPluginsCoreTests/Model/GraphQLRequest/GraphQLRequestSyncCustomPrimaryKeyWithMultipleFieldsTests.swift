@@ -23,13 +23,13 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
 
     func testDeleteMutationGraphQLRequestWithDateInPK() throws {
         let customer = CustomerWithMultipleFieldsinPK(dob: Temporal.DateTime.now(),
-                                 date: Temporal.Date.now(),
-                                 time: Temporal.Time.now(),
-                                 phoneNumber: 1_234_567,
-                                 priority: Priority.high,
-                                 height: 6.1,
-                                 firstName: "John",
-                                 lastName: "Doe")
+                                                      date: Temporal.Date.now(),
+                                                      time: Temporal.Time.now(),
+                                                      phoneNumber: 1_234_567,
+                                                      priority: Priority.high,
+                                                      height: 6.1,
+                                                      firstName: "John",
+                                                      lastName: "Doe")
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: customer.modelName,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
