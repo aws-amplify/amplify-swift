@@ -41,7 +41,7 @@ struct ColorCounter: State {
         func resolve(oldState: ColorCounter, byApplying event: StateMachineEvent) -> StateResolution<ColorCounter> {
 
             var builder = ColorCounter.ColorBuilder(oldState)
-            var commands = [Command]()
+            var actions = [Action]()
 
             switch event {
             case is Counter.Event:
@@ -49,20 +49,20 @@ struct ColorCounter: State {
                     .Resolver()
                     .resolve(oldState: oldState.counter, byApplying: event)
                 builder.counter = resolution.newState
-                commands = resolution.commands
+                actions = resolution.actions
 
             case is Color.Event:
                 let resolution = Color
                     .Resolver()
                     .resolve(oldState: oldState.color, byApplying: event)
                 builder.color = resolution.newState
-                commands = resolution.commands
+                actions = resolution.actions
 
             default:
                 return .from(oldState)
             }
             resolveHasTriggered(for: &builder)
-            return StateResolution(newState: builder.build(), commands: commands)
+            return StateResolution(newState: builder.build(), actions: actions)
         }
 
         private func resolveHasTriggered(for builder: inout ColorCounter.ColorBuilder) {

@@ -20,7 +20,7 @@ class ConfigureFetchIdentityTests: XCTestCase {
         let fetchAWSCredentialEventExpectation = expectation(description: "fetchAWSCredential")
         
         let cognitoSessionInput = AWSAuthCognitoSession.testData
-        let command = ConfigureFetchIdentity(cognitoSession: cognitoSessionInput)
+        let action = ConfigureFetchIdentity(cognitoSession: cognitoSessionInput)
         
         let environment = AuthEnvironment(userPoolConfigData: nil,
                                           identityPoolConfigData: nil,
@@ -28,7 +28,7 @@ class ConfigureFetchIdentityTests: XCTestCase {
                                           authorizationEnvironment: nil,
                                           credentialStoreEnvironment: nil)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 if let event = event as? FetchIdentityEvent,
@@ -52,7 +52,7 @@ class ConfigureFetchIdentityTests: XCTestCase {
         
         let cognitoSessionInput = AWSAuthCognitoSession.testData.copySessionByUpdating(identityIdResult: .failure(AuthError.unknown("", nil)))
 
-        let command = ConfigureFetchIdentity(cognitoSession: cognitoSessionInput)
+        let action = ConfigureFetchIdentity(cognitoSession: cognitoSessionInput)
 
         let environment = AuthEnvironment(userPoolConfigData: nil,
                                           identityPoolConfigData: nil,
@@ -60,7 +60,7 @@ class ConfigureFetchIdentityTests: XCTestCase {
                                           authorizationEnvironment: nil,
                                           credentialStoreEnvironment: nil)
         
-        command.execute(
+        action.execute(
             withDispatcher: MockDispatcher { event in
                 
                 guard let event = event as? FetchIdentityEvent else {

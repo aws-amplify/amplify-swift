@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct LoadCredentialStore: Command {
+struct LoadCredentialStore: Action {
 
     let identifier = "LoadCredentialStore"
 

@@ -7,7 +7,7 @@
 
 struct StateResolution<T: State> {
     let newState: T
-    let commands: [Command]
+    let actions: [Action]
 
     static func from(_ state: T) -> StateResolution<T> {
         StateResolution(newState: state)
@@ -15,9 +15,9 @@ struct StateResolution<T: State> {
 
     init(
         newState: T,
-        commands: [Command] = []
+        actions: [Action] = []
     ) {
         self.newState = newState
-        self.commands = commands
+        self.actions = actions
     }
 }

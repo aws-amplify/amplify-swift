@@ -26,9 +26,9 @@
 //    static let networkTimeout: TimeInterval = 120
 //    let environment = Defaults.makeDefaultAuthEnvironment()
 //
-//    func testInitiateAuthCommandPropagatesSuccess() {
+//    func testInitiateAuthActionPropagatesSuccess() {
 //
-//        let command = InitiateAuthSRP(username: "user1", password: "")
+//        let action = InitiateAuthSRP(username: "user1", password: "")
 //        let errorEventSent = expectation(description: "errorEventSent")
 //
 //        let dispatcher = IntegrationTestMockDispatcher { event in
@@ -47,7 +47,7 @@
 //            XCTAssertNotNil(authOutputResponse)
 //        }
 //
-//        command.execute(
+//        action.execute(
 //            withDispatcher: dispatcher,
 //            environment: environment
 //        )
@@ -55,8 +55,8 @@
 //        waitForExpectations(timeout: InitiateAuthIntegTests.networkTimeout)
 //    }
 //
-//    func testInitiateAuthCommandPropagatesServiceError() {
-//        let command = InitiateAuthSRP(username: "INVALID_USER", password: "")
+//    func testInitiateAuthActionPropagatesServiceError() {
+//        let action = InitiateAuthSRP(username: "INVALID_USER", password: "")
 //        let errorEventSent = expectation(description: "errorEventSent")
 //
 //        let dispatcher = IntegrationTestMockDispatcher { event in
@@ -78,7 +78,7 @@
 //            XCTAssertNotNil(message)
 //        }
 //
-//        command.execute(
+//        action.execute(
 //            withDispatcher: dispatcher,
 //            environment: environment
 //        )
@@ -86,8 +86,8 @@
 //        waitForExpectations(timeout: InitiateAuthIntegTests.networkTimeout)
 //    }
 //
-//    func testInitiateAuthCommandPropagatesConfigurationError() {
-//        let command = InitiateAuthSRP(username: "user1", password: "")
+//    func testInitiateAuthActionPropagatesConfigurationError() {
+//        let action = InitiateAuthSRP(username: "user1", password: "")
 //        let errorEventSent = expectation(description: "errorEventSent")
 //
 //        let dispatcher = IntegrationTestMockDispatcher { event in
@@ -109,7 +109,7 @@
 //            XCTAssertNotNil(message)
 //        }
 //
-//        command.execute(
+//        action.execute(
 //            withDispatcher: dispatcher,
 //            environment: MockConfigurationErrorEnvironment()
 //        )

@@ -21,7 +21,7 @@
 //
 //class InitiateAuthTests: XCTestCase {
 //
-//    func testInitiateAuthCommandThrowsError() {
+//    func testInitiateAuthActionThrowsError() {
 //        let userPoolConfiguration = AWSCognitoIdentityUserPoolConfiguration(
 //            clientId: "clientId123",
 //            clientSecret: "clientSecret123",
