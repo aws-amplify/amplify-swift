@@ -29,27 +29,25 @@ public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
                                    signingRegion: Swift.String,
                                    date: ClientRuntime.Date) throws -> SdkHttpRequest? {
         do {
-            return nil
-            // This is unusable until swift SDK 0.1.2 is released (https://github.com/awslabs/aws-sdk-swift/pull/522)
-//            let credentialsResult = try credentialsProvider.getCredentials()
-//            let credentials = try credentialsResult.get()
-//
-//            let flags = SigningFlags(useDoubleURIEncode: true,
-//                                     shouldNormalizeURIPath: true,
-//                                     omitSessionToken: false) know
-//            let signedBodyHeader: AWSSignedBodyHeader = .none
-//            let signedBodyValue: AWSSignedBodyValue = .empty
-//            let signingConfig = AWSSigningConfig(credentials: credentials,
-//                                                 signedBodyHeader: signedBodyHeader,
-//                                                 signedBodyValue: signedBodyValue,
-//                                                 flags: flags,
-//                                                 date: date,
-//                                                 service: signingName,
-//                                                 region: signingRegion,
-//                                                 signatureType: .requestHeaders)
-//            return AWSSigV4Signer.sigV4SignedRequest(requestBuilder: requestBuilder, signingConfig: signingConfig)
-        } catch let err {
-            throw AuthError.unknown("Unable to sign request", err)
+            let credentialsResult = try credentialsProvider.getCredentials()
+            let credentials = try credentialsResult.get()
+
+            let flags = SigningFlags(useDoubleURIEncode: true,
+                                     shouldNormalizeURIPath: true,
+                                     omitSessionToken: false) 
+            let signedBodyHeader: AWSSignedBodyHeader = .none
+            let signedBodyValue: AWSSignedBodyValue = .empty
+            let signingConfig = AWSSigningConfig(credentials: credentials,
+                                                 signedBodyHeader: signedBodyHeader,
+                                                 signedBodyValue: signedBodyValue,
+                                                 flags: flags,
+                                                 date: date,
+                                                 service: signingName,
+                                                 region: signingRegion,
+                                                 signatureType: .requestHeaders)
+            return AWSSigV4Signer.sigV4SignedRequest(requestBuilder: requestBuilder, signingConfig: signingConfig)
+        } catch let error {
+            throw AuthError.unknown("Unable to sign request", error)
         }
     }
 }
