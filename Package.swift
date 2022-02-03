@@ -11,13 +11,17 @@ let amplifyTargets: [Target] = [
             "Categories/DataStore/Model/Temporal/README.md"
         ]
     ),
-    .testTarget(
-        name: "AmplifyTests",
+    .target(
+        name: "AWSPluginsCore",
         dependencies: [
             "Amplify",
-            "AmplifyTestCommon"
+            .product(name: "AWSClientRuntime", package: "AWSSwiftSDK")
         ],
-        path: "AmplifyTests"
+        path: "AmplifyPlugins/Core/AWSPluginsCore",
+        exclude: [
+            "Info.plist"
+        ]
+        
     ),
     .target(
         name: "AmplifyTestCommon",
@@ -28,16 +32,25 @@ let amplifyTargets: [Target] = [
         ],
         path: "AmplifyTestCommon",
         exclude: [
-            "Info.plist"
+            "Info.plist",
+            "Models/schema.graphql",
+            "Models/Restaurant/schema.graphql",
+            "Models/TeamProject/schema.graphql",
+            "Models/M2MPostEditorUser/schema.graphql",
+            "Models/Collection/connection-schema.graphql",
         ]
     ),
-    .target(
-        name: "AWSPluginsCore",
+    .testTarget(
+        name: "AmplifyTests",
         dependencies: [
             "Amplify",
-            .product(name: "AWSClientRuntime", package: "AWSSwiftSDK")
+            "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/Core/AWSPluginsCore"
+        path: "AmplifyTests",
+        exclude: [
+            "Info.plist",
+            "CoreTests/README.md"
+        ]
     ),
     .target(
         name: "AWSPluginsTestCommon",
@@ -46,7 +59,10 @@ let amplifyTargets: [Target] = [
             "AWSPluginsCore",
             .product(name: "AWSClientRuntime", package: "AWSSwiftSDK")
         ],
-        path: "AmplifyPlugins/Core/AWSPluginsTestCommon"
+        path: "AmplifyPlugins/Core/AWSPluginsTestCommon",
+        exclude: [
+            "Info.plist"
+        ]
     ),
     .testTarget(
         name: "AWSPluginsCoreTests",
@@ -55,7 +71,10 @@ let amplifyTargets: [Target] = [
             "AmplifyTestCommon",
             .product(name: "AWSClientRuntime", package: "AWSSwiftSDK")
         ],
-        path: "AmplifyPlugins/Core/AWSPluginsCoreTests"
+        path: "AmplifyPlugins/Core/AWSPluginsCoreTests",
+        exclude: [
+            "Info.plist"
+        ]
     ),
 ]
 
@@ -88,6 +107,11 @@ let apiTargets: [Target] = [
             "AmplifyTestCommon"
         ],
         path: "AmplifyPlugins/API/AWSAPICategoryPluginFunctionalTests",
+        exclude: [
+            "Info.plist",
+            "GraphQLModelBased/README.md",
+            "GraphQLSyncBased/README.md"
+        ],
         resources: [
             .process("Resources/GraphQLModelBasedTests-amplifyconfiguration.json")
         ]
@@ -142,10 +166,7 @@ let authTargets: [Target] = [
             .product(name: "AWSCognitoIdentityProvider", package: "AWSSwiftSDK"),
             .product(name: "AWSCognitoIdentity", package: "AWSSwiftSDK")
         ],
-        path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin",
-        exclude: [
-            "Resources/Info.plist"
-        ]
+        path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin"
     ),
     .testTarget(
         name: "AWSCognitoAuthPluginUnitTests",
@@ -245,7 +266,7 @@ let package = Package(
         .package(
             name: "AWSSwiftSDK",
             url: "https://github.com/awslabs/aws-sdk-swift",
-            .upToNextMajor(from: "0.1.0")
+            .upToNextMajor(from: "0.1.2")
         ),
         .package(
             name: "CwlPreconditionTesting",
