@@ -56,7 +56,7 @@ public extension SRPSignInState {
                 }
                 // Assuming password could be nil
                 let password = signInEventData.password ?? ""
-                let action = InitiateAuthSRP(username: username, password: password ?? "")
+                let action = InitiateAuthSRP(username: username, password: password)
                 return StateResolution(
                     newState: SRPSignInState.initiatingSRPA(signInEventData),
                     actions: [action]
