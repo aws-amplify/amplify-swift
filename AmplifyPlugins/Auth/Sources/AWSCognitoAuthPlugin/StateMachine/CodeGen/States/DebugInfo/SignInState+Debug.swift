@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public extension SignInState {
 
     var debugDictionary: [String: Any] {

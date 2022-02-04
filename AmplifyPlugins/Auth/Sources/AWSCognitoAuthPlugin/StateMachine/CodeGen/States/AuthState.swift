@@ -7,12 +7,11 @@
 
 import Foundation
 
-
 enum AuthState: State {
 
     case notConfigured
 
-    case configuringCredentialStore(CredentialStoreState)
+    case configuringAuth
 
     case configuringAuthentication(AuthenticationState)
 
@@ -26,7 +25,7 @@ extension AuthState {
     var type: String {
         switch self {
         case .notConfigured: return "AuthState.notConfigured"
-        case .configuringCredentialStore: return "AuthState.configuringCredentialStore"
+        case .configuringAuth: return "AuthState.configuringAuth"
         case .configuringAuthentication: return "AuthState.configuringAuthentication"
         case .configuringAuthorization: return "AuthState.configuringAuthorization"
         case .configured: return "AuthState.configured"

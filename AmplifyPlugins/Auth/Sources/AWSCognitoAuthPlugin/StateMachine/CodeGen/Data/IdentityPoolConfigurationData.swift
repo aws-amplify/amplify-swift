@@ -7,14 +7,12 @@
 
 import Foundation
 
-
 public struct IdentityPoolConfigurationData: Equatable {
     public let poolId: String
     public let region: String
 
     public init(poolId: String,
-                region: String)
-    {
+                region: String) {
         self.poolId = poolId
         self.region = region
     }
@@ -37,4 +35,3 @@ extension IdentityPoolConfigurationData: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
-

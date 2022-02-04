@@ -168,7 +168,6 @@ protocol State: Equatable {
     var type: String { get }
 }
 
-
 struct StateID: Hashable {
     let id: String
 }

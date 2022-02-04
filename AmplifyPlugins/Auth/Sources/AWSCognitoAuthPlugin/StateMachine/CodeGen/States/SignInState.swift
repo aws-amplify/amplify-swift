@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-
 public enum SignInState: State {
     case signingInWithSRP(SRPSignInState, SignInEventData)
     case signingInWithSocial

@@ -20,10 +20,10 @@ extension AuthEvent {
     ]
 
     static let configureAuth = AuthEvent(id: "configureAuth",
-                                         eventType: .configureAuth(.testData))
+                                         eventType: .configureAuth(.testData, .testData))
 
     static let configureAuthentication = AuthEvent(id: "configureAuthentication",
-                                                   eventType: .configureAuthentication(.testData))
+                                                   eventType: .configureAuthentication(.testData, .testData))
 
     static let configureAuthorization = AuthEvent(id: "configureAuthentication",
                                                   eventType: .configureAuthorization(.testData))

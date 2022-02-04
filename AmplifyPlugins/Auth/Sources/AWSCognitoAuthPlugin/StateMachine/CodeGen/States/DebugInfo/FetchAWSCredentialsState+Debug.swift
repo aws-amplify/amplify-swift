@@ -25,4 +25,3 @@ public extension FetchAWSCredentialsState {
         return stateTypeDictionary.merging(additionalMetadataDictionary, uniquingKeysWith: { $1 })
     }
 }
-

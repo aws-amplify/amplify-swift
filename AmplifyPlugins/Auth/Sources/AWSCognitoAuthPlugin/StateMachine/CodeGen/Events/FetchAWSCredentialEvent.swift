@@ -7,14 +7,13 @@
 
 import Foundation
 
-
 public struct FetchAWSCredentialEvent: StateMachineEvent {
     public enum EventType: Equatable {
 
         case fetch(AWSAuthCognitoSession)
-        
+
         case fetched
-        
+
         case throwError(AuthorizationError)
 
     }
@@ -41,4 +40,3 @@ public struct FetchAWSCredentialEvent: StateMachineEvent {
         self.time = time
     }
 }
-

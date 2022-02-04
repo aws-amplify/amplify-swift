@@ -12,9 +12,9 @@ public enum FetchUserPoolTokensState: State {
     case configuring
 
     case refreshing
-    
+
     case fetched
-    
+
     case error(AuthorizationError)
 
 }
@@ -29,4 +29,3 @@ public extension FetchUserPoolTokensState {
         }
     }
 }
-
