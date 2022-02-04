@@ -240,7 +240,7 @@ extension StateMachine: EventDispatcher {
     ///   - newState: The new state to be sent
     /// - Returns: true if the subscriber was notified, false if the wrapper reference was nil or a cancellation was pending
     private func notify(
-        subscriberElement: [WeakWrapper[Box[UUID]>, (StateType) -> Void>.Element,
+        subscriberElement: Dictionary<WeakWrapper<Box<UUID>>, (StateType) -> Void>.Element,
         about newState: StateType
     ) -> Bool {
         let weakWrapper = subscriberElement.key
