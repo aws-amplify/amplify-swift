@@ -8,9 +8,9 @@
 import Foundation
 
 struct CognitoCredentials: Codable {
-    public let userPoolTokens: AWSCognitoUserPoolTokens?
-    public let identityId: String?
-    public let awsCredential: AuthAWSCognitoCredentials?
+    let userPoolTokens: AWSCognitoUserPoolTokens?
+    let identityId: String?
+    let awsCredential: AuthAWSCognitoCredentials?
 }
 
 extension CognitoCredentials: Equatable { }

@@ -100,8 +100,7 @@ enum Defaults {
             userPoolConfigData: userPoolConfigData,
             identityPoolConfigData: identityPoolConfigData,
             authenticationEnvironment: authenticationEnvironment,
-            authorizationEnvironment: authorizationEnvironment,
-            credentialStoreEnvironment: nil
+            authorizationEnvironment: authorizationEnvironment
         )
         return authEnv
     }

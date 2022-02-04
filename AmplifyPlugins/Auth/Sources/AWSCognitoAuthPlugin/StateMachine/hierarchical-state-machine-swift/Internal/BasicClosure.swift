@@ -6,6 +6,6 @@
 //
 
 /// Convenience typealias
-//typealias BasicClosure = () -> Void
+// typealias BasicClosure = () -> Void
 
 typealias BasicThrowableClosure = () throws -> Void

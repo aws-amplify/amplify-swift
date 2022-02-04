@@ -7,25 +7,24 @@
 
 import Foundation
 
-
-public struct AuthorizationEvent: StateMachineEvent {
-    public enum EventType: Equatable {
+struct AuthorizationEvent: StateMachineEvent {
+    enum EventType: Equatable {
 
         case configure(AuthConfiguration)
 
-        case fetchAuthSession
+        case fetchAuthSession(CognitoCredentials?)
 
         case fetchedAuthSession(AWSAuthCognitoSession)
-        
+
         case throwError(AuthorizationError)
-        
+
     }
 
-    public let id: String
-    public let eventType: EventType
-    public let time: Date?
+    let id: String
+    let eventType: EventType
+    let time: Date?
 
-    public var type: String {
+    var type: String {
         switch eventType {
         case .configure: return "AuthorizationEvent.configure"
         case .fetchAuthSession: return "AuthorizationEvent.fetchAuthSession"
@@ -34,7 +33,7 @@ public struct AuthorizationEvent: StateMachineEvent {
         }
     }
 
-    public init(
+    init(
         id: String = UUID().uuidString,
         eventType: EventType,
         time: Date? = nil
@@ -44,4 +43,3 @@ public struct AuthorizationEvent: StateMachineEvent {
         self.time = time
     }
 }
-

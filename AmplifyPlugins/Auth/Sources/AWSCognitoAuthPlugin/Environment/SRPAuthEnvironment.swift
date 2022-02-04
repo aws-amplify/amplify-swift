@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-
 // TODO: Refactor this: shouldn't be depending on HLC constructs like
 // AWSCognitoIdentityUserPoolConfiguration nor AWSServiceInfo, nor even really on
 // SRP dependencies

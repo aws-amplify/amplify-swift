@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public extension AuthorizationState {
 
     struct Resolver: StateMachineResolver {
@@ -28,10 +27,10 @@ public extension AuthorizationState {
                 }
                 return resolveNotConfigured(byApplying: authZEvent)
             case .configured, .sessionEstablished, .error:
-                guard case .fetchAuthSession = isAuthorizationEvent(event)?.eventType else {
+                guard case .fetchAuthSession(let cognitoCredentials) = isAuthorizationEvent(event)?.eventType else {
                     return .from(oldState)
                 }
-                return resolveFetchAuthSessionEvent()
+                return resolveFetchAuthSessionEvent(storedCredentials: cognitoCredentials)
             case .fetchingAuthSession(let fetchAuthSessionState):
                 let fetchAuthSessionStateResolver = FetchAuthSessionState.Resolver()
                 let fetchAuthSessionResolution = fetchAuthSessionStateResolver.resolve(
@@ -61,9 +60,9 @@ public extension AuthorizationState {
                 return .from(.notConfigured)
             }
         }
-        
-        private func resolveFetchAuthSessionEvent() -> StateResolution<StateType> {
-            let action = InitializeFetchAuthSession()
+
+        private func resolveFetchAuthSessionEvent(storedCredentials: CognitoCredentials?) -> StateResolution<StateType> {
+            let action = InitializeFetchAuthSession(storedCredentials: storedCredentials)
             let resolution = StateResolution(
                 newState: AuthorizationState.fetchingAuthSession(FetchAuthSessionState.initializingFetchAuthSession),
                 actions: [action]
