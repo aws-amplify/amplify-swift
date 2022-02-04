@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 extension AuthenticationState {
 
     struct Resolver: StateMachineResolver {
@@ -60,8 +59,8 @@ extension AuthenticationState {
         ) -> StateResolution<StateType> {
 
             switch authEvent.eventType {
-            case .configure(let authConfig):
-                let action = LoadPersistedAuthentication(configuration: authConfig)
+            case .configure(let authConfig, let cognitoCredentials):
+                let action = LoadPersistedAuthentication(configuration: authConfig, storedCredentials: cognitoCredentials)
                 let resolution = StateResolution(
                     newState: AuthenticationState.configured(authConfig),
                     actions: [action]
@@ -148,8 +147,7 @@ extension AuthenticationState {
         }
 
         private func resolveSigningInState(oldState: AuthenticationState,
-                                           event: StateMachineEvent) -> StateResolution<StateType>
-        {
+                                           event: StateMachineEvent) -> StateResolution<StateType> {
             guard case .signingIn(let authConfiguration, let signInState) = oldState else {
                 return .from(oldState)
             }

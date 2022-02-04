@@ -11,7 +11,6 @@ extension SignUpState {
         public typealias StateType = SignUpState
         public let defaultState = SignUpState.notStarted
 
-
         public init() { }
 
         func resolve(

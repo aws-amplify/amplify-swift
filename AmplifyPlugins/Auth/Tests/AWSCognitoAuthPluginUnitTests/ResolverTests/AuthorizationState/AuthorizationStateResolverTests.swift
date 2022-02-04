@@ -32,7 +32,7 @@ class AuthorizationStateResolverTests: XCTestCase {
                                        event: AuthorizationEvent(eventType: .configure(AuthConfiguration.testData)),
                                        expected: .configured),
             AuthorizationStateSequence(oldState: .configured,
-                                       event: AuthorizationEvent(eventType: .fetchAuthSession),
+                                       event: AuthorizationEvent(eventType: .fetchAuthSession(nil)),
                                        expected: .fetchingAuthSession(FetchAuthSessionState.initializingFetchAuthSession)),
             AuthorizationStateSequence(oldState: .fetchingAuthSession(FetchAuthSessionState.initializingFetchAuthSession),
                                        event: AuthorizationEvent(eventType: .fetchedAuthSession(sessionData)),
@@ -52,7 +52,7 @@ class AuthorizationStateResolverTests: XCTestCase {
         let authorizationError = AuthorizationError.configuration(message: "someError")
         let invalidSequences: [AuthorizationStateSequence] = [
             AuthorizationStateSequence(oldState: .notConfigured,
-                                       event: AuthorizationEvent(eventType: .fetchAuthSession),
+                                       event: AuthorizationEvent(eventType: .fetchAuthSession(nil)),
                                        expected: .fetchingAuthSession(FetchAuthSessionState.initializingFetchAuthSession)),
             AuthorizationStateSequence(oldState: .notConfigured,
                                        event: AuthorizationEvent(eventType: .fetchedAuthSession(sessionData)),
@@ -61,7 +61,7 @@ class AuthorizationStateResolverTests: XCTestCase {
                                        event: AuthorizationEvent(eventType: .throwError(authorizationError)),
                                        expected: .configured),
             AuthorizationStateSequence(oldState: .configured,
-                                       event: AuthorizationEvent(eventType: .fetchAuthSession),
+                                       event: AuthorizationEvent(eventType: .fetchAuthSession(nil)),
                                        expected: .notConfigured),
             AuthorizationStateSequence(oldState: .configured,
                                        event: AuthorizationEvent(eventType: .fetchedAuthSession(sessionData)),

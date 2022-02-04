@@ -11,7 +11,7 @@ struct CredentialStoreAttributes {
 
     var itemClass: String = CredentialStoreConstant.ClassGenericPassword
     var service: String
-    var accessGroup: String? = nil
+    var accessGroup: String?
 
     var label: String?
     var comment: String?

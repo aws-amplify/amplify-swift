@@ -12,7 +12,6 @@ public struct AuthEnvironment: Environment {
     let identityPoolConfigData: IdentityPoolConfigurationData?
     let authenticationEnvironment: AuthenticationEnvironment?
     let authorizationEnvironment: AuthorizationEnvironment?
-    let credentialStoreEnvironment: CredentialStoreEnvironment?
 }
 
 extension AuthEnvironment: AuthenticationEnvironment {
@@ -23,7 +22,6 @@ extension AuthEnvironment: AuthenticationEnvironment {
         }
         return authNEnv.userPoolEnvironment
     }
-
 
     var srpSignInEnvironment: SRPSignInEnvironment {
         guard let authNEnv = authenticationEnvironment else {
@@ -40,7 +38,7 @@ extension AuthEnvironment: AuthorizationEnvironment {
         }
         return authZEnv.identityPoolConfiguration
     }
-    
+
     var cognitoIdentityFactory: CognitoIdentityFactory {
         guard let authZEnv = authorizationEnvironment else {
             fatalError("Could not find authorization environment")

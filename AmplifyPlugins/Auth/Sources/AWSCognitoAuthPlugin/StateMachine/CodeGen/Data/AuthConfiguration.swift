@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-
 public enum AuthConfiguration {
     case userPools(UserPoolConfigurationData)
     case identityPools(IdentityPoolConfigurationData)
@@ -67,7 +65,7 @@ extension AuthConfiguration {
         case .userPools(let userPoolConfigurationData),
                 .userPoolsAndIdentityPools(let userPoolConfigurationData, _):
             return userPoolConfigurationData
-        case .identityPools(_): return nil
+        case .identityPools: return nil
         }
     }
 
@@ -76,7 +74,7 @@ extension AuthConfiguration {
         case .identityPools(let identityPoolConfigurationData),
                 .userPoolsAndIdentityPools( _, let identityPoolConfigurationData):
             return identityPoolConfigurationData
-        case .userPools(_): return nil
+        case .userPools: return nil
         }
     }
 }

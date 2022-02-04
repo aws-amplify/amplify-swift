@@ -7,9 +7,7 @@
 
 import Foundation
 
-
 import AWSCognitoIdentityProvider
-
 
 public struct SRPSignInEvent: StateMachineEvent {
     public var data: Any?
@@ -56,4 +54,3 @@ public struct SRPSignInEvent: StateMachineEvent {
         self.time = time
     }
 }
-

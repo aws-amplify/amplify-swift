@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 extension CredentialStoreState {
 
     struct Resolver: StateMachineResolver {
@@ -28,10 +27,10 @@ extension CredentialStoreState {
                 return resolveNotConfigured(byApplying: credentialStoreEvent)
             case .migratingLegacyStore:
                 return resolveMigratingLegacyStore(oldState: oldState, byApplying: credentialStoreEvent)
-            case .loadingStoredCredentials:
-                return resolveLoadingStoredCredentials(oldState: oldState, byApplying: credentialStoreEvent)
-            default:
-                return .from(oldState)
+            case .loadingStoredCredentials, .storingCredentials, .clearingCredentials:
+                return resolveOperationCompletion(oldState: oldState, byApplying: credentialStoreEvent)
+            case .idle, error:
+                return resolveIdleAndErrorState(oldState: oldState, byApplying: credentialStoreEvent)
             }
         }
 
@@ -40,10 +39,10 @@ extension CredentialStoreState {
         ) -> StateResolution<StateType> {
 
             switch credentialStoreEvent.eventType {
-            case .migrateLegacyCredentialStore(let authConfig):
-                let action = MigrateLegacyCredentialStore(authConfiguration: authConfig)
+            case .migrateLegacyCredentialStore:
+                let action = MigrateLegacyCredentialStore()
                 let resolution = StateResolution(
-                    newState: CredentialStoreState.migratingLegacyStore(authConfig),
+                    newState: CredentialStoreState.migratingLegacyStore,
                     actions: [action]
                 )
                 return resolution
@@ -58,25 +57,60 @@ extension CredentialStoreState {
         ) -> StateResolution<StateType> {
 
             switch credentialStoreEvent.eventType {
-            case .loadCredentialStore(let authConfig):
-                let action = LoadCredentialStore(authConfiguration: authConfig)
+            case .loadCredentialStore:
+                let action = LoadCredentialStore()
                 let resolution = StateResolution(
-                    newState: CredentialStoreState.loadingStoredCredentials(authConfig),
+                    newState: CredentialStoreState.loadingStoredCredentials,
                     actions: [action]
                 )
                 return resolution
+            case .throwError(let error):
+                return .init(newState: CredentialStoreState.error(error))
             default:
                 return .from(oldState)
             }
         }
 
-        private func resolveLoadingStoredCredentials(
+        private func resolveOperationCompletion(
             oldState: StateType,
             byApplying credentialStoreEvent: CredentialStoreEvent
         ) -> StateResolution<StateType> {
             switch credentialStoreEvent.eventType {
-            case .successfullyLoadedCredentialStore(let storedCredentials):
-                return .init(newState: CredentialStoreState.credentialsLoaded(storedCredentials))
+            case .completedOperation(let storedCredentials):
+                return .init(newState: CredentialStoreState.idle(storedCredentials))
+            case .throwError(let error):
+                return .init(newState: CredentialStoreState.error(error))
+            default:
+                return .from(oldState)
+            }
+        }
+
+        private func resolveIdleAndErrorState(
+            oldState: StateType,
+            byApplying credentialStoreEvent: CredentialStoreEvent
+        ) -> StateResolution<StateType> {
+            switch credentialStoreEvent.eventType {
+            case .loadCredentialStore:
+                let action = LoadCredentialStore()
+                let resolution = StateResolution(
+                    newState: CredentialStoreState.loadingStoredCredentials,
+                    actions: [action]
+                )
+                return resolution
+            case .storeCredentials(let credentials):
+                let action = StoreCredentials(credentials: credentials)
+                let resolution = StateResolution(
+                    newState: CredentialStoreState.storingCredentials,
+                    actions: [action]
+                )
+                return resolution
+            case .clearCredentialStore:
+                let action = ClearCredentialStore()
+                let resolution = StateResolution(
+                    newState: CredentialStoreState.clearingCredentials,
+                    actions: [action]
+                )
+                return resolution
             default:
                 return .from(oldState)
             }

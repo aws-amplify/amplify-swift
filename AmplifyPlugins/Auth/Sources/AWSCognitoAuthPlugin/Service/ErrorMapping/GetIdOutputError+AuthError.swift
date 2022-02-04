@@ -48,5 +48,5 @@ extension GetIdOutputError: AuthErrorConvertible {
             return .unknown("Unknown service error occurred with status \(statusCode) \(message)")
         }
     }
-    
+
 }
