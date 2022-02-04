@@ -7,12 +7,11 @@
 
 import Foundation
 
-
-public struct AuthenticationEvent: StateMachineEvent {
-    public enum EventType: Equatable {
+struct AuthenticationEvent: StateMachineEvent {
+    enum EventType: Equatable {
 
         /// Emitted at startup when the Authentication system is being initialized
-        case configure(AuthConfiguration)
+        case configure(AuthConfiguration, CognitoCredentials?)
 
         /// Emitted at startup when the Authentication system finished configuring
         case configured(AuthConfiguration)
@@ -35,11 +34,11 @@ public struct AuthenticationEvent: StateMachineEvent {
         case error(AuthenticationError)
     }
 
-    public let id: String
-    public let eventType: EventType
-    public let time: Date?
+    let id: String
+    let eventType: EventType
+    let time: Date?
 
-    public var type: String {
+    var type: String {
         switch eventType {
         case .configure:
             return "AuthenticationEvent.configure"
@@ -58,7 +57,7 @@ public struct AuthenticationEvent: StateMachineEvent {
         }
     }
 
-    public init(
+    init(
         id: String = UUID().uuidString,
         eventType: EventType,
         time: Date? = nil

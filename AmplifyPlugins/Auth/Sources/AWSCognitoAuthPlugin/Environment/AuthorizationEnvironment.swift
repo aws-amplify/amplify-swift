@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-
 protocol AuthorizationEnvironment: Environment {
 
     typealias CognitoIdentityFactory = () throws -> CognitoIdentityBehavior
@@ -38,4 +36,3 @@ public struct BasicAuthorizationEnvironment: AuthorizationEnvironment {
         self.eventIDFactory = eventIDFactory
     }
 }
-

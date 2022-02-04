@@ -11,6 +11,9 @@ import Security
 
 public enum CredentialStoreError {
 
+    /// Caused by a configuration
+    case configuration(message: String)
+
     /// Caused by an unknown reason
     case unknown(ErrorDescription, Error? = nil)
 
@@ -25,6 +28,34 @@ public enum CredentialStoreError {
 
     /// Caused trying to perform a keychain operation, examples, missing entitlements, missing required attributes, etc
     case securityError(OSStatus)
+}
+
+extension CredentialStoreError: AuthErrorConvertible {
+    var authError: AuthError {
+        switch self {
+        case .configuration(let message):
+            return .configuration(message,
+                                  AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
+                                  nil)
+        case .unknown(let errorDescription, let error):
+            return .unknown(errorDescription, error)
+        case .conversionError(let errorDescription, let error):
+            return .service(errorDescription,
+                            AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
+                            error)
+        case .codingError(let errorDescription, let error):
+            return .service(errorDescription,
+                            AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
+                            error)
+        case .itemNotFound:
+            return .service("Credential Store Item not found", "", nil)
+        case .securityError(let oSStatus):
+            return .service("Credential store security error with status: \(oSStatus)",
+                            AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
+                            nil)
+        }
+    }
+
 }
 
 extension CredentialStoreError: AmplifyError {
@@ -54,13 +85,15 @@ extension CredentialStoreError: AmplifyError {
             return "Unexpected error occurred with message: \(errorDescription)"
         case .itemNotFound:
             return "Unable to find the keychain item"
+        case .configuration(let message):
+            return message
         }
     }
 
     /// Recovery Suggestion
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
-        case .unknown, .conversionError, .securityError, .itemNotFound, .codingError:
+        case .unknown, .conversionError, .securityError, .itemNotFound, .codingError, .configuration:
             return AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
         }
     }
@@ -75,4 +108,25 @@ extension CredentialStoreError: AmplifyError {
         }
     }
 
+}
+
+extension CredentialStoreError: Equatable {
+    public static func == (lhs: CredentialStoreError, rhs: CredentialStoreError) -> Bool {
+        switch (lhs, rhs) {
+        case (.configuration, .configuration):
+            return true
+        case (.unknown, .unknown):
+            return true
+        case (.conversionError, .conversionError):
+            return true
+        case (.codingError, codingError):
+            return true
+        case (.itemNotFound, .itemNotFound):
+            return true
+        case (.securityError, .securityError):
+            return true
+        default:
+            return false
+        }
+    }
 }

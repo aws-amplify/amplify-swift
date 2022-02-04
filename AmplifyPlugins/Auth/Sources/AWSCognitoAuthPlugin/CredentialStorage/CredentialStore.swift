@@ -68,7 +68,6 @@ struct CredentialStore: CredentialStoreBehavior {
         }
     }
 
-
     func set(_ value: String, key: String) throws {
         guard let data = value.data(using: .utf8, allowLossyConversion: false) else {
             throw CredentialStoreError.conversionError("Unable to create Data from String retrieved")
@@ -103,7 +102,7 @@ struct CredentialStore: CredentialStoreBehavior {
         }
     }
 
-    // MARK:
+    // MARK: 
     func remove(_ key: String) throws {
         var query = attributes.query()
         query[CredentialStoreConstant.AttributeAccount] = key

@@ -32,28 +32,63 @@ extension AWSCognitoAuthPlugin {
         let identityPoolConfigData = parseIdentityPoolConfigData(jsonValueConfiguration)
         let authConfiguration = try authConfiguration(userPoolConfig: userPoolConfigData,
                                                       identityPoolConfig: identityPoolConfigData)
-        let environment = makeAuthEnvironment(authConfiguration: authConfiguration)
 
-        let resolver = AuthState.Resolver().eraseToAnyResolver()
-        let stateMachine = StateMachine(resolver: resolver, environment: environment)
-        configure(authConfiguration: authConfiguration, stateMachine: stateMachine)
+        let authResolver = AuthState.Resolver().eraseToAnyResolver()
+        let authEnvironment = makeAuthEnvironment(authConfiguration: authConfiguration)
 
-        stateMachine.send(AuthEvent(eventType: .configureAuth(authConfiguration)))
+        let credentialStoreResolver = CredentialStoreState.Resolver().eraseToAnyResolver()
+        let credentialEnvironment = credentialStoreEnvironment(authConfiguration: authConfiguration)
+
+        let authStateMachine = StateMachine(resolver: authResolver, environment: authEnvironment)
+        let credentialStoreMachine = StateMachine(resolver: credentialStoreResolver, environment: credentialEnvironment)
+
+        configure(authConfiguration: authConfiguration,
+                  authStateMachine: authStateMachine,
+                  credentialStoreStateMachine: credentialStoreMachine)
     }
 
     func configure(authConfiguration: AuthConfiguration,
-                   stateMachine: StateMachine<AuthState, AuthEnvironment>,
-                   queue: OperationQueue = OperationQueue())
-    {
+                   authStateMachine: StateMachine<AuthState, AuthEnvironment>,
+                   credentialStoreStateMachine: StateMachine<CredentialStoreState, CredentialEnvironment>,
+                   queue: OperationQueue = OperationQueue()) {
         self.authConfiguration = authConfiguration
-        self.stateMachine = stateMachine
         self.queue = queue
         self.queue.maxConcurrentOperationCount = 1
+        self.authStateMachine = authStateMachine
+        self.credentialStoreStateMachine = credentialStoreStateMachine
+        sendConfigureCredentialEvent()
+    }
+
+    func sendConfigureCredentialEvent() {
+        var token: StateMachine<CredentialStoreState, CredentialEnvironment>.StateChangeListenerToken?
+        token = credentialStoreStateMachine.listen { [weak self] in
+            guard let self = self else {
+                return
+            }
+            switch $0 {
+            case .idle(let storedCredentials):
+                self.sendConfigureAuthEvent(with: storedCredentials)
+                if let token = token {
+                    self.credentialStoreStateMachine.cancel(listenerToken: token)
+                }
+            case .error:
+                self.sendConfigureAuthEvent(with: nil)
+                if let token = token {
+                    self.credentialStoreStateMachine.cancel(listenerToken: token)
+                }
+            default:
+                break
+            }
+        } onSubscribe: { }
+        credentialStoreStateMachine.send(CredentialStoreEvent(eventType: .migrateLegacyCredentialStore))
+    }
+
+    func sendConfigureAuthEvent(with storedCredentials: CognitoCredentials?) {
+        authStateMachine.send(AuthEvent(eventType: .configureAuth(authConfiguration, storedCredentials)))
     }
 
     func authConfiguration(userPoolConfig: UserPoolConfigurationData?,
-                           identityPoolConfig: IdentityPoolConfigurationData?) throws -> AuthConfiguration
-    {
+                           identityPoolConfig: IdentityPoolConfigurationData?) throws -> AuthConfiguration {
 
         if let userPoolConfigNonNil = userPoolConfig, let identityPoolConfigNonNil = identityPoolConfig {
             return .userPoolsAndIdentityPools(userPoolConfigNonNil, identityPoolConfigNonNil)
@@ -72,8 +107,8 @@ extension AWSCognitoAuthPlugin {
         )
     }
 
-    func parseUserPoolConfigData(_ config: JSONValue) ->  UserPoolConfigurationData? {
-        //TODO: Use JSON serialization here to convert.
+    func parseUserPoolConfigData(_ config: JSONValue) -> UserPoolConfigurationData? {
+        // TODO: Use JSON serialization here to convert.
         guard let cognitoUserPoolJSON = config.value(at: "CognitoUserPool.Default") else {
             Amplify.Logging.info("Could not find Cognito User Pool configuration")
             return nil
@@ -82,8 +117,8 @@ extension AWSCognitoAuthPlugin {
               case .string(let appClientId) = cognitoUserPoolJSON.value(at: "AppClientId"),
               case .string(let region) = cognitoUserPoolJSON.value(at: "Region")
         else {
-                  return nil
-              }
+            return nil
+        }
 
         var clientSecret: String?
         if case .string(let clientSecretFromConfig) = cognitoUserPoolJSON.value(at: "AppClientSecret") {
@@ -104,8 +139,8 @@ extension AWSCognitoAuthPlugin {
         guard case .string(let poolId) = cognitoIdentityPoolJSON.value(at: "PoolId"),
               case .string(let region) = cognitoIdentityPoolJSON.value(at: "Region")
         else {
-                  return nil
-              }
+            return nil
+        }
         return IdentityPoolConfigurationData(poolId: poolId, region: region)
     }
 
@@ -151,16 +186,14 @@ extension AWSCognitoAuthPlugin {
             return AuthEnvironment(userPoolConfigData: userPoolConfigurationData,
                                    identityPoolConfigData: nil,
                                    authenticationEnvironment: authenticationEnvironment,
-                                   authorizationEnvironment: nil,
-                                   credentialStoreEnvironment: credentialStoreEnvironment())
+                                   authorizationEnvironment: nil)
 
         case .identityPools(let identityPoolConfigurationData):
             let authorizationEnvironment = authorizationEnvironment(identityPoolConfigData: identityPoolConfigurationData)
             return AuthEnvironment(userPoolConfigData: nil,
                                    identityPoolConfigData: identityPoolConfigurationData,
                                    authenticationEnvironment: nil,
-                                   authorizationEnvironment: authorizationEnvironment,
-                                   credentialStoreEnvironment: credentialStoreEnvironment())
+                                   authorizationEnvironment: authorizationEnvironment)
 
         case .userPoolsAndIdentityPools(let userPoolConfigurationData, let identityPoolConfigurationData):
             let authenticationEnvironment = authenticationEnvironment(userPoolConfigData: userPoolConfigurationData)
@@ -168,8 +201,7 @@ extension AWSCognitoAuthPlugin {
             return AuthEnvironment(userPoolConfigData: userPoolConfigurationData,
                                    identityPoolConfigData: identityPoolConfigurationData,
                                    authenticationEnvironment: authenticationEnvironment,
-                                   authorizationEnvironment: authorizationEnvironment,
-                                   credentialStoreEnvironment: credentialStoreEnvironment())
+                                   authorizationEnvironment: authorizationEnvironment)
         }
     }
 
@@ -189,11 +221,15 @@ extension AWSCognitoAuthPlugin {
                                       cognitoIdentityFactory: makeIdentityClient)
     }
 
-    func credentialStoreEnvironment() -> CredentialStoreEnvironment {
-        BasicCredentialStoreEnvironment(amplifyCredentialStoreFactory: makeCredentialStore,
-                                        legacyCredentialStoreFactory: makeLegacyCredentialStore(service:))
+    func credentialStoreEnvironment(authConfiguration: AuthConfiguration) -> CredentialEnvironment {
+        CredentialEnvironment(
+            authConfiguration: authConfiguration,
+            credentialStoreEnvironment: BasicCredentialStoreEnvironment(
+                amplifyCredentialStoreFactory: makeCredentialStore,
+                legacyCredentialStoreFactory: makeLegacyCredentialStore(service:)
+            )
+        )
     }
-
 
 }
 

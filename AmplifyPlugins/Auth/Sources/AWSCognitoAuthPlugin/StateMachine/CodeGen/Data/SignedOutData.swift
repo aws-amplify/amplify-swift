@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-
 public struct SignedOutData {
     public let authenticationConfiguration: AuthConfiguration
     public let lastKnownUserName: String?

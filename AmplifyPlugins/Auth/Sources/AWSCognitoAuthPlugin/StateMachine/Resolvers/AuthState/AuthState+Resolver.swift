@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 typealias Resolution = StateResolution<AuthState>
 
 extension AuthState {
@@ -21,34 +20,28 @@ extension AuthState {
         func resolve(oldState: AuthState, byApplying event: StateMachineEvent) -> Resolution {
             switch oldState {
             case .notConfigured:
-                guard case .configureAuth(let authConfiguration) = isAuthEvent(event)?.eventType else {
+                guard case .configureAuth(let authConfiguration, let storedCredentials) = isAuthEvent(event)?.eventType else {
                     return .from(.notConfigured)
                 }
-                let newState = AuthState.configuringCredentialStore(CredentialStoreState.notConfigured)
-                let action = InitializeCredentialStoreConfiguration(authConfiguration: authConfiguration)
+                let newState = AuthState.configuringAuth
+                let action = InitializeAuthConfiguration(authConfiguration: authConfiguration,
+                                                          storedCredentials: storedCredentials)
                 return .init(newState: newState, actions: [action])
 
-            case .configuringCredentialStore(let credentialStoreState):
-                let credentialStoreResolver = CredentialStoreState.Resolver()
-                let resolution = credentialStoreResolver.resolve(oldState: credentialStoreState, byApplying: event)
-
-                if let _ = isCredentialStoreEvent(event) {
-                    let newState = AuthState.configuringCredentialStore(resolution.newState)
-                    return .init(newState: newState, actions: resolution.actions)
-                }
-
-                let authEvent = isAuthEvent(event)?.eventType
-                if case .configureAuthentication(let authConfiguration) = authEvent {
+            case .configuringAuth:
+                switch isAuthEvent(event)?.eventType {
+                case .configureAuthentication(let authConfiguration, let storedCredentials):
                     let newState = AuthState.configuringAuthentication(.notConfigured)
-                    let action = InitializeAuthenticationConfiguration(configuration: authConfiguration)
+                    let action = InitializeAuthenticationConfiguration(configuration: authConfiguration,
+                                                                        cognitoCredentials: storedCredentials)
                     return .init(newState: newState, actions: [action])
-
-                } else if case .configureAuthorization(let authConfiguration) = authEvent {
+                case .configureAuthorization(let authConfiguration):
                     let newState = AuthState.configuringAuthorization(.notConfigured, .notConfigured)
                     let action = InitializeAuthorizationConfiguration(configuration: authConfiguration)
                     return .init(newState: newState, actions: [action])
+                default:
+                    return .from(oldState)
                 }
-                return .from(oldState)
 
             case .configuringAuthentication(let authenticationState):
                 let resolver = AuthenticationState.Resolver()
