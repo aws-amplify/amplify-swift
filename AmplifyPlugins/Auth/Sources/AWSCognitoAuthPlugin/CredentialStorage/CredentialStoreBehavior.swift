@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 protocol CredentialStoreBehavior {
 
     /** Getting data */

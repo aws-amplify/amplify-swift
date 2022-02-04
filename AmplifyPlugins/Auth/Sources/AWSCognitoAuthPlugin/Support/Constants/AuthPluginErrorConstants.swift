@@ -263,15 +263,15 @@ extension AuthPluginErrorConstants {
     is properly configured and auth information are present in the configuration. You can use Amplify CLI to
     configure the auth category.
     """
-    
+
     static let externalServiceException: RecoverySuggestion = """
     An exception thrown when a dependent service such as Facebook or Twitter is not responding
     """
-    
+
     static let limitExceededException: RecoverySuggestion = """
     The total number of user pools has exceeded a preset limit.
     """
-    
+
     static let resourceConflictException: RecoverySuggestion = """
     Check if the login is already linked to another account.
     """

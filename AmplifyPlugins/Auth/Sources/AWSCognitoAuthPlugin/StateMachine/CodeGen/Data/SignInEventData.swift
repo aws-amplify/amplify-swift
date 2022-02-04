@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-
 public struct SignInEventData: Codable {
     public let username: String?
     public let password: String?
@@ -23,7 +21,7 @@ extension SignInEventData: CustomDebugDictionaryConvertible {
     public var debugDictionary: [String: Any] {
         [
             "username": username.masked(),
-            "password": password.redacted(),
+            "password": password.redacted()
         ]
     }
 }

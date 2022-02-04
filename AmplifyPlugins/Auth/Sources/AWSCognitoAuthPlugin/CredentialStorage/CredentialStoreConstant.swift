@@ -32,4 +32,3 @@ struct CredentialStoreConstant {
     /** Value Type Key Constants */
     static let ValueData = String(kSecValueData)
 }
-

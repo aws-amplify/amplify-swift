@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-
 public struct UserPoolConfigurationData: Equatable {
 
     public let poolId: String
@@ -21,8 +19,7 @@ public struct UserPoolConfigurationData: Equatable {
                 region: String,
                 clientSecret: String? = nil,
                 pinpointAppId: String? = nil,
-                hostedUIConfig: HostedUIConfigurationData? = nil)
-    {
+                hostedUIConfig: HostedUIConfigurationData? = nil) {
         self.poolId = poolId
         self.clientId = clientId
         self.region = region
@@ -30,7 +27,7 @@ public struct UserPoolConfigurationData: Equatable {
         self.pinpointAppId = pinpointAppId
         self.hostedUIConfig = hostedUIConfig
     }
-    
+
     /// Amazon Cognito user pool: cognito-idp.<region>.amazonaws.com/<YOUR_USER_POOL_ID>,
     /// for example, cognito-idp.us-east-1.amazonaws.com/us-east-1_123456789.
     public func getIdentityProviderName() -> String {
@@ -59,5 +56,3 @@ extension UserPoolConfigurationData: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
-
-

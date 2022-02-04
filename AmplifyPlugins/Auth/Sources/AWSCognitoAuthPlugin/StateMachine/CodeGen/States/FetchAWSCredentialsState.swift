@@ -10,11 +10,11 @@ import Foundation
 public enum FetchAWSCredentialsState: State {
 
     case configuring
-    
+
     case fetching
 
     case fetched
-    
+
     case error(AuthorizationError)
 
 }
@@ -29,4 +29,3 @@ public extension FetchAWSCredentialsState {
         }
     }
 }
-

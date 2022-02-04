@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-
 extension AuthenticationState: CustomDebugDictionaryConvertible {
 
     public var debugDictionary: [String: Any] {
@@ -25,7 +23,7 @@ extension AuthenticationState: CustomDebugDictionaryConvertible {
 
         case .signingIn(let authenticationConfiguration, let signInState):
             return [
-                "AuthenticationState":  "signingIn",
+                "AuthenticationState": "signingIn",
                 "- AuthenticationConfiguration": authenticationConfiguration.debugDictionary,
                 "- SignInState": signInState.debugDictionary
             ]

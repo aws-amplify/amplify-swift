@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public extension FetchUserPoolTokensState {
 
     struct Resolver: StateMachineResolver {
@@ -39,8 +38,7 @@ public extension FetchUserPoolTokensState {
 
         private func resolveConfiguringState(
             byApplying fetchUserPoolTokenEvent: FetchUserPoolTokensEvent,
-            from oldState: FetchUserPoolTokensState) -> StateResolution<StateType>
-        {
+            from oldState: FetchUserPoolTokensState) -> StateResolution<StateType> {
                 switch fetchUserPoolTokenEvent.eventType {
                 case .refresh(let cognitoSession):
                     let newState = FetchUserPoolTokensState.refreshing
@@ -55,8 +53,7 @@ public extension FetchUserPoolTokensState {
 
         private func resolveRefreshingState(
             byApplying fetchUserPoolTokenEvent: FetchUserPoolTokensEvent,
-            from oldState: FetchUserPoolTokensState) -> StateResolution<StateType>
-        {
+            from oldState: FetchUserPoolTokensState) -> StateResolution<StateType> {
                 switch fetchUserPoolTokenEvent.eventType {
                 case .fetched:
                     return .init(newState: FetchUserPoolTokensState.fetched)
@@ -66,7 +63,7 @@ public extension FetchUserPoolTokensState {
                     return .from(oldState)
                 }
         }
-        
+
         private func isFetchUserPoolTokenEvent(_ event: StateMachineEvent) -> FetchUserPoolTokensEvent? {
             guard let userPoolTokenEvent = event as? FetchUserPoolTokensEvent else {
                 return nil
