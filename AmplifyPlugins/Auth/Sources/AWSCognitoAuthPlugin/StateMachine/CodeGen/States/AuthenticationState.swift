@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-
 enum AuthenticationState: State {
     /// Initial state
     case notConfigured

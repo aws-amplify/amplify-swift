@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public extension FetchIdentityState {
 
     struct Resolver: StateMachineResolver {

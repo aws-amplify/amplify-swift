@@ -43,7 +43,7 @@ struct AWSCognitoAuthCredentialStore {
 }
 
 extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
-    
+
     func saveCredential(_ credential: CognitoCredentials) throws {
 
         let authCredentialStoreKey = generateSessionKey()

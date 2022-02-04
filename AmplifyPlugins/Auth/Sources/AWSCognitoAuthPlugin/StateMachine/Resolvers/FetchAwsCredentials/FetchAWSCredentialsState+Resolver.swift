@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public extension FetchAWSCredentialsState {
 
     struct Resolver: StateMachineResolver {

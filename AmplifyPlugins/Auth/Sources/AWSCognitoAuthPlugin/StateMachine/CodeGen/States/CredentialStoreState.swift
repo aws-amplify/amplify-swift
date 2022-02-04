@@ -7,16 +7,21 @@
 
 import Foundation
 
-
 enum CredentialStoreState: State {
 
     case notConfigured
 
-    case migratingLegacyStore(AuthConfiguration)
+    case migratingLegacyStore
 
-    case loadingStoredCredentials(AuthConfiguration)
+    case loadingStoredCredentials
 
-    case credentialsLoaded(CognitoCredentials?)
+    case storingCredentials
+
+    case clearingCredentials
+
+    case idle(CognitoCredentials?)
+
+    case error(CredentialStoreError)
 
 }
 
@@ -26,8 +31,10 @@ extension CredentialStoreState {
         case .notConfigured: return "CredentialStoreState.notConfigured"
         case .migratingLegacyStore: return "CredentialStoreState.migratingLegacyStore"
         case .loadingStoredCredentials: return "CredentialStoreState.loadingStoredCredentials"
-        case .credentialsLoaded: return "CredentialStoreState.credentialsLoaded"
+        case .storingCredentials: return "CredentialStoreState.storingCredentials"
+        case .clearingCredentials: return "CredentialStoreState.clearingCredentials"
+        case .idle: return "CredentialStoreState.idle"
+        case .error: return "CredentialStoreState.error"
         }
     }
 }
-
