@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public enum FetchAuthSessionState: State {
 
     case initializingFetchAuthSession
@@ -33,4 +32,3 @@ public extension FetchAuthSessionState {
         }
     }
 }
-

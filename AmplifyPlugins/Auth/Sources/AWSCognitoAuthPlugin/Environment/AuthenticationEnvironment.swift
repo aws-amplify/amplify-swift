@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-
 protocol AuthenticationEnvironment: Environment {
 
     var srpSignInEnvironment: SRPSignInEnvironment { get }

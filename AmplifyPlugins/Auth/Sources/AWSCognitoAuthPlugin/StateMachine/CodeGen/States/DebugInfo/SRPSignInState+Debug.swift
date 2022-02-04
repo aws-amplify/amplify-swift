@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public extension SRPSignInState {
 
     var debugDictionary: [String: Any] {
