@@ -27,4 +27,3 @@ public extension AuthorizationState {
         return stateTypeDictionary.merging(additionalMetadataDictionary, uniquingKeysWith: { $1 })
     }
 }
-

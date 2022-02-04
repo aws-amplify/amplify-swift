@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-
 public extension SRPSignInState {
     struct Resolver: StateMachineResolver {
         public typealias StateType = SRPSignInState
@@ -34,11 +32,7 @@ public extension SRPSignInState {
                 return resolveInitiatingSRPA(byApplying: srpSignInEvent, from: oldState)
             case .respondingPasswordVerifier(let srpStateData):
                 return resolveRespondingVerifyPassword(srpStateData: srpStateData, byApplying: srpSignInEvent)
-            case .nextAuthChallenge:
-                return .from(oldState)
-            case .signedIn:
-                return .from(oldState)
-            case .error:
+            case .nextAuthChallenge, .signedIn, .error:
                 return .from(oldState)
             case .cancelling:
                 return .from(.notStarted)
@@ -84,8 +78,7 @@ public extension SRPSignInState {
         }
 
         private func resolveRespondingVerifyPassword(srpStateData: SRPStateData,
-                                                     byApplying signInEvent: SRPSignInEvent)  -> StateResolution<SRPSignInState>
-        {
+                                                     byApplying signInEvent: SRPSignInEvent)  -> StateResolution<SRPSignInState> {
             switch signInEvent.eventType {
             case .finalizeSRPSignIn(let signedInData):
                 return .from(.signedIn(signedInData))

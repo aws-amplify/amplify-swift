@@ -10,15 +10,14 @@ import AWSPluginsCore
 import Amplify
 
 public extension FetchAuthSessionState {
-    
+
     struct Resolver: StateMachineResolver {
-        
+
         public var defaultState: FetchAuthSessionState = .initializingFetchAuthSession
-        
+
         func resolve(oldState: FetchAuthSessionState,
-                     byApplying event: StateMachineEvent) -> StateResolution<FetchAuthSessionState>
-        {
-                        
+                     byApplying event: StateMachineEvent) -> StateResolution<FetchAuthSessionState> {
+
             switch oldState {
             case .initializingFetchAuthSession:
                 guard let fetchAuthSessionEvent = isFetchAuthSessionEvent(event) else {
@@ -26,7 +25,7 @@ public extension FetchAuthSessionState {
                 }
                 return resolveInitializeFetchUserAuthSession(byApplying: fetchAuthSessionEvent,
                                                              from: oldState)
-                
+
             case .fetchingUserPoolTokens(let userPoolTokenState):
                 let fetchUserPoolTokenResolver = FetchUserPoolTokensState.Resolver()
                 let fetchUserPoolTokenResolution = fetchUserPoolTokenResolver.resolve(
@@ -64,11 +63,10 @@ public extension FetchAuthSessionState {
                 return .from(oldState)
             }
         }
-        
+
         private func resolveInitializeFetchUserAuthSession(
             byApplying fetchAuthSessionEvent: FetchAuthSessionEvent,
-            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState>
-        {
+            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState> {
             switch fetchAuthSessionEvent.eventType {
             case .fetchUserPoolTokens(let cognitoSession):
                 let newState = FetchAuthSessionState.fetchingUserPoolTokens(FetchUserPoolTokensState.configuring)
@@ -82,11 +80,10 @@ public extension FetchAuthSessionState {
                 return .from(oldState)
             }
         }
-        
+
         private func resolveFetchingUserTokensState(
             byApplying fetchAuthSessionEvent: FetchAuthSessionEvent,
-            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState>
-        {
+            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState> {
             guard case .fetchingUserPoolTokens = oldState else {
                 return .from(oldState)
             }
@@ -99,11 +96,10 @@ public extension FetchAuthSessionState {
                 return .from(oldState)
             }
         }
-        
+
         private func resolveFetchingIdentityState(
             byApplying fetchAuthSessionEvent: FetchAuthSessionEvent,
-            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState>
-        {
+            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState> {
             guard case .fetchingIdentity = oldState else {
                 return .from(oldState)
             }
@@ -116,11 +112,10 @@ public extension FetchAuthSessionState {
                 return .from(oldState)
             }
         }
-        
+
         private func resolveFetchingAWSCredentialsState(
             byApplying fetchAuthSessionEvent: FetchAuthSessionEvent,
-            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState>
-        {
+            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState> {
             guard case .fetchingAWSCredentials = oldState else {
                 return .from(oldState)
             }
@@ -133,14 +128,13 @@ public extension FetchAuthSessionState {
                 return .from(oldState)
             }
         }
-        
+
         private func isFetchAuthSessionEvent(_ event: StateMachineEvent) -> FetchAuthSessionEvent? {
             guard let authEvent = event as? FetchAuthSessionEvent else {
                 return nil
             }
             return authEvent
         }
-        
+
     }
 }
-

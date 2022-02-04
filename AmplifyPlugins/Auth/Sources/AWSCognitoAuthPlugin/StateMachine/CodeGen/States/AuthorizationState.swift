@@ -7,17 +7,16 @@
 
 import Foundation
 
-
 public enum AuthorizationState: State {
 
     case notConfigured
-        
+
     case configured
-    
+
     case fetchingAuthSession(FetchAuthSessionState)
 
     case sessionEstablished(AWSAuthCognitoSession)
-    
+
     case error(AuthorizationError)
 }
 
