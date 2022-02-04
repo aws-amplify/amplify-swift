@@ -25,4 +25,3 @@ public extension FetchUserPoolTokensState {
         return stateTypeDictionary.merging(additionalMetadataDictionary, uniquingKeysWith: { $1 })
     }
 }
-

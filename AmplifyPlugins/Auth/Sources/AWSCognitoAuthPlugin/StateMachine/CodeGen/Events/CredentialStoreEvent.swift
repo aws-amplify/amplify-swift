@@ -7,14 +7,22 @@
 
 import Foundation
 
-
 struct CredentialStoreEvent: StateMachineEvent {
 
     enum EventType: Equatable {
 
-        case migrateLegacyCredentialStore(AuthConfiguration)
-        case loadCredentialStore(AuthConfiguration)
-        case successfullyLoadedCredentialStore(CognitoCredentials?)
+        case migrateLegacyCredentialStore
+
+        case loadCredentialStore
+
+        case storeCredentials(CognitoCredentials)
+
+        case clearCredentialStore
+
+        case completedOperation(CognitoCredentials?)
+
+        case throwError(CredentialStoreError)
+
     }
 
     let id: String
@@ -25,7 +33,10 @@ struct CredentialStoreEvent: StateMachineEvent {
         switch eventType {
         case .migrateLegacyCredentialStore: return  "CredentialStoreEvent.migrateLegacyCredentialStore"
         case .loadCredentialStore: return  "CredentialStoreEvent.loadCredentialStore"
-        case .successfullyLoadedCredentialStore: return  "CredentialStoreEvent.successfullyLoadedCredentialStore"
+        case .storeCredentials: return  "CredentialStoreEvent.saveCredentials"
+        case .clearCredentialStore: return  "CredentialStoreEvent.clearCredentialStore"
+        case .completedOperation: return  "CredentialStoreEvent.completedOperation"
+        case .throwError: return  "CredentialStoreEvent.throwError"
         }
     }
 
@@ -39,4 +50,3 @@ struct CredentialStoreEvent: StateMachineEvent {
         self.time = time
     }
 }
-

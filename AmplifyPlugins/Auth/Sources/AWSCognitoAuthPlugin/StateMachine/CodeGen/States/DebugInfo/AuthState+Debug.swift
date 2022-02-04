@@ -18,10 +18,9 @@ extension AuthState: CustomDebugStringConvertible {
             additionalMetadataDictionary = [
                 "AuthState": "notConfigured"
             ]
-        case .configuringCredentialStore(let credentialStoreState):
+        case .configuringAuth:
             additionalMetadataDictionary = [
-                "AuthState": "configuringAuthentication",
-                "- CredentialStoreState": credentialStoreState.debugDictionary
+                "AuthState": "configuringAuth"
             ]
         case .configuringAuthentication(let authenticationState):
             additionalMetadataDictionary = [

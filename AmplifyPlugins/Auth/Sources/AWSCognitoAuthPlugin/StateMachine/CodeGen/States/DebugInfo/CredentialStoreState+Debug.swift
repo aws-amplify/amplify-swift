@@ -15,18 +15,19 @@ extension CredentialStoreState {
         switch self {
         case .notConfigured:
             additionalMetadataDictionary = [:]
-        case .migratingLegacyStore(let authenticationConfiguration):
-            additionalMetadataDictionary = [
-                "- AuthenticationConfiguration": authenticationConfiguration.debugDictionary,
-            ]
-        case .loadingStoredCredentials(let authenticationConfiguration):
-            additionalMetadataDictionary = [
-                "- AuthenticationConfiguration": authenticationConfiguration.debugDictionary,
-            ]
-        case .credentialsLoaded:
+        case .migratingLegacyStore:
+            additionalMetadataDictionary = [:]
+        case .loadingStoredCredentials:
+            additionalMetadataDictionary = [:]
+        case .clearingCredentials:
+            additionalMetadataDictionary = [:]
+        case .storingCredentials:
+            additionalMetadataDictionary = [:]
+        case .idle:
+            additionalMetadataDictionary = [:]
+        case .error:
             additionalMetadataDictionary = [:]
         }
         return stateTypeDictionary.merging(additionalMetadataDictionary, uniquingKeysWith: { $1 })
     }
 }
-

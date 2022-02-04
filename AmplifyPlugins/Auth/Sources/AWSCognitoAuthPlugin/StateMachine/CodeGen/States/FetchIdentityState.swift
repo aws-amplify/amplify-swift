@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public enum FetchIdentityState: State {
 
     case configuring
@@ -15,7 +14,7 @@ public enum FetchIdentityState: State {
     case fetching
 
     case fetched
-    
+
     case error(AuthorizationError)
 
 }
@@ -30,4 +29,3 @@ public extension FetchIdentityState {
         }
     }
 }
-

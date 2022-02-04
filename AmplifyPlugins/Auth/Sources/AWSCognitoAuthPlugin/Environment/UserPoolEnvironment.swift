@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 protocol UserPoolEnvironment: Environment {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
     var userPoolConfiguration: UserPoolConfigurationData { get }

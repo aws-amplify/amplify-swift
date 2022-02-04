@@ -8,10 +8,11 @@
 import Foundation
 import Amplify
 
-
 public final class AWSCognitoAuthPlugin: AuthCategoryPlugin {
 
-    var stateMachine: StateMachine<AuthState, AuthEnvironment>!
+    var authStateMachine: StateMachine<AuthState, AuthEnvironment>!
+
+    var credentialStoreStateMachine: StateMachine<CredentialStoreState, CredentialEnvironment>!
 
     /// A queue that regulates the execution of operations.
     var queue: OperationQueue!

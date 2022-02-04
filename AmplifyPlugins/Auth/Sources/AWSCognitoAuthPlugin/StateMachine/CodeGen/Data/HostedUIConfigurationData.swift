@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public struct HostedUIConfigurationData: Equatable {
 
     // User pool app cliend id configured for the HostedUI
@@ -21,8 +20,7 @@ public struct HostedUIConfigurationData: Equatable {
 
     public init(clientId: String,
                 oauth: OAuthConfigurationData,
-                clientSecret: String? = nil)
-    {
+                clientSecret: String? = nil) {
         self.clientId = clientId
         self.oauth = oauth
         self.clientSecret = clientSecret
@@ -56,8 +54,7 @@ public struct OAuthConfigurationData: Equatable {
     public init(domain: String,
                 scopes: [String],
                 signInRedirectURI: String,
-                signOutRedirectURI: String)
-    {
+                signOutRedirectURI: String) {
         self.domain = domain
         self.scopes = scopes
         self.signInRedirectURI = signInRedirectURI

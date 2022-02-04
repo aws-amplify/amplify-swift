@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public struct SignedInData {
     public let userId: String
     public let userName: String

@@ -74,4 +74,3 @@ extension DefaultLogger {
         OSLog(subsystem: "AWSCognitoPlugin", category: String(describing: self))
     }
 }
-
