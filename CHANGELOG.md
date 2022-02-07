@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.19.2 (2022-02-07)
+
+### Bug Fixes
+
+- **datastore**: Add DateTime, Date, Time, Int, Float, Enum field in indexes to GraphQL input correctly for mutations (#1612)
+
 ## 1.19.1 (2022-02-01)
 
 ### Bug Fixes
