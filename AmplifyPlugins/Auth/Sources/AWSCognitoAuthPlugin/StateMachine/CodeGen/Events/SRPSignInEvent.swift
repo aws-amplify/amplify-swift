@@ -6,14 +6,14 @@
 //
 
 import Foundation
-
 import AWSCognitoIdentityProvider
 
-public struct SRPSignInEvent: StateMachineEvent {
-    public var data: Any?
 
-    public enum EventType: Equatable {
-        public static func == (lhs: SRPSignInEvent.EventType, rhs: SRPSignInEvent.EventType) -> Bool {
+struct SRPSignInEvent: StateMachineEvent {
+    var data: Any?
+
+    enum EventType: Equatable {
+        static func == (lhs: SRPSignInEvent.EventType, rhs: SRPSignInEvent.EventType) -> Bool {
             return false
         }
 
@@ -27,11 +27,11 @@ public struct SRPSignInEvent: StateMachineEvent {
         case restoreToNotInitialized(SRPStateData)
     }
 
-    public let id: String
-    public let eventType: EventType
-    public let time: Date?
+    let id: String
+    let eventType: EventType
+    let time: Date?
 
-    public var type: String {
+    var type: String {
         switch eventType {
         case .initiateSRP: return "SRPSignInEvent.initiateSRP"
         case .respondPasswordVerifier: return "SRPSignInEvent.respondPasswordVerifier"
@@ -44,11 +44,9 @@ public struct SRPSignInEvent: StateMachineEvent {
         }
     }
 
-    public init(
-        id: String,
-        eventType: EventType,
-        time: Date? = nil
-    ) {
+    public init(id: String = UUID().uuidString,
+                eventType: EventType,
+                time: Date? = nil) {
         self.id = id
         self.eventType = eventType
         self.time = time
