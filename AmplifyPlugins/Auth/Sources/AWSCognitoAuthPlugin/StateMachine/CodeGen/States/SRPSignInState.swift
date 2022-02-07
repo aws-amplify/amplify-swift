@@ -7,7 +7,7 @@
 
 import AWSCognitoIdentityProvider
 
-public enum SRPSignInState: State {
+enum SRPSignInState: State {
 
     case notStarted
     case initiatingSRPA(SignInEventData)
@@ -18,7 +18,7 @@ public enum SRPSignInState: State {
     case cancelling
 }
 
-public extension SRPSignInState {
+extension SRPSignInState {
 
     var type: String {
         switch self {
