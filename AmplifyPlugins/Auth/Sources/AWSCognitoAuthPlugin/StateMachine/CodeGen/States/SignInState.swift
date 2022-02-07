@@ -5,15 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public enum SignInState: State {
+import Foundation
+
+enum SignInState: State {
     case signingInWithSRP(SRPSignInState, SignInEventData)
     case signingInWithSocial
     case signingInWithCustom
     case resolvingMFAChallenge
 }
 
-public extension SignInState {
-
+extension SignInState {
+    
     var type: String {
         switch self {
         case .signingInWithSRP: return "SignInState.signingInWithSRP"

@@ -24,35 +24,47 @@ extension SRPStateData {
 }
 
 extension InitiateAuthOutputResponse {
-    static let testData = InitiateAuthOutputResponse(authenticationResult: .none,
-                                                     challengeName: .passwordVerifier,
-                                                     challengeParameters: nil,
-                                                     session: nil)
+    static let testData = InitiateAuthOutputResponse(
+        authenticationResult: .none,
+        challengeName: .passwordVerifier,
+        challengeParameters: nil,
+        session: nil)
 
-    static let validTestData = InitiateAuthOutputResponse(authenticationResult: .none,
-                                                     challengeName: .passwordVerifier,
-                                                     challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
-                                                     session: "session")
+    static let validTestData = InitiateAuthOutputResponse(
+        authenticationResult: .none,
+        challengeName: .passwordVerifier,
+        challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+        session: "session")
 
-    static let invalidTestDataWithNoSalt = InitiateAuthOutputResponse(authenticationResult: .none,
-                                                                      challengeName: .passwordVerifier,
-                                                                      challengeParameters: InitiateAuthOutputResponse.invalidChalengeParamsNoSalt,
-                                                                      session: "session")
+    static let invalidChallenge = InitiateAuthOutputResponse(
+        authenticationResult: .none,
+        challengeName: .passwordVerifier,
+        challengeParameters: [:],
+        session: nil)
 
-    static let invalidTestDataWithNoSecretBlock = InitiateAuthOutputResponse(authenticationResult: .none,
-                                                                             challengeName: .passwordVerifier,
-                                                                             challengeParameters: InitiateAuthOutputResponse.invalidChalengeParamsNoSecretBlock,
-                                                                             session: "session")
+    static let invalidTestDataWithNoSalt = InitiateAuthOutputResponse(
+        authenticationResult: .none,
+        challengeName: .passwordVerifier,
+        challengeParameters: InitiateAuthOutputResponse.invalidChalengeParamsNoSalt,
+        session: "session")
 
-    static let invalidTestDataWithNoSRPB = InitiateAuthOutputResponse(authenticationResult: .none,
-                                                                      challengeName: .passwordVerifier,
-                                                                      challengeParameters: InitiateAuthOutputResponse.invalidChalengeParamsNoSRPB,
-                                                                      session: "session")
+    static let invalidTestDataWithNoSecretBlock = InitiateAuthOutputResponse(
+        authenticationResult: .none,
+        challengeName: .passwordVerifier,
+        challengeParameters: InitiateAuthOutputResponse.invalidChalengeParamsNoSecretBlock,
+        session: "session")
 
-    static let invalidTestDataForException = InitiateAuthOutputResponse(authenticationResult: .none,
-                                                                        challengeName: .passwordVerifier,
-                                                                        challengeParameters: InitiateAuthOutputResponse.invalidChalengeParamsForException,
-                                                                        session: "session")
+    static let invalidTestDataWithNoSRPB = InitiateAuthOutputResponse(
+        authenticationResult: .none,
+        challengeName: .passwordVerifier,
+        challengeParameters: InitiateAuthOutputResponse.invalidChalengeParamsNoSRPB,
+        session: "session")
+
+    static let invalidTestDataForException = InitiateAuthOutputResponse(
+        authenticationResult: .none,
+        challengeName: .passwordVerifier,
+        challengeParameters: InitiateAuthOutputResponse.invalidChalengeParamsForException,
+        session: "session")
 }
 
 extension RespondToAuthChallengeOutputResponse {
@@ -65,7 +77,11 @@ extension RespondToAuthChallengeOutputResponse {
             refreshToken: "refreshTokenXXX",
             tokenType: "Bearer")
 
-        return RespondToAuthChallengeOutputResponse(authenticationResult: result, challengeName: .none, challengeParameters: [:], session: "session")
+        return RespondToAuthChallengeOutputResponse(
+            authenticationResult: result,
+            challengeName: .none,
+            challengeParameters: [:],
+            session: "session")
     }
 }
 
@@ -162,11 +178,26 @@ extension SRPStateData {
 }
 extension InitiateAuthOutputResponse {
 
-    static let invalidChalengeParamsNoSalt: [String: String] = ["SALT": "", "SECRET_BLOCK": "a", "USER_ID_FOR_SRP": "royji2", "SRP_B": "a", "USERNAME": "a"]
+    static let invalidChalengeParamsNoSalt: [String: String] = [
+        "SALT": "",
+        "SECRET_BLOCK": "a",
+        "USER_ID_FOR_SRP": "royji2",
+        "SRP_B": "a",
+        "USERNAME": "a"
+    ]
 
-    static let invalidChalengeParamsNoSecretBlock: [String: String] = ["SALT": "a", "USER_ID_FOR_SRP": "royji2", "SRP_B": "a", "USERNAME": "a"]
+    static let invalidChalengeParamsNoSecretBlock: [String: String] = [
+        "SALT": "a",
+        "USER_ID_FOR_SRP": "royji2",
+        "SRP_B": "a",
+        "USERNAME": "a"]
 
-    static let invalidChalengeParamsForException: [String: String] = ["SALT": "a", "SECRET_BLOCK": "", "USER_ID_FOR_SRP": "royji2", "SRP_B": "za", "USERNAME": "a"]
+    static let invalidChalengeParamsForException: [String: String] = [
+        "SALT": "a",
+        "SECRET_BLOCK": "",
+        "USER_ID_FOR_SRP": "royji2",
+        "SRP_B": "za",
+        "USERNAME": "a"]
 
     static let invalidChalengeParamsNoSRPB: [String: String] = [
         "SALT": "a",
