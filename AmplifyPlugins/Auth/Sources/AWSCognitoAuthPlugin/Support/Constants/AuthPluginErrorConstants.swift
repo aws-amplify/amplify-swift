@@ -24,10 +24,6 @@ enum AuthPluginErrorConstants {
         "Configuration was not a dictionary literal",
         "Make sure the value for the plugin is a dictionary literal")
 
-    static let mobileClientInitializeError: AuthPluginErrorString = (
-        "Unable to initialize the underlying AWSMobileClient",
-        "Make sure that the necessary configuration are present in the configuration file")
-
     static let hostedUISecurityFailedError: AuthPluginErrorString = (
         "Found invalid parameter while parsing the webUI redirect URL",
         "Make sure that the signIn URL has not been modified during the signIn flow")

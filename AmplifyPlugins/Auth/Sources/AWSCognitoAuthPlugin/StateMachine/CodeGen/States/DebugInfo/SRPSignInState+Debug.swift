@@ -7,7 +7,7 @@
 
 import Foundation
 
-public extension SRPSignInState {
+extension SRPSignInState {
 
     var debugDictionary: [String: Any] {
         let stateTypeDictionary: [String: Any] = ["SRPSignInState": type]

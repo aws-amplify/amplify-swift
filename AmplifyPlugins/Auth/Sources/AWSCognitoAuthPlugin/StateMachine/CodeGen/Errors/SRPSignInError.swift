@@ -7,20 +7,26 @@
 
 import Foundation
 
-public enum SRPSignInError: Error {
+enum SRPSignInError: Error {
     case configuration(message: String)
     case service(error: Swift.Error)
     case inputValidation(field: String)
+    case invalidServiceResponse(message: String)
+    case calculation(SRPError)
 }
 
 extension SRPSignInError: Equatable {
-    public static func == (lhs: SRPSignInError, rhs: SRPSignInError) -> Bool {
+    static func == (lhs: SRPSignInError, rhs: SRPSignInError) -> Bool {
         switch (lhs, rhs) {
         case (.configuration, .configuration):
             return true
         case (.service, .service):
             return true
         case (.inputValidation(let lhsField), .inputValidation(let rhsField)):
+            return lhsField == rhsField
+        case (.invalidServiceResponse, .invalidServiceResponse):
+            return true
+        case (.calculation(let lhsField), .calculation(let rhsField)):
             return lhsField == rhsField
         default:
             return false
