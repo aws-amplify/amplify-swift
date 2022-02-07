@@ -139,6 +139,10 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
             } else {
                 return AuthError.unknown("", error)
             }
+        case . invalidServiceResponse(message: let message):
+            return AuthError.service(message, "")
+        case .calculation:
+            return AuthError.unknown("SignIn calculation returned an error")
         case .inputValidation(let field):
             return AuthError.validation(field,
                                         AuthPluginErrorConstants.signInUsernameError.errorDescription,

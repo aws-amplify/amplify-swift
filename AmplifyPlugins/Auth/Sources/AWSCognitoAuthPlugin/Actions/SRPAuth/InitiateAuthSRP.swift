@@ -5,9 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCognitoIdentityProvider
+import Amplify
 import Foundation
 import CryptoKit
+import AWSCognitoIdentityProvider
 
 struct InitiateAuthSRP: Action {
     let identifier = "InitiateAuthSRP"
@@ -20,46 +21,58 @@ struct InitiateAuthSRP: Action {
         self.password = password
     }
 
-    func execute(
-        withDispatcher dispatcher: EventDispatcher,
-        environment: Environment
-    ) {
-        let timer = LoggingTimer(identifier).start("### Starting execution")
-        guard let environment = environment as? SRPAuthEnvironment else {
-            let authError = SRPSignInError.configuration(message: "Environment configured incorrectly")
+    func execute(withDispatcher dispatcher: EventDispatcher,
+                 environment: Environment) {
+
+        Amplify.Logging.verbose("Starting execution \(#fileID)")
+        do {
+            let environment = try SRPSignInHelper.srpEnvironment(environment)
+            let nHexValue = environment.srpConfiguration.nHexValue
+            let gHexValue = environment.srpConfiguration.gHexValue
+
+            let srpClient = try SRPSignInHelper.srpClient(environment)
+            let srpKeyPair = srpClient.generateClientKeyPair()
+
+            let srpStateData = SRPStateData(username: username,
+                                            password: password,
+                                            NHexValue: nHexValue,
+                                            gHexValue: gHexValue,
+                                            srpKeyPair: srpKeyPair,
+                                            clientTimestamp: Date())
+            let request = request(environment: environment,
+                                  publicHexValue: srpKeyPair.publicKeyHexValue)
+
+            try sendRequest(request: request,
+                            environment: environment,
+                            srpStateData: srpStateData) { responseEvent in
+                dispatcher.send(responseEvent)
+                Amplify.Logging.verbose("sending event #file")
+            }
+
+        } catch let error as SRPSignInError {
+            Amplify.Logging.verbose("SRPSignInError \(error) #file")
+            let event = SRPSignInEvent(eventType: .throwAuthError(error))
+            dispatcher.send(event)
+        } catch {
+            Amplify.Logging.verbose("Caught error \(error) #file")
+            let authError = SRPSignInError.service(error: error)
             let event = SRPSignInEvent(
-                id: UUID().uuidString,
                 eventType: .throwAuthError(authError)
             )
             dispatcher.send(event)
-            return
         }
+    }
 
-        guard let srpClient = try? environment.srpClientFactory(environment.srpConfiguration.nHexValue,
-                                                                environment.srpConfiguration.gHexValue)
-        else {
-            fatalError("TODO: Replace this with a dispatcher.send()")
-        }
-
-        let srpKeyPair = srpClient.generateClientKeyPair()
-
-        let clientTimeStamp = Date()
-        let srpStateData = SRPStateData(username: username,
-                                        password: password,
-                                        NHexValue: environment.srpConfiguration.nHexValue,
-                                        gHexValue: environment.srpConfiguration.gHexValue,
-                                        srpKeyPair: srpKeyPair,
-                                        clientTimestamp: clientTimeStamp)
-
+    private func request(environment: SRPAuthEnvironment,
+                         publicHexValue: String) -> InitiateAuthInput {
         let userPoolClientId = environment.userPoolConfiguration.clientId
-        let publicHexValue = srpKeyPair.publicKeyHexValue
         var authParameters = [
             "USERNAME": username,
             "SRP_A": publicHexValue
         ]
 
         if let clientSecret = environment.userPoolConfiguration.clientSecret {
-            let clientSecretHash = InitiateAuthSRP.getClientSecretHashBase64String(
+            let clientSecretHash = SRPSignInHelper.clientSecretHash(
                 username: username,
                 userPoolClientId: userPoolClientId,
                 clientSecret: clientSecret
@@ -67,63 +80,39 @@ struct InitiateAuthSRP: Action {
             authParameters["SECRET_HASH"] = clientSecretHash
         }
 
-        if let deviceId = InitiateAuthSRP.getDeviceId() {
+        if let deviceId = Self.getDeviceId() {
             authParameters["DEVICE_KEY"] = deviceId
         }
 
-        let input = InitiateAuthInput(analyticsMetadata: nil,
-                                      authFlow: .userSrpAuth,
-                                      authParameters: authParameters,
-                                      clientId: userPoolClientId,
-                                      clientMetadata: nil,
-                                      userContextData: nil)
-        do {
-            let client = try environment.cognitoUserPoolFactory()
-            timer.note("### Starting initiateAuth")
-            client.initiateAuth(input: input) { result in
-                timer.note("### initiateAuth response received")
-                switch result {
-                case .success(let response):
-                    let event = SRPSignInEvent(
-                        id: environment.eventIDFactory(),
-                        eventType: .respondPasswordVerifier(srpStateData, response),
-                        time: Date()
-                    )
-                    dispatcher.send(event)
-                case .failure(let error):
-                    let authError = SRPSignInError.service(error: error)
-                    let event = SRPSignInEvent(
-                        id: environment.eventIDFactory(),
-                        eventType: .throwAuthError(authError)
-                    )
-                    dispatcher.send(event)
-                }
-                timer.stop("### sending SRPSignInEvent.initiateAuthResponseReceived")
-            }
-        } catch {
-            let authError = SRPSignInError.service(error: error)
-            let event = SRPSignInEvent(
-                id: environment.eventIDFactory(),
-                eventType: .throwAuthError(authError)
-            )
-            dispatcher.send(event)
-        }
+        return InitiateAuthInput(analyticsMetadata: nil,
+                                 authFlow: .userSrpAuth,
+                                 authParameters: authParameters,
+                                 clientId: userPoolClientId,
+                                 clientMetadata: nil,
+                                 userContextData: nil)
     }
 
-    private static func getClientSecretHashBase64String(
-        username: String,
-        userPoolClientId: String,
-        clientSecret: String
-    ) -> String {
-        let clientSecretData = clientSecret.data(using: .utf8)!
-        let clientSecretByteArray = [UInt8](clientSecretData)
-        let key = SymmetricKey(data: clientSecretByteArray)
+    private func sendRequest(request: InitiateAuthInput,
+                     environment: SRPAuthEnvironment,
+                     srpStateData: SRPStateData,
+                     callback: @escaping (SRPSignInEvent) -> Void) throws {
 
-        let clientData = (username + userPoolClientId).data(using: .utf8)!
-
-        let mac = HMAC<SHA256>.authenticationCode(for: clientData, using: key)
-        let macBase64 = Data(mac).base64EncodedString()
-        return macBase64
+        let cognitoClient = try environment.cognitoUserPoolFactory()
+        Amplify.Logging.verbose("Starting initiateAuth #file")
+        cognitoClient.initiateAuth(input: request) { result in
+            Amplify.Logging.verbose("initiateAuth response received #file")
+            let event: SRPSignInEvent!
+            switch result {
+            case .success(let response):
+                event = SRPSignInEvent(
+                    eventType: .respondPasswordVerifier(srpStateData, response)
+                )
+            case .failure(let error):
+                let authError = SRPSignInError.service(error: error)
+                event = SRPSignInEvent(eventType: .throwAuthError(authError))
+            }
+            callback(event)
+        }
     }
 
     // TODO: Implement this
