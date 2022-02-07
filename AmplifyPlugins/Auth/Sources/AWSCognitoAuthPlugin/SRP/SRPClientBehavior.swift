@@ -20,9 +20,12 @@ protocol SRPClientBehavior {
                                clientPublicKeyHexValue: String,
                                serverPublicKeyHexValue: String) throws -> String
 
-    static func calculateUHexValue(clientPublicKeyHexValue: String, serverPublicKeyHexValue: String) throws -> String
+    static func calculateUHexValue(
+        clientPublicKeyHexValue: String,
+        serverPublicKeyHexValue: String) throws -> String
 
-    static func generateAuthenticationKey(sharedSecretHexValue: String, uHexValue: String) throws -> Data
+    static func generateAuthenticationKey(
+        sharedSecretHexValue: String, uHexValue: String) throws -> Data
 }
 
 enum SRPError: Error {
