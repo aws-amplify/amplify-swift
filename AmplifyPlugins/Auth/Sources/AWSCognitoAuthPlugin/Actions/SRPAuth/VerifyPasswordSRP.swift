@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCognitoIdentityProvider
+import Amplify
 import Foundation
-import CryptoKit
+import AWSCognitoIdentityProvider
 
 struct VerifyPasswordSRP: Action {
     let identifier = "VerifyPasswordSRP"
@@ -21,249 +21,144 @@ struct VerifyPasswordSRP: Action {
         self.authResponse = authResponse
     }
 
-    func execute(
-        withDispatcher dispatcher: EventDispatcher,
-        environment: Environment
-    ) {
-        let timer = LoggingTimer(identifier).start("### Starting execution")
-        guard let environment = environment as? SRPAuthEnvironment else {
-            let authError = SRPSignInError.configuration(message: "Environment configured incorrectly")
+    func execute(withDispatcher dispatcher: EventDispatcher,
+                 environment: Environment) {
+
+        Amplify.Logging.verbose("Starting execution \(#fileID)")
+        do {
+            let environment = try SRPSignInHelper.srpEnvironment(environment)
+            let srpClient = try SRPSignInHelper.srpClient(environment)
+            let parameters = try challengeParameters()
+
+            let inputUsername = stateData.username
+            let username = parameters["USERNAME"] ?? inputUsername
+            let userIdForSRP = parameters["USER_ID_FOR_SRP"] ?? inputUsername
+
+            let saltHex = try saltHex(parameters)
+            let secretBlockString = try secretBlockString(parameters)
+            let secretBlock = try secretBlock(secretBlockString)
+            let serverPublicB = try serverPublic(parameters)
+
+            let signature = try signature(userIdForSRP: userIdForSRP,
+                                          saltHex: saltHex,
+                                          secretBlock: secretBlock,
+                                          serverPublicBHexString: serverPublicB,
+                                          srpClient: srpClient,
+                                          environment: environment)
+            let request = request(username: username,
+                                  session: authResponse.session,
+                                  secretBlock: secretBlockString,
+                                  signature: signature,
+                                  environment: environment)
+            try sendRequest(request: request,
+                            environment: environment) { responseEvent in
+                dispatcher.send(responseEvent)
+                Amplify.Logging.verbose("sending event #file")
+            }
+        } catch let error as SRPSignInError {
+            Amplify.Logging.verbose("SRPSignInError \(error) #file")
             let event = SRPSignInEvent(
-                id: UUID().uuidString,
-                eventType: .throwPasswordVerifierError(authError)
+                eventType: .throwPasswordVerifierError(error)
             )
             dispatcher.send(event)
-            return
-        }
-
-        guard let challengeParameters = authResponse.challengeParameters else {
-            // TODO: Change this to a better error
-            let authError = SRPSignInError.configuration(message: AuthPluginErrorConstants.configurationError)
+        } catch {
+            Amplify.Logging.verbose("Caught error \(error) #file")
+            let authError = SRPSignInError.service(error: error)
             let event = SRPSignInEvent(
-                id: environment.eventIDFactory(),
-                eventType: .throwPasswordVerifierError(authError)
+                eventType: .throwAuthError(authError)
             )
             dispatcher.send(event)
-            return
         }
+    }
 
-        let username = challengeParameters["USERNAME"] ?? stateData.username
-        let userIdForSRP = challengeParameters["USER_ID_FOR_SRP"] ?? stateData.username
-
-        guard let saltHex = challengeParameters["SALT"],
-              !saltHex.isEmpty
-        else {
-                  // TODO: Change this to a better error
-                  let authError = SRPSignInError.configuration(message: "Unable to retrieve salt")
-                  let event = SRPSignInEvent(
-                    id: environment.eventIDFactory(),
-                    eventType: .throwPasswordVerifierError(authError)
-                  )
-                  dispatcher.send(event)
-                  return
-              }
-
-        guard let secretBlockString = challengeParameters["SECRET_BLOCK"],
-              let serverSecretBlock = Data(base64Encoded: secretBlockString)
-        else {
-            // TODO: Change this to a better error
-            let authError = SRPSignInError.configuration(message: "Unable to retrieve server secrets")
-                  let event = SRPSignInEvent(
-                      id: environment.eventIDFactory(),
-                      eventType: .throwPasswordVerifierError(authError)
-                  )
-                  dispatcher.send(event)
-                  return
-              }
-
-        guard let serverPublicBHexString = challengeParameters["SRP_B"] else {
-            // TODO: Change this to a better error
-            let authError = SRPSignInError.configuration(message: "Unable to retrieve SRP_B")
-                  let event = SRPSignInEvent(
-                      id: environment.eventIDFactory(),
-                      eventType: .throwPasswordVerifierError(authError)
-                  )
-                  dispatcher.send(event)
-                  return
-              }
+    private func request(username: String,
+                         session: String?,
+                         secretBlock: String,
+                         signature: String,
+                         environment: SRPAuthEnvironment)
+    -> RespondToAuthChallengeInput {
+        let dateStr = generateDateString(date: stateData.clientTimestamp)
         let userPoolClientId = environment.userPoolConfiguration.clientId
-        let poolId = environment.userPoolConfiguration.poolId
-
-        let session = authResponse.session
-
         var challengeResponses = ["USERNAME": username]
+        if let clientSecret = environment.userPoolConfiguration.clientSecret {
 
-        if let clientSecretHash = generateClientSecretHash(environment: environment,
-                                                           userPoolClientId: userPoolClientId) {
+            let clientSecretHash = SRPSignInHelper.clientSecretHash(
+                username: username,
+                userPoolClientId: userPoolClientId,
+                clientSecret: clientSecret
+            )
             challengeResponses["SECRET_HASH"] = clientSecretHash
         }
 
-        do {
+        challengeResponses["TIMESTAMP"] = dateStr
+        challengeResponses["PASSWORD_CLAIM_SECRET_BLOCK"] = secretBlock
+        challengeResponses["PASSWORD_CLAIM_SIGNATURE"] = signature
+        return RespondToAuthChallengeInput(
+            analyticsMetadata: nil,
+            challengeName: .passwordVerifier,
+            challengeResponses: challengeResponses,
+            clientId: userPoolClientId,
+            clientMetadata: nil,
+            session: session,
+            userContextData: nil)
+    }
 
-            let index = poolId.firstIndex(of: "_")!
-            let strippedPoolId =  poolId[poolId.index(index, offsetBy: 1)...]
-            let dateStr = generateDateString(date: stateData.clientTimestamp)
-            let usernameForS = "\(strippedPoolId)\(userIdForSRP)"
+    private func sendRequest(
+        request: RespondToAuthChallengeInput,
+        environment: SRPAuthEnvironment,
+        callback: @escaping (SRPSignInEvent) -> Void) throws {
 
-            let srpClient = try environment.srpClientFactory(environment.srpConfiguration.nHexValue,
-                                                             environment.srpConfiguration.gHexValue)
-            // Calculate the S value
-            let clientSharedSecret = try srpClient.calculateSharedSecret(username: usernameForS,
-                                                                         password: stateData.password,
-                                                                         saltHexValue: saltHex,
-                                                                         clientPrivateKeyHexValue: stateData.srpKeyPair.privateKeyHexValue,
-                                                                         clientPublicKeyHexValue: stateData.srpKeyPair.publicKeyHexValue,
-                                                                         serverPublicKeyHexValue: serverPublicBHexString)
-
-            let u = try type(of: srpClient).calculateUHexValue(
-                clientPublicKeyHexValue: stateData.srpKeyPair.publicKeyHexValue,
-                serverPublicKeyHexValue: serverPublicBHexString)
-            // HKDF
-            let authenticationkey = try type(of: srpClient).generateAuthenticationKey(
-                sharedSecretHexValue: clientSharedSecret,
-                uHexValue: u)
-
-            // Signature
-
-            let signature = generateAuthenticationSignature(srpTimeStamp: dateStr,
-                                                            authenticationKey: authenticationkey,
-                                                            srpUserName: userIdForSRP,
-                                                            poolName: String(strippedPoolId),
-                                                            serviceSecretBlock: serverSecretBlock)
-            let signatureString = signature.base64EncodedString()
-
-            challengeResponses["TIMESTAMP"] = dateStr
-            challengeResponses["PASSWORD_CLAIM_SECRET_BLOCK"] = secretBlockString
-            challengeResponses["PASSWORD_CLAIM_SIGNATURE"] = signatureString
-
-        } catch {
-            // TODO: Change this to a better error
-            let authError = SRPSignInError.configuration(message: "Exception calculating secret")
-            let event = SRPSignInEvent(
-                id: environment.eventIDFactory(),
-                eventType: .throwPasswordVerifierError(authError)
-            )
-            dispatcher.send(event)
-        }
-
-        let input = RespondToAuthChallengeInput(analyticsMetadata: nil,
-                                                challengeName: .passwordVerifier,
-                                                challengeResponses: challengeResponses,
-                                                clientId: userPoolClientId,
-                                                clientMetadata: nil,
-                                                session: session,
-                                                userContextData: nil)
-
-        do {
             let client = try environment.cognitoUserPoolFactory()
-            timer.note("### starting respondToAuthChallenge")
-            client.respondToAuthChallenge(input: input) { result in
-                timer.note("### respondToAuthChallenge response received")
+            client.respondToAuthChallenge(input: request) { result in
 
+                let event: SRPSignInEvent!
                 switch result {
                 case .success(let response):
-                    if let authenticationResult = response.authenticationResult {
-
-                        guard let idToken = authenticationResult.idToken,
-                              let accessToken = authenticationResult.accessToken,
-                              let refreshToken = authenticationResult.refreshToken
-                        else {
-                            fatalError("TODO: Replace this with a dispatcher.send()")
-                        }
-
-                        let userPoolTokens = AWSCognitoUserPoolTokens(
-                            idToken: idToken,
-                            accessToken: accessToken,
-                            refreshToken: refreshToken,
-                            expiresIn: authenticationResult.expiresIn
+                    guard let signedInData = parseResponse(response) else {
+                        let message = "Response did not contain signIn info"
+                        let error = SRPSignInError.invalidServiceResponse(
+                            message: message
                         )
-
-                        let signedInData = SignedInData(
-                            userId: "",
-                            userName: stateData.username,
-                            signedInDate: Date(),
-                            signInMethod: .srp,
-                            cognitoUserPoolTokens: userPoolTokens
+                        event = SRPSignInEvent(
+                            eventType: .throwPasswordVerifierError(error)
                         )
-                        let event = SRPSignInEvent(
-                            id: environment.eventIDFactory(),
-                            eventType: .finalizeSRPSignIn(signedInData),
-                            time: Date()
-                        )
-                        timer.stop("### sending SRPSignInEvent.done")
-                        dispatcher.send(event)
+                        callback(event)
+                        return
                     }
+                    event = SRPSignInEvent(
+                        eventType: .finalizeSRPSignIn(signedInData))
+                    callback(event)
                 case .failure(let error):
-                    print(error)
+
                     let authError = SRPSignInError.service(error: error)
-                    let event = SRPSignInEvent(
-                        id: environment.eventIDFactory(),
-                        eventType: .throwPasswordVerifierError(authError)
-                    )
-                    dispatcher.send(event)
+                    event = SRPSignInEvent(
+                        eventType: .throwPasswordVerifierError(authError))
+                    callback(event)
                 }
-                timer.stop("### sending SRPSignInEvent.resondToAuthChallengeResponseReceived")
             }
-        } catch {
-            let authError = SRPSignInError.service(error: error)
-            let event = SRPSignInEvent(
-                id: environment.eventIDFactory(),
-                eventType: .throwPasswordVerifierError(authError)
-            )
-            dispatcher.send(event)
         }
 
-    }
-
-    private static func getClientSecretHashBase64String(
-        username: String,
-        userPoolClientId: String,
-        clientSecret: String
-    ) -> String {
-        let clientSecretData = clientSecret.data(using: .utf8)!
-        let clientSecretByteArray = [UInt8](clientSecretData)
-        let key = SymmetricKey(data: clientSecretByteArray)
-
-        let clientData = (username + userPoolClientId).data(using: .utf8)!
-
-        let mac = HMAC<SHA256>.authenticationCode(for: clientData, using: key)
-        let macBase64 = Data(mac).base64EncodedString()
-        return macBase64
-    }
-
-    private func generateAuthenticationSignature(srpTimeStamp: String,
-                                                 authenticationKey: Data,
-                                                 srpUserName: String,
-                                                 poolName: String,
-                                                 serviceSecretBlock: Data) -> Data {
-        let key = SymmetricKey(data: authenticationKey)
-        var hmac = HMAC<SHA256>.init(key: key)
-        hmac.update(data: poolName.data(using: .utf8)!)
-        hmac.update(data: srpUserName.data(using: .utf8)!)
-        hmac.update(data: serviceSecretBlock)
-        hmac.update(data: srpTimeStamp.data(using: .utf8)!)
-        return Data(hmac.finalize())
-    }
-
-    private func generateDateString(date: Date) -> String {
-        let timezone = TimeZone(abbreviation: "UTC")
-        let dateFormatter = DateFormatter()
-        dateFormatter.timeZone = timezone
-        dateFormatter.dateFormat = "EEE MMM d HH:mm:ss 'UTC' yyyy"
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        return dateFormatter.string(from: date)
-    }
-
-    private func generateClientSecretHash(environment: SRPAuthEnvironment, userPoolClientId: String) -> String? {
-        if let appClientSecret = environment.userPoolConfiguration.clientSecret {
-            let clientSecretHash = VerifyPasswordSRP.getClientSecretHashBase64String(
-                username: stateData.username,
-                userPoolClientId: userPoolClientId,
-                clientSecret: appClientSecret
-            )
-            return clientSecretHash
+    private func parseResponse(_ response: RespondToAuthChallengeOutputResponse)
+    -> SignedInData? {
+        guard let authResult = response.authenticationResult,
+              let idToken = authResult.idToken,
+              let accessToken = authResult.accessToken,
+              let refreshToken = authResult.refreshToken
+        else {
+            return nil
         }
-        return nil
+        let userPoolTokens = AWSCognitoUserPoolTokens(
+            idToken: idToken,
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            expiresIn: authResult.expiresIn)
+
+        return SignedInData(
+            userId: "",
+            userName: stateData.username,
+            signedInDate: Date(),
+            signInMethod: .srp,
+            cognitoUserPoolTokens: userPoolTokens)
     }
 }
 

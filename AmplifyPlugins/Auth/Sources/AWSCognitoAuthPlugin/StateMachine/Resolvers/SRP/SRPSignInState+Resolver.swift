@@ -5,7 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public extension SRPSignInState {
+import Foundation
+
+extension SRPSignInState {
     struct Resolver: StateMachineResolver {
         public typealias StateType = SRPSignInState
         public let defaultState = SRPSignInState.notStarted
