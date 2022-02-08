@@ -21,12 +21,13 @@ struct CredentialStoreAttributes {
 extension CredentialStoreAttributes {
 
     func query() -> [String: Any] {
-        let query: [String: Any] = [
+        var query: [String: Any] = [
             CredentialStoreConstant.Class: itemClass,
-            CredentialStoreConstant.AttributeService: service,
-            CredentialStoreConstant.AttributeAccessGroup: accessGroup as Any
+            CredentialStoreConstant.AttributeService: service
         ]
-
+        if let accessGroup = accessGroup {
+            query[CredentialStoreConstant.AttributeAccessGroup] = accessGroup             
+        }
         return query
     }
 
