@@ -15,21 +15,21 @@ class SignUpStateTests: XCTestCase {
     func testSignUpNotStartedResolver() throws {
         let sequence = SignUpStateSequence(oldState: .notStarted,
                                            event: .initiateSignUpEvent,
-                                           expected: .initiatingSigningUp)
+                                           expected: .initiatingSigningUp(SignUpEventData()))
         sequence.assertResolvesToExpected()
     }
 
     func testSignUpInitiatingSigningUpSuccessResolver() throws {
-        let sequence = SignUpStateSequence(oldState: .initiatingSigningUp,
+        let sequence = SignUpStateSequence(oldState: .initiatingSigningUp(SignUpEventData()),
                                            event: .initiateSignUpSuccessEvent,
                                            expected: .signingUpInitiated)
         sequence.assertResolvesToExpected()
     }
 
     func testSignUpInitiatingSigningUpFailureResolver() throws {
-        let sequence = SignUpStateSequence(oldState: .initiatingSigningUp,
+        let sequence = SignUpStateSequence(oldState: .initiatingSigningUp(SignUpEventData()),
                                            event: .initiateSignUpFailureEvent,
-                                           expected: .error)
+                                           expected: .error(.invalidUsername(message: "")))
         sequence.assertResolvesToExpected()
     }
 
@@ -40,7 +40,7 @@ class SignUpStateTests: XCTestCase {
         let password = "yearandmydogsname"
 
         let signUpCallback: MockIdentityProvider.SignUpCallback = { (input, callback) in
-            let response = SignUpOutputResponse(userConfirmed: true, userSub: username)
+            let response = SignUpOutputResponse(userConfirmed: false, userSub: username)
             callback(.success(response))
             exp.fulfill()
         }
@@ -60,9 +60,9 @@ class SignUpStateTests: XCTestCase {
                 return
             }
 
-            if case .initiateSignUp(let eventUsername, let eventPassword) = event.eventType {
-                XCTAssertEqual(username, eventUsername)
-                XCTAssertEqual(password, eventPassword)
+            if case .initiateSignUp(let signUpEventData) = event.eventType {
+                XCTAssertEqual(username, signUpEventData.username)
+                XCTAssertEqual(password, signUpEventData.password)
             }
         }
 
