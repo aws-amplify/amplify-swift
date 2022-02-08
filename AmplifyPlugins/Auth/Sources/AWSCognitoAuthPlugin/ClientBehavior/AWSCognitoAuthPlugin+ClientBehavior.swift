@@ -14,7 +14,13 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
                        password: String?,
                        options: AuthSignUpOperation.Request.Options?,
                        listener: AuthSignUpOperation.ResultListener?) -> AuthSignUpOperation {
-        fatalError("Not implemented")
+        let options = options ?? AuthSignUpRequest.Options()
+        let request = AuthSignUpRequest(username: username,
+                                        password: password,
+                                        options: options)
+        let signUpOperation = AWSAuthSignUpOperation(request, stateMachine: stateMachine, resultListener: listener)
+        queue.addOperation(signUpOperation)
+        return signUpOperation
     }
 
     public func confirmSignUp(for username: String,

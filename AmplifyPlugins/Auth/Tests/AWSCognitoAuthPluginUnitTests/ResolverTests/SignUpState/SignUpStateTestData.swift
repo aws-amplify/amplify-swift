@@ -23,12 +23,12 @@ extension SignUpEvent {
 
     static let initiateSignUpEvent = SignUpEvent(
         id: "initiateSignUp",
-        eventType: .initiateSignUp(username: "", password: ""), time: nil
+        eventType: .initiateSignUp(SignUpEventData()), time: nil
     )
 
     static let confirmSignUpEvent = SignUpEvent(
         id: "confirmSignUp",
-        eventType: .confirmSignUp(username: "", confirmationCode: ""), time: nil
+        eventType: .confirmSignUp(ConfirmSignUpEventData()), time: nil
     )
 
 
@@ -39,7 +39,7 @@ extension SignUpEvent {
 
     static let initiateSignUpFailureEvent = SignUpEvent(
         id: "initiateSignUpFailure",
-        eventType: .initiateSignUpFailure(signUpResponse: SignUpOutputResponse()), time: nil
+        eventType: .initiateSignUpFailure(error: SignUpError.invalidUsername(message: "")), time: nil
     )
 
     static let confirmSignUpSuccessEvent = SignUpEvent(
@@ -49,7 +49,7 @@ extension SignUpEvent {
 
     static let confirmSignUpFailureEvent = SignUpEvent(
         id: "confirmSignUpFailure",
-        eventType: .confirmSignUpFailure(confirmSignupResponse: ConfirmSignUpOutputResponse()), time: nil
+        eventType: .confirmSignUpFailure(error: SignUpError.invalidConfirmationCode(message: "")), time: nil
     )
 
 }
