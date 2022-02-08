@@ -227,6 +227,13 @@ type Nested {
 
 ```
 
-3.  `amplify push`
+3. This was originally written and tested against Transformer V1 so if you are using the latest CLI that has launched Transformer V2, update `cli.json` before running `amplify push`.
 
-4. Copy `amplifyconfiguration.json` over as `GraphQLModelBasedTests-amplifyconfiguration.json` to `~/.aws-amplify/amplify-ios/testconfiguration/`
+In `amplify/cli.json`, update `features.graphqltransformer.useexperimentalpipelinedtransformer` to `false` and `features.graphqltransformer.transformerversion` to `1`
+
+4.  `amplify push`
+
+5. Copy `amplifyconfiguration.json` over as `GraphQLModelBasedTests-amplifyconfiguration.json` to `~/.aws-amplify/amplify-ios/testconfiguration/`
+```
+cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/GraphQLModelBasedTests-amplifyconfiguration.json
+```
