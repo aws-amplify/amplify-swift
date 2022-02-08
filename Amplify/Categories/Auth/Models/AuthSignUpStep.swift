@@ -9,7 +9,7 @@
 public enum AuthSignUpStep {
 
     /// Need to confirm the user
-    case confirmUser(AuthCodeDeliveryDetails?, AdditionalInfo?)
+    case confirmUser(AuthCodeDeliveryDetails? = nil, AdditionalInfo? = nil)
 
     /// Sign up is complete
     case done

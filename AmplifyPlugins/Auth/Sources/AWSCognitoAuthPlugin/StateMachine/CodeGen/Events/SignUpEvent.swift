@@ -22,12 +22,12 @@ public struct SignUpEvent: StateMachineEvent {
     public var data: Any?
 
     public enum EventType: Equatable {
-        case initiateSignUp(username: String, password: String)
-        case confirmSignUp(username: String, confirmationCode: String)
+        case initiateSignUp(SignUpEventData)
+        case confirmSignUp(ConfirmSignUpEventData)
         case initiateSignUpSuccess(username: String, signUpResponse: SignUpOutputResponse)
-        case initiateSignUpFailure(signUpResponse: SignUpOutputResponse)
+        case initiateSignUpFailure(error: SignUpError)
         case confirmSignUpSuccess(confirmSignupResponse: ConfirmSignUpOutputResponse)
-        case confirmSignUpFailure(confirmSignupResponse: ConfirmSignUpOutputResponse)
+        case confirmSignUpFailure(error: SignUpError)
         case throwAuthError(AuthenticationError)
     }
 
@@ -55,7 +55,7 @@ public struct SignUpEvent: StateMachineEvent {
     }
 
     public init(
-        id: String,
+        id: String = UUID().uuidString,
         eventType: EventType,
         time: Date? = nil
     ) {
