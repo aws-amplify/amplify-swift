@@ -13,23 +13,23 @@ import AWSCognitoIdentityProvider
 
 class ConfirmSignUpStateTests: XCTestCase {
     func testConfirmingSignUpResolver() throws {
-        let sequence = SignUpStateSequence(oldState: .confirmingSignUp,
+        let sequence = SignUpStateSequence(oldState: .confirmingSignUp(ConfirmSignUpEventData()),
                                            event: .confirmSignUpEvent,
-                                           expected: .confirmingSignUp)
+                                           expected: .confirmingSignUp(ConfirmSignUpEventData()))
         sequence.assertResolvesToExpected()
     }
 
     func testConfirmingSignUpSuccessResolver() throws {
-        let sequence = SignUpStateSequence(oldState: .confirmingSignUp,
+        let sequence = SignUpStateSequence(oldState: .confirmingSignUp(ConfirmSignUpEventData()),
                                            event: .confirmSignUpSuccessEvent,
                                            expected: .signedUp)
         sequence.assertResolvesToExpected()
     }
 
     func testConfirmingSignUpFailureResolver() throws {
-        let sequence = SignUpStateSequence(oldState: .confirmingSignUp,
+        let sequence = SignUpStateSequence(oldState: .confirmingSignUp(ConfirmSignUpEventData()),
                                            event: .confirmSignUpFailureEvent,
-                                           expected: .error)
+                                           expected: .error(.invalidConfirmationCode(message: "")))
         sequence.assertResolvesToExpected()
     }
 
@@ -60,9 +60,9 @@ class ConfirmSignUpStateTests: XCTestCase {
                 return
             }
 
-            if case .confirmSignUp(let eventUsername, let eventConfirmationCode) = event.eventType {
-                XCTAssertEqual(username, eventUsername)
-                XCTAssertEqual(confirmationCode, eventConfirmationCode)
+            if case .confirmSignUp(let confirmSignUpEventData) = event.eventType {
+                XCTAssertEqual(username, confirmSignUpEventData.username)
+                XCTAssertEqual(confirmationCode, confirmSignUpEventData.confirmationCode)
             }
         }
 

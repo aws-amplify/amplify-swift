@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import Amplify
 
 extension SignUpState {
     struct Resolver: StateMachineResolver {
@@ -14,10 +15,9 @@ extension SignUpState {
         public init() { }
 
         func resolve(
-            oldState: SignUpState,
+            oldState: StateType,
             byApplying event: StateMachineEvent
         ) -> StateResolution<SignUpState> {
-
             guard let signUpEvent = event as? SignUpEvent else {
                 return .from(oldState)
             }
@@ -42,9 +42,13 @@ extension SignUpState {
 
         private func resolveNotStarted(byApplying signInEvent: SignUpEvent) -> StateResolution<SignUpState>? {
             switch signInEvent.eventType {
-            case .initiateSignUp(let username, let password):
-                let action = InitiateSignUp(username: username, password: password)
-                return StateResolution(newState: SignUpState.initiatingSigningUp, actions: [action])
+            case .initiateSignUp(let signUpEventData):
+                let command = InitiateSignUp(username: signUpEventData.username, password: signUpEventData.password)
+                return StateResolution(newState: SignUpState.initiatingSigningUp(signUpEventData), commands: [command])
+            case .confirmSignUp(let confirmSignUpEventData):
+                let command = ConfirmSignUp(username: confirmSignUpEventData.username,
+                                            confirmationCode: confirmSignUpEventData.confirmationCode)
+                return StateResolution(newState: SignUpState.confirmingSignUp(confirmSignUpEventData), commands: [command])
             default:
                 return nil
             }
@@ -54,8 +58,8 @@ extension SignUpState {
             switch signInEvent.eventType {
             case .initiateSignUpSuccess:
                 return StateResolution(newState: .signingUpInitiated)
-            case .initiateSignUpFailure:
-                return StateResolution(newState: .error)
+            case .initiateSignUpFailure(let error):
+                return StateResolution(newState: .error(error))
             default:
                 return nil
             }
@@ -63,13 +67,14 @@ extension SignUpState {
 
         private func resolveConfirmingSignUp(byApplying signInEvent: SignUpEvent) -> StateResolution<SignUpState>? {
             switch signInEvent.eventType {
-            case .confirmSignUp(let username, let confirmationCode):
-                let action = ConfirmSignUp(username: username, confirmationCode: confirmationCode)
-                return StateResolution(newState: SignUpState.confirmingSignUp, actions: [action])
+            case .confirmSignUp(let confirmSignUpEventData):
+                let command = ConfirmSignUp(username: confirmSignUpEventData.username,
+                                            confirmationCode: confirmSignUpEventData.confirmationCode)
+                return StateResolution(newState: SignUpState.confirmingSignUp(confirmSignUpEventData), commands: [command])
             case .confirmSignUpSuccess:
                 return StateResolution(newState: .signedUp)
-            case .confirmSignUpFailure:
-                return StateResolution(newState: .error)
+            case .confirmSignUpFailure(let error):
+                return StateResolution(newState: .error(error))
             default:
                 return nil
             }

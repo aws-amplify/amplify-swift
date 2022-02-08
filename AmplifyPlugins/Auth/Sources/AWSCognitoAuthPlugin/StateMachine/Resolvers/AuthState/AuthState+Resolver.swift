@@ -77,7 +77,6 @@ extension AuthState {
                 let newState = AuthState.configured(authNresolution.newState, authZresolution.newState)
                 return .init(newState: newState, actions: authNresolution.actions + authZresolution.actions)
             }
-
         }
 
         private func isAuthEvent(_ event: StateMachineEvent) -> AuthEvent? {
