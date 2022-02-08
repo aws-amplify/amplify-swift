@@ -22,7 +22,7 @@ enum AuthSignInHelper {
         _ = Amplify.Auth.signUp(username: username, password: password, options: options) { result in
             switch result {
             case .success(let signUpResult):
-                completionHandler(signUpResult.isSignupComplete, nil)
+                completionHandler(signUpResult.isSignUpComplete, nil)
             case .failure(let error):
                 completionHandler(false, error)
             }

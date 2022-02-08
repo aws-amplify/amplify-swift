@@ -17,7 +17,6 @@ extension AuthenticationState {
             oldState: StateType,
             byApplying event: StateMachineEvent
         ) -> StateResolution<StateType> {
-
             switch oldState {
             case .notConfigured:
                 guard let authEvent = event as? AuthenticationEvent else {
@@ -30,14 +29,24 @@ extension AuthenticationState {
                 }
                 return resolveConfigured(byApplying: authEvent, to: authConfig)
             case .signedOut(let signedOutData):
-                guard let authEvent = event as? AuthenticationEvent else {
+                if let authEvent = event as? AuthenticationEvent {
+                    return resolveSignedOut(
+                        byApplying: authEvent,
+                        to: signedOutData,
+                        currentConfiguration: signedOutData.authenticationConfiguration)
+                } else if let signUpEvent = event as? SignUpEvent {
+                    let resolver = SignUpState.Resolver()
+                    let resolution = resolver.resolve(oldState: .notStarted, byApplying: signUpEvent)
+                    let newState = AuthenticationState.signingUp(signedOutData.authenticationConfiguration, resolution.newState)
+                    return .init(newState: newState, commands: resolution.commands)
+                } else {
                     return .from(oldState)
                 }
-                return resolveSignedOut(
-                    byApplying: authEvent,
-                    to: signedOutData,
-                    currentConfiguration: signedOutData.authenticationConfiguration
-                )
+            case .signingUp(let authConfiguration, let signUpState):
+                let resolver = SignUpState.Resolver()
+                let resolution = resolver.resolve(oldState: signUpState, byApplying: event)
+                let newState = AuthenticationState.signingUp(authConfiguration, resolution.newState)
+                return .init(newState: newState, commands: resolution.commands)
             case .signingIn:
                 return resolveSigningInState(oldState: oldState, event: event)
             case .signedIn(let authenticationConfiguration, let signedInData):
