@@ -18,7 +18,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         let request = AuthSignUpRequest(username: username,
                                         password: password,
                                         options: options)
-        let signUpOperation = AWSAuthSignUpOperation(request, stateMachine: stateMachine, resultListener: listener)
+        let signUpOperation = AWSAuthSignUpOperation(request, stateMachine: authStateMachine, resultListener: listener)
         queue.addOperation(signUpOperation)
         return signUpOperation
     }
