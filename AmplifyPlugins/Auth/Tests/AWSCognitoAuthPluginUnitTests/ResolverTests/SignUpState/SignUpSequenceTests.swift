@@ -24,27 +24,39 @@ extension SignUpStateSequence {
     }
 }
 
+extension SignUpEventData {
+    init() {
+        self.init(username: "", password: "")
+    }
+}
+
+extension ConfirmSignUpEventData {
+    init() {
+        self.init(username: "", confirmationCode: "")
+    }
+}
+
 class SignUpSequenceTests: XCTestCase {
     func testValidSignUpSequences() throws {
         let validSequences: [SignUpStateSequence] = [
             StateSequence(oldState: .notStarted,
                           event: .initiateSignUpEvent,
-                          expected: .initiatingSigningUp),
+                          expected: .initiatingSigningUp(SignUpEventData())),
             StateSequence(oldState: .signingUpInitiated,
                           event: .initiateSignUpSuccessEvent,
                           expected: .signingUpInitiated),
-            StateSequence(oldState: .initiatingSigningUp,
+            StateSequence(oldState: .initiatingSigningUp(SignUpEventData()),
                           event: .initiateSignUpFailureEvent,
-                          expected: .error),
-            StateSequence(oldState: .confirmingSignUp,
+                          expected: .error(.invalidUsername(message: ""))),
+            StateSequence(oldState: .confirmingSignUp(ConfirmSignUpEventData()),
                           event: .confirmSignUpEvent,
-                          expected: .confirmingSignUp),
-            StateSequence(oldState: .confirmingSignUp,
+                          expected: .confirmingSignUp(ConfirmSignUpEventData())),
+            StateSequence(oldState: .confirmingSignUp(ConfirmSignUpEventData()),
                           event: .confirmSignUpSuccessEvent,
                           expected: .signedUp),
-            StateSequence(oldState: .confirmingSignUp,
+            StateSequence(oldState: .confirmingSignUp(ConfirmSignUpEventData()),
                           event: .confirmSignUpFailureEvent,
-                          expected: .error)
+                          expected: .error(.invalidConfirmationCode(message: "")))
         ]
 
         for sequence in validSequences {
@@ -56,11 +68,11 @@ class SignUpSequenceTests: XCTestCase {
         let invalidSequences: [SignUpStateSequence] = [
             SignUpStateSequence(oldState: .notStarted,
                                 event: .confirmSignUpEvent,
-                                expected: .initiatingSigningUp),
-            SignUpStateSequence(oldState: .confirmingSignUp,
+                                expected: .initiatingSigningUp(SignUpEventData())),
+            SignUpStateSequence(oldState: .confirmingSignUp(ConfirmSignUpEventData()),
                                 event: .confirmSignUpSuccessEvent,
-                                expected: .error),
-            SignUpStateSequence(oldState: .confirmingSignUp,
+                                expected: .error(.invalidPassword(message: ""))),
+            SignUpStateSequence(oldState: .confirmingSignUp(ConfirmSignUpEventData()),
                                 event: .confirmSignUpFailureEvent,
                                 expected: .signedUp)
         ]

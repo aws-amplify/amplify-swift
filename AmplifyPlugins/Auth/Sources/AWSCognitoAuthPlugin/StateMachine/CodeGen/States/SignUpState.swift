@@ -9,11 +9,11 @@ import Foundation
 
 public enum SignUpState: State {
     case notStarted
-    case initiatingSigningUp
+    case initiatingSigningUp(SignUpEventData)
     case signingUpInitiated
-    case confirmingSignUp
+    case confirmingSignUp(ConfirmSignUpEventData)
     case signedUp
-    case error
+    case error(SignUpError)
 }
 
 public extension SignUpState {
