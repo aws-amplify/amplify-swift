@@ -236,9 +236,17 @@ type CustomerOrder @model
 }
 
 ```
-3. `amplify push`
 
-4. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
+3. This was originally written and tested against Transformer V1 so if you are using the latest CLI that has launched Transformer V2, update `cli.json` before running `amplify push`.
+In `amplify/cli.json`, update `features.graphqltransformer.useexperimentalpipelinedtransformer` to `false` and `features.graphqltransformer.transformerversion` to `1`
 
+4. `amplify push`
+
+
+5. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
+```
+cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration.json
+
+```
 
 You should now be able to run all of the tests 
