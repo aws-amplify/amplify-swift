@@ -43,12 +43,12 @@ extension SignUpState {
         private func resolveNotStarted(byApplying signInEvent: SignUpEvent) -> StateResolution<SignUpState>? {
             switch signInEvent.eventType {
             case .initiateSignUp(let signUpEventData):
-                let command = InitiateSignUp(username: signUpEventData.username, password: signUpEventData.password)
-                return StateResolution(newState: SignUpState.initiatingSigningUp(signUpEventData), commands: [command])
+                let action = InitiateSignUp(username: signUpEventData.username, password: signUpEventData.password)
+                return StateResolution(newState: SignUpState.initiatingSigningUp(signUpEventData), actions: [action])
             case .confirmSignUp(let confirmSignUpEventData):
-                let command = ConfirmSignUp(username: confirmSignUpEventData.username,
+                let action = ConfirmSignUp(username: confirmSignUpEventData.username,
                                             confirmationCode: confirmSignUpEventData.confirmationCode)
-                return StateResolution(newState: SignUpState.confirmingSignUp(confirmSignUpEventData), commands: [command])
+                return StateResolution(newState: SignUpState.confirmingSignUp(confirmSignUpEventData), actions: [action])
             default:
                 return nil
             }
@@ -68,9 +68,9 @@ extension SignUpState {
         private func resolveConfirmingSignUp(byApplying signInEvent: SignUpEvent) -> StateResolution<SignUpState>? {
             switch signInEvent.eventType {
             case .confirmSignUp(let confirmSignUpEventData):
-                let command = ConfirmSignUp(username: confirmSignUpEventData.username,
+                let action = ConfirmSignUp(username: confirmSignUpEventData.username,
                                             confirmationCode: confirmSignUpEventData.confirmationCode)
-                return StateResolution(newState: SignUpState.confirmingSignUp(confirmSignUpEventData), commands: [command])
+                return StateResolution(newState: SignUpState.confirmingSignUp(confirmSignUpEventData), actions: [action])
             case .confirmSignUpSuccess:
                 return StateResolution(newState: .signedUp)
             case .confirmSignUpFailure(let error):

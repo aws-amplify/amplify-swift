@@ -38,7 +38,7 @@ extension AuthenticationState {
                     let resolver = SignUpState.Resolver()
                     let resolution = resolver.resolve(oldState: .notStarted, byApplying: signUpEvent)
                     let newState = AuthenticationState.signingUp(signedOutData.authenticationConfiguration, resolution.newState)
-                    return .init(newState: newState, commands: resolution.commands)
+                    return .init(newState: newState, actions: resolution.actions)
                 } else {
                     return .from(oldState)
                 }
@@ -46,7 +46,7 @@ extension AuthenticationState {
                 let resolver = SignUpState.Resolver()
                 let resolution = resolver.resolve(oldState: signUpState, byApplying: event)
                 let newState = AuthenticationState.signingUp(authConfiguration, resolution.newState)
-                return .init(newState: newState, commands: resolution.commands)
+                return .init(newState: newState, actions: resolution.actions)
             case .signingIn:
                 return resolveSigningInState(oldState: oldState, event: event)
             case .signedIn(let authenticationConfiguration, let signedInData):
