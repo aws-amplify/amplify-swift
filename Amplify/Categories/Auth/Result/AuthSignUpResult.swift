@@ -10,7 +10,7 @@ import Foundation
 public struct AuthSignUpResult {
 
     /// Indicate whether the signUp flow is completed.
-    public var isSignupComplete: Bool {
+    public var isSignUpComplete: Bool {
         switch nextStep {
         case .done:
             return true
