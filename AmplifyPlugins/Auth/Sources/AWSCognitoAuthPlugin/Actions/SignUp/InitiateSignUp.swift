@@ -56,19 +56,12 @@ struct InitiateSignUp: Action {
             let event: SignUpEvent
             switch result {
             case .success(let response):
-                event = SignUpEvent(id: UUID().uuidString,
-                                    eventType: .initiateSignUpSuccess(username: username, signUpResponse: response),
-                                    time: Date())
+                event = SignUpEvent(eventType: .initiateSignUpSuccess(username: username, signUpResponse: response))
             case .failure(let error):
                 // error is SignUpOutputError
                 // https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SignUp.html#API_SignUp_Errors
-
-                // TODO: change to SignUpError once the PR with AuthErrorConvertible is merged to dev-preview
-                let authError = AuthenticationError.service(message: error.localizedDescription)
-                event = SignUpEvent(
-                    id: UUID().uuidString,
-                    eventType: .throwAuthError(authError)
-                )
+                let error = SignUpError.service(error: error)
+                event = SignUpEvent(eventType: .initiateSignUpFailure(error: error))
             }
             dispatcher.send(event)
             timer.stop("### sending SignUpEvent.initiateSignUpResponseReceived")
