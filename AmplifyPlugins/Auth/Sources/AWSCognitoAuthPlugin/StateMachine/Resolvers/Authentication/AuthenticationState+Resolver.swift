@@ -28,16 +28,20 @@ extension AuthenticationState {
                     return .from(oldState)
                 }
                 return resolveConfigured(byApplying: authEvent, to: authConfig)
-            case .signedOut(let signedOutData):
+            case .signingOut(let authenticationConfiguration, let signOutState):
+                return resolveSigningOutState(byApplying: event,
+                                              to: signOutState,
+                                              currentConfiguration: authenticationConfiguration)
+            case .signedOut(let authenticationConfiguration, let signedOutData):
                 if let authEvent = event as? AuthenticationEvent {
                     return resolveSignedOut(
                         byApplying: authEvent,
                         to: signedOutData,
-                        currentConfiguration: signedOutData.authenticationConfiguration)
+                        currentConfiguration: authenticationConfiguration)
                 } else if let signUpEvent = event as? SignUpEvent {
                     let resolver = SignUpState.Resolver()
                     let resolution = resolver.resolve(oldState: .notStarted, byApplying: signUpEvent)
-                    let newState = AuthenticationState.signingUp(signedOutData.authenticationConfiguration, resolution.newState)
+                    let newState = AuthenticationState.signingUp(authenticationConfiguration, resolution.newState)
                     return .init(newState: newState, actions: resolution.actions)
                 } else {
                     return .from(oldState)
@@ -88,7 +92,7 @@ extension AuthenticationState {
             case .initializedSignedIn(let signedInData):
                 return .from(.signedIn(currentConfiguration, signedInData))
             case .initializedSignedOut(let signedOutData):
-                return .from(.signedOut(signedOutData))
+                return .from(.signedOut(currentConfiguration, signedOutData))
             default:
                 return .from(.configured(currentConfiguration))
             }
@@ -107,7 +111,7 @@ extension AuthenticationState {
                     currentSignedOutData: currentSignedOutData
                 )
             default:
-                return .from(.signedOut(currentSignedOutData))
+                return .from(.signedOut(currentConfiguration, currentSignedOutData))
             }
         }
 
@@ -117,12 +121,16 @@ extension AuthenticationState {
             currentConfiguration: AuthConfiguration
         ) -> StateResolution<StateType> {
             switch authEvent.eventType {
-            case .signOutRequested:
-                let signedOutData = SignedOutData(
-                    authenticationConfiguration: currentConfiguration,
-                    lastKnownUserName: currentSignedInData.userName
+            case .signOutRequested(let signOutEventData):
+                let action = InitiateSignOut(signedInData: currentSignedInData,
+                                             signOutEventData: signOutEventData)
+                let signOutState = SignOutState.notStarted
+                let resolution = StateResolution(
+                    newState: AuthenticationState.signingOut(currentConfiguration, signOutState),
+                    actions: [action]
                 )
-                return .from(.signedOut(signedOutData))
+                return resolution
+                
             default:
                 return .from(.signedIn(currentConfiguration, currentSignedInData))
             }
@@ -140,7 +148,6 @@ extension AuthenticationState {
         /// - Returns: A StateResolution for the appropriate next step, which may be
         /// signing in with the appropriate method, or resolving to an error if the
         /// configuration and event data is invalid.
-
         private func resolveAuthMethod(
             for signInData: SignInEventData,
             currentConfiguration: AuthConfiguration,
@@ -178,7 +185,25 @@ extension AuthenticationState {
             }
             return resolution
         }
-
+    
+        private func resolveSigningOutState(
+            byApplying event: StateMachineEvent,
+            to signOutState: SignOutState,
+            currentConfiguration authConfig: AuthConfiguration
+        ) -> StateResolution<StateType> {
+            let resolver = SignOutState.Resolver()
+            let resolution = resolver.resolve(oldState: signOutState, byApplying: event)
+            switch resolution.newState {
+            case .signedOut(let signedOutData):
+                let newState = AuthenticationState.signedOut(authConfig, signedOutData)
+                return .init(newState: newState, actions: resolution.actions)
+            case .error(let error):
+                let newState = AuthenticationState.error(authConfig, error)
+                return .init(newState: newState, actions: resolution.actions)
+            default:
+                let newState = AuthenticationState.signingOut(authConfig, resolution.newState)
+                return .init(newState: newState, actions: resolution.actions)
+            }
+        }
     }
-
 }
