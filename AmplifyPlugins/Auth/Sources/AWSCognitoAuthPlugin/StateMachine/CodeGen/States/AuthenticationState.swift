@@ -11,9 +11,12 @@ enum AuthenticationState: State {
 
     /// System is configured, and now knows how to find persisted config data, if any
     case configured(AuthConfiguration)
+    
+    /// User is signing out
+    case signingOut(AuthConfiguration, SignOutState)
 
     /// System is configured and ready for user to sign in
-    case signedOut(SignedOutData)
+    case signedOut(AuthConfiguration, SignedOutData)
 
     /// System is trying to sign up
     case signingUp(AuthConfiguration, SignUpState)
@@ -35,6 +38,7 @@ extension AuthenticationState {
         switch self {
         case .notConfigured: return "AuthenticationState.notConfigured"
         case .configured: return "AuthenticationState.configured"
+        case .signingOut: return "AuthenticationState.signingOut"
         case .signedOut: return "AuthenticationState.signedOut"
         case .signingUp: return "AuthenticationState.signingUp"
         case .signingIn: return "AuthenticationState.signingIn"
