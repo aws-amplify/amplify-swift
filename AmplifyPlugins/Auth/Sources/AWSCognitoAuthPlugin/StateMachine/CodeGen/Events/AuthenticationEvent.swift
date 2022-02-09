@@ -28,7 +28,7 @@ struct AuthenticationEvent: StateMachineEvent {
         case signInRequested(SignInEventData)
 
         /// Emitted when a user sign out is requested
-        case signOutRequested
+        case signOutRequested(SignOutEventData)
 
         /// Emitted at any time if the Authentication system encounters an error
         case error(AuthenticationError)

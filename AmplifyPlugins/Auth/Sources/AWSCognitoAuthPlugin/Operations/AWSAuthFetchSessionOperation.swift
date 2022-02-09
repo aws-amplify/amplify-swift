@@ -79,12 +79,15 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
             default:
                 break
             }
-
-        } onSubscribe: { }
-
-        // Send the load locally stored credentials event
-        let event = CredentialStoreEvent.init(eventType: .loadCredentialStore)
-        credentialStoreStateMachine.send(event)
+        } onSubscribe: { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            // Send the load locally stored credentials event
+            let event = CredentialStoreEvent.init(eventType: .loadCredentialStore)
+            self.credentialStoreStateMachine.send(event)
+        }
     }
 
     func doInitialize(with storedCredentials: CognitoCredentials?) {
@@ -138,9 +141,13 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
                 break
             }
 
-        } onSubscribe: { }
-
-        sendFetchAuthSessionEvent(with: storedCredentials)
+        } onSubscribe: { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            self.sendFetchAuthSessionEvent(with: storedCredentials)
+        }
     }
 
     func storeSession(_ session: AWSAuthCognitoSession) {
@@ -169,10 +176,14 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
                 break
             }
 
-        } onSubscribe: { }
-
-        // Send the load locally stored credentials event
-        sendStoreCredentialsEvent(with: session.getCognitoCredentials())
+        } onSubscribe: { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            // Send the load locally stored credentials event
+            self.sendStoreCredentialsEvent(with: session.getCognitoCredentials())
+        }
     }
 
     private func sendStoreCredentialsEvent(with credentials: CognitoCredentials) {
