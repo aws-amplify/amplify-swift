@@ -68,6 +68,10 @@ extension SignInEventData {
     static let testData = SignInEventData(username: "testUserName", password: "testPassword")
 }
 
+extension SignOutEventData {
+    static let testData = SignOutEventData(globalSignOut: true)
+}
+
 extension AWSCognitoUserPoolTokens {
     static let testData = AWSCognitoUserPoolTokens(
         idToken: "XX", accessToken: "XX", refreshToken: "XX", expiresIn: 300)
@@ -85,8 +89,7 @@ extension SignedInData {
 
 extension SignedOutData {
     static let testData = SignedOutData(
-        authenticationConfiguration: .testData,
-        lastKnownUserName: nil
+        lastKnownUserName: "testUserName"
     )
 }
 

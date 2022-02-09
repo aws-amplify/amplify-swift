@@ -74,7 +74,15 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 
     public func signOut(options: AuthSignOutOperation.Request.Options?,
                         listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation {
-        fatalError("Not implemented")
+        let options = options ?? AuthSignOutRequest.Options()
+        let request = AuthSignOutRequest(options: options)
+        let signOutOperation = AWSAuthSignOutOperation(request,
+                                                       authStateMachine: authStateMachine,
+                                                       credentialStoreStateMachine: credentialStoreStateMachine,
+                                                       resultListener: listener)
+        queue.addOperation(signOutOperation)
+        return signOutOperation
+
     }
 
     public func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options?,
