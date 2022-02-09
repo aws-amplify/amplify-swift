@@ -250,6 +250,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
                 switch queryResult {
                 case .success(let queriedModels):
                     currentItems.sortedModels = queriedModels
+                    currentItems.modelIds = Set(queriedModels.map(\.id))
                     sendSnapshot()
                 case .failure(let error):
                     self.passthroughPublisher.send(completion: .failure(error))
