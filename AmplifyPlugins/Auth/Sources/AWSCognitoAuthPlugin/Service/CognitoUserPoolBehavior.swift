@@ -22,4 +22,13 @@ public protocol CognitoUserPoolBehavior {
 
     func confirmSignUp(input: ConfirmSignUpInput, completion: @escaping (ClientRuntime.SdkResult<ConfirmSignUpOutputResponse, ConfirmSignUpOutputError>) -> Void)
 
+    func globalSignOut(
+        input: GlobalSignOutInput,
+        completion: @escaping (ClientRuntime.SdkResult<GlobalSignOutOutputResponse, GlobalSignOutOutputError>) -> Void
+    )
+    
+    func revokeToken(
+        input: RevokeTokenInput,
+        completion: @escaping (ClientRuntime.SdkResult<RevokeTokenOutputResponse, RevokeTokenOutputError>) -> Void
+    )
 }

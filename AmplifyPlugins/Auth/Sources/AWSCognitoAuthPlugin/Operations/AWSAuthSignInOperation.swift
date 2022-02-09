@@ -66,9 +66,6 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
             guard case .configured(let authNState, _) = $0 else {
                 return
             }
-            defer {
-                self.finish()
-            }
 
             switch authNState {
             case .signedIn(_, let signedInData):
@@ -93,8 +90,13 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
             default:
                 break
             }
-        } onSubscribe: { }
-        sendSignInEvent()
+        } onSubscribe: { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            self.sendSignInEvent()
+        }
     }
 
     func storeUserPoolTokens(tokens: AWSCognitoUserPoolTokens) {
@@ -106,6 +108,10 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
 
             switch $0 {
             case .idle, .error:
+                defer {
+                    self.finish()
+                }
+                
                 self.dispatch(AuthSignInResult(nextStep: .done))
                 if let token = token {
                     self.credentialStoreStateMachine.cancel(listenerToken: token)
@@ -113,6 +119,10 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
             /* Commenting this out for now due to Missing entitlement(OSStatus:-34018) error from SPM
              This is happening due to SPM not supporting testing with Keychain
             case .error(let credentialStoreError):
+                defer {
+                    self.finish()
+                }
+                
                 // Unable to save the credentials in the local store
                 self.dispatch(credentialStoreError.authError)
                 if let token = token {
@@ -123,10 +133,14 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
                 break
             }
 
-        } onSubscribe: { }
-
-        // Send the load locally stored credentials event
-        sendStoreCredentialsEvent(with: tokens)
+        } onSubscribe: { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            // Send the load locally stored credentials event
+            self.sendStoreCredentialsEvent(with: tokens)
+        }
     }
 
     func mapToAuthError(_ srpSignInError: SRPSignInError) -> AuthError {
