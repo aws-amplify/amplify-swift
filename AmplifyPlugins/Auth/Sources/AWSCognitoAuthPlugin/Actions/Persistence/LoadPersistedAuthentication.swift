@@ -26,7 +26,7 @@ struct LoadPersistedAuthentication: Action {
                                             cognitoUserPoolTokens: userPoolTokens)
             authenticationEvent = AuthenticationEvent(eventType: .initializedSignedIn(signedInData))
         } else {
-            let signedOutData = SignedOutData(authenticationConfiguration: configuration, lastKnownUserName: nil)
+            let signedOutData = SignedOutData(lastKnownUserName: nil)
             authenticationEvent = AuthenticationEvent(eventType: .initializedSignedOut(signedOutData))
         }
         timer.stop("### sending event \(authenticationEvent.type)")
