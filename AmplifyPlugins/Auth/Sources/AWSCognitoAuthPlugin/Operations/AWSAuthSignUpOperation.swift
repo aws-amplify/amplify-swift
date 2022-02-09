@@ -82,8 +82,13 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation, AuthSignUpOperation
                 print("default for \(authNState)")
                 break
             }
-        } onSubscribe: { }
-        sendSignUpEvent()
+        } onSubscribe: { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            self.sendSignUpEvent()
+        }
     }
 
     private func sendSignUpEvent() {
@@ -113,5 +118,4 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation, AuthSignUpOperation
             stateMachine.cancel(listenerToken: token)
         }
     }
-
 }
