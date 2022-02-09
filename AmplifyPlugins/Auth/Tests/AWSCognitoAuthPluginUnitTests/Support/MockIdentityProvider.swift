@@ -34,22 +34,40 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         (Result<ConfirmSignUpOutputResponse,
          SdkError<ConfirmSignUpOutputError>>) -> Void
     ) -> Void
+    
+    typealias GlobalSignOutCallback = (
+        GlobalSignOutInput,
+        (Result<GlobalSignOutOutputResponse,
+         SdkError<GlobalSignOutOutputError>>) -> Void
+    ) -> Void
+    
+    typealias RevokeTokenCallback = (
+        RevokeTokenInput,
+        (Result<RevokeTokenOutputResponse,
+         SdkError<RevokeTokenOutputError>>) -> Void
+    ) -> Void
 
     let initiateAuthCallback: InitiateAuthCallback?
     let respondToAuthChallengeCallback: RespondToAuthChallengeCallback?
     let signUpCallback: SignUpCallback?
     let confirmSignUpCallback: ConfirmSignUpCallback?
+    let globalSignOutCallback: GlobalSignOutCallback?
+    let revokeTokenCallback: RevokeTokenCallback?
 
     init(
         initiateAuthCallback: InitiateAuthCallback? = nil,
         respondToAuthChallengeCallback: RespondToAuthChallengeCallback? = nil,
         signUpCallback: SignUpCallback? = nil,
-        confirmSignUpCallback: ConfirmSignUpCallback? = nil
+        confirmSignUpCallback: ConfirmSignUpCallback? = nil,
+        globalSignOutCallback: GlobalSignOutCallback? = nil,
+        revokeTokenCallback: RevokeTokenCallback? = nil
     ) {
         self.initiateAuthCallback = initiateAuthCallback
         self.respondToAuthChallengeCallback = respondToAuthChallengeCallback
         self.signUpCallback = signUpCallback
         self.confirmSignUpCallback = confirmSignUpCallback
+        self.globalSignOutCallback = globalSignOutCallback
+        self.revokeTokenCallback = revokeTokenCallback
     }
 
     func initiateAuth(input: InitiateAuthInput,
@@ -72,5 +90,19 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
 
     func confirmSignUp(input: ConfirmSignUpInput, completion: @escaping (SdkResult<ConfirmSignUpOutputResponse, ConfirmSignUpOutputError>) -> Void) {
         confirmSignUpCallback?(input, completion)
+    }
+    
+    func globalSignOut(
+        input: GlobalSignOutInput,
+        completion: @escaping (SdkResult<GlobalSignOutOutputResponse, GlobalSignOutOutputError>) -> Void
+    ) {
+        globalSignOutCallback?(input, completion)
+    }
+    
+    func revokeToken(
+        input: RevokeTokenInput,
+        completion: @escaping (ClientRuntime.SdkResult<RevokeTokenOutputResponse, RevokeTokenOutputError>) -> Void
+    ) {
+        revokeTokenCallback?(input, completion)
     }
 }

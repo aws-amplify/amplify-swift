@@ -4,17 +4,32 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+import Amplify
 
 public enum AuthenticationError: Error {
     case configuration(message: String)
     case service(message: String)
+    case unknown(message: String)
 }
 
-extension AuthenticationError: Equatable { }
+extension AuthenticationError: AuthErrorConvertible {
+    var authError: AuthError {
+        switch self {
+        case .configuration(let message):
+            return .configuration(message, "")
+        case .service(let message):
+            return .service(message, "")
+        case .unknown(let message):
+            return .unknown(message)
+        }
+    }
+}
+
+extension AuthenticationError: Equatable {}
 
 extension AuthenticationError: Codable {
     enum CodingKeys: CodingKey {
-        case configuration, service
+        case configuration, service, unknown
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -25,6 +40,8 @@ extension AuthenticationError: Codable {
             try container.encode(message, forKey: .configuration)
         case .service(let message):
             try container.encode(message, forKey: .service)
+        case .unknown(let message):
+            try container.encode(message, forKey: .unknown)
         }
     }
 
@@ -47,7 +64,9 @@ extension AuthenticationError: Codable {
         case .service:
             let message = try container.decode(String.self, forKey: key)
             self = .service(message: message)
+        case .unknown:
+            let message = try container.decode(String.self, forKey: key)
+            self = .unknown(message: message)
         }
     }
-
 }
