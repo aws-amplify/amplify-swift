@@ -15,11 +15,7 @@ class InitializeFetchAuthSessionTests: XCTestCase {
         let expectation = expectation(description: "initializeUserPool")
         let action = InitializeFetchAuthSession(storedCredentials: CognitoCredentials.testData)
         
-        let environment = AuthEnvironment(
-            userPoolConfigData: nil,
-            identityPoolConfigData: nil,
-            authenticationEnvironment: nil,
-            authorizationEnvironment: nil)
+        let environment = Defaults.makeDefaultAuthEnvironment()
         
         action.execute(
             withDispatcher: MockDispatcher { event in
@@ -47,11 +43,7 @@ class InitializeFetchAuthSessionTests: XCTestCase {
         let action = InitializeFetchAuthSession(
             storedCredentials: CognitoCredentials(userPoolTokens: nil, identityId: "", awsCredential: nil))
         
-        let environment = AuthEnvironment(
-            userPoolConfigData: nil,
-            identityPoolConfigData: nil,
-            authenticationEnvironment: nil,
-            authorizationEnvironment: nil)
+        let environment = Defaults.makeDefaultAuthEnvironment()
         
         action.execute(
             withDispatcher: MockDispatcher { event in

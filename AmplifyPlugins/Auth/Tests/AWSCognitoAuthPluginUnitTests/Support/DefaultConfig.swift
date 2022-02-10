@@ -97,6 +97,7 @@ enum Defaults {
             identityPoolConfiguration: identityPoolConfigData,
             cognitoIdentityFactory: makeIdentity)
         let authEnv = AuthEnvironment(
+            configuration: Defaults.makeDefaultAuthConfigData(),
             userPoolConfigData: userPoolConfigData,
             identityPoolConfigData: identityPoolConfigData,
             authenticationEnvironment: authenticationEnvironment,
