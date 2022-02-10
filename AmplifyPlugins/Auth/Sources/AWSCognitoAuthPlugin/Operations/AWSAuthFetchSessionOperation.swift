@@ -9,17 +9,15 @@ import Foundation
 import Amplify
 
 public typealias AmplifyFetchSessionOperation = AmplifyOperation<AuthFetchSessionRequest, AuthSession, AuthError>
-typealias AmplifyFetchSessionOperationAuthStateMachine = StateMachine<AuthState, AuthEnvironment>
-typealias AmplifyFetchSessionOperationCredentialStoreStateMachine = StateMachine<CredentialStoreState, CredentialEnvironment>
 
 public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFetchSessionOperation {
 
-    let authStateMachine: AmplifyFetchSessionOperationAuthStateMachine
-    let credentialStoreStateMachine: AmplifyFetchSessionOperationCredentialStoreStateMachine
+    let authStateMachine: AuthStateMachine
+    let credentialStoreStateMachine: CredentialStoreStateMachine
 
     init(_ request: AuthFetchSessionRequest,
-         authStateMachine: AmplifyFetchSessionOperationAuthStateMachine,
-         credentialStoreStateMachine: AmplifyFetchSessionOperationCredentialStoreStateMachine,
+         authStateMachine: AuthStateMachine,
+         credentialStoreStateMachine: CredentialStoreStateMachine,
          resultListener: ResultListener?) {
 
         self.authStateMachine = authStateMachine
@@ -42,7 +40,7 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
 
     func initializeCredentialStore(completion: @escaping () -> Void) {
 
-        var token: AWSAuthSignInOperationStateMachine.StateChangeListenerToken?
+        var token: AuthStateMachine.StateChangeListenerToken?
         token = credentialStoreStateMachine.listen { [weak self] in
             guard let self = self else { return }
 
@@ -61,7 +59,7 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
 
     func fetchStoredCredentials() {
 
-        var token: AWSAuthSignInOperationStateMachine.StateChangeListenerToken?
+        var token: AuthStateMachine.StateChangeListenerToken?
         token = credentialStoreStateMachine.listen { [weak self] in
             guard let self = self else { return }
 
@@ -91,7 +89,7 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
     }
 
     func doInitialize(with storedCredentials: CognitoCredentials?) {
-        var token: AWSAuthSignInOperationStateMachine.StateChangeListenerToken?
+        var token: AuthStateMachine.StateChangeListenerToken?
         token = authStateMachine.listen { [weak self] in
             guard let self = self else {
                 return
@@ -114,7 +112,7 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
     }
 
     func fetchAuthSession(with storedCredentials: CognitoCredentials?) {
-        var token: AWSAuthSignInOperationStateMachine.StateChangeListenerToken?
+        var token: AuthStateMachine.StateChangeListenerToken?
         token = authStateMachine.listen { [weak self] in
             guard let self = self else {
                 return
@@ -151,7 +149,7 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
     }
 
     func storeSession(_ session: AWSAuthCognitoSession) {
-        var token: AWSAuthSignInOperationCredentialStoreStateMachine.StateChangeListenerToken?
+        var token: CredentialStoreStateMachine.StateChangeListenerToken?
         token = credentialStoreStateMachine.listen { [weak self] in
             guard let self = self else {
                 return

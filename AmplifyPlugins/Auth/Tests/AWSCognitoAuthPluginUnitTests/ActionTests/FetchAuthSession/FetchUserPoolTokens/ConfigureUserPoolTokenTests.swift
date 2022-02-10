@@ -20,10 +20,7 @@ class ConfigureUserPoolTokenTests: XCTestCase {
         let cognitoSessionInput = AWSAuthCognitoSession.testData.copySessionByUpdating(cognitoTokensResult: .failure(AuthError.unknown("", nil)))
         let action = ConfigureUserPoolToken(cognitoSession: cognitoSessionInput)
         
-        let environment = AuthEnvironment(userPoolConfigData: nil,
-                                          identityPoolConfigData: nil,
-                                          authenticationEnvironment: nil,
-                                          authorizationEnvironment: nil)
+        let environment = Defaults.makeDefaultAuthEnvironment()
         
         action.execute(
             withDispatcher: MockDispatcher { event in
@@ -58,10 +55,7 @@ class ConfigureUserPoolTokenTests: XCTestCase {
 
         let action = ConfigureUserPoolToken(cognitoSession: cognitoSessionInput)
         
-        let environment = AuthEnvironment(userPoolConfigData: nil,
-                                          identityPoolConfigData: nil,
-                                          authenticationEnvironment: nil,
-                                          authorizationEnvironment: nil)
+        let environment = Defaults.makeDefaultAuthEnvironment()
         
         action.execute(
             withDispatcher: MockDispatcher { event in
@@ -94,10 +88,7 @@ class ConfigureUserPoolTokenTests: XCTestCase {
 
         let action = ConfigureUserPoolToken(cognitoSession: cognitoSessionInput)
         
-        let environment = AuthEnvironment(userPoolConfigData: nil,
-                                          identityPoolConfigData: nil,
-                                          authenticationEnvironment: nil,
-                                          authorizationEnvironment: nil)
+        let environment = Defaults.makeDefaultAuthEnvironment()
         
         action.execute(
             withDispatcher: MockDispatcher { event in
