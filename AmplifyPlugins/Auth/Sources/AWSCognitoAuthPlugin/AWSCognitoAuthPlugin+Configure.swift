@@ -178,30 +178,36 @@ extension AWSCognitoAuthPlugin {
     }
 
     func makeAuthEnvironment(authConfiguration: AuthConfiguration) -> AuthEnvironment {
-
+        
         switch authConfiguration {
         case .userPools(let userPoolConfigurationData):
             let authenticationEnvironment = authenticationEnvironment(userPoolConfigData: userPoolConfigurationData)
-
-            return AuthEnvironment(userPoolConfigData: userPoolConfigurationData,
-                                   identityPoolConfigData: nil,
-                                   authenticationEnvironment: authenticationEnvironment,
-                                   authorizationEnvironment: nil)
-
+            
+            return AuthEnvironment(
+                configuration: authConfiguration,
+                userPoolConfigData: userPoolConfigurationData,
+                identityPoolConfigData: nil,
+                authenticationEnvironment: authenticationEnvironment,
+                authorizationEnvironment: nil)
+            
         case .identityPools(let identityPoolConfigurationData):
             let authorizationEnvironment = authorizationEnvironment(identityPoolConfigData: identityPoolConfigurationData)
-            return AuthEnvironment(userPoolConfigData: nil,
-                                   identityPoolConfigData: identityPoolConfigurationData,
-                                   authenticationEnvironment: nil,
-                                   authorizationEnvironment: authorizationEnvironment)
-
+            return AuthEnvironment(
+                configuration: authConfiguration,
+                userPoolConfigData: nil,
+                identityPoolConfigData: identityPoolConfigurationData,
+                authenticationEnvironment: nil,
+                authorizationEnvironment: authorizationEnvironment)
+            
         case .userPoolsAndIdentityPools(let userPoolConfigurationData, let identityPoolConfigurationData):
             let authenticationEnvironment = authenticationEnvironment(userPoolConfigData: userPoolConfigurationData)
             let authorizationEnvironment = authorizationEnvironment(identityPoolConfigData: identityPoolConfigurationData)
-            return AuthEnvironment(userPoolConfigData: userPoolConfigurationData,
-                                   identityPoolConfigData: identityPoolConfigurationData,
-                                   authenticationEnvironment: authenticationEnvironment,
-                                   authorizationEnvironment: authorizationEnvironment)
+            return AuthEnvironment(
+                configuration: authConfiguration,
+                userPoolConfigData: userPoolConfigurationData,
+                identityPoolConfigData: identityPoolConfigurationData,
+                authenticationEnvironment: authenticationEnvironment,
+                authorizationEnvironment: authorizationEnvironment)
         }
     }
 
