@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 
 extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
-
+    
     public func signUp(username: String,
                        password: String?,
                        options: AuthSignUpOperation.Request.Options?,
@@ -22,25 +22,25 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         queue.addOperation(signUpOperation)
         return signUpOperation
     }
-
+    
     public func confirmSignUp(for username: String,
                               confirmationCode: String,
                               options: AuthConfirmSignUpOperation.Request.Options?,
                               listener: AuthConfirmSignUpOperation.ResultListener?) -> AuthConfirmSignUpOperation {
         let options = options ?? AuthConfirmSignUpRequest.Options()
-               let request = AuthConfirmSignUpRequest(username: username, code: confirmationCode, options: options)
-               let confirmSignUpOperation = AWSAuthConfirmSignUpOperation(request, stateMachine: authStateMachine, resultListener: listener)
-               queue.addOperation(confirmSignUpOperation)
-               return confirmSignUpOperation
-
+        let request = AuthConfirmSignUpRequest(username: username, code: confirmationCode, options: options)
+        let confirmSignUpOperation = AWSAuthConfirmSignUpOperation(request, stateMachine: authStateMachine, resultListener: listener)
+        queue.addOperation(confirmSignUpOperation)
+        return confirmSignUpOperation
+        
     }
-
+    
     public func resendSignUpCode(for username: String,
                                  options: AuthResendSignUpCodeOperation.Request.Options?,
                                  listener: AuthResendSignUpCodeOperation.ResultListener?) -> AuthResendSignUpCodeOperation {
         fatalError("Not implemented")
     }
-
+    
     public func signIn(username: String?,
                        password: String?,
                        options: AuthSignInOperation.Request.Options?,
@@ -57,26 +57,26 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         queue.addOperation(signInOperation)
         return signInOperation
     }
-
+    
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthWebUISignInOperation.Request.Options?,
                                 listener: AuthWebUISignInOperation.ResultListener?) -> AuthWebUISignInOperation {
         fatalError("Not implemented")
     }
-
+    
     public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthSocialWebUISignInOperation.Request.Options?,
                                 listener: AuthSocialWebUISignInOperation.ResultListener?) -> AuthSocialWebUISignInOperation {
         fatalError("Not implemented")
     }
-
+    
     public func confirmSignIn(challengeResponse: String,
                               options: AuthConfirmSignInOperation.Request.Options?,
                               listener: AuthConfirmSignInOperation.ResultListener?) -> AuthConfirmSignInOperation {
         fatalError("Not implemented")
     }
-
+    
     public func signOut(options: AuthSignOutOperation.Request.Options?,
                         listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation {
         let options = options ?? AuthSignOutRequest.Options()
@@ -87,9 +87,9 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
                                                        resultListener: listener)
         queue.addOperation(signOutOperation)
         return signOutOperation
-
+        
     }
-
+    
     public func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options?,
                                  listener: AuthFetchSessionOperation.ResultListener?) -> AuthFetchSessionOperation {
         let options = options ?? AuthFetchSessionRequest.Options()
@@ -101,13 +101,13 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         queue.addOperation(fetchAuthSessionOperation)
         return fetchAuthSessionOperation
     }
-
+    
     public func resetPassword(for username: String,
                               options: AuthResetPasswordOperation.Request.Options?,
                               listener: AuthResetPasswordOperation.ResultListener?) -> AuthResetPasswordOperation {
         fatalError("Not implemented")
     }
-
+    
     public func confirmResetPassword(for username: String,
                                      with newPassword: String,
                                      confirmationCode: String,
@@ -116,5 +116,5 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     -> AuthConfirmResetPasswordOperation {
         fatalError("Not implemented")
     }
-
+    
 }

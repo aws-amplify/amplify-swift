@@ -13,12 +13,10 @@ import Amplify
 struct InitiateSignUp: Action {
     let identifier = "InitiateSignUp"
 
-    let username: String
-    let password: String
+    let signUpEventData: SignUpEventData
 
-    init(username: String, password: String) {
-        self.username = username
-        self.password = password
+    init(signUpEventData: SignUpEventData) {
+        self.signUpEventData = signUpEventData
     }
 
     func execute(
@@ -38,7 +36,7 @@ struct InitiateSignUp: Action {
 
         let client: CognitoUserPoolBehavior
         do {
-            client = try environment.cognitoUserPoolFactory()
+            client = try createIdentityProviderClient(key: signUpEventData.key, environment: environment)
         } catch {
             let authError = AuthenticationError.configuration(message: "Failed to get CognitoUserPool client: \(error)")
             let event = SignUpEvent(
@@ -49,17 +47,17 @@ struct InitiateSignUp: Action {
             return
         }
 
-        let input = SignUpInput(username: username, password: password, userPoolConfiguration: environment.userPoolConfiguration)
+        let input = SignUpInput(username: signUpEventData.username,
+                                password: signUpEventData.password,
+                                userPoolConfiguration: environment.userPoolConfiguration)
         timer.note("### Starting signUp")
         client.signUp(input: input) { result in
             timer.note("### signUp response received")
             let event: SignUpEvent
             switch result {
             case .success(let response):
-                event = SignUpEvent(eventType: .initiateSignUpSuccess(username: username, signUpResponse: response))
+                event = SignUpEvent(eventType: .initiateSignUpSuccess(username: signUpEventData.username, signUpResponse: response))
             case .failure(let error):
-                // error is SignUpOutputError
-                // https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SignUp.html#API_SignUp_Errors
                 let error = SignUpError.service(error: error)
                 event = SignUpEvent(eventType: .initiateSignUpFailure(error: error))
             }
