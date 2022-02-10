@@ -51,8 +51,8 @@ class SignUpStateTests: XCTestCase {
 
         let environment = BasicUserPoolEnvironment(userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
                                                    cognitoUserPoolFactory: cognitoUserPoolFactory)
-
-        let action = InitiateSignUp(username: username, password: password)
+        let signUpEventData = SignUpEventData(username: username, password: password)
+        let action = InitiateSignUp(signUpEventData: signUpEventData)
 
         let dispatcher = MockDispatcher { event in
             guard let event = event as? SignUpEvent else {
