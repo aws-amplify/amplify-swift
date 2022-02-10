@@ -6,15 +6,15 @@
 //
 
 import Foundation
-import libtommath
+import libtommathAmplify
 
 public extension AmplifyBigInt {
 
     // MARK: - Addition
     static func + (lhs: AmplifyBigInt, rhs: AmplifyBigInt) -> AmplifyBigInt {
         let sum = AmplifyBigInt()
-        let result = mp_add(&lhs.value, &rhs.value, &sum.value)
-        if result != MP_OKAY {
+        let result = amplify_mp_add(&lhs.value, &rhs.value, &sum.value)
+        if result != AMPLIFY_MP_OKAY {
             fatalError("Error occured during + operation: \(result)")
         }
         return sum
@@ -40,8 +40,8 @@ public extension AmplifyBigInt {
 
     static func - (lhs: AmplifyBigInt, rhs: AmplifyBigInt) -> AmplifyBigInt {
         let difference = AmplifyBigInt()
-        let result = mp_sub(&lhs.value, &rhs.value, &difference.value)
-        if result != MP_OKAY {
+        let result = amplify_mp_sub(&lhs.value, &rhs.value, &difference.value)
+        if result != AMPLIFY_MP_OKAY {
             fatalError("Error occured during - operation: \(result)")
         }
         return difference
@@ -63,8 +63,8 @@ public extension AmplifyBigInt {
 
     static func * (lhs: AmplifyBigInt, rhs: AmplifyBigInt) -> AmplifyBigInt {
         let product = AmplifyBigInt()
-        let result = mp_mul(&lhs.value, &rhs.value, &product.value)
-        if result != MP_OKAY {
+        let result = amplify_mp_mul(&lhs.value, &rhs.value, &product.value)
+        if result != AMPLIFY_MP_OKAY {
             fatalError("Error occured during * operation: \(result)")
         }
         return product
@@ -100,9 +100,9 @@ public extension AmplifyBigInt {
         let quotient = AmplifyBigInt()
         let remainder = AmplifyBigInt()
 
-        let result = mp_div(&lhs.value, &rhs.value, &quotient.value, &remainder.value)
+        let result = amplify_mp_div(&lhs.value, &rhs.value, &quotient.value, &remainder.value)
 
-        if result != MP_OKAY {
+        if result != AMPLIFY_MP_OKAY {
             fatalError("Error occured during % operation: \(result)")
         }
         return remainder
@@ -123,8 +123,8 @@ public extension AmplifyBigInt {
                     modulus: AmplifyBigInt) -> AmplifyBigInt
     {
         let exponentialModulus = AmplifyBigInt()
-        let result = mp_exptmod(&value, &power.value, &modulus.value, &exponentialModulus.value)
-        guard result == MP_OKAY else {
+        let result = amplify_mp_exptmod(&value, &power.value, &modulus.value, &exponentialModulus.value)
+        guard result == AMPLIFY_MP_OKAY else {
             fatalError("Error occured during pow(:modulus:) operation: \(result)")
         }
         return exponentialModulus

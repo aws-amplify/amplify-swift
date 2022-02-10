@@ -6,12 +6,12 @@
 //
 
 import Foundation
-import libtommath
+import libtommathAmplify
 
 extension AmplifyBigInt {
 
     func sign() -> AmplifyBigIntSign {
-        value.sign == MP_ZPOS ? .positive : .negative
+        value.sign == AMPLIFY_MP_ZPOS ? .positive : .negative
     }
 }
 
