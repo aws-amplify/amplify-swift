@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import libtommath
+import libtommathAmplify
 
 extension AmplifyBigInt: Equatable, Comparable {
 
@@ -31,12 +31,12 @@ extension AmplifyBigInt: Equatable, Comparable {
     }
 
     func compare(_ againstValue: AmplifyBigInt) -> ComparisonResult {
-        let comparisonResult = mp_cmp(&value, &againstValue.value)
+        let comparisonResult = amplify_mp_cmp(&value, &againstValue.value)
 
         switch comparisonResult {
-        case MP_GT:
+        case AMPLIFY_MP_GT:
             return .orderedAscending
-        case MP_LT:
+        case AMPLIFY_MP_LT:
             return .orderedDescending
         default:
             return .orderedSame
