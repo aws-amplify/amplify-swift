@@ -22,10 +22,7 @@ class ConfigureFetchIdentityTests: XCTestCase {
         let cognitoSessionInput = AWSAuthCognitoSession.testData
         let action = ConfigureFetchIdentity(cognitoSession: cognitoSessionInput)
         
-        let environment = AuthEnvironment(userPoolConfigData: nil,
-                                          identityPoolConfigData: nil,
-                                          authenticationEnvironment: nil,
-                                          authorizationEnvironment: nil)
+        let environment = Defaults.makeDefaultAuthEnvironment()
         
         action.execute(
             withDispatcher: MockDispatcher { event in
@@ -53,10 +50,7 @@ class ConfigureFetchIdentityTests: XCTestCase {
 
         let action = ConfigureFetchIdentity(cognitoSession: cognitoSessionInput)
 
-        let environment = AuthEnvironment(userPoolConfigData: nil,
-                                          identityPoolConfigData: nil,
-                                          authenticationEnvironment: nil,
-                                          authorizationEnvironment: nil)
+        let environment = Defaults.makeDefaultAuthEnvironment()
         
         action.execute(
             withDispatcher: MockDispatcher { event in

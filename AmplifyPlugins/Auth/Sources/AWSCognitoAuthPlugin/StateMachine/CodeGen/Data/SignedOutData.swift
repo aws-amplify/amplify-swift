@@ -9,7 +9,7 @@ public struct SignedOutData {
     public let lastKnownUserName: String?
 
     public init(
-        lastKnownUserName: String?
+        lastKnownUserName: String? = nil
     ) {
         self.lastKnownUserName = lastKnownUserName
     }

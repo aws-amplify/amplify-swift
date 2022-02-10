@@ -27,6 +27,9 @@ struct AuthenticationEvent: StateMachineEvent {
         /// Emitted when a user sign in is requested
         case signInRequested(SignInEventData)
 
+        /// Emitted when we should cancel the signIn 
+        case cancelSignIn(AuthConfiguration)
+
         /// Emitted when a user sign out is requested
         case signOutRequested(SignOutEventData)
 
@@ -52,6 +55,8 @@ struct AuthenticationEvent: StateMachineEvent {
             return "AuthenticationEvent.signIn"
         case .signOutRequested:
             return "AuthenticationEvent.signOut"
+        case .cancelSignIn:
+            return "AuthenticationEvent.cancelSignIn"
         case .error:
             return "AuthenticationEvent.error"
         }

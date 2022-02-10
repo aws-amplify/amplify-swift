@@ -15,8 +15,7 @@ typealias AWSAuthSignUpOperationStateMachine = StateMachine<AuthState, AuthEnvir
 
 public class AWSAuthSignUpOperation: AmplifySignUpOperation, AuthSignUpOperation {
 
-    let stateMachine: AWSAuthSignUpOperationStateMachine
-    var statelistenerToken: AWSAuthSignUpOperationStateMachine.StateChangeListenerToken?
+    let stateMachine: AuthStateMachine
 
     init(_ request: AuthSignUpRequest,
          stateMachine: AWSAuthSignUpOperationStateMachine,
@@ -38,7 +37,7 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation, AuthSignUpOperation
     }
 
     func doInitialize() {
-        var token: AWSAuthSignInOperationStateMachine.StateChangeListenerToken?
+        var token: AuthStateMachine.StateChangeListenerToken?
         token = stateMachine.listen { [weak self] in
             guard let self = self else {
                 return
