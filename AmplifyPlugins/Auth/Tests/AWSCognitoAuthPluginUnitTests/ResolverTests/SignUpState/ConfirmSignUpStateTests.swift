@@ -52,7 +52,8 @@ class ConfirmSignUpStateTests: XCTestCase {
         let environment = BasicUserPoolEnvironment(userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
                                                    cognitoUserPoolFactory: cognitoUserPoolFactory)
 
-        let action = ConfirmSignUp(username: username, confirmationCode: confirmationCode)
+        let confirmSignUpEventData = ConfirmSignUpEventData(username: username, confirmationCode: confirmationCode)
+        let action = ConfirmSignUp(confirmSignUpEventData: confirmSignUpEventData)
 
         let dispatcher = MockDispatcher { event in
             guard let event = event as? SignUpEvent else {
