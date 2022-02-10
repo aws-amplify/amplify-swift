@@ -47,15 +47,6 @@
         }
       },
       {
-        "package": "tommath",
-        "repositoryURL": "https://github.com/libtom/libtommath",
-        "state": {
-          "branch": "develop",
-          "revision": "bea9270646303baf683f4ba2ddf0d70721f0e55d",
-          "version": null
-        }
-      },
-      {
         "package": "ClientRuntime",
         "repositoryURL": "https://github.com/awslabs/smithy-swift.git",
         "state": {
