@@ -11,13 +11,10 @@ import AWSCognitoIdentityProvider
 struct ConfirmSignUp: Action {
     let identifier = "ConfirmSignUp"
 
-    let username: String
-    let confirmationCode: String
+    let confirmSignUpEventData: ConfirmSignUpEventData
 
-    init(username: String,
-         confirmationCode: String) {
-        self.username = username
-        self.confirmationCode = confirmationCode
+    init(confirmSignUpEventData: ConfirmSignUpEventData) {
+        self.confirmSignUpEventData = confirmSignUpEventData
     }
 
     func execute(
@@ -38,7 +35,7 @@ struct ConfirmSignUp: Action {
 
         let client: CognitoUserPoolBehavior
         do {
-            client = try environment.cognitoUserPoolFactory()
+            client = try createIdentityProviderClient(key: confirmSignUpEventData.key, environment: environment)
         } catch {
             let authError = AuthenticationError.configuration(message: "Failed to get CognitoUserPool client: \(error)")
             let event = SignUpEvent(
@@ -49,8 +46,8 @@ struct ConfirmSignUp: Action {
             return
         }
 
-        let input = ConfirmSignUpInput(username: username,
-                                       confirmationCode: confirmationCode)
+        let input = ConfirmSignUpInput(username: confirmSignUpEventData.username,
+                                       confirmationCode:  confirmSignUpEventData.confirmationCode)
         timer.note("### Starting confirmSignUp")
         client.confirmSignUp(input: input) { result in
             timer.note("### confirmSignUp response received")
@@ -61,15 +58,8 @@ struct ConfirmSignUp: Action {
                                     eventType: .confirmSignUpSuccess(confirmSignupResponse: response),
                                     time: Date())
             case .failure(let error):
-                // error is ConfirmSignUpOutputError
-                // https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ConfirmSignUp.html#API_ConfirmSignUp_Errors
-
-                // TODO: change to SignUpError once the PR with AuthErrorConvertible is merged to dev-preview
-                let authError = AuthenticationError.service(message: error.localizedDescription)
-                event = SignUpEvent(
-                    id: UUID().uuidString,
-                    eventType: .throwAuthError(authError)
-                )
+                let error = SignUpError.service(error: error)
+                event = SignUpEvent(eventType: .confirmSignUpFailure(error: error))
             }
             dispatcher.send(event)
             timer.stop("### sending SignUpEvent.initiateSignUpResponseReceived")
