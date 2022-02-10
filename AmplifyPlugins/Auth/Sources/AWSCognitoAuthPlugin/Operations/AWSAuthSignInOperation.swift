@@ -11,19 +11,20 @@ import Amplify
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-public typealias AmplifySignInOperation = AmplifyOperation<AuthSignInRequest, AuthSignInResult, AuthError>
-typealias AWSAuthSignInOperationStateMachine = StateMachine<AuthState, AuthEnvironment>
-typealias AWSAuthSignInOperationCredentialStoreStateMachine = StateMachine<CredentialStoreState, CredentialEnvironment>
+public typealias AmplifySignInOperation = AmplifyOperation<
+    AuthSignInRequest,
+    AuthSignInResult,
+    AuthError>
 
-public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation {
+public class AWSAuthSignInOperation: AmplifySignInOperation,
+                                     AuthSignInOperation {
 
-    let authStateMachine: AWSAuthSignInOperationStateMachine
-    let credentialStoreStateMachine: AWSAuthSignInOperationCredentialStoreStateMachine
-    var statelistenerToken: AWSAuthSignInOperationStateMachine.StateChangeListenerToken?
+    let authStateMachine: AuthStateMachine
+    let credentialStoreStateMachine: CredentialStoreStateMachine
 
     init(_ request: AuthSignInRequest,
-         authStateMachine: AWSAuthSignInOperationStateMachine,
-         credentialStoreStateMachine: AWSAuthSignInOperationCredentialStoreStateMachine,
+         authStateMachine: AuthStateMachine,
+         credentialStoreStateMachine: CredentialStoreStateMachine,
          resultListener: ResultListener?) {
 
         self.authStateMachine = authStateMachine
@@ -39,26 +40,39 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
             finish()
             return
         }
-        doInitialize()
+        doInitialize { [weak self] authenticationState in
+            switch authenticationState {
+            case .signedOut:
+                self?.doSignIn()
+            default:
+                // TODO: Should dispatch an error is already signedIn
+                // or signingIn
+                self?.finish()
+            }
+        }
     }
 
-    func doInitialize() {
-        var token: AWSAuthSignInOperationStateMachine.StateChangeListenerToken?
+    func doInitialize(_ callback: @escaping (AuthenticationState) -> Void) {
+        var token: AuthStateMachineToken?
         token = authStateMachine.listen { [weak self] in
             guard let self = self else {
                 return
             }
-            if case .configured = $0 {
-                if let token = token {
-                    self.authStateMachine.cancel(listenerToken: token)
-                }
-                self.doSignIn()
+            // Auth should be configured to start the signIn process
+            if case .configured(let authenticationState, _) = $0 {
+                callback(authenticationState)
+                self.cancelToken(token)
             }
         } onSubscribe: { }
     }
 
     func doSignIn() {
-        var token: AWSAuthSignInOperationStateMachine.StateChangeListenerToken?
+        if isCancelled {
+            finish()
+            return
+        }
+
+        var token: AuthStateMachine.StateChangeListenerToken?
         token = authStateMachine.listen { [weak self] in
             guard let self = self else {
                 return
@@ -69,23 +83,26 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
 
             switch authNState {
             case .signedIn(_, let signedInData):
-                self.storeUserPoolTokens(tokens: signedInData.cognitoUserPoolTokens)
-                if let token = token {
-                    self.authStateMachine.cancel(listenerToken: token)
-                }
+                let cognitoTokens = signedInData.cognitoUserPoolTokens
+                self.storeUserPoolTokens(cognitoTokens)
+                self.cancelToken(token)
             case .error(_, let error):
                 self.dispatch(AuthError.unknown("Some error", error))
-                if let token = token {
-                    self.authStateMachine.cancel(listenerToken: token)
-                }
+                self.cancelToken(token)
+                self.finish()
             case .signingIn(_, let signInState):
                 if case .signingInWithSRP(let srpState, _) = signInState,
                    case .error(let signInError) = srpState {
-                    let authError = self.mapToAuthError(signInError)
-                    self.dispatch(authError)
-                    if let token = token {
-                        self.authStateMachine.cancel(listenerToken: token)
+                    if (signInError.isUserUnConfirmed) {
+                        self.dispatch(AuthSignInResult(nextStep: .confirmSignUp(nil)))
+                    } else if (signInError.isResetPassword) {
+                        self.dispatch(AuthSignInResult(nextStep: .resetPassword(nil)))
+                    } else {
+                        self.dispatch(signInError.authError)
                     }
+
+                    self.cancelToken(token)
+                    self.finish()
                 }
             default:
                 break
@@ -94,75 +111,40 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
             guard let self = self else {
                 return
             }
-            
             self.sendSignInEvent()
         }
+
     }
 
-    func storeUserPoolTokens(tokens: AWSCognitoUserPoolTokens) {
-        var token: AWSAuthSignInOperationCredentialStoreStateMachine.StateChangeListenerToken?
+    func storeUserPoolTokens(_ tokens: AWSCognitoUserPoolTokens) {
+        var token: CredentialStoreStateMachine.StateChangeListenerToken?
         token = credentialStoreStateMachine.listen { [weak self] in
             guard let self = self else {
                 return
             }
 
             switch $0 {
-            case .idle, .error:
-                defer {
-                    self.finish()
-                }
-                
+            case .idle:
                 self.dispatch(AuthSignInResult(nextStep: .done))
-                if let token = token {
-                    self.credentialStoreStateMachine.cancel(listenerToken: token)
-                }
-            /* Commenting this out for now due to Missing entitlement(OSStatus:-34018) error from SPM
-             This is happening due to SPM not supporting testing with Keychain
+                self.cancelCredentialStoreToken(token)
+                self.finish()
             case .error(let credentialStoreError):
-                defer {
-                    self.finish()
-                }
-                
+
                 // Unable to save the credentials in the local store
                 self.dispatch(credentialStoreError.authError)
-                if let token = token {
-                    self.credentialStoreStateMachine.cancel(listenerToken: token)
-                }
-            */
+                self.cancelCredentialStoreToken(token)
+                self.finish()
             default:
                 break
             }
 
-        } onSubscribe: { [weak self] in
+        } onSubscribe: {[weak self] in
             guard let self = self else {
                 return
             }
-            
             // Send the load locally stored credentials event
             self.sendStoreCredentialsEvent(with: tokens)
         }
-    }
-
-    func mapToAuthError(_ srpSignInError: SRPSignInError) -> AuthError {
-        switch srpSignInError {
-        case .configuration(let message):
-            return AuthError.configuration(message, "")
-        case .service(let error):
-            if let initiateAuthError = error as? SdkError<InitiateAuthOutputError> {
-                return initiateAuthError.authError
-            } else {
-                return AuthError.unknown("", error)
-            }
-        case . invalidServiceResponse(message: let message):
-            return AuthError.service(message, "")
-        case .calculation:
-            return AuthError.unknown("SignIn calculation returned an error")
-        case .inputValidation(let field):
-            return AuthError.validation(field,
-                                        AuthPluginErrorConstants.signInUsernameError.errorDescription,
-                                        AuthPluginErrorConstants.signInUsernameError.recoverySuggestion)
-        }
-
     }
 
     private func sendStoreCredentialsEvent(with userPoolTokens: AWSCognitoUserPoolTokens) {
@@ -185,5 +167,18 @@ public class AWSAuthSignInOperation: AmplifySignInOperation, AuthSignInOperation
     private func dispatch(_ error: AuthError) {
         let asyncEvent = AWSAuthSignInOperation.OperationResult.failure(error)
         dispatch(result: asyncEvent)
+    }
+
+    // TODO: Find a differnet mechanism to cancel the tokens
+    private func cancelToken(_ token: AuthStateMachineToken?) {
+        if let token = token {
+            self.authStateMachine.cancel(listenerToken: token)
+        }
+    }
+
+    private func cancelCredentialStoreToken(_ token: CredentialStoreStateMachineToken?) {
+        if let token = token {
+            self.authStateMachine.cancel(listenerToken: token)
+        }
     }
 }

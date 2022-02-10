@@ -164,6 +164,16 @@ extension AuthenticationState {
 
         private func resolveSigningInState(oldState: AuthenticationState,
                                            event: StateMachineEvent) -> StateResolution<StateType> {
+            if let authEvent = event as? AuthenticationEvent,
+                  case .error(let error) = authEvent.eventType {
+                return .from(.error(nil, error))
+            }
+            if let authEvent = event as? AuthenticationEvent,
+                  case .cancelSignIn(let config) = authEvent.eventType {
+                let signedOutData = SignedOutData()
+                return .from(.signedOut(config, signedOutData))
+            }
+
             guard case .signingIn(let authConfiguration, let signInState) = oldState else {
                 return .from(oldState)
             }

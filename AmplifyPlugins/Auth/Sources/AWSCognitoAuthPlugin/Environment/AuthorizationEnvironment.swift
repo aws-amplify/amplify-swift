@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 protocol AuthorizationEnvironment: Environment {
 
     typealias CognitoIdentityFactory = () throws -> CognitoIdentityBehavior
