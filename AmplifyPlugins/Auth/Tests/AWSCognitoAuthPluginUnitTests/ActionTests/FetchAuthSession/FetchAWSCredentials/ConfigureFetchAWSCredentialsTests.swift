@@ -20,10 +20,7 @@ class ConfigureFetchAWSCredentialsTests: XCTestCase {
         let cognitoSessionInput = AWSAuthCognitoSession.testData.copySessionByUpdating(identityIdResult: .failure(AuthError.unknown("", nil)))
         let action = ConfigureFetchAWSCredentials(cognitoSession: cognitoSessionInput)
         
-        let environment = AuthEnvironment(userPoolConfigData: nil,
-                                          identityPoolConfigData: nil,
-                                          authenticationEnvironment: nil,
-                                          authorizationEnvironment: nil)
+        let environment = Defaults.makeDefaultAuthEnvironment()
         
         action.execute(
             withDispatcher: MockDispatcher { event in
@@ -56,10 +53,7 @@ class ConfigureFetchAWSCredentialsTests: XCTestCase {
         let cognitoSessionInput = AWSAuthCognitoSession.testData.copySessionByUpdating(awsCredentialsResult: .success(awsCredentialsInput))
         let action = ConfigureFetchAWSCredentials(cognitoSession: cognitoSessionInput)
 
-        let environment = AuthEnvironment(userPoolConfigData: nil,
-                                          identityPoolConfigData: nil,
-                                          authenticationEnvironment: nil,
-                                          authorizationEnvironment: nil)
+        let environment = Defaults.makeDefaultAuthEnvironment()
         
         action.execute(
             withDispatcher: MockDispatcher { event in
@@ -89,10 +83,7 @@ class ConfigureFetchAWSCredentialsTests: XCTestCase {
         let cognitoSessionInput = AWSAuthCognitoSession.testData.copySessionByUpdating(awsCredentialsResult: .success(awsCredentialsInput))
         let action = ConfigureFetchAWSCredentials(cognitoSession: cognitoSessionInput)
         
-        let environment = AuthEnvironment(userPoolConfigData: nil,
-                                          identityPoolConfigData: nil,
-                                          authenticationEnvironment: nil,
-                                          authorizationEnvironment: nil)
+        let environment = Defaults.makeDefaultAuthEnvironment()
         
         action.execute(
             withDispatcher: MockDispatcher { event in
@@ -121,10 +112,7 @@ class ConfigureFetchAWSCredentialsTests: XCTestCase {
         let cognitoSessionInput = AWSAuthCognitoSession.testData.copySessionByUpdating(identityIdResult: .success(identityIdInput))
         let action = ConfigureFetchAWSCredentials(cognitoSession: cognitoSessionInput)
         
-        let environment = AuthEnvironment(userPoolConfigData: nil,
-                                          identityPoolConfigData: nil,
-                                          authenticationEnvironment: nil,
-                                          authorizationEnvironment: nil)
+        let environment = Defaults.makeDefaultAuthEnvironment()
         
         action.execute(
             withDispatcher: MockDispatcher { event in

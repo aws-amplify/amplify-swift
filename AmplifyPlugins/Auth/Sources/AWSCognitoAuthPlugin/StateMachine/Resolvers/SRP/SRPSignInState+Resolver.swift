@@ -12,8 +12,6 @@ extension SRPSignInState {
         public typealias StateType = SRPSignInState
         public let defaultState = SRPSignInState.notStarted
 
-        public init() { }
-
         func resolve(
             oldState: SRPSignInState,
             byApplying event: StateMachineEvent
@@ -24,7 +22,19 @@ extension SRPSignInState {
             }
 
             if case .throwAuthError(let authError) = srpSignInEvent.eventType {
-                return .from(SRPSignInState.error(authError))
+                let action = CancelSignIn()
+                return StateResolution(
+                    newState: SRPSignInState.error(authError),
+                    actions: [action]
+                )
+            }
+
+            if case .throwPasswordVerifierError(let authError) = srpSignInEvent.eventType {
+                let action = CancelSignIn()
+                return StateResolution(
+                    newState: SRPSignInState.error(authError),
+                    actions: [action]
+                )
             }
 
             switch oldState {
@@ -62,16 +72,18 @@ extension SRPSignInState {
             }
         }
 
-        private func resolveInitiatingSRPA(byApplying signInEvent: SRPSignInEvent, from oldState: SRPSignInState) -> StateResolution<SRPSignInState> {
+        private func resolveInitiatingSRPA(
+            byApplying signInEvent: SRPSignInEvent,
+            from oldState: SRPSignInState)
+        -> StateResolution<SRPSignInState> {
             switch signInEvent.eventType {
             case .respondPasswordVerifier(let srpStateData, let authResponse):
-                let action = VerifyPasswordSRP(stateData: srpStateData, authResponse: authResponse)
+                let action = VerifyPasswordSRP(stateData: srpStateData,
+                                               authResponse: authResponse)
                 return StateResolution(
                     newState: SRPSignInState.respondingPasswordVerifier(srpStateData),
                     actions: [action]
                 )
-            case .throwAuthError(let authError):
-                return .from(.error(authError))
             case .cancelSRPSignIn:
                 return .from(.cancelling)
             default:
@@ -79,15 +91,15 @@ extension SRPSignInState {
             }
         }
 
-        private func resolveRespondingVerifyPassword(srpStateData: SRPStateData,
-                                                     byApplying signInEvent: SRPSignInEvent)  -> StateResolution<SRPSignInState> {
+        private func resolveRespondingVerifyPassword(
+            srpStateData: SRPStateData,
+            byApplying signInEvent: SRPSignInEvent)
+        -> StateResolution<SRPSignInState> {
             switch signInEvent.eventType {
             case .finalizeSRPSignIn(let signedInData):
                 return .from(.signedIn(signedInData))
             case .respondNextAuthChallenge(let authChallengeResponse):
                 return .from(.nextAuthChallenge(authChallengeResponse))
-            case .throwPasswordVerifierError(let authError):
-                return .from(.error(authError))
             case .cancelSRPSignIn:
                 return .from(.cancelling)
             default:
