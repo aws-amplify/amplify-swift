@@ -14,8 +14,8 @@ typealias AWSAuthSignOutOperationCredentialStoreStateMachine = StateMachine<Cred
 
 public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperation {
     
-    let authStateMachine: AWSAuthSignOutOperationStateMachine
-    let credentialStoreStateMachine: AWSAuthSignInOperationCredentialStoreStateMachine
+    let authStateMachine: AuthStateMachine
+    let credentialStoreStateMachine: CredentialStoreStateMachine
     var statelistenerToken: AWSAuthSignOutOperationStateMachine.StateChangeListenerToken?
     
     init(_ request: AuthSignOutRequest,
