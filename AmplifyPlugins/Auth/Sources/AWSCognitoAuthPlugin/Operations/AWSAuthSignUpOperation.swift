@@ -66,34 +66,29 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation, AuthSignUpOperation
             guard case .configured(let authNState, _) = state else {
                 return
             }
-            defer {
-                self.finish()
-            }
 
             switch authNState {
             case .signingUp(_ , let signUpState):
-                self.cancelListener(token)
 
                 switch signUpState {
                 case .signingUpInitiated:
                     self.dispatch(result: .success(AuthSignUpResult(.confirmUser())))
+                    self.cancelListener(token)
+                    self.finish()
                 case .error(let error):
                     self.dispatch(message: "Failed while signing up", error: error)
+                    self.cancelListener(token)
+                    self.finish()
                 default:
-                    self.dispatch(message: "Failed while signing up", error: .invalidState(message: "\(signUpState.type)"))
+                    break
                 }
-            case .error(_, let error):
-                self.cancelListener(token)
-                self.dispatch(message: "failed while signing up", error: .service(error: error))
             default:
-                print("default for \(authNState)")
                 break
             }
         } onSubscribe: { [weak self] in
             guard let self = self else {
                 return
             }
-            
             self.sendSignUpEvent()
         }
     }
