@@ -6,13 +6,13 @@
 //
 
 import Foundation
-import libtommath
+import libtommathAmplify
 
 public extension AmplifyBigInt {
 
     func add(bigInteger: AmplifyBigInt) -> AmplifyBigInt {
         let sum = AmplifyBigInt()
-        _ = mp_add(&value, &bigInteger.value, &sum.value)
+        _ = amplify_mp_add(&value, &bigInteger.value, &sum.value)
         return sum
     }
 }

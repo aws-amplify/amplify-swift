@@ -146,7 +146,7 @@ let apiTargets: [Target] = [
 let authTargets: [Target] = [
     .target(name: "AmplifyBigInteger",
             dependencies: [
-                "libtommath"
+                "libtommathAmplify"
             ],
             path: "AmplifyPlugins/Auth/Sources/AmplifyBigInteger"
            ),
@@ -167,6 +167,13 @@ let authTargets: [Target] = [
             .product(name: "AWSCognitoIdentity", package: "AWSSwiftSDK")
         ],
         path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin"
+    ),
+    .target(
+        name: "libtommathAmplify",
+        path: "AmplifyPlugins/Auth/Sources/libtommath",
+        cSettings: [
+            .unsafeFlags(["-flto=thin"])  // for Dead Code Elimination
+        ]
     ),
     .testTarget(
         name: "AWSCognitoAuthPluginUnitTests",
@@ -250,10 +257,6 @@ let package = Package(
         
     ],
     dependencies: [
-        .package(
-            url: "https://github.com/libtom/libtommath",
-            branch: "develop"
-        ),
         .package(
             url: "https://github.com/stephencelis/SQLite.swift.git",
             .exact("0.12.2")
