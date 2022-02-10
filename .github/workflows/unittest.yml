@@ -1,0 +1,25 @@
+name: UnitTest
+on: 
+  pull_request: 
+    branches:      
+      - main      
+      - dev-preview
+
+permissions:
+    contents: read 
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+
+  auth-unit-test:
+    runs-on: macos-latest
+    environment: UnitTest
+    steps:
+      - uses: actions/checkout@v2
+    
+      - name: Run auth unit test
+        run: xcodebuild test -scheme AWSCognitoAuthPlugin -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13' | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+    
