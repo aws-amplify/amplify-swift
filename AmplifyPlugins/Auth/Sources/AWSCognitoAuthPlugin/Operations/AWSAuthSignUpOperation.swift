@@ -37,7 +37,7 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation, AuthSignUpOperation
     }
 
     func doInitialize() {
-        var token: AuthStateMachine.StateChangeListenerToken?
+        var token: AuthStateMachineToken?
         token = stateMachine.listen { [weak self] in
             guard let self = self else {
                 return

@@ -35,9 +35,9 @@ extension AuthState {
                     let action = InitializeAuthenticationConfiguration(configuration: authConfiguration,
                                                                         cognitoCredentials: storedCredentials)
                     return .init(newState: newState, actions: [action])
-                case .configureAuthorization(let authConfiguration):
+                case .configureAuthorization:
                     let newState = AuthState.configuringAuthorization(.notConfigured, .notConfigured)
-                    let action = InitializeAuthorizationConfiguration(configuration: authConfiguration)
+                    let action = InitializeAuthorizationConfiguration()
                     return .init(newState: newState, actions: [action])
                 default:
                     return .from(oldState)
@@ -46,13 +46,13 @@ extension AuthState {
             case .configuringAuthentication(let authenticationState):
                 let resolver = AuthenticationState.Resolver()
                 let resolution = resolver.resolve(oldState: authenticationState, byApplying: event)
-                guard case .authenticationConfigured(let authConfiguration) = isAuthEvent(event)?.eventType else {
+                guard case .authenticationConfigured = isAuthEvent(event)?.eventType else {
                     let newState = AuthState.configuringAuthentication(resolution.newState)
                     return .init(newState: newState, actions: resolution.actions)
                 }
 
                 let newState = AuthState.configuringAuthorization(resolution.newState, .notConfigured)
-                let action = InitializeAuthorizationConfiguration(configuration: authConfiguration)
+                let action = InitializeAuthorizationConfiguration()
                 return .init(newState: newState, actions: resolution.actions + [action])
 
             case .configuringAuthorization(let authenticationState, let authorizationState):
