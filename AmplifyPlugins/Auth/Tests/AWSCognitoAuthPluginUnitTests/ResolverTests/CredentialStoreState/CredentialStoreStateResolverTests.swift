@@ -40,7 +40,7 @@ class CredentialStoreStateResolverTests: XCTestCase {
             CredentialStoreStateSequence(
                 oldState: .loadingStoredCredentials,
                 event: CredentialStoreEvent(eventType: .completedOperation(testData)),
-                expected: .idle(testData)),
+                expected: .success(testData)),
             CredentialStoreStateSequence(
                 oldState: .loadingStoredCredentials,
                 event: CredentialStoreEvent(eventType: .throwError(credentialStoreError)),
@@ -48,7 +48,7 @@ class CredentialStoreStateResolverTests: XCTestCase {
             CredentialStoreStateSequence(
                 oldState: .clearingCredentials,
                 event: CredentialStoreEvent(eventType: .completedOperation(testData)),
-                expected: .idle(testData)),
+                expected: .success(testData)),
             CredentialStoreStateSequence(
                 oldState: .clearingCredentials,
                 event: CredentialStoreEvent(eventType: .throwError(credentialStoreError)),
@@ -56,33 +56,45 @@ class CredentialStoreStateResolverTests: XCTestCase {
             CredentialStoreStateSequence(
                 oldState: .storingCredentials,
                 event: CredentialStoreEvent(eventType: .completedOperation(testData)),
-                expected: .idle(testData)),
+                expected: .success(testData)),
             CredentialStoreStateSequence(
                 oldState: .storingCredentials,
                 event: CredentialStoreEvent(eventType: .throwError(credentialStoreError)),
                 expected: .error(credentialStoreError)),
             CredentialStoreStateSequence(
-                oldState: .idle(testData),
+                oldState: .success(testData),
                 event: CredentialStoreEvent(eventType: .loadCredentialStore),
-                expected: .loadingStoredCredentials),
+                expected: .success(testData)),
             CredentialStoreStateSequence(
-                oldState: .idle(testData),
+                oldState: .success(testData),
                 event: CredentialStoreEvent(eventType: .storeCredentials(testData)),
-                expected: .storingCredentials),
+                expected: .success(testData)),
             CredentialStoreStateSequence(
-                oldState: .idle(testData),
+                oldState: .success(testData),
                 event: CredentialStoreEvent(eventType: .clearCredentialStore),
-                expected: .clearingCredentials),
+                expected: .success(testData)),
             CredentialStoreStateSequence(
                 oldState: .error(credentialStoreError),
                 event: CredentialStoreEvent(eventType: .loadCredentialStore),
-                expected: .loadingStoredCredentials),
+                expected: .error(credentialStoreError)),
             CredentialStoreStateSequence(
                 oldState: .error(credentialStoreError),
                 event: CredentialStoreEvent(eventType: .storeCredentials(testData)),
-                expected: .storingCredentials),
+                expected: .error(credentialStoreError)),
             CredentialStoreStateSequence(
                 oldState: .error(credentialStoreError),
+                event: CredentialStoreEvent(eventType: .clearCredentialStore),
+                expected: .error(credentialStoreError)),
+            CredentialStoreStateSequence(
+                oldState: .idle,
+                event: CredentialStoreEvent(eventType: .loadCredentialStore),
+                expected: .loadingStoredCredentials),
+            CredentialStoreStateSequence(
+                oldState: .idle,
+                event: CredentialStoreEvent(eventType: .storeCredentials(testData)),
+                expected: .storingCredentials),
+            CredentialStoreStateSequence(
+                oldState: .idle,
                 event: CredentialStoreEvent(eventType: .clearCredentialStore),
                 expected: .clearingCredentials)
         ]

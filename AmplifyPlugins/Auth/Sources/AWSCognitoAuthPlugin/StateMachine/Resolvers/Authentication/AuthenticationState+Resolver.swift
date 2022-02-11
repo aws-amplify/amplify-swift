@@ -73,7 +73,7 @@ extension AuthenticationState {
 
             switch authEvent.eventType {
             case .configure(let authConfig, let cognitoCredentials):
-                let action = LoadPersistedAuthentication(configuration: authConfig, storedCredentials: cognitoCredentials)
+                let action = ConfigureAuthentication(configuration: authConfig, storedCredentials: cognitoCredentials)
                 let resolution = StateResolution(
                     newState: AuthenticationState.configured(authConfig),
                     actions: [action]
@@ -170,7 +170,7 @@ extension AuthenticationState {
             }
             if let authEvent = event as? AuthenticationEvent,
                   case .cancelSignIn(let config) = authEvent.eventType {
-                let signedOutData = SignedOutData()
+                let signedOutData = SignedOutData(lastKnownUserName: nil)
                 return .from(.signedOut(config, signedOutData))
             }
 

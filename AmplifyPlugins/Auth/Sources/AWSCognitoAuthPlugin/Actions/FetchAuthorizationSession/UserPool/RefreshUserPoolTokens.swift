@@ -74,8 +74,7 @@ struct RefreshUserPoolTokens: Action {
             case .success(let response):
                 guard let authenticationResult = response.authenticationResult,
                       let idToken = authenticationResult.idToken,
-                      let accessToken = authenticationResult.accessToken,
-                      let refreshToken = authenticationResult.refreshToken else {
+                      let accessToken = authenticationResult.accessToken else {
 
                           let authZError = AuthorizationError.invalidUserPoolTokens(
                             message: "UserPoolTokens are invalid.")
@@ -94,7 +93,7 @@ struct RefreshUserPoolTokens: Action {
                 let userPoolTokens = AWSCognitoUserPoolTokens(
                     idToken: idToken,
                     accessToken: accessToken,
-                    refreshToken: refreshToken,
+                    refreshToken: cognitoUserPoolTokens.refreshToken,
                     expiresIn: authenticationResult.expiresIn
                 )
 

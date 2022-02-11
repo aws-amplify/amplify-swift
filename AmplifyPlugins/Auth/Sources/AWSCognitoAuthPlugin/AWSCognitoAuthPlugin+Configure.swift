@@ -66,21 +66,30 @@ extension AWSCognitoAuthPlugin {
                 return
             }
             switch $0 {
-            case .idle(let storedCredentials):
+            case .success(let storedCredentials):
                 self.sendConfigureAuthEvent(with: storedCredentials)
                 if let token = token {
                     self.credentialStoreStateMachine.cancel(listenerToken: token)
                 }
-            case .error:
-                self.sendConfigureAuthEvent(with: nil)
+            case .error(let credentialStoreError):
+                if case .itemNotFound = credentialStoreError {
+                    self.sendConfigureAuthEvent(with: nil)
+                } else {
+                    let error = AuthError.service("An exception occurred when configuring credential store",
+                                                  AmplifyErrorMessages.reportBugToAWS(),
+                                                  credentialStoreError)
+                    Amplify.log.error(error: error)
+                }
+                
                 if let token = token {
                     self.credentialStoreStateMachine.cancel(listenerToken: token)
                 }
             default:
                 break
             }
-        } onSubscribe: { }
-        credentialStoreStateMachine.send(CredentialStoreEvent(eventType: .migrateLegacyCredentialStore))
+        } onSubscribe: { [weak self] in
+            self?.credentialStoreStateMachine.send(CredentialStoreEvent(eventType: .migrateLegacyCredentialStore))
+        }
     }
 
     func sendConfigureAuthEvent(with storedCredentials: CognitoCredentials?) {
