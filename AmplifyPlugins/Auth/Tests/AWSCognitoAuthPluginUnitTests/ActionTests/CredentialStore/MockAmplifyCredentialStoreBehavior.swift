@@ -13,7 +13,7 @@ class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior, Am
     
     typealias Migrationhandler = () -> ()
     typealias SaveCredentialHandler = (CognitoCredentials) throws -> Void
-    typealias GetCredentialHandler = () throws -> (CognitoCredentials?)
+    typealias GetCredentialHandler = () throws -> (CognitoCredentials)
     typealias ClearCredentialHandler = () throws -> ()
         
     let migrationCompleteHandler: Migrationhandler?
@@ -36,8 +36,11 @@ class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior, Am
         try saveCredentialHandler?(credential)
     }
     
-    func retrieveCredential() throws -> CognitoCredentials? {
-        return try getCredentialHandler?()
+    func retrieveCredential() throws -> CognitoCredentials {
+        guard let credentials = try getCredentialHandler?() else {
+            throw CredentialStoreError.unknown("", nil)
+        }
+        return credentials
     }
 
     func deleteCredential() throws {
