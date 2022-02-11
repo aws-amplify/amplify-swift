@@ -10,7 +10,7 @@ import Foundation
 struct AuthorizationEvent: StateMachineEvent {
     enum EventType: Equatable {
 
-        case configure(AuthConfiguration)
+        case configure
 
         case fetchAuthSession(CognitoCredentials?)
 

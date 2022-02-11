@@ -19,9 +19,11 @@ enum CredentialStoreState: State {
 
     case clearingCredentials
 
-    case idle(CognitoCredentials?)
+    case success(CognitoCredentials?)
 
     case error(CredentialStoreError)
+    
+    case idle
 
 }
 
@@ -33,8 +35,9 @@ extension CredentialStoreState {
         case .loadingStoredCredentials: return "CredentialStoreState.loadingStoredCredentials"
         case .storingCredentials: return "CredentialStoreState.storingCredentials"
         case .clearingCredentials: return "CredentialStoreState.clearingCredentials"
-        case .idle: return "CredentialStoreState.idle"
+        case .success: return "CredentialStoreState.success"
         case .error: return "CredentialStoreState.error"
+        case .idle: return "CredentialStoreState.idle"
         }
     }
 }
