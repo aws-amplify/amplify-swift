@@ -14,11 +14,13 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     override func setUp() {
         super.setUp()
         initializeAmplify()
+        AuthSessionHelper.invalidateSessions()
     }
 
     override func tearDown() {
         super.tearDown()
         Amplify.reset()
+        AuthSessionHelper.invalidateSessions()
         sleep(2)
     }
 
@@ -32,8 +34,8 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     ///
     func testSuccessfulSignIn() {
 
-        let username = "xxx"
-        let password = "xxx"
+        let username = defaultTestUsername
+        let password = defaultTestPassword
 
         //TODO: Add `AuthSignInHelper.signUpUser` when signUp api is ready
 
