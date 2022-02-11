@@ -32,7 +32,9 @@ import AWSCognitoIdentityProvider
 
         let plugin = try createPlugin()
 
-        let signUpEventData = SignUpEventData(username: "jeffb", password: "Valid&99")
+        let signUpEventData = SignUpEventData(username: "jeffb",
+                                              password: "Valid&99",
+                                              attributes: [:])
 
         IdentityProviderFactoryRegistry.shared[signUpEventData.key] = {
             MockIdentityProvider(signUpCallback: signUp)
@@ -51,7 +53,7 @@ import AWSCognitoIdentityProvider
             exp.fulfill()
         }
 
-        wait(for: [exp], timeout: 300.0)
+        wait(for: [exp], timeout: 2)
 
         XCTAssertTrue(called, "Signup closure should be called")
         XCTAssertNil(testError, "Error should not be returned")
@@ -69,7 +71,9 @@ import AWSCognitoIdentityProvider
 
         let plugin = try createPlugin()
 
-        let signUpEventData = SignUpEventData(username: "jeffb", password: "lowercase")
+        let signUpEventData = SignUpEventData(username: "jeffb",
+                                              password: "lowercase",
+                                              attributes: [:])
 
         IdentityProviderFactoryRegistry.shared[signUpEventData.key] = {
             MockIdentityProvider(signUpCallback: signUp)
@@ -88,7 +92,7 @@ import AWSCognitoIdentityProvider
             exp.fulfill()
         }
 
-        wait(for: [exp], timeout: 300.0)
+        wait(for: [exp], timeout: 2)
 
         XCTAssertTrue(called, "Signup closure should be called")
         XCTAssertNotNil(testError, "Error should be returned")
