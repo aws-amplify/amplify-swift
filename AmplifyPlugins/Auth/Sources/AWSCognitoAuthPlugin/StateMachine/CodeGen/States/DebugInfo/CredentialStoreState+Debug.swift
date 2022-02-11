@@ -23,9 +23,11 @@ extension CredentialStoreState {
             additionalMetadataDictionary = [:]
         case .storingCredentials:
             additionalMetadataDictionary = [:]
-        case .idle:
+        case .success:
             additionalMetadataDictionary = [:]
         case .error:
+            additionalMetadataDictionary = [:]
+        case .idle:
             additionalMetadataDictionary = [:]
         }
         return stateTypeDictionary.merging(additionalMetadataDictionary, uniquingKeysWith: { $1 })

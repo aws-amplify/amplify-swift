@@ -9,18 +9,16 @@ import Foundation
 import Amplify
 
 public typealias AmplifySignOutOperation = AmplifyOperation<AuthSignOutRequest, Void, AuthError>
-typealias AWSAuthSignOutOperationStateMachine = StateMachine<AuthState, AuthEnvironment>
-typealias AWSAuthSignOutOperationCredentialStoreStateMachine = StateMachine<CredentialStoreState, CredentialEnvironment>
 
 public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperation {
     
     let authStateMachine: AuthStateMachine
     let credentialStoreStateMachine: CredentialStoreStateMachine
-    var statelistenerToken: AWSAuthSignOutOperationStateMachine.StateChangeListenerToken?
+    var stateListenerToken: CredentialStoreStateMachineToken?
     
     init(_ request: AuthSignOutRequest,
-         authStateMachine: AWSAuthSignOutOperationStateMachine,
-         credentialStoreStateMachine: AWSAuthSignOutOperationCredentialStoreStateMachine,
+         authStateMachine: AuthStateMachine,
+         credentialStoreStateMachine: CredentialStoreStateMachine,
          resultListener: ResultListener?)
     {
         self.authStateMachine = authStateMachine
@@ -41,8 +39,7 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
     }
     
     func doInitialize() {
-        var token: AWSAuthSignOutOperationStateMachine.StateChangeListenerToken?
-        token = authStateMachine.listen { [weak self] in
+        stateListenerToken = authStateMachine.listen { [weak self] in
             guard let self = self else {
                 return
             }
@@ -57,7 +54,7 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
                     return
                 }
                 
-                if let token = token {
+                if let token = self.stateListenerToken {
                     self.authStateMachine.cancel(listenerToken: token)
                 }
                 self.doSignOut()
@@ -66,8 +63,7 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
     }
     
     func doSignOut() {
-        var token: AWSAuthSignOutOperationStateMachine.StateChangeListenerToken?
-        token = authStateMachine.listen {[weak self] in
+        stateListenerToken = authStateMachine.listen {[weak self] in
             guard let self = self else {
                 return
             }
@@ -87,7 +83,7 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
                 }
                 
                 self.dispatchSuccess()
-                if let token = token {
+                if let token = self.stateListenerToken {
                     self.authStateMachine.cancel(listenerToken: token)
                 }
 
@@ -97,7 +93,7 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
                 }
                 
                 self.dispatch(error.authError)
-                if let token = token {
+                if let token = self.stateListenerToken {
                     self.authStateMachine.cancel(listenerToken: token)
                 }
 
@@ -114,14 +110,14 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
     }
     
     func clearCredentialStore() {
-        var token: AWSAuthSignOutOperationCredentialStoreStateMachine.StateChangeListenerToken?
+        var token: CredentialStoreStateMachineToken?
         token = credentialStoreStateMachine.listen { [weak self] credentialStoreState in
             guard let self = self else {
                 return
             }
 
             switch credentialStoreState {
-            case .idle:
+            case .success:
                 self.sendSignedOutSuccessEvent()
                 if let token = token {
                     self.credentialStoreStateMachine.cancel(listenerToken: token)

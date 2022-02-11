@@ -26,11 +26,16 @@ public extension AuthorizationState {
                     return .from(oldState)
                 }
                 return resolveNotConfigured(byApplying: authZEvent)
-            case .configured, .sessionEstablished, .error:
+            case .configured:
                 guard case .fetchAuthSession(let cognitoCredentials) = isAuthorizationEvent(event)?.eventType else {
                     return .from(oldState)
                 }
                 return resolveFetchAuthSessionEvent(storedCredentials: cognitoCredentials)
+            case .sessionEstablished, .error:
+                guard case .configure = isAuthorizationEvent(event)?.eventType else {
+                    return .from(oldState)
+                }
+                return .init(newState: .configured)
             case .fetchingAuthSession(let fetchAuthSessionState):
                 let fetchAuthSessionStateResolver = FetchAuthSessionState.Resolver()
                 let fetchAuthSessionResolution = fetchAuthSessionStateResolver.resolve(
@@ -39,7 +44,13 @@ public extension AuthorizationState {
                     let authorizationState = AuthorizationState.fetchingAuthSession(fetchAuthSessionResolution.newState)
                     return .init(newState: authorizationState, actions: fetchAuthSessionResolution.actions)
                 }
-                return .init(newState: AuthorizationState.sessionEstablished(sessionData))
+                // Move the Authorization back to configured
+                let action = InitializeAuthorizationConfiguration()
+                let resolution = StateResolution(
+                    newState: AuthorizationState.sessionEstablished(sessionData),
+                    actions: [action]
+                )
+                return resolution
             }
         }
 
@@ -47,15 +58,20 @@ public extension AuthorizationState {
             byApplying authorizationEvent: AuthorizationEvent
         ) -> StateResolution<StateType> {
             switch authorizationEvent.eventType {
-            case .configure(let authConfiguration):
-                let action = LoadPersistedAuthorization(authConfiguration: authConfiguration)
+            case .configure:
+                let action = ConfigureAuthorization()
                 let resolution = StateResolution(
                     newState: AuthorizationState.configured,
                     actions: [action]
                 )
                 return resolution
             case .throwError(let authorizationError):
-                return .init(newState: AuthorizationState.error(authorizationError))
+                let action = InitializeAuthorizationConfiguration()
+                let resolution = StateResolution(
+                    newState: AuthorizationState.error(authorizationError),
+                    actions: [action]
+                )
+                return resolution
             default:
                 return .from(.notConfigured)
             }

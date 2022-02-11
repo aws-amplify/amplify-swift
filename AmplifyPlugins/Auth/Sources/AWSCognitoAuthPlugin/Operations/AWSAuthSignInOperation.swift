@@ -129,7 +129,6 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
                 self.cancelCredentialStoreToken(token)
                 self.finish()
             case .error(let credentialStoreError):
-
                 // Unable to save the credentials in the local store
                 self.dispatch(credentialStoreError.authError)
                 self.cancelCredentialStoreToken(token)
@@ -137,7 +136,6 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             default:
                 break
             }
-
         } onSubscribe: {[weak self] in
             guard let self = self else {
                 return
