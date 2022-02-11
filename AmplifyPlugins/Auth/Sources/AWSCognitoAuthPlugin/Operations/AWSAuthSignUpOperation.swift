@@ -10,15 +10,18 @@ import Amplify
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-public typealias AmplifySignUpOperation = AmplifyOperation<AuthSignUpRequest, AuthSignUpResult, AuthError>
-typealias AWSAuthSignUpOperationStateMachine = StateMachine<AuthState, AuthEnvironment>
+public typealias AmplifySignUpOperation = AmplifyOperation<
+    AuthSignUpRequest,
+    AuthSignUpResult,
+    AuthError>
 
-public class AWSAuthSignUpOperation: AmplifySignUpOperation, AuthSignUpOperation {
+public class AWSAuthSignUpOperation: AmplifySignUpOperation,
+                                     AuthSignUpOperation {
 
     let stateMachine: AuthStateMachine
 
     init(_ request: AuthSignUpRequest,
-         stateMachine: AWSAuthSignUpOperationStateMachine,
+         stateMachine: AuthStateMachine,
          resultListener: ResultListener?) {
 
         self.stateMachine = stateMachine
@@ -44,21 +47,23 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation, AuthSignUpOperation
             }
 
             if case .configured(let authNState, _) = $0 {
-                guard case .signedOut = authNState else {
+
+                switch authNState {
+                case .signedOut, .signingUp:
                     self.cancelListener(token)
-                    let message = "Auth state must be signed out to sign up"
+                    self.doSignUp()
+                default:
+                    self.cancelListener(token)
+                    let message = "Auth state must be signed out to signup"
                     self.dispatch(message: message, error: .invalidState(message: message))
                     self.finish()
-                    return
                 }
-                self.cancelListener(token)
-                self.doSignUp()
             }
         } onSubscribe: { }
     }
 
     func doSignUp() {
-        var token: AWSAuthSignUpOperationStateMachine.StateChangeListenerToken?
+        var token: AuthStateMachineToken?
         token = stateMachine.listen { [weak self] state in
             guard let self = self else {
                 return
@@ -105,7 +110,14 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation, AuthSignUpOperation
             return
         }
 
-        let signUpData = SignUpEventData(username: request.username, password: password)
+        // Convert the attributes to [String: String]
+        let attributes = request.options.userAttributes?.reduce(
+            into: [String: String]()) {
+                $0[$1.key.rawValue] = $1.value
+            } ?? [:]
+        let signUpData = SignUpEventData(username: request.username,
+                                         password: password,
+                                         attributes: attributes)
         let event = SignUpEvent(eventType: .initiateSignUp(signUpData))
         stateMachine.send(event)
     }
@@ -115,7 +127,7 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation, AuthSignUpOperation
         dispatch(result: result)
     }
 
-    private func cancelListener(_ token: AWSAuthSignUpOperationStateMachine.StateChangeListenerToken?) {
+    private func cancelListener(_ token: AuthStateMachineToken?) {
         if let token = token {
             stateMachine.cancel(listenerToken: token)
         }

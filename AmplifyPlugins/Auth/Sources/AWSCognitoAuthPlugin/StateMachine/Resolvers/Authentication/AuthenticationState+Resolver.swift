@@ -46,11 +46,8 @@ extension AuthenticationState {
                 } else {
                     return .from(oldState)
                 }
-            case .signingUp(let authConfiguration, let signUpState):
-                let resolver = SignUpState.Resolver()
-                let resolution = resolver.resolve(oldState: signUpState, byApplying: event)
-                let newState = AuthenticationState.signingUp(authConfiguration, resolution.newState)
-                return .init(newState: newState, actions: resolution.actions)
+            case .signingUp:
+                return resolveSigningUpState(oldState: oldState, event: event)
             case .signingIn:
                 return resolveSigningInState(oldState: oldState, event: event)
             case .signedIn(let authenticationConfiguration, let signedInData):
@@ -160,6 +157,26 @@ extension AuthenticationState {
                 actions: [action]
             )
             return resolution
+        }
+
+        private func resolveSigningUpState(oldState: AuthenticationState,
+                                           event: StateMachineEvent)  -> StateResolution<StateType> {
+            if let authEvent = event as? AuthenticationEvent,
+               case .error(let error) = authEvent.eventType {
+                return .from(.error(nil, error))
+            }
+            if let authEvent = event as? AuthenticationEvent,
+               case .cancelSignUp(let config) = authEvent.eventType {
+                let signedOutData = SignedOutData(lastKnownUserName: nil)
+                return .from(.signedOut(config, signedOutData))
+            }
+            guard case .signingUp(let authConfiguration, let signUpState) = oldState else {
+                return .from(oldState)
+            }
+            let resolver = SignUpState.Resolver()
+            let resolution = resolver.resolve(oldState: signUpState, byApplying: event)
+            let newState = AuthenticationState.signingUp(authConfiguration, resolution.newState)
+            return .init(newState: newState, actions: resolution.actions)
         }
 
         private func resolveSigningInState(oldState: AuthenticationState,
