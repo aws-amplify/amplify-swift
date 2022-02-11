@@ -183,13 +183,6 @@ let authTargets: [Target] = [
         path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests"
     ),
     .testTarget(
-        name: "AWSCognitoAuthPluginIntegrationTests",
-        dependencies: [
-            "AWSCognitoAuthPlugin"
-        ],
-        path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginIntegrationTests"
-    ),
-    .testTarget(
         name: "AmplifyBigIntegerTests",
         dependencies: [
             "AmplifyBigInteger"
