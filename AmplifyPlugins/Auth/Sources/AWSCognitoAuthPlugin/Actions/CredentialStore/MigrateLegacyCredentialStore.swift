@@ -50,10 +50,10 @@ struct MigrateLegacyCredentialStore: Action {
         let userPoolTokens = try? getUserPoolTokens(from: credentialStoreEnvironment, with: authConfiguration)
 
         // IdentityId and AWSCredentials should exist together
-        if let (storeIdentityId, storeAWSCredentials) = try? getIdentityIdAndAWSCredentials(from: credentialStoreEnvironment,
+        if let (storedIdentityId, storedAWSCredentials) = try? getIdentityIdAndAWSCredentials(from: credentialStoreEnvironment,
                                                                                             with: authConfiguration) {
-            identityId = storeIdentityId
-            awsCredentials = storeAWSCredentials
+            identityId = storedIdentityId
+            awsCredentials = storedAWSCredentials
         }
 
         do {
