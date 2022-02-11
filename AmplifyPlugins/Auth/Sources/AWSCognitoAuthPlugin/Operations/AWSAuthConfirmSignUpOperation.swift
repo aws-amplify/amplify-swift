@@ -10,16 +10,19 @@ import Amplify
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-public typealias AmplifyConfirmSignUpOperation = AmplifyOperation<AuthConfirmSignUpRequest, AuthSignUpResult, AuthError>
-typealias AWSAuthConfirmSignUpOperationStateMachine = StateMachine<AuthState, AuthEnvironment>
+public typealias AmplifyConfirmSignUpOperation = AmplifyOperation<
+    AuthConfirmSignUpRequest,
+    AuthSignUpResult,
+    AuthError>
 
-public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation, AuthConfirmSignUpOperation {
+public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
+                                            AuthConfirmSignUpOperation {
 
-    let stateMachine: AWSAuthConfirmSignUpOperationStateMachine
-    var statelistenerToken: AWSAuthConfirmSignUpOperationStateMachine.StateChangeListenerToken?
+    let stateMachine: AuthStateMachine
+    var statelistenerToken: AuthStateMachineToken?
 
     init(_ request: AuthConfirmSignUpRequest,
-         stateMachine: AWSAuthConfirmSignUpOperationStateMachine,
+         stateMachine: AuthStateMachine,
          resultListener: ResultListener?) {
 
         self.stateMachine = stateMachine
@@ -38,28 +41,29 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation, AuthC
     }
 
     func doInitialize() {
-        var token: AWSAuthConfirmSignUpOperationStateMachine.StateChangeListenerToken?
+        var token: AuthStateMachineToken?
         token = stateMachine.listen { [weak self] in
             guard let self = self else {
                 return
             }
 
             if case .configured(let authNState, _) = $0 {
-                guard case .signedOut = authNState else {
+                switch authNState {
+                case .signedOut, .signingUp:
+                    self.cancelListener(token)
+                    self.doConfirmSignUp()
+                default:
                     self.cancelListener(token)
                     let message = "Auth state must be signed out to confirm signup"
                     self.dispatch(message: message, error: .invalidState(message: message))
                     self.finish()
-                    return
                 }
-                self.cancelListener(token)
-                self.doConfirmSignUp()
             }
         } onSubscribe: { }
     }
 
     func doConfirmSignUp() {
-        var token: AWSAuthConfirmSignUpOperationStateMachine.StateChangeListenerToken?
+        var token: AuthStateMachineToken?
         token = stateMachine.listen { [weak self] state in
             guard let self = self else {
                 return
@@ -86,15 +90,15 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation, AuthC
                 break
             }
         } onSubscribe: { [weak self] in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
             self.sendConfirmSignUpEvent()
         }
     }
 
     private func sendConfirmSignUpEvent() {
-        let confirmSignUpData = ConfirmSignUpEventData(username: request.username, confirmationCode: request.code)
+        let confirmSignUpData = ConfirmSignUpEventData(
+            username: request.username,
+            confirmationCode: request.code)
         let event = SignUpEvent(eventType: .confirmSignUp(confirmSignUpData))
         stateMachine.send(event)
     }
@@ -104,10 +108,9 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation, AuthC
         dispatch(result: result)
     }
 
-    private func cancelListener(_ token: AWSAuthConfirmSignUpOperationStateMachine.StateChangeListenerToken?) {
+    private func cancelListener(_ token: AuthStateMachineToken?) {
         if let token = token {
             stateMachine.cancel(listenerToken: token)
         }
     }
-
 }
