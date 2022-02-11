@@ -17,7 +17,7 @@ class AuthSignOutTests: AWSAuthBaseTest {
     override func setUp() {
         super.setUp()
         initializeAmplify()
-        
+        AuthSessionHelper.invalidateSessions()
         if Self.setSDKLogLevelDebug {
             SDKLoggingSystem.initialize(logLevel: .debug)
             Self.setSDKLogLevelDebug = false
@@ -27,6 +27,7 @@ class AuthSignOutTests: AWSAuthBaseTest {
     override func tearDown() {
         super.tearDown()
         Amplify.reset()
+        AuthSessionHelper.invalidateSessions()
         sleep(2)
     }
     
@@ -98,8 +99,8 @@ class AuthSignOutTests: AWSAuthBaseTest {
     }
         
     private func signIn(_ completion: @escaping ()->Void) -> AuthSignInOperation {
-        let username = "xx"
-        let password = "xx"
+        let username = defaultTestUsername
+        let password = defaultTestPassword
         
         let operation = Amplify.Auth.signIn(username: username, password: password) { result in
             defer {
