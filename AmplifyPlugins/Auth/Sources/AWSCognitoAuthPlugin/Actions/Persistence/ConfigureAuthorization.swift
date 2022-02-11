@@ -7,36 +7,31 @@
 
 import Foundation
 
-struct LoadPersistedAuthorization: Action {
+struct ConfigureAuthorization: Action {
 
-    let identifier = "LoadPersistedAuthorization"
-
-    let authConfiguration: AuthConfiguration
+    let identifier = "ConfigureAuthorization"
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
         let timer = LoggingTimer(identifier).start("### Starting execution")
-
         // Send Authorization configured event to move the Auth state to configured
         let authorizationConfiguredEvent = AuthEvent(eventType: .authorizationConfigured)
         timer.note("### sending event \(authorizationConfiguredEvent.type)")
         dispatcher.send(authorizationConfiguredEvent)
-
     }
 }
 
-extension LoadPersistedAuthorization: DefaultLogger { }
+extension ConfigureAuthorization: DefaultLogger { }
 
-extension LoadPersistedAuthorization: CustomDebugDictionaryConvertible {
+extension ConfigureAuthorization: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
-            "identifier": identifier,
-            "configuration": authConfiguration
+            "identifier": identifier
         ]
     }
 }
 
-extension LoadPersistedAuthorization: CustomDebugStringConvertible {
+extension ConfigureAuthorization: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription
     }
