@@ -22,6 +22,8 @@ struct CredentialStoreEvent: StateMachineEvent {
         case completedOperation(CognitoCredentials?)
 
         case throwError(CredentialStoreError)
+        
+        case moveToIdleState
 
     }
 
@@ -37,6 +39,7 @@ struct CredentialStoreEvent: StateMachineEvent {
         case .clearCredentialStore: return  "CredentialStoreEvent.clearCredentialStore"
         case .completedOperation: return  "CredentialStoreEvent.completedOperation"
         case .throwError: return  "CredentialStoreEvent.throwError"
+        case .moveToIdleState: return  "CredentialStoreEvent.moveToIdleState"
         }
     }
 

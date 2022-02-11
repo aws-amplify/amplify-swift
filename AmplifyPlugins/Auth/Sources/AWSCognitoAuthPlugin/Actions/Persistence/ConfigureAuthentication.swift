@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct LoadPersistedAuthentication: Action {
-    let identifier = "LoadPersistedAuthentication"
+struct ConfigureAuthentication: Action {
+    let identifier = "ConfigureAuthentication"
     let configuration: AuthConfiguration
     let storedCredentials: CognitoCredentials?
 
@@ -38,9 +38,9 @@ struct LoadPersistedAuthentication: Action {
     }
 }
 
-extension LoadPersistedAuthentication: DefaultLogger { }
+extension ConfigureAuthentication: DefaultLogger { }
 
-extension LoadPersistedAuthentication: CustomDebugDictionaryConvertible {
+extension ConfigureAuthentication: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
@@ -49,7 +49,7 @@ extension LoadPersistedAuthentication: CustomDebugDictionaryConvertible {
     }
 }
 
-extension LoadPersistedAuthentication: CustomDebugStringConvertible {
+extension ConfigureAuthentication: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription
     }

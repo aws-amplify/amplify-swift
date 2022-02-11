@@ -11,7 +11,7 @@ import AWSCognitoIdentity
 
 @testable import AWSCognitoAuthPlugin
 
-class FetchAuthAwsCredentialsTests: XCTestCase {
+class FetchAuthAWSCredentialsTests: XCTestCase {
     
     func testNoEnvironment() {
         
