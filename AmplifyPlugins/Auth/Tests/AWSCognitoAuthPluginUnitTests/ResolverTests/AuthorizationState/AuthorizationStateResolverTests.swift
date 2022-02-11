@@ -29,7 +29,7 @@ class AuthorizationStateResolverTests: XCTestCase {
         let authorizationError = AuthorizationError.configuration(message: "someError")
         let validSequences: [AuthorizationStateSequence] = [
             AuthorizationStateSequence(oldState: .notConfigured,
-                                       event: AuthorizationEvent(eventType: .configure(AuthConfiguration.testData)),
+                                       event: AuthorizationEvent(eventType: .configure),
                                        expected: .configured),
             AuthorizationStateSequence(oldState: .configured,
                                        event: AuthorizationEvent(eventType: .fetchAuthSession(nil)),

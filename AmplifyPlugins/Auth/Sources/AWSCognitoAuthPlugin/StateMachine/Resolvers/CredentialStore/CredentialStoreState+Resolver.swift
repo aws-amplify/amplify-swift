@@ -29,8 +29,10 @@ extension CredentialStoreState {
                 return resolveMigratingLegacyStore(oldState: oldState, byApplying: credentialStoreEvent)
             case .loadingStoredCredentials, .storingCredentials, .clearingCredentials:
                 return resolveOperationCompletion(oldState: oldState, byApplying: credentialStoreEvent)
-            case .idle, error:
-                return resolveIdleAndErrorState(oldState: oldState, byApplying: credentialStoreEvent)
+            case .success, error:
+                return resolveSuccessAndErrorState(oldState: oldState, byApplying: credentialStoreEvent)
+            case .idle:
+                return resolveIdleState(oldState: oldState, byApplying: credentialStoreEvent)
             }
         }
 
@@ -77,15 +79,37 @@ extension CredentialStoreState {
         ) -> StateResolution<StateType> {
             switch credentialStoreEvent.eventType {
             case .completedOperation(let storedCredentials):
-                return .init(newState: CredentialStoreState.idle(storedCredentials))
+                let action = IdleCredentialStore()
+                let resolution = StateResolution(
+                    newState: CredentialStoreState.success(storedCredentials),
+                    actions: [action]
+                )
+                return resolution
             case .throwError(let error):
-                return .init(newState: CredentialStoreState.error(error))
+                let action = IdleCredentialStore()
+                let resolution = StateResolution(
+                    newState: CredentialStoreState.error(error),
+                    actions: [action]
+                )
+                return resolution
+            default:
+                return .from(oldState)
+            }
+        }
+        
+        private func resolveSuccessAndErrorState(
+            oldState: StateType,
+            byApplying credentialStoreEvent: CredentialStoreEvent
+        ) -> StateResolution<StateType> {
+            switch credentialStoreEvent.eventType {
+            case .moveToIdleState:
+                return .init(newState: CredentialStoreState.idle)
             default:
                 return .from(oldState)
             }
         }
 
-        private func resolveIdleAndErrorState(
+        private func resolveIdleState(
             oldState: StateType,
             byApplying credentialStoreEvent: CredentialStoreEvent
         ) -> StateResolution<StateType> {
