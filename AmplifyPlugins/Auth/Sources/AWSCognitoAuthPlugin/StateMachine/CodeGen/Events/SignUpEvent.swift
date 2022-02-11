@@ -18,10 +18,10 @@
 import Foundation
 import AWSCognitoIdentityProvider
 
-public struct SignUpEvent: StateMachineEvent {
-    public var data: Any?
+struct SignUpEvent: StateMachineEvent {
+    var data: Any?
 
-    public enum EventType: Equatable {
+    enum EventType: Equatable {
         case initiateSignUp(SignUpEventData)
         case confirmSignUp(ConfirmSignUpEventData)
         case initiateSignUpSuccess(username: String, signUpResponse: SignUpOutputResponse)
@@ -31,11 +31,11 @@ public struct SignUpEvent: StateMachineEvent {
         case throwAuthError(AuthenticationError)
     }
 
-    public let id: String
-    public let eventType: EventType
-    public let time: Date?
+    let id: String
+    let eventType: EventType
+    let time: Date?
 
-    public var type: String {
+    var type: String {
         switch eventType {
         case .initiateSignUp:
             return "SignUpEvent.initiateSignUp"
@@ -54,7 +54,7 @@ public struct SignUpEvent: StateMachineEvent {
         }
     }
 
-    public init(
+    init(
         id: String = UUID().uuidString,
         eventType: EventType,
         time: Date? = nil

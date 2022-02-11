@@ -7,13 +7,17 @@
 
 import Foundation
 
-public struct SignUpEventData: Codable {
-    public let username: String
-    public let password: String
+struct SignUpEventData: Codable {
+    let username: String
+    let password: String
+    let attributes: [String: String]
 
-    public init(username: String, password: String) {
+    init(username: String,
+         password: String,
+         attributes: [String: String]) {
         self.username = username
         self.password = password
+        self.attributes = attributes
     }
 }
 

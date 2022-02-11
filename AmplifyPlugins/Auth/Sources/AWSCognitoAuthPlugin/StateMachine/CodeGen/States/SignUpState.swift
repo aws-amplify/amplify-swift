@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum SignUpState: State {
+enum SignUpState: State {
     case notStarted
     case initiatingSigningUp(SignUpEventData)
     case signingUpInitiated
@@ -16,7 +16,7 @@ public enum SignUpState: State {
     case error(SignUpError)
 }
 
-public extension SignUpState {
+extension SignUpState {
     var type: String {
         switch self {
         case .notStarted:

@@ -24,14 +24,17 @@ class AWSAuthConfirmSignUpOperationTests: XCTestCase {
         
         var called = false
         var testError: Error? = nil
-        let confirmSignUp: MockIdentityProvider.ConfirmSignUpCallback = { _, completion in
+        let confirmSignUp: MockIdentityProvider.ConfirmSignUpCallback = {
+            _, completion in
             called = true
             completion(.success(.init()))
         }
         
         let plugin = try createPlugin()
         
-        let confirmSignUpEventData = ConfirmSignUpEventData(username: "jeffb", confirmationCode: "07051994")
+        let confirmSignUpEventData = ConfirmSignUpEventData(
+            username: "jeffb",
+            confirmationCode: "07051994")
         
         IdentityProviderFactoryRegistry.shared[confirmSignUpEventData.key] = {
             MockIdentityProvider(confirmSignUpCallback: confirmSignUp)
@@ -40,7 +43,9 @@ class AWSAuthConfirmSignUpOperationTests: XCTestCase {
             IdentityProviderFactoryRegistry.shared[confirmSignUpEventData.key] = nil
         }
         
-        _ = plugin.confirmSignUp(for: confirmSignUpEventData.username, confirmationCode: confirmSignUpEventData.confirmationCode, options: nil) { result in
+        _ = plugin.confirmSignUp(for: confirmSignUpEventData.username,
+                                    confirmationCode: confirmSignUpEventData.confirmationCode,
+                                    options: nil) { result in
             switch result {
             case .success(let confirmSignUpResult):
                 print("Confirm Sign Up Result: \(confirmSignUpResult)")
@@ -50,7 +55,7 @@ class AWSAuthConfirmSignUpOperationTests: XCTestCase {
             exp.fulfill()
         }
         
-        wait(for: [exp], timeout: 300.0)
+        wait(for: [exp], timeout: 22)
         
         XCTAssertTrue(called, "Confirm Signup closure should be called")
         XCTAssertNil(testError, "Error should not be returned")
@@ -87,7 +92,7 @@ class AWSAuthConfirmSignUpOperationTests: XCTestCase {
             exp.fulfill()
         }
         
-        wait(for: [exp], timeout: 300.0)
+        wait(for: [exp], timeout: 2)
         
         XCTAssertTrue(called, "Signup closure should be called")
         XCTAssertNotNil(testError, "Error should be returned")
@@ -100,10 +105,11 @@ class AWSAuthConfirmSignUpOperationTests: XCTestCase {
         
         let categoryConfig = AuthCategoryConfiguration(plugins: [
             "awsCognitoAuthPlugin": [
-                "CredentialsProvider": ["CognitoIdentity": ["Default":
-                                                                ["PoolId": "xx",
-                                                                 "Region": "us-east-1"]
-                                                           ]],
+                "CredentialsProvider": ["CognitoIdentity": [
+                    "Default":
+                        ["PoolId": "xx",
+                         "Region": "us-east-1"]
+                ]],
                 "CognitoUserPool": ["Default": [
                     "PoolId": "xx",
                     "Region": "us-east-1",

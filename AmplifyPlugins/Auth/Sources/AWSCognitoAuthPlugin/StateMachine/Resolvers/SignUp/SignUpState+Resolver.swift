@@ -33,7 +33,11 @@ extension SignUpState {
                 return resolveInitiatingSigningUp(byApplying: signUpEvent) ?? defaultState()
             case .confirmingSignUp:
                 return resolveConfirmingSignUp(byApplying: signUpEvent) ?? defaultState()
-            default:
+            case .signingUpInitiated:
+                return resolveSigningUpInitiated(byApplying: signUpEvent) ?? defaultState()
+            case .signedUp:
+                return defaultState()
+            case .error(_):
                 return defaultState()
             }
         }
@@ -58,7 +62,21 @@ extension SignUpState {
             case .initiateSignUpSuccess:
                 return StateResolution(newState: .signingUpInitiated)
             case .initiateSignUpFailure(let error):
-                return StateResolution(newState: .error(error))
+                let action = CancelSignUp()
+                return StateResolution(newState: .error(error), actions: [action])
+            default:
+                return nil
+            }
+        }
+
+        private func resolveSigningUpInitiated(byApplying signInEvent: SignUpEvent) -> StateResolution<SignUpState>? {
+            switch signInEvent.eventType {
+            case .initiateSignUp(let signUpEventData):
+                let action = InitiateSignUp(signUpEventData: signUpEventData)
+                return StateResolution(newState: SignUpState.initiatingSigningUp(signUpEventData), actions: [action])
+            case .confirmSignUp(let confirmSignUpEventData):
+                let action = ConfirmSignUp(confirmSignUpEventData: confirmSignUpEventData)
+                return StateResolution(newState: SignUpState.confirmingSignUp(confirmSignUpEventData), actions: [action])
             default:
                 return nil
             }
@@ -72,7 +90,8 @@ extension SignUpState {
             case .confirmSignUpSuccess:
                 return StateResolution(newState: .signedUp)
             case .confirmSignUpFailure(let error):
-                return StateResolution(newState: .error(error))
+                let action = CancelSignUp()
+                return StateResolution(newState: .error(error), actions: [action])
             default:
                 return nil
             }

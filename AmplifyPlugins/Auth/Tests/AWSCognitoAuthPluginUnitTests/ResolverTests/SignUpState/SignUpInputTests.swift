@@ -16,6 +16,7 @@ class SignUpInputTests: XCTestCase {
                                                               clientSecret: clientSecret)
         let input = SignUpInput(username: username,
                                 password: password,
+                                attributes: [:],
                                 userPoolConfiguration: userPoolConfiguration)
 
         XCTAssertNotNil(input.secretHash)
@@ -30,6 +31,7 @@ class SignUpInputTests: XCTestCase {
                                                               clientSecret: nil)
         let input = SignUpInput(username: username,
                                 password: password,
+                                attributes: [:],
                                 userPoolConfiguration: userPoolConfiguration)
 
         XCTAssertNil(input.secretHash)
@@ -46,6 +48,7 @@ class SignUpInputTests: XCTestCase {
                                                               clientSecret: clientSecret)
         let input = SignUpInput(username: username,
                                 password: password,
+                                attributes: [:],
                                 userPoolConfiguration: userPoolConfiguration)
         XCTAssertNotNil(input.validationData)
         XCTAssertGreaterThan(input.validationData?.count ?? 0, 0)
