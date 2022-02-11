@@ -11,7 +11,7 @@ import ClientRuntime
 
 import AWSCognitoIdentityProvider
 
-class AWSAuthSignUpOperationTests: XCTestCase {
+ class AWSAuthSignUpOperationTests: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
