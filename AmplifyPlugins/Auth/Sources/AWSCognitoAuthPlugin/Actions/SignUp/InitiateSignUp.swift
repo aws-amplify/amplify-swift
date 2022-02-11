@@ -49,6 +49,7 @@ struct InitiateSignUp: Action {
 
         let input = SignUpInput(username: signUpEventData.username,
                                 password: signUpEventData.password,
+                                attributes: signUpEventData.attributes,
                                 userPoolConfiguration: environment.userPoolConfiguration)
         timer.note("### Starting signUp")
         client.signUp(input: input) { result in
@@ -72,13 +73,18 @@ import UIKit
 #endif
 
 extension SignUpInput {
-    init(username: String, password: String, userPoolConfiguration: UserPoolConfigurationData) {
+    typealias CognitoAttributeType = CognitoIdentityProviderClientTypes.AttributeType
+    init(username: String,
+         password: String,
+         attributes: [String: String],
+         userPoolConfiguration: UserPoolConfigurationData) {
         let secretHash = Self.calculateSecretHash(username: username, userPoolConfiguration: userPoolConfiguration)
         let validationData = Self.getValidationData()
-
+        let convertedAttributes = Self.convertAttributes(attributes)
         self.init(clientId: userPoolConfiguration.clientId,
                   password: password,
                   secretHash: secretHash,
+                  userAttributes: convertedAttributes,
                   username: username,
                   validationData: validationData)
     }
@@ -126,5 +132,13 @@ extension SignUpInput {
         #else
         return nil
         #endif
+    }
+
+    private static func convertAttributes(_ attributes: [String: String]) -> [CognitoIdentityProviderClientTypes.AttributeType] {
+
+     return attributes.reduce(into: [CognitoIdentityProviderClientTypes.AttributeType]()) {
+            $0.append(CognitoIdentityProviderClientTypes.AttributeType(name: $1.key,
+                                                                       value: $1.value))
+        }
     }
 }
