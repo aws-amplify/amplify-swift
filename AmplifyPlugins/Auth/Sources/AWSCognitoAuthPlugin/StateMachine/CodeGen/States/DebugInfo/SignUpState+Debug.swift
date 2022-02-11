@@ -7,7 +7,7 @@
 
 import Foundation
 
-public extension SignUpState {
+extension SignUpState {
     var debugDictionary: [String: Any] {
         switch self {
         case .notStarted:
