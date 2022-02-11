@@ -26,7 +26,7 @@ extension SignUpStateSequence {
 
 extension SignUpEventData {
     init() {
-        self.init(username: "", password: "")
+        self.init(username: "", password: "", attributes: [:])
     }
 }
 
