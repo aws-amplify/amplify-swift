@@ -96,8 +96,14 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             .map { CreateTableStatement(modelSchema: $0).stringValue }
             .joined(separator: "\n")
 
+        let createIndexStatements = modelSchemas
+                    .sortByDependencyOrder()
+                    .map{ CreateIndexStatement(modelSchema: $0).stringValue }
+                    .joined(separator: "\n")
+
         do {
             try connection.execute(createTableStatements)
+            try connection.execute(createIndexStatements)
         } catch {
             throw DataStoreError.invalidOperation(causedBy: error)
         }
