@@ -116,5 +116,9 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     -> AuthConfirmResetPasswordOperation {
         fatalError("Not implemented")
     }
+
+    public func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation {
+        fatalError("Not implemented")
+    }
     
 }
