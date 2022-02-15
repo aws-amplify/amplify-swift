@@ -23,8 +23,8 @@ PODS:
     - AWSMobileClient (~> 2.27.0)
     - AWSPluginsCore (= 1.19.1)
     - CwlPreconditionTesting (~> 2.0)
-  - AppSyncRealTimeClient (1.6.0):
-    - Starscream (~> 3.1.1)
+  - AppSyncRealTimeClient (1.7.1):
+    - Starscream (~> 4.0.4)
   - AWSAuthCore (2.27.1):
     - AWSCore (= 2.27.1)
   - AWSCognitoIdentityProvider (2.27.1):
@@ -53,7 +53,7 @@ PODS:
   - SQLite.swift (0.12.2):
     - SQLite.swift/standard (= 0.12.2)
   - SQLite.swift/standard (0.12.2)
-  - Starscream (3.1.1)
+  - Starscream (4.0.4)
   - SwiftFormat/CLI (0.44.17)
   - SwiftLint (0.46.2)
 
@@ -108,7 +108,7 @@ SPEC CHECKSUMS:
   Amplify: cc137692ff768585ec3751825a10b85686a0f004
   AmplifyPlugins: fc0cabd7626ca3b5d6ef45dcf4050ef7b9a70120
   AmplifyTestCommon: 341bee5d527b4294dc256314221d75f9cc7e40be
-  AppSyncRealTimeClient: 8b5ec94085b8ee9bb6fb9d9d76a157beb538ec6f
+  AppSyncRealTimeClient: d22d76067627eec21aecc145379a8f9a3341a958
   AWSAuthCore: 9528c60ccdac6df6024fb0af1ed6a43782fd2d3d
   AWSCognitoIdentityProvider: 4de7f96340be72c1dca35c0ba835c6b9b69a28c0
   AWSCognitoIdentityProviderASF: 727f7c1c80d667a2da79e408c8c8745eac981d58
@@ -121,7 +121,7 @@ SPEC CHECKSUMS:
   CwlPosixPreconditionTesting: 1ba4471964405941f79b3f06bbcf3c2be782950c
   CwlPreconditionTesting: 73ae5de517a8761e5e40fb4136c6a26365af0440
   SQLite.swift: d2b4642190917051ce6bd1d49aab565fe794eea3
-  Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
+  Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
   SwiftLint: 6bc52a21f0fd44cab9aa2dc8e534fb9f5e3ec507
 

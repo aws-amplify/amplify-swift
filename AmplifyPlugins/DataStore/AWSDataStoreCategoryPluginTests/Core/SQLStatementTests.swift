@@ -33,6 +33,10 @@ class SQLStatementTests: XCTestCase {
 
         // Reserved word
         ModelRegistry.register(modelType: Transaction.self)
+
+        // Secondary Indexes
+        ModelRegistry.register(modelType: CustomerSecondaryIndexV2.self)
+        ModelRegistry.register(modelType: CustomerMultipleSecondaryIndexV2.self)
     }
 
     // MARK: - Create Table
@@ -133,6 +137,35 @@ class SQLStatementTests: XCTestCase {
           foreign key("bookId") references "Book"("id")
             on delete cascade
         );
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    // MARK: - Create Index
+
+    /// - Given: a `Model` instance
+    /// - When:
+    ///     - the model is of type `CustomerSecondaryIndexV2`
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    func testCreateIndexStatementFromModelWithSingleIndex() {
+        let statement = CreateIndexStatement(modelSchema: CustomerSecondaryIndexV2.schema)
+        let expectedStatement = """
+        create index if not exists byRepresentative on CustomerSecondaryIndexV2 (accountRepresentativeID);
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    /// - Given: a `Model` instance
+    /// - When:
+    ///     - the model is of type `CustomerMultipleSecondaryIndexV2`
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    func testCreateIndexStatementFromModelWithMultipleIndexes() {
+        let statement = CreateIndexStatement(modelSchema: CustomerMultipleSecondaryIndexV2.schema)
+        let expectedStatement = """
+        create index if not exists byNameAndPhoneNumber on CustomerMultipleSecondaryIndexV2 (name, phoneNumber);\
+        create index if not exists byRepresentative on CustomerMultipleSecondaryIndexV2 (accountRepresentativeID);
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }

@@ -22,11 +22,10 @@ struct CreateIndexStatement: SQLStatement {
         var statement = ""
 
         for index in modelSchema.indexes {
-            if case let .index(fields, name) = index, name != nil {
-                statement += "create index if not exists " + "\(name)" + " on " + "\(tableName)"
-                statement += "(\n"
-                statement += fields.joined(separator: ", ")
-                statement += "\n);"
+            if case let .index(fields, name) = index, let name = name {
+                statement += """
+                create index if not exists \(name) on \(tableName) (\(fields.joined(separator: ", ")));
+                """
             }
         }
 

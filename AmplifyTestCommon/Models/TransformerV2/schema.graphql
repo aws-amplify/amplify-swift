@@ -165,6 +165,13 @@ type CustomerSecondaryIndexV2 @model {
   accountRepresentativeID: ID! @index(name: "byRepresentative", queryField: "customerByRepresentative")
 }
 
+type CustomerMultipleSecondaryIndexV2 @model {
+  id: ID!
+  name: String! @index(name: "byNameAndPhoneNumber", sortKeyFields: ["phoneNumber"], queryField: "customerByNameAndPhone")
+  phoneNumber: String
+  accountRepresentativeID: ID! @index(name: "byRepresentative", queryField: "customerByRepresentative")
+}
+
 # Assign Default Values for fields
 
 type TodoWithDefaultValueV2 @model {
