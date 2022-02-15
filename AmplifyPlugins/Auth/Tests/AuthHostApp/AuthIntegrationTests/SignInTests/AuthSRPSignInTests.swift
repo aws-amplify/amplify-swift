@@ -55,6 +55,60 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
         wait(for: [operationExpectation], timeout: networkTimeout)
     }
 
+    /// Test signIn with empty username password
+    ///
+    /// - Given: A configured auth plugin
+    /// - When:
+    ///    - I invoke Amplify.Auth.signIn with empty username and password twice
+    /// - Then:
+    ///    - I should get a invalid error one each api call
+    ///
+    func testSignInFailWithEmptyUsername() {
+
+        let username = ""
+        let password = ""
+
+        let operationExpectation1 = expectation(description: "Operation should complete")
+        let operation1 = Amplify.Auth.signIn(username: username, password: password) { result in
+            defer {
+                operationExpectation1.fulfill()
+            }
+            switch result {
+            case .success:
+                XCTFail("SignIn with a empty username/password should fail")
+            case .failure(let error):
+                guard case .validation = error else {
+                    XCTFail("Should throw validation error")
+                    return
+                }
+
+            }
+        }
+        XCTAssertNotNil(operation1, "SignIn operation should not be nil")
+        wait(for: [operationExpectation1], timeout: networkTimeout)
+
+
+        // Test once more to verify that the state machine recovered from the previous error
+        let operationExpectation2 = expectation(description: "Operation should complete")
+        let operation2 = Amplify.Auth.signIn(username: username, password: password) { result in
+            defer {
+                operationExpectation2.fulfill()
+            }
+            switch result {
+            case .success:
+                XCTFail("SignIn with a empty username/password should fail")
+            case .failure(let error):
+                guard case .validation = error else {
+                    XCTFail("Should throw validation error")
+                    return
+                }
+
+            }
+        }
+        XCTAssertNotNil(operation2, "SignIn operation should not be nil")
+        wait(for: [operationExpectation2], timeout: networkTimeout)
+    }
+
     //
     //    /// Test successful signIn of a valid user
     //    /// Internally, Two Cognito APIs will be called, Cognito's `InitiateAuth` and `RespondToAuthChallenge` API.
