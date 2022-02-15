@@ -22,19 +22,11 @@ extension SRPSignInState {
             }
 
             if case .throwAuthError(let authError) = srpSignInEvent.eventType {
-                let action = CancelSignIn()
-                return StateResolution(
-                    newState: SRPSignInState.error(authError),
-                    actions: [action]
-                )
+                return errorStateWithCancelSignIn(authError)
             }
 
             if case .throwPasswordVerifierError(let authError) = srpSignInEvent.eventType {
-                let action = CancelSignIn()
-                return StateResolution(
-                    newState: SRPSignInState.error(authError),
-                    actions: [action]
-                )
+                return errorStateWithCancelSignIn(authError)
             }
 
             switch oldState {
@@ -58,7 +50,7 @@ extension SRPSignInState {
                     let error = SRPSignInError.inputValidation(
                         field: AuthPluginErrorConstants.signInUsernameError.field
                     )
-                    return .from(SRPSignInState.error(error))
+                    return errorStateWithCancelSignIn(error)
                 }
                 // Assuming password could be nil
                 let password = signInEventData.password ?? ""
@@ -105,6 +97,15 @@ extension SRPSignInState {
             default:
                 return .from(.respondingPasswordVerifier(srpStateData))
             }
+        }
+
+        private func errorStateWithCancelSignIn(_ error: SRPSignInError)
+        -> StateResolution<SRPSignInState> {
+            let action = CancelSignIn()
+            return StateResolution(
+                newState: SRPSignInState.error(error),
+                actions: [action]
+            )
         }
 
     }
