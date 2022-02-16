@@ -7,8 +7,8 @@
 
 import Foundation
 
-public typealias EventIDFactory = () -> String
+typealias EventIDFactory = () -> String
 
-public enum UUIDFactory {
-    public static let factory: EventIDFactory = { UUID().uuidString }
+enum UUIDFactory {
+    static let factory: EventIDFactory = { UUID().uuidString }
 }

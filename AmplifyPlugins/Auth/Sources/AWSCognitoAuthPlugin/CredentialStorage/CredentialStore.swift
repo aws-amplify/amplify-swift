@@ -102,7 +102,7 @@ struct CredentialStore: CredentialStoreBehavior {
         }
     }
 
-    // MARK: 
+    // MARK:
     func remove(_ key: String) throws {
         var query = attributes.query()
         query[CredentialStoreConstant.AttributeAccount] = key

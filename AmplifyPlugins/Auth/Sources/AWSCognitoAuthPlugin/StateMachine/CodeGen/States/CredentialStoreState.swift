@@ -22,7 +22,7 @@ enum CredentialStoreState: State {
     case success(CognitoCredentials?)
 
     case error(CredentialStoreError)
-    
+
     case idle
 
 }

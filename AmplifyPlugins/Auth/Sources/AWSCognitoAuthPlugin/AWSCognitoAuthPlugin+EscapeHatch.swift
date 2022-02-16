@@ -9,9 +9,9 @@ import Foundation
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 
-extension AWSCognitoAuthPlugin {
+public extension AWSCognitoAuthPlugin {
 
-    public func getEscapeHatch() -> AWSCognitoAuthService {
+    func getEscapeHatch() -> AWSCognitoAuthService {
         var service: AWSCognitoAuthService?
         switch authConfiguration {
 
@@ -34,7 +34,8 @@ extension AWSCognitoAuthPlugin {
             if let userPoolClient = userPoolClient
                 as? CognitoIdentityProviderClient,
                let identityPoolClient = identityPoolClient
-                as? CognitoIdentityClient {
+                as? CognitoIdentityClient
+            {
 
                 service = .userPoolAndIdentityPool(userPoolClient,
                                                    identityPoolClient)

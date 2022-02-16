@@ -1,4 +1,5 @@
-//// Copyright Amazon.com Inc. or its affiliates.
+//
+// Copyright Amazon.com Inc. or its affiliates.
 // All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -6,7 +7,7 @@
 
 import Foundation
 
-public enum SignUpError: Error {
+enum SignUpError: Error {
     case invalidState(message: String)
     case invalidUsername(message: String)
     case missingPassword(message: String)
@@ -16,7 +17,7 @@ public enum SignUpError: Error {
 }
 
 extension SignUpError: Equatable {
-    public static func == (lhs: SignUpError, rhs: SignUpError) -> Bool {
+    static func == (lhs: SignUpError, rhs: SignUpError) -> Bool {
         switch (lhs, rhs) {
         case (.invalidState, .invalidState):
             return true

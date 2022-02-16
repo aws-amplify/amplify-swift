@@ -11,7 +11,8 @@ import AWSPluginsCore
 public struct AWSAuthCognitoSession: AuthSession,
                                      AuthAWSCredentialsProvider,
                                      AuthCognitoTokensProvider,
-                                     AuthCognitoIdentityProvider {
+                                     AuthCognitoIdentityProvider
+{
 
     /// Indicates whether the user is signedIn or not
     public var isSignedIn: Bool
@@ -28,7 +29,8 @@ public struct AWSAuthCognitoSession: AuthSession,
          userSubResult: Result<String, AuthError>,
          identityIdResult: Result<String, AuthError>,
          awsCredentialsResult: Result<AuthAWSCredentials, AuthError>,
-         cognitoTokensResult: Result<AuthCognitoTokens, AuthError>) {
+         cognitoTokensResult: Result<AuthCognitoTokens, AuthError>)
+    {
         self.isSignedIn = isSignedIn
         self.userSubResult = userSubResult
         self.identityIdResult = identityIdResult
@@ -64,13 +66,15 @@ extension AWSAuthCognitoSession {
 
         var cognitUserPoolTokens: AWSCognitoUserPoolTokens?
         if case let .success(tokens) = getCognitoTokens(),
-           let unwrappedTokens = tokens as? AWSCognitoUserPoolTokens {
+           let unwrappedTokens = tokens as? AWSCognitoUserPoolTokens
+        {
             cognitUserPoolTokens = unwrappedTokens
         }
 
         var awsCredentials: AuthAWSCognitoCredentials?
         if case let .success(credentials) = getAWSCredentials(),
-            let unwrappedCredentials = credentials as? AuthAWSCognitoCredentials {
+            let unwrappedCredentials = credentials as? AuthAWSCognitoCredentials
+        {
             awsCredentials = unwrappedCredentials
         }
 

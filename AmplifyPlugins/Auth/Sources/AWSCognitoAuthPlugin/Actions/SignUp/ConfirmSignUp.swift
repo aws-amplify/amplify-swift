@@ -24,7 +24,8 @@ struct ConfirmSignUp: Action {
 
         let timer = LoggingTimer(identifier).start("### Starting execution")
         guard let environment = environment as? UserPoolEnvironment else {
-            let authError = AuthenticationError.configuration(message: "Environment configured incorrectly")
+            let message = AuthPluginErrorConstants.configurationError
+            let authError = AuthenticationError.configuration(message: message)
             let event = SignUpEvent(
                 id: UUID().uuidString,
                 eventType: .throwAuthError(authError)
@@ -84,7 +85,8 @@ extension ConfirmSignUpInput {
     private static func calculateSecretHash(username: String, userPoolConfiguration: UserPoolConfigurationData) -> String? {
         guard let clientSecret = userPoolConfiguration.clientSecret,
               !clientSecret.isEmpty,
-              let clientSecretData = clientSecret.data(using: .utf8) else {
+              let clientSecretData = clientSecret.data(using: .utf8)
+        else {
             return nil
         }
 

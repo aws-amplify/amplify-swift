@@ -21,7 +21,8 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
     public init(idToken: String,
                 accessToken: String,
                 refreshToken: String,
-                expiresIn: Int) {
+                expiresIn: Int)
+    {
         self.idToken = idToken
         self.accessToken = accessToken
         self.refreshToken = refreshToken
@@ -31,7 +32,8 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
     public init(idToken: String,
                 accessToken: String,
                 refreshToken: String,
-                expiration: Date) {
+                expiration: Date)
+    {
         self.idToken = idToken
         self.accessToken = accessToken
         self.refreshToken = refreshToken

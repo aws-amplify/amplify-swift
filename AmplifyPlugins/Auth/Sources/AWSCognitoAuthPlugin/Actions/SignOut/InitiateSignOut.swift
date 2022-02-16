@@ -16,14 +16,14 @@ struct InitiateSignOut: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
         let timer = LoggingTimer(identifier).start("### Starting execution")
-        
+
         let event: SignOutEvent
         if signOutEventData.globalSignOut {
             event = SignOutEvent(eventType: .signOutGlobally(signedInData))
         } else {
             event = SignOutEvent(eventType: .revokeToken(signedInData))
         }
-        
+
         timer.stop("### sending \(event.type)")
         dispatcher.send(event)
     }

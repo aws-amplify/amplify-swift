@@ -17,7 +17,8 @@ public typealias AmplifySignInOperation = AmplifyOperation<
     AuthError>
 
 public class AWSAuthSignInOperation: AmplifySignInOperation,
-                                     AuthSignInOperation {
+                                     AuthSignInOperation
+{
 
     let authStateMachine: AuthStateMachine
     let credentialStoreStateMachine: CredentialStoreStateMachine
@@ -25,7 +26,8 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
     init(_ request: AuthSignInRequest,
          authStateMachine: AuthStateMachine,
          credentialStoreStateMachine: CredentialStoreStateMachine,
-         resultListener: ResultListener?) {
+         resultListener: ResultListener?)
+    {
 
         self.authStateMachine = authStateMachine
         self.credentialStoreStateMachine = credentialStoreStateMachine
@@ -92,10 +94,11 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
                 self.finish()
             case .signingIn(_, let signInState):
                 if case .signingInWithSRP(let srpState, _) = signInState,
-                   case .error(let signInError) = srpState {
-                    if (signInError.isUserUnConfirmed) {
+                   case .error(let signInError) = srpState
+                {
+                    if signInError.isUserUnConfirmed {
                         self.dispatch(AuthSignInResult(nextStep: .confirmSignUp(nil)))
-                    } else if (signInError.isResetPassword) {
+                    } else if signInError.isResetPassword {
                         self.dispatch(AuthSignInResult(nextStep: .resetPassword(nil)))
                     } else {
                         self.dispatch(signInError.authError)
@@ -170,13 +173,13 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
     // TODO: Find a differnet mechanism to cancel the tokens
     private func cancelToken(_ token: AuthStateMachineToken?) {
         if let token = token {
-            self.authStateMachine.cancel(listenerToken: token)
+            authStateMachine.cancel(listenerToken: token)
         }
     }
 
     private func cancelCredentialStoreToken(_ token: CredentialStoreStateMachineToken?) {
         if let token = token {
-            self.authStateMachine.cancel(listenerToken: token)
+            authStateMachine.cancel(listenerToken: token)
         }
     }
 }

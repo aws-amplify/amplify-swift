@@ -6,14 +6,13 @@
 //
 
 import Foundation
-
 import AWSCognitoIdentityProvider
 
-public struct SignOutEvent: StateMachineEvent {
-    public var data: Any?
+struct SignOutEvent: StateMachineEvent {
+    var data: Any?
 
-    public enum EventType: Equatable {
-        public static func == (lhs: SignOutEvent.EventType, rhs: SignOutEvent.EventType) -> Bool {
+    enum EventType: Equatable {
+        static func == (lhs: SignOutEvent.EventType, rhs: SignOutEvent.EventType) -> Bool {
             return false
         }
 
@@ -24,11 +23,11 @@ public struct SignOutEvent: StateMachineEvent {
         case signedOutFailure(AuthenticationError)
     }
 
-    public let id: String
-    public let eventType: EventType
-    public let time: Date?
+    let id: String
+    let eventType: EventType
+    let time: Date?
 
-    public var type: String {
+    var type: String {
         switch eventType {
         case .signOutGlobally:
             return "SignOutEvent.signOutGlobally"
@@ -43,7 +42,7 @@ public struct SignOutEvent: StateMachineEvent {
         }
     }
 
-    public init(
+    init(
         id: String = UUID().uuidString,
         eventType: EventType,
         time: Date? = nil

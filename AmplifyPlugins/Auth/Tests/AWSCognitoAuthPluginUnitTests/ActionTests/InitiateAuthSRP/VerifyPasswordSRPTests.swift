@@ -30,7 +30,8 @@ class VerifyPasswordSRPTests: XCTestCase {
             MockIdentityProvider(
                 respondToAuthChallengeCallback: { input, callback
                     in verifyPasswordInvoked.fulfill()
-                })}
+                })
+        }
 
         let environment = BasicSRPAuthEnvironment(
             userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
@@ -86,14 +87,15 @@ class VerifyPasswordSRPTests: XCTestCase {
             }
 
             guard case let .throwPasswordVerifierError(error) = event.eventType,
-                  case .invalidServiceResponse = error else {
+                  case .invalidServiceResponse = error
+            else {
                       XCTFail("Should receive invalid service response")
                       return
                   }
 
         }
 
-        action.execute(withDispatcher: dispatcher,environment: environment)
+        action.execute(withDispatcher: dispatcher, environment: environment)
         waitForExpectations(timeout: 0.1)
     }
 
@@ -135,14 +137,14 @@ class VerifyPasswordSRPTests: XCTestCase {
             }
 
             guard case let .throwPasswordVerifierError(error) = event.eventType,
-                  case .invalidServiceResponse = error else
-                  {
+                  case .invalidServiceResponse = error
+            else {
                       XCTFail("Should receive invalid service response")
                       return
                   }
         }
 
-        action.execute(withDispatcher: dispatcher,environment: environment)
+        action.execute(withDispatcher: dispatcher, environment: environment)
         waitForExpectations(timeout: 0.1)
     }
 
@@ -184,14 +186,14 @@ class VerifyPasswordSRPTests: XCTestCase {
             }
 
             guard case let .throwPasswordVerifierError(error) = event.eventType,
-                  case .invalidServiceResponse = error else
-                  {
+                  case .invalidServiceResponse = error
+            else {
                       XCTFail("Should receive invalid service response")
                       return
                   }
         }
 
-        action.execute(withDispatcher: dispatcher,environment: environment)
+        action.execute(withDispatcher: dispatcher, environment: environment)
         waitForExpectations(timeout: 0.1)
     }
 
@@ -233,14 +235,14 @@ class VerifyPasswordSRPTests: XCTestCase {
             }
 
             guard case let .throwPasswordVerifierError(error) = event.eventType,
-                  case .invalidServiceResponse = error else
-                  {
+                  case .invalidServiceResponse = error
+            else {
                       XCTFail("Should receive invalid service response")
                       return
                   }
         }
 
-        action.execute(withDispatcher: dispatcher,environment: environment)
+        action.execute(withDispatcher: dispatcher, environment: environment)
         waitForExpectations(timeout: 0.1)
     }
 
@@ -282,14 +284,14 @@ class VerifyPasswordSRPTests: XCTestCase {
             }
 
             guard case let .throwPasswordVerifierError(error) = event.eventType,
-                  case .invalidServiceResponse = error else
-                  {
+                  case .invalidServiceResponse = error
+            else {
                       XCTFail("Should receive invalid service response")
                       return
                   }
         }
 
-        action.execute(withDispatcher: dispatcher,environment: environment)
+        action.execute(withDispatcher: dispatcher, environment: environment)
         waitForExpectations(timeout: 0.1)
     }
 
@@ -331,14 +333,14 @@ class VerifyPasswordSRPTests: XCTestCase {
             }
 
             guard case let .throwPasswordVerifierError(error) = event.eventType,
-                  case .calculation = error else
-                  {
+                  case .calculation = error
+            else {
                       XCTFail("Should receive invalid service response")
                       return
                   }
         }
 
-        action.execute(withDispatcher: dispatcher,environment: environment)
+        action.execute(withDispatcher: dispatcher, environment: environment)
         waitForExpectations(timeout: 0.1)
     }
 
@@ -428,8 +430,8 @@ class VerifyPasswordSRPTests: XCTestCase {
             }
 
             guard case let .throwPasswordVerifierError(error) = event.eventType,
-                  case .service = error else
-                  {
+                  case .service = error
+            else {
                       XCTFail("Should receive invalid service response")
                       return
                   }

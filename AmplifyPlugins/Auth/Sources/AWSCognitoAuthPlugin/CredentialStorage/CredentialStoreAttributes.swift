@@ -26,7 +26,7 @@ extension CredentialStoreAttributes {
             CredentialStoreConstant.AttributeService: service
         ]
         if let accessGroup = accessGroup {
-            query[CredentialStoreConstant.AttributeAccessGroup] = accessGroup             
+            query[CredentialStoreConstant.AttributeAccessGroup] = accessGroup
         }
         return query
     }
