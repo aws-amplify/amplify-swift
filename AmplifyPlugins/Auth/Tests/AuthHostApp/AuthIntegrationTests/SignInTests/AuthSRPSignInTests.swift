@@ -34,10 +34,17 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     ///
     func testSuccessfulSignIn() {
 
-        let username = defaultTestUsername
-        let password = defaultTestPassword
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
 
-        //TODO: Add `AuthSignInHelper.signUpUser` when signUp api is ready
+        let signUpExpectation = expectation(description: "SignUp operation should complete")
+        AuthSignInHelper.signUpUser(username: username,
+                                    password: password,
+                                    email: defaultTestEmail) { didSucceed, error in
+            signUpExpectation.fulfill()
+            XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
+        }
+        wait(for: [signUpExpectation], timeout: networkTimeout)
 
         let operationExpectation = expectation(description: "Operation should complete")
         let operation = Amplify.Auth.signIn(username: username, password: password) { result in

@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import AWSCognitoIdentityProvider
 
 enum SignUpState: State {
     case notStarted
     case initiatingSigningUp(SignUpEventData)
-    case signingUpInitiated
+    case signingUpInitiated(username: String, response: SignUpOutputResponse)
     case confirmingSignUp(ConfirmSignUpEventData)
     case signedUp
     case error(SignUpError)
@@ -31,6 +32,25 @@ extension SignUpState {
             return "SignUpState.signedUp"
         case .error:
             return "SignUpState.error"
+        }
+    }
+
+    static func == (lhs: SignUpState, rhs: SignUpState) -> Bool {
+        switch (lhs, rhs) {
+        case (.notStarted, .notStarted):
+            return true
+        case (.initiatingSigningUp(let lhsData), .initiatingSigningUp(let rhsData)):
+            return lhsData == rhsData
+        case (.signingUpInitiated, .signingUpInitiated):
+            return true
+        case (.confirmingSignUp(let lhsData), .confirmingSignUp(let rhsData)):
+            return lhsData == rhsData
+        case (.signedUp, .signedUp):
+            return true
+        case (.error(let lhsData), .error(let rhsData)):
+            return lhsData == rhsData
+        default:
+            return false
         }
     }
 }

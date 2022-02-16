@@ -22,7 +22,7 @@ class SignUpStateTests: XCTestCase {
     func testSignUpInitiatingSigningUpSuccessResolver() throws {
         let sequence = SignUpStateSequence(oldState: .initiatingSigningUp(SignUpEventData()),
                                            event: .initiateSignUpSuccessEvent,
-                                           expected: .signingUpInitiated)
+                                           expected: .signingUpInitiated(username: "", response: SignUpOutputResponse()))
         sequence.assertResolvesToExpected()
     }
 
