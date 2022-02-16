@@ -15,10 +15,12 @@ struct FetchAuthIdentityId: Action {
     let cognitoSession: AWSAuthCognitoSession
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) {
+                 environment: Environment)
+    {
 
         guard let authZEnvironment = environment as? AuthorizationEnvironment,
-              let client = try? authZEnvironment.cognitoIdentityFactory() else {
+              let client = try? authZEnvironment.cognitoIdentityFactory()
+        else {
                   let authZError = AuthorizationError.configuration(message: AuthPluginErrorConstants.configurationError)
                   let event = FetchIdentityEvent(eventType: .throwError(authZError))
                   dispatcher.send(event)
@@ -35,7 +37,8 @@ struct FetchAuthIdentityId: Action {
 
         var loginsMap: [String: String] = [:]
         if case let .success(cognitoUserPoolTokens) = cognitoSession.cognitoTokensResult,
-           let userpoolEnvironment = environment as? UserPoolEnvironment {
+           let userpoolEnvironment = environment as? UserPoolEnvironment
+        {
 
             let identityProviderName = userpoolEnvironment.userPoolConfiguration.getIdentityProviderName()
             loginsMap[identityProviderName] = cognitoUserPoolTokens.idToken

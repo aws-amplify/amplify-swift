@@ -7,7 +7,7 @@
 
 import AWSCognitoIdentityProvider
 
-public enum SignOutState: State {
+enum SignOutState: State {
     case notStarted
     case signingOutGlobally
     case revokingToken
@@ -16,7 +16,7 @@ public enum SignOutState: State {
     case error(AuthenticationError)
 }
 
-public extension SignOutState {
+extension SignOutState {
     var type: String {
         switch self {
         case .notStarted: return "SignOutState.notStarted"

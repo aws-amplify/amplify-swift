@@ -10,9 +10,10 @@ import Foundation
 
 struct CancelSignIn: Action {
     let identifier = "CancelSignIn"
-    
+
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) {
+                 environment: Environment)
+    {
 
         Amplify.Logging.verbose("Starting execution \(#fileID)")
 
@@ -34,7 +35,7 @@ struct CancelSignIn: Action {
 extension CancelSignIn: DefaultLogger { }
 
 extension CancelSignIn: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         [
             "identifier": identifier
         ]
@@ -42,7 +43,7 @@ extension CancelSignIn: CustomDebugDictionaryConvertible {
 }
 
 extension CancelSignIn: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         debugDictionary.debugDescription
     }
 }

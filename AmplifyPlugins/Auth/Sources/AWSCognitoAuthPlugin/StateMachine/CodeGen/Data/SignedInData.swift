@@ -7,14 +7,14 @@
 
 import Foundation
 
-public struct SignedInData {
-    public let userId: String
-    public let userName: String
-    public let signedInDate: Date
-    public let signInMethod: SignInMethod
-    public let cognitoUserPoolTokens: AWSCognitoUserPoolTokens
+struct SignedInData {
+    let userId: String
+    let userName: String
+    let signedInDate: Date
+    let signInMethod: SignInMethod
+    let cognitoUserPoolTokens: AWSCognitoUserPoolTokens
 
-    public init(
+    init(
         userId: String,
         userName: String,
         signedInDate: Date,
@@ -34,7 +34,7 @@ extension SignedInData: Codable { }
 extension SignedInData: Equatable { }
 
 extension SignedInData: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         [
             "userId": userId.masked(),
             "userName": userName.masked(),
@@ -45,7 +45,7 @@ extension SignedInData: CustomDebugDictionaryConvertible {
 }
 
 extension SignedInData: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         debugDictionary.debugDescription
     }
 }

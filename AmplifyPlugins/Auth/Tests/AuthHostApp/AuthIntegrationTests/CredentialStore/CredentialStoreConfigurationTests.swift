@@ -9,17 +9,17 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 
 class CredentialStoreConfigurationTests: AWSAuthBaseTest {
-    
+
     override func setUp() {
         super.setUp()
         AuthSessionHelper.invalidateSessions()
     }
-    
+
     override func tearDown() {
         super.tearDown()
         AuthSessionHelper.invalidateSessions()
     }
-    
+
     /// Test successful migration of credentials when auth configuration changes
     ///
     /// - Given: A user registered in Identity user pool
@@ -44,13 +44,13 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         } catch {
             XCTFail("Unable to save credentials")
         }
-        
+
         // When configuration changed
         let userPoolConfiguration = Defaults.makeDefaultUserPoolConfigData()
         let newAuthConfig = AuthConfiguration.userPoolsAndIdentityPools(userPoolConfiguration,
                                                                         configData)
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: newAuthConfig)
-        
+
         // Then
         let credentials = try? newCredentialStore.retrieveCredential()
         XCTAssertNotNil(credentials)
@@ -59,7 +59,7 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         XCTAssertEqual(credentials?.identityId, identityId)
         XCTAssertEqual(credentials?.awsCredential, awsCredentials)
     }
-    
+
     /// Test no migration happens when no configuration change happens
     ///
     /// - Given: A user registered is configured
@@ -85,10 +85,10 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         } catch {
             XCTFail("Unable to save credentials")
         }
-        
+
         // When configuration don't change changed
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: initialAuthConfig)
-        
+
         // Then
         let credentials = try? newCredentialStore.retrieveCredential()
         XCTAssertNotNil(credentials)
@@ -97,7 +97,7 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         XCTAssertEqual(credentials?.identityId, identityId)
         XCTAssertEqual(credentials?.awsCredential, awsCredentials)
     }
-    
+
     /// Test clearing of existing credentials when a configuration change happens from UserPool to both User Pool and Identity Pool
     ///
     /// - Given: A user registered in user pool
@@ -121,18 +121,18 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         } catch {
             XCTFail("Unable to save credentials")
         }
-        
+
         // When configuration changed
         let newAuthConfig = AuthConfiguration.userPoolsAndIdentityPools(
             Defaults.makeDefaultUserPoolConfigData(),
             Defaults.makeIdentityConfigData())
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: newAuthConfig)
-        
+
         // Then
         let credentials = try? newCredentialStore.retrieveCredential()
         XCTAssertNil(credentials)
     }
-    
+
     /// Test clearing of existing credentials when a configuration changes for identity pool
     ///
     /// - Given: A user registered in identity pool
@@ -156,17 +156,17 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         } catch {
             XCTFail("Unable to save credentials")
         }
-        
+
         // When configuration changed
         let newAuthConfig = AuthConfiguration.identityPools(IdentityPoolConfigurationData(poolId: "changed",
                                                                                           region: "changed"))
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: newAuthConfig)
-        
+
         // Then
         let credentials = try? newCredentialStore.retrieveCredential()
         XCTAssertNil(credentials)
     }
-    
+
     /// Test clearing of existing credentials when a new app is installed
     ///
     /// - Given: A user registered
@@ -192,11 +192,11 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         } catch {
             XCTFail("Unable to save credentials")
         }
-        
+
         // When configuration don't change changed
         UserDefaults.standard.removeObject(forKey: "isKeychainConfigured")
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: initialAuthConfig)
-        
+
         // Then credentials should be nil
         let credentials = try? newCredentialStore.retrieveCredential()
         XCTAssertNil(credentials)

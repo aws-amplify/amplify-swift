@@ -9,8 +9,8 @@ import Foundation
 
 extension SRPSignInState {
     struct Resolver: StateMachineResolver {
-        public typealias StateType = SRPSignInState
-        public let defaultState = SRPSignInState.notStarted
+        typealias StateType = SRPSignInState
+        let defaultState = SRPSignInState.notStarted
 
         func resolve(
             oldState: SRPSignInState,

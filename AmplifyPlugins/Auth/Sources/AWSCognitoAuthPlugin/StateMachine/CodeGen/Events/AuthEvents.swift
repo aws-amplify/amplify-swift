@@ -40,7 +40,8 @@ import Foundation
 
      init(id: String = UUID().uuidString,
                 eventType: EventType,
-                time: Date? = Date()) {
+                time: Date? = Date())
+     {
         self.id = id
         self.eventType = eventType
         self.time = time

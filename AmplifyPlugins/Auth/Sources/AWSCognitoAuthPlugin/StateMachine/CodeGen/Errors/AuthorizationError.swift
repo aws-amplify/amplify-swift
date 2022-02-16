@@ -10,7 +10,7 @@ import AWSCognitoIdentity
 import ClientRuntime
 import Foundation
 
-public enum AuthorizationError: Error {
+enum AuthorizationError: Error {
     case configuration(message: String)
     case service(error: Swift.Error)
     case invalidState(message: String)
@@ -45,7 +45,7 @@ extension AuthorizationError: AuthErrorConvertible {
 }
 
 extension AuthorizationError: Equatable {
-    public static func == (lhs: AuthorizationError, rhs: AuthorizationError) -> Bool {
+    static func == (lhs: AuthorizationError, rhs: AuthorizationError) -> Bool {
         switch (lhs, rhs) {
         case (.configuration, .configuration):
             return true

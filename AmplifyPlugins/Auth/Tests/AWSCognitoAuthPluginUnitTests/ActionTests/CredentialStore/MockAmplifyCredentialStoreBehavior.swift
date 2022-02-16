@@ -10,12 +10,12 @@ import Foundation
 @testable import AWSCognitoAuthPlugin
 
 class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior, AmplifyAuthCredentialStoreProvider {
-    
-    typealias Migrationhandler = () -> ()
+
+    typealias Migrationhandler = () -> Void
     typealias SaveCredentialHandler = (CognitoCredentials) throws -> Void
     typealias GetCredentialHandler = () throws -> (CognitoCredentials)
-    typealias ClearCredentialHandler = () throws -> ()
-        
+    typealias ClearCredentialHandler = () throws -> Void
+
     let migrationCompleteHandler: Migrationhandler?
     let saveCredentialHandler: SaveCredentialHandler?
     let getCredentialHandler: GetCredentialHandler?
@@ -31,11 +31,11 @@ class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior, Am
         self.getCredentialHandler = getCredentialHandler
         self.clearCredentialHandler = clearCredentialHandler
     }
-    
+
     func saveCredential(_ credential: CognitoCredentials) throws {
         try saveCredentialHandler?(credential)
     }
-    
+
     func retrieveCredential() throws -> CognitoCredentials {
         guard let credentials = try getCredentialHandler?() else {
             throw CredentialStoreError.unknown("", nil)

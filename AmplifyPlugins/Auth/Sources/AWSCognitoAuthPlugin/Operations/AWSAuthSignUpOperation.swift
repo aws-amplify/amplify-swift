@@ -1,4 +1,5 @@
-//// Copyright Amazon.com Inc. or its affiliates.
+//
+// Copyright Amazon.com Inc. or its affiliates.
 // All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -16,13 +17,15 @@ public typealias AmplifySignUpOperation = AmplifyOperation<
     AuthError>
 
 public class AWSAuthSignUpOperation: AmplifySignUpOperation,
-                                     AuthSignUpOperation {
+                                     AuthSignUpOperation
+{
 
     let stateMachine: AuthStateMachine
 
     init(_ request: AuthSignUpRequest,
          stateMachine: AuthStateMachine,
-         resultListener: ResultListener?) {
+         resultListener: ResultListener?)
+    {
 
         self.stateMachine = stateMachine
         super.init(categoryType: .auth,
@@ -73,7 +76,7 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation,
             }
 
             switch authNState {
-            case .signingUp(_ , let signUpState):
+            case .signingUp(_, let signUpState):
 
                 switch signUpState {
                 case .signingUpInitiated:

@@ -9,7 +9,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 
 class SignOutStateNotStartedTests: XCTestCase {
-    
+
     var resolver: AnyResolver<SignOutState> {
         SignOutState.Resolver().logging().eraseToAnyResolver()
     }

@@ -15,7 +15,7 @@ enum SignInState: State {
 }
 
 extension SignInState {
-    
+
     var type: String {
         switch self {
         case .signingInWithSRP: return "SignInState.signingInWithSRP"

@@ -15,15 +15,16 @@ struct SignOutGlobally: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
         let timer = LoggingTimer(identifier).start("### Starting execution")
-        
+
         guard let environment = environment as? UserPoolEnvironment else {
-            let error = AuthenticationError.configuration(message: "Environment configured incorrectly")
+            let message = AuthPluginErrorConstants.configurationError
+            let error = AuthenticationError.configuration(message: message)
             let event = SignOutEvent(id: UUID().uuidString, eventType: .signedOutFailure(error))
             dispatcher.send(event)
             timer.stop("### sending \(event.type)")
             return
         }
-        
+
         let client: CognitoUserPoolBehavior
         do {
             client = try environment.cognitoUserPoolFactory()
@@ -34,10 +35,10 @@ struct SignOutGlobally: Action {
             timer.stop("### sending \(event.type)")
             return
         }
-        
+
         timer.note("### Starting signOut")
         let input = GlobalSignOutInput(accessToken: signedInData.cognitoUserPoolTokens.accessToken)
-        
+
         client.globalSignOut(input: input) { result in
             // Log the result, but proceed to attempt to revoke tokens regardless of globalSignOut result.
             timer.note("### globalSignOut response received")
