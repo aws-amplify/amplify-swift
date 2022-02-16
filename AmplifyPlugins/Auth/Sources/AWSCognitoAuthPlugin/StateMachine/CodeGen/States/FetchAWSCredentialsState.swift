@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum FetchAWSCredentialsState: State {
+enum FetchAWSCredentialsState: State {
 
     case configuring
 
@@ -19,7 +19,7 @@ public enum FetchAWSCredentialsState: State {
 
 }
 
-public extension FetchAWSCredentialsState {
+extension FetchAWSCredentialsState {
     var type: String {
         switch self {
         case .configuring: return "FetchAWSCredentialsState.configuring"

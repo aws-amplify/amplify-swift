@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public enum AuthenticationConfiguration {
+enum AuthenticationConfiguration {
     case userPools(UserPoolConfigurationData)
 }
 
@@ -16,7 +16,7 @@ extension AuthenticationConfiguration: Codable {
         case userPools
     }
 
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         switch self {
@@ -25,7 +25,7 @@ extension AuthenticationConfiguration: Codable {
         }
     }
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         guard let key = container.allKeys.first else {
@@ -47,7 +47,7 @@ extension AuthenticationConfiguration: Codable {
 }
 
 extension AuthenticationConfiguration: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         switch self {
         case .userPools(let userPoolConfigurationData):
             return [

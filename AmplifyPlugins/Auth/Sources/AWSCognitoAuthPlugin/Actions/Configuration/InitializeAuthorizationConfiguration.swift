@@ -12,7 +12,8 @@ struct InitializeAuthorizationConfiguration: Action {
     let identifier = "InitializeAuthorizationConfiguration"
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                        environment: Environment) {
+                        environment: Environment)
+    {
         // ATM this is a no-op action
         let timer = LoggingTimer(identifier).start("### Starting execution")
         let authorizationEvent = AuthorizationEvent(eventType: .configure)

@@ -12,7 +12,8 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
 
     public func fetchDevices(
         options: AuthFetchDevicesOperation.Request.Options? = nil,
-        listener: AuthFetchDevicesOperation.ResultListener?) -> AuthFetchDevicesOperation {
+        listener: AuthFetchDevicesOperation.ResultListener?) -> AuthFetchDevicesOperation
+    {
 
             fatalError("Not implemented")
         }
@@ -20,14 +21,16 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
     public func forgetDevice(
         _ device: AuthDevice? = nil,
         options: AuthForgetDeviceOperation.Request.Options? = nil,
-        listener: AuthForgetDeviceOperation.ResultListener?) -> AuthForgetDeviceOperation {
+        listener: AuthForgetDeviceOperation.ResultListener?) -> AuthForgetDeviceOperation
+    {
 
             fatalError("Not implemented")
         }
 
     public func rememberDevice(
         options: AuthRememberDeviceOperation.Request.Options? = nil,
-        listener: AuthRememberDeviceOperation.ResultListener?) -> AuthRememberDeviceOperation {
+        listener: AuthRememberDeviceOperation.ResultListener?) -> AuthRememberDeviceOperation
+    {
             fatalError("Not implemented")
         }
 }

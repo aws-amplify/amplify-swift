@@ -50,7 +50,8 @@ extension AWSCognitoAuthPlugin {
     func configure(authConfiguration: AuthConfiguration,
                    authStateMachine: StateMachine<AuthState, AuthEnvironment>,
                    credentialStoreStateMachine: StateMachine<CredentialStoreState, CredentialEnvironment>,
-                   queue: OperationQueue = OperationQueue()) {
+                   queue: OperationQueue = OperationQueue())
+    {
         self.authConfiguration = authConfiguration
         self.queue = queue
         self.queue.maxConcurrentOperationCount = 1
@@ -80,7 +81,7 @@ extension AWSCognitoAuthPlugin {
                                                   credentialStoreError)
                     Amplify.log.error(error: error)
                 }
-                
+
                 if let token = token {
                     self.credentialStoreStateMachine.cancel(listenerToken: token)
                 }
@@ -97,7 +98,8 @@ extension AWSCognitoAuthPlugin {
     }
 
     func authConfiguration(userPoolConfig: UserPoolConfigurationData?,
-                           identityPoolConfig: IdentityPoolConfigurationData?) throws -> AuthConfiguration {
+                           identityPoolConfig: IdentityPoolConfigurationData?) throws -> AuthConfiguration
+    {
 
         if let userPoolConfigNonNil = userPoolConfig, let identityPoolConfigNonNil = identityPoolConfig {
             return .userPoolsAndIdentityPools(userPoolConfigNonNil, identityPoolConfigNonNil)
@@ -187,18 +189,18 @@ extension AWSCognitoAuthPlugin {
     }
 
     func makeAuthEnvironment(authConfiguration: AuthConfiguration) -> AuthEnvironment {
-        
+
         switch authConfiguration {
         case .userPools(let userPoolConfigurationData):
             let authenticationEnvironment = authenticationEnvironment(userPoolConfigData: userPoolConfigurationData)
-            
+
             return AuthEnvironment(
                 configuration: authConfiguration,
                 userPoolConfigData: userPoolConfigurationData,
                 identityPoolConfigData: nil,
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: nil)
-            
+
         case .identityPools(let identityPoolConfigurationData):
             let authorizationEnvironment = authorizationEnvironment(identityPoolConfigData: identityPoolConfigurationData)
             return AuthEnvironment(
@@ -207,7 +209,7 @@ extension AWSCognitoAuthPlugin {
                 identityPoolConfigData: identityPoolConfigurationData,
                 authenticationEnvironment: nil,
                 authorizationEnvironment: authorizationEnvironment)
-            
+
         case .userPoolsAndIdentityPools(let userPoolConfigurationData, let identityPoolConfigurationData):
             let authenticationEnvironment = authenticationEnvironment(userPoolConfigData: userPoolConfigurationData)
             let authorizationEnvironment = authorizationEnvironment(identityPoolConfigData: identityPoolConfigurationData)

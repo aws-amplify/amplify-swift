@@ -21,7 +21,6 @@ let amplifyTargets: [Target] = [
         exclude: [
             "Info.plist"
         ]
-        
     ),
     .target(
         name: "AmplifyTestCommon",
@@ -38,6 +37,7 @@ let amplifyTargets: [Target] = [
             "Models/TeamProject/schema.graphql",
             "Models/M2MPostEditorUser/schema.graphql",
             "Models/Collection/connection-schema.graphql",
+            "Models/TransformerV2/schema.graphql"
         ]
     ),
     .testTarget(
@@ -98,7 +98,10 @@ let apiTargets: [Target] = [
             "AmplifyTestCommon",
             "AWSPluginsTestCommon"
         ],
-        path: "AmplifyPlugins/API/AWSAPICategoryPluginTests"
+        path: "AmplifyPlugins/API/AWSAPICategoryPluginTests",
+        exclude: [
+            "Info.plist"
+        ]
     ),
     .testTarget(
         name: "AWSAPICategoryPluginFunctionalTests",
@@ -111,9 +114,6 @@ let apiTargets: [Target] = [
             "Info.plist",
             "GraphQLModelBased/README.md",
             "GraphQLSyncBased/README.md"
-        ],
-        resources: [
-            .process("Resources/GraphQLModelBasedTests-amplifyconfiguration.json")
         ]
     ),
     .testTarget(
@@ -124,9 +124,9 @@ let apiTargets: [Target] = [
             "AmplifyTestCommon"
         ],
         path: "AmplifyPlugins/API/AWSAPICategoryPluginIntegrationTests/GraphQL/GraphQLWithIAMIntegrationTests/",
-        resources: [
-            .process("Resources/GraphQLWithIAMIntegrationTests-amplifyconfiguration.json"),
-            .process("Resources/GraphQLWithIAMIntegrationTests-credentials.json")
+        exclude: [
+            "README.md",
+            "Info.plist"
         ]
     ),
     .testTarget(
@@ -136,10 +136,7 @@ let apiTargets: [Target] = [
             "AWSCognitoAuthPlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/API/AWSAPICategoryPluginIntegrationTests/REST/RESTWithIAMIntegrationTests/",
-        resources: [
-            .process("Resources/RESTWithIAMIntegrationTests-amplifyconfiguration.json")
-        ]
+        path: "AmplifyPlugins/API/AWSAPICategoryPluginIntegrationTests/REST/RESTWithIAMIntegrationTests/"
     ),
 ]
 
@@ -171,10 +168,14 @@ let authTargets: [Target] = [
     .target(
         name: "libtommathAmplify",
         path: "AmplifyPlugins/Auth/Sources/libtommath",
+        exclude: [
+            "changes.txt",
+            "LICENSE",
+            "README.md"
+        ],
         cSettings: [
             .unsafeFlags(["-flto=thin"])  // for Dead Code Elimination
-        ]
-    ),
+        ]    ),
     .testTarget(
         name: "AWSCognitoAuthPluginUnitTests",
         dependencies: [
@@ -209,7 +210,10 @@ let dataStoreTargets: [Target] = [
             "AWSDataStorePlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPluginTests"
+        path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPluginTests",
+        exclude: [
+            "Info.plist"
+        ]
     ),
     .testTarget(
         name: "AWSDataStoreCategoryPluginIntegrationTests",
@@ -219,8 +223,10 @@ let dataStoreTargets: [Target] = [
             "AmplifyTestCommon"
         ],
         path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPluginIntegrationTests",
-        resources: [
-            .process("Resources/AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration.json")
+        exclude: [
+            "TransformerV2/README.md",
+            "README.md",
+            "Info.plist"
         ]
     ),
 ]

@@ -31,7 +31,8 @@ extension SdkError: AuthErrorConvertible {
     }
 
     func convertToAuthError(clientError: ClientError,
-                            httpResponse: HttpResponse? = nil) -> AuthError {
+                            httpResponse: HttpResponse? = nil) -> AuthError
+    {
         switch clientError {
         case .networkError(let error):
             return AuthError.service(error.localizedDescription,

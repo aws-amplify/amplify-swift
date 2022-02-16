@@ -27,7 +27,7 @@ struct StartSRPFlow: Action {
 extension StartSRPFlow: DefaultLogger { }
 
 extension StartSRPFlow: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
             "signInEventData": signInEventData.debugDictionary
@@ -36,7 +36,7 @@ extension StartSRPFlow: CustomDebugDictionaryConvertible {
 }
 
 extension StartSRPFlow: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         debugDictionary.debugDescription
     }
 }

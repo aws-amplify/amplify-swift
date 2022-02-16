@@ -8,7 +8,7 @@
 import Foundation
 
 
-public extension SignOutState {
+extension SignOutState {
 
     var debugDictionary: [String: Any] {
 

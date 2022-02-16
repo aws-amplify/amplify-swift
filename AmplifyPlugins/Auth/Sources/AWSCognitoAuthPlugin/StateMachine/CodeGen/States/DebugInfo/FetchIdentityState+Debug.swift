@@ -7,7 +7,7 @@
 
 import Foundation
 
-public extension FetchIdentityState {
+extension FetchIdentityState {
     var debugDictionary: [String: Any] {
         let stateTypeDictionary: [String: Any] = ["FetchIdentityState": type]
         var additionalMetadataDictionary: [String: Any] = [:]

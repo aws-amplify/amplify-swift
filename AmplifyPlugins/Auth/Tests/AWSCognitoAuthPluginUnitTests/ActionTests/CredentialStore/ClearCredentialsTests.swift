@@ -48,7 +48,7 @@ class ClearCredentialsTests: XCTestCase {
 
         waitForExpectations(timeout: 0.1)
     }
-    
+
     /// Test is responsible to check if configuration error is correctly caught by the action
     ///
     /// - Given: A set of credentials and an invalid environment
@@ -57,7 +57,7 @@ class ClearCredentialsTests: XCTestCase {
     ///    - The action should throw an error
     func testClearCredentialsInvalidEnvironment() {
         let expectation = expectation(description: "throwClearCredentialConfigurationError")
-        
+
         let expectedError = CredentialStoreError.configuration(
             message: AuthPluginErrorConstants.configurationError)
 
@@ -65,12 +65,12 @@ class ClearCredentialsTests: XCTestCase {
 
         let action = ClearCredentialStore()
         action.execute(withDispatcher: MockDispatcher { event in
-            
+
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
                 return
             }
-            
+
             if case let .throwError(error)  = event.eventType {
                 XCTAssertNotNil(error)
                 XCTAssertEqual(error, expectedError)
@@ -80,7 +80,7 @@ class ClearCredentialsTests: XCTestCase {
 
         waitForExpectations(timeout: 0.1)
     }
-    
+
     /// Test is responsible to check if the clear credentials handle a known error
     ///
     /// - Given: A set of credentials and an expected error from the Mock
@@ -90,8 +90,8 @@ class ClearCredentialsTests: XCTestCase {
     func testClearCredentialsKnownException() {
         let mockedData = "mock"
         let expectation = expectation(description: "clearCredentialErrorInvoked")
-        
-        let expectedError = CredentialStoreError.securityError(30534)
+
+        let expectedError = CredentialStoreError.securityError(30_534)
 
         let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(data: mockedData)
         let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { service in
@@ -116,12 +116,12 @@ class ClearCredentialsTests: XCTestCase {
 
         let action = ClearCredentialStore()
         action.execute(withDispatcher: MockDispatcher { event in
-            
+
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
                 return
             }
-            
+
             if case let .throwError(error)  = event.eventType {
                 XCTAssertNotNil(error)
                 XCTAssertEqual(error, expectedError)
@@ -131,7 +131,7 @@ class ClearCredentialsTests: XCTestCase {
 
         waitForExpectations(timeout: 0.1)
     }
-    
+
     /// Test is responsible to check if the clear credentials handle an unknown error
     ///
     /// - Given: A set of credentials and an expected unknown error from the Mock
@@ -141,7 +141,7 @@ class ClearCredentialsTests: XCTestCase {
     func testClearCredentialsUnknownKnownException() {
         let mockedData = "mock"
         let expectation = expectation(description: "clearCredentialErrorInvoked")
-        
+
         let unknownError = AuthorizationError.invalidIdentityId(message: "")
         let expectedError = CredentialStoreError.unknown("An unknown error occurred", unknownError)
 
@@ -168,12 +168,12 @@ class ClearCredentialsTests: XCTestCase {
 
         let action = ClearCredentialStore()
         action.execute(withDispatcher: MockDispatcher { event in
-            
+
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
                 return
             }
-            
+
             if case let .throwError(error)  = event.eventType {
                 XCTAssertNotNil(error)
                 XCTAssertEqual(error, expectedError)

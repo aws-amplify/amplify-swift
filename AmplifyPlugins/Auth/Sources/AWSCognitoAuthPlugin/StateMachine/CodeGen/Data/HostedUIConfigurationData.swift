@@ -7,20 +7,21 @@
 
 import Foundation
 
-public struct HostedUIConfigurationData: Equatable {
+struct HostedUIConfigurationData: Equatable {
 
     // User pool app cliend id configured for the HostedUI
-    public let clientId: String
+    let clientId: String
 
     // Userpool app client secret configured for the HostedUI
-    public let clientSecret: String?
+    let clientSecret: String?
 
     // OAuth related information
-    public let oauth: OAuthConfigurationData
+    let oauth: OAuthConfigurationData
 
-    public init(clientId: String,
+    init(clientId: String,
                 oauth: OAuthConfigurationData,
-                clientSecret: String? = nil) {
+                clientSecret: String? = nil)
+    {
         self.clientId = clientId
         self.oauth = oauth
         self.clientSecret = clientSecret
@@ -30,7 +31,7 @@ public struct HostedUIConfigurationData: Equatable {
 extension HostedUIConfigurationData: Codable { }
 
 extension HostedUIConfigurationData: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         [
             "clientId": clientId.masked(interiorCount: 4, retainingCount: 4),
             "clientSecret": clientSecret.masked(interiorCount: 4, retainingCount: 4),
@@ -40,21 +41,22 @@ extension HostedUIConfigurationData: CustomDebugDictionaryConvertible {
 }
 
 extension HostedUIConfigurationData: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         debugDictionary.debugDescription
     }
 }
 
-public struct OAuthConfigurationData: Equatable {
-    public let domain: String
-    public let scopes: [String]
-    public let signInRedirectURI: String
-    public let signOutRedirectURI: String
+struct OAuthConfigurationData: Equatable {
+    let domain: String
+    let scopes: [String]
+    let signInRedirectURI: String
+    let signOutRedirectURI: String
 
-    public init(domain: String,
+    init(domain: String,
                 scopes: [String],
                 signInRedirectURI: String,
-                signOutRedirectURI: String) {
+                signOutRedirectURI: String)
+    {
         self.domain = domain
         self.scopes = scopes
         self.signInRedirectURI = signInRedirectURI
@@ -65,7 +67,7 @@ public struct OAuthConfigurationData: Equatable {
 extension OAuthConfigurationData: Codable { }
 
 extension OAuthConfigurationData: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         [
             "domain": domain.masked(interiorCount: 4, retainingCount: 4),
             "signInRedirectURI": signInRedirectURI.masked(interiorCount: 4, retainingCount: 4),
@@ -75,7 +77,7 @@ extension OAuthConfigurationData: CustomDebugDictionaryConvertible {
 }
 
 extension OAuthConfigurationData: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         debugDictionary.debugDescription
     }
 }

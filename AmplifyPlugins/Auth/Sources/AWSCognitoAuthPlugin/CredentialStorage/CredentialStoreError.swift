@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 import Security
 
-public enum CredentialStoreError {
+enum CredentialStoreError {
 
     /// Caused by a configuration
     case configuration(message: String)
@@ -60,7 +60,7 @@ extension CredentialStoreError: AuthErrorConvertible {
 
 extension CredentialStoreError: AmplifyError {
 
-    public init(
+    init(
         errorDescription: ErrorDescription = "An unknown error occurred",
         recoverySuggestion: RecoverySuggestion = "(Ignored)",
         error: Error
@@ -75,7 +75,7 @@ extension CredentialStoreError: AmplifyError {
     }
 
     /// Error Description
-    public var errorDescription: ErrorDescription {
+    var errorDescription: ErrorDescription {
         switch self {
         case .conversionError(let errorDescription, _), .codingError(let errorDescription, _):
             return errorDescription
@@ -91,7 +91,7 @@ extension CredentialStoreError: AmplifyError {
     }
 
     /// Recovery Suggestion
-    public var recoverySuggestion: RecoverySuggestion {
+    var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .unknown, .conversionError, .securityError, .itemNotFound, .codingError, .configuration:
             return AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
@@ -99,7 +99,7 @@ extension CredentialStoreError: AmplifyError {
     }
 
     /// Underlying Error
-    public var underlyingError: Error? {
+    var underlyingError: Error? {
         switch self {
         case .conversionError(_, let error), .codingError(_, let error), .unknown(_, let error):
             return error
@@ -111,7 +111,7 @@ extension CredentialStoreError: AmplifyError {
 }
 
 extension CredentialStoreError: Equatable {
-    public static func == (lhs: CredentialStoreError, rhs: CredentialStoreError) -> Bool {
+    static func == (lhs: CredentialStoreError, rhs: CredentialStoreError) -> Bool {
         switch (lhs, rhs) {
         case (.configuration, .configuration):
             return true

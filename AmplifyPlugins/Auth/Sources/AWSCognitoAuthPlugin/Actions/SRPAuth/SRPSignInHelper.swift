@@ -14,8 +14,8 @@ struct SRPSignInHelper {
     -> SRPAuthEnvironment {
 
         guard let environment = environment as? SRPAuthEnvironment else {
-            let message = "SRP Environment configured incorrectly"
-            let error = SRPSignInError.configuration(message: message)
+            let message = AuthPluginErrorConstants.configurationError
+            let error = AuthenticationError.configuration(message: message)
             throw error
         }
         return environment

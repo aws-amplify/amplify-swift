@@ -7,8 +7,8 @@
 
 import Foundation
 
-public struct FetchAuthSessionEvent: StateMachineEvent {
-    public enum EventType: Equatable {
+struct FetchAuthSessionEvent: StateMachineEvent {
+    enum EventType: Equatable {
 
         case fetchUserPoolTokens(AWSAuthCognitoSession)
 
@@ -22,11 +22,11 @@ public struct FetchAuthSessionEvent: StateMachineEvent {
 
     }
 
-    public let id: String
-    public let eventType: EventType
-    public let time: Date?
+    let id: String
+    let eventType: EventType
+    let time: Date?
 
-    public var type: String {
+    var type: String {
         switch eventType {
         case .fetchUserPoolTokens: return "FetchAuthSessionEvent.fetchUserPoolTokens"
         case .fetchIdentity: return "FetchAuthSessionEvent.fetchIdentity"
@@ -36,7 +36,7 @@ public struct FetchAuthSessionEvent: StateMachineEvent {
         }
     }
 
-    public init(
+    init(
         id: String = UUID().uuidString,
         eventType: EventType,
         time: Date? = nil
