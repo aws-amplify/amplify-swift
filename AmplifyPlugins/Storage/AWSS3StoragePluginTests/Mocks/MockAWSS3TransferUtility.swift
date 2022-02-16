@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/*
 import Foundation
 @testable import AWSS3StoragePlugin
 import AWSS3
@@ -237,3 +238,4 @@ class MockTransferUtilityDownloadTask: AWSS3TransferUtilityDownloadTask {
         }
     }
 }
+*/

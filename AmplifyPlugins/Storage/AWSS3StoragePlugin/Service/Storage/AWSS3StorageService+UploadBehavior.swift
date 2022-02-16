@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/*
 import Foundation
 import AWSS3
 import Amplify
@@ -119,3 +120,4 @@ extension AWSS3StorageService {
         return block
     }
 }
+*/
