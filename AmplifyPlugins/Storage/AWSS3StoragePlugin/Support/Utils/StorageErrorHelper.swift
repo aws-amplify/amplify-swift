@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/*
 import Foundation
 import Amplify
 import AWSS3
@@ -139,3 +140,4 @@ class StorageErrorHelper {
         return nil
     }
 }
+*/

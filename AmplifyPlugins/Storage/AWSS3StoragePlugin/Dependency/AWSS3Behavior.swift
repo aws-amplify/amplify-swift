@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/*
 import Foundation
 import AWSS3
 
@@ -20,3 +21,4 @@ protocol AWSS3Behavior {
     // Gets instance of AWS Service.
     func getS3() -> AWSS3
 }
+*/

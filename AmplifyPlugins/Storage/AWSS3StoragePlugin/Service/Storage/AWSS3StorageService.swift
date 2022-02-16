@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/*
 import Foundation
 import AWSS3
 import Amplify
@@ -70,3 +71,4 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour {
         identifier = nil
     }
 }
+*/
