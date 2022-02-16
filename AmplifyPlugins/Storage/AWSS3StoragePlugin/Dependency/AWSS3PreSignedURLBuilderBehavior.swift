@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/*
 import Foundation
 import AWSS3
 
@@ -14,3 +15,4 @@ protocol AWSS3PreSignedURLBuilderBehavior {
     // Gets a pre-signed URL.
     func getPreSignedURL(_ getPreSignedURLRequest: AWSS3GetPreSignedURLRequest) -> AWSTask<NSURL>
 }
+*/
