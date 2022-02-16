@@ -23,7 +23,7 @@ extension AuthorizationStateSequence {
     }
 }
 class AuthorizationStateResolverTests: XCTestCase {
-    
+
     func testValidAuthorizationStateSequences() throws {
         let sessionData = AWSAuthCognitoSession.testData
         let authorizationError = AuthorizationError.configuration(message: "someError")
@@ -41,12 +41,12 @@ class AuthorizationStateResolverTests: XCTestCase {
                                        event: AuthorizationEvent(eventType: .throwError(authorizationError)),
                                        expected: .error(authorizationError))
         ]
-        
+
         for sequence in validSequences {
             sequence.assertResolvesToExpected()
         }
     }
-    
+
     func testInvalidAuthorizationStateSequences() throws {
         let sessionData = AWSAuthCognitoSession.testData
         let authorizationError = AuthorizationError.configuration(message: "someError")
@@ -70,10 +70,10 @@ class AuthorizationStateResolverTests: XCTestCase {
                                        event: AuthorizationEvent(eventType: .throwError(authorizationError)),
                                        expected: .notConfigured)
         ]
-        
+
         for sequence in invalidSequences {
             sequence.assertNotResolvesToExpected()
         }
     }
-    
+
 }

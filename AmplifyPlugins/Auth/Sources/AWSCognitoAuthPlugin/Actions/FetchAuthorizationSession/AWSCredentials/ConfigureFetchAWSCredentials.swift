@@ -15,7 +15,8 @@ struct ConfigureFetchAWSCredentials: Action {
     let cognitoSession: AWSAuthCognitoSession
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) {
+                 environment: Environment)
+    {
 
         if case let .failure(error) = cognitoSession.identityIdResult {
             let authZError = AuthorizationError.service(error: error)
@@ -34,7 +35,8 @@ struct ConfigureFetchAWSCredentials: Action {
         let refreshInterval = AuthPluginConstants.sessionRefreshInterval
         if case let .success(awsCredentials) = cognitoSession.awsCredentialsResult,
            let cognitoAWSCredentials = awsCredentials as? AuthAWSCognitoCredentials,
-           cognitoAWSCredentials.expiration.compare(Date().addingTimeInterval(refreshInterval)) == .orderedDescending {
+           cognitoAWSCredentials.expiration.compare(Date().addingTimeInterval(refreshInterval)) == .orderedDescending
+        {
 
             let fetchedCredentialsEvent = FetchAWSCredentialEvent(eventType: .fetched)
             timer.note("### sending \(fetchedCredentialsEvent.type)")

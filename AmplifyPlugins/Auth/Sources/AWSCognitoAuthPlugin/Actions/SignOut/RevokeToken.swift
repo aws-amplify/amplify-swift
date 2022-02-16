@@ -15,15 +15,16 @@ struct RevokeToken: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
         let timer = LoggingTimer(identifier).start("### Starting execution")
-        
+
         guard let environment = environment as? UserPoolEnvironment else {
-            let error = AuthenticationError.configuration(message: "Environment configured incorrectly")
+            let message = AuthPluginErrorConstants.configurationError
+            let error = AuthenticationError.configuration(message: message)
             let event = SignOutEvent(id: UUID().uuidString, eventType: .signedOutFailure(error))
             dispatcher.send(event)
             timer.stop("### sending \(event.type)")
             return
         }
-        
+
         let client: CognitoUserPoolBehavior
         do {
             client = try environment.cognitoUserPoolFactory()
@@ -34,14 +35,14 @@ struct RevokeToken: Action {
             timer.stop("### sending \(event.type)")
             return
         }
-        
+
         timer.note("### Starting revokeToken")
         let clientId = environment.userPoolConfiguration.clientId
         let clientSecret = environment.userPoolConfiguration.clientSecret
         let refreshToken = signedInData.cognitoUserPoolTokens.refreshToken
-        
+
         let input = RevokeTokenInput(clientId: clientId, clientSecret: clientSecret, token: refreshToken)
-        
+
         client.revokeToken(input: input) { result in
             // Log the result, but proceed to clear credential store regardless of revokeToken result.
             timer.note("### revokeToken response received")

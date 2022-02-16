@@ -8,7 +8,7 @@
 import AWSCognitoIdentity
 import ClientRuntime
 
-public protocol CognitoIdentityBehavior {
+protocol CognitoIdentityBehavior {
 
     /// Generates (or retrieves) a Cognito ID. Supplying multiple logins will create an implicit linked account.
     /// This is a public API. You do not need any credentials to call this API.

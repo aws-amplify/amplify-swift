@@ -14,12 +14,12 @@ struct AWSCognitoAuthCredentialStore {
     private let service = "com.amplify.credentialStore"
     private let sessionKey = "session"
     private let authConfigurationKey = "authConfiguration"
-    
+
     // User defaults constants
     /// This UserDefault Key is used to check if Keychain already has items stored on a fresh install
     /// If this flag doesn't exist, previous keychain values for Amplify would be wiped out
     private let isKeychainConfiguredKey = "isKeychainConfigured"
-    
+
     private let authConfiguration: AuthConfiguration
     private let keychain: CredentialStoreBehavior
     private let userDefaults = UserDefaults.standard
@@ -27,45 +27,46 @@ struct AWSCognitoAuthCredentialStore {
     init(authConfiguration: AuthConfiguration, accessGroup: String? = nil) {
         self.authConfiguration = authConfiguration
         self.keychain = CredentialStore(service: service, accessGroup: accessGroup)
-        
-        if !self.userDefaults.bool(forKey: isKeychainConfiguredKey) {
-            try? self.clearAllCredentials()
-            self.userDefaults.set(true, forKey: isKeychainConfiguredKey)
+
+        if !userDefaults.bool(forKey: isKeychainConfiguredKey) {
+            try? clearAllCredentials()
+            userDefaults.set(true, forKey: isKeychainConfiguredKey)
         }
-        
+
         restoreCredentialsOnConfigurationChanges(currentAuthConfig: authConfiguration)
         // Save the current configuration
         saveAuthConfiguration(authConfig: authConfiguration)
     }
-    
+
     // The method is responsible for migrating any old credentials to the new namespace
     private func restoreCredentialsOnConfigurationChanges(currentAuthConfig: AuthConfiguration) {
-        
+
         guard let oldAuthConfigData = getAuthConfiguration() else {
             return
         }
         let oldNameSpace = generateSessionKey(for: oldAuthConfigData)
         let newNameSpace = generateSessionKey(for: currentAuthConfig)
-        
+
         let oldUserPoolConfiguration = oldAuthConfigData.getUserPoolConfiguration()
         let oldIdentityPoolConfiguration = oldAuthConfigData.getIdentityPoolConfiguration()
         let newIdentityConfigData = currentAuthConfig.getIdentityPoolConfiguration()
-        
+
         /// Only migrate if
         ///  - Old User Pool Config didn't exist
         ///  - New Identity Config Data exists
         ///  - Old Identity Pool Config == New Identity Pool Config
         if oldUserPoolConfiguration == nil &&
             newIdentityConfigData != nil &&
-            oldIdentityPoolConfiguration == newIdentityConfigData {
-            
+            oldIdentityPoolConfiguration == newIdentityConfigData
+        {
+
             // retrieve data from the old namespace and save with the new namespace
-            if let oldCognitoCredentialsData = try? self.keychain.getData(oldNameSpace) {
-                try? self.keychain.set(oldCognitoCredentialsData, key: newNameSpace)
+            if let oldCognitoCredentialsData = try? keychain.getData(oldNameSpace) {
+                try? keychain.set(oldCognitoCredentialsData, key: newNameSpace)
             }
         } else if oldAuthConfigData != currentAuthConfig {
             // Clear the old credentials
-            try? self.keychain.remove(oldNameSpace)
+            try? keychain.remove(oldNameSpace)
         }
     }
 
@@ -88,13 +89,13 @@ struct AWSCognitoAuthCredentialStore {
     private func generateSessionKey(for authConfiguration: AuthConfiguration) -> String {
         return "\(storeKey(for: authConfiguration)).\(sessionKey)"
     }
-    
+
     private func saveAuthConfiguration(authConfig: AuthConfiguration) {
         if let encodedAuthConfigData = try? encode(object: authConfig) {
             try? keychain.set(encodedAuthConfigData, key: authConfigurationKey)
         }
     }
-    
+
     private func getAuthConfiguration() -> AuthConfiguration? {
         if let userPoolConfigData = try? keychain.getData(authConfigurationKey) {
             return try? decode(data: userPoolConfigData)
@@ -107,20 +108,20 @@ struct AWSCognitoAuthCredentialStore {
 extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
 
     func saveCredential(_ credential: CognitoCredentials) throws {
-        let authCredentialStoreKey = generateSessionKey(for: self.authConfiguration)
+        let authCredentialStoreKey = generateSessionKey(for: authConfiguration)
         let encodedCredentials = try encode(object: credential)
         try keychain.set(encodedCredentials, key: authCredentialStoreKey)
     }
 
     func retrieveCredential() throws -> CognitoCredentials {
-        let authCredentialStoreKey = generateSessionKey(for: self.authConfiguration)
+        let authCredentialStoreKey = generateSessionKey(for: authConfiguration)
         let authCredentialData = try keychain.getData(authCredentialStoreKey)
         let awsCredential: CognitoCredentials = try decode(data: authCredentialData)
         return awsCredential
     }
 
     func deleteCredential() throws {
-        let authCredentialStoreKey = generateSessionKey(for: self.authConfiguration)
+        let authCredentialStoreKey = generateSessionKey(for: authConfiguration)
         try keychain.remove(authCredentialStoreKey)
     }
 

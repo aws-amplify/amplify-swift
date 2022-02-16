@@ -11,7 +11,7 @@ extension AuthenticationState {
         typealias StateType = AuthenticationState
         let defaultState = AuthenticationState.notConfigured
 
-        public init() { }
+        init() { }
 
         func resolve(
             oldState: StateType,
@@ -127,7 +127,7 @@ extension AuthenticationState {
                     actions: [action]
                 )
                 return resolution
-                
+
             default:
                 return .from(.signedIn(currentConfiguration, currentSignedInData))
             }
@@ -160,13 +160,16 @@ extension AuthenticationState {
         }
 
         private func resolveSigningUpState(oldState: AuthenticationState,
-                                           event: StateMachineEvent)  -> StateResolution<StateType> {
+                                           event: StateMachineEvent)  -> StateResolution<StateType>
+        {
             if let authEvent = event as? AuthenticationEvent,
-               case .error(let error) = authEvent.eventType {
+               case .error(let error) = authEvent.eventType
+            {
                 return .from(.error(nil, error))
             }
             if let authEvent = event as? AuthenticationEvent,
-               case .cancelSignUp(let config) = authEvent.eventType {
+               case .cancelSignUp(let config) = authEvent.eventType
+            {
                 let signedOutData = SignedOutData(lastKnownUserName: nil)
                 return .from(.signedOut(config, signedOutData))
             }
@@ -180,13 +183,16 @@ extension AuthenticationState {
         }
 
         private func resolveSigningInState(oldState: AuthenticationState,
-                                           event: StateMachineEvent) -> StateResolution<StateType> {
+                                           event: StateMachineEvent) -> StateResolution<StateType>
+        {
             if let authEvent = event as? AuthenticationEvent,
-                  case .error(let error) = authEvent.eventType {
+                  case .error(let error) = authEvent.eventType
+            {
                 return .from(.error(nil, error))
             }
             if let authEvent = event as? AuthenticationEvent,
-                  case .cancelSignIn(let config) = authEvent.eventType {
+                  case .cancelSignIn(let config) = authEvent.eventType
+            {
                 let signedOutData = SignedOutData(lastKnownUserName: nil)
                 return .from(.signedOut(config, signedOutData))
             }
@@ -212,7 +218,7 @@ extension AuthenticationState {
             }
             return resolution
         }
-    
+
         private func resolveSigningOutState(
             byApplying event: StateMachineEvent,
             to signOutState: SignOutState,

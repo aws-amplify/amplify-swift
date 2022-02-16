@@ -9,13 +9,13 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 
 class SignOutStateSigningOutLocallyTests: XCTestCase {
-    
+
     var resolver: AnyResolver<SignOutState> {
         SignOutState.Resolver().logging().eraseToAnyResolver()
     }
 
     var oldState = SignOutState.signingOutLocally(.testData)
-    
+
     func testUnsupported() {
         func assertIfUnsupported(_ event: SignOutEvent) {
             switch event.eventType {

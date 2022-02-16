@@ -22,7 +22,7 @@ struct CredentialStoreEvent: StateMachineEvent {
         case completedOperation(CognitoCredentials?)
 
         case throwError(CredentialStoreError)
-        
+
         case moveToIdleState
 
     }

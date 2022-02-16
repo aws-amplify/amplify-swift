@@ -7,7 +7,7 @@
 
 import Foundation
 
-public extension AuthorizationState {
+extension AuthorizationState {
     var debugDictionary: [String: Any] {
         let stateTypeDictionary: [String: Any] = ["AuthorizationState": type]
         var additionalMetadataDictionary: [String: Any] = [:]

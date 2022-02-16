@@ -14,8 +14,6 @@
 		485CB54027B614CE006CCEC7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB53F27B614CE006CCEC7 /* ContentView.swift */; };
 		485CB54227B614CF006CCEC7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 485CB54127B614CF006CCEC7 /* Assets.xcassets */; };
 		485CB54527B614CF006CCEC7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 485CB54427B614CF006CCEC7 /* Preview Assets.xcassets */; };
-		485CB59127B61BA9006CCEC7 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 485CB59027B61BA9006CCEC7 /* Amplify */; };
-		485CB59327B61BAE006CCEC7 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 485CB59227B61BAE006CCEC7 /* AWSCognitoAuthPlugin */; };
 		485CB5B027B61EAC006CCEC7 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 485CB5AE27B61EAA006CCEC7 /* README.md */; };
 		485CB5B127B61EAC006CCEC7 /* AWSAuthBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5AF27B61EAA006CCEC7 /* AWSAuthBaseTest.swift */; };
 		485CB5B927B61F10006CCEC7 /* AuthSessionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5B727B61F0F006CCEC7 /* AuthSessionHelper.swift */; };
@@ -24,6 +22,8 @@
 		485CB5C027B61F1E006CCEC7 /* SignedOutAuthSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BC27B61F1D006CCEC7 /* SignedOutAuthSessionTests.swift */; };
 		485CB5C127B61F1E006CCEC7 /* AuthSignOutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BD27B61F1D006CCEC7 /* AuthSignOutTests.swift */; };
 		485CB5C227B61F1E006CCEC7 /* AuthSRPSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */; };
+		B4EBE93D27BCBE440005AE5C /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = B4EBE93C27BCBE440005AE5C /* Amplify */; };
+		B4EBE93F27BCBE440005AE5C /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B4EBE93E27BCBE440005AE5C /* AWSCognitoAuthPlugin */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,7 +54,7 @@
 		485CB5BC27B61F1D006CCEC7 /* SignedOutAuthSessionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignedOutAuthSessionTests.swift; sourceTree = "<group>"; };
 		485CB5BD27B61F1D006CCEC7 /* AuthSignOutTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSignOutTests.swift; sourceTree = "<group>"; };
 		485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSRPSignInTests.swift; sourceTree = "<group>"; };
-		485CB5C727B62C5C006CCEC7 /* amplify-ios-staging */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios-staging"; path = ../../../..; sourceTree = "<group>"; };
+		B4EBE93B27BCBE100005AE5C /* amplify-ios-staging */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios-staging"; path = ../../../..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,8 +62,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				485CB59127B61BA9006CCEC7 /* Amplify in Frameworks */,
-				485CB59327B61BAE006CCEC7 /* AWSCognitoAuthPlugin in Frameworks */,
+				B4EBE93D27BCBE440005AE5C /* Amplify in Frameworks */,
+				B4EBE93F27BCBE440005AE5C /* AWSCognitoAuthPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,7 +184,7 @@
 		485CB5C627B62C5C006CCEC7 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				485CB5C727B62C5C006CCEC7 /* amplify-ios-staging */,
+				B4EBE93B27BCBE100005AE5C /* amplify-ios-staging */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -206,8 +206,8 @@
 			);
 			name = AuthHostApp;
 			packageProductDependencies = (
-				485CB59027B61BA9006CCEC7 /* Amplify */,
-				485CB59227B61BAE006CCEC7 /* AWSCognitoAuthPlugin */,
+				B4EBE93C27BCBE440005AE5C /* Amplify */,
+				B4EBE93E27BCBE440005AE5C /* AWSCognitoAuthPlugin */,
 			);
 			productName = AuthHostApp;
 			productReference = 485CB53A27B614CE006CCEC7 /* AuthHostApp.app */;
@@ -220,6 +220,7 @@
 				485CB59B27B61E04006CCEC7 /* Sources */,
 				485CB59C27B61E04006CCEC7 /* Frameworks */,
 				485CB59D27B61E04006CCEC7 /* Resources */,
+				B4EBE94027BD417F0005AE5C /* Copy Configuration folder */,
 			);
 			buildRules = (
 			);
@@ -288,6 +289,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B4EBE94027BD417F0005AE5C /* Copy Configuration folder */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration folder";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		485CB53627B614CE006CCEC7 /* Sources */ = {
@@ -572,11 +594,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		485CB59027B61BA9006CCEC7 /* Amplify */ = {
+		B4EBE93C27BCBE440005AE5C /* Amplify */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Amplify;
 		};
-		485CB59227B61BAE006CCEC7 /* AWSCognitoAuthPlugin */ = {
+		B4EBE93E27BCBE440005AE5C /* AWSCognitoAuthPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSCognitoAuthPlugin;
 		};

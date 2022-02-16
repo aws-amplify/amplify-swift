@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct SRPStateData {
+struct SRPStateData {
     let username: String
     let password: String
     let NHexValue: String
@@ -34,13 +34,13 @@ public struct SRPStateData {
 }
 
 extension SRPStateData: Equatable {
-    public static func == (lhs: SRPStateData, rhs: SRPStateData) -> Bool {
+    static func == (lhs: SRPStateData, rhs: SRPStateData) -> Bool {
         return true
     }
 }
 
 extension SRPStateData: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         [
             "username": username.masked(),
             "password": password.redacted(),
@@ -56,7 +56,7 @@ extension SRPStateData: CustomDebugDictionaryConvertible {
 }
 
 extension SRPStateData: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         debugDictionary.debugDescription
     }
 }
