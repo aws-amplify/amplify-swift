@@ -25,8 +25,11 @@ public struct SRPClientState {
 
     private static func calculatePrivateA(prime N: BigInt) -> BigInt {
         let byteSize = 256 / 8
-        let randomInt = generateRandomUnsigned(of: byteSize)
-        return randomInt % N
+        var randomInt: BigInt
+        repeat {
+            randomInt = generateRandomUnsigned(of: byteSize)
+        } while (randomInt >= N)
+        return randomInt
     }
 
     private static func calculatePublicA(privateA: BigInt,
