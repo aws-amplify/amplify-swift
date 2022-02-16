@@ -54,7 +54,8 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
             let dependencies = AWSAPIPlugin.ConfigurationDependencies(
                 pluginConfig: pluginConfig,
                 authService: authService,
-                subscriptionConnectionFactory: AWSSubscriptionConnectionFactory()
+                subscriptionConnectionFactory: AWSSubscriptionConnectionFactory(),
+                logLevel: .error
             )
             apiPlugin.configure(using: dependencies)
         } catch {

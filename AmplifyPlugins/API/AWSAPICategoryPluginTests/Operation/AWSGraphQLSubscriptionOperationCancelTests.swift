@@ -49,7 +49,8 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             let dependencies = AWSAPIPlugin.ConfigurationDependencies(
                 pluginConfig: pluginConfig,
                 authService: authService,
-                subscriptionConnectionFactory: subscriptionConnectionFactory
+                subscriptionConnectionFactory: subscriptionConnectionFactory,
+                logLevel: .error
             )
             apiPlugin.configure(using: dependencies)
         } catch {
