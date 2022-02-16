@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/*
 import Foundation
 import AWSS3
 
@@ -29,3 +30,4 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
         return preSignedURLBuilder.getPreSignedURL(getPreSignedURLRequest)
     }
 }
+*/

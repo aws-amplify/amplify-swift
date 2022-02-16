@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/*
 import Foundation
 import AWSS3
 
@@ -13,3 +14,4 @@ extension AWSS3StorageService {
         return awsS3.getS3()
     }
 }
+*/

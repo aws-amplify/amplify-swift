@@ -10,6 +10,7 @@ import XCTest
 @testable import AmplifyTestCommon
 
 class AWSS3StorageServiceTestBase: XCTestCase {
+    /*
     var mockTransferUtility: MockAWSS3TransferUtility!
     var mockPreSignedURLBuilder: MockAWSS3PreSignedURLBuilder!
     var mockS3: MockS3!
@@ -36,4 +37,5 @@ class AWSS3StorageServiceTestBase: XCTestCase {
 
     func testReset() {
     }
+     */
 }

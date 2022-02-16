@@ -9,6 +9,7 @@ import XCTest
 import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSS3StoragePlugin
+@testable import AWSPluginsTestCommon
 
 class AWSS3PluginPrefixResolverTests: XCTestCase {
 
