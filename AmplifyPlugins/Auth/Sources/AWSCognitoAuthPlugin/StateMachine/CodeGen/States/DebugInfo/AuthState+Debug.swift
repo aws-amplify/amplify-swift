@@ -9,7 +9,7 @@ import Foundation
 
 extension AuthState: CustomDebugStringConvertible {
 
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         let stateTypeDictionary: [String: Any] = ["AuthorizationState": type]
         var additionalMetadataDictionary: [String: Any] = [:]
 
@@ -44,7 +44,7 @@ extension AuthState: CustomDebugStringConvertible {
         return stateTypeDictionary.merging(additionalMetadataDictionary, uniquingKeysWith: { $1 })
     }
 
-    public var debugDescription: String {
+    var debugDescription: String {
         return (debugDictionary as AnyObject).description
     }
 }

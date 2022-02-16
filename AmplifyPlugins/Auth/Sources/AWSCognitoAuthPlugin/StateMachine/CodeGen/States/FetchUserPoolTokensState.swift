@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum FetchUserPoolTokensState: State {
+enum FetchUserPoolTokensState: State {
 
     case configuring
 
@@ -19,7 +19,7 @@ public enum FetchUserPoolTokensState: State {
 
 }
 
-public extension FetchUserPoolTokensState {
+extension FetchUserPoolTokensState {
     var type: String {
         switch self {
         case .configuring: return "FetchUserPoolTokensState.configuring"

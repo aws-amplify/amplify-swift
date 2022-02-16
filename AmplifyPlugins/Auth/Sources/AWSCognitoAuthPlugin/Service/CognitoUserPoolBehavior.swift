@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-public protocol CognitoUserPoolBehavior {
+protocol CognitoUserPoolBehavior {
 
     func initiateAuth(input: InitiateAuthInput,
                       completion: @escaping (Result<InitiateAuthOutputResponse,
@@ -26,7 +26,7 @@ public protocol CognitoUserPoolBehavior {
         input: GlobalSignOutInput,
         completion: @escaping (ClientRuntime.SdkResult<GlobalSignOutOutputResponse, GlobalSignOutOutputError>) -> Void
     )
-    
+
     func revokeToken(
         input: RevokeTokenInput,
         completion: @escaping (ClientRuntime.SdkResult<RevokeTokenOutputResponse, RevokeTokenOutputError>) -> Void

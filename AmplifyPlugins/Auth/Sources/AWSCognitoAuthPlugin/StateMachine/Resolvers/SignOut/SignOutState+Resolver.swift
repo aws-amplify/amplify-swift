@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public extension SignOutState {
+extension SignOutState {
     struct Resolver: StateMachineResolver {
-        public typealias StateType = SignOutState
-        public let defaultState = SignOutState.notStarted
+        typealias StateType = SignOutState
+        let defaultState = SignOutState.notStarted
 
-        public init() { }
+        init() { }
 
         func resolve(
             oldState: SignOutState,
@@ -38,9 +38,10 @@ public extension SignOutState {
                 return .from(oldState)
             }
         }
-        
+
         private func resolveNotStarted(byApplying signOutEvent: SignOutEvent,
-                                       from oldState: SignOutState) -> StateResolution<SignOutState> {
+                                       from oldState: SignOutState) -> StateResolution<SignOutState>
+        {
             switch signOutEvent.eventType {
             case .signOutGlobally(let signedInData):
                 let action = SignOutGlobally(signedInData: signedInData)
@@ -58,9 +59,10 @@ public extension SignOutState {
                 return .from(oldState)
             }
         }
-        
+
         private func resolveSigningOutGlobally(byApplying signOutEvent: SignOutEvent,
-                                               from oldState: SignOutState) -> StateResolution<SignOutState> {
+                                               from oldState: SignOutState) -> StateResolution<SignOutState>
+        {
             switch signOutEvent.eventType {
             case .revokeToken(let signedInData):
                 let action = RevokeToken(signedInData: signedInData)
@@ -74,9 +76,10 @@ public extension SignOutState {
                 return .from(oldState)
             }
         }
-        
+
         private func resolveRevokingToken(byApplying signOutEvent: SignOutEvent,
-                                          from oldState: SignOutState) -> StateResolution<SignOutState> {
+                                          from oldState: SignOutState) -> StateResolution<SignOutState>
+        {
             switch signOutEvent.eventType {
             case .signOutLocally(let signedInData):
                 return .from(.signingOutLocally(signedInData))
@@ -89,7 +92,8 @@ public extension SignOutState {
 
         private func resolveClearingCredentialStore(byApplying signOutEvent: SignOutEvent,
                                                     from oldState: SignOutState,
-                                                    signedInData: SignedInData) -> StateResolution<SignOutState> {
+                                                    signedInData: SignedInData) -> StateResolution<SignOutState>
+        {
             switch signOutEvent.eventType {
             case .signedOutSuccess:
                 let signedOutData = SignedOutData(lastKnownUserName: signedInData.userName)

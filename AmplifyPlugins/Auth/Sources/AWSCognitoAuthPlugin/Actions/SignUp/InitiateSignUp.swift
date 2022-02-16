@@ -25,7 +25,8 @@ struct InitiateSignUp: Action {
     ) {
         let timer = LoggingTimer(identifier).start("### Starting execution")
         guard let environment = environment as? UserPoolEnvironment else {
-            let authError = AuthenticationError.configuration(message: "Environment configured incorrectly")
+            let message = AuthPluginErrorConstants.configurationError
+            let authError = AuthenticationError.configuration(message: message)
             let event = SignUpEvent(
                 id: UUID().uuidString,
                 eventType: .throwAuthError(authError)
@@ -77,7 +78,8 @@ extension SignUpInput {
     init(username: String,
          password: String,
          attributes: [String: String],
-         userPoolConfiguration: UserPoolConfigurationData) {
+         userPoolConfiguration: UserPoolConfigurationData)
+    {
         let secretHash = Self.calculateSecretHash(username: username, userPoolConfiguration: userPoolConfiguration)
         let validationData = Self.getValidationData()
         let convertedAttributes = Self.convertAttributes(attributes)
@@ -92,7 +94,8 @@ extension SignUpInput {
     private static func calculateSecretHash(username: String, userPoolConfiguration: UserPoolConfigurationData) -> String? {
         guard let clientSecret = userPoolConfiguration.clientSecret,
               !clientSecret.isEmpty,
-              let clientSecretData = clientSecret.data(using: .utf8) else {
+              let clientSecretData = clientSecret.data(using: .utf8)
+        else {
             return nil
         }
 

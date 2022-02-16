@@ -15,7 +15,8 @@ struct InitializeAuthenticationConfiguration: Action {
     let cognitoCredentials: CognitoCredentials?
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                        environment: Environment) {
+                        environment: Environment)
+    {
         let timer = LoggingTimer(identifier).start("### Starting execution")
         let event = AuthenticationEvent(eventType: .configure(configuration, cognitoCredentials))
         timer.stop("### sending \(event.type)")

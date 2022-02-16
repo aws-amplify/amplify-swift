@@ -7,12 +7,13 @@
 
 import Foundation
 
-public struct IdentityPoolConfigurationData: Equatable {
-    public let poolId: String
-    public let region: String
+struct IdentityPoolConfigurationData: Equatable {
+    let poolId: String
+    let region: String
 
-    public init(poolId: String,
-                region: String) {
+    init(poolId: String,
+                region: String)
+    {
         self.poolId = poolId
         self.region = region
     }
@@ -22,7 +23,7 @@ public struct IdentityPoolConfigurationData: Equatable {
 extension IdentityPoolConfigurationData: Codable { }
 
 extension IdentityPoolConfigurationData: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         [
             "poolId": poolId.masked(interiorCount: 4, retainingCount: 4),
             "region": region.masked(interiorCount: 4, retainingCount: 4)
@@ -31,7 +32,7 @@ extension IdentityPoolConfigurationData: CustomDebugDictionaryConvertible {
 }
 
 extension IdentityPoolConfigurationData: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         debugDictionary.debugDescription
     }
 }

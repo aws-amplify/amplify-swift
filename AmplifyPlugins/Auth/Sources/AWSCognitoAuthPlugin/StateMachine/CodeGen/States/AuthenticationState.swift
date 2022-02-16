@@ -11,7 +11,7 @@ enum AuthenticationState: State {
 
     /// System is configured, and now knows how to find persisted config data, if any
     case configured(AuthConfiguration)
-    
+
     /// User is signing out
     case signingOut(AuthConfiguration, SignOutState)
 

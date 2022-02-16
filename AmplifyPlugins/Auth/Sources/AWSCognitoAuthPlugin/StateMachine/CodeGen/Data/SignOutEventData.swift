@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public struct SignOutEventData: Codable {
-    public let globalSignOut: Bool
+struct SignOutEventData: Codable {
+    let globalSignOut: Bool
 
-    public init(globalSignOut: Bool) {
+    init(globalSignOut: Bool) {
         self.globalSignOut = globalSignOut
     }
 }
@@ -16,14 +16,14 @@ public struct SignOutEventData: Codable {
 extension SignOutEventData: Equatable { }
 
 extension SignOutEventData: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         [
             "globalSignOut": globalSignOut
         ]
     }
 }
 extension SignOutEventData: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         debugDictionary.debugDescription
     }
 }

@@ -9,14 +9,15 @@ import Foundation
 import AWSPluginsCore
 import Amplify
 
-public extension FetchAuthSessionState {
+extension FetchAuthSessionState {
 
     struct Resolver: StateMachineResolver {
 
-        public var defaultState: FetchAuthSessionState = .initializingFetchAuthSession
+        var defaultState: FetchAuthSessionState = .initializingFetchAuthSession
 
         func resolve(oldState: FetchAuthSessionState,
-                     byApplying event: StateMachineEvent) -> StateResolution<FetchAuthSessionState> {
+                     byApplying event: StateMachineEvent) -> StateResolution<FetchAuthSessionState>
+        {
 
             switch oldState {
             case .initializingFetchAuthSession:
@@ -66,7 +67,8 @@ public extension FetchAuthSessionState {
 
         private func resolveInitializeFetchUserAuthSession(
             byApplying fetchAuthSessionEvent: FetchAuthSessionEvent,
-            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState> {
+            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState>
+        {
             switch fetchAuthSessionEvent.eventType {
             case .fetchUserPoolTokens(let cognitoSession):
                 let newState = FetchAuthSessionState.fetchingUserPoolTokens(FetchUserPoolTokensState.configuring)
@@ -83,7 +85,8 @@ public extension FetchAuthSessionState {
 
         private func resolveFetchingUserTokensState(
             byApplying fetchAuthSessionEvent: FetchAuthSessionEvent,
-            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState> {
+            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState>
+        {
             guard case .fetchingUserPoolTokens = oldState else {
                 return .from(oldState)
             }
@@ -99,7 +102,8 @@ public extension FetchAuthSessionState {
 
         private func resolveFetchingIdentityState(
             byApplying fetchAuthSessionEvent: FetchAuthSessionEvent,
-            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState> {
+            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState>
+        {
             guard case .fetchingIdentity = oldState else {
                 return .from(oldState)
             }
@@ -115,7 +119,8 @@ public extension FetchAuthSessionState {
 
         private func resolveFetchingAWSCredentialsState(
             byApplying fetchAuthSessionEvent: FetchAuthSessionEvent,
-            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState> {
+            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState>
+        {
             guard case .fetchingAWSCredentials = oldState else {
                 return .from(oldState)
             }

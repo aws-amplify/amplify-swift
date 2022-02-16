@@ -26,7 +26,7 @@ extension FetchAWSCredentialStateSequence {
 class FetchAWSCredentialStateResolverTests: XCTestCase {
     func testValidFetchAWSCredentialStateSequences() throws {
         let authorizationError = AuthorizationError.configuration(message: "someError")
-        
+
         let validSequences: [FetchAWSCredentialStateSequence] = [
             FetchAWSCredentialStateSequence(oldState: .configuring,
                                             event: FetchAWSCredentialEvent(eventType: .fetch(AWSAuthCognitoSession.testData)),
@@ -41,10 +41,10 @@ class FetchAWSCredentialStateResolverTests: XCTestCase {
                                             event: FetchAWSCredentialEvent(eventType: .throwError(authorizationError)),
                                             expected: .error(authorizationError))
         ]
-        
+
         for sequence in validSequences {
             sequence.assertResolvesToExpected()
         }
     }
-    
+
 }
