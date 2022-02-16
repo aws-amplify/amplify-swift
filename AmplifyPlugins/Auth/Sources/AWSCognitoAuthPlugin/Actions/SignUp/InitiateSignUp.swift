@@ -23,7 +23,7 @@ struct InitiateSignUp: Action {
         withDispatcher dispatcher: EventDispatcher,
         environment: Environment
     ) {
-        let timer = LoggingTimer(identifier).start("### Starting execution")
+        Amplify.Logging.verbose("Starting execution \(#fileID)")
         guard let environment = environment as? UserPoolEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let authError = AuthenticationError.configuration(message: message)
@@ -37,7 +37,8 @@ struct InitiateSignUp: Action {
 
         let client: CognitoUserPoolBehavior
         do {
-            client = try createIdentityProviderClient(key: signUpEventData.key, environment: environment)
+            client = try createIdentityProviderClient(key: signUpEventData.key,
+                                                      environment: environment)
         } catch {
             let authError = AuthenticationError.configuration(message: "Failed to get CognitoUserPool client: \(error)")
             let event = SignUpEvent(
@@ -52,19 +53,22 @@ struct InitiateSignUp: Action {
                                 password: signUpEventData.password,
                                 attributes: signUpEventData.attributes,
                                 userPoolConfiguration: environment.userPoolConfiguration)
-        timer.note("### Starting signUp")
+        Amplify.Logging.verbose("Starting signUp \(#fileID)")
         client.signUp(input: input) { result in
-            timer.note("### signUp response received")
+            Amplify.Logging.verbose("SignUp response received \(#fileID)")
             let event: SignUpEvent
             switch result {
             case .success(let response):
-                event = SignUpEvent(eventType: .initiateSignUpSuccess(username: signUpEventData.username, signUpResponse: response))
+                event = SignUpEvent(eventType: .initiateSignUpSuccess(
+                    username: signUpEventData.username,
+                    signUpResponse: response)
+                )
             case .failure(let error):
                 let error = SignUpError.service(error: error)
                 event = SignUpEvent(eventType: .initiateSignUpFailure(error: error))
             }
             dispatcher.send(event)
-            timer.stop("### sending SignUpEvent.initiateSignUpResponseReceived")
+            Amplify.Logging.verbose("Sending SignUpEvent.initiateSignUpResponseReceived \(#fileID)")
         }
     }
 }
