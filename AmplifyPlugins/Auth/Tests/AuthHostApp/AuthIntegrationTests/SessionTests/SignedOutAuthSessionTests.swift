@@ -94,7 +94,8 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
 
                 let tokensResult = (result as? AuthCognitoTokensProvider)?.getCognitoTokens()
                 guard case let .failure(authError) = tokensResult,
-                      case .signedOut = authError else {
+                      case .signedOut = authError
+                else {
                     XCTFail("Should produce signedOut error.")
                     return
                 }

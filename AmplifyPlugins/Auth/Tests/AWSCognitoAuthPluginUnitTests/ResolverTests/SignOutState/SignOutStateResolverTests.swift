@@ -59,10 +59,10 @@ class SignOutStateResolverTests: XCTestCase {
                 event: SignOutEvent(eventType: .signedOutFailure(.testData)),
                 expected: .error(.testData)),
         ]
-        
+
         for sequence in validSequences {
             sequence.assertResolvesToExpected()
         }
     }
-    
+
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct AuthEnvironment: Environment {
+struct AuthEnvironment: Environment {
     let configuration: AuthConfiguration
     let userPoolConfigData: UserPoolConfigurationData?
     let identityPoolConfigData: IdentityPoolConfigurationData?

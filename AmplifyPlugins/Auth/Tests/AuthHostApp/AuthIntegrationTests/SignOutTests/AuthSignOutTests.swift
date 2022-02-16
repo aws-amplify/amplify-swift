@@ -13,7 +13,7 @@ class AuthSignOutTests: AWSAuthBaseTest {
     // Enable this to set the aws-sdk-swift log level during debugging.
     // This can only be called once per process.
     private static var setSDKLogLevelDebug = true
-    
+
     override func setUp() {
         super.setUp()
         initializeAmplify()
@@ -23,14 +23,14 @@ class AuthSignOutTests: AWSAuthBaseTest {
             Self.setSDKLogLevelDebug = false
         }
     }
-    
+
     override func tearDown() {
         super.tearDown()
         Amplify.reset()
         AuthSessionHelper.invalidateSessions()
         sleep(2)
     }
-    
+
     /// Test successful signOut with globalSignout enabled.
     ///
     /// - Given: A user signed in via Cognito user pool
@@ -44,14 +44,14 @@ class AuthSignOutTests: AWSAuthBaseTest {
         let signinOperation = signIn(signInExpectation.fulfill)
         wait(for: [signInExpectation], timeout: networkTimeout)
         XCTAssertTrue(signinOperation.isFinished, "SignIn operation should be finished.")
-        
+
         print("calling signOut...")
         let signOutExpectation = expectation(description: "SignOut operation should complete")
         let signOutOperation = signOut(globalSignOut: true, completion: signOutExpectation.fulfill)
         wait(for: [signOutExpectation], timeout: networkTimeout)
         XCTAssertTrue(signOutOperation.isFinished, "SignOut operation should be finished.")
     }
-    
+
     /// Test successful signOut with globalSignout disabled.
     ///
     /// - Given: A user signed in via Cognito user pool
@@ -65,14 +65,14 @@ class AuthSignOutTests: AWSAuthBaseTest {
         let signinOperation = signIn(signInExpectation.fulfill)
         wait(for: [signInExpectation], timeout: networkTimeout)
         XCTAssertTrue(signinOperation.isFinished, "SignIn operation should be finished.")
-        
+
         print("calling signOut...")
         let signOutExpectation = expectation(description: "SignOut operation should complete")
         let signOutOperation = signOut(globalSignOut: false, completion: signOutExpectation.fulfill)
         wait(for: [signOutExpectation], timeout: networkTimeout)
         XCTAssertTrue(signOutOperation.isFinished, "SignOut operation should be finished.")
     }
-    
+
     /// Test if invoking signOut without unauthenticate state does not fail
     ///
     /// - Given: An unauthenticated state
@@ -97,11 +97,11 @@ class AuthSignOutTests: AWSAuthBaseTest {
         XCTAssertNotNil(operation, "SignOut operation should not be nil")
         wait(for: [operationExpectation], timeout: networkTimeout)
     }
-        
-    private func signIn(_ completion: @escaping ()->Void) -> AuthSignInOperation {
+
+    private func signIn(_ completion: @escaping () -> Void) -> AuthSignInOperation {
         let username = defaultTestUsername
         let password = defaultTestPassword
-        
+
         let operation = Amplify.Auth.signIn(username: username, password: password) { result in
             defer {
                 completion()
@@ -116,10 +116,10 @@ class AuthSignOutTests: AWSAuthBaseTest {
         XCTAssertNotNil(operation, "SignIn operation should not be nil")
         return operation
     }
-    
-    private func signOut(globalSignOut: Bool, completion: @escaping ()->Void) -> AuthSignOutOperation {
+
+    private func signOut(globalSignOut: Bool, completion: @escaping () -> Void) -> AuthSignOutOperation {
         let options = AuthSignOutRequest.Options(globalSignOut: globalSignOut)
-        
+
         let operation = Amplify.Auth.signOut(options: options) { result in
             defer {
                 completion()

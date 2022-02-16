@@ -7,13 +7,13 @@
 
 import Foundation
 
-public extension AuthorizationState {
+extension AuthorizationState {
 
     struct Resolver: StateMachineResolver {
-        public typealias StateType = AuthorizationState
-        public let defaultState = AuthorizationState.notConfigured
+        typealias StateType = AuthorizationState
+        let defaultState = AuthorizationState.notConfigured
 
-        public init() { }
+        init() { }
 
         func resolve(
             oldState: StateType,

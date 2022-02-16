@@ -12,7 +12,7 @@ import AWSCognitoAuthPlugin
 class AWSAuthBaseTest: XCTestCase {
 
     let networkTimeout = TimeInterval(20)
-    
+
     var defaultTestUsername = "xx"
     var defaultTestPassword = "xx"
 

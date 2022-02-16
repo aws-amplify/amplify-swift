@@ -15,7 +15,8 @@ struct ConfigureFetchIdentity: Action {
     let cognitoSession: AWSAuthCognitoSession
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) {
+                 environment: Environment)
+    {
 
         switch cognitoSession.cognitoTokensResult {
         case .success: break
@@ -34,7 +35,6 @@ struct ConfigureFetchIdentity: Action {
                 dispatcher.send(fetchAwsCredentialsEvent)
                 return
             }
-            break
         }
 
         let timer = LoggingTimer(identifier).start("### Starting execution")
