@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/*
 import Foundation
 @testable import AWSS3StoragePlugin
 import AWSS3
@@ -23,3 +24,4 @@ public class MockS3: AWSS3Behavior {
         return AWSTask()
     }
 }
+*/
