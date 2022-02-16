@@ -57,11 +57,13 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
 
     // MARK: Mock functionality
 
+    /*
     public func configure(region: AWSRegionType,
                           bucket: String,
                           cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
                           identifier: String) throws {
     }
+     */
 
     public func reset() {
     }
@@ -145,8 +147,9 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
         }
     }
 
-    public func getEscapeHatch() -> AWSS3 {
-        return AWSS3()
+    public func getEscapeHatch() -> S3Client {
+//        return AWSS3()
+        fatalError("Not Implemented")
     }
 
     // MARK: Mock verify

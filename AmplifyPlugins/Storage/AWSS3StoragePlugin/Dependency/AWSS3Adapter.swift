@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/*
 import Foundation
 import AWSS3
 
@@ -39,3 +40,4 @@ class AWSS3Adapter: AWSS3Behavior {
         return awsS3
     }
 }
+*/

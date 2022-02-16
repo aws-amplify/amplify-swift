@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/*
 import Foundation
 import AWSS3
 
@@ -56,3 +57,4 @@ protocol AWSS3TransferUtilityBehavior {
                               completionHandler: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock?)
         -> AWSTask<AWSS3TransferUtilityMultiPartUploadTask>
 }
+*/
