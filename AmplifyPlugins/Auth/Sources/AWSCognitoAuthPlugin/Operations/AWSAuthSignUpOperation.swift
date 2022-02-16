@@ -43,6 +43,10 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation,
     }
 
     func doInitialize() {
+        if isCancelled {
+            finish()
+            return
+        }
         var token: AuthStateMachineToken?
         token = stateMachine.listen { [weak self] in
             guard let self = self else {
@@ -58,7 +62,8 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation,
                 default:
                     self.cancelListener(token)
                     let message = "Auth state must be signed out to signup"
-                    self.dispatch(message: message, error: .invalidState(message: message))
+                    let error = AuthError.invalidState(message, "", nil)
+                    self.dispatch(error)
                     self.finish()
                 }
             }
@@ -66,25 +71,29 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation,
     }
 
     func doSignUp() {
+
         var token: AuthStateMachineToken?
         token = stateMachine.listen { [weak self] state in
             guard let self = self else {
                 return
             }
+            if self.isCancelled {
+                self.finish()
+                return
+            }
             guard case .configured(let authNState, _) = state else {
                 return
             }
-
             switch authNState {
             case .signingUp(_, let signUpState):
 
                 switch signUpState {
-                case .signingUpInitiated:
-                    self.dispatch(result: .success(AuthSignUpResult(.confirmUser())))
+                case .signingUpInitiated(_, response: let response):
+                    self.dispatch(result: .success(response.authResponse))
                     self.cancelListener(token)
                     self.finish()
                 case .error(let error):
-                    self.dispatch(message: "Failed while signing up", error: error)
+                    self.dispatch(error.authError)
                     self.cancelListener(token)
                     self.finish()
                 default:
@@ -102,14 +111,25 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation,
     }
 
     private func sendSignUpEvent() {
-        guard let password = request.password else {
-            let message = "password is nil"
-            dispatch(message: message, error: .missingPassword(message: message))
+
+        guard !request.username.isEmpty else {
+               let error = AuthError.validation(
+                AuthPluginErrorConstants.signUpUsernameError.field,
+                AuthPluginErrorConstants.signUpUsernameError.errorDescription,
+                AuthPluginErrorConstants.signUpUsernameError.recoverySuggestion, nil)
+               dispatch(error)
+            finish()
             return
         }
 
-        if let error = SignUpPasswordValidator.validate(password: password) {
-            dispatch(message: "invalid password", error: error)
+        guard let password = request.password,
+           SignUpPasswordValidator.validate(password: password) == nil else {
+               let error = AuthError.validation(
+                AuthPluginErrorConstants.signUpPasswordError.field,
+                AuthPluginErrorConstants.signUpPasswordError.errorDescription,
+                AuthPluginErrorConstants.signUpPasswordError.recoverySuggestion, nil)
+               dispatch(error)
+            finish()
             return
         }
 
@@ -125,9 +145,8 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation,
         stateMachine.send(event)
     }
 
-    private func dispatch(message: String, error: SignUpError) {
-        let result = AWSAuthSignUpOperation.OperationResult.failure(.unknown(message, error))
-        dispatch(result: result)
+    private func dispatch(_ error: AuthError) {
+        dispatch(result: .failure(error))
     }
 
     private func cancelListener(_ token: AuthStateMachineToken?) {

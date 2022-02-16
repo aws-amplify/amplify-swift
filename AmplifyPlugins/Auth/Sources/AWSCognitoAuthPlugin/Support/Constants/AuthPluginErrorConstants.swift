@@ -272,4 +272,12 @@ extension AuthPluginErrorConstants {
     Check if the login is already linked to another account.
     """
 
+    static let invalidEmailRoleError: RecoverySuggestion = """
+    Check the email identity used with Cognito Service
+    """
+
+    static let invalidSMSRoleError: RecoverySuggestion = """
+    Check the role provided for SMS configuration in Cognito Service
+    """
+
 }
