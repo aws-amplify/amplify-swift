@@ -34,15 +34,16 @@ extension AWSS3StoragePlugin {
 
         do {
             let bucket = try AWSS3StoragePlugin.getBucket(configObject)
-            let region = try AWSS3StoragePlugin.getRegionType(configObject)
+//            let region = try AWSS3StoragePlugin.getRegionType(configObject)
             let defaultAccessLevel = try AWSS3StoragePlugin.getDefaultAccessLevel(configObject)
 
             let authService = AWSAuthService()
             let credentialsProvider = authService.getCredentialsProvider()
-            let storageService = try AWSS3StorageService(region: region,
-                                                         bucket: bucket,
-                                                         credentialsProvider: credentialsProvider,
-                                                         identifier: key)
+//            let storageService = try AWSS3StorageService(region: region,
+//                                                         bucket: bucket,
+//                                                         credentialsProvider: credentialsProvider,
+//                                                         identifier: key)
+            let storageService = try AWSS3StorageService()
 
             configure(storageService: storageService, authService: authService, defaultAccessLevel: defaultAccessLevel)
         } catch let storageError as StorageError {
@@ -103,30 +104,30 @@ extension AWSS3StoragePlugin {
     }
 
     /// Retrieves the region from configuration, validates, and transforms to and returns the AWSRegionType
-    private static func getRegionType(_ configuration: [String: JSONValue]) throws -> AWSRegionType {
-        guard let region = configuration[PluginConstants.region] else {
-            throw PluginError.pluginConfigurationError(PluginErrorConstants.missingRegion.errorDescription,
-                                                       PluginErrorConstants.missingRegion.recoverySuggestion)
-        }
-
-        guard case let .string(regionValue) = region else {
-            throw PluginError.pluginConfigurationError(PluginErrorConstants.invalidRegion.errorDescription,
-                                                       PluginErrorConstants.invalidRegion.recoverySuggestion)
-        }
-
-        if regionValue.isEmpty {
-            throw PluginError.pluginConfigurationError(PluginErrorConstants.emptyRegion.errorDescription,
-                                                       PluginErrorConstants.emptyRegion.recoverySuggestion)
-        }
-
-        let regionType = regionValue.aws_regionTypeValue()
-        guard regionType != AWSRegionType.Unknown else {
-            throw PluginError.pluginConfigurationError(PluginErrorConstants.invalidRegion.errorDescription,
-                                                       PluginErrorConstants.invalidRegion.recoverySuggestion)
-        }
-
-        return regionType
-    }
+//    private static func getRegionType(_ configuration: [String: JSONValue]) throws -> AWSRegionType {
+//        guard let region = configuration[PluginConstants.region] else {
+//            throw PluginError.pluginConfigurationError(PluginErrorConstants.missingRegion.errorDescription,
+//                                                       PluginErrorConstants.missingRegion.recoverySuggestion)
+//        }
+//
+//        guard case let .string(regionValue) = region else {
+//            throw PluginError.pluginConfigurationError(PluginErrorConstants.invalidRegion.errorDescription,
+//                                                       PluginErrorConstants.invalidRegion.recoverySuggestion)
+//        }
+//
+//        if regionValue.isEmpty {
+//            throw PluginError.pluginConfigurationError(PluginErrorConstants.emptyRegion.errorDescription,
+//                                                       PluginErrorConstants.emptyRegion.recoverySuggestion)
+//        }
+//
+//        let regionType = regionValue.aws_regionTypeValue()
+//        guard regionType != AWSRegionType.Unknown else {
+//            throw PluginError.pluginConfigurationError(PluginErrorConstants.invalidRegion.errorDescription,
+//                                                       PluginErrorConstants.invalidRegion.recoverySuggestion)
+//        }
+//
+//        return regionType
+//    }
 
     /// Checks if the access level is specified in the configurationand and retrieves it. Returns the default
     /// public access level if none is found in the configuration.

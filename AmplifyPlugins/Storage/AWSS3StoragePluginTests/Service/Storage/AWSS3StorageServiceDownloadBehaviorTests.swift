@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/*
 import XCTest
 @testable import AWSS3StoragePlugin
 
@@ -83,3 +84,4 @@ class AWSS3StorageServiceDownloadBehaviorTests: AWSS3StorageServiceTestBase {
 //        waitForExpectations(timeout: 1.0)
 //    }
 }
+*/
