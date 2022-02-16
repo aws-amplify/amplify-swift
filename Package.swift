@@ -231,7 +231,43 @@ let dataStoreTargets: [Target] = [
     ),
 ]
 
-let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets
+let storageTargets: [Target] = [
+    .target(
+        name: "AWSS3StoragePlugin",
+        dependencies: [
+            .target(name: "Amplify"),
+            .target(name: "AWSPluginsCore"),
+            .product(name: "AWSS3", package: "AWSSwiftSDK")],
+        path: "AmplifyPlugins/Storage/AWSS3StoragePlugin",
+        exclude: [
+            "Info.plist"
+        ]
+    ),
+    .testTarget(
+        name: "AWSS3StoragePluginTests",
+        dependencies: [
+            "AWSS3StoragePlugin",
+            "AmplifyTestCommon",
+            "AWSPluginsTestCommon"
+        ],
+        path: "AmplifyPlugins/Storage/AWSS3StoragePluginTests"
+    ),
+    .testTarget(
+        name: "AWSS3StoragePluginFunctionalTests",
+        dependencies: [
+            "AWSS3StoragePlugin",
+            "AWSAPIPlugin",
+            "AmplifyTestCommon",
+            "AWSPluginsTestCommon"
+        ],
+        path: "AmplifyPlugins/Storage/AWSS3StoragePluginFunctionalTests",
+        resources: [
+            .process("Resources/AWSS3StoragePluginFunctionalTests-amplifyconfiguration.json")
+        ]
+    ),
+]
+
+let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets
 
 let package = Package(
     name: "Amplify",
@@ -252,6 +288,10 @@ let package = Package(
         .library(
             name: "AWSDataStorePlugin",
             targets: ["AWSDataStorePlugin"]
+        ),
+        .library(
+            name: "AWSS3StoragePlugin",
+            targets: ["AWSS3StoragePlugin"]
         ),
         
     ],

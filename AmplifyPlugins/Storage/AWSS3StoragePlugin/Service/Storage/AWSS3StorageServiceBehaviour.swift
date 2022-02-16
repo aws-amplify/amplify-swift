@@ -35,7 +35,7 @@ protocol AWSS3StorageServiceBehaviour {
 
     func reset()
 
-    func getEscapeHatch() -> AWSS3
+    func getEscapeHatch() -> S3Client
 
     func download(serviceKey: String,
                   fileURL: URL?,
