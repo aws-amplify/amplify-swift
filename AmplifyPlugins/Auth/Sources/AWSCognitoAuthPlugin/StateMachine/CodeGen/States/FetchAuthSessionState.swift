@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum FetchAuthSessionState: State {
+enum FetchAuthSessionState: State {
 
     case initializingFetchAuthSession
 
@@ -21,7 +21,7 @@ public enum FetchAuthSessionState: State {
 
 }
 
-public extension FetchAuthSessionState {
+extension FetchAuthSessionState {
     var type: String {
         switch self {
         case .initializingFetchAuthSession: return "FetchAuthSessionState.initializingFetchAuthSession"

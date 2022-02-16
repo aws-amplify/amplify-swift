@@ -24,11 +24,11 @@ extension FetchUserPoolTokenStateSequence {
 }
 
 class FetchUserPoolTokenStateResolverTests: XCTestCase {
-    
+
     func testValidFetchUserPoolTokenStateSequences() throws {
         let authorizationError = AuthorizationError.configuration(message: "someError")
         let cognitoSession = AWSAuthCognitoSession.testData
-        
+
         let validSequences: [FetchUserPoolTokenStateSequence] = [
             FetchUserPoolTokenStateSequence(oldState: .configuring,
                                             event: FetchUserPoolTokensEvent(eventType: .refresh(cognitoSession)),
@@ -43,7 +43,7 @@ class FetchUserPoolTokenStateResolverTests: XCTestCase {
                                             event: FetchUserPoolTokensEvent(eventType: .throwError(authorizationError)),
                                             expected: .error(authorizationError))
         ]
-        
+
         for sequence in validSequences {
             sequence.assertResolvesToExpected()
         }

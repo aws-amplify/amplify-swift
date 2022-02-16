@@ -16,13 +16,15 @@ struct VerifyPasswordSRP: Action {
     let authResponse: InitiateAuthOutputResponse
 
     init(stateData: SRPStateData,
-         authResponse: InitiateAuthOutputResponse) {
+         authResponse: InitiateAuthOutputResponse)
+    {
         self.stateData = stateData
         self.authResponse = authResponse
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) {
+                 environment: Environment)
+    {
 
         Amplify.Logging.verbose("Starting execution \(#fileID)")
         do {
@@ -106,7 +108,8 @@ struct VerifyPasswordSRP: Action {
     private func sendRequest(
         request: RespondToAuthChallengeInput,
         environment: SRPAuthEnvironment,
-        callback: @escaping (SRPSignInEvent) -> Void) throws {
+        callback: @escaping (SRPSignInEvent) -> Void) throws
+    {
 
             let client = try environment.cognitoUserPoolFactory()
             client.respondToAuthChallenge(input: request) { result in
@@ -165,7 +168,7 @@ struct VerifyPasswordSRP: Action {
 extension VerifyPasswordSRP: DefaultLogger { }
 
 extension VerifyPasswordSRP: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
             "stateData": stateData.debugDictionary,
@@ -175,7 +178,7 @@ extension VerifyPasswordSRP: CustomDebugDictionaryConvertible {
 }
 
 extension VerifyPasswordSRP: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         debugDictionary.debugDescription
     }
 }

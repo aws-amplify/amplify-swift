@@ -7,13 +7,13 @@
 
 import Foundation
 
-public extension FetchIdentityState {
+extension FetchIdentityState {
 
     struct Resolver: StateMachineResolver {
-        public typealias StateType = FetchIdentityState
-        public let defaultState = FetchIdentityState.configuring
+        typealias StateType = FetchIdentityState
+        let defaultState = FetchIdentityState.configuring
 
-        public init() { }
+        init() { }
 
         func resolve(
             oldState: StateType,

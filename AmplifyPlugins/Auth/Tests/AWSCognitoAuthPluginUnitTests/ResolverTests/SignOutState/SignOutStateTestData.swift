@@ -31,17 +31,17 @@ extension SignOutEvent {
         id: "revokeToken",
         eventType: .revokeToken(.testData)
     )
-    
+
     static let signOutLocally = SignOutEvent(
         id: "signOutLocally",
         eventType: .signOutLocally(.testData)
     )
-    
+
     static let signedOutSuccess = SignOutEvent(
         id: "signedOutSuccess",
         eventType: .signedOutSuccess
     )
-    
+
     static let signedOutFailure = SignOutEvent(
         id: "signedOutFailure",
         eventType: .signedOutFailure(.testData)

@@ -13,7 +13,7 @@ protocol UserPoolEnvironment: Environment {
     var cognitoUserPoolFactory: CognitoUserPoolFactory { get }
 }
 
-public struct BasicUserPoolEnvironment: UserPoolEnvironment {
+struct BasicUserPoolEnvironment: UserPoolEnvironment {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
     let userPoolConfiguration: UserPoolConfigurationData
     let cognitoUserPoolFactory: CognitoUserPoolFactory

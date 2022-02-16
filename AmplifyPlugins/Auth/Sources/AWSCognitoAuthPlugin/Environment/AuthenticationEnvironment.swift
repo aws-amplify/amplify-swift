@@ -11,7 +11,7 @@ protocol AuthenticationEnvironment: Environment {
     var userPoolEnvironment: UserPoolEnvironment { get }
 }
 
-public struct BasicAuthenticationEnvironment: AuthenticationEnvironment {
+struct BasicAuthenticationEnvironment: AuthenticationEnvironment {
     let srpSignInEnvironment: SRPSignInEnvironment
     let userPoolEnvironment: UserPoolEnvironment
 }

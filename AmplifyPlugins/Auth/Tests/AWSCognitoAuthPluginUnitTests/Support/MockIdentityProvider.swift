@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCognitoAuthPlugin
+@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
@@ -34,13 +34,13 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         (Result<ConfirmSignUpOutputResponse,
          SdkError<ConfirmSignUpOutputError>>) -> Void
     ) -> Void
-    
+
     typealias GlobalSignOutCallback = (
         GlobalSignOutInput,
         (Result<GlobalSignOutOutputResponse,
          SdkError<GlobalSignOutOutputError>>) -> Void
     ) -> Void
-    
+
     typealias RevokeTokenCallback = (
         RevokeTokenInput,
         (Result<RevokeTokenOutputResponse,
@@ -91,14 +91,14 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     func confirmSignUp(input: ConfirmSignUpInput, completion: @escaping (SdkResult<ConfirmSignUpOutputResponse, ConfirmSignUpOutputError>) -> Void) {
         confirmSignUpCallback?(input, completion)
     }
-    
+
     func globalSignOut(
         input: GlobalSignOutInput,
         completion: @escaping (SdkResult<GlobalSignOutOutputResponse, GlobalSignOutOutputError>) -> Void
     ) {
         globalSignOutCallback?(input, completion)
     }
-    
+
     func revokeToken(
         input: RevokeTokenInput,
         completion: @escaping (ClientRuntime.SdkResult<RevokeTokenOutputResponse, RevokeTokenOutputError>) -> Void

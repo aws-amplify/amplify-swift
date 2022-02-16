@@ -22,7 +22,8 @@ struct InitiateAuthSRP: Action {
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) {
+                 environment: Environment)
+    {
 
         Amplify.Logging.verbose("Starting execution \(#fileID)")
         do {
@@ -64,7 +65,8 @@ struct InitiateAuthSRP: Action {
     }
 
     private func request(environment: SRPAuthEnvironment,
-                         publicHexValue: String) -> InitiateAuthInput {
+                         publicHexValue: String) -> InitiateAuthInput
+    {
         let userPoolClientId = environment.userPoolConfiguration.clientId
         var authParameters = [
             "USERNAME": username,
@@ -95,7 +97,8 @@ struct InitiateAuthSRP: Action {
     private func sendRequest(request: InitiateAuthInput,
                      environment: SRPAuthEnvironment,
                      srpStateData: SRPStateData,
-                     callback: @escaping (SRPSignInEvent) -> Void) throws {
+                     callback: @escaping (SRPSignInEvent) -> Void) throws
+    {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
         Amplify.Logging.verbose("Starting initiateAuth #file")
@@ -125,7 +128,7 @@ struct InitiateAuthSRP: Action {
 extension InitiateAuthSRP: DefaultLogger { }
 
 extension InitiateAuthSRP: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
             "username": username.masked(),
@@ -135,7 +138,7 @@ extension InitiateAuthSRP: CustomDebugDictionaryConvertible {
 }
 
 extension InitiateAuthSRP: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         debugDictionary.debugDescription
     }
 }

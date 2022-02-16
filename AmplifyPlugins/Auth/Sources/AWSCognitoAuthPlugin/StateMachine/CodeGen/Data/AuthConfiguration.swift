@@ -5,7 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public enum AuthConfiguration {
+import Foundation
+
+enum AuthConfiguration {
     case userPools(UserPoolConfigurationData)
     case identityPools(IdentityPoolConfigurationData)
     case userPoolsAndIdentityPools(UserPoolConfigurationData, IdentityPoolConfigurationData)
@@ -19,7 +21,7 @@ extension AuthConfiguration: Codable {
         case identityPools
     }
 
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         switch self {
@@ -33,7 +35,7 @@ extension AuthConfiguration: Codable {
         }
     }
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
 
         let userConfigData = try? values.decode(UserPoolConfigurationData.self, forKey: .userPools)
@@ -80,7 +82,7 @@ extension AuthConfiguration {
 }
 
 extension AuthConfiguration: CustomDebugDictionaryConvertible {
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         switch self {
         case .userPools(let userPoolConfigurationData):
             return [

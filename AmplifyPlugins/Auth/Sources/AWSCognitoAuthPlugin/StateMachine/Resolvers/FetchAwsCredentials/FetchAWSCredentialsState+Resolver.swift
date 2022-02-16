@@ -7,13 +7,13 @@
 
 import Foundation
 
-public extension FetchAWSCredentialsState {
+extension FetchAWSCredentialsState {
 
     struct Resolver: StateMachineResolver {
-        public typealias StateType = FetchAWSCredentialsState
-        public let defaultState = FetchAWSCredentialsState.configuring
+        typealias StateType = FetchAWSCredentialsState
+        let defaultState = FetchAWSCredentialsState.configuring
 
-        public init() { }
+        init() { }
 
         func resolve(
             oldState: StateType,
