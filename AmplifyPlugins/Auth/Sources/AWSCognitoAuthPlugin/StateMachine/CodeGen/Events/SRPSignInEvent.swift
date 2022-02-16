@@ -44,9 +44,10 @@ struct SRPSignInEvent: StateMachineEvent {
         }
     }
 
-    public init(id: String = UUID().uuidString,
+    init(id: String = UUID().uuidString,
                 eventType: EventType,
-                time: Date? = nil) {
+                time: Date? = nil)
+    {
         self.id = id
         self.eventType = eventType
         self.time = time

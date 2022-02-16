@@ -7,7 +7,7 @@
 
 extension AuthenticationState: CustomDebugDictionaryConvertible {
 
-    public var debugDictionary: [String: Any] {
+    var debugDictionary: [String: Any] {
         switch self {
         case .notConfigured:
             return ["AuthenticationState": "notConfigured"]
@@ -21,7 +21,7 @@ extension AuthenticationState: CustomDebugDictionaryConvertible {
                 "- AuthenticationConfiguration": authenticationConfiguration.debugDictionary,
                 "- SignOutState": signOutState.debugDictionary
             ]
-            
+
         case .signedOut(let authenticationConfiguration, let signedOutData):
             return [
                 "AuthenticationState": "signedOut",

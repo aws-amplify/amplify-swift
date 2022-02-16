@@ -17,7 +17,8 @@ struct RefreshUserPoolTokens: Action {
     let cognitoSession: AWSAuthCognitoSession
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) {
+                 environment: Environment)
+    {
 
         guard case let .success(cognitoUserPoolTokens) = cognitoSession.cognitoTokensResult else {
             let authZError = AuthorizationError.invalidState(
@@ -74,7 +75,8 @@ struct RefreshUserPoolTokens: Action {
             case .success(let response):
                 guard let authenticationResult = response.authenticationResult,
                       let idToken = authenticationResult.idToken,
-                      let accessToken = authenticationResult.accessToken else {
+                      let accessToken = authenticationResult.accessToken
+                else {
 
                           let authZError = AuthorizationError.invalidUserPoolTokens(
                             message: "UserPoolTokens are invalid.")

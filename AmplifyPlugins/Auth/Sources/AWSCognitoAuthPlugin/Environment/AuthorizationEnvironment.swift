@@ -16,7 +16,7 @@ protocol AuthorizationEnvironment: Environment {
 
 }
 
-public struct BasicAuthorizationEnvironment: AuthorizationEnvironment {
+struct BasicAuthorizationEnvironment: AuthorizationEnvironment {
 
     typealias CognitoIdentityFactory = () throws -> CognitoIdentityBehavior
 

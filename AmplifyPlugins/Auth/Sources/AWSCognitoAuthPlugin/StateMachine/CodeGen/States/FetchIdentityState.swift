@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum FetchIdentityState: State {
+enum FetchIdentityState: State {
 
     case configuring
 
@@ -19,7 +19,7 @@ public enum FetchIdentityState: State {
 
 }
 
-public extension FetchIdentityState {
+extension FetchIdentityState {
     var type: String {
         switch self {
         case .configuring: return "FetchIdentityState.configuring"

@@ -11,15 +11,16 @@ import Amplify
 public typealias AmplifyFetchSessionOperation = AmplifyOperation<AuthFetchSessionRequest, AuthSession, AuthError>
 
 public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFetchSessionOperation {
-    
+
     let authStateMachine: AuthStateMachine
     let credentialStoreStateMachine: CredentialStoreStateMachine
-    
+
     init(_ request: AuthFetchSessionRequest,
          authStateMachine: AuthStateMachine,
          credentialStoreStateMachine: CredentialStoreStateMachine,
-         resultListener: ResultListener?) {
-        
+         resultListener: ResultListener?)
+    {
+
         self.authStateMachine = authStateMachine
         self.credentialStoreStateMachine = credentialStoreStateMachine
         super.init(categoryType: .auth,
@@ -27,7 +28,7 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
                    request: request,
                    resultListener: resultListener)
     }
-    
+
     override public func main() {
         if isCancelled {
             finish()
@@ -37,13 +38,13 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
             self?.fetchStoredCredentials()
         }
     }
-    
+
     func initializeCredentialStore(completion: @escaping () -> Void) {
-        
+
         var token: AuthStateMachine.StateChangeListenerToken?
         token = credentialStoreStateMachine.listen { [weak self] in
             guard let self = self else { return }
-            
+
             switch $0 {
             case .idle:
                 completion()
@@ -53,16 +54,16 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
             default:
                 break
             }
-            
+
         } onSubscribe: { }
     }
-    
+
     func fetchStoredCredentials() {
-        
+
         var token: AuthStateMachine.StateChangeListenerToken?
         token = credentialStoreStateMachine.listen { [weak self] in
             guard let self = self else { return }
-            
+
             switch $0 {
             case .success(let credentials):
                 self.doInitialize(with: credentials)
@@ -79,13 +80,13 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
             }
         } onSubscribe: { [weak self] in
             guard let self = self else { return }
-            
+
             // Send the load locally stored credentials event
             let event = CredentialStoreEvent.init(eventType: .loadCredentialStore)
             self.credentialStoreStateMachine.send(event)
         }
     }
-    
+
     func doInitialize(with storedCredentials: CognitoCredentials?) {
         var token: AuthStateMachine.StateChangeListenerToken?
         token = authStateMachine.listen { [weak self] in
@@ -99,7 +100,8 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
             }
             // If still fetchingAuthSession, we will wait
             if case .fetchingAuthSession = authZState,
-               case .notConfigured = authZState {
+               case .notConfigured = authZState
+            {
                 return
             }
             if let token = token {
@@ -108,7 +110,7 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
             self.fetchAuthSession(with: storedCredentials)
         } onSubscribe: { }
     }
-    
+
     func fetchAuthSession(with storedCredentials: CognitoCredentials?) {
         var token: AuthStateMachine.StateChangeListenerToken?
         token = authStateMachine.listen { [weak self] in
@@ -118,7 +120,7 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
             guard case .configured(_, let authZState) = $0 else {
                 return
             }
-            
+
             switch authZState {
             case .sessionEstablished(let session):
                 // Store the credentials
@@ -136,7 +138,7 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
             default:
                 break
             }
-            
+
         } onSubscribe: { [weak self] in
             guard let self = self else {
                 return
@@ -144,14 +146,14 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
             self.sendFetchAuthSessionEvent(with: storedCredentials)
         }
     }
-    
+
     func storeSession(_ session: AWSAuthCognitoSession) {
         var token: CredentialStoreStateMachine.StateChangeListenerToken?
         token = credentialStoreStateMachine.listen { [weak self] in
             guard let self = self else {
                 return
             }
-            
+
             switch $0 {
             case .success:
                 self.dispatch(session)
@@ -169,7 +171,7 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
             default:
                 break
             }
-            
+
         } onSubscribe: { [weak self] in
             guard let self = self else {
                 return
@@ -179,27 +181,27 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
 
         }
     }
-    
+
     private func sendStoreCredentialsEvent(with credentials: CognitoCredentials) {
         let event = CredentialStoreEvent.init(eventType: .storeCredentials(credentials))
         credentialStoreStateMachine.send(event)
     }
-    
+
     private func sendFetchAuthSessionEvent(with storedCredentials: CognitoCredentials?) {
         let event = AuthorizationEvent.init(eventType: .fetchAuthSession(storedCredentials))
         authStateMachine.send(event)
     }
-    
+
     private func dispatch(_ result: AuthSession) {
-        self.finish()
+        finish()
         let asyncEvent = AWSAuthFetchSessionOperation.OperationResult.success(result)
         dispatch(result: asyncEvent)
     }
-    
+
     private func dispatch(_ error: AuthError) {
-        self.finish()
+        finish()
         let asyncEvent = AWSAuthFetchSessionOperation.OperationResult.failure(error)
         dispatch(result: asyncEvent)
     }
-    
+
 }

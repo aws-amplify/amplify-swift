@@ -1,4 +1,5 @@
-//// Copyright Amazon.com Inc. or its affiliates.
+//
+// Copyright Amazon.com Inc. or its affiliates.
 // All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -32,7 +33,7 @@ class IdentityProviderFactoryRegistry {
     static let shared = IdentityProviderFactoryRegistry()
 
     init() {
-        registry = [:]
+        self.registry = [:]
     }
 
     subscript(key: String) -> IdentityProviderFactory? {

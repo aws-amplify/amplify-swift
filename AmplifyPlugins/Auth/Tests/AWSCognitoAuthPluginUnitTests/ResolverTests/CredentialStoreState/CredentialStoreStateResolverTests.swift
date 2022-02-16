@@ -27,7 +27,7 @@ class CredentialStoreStateResolverTests: XCTestCase {
     func testValidCredentialStoreStateSequences() throws {
         let credentialStoreError = CredentialStoreError.configuration(message: "someError")
         let testData = CognitoCredentials.testData
-        
+
         let validSequences: [CredentialStoreStateSequence] = [
             CredentialStoreStateSequence(
                 oldState: .notConfigured,
@@ -98,10 +98,10 @@ class CredentialStoreStateResolverTests: XCTestCase {
                 event: CredentialStoreEvent(eventType: .clearCredentialStore),
                 expected: .clearingCredentials)
         ]
-        
+
         for sequence in validSequences {
             sequence.assertResolvesToExpected()
         }
     }
-    
+
 }

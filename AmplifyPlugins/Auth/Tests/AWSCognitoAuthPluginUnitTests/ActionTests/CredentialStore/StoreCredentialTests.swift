@@ -51,7 +51,7 @@ class StoreCredentialTests: XCTestCase {
 
         waitForExpectations(timeout: 0.1)
     }
-    
+
     /// Test is responsible to check if configuration error is correctly caught by the action
     ///
     /// - Given: A set of credentials and an invalid environment
@@ -60,7 +60,7 @@ class StoreCredentialTests: XCTestCase {
     ///    - The action should throw an error
     func testStoreCredentialsInvalidEnvironment() {
         let expectation = expectation(description: "throwStoreCredentialConfigurationError")
-        
+
         let expectedError = CredentialStoreError.configuration(
             message: AuthPluginErrorConstants.configurationError)
 
@@ -68,12 +68,12 @@ class StoreCredentialTests: XCTestCase {
 
         let action = StoreCredentials(credentials: .testData)
         action.execute(withDispatcher: MockDispatcher { event in
-            
+
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
                 return
             }
-            
+
             if case let .throwError(error)  = event.eventType {
                 XCTAssertNotNil(error)
                 XCTAssertEqual(error, expectedError)
@@ -83,7 +83,7 @@ class StoreCredentialTests: XCTestCase {
 
         waitForExpectations(timeout: 0.1)
     }
-    
+
     /// Test is responsible to check if the store credentials handle a known error
     ///
     /// - Given: A set of credentials and an expected error from the Mock
@@ -94,8 +94,8 @@ class StoreCredentialTests: XCTestCase {
         let mockedData = "mock"
         let testData = CognitoCredentials.testData
         let expectation = expectation(description: "saveCredentialErrorInvoked")
-        
-        let expectedError = CredentialStoreError.securityError(30534)
+
+        let expectedError = CredentialStoreError.securityError(30_534)
 
         let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(data: mockedData)
         let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { service in
@@ -120,12 +120,12 @@ class StoreCredentialTests: XCTestCase {
 
         let action = StoreCredentials(credentials: testData)
         action.execute(withDispatcher: MockDispatcher { event in
-            
+
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
                 return
             }
-            
+
             if case let .throwError(error)  = event.eventType {
                 XCTAssertNotNil(error)
                 XCTAssertEqual(error, expectedError)
@@ -135,7 +135,7 @@ class StoreCredentialTests: XCTestCase {
 
         waitForExpectations(timeout: 0.1)
     }
-    
+
     /// Test is responsible to check if the store credentials handle an unknown error
     ///
     /// - Given: A set of credentials and an expected unknown error from the Mock
@@ -146,7 +146,7 @@ class StoreCredentialTests: XCTestCase {
         let mockedData = "mock"
         let testData = CognitoCredentials.testData
         let expectation = expectation(description: "saveCredentialErrorInvoked")
-        
+
         let unknownError = AuthorizationError.invalidIdentityId(message: "")
         let expectedError = CredentialStoreError.unknown("An unknown error occurred", unknownError)
 
@@ -173,12 +173,12 @@ class StoreCredentialTests: XCTestCase {
 
         let action = StoreCredentials(credentials: testData)
         action.execute(withDispatcher: MockDispatcher { event in
-            
+
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
                 return
             }
-            
+
             if case let .throwError(error)  = event.eventType {
                 XCTAssertNotNil(error)
                 XCTAssertEqual(error, expectedError)

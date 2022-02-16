@@ -1,4 +1,5 @@
-//// Copyright Amazon.com Inc. or its affiliates.
+//
+// Copyright Amazon.com Inc. or its affiliates.
 // All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -9,10 +10,10 @@ import Amplify
 
 extension SignUpState {
     struct Resolver: StateMachineResolver {
-        public typealias StateType = SignUpState
-        public let defaultState = SignUpState.notStarted
+        typealias StateType = SignUpState
+        let defaultState = SignUpState.notStarted
 
-        public init() { }
+        init() { }
 
         func resolve(
             oldState: StateType,
