@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4848349327B6311E00649D11 /* InitiateAuthIntegTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4848349227B6311D00649D11 /* InitiateAuthIntegTests.swift */; };
 		484834BC27B6ED8800649D11 /* CredentialStoreConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484834BB27B6ED8700649D11 /* CredentialStoreConfigurationTests.swift */; };
 		484834BE27B6FD9B00649D11 /* AuthEnvironmentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484834BD27B6FD9B00649D11 /* AuthEnvironmentHelper.swift */; };
 		485CB53E27B614CE006CCEC7 /* AuthHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB53D27B614CE006CCEC7 /* AuthHostAppApp.swift */; };
@@ -22,6 +21,9 @@
 		485CB5C027B61F1E006CCEC7 /* SignedOutAuthSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BC27B61F1D006CCEC7 /* SignedOutAuthSessionTests.swift */; };
 		485CB5C127B61F1E006CCEC7 /* AuthSignOutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BD27B61F1D006CCEC7 /* AuthSignOutTests.swift */; };
 		485CB5C227B61F1E006CCEC7 /* AuthSRPSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */; };
+		B43C26CA27BC9D54003F3BF7 /* AuthSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43C26C727BC9D54003F3BF7 /* AuthSignUpTests.swift */; };
+		B43C26CB27BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43C26C827BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift */; };
+		B43C26CC27BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43C26C927BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift */; };
 		B4EBE93D27BCBE440005AE5C /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = B4EBE93C27BCBE440005AE5C /* Amplify */; };
 		B4EBE93F27BCBE440005AE5C /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B4EBE93E27BCBE440005AE5C /* AWSCognitoAuthPlugin */; };
 /* End PBXBuildFile section */
@@ -37,7 +39,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		4848349227B6311D00649D11 /* InitiateAuthIntegTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitiateAuthIntegTests.swift; sourceTree = "<group>"; };
 		484834BB27B6ED8700649D11 /* CredentialStoreConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialStoreConfigurationTests.swift; sourceTree = "<group>"; };
 		484834BD27B6FD9B00649D11 /* AuthEnvironmentHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthEnvironmentHelper.swift; sourceTree = "<group>"; };
 		485CB53A27B614CE006CCEC7 /* AuthHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AuthHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -54,7 +55,10 @@
 		485CB5BC27B61F1D006CCEC7 /* SignedOutAuthSessionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignedOutAuthSessionTests.swift; sourceTree = "<group>"; };
 		485CB5BD27B61F1D006CCEC7 /* AuthSignOutTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSignOutTests.swift; sourceTree = "<group>"; };
 		485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSRPSignInTests.swift; sourceTree = "<group>"; };
-		B4EBE93B27BCBE100005AE5C /* amplify-ios-staging */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios-staging"; path = ../../../..; sourceTree = "<group>"; };
+		B43C26C727BC9D54003F3BF7 /* AuthSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSignUpTests.swift; sourceTree = "<group>"; };
+		B43C26C827BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthConfirmSignUpTests.swift; sourceTree = "<group>"; };
+		B43C26C927BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthResendSignUpCodeTests.swift; sourceTree = "<group>"; };
+		B443B8C127BD707B009DA19B /* amplify-ios-staging */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios-staging"; path = ../../../..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,8 +138,8 @@
 		485CB5A027B61E04006CCEC7 /* AuthIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				B43C26C627BC9D54003F3BF7 /* SignUpTests */,
 				484834BA27B6ED7200649D11 /* CredentialStore */,
-				4848349227B6311D00649D11 /* InitiateAuthIntegTests.swift */,
 				485CB5C527B61F63006CCEC7 /* SessionTests */,
 				485CB5C427B61F5A006CCEC7 /* SignOutTests */,
 				485CB5C327B61F4A006CCEC7 /* SignInTests */,
@@ -184,9 +188,19 @@
 		485CB5C627B62C5C006CCEC7 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				B4EBE93B27BCBE100005AE5C /* amplify-ios-staging */,
+				B443B8C127BD707B009DA19B /* amplify-ios-staging */,
 			);
 			name = Packages;
+			sourceTree = "<group>";
+		};
+		B43C26C627BC9D54003F3BF7 /* SignUpTests */ = {
+			isa = PBXGroup;
+			children = (
+				B43C26C727BC9D54003F3BF7 /* AuthSignUpTests.swift */,
+				B43C26C827BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift */,
+				B43C26C927BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift */,
+			);
+			path = SignUpTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -327,14 +341,16 @@
 			files = (
 				485CB5B927B61F10006CCEC7 /* AuthSessionHelper.swift in Sources */,
 				485CB5C227B61F1E006CCEC7 /* AuthSRPSignInTests.swift in Sources */,
-				4848349327B6311E00649D11 /* InitiateAuthIntegTests.swift in Sources */,
+				B43C26CB27BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift in Sources */,
 				485CB5C127B61F1E006CCEC7 /* AuthSignOutTests.swift in Sources */,
 				485CB5B127B61EAC006CCEC7 /* AWSAuthBaseTest.swift in Sources */,
 				485CB5C027B61F1E006CCEC7 /* SignedOutAuthSessionTests.swift in Sources */,
 				485CB5BA27B61F10006CCEC7 /* AuthSignInHelper.swift in Sources */,
 				484834BE27B6FD9B00649D11 /* AuthEnvironmentHelper.swift in Sources */,
 				484834BC27B6ED8800649D11 /* CredentialStoreConfigurationTests.swift in Sources */,
+				B43C26CC27BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift in Sources */,
 				485CB5BF27B61F1E006CCEC7 /* SignedInAuthSessionTests.swift in Sources */,
+				B43C26CA27BC9D54003F3BF7 /* AuthSignUpTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
