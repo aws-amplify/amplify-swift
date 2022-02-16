@@ -21,6 +21,6 @@ public struct BasicUserPoolTokenProvider: AuthTokenProvider {
     }
 
     public func getToken() -> Result<String, AuthError> {
-        fatalError("Convert to async")
+        return self.authService.getToken()
     }
 }
