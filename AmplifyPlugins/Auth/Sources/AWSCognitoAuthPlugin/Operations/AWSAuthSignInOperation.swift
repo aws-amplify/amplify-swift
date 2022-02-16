@@ -43,14 +43,20 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             return
         }
         doInitialize { [weak self] authenticationState in
-            switch authenticationState {
-            case .signedOut:
-                self?.doSignIn()
-            default:
-                // TODO: Should dispatch an error is already signedIn
-                // or signingIn
-                self?.finish()
-            }
+            self?.tryToInvokeSignIn(authenticationState)
+        }
+    }
+
+    func tryToInvokeSignIn(_ authenticationState: AuthenticationState) {
+        switch authenticationState {
+        case .signedOut:
+            self.doSignIn()
+        case .signingUp(let configuration, _):
+            self.cancelSignUp(configuration)
+        default:
+            // TODO: Should dispatch an error is already signedIn
+            // or signingIn
+            self.finish()
         }
     }
 
@@ -119,6 +125,40 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
 
     }
 
+    func cancelSignUp(_ configuration: AuthConfiguration) {
+        if isCancelled {
+            finish()
+            return
+        }
+
+        var token: AuthStateMachine.StateChangeListenerToken?
+        token = authStateMachine.listen { [weak self] in
+            guard let self = self else {
+                return
+            }
+            guard case .configured(let authNState, _) = $0 else {
+                return
+            }
+
+            switch authNState {
+            case .signedOut:
+                self.tryToInvokeSignIn(authNState)
+                self.cancelToken(token)
+            case .error(_, let error):
+                self.dispatch(AuthError.unknown("Some error", error))
+                self.cancelToken(token)
+                self.finish()
+            default:
+                break
+            }
+        } onSubscribe: { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.sendCancelSignUpEvent(configuration)
+        }
+    }
+
     func storeUserPoolTokens(_ tokens: AWSCognitoUserPoolTokens) {
         var token: CredentialStoreStateMachine.StateChangeListenerToken?
         token = credentialStoreStateMachine.listen { [weak self] in
@@ -157,6 +197,12 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
     private func sendSignInEvent() {
         let signInData = SignInEventData(username: request.username, password: request.password)
         let event = AuthenticationEvent.init(eventType: .signInRequested(signInData))
+        authStateMachine.send(event)
+    }
+
+    private func sendCancelSignUpEvent(_ configuration: AuthConfiguration) {
+        let event = AuthenticationEvent(
+            eventType: .cancelSignUp(configuration))
         authStateMachine.send(event)
     }
 

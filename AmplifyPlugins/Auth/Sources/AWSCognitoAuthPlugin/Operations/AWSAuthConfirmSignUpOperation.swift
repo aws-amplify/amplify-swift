@@ -5,9 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-
+import Foundation
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
@@ -44,6 +43,10 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
     }
 
     func doInitialize() {
+        if isCancelled {
+            finish()
+            return
+        }
         var token: AuthStateMachineToken?
         token = stateMachine.listen { [weak self] in
             guard let self = self else {
@@ -57,8 +60,9 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
                     self.doConfirmSignUp()
                 default:
                     self.cancelListener(token)
-                    let message = "Auth state must be signed out to confirm signup"
-                    self.dispatch(message: message, error: .invalidState(message: message))
+                    let message = "Auth state must be signed out to signup"
+                    let error = AuthError.invalidState(message, "", nil)
+                    self.dispatch(error)
                     self.finish()
                 }
             }
@@ -69,6 +73,10 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
         var token: AuthStateMachineToken?
         token = stateMachine.listen { [weak self] state in
             guard let self = self else {
+                return
+            }
+            guard self.isCancelled == false else {
+                self.finish()
                 return
             }
             guard case .configured(let authNState, _) = state else {
@@ -83,7 +91,7 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
                     self.cancelListener(token)
                     self.finish()
                 case .error(let error):
-                    self.dispatch(message: "Failed while confirming signup", error: error)
+                    self.dispatch(error.authError)
                     self.cancelListener(token)
                     self.finish()
                 default:
@@ -99,6 +107,15 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
     }
 
     private func sendConfirmSignUpEvent() {
+        guard !request.code.isEmpty else {
+               let error = AuthError.validation(
+                AuthPluginErrorConstants.confirmSignUpCodeError.field,
+                AuthPluginErrorConstants.confirmSignUpCodeError.errorDescription,
+                AuthPluginErrorConstants.confirmSignUpCodeError.recoverySuggestion, nil)
+               dispatch(error)
+            finish()
+            return
+        }
         let confirmSignUpData = ConfirmSignUpEventData(
             username: request.username,
             confirmationCode: request.code)
@@ -106,9 +123,8 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
         stateMachine.send(event)
     }
 
-    private func dispatch(message: String, error: SignUpError) {
-        let result = AWSAuthSignUpOperation.OperationResult.failure(.unknown(message, error))
-        dispatch(result: result)
+    private func dispatch(_ error: AuthError) {
+        dispatch(result: .failure(error))
     }
 
     private func cancelListener(_ token: AuthStateMachineToken?) {
