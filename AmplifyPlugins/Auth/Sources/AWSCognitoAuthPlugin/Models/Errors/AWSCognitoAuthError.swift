@@ -77,6 +77,9 @@ public enum AWSCognitoAuthError: Error {
     /// SMS role related issue
     case smsRole
 
+    /// Email role related issue
+    case emailRole
+
     /// An external service like facebook/twitter threw an error
     case externalServiceException
 

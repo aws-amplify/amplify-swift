@@ -35,7 +35,7 @@ extension InitiateAuthOutputError: AuthErrorConvertible {
             return AuthError.configuration(exception.message ?? "Invalid UserPool Configuration error",
                                            AuthPluginErrorConstants.configurationError)
         case .notAuthorizedException(let exception):
-            return AuthError.notAuthorized(exception.message ?? "Not authrozied error",
+            return AuthError.notAuthorized(exception.message ?? "Not authorized error",
                                            AuthPluginErrorConstants.notAuthorizedError)
         case .passwordResetRequiredException(let exception):
             return AuthError.service(exception.message ?? "Password reset required error",
