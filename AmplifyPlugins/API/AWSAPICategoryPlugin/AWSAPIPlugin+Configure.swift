@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSPluginsCore
+import AppSyncRealTimeClient
 
 public extension AWSAPIPlugin {
 
@@ -49,12 +50,14 @@ extension AWSAPIPlugin {
         let authService: AWSAuthServiceBehavior
         let pluginConfig: AWSAPICategoryPluginConfiguration
         let subscriptionConnectionFactory: SubscriptionConnectionFactory
+        let logLevel: LogLevel
 
         init(
             configurationValues: JSONValue,
             apiAuthProviderFactory: APIAuthProviderFactory,
             authService: AWSAuthServiceBehavior? = nil,
-            subscriptionConnectionFactory: SubscriptionConnectionFactory? = nil
+            subscriptionConnectionFactory: SubscriptionConnectionFactory? = nil,
+            logLevel: LogLevel? = nil
         ) throws {
             let authService = authService
                 ?? AWSAuthService()
@@ -68,21 +71,26 @@ extension AWSAPIPlugin {
             let subscriptionConnectionFactory = subscriptionConnectionFactory
                 ?? AWSSubscriptionConnectionFactory()
 
+            let logLevel = logLevel ?? Amplify.Logging.logLevel
+
             self.init(
                 pluginConfig: pluginConfig,
                 authService: authService,
-                subscriptionConnectionFactory: subscriptionConnectionFactory
+                subscriptionConnectionFactory: subscriptionConnectionFactory,
+                logLevel: logLevel
             )
         }
 
         init(
             pluginConfig: AWSAPICategoryPluginConfiguration,
             authService: AWSAuthServiceBehavior,
-            subscriptionConnectionFactory: SubscriptionConnectionFactory
+            subscriptionConnectionFactory: SubscriptionConnectionFactory,
+            logLevel: LogLevel
         ) {
             self.pluginConfig = pluginConfig
             self.authService = authService
             self.subscriptionConnectionFactory = subscriptionConnectionFactory
+            self.logLevel = logLevel
         }
 
     }
@@ -97,6 +105,7 @@ extension AWSAPIPlugin {
         authService = dependencies.authService
         pluginConfig = dependencies.pluginConfig
         subscriptionConnectionFactory = dependencies.subscriptionConnectionFactory
+        AppSyncRealTimeClient.logLevel = AppSyncRealTimeClient.LogLevel(
+            rawValue: dependencies.logLevel.rawValue) ?? .error
     }
-
 }
