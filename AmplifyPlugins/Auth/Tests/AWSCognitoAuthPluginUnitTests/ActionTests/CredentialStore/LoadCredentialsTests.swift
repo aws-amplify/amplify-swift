@@ -45,12 +45,12 @@ class LoadCredentialsTests: XCTestCase {
 
         let action = LoadCredentialStore()
         action.execute(withDispatcher: MockDispatcher { event in
-            
+
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
                 return
             }
-            
+
             if case let .completedOperation(credentials)  = event.eventType {
                 XCTAssertNotNil(credentials)
                 XCTAssertEqual(credentials, testData)
@@ -60,7 +60,7 @@ class LoadCredentialsTests: XCTestCase {
 
         waitForExpectations(timeout: 0.1)
     }
-    
+
     /// Test is responsible to check if configuration error is correctly caught by the action
     ///
     /// - Given: An invalid environment
@@ -69,7 +69,7 @@ class LoadCredentialsTests: XCTestCase {
     ///    - The action should throw an error
     func testLoadCredentialsInvalidEnvironment() {
         let expectation = expectation(description: "throwLoadCredentialConfigurationError")
-        
+
         let expectedError = CredentialStoreError.configuration(
             message: AuthPluginErrorConstants.configurationError)
 
@@ -77,12 +77,12 @@ class LoadCredentialsTests: XCTestCase {
 
         let action = LoadCredentialStore()
         action.execute(withDispatcher: MockDispatcher { event in
-            
+
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
                 return
             }
-            
+
             if case let .throwError(error)  = event.eventType {
                 XCTAssertNotNil(error)
                 XCTAssertEqual(error, expectedError)
@@ -92,7 +92,7 @@ class LoadCredentialsTests: XCTestCase {
 
         waitForExpectations(timeout: 0.1)
     }
-    
+
     /// Test is responsible to check if the load credentials handle a known error
     ///
     /// - Given: A credential store and an expected error from the Mock
@@ -102,8 +102,8 @@ class LoadCredentialsTests: XCTestCase {
     func testLoadCredentialsKnownException() {
         let mockedData = "mock"
         let expectation = expectation(description: "loadCredentialErrorInvoked")
-        
-        let expectedError = CredentialStoreError.securityError(30534)
+
+        let expectedError = CredentialStoreError.securityError(30_534)
 
         let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(data: mockedData)
         let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { service in
@@ -128,12 +128,12 @@ class LoadCredentialsTests: XCTestCase {
 
         let action = LoadCredentialStore()
         action.execute(withDispatcher: MockDispatcher { event in
-            
+
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
                 return
             }
-            
+
             if case let .throwError(error)  = event.eventType {
                 XCTAssertNotNil(error)
                 XCTAssertEqual(error, expectedError)
@@ -143,7 +143,7 @@ class LoadCredentialsTests: XCTestCase {
 
         waitForExpectations(timeout: 0.1)
     }
-    
+
     /// Test is responsible to check if the load credentials handle an unknown error
     ///
     /// - Given: A expected unknown error from the Mock
@@ -153,7 +153,7 @@ class LoadCredentialsTests: XCTestCase {
     func testLoadCredentialsUnknownKnownException() {
         let mockedData = "mock"
         let expectation = expectation(description: "loadCredentialErrorInvoked")
-        
+
         let unknownError = AuthorizationError.invalidIdentityId(message: "")
         let expectedError = CredentialStoreError.unknown("An unknown error occurred", unknownError)
 
@@ -180,12 +180,12 @@ class LoadCredentialsTests: XCTestCase {
 
         let action = LoadCredentialStore()
         action.execute(withDispatcher: MockDispatcher { event in
-            
+
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
                 return
             }
-            
+
             if case let .throwError(error)  = event.eventType {
                 XCTAssertNotNil(error)
                 XCTAssertEqual(error, expectedError)

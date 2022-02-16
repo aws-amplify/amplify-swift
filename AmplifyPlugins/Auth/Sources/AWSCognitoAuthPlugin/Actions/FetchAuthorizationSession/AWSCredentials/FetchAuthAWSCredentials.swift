@@ -16,9 +16,11 @@ struct FetchAuthAWSCredentials: Action {
     let cognitoSession: AWSAuthCognitoSession
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) {
+                 environment: Environment)
+    {
         guard let authZEnvironment = environment as? AuthorizationEnvironment,
-              let client = try? authZEnvironment.cognitoIdentityFactory() else {
+              let client = try? authZEnvironment.cognitoIdentityFactory()
+        else {
 
                   let authZError = AuthorizationError.configuration(message: AuthPluginErrorConstants.configurationError)
                   let event = FetchAWSCredentialEvent(eventType: .throwError(authZError))
@@ -55,7 +57,8 @@ struct FetchAuthAWSCredentials: Action {
 
         var loginsMap: [String: String] = [:]
         if case let .success(cognitoUserPoolTokens) = cognitoSession.cognitoTokensResult,
-           let userPoolEnvironment = environment as? UserPoolEnvironment {
+           let userPoolEnvironment = environment as? UserPoolEnvironment
+        {
 
             let identityProviderName = userPoolEnvironment.userPoolConfiguration.getIdentityProviderName()
             loginsMap[identityProviderName] = cognitoUserPoolTokens.idToken
@@ -84,7 +87,8 @@ struct FetchAuthAWSCredentials: Action {
                       let accessKey = awsCredentials.accessKeyId,
                       let secretKey = awsCredentials.secretKey,
                       let sessionKey = awsCredentials.sessionToken,
-                      let expiration = awsCredentials.expiration else {
+                      let expiration = awsCredentials.expiration
+                else {
                           let authZError = AuthorizationError.invalidAWSCredentials(
                             message: "AWSCredentials are invalid.")
                           let event = FetchAWSCredentialEvent(eventType: .throwError(authZError))

@@ -26,7 +26,7 @@ extension FetchIdentityStateSequence {
 class FetchIdentityStateResolverTests: XCTestCase {
     func testValidFetchIdentityStateSequences() throws {
         let authorizationError = AuthorizationError.configuration(message: "someError")
-        
+
         let validSequences: [FetchIdentityStateSequence] = [
             FetchIdentityStateSequence(oldState: .configuring,
                                        event: FetchIdentityEvent(eventType: .fetch(AWSAuthCognitoSession.testData)),
@@ -41,10 +41,10 @@ class FetchIdentityStateResolverTests: XCTestCase {
                                        event: FetchIdentityEvent(eventType: .throwError(authorizationError)),
                                        expected: .error(authorizationError))
         ]
-        
+
         for sequence in validSequences {
             sequence.assertResolvesToExpected()
         }
     }
-    
+
 }

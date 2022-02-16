@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 import XCTest
 
 @testable import AWSCognitoAuthPlugin
@@ -66,7 +73,8 @@ class SignUpInputTests: XCTestCase {
 
     func assertHasAttributeType(name: String,
                                 validationData: [CognitoIdentityProviderClientTypes.AttributeType],
-                                file: StaticString = #file, line: UInt = #line) {
+                                file: StaticString = #file, line: UInt = #line)
+    {
 
         let attribute = validationData.first(where: { $0.name == name })
         XCTAssertNotNil(attribute, "Attribute not found for name: \(name)", file: file, line: line)

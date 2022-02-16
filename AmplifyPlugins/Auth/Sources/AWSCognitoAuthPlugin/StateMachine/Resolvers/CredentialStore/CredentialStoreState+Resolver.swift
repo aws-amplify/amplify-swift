@@ -10,10 +10,10 @@ import Foundation
 extension CredentialStoreState {
 
     struct Resolver: StateMachineResolver {
-        public typealias StateType = CredentialStoreState
-        public let defaultState = CredentialStoreState.notConfigured
+        typealias StateType = CredentialStoreState
+        let defaultState = CredentialStoreState.notConfigured
 
-        public init() { }
+        init() { }
 
         func resolve(
             oldState: StateType,
@@ -96,7 +96,7 @@ extension CredentialStoreState {
                 return .from(oldState)
             }
         }
-        
+
         private func resolveSuccessAndErrorState(
             oldState: StateType,
             byApplying credentialStoreEvent: CredentialStoreEvent

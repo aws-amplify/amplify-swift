@@ -4,9 +4,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import Amplify
 
-public enum AuthenticationError: Error {
+enum AuthenticationError: Error {
     case configuration(message: String)
     case service(message: String)
     case unknown(message: String)
@@ -32,7 +33,7 @@ extension AuthenticationError: Codable {
         case configuration, service, unknown
     }
 
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         switch self {
@@ -45,7 +46,7 @@ extension AuthenticationError: Codable {
         }
     }
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         guard let key = container.allKeys.first else {

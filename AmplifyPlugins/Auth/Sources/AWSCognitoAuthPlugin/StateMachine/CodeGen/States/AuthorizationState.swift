@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum AuthorizationState: State {
+enum AuthorizationState: State {
 
     case notConfigured
 
@@ -20,7 +20,7 @@ public enum AuthorizationState: State {
     case error(AuthorizationError)
 }
 
-public extension AuthorizationState {
+extension AuthorizationState {
     var type: String {
         switch self {
         case .notConfigured: return "AuthorizationState.notConfigured"

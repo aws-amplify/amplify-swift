@@ -25,10 +25,10 @@ extension FetchAuthSessionStateSequence {
 }
 
 class FetchAuthSessionStateResolverTests: XCTestCase {
-    
+
     func testValidFetchAuthSessionStateSequences() throws {
         let cognitoSession = AWSAuthCognitoSession.testData
-        
+
         let validSequences: [FetchAuthSessionStateSequence] = [
             StateSequence(oldState: .initializingFetchAuthSession,
                           event: FetchAuthSessionEvent(eventType: .fetchIdentity(cognitoSession)),
@@ -46,10 +46,10 @@ class FetchAuthSessionStateResolverTests: XCTestCase {
                           event: FetchAuthSessionEvent(eventType: .fetchedAuthSession(cognitoSession)),
                           expected: .sessionEstablished)
         ]
-        
+
         for sequence in validSequences {
             sequence.assertResolvesToExpected()
         }
     }
-    
+
 }
