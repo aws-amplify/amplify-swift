@@ -15,7 +15,7 @@ struct ConfigureUserPoolToken: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
-        let timer = LoggingTimer(identifier).start("### Starting execution")
+        logVerbose("Starting execution", environment: environment)
 
         switch cognitoSession.cognitoTokensResult {
         case .success(let cognitoUserPoolTokens):
@@ -25,16 +25,16 @@ struct ConfigureUserPoolToken: Action {
             if cognitoUserPoolTokens.expiration.compare(Date().addingTimeInterval(refreshInterval)) == .orderedDescending {
 
                 let userPoolTokensEvent = FetchUserPoolTokensEvent(eventType: .fetched)
-                timer.note("### sending event \(userPoolTokensEvent.type)")
+                logVerbose("Sending event \(userPoolTokensEvent.type)", environment: environment)
                 dispatcher.send(userPoolTokensEvent)
 
                 // User pool tokens are valid, move to fetching the identity
                 let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity(cognitoSession))
-                timer.stop("### sending event \(fetchIdentityEvent.type)")
+                logVerbose("Sending event \(fetchIdentityEvent.type)", environment: environment)
                 dispatcher.send(fetchIdentityEvent)
             } else {
                 let event = FetchUserPoolTokensEvent(eventType: .refresh(cognitoSession))
-                timer.stop("### sending event \(event.type)")
+                logVerbose("Sending event \(event.type)", environment: environment)
                 dispatcher.send(event)
             }
 
@@ -45,14 +45,11 @@ struct ConfigureUserPoolToken: Action {
 
             // No User pool tokens, possibly a signed out state
             let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity(cognitoSession))
-            timer.stop("### sending event \(fetchIdentityEvent.type)")
+            logVerbose("Sending event \(fetchIdentityEvent.type)", environment: environment)
             dispatcher.send(fetchIdentityEvent)
         }
-
     }
 }
-
-extension ConfigureUserPoolToken: DefaultLogger { }
 
 extension ConfigureUserPoolToken: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

@@ -30,7 +30,7 @@ struct ConfigureFetchAWSCredentials: Action {
             return
         }
 
-        let timer = LoggingTimer(identifier).start("### Starting execution")
+        logVerbose("Starting execution", environment: environment)
 
         let refreshInterval = AuthPluginConstants.sessionRefreshInterval
         if case let .success(awsCredentials) = cognitoSession.awsCredentialsResult,
@@ -39,21 +39,19 @@ struct ConfigureFetchAWSCredentials: Action {
         {
 
             let fetchedCredentialsEvent = FetchAWSCredentialEvent(eventType: .fetched)
-            timer.note("### sending \(fetchedCredentialsEvent.type)")
+            logVerbose("Sending event \(fetchedCredentialsEvent.type)", environment: environment)
             dispatcher.send(fetchedCredentialsEvent)
 
             let fetchAuthSessionEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession(cognitoSession))
-            timer.stop("### sending \(fetchAuthSessionEvent.type)")
+            logVerbose("Sending event \(fetchAuthSessionEvent.type)", environment: environment)
             dispatcher.send(fetchAuthSessionEvent)
         } else {
             let fetchAWSCredentialEvent = FetchAWSCredentialEvent(eventType: .fetch(cognitoSession))
-            timer.stop("### sending \(fetchAWSCredentialEvent.type)")
+            logVerbose("Sending event \(fetchAWSCredentialEvent.type)", environment: environment)
             dispatcher.send(fetchAWSCredentialEvent)
         }
     }
 }
-
-extension ConfigureFetchAWSCredentials: DefaultLogger { }
 
 extension ConfigureFetchAWSCredentials: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

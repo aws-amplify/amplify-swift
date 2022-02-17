@@ -24,8 +24,7 @@ struct InitiateAuthSRP: Action {
     func execute(withDispatcher dispatcher: EventDispatcher,
                  environment: Environment)
     {
-
-        Amplify.Logging.verbose("Starting execution \(#fileID)")
+        logVerbose("Starting execution", environment: environment)
         do {
             let environment = try SRPSignInHelper.srpEnvironment(environment)
             let nHexValue = environment.srpConfiguration.nHexValue
@@ -46,16 +45,17 @@ struct InitiateAuthSRP: Action {
             try sendRequest(request: request,
                             environment: environment,
                             srpStateData: srpStateData) { responseEvent in
+                logVerbose("Sending event \(responseEvent)", environment: environment)
                 dispatcher.send(responseEvent)
-                Amplify.Logging.verbose("sending event #file")
+
             }
 
         } catch let error as SRPSignInError {
-            Amplify.Logging.verbose("SRPSignInError \(error) #file")
+            logVerbose("Raised error \(error)", environment: environment)
             let event = SRPSignInEvent(eventType: .throwAuthError(error))
             dispatcher.send(event)
         } catch {
-            Amplify.Logging.verbose("Caught error \(error) #file")
+            logVerbose("Caught error \(error)", environment: environment)
             let authError = SRPSignInError.service(error: error)
             let event = SRPSignInEvent(
                 eventType: .throwAuthError(authError)
