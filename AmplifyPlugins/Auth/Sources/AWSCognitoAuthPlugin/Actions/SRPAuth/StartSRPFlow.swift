@@ -14,17 +14,12 @@ struct StartSRPFlow: Action {
     let signInEventData: SignInEventData
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-        let timer = LoggingTimer(identifier).start("### Starting execution")
-
+        logVerbose("Start execution", environment: environment)
         let event = SRPSignInEvent(id: UUID().uuidString, eventType: .initiateSRP(signInEventData))
-
-        timer.stop("### sending SRPSignInEvent.invoked")
+        logVerbose("Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }
-
 }
-
-extension StartSRPFlow: DefaultLogger { }
 
 extension StartSRPFlow: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

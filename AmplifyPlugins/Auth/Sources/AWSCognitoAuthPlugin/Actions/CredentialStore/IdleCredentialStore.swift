@@ -12,14 +12,13 @@ struct IdleCredentialStore: Action {
     let identifier = "IdleCredentialStore"
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-        let timer = LoggingTimer(identifier).start("### Starting execution")
+
+        logVerbose("Starting execution", environment: environment)
         let event = CredentialStoreEvent(eventType: .moveToIdleState)
-        timer.stop("### sending event \(event.type)")
+        logVerbose("Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }
 }
-
-extension IdleCredentialStore: DefaultLogger { }
 
 extension IdleCredentialStore: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
