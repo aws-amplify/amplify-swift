@@ -15,6 +15,7 @@ extension CustomerMultipleSecondaryIndexV2 {
     case id
     case name
     case phoneNumber
+    case age
     case accountRepresentativeID
     case createdAt
     case updatedAt
@@ -30,6 +31,7 @@ extension CustomerMultipleSecondaryIndexV2 {
 
     model.attributes(
       .index(fields: ["name", "phoneNumber"], name: "byNameAndPhoneNumber"),
+      .index(fields: ["age", "phoneNumber"], name: "byAgeAndPhoneNumber"),
       .index(fields: ["accountRepresentativeID"], name: "byRepresentative")
     )
 
@@ -37,10 +39,10 @@ extension CustomerMultipleSecondaryIndexV2 {
       .id(),
       .field(customerMultipleSecondaryIndexV2.name, is: .required, ofType: .string),
       .field(customerMultipleSecondaryIndexV2.phoneNumber, is: .optional, ofType: .string),
+      .field(customerMultipleSecondaryIndexV2.age, is: .required, ofType: .int),
       .field(customerMultipleSecondaryIndexV2.accountRepresentativeID, is: .required, ofType: .string),
       .field(customerMultipleSecondaryIndexV2.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(customerMultipleSecondaryIndexV2.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
 }
-

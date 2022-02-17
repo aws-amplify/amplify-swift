@@ -169,7 +169,8 @@ type CustomerMultipleSecondaryIndexV2 @model {
   id: ID!
   name: String! @index(name: "byNameAndPhoneNumber", sortKeyFields: ["phoneNumber"], queryField: "customerByNameAndPhone")
   phoneNumber: String
-  accountRepresentativeID: ID! @index(name: "byRepresentative", queryField: "customerByRepresentative")
+  age: Int! @index(name: "byAgeAndPhoneNumber", sortKeyFields: ["phoneNumber"], queryField: "customerByAgeAndPhone")
+  accountRepresentativeID: ID! @index(name: "byRepresentative", queryField: "customerByRepresentative2")
 }
 
 # Assign Default Values for fields
@@ -218,4 +219,10 @@ type CustomerWithMultipleFieldsinPK
   height: Float!
   firstName: String
   lastName: String
+}
+
+enum Priority {
+  LOW
+  NORMAL
+  HIGH
 }

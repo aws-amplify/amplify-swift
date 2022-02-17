@@ -24,7 +24,7 @@ struct CreateIndexStatement: SQLStatement {
         for index in modelSchema.indexes {
             if case let .index(fields, name) = index, let name = name {
                 statement += """
-                create index if not exists \(name) on \(tableName) (\(fields.joined(separator: ", ")));
+                create index if not exists \"\(name)\" on \"\(tableName)\" (\(fields.map { "\"" + $0 + "\"" }.joined(separator: ", ")));
                 """
             }
         }

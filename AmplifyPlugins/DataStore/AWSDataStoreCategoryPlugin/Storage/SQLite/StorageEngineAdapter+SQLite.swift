@@ -27,6 +27,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     // our system and find an optimal value.
     static var maxNumberOfPredicates: Int = 950
 
+    // Create SQLite indexes when SQLite tables are created
+    var shouldCreateSQLiteIndexes: Bool = true
+
     convenience init(version: String,
                      databaseName: String = "database",
                      userDefaults: UserDefaults = UserDefaults.standard) throws {
@@ -96,16 +99,22 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             .map { CreateTableStatement(modelSchema: $0).stringValue }
             .joined(separator: "\n")
 
-        let createIndexStatements = modelSchemas
-                    .sortByDependencyOrder()
-                    .map{ CreateIndexStatement(modelSchema: $0).stringValue }
-                    .joined(separator: "\n")
-
         do {
             try connection.execute(createTableStatements)
-            try connection.execute(createIndexStatements)
         } catch {
             throw DataStoreError.invalidOperation(causedBy: error)
+        }
+
+        if shouldCreateSQLiteIndexes {
+            let createIndexStatements = modelSchemas
+                .sortByDependencyOrder()
+                .map { CreateIndexStatement(modelSchema: $0).stringValue }
+                .joined(separator: "\n")
+            do {
+                try connection.execute(createIndexStatements)
+            } catch {
+                throw DataStoreError.invalidOperation(causedBy: error)
+            }
         }
     }
 
