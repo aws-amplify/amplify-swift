@@ -17,14 +17,12 @@ struct InitializeAuthenticationConfiguration: Action {
     func execute(withDispatcher dispatcher: EventDispatcher,
                         environment: Environment)
     {
-        let timer = LoggingTimer(identifier).start("### Starting execution")
+        logVerbose("Starting execution", environment: environment)
         let event = AuthenticationEvent(eventType: .configure(configuration, cognitoCredentials))
-        timer.stop("### sending \(event.type)")
+        logVerbose("Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }
 }
-
-extension InitializeAuthenticationConfiguration: DefaultLogger { }
 
 extension InitializeAuthenticationConfiguration: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

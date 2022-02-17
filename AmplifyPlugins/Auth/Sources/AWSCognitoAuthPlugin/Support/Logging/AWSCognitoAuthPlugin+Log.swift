@@ -7,8 +7,6 @@
 
 import Amplify
 
-extension AWSCognitoAuthPlugin {
-    var log: Logger {
-        Amplify.Logging.logger(forCategory: key)
-    }
+extension AWSCognitoAuthPlugin: DefaultLogger {
+
 }

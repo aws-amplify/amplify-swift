@@ -14,14 +14,14 @@ struct SignOutGlobally: Action {
     let signedInData: SignedInData
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-        let timer = LoggingTimer(identifier).start("### Starting execution")
+        logVerbose("Starting execution", environment: environment)
 
         guard let environment = environment as? UserPoolEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let error = AuthenticationError.configuration(message: message)
             let event = SignOutEvent(id: UUID().uuidString, eventType: .signedOutFailure(error))
             dispatcher.send(event)
-            timer.stop("### sending \(event.type)")
+            logVerbose("Sending event \(event.type)", environment: environment)
             return
         }
 
@@ -32,30 +32,28 @@ struct SignOutGlobally: Action {
             let authError = AuthenticationError.configuration(message: "Failed to get CognitoUserPool client: \(error)")
             let event = SignOutEvent(eventType: .signedOutFailure(authError))
             dispatcher.send(event)
-            timer.stop("### sending \(event.type)")
+            logVerbose("Sending event \(event.type)", environment: environment)
             return
         }
 
-        timer.note("### Starting signOut")
+        logVerbose("Starting Global signOut", environment: environment)
         let input = GlobalSignOutInput(accessToken: signedInData.cognitoUserPoolTokens.accessToken)
 
         client.globalSignOut(input: input) { result in
             // Log the result, but proceed to attempt to revoke tokens regardless of globalSignOut result.
-            timer.note("### globalSignOut response received")
+            logVerbose("Global signOut response received", environment: environment)
             switch result {
             case .success:
-                timer.note("### globalSignOut succeeded")
+                logVerbose("Global SignOut success", environment: environment)
             case .failure(let error):
-                timer.note("### globalSignOut failed with error: \(error)")
+                logVerbose("Global SignOut failed \(error)", environment: environment)
             }
             let event = SignOutEvent(eventType: .revokeToken(signedInData))
             dispatcher.send(event)
-            timer.stop("### sending \(event.type)")
+            logVerbose("Sending event \(event.type)", environment: environment)
         }
     }
 }
-
-extension SignOutGlobally: DefaultLogger { }
 
 extension SignOutGlobally: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 
 struct InitiateSignOut: Action {
@@ -15,7 +16,7 @@ struct InitiateSignOut: Action {
     let signOutEventData: SignOutEventData
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-        let timer = LoggingTimer(identifier).start("### Starting execution")
+        logVerbose("Starting execution", environment: environment)
 
         let event: SignOutEvent
         if signOutEventData.globalSignOut {
@@ -23,14 +24,11 @@ struct InitiateSignOut: Action {
         } else {
             event = SignOutEvent(eventType: .revokeToken(signedInData))
         }
-
-        timer.stop("### sending \(event.type)")
+        logVerbose("Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }
 
 }
-
-extension InitiateSignOut: DefaultLogger { }
 
 extension InitiateSignOut: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
