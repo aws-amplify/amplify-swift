@@ -29,13 +29,13 @@ struct MigrateLegacyCredentialStore: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
-        let timer = LoggingTimer(identifier).start("### Starting execution")
+        logVerbose("Starting execution", environment: environment)
 
         guard let credentialEnvironment = environment as? CredentialEnvironment else {
             let event = CredentialStoreEvent(
                 eventType: .throwError(CredentialStoreError.configuration(
                     message: AuthPluginErrorConstants.configurationError)))
-            timer.stop("### sending event \(event.type)")
+            logVerbose("Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
             return
         }
@@ -68,16 +68,16 @@ struct MigrateLegacyCredentialStore: Action {
                 try amplifyCredentialStore.saveCredential(credentials)
             }
             let event = CredentialStoreEvent(eventType: .loadCredentialStore)
-            timer.stop("### sending event \(event.type)")
+            logVerbose("Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch let error as CredentialStoreError {
             let event = CredentialStoreEvent(eventType: .throwError(error))
-            timer.stop("### sending event \(event.type)")
+            logVerbose("Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch {
             let event = CredentialStoreEvent(
                 eventType: .throwError(CredentialStoreError.unknown("An unknown error occurred", error)))
-            timer.stop("### sending event \(event.type)")
+            logVerbose("Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         }
 

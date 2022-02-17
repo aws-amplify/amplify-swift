@@ -199,7 +199,8 @@ extension AWSCognitoAuthPlugin {
                 userPoolConfigData: userPoolConfigurationData,
                 identityPoolConfigData: nil,
                 authenticationEnvironment: authenticationEnvironment,
-                authorizationEnvironment: nil)
+                authorizationEnvironment: nil,
+                logger: log)
 
         case .identityPools(let identityPoolConfigurationData):
             let authorizationEnvironment = authorizationEnvironment(identityPoolConfigData: identityPoolConfigurationData)
@@ -208,7 +209,8 @@ extension AWSCognitoAuthPlugin {
                 userPoolConfigData: nil,
                 identityPoolConfigData: identityPoolConfigurationData,
                 authenticationEnvironment: nil,
-                authorizationEnvironment: authorizationEnvironment)
+                authorizationEnvironment: authorizationEnvironment,
+                logger: log)
 
         case .userPoolsAndIdentityPools(let userPoolConfigurationData, let identityPoolConfigurationData):
             let authenticationEnvironment = authenticationEnvironment(userPoolConfigData: userPoolConfigurationData)
@@ -218,7 +220,8 @@ extension AWSCognitoAuthPlugin {
                 userPoolConfigData: userPoolConfigurationData,
                 identityPoolConfigData: identityPoolConfigurationData,
                 authenticationEnvironment: authenticationEnvironment,
-                authorizationEnvironment: authorizationEnvironment)
+                authorizationEnvironment: authorizationEnvironment,
+                logger: log)
         }
     }
 

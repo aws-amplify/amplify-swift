@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Amplify
 
 struct AuthEnvironment: Environment {
     let configuration: AuthConfiguration
@@ -13,6 +14,8 @@ struct AuthEnvironment: Environment {
     let identityPoolConfigData: IdentityPoolConfigurationData?
     let authenticationEnvironment: AuthenticationEnvironment?
     let authorizationEnvironment: AuthorizationEnvironment?
+
+    let logger: Logger
 }
 
 extension AuthEnvironment: AuthenticationEnvironment {
