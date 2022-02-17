@@ -53,7 +53,7 @@ struct FetchAuthAWSCredentials: Action {
             return
         }
 
-        let timer = LoggingTimer(identifier).start("### Starting execution")
+        logVerbose("Starting execution", environment: environment)
 
         var loginsMap: [String: String] = [:]
         if case let .success(cognitoUserPoolTokens) = cognitoSession.cognitoTokensResult,
@@ -80,7 +80,8 @@ struct FetchAuthAWSCredentials: Action {
                     let fetchedAuthSessionEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession(updatedSession))
                     dispatcher.send(fetchedAuthSessionEvent)
 
-                    timer.stop("### sending \(fetchedAuthSessionEvent.type)")
+                    logVerbose("Sending event \(fetchedAuthSessionEvent.type)",
+                               environment: environment)
                     return
                 }
                 guard let awsCredentials = response.credentials,
@@ -99,7 +100,8 @@ struct FetchAuthAWSCredentials: Action {
                           let fetchedAuthSessionEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession(updatedSession))
                           dispatcher.send(fetchedAuthSessionEvent)
 
-                          timer.stop("### sending \(fetchedAuthSessionEvent.type)")
+                    logVerbose("Sending event \(fetchedAuthSessionEvent.type)",
+                               environment: environment)
                           return
                       }
                 let awsCognitoCredentials = AuthAWSCognitoCredentials(
@@ -115,11 +117,11 @@ struct FetchAuthAWSCredentials: Action {
                 )
 
                 let fetchedAWSCredentialEvent = FetchAWSCredentialEvent(eventType: .fetched)
-                timer.note("### sending \(fetchedAWSCredentialEvent.type)")
+                logVerbose("Sending event \(fetchedAWSCredentialEvent.type)", environment: environment)
                 dispatcher.send(fetchedAWSCredentialEvent)
 
                 let fetchedAuthSessionEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession(updatedSession))
-                timer.stop("### sending \(fetchedAuthSessionEvent.type)")
+                logVerbose("Sending event \(fetchedAuthSessionEvent.type)", environment: environment)
                 dispatcher.send(fetchedAuthSessionEvent)
 
             case .failure(let error):
@@ -130,15 +132,13 @@ struct FetchAuthAWSCredentials: Action {
                 let updatedSession = cognitoSession.copySessionByUpdating(
                   awsCredentialsResult: .failure(error.authError))
                 let fetchedAuthSessionEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession(updatedSession))
-                timer.stop("### sending \(fetchedAuthSessionEvent.type)")
+                logVerbose("Sending event \(fetchedAuthSessionEvent.type)", environment: environment)
                 dispatcher.send(fetchedAuthSessionEvent)
             }
         }
 
     }
 }
-
-extension FetchAuthAWSCredentials: DefaultLogger { }
 
 extension FetchAuthAWSCredentials: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

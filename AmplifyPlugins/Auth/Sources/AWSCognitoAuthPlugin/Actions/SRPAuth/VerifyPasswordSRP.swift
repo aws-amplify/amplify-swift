@@ -26,7 +26,7 @@ struct VerifyPasswordSRP: Action {
                  environment: Environment)
     {
 
-        Amplify.Logging.verbose("Starting execution \(#fileID)")
+        Amplify.Logging.verbose("Starting execution")
         do {
             let environment = try SRPSignInHelper.srpEnvironment(environment)
             let srpClient = try SRPSignInHelper.srpClient(environment)

@@ -23,7 +23,7 @@ struct InitiateSignUp: Action {
         withDispatcher dispatcher: EventDispatcher,
         environment: Environment
     ) {
-        Amplify.Logging.verbose("Starting execution \(#fileID)")
+        logVerbose("Starting execution", environment: environment)
         guard let environment = environment as? UserPoolEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let authError = AuthenticationError.configuration(message: message)
@@ -53,9 +53,9 @@ struct InitiateSignUp: Action {
                                 password: signUpEventData.password,
                                 attributes: signUpEventData.attributes,
                                 userPoolConfiguration: environment.userPoolConfiguration)
-        Amplify.Logging.verbose("Starting signUp \(#fileID)")
+        logVerbose("Starting signup", environment: environment)
         client.signUp(input: input) { result in
-            Amplify.Logging.verbose("SignUp response received \(#fileID)")
+            logVerbose("SignUp received", environment: environment)
             let event: SignUpEvent
             switch result {
             case .success(let response):
@@ -67,8 +67,8 @@ struct InitiateSignUp: Action {
                 let error = SignUpError.service(error: error)
                 event = SignUpEvent(eventType: .initiateSignUpFailure(error: error))
             }
+            logVerbose("Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
-            Amplify.Logging.verbose("Sending SignUpEvent.initiateSignUpResponseReceived \(#fileID)")
         }
     }
 }
