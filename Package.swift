@@ -308,7 +308,7 @@ let package = Package(
         .package(
             name: "AWSSwiftSDK",
             url: "https://github.com/awslabs/aws-sdk-swift",
-            .upToNextMajor(from: "0.1.2")
+            .exact("0.1.3")
         ),
         .package(
             name: "CwlPreconditionTesting",
