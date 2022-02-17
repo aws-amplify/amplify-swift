@@ -14,6 +14,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSAPIPlugin"
+               BuildableName = "AWSAPIPlugin"
+               BlueprintName = "AWSAPIPlugin"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "AWSCognitoAuthPlugin"
                BuildableName = "AWSCognitoAuthPlugin"
                BlueprintName = "AWSCognitoAuthPlugin"
@@ -42,9 +56,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSPluginsCore"
-               BuildableName = "AWSPluginsCore"
-               BlueprintName = "AWSPluginsCore"
+               BlueprintIdentifier = "AWSS3StoragePlugin"
+               BuildableName = "AWSS3StoragePlugin"
+               BlueprintName = "AWSS3StoragePlugin"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -70,9 +84,23 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSCognitoAuthPluginIntegrationTests"
-               BuildableName = "AWSCognitoAuthPluginIntegrationTests"
-               BlueprintName = "AWSCognitoAuthPluginIntegrationTests"
+               BlueprintIdentifier = "AWSAPICategoryPluginFunctionalTests"
+               BuildableName = "AWSAPICategoryPluginFunctionalTests"
+               BlueprintName = "AWSAPICategoryPluginFunctionalTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSAPIPluginTests"
+               BuildableName = "AWSAPIPluginTests"
+               BlueprintName = "AWSAPIPluginTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -87,6 +115,20 @@
                BlueprintIdentifier = "AWSCognitoAuthPluginUnitTests"
                BuildableName = "AWSCognitoAuthPluginUnitTests"
                BlueprintName = "AWSCognitoAuthPluginUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSDataStoreCategoryPluginIntegrationTests"
+               BuildableName = "AWSDataStoreCategoryPluginIntegrationTests"
+               BlueprintName = "AWSDataStoreCategoryPluginIntegrationTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -126,6 +168,34 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSS3StoragePluginFunctionalTests"
+               BuildableName = "AWSS3StoragePluginFunctionalTests"
+               BlueprintName = "AWSS3StoragePluginFunctionalTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSS3StoragePluginTests"
+               BuildableName = "AWSS3StoragePluginTests"
+               BlueprintName = "AWSS3StoragePluginTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "AmplifyBigIntegerTests"
                BuildableName = "AmplifyBigIntegerTests"
                BlueprintName = "AmplifyBigIntegerTests"
@@ -149,14 +219,56 @@
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "GraphQLWithIAMIntegrationTests"
+               BuildableName = "GraphQLWithIAMIntegrationTests"
+               BlueprintName = "GraphQLWithIAMIntegrationTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "RESTWithIAMIntegrationTests"
+               BuildableName = "RESTWithIAMIntegrationTests"
+               BlueprintName = "RESTWithIAMIntegrationTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
             buildForProfiling = "YES"
             buildForArchiving = "YES"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSAPICategoryPlugin"
-               BuildableName = "AWSAPICategoryPlugin"
-               BlueprintName = "AWSAPICategoryPlugin"
+               BlueprintIdentifier = "AWSPluginsCore"
+               BuildableName = "AWSPluginsCore"
+               BlueprintName = "AWSPluginsCore"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSPluginsTestCommon"
+               BuildableName = "AWSPluginsTestCommon"
+               BlueprintName = "AWSPluginsTestCommon"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -210,121 +322,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSAPIPlugin"
-               BuildableName = "AWSAPIPlugin"
-               BlueprintName = "AWSAPIPlugin"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "Amplify_AWSAPICategoryPluginFunctionalTests"
-               BuildableName = "Amplify_AWSAPICategoryPluginFunctionalTests"
-               BlueprintName = "Amplify_AWSAPICategoryPluginFunctionalTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "Amplify_GraphQLWithIAMIntegrationTests"
-               BuildableName = "Amplify_GraphQLWithIAMIntegrationTests"
-               BlueprintName = "Amplify_GraphQLWithIAMIntegrationTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "Amplify_AWSDataStoreCategoryPluginIntegrationTests"
-               BuildableName = "Amplify_AWSDataStoreCategoryPluginIntegrationTests"
-               BlueprintName = "Amplify_AWSDataStoreCategoryPluginIntegrationTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSPluginsTestCommon"
-               BuildableName = "AWSPluginsTestCommon"
-               BlueprintName = "AWSPluginsTestCommon"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "hierarchical-state-machine-swift"
-               BuildableName = "hierarchical-state-machine-swift"
-               BlueprintName = "hierarchical-state-machine-swift"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "libtommathAmplify"
                BuildableName = "libtommathAmplify"
                BlueprintName = "libtommathAmplify"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AuthIntegrationTests"
-               BuildableName = "AuthIntegrationTests"
-               BlueprintName = "AuthIntegrationTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AuthHostApp"
-               BuildableName = "AuthHostApp"
-               BlueprintName = "AuthHostApp"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -340,9 +340,19 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSCognitoAuthPluginIntegrationTests"
-               BuildableName = "AWSCognitoAuthPluginIntegrationTests"
-               BlueprintName = "AWSCognitoAuthPluginIntegrationTests"
+               BlueprintIdentifier = "AWSAPICategoryPluginFunctionalTests"
+               BuildableName = "AWSAPICategoryPluginFunctionalTests"
+               BlueprintName = "AWSAPICategoryPluginFunctionalTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSAPIPluginTests"
+               BuildableName = "AWSAPIPluginTests"
+               BlueprintName = "AWSAPIPluginTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
@@ -353,6 +363,16 @@
                BlueprintIdentifier = "AWSCognitoAuthPluginUnitTests"
                BuildableName = "AWSCognitoAuthPluginUnitTests"
                BlueprintName = "AWSCognitoAuthPluginUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSDataStoreCategoryPluginIntegrationTests"
+               BuildableName = "AWSDataStoreCategoryPluginIntegrationTests"
+               BlueprintName = "AWSDataStoreCategoryPluginIntegrationTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
@@ -380,6 +400,26 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSS3StoragePluginFunctionalTests"
+               BuildableName = "AWSS3StoragePluginFunctionalTests"
+               BlueprintName = "AWSS3StoragePluginFunctionalTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSS3StoragePluginTests"
+               BuildableName = "AWSS3StoragePluginTests"
+               BlueprintName = "AWSS3StoragePluginTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "AmplifyBigIntegerTests"
                BuildableName = "AmplifyBigIntegerTests"
                BlueprintName = "AmplifyBigIntegerTests"
@@ -400,36 +440,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSAPICategoryPluginFunctionalTests"
-               BuildableName = "AWSAPICategoryPluginFunctionalTests"
-               BlueprintName = "AWSAPICategoryPluginFunctionalTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "RESTWithIAMIntegrationTests"
-               BuildableName = "RESTWithIAMIntegrationTests"
-               BlueprintName = "RESTWithIAMIntegrationTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSAPIPluginTests"
-               BuildableName = "AWSAPIPluginTests"
-               BlueprintName = "AWSAPIPluginTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "GraphQLWithIAMIntegrationTests"
                BuildableName = "GraphQLWithIAMIntegrationTests"
                BlueprintName = "GraphQLWithIAMIntegrationTests"
@@ -440,19 +450,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSDataStoreCategoryPluginIntegrationTests"
-               BuildableName = "AWSDataStoreCategoryPluginIntegrationTests"
-               BlueprintName = "AWSDataStoreCategoryPluginIntegrationTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "hierarchical-state-machine-swiftTests"
-               BuildableName = "hierarchical-state-machine-swiftTests"
-               BlueprintName = "hierarchical-state-machine-swiftTests"
+               BlueprintIdentifier = "RESTWithIAMIntegrationTests"
+               BuildableName = "RESTWithIAMIntegrationTests"
+               BlueprintName = "RESTWithIAMIntegrationTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
@@ -478,9 +478,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AWSCognitoAuthPlugin"
-            BuildableName = "AWSCognitoAuthPlugin"
-            BlueprintName = "AWSCognitoAuthPlugin"
+            BlueprintIdentifier = "AWSAPIPlugin"
+            BuildableName = "AWSAPIPlugin"
+            BlueprintName = "AWSAPIPlugin"
             ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>
