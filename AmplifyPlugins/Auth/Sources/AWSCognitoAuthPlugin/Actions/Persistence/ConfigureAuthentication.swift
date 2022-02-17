@@ -16,7 +16,7 @@ struct ConfigureAuthentication: Action {
         withDispatcher dispatcher: EventDispatcher,
         environment: Environment
     ) {
-        let timer = LoggingTimer(identifier).start("### Starting execution")
+        logVerbose("Start execution", environment: environment)
         let authenticationEvent: AuthenticationEvent
         if let userPoolTokens = storedCredentials?.userPoolTokens {
             let signedInData = SignedInData(userId: "",
@@ -29,16 +29,14 @@ struct ConfigureAuthentication: Action {
             let signedOutData = SignedOutData(lastKnownUserName: nil)
             authenticationEvent = AuthenticationEvent(eventType: .initializedSignedOut(signedOutData))
         }
-        timer.stop("### sending event \(authenticationEvent.type)")
+        logVerbose("Sending event \(authenticationEvent.type)", environment: environment)
         dispatcher.send(authenticationEvent)
 
         let authStateEvent = AuthEvent(eventType: .authenticationConfigured(configuration))
-        timer.stop("### sending event \(authStateEvent.type)")
+        logVerbose("Sending event \(authStateEvent.type)", environment: environment)
         dispatcher.send(authStateEvent)
     }
 }
-
-extension ConfigureAuthentication: DefaultLogger { }
 
 extension ConfigureAuthentication: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

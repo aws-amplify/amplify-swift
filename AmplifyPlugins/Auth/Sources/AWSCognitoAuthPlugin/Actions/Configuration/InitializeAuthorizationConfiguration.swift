@@ -15,14 +15,12 @@ struct InitializeAuthorizationConfiguration: Action {
                         environment: Environment)
     {
         // ATM this is a no-op action
-        let timer = LoggingTimer(identifier).start("### Starting execution")
-        let authorizationEvent = AuthorizationEvent(eventType: .configure)
-        timer.stop("### sending \(authorizationEvent.type)")
-        dispatcher.send(authorizationEvent)
+        logVerbose("Starting execution", environment: environment)
+        let event = AuthorizationEvent(eventType: .configure)
+        logVerbose("Sending event \(event.type)", environment: environment)
+        dispatcher.send(event)
     }
 }
-
-extension InitializeAuthorizationConfiguration: DefaultLogger { }
 
 extension InitializeAuthorizationConfiguration: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
