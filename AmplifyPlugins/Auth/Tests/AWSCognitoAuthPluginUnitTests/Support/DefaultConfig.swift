@@ -10,7 +10,7 @@ import Foundation
 import AWSCognitoIdentityProvider
 import AWSCognitoIdentity
 import ClientRuntime
-
+import Amplify
 
 enum Defaults {
 
@@ -101,8 +101,10 @@ enum Defaults {
             userPoolConfigData: userPoolConfigData,
             identityPoolConfigData: identityPoolConfigData,
             authenticationEnvironment: authenticationEnvironment,
-            authorizationEnvironment: authorizationEnvironment
+            authorizationEnvironment: authorizationEnvironment,
+            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
+        Amplify.Logging.logLevel = .verbose
         return authEnv
     }
 

@@ -22,7 +22,7 @@ struct ConfirmSignUp: Action {
         environment: Environment
     ) {
 
-        let timer = LoggingTimer(identifier).start("### Starting execution")
+        logVerbose("Starting execution", environment: environment)
         guard let environment = environment as? UserPoolEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let authError = AuthenticationError.configuration(message: message)
@@ -50,9 +50,9 @@ struct ConfirmSignUp: Action {
         let input = ConfirmSignUpInput(username: confirmSignUpEventData.username,
                                        confirmationCode:  confirmSignUpEventData.confirmationCode,
                                        userPoolConfiguration: environment.userPoolConfiguration)
-        timer.note("### Starting confirmSignUp")
+        logVerbose("Starting ConfirmSignUp", environment: environment)
         client.confirmSignUp(input: input) { result in
-            timer.note("### confirmSignUp response received")
+            logVerbose("ConfirmSignUp received", environment: environment)
             let event: SignUpEvent
             switch result {
             case .success(let response):
@@ -63,8 +63,9 @@ struct ConfirmSignUp: Action {
                 let error = SignUpError.service(error: error)
                 event = SignUpEvent(eventType: .confirmSignUpFailure(error: error))
             }
+            logVerbose("Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
-            timer.stop("### sending SignUpEvent.initiateSignUpResponseReceived")
+
         }
     }
 }

@@ -47,7 +47,7 @@ struct RefreshUserPoolTokens: Action {
             return
         }
 
-        let timer = LoggingTimer(identifier).start("### Starting execution")
+        logVerbose("Starting execution", environment: environment)
 
         let userPoolClientId = environment.userPoolConfiguration.clientId
         let client = try? environment.cognitoUserPoolFactory()
@@ -66,10 +66,10 @@ struct RefreshUserPoolTokens: Action {
                                       clientMetadata: nil,
                                       userContextData: nil)
 
-        timer.note("### Starting initiateAuth refresh tokens")
+        logVerbose("Starting initiate auth refresh token", environment: environment)
         client?.initiateAuth(input: input,
                              completion: { result in
-            timer.note("### initiateAuth refresh tokens response received")
+            logVerbose("Initiate auth response received", environment: environment)
 
             switch result {
             case .success(let response):
@@ -78,19 +78,20 @@ struct RefreshUserPoolTokens: Action {
                       let accessToken = authenticationResult.accessToken
                 else {
 
-                          let authZError = AuthorizationError.invalidUserPoolTokens(
-                            message: "UserPoolTokens are invalid.")
-                          let event = FetchUserPoolTokensEvent(eventType: .throwError(authZError))
-                          dispatcher.send(event)
+                    let authZError = AuthorizationError.invalidUserPoolTokens(
+                        message: "UserPoolTokens are invalid.")
+                    let event = FetchUserPoolTokensEvent(eventType: .throwError(authZError))
+                    dispatcher.send(event)
 
-                          let updateCognitoSession = cognitoSession.copySessionByUpdating(
-                            cognitoTokensResult: .failure(authZError.authError))
-                          let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity(updateCognitoSession))
-                          dispatcher.send(fetchIdentityEvent)
+                    let updateCognitoSession = cognitoSession.copySessionByUpdating(
+                        cognitoTokensResult: .failure(authZError.authError))
+                    let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity(updateCognitoSession))
+                    dispatcher.send(fetchIdentityEvent)
 
-                          timer.stop("### sending event \(fetchIdentityEvent.type)")
-                          return
-                      }
+                    logVerbose("Sending event \(fetchIdentityEvent.type)",
+                               environment: environment)
+                    return
+                }
 
                 let userPoolTokens = AWSCognitoUserPoolTokens(
                     idToken: idToken,
@@ -102,11 +103,13 @@ struct RefreshUserPoolTokens: Action {
                 let updateCognitoSession = cognitoSession.copySessionByUpdating(cognitoTokensResult: .success(userPoolTokens))
 
                 let fetchedTokenEvent = FetchUserPoolTokensEvent(eventType: .fetched)
-                timer.note("### sending event \(fetchedTokenEvent.type)")
+                logVerbose("Sending event \(fetchedTokenEvent.type)",
+                           environment: environment)
                 dispatcher.send(fetchedTokenEvent)
 
                 let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity(updateCognitoSession))
-                timer.stop("### sending event \(fetchIdentityEvent.type)")
+                logVerbose("Sending event \(fetchIdentityEvent.type)",
+                           environment: environment)
                 dispatcher.send(fetchIdentityEvent)
             case .failure(let error):
                 let authError = AuthorizationError.service(error: error)
@@ -128,10 +131,11 @@ struct RefreshUserPoolTokens: Action {
                 }
 
                 let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity(updateCognitoSession))
-                timer.stop("### sending event \(fetchIdentityEvent.type)")
+                logVerbose("Sending event \(fetchIdentityEvent.type)",
+                           environment: environment)
                 dispatcher.send(fetchIdentityEvent)
             }
-            timer.stop("### initiateAuth refresh tokens response complete")
+            logVerbose("Initiate auth complete", environment: environment)
         })
 
     }
