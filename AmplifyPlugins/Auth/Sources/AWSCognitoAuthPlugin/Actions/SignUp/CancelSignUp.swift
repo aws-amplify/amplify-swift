@@ -15,20 +15,20 @@ struct CancelSignUp: Action {
                  environment: Environment)
     {
 
-        Amplify.Logging.verbose("Starting execution \(#fileID)")
+        Amplify.Logging.verbose("Starting execution")
 
         guard let environment = environment as? AuthEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let error = AuthenticationError.configuration(message: message)
             let event = AuthenticationEvent(eventType: .error(error))
             dispatcher.send(event)
-            Amplify.Logging.verbose("Sending event \(#fileID)")
+            Amplify.Logging.verbose("Sending event")
             return
         }
         let event = AuthenticationEvent(
             eventType: .cancelSignUp(environment.configuration))
         dispatcher.send(event)
-        Amplify.Logging.verbose("Sending event \(#fileID)")
+        Amplify.Logging.verbose("Sending event")
 
     }
 }

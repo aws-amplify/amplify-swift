@@ -13,15 +13,13 @@ struct ConfigureAuthorization: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
-        let timer = LoggingTimer(identifier).start("### Starting execution")
+        logVerbose("Starting execution", environment: environment)
         // Send Authorization configured event to move the Auth state to configured
-        let authorizationConfiguredEvent = AuthEvent(eventType: .authorizationConfigured)
-        timer.note("### sending event \(authorizationConfiguredEvent.type)")
-        dispatcher.send(authorizationConfiguredEvent)
+        let event = AuthEvent(eventType: .authorizationConfigured)
+        logVerbose("Sending event \(event.type)", environment: environment)
+        dispatcher.send(event)
     }
 }
-
-extension ConfigureAuthorization: DefaultLogger { }
 
 extension ConfigureAuthorization: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
