@@ -13,13 +13,13 @@ struct LoadCredentialStore: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
-        let timer = LoggingTimer(identifier).start("### Starting execution")
+        logVerbose("Starting execution", environment: environment)
 
         guard let credentialEnvironment = environment as? CredentialEnvironment else {
             let event = CredentialStoreEvent(
                 eventType: .throwError(CredentialStoreError.configuration(
                     message: AuthPluginErrorConstants.configurationError)))
-            timer.stop("### sending event \(event.type)")
+            logVerbose("Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
             return
         }
@@ -30,23 +30,24 @@ struct LoadCredentialStore: Action {
         do {
             let storedCredentials = try amplifyCredentialStore.retrieveCredential()
             let event = CredentialStoreEvent(eventType: .completedOperation(storedCredentials))
-            timer.stop("### sending event \(event.type)")
+            logVerbose("Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch let error as CredentialStoreError {
             let event = CredentialStoreEvent(eventType: .throwError(error))
-            timer.stop("### sending event \(event.type)")
+            logVerbose("Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch {
             let event = CredentialStoreEvent(
-                eventType: .throwError(CredentialStoreError.unknown("An unknown error occurred", error)))
-            timer.stop("### sending event \(event.type)")
+                eventType: .throwError(
+                    CredentialStoreError.unknown("An unknown error occurred", error)
+                )
+            )
+            logVerbose("Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         }
 
     }
 }
-
-extension LoadCredentialStore: DefaultLogger { }
 
 extension LoadCredentialStore: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

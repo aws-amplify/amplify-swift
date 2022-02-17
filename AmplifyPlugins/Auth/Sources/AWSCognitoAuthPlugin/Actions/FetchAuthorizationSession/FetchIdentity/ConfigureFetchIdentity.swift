@@ -37,30 +37,28 @@ struct ConfigureFetchIdentity: Action {
             }
         }
 
-        let timer = LoggingTimer(identifier).start("### Starting execution")
+        logVerbose("Starting execution", environment: environment)
 
         let fetchIdentity: FetchIdentityEvent
 
         // If identity already exists return that.
         if case .success = cognitoSession.identityIdResult {
             fetchIdentity = FetchIdentityEvent(eventType: .fetched)
-            timer.note("### sending event \(fetchIdentity.type)")
+            logVerbose("Sending event \(fetchIdentity.type)", environment: environment)
             dispatcher.send(fetchIdentity)
 
             // Move to fetching the AWS Credentials
             let fetchAwsCredentialsEvent = FetchAuthSessionEvent(
                 eventType: .fetchAWSCredentials(cognitoSession))
-            timer.stop("### sending event \(fetchAwsCredentialsEvent.type)")
+            logVerbose("Sending event \(fetchAwsCredentialsEvent.type)", environment: environment)
             dispatcher.send(fetchAwsCredentialsEvent)
         } else {
             fetchIdentity = FetchIdentityEvent(eventType: .fetch(cognitoSession))
-            timer.stop("### sending event \(fetchIdentity.type)")
+            logVerbose("Sending event \(fetchIdentity.type)", environment: environment)
             dispatcher.send(fetchIdentity)
         }
     }
 }
-
-extension ConfigureFetchIdentity: DefaultLogger { }
 
 extension ConfigureFetchIdentity: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
