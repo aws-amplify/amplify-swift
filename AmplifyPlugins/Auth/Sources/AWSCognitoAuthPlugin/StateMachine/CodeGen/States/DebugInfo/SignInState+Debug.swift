@@ -11,26 +11,17 @@ extension SignInState {
 
     var debugDictionary: [String: Any] {
 
+        var additionalMetadataDictionary: [String: Any] = [:]
+
         switch self {
 
         case .signingInWithSRP(let srpSignInState, let signInEventData):
-            return [
-                "SignInState": "signingInWithSRP",
-                "- SRPSignInState": srpSignInState.debugDictionary,
-                "- SignInEventData": signInEventData.debugDictionary
-            ]
-        case .signingInWithSocial:
-            return [
-                "SignInState": "signingInWithSocial"
-            ]
-        case .signingInWithCustom:
-            return [
-                "SignInState": "signingInWithCustom"
-            ]
-        case .resolvingMFAChallenge:
-            return [
-                "SignInState": "resolvingMFAChallenge"
-            ]
+            additionalMetadataDictionary = srpSignInState.debugDictionary.merging(
+                signInEventData.debugDictionary, uniquingKeysWith: {$1}
+            )
+        default:
+            additionalMetadataDictionary = [:]
         }
+        return [type: additionalMetadataDictionary]
     }
 }

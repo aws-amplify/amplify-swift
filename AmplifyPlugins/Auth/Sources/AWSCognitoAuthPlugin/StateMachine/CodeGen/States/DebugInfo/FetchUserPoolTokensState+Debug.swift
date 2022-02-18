@@ -9,7 +9,7 @@ import Foundation
 
 extension FetchUserPoolTokensState {
     var debugDictionary: [String: Any] {
-        let stateTypeDictionary: [String: Any] = ["FetchUserPoolTokensState": type]
+
         var additionalMetadataDictionary: [String: Any] = [:]
 
         switch self {
@@ -22,6 +22,6 @@ extension FetchUserPoolTokensState {
         case .error:
             additionalMetadataDictionary = [:]
         }
-        return stateTypeDictionary.merging(additionalMetadataDictionary, uniquingKeysWith: { $1 })
+        return [type: additionalMetadataDictionary]
     }
 }

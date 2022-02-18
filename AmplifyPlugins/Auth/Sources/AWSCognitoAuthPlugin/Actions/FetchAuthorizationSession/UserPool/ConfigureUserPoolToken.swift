@@ -15,7 +15,7 @@ struct ConfigureUserPoolToken: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
-        logVerbose("Starting execution", environment: environment)
+        logVerbose("\(#fileID) Starting execution", environment: environment)
 
         switch cognitoSession.cognitoTokensResult {
         case .success(let cognitoUserPoolTokens):
@@ -25,16 +25,16 @@ struct ConfigureUserPoolToken: Action {
             if cognitoUserPoolTokens.expiration.compare(Date().addingTimeInterval(refreshInterval)) == .orderedDescending {
 
                 let userPoolTokensEvent = FetchUserPoolTokensEvent(eventType: .fetched)
-                logVerbose("Sending event \(userPoolTokensEvent.type)", environment: environment)
+                logVerbose("\(#fileID) Sending event \(userPoolTokensEvent.type)", environment: environment)
                 dispatcher.send(userPoolTokensEvent)
 
                 // User pool tokens are valid, move to fetching the identity
                 let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity(cognitoSession))
-                logVerbose("Sending event \(fetchIdentityEvent.type)", environment: environment)
+                logVerbose("\(#fileID) Sending event \(fetchIdentityEvent.type)", environment: environment)
                 dispatcher.send(fetchIdentityEvent)
             } else {
                 let event = FetchUserPoolTokensEvent(eventType: .refresh(cognitoSession))
-                logVerbose("Sending event \(event.type)", environment: environment)
+                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
                 dispatcher.send(event)
             }
 
@@ -45,7 +45,7 @@ struct ConfigureUserPoolToken: Action {
 
             // No User pool tokens, possibly a signed out state
             let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity(cognitoSession))
-            logVerbose("Sending event \(fetchIdentityEvent.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(fetchIdentityEvent.type)", environment: environment)
             dispatcher.send(fetchIdentityEvent)
         }
     }
