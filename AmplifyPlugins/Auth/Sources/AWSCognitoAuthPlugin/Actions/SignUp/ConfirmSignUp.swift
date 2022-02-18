@@ -22,7 +22,7 @@ struct ConfirmSignUp: Action {
         environment: Environment
     ) {
 
-        logVerbose("Starting execution", environment: environment)
+        logVerbose("\(#fileID) Starting execution", environment: environment)
         guard let environment = environment as? UserPoolEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let authError = AuthenticationError.configuration(message: message)
@@ -50,9 +50,9 @@ struct ConfirmSignUp: Action {
         let input = ConfirmSignUpInput(username: confirmSignUpEventData.username,
                                        confirmationCode:  confirmSignUpEventData.confirmationCode,
                                        userPoolConfiguration: environment.userPoolConfiguration)
-        logVerbose("Starting ConfirmSignUp", environment: environment)
+        logVerbose("\(#fileID) Starting ConfirmSignUp", environment: environment)
         client.confirmSignUp(input: input) { result in
-            logVerbose("ConfirmSignUp received", environment: environment)
+            logVerbose("\(#fileID) ConfirmSignUp received", environment: environment)
             let event: SignUpEvent
             switch result {
             case .success(let response):
@@ -63,7 +63,7 @@ struct ConfirmSignUp: Action {
                 let error = SignUpError.service(error: error)
                 event = SignUpEvent(eventType: .confirmSignUpFailure(error: error))
             }
-            logVerbose("Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
 
         }

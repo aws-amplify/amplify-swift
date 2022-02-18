@@ -8,56 +8,45 @@
 extension AuthenticationState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
+        var additionalMetadataDictionary: [String: Any] = [:]
         switch self {
         case .notConfigured:
-            return ["AuthenticationState": "notConfigured"]
+            additionalMetadataDictionary = [:]
 
         case .configured:
-            return ["AuthenticationState": "configured"]
+            additionalMetadataDictionary = [:]
 
         case .signingOut(let authenticationConfiguration, let signOutState):
-            return [
-                "AuthenticationState":  "signingOut",
-                "- AuthenticationConfiguration": authenticationConfiguration.debugDictionary,
-                "- SignOutState": signOutState.debugDictionary
-            ]
+            additionalMetadataDictionary = authenticationConfiguration.debugDictionary.merging(
+                signOutState.debugDictionary, uniquingKeysWith: {$1}
+            )
 
         case .signedOut(let authenticationConfiguration, let signedOutData):
-            return [
-                "AuthenticationState": "signedOut",
-                "- AuthenticationConfiguration": authenticationConfiguration.debugDictionary,
-                "- SignedOutData": signedOutData.debugDictionary
-            ]
+            additionalMetadataDictionary = authenticationConfiguration.debugDictionary.merging(
+                signedOutData.debugDictionary, uniquingKeysWith: {$1}
+            )
 
         case .signingUp(let authenticationConfiguration, let signUpState):
-            return [
-                "AuthenticationState": "signingUp",
-                "- AuthenticationConfiguration": authenticationConfiguration.debugDictionary,
-                "- SignUpState": signUpState.debugDictionary
-            ]
+            additionalMetadataDictionary = authenticationConfiguration.debugDictionary.merging(
+                signUpState.debugDictionary, uniquingKeysWith: {$1}
+            )
 
         case .signingIn(let authenticationConfiguration, let signInState):
-            return [
-                "AuthenticationState": "signingIn",
-                "- AuthenticationConfiguration": authenticationConfiguration.debugDictionary,
-                "- SignInState": signInState.debugDictionary
-            ]
+            additionalMetadataDictionary = authenticationConfiguration.debugDictionary.merging(
+                signInState.debugDictionary, uniquingKeysWith: {$1}
+            )
 
         case .signedIn(let authenticationConfiguration, let signedInData):
-            return [
-                "AuthenticationState": "signedIn",
-                "- AuthenticationConfiguration": authenticationConfiguration.debugDictionary,
-                "- SignInState": signedInData.debugDictionary
-            ]
+            additionalMetadataDictionary = authenticationConfiguration.debugDictionary.merging(
+                signedInData.debugDictionary, uniquingKeysWith: {$1}
+            )
 
         case .error(_, let error):
-            return [
-                "AuthenticationState": "error",
-                "- AuthenticationError": error
+            additionalMetadataDictionary = [
+                "Error": error
             ]
         }
+        return [type: additionalMetadataDictionary]
     }
 
 }
-
-extension AuthenticationState: CustomDebugStringConvertible { }

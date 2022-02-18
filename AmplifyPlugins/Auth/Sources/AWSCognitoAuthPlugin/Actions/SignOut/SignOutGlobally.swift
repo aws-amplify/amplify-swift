@@ -14,14 +14,14 @@ struct SignOutGlobally: Action {
     let signedInData: SignedInData
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-        logVerbose("Starting execution", environment: environment)
+        logVerbose("\(#fileID) Starting execution", environment: environment)
 
         guard let environment = environment as? UserPoolEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let error = AuthenticationError.configuration(message: message)
             let event = SignOutEvent(id: UUID().uuidString, eventType: .signedOutFailure(error))
             dispatcher.send(event)
-            logVerbose("Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             return
         }
 
@@ -32,25 +32,25 @@ struct SignOutGlobally: Action {
             let authError = AuthenticationError.configuration(message: "Failed to get CognitoUserPool client: \(error)")
             let event = SignOutEvent(eventType: .signedOutFailure(authError))
             dispatcher.send(event)
-            logVerbose("Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             return
         }
 
-        logVerbose("Starting Global signOut", environment: environment)
+        logVerbose("\(#fileID) Starting Global signOut", environment: environment)
         let input = GlobalSignOutInput(accessToken: signedInData.cognitoUserPoolTokens.accessToken)
 
         client.globalSignOut(input: input) { result in
             // Log the result, but proceed to attempt to revoke tokens regardless of globalSignOut result.
-            logVerbose("Global signOut response received", environment: environment)
+            logVerbose("\(#fileID) Global signOut response received", environment: environment)
             switch result {
             case .success:
-                logVerbose("Global SignOut success", environment: environment)
+                logVerbose("\(#fileID) Global SignOut success", environment: environment)
             case .failure(let error):
-                logVerbose("Global SignOut failed \(error)", environment: environment)
+                logVerbose("\(#fileID) Global SignOut failed \(error)", environment: environment)
             }
             let event = SignOutEvent(eventType: .revokeToken(signedInData))
             dispatcher.send(event)
-            logVerbose("Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         }
     }
 }

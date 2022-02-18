@@ -24,7 +24,7 @@ struct InitiateAuthSRP: Action {
     func execute(withDispatcher dispatcher: EventDispatcher,
                  environment: Environment)
     {
-        logVerbose("Starting execution", environment: environment)
+        logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
             let environment = try SRPSignInHelper.srpEnvironment(environment)
             let nHexValue = environment.srpConfiguration.nHexValue
@@ -45,17 +45,17 @@ struct InitiateAuthSRP: Action {
             try sendRequest(request: request,
                             environment: environment,
                             srpStateData: srpStateData) { responseEvent in
-                logVerbose("Sending event \(responseEvent)", environment: environment)
+                logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
                 dispatcher.send(responseEvent)
 
             }
 
         } catch let error as SRPSignInError {
-            logVerbose("Raised error \(error)", environment: environment)
+            logVerbose("\(#fileID) Raised error \(error)", environment: environment)
             let event = SRPSignInEvent(eventType: .throwAuthError(error))
             dispatcher.send(event)
         } catch {
-            logVerbose("Caught error \(error)", environment: environment)
+            logVerbose("\(#fileID) Caught error \(error)", environment: environment)
             let authError = SRPSignInError.service(error: error)
             let event = SRPSignInEvent(
                 eventType: .throwAuthError(authError)
@@ -101,9 +101,9 @@ struct InitiateAuthSRP: Action {
     {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
-        Amplify.Logging.verbose("Starting initiateAuth #file")
+        logVerbose("\(#fileID) Starting execution", environment: environment)
         cognitoClient.initiateAuth(input: request) { result in
-            Amplify.Logging.verbose("initiateAuth response received #file")
+            logVerbose("\(#fileID) InitiateAuth response received", environment: environment)
             let event: SRPSignInEvent!
             switch result {
             case .success(let response):

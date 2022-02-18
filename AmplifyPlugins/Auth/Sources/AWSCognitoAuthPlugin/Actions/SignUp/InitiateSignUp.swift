@@ -23,7 +23,7 @@ struct InitiateSignUp: Action {
         withDispatcher dispatcher: EventDispatcher,
         environment: Environment
     ) {
-        logVerbose("Starting execution", environment: environment)
+        logVerbose("\(#fileID) Starting execution", environment: environment)
         guard let environment = environment as? UserPoolEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let authError = AuthenticationError.configuration(message: message)
@@ -53,9 +53,9 @@ struct InitiateSignUp: Action {
                                 password: signUpEventData.password,
                                 attributes: signUpEventData.attributes,
                                 userPoolConfiguration: environment.userPoolConfiguration)
-        logVerbose("Starting signup", environment: environment)
+        logVerbose("\(#fileID) Starting signup", environment: environment)
         client.signUp(input: input) { result in
-            logVerbose("SignUp received", environment: environment)
+            logVerbose("\(#fileID) SignUp received", environment: environment)
             let event: SignUpEvent
             switch result {
             case .success(let response):
@@ -67,7 +67,7 @@ struct InitiateSignUp: Action {
                 let error = SignUpError.service(error: error)
                 event = SignUpEvent(eventType: .initiateSignUpFailure(error: error))
             }
-            logVerbose("Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         }
     }
