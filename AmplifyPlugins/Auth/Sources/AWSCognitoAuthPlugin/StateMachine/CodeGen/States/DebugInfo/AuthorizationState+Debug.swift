@@ -7,9 +7,8 @@
 
 import Foundation
 
-extension AuthorizationState {
+extension AuthorizationState: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
-        let stateTypeDictionary: [String: Any] = ["AuthorizationState": type]
         var additionalMetadataDictionary: [String: Any] = [:]
 
         switch self {
@@ -17,13 +16,13 @@ extension AuthorizationState {
             additionalMetadataDictionary = [:]
         case .configured:
             additionalMetadataDictionary = [:]
-        case .fetchingAuthSession:
-            additionalMetadataDictionary = [:]
+        case .fetchingAuthSession(let state):
+            additionalMetadataDictionary = state.debugDictionary
         case .sessionEstablished:
             additionalMetadataDictionary = [:]
-        case .error:
-            additionalMetadataDictionary = [:]
+        case .error(let error):
+            additionalMetadataDictionary = ["Error": error]
         }
-        return stateTypeDictionary.merging(additionalMetadataDictionary, uniquingKeysWith: { $1 })
+        return [type: additionalMetadataDictionary]
     }
 }
