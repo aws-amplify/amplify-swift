@@ -16,7 +16,7 @@ struct ConfigureAuthentication: Action {
         withDispatcher dispatcher: EventDispatcher,
         environment: Environment
     ) {
-        logVerbose("Start execution", environment: environment)
+        logVerbose("\(#fileID) Start execution", environment: environment)
         let authenticationEvent: AuthenticationEvent
         if let userPoolTokens = storedCredentials?.userPoolTokens {
             let signedInData = SignedInData(userId: "",
@@ -29,11 +29,11 @@ struct ConfigureAuthentication: Action {
             let signedOutData = SignedOutData(lastKnownUserName: nil)
             authenticationEvent = AuthenticationEvent(eventType: .initializedSignedOut(signedOutData))
         }
-        logVerbose("Sending event \(authenticationEvent.type)", environment: environment)
+        logVerbose("\(#fileID) Sending event \(authenticationEvent.type)", environment: environment)
         dispatcher.send(authenticationEvent)
 
         let authStateEvent = AuthEvent(eventType: .authenticationConfigured(configuration))
-        logVerbose("Sending event \(authStateEvent.type)", environment: environment)
+        logVerbose("\(#fileID) Sending event \(authStateEvent.type)", environment: environment)
         dispatcher.send(authStateEvent)
     }
 }

@@ -30,7 +30,7 @@ struct ConfigureFetchAWSCredentials: Action {
             return
         }
 
-        logVerbose("Starting execution", environment: environment)
+        logVerbose("\(#fileID) Starting execution", environment: environment)
 
         let refreshInterval = AuthPluginConstants.sessionRefreshInterval
         if case let .success(awsCredentials) = cognitoSession.awsCredentialsResult,
@@ -39,15 +39,15 @@ struct ConfigureFetchAWSCredentials: Action {
         {
 
             let fetchedCredentialsEvent = FetchAWSCredentialEvent(eventType: .fetched)
-            logVerbose("Sending event \(fetchedCredentialsEvent.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(fetchedCredentialsEvent.type)", environment: environment)
             dispatcher.send(fetchedCredentialsEvent)
 
             let fetchAuthSessionEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession(cognitoSession))
-            logVerbose("Sending event \(fetchAuthSessionEvent.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(fetchAuthSessionEvent.type)", environment: environment)
             dispatcher.send(fetchAuthSessionEvent)
         } else {
             let fetchAWSCredentialEvent = FetchAWSCredentialEvent(eventType: .fetch(cognitoSession))
-            logVerbose("Sending event \(fetchAWSCredentialEvent.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(fetchAWSCredentialEvent.type)", environment: environment)
             dispatcher.send(fetchAWSCredentialEvent)
         }
     }

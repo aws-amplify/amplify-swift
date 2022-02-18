@@ -10,34 +10,28 @@ import Foundation
 extension SRPSignInState {
 
     var debugDictionary: [String: Any] {
-        let stateTypeDictionary: [String: Any] = ["SRPSignInState": type]
+
         var additionalMetadataDictionary: [String: Any] = [:]
         switch self {
         case .notStarted:
             additionalMetadataDictionary = [:]
         case .initiatingSRPA(let signInEventData):
-            additionalMetadataDictionary = [
-                "- SignInEventData": signInEventData.debugDictionary
-            ]
+            additionalMetadataDictionary = signInEventData.debugDictionary
         case .cancelling:
             additionalMetadataDictionary = [:]
         case .nextAuthChallenge(let awsAuthChallenge):
             additionalMetadataDictionary = [
-                "- AWSAuthChallengeData": awsAuthChallenge
+                "AuthChallengeData": awsAuthChallenge
             ]
         case .respondingPasswordVerifier(let srpStateData):
-            additionalMetadataDictionary = [
-                "- SRPStateData": srpStateData.debugDictionary
-            ]
+            additionalMetadataDictionary = srpStateData.debugDictionary
         case .signedIn(let signedInData):
-            additionalMetadataDictionary = [
-                "- SignedInData": signedInData.debugDictionary
-            ]
+            additionalMetadataDictionary = signedInData.debugDictionary
         case .error(let error):
             additionalMetadataDictionary = [
-                "- AuthenticationError": error
+                "Error": error
             ]
         }
-        return stateTypeDictionary.merging(additionalMetadataDictionary, uniquingKeysWith: { $1 })
+        return [type: additionalMetadataDictionary]
     }
 }

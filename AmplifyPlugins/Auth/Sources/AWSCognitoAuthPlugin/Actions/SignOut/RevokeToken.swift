@@ -14,14 +14,14 @@ struct RevokeToken: Action {
     let signedInData: SignedInData
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-        logVerbose("Starting execution", environment: environment)
+        logVerbose("\(#fileID) Starting execution", environment: environment)
 
         guard let environment = environment as? UserPoolEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let error = AuthenticationError.configuration(message: message)
             let event = SignOutEvent(id: UUID().uuidString, eventType: .signedOutFailure(error))
             dispatcher.send(event)
-            logVerbose("Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             return
         }
 
@@ -32,11 +32,11 @@ struct RevokeToken: Action {
             let authError = AuthenticationError.configuration(message: "Failed to get CognitoUserPool client: \(error)")
             let event = SignOutEvent(id: UUID().uuidString, eventType: .signedOutFailure(authError))
             dispatcher.send(event)
-            logVerbose("Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             return
         }
 
-        logVerbose("Starting revoke token api", environment: environment)
+        logVerbose("\(#fileID) Starting revoke token api", environment: environment)
         let clientId = environment.userPoolConfiguration.clientId
         let clientSecret = environment.userPoolConfiguration.clientSecret
         let refreshToken = signedInData.cognitoUserPoolTokens.refreshToken
@@ -45,15 +45,15 @@ struct RevokeToken: Action {
 
         client.revokeToken(input: input) { result in
             // Log the result, but proceed to clear credential store regardless of revokeToken result.
-            logVerbose("Revoke token response received", environment: environment)
+            logVerbose("\(#fileID) Revoke token response received", environment: environment)
             switch result {
             case .success:
-                logVerbose("Revoke token succeedd", environment: environment)
+                logVerbose("\(#fileID) Revoke token succeedd", environment: environment)
             case .failure(let error):
-                logVerbose("Revoke token failed \(error)", environment: environment)
+                logVerbose("\(#fileID) Revoke token failed \(error)", environment: environment)
             }
             let event = SignOutEvent(eventType: .signOutLocally(signedInData))
-            logVerbose("Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         }
     }

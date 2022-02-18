@@ -9,7 +9,6 @@ import Foundation
 
 extension FetchAWSCredentialsState {
     var debugDictionary: [String: Any] {
-        let stateTypeDictionary: [String: Any] = ["FetchAWSCredentialsState": type]
         var additionalMetadataDictionary: [String: Any] = [:]
 
         switch self {
@@ -22,6 +21,6 @@ extension FetchAWSCredentialsState {
         case .error:
             additionalMetadataDictionary = [:]
         }
-        return stateTypeDictionary.merging(additionalMetadataDictionary, uniquingKeysWith: { $1 })
+        return [type: additionalMetadataDictionary]
     }
 }

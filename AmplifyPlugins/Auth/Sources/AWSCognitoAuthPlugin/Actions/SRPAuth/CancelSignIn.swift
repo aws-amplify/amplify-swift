@@ -15,19 +15,21 @@ struct CancelSignIn: Action {
                  environment: Environment)
     {
 
-        Amplify.Logging.verbose("Starting execution")
+        logVerbose("\(#fileID) Starting execution", environment: environment)
 
         guard let environment = environment as? AuthEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let error = AuthenticationError.configuration(message: message)
             let event = AuthenticationEvent(eventType: .error(error))
+            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
             dispatcher.send(event)
-            Amplify.Logging.verbose("Sending event")
+
             return
         }
         let event = AuthenticationEvent(eventType: .cancelSignIn(environment.configuration))
+        logVerbose("\(#fileID) Sending event \(event)", environment: environment)
         dispatcher.send(event)
-        Amplify.Logging.verbose("Sending event")
+
 
     }
 }
