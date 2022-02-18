@@ -5,52 +5,23 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/*
 import Foundation
 import AWSS3
 import Amplify
 
-typealias DeleteCompletedHandler = (AWSTask<AWSS3DeleteObjectOutput>) -> Any?
-
 extension AWSS3StorageService {
 
     func delete(serviceKey: String, onEvent: @escaping StorageServiceDeleteEventHandler) {
-        let request = AWSS3StorageService.makeDeleteObjectRequest(bucket: bucket, serviceKey: serviceKey)
-        let deleteCompletedHandler = AWSS3StorageService.makeDeleteCompletedHandler(onEvent: onEvent)
+        let request = AWSS3DeleteObjectRequest(bucket: bucket, key: serviceKey)
 
-        awsS3.deleteObject(request).continueWith(block: deleteCompletedHandler)
-    }
-
-    private static func makeDeleteObjectRequest(bucket: String, serviceKey: String) -> AWSS3DeleteObjectRequest {
-        let request: AWSS3DeleteObjectRequest = AWSS3DeleteObjectRequest()
-        request.bucket = bucket
-        request.key = serviceKey
-
-        return request
-    }
-
-    private static func makeDeleteCompletedHandler(onEvent: @escaping StorageServiceDeleteEventHandler)
-        -> DeleteCompletedHandler {
-
-        let block: DeleteCompletedHandler = { (task: AWSTask<AWSS3DeleteObjectOutput>) -> Any? in
-            guard task.error == nil else {
-                let error = task.error! as NSError
-                let storageError = StorageErrorHelper.mapServiceError(error)
-                onEvent(StorageEvent.failed(storageError))
-                return nil
+        awsS3.deleteObject(request) { result in
+            switch result {
+            case .success:
+                onEvent(StorageEvent.completedVoid)
+            case .failure(let error):
+                onEvent(StorageEvent.failed(error))
             }
-
-            guard task.result != nil else {
-                onEvent(StorageEvent.failed(StorageError.unknown("Delete was completed but no result value")))
-                return nil
-            }
-
-            onEvent(StorageEvent.completedVoid)
-
-            return nil
         }
-
-        return block
     }
+
 }
-*/
