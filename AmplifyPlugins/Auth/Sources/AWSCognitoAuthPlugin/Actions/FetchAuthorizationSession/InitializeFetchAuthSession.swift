@@ -23,8 +23,6 @@ struct InitializeFetchAuthSession: Action {
         let identityIdResult: Result<String, AuthError>
         let awsCredentialsResult: Result<AuthAWSCredentials, AuthError>
         let cognitoTokensResult: Result<AuthCognitoTokens, AuthError>
-        // TODO: Implement this
-        let userSubResult: Result<String, AuthError> = .failure(AuthError.unknown("", nil))
 
         if let userPoolTokens = storedCredentials?.userPoolTokens {
             cognitoTokensResult = .success(userPoolTokens)
@@ -56,7 +54,6 @@ struct InitializeFetchAuthSession: Action {
         }
 
         let session = AWSAuthCognitoSession(isSignedIn: isSignedIn,
-                                            userSubResult: userSubResult,
                                             identityIdResult: identityIdResult,
                                             awsCredentialsResult: awsCredentialsResult,
                                             cognitoTokensResult: cognitoTokensResult)
