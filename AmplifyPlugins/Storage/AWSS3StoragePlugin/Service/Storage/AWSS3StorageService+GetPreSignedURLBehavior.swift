@@ -5,64 +5,34 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/*
 import Foundation
 import AWSS3
 import Amplify
 
-public typealias GetURLCompletedHandler = (AWSTask<NSURL>) -> Any?
+//public typealias GetURLCompletedHandler = (AWSTask<NSURL>) -> Any?
 
 extension AWSS3StorageService {
+
     func getPreSignedURL(serviceKey: String,
                          expires: Int,
                          onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
-
-        let getPresignedURLRequest = AWSS3StorageService.makeAWSS3GetPreSignedURLRequest(bucket: bucket,
-                                                                                         key: serviceKey,
-                                                                                         expires: expires)
-
-        let getPresignedURLCompletedHandler =
-            AWSS3StorageService.makeGetPreSignedURLCompletedHandler(onEvent: onEvent)
-
-        preSignedURLBuilder.getPreSignedURL(getPresignedURLRequest)
-            .continueWith(block: getPresignedURLCompletedHandler)
-    }
-
-    private static func makeAWSS3GetPreSignedURLRequest(bucket: String,
-                                                        key: String,
-                                                        expires: Int) -> AWSS3GetPreSignedURLRequest {
-        let request = AWSS3GetPreSignedURLRequest()
-        request.bucket = bucket
-        request.key = key
-        request.httpMethod = AWSHTTPMethod.GET
-        let timeIntervalSinceNow = Double(expires)
-        request.expires = NSDate(timeIntervalSinceNow: timeIntervalSinceNow) as Date
-
-        return request
-    }
-
-    private static func makeGetPreSignedURLCompletedHandler(
-        onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) -> GetURLCompletedHandler {
-
-        let block: GetURLCompletedHandler = { (task: AWSTask<NSURL>) -> Any? in
-            guard task.error == nil else {
-                let error = task.error! as NSError
-                let storageError = StorageErrorHelper.mapServiceError(error)
-                onEvent(StorageEvent.failed(storageError))
-                return nil
+        do {
+            // https://BUCKET.s3.REGION.amazonaws.com/PREFIX+KEY
+            guard let bucket = bucket else {
+                throw StorageError.unknown("Invalid bucket", nil)
             }
-
-            guard let result = task.result else {
-                onEvent(StorageEvent.failed(StorageError.unknown("Missing result data")))
-                return nil
+            guard let region = region else {
+                throw StorageError.unknown("Invalid region", nil)
             }
-
-            onEvent(StorageEvent.completed(result as URL))
-
-            return nil
+            guard let url = URL(string: "https://\(bucket).s3.\(region).amazonaws.com/\(serviceKey)") else {
+                throw StorageError.unknown("Failed to create URL for pre-signed URL", nil)
+            }
+            let urlRequest = URLRequest(url: url)
+            let preSignedURL = try preSignedURLBuilder.getPreSignedURL(urlRequest)
+            onEvent(.completed(preSignedURL))
+        } catch {
+            onEvent(.failed(StorageError(error: error)))
         }
-
-        return block
     }
+
 }
- */
