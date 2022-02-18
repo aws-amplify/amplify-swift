@@ -5,70 +5,59 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/*
 import Foundation
+
 import AWSS3
 import Amplify
 import AWSPluginsCore
 
 class AWSS3StorageService: AWSS3StorageServiceBehaviour {
+    private var authService: AWSAuthServiceBehavior?
 
-    var transferUtility: AWSS3TransferUtilityBehavior!
+    // resettable values
     var preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior!
     var awsS3: AWSS3Behavior!
-    var identifier: String!
+    var region: String!
     var bucket: String!
+    var identifier: String!
 
-    convenience init(region: AWSRegionType,
-                     bucket: String,
-                     credentialsProvider: AWSCredentialsProvider,
-                     identifier: String) throws {
-        let serviceConfiguration = AmplifyAWSServiceConfiguration(region: region,
-                                                                  credentialsProvider: credentialsProvider)
+    init(authService: AWSAuthServiceBehavior, region: String, bucket: String, identifier: String) {
+        self.authService = authService
 
-        AWSS3TransferUtility.register(with: serviceConfiguration, forKey: identifier)
-        AWSS3PreSignedURLBuilder.register(with: serviceConfiguration, forKey: identifier)
-        AWSS3.register(with: serviceConfiguration, forKey: identifier)
+        self.preSignedURLBuilder = AWSS3PreSignedURLBuilderAdapter(authService: authService, signingRegion: region)
+        self.awsS3 = try! AWSS3Adapter(S3Client(region: region))
 
-        let transferUtilityOptional = AWSS3TransferUtility.s3TransferUtility(forKey: identifier)
-        guard let transferUtility = transferUtilityOptional else {
-            throw PluginError.pluginConfigurationError(
-                PluginErrorConstants.transferUtilityInitializationError.errorDescription,
-                PluginErrorConstants.transferUtilityInitializationError.recoverySuggestion)
-        }
-
-        let preSignedURLBuilder = AWSS3PreSignedURLBuilderAdapter(
-            AWSS3PreSignedURLBuilder.s3PreSignedURLBuilder(forKey: identifier))
-        let awsS3 = AWSS3Adapter(AWSS3.s3(forKey: identifier))
-
-        self.init(transferUtility: AWSS3TransferUtilityAdapter(transferUtility),
-                  preSignedURLBuilder: preSignedURLBuilder,
-                  awsS3: awsS3,
-                  bucket: bucket,
-                  identifier: identifier)
-    }
-
-    init(transferUtility: AWSS3TransferUtilityBehavior,
-         preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior,
-         awsS3: AWSS3Behavior,
-         bucket: String,
-         identifier: String) {
-        self.transferUtility = transferUtility
-        self.preSignedURLBuilder = preSignedURLBuilder
-        self.awsS3 = awsS3
+        self.region = region
         self.bucket = bucket
         self.identifier = identifier
     }
 
     func reset() {
-        AWSS3TransferUtility.remove(forKey: identifier)
-        transferUtility = nil
-        AWSS3PreSignedURLBuilder.remove(forKey: identifier)
         preSignedURLBuilder = nil
-        AWSS3.remove(forKey: identifier)
         awsS3 = nil
+        region = nil
         bucket = nil
         identifier = nil
     }
+
+    func getEscapeHatch() -> S3Client {
+        awsS3.getS3()
+    }
+
+    func download(serviceKey: String, fileURL: URL?, onEvent: @escaping StorageServiceDownloadEventHandler) {
+        fatalError("Not Implemented")
+    }
+
+    func getPreSignedURL(serviceKey: String, expires: Int, onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
+        fatalError("Not Implemented")
+    }
+
+    func upload(serviceKey: String, uploadSource: UploadSource, contentType: String?, metadata: [String : String]?, onEvent: @escaping StorageServiceUploadEventHandler) {
+        fatalError("Not Implemented")
+    }
+
+    func multiPartUpload(serviceKey: String, uploadSource: UploadSource, contentType: String?, metadata: [String : String]?, onEvent: @escaping StorageServiceMultiPartUploadEventHandler) {
+        fatalError("Not Implemented")
+    }
+
 }
-*/
