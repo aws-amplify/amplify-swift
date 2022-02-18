@@ -25,7 +25,11 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour {
         self.authService = authService
 
         self.preSignedURLBuilder = AWSS3PreSignedURLBuilderAdapter(authService: authService, signingRegion: region)
-        self.awsS3 = try! AWSS3Adapter(S3Client(region: region))
+        do {
+            self.awsS3 = try? AWSS3Adapter(S3Client(region: region))
+        } catch {
+            fatalError("Failed to create AWS3 Adapter with region: \(region)")
+        }
 
         self.region = region
         self.bucket = bucket
@@ -45,10 +49,6 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour {
     }
 
     func download(serviceKey: String, fileURL: URL?, onEvent: @escaping StorageServiceDownloadEventHandler) {
-        fatalError("Not Implemented")
-    }
-
-    func getPreSignedURL(serviceKey: String, expires: Int, onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
         fatalError("Not Implemented")
     }
 
