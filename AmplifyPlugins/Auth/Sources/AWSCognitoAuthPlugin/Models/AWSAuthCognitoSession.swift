@@ -17,7 +17,9 @@ public struct AWSAuthCognitoSession: AuthSession,
     /// Indicates whether the user is signedIn or not
     public var isSignedIn: Bool
 
-    public let userSubResult: Result<String, AuthError>
+    public var userSubResult: Result<String, AuthError> {
+        return getUserSub()
+    }
 
     public let identityIdResult: Result<String, AuthError>
 
@@ -26,13 +28,11 @@ public struct AWSAuthCognitoSession: AuthSession,
     public let cognitoTokensResult: Result<AuthCognitoTokens, AuthError>
 
     init(isSignedIn: Bool,
-         userSubResult: Result<String, AuthError>,
          identityIdResult: Result<String, AuthError>,
          awsCredentialsResult: Result<AuthAWSCredentials, AuthError>,
          cognitoTokensResult: Result<AuthCognitoTokens, AuthError>)
     {
         self.isSignedIn = isSignedIn
-        self.userSubResult = userSubResult
         self.identityIdResult = identityIdResult
         self.awsCredentialsResult = awsCredentialsResult
         self.cognitoTokensResult = cognitoTokensResult
@@ -51,8 +51,30 @@ public struct AWSAuthCognitoSession: AuthSession,
     }
 
     public func getUserSub() -> Result<String, AuthError> {
-        return userSubResult
+        do {
+            let tokens = try cognitoTokensResult.get()
+            let claims = try AWSAuthService().getTokenClaims(tokenString: tokens.idToken).get()
+            guard let userSub = claims["sub"] as? String else {
+                let error = AuthError.unknown("""
+                                Could not retreive user sub from the fetched Cognito tokens.
+                                """)
+                return .failure(error)
+            }
+            return .success(userSub)
+        } catch AuthError.signedOut {
+            return .failure(AuthError.signedOut(
+                            AuthPluginErrorConstants.userSubSignOutError.errorDescription,
+                            AuthPluginErrorConstants.userSubSignOutError.recoverySuggestion))
+        } catch let error as AuthError{
+            return .failure(error)
+        } catch {
+            let error = AuthError.unknown("""
+                            Could not retreive user sub from the fetched Cognito tokens.
+                            """)
+            return .failure(error)
+        }
     }
+
 }
 
 /// Helper method to update specific results if needed
@@ -73,7 +95,7 @@ extension AWSAuthCognitoSession {
 
         var awsCredentials: AuthAWSCognitoCredentials?
         if case let .success(credentials) = getAWSCredentials(),
-            let unwrappedCredentials = credentials as? AuthAWSCognitoCredentials
+           let unwrappedCredentials = credentials as? AuthAWSCognitoCredentials
         {
             awsCredentials = unwrappedCredentials
         }
@@ -95,7 +117,6 @@ extension AWSAuthCognitoSession {
         let identityIdResultCopy: Result<String, AuthError>
         let awsCredentialsResultCopy: Result<AuthAWSCredentials, AuthError>
         let cognitoTokensResultCopy: Result<AuthCognitoTokens, AuthError>
-        let userSubResultCopy: Result<String, AuthError>
 
         if let unwrappedIsSignedIn = isSignedIn {
             isSignedInCopy = unwrappedIsSignedIn
@@ -121,15 +142,8 @@ extension AWSAuthCognitoSession {
             cognitoTokensResultCopy = self.cognitoTokensResult
         }
 
-        if let unwrappedUserSubResultCopy = userSubResult {
-            userSubResultCopy = unwrappedUserSubResultCopy
-        } else {
-            userSubResultCopy = self.userSubResult
-        }
-
         return AWSAuthCognitoSession(
             isSignedIn: isSignedInCopy,
-            userSubResult: userSubResultCopy,
             identityIdResult: identityIdResultCopy,
             awsCredentialsResult: awsCredentialsResultCopy,
             cognitoTokensResult: cognitoTokensResultCopy
