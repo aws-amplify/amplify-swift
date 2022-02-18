@@ -7,12 +7,16 @@
 
 import Foundation
 
-struct AWSS3DeleteObjectRequest {
+struct AWSS3AbortMultipartUploadRequest {
     let bucket: String
     let key: String
+    let uploadId: String
     
-    init(bucket: String, key: String) {
+    init(bucket: String,
+         key: String,
+         uploadId: String) {
         self.bucket = bucket
         self.key = key
+        self.uploadId = uploadId
     }
 }
