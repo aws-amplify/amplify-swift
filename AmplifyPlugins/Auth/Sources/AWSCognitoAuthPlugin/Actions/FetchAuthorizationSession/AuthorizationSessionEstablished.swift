@@ -24,8 +24,6 @@ struct AuthorizationSessionEstablished: Action {
 
 }
 
-extension AuthorizationSessionEstablished: DefaultLogger { }
-
 extension AuthorizationSessionEstablished: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
