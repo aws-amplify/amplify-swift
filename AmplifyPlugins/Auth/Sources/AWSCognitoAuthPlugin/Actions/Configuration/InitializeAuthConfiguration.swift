@@ -16,7 +16,7 @@ struct InitializeAuthConfiguration: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
-        logVerbose("Starting execution", environment: environment)
+        logVerbose("\(#fileID) Starting execution", environment: environment)
 
         var event: StateMachineEvent
         switch authConfiguration {
@@ -25,7 +25,7 @@ struct InitializeAuthConfiguration: Action {
         default:
             event = AuthEvent(eventType: .configureAuthentication(authConfiguration, storedCredentials))
         }
-        logVerbose("Sending event \(event.type)", environment: environment)
+        logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }
 }

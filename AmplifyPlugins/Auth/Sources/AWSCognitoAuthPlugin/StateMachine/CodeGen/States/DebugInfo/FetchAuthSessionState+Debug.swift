@@ -10,22 +10,22 @@ import Foundation
 extension FetchAuthSessionState {
 
     var debugDictionary: [String: Any] {
-        let stateTypeDictionary: [String: Any] = ["FetchAuthSessionState": type]
+
         var additionalMetadataDictionary: [String: Any] = [:]
 
         switch self {
         case .initializingFetchAuthSession:
             additionalMetadataDictionary = [:]
-        case .fetchingUserPoolTokens:
-            additionalMetadataDictionary = [:]
-        case .fetchingIdentity:
-            additionalMetadataDictionary = [:]
-        case .fetchingAWSCredentials:
-            additionalMetadataDictionary = [:]
+        case .fetchingUserPoolTokens(let state):
+            additionalMetadataDictionary = state.debugDictionary
+        case .fetchingIdentity(let state):
+            additionalMetadataDictionary = state.debugDictionary
+        case .fetchingAWSCredentials(let state):
+            additionalMetadataDictionary = state.debugDictionary
         case .sessionEstablished:
             additionalMetadataDictionary = [:]
         }
-        return stateTypeDictionary.merging(additionalMetadataDictionary, uniquingKeysWith: { $1 })
+        return [type: additionalMetadataDictionary]
     }
 
 }
