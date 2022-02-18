@@ -33,7 +33,7 @@ struct FetchAuthIdentityId: Action {
             return
         }
 
-        logVerbose("Starting execution", environment: environment)
+        logVerbose("\(#fileID) Starting execution", environment: environment)
 
         var loginsMap: [String: String] = [:]
         if case let .success(cognitoUserPoolTokens) = cognitoSession.cognitoTokensResult,
@@ -62,7 +62,7 @@ struct FetchAuthIdentityId: Action {
                         eventType: .fetchAWSCredentials(updateCognitoSession))
                     dispatcher.send(fetchAwsCredentialsEvent)
 
-                    logVerbose("Sending event \(fetchAwsCredentialsEvent.type)",
+                    logVerbose("\(#fileID) Sending event \(fetchAwsCredentialsEvent.type)",
                                environment: environment)
                     return
                 }
@@ -71,13 +71,13 @@ struct FetchAuthIdentityId: Action {
                     identityIdResult: .success(identityId))
 
                 let fetchIdentityEvent = FetchIdentityEvent(eventType: .fetched)
-                logVerbose("Sending event \(fetchIdentityEvent.type)",
+                logVerbose("\(#fileID) Sending event \(fetchIdentityEvent.type)",
                            environment: environment)
                 dispatcher.send(fetchIdentityEvent)
 
                 let fetchAwsCredentialsEvent = FetchAuthSessionEvent(
                     eventType: .fetchAWSCredentials(updateCognitoSession))
-                logVerbose("Sending event \(fetchAwsCredentialsEvent.type)",
+                logVerbose("\(#fileID) Sending event \(fetchAwsCredentialsEvent.type)",
                            environment: environment)
                 dispatcher.send(fetchAwsCredentialsEvent)
 
@@ -90,7 +90,7 @@ struct FetchAuthIdentityId: Action {
                     identityIdResult: .failure(error.authError))
                 let fetchAwsCredentialsEvent = FetchAuthSessionEvent(
                     eventType: .fetchAWSCredentials(updateCognitoSession))
-                logVerbose("Sending event \(fetchAwsCredentialsEvent.type)",
+                logVerbose("\(#fileID) Sending event \(fetchAwsCredentialsEvent.type)",
                            environment: environment)
                 dispatcher.send(fetchAwsCredentialsEvent)
             }

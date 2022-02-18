@@ -47,7 +47,7 @@ struct RefreshUserPoolTokens: Action {
             return
         }
 
-        logVerbose("Starting execution", environment: environment)
+        logVerbose("\(#fileID) Starting execution", environment: environment)
 
         let userPoolClientId = environment.userPoolConfiguration.clientId
         let client = try? environment.cognitoUserPoolFactory()
@@ -66,10 +66,10 @@ struct RefreshUserPoolTokens: Action {
                                       clientMetadata: nil,
                                       userContextData: nil)
 
-        logVerbose("Starting initiate auth refresh token", environment: environment)
+        logVerbose("\(#fileID) Starting initiate auth refresh token", environment: environment)
         client?.initiateAuth(input: input,
                              completion: { result in
-            logVerbose("Initiate auth response received", environment: environment)
+            logVerbose("\(#fileID) Initiate auth response received", environment: environment)
 
             switch result {
             case .success(let response):
@@ -88,7 +88,7 @@ struct RefreshUserPoolTokens: Action {
                     let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity(updateCognitoSession))
                     dispatcher.send(fetchIdentityEvent)
 
-                    logVerbose("Sending event \(fetchIdentityEvent.type)",
+                    logVerbose("\(#fileID) Sending event \(fetchIdentityEvent.type)",
                                environment: environment)
                     return
                 }
@@ -103,12 +103,12 @@ struct RefreshUserPoolTokens: Action {
                 let updateCognitoSession = cognitoSession.copySessionByUpdating(cognitoTokensResult: .success(userPoolTokens))
 
                 let fetchedTokenEvent = FetchUserPoolTokensEvent(eventType: .fetched)
-                logVerbose("Sending event \(fetchedTokenEvent.type)",
+                logVerbose("\(#fileID) Sending event \(fetchedTokenEvent.type)",
                            environment: environment)
                 dispatcher.send(fetchedTokenEvent)
 
                 let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity(updateCognitoSession))
-                logVerbose("Sending event \(fetchIdentityEvent.type)",
+                logVerbose("\(#fileID) Sending event \(fetchIdentityEvent.type)",
                            environment: environment)
                 dispatcher.send(fetchIdentityEvent)
             case .failure(let error):
@@ -131,11 +131,11 @@ struct RefreshUserPoolTokens: Action {
                 }
 
                 let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity(updateCognitoSession))
-                logVerbose("Sending event \(fetchIdentityEvent.type)",
+                logVerbose("\(#fileID) Sending event \(fetchIdentityEvent.type)",
                            environment: environment)
                 dispatcher.send(fetchIdentityEvent)
             }
-            logVerbose("Initiate auth complete", environment: environment)
+            logVerbose("\(#fileID) Initiate auth complete", environment: environment)
         })
 
     }

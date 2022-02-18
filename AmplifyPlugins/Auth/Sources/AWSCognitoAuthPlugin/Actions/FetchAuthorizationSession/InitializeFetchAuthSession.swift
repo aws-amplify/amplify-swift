@@ -17,7 +17,7 @@ struct InitializeFetchAuthSession: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
-        logVerbose("Starting execution", environment: environment)
+        logVerbose("\(#fileID) Starting execution", environment: environment)
 
         let isSignedIn = storedCredentials?.userPoolTokens != nil
         let identityIdResult: Result<String, AuthError>
@@ -65,7 +65,7 @@ struct InitializeFetchAuthSession: Action {
             event = FetchAuthSessionEvent(eventType: .fetchIdentity(session))
         }
 
-        logVerbose("Sending event \(event.type)", environment: environment)
+        logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }
 }

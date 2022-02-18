@@ -10,41 +10,31 @@ import Foundation
 extension AuthState: CustomDebugStringConvertible {
 
     var debugDictionary: [String: Any] {
-        let stateTypeDictionary: [String: Any] = ["AuthorizationState": type]
+       
         var additionalMetadataDictionary: [String: Any] = [:]
 
         switch self {
         case .notConfigured:
-            additionalMetadataDictionary = [
-                "AuthState": "notConfigured"
-            ]
+            additionalMetadataDictionary = [:]
         case .configuringAuth:
-            additionalMetadataDictionary = [
-                "AuthState": "configuringAuth"
-            ]
+            additionalMetadataDictionary = [:]
         case .configuringAuthentication(let authenticationState):
-            additionalMetadataDictionary = [
-                "AuthState": "configuringAuthentication",
-                "- AuthenticationState": authenticationState.debugDictionary
-            ]
+            additionalMetadataDictionary = authenticationState.debugDictionary
 
         case .configuringAuthorization(let authenticationState, let authorizationState):
-            additionalMetadataDictionary = [
-                "AuthState": "configuringAuthorization",
-                "- AuthenticationState": authenticationState.debugDictionary,
-                "- AuthorizationState": authorizationState.debugDictionary
-            ]
+            additionalMetadataDictionary = authenticationState.debugDictionary.merging(
+                authorizationState.debugDictionary, uniquingKeysWith: {$1}
+            )
         case .configured(let authenticationState, let authorizationState):
-            additionalMetadataDictionary = [
-                "AuthState": "configured",
-                "- AuthenticationState": authenticationState.debugDictionary,
-                "- AuthorizationState": authorizationState.debugDictionary
-            ]
+            additionalMetadataDictionary = authenticationState.debugDictionary.merging(
+                authorizationState.debugDictionary, uniquingKeysWith: {$1}
+            )
         }
-        return stateTypeDictionary.merging(additionalMetadataDictionary, uniquingKeysWith: { $1 })
+        return [type: additionalMetadataDictionary]
     }
 
     var debugDescription: String {
         return (debugDictionary as AnyObject).description
+
     }
 }

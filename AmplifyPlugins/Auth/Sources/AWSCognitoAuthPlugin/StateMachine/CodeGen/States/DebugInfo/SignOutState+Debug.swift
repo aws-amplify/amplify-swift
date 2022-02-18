@@ -12,33 +12,15 @@ extension SignOutState {
 
     var debugDictionary: [String: Any] {
 
+        var additionalMetadataDictionary: [String: Any] = [:]
+        
         switch self {
-        case .notStarted:
-            return [
-                "SignOutState": "notStarted"
-            ]
-        case .signingOutGlobally:
-            return [
-                "SignOutState": "signingOutGlobally"
-            ]
-        case .revokingToken:
-            return [
-                "SignOutState": "revokingToken"
-            ]
-        case .signingOutLocally:
-            return [
-                "SignOutState": "signingOutLocally"
-            ]
-        case .signedOut:
-            return [
-                "SignOutState": "signedOut",
-            ]
         case .error(let error):
-            return [
-                "SignOutState": "error",
-                "- AuthenticationError": error
-            ]
+            additionalMetadataDictionary = ["Error": error]
+        default:
+            additionalMetadataDictionary = [:]
         }
+        return [type: additionalMetadataDictionary]
     }
 }
 
