@@ -11,6 +11,7 @@ import Amplify
 public final class AWSCognitoAuthPlugin: AuthCategoryPlugin {
 
     var authStateMachine: StateMachine<AuthState, AuthEnvironment>!
+    var authStateListenerToken: StateMachine<AuthState, AuthEnvironment>.StateChangeListenerToken!
 
     var credentialStoreStateMachine: StateMachine<CredentialStoreState, CredentialEnvironment>!
 

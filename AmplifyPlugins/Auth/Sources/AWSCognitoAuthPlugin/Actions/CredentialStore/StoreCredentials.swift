@@ -15,13 +15,13 @@ struct StoreCredentials: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
-        logVerbose("Starting execution", environment: environment)
+        logVerbose("\(#fileID) Starting execution", environment: environment)
 
         guard let credentialEnvironment = environment as? CredentialEnvironment else {
             let event = CredentialStoreEvent(
                 eventType: .throwError(CredentialStoreError.configuration(
                     message: AuthPluginErrorConstants.configurationError)))
-            logVerbose("Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
             return
         }
@@ -31,16 +31,16 @@ struct StoreCredentials: Action {
         do {
             try amplifyCredentialStore.saveCredential(credentials)
             let event = CredentialStoreEvent(eventType: .completedOperation(credentials))
-            logVerbose("Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch let error as CredentialStoreError {
             let event = CredentialStoreEvent(eventType: .throwError(error))
-            logVerbose("Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch {
             let event = CredentialStoreEvent(
                 eventType: .throwError(CredentialStoreError.unknown("An unknown error occurred", error)))
-            logVerbose("Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         }
 

@@ -15,9 +15,9 @@ struct InitializeAuthorizationConfiguration: Action {
                         environment: Environment)
     {
         // ATM this is a no-op action
-        logVerbose("Starting execution", environment: environment)
+        logVerbose("\(#fileID) Starting execution", environment: environment)
         let event = AuthorizationEvent(eventType: .configure)
-        logVerbose("Sending event \(event.type)", environment: environment)
+        logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }
 }
