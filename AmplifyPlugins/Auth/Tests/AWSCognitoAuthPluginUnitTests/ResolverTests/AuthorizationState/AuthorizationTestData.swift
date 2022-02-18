@@ -13,7 +13,6 @@ import Foundation
 extension AWSAuthCognitoSession {
     static var testData: AWSAuthCognitoSession {
         AWSAuthCognitoSession(isSignedIn: true,
-                              userSubResult: .failure(AuthError.unknown("", nil)),
                               identityIdResult: .success("identityId"),
                               awsCredentialsResult: .success(AuthAWSCognitoCredentials.testData),
                               cognitoTokensResult: .success(AWSCognitoUserPoolTokens.testData))
