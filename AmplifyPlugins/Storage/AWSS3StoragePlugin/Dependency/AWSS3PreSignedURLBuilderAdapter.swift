@@ -23,7 +23,7 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
 
     /// Creates a pre-signed URL builder.
     /// - Parameter credentialsProvider: Credentials Provider.
-    public init(authService: AWSAuthServiceBehavior, signingRegion: String) {
+    init(authService: AWSAuthServiceBehavior, signingRegion: String) {
         self.authService = authService
         self.signingRegion = signingRegion
     }
@@ -35,9 +35,9 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
         // TODO: handle clock skew?
 
         let httpRequest = try sigV4SignedRequest(requestBuilder: requestBuilder,
-                                                       signingName: awsS3SigningName,
-                                                       signingRegion: signingRegion,
-                                                       date: Date())
+                                                 signingName: awsS3SigningName,
+                                                 signingRegion: signingRegion,
+                                                 date: Date())
 
         guard let preSignedURL = httpRequest.endpoint.url else {
             throw AWSS3PreSignedURLBuilderError.failed(reason: "Failed to get Pre-Signed URL from Endpoint", error: nil)
@@ -47,9 +47,9 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
     }
 
     internal func sigV4SignedRequest(requestBuilder: SdkHttpRequestBuilder,
-                                   signingName: Swift.String,
-                                   signingRegion: Swift.String,
-                                   date: ClientRuntime.Date) throws -> SdkHttpRequest {
+                                     signingName: Swift.String,
+                                     signingRegion: Swift.String,
+                                     date: ClientRuntime.Date) throws -> SdkHttpRequest {
         do {
             let credentialsResult = try authService.getCredentialsProvider().getCredentials()
             let credentials = try credentialsResult.get()
