@@ -53,9 +53,14 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             self.doSignIn()
         case .signingUp(let configuration, _):
             self.cancelSignUp(configuration)
+        case .signedIn:
+            self.dispatch(AuthError.invalidState(
+                "There is already a user in signedIn state. SignOut the user first before calling signIn",
+                AuthPluginErrorConstants.invalidStateError, nil))
+            self.finish()
         default:
-            // TODO: Should dispatch an error is already signedIn
-            // or signingIn
+            self.dispatch(AuthError.invalidState("Sign in reached an invalid state",
+                                                 AuthPluginErrorConstants.invalidStateError, nil))
             self.finish()
         }
     }
@@ -95,7 +100,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
                 self.storeUserPoolTokens(cognitoTokens)
                 self.cancelToken(token)
             case .error(_, let error):
-                self.dispatch(AuthError.unknown("Some error", error))
+                self.dispatch(AuthError.unknown("Sign in reached an error state", error))
                 self.cancelToken(token)
                 self.finish()
             case .signingIn(_, let signInState):
