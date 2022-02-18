@@ -13,13 +13,13 @@ struct LoadCredentialStore: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
-        logVerbose("Starting execution", environment: environment)
+        logVerbose("\(#fileID) Starting execution", environment: environment)
 
         guard let credentialEnvironment = environment as? CredentialEnvironment else {
             let event = CredentialStoreEvent(
                 eventType: .throwError(CredentialStoreError.configuration(
                     message: AuthPluginErrorConstants.configurationError)))
-            logVerbose("Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
             return
         }
@@ -30,11 +30,11 @@ struct LoadCredentialStore: Action {
         do {
             let storedCredentials = try amplifyCredentialStore.retrieveCredential()
             let event = CredentialStoreEvent(eventType: .completedOperation(storedCredentials))
-            logVerbose("Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch let error as CredentialStoreError {
             let event = CredentialStoreEvent(eventType: .throwError(error))
-            logVerbose("Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch {
             let event = CredentialStoreEvent(
@@ -42,7 +42,7 @@ struct LoadCredentialStore: Action {
                     CredentialStoreError.unknown("An unknown error occurred", error)
                 )
             )
-            logVerbose("Sending event \(event.type)", environment: environment)
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         }
 

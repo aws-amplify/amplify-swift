@@ -26,7 +26,7 @@ struct VerifyPasswordSRP: Action {
                  environment: Environment)
     {
 
-        Amplify.Logging.verbose("Starting execution")
+        logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
             let environment = try SRPSignInHelper.srpEnvironment(environment)
             let srpClient = try SRPSignInHelper.srpClient(environment)
@@ -54,17 +54,17 @@ struct VerifyPasswordSRP: Action {
                                   environment: environment)
             try sendRequest(request: request,
                             environment: environment) { responseEvent in
+                logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
                 dispatcher.send(responseEvent)
-                Amplify.Logging.verbose("sending event #file")
             }
         } catch let error as SRPSignInError {
-            Amplify.Logging.verbose("SRPSignInError \(error) #file")
+            logVerbose("\(#fileID) SRPSignInError \(error)", environment: environment)
             let event = SRPSignInEvent(
                 eventType: .throwPasswordVerifierError(error)
             )
             dispatcher.send(event)
         } catch {
-            Amplify.Logging.verbose("Caught error \(error) #file")
+            logVerbose("\(#fileID) SRPSignInError Generic \(error)", environment: environment)
             let authError = SRPSignInError.service(error: error)
             let event = SRPSignInEvent(
                 eventType: .throwAuthError(authError)
