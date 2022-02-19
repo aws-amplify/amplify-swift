@@ -160,6 +160,7 @@ let authTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AmplifySRP"),
             .target(name: "AWSPluginsCore"),
+            .product(name: "AWSClientRuntime", package: "AWSSwiftSDK"),
             .product(name: "AWSCognitoIdentityProvider", package: "AWSSwiftSDK"),
             .product(name: "AWSCognitoIdentity", package: "AWSSwiftSDK")
         ],
