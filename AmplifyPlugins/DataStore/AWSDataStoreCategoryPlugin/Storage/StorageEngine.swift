@@ -193,7 +193,8 @@ final class StorageEngine: StorageEngineBehavior {
 
         let mutationType = modelExists ? MutationEvent.MutationType.update : .create
 
-        if mutationType == .create && condition != nil {
+        // If it is `create`, and there is a condition, and that condition is not `.all`, fail the request
+        if mutationType == .create, let condition = condition, !condition.isAll {
             let dataStoreError = DataStoreError.invalidCondition(
                 "Cannot apply a condition on model which does not exist.",
                 "Save the model instance without a condition first.")

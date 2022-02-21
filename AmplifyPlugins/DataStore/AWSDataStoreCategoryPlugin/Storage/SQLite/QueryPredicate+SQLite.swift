@@ -50,3 +50,13 @@ extension QueryOperator {
         }
     }
 }
+
+extension QueryPredicate {
+    var isAll: Bool {
+        if let allPredicate = self as? QueryPredicateConstant, allPredicate == .all {
+            return true
+        } else {
+            return false
+        }
+    }
+}

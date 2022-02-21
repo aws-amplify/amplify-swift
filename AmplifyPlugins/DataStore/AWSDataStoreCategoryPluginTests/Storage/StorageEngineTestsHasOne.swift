@@ -48,6 +48,28 @@ class StorageEngineTestsHasOne: StorageEngineTestsBase {
         }
     }
 
+    func testSaveModelWithPredicateAll() {
+        let team = Team(name: "Team")
+        let saveFinished = expectation(description: "Save finished")
+        var result: DataStoreResult<Team>?
+        storageEngine.save(team, condition: QueryPredicateConstant.all) { sResult in
+            result = sResult
+            saveFinished.fulfill()
+        }
+        wait(for: [saveFinished], timeout: defaultTimeout)
+
+        guard let saveResult = result else {
+            XCTFail("Save operation timed out")
+            return
+        }
+
+        guard case .success =
+            querySingleModelSynchronous(modelType: Team.self, predicate: Team.keys.id == team.id) else {
+                XCTFail("Failed to query Team")
+                return
+        }
+    }
+
     func testBelongsToRelationshipWithoutOwner() {
         let teamA = Team(name: "A-Team")
         let projectA = Project(name: "ProjectA", team: teamA)
