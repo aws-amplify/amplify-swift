@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AppSyncRealTimeClient
 
 extension AWSAPIPlugin {
     var log: Logger {

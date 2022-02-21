@@ -19,8 +19,8 @@ PODS:
     - AWSMobileClient (~> 2.27.0)
     - AWSPluginsCore (= 1.19.2)
     - CwlPreconditionTesting (~> 2.0)
-  - AppSyncRealTimeClient (1.6.0):
-    - Starscream (~> 3.1.1)
+  - AppSyncRealTimeClient (1.8.0):
+    - Starscream (~> 4.0.4)
   - AWSAuthCore (2.27.1):
     - AWSCore (= 2.27.1)
   - AWSCognitoIdentityProvider (2.27.1):
@@ -46,7 +46,7 @@ PODS:
     - CwlCatchException (~> 2.1.1)
     - CwlMachBadInstructionHandler (~> 2.1.0)
     - CwlPosixPreconditionTesting (~> 2.1.0)
-  - Starscream (3.1.1)
+  - Starscream (4.0.4)
   - SwiftFormat/CLI (0.44.17)
   - SwiftLint (0.46.2)
 
@@ -54,7 +54,7 @@ DEPENDENCIES:
   - Amplify (from `../../`)
   - AmplifyPlugins/AWSCognitoAuthPlugin (from `../../`)
   - AmplifyTestCommon (from `../../`)
-  - AppSyncRealTimeClient (~> 1.4)
+  - AppSyncRealTimeClient (~> 1.8)
   - AWSPluginsCore (from `../../`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `2.1.0`)
   - SwiftFormat/CLI (= 0.44.17)
@@ -96,9 +96,9 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Amplify: cc3adcea085108a52bc3bb8273e5b38034593127
-  AmplifyPlugins: 4b24b838046785cf89d733a579a5c2ce56907c8c
+  AmplifyPlugins: 99bdbfd5d4816ae0d93f9ef04705db1843d7ef47
   AmplifyTestCommon: a4697828d0070451c45d0855857178601396fb68
-  AppSyncRealTimeClient: 8b5ec94085b8ee9bb6fb9d9d76a157beb538ec6f
+  AppSyncRealTimeClient: 463678f3a459c6e77851ca8e23dd7e0108bfb717
   AWSAuthCore: 9528c60ccdac6df6024fb0af1ed6a43782fd2d3d
   AWSCognitoIdentityProvider: 4de7f96340be72c1dca35c0ba835c6b9b69a28c0
   AWSCognitoIdentityProviderASF: 727f7c1c80d667a2da79e408c8c8745eac981d58
@@ -110,10 +110,10 @@ SPEC CHECKSUMS:
   CwlMachBadInstructionHandler: aa1fe9f2d08b29507c150d099434b2890247e7f8
   CwlPosixPreconditionTesting: 1ba4471964405941f79b3f06bbcf3c2be782950c
   CwlPreconditionTesting: 73ae5de517a8761e5e40fb4136c6a26365af0440
-  Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
+  Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
   SwiftLint: 6bc52a21f0fd44cab9aa2dc8e534fb9f5e3ec507
 
-PODFILE CHECKSUM: 0abaf757d71567dcf70f5a3e79b0149917c3bb38
+PODFILE CHECKSUM: 54e87158e45936fe60756d4a417b89eb64ea1c51
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2
