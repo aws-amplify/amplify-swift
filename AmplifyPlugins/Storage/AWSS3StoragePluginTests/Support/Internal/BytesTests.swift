@@ -21,4 +21,10 @@ class BytesTests: XCTestCase {
         XCTAssertEqual(Bytes.bytes(1).bits, 8)
     }
 
+    func testMaximumBytesForMultipartUploadObjectSize() throws {
+        let bytes = Bytes.terabytes(5)
+        print("Bytes: \(bytes.bytes)")
+        print("Int Max: \(Int.max)")
+        XCTAssertTrue(bytes.bytes < Int.max)
+    }
 }

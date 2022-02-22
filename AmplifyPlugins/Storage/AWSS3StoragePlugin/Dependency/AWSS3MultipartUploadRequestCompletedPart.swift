@@ -16,3 +16,5 @@ struct AWSS3MultipartUploadRequestCompletedPart {
         self.eTag = eTag
     }
 }
+
+typealias AWSS3MultipartUploadRequestCompletedParts = [AWSS3MultipartUploadRequestCompletedPart]

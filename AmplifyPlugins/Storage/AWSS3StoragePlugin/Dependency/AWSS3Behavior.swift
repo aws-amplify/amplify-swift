@@ -22,13 +22,16 @@ protocol AWSS3Behavior {
     // Lists objects in a bucket.
     func listObjectsV2(_ request: AWSS3ListObjectsV2Request, completion: @escaping (Result<StorageListResult, StorageError>) -> Void)
 
+    // Creates a Multipart Upload.
     func createMultipartUpload(_ request: CreateMultipartUploadRequest, completion: @escaping (Result<AWSS3CreateMultipartUploadResponse, StorageError>) -> Void)
 
+    // Completes a Multipart Upload.
     func completeMultipartUpload(_ request: AWSS3CompleteMultipartUploadRequest, completion: @escaping (Result<AWSS3CompleteMultipartUploadResponse, StorageError>) -> Void)
 
+    // Aborts a Multipart Upload.
     func abortMultipartUpload(_ request: AWSS3AbortMultipartUploadRequest, completion: @escaping (Result<Void, StorageError>) -> Void)
 
-    // Gets instance of AWS Service.
+    // Gets a client for AWS S3 Service.
     func getS3() -> S3Client
 
 }
