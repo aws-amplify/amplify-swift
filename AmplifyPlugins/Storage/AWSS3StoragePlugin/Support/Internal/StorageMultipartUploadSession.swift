@@ -8,13 +8,6 @@
 // Docs: https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPart.html
 // https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html
 
-// TODO: determine what happens if a multipart upload is aborted while uploading parts
-// create a model for it to use with unit tests
-//
-// Code: NoSuchUpload
-// Cause: The specified multipart upload does not exist. The upload ID might be invalid, or the multipart upload might have been aborted or completed.
-// HTTP Status Code: 404 Not Found
-
 import Foundation
 import AWSS3
 import Amplify
@@ -133,6 +126,16 @@ class StorageMultipartUploadSession {
         ProcessInfo.processInfo.activeProcessorCount * 2
     }
 
+    var uploadId: UploadID? {
+        multipartUpload.uploadId
+    }
+
+    var completedParts: StorageUploadParts? {
+        queue.sync {
+            multipartUpload.parts?.completed
+        }
+    }
+
     var partsCount: Int {
         queue.sync {
             guard let parts = multipartUpload.parts else {
@@ -176,8 +179,6 @@ class StorageMultipartUploadSession {
             multipartUpload.pendingPartNumbers
         }
     }
-
-    // Finite State Machine: State, Transition, Events
 
     func startUpload() {
         do {
@@ -225,10 +226,7 @@ class StorageMultipartUploadSession {
     func handle(uploadPartEvent: StorageUploadPartEvent) {
         logger.debug("\(#function): \(uploadPartEvent)")
 
-        // TODO: let go of upload task with taskIdentifier when completed
-
         do {
-            let taskIdentifier = uploadPartEvent.taskIdentifier
             try multipartUpload.transition(uploadPartEvent: uploadPartEvent)
 
             // update the transerTask with every state transition
@@ -244,9 +242,6 @@ class StorageMultipartUploadSession {
             }
 
             let isCompletedEvent = uploadPartEvent.isCompleted
-            if isCompletedEvent, let taskIdentifier = taskIdentifier {
-                // TODO: unregister task
-            }
 
             if case .queued = uploadPartEvent {
                 return
@@ -306,7 +301,6 @@ class StorageMultipartUploadSession {
 
                     lastNumber = partNumber
                 }
-                print("Stopped at \(lastNumber ?? 0)")
             }
         } catch {
             // TODO: determine if a retry should be attempted
@@ -316,29 +310,8 @@ class StorageMultipartUploadSession {
 
 }
 
-enum StorageMultipartUploadSessionEvent {
-    case progress(bytesTransferred: Int)
-    case completed(eTag: String?, error: Error?)
-}
-
 extension StorageMultipartUploadSession: Equatable {
     static func == (lhs: StorageMultipartUploadSession, rhs: StorageMultipartUploadSession) -> Bool {
         lhs.id == rhs.id
-    }
-}
-
-
-// TODO: maybe not do this
-extension Sequence where Element == StorageMultipartUploadSession {
-    // find task by taskIdentifier
-    func findMultipartUpload(taskIdentifier: TaskIdentifier) -> StorageMultipartUpload? {
-        first {
-            $0.multipartUpload.taskIdentifier == taskIdentifier
-        }.map {
-            $0.multipartUpload
-        }
-    }
-    func findUploadPart(taskIdentifier: TaskIdentifier) -> StorageUploadPart? {
-        return nil
     }
 }

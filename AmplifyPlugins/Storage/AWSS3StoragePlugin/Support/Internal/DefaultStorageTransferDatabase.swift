@@ -266,7 +266,6 @@ class DefaultStorageTransferDatabase {
             fileSystem.removeFileIfExists(fileURL: fileURL)
             try jsonData.write(to: fileURL)
         } catch {
-            print("Error: \(error)")
             throw error
         }
     }

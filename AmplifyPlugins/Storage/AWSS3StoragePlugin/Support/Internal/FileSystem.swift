@@ -173,6 +173,13 @@ class FileSystem {
         return size
     }
 
+    func moveFile(from sourceFileURL: URL, to destinationURL: URL) throws {
+        guard FileManager.default.fileExists(atPath: destinationURL.path) else {
+            throw Failure.fatalError(errorDescription: "File already exists at destination: \(destinationURL.path)")
+        }
+        try FileManager.default.moveItem(atPath: sourceFileURL.path, toPath: destinationURL.path)
+    }
+
     /// Creates a partial file from a source file.
     /// - Parameters:
     ///   - fileURL: URL of the source file

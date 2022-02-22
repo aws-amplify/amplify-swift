@@ -152,6 +152,7 @@ class StorageTransferTask {
         }
         transferType.fail(error: error)
         status = .error
+        storageTransferDatabase.removeTransferRequest(task: self)
     }
 
     func cancel() {
