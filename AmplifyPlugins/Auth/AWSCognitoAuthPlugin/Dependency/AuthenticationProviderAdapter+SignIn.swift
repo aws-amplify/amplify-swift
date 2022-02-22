@@ -260,8 +260,24 @@ extension AuthenticationProviderAdapter {
                 break
             }
         }
+        if self.isErrorCausedByBadRequest(error) {
+            let errorDescription = error._userInfo?["error"]?
+                .description.trimmingCharacters(in: .whitespaces) ?? "unknown error"
+            return AuthError.service(errorDescription,
+                                     AuthPluginErrorConstants.hostedUIBadRequestError,
+                                     error)
+        }
         let authError = AuthErrorHelper.toAuthError(error)
         return authError
+    }
+    
+    private func isErrorCausedByBadRequest(_ error: Error?) -> Bool {
+        if let cognitoAuthError = error as NSError?,
+               cognitoAuthError.domain == AWSCognitoAuthErrorDomain,
+               cognitoAuthError.code == AWSCognitoAuthClientErrorType.errorBadRequest.rawValue {
+            return true
+        }
+        return false
     }
 
     private class ModalPresentingNavigationController: UINavigationController {
