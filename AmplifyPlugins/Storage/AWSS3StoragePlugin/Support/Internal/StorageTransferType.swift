@@ -29,6 +29,25 @@ enum StorageTransferType {
     case list(onEvent: AWSS3StorageServiceBehaviour.StorageServiceListEventHandler)
     case remove(onEvent: AWSS3StorageServiceBehaviour.StorageServiceDeleteEventHandler)
 
+    var name: String {
+        switch self {
+        case .getPreSignedURL:
+            return "GetPreSignedURL"
+        case .download:
+            return "Download"
+        case .upload:
+            return "Upload"
+        case .multiPartUpload:
+            return "MultiPartUpload"
+        case .multiPartUploadPart:
+            return "MultiPartUploadPart"
+        case .list:
+            return "List"
+        case .remove:
+            return "Remove"
+        }
+    }
+
     var uploadId: UploadID? {
         if case .multiPartUploadPart(let uploadId, _) = self {
             return uploadId
@@ -36,6 +55,7 @@ enum StorageTransferType {
             return nil
         }
     }
+
     var partNumber: PartNumber? {
         if case .multiPartUploadPart(_, let partNumber) = self {
             return partNumber
@@ -77,10 +97,8 @@ enum StorageTransferType {
             onEvent(.failed(storageError))
         case .multiPartUpload(let onEvent):
             onEvent(.failed(storageError))
-        case .multiPartUploadPart(let uploadId, let number):
-            // TODO: look up type by uploadId to report failure
-            print("Error: \(uploadId), \(number)")
-            fatalError("Error")
+        case .multiPartUploadPart:
+            break
         case .list(let onEvent):
             onEvent(.failed(storageError))
         case .remove(let onEvent):
