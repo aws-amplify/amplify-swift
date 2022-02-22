@@ -15,11 +15,6 @@ public enum StorageError {
     case service(ErrorDescription, RecoverySuggestion, Error? = nil)
     case unknown(ErrorDescription, Error? = nil)
     case validation(Field, ErrorDescription, RecoverySuggestion, Error? = nil)
-
-    case invalidBucketNameForAccelerateModeEnabled(ErrorDescription, RecoverySuggestion, Error? = nil)
-    case invalidBucket(ErrorDescription, RecoverySuggestion, Error? = nil)
-    case invalidKey(ErrorDescription, RecoverySuggestion, Error? = nil)
-    case invalidResponse(ErrorDescription, RecoverySuggestion, Error? = nil)
 }
 
 extension StorageError: AmplifyError {
@@ -29,11 +24,7 @@ extension StorageError: AmplifyError {
              .authError(let errorDescription, _, _),
              .configuration(let errorDescription, _, _),
              .service(let errorDescription, _, _),
-             .localFileNotFound(let errorDescription, _, _),
-             .invalidBucketNameForAccelerateModeEnabled(let errorDescription, _, _),
-             .invalidBucket(let errorDescription, _, _),
-             .invalidKey(let errorDescription, _, _),
-             .invalidResponse(let errorDescription, _, _):
+             .localFileNotFound(let errorDescription, _, _):
             return errorDescription
         case .httpStatusError(let statusCode, _, _):
             return "The HTTP response status code is [\(statusCode)]."
@@ -53,11 +44,7 @@ extension StorageError: AmplifyError {
              .configuration(_, let recoverySuggestion, _),
              .localFileNotFound(_, let recoverySuggestion, _),
              .service(_, let recoverySuggestion, _),
-             .validation(_, _, let recoverySuggestion, _),
-             .invalidBucketNameForAccelerateModeEnabled(_, let recoverySuggestion, _),
-             .invalidBucket(_, let recoverySuggestion, _),
-             .invalidKey(_, let recoverySuggestion, _),
-             .invalidResponse(_, let recoverySuggestion, _):
+             .validation(_, _, let recoverySuggestion, _):
             return recoverySuggestion
         case .httpStatusError(_, let recoverySuggestion, _):
             return """
@@ -87,11 +74,7 @@ extension StorageError: AmplifyError {
              .localFileNotFound(_, _, let underlyingError),
              .service(_, _, let underlyingError),
              .unknown(_, let underlyingError),
-             .validation(_, _, _, let underlyingError),
-             .invalidBucketNameForAccelerateModeEnabled(_, _, let underlyingError),
-             .invalidBucket(_, _, let underlyingError),
-             .invalidKey(_, _, let underlyingError),
-             .invalidResponse(_, _, let underlyingError):
+             .validation(_, _, _, let underlyingError):
             return underlyingError
         }
     }
