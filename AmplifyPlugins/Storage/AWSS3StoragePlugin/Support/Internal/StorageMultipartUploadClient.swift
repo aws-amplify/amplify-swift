@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 import Foundation
 
 import Amplify
@@ -26,7 +33,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
     let key: String
     let contentType: String?
     let requestHeaders: RequestHeaders?
-    var session: StorageMultipartUploadSession?
+    weak var session: StorageMultipartUploadSession?
 
     init(serviceProxy: StorageServiceProxy,
          fileSystem: FileSystem = .default,
@@ -61,6 +68,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             guard let self = self else { return }
             switch result {
             case .success(let response):
+                serviceProxy.register(multipartUploadSession: session)
                 session.handle(multipartUploadEvent: .created(uploadFile: self.uploadFile, uploadId: response.uploadId))
             case .failure(let error):
                 session.fail(error: error)
@@ -73,7 +81,6 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
         guard let serviceProxy = serviceProxy else { fatalError("Service Proxy is required") }
 
         guard let uploadFile = multipartUpload.uploadFile,
-              let uploadId = multipartUpload.uploadId,
               let partSize = multipartUpload.partSize,
               let part = multipartUpload.part(for: partNumber) else {
                   fatalError("Part number is required")
@@ -127,21 +134,18 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
         guard let serviceProxy = serviceProxy,
             let session = session else { fatalError() }
 
-        // TODO: call register(task:) so the taskIdentifier is known for an uploadPart
-
-        // TODO: prepare parts
-        let parts: AWSS3MultipartUploadRequestCompletedParts = []
-
+        let completedParts = session.completedParts ?? []
+        let parts = AWSS3MultipartUploadRequestCompletedParts(completedParts: completedParts)
         let request = AWSS3CompleteMultipartUploadRequest(bucket: bucket, key: key, uploadId: uploadId, parts: parts)
 
         serviceProxy.awsS3.completeMultipartUpload(request) { result in
             switch result {
             case .success:
                 session.handle(multipartUploadEvent: .completed(uploadId: uploadId))
-                //serviceProxy.unregister(task: session.transferTask)
             case .failure(let error):
                 session.fail(error: error)
             }
+            serviceProxy.unregister(multipartUploadSession: session)
         }
     }
 
@@ -157,6 +161,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             case .failure(let error):
                 session.fail(error: error)
             }
+            serviceProxy.unregister(multipartUploadSession: session)
         }
     }
 

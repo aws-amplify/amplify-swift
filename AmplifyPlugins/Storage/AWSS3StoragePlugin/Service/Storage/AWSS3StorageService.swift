@@ -11,7 +11,7 @@ import AWSS3
 import Amplify
 import AWSPluginsCore
 
-class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageBackgroundEventsHandler, StorageServiceProxy {
+class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
 
     // resettable values
     private var authService: AWSAuthServiceBehavior?
@@ -25,26 +25,26 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageBackgroundEvents
 
     let storageConfiguration: StorageConfiguration
     let sessionConfiguration: URLSessionConfiguration
-    let urlSession: URLSession
+    var delegateQueue: OperationQueue?
+    var urlSession: URLSession
     let storageTransferDatabase: StorageTransferDatabase
+    let fileSystem: FileSystem
 
     var tasks: [Int: StorageTransferTask] = [:]
     var multipartUploadSessions: [StorageMultipartUploadSession] = []
-
-    var backgroundEventCompletionHandler: (() -> Void)?
 
     var identifier: String {
         storageConfiguration.sessionIdentifier
     }
 
     convenience init(authService: AWSAuthServiceBehavior,
-         region: String,
-         bucket: String,
-         storageConfiguration: StorageConfiguration = .default,
-         storageTransferDatabase: StorageTransferDatabase = .default,
-         sessionConfiguration: URLSessionConfiguration? = nil,
-         delegateQueue: OperationQueue? = nil,
-         logger: Logger = storageLogger) throws {
+                     region: String,
+                     bucket: String,
+                     storageConfiguration: StorageConfiguration = .default,
+                     storageTransferDatabase: StorageTransferDatabase = .default,
+                     sessionConfiguration: URLSessionConfiguration? = nil,
+                     delegateQueue: OperationQueue? = nil,
+                     logger: Logger = storageLogger) throws {
 
         let s3Client = try S3Client(region: region)
         let awsS3 = AWSS3Adapter(s3Client)
@@ -54,8 +54,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageBackgroundEvents
         if let sessionConfiguration = sessionConfiguration {
             _sessionConfiguration = sessionConfiguration
         } else {
-            let identifier = storageConfiguration.sessionIdentifier
-            let sessionConfiguration = URLSessionConfiguration.background(withIdentifier: identifier)
+            let sessionConfiguration = URLSessionConfiguration.background(withIdentifier: storageConfiguration.sessionIdentifier)
             sessionConfiguration.allowsCellularAccess = storageConfiguration.allowsCellularAccess
             sessionConfiguration.timeoutIntervalForResource = TimeInterval(storageConfiguration.timeoutIntervalForResource)
             _sessionConfiguration = sessionConfiguration
@@ -76,6 +75,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageBackgroundEvents
     init(authService: AWSAuthServiceBehavior,
          storageConfiguration: StorageConfiguration = .default,
          storageTransferDatabase: StorageTransferDatabase = .default,
+         fileSystem: FileSystem = .default,
          sessionConfiguration: URLSessionConfiguration,
          delegateQueue: OperationQueue? = nil,
          logger: Logger = storageLogger,
@@ -83,12 +83,13 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageBackgroundEvents
          preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior,
          awsS3: AWSS3Behavior,
          bucket: String) {
-
         self.storageConfiguration = storageConfiguration
         self.storageTransferDatabase = storageTransferDatabase
+        self.fileSystem = fileSystem
         self.sessionConfiguration = sessionConfiguration
 
         let delegate = StorageServiceSessionDelegate(identifier: storageConfiguration.sessionIdentifier, logger: logger)
+        self.delegateQueue = delegateQueue
         self.urlSession = URLSession(configuration: sessionConfiguration, delegate: delegate, delegateQueue: delegateQueue)
 
         self.logger = logger
@@ -97,7 +98,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageBackgroundEvents
         self.awsS3 = awsS3
         self.bucket = bucket
 
-        StorageRegistry.register(identifier: identifier, backgroundEventsHandler: self)
+        StorageBackgroundEventsRegistry.register(identifier: identifier)
 
         delegate.storageService = self
 
@@ -114,7 +115,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageBackgroundEvents
     }
 
     deinit {
-        StorageRegistry.unregister(identifier: identifier)
+        StorageBackgroundEventsRegistry.unregister(identifier: identifier)
     }
 
     func reset() {
@@ -124,6 +125,11 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageBackgroundEvents
         awsS3 = nil
         region = nil
         bucket = nil
+    }
+
+    func resetURLSession() {
+        let delegate = StorageServiceSessionDelegate(identifier: storageConfiguration.sessionIdentifier, logger: logger)
+        self.urlSession = URLSession(configuration: sessionConfiguration, delegate: delegate, delegateQueue: delegateQueue)
     }
 
     func attachEventHandlers(onUpload: AWSS3StorageServiceBehaviour.StorageServiceUploadEventHandler? = nil,
@@ -171,21 +177,14 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageBackgroundEvents
 
     func findTask(taskIdentifier: TaskIdentifier) -> StorageTransferTask? {
         let task = tasks[taskIdentifier]
-
         return task
     }
 
-    // TODO: determine if this function is needed for recovery
-    func linkTransfers() {
-        urlSession.getTasksWithCompletionHandler { [weak self] _, uploadTasks, downloadTasks in
-            guard let self = self else { return }
-            uploadTasks.forEach { uploadTask in
-                self.logger.debug("Linking upload task for identifier: \(uploadTask.taskIdentifier)")
-            }
-            downloadTasks.forEach { downloadTask in
-                self.logger.debug("Linking download task for identifier: \(downloadTask.taskIdentifier)")
-            }
+    func findMultipartUploadSession(uploadId: UploadID) -> StorageMultipartUploadSession? {
+        let session = multipartUploadSessions.first { session in
+            session.uploadId == uploadId
         }
+        return session
     }
 
     func createTransferTask(transferType: StorageTransferType,
@@ -217,70 +216,23 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageBackgroundEvents
         }
     }
 
-}
-
-class StorageServiceSessionDelegate: NSObject {
-    let identifier: String
-    let logger: Logger
-    weak var storageService: AWSS3StorageService?
-
-    init(identifier: String, logger: Logger = storageLogger) {
-        self.identifier = identifier
-        self.logger = logger
-    }
-
-    private func findTransferTask(for taskIdentifier: TaskIdentifier) -> StorageTransferTask? {
-        guard let storageService = storageService,
-              let transferTask = storageService.findTask(taskIdentifier: taskIdentifier) else {
-                  logger.error("Failed to find transfer task: \(taskIdentifier)")
-                  return nil
+    func completeDownload(taskIdentifier: TaskIdentifier, sourceURL: URL) {
+        guard let transferTask = findTask(taskIdentifier: taskIdentifier),
+              let destinationLocation = transferTask.location,
+              case .download(let onEvent) = transferTask.transferType else {
+                  logger.info("Unable to complete download for task: \(taskIdentifier)")
+                  return
               }
-        return transferTask
-    }
-}
 
-public extension Notification.Name {
-    static let StorageURLSessionDidBecomeInvalidNotification = Notification.Name("URLSessionDidBecomeInvalidNotification")
-    static let reachabilityChanged = Notification.Name("reachabilityChanged")
-}
-
-extension StorageServiceSessionDelegate: URLSessionDelegate {
-
-    func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        #warning("Not Implemented")
-        fatalError("Not Implemented")
-    }
-
-    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-        #warning("Not Implemented")
-        fatalError("Not Implemented")
-    }
-}
-
-extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
-
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        #warning("Not Implemented")
-        fatalError("Not Implemented")
-    }
-
-    func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
-        #warning("Not Implemented")
-        fatalError("Not Implemented")
-    }
-
-}
-
-extension StorageServiceSessionDelegate: URLSessionDownloadDelegate {
-
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        #warning("Not Implemented")
-        fatalError("Not Implemented")
-    }
-
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        #warning("Not Implemented")
-        fatalError("Not Implemented")
+        do {
+            try fileSystem.moveFile(from: sourceURL, to: destinationLocation)
+            let data = try Data(contentsOf: destinationLocation)
+            onEvent(.completed(data))
+            transferTask.complete()
+        } catch {
+            transferTask.fail(error: error)
+        }
+        unregister(task: transferTask)
     }
 
 }

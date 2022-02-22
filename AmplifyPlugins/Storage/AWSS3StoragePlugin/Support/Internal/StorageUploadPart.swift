@@ -165,7 +165,7 @@ struct StorageUploadPartSize {
         self.size = minimumPartSize
     }
 
-    /// Creates custom part size. Throws if file part is invalid.
+    /// Creates custom part size in bytes. Throws if file part is invalid.
     /// - Parameter size: part size
     init(size: Int) throws {
         if size < minimumPartSize {
@@ -282,19 +282,19 @@ extension Sequence where Element == StorageUploadPart {
         }
     }
 
-    var pending: [StorageUploadPart] {
+    var pending: StorageUploadParts {
         filter { $0.isPending }
     }
 
-    var inProgress: [StorageUploadPart] {
+    var inProgress: StorageUploadParts {
         filter { $0.inProgress }
     }
 
-    var failed: [StorageUploadPart] {
+    var failed: StorageUploadParts {
         filter { $0.failed }
     }
 
-    var completed: [StorageUploadPart] {
+    var completed: StorageUploadParts {
         filter { $0.completed }
     }
 
