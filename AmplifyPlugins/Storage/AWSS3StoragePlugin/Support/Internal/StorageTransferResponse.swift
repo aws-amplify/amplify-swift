@@ -38,7 +38,7 @@ class StorageTransferResponse {
                 error = nil
             }
         } else {
-            error = .invalidResponse("Response is not an HTTP response", "Invalid response", nil)
+            error = .unknown("Response is not an HTTP response", nil)
         }
         return error
     }
