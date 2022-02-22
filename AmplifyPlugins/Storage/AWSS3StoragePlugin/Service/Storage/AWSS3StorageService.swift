@@ -206,13 +206,11 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
         if bucket.isEmpty {
             let errorDescription = "Invalid bucket specified."
             let recoverySuggestion = "Please specify a bucket name or configure the bucket property."
-            throw accelerationModeEnabled ?
-            StorageError.invalidBucketNameForAccelerateModeEnabled(errorDescription, "", nil) :
-            StorageError.invalidBucket(errorDescription, recoverySuggestion, nil)
+            throw StorageError.validation("bucket", errorDescription, recoverySuggestion, nil)
         } else if key.isEmpty {
             let errorDescription = "Invalid key specified."
             let recoverySuggestion = "Please specify a key."
-            throw StorageError.invalidKey(errorDescription, recoverySuggestion, nil)
+            throw StorageError.validation("key", errorDescription, recoverySuggestion, nil)
         }
     }
 
