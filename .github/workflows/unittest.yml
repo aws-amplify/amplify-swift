@@ -14,12 +14,53 @@ concurrency:
 
 jobs:
 
+  amplify-unit-test:
+    runs-on: macos-latest
+    environment: UnitTest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run unit test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: Amplify
+
+  api-unit-test:
+    runs-on: macos-latest
+    environment: UnitTest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run unit test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: AWSAPIPlugin  
+
   auth-unit-test:
     runs-on: macos-latest
     environment: UnitTest
     steps:
       - uses: actions/checkout@v2
-    
-      - name: Run auth unit test
-        run: xcodebuild test -scheme AWSCognitoAuthPlugin -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13' | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+      - name: Run unit test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: AWSCognitoAuthPlugin
+
+  datastore-unit-test:
+    runs-on: macos-latest
+    environment: UnitTest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run unit test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: AWSDataStorePlugin
+  
+  storage-unit-test:
+    runs-on: macos-latest
+    environment: UnitTest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run unit test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: AWSS3StoragePlugin  
     

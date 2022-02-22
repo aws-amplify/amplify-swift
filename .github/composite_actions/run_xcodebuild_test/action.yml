@@ -1,40 +1,18 @@
-name: 'Run pod install; xcodebuild test'
-description: 'Action runs pod install and then runs the tests specified at project_path for workspace and scheme'
+name: 'Run xcodebuild test'
+description: 'Action runs the test for the scheme specified'
 
 inputs:
-  project_path:
-    required: true
-    type: string
-  workspace:
-    required: true
-    type: string
   scheme:
     required: true
     type: string
-  simulator:
+  destination:
     required: false
     type: string
-    default: 'platform=iOS Simulator,name=iPhone 13,OS=latest'
 
 runs:
   using: "composite"
   steps:
-    - name: CocoaPods Cache
-      uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
-      with:
-        path: ~/Library/Caches/CocoaPods
-        key: pods-${{ inputs.workspace }}-${{ hashFiles('**/Podfile.lock') }}
-        restore-keys: |
-          pods-${{ inputs.workspace }}-
-
-    - name: CocoaPods Install
-      run: |
-        cd ${{ inputs.project_path }}
-        pod install
-      shell: bash
-
     - name: Test ${{ inputs.scheme }}
       run: |
-        cd ${{ inputs.project_path }} 
-        xcodebuild test -workspace ${{ inputs.workspace }} -scheme ${{ inputs.scheme }} -sdk iphonesimulator -destination '${{ inputs.simulator }}' | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]} 
-      shell: bash
+        xcodebuild test -scheme AWSCognitoAuthPlugin -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13' | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}        
+      shell: bash 
