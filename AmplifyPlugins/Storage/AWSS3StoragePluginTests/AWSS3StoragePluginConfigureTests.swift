@@ -240,7 +240,10 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
         }
     }
 
-    func testConfigureThrowsForInvalidRegionType() {
+    let isValidationRegionConfig = false
+
+    func testConfigureThrowsForInvalidRegionType() throws {
+        try XCTSkipIf(!isValidationRegionConfig, "Skipping until region validation is enabled")
         let bucket = JSONValue.init(stringLiteral: testBucket)
         let region = JSONValue.init(stringLiteral: "invalidRegionType")
         let storagePluginConfig = JSONValue.init(

@@ -107,8 +107,9 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
 
     func testUploadFileOperationUploadSuccess() {
         mockAuthService.identityId = testIdentityId
+        let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceUploadEvents = [
-            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completedVoid]
 
@@ -157,8 +158,9 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
 
     func testUploadFileOperationUploadFail() {
         mockAuthService.identityId = testIdentityId
+        let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceUploadEvents = [
-            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
             StorageEvent.failed(StorageError.service("", ""))]
 
@@ -203,8 +205,9 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
 
     func testUploadFileOperationMultiPartUploadSuccess() {
         mockAuthService.identityId = testIdentityId
+        let task = StorageTransferTask(transferType: .multiPartUpload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceMultiPartUploadEvents = [
-            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completedVoid]
 

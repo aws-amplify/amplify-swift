@@ -37,10 +37,15 @@ class FileSystem {
     }()
 
     init() {
-        // swiftlint:disable force_try
-        self.documentsURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        self.cachesURL = try! FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        // swiftlint:enable force_try
+        // Note: This API supports many values for directories. The ones used here will always be available to an app.
+        guard let documentsURL = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true) else {
+            fatalError("Failed to get URL for documents directory.")
+        }
+        guard let cachesURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true) else {
+            fatalError("Failed to get URL for caches directory.")
+        }
+        self.documentsURL = documentsURL
+        self.cachesURL = cachesURL
     }
 
     /// Checks if a file exists
@@ -50,6 +55,15 @@ class FileSystem {
         FileManager.default.fileExists(atPath: fileURL.path)
     }
 
+    /// Checks if a directory exists
+    /// - Parameter directoryURL: URL of the directory
+    /// - Returns: exists
+    func directoryExists(atURL directoryURL: URL) -> Bool {
+        var isDir: ObjCBool = false
+        let exists = FileManager.default.fileExists(atPath: directoryURL.path, isDirectory: &isDir) && isDir.boolValue
+        return exists
+    }
+
     /// Load contents from a file.
     /// - Parameter fileURL: URL of file to load
     /// - Returns: Data from file if it could be loaded
@@ -57,9 +71,9 @@ class FileSystem {
         FileManager.default.contents(atPath: fileURL.path)
     }
 
-    /// Creates a temporary directory.
+    /// Creates URL for a temporary directory but does not create the directory.
     /// - Parameter baseURL: URL to use as the base which defaults to Caches Directory
-    /// - Returns: Directory URL
+    /// - Returns: URL for a temporary directory
     func createTemporaryDirectoryURL(baseURL: URL = FileSystem.default.cachesURL) -> URL {
         baseURL.appendingPathComponent(UUID().uuidString, isDirectory: true)
     }
@@ -88,12 +102,26 @@ class FileSystem {
         return temporaryFileURL
     }
 
-    func removeFileIfExists(fileURL: URL) {
+    /// Remove file if it exists
+    /// - Parameter fileURL: URL of the file
+    @discardableResult
+    func removeFileIfExists(fileURL: URL) -> Bool {
+        let success: Bool
         if FileManager.default.fileExists(atPath: fileURL.path) {
-            try? FileManager.default.removeItem(at: fileURL)
+            do {
+                try FileManager.default.removeItem(at: fileURL)
+                success = true
+            } catch {
+                success = false
+            }
+        } else {
+            success = true
         }
+        return success
     }
 
+    /// Remove directory if it exists
+    /// - Parameter directoryURL: URL of the directory
     func removeDirectoryIfExists(directoryURL: URL) {
         var isDir: ObjCBool = false
         if FileManager.default.fileExists(atPath: directoryURL.path, isDirectory: &isDir) && isDir.boolValue {
@@ -101,16 +129,29 @@ class FileSystem {
         }
     }
 
+    /// Create directory
+    /// - Parameter directoryURL: URL of new directory
     func createDirectory(at directoryURL: URL) throws {
         try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
     }
 
+    /// Create file
+    /// - Parameters:
+    ///   - baseURL: URL of the base directory
+    ///   - filename: name of the file
+    ///   - data: data
+    /// - Returns: URL of the new file
     func createFile(baseURL: URL = FileSystem.default.cachesURL, filename: String, data: Data) throws -> URL {
         let fileURL = baseURL.appendingPathComponent(filename)
         try data.write(to: fileURL)
         return fileURL
     }
 
+    /// Get list of contents in a directory matching a filter
+    /// - Parameters:
+    ///   - directoryURL: URL of direcetory
+    ///   - matching: filter to limit matches
+    /// - Returns: matched contents
     func directoryContents(directoryURL: URL, matching: @escaping (String) -> Bool) throws -> [URL] {
         let fileURLs = try FileManager.default.contentsOfDirectory(atPath: directoryURL.path)
             .filter(matching)
@@ -142,50 +183,31 @@ class FileSystem {
         // 4.5 MB (1 MB per part)
         // 1024 1024 1024 1024 512
 
-        // seek to the offset, read bytes and write data to a file
-        do {
-            let fileHandle = try FileHandle(forReadingFrom: fileURL)
-            defer {
-                if #available(iOS 13.0, *) {
-                    try? fileHandle.close()
-                } else {
-                    fileHandle.closeFile()
+        // Move work off current context
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+            // seek to the offset, read bytes and write data to a file
+            do {
+                let fileHandle = try FileHandle(forReadingFrom: fileURL)
+                defer {
+                    if #available(iOS 13.0, *) {
+                        try? fileHandle.close()
+                    } else {
+                        fileHandle.closeFile()
+                    }
                 }
+                if #available(iOS 13.0, *) {
+                    try fileHandle.seek(toOffset: UInt64(offset))
+                } else {
+                    fileHandle.seek(toFileOffset: UInt64(offset))
+                }
+                let data = fileHandle.readData(ofLength: length)
+                let fileURL = try self.createTemporaryFile(data: data)
+                completionHandler(.success(fileURL))
+            } catch {
+                completionHandler(.failure(error))
             }
-            if #available(iOS 13.0, *) {
-                try fileHandle.seek(toOffset: UInt64(offset))
-            } else {
-                fileHandle.seek(toFileOffset: UInt64(offset))
-            }
-            let data = fileHandle.readData(ofLength: length)
-            let fileURL = try createTemporaryFile(data: data)
-            completionHandler(.success(fileURL))
-        } catch {
-            completionHandler(.failure(error))
         }
     }
 
-    func randomData(bytes: Bytes) -> Data {
-        let count = bytes.bytes
-        var bytes = [Int8](repeating: 0, count: count)
-        // Fill bytes with secure random data
-        let status = SecRandomCopyBytes(
-            kSecRandomDefault,
-            count,
-            &bytes
-        )
-        // A status of errSecSuccess indicates success
-        guard status == errSecSuccess else {
-            Fatal.error("Failed to copy bytes: \(status)")
-        }
-        let data = Data(bytes: bytes, count: count)
-        return data
-    }
-
-}
-
-extension Bytes {
-    func generateRandomData() -> Data {
-        FileSystem.default.randomData(bytes: self)
-    }
 }

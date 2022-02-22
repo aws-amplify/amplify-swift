@@ -52,13 +52,25 @@ extension SdkError {
         }
     }
 
+    func isOk(statusCode: Int) -> Bool {
+        (200..<299).contains(statusCode)
+    }
+
+    func isAccessDenied(statusCode: Int) -> Bool {
+        [401, 403].contains(statusCode)
+    }
+
+    func isNotFound(statusCode: Int) -> Bool {
+        404 == statusCode
+    }
+
     var storageError: StorageError {
         let storageError: StorageError
         if let statusCode = statusCode?.rawValue,
-           !(200..<299).contains(statusCode) {
-            if [401, 403].contains(statusCode) {
+           !isOk(statusCode: statusCode) {
+            if isAccessDenied(statusCode: statusCode) {
                 storageError = StorageError.accessDenied(localizedDescription, "", self)
-            } else if statusCode == 404 {
+            } else if isNotFound(statusCode: statusCode) {
                 storageError = StorageError.keyNotFound(StorageError.serviceKey,
                                                         "Received HTTP Response status code 404 NotFound",
                                                         "Make sure the key exists before trying to download it.")
