@@ -69,8 +69,9 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testDownloadDataOperationDownloadData() {
+        let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
-            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(Data())]
         let request = StorageDownloadDataRequest(key: testKey, options: StorageDownloadDataRequest.Options())
@@ -101,8 +102,9 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testDownloadDataOperationDownloadDataFailed() {
+        let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
-            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
             StorageEvent.failed(StorageError.service("", ""))]
         let request = StorageDownloadDataRequest(key: testKey, options: StorageDownloadDataRequest.Options())
@@ -133,8 +135,9 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testGetOperationDownloadDataFromTargetIdentityId() {
+        let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
-            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(Data())]
         let options = StorageDownloadDataRequest.Options(accessLevel: .protected,

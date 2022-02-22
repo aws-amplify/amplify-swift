@@ -8,38 +8,22 @@
 import Foundation
 import AWSS3
 
-struct AWSS3TransferUtilityTask {
-    var transferID: String = UUID().uuidString
-}
-
 class StorageTaskReference {
-    let task: AWSS3TransferUtilityTask?
-//    let multiPartUploadTask: AWSS3TransferUtilityMultiPartUploadTask?
+    let task: StorageTask
 
-    init(_ task: AWSS3TransferUtilityTask) {
+    init(_ task: StorageTransferTask) {
         self.task = task
-//        self.multiPartUploadTask = nil
     }
-
-    /*
-    init(_ task: AWSS3TransferUtilityMultiPartUploadTask) {
-        self.task = nil
-        self.multiPartUploadTask = task
-    }
-     */
 
     func pause() {
-//        task?.suspend()
-//        multiPartUploadTask?.suspend()
+        task.pause()
     }
 
     func resume() {
-//        task?.resume()
-//        multiPartUploadTask?.resume()
+        task.resume()
     }
 
     func cancel() {
-//        task?.cancel()
-//        multiPartUploadTask?.cancel()
+        task.cancel()
     }
 }
