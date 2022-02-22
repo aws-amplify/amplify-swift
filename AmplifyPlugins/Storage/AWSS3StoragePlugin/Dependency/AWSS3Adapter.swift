@@ -75,7 +75,16 @@ class AWSS3Adapter: AWSS3Behavior {
     ///   - request: request
     ///   - completion: handler which returns a result with uploadId
     func createMultipartUpload(_ request: CreateMultipartUploadRequest, completion: @escaping (Result<AWSS3CreateMultipartUploadResponse, StorageError>) -> Void) {
-        let input = CreateMultipartUploadInput(bucket: request.bucket, key: request.key)
+        let input = CreateMultipartUploadInput(bucket: request.bucket,
+                                               cacheControl: request.cacheControl,
+                                               contentDisposition: request.contentDisposition,
+                                               contentEncoding: request.contentEncoding,
+                                               contentLanguage: request.contentLanguage,
+                                               contentType: request.contentType,
+                                               expires: request.expires,
+                                               key: request.key,
+                                               metadata: request.metadata)
+        
         awsS3.createMultipartUpload(input: input) { result in
             switch result {
             case .success(let response):
@@ -85,7 +94,7 @@ class AWSS3Adapter: AWSS3Behavior {
                 }
                 completion(.success(AWSS3CreateMultipartUploadResponse(bucket: bucket, key: key, uploadId: uploadId)))
             case .failure(let error):
-                print("Error: \(error)")
+                completion(.failure(error.storageError))
             }
         }
     }
