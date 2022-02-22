@@ -22,7 +22,7 @@ func attempt<T>(_ expression: @autoclosure () throws -> T,
     }
 }
 
-/// Attemp to run an expression or fail.
+/// Attempt to run an expression or fail.
 /// - Parameters:
 ///   - expression: expression
 ///   - fail: error handler
