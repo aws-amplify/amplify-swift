@@ -8,27 +8,26 @@
 import Amplify
 import Foundation
 
-/// Represents a `create index` SQL statement. The table is created based on the `ModelSchema`
+/// Represents a `create index` SQL statement. The index is created based on the
+/// secondary index present in the `ModelSchema`
 struct CreateIndexStatement: SQLStatement {
+    var modelSchema: ModelSchema
 
-    let modelSchema: ModelSchema
+    // fields/column names which are used to create the index in SQLite table
+    var fields: [ModelFieldName]
 
-    init(modelSchema: ModelSchema) {
+    // name of the secondary index
+    var indexName: String
+
+    init(modelSchema: ModelSchema, fields: [ModelFieldName], indexName: String) {
         self.modelSchema = modelSchema
+        self.fields = fields
+        self.indexName = indexName
     }
 
     var stringValue: String {
-        let tableName = modelSchema.name
-        var statement = ""
-
-        for index in modelSchema.indexes {
-            if case let .index(fields, name) = index, let name = name {
-                statement += """
-                create index if not exists \"\(name)\" on \"\(tableName)\" (\(fields.map { "\"" + $0 + "\"" }.joined(separator: ", ")));
-                """
-            }
-        }
-
-        return statement
+        return """
+        create index if not exists \"\(indexName)\" on \"\(modelSchema.name)\" (\(fields.map { "\"\($0)\"" }.joined(separator: ", ")));
+        """
     }
 }

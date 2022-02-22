@@ -149,11 +149,11 @@ class SQLStatementTests: XCTestCase {
     /// - Then:
     ///   - check if the generated SQL statement is valid
     func testCreateIndexStatementFromModelWithSingleIndex() {
-        let statement = CreateIndexStatement(modelSchema: CustomerSecondaryIndexV2.schema)
+        let statement = CustomerSecondaryIndexV2.schema.createIndexStatements()
         let expectedStatement = """
         create index if not exists "byRepresentative" on "CustomerSecondaryIndexV2" ("accountRepresentativeID");
         """
-        XCTAssertEqual(statement.stringValue, expectedStatement)
+        XCTAssertEqual(statement, expectedStatement)
     }
 
     /// - Given: a `Model` instance
@@ -162,13 +162,13 @@ class SQLStatementTests: XCTestCase {
     /// - Then:
     ///   - check if the generated SQL statement is valid
     func testCreateIndexStatementFromModelWithMultipleIndexes() {
-        let statement = CreateIndexStatement(modelSchema: CustomerMultipleSecondaryIndexV2.schema)
+        let statement = CustomerMultipleSecondaryIndexV2.schema.createIndexStatements()
         let expectedStatement = """
         create index if not exists "byNameAndPhoneNumber" on "CustomerMultipleSecondaryIndexV2" ("name", "phoneNumber");\
         create index if not exists "byAgeAndPhoneNumber" on "CustomerMultipleSecondaryIndexV2" ("age", "phoneNumber");\
         create index if not exists "byRepresentative" on "CustomerMultipleSecondaryIndexV2" ("accountRepresentativeID");
         """
-        XCTAssertEqual(statement.stringValue, expectedStatement)
+        XCTAssertEqual(statement, expectedStatement)
     }
 
     // MARK: - Insert Statements

@@ -15,33 +15,22 @@ import XCTest
 @testable import AWSDataStoreCategoryPlugin
 
 // swiftlint:disable type_body_length
-// swiftlint:disable file_length
 class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
-    var connectionWithIndex: Connection!
-    var storageEngineWithIndex: StorageEngine!
-    var storageAdapterWithIndex: SQLiteStorageEngineAdapter!
-    var syncEngineWithIndex: MockRemoteSyncEngine!
-    let validAPIPluginKey = "MockAPICategoryPlugin"
-    let validAuthPluginKey = "MockAuthCategoryPlugin"
 
     // number of records to be created
-    let numberOfRecords = 100
-
-    // number of iterations over which a query time is averaged out
-    let iterations = 10
+    let numberOfRecords = 1_000
 
     override func setUp() {
         super.setUp()
         Amplify.Logging.logLevel = .warn
-        setUpStorageEngine()
     }
 
-    func setUpStorageEngine() {
+    func setupStorageEngine() {
+        let validAPIPluginKey = "MockAPICategoryPlugin"
+        let validAuthPluginKey = "MockAuthCategoryPlugin"
         do {
-            // create storage adapter without SQLite indexes for secondary indexes present in Model schema
             connection = try Connection(.inMemory)
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
-            storageAdapter.shouldCreateSQLiteIndexes = false
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
             syncEngine = MockRemoteSyncEngine()
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
@@ -50,25 +39,12 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
 
-            connectionWithIndex = try Connection(.inMemory)
-            storageAdapterWithIndex = try SQLiteStorageEngineAdapter(connection: connectionWithIndex)
-            try storageAdapterWithIndex.setUp(modelSchemas: StorageEngine.systemModelSchemas)
-            syncEngineWithIndex = MockRemoteSyncEngine()
-            storageEngineWithIndex = StorageEngine(storageAdapter: storageAdapterWithIndex,
-                                                   dataStoreConfiguration: .default,
-                                                   syncEngine: syncEngineWithIndex,
-                                                   validAPIPluginKey: validAPIPluginKey,
-                                                   validAuthPluginKey: validAuthPluginKey)
-
             ModelRegistry.register(modelType: CustomerSecondaryIndexV2.self)
             ModelRegistry.register(modelType: CustomerMultipleSecondaryIndexV2.self)
 
             do {
                 try storageEngine.setUp(modelSchemas: [CustomerSecondaryIndexV2.schema])
                 try storageEngine.setUp(modelSchemas: [CustomerMultipleSecondaryIndexV2.schema])
-
-                try storageEngineWithIndex.setUp(modelSchemas: [CustomerSecondaryIndexV2.schema])
-                try storageEngineWithIndex.setUp(modelSchemas: [CustomerMultipleSecondaryIndexV2.schema])
             } catch {
                 XCTFail("Failed to setup storage engine")
             }
@@ -83,25 +59,26 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
     //  In this test, query is done w.r.t. to secondary index `byRepresentative` where
     //  the predicate checks for equality with `accountRepresentativeID`
 
-    //  For brevity, two tables (one with SQLite indexing for secondary indexes in schema and one without SQLite
-    //  indexes) is created with many records(>=1000) where each customer has a single
-    //  letter name (for e.g. "a", "b"), phonenumber is a string of length 10 having small letters,
+    //  For brevity, a table (with SQLite indexing for secondary indexes in schema)
+    //  is created with many records(100 to 10000) where each customer has a single
+    //  letter name (for e.g. "a", "b"), phonenumber is a string of length 10 having numbers,
     //  and accountRepresentativeID is a string of length 10 having capital letters
 
-    //  % decrease in query time is printed to the console
     //  Results are noted when run on Intel Core i7, 2.6Ghz, 6 Core
     //  16GB 2667 MHz DDR4 Memory (inMemory, empirical observations)
-    //  Number of records   -   % decrease in query time
-    //  100                 -   7.7
-    //  1000                -   12.63
-    //  5000                -   40.2
-    //  10000 (5 iterations)-   54.85
+    //  with SQLite indexes created vs not created
+    //  Number of records   -   Avg. query time with    -   Previous (s)
+    //                          indexes (s)
+    //  100                 -   0.0028375326990499163   -   0.0030892116992617957
+    //  1000                -   0.002908085302624386    -   0.0032255952028208412
+    //  5000                -   0.0032134409993886948   -   0.00478174310119357
+    //  10000               -   0.0033998960039345548   -   0.006051322101324331
     func testQueryPerformanceForModelWithSingleIndex() {
-        var averageTimeForQuery1: Double = 0.0
-        var averageTimeForQuery2: Double = 0.0
-
-        for _ in 0 ... iterations {
-            setUpStorageEngine()
+        var averageTimeForQuery: Double = 0.0
+        var iterations = 0
+        measureMetrics([XCTPerformanceMetric.wallClockTime], automaticallyStartMeasuring: false) {
+            iterations += 1
+            setupStorageEngine()
             for _ in 0 ... numberOfRecords {
                 let customer = CustomerSecondaryIndexV2(
                     name: randomSmallCharacterString(length: 1),
@@ -110,11 +87,10 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                     createdAt: Temporal.DateTime.now(),
                     updatedAt: Temporal.DateTime.now())
 
-                guard case .success = saveModelSynchronous(model: customer, storageEngine: storageEngine),
-                    case .success = saveModelSynchronous(model: customer, storageEngine: storageEngineWithIndex) else {
-                        XCTFail("Failed to save customer \(customer)")
-                        return
-                }
+                guard case .success = saveModelSynchronous(model: customer, storageEngine: storageEngine) else {
+                          XCTFail("Failed to save customer \(customer)")
+                          return
+                      }
             }
 
             // Create a unique customer so that query has atleast one successful search result
@@ -128,48 +104,28 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                 createdAt: Temporal.DateTime.now(),
                 updatedAt: Temporal.DateTime.now())
 
-            guard case .success = saveModelSynchronous(model: uniqueCustomer, storageEngine: storageEngine),
-                case .success = saveModelSynchronous(model: uniqueCustomer, storageEngine: storageEngineWithIndex)
-            else {
-                    XCTFail("Failed to save customer \(uniqueCustomer)")
-                    return
+            guard case .success = saveModelSynchronous(model: uniqueCustomer, storageEngine: storageEngine) else {
+                XCTFail("Failed to save customer \(uniqueCustomer)")
+                return
             }
 
-            // Measure time needed to run a query
-            let predicate =
-            CustomerSecondaryIndexV2.keys.accountRepresentativeID.eq(accountRepresentativeID)
+            let predicate = CustomerSecondaryIndexV2.keys.accountRepresentativeID.eq(accountRepresentativeID)
 
             let startTimeQuery1 = CACurrentMediaTime()
-            guard case .success =
-                    queryModelSynchronous(modelType: CustomerSecondaryIndexV2.self,
-                                          predicate: predicate,
-                                          storageEngine: storageEngine) else {
-                    XCTFail("Failed to query customer")
-                    return
+            startMeasuring()
+            guard case .success = queryModelSynchronous(modelType: CustomerSecondaryIndexV2.self,
+                                                        predicate: predicate,
+                                                        storageEngine: storageEngine) else {
+                XCTFail("Failed to query customer")
+                return
             }
+            stopMeasuring()
             let timeElapsedQuery1 = CACurrentMediaTime() - startTimeQuery1
-            averageTimeForQuery1 += timeElapsedQuery1
-
-            let startTimeQuery2 = CACurrentMediaTime()
-            guard case .success =
-                    queryModelSynchronous(modelType: CustomerSecondaryIndexV2.self,
-                                          predicate: predicate,
-                                          storageEngine: storageEngineWithIndex) else {
-                    XCTFail("Failed to query customer")
-                    return
-            }
-            let timeElapsedQuery2 = CACurrentMediaTime() - startTimeQuery2
-            averageTimeForQuery2 += timeElapsedQuery2
+            averageTimeForQuery += timeElapsedQuery1
+            print("Query time \(#function) number of records \(numberOfRecords) : \(timeElapsedQuery1)")
         }
-
-        averageTimeForQuery1 = (averageTimeForQuery1 / Double(iterations))
-        averageTimeForQuery2 = (averageTimeForQuery2 / Double(iterations))
-        print("Average time elapsed for query 1 (without SQLite indexing) : \(averageTimeForQuery1) s.")
-        print("Average time time query 2 (with SQLite indexing) : \(averageTimeForQuery2) s.")
-
-        let percentDecreaseInQueryTime =
-        (averageTimeForQuery1 - averageTimeForQuery2) * Double(100) / averageTimeForQuery1
-        print("% decrease in query time: \(percentDecreaseInQueryTime)")
+        averageTimeForQuery /= Double(iterations)
+        print("Average query time \(#function) number of records \(numberOfRecords) : \(averageTimeForQuery)")
     }
 
     //  `CustomerMultipleSecondaryIndexV2` Model Schema contains two secondary indexes, namely,
@@ -178,25 +134,26 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
     //  In this test, query is done w.r.t. to secondary index `byNameAndPhoneNumber` where
     //  the predicate checks for equality with `name` and `phoneNumber` which begins with "1"
 
-    //  For brevity, two tables (one with SQLite indexing for secondary indexes in schema and one without SQLite
-    //  indexes) is created with many records(>=1000) where each customer has a single
-    //  letter name (for e.g. "a", "b"), phonenumber is a string of length 10 having small letters, age between 1-100,
+    //  For brevity, a table (with SQLite indexing for secondary indexes in schema)
+    //  is created with many records(100 to 10000) where each customer has a single
+    //  letter name (for e.g. "a", "b"), phonenumber is a string of length 10 having numbers, age between 1-100,
     //  and accountRepresentativeID is a string of length 10 having capital letters
 
-    //  % decrease in query time is printed to the console
     //  Results are noted when run on Intel Core i7, 2.6Ghz, 6 Core
     //  16GB 2667 MHz DDR4 Memory (inMemory, empirical observations)
-    //  Number of records   -   % decrease in query time
-    //  100                 -   0.15
-    //  1000                -   4.69
-    //  5000                -   5.84
-    //  10000               -   11.56
+    //  with SQLite indexes created vs not created
+    //  Number of records   -   Avg. query time with    -   Previous (s)
+    //                          indexes (s)
+    //  100                 -   0.0031190951005555688   -   0.0036742549025802875
+    //  1000                -   0.010179293301189319    -   0.011310623202007264
+    //  5000                -   0.03966123380087083     -   0.04700456840073457
+    //  10000               -   0.08497165249864339     -   0.09597435819596285
     func testQueryPerformanceForModelWithMultipleIndexes1() {
-        var averageTimeForQuery1: Double = 0.0
-        var averageTimeForQuery2: Double = 0.0
-
-        for _ in 0 ... iterations {
-            setUpStorageEngine()
+        var averageTimeForQuery: Double = 0.0
+        var iterations = 0
+        measureMetrics([XCTPerformanceMetric.wallClockTime], automaticallyStartMeasuring: false) {
+            iterations += 1
+            setupStorageEngine()
             for _ in 0 ... numberOfRecords {
                 let customer = CustomerMultipleSecondaryIndexV2(
                     name: randomSmallCharacterString(length: 1),
@@ -206,11 +163,10 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                     createdAt: Temporal.DateTime.now(),
                     updatedAt: Temporal.DateTime.now())
 
-                guard case .success = saveModelSynchronous(model: customer, storageEngine: storageEngine),
-                    case .success = saveModelSynchronous(model: customer, storageEngine: storageEngineWithIndex) else {
-                        XCTFail("Failed to save customer \(customer)")
-                        return
-                }
+                guard case .success = saveModelSynchronous(model: customer, storageEngine: storageEngine) else {
+                          XCTFail("Failed to save customer \(customer)")
+                          return
+                      }
             }
 
             // Create a unique customer so that query has atleast one successful search result
@@ -225,49 +181,29 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                 createdAt: Temporal.DateTime.now(),
                 updatedAt: Temporal.DateTime.now())
 
-            guard case .success = saveModelSynchronous(model: uniqueCustomer, storageEngine: storageEngine),
-                case .success = saveModelSynchronous(model: uniqueCustomer, storageEngine: storageEngineWithIndex)
-            else {
-                    XCTFail("Failed to save customer \(uniqueCustomer)")
-                    return
+            guard case .success = saveModelSynchronous(model: uniqueCustomer, storageEngine: storageEngine) else {
+                XCTFail("Failed to save customer \(uniqueCustomer)")
+                return
             }
 
-            // Measure time needed to run a query
-            let predicate =
-            CustomerMultipleSecondaryIndexV2.keys.name.eq(name) &&
+            let predicate = CustomerMultipleSecondaryIndexV2.keys.name.eq(name) &&
             CustomerMultipleSecondaryIndexV2.keys.phoneNumber.beginsWith("1")
 
             let startTimeQuery1 = CACurrentMediaTime()
-            guard case .success =
-                    queryModelSynchronous(modelType: CustomerMultipleSecondaryIndexV2.self,
-                                          predicate: predicate,
-                                          storageEngine: storageEngine) else {
-                    XCTFail("Failed to query customer")
-                    return
+            startMeasuring()
+            guard case .success = queryModelSynchronous(modelType: CustomerMultipleSecondaryIndexV2.self,
+                                                        predicate: predicate,
+                                                        storageEngine: storageEngine) else {
+                XCTFail("Failed to query customer")
+                return
             }
+            stopMeasuring()
             let timeElapsedQuery1 = CACurrentMediaTime() - startTimeQuery1
-            averageTimeForQuery1 += timeElapsedQuery1
-
-            let startTimeQuery2 = CACurrentMediaTime()
-            guard case .success =
-                    queryModelSynchronous(modelType: CustomerMultipleSecondaryIndexV2.self,
-                                          predicate: predicate,
-                                          storageEngine: storageEngineWithIndex) else {
-                    XCTFail("Failed to query customer")
-                    return
-            }
-            let timeElapsedQuery2 = CACurrentMediaTime() - startTimeQuery2
-            averageTimeForQuery2 += timeElapsedQuery2
+            averageTimeForQuery += timeElapsedQuery1
+            print("Query time \(#function) number of records \(numberOfRecords) : \(timeElapsedQuery1)")
         }
-
-        averageTimeForQuery1 = (averageTimeForQuery1 / Double(iterations))
-        averageTimeForQuery2 = (averageTimeForQuery2 / Double(iterations))
-        print("Average time elapsed for query 1 (without SQLite indexing) : \(averageTimeForQuery1) s.")
-        print("Average time time query 2 (with SQLite indexing) : \(averageTimeForQuery2) s.")
-
-        let percentDecreaseInQueryTime =
-        (averageTimeForQuery1 - averageTimeForQuery2) * Double(100) / averageTimeForQuery1
-        print("% decrease in query time: \(percentDecreaseInQueryTime)")
+        averageTimeForQuery /= Double(iterations)
+        print("Average query time \(#function) number of records \(numberOfRecords) : \(averageTimeForQuery)")
     }
 
     //  `CustomerMultipleSecondaryIndexV2` Model Schema contains two secondary indexes, namely,
@@ -276,25 +212,26 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
     //  In this test, query is done w.r.t. to secondary index `byAgeAndPhoneNumber` where
     //  the predicate checks for equality with `age` and `phoneNumber` which begins with "1"
 
-    //  For brevity, two tables (one with SQLite indexing for secondary indexes in schema and one without SQLite
-    //  indexes) is created with many records(>=1000) where each customer has a single
-    //  letter name (for e.g. "a", "b"), phonenumber is a string of length 10 having small letters, age between 1-100,
+    //  For brevity, a table (with SQLite indexing for secondary indexes in schema)
+    //  is created with many records(100 to 10000) where each customer has a single
+    //  letter name (for e.g. "a", "b"), phonenumber is a string of length 10 having numbers, age between 1-100,
     //  and accountRepresentativeID is a string of length 10 having capital letters
 
-    //  % decrease in query time is printed to the console
     //  Results are noted when run on Intel Core i7, 2.6Ghz, 6 Core
     //  16GB 2667 MHz DDR4 Memory (inMemory, empirical observations)
-    //  Number of records   -   % decrease in query time
-    //  100                 -   1.53
-    //  1000                -   2.63
-    //  5000                -   5.4
-    //  10000 (5 iterations)-   6.51
+    //  with SQLite indexes created vs not created
+    //  Number of records   -   Avg. query time with    -   Previous (s)
+    //                          indexes (s)
+    //  100                 -   0.003238815201621037    -   0.003389103499648627
+    //  1000                -   0.004494062899902928    -   0.004931295602000318
+    //  5000                -   0.011302956998406444    -   0.013200746997934766
+    //  10000               -   0.02146193390071858     -   0.025970560003770515
     func testQueryPerformanceForModelWithMultipleIndexes2() {
-        var averageTimeForQuery1: Double = 0.0
-        var averageTimeForQuery2: Double = 0.0
-
-        for _ in 0 ... iterations {
-            setUpStorageEngine()
+        var averageTimeForQuery: Double = 0.0
+        var iterations = 0
+        measureMetrics([XCTPerformanceMetric.wallClockTime], automaticallyStartMeasuring: false) {
+            iterations += 1
+            setupStorageEngine()
             for _ in 0 ... numberOfRecords {
                 let customer = CustomerMultipleSecondaryIndexV2(
                     name: randomSmallCharacterString(length: 1),
@@ -304,8 +241,7 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                     createdAt: Temporal.DateTime.now(),
                     updatedAt: Temporal.DateTime.now())
 
-                guard case .success = saveModelSynchronous(model: customer, storageEngine: storageEngine),
-                    case .success = saveModelSynchronous(model: customer, storageEngine: storageEngineWithIndex) else {
+                guard case .success = saveModelSynchronous(model: customer, storageEngine: storageEngine) else {
                         XCTFail("Failed to save customer \(customer)")
                         return
                 }
@@ -324,19 +260,17 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                 createdAt: Temporal.DateTime.now(),
                 updatedAt: Temporal.DateTime.now())
 
-            guard case .success = saveModelSynchronous(model: uniqueCustomer, storageEngine: storageEngine),
-                  case .success = saveModelSynchronous(model: uniqueCustomer, storageEngine: storageEngineWithIndex)
-            else {
+            guard case .success = saveModelSynchronous(model: uniqueCustomer, storageEngine: storageEngine) else {
                 XCTFail("Failed to save customer \(uniqueCustomer)")
                 return
             }
 
-            // Measure time needed to run a query
             let predicate =
             CustomerMultipleSecondaryIndexV2.keys.age.eq(age) &&
             CustomerMultipleSecondaryIndexV2.keys.phoneNumber.beginsWith("1")
 
             let startTimeQuery1 = CACurrentMediaTime()
+            startMeasuring()
             guard case .success =
                     queryModelSynchronous(modelType: CustomerMultipleSecondaryIndexV2.self,
                                           predicate: predicate,
@@ -344,29 +278,13 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                     XCTFail("Failed to query customer")
                     return
             }
+            stopMeasuring()
             let timeElapsedQuery1 = CACurrentMediaTime() - startTimeQuery1
-            averageTimeForQuery1 += timeElapsedQuery1
-
-            let startTimeQuery2 = CACurrentMediaTime()
-            guard case .success =
-                    queryModelSynchronous(modelType: CustomerMultipleSecondaryIndexV2.self,
-                                          predicate: predicate,
-                                          storageEngine: storageEngineWithIndex) else {
-                    XCTFail("Failed to query customer")
-                    return
-            }
-            let timeElapsedQuery2 = CACurrentMediaTime() - startTimeQuery2
-            averageTimeForQuery2 += timeElapsedQuery2
+            averageTimeForQuery += timeElapsedQuery1
+            print("Query time \(#function) number of records \(numberOfRecords) : \(timeElapsedQuery1)")
         }
-
-        averageTimeForQuery1 = (averageTimeForQuery1 / Double(iterations))
-        averageTimeForQuery2 = (averageTimeForQuery2 / Double(iterations))
-        print("Average time elapsed for query 1 (without SQLite indexing) : \(averageTimeForQuery1) s.")
-        print("Average time time query 2 (with SQLite indexing) : \(averageTimeForQuery2) s.")
-
-        let percentDecreaseInQueryTime =
-        (averageTimeForQuery1 - averageTimeForQuery2) * Double(100) / averageTimeForQuery1
-        print("% decrease in query time: \(percentDecreaseInQueryTime)")
+        averageTimeForQuery /= Double(iterations)
+        print("Average query time \(#function) number of records \(numberOfRecords) : \(averageTimeForQuery)")
     }
 
     func randomSmallCharacterString(length: Int) -> String {
@@ -409,25 +327,6 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
             return .failure(causedBy: "Save operation timed out")
         }
         return saveResult
-    }
-
-    func querySingleModelSynchronous<M: Model>(modelType: M.Type,
-                                               predicate: QueryPredicate,
-                                               storageEngine: StorageEngine) -> DataStoreResult<M> {
-        let result = queryModelSynchronous(modelType: modelType, predicate: predicate, storageEngine: storageEngine)
-
-        switch result {
-        case .success(let models):
-            if models.isEmpty {
-                return .failure(causedBy: "Found no models, of type \(modelType.modelName)")
-            } else if models.count > 1 {
-                return .failure(causedBy: "Found more than one model of type \(modelType.modelName)")
-            } else {
-                return .success(models.first!)
-            }
-        case .failure(let error):
-            return .failure(error)
-        }
     }
 
     func queryModelSynchronous<M: Model>(modelType: M.Type,
