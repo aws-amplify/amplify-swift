@@ -23,7 +23,7 @@ PODS:
     - AWSMobileClient (~> 2.27.0)
     - AWSPluginsCore (= 1.21.0)
     - CwlPreconditionTesting (~> 2.0)
-    - AppSyncRealTimeClient (1.9.0):
+  - AppSyncRealTimeClient (1.9.0):
     - Starscream (~> 4.0.4)
   - AWSAuthCore (2.27.1):
     - AWSCore (= 2.27.1)
