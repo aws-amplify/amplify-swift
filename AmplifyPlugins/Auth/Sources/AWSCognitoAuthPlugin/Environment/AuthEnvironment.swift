@@ -34,19 +34,3 @@ extension AuthEnvironment: AuthenticationEnvironment {
         return authNEnv.srpSignInEnvironment
     }
 }
-
-extension AuthEnvironment: AuthorizationEnvironment {
-    var identityPoolConfiguration: IdentityPoolConfigurationData {
-        guard let authZEnv = authorizationEnvironment else {
-            fatalError("Could not find authorization environment")
-        }
-        return authZEnv.identityPoolConfiguration
-    }
-
-    var cognitoIdentityFactory: CognitoIdentityFactory {
-        guard let authZEnv = authorizationEnvironment else {
-            fatalError("Could not find authorization environment")
-        }
-        return authZEnv.cognitoIdentityFactory
-    }
-}
