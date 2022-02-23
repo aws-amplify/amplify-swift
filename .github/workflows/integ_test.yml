@@ -17,7 +17,9 @@ jobs:
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+        with:
+          persist-credentials: false
 
       - name: Test if copying integrationtest resouces work
         uses: ./.github/composite_actions/download_test_configuration
@@ -32,7 +34,9 @@ jobs:
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+        with:
+          persist-credentials: false
 
       - name: Make directory
         run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
@@ -60,7 +64,9 @@ jobs:
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+        with:
+          persist-credentials: false
 
       - name: Make directory
         run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
@@ -123,7 +129,9 @@ jobs:
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+        with:
+          persist-credentials: false
 
       - name: Make directory
         run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
@@ -151,7 +159,9 @@ jobs:
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+        with:
+          persist-credentials: false
 
       - name: Make directory
         run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
@@ -193,7 +203,9 @@ jobs:
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+        with:
+          persist-credentials: false
 
       - name: Make directory
         run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
@@ -221,7 +233,9 @@ jobs:
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+        with:
+          persist-credentials: false
 
       - name: Make directory
         run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
@@ -256,7 +270,9 @@ jobs:
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+        with:
+          persist-credentials: false
 
       - name: Make directory
         run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/

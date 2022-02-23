@@ -19,7 +19,7 @@ runs:
   using: "composite"
   steps:
     - name: Configure AWS credentials for {{ inputs.resource_subfolder }}
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@05b148adc31e091bafbaf404f745055d4d3bc9d2 # Pin to 1.6.1
       with:
           role-to-assume: ${{ inputs.aws_role_to_assume }}
           aws-region: ${{ inputs.aws_region }}
