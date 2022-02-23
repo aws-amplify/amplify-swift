@@ -17,11 +17,11 @@ struct FetchAuthIdentityId: Action {
     func execute(withDispatcher dispatcher: EventDispatcher,
                  environment: Environment)
     {
-
-        guard let authZEnvironment = environment as? AuthorizationEnvironment,
+        guard let authEnv = environment as? AuthEnvironment,
+              let authZEnvironment = authEnv.authorizationEnvironment,
               let client = try? authZEnvironment.cognitoIdentityFactory()
         else {
-            let authZError = AuthorizationError.configuration(message: AuthPluginErrorConstants.configurationError)
+            let authZError = AuthorizationError.configuration(message: AuthPluginErrorConstants.signedInIdentityIdWithNoCIDPError.errorDescription)
             let event = FetchIdentityEvent(eventType: .throwError(authZError))
             dispatcher.send(event)
 
