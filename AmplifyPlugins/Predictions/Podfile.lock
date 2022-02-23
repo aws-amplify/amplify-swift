@@ -1,14 +1,14 @@
 PODS:
-  - Amplify (1.19.2):
-    - Amplify/Default (= 1.19.2)
-  - Amplify/Default (1.19.2)
-  - AmplifyPlugins/AWSCognitoAuthPlugin (1.19.2):
+  - Amplify (1.20.0):
+    - Amplify/Default (= 1.20.0)
+  - Amplify/Default (1.20.0)
+  - AmplifyPlugins/AWSCognitoAuthPlugin (1.20.0):
     - AWSAuthCore (~> 2.27.0)
     - AWSCognitoIdentityProvider (~> 2.27.0)
     - AWSCognitoIdentityProviderASF (~> 2.27.0)
     - AWSCore (~> 2.27.0)
     - AWSMobileClient (~> 2.27.0)
-    - AWSPluginsCore (= 1.19.2)
+    - AWSPluginsCore (= 1.20.0)
   - AWSAuthCore (2.27.1):
     - AWSCore (= 2.27.1)
   - AWSCognitoIdentityProvider (2.27.1):
@@ -24,8 +24,8 @@ PODS:
     - AWSCognitoIdentityProvider (= 2.27.1)
     - AWSCognitoIdentityProviderASF (= 2.27.1)
     - AWSCore (= 2.27.1)
-  - AWSPluginsCore (1.19.2):
-    - Amplify (= 1.19.2)
+  - AWSPluginsCore (1.20.0):
+    - Amplify (= 1.20.0)
     - AWSCore (~> 2.27.0)
   - AWSPolly (2.27.1):
     - AWSCore (= 2.27.1)
@@ -47,7 +47,7 @@ PODS:
     - CwlMachBadInstructionHandler (~> 2.1.0)
     - CwlPosixPreconditionTesting (~> 2.1.0)
   - SwiftFormat/CLI (0.44.17)
-  - SwiftLint (0.46.2)
+  - SwiftLint (0.46.3)
 
 DEPENDENCIES:
   - Amplify (from `../../`)
@@ -100,15 +100,15 @@ CHECKOUT OPTIONS:
     :tag: 2.1.0
 
 SPEC CHECKSUMS:
-  Amplify: cc3adcea085108a52bc3bb8273e5b38034593127
-  AmplifyPlugins: 4b24b838046785cf89d733a579a5c2ce56907c8c
+  Amplify: 318051ea3aaac4ef55ff0da06b207cf0afdcd770
+  AmplifyPlugins: 25eaa68f0cb4ec060763db9c3e6d7c7250574d8f
   AWSAuthCore: 9528c60ccdac6df6024fb0af1ed6a43782fd2d3d
   AWSCognitoIdentityProvider: 4de7f96340be72c1dca35c0ba835c6b9b69a28c0
   AWSCognitoIdentityProviderASF: 727f7c1c80d667a2da79e408c8c8745eac981d58
   AWSComprehend: f8a4b31b8f42d76d328f090dc370b0f03f8e626a
   AWSCore: f859f6955a8e52dcb3e79fac95fef058639d1049
   AWSMobileClient: 9c1edcbe7088b3c9b910aaf6faf2db43a8f1568d
-  AWSPluginsCore: 8c8d23756e6094aa92adfbe5c4b9cc1df1075576
+  AWSPluginsCore: 439740964ec86462548cb978acc499bfc2b594e9
   AWSPolly: 4f56d85c4b412288684db50780a95d2dd3b63d95
   AWSRekognition: 1ab867d40da9d8c5b7b65346258597816f5f5120
   AWSTextract: 7be044959b8e0618c1ea058d14da1d50a1bcbe63
@@ -120,7 +120,7 @@ SPEC CHECKSUMS:
   CwlPosixPreconditionTesting: 1ba4471964405941f79b3f06bbcf3c2be782950c
   CwlPreconditionTesting: 73ae5de517a8761e5e40fb4136c6a26365af0440
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
-  SwiftLint: 6bc52a21f0fd44cab9aa2dc8e534fb9f5e3ec507
+  SwiftLint: ae76d82f056734f853c8cd0371503252c606c482
 
 PODFILE CHECKSUM: 359e5e54f0b35ed310c3d521aa35d3d628630460
 

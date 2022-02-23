@@ -1,5 +1,15 @@
 # Changelog
 ## Unreleased
+## 1.20.0 (2022-02-23)
+
+### Features
+
+- **API**: Set AppSyncRTClient log level from Amplify log level (#1637)
+
+### Bug Fixes
+
+- Handle .all predicate for create/update (#1640)
+
 ## 1.19.2 (2022-02-07)
 
 ### Bug Fixes
