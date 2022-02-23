@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.21.0 (2022-02-23)
+
+### Features
+
+- **auth**: handle errors returned from Social SignIn sessions (#1642)
+
 ## 1.20.0 (2022-02-23)
 
 ### Features
