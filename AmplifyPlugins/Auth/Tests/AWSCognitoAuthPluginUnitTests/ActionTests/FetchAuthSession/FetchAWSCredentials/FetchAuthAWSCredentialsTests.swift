@@ -8,6 +8,7 @@
 import XCTest
 
 import AWSCognitoIdentity
+import Amplify
 
 @testable import AWSCognitoAuthPlugin
 
@@ -28,7 +29,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
 
                 if case let .throwError(error) = event.eventType {
                     XCTAssertNotNil(error)
-                    XCTAssertEqual(error, AuthorizationError.configuration(message: AuthPluginErrorConstants.configurationError))
+                    XCTAssertEqual(error, AuthorizationError.configuration(message: AuthPluginErrorConstants.signedInAWSCredentialsWithNoCIDPError.errorDescription))
                     expectation.fulfill()
                 }
             },
@@ -48,6 +49,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
                                                                      cognitoIdentityFactory: identityProviderFactory)
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(authZEnvironment: authorizationEnvironment)
 
         let action = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
 
@@ -64,7 +66,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
                     expectation.fulfill()
                 }
             },
-            environment: authorizationEnvironment
+            environment: authEnvironment
         )
 
         waitForExpectations(timeout: 0.1)
@@ -80,6 +82,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
                                                                      cognitoIdentityFactory: identityProviderFactory)
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(authZEnvironment: authorizationEnvironment)
 
         let action = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
 
@@ -96,7 +99,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
                     expectation.fulfill()
                 }
             },
-            environment: authorizationEnvironment
+            environment: authEnvironment
         )
 
         waitForExpectations(timeout: 0.1)
@@ -125,6 +128,8 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
                                                                      cognitoIdentityFactory: identityProviderFactory)
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(authZEnvironment: authorizationEnvironment)
+
 
         let action = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
 
@@ -141,7 +146,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
                     fetchedAuthSessionExpectation.fulfill()
                 }
             },
-            environment: authorizationEnvironment
+            environment: authEnvironment
         )
         waitForExpectations(timeout: 0.1)
     }
@@ -160,6 +165,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
                                                                      cognitoIdentityFactory: identityProviderFactory)
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(authZEnvironment: authorizationEnvironment)
 
         let action = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
 
@@ -178,7 +184,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
                     fetchedSessionExpectation.fulfill()
                 }
             },
-            environment: authorizationEnvironment
+            environment: authEnvironment
         )
         waitForExpectations(timeout: 0.1)
     }

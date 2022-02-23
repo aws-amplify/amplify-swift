@@ -47,8 +47,8 @@ extension AuthorizationError: AuthErrorConvertible {
 extension AuthorizationError: Equatable {
     static func == (lhs: AuthorizationError, rhs: AuthorizationError) -> Bool {
         switch (lhs, rhs) {
-        case (.configuration, .configuration):
-            return true
+        case (.configuration(let lhsMessage), .configuration(let rhsMessage)):
+            return lhsMessage == rhsMessage
         case (.service, .service):
             return true
         case (.invalidAWSCredentials, invalidAWSCredentials):

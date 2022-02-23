@@ -81,7 +81,9 @@ enum Defaults {
         return .userPoolsAndIdentityPools(userPoolConfigData, identityConfigDate)
     }
 
-    static func makeDefaultAuthEnvironment() -> AuthEnvironment {
+    static func makeDefaultAuthEnvironment(
+        authZEnvironment: BasicAuthorizationEnvironment? = nil
+    ) -> AuthEnvironment {
         let userPoolConfigData = makeDefaultUserPoolConfigData()
         let identityPoolConfigData = makeIdentityConfigData()
         let srpAuthEnvironment = BasicSRPAuthEnvironment(
@@ -101,7 +103,7 @@ enum Defaults {
             userPoolConfigData: userPoolConfigData,
             identityPoolConfigData: identityPoolConfigData,
             authenticationEnvironment: authenticationEnvironment,
-            authorizationEnvironment: authorizationEnvironment,
+            authorizationEnvironment: authZEnvironment ?? authorizationEnvironment,
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
         Amplify.Logging.logLevel = .verbose
