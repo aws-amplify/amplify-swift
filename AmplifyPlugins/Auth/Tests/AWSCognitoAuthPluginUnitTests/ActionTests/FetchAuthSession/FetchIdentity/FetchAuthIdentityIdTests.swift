@@ -28,7 +28,7 @@ class FetchAuthIdentityIdTests: XCTestCase {
 
                 if case let .throwError(error) = event.eventType {
                     XCTAssertNotNil(error)
-                    XCTAssertEqual(error, AuthorizationError.configuration(message: AuthPluginErrorConstants.configurationError))
+                    XCTAssertEqual(error, AuthorizationError.configuration(message: AuthPluginErrorConstants.signedInIdentityIdWithNoCIDPError.errorDescription))
                     expectation.fulfill()
                 }
             },
@@ -48,6 +48,7 @@ class FetchAuthIdentityIdTests: XCTestCase {
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
                                                                      cognitoIdentityFactory: identityProviderFactory)
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(authZEnvironment: authorizationEnvironment)
 
         let action = FetchAuthIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
 
@@ -64,7 +65,7 @@ class FetchAuthIdentityIdTests: XCTestCase {
                     expectation.fulfill()
                 }
             },
-            environment: authorizationEnvironment
+            environment: authEnvironment
         )
 
         waitForExpectations(timeout: 0.1)
@@ -84,6 +85,7 @@ class FetchAuthIdentityIdTests: XCTestCase {
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
                                                                      cognitoIdentityFactory: identityProviderFactory)
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(authZEnvironment: authorizationEnvironment)
 
         let action = FetchAuthIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
 
@@ -101,7 +103,7 @@ class FetchAuthIdentityIdTests: XCTestCase {
                     fetchAWSCredentialExpectation.fulfill()
                 }
             },
-            environment: authorizationEnvironment
+            environment: authEnvironment
         )
         waitForExpectations(timeout: 0.1)
     }
@@ -121,6 +123,7 @@ class FetchAuthIdentityIdTests: XCTestCase {
 
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
                                                                      cognitoIdentityFactory: identityProviderFactory)
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(authZEnvironment: authorizationEnvironment)
 
         let action = FetchAuthIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
 
@@ -140,7 +143,7 @@ class FetchAuthIdentityIdTests: XCTestCase {
                     fetchAWSCredentialExpectation.fulfill()
                 }
             },
-            environment: authorizationEnvironment
+            environment: authEnvironment
         )
         waitForExpectations(timeout: 0.1)
     }
