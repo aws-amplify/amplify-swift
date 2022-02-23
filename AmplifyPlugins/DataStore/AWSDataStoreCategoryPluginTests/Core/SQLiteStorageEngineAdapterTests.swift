@@ -59,6 +59,45 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
 
     /// - Given: a list a `Post` instance
     /// - When:
+    ///   - the `save(post, condition = .all)` is called
+    /// - Then:
+    ///   - call `query(Post)` to check if the model was correctly inserted
+    func testInsertPostWithAll() {
+        let expectation = self.expectation(
+            description: "it should save and select a Post from the database")
+
+        // insert a post
+        let post = Post(title: "title", content: "content", createdAt: .now())
+        storageAdapter.save(post, condition: QueryPredicateConstant.all) { saveResult in
+            switch saveResult {
+            case .success:
+                self.storageAdapter.query(Post.self) { queryResult in
+                    switch queryResult {
+                    case .success(let posts):
+                        XCTAssert(posts.count == 1)
+                        if let savedPost = posts.first {
+                            XCTAssert(post.id == savedPost.id)
+                            XCTAssert(post.title == savedPost.title)
+                            XCTAssert(post.content == savedPost.content)
+                            XCTAssertEqual(post.createdAt.iso8601String, savedPost.createdAt.iso8601String)
+                        }
+                        expectation.fulfill()
+                    case .failure(let error):
+                        XCTFail(String(describing: error))
+                        expectation.fulfill()
+                    }
+                }
+            case .failure(let error):
+                XCTFail(String(describing: error))
+                expectation.fulfill()
+            }
+        }
+
+        wait(for: [expectation], timeout: 5)
+    }
+
+    /// - Given: a list a `Post` instance
+    /// - When:
     ///   - the `save(post)` is called
     /// - Then:
     ///   - call `query(Post, where: title == post.title)` to check
@@ -183,6 +222,55 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                 post.title = "title updated"
                 let condition = Post.keys.content == post.content
                 self.storageAdapter.save(post, condition: condition) { updateResult in
+                    switch updateResult {
+                    case .success:
+                        checkSavedPost(id: post.id)
+                    case .failure(let error):
+                        XCTFail(error.errorDescription)
+                    }
+                }
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            }
+        }
+
+        wait(for: [expectation], timeout: 5)
+    }
+
+    /// - Given: A Post instance
+    /// - When:
+    ///    - The `save(post)` is called
+    /// - Then:
+    ///    - call `update(post, condition = .all)` with `post.title` updated and condition `.all`
+    ///    - a successful update for `update(post, condition)`
+    ///    - call `query(Post)` to check if the model was correctly updated
+    func testInsertPostAndThenUpdateItWithConditionAll() {
+        let expectation = self.expectation(
+            description: "it should insert and update a Post")
+
+        func checkSavedPost(id: String) {
+            storageAdapter.query(Post.self) {
+                switch $0 {
+                case .success(let posts):
+                    XCTAssertEqual(posts.count, 1)
+                    if let post = posts.first {
+                        XCTAssertEqual(post.id, id)
+                        XCTAssertEqual(post.title, "title updated")
+                    }
+                    expectation.fulfill()
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                    expectation.fulfill()
+                }
+            }
+        }
+
+        var post = Post(title: "title", content: "content", createdAt: .now())
+        storageAdapter.save(post) { insertResult in
+            switch insertResult {
+            case .success:
+                post.title = "title updated"
+                self.storageAdapter.save(post, condition: QueryPredicateConstant.all) { updateResult in
                     switch updateResult {
                     case .success:
                         checkSavedPost(id: post.id)
