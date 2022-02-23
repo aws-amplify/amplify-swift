@@ -18,11 +18,12 @@ struct FetchAuthAWSCredentials: Action {
     func execute(withDispatcher dispatcher: EventDispatcher,
                  environment: Environment)
     {
-        guard let authZEnvironment = environment as? AuthorizationEnvironment,
+        guard let authEnv = environment as? AuthEnvironment,
+              let authZEnvironment = authEnv.authorizationEnvironment,
               let client = try? authZEnvironment.cognitoIdentityFactory()
         else {
 
-                  let authZError = AuthorizationError.configuration(message: AuthPluginErrorConstants.configurationError)
+            let authZError = AuthorizationError.configuration(message: AuthPluginErrorConstants.signedInAWSCredentialsWithNoCIDPError.errorDescription)
                   let event = FetchAWSCredentialEvent(eventType: .throwError(authZError))
                   dispatcher.send(event)
 
