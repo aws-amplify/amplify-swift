@@ -114,4 +114,15 @@ extension ModelSchema {
     var foreignKeys: [ModelField] {
         sortedFields.filter { $0.isForeignKey }
     }
+
+    /// Create SQLite indexes corresponding to secondary indexes in the model schema
+    func createIndexStatements() -> String {
+        var statement = ""
+        for index in indexes {
+            if case let .index(fields, name) = index, let name = name {
+                statement += CreateIndexStatement(modelSchema: self, fields: fields, indexName: name).stringValue
+            }
+        }
+        return statement
+    }
 }

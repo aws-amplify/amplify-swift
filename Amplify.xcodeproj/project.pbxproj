@@ -442,6 +442,8 @@
 		97F793B627AA0619000153D6 /* CustomerWithMultipleFieldsinPK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F793B527AA0619000153D6 /* CustomerWithMultipleFieldsinPK.swift */; };
 		97F793B827AA0667000153D6 /* CustomerWithMultipleFieldsinPK+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F793B727AA0667000153D6 /* CustomerWithMultipleFieldsinPK+Schema.swift */; };
 		97F793BA27AA0767000153D6 /* Priority.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F793B927AA0767000153D6 /* Priority.swift */; };
+		97F793D827BC670B000153D6 /* CustomerMultipleSecondaryIndexV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F793D727BC670B000153D6 /* CustomerMultipleSecondaryIndexV2.swift */; };
+		97F793DA27BC6720000153D6 /* CustomerMultipleSecondaryIndexV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F793D927BC6720000153D6 /* CustomerMultipleSecondaryIndexV2+Schema.swift */; };
 		A5BD5B125AE6AAD604092274 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5009041CDAAB46551245D381 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */; };
 		B4251A0124250369007F59EF /* AuthConfirmResetPasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A0024250369007F59EF /* AuthConfirmResetPasswordRequest.swift */; };
 		B4251A05242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A04242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift */; };
@@ -1366,6 +1368,8 @@
 		97F793B527AA0619000153D6 /* CustomerWithMultipleFieldsinPK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerWithMultipleFieldsinPK.swift; sourceTree = "<group>"; };
 		97F793B727AA0667000153D6 /* CustomerWithMultipleFieldsinPK+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomerWithMultipleFieldsinPK+Schema.swift"; sourceTree = "<group>"; };
 		97F793B927AA0767000153D6 /* Priority.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Priority.swift; sourceTree = "<group>"; };
+		97F793D727BC670B000153D6 /* CustomerMultipleSecondaryIndexV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerMultipleSecondaryIndexV2.swift; sourceTree = "<group>"; };
+		97F793D927BC6720000153D6 /* CustomerMultipleSecondaryIndexV2+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomerMultipleSecondaryIndexV2+Schema.swift"; sourceTree = "<group>"; };
 		AF4FA69A23AEB42CF7BB8336 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTests/Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B4251A0024250369007F59EF /* AuthConfirmResetPasswordRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmResetPasswordRequest.swift; sourceTree = "<group>"; };
 		B4251A04242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmResetPasswordOperation.swift; sourceTree = "<group>"; };
@@ -2214,6 +2218,8 @@
 				97F793B527AA0619000153D6 /* CustomerWithMultipleFieldsinPK.swift */,
 				97F793B727AA0667000153D6 /* CustomerWithMultipleFieldsinPK+Schema.swift */,
 				97F793B927AA0767000153D6 /* Priority.swift */,
+				97F793D727BC670B000153D6 /* CustomerMultipleSecondaryIndexV2.swift */,
+				97F793D927BC6720000153D6 /* CustomerMultipleSecondaryIndexV2+Schema.swift */,
 			);
 			path = TransformerV2;
 			sourceTree = "<group>";
@@ -5623,6 +5629,7 @@
 				FACA36152327FC39000E74F6 /* MessageReporter.swift in Sources */,
 				FAF512AE23986791001ADF4E /* AmplifyModels.swift in Sources */,
 				217D5EC42577F9DF009F0639 /* Team1+Schema.swift in Sources */,
+				97F793DA27BC6720000153D6 /* CustomerMultipleSecondaryIndexV2+Schema.swift in Sources */,
 				6BE9D73725A67F7400AB5C9A /* M2MPost.swift in Sources */,
 				21A905362616446F00EC141D /* Nested.swift in Sources */,
 				B9FAA11C23879B35009414B4 /* Book.swift in Sources */,
@@ -5695,6 +5702,7 @@
 				217D5EC12577F9DF009F0639 /* Team2.swift in Sources */,
 				217D5EBE2577F9DF009F0639 /* Post5+Schema.swift in Sources */,
 				214F49782486D8A200DA616C /* UserFollowing.swift in Sources */,
+				97F793D827BC670B000153D6 /* CustomerMultipleSecondaryIndexV2.swift in Sources */,
 				6BEE08242533D30800133961 /* OGCScenarioBMGroupPost.swift in Sources */,
 				217D5EC22577F9DF009F0639 /* User5+Schema.swift in Sources */,
 				97F793B627AA0619000153D6 /* CustomerWithMultipleFieldsinPK.swift in Sources */,

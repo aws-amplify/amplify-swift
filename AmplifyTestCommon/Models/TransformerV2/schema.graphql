@@ -165,6 +165,14 @@ type CustomerSecondaryIndexV2 @model {
   accountRepresentativeID: ID! @index(name: "byRepresentative", queryField: "customerByRepresentative")
 }
 
+type CustomerMultipleSecondaryIndexV2 @model {
+  id: ID!
+  name: String! @index(name: "byNameAndPhoneNumber", sortKeyFields: ["phoneNumber"], queryField: "customerByNameAndPhone")
+  phoneNumber: String
+  age: Int! @index(name: "byAgeAndPhoneNumber", sortKeyFields: ["phoneNumber"], queryField: "customerByAgeAndPhone")
+  accountRepresentativeID: ID! @index(name: "byRepresentative", queryField: "customerByRepresentative2")
+}
+
 # Assign Default Values for fields
 
 type TodoWithDefaultValueV2 @model {
@@ -211,4 +219,10 @@ type CustomerWithMultipleFieldsinPK
   height: Float!
   firstName: String
   lastName: String
+}
+
+enum Priority {
+  LOW
+  NORMAL
+  HIGH
 }

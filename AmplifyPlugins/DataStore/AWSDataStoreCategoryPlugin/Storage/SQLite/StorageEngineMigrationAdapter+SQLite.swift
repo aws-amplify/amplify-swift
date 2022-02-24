@@ -13,7 +13,9 @@ extension SQLiteStorageEngineAdapter {
 
     @discardableResult func createStore(for modelSchema: ModelSchema) throws -> String {
         let createTableStatement = CreateTableStatement(modelSchema: modelSchema).stringValue
+        let createIndexStatement = modelSchema.createIndexStatements()
         try connection.execute(createTableStatement)
+        try connection.execute(createIndexStatement)
         return createTableStatement
     }
 
