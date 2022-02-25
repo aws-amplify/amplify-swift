@@ -6,11 +6,9 @@
 //
 
 import XCTest
-import AmplifyPlugins
-
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 /*
  Many-to-many

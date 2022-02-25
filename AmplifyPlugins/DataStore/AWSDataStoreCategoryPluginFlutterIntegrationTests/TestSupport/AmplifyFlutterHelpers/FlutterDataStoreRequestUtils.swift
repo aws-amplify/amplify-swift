@@ -6,7 +6,6 @@
 //
 import Foundation
 import Amplify
-import AmplifyPlugins
 
 public class FlutterDataStoreRequestUtils {
     

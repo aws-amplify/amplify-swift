@@ -433,41 +433,41 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
-    /// Given: Object with key `key` in storage
-    /// When: Using the escape hatch and calling headObject API  using the key "public/`key`"
-    /// Then: The request completes successful
-    func testEscapeHatchAndGetHeadObject() {
-        let key = UUID().uuidString
-        uploadData(key: key, dataString: key)
-
-        do {
-            let pluginOptional = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin")
-
-            guard let plugin = pluginOptional as? AWSS3StoragePlugin else {
-                XCTFail("Could not cast as AWSS3StoragePlugin")
-                return
-            }
-
-            let awsS3 = plugin.getEscapeHatch()
-            let request: AWSS3HeadObjectRequest = AWSS3HeadObjectRequest()
-
-            request.bucket = try AWSS3StoragePluginTestBase.getBucketFromConfig(
-                forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)
-            request.key = "public/" + key
-
-            let task = awsS3.headObject(request)
-            task.waitUntilFinished()
-
-            if let error = task.error {
-                XCTFail("Failed to get headObject \(error)")
-            } else if let result = task.result {
-                print("headObject \(result)")
-                XCTAssertNotNil(result)
-            }
-        } catch {
-            XCTFail("Failed to get AWSS3StoragePlugin")
-        }
-    }
+//    /// Given: Object with key `key` in storage
+//    /// When: Using the escape hatch and calling headObject API  using the key "public/`key`"
+//    /// Then: The request completes successful
+//    func testEscapeHatchAndGetHeadObject() {
+//        let key = UUID().uuidString
+//        uploadData(key: key, dataString: key)
+//
+//        do {
+//            let pluginOptional = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin")
+//
+//            guard let plugin = pluginOptional as? AWSS3StoragePlugin else {
+//                XCTFail("Could not cast as AWSS3StoragePlugin")
+//                return
+//            }
+//
+//            let awsS3 = plugin.getEscapeHatch()
+//            let request: AWSS3HeadObjectRequest = AWSS3HeadObjectRequest()
+//
+//            request.bucket = try AWSS3StoragePluginTestBase.getBucketFromConfig(
+//                forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)
+//            request.key = "public/" + key
+//
+//            let task = awsS3.headObject(request)
+//            task.waitUntilFinished()
+//
+//            if let error = task.error {
+//                XCTFail("Failed to get headObject \(error)")
+//            } else if let result = task.result {
+//                print("headObject \(result)")
+//                XCTAssertNotNil(result)
+//            }
+//        } catch {
+//            XCTFail("Failed to get AWSS3StoragePlugin")
+//        }
+//    }
 
     // MARK: Helper functions
 

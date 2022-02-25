@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import AmplifyPlugins
 import AWSPredictionsPlugin
 import AWSCore
 
