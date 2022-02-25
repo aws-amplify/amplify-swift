@@ -1,5 +1,7 @@
 # Changelog
+
 ## Unreleased
+
 ## 1.22.3 (2022-04-02)
 
 ## 1.22.2 (2022-03-29)
@@ -9,6 +11,12 @@
 - update SQLite dependency to 0.13.2 (#1696)
 
 ## 1.22.1 (2022-03-23)
+
+### Features
+
+- **Core**: Amplify now directly depends on AWS SDK for Swift.
+- **Auth**: Redesigned AWSCognitoAuthPlugin implementation using a state machine architecture. Internal dependency on AWSMobileClient is removed and the plugin directly depends on AWS SDK for Swift. The escape hatch now returns the underlying Swift SDK for Cognito UserPool and Cognito Identity Pool.
+- **Storage**: Removed the dependency on TransferUtility and improved the internal logic of AWSS3StoragePlugin implementation.
 
 ## 1.22.0 (2022-03-16)
 
