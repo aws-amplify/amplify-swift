@@ -6,11 +6,9 @@
 //
 
 import XCTest
-import AmplifyPlugins
-
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 /* Has One (Implicit Field)
  A one-to-one connection where a project has a team.

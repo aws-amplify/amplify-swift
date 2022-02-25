@@ -6,7 +6,7 @@
 //
 import XCTest
 import Amplify
-import AWSDataStoreCategoryPlugin
+import AWSDataStorePlugin
 
 class AWSDataStorePluginFlutterConfigurationTests: XCTestCase {
 

@@ -5,12 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 import XCTest
-import AmplifyPlugins
-import AWSMobileClient
-
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 /*
  (Belongs to) A connection that is bi-directional by adding a many-to-one connection to the type that already have a one-to-many connection.

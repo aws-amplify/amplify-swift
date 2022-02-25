@@ -19,40 +19,9 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
     let credentialsFile = "GraphQLWithIAMIntegrationTests-credentials"
     var user: User!
 
-    enum TestConfigError: Error {
-        
-        case jsonError(String)
-        
-        case bundlePathError(String)
-    }
-    
-    static func retrieveCredentials(forResource: String) throws -> [String: String] {
-        guard let url = Bundle.module.url(forResource: forResource, withExtension: "json") else {
-            throw "Could not retrieve configuration file: \(forResource)"
-        }
-        
-        let data = try Data(contentsOf: url)
-        
-        let jsonOptional = try JSONSerialization.jsonObject(with: data, options: []) as? [String: String]
-        guard let json = jsonOptional else {
-            throw TestConfigError.jsonError("Could not deserialize `\(forResource)` into JSON object")
-        }
-        
-        return json
-    }
-    
-    static func retrieveAmplifyConfiguration(forResource: String) throws -> AmplifyConfiguration {
-
-        guard let url = Bundle.module.url(forResource: forResource, withExtension: "json") else {
-            throw "Could not retrieve configuration file: \(forResource)"
-        }
-        let data = try Data(contentsOf: url)
-        return try AmplifyConfiguration.decodeAmplifyConfiguration(from: data)
-    }
-
     override func setUp() {
         do {
-            let credentials = try GraphQLWithIAMIntegrationTests.retrieveCredentials(forResource: credentialsFile)
+            let credentials = try TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
 
             guard let username = credentials["username"],
                   let password = credentials["password"] else {
@@ -64,7 +33,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
 
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
-            let amplifyConfig = try GraphQLWithIAMIntegrationTests.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
             try Amplify.configure(amplifyConfig)
 
             ModelRegistry.register(modelType: Todo.self)
@@ -152,7 +121,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
                 successInvoked.fulfill()
             case .failure(let error):
                 print(error)
-                if case let .httpStatusError(statusCode, response) = error,
+                if case let .httpStatusError(_, response) = error,
                     let awsResponse = response as? AWSHTTPURLResponse,
                     let responseBody = awsResponse.body
                 {

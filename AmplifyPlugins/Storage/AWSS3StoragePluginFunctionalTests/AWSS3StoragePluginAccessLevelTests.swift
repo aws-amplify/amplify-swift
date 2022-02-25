@@ -9,7 +9,7 @@ import XCTest
 import Amplify
 import AWSS3
 import AWSPluginsCore
-
+import AWSCognitoAuthPlugin
 @testable import AWSS3StoragePlugin
 @testable import AmplifyTestCommon
 
@@ -345,8 +345,6 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 signInInvoked.fulfill()
             case .failure(let error):
                 XCTFail("Failed to Sign in user \(error)")
-            default:
-                XCTFail("Unexpected event")
             }
         }
         wait(for: [signInInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -371,8 +369,6 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 }
             case .failure(let error):
                 XCTFail("Failed to get auth session \(error)")
-            default:
-                XCTFail("Unexpected event")
             }
         })
         wait(for: [retrieveIdentityCompleted], timeout: TestCommonConstants.networkTimeout)
