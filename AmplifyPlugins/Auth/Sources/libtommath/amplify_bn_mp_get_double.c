@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_GET_DOUBLE_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 double amplify_mp_get_double(const amplify_mp_int *a)
 {

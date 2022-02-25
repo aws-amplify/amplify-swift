@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_DIV_D_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* single digit division (based on routine from MPI) */
 amplify_mp_err amplify_mp_div_d(const amplify_mp_int *a, amplify_mp_digit b, amplify_mp_int *c, amplify_mp_digit *d)

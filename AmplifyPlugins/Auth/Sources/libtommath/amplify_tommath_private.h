@@ -1,5 +1,6 @@
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 #ifndef AMPLIFY_TOMMATH_PRIV_H_
 #define AMPLIFY_TOMMATH_PRIV_H_

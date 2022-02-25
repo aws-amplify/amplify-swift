@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_ERROR_TO_STRING_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* return a char * string for a given code */
 const char *amplify_mp_error_to_string(amplify_mp_err code)
