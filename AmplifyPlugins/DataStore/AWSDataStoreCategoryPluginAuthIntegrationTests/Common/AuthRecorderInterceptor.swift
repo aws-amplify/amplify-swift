@@ -7,7 +7,6 @@
 
 import Foundation
 import Amplify
-import AmplifyPlugins
 import AWSPluginsCore
 
 class AuthRecorderInterceptor: URLRequestInterceptor {

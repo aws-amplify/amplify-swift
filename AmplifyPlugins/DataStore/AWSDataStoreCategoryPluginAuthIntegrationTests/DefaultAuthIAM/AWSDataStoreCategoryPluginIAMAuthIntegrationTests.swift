@@ -8,7 +8,6 @@
 import XCTest
 
 @testable import Amplify
-@testable import AmplifyPlugins
 @testable import AmplifyTestCommon
 
 class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTest {
