@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_ADD_D_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* single digit addition */
 amplify_mp_err amplify_amplify_mp_add_d(const amplify_mp_int *a, amplify_mp_digit b, amplify_mp_int *c)

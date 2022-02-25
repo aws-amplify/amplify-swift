@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_S_MP_INVMOD_FAST_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* computes the modular inverse via binary extended euclidean algorithm,
  * that is c = 1/a mod b

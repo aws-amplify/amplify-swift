@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_FREAD_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 #ifndef AMPLIFY_MP_NO_FILE
 /* read a bigint from a file stream in ASCII */

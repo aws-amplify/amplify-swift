@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_CUTOFFS_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 #ifndef AMPLIFY_MP_FIXED_CUTOFFS
 #include "amplify_tommath_cutoffs.h"

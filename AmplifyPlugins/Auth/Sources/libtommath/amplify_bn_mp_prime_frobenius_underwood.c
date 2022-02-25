@@ -3,6 +3,7 @@
 
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /*
  *  See file amplify_bn_mp_prime_is_prime.c or the documentation in doc/bn.tex for the details

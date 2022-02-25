@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_MONTGOMERY_CALC_NORMALIZATION_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /*
  * shifts with subtractions when the result is greater than b.

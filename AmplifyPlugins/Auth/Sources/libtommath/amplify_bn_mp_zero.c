@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_ZERO_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* set to zero */
 void amplify_mp_zero(amplify_mp_int *a)
