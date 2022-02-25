@@ -5,13 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 import XCTest
-
-import AmplifyPlugins
 import AWSPluginsCore
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 // swiftlint:disable cyclomatic_complexity
 // swiftlint:disable type_body_length

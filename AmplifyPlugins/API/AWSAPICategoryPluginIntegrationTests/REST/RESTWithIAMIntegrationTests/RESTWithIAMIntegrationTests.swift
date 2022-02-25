@@ -14,15 +14,6 @@ import AWSCognitoAuthPlugin
 
 class RESTWithIAMIntegrationTests: XCTestCase {
 
-    static func retrieveAmplifyConfiguration(forResource: String) throws -> AmplifyConfiguration {
-
-        guard let url = Bundle.module.url(forResource: forResource, withExtension: "json") else {
-            throw "Could not retrieve configuration file: \(forResource)"
-        }
-        let data = try Data(contentsOf: url)
-        return try AmplifyConfiguration.decodeAmplifyConfiguration(from: data)
-    }
-    
     static let amplifyConfiguration = "RESTWithIAMIntegrationTests-amplifyconfiguration"
 
     override func setUp() {
@@ -30,8 +21,8 @@ class RESTWithIAMIntegrationTests: XCTestCase {
         do {
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
-            let amplifyConfig = try RESTWithIAMIntegrationTests.retrieveAmplifyConfiguration(
-                forResource: RESTWithIAMIntegrationTests.amplifyConfiguration)
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
+                            forResource: RESTWithIAMIntegrationTests.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
         } catch {
             XCTFail("Error during setup: \(error)")
@@ -56,7 +47,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
                 print(result)
                 completeInvoked.fulfill()
             case .failure(let error):
-                if case let .httpStatusError(statusCode, response) = error,
+                if case let .httpStatusError(_, response) = error,
                     let awsResponse = response as? AWSHTTPURLResponse,
                     let responseBody = awsResponse.body
                 {
