@@ -10,7 +10,6 @@ import Foundation
 import Combine
 
 @testable import Amplify
-@testable import AmplifyPlugins
 
 // Models registration
 extension AWSDataStoreMultiAuthSingleRuleTests {

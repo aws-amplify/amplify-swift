@@ -10,7 +10,6 @@ import Foundation
 import Combine
 
 @testable import Amplify
-@testable import AmplifyPlugins
 @testable import AmplifyTestCommon
 
 class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {

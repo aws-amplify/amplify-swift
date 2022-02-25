@@ -6,11 +6,9 @@
 //
 
 import XCTest
-import AmplifyPlugins
-
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 /* 11 Explicit Bi-Directional Belongs to Relationship
  (Belongs to) A connection that is bi-directional by adding a many-to-one connection to the type that already have a one-to-many connection.
