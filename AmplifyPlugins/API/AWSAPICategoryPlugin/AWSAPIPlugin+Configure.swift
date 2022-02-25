@@ -54,14 +54,14 @@ extension AWSAPIPlugin {
         let authService: AWSAuthServiceBehavior
         let pluginConfig: AWSAPICategoryPluginConfiguration
         let subscriptionConnectionFactory: SubscriptionConnectionFactory
-        let logLevel: LogLevel
+        let logLevel: Amplify.LogLevel
 
         init(
             configurationValues: JSONValue,
             apiAuthProviderFactory: APIAuthProviderFactory,
             authService: AWSAuthServiceBehavior? = nil,
             subscriptionConnectionFactory: SubscriptionConnectionFactory? = nil,
-            logLevel: LogLevel? = nil
+            logLevel: Amplify.LogLevel? = nil
         ) throws {
             let authService = authService
                 ?? AWSAuthService()
@@ -89,7 +89,7 @@ extension AWSAPIPlugin {
             pluginConfig: AWSAPICategoryPluginConfiguration,
             authService: AWSAuthServiceBehavior,
             subscriptionConnectionFactory: SubscriptionConnectionFactory,
-            logLevel: LogLevel
+            logLevel: Amplify.LogLevel
         ) {
             self.pluginConfig = pluginConfig
             self.authService = authService
