@@ -306,7 +306,7 @@ let package = Package(
         .package(
             name: "AppSyncRealTimeClient",
             url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
-            from: "1.4.3"
+            from: "1.8.0"
         ),// We can remove AwsCrt and ClientRuntime once we move to the latest AWS SDK for Swift
         .package(
             name: "AwsCrt",
