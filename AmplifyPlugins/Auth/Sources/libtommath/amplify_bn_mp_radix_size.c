@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_RADIX_SIZE_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* returns size of ASCII representation */
 amplify_mp_err amplify_mp_radix_size(const amplify_mp_int *a, int radix, int *size)

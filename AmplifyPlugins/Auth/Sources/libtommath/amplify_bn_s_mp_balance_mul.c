@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_S_MP_BALANCE_MUL_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* single-digit multiplication with the smaller number as the single-digit */
 amplify_mp_err s_amplify_mp_balance_mul(const amplify_mp_int *a, const amplify_mp_int *b, amplify_mp_int *c)

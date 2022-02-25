@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_S_MP_EXPTMOD_FAST_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* computes Y == G**X mod P, HAC pp.616, Algorithm 14.85
  *

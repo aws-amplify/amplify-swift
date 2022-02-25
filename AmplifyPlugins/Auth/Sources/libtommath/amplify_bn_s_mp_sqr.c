@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_S_MP_SQR_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* low level squaring, b = a*a, HAC pp.596-597, Algorithm 14.16 */
 amplify_mp_err amplify_s_mp_sqr(const amplify_mp_int *a, amplify_mp_int *b)

@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_SET_DOUBLE_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 #if defined(__STDC_IEC_559__) || defined(__GCC_IEC_559)
 amplify_mp_err amplify_mp_set_double(amplify_mp_int *a, double b)

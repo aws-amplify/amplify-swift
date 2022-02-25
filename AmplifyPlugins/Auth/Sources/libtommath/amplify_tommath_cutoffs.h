@@ -1,5 +1,6 @@
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 /*
    Current values evaluated on an AMD A8-6600K (64-bit).
    Type "make tune" to optimize them for your machine but
