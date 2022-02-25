@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_DIV_3_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* divide by three (based on routine from MPI and the GMP manual) */
 amplify_mp_err amplify_mp_div_3(const amplify_mp_int *a, amplify_mp_int *c, amplify_mp_digit *d)

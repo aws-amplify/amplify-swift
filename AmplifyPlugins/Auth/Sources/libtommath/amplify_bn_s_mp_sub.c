@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_S_MP_SUB_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* low level subtraction (assumes |a| > |b|), HAC pp.595 Algorithm 14.9 */
 amplify_mp_err amplify_s_mp_sub(const amplify_mp_int *a, const amplify_mp_int *b, amplify_mp_int *c)

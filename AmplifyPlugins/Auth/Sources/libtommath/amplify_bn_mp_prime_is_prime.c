@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_PRIME_IS_PRIME_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* portable integer log of two with small footprint */
 static unsigned int s_floor_ilog2(int value)

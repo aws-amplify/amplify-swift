@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_FROM_SBIN_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* read signed bin, big endian, first byte is 0==positive or 1==negative */
 amplify_mp_err amplify_mp_from_sbin(amplify_mp_int *a, const unsigned char *buf, size_t size)

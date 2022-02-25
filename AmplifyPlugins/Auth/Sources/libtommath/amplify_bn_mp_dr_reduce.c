@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_DR_REDUCE_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* reduce "x" in place modulo "n" using the Diminished Radix algorithm.
  *

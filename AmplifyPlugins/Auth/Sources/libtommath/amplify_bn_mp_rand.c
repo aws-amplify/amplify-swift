@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_RAND_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 amplify_mp_err(*amplify_s_mp_rand_source)(void *out, size_t size) = amplify_s_mp_rand_platform;
 
