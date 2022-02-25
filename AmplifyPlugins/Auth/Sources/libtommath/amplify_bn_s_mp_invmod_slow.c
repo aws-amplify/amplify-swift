@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_S_MP_INVMOD_SLOW_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* hac 14.61, pp608 */
 amplify_mp_err amplify_s_mp_invmod_slow(const amplify_mp_int *a, const amplify_mp_int *b, amplify_mp_int *c)

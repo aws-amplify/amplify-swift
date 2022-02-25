@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_UBIN_SIZE_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* get the size for an unsigned equivalent */
 size_t amplify_mp_ubin_size(const amplify_mp_int *a)

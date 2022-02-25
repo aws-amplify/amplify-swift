@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_S_MP_MUL_DIGS_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* multiplies |a| * |b| and only computes upto digs digits of result
  * HAC pp. 595, Algorithm 14.12  Modified so you can control how

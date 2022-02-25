@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_REDUCE_2K_SETUP_L_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* determines the setup value */
 amplify_mp_err amplify_mp_reduce_2k_setup_l(const amplify_mp_int *a, amplify_mp_int *d)

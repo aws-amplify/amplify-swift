@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_PACK_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* based on gmp's mpz_export.
  * see http://gmplib.org/manual/Integer-Import-and-Export.html

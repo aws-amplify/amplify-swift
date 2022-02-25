@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_CMP_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* compare two ints (signed)*/
 amplify_mp_ord amplify_mp_cmp(const amplify_mp_int *a, const amplify_mp_int *b)

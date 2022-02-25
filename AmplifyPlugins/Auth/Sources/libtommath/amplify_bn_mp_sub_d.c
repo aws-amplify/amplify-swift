@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_SUB_D_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* single digit subtraction */
 amplify_mp_err amplify_mp_sub_d(const amplify_mp_int *a, amplify_mp_digit b, amplify_mp_int *c)

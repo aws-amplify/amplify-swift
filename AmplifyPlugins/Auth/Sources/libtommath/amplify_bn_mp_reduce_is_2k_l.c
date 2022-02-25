@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_REDUCE_IS_2K_L_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* determines if reduce_2k_l can be used */
 amplify_mp_bool amplify_mp_reduce_is_2k_l(const amplify_mp_int *a)

@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_RSHD_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* shift right a certain amount of digits */
 void amplify_mp_rshd(amplify_mp_int *a, int b)
