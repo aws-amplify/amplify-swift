@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_TO_RADIX_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* stores a bignum as a ASCII string in a given radix (2..64)
  *

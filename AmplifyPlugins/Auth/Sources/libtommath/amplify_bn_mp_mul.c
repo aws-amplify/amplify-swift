@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_MUL_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* high level multiplication (handles sign) */
 amplify_mp_err amplify_mp_mul(const amplify_mp_int *a, const amplify_mp_int *b, amplify_mp_int *c)

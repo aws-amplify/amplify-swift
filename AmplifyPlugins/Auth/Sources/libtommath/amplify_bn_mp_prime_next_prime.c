@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_PRIME_NEXT_PRIME_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* finds the next prime after the number "a" using "t" trials
  * of Miller-Rabin.

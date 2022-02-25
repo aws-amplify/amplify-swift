@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_S_MP_MUL_HIGH_DIGS_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* multiplies |a| * |b| and does not compute the lower digs digits
  * [meant to get the higher part of the product]

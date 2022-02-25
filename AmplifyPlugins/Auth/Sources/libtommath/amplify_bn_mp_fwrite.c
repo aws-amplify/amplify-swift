@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_FWRITE_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 #ifndef AMPLIFY_MP_NO_FILE
 amplify_mp_err amplify_mp_fwrite(const amplify_mp_int *a, int radix, FILE *stream)

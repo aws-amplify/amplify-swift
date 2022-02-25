@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_ADDMOD_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* d = a + b (mod c) */
 amplify_mp_err amplify_mp_addmod(const amplify_mp_int *a, const amplify_mp_int *b, const amplify_mp_int *c, amplify_mp_int *d)

@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_DEPRECATED_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 #ifdef AMPLIFY_BN_MP_GET_BIT_C
 int amplify_mp_get_bit(const amplify_mp_int *a, int b)

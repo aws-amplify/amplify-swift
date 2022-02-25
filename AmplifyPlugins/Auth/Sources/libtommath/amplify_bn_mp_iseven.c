@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_ISEVEN_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 amplify_mp_bool amplify_mp_iseven(const amplify_mp_int *a)
 {
