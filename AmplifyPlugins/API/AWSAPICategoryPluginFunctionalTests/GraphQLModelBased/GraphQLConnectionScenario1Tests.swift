@@ -28,23 +28,14 @@ import XCTest
 
  */
 class GraphQLConnectionScenario1Tests: XCTestCase {
-
-    static func retrieveAmplifyConfiguration(forResource: String) throws -> AmplifyConfiguration {
-
-        guard let url = Bundle.module.url(forResource: forResource, withExtension: "json") else {
-            throw "Could not retrieve configuration file: \(forResource)"
-        }
-        let data = try Data(contentsOf: url)
-        return try AmplifyConfiguration.decodeAmplifyConfiguration(from: data)
-    }
         
     override func setUp() {
         do {
             Amplify.Logging.logLevel = .verbose
             try Amplify.add(plugin: AWSAPIPlugin())
 
-            let amplifyConfig = try GraphQLConnectionScenario1Tests.retrieveAmplifyConfiguration(
-                forResource: GraphQLModelBasedTests.amplifyConfiguration)
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
+                            forResource: GraphQLModelBasedTests.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
 
             ModelRegistry.register(modelType: Project1.self)

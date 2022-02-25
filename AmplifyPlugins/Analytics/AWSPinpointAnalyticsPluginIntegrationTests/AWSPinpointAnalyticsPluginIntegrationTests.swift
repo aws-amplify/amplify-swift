@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import AmplifyPlugins
 import AWSPinpoint
 
 @testable import Amplify

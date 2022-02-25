@@ -36,9 +36,9 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
     }
 
     func uploadPart(partNumber: PartNumber, multipartUpload: StorageMultipartUpload, subTask: StorageTransferTask) throws {
-        guard let uploadFile = multipartUpload.uploadFile,
-              let uploadId = multipartUpload.uploadId,
-              let partSize = multipartUpload.partSize,
+        guard let _ = multipartUpload.uploadFile,
+              let _ = multipartUpload.uploadId,
+              let _ = multipartUpload.partSize,
               let part = multipartUpload.part(for: partNumber) else {
                   fatalError()
               }

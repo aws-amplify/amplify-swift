@@ -134,9 +134,13 @@ let apiTargets: [Target] = [
         dependencies: [
             "AWSAPIPlugin",
             "AWSCognitoAuthPlugin",
-            "AmplifyTestCommon"
+            "AmplifyTestCommon",
         ],
-        path: "AmplifyPlugins/API/AWSAPICategoryPluginIntegrationTests/REST/RESTWithIAMIntegrationTests/"
+        path: "AmplifyPlugins/API/AWSAPICategoryPluginIntegrationTests/REST/RESTWithIAMIntegrationTests/",
+        exclude: [
+            "README.md",
+            "Info.plist"
+        ]
     ),
 ]
 
@@ -241,7 +245,7 @@ let storageTargets: [Target] = [
             .product(name: "AWSS3", package: "AWSSwiftSDK")],
         path: "AmplifyPlugins/Storage/AWSS3StoragePlugin",
         exclude: [
-            "Info.plist"
+            "Resources/Info.plist"
         ]
     ),
     .testTarget(
@@ -259,12 +263,10 @@ let storageTargets: [Target] = [
             "AWSS3StoragePlugin",
             "AWSAPIPlugin",
             "AmplifyTestCommon",
-            "AWSPluginsTestCommon"
+            "AWSPluginsTestCommon",
+            "AWSCognitoAuthPlugin"
         ],
-        path: "AmplifyPlugins/Storage/AWSS3StoragePluginFunctionalTests",
-        resources: [
-            .process("Resources/AWSS3StoragePluginFunctionalTests-amplifyconfiguration.json")
-        ]
+        path: "AmplifyPlugins/Storage/AWSS3StoragePluginFunctionalTests"
     ),
 ]
 
@@ -305,6 +307,16 @@ let package = Package(
             name: "AppSyncRealTimeClient",
             url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
             from: "1.4.3"
+        ),// We can remove AwsCrt and ClientRuntime once we move to the latest AWS SDK for Swift
+        .package(
+            name: "AwsCrt",
+            url: "https://github.com/awslabs/aws-crt-swift.git",
+            .exact("0.1.1")
+        ),
+        .package(
+            name: "ClientRuntime",
+            url: "https://github.com/awslabs/smithy-swift.git",
+            .exact("0.1.3")
         ),
         .package(
             name: "AWSSwiftSDK",
