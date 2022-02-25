@@ -86,62 +86,62 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
-    /// Given: An object uploaded with metadata with key `metadataKey` and value `metadataValue`
-    /// When: Call the headObject API
-    /// Then: The expected metadata should exist on the object
-    func testuploadExpectationWithMetadata() {
-        let key = UUID().uuidString
-        let data = key.data(using: .utf8)!
-        let metadataKey = "metadatakey"
-        let metadataValue = metadataKey + "Value"
-        let metadata = [metadataKey: metadataValue]
-        let options = StorageUploadDataRequest.Options(metadata: metadata)
-        let completeInvoked = expectation(description: "Completed is invoked")
-
-        let operation = Amplify.Storage.uploadData(key: key, data: data, options: options) { event in
-            switch event {
-            case .success:
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Failed with \(error)")
-            }
-        }
-
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
-
-        do {
-            let pluginOptional = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin")
-
-            guard let plugin = pluginOptional as? AWSS3StoragePlugin else {
-                XCTFail("Could not cast as AWSS3StoragePlugin")
-                return
-            }
-
-            let awsS3 = plugin.getEscapeHatch()
-            let request: AWSS3HeadObjectRequest = AWSS3HeadObjectRequest()
-            request.bucket = try AWSS3StoragePluginTestBase.getBucketFromConfig(
-                forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)
-            request.key = "public/" + key
-
-            let task = awsS3.headObject(request)
-            task.waitUntilFinished()
-
-            if let error = task.error {
-                XCTFail("Failed to get headObject \(error)")
-            } else if let result = task.result {
-                let headObjectOutput = result as AWSS3HeadObjectOutput
-                print("headObject \(result)")
-                XCTAssertNotNil(headObjectOutput)
-                XCTAssertNotNil(headObjectOutput.metadata)
-                if let metadata = headObjectOutput.metadata {
-                    XCTAssertEqual(metadata[metadataKey], metadataValue)
-                }
-            }
-        } catch {
-            XCTFail("Failed to get awsS3StoragePlugin")
-        }
-    }
+//    /// Given: An object uploaded with metadata with key `metadataKey` and value `metadataValue`
+//    /// When: Call the headObject API
+//    /// Then: The expected metadata should exist on the object
+//    func testuploadExpectationWithMetadata() {
+//        let key = UUID().uuidString
+//        let data = key.data(using: .utf8)!
+//        let metadataKey = "metadatakey"
+//        let metadataValue = metadataKey + "Value"
+//        let metadata = [metadataKey: metadataValue]
+//        let options = StorageUploadDataRequest.Options(metadata: metadata)
+//        let completeInvoked = expectation(description: "Completed is invoked")
+//
+//        let operation = Amplify.Storage.uploadData(key: key, data: data, options: options) { event in
+//            switch event {
+//            case .success:
+//                completeInvoked.fulfill()
+//            case .failure(let error):
+//                XCTFail("Failed with \(error)")
+//            }
+//        }
+//
+//        XCTAssertNotNil(operation)
+//        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+//
+//        do {
+//            let pluginOptional = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin")
+//
+//            guard let plugin = pluginOptional as? AWSS3StoragePlugin else {
+//                XCTFail("Could not cast as AWSS3StoragePlugin")
+//                return
+//            }
+//
+//            let awsS3 = plugin.getEscapeHatch()
+//            let request: AWSS3HeadObjectRequest = AWSS3HeadObjectRequest()
+//            request.bucket = try AWSS3StoragePluginTestBase.getBucketFromConfig(
+//                forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)
+//            request.key = "public/" + key
+//
+//            let task = awsS3.headObject(request)
+//            task.waitUntilFinished()
+//
+//            if let error = task.error {
+//                XCTFail("Failed to get headObject \(error)")
+//            } else if let result = task.result {
+//                let headObjectOutput = result as AWSS3HeadObjectOutput
+//                print("headObject \(result)")
+//                XCTAssertNotNil(headObjectOutput)
+//                XCTAssertNotNil(headObjectOutput.metadata)
+//                if let metadata = headObjectOutput.metadata {
+//                    XCTAssertEqual(metadata[metadataKey], metadataValue)
+//                }
+//            }
+//        } catch {
+//            XCTFail("Failed to get awsS3StoragePlugin")
+//        }
+//    }
 
 //    func testPutLargeDataWithMetadata() {
 //        XCTFail("Not yet implemented")

@@ -8,8 +8,6 @@
 import Foundation
 import XCTest
 import Combine
-
-import AmplifyPlugins
 import AWSDataStorePlugin
 import AWSPluginsCore
 

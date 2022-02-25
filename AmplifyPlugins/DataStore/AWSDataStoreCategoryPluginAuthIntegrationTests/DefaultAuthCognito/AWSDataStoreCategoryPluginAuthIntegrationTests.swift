@@ -6,9 +6,7 @@
 //
 
 import XCTest
-import AmplifyPlugins
 import AWSDataStorePlugin
-
 @testable import Amplify
 @testable import AmplifyTestCommon
 
