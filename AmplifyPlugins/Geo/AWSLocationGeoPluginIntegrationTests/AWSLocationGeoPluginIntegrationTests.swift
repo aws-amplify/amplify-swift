@@ -6,9 +6,7 @@
 //
 
 import XCTest
-import AmplifyPlugins
 import AWSLocation
-
 @testable import Amplify
 @testable import AWSLocationGeoPlugin
 @testable import AmplifyTestCommon

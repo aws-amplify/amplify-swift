@@ -14,15 +14,7 @@ import AWSAPIPlugin
 
 
 class SyncEngineIntegrationTestBase: DataStoreTestBase {
-    
-    static func retrieveAmplifyConfiguration(forResource: String) throws -> AmplifyConfiguration {
-        guard let url = Bundle.module.url(forResource: forResource, withExtension: "json") else {
-            throw "Could not retrieve configuration file: \(forResource)"
-        }
-        let data = try Data(contentsOf: url)
-        return try AmplifyConfiguration.decodeAmplifyConfiguration(from: data)
-    }
-    
+
     static let amplifyConfigurationFile = "AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration"
 
     static let networkTimeout = TimeInterval(180)

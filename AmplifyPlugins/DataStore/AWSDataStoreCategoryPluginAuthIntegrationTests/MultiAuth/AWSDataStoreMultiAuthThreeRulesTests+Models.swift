@@ -8,7 +8,6 @@
 import Foundation
 
 @testable import Amplify
-@testable import AmplifyPlugins
 
 extension AWSDataStoreMultiAuthThreeRulesTests {
     struct OwnerPrivatePublicUserPoolsAPIKeyModels: AmplifyModelRegistration {
