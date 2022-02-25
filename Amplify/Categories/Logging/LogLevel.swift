@@ -6,13 +6,17 @@
 //
 
 /// Log levels are modeled as Ints to allow for easy comparison of levels
-public enum LogLevel: Int {
-    case error
-    case warn
-    case info
-    case debug
-    case verbose
+///
+public extension Amplify {
+    enum LogLevel: Int {
+        case error
+        case warn
+        case info
+        case debug
+        case verbose
+    }
 }
+public typealias LogLevel = Amplify.LogLevel
 
 extension LogLevel: Comparable {
     public static func < (lhs: LogLevel, rhs: LogLevel) -> Bool {

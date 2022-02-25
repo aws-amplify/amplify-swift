@@ -12,7 +12,7 @@ import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 // swiftlint:disable type_body_length
 class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
