@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_DIV_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 #ifdef AMPLIFY_BN_MP_DIV_SMALL
 

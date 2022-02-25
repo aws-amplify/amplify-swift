@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_INIT_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* init a new amplify_mp_int */
 amplify_mp_err amplify_mp_init(amplify_mp_int *a)

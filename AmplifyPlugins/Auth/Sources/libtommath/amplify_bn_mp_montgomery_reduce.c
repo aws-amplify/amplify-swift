@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_MONTGOMERY_REDUCE_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* computes xR**-1 == x (mod N) via Montgomery Reduction */
 amplify_mp_err amplify_mp_montgomery_reduce(amplify_mp_int *x, const amplify_mp_int *n, amplify_mp_digit rho)

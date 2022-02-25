@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_S_MP_TOOM_MUL_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* multiplication using the Toom-Cook 3-way algorithm
  *

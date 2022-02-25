@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_S_MP_REVERSE_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* reverse an array, used for radix code */
 void amplify_s_mp_reverse(unsigned char *s, size_t len)

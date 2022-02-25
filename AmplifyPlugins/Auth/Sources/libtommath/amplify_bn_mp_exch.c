@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_EXCH_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* swap the elements of two integers, for cases where you can't simply swap the
  * amplify_mp_int pointers around

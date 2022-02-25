@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_S_MP_EXPTMOD_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 #ifdef AMPLIFY_MP_LOW_MEM
 #   define TAB_SIZE 32

@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_COUNT_BITS_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* returns the number of bits in an int */
 int amplify_mp_count_bits(const amplify_mp_int *a)

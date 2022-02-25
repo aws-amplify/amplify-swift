@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_SHRINK_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* shrink a bignum */
 amplify_mp_err amplify_mp_shrink(amplify_mp_int *a)

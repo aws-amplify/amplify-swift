@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_INIT_COPY_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* creates "a" then copies b into it */
 amplify_mp_err amplify_mp_init_copy(amplify_mp_int *a, const amplify_mp_int *b)
