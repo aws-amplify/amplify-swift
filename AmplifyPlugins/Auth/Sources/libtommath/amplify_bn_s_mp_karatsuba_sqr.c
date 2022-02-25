@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_S_MP_KARATSUBA_SQR_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* Karatsuba squaring, computes b = a*a using three
  * half size squarings

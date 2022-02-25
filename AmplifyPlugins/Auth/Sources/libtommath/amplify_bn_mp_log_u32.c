@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_LOG_U32_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* Compute log_{base}(a) */
 static amplify_mp_word s_pow(amplify_mp_word base, amplify_mp_word exponent)

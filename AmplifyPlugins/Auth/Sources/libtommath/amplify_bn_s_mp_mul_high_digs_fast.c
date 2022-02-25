@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_S_MP_MUL_HIGH_DIGS_FAST_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* this is a modified version of fast_s_mul_digs that only produces
  * output digits *above* digs.  See the comments for fast_s_mul_digs

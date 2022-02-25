@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_INCR_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* Increment "a" by one like "a++". Changes input! */
 amplify_mp_err amplify_mp_incr(amplify_mp_int *a)

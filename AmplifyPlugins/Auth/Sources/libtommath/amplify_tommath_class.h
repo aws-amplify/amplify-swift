@@ -1,5 +1,6 @@
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 #if !(defined(LTM1) && defined(LTM2) && defined(LTM3))
 #define LTM_INSIDE

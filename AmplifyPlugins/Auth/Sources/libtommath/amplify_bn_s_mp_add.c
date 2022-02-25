@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_S_MP_ADD_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* low level addition, based on HAC pp.594, Algorithm 14.7 */
 amplify_mp_err amplify_s_mp_add(const amplify_mp_int *a, const amplify_mp_int *b, amplify_mp_int *c)
