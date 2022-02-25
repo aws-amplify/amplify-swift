@@ -1,4 +1,4 @@
-## Amplify for iOS
+## Amplify for iOS (Developer Preview)
 <img src="https://s3.amazonaws.com/aws-mobile-hub-images/aws-amplify-logo.png" alt="AWS Amplify" width="550" >
 AWS Amplify provides a declarative and easy-to-use interface across different categories of cloud operations. AWS Amplify goes well with any JavaScript based frontend workflow, and React Native for mobile developers.
 
@@ -7,43 +7,42 @@ Our default implementation works with Amazon Web Services (AWS), but AWS Amplify
 - **API Documentation**
   https://docs.amplify.aws/start/q/integration/ios
 
-[![Cocoapods](https://img.shields.io/cocoapods/v/Amplify)](https://cocoapods.org/pods/Amplify)
 [![CircleCI](https://circleci.com/gh/aws-amplify/amplify-ios.svg?style=shield)](https://circleci.com/gh/aws-amplify/amplify-ios)
 [![Discord](https://img.shields.io/discord/308323056592486420?logo=discord)](https://discord.gg/jWVbPfC)
 
 ## Features/APIs
 
-- [Analytics](https://docs.amplify.aws/lib/analytics/getting-started/q/platform/ios) - for logging metrics and understanding your users.
 - [API (GraphQL)](https://docs.amplify.aws/lib/graphqlapi/getting-started/q/platform/ios) - for adding a GraphQL endpoint to your app.
 - [API (REST)](https://docs.amplify.aws/lib/restapi/getting-started/q/platform/ios) - for adding a REST endpoint to your app.
 - [Authentication](https://docs.amplify.aws/lib/auth/getting-started/q/platform/ios) - for managing your users.
+   - _Note: Authentication category only supports **Sign Up**, **Sign In**, **Sign Out** and **Fetch Auth Session** API's._
 - [DataStore](https://docs.amplify.aws/lib/datastore/getting-started/q/platform/ios) - for making it easier to program for a distributed data store for offline and online scenarios.
-- [Geo](https://docs.amplify.aws/lib/geo/getting-started/q/platform/ios) - for adding location-based capabilities to your app.
-- [Predictions](https://docs.amplify.aws/lib/predictions/getting-started/q/platform/ios) - to detect text, images, and more!
 - [Storage](https://docs.amplify.aws/lib/storage/getting-started/q/platform/ios) - store complex objects like pictures and videos to the cloud.
 
-All services and features not listed above are supported via the [iOS SDK](https://docs.amplify.aws/sdk/q/platform/ios) or if supported by a category can be accessed via the Escape Hatch like below:
+
+All services and features not listed above are supported via the [Swift SDK](https://github.com/awslabs/aws-sdk-swift) or if supported by a category can be accessed via the Escape Hatch like below:
 
 ```swift
-guard let predictionsPlugin = try Amplify.Predictions.getPlugin(for: "awsPredictionsPlugin") as? AWSPredictionsPlugin else {
-    print("Unable to cast to AWSPredictionsPlugin")
+guard let plugin = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin else {
+    print("Unable to to cast to AWSS3StoragePlugin")
     return
 }
 
-guard let rekognitionService = predictionsPlugin.getEscapeHatch(key: .rekognition) as? AWSRekognition else {
-    print("Unable to get AWSRekognition")
-    return
-}
-
-let request = AWSRekognitionCreateCollectionRequest()
-if let request = request {
-    rekognitionService.createCollection(request)
+let awsS3 = plugin.getEscapeHatch()
+let input: HeadBucketInput = HeadBucketInput()
+let task = awsS3.headBucket(input: input) { result in
+    switch result {
+    case .success(let response):
+        print(response)
+    case .failure(let error):
+        print(error)
+    }
 }
 ```
 
 ## Platform Support
 
-Amplify supports iOS 11 and above and iOS 13 for certain categories such as Predictions and Geo. There are currently no plans to support Amplify on WatchOS, tvOS, or MacOS.
+Amplify supports iOS 13 and above. There are currently no plans to support Amplify on WatchOS, tvOS, or MacOS.
 
 ## License
 
@@ -73,12 +72,9 @@ Amplify requires Xcode 11.4 or higher to build.
 1. Choose which of the libraries you want added to your project. Always select the **Amplify** library. The "Plugin" to install depends on which categories you are using:
 
     - API: **AWSAPIPlugin**
-    - Analytics: **AWSPinpointAnalyticsPlugin**
     - Auth: **AWSCognitoAuthPlugin**
     - DataStore: **AWSDataStorePlugin**
     - Storage: **AWSS3StoragePlugin**
-
-      _Note: AWSPredictionsPlugin is not currently supported through Swift Package Manager due to different minimum iOS version requirements. Support for this will eventually be added._
 
     ![Select dependencies](readme-images/spm-setup-04-select-dependencies.png)
 
@@ -116,96 +112,6 @@ Amplify requires Xcode 11.4 or higher to build.
         Amplify.Storage.uploadFile(...)
     }
     ```
-
-### CocoaPods
-
-1. Amplify for iOS is available through [CocoaPods](http://cocoapods.org). If you have not installed CocoaPods, install CocoaPods by running the command:
-    ```
-    $ gem install cocoapods
-    $ pod setup
-    ```
-
-    Depending on your system settings, you may have to use `sudo` for installing `cocoapods` as follows:
-    
-    ```
-    $ sudo gem install cocoapods
-    $ pod setup
-    ```
-
-1. In your project directory (the directory where your `*.xcodeproj` file is), type `pod init` and open the Podfile that was created. Add the `Amplify` pod and any plugins you would like to use. Below is an example of what a podfile might look like if you were going to use the Predictions plugin.
-    ```ruby
-    source 'https://github.com/CocoaPods/Specs.git'
-    
-    platform :ios, '13.0'
-    use_frameworks!
-
-    target :'YourTarget' do
-        pod 'Amplify'
-        pod 'AmplifyPlugins/AWSCognitoAuthPlugin'
-        pod 'AWSPredictionsPlugin'
-        pod 'CoreMLPredictionsPlugin'
-    end
-    ```
-        
-1. Then run the following command:
-    ```
-    $ pod install
-    ```
-1. Open up `*.xcworkspace` with Xcode and start using Amplify.
-
-    ![image](readme-images/cocoapods-setup-02.png?raw=true)
-
-    **Note**: Do **NOT** use `*.xcodeproj`. If you open up a project file instead of a workspace, you will receive an error.
-
-1. In your app code, import `AmplifyPlugins` when you need to add a plugin to Amplify, access plugin options, or access a category escape hatch.
-
-    ```swift
-    import Amplify
-    import AmplifyPlugins
-
-    // ... later
-
-    func initializeAmplify() {
-        do {
-            try Amplify.add(AWSAPIPlugin())
-            // and so on ...
-        } catch {
-            assert(false, "Error initializing Amplify: \(error)")
-        }
-    }
-    ```
-
-    If you're just accessing Amplify category APIs (e.g., `Auth.signIn()` or `Storage.uploadFile()`), you only need to import Amplify:
-
-    ```swift
-    import Amplify
-
-    // ... later
-
-    func doUpload() {
-        Amplify.Storage.uploadFile(...)
-    }
-    ```
-
-**Development Pods**
-
-You can manually install the library by cloning this repo and creating a Podfile that references your local clone of it like below:
-
-```ruby
-pod 'Amplify', :path => '~/amplify-ios'
-pod 'AWSPluginsCore', :path => '~/amplify-ios'
-pod 'CoreMLPredictionsPlugin', :path => '~/amplify-ios'
-pod 'AWSPredictionsPlugin', :path => '~/amplify-ios'
-pod 'AmplifyPlugins/AWSAPIPlugin', :path => '~/amplify-ios'
-```
-
-Then, install the dependencies:
-
-```
-pod install
-```
-
-Open your project using ./YOUR-PROJECT-NAME.xcworkspace file. Remember to always use ./YOUR-PROJECT-NAME.xcworkspace to open your Xcode project from now on.
 
 ## Reporting Bugs/Feature Requests
 
