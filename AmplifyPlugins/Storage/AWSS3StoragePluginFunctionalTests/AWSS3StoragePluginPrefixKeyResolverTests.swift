@@ -6,11 +6,11 @@
 //
 
 import XCTest
-import AmplifyPlugins
 import AWSS3StoragePlugin
 
 @testable import Amplify
 @testable import AmplifyTestCommon
+import AWSCognitoAuthPlugin
 
 class AWSS3StoragePluginKeyResolverTests: XCTestCase {
 
