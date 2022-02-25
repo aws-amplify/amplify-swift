@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_SQRTMOD_PRIME_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* Tonelli-Shanks algorithm
  * https://en.wikipedia.org/wiki/Tonelli%E2%80%93Shanks_algorithm

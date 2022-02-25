@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_IS_SQUARE_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* Check if remainders are possible squares - fast exclude non-squares */
 static const char rem_128[128] = {

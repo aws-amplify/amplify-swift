@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_DR_IS_MODULUS_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* determines if a number is a valid DR modulus */
 amplify_mp_bool amplify_mp_dr_is_modulus(const amplify_mp_int *a)

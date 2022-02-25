@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_MOD_2D_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* calc a value mod 2**b */
 amplify_mp_err amplify_mp_mod_2d(const amplify_mp_int *a, int b, amplify_mp_int *c)

@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_REDUCE_2K_L_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* reduces a modulo n where n is of the form 2**p - d
    This differs from reduce_2k since "d" can be larger

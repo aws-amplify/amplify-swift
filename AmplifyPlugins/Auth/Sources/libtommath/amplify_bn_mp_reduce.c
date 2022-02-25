@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_REDUCE_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* reduces x mod m, assumes 0 < x < m**2, mu is
  * precomputed via amplify_mp_reduce_setup.

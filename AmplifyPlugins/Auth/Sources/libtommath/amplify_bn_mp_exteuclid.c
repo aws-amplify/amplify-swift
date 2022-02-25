@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_EXTEUCLID_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* Extended euclidean algorithm of (a, b) produces
    a*u1 + b*u2 = u3

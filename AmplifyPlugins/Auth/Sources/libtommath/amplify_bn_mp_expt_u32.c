@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_EXPT_U32_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* calculate c = a**b  using a square-multiply algorithm */
 amplify_mp_err amplify_mp_expt_u32(const amplify_mp_int *a, uint32_t b, amplify_mp_int *c)

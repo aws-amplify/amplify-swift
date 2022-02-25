@@ -3,6 +3,7 @@
 
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* Get bit at position b and return AMPLIFY_MP_YES if the bit is 1, AMPLIFY_MP_NO if it is 0 */
 amplify_mp_bool amplify_s_mp_get_bit(const amplify_mp_int *a, unsigned int b)

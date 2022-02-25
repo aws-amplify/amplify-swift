@@ -2,6 +2,7 @@
 #ifdef AMPLIFY_BN_MP_REDUCE_SETUP_C
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
+/* Modifications Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 
 /* pre-calculate the value required for Barrett reduction
  * For a given modulus "b" it calulates the value required in "a"
