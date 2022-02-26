@@ -18,6 +18,8 @@ class AWSAuthBaseTest: XCTestCase {
 
     let amplifyConfigurationFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration"
     let credentialsFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-credentials"
+    
+    var amplifyConfiguration: AmplifyConfiguration!
 
     func initializeAmplify() {
         do {
@@ -26,6 +28,7 @@ class AWSAuthBaseTest: XCTestCase {
             defaultTestPassword = credentialsConfiguration["password"] ?? defaultTestPassword
             let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: amplifyConfigurationFile)
+            amplifyConfiguration = configuration
             let authPlugin = AWSCognitoAuthPlugin()
             try Amplify.add(plugin: authPlugin)
             try Amplify.configure(configuration)
