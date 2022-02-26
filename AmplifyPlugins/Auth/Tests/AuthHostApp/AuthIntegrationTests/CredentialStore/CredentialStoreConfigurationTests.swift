@@ -12,12 +12,12 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
 
     override func setUp() {
         super.setUp()
-        AuthSessionHelper.invalidateSessions()
+        AuthSessionHelper.clearSession()
     }
 
     override func tearDown() {
         super.tearDown()
-        AuthSessionHelper.invalidateSessions()
+        AuthSessionHelper.clearSession()
     }
 
     /// Test successful migration of credentials when auth configuration changes
