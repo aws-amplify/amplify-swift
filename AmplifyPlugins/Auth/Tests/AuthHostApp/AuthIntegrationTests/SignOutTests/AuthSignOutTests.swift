@@ -17,7 +17,7 @@ class AuthSignOutTests: AWSAuthBaseTest {
     override func setUp() {
         super.setUp()
         initializeAmplify()
-        AuthSessionHelper.invalidateSessions()
+        AuthSessionHelper.clearSession()
         if Self.setSDKLogLevelDebug {
             SDKLoggingSystem.initialize(logLevel: .debug)
             Self.setSDKLogLevelDebug = false
@@ -27,7 +27,7 @@ class AuthSignOutTests: AWSAuthBaseTest {
     override func tearDown() {
         super.tearDown()
         Amplify.reset()
-        AuthSessionHelper.invalidateSessions()
+        AuthSessionHelper.clearSession()
         sleep(2)
     }
 
