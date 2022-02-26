@@ -56,7 +56,11 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation,
             if case .configured(let authNState, _) = $0 {
 
                 switch authNState {
-                case .signedOut, .signingUp:
+                case .signingUp(let authConfig, _):
+                    let event = AuthenticationEvent(eventType: .cancelSignUp(authConfig))
+                    self.stateMachine.send(event)
+                    break
+                case .signedOut:
                     self.cancelListener(token)
                     self.doSignUp()
                 default:
