@@ -14,13 +14,13 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     override func setUp() {
         super.setUp()
         initializeAmplify()
-        AuthSessionHelper.invalidateSessions()
+        AuthSessionHelper.clearSession()
     }
 
     override func tearDown() {
         super.tearDown()
         Amplify.reset()
-        AuthSessionHelper.invalidateSessions()
+        AuthSessionHelper.clearSession()
         sleep(2)
     }
 
