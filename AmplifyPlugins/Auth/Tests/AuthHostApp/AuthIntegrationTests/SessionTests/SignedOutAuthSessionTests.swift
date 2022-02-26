@@ -15,6 +15,7 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
     override func setUp() {
         super.setUp()
         initializeAmplify()
+        AuthSessionHelper.clearSession()
     }
 
     override func tearDown() {
@@ -74,6 +75,55 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
         }
         XCTAssertNotNil(operation, "Operation should not be nil")
         wait(for: [authSessionExpectation], timeout: networkTimeout)
+    }
+    
+    /// Test if we can retreive valid credentials for a signedOut session multiple times
+    ///
+    /// - Given: Auth category with a signedOut state
+    /// - When:
+    ///    - I invoke fetchAuthSession multiple times
+    /// - Then:
+    ///    - Valid response with signedOut state = false
+    ///
+    func testMultipleSuccessfulSessionFetchWithCredentials() {
+        let firstAuthSessionExpectation = expectation(description: "Received event result from fetchAuth")
+        let firstOperation = Amplify.Auth.fetchAuthSession {event in
+            switch event {
+            case .success(let result):
+                XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
+                let credentialsResult = (result as? AuthAWSCredentialsProvider)?.getAWSCredentials()
+                guard let awsCredentails = try? credentialsResult?.get() else {
+                    XCTFail("Could not fetch aws credentials")
+                    return
+                }
+                XCTAssertNotNil(awsCredentails.accessKey, "Access key should not be nil")
+
+            case .failure(let error):
+                XCTFail("Should not receive error \(error)")
+            }
+            firstAuthSessionExpectation.fulfill()
+        }
+        
+        let secondAuthSessionExpectation = expectation(description: "Received event result from fetchAuth")
+        let secondOperation = Amplify.Auth.fetchAuthSession {event in
+            switch event {
+            case .success(let result):
+                XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
+                let credentialsResult = (result as? AuthAWSCredentialsProvider)?.getAWSCredentials()
+                guard let awsCredentails = try? credentialsResult?.get() else {
+                    XCTFail("Could not fetch aws credentials")
+                    return
+                }
+                XCTAssertNotNil(awsCredentails.accessKey, "Access key should not be nil")
+
+            case .failure(let error):
+                XCTFail("Should not receive error \(error)")
+            }
+            secondAuthSessionExpectation.fulfill()
+        }
+        XCTAssertNotNil(firstOperation, "Operation should not be nil")
+        XCTAssertNotNil(secondOperation, "Operation should not be nil")
+        wait(for: [firstAuthSessionExpectation, secondAuthSessionExpectation], timeout: networkTimeout)
     }
 
     /// Test whether fetchAuth returns signedOut error
