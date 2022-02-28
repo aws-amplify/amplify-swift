@@ -8,7 +8,6 @@
 import Foundation
 import Amplify
 import AWSPluginsCore
-import AWSS3
 
 extension AWSS3StoragePlugin {
 
