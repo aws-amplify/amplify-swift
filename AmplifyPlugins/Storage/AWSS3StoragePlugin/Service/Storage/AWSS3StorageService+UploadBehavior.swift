@@ -31,7 +31,7 @@ extension AWSS3StorageService {
 
         let contentType = contentType ?? "application/octet-stream"
 
-        guard let preSignedURL = preSignedURLBuilder.getPreSignedURL(key: serviceKey) else {
+        guard let preSignedURL = preSignedURLBuilder.getPreSignedURL(key: serviceKey, method: .put) else {
             onEvent(.failed(StorageError.unknown("Failed to get pre-signed URL", nil)))
             return
         }
