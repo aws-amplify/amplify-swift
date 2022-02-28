@@ -23,11 +23,11 @@ class StorageServiceSessionDelegate: NSObject {
     }
 
     // Set a Symbolic Breakpoint in Xcode to monitor these messages
-    func reportSessionActivity(_ message: String, warning: Bool = false) {
+    func logURLSessionActivity(_ message: String, warning: Bool = false) {
         if warning {
-            logger.warn(message)
+            logger.warn("[URLSession] \(message)")
         } else {
-            logger.info(message)
+            logger.info("[URLSession] \(message)")
         }
     }
 
@@ -51,7 +51,7 @@ public extension Notification.Name {
 extension StorageServiceSessionDelegate: URLSessionDelegate {
 
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        reportSessionActivity("[URLSession] session did finish background events")
+        logURLSessionActivity("Session did finish background events")
 
         if let identifier = storageService?.identifier,
            let handler = StorageBackgroundEventsRegistry.findCompletionHandler(for: identifier) {
@@ -63,9 +63,9 @@ extension StorageServiceSessionDelegate: URLSessionDelegate {
 
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
         if let error = error {
-            reportSessionActivity("[URLSession] session did become invalid: \(identifier) [\(error)]", warning: true)
+            logURLSessionActivity("Session did become invalid: \(identifier) [\(error)]", warning: true)
         } else {
-            reportSessionActivity("[URLSession] session did become invalid: \(identifier)")
+            logURLSessionActivity("Session did become invalid: \(identifier)")
         }
 
         // The Storage plugin must be reset and configured again when the session becomes invalid.
@@ -82,14 +82,14 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error = error {
-            reportSessionActivity("[URLSession] session task did complete with error: \(task.taskIdentifier) [\(error)]", warning: true)
+            logURLSessionActivity("Session task did complete with error: \(task.taskIdentifier) [\(error)]", warning: true)
         } else {
-            reportSessionActivity("[URLSession] session task did complete: \(task.taskIdentifier)")
+            logURLSessionActivity("Session task did complete: \(task.taskIdentifier)")
         }
 
         guard let storageService = storageService,
               let transferTask = findTransferTask(for: task.taskIdentifier) else {
-                  reportSessionActivity("[URLSession] session task not handled: \(task.taskIdentifier)")
+                  logURLSessionActivity("Session task not handled: \(task.taskIdentifier)")
                   return
               }
 
@@ -97,9 +97,9 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
         if let responseError = response.responseError {
             transferTask.fail(error: responseError)
             storageService.unregister(task: transferTask)
-            reportSessionActivity("[URLSession] Failed with error: \(responseError)", warning: true)
+            logURLSessionActivity("Failed with error: \(responseError)", warning: true)
             if response.isErrorRetriable {
-                reportSessionActivity("[URLSession] Task can be retried.")
+                logURLSessionActivity("Task can be retried.")
             }
             return
         }
@@ -107,12 +107,12 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
         switch transferTask.transferType {
         case .multiPartUploadPart(let uploadId, let partNumber):
             guard let multipartUploadSession = storageService.findMultipartUploadSession(uploadId: uploadId) else {
-                logger.info("[URLSession] MultipartUpload not found for uploadId: \(uploadId)")
+                logger.info("MultipartUpload not found for uploadId: \(uploadId)")
                 return
             }
 
             guard let eTag = task.eTag else {
-                logger.error("[URLSession] Completed upload part does not include header value for ETAG: [\(partNumber), \(uploadId)]")
+                logger.error("Completed upload part does not include header value for ETAG: [\(partNumber), \(uploadId)]")
                 multipartUploadSession.handle(uploadPartEvent: .failed(partNumber: partNumber, error: StorageError.unknown("Upload for part number does not include value for eTag", nil)))
                 return
             }
@@ -127,13 +127,13 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
         case .download:
             storageService.unregister(task: transferTask)
         default:
-            logger.debug("[URLSession] Transfer Type not supported by \(#function): [\(transferTask.transferType.name)]")
+            logger.debug("Transfer Type not supported by \(#function): [\(transferTask.transferType.name)]")
         }
 
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
-        reportSessionActivity("[URLSession] session task update: [bytesSent: \(bytesSent)], [totalBytesSent: \(totalBytesSent)], [totalBytesExpectedToSend: \(totalBytesExpectedToSend)]")
+        logURLSessionActivity("Session task update: [bytesSent: \(bytesSent)], [totalBytesSent: \(totalBytesSent)], [totalBytesExpectedToSend: \(totalBytesExpectedToSend)]")
 
         guard let storageService = storageService,
               let transferTask = findTransferTask(for: task.taskIdentifier) else { return }
@@ -141,7 +141,7 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
         switch transferTask.transferType {
         case .multiPartUploadPart(let uploadId, let partNumber):
             guard let multipartUploadSession = storageService.findMultipartUploadSession(uploadId: uploadId) else {
-                logger.info("[URLSession] MultipartUpload not found for uploadId: \(uploadId)")
+                logger.info("MultipartUpload not found for uploadId: \(uploadId)")
                 return
             }
 
@@ -151,7 +151,7 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
             progress.completedUnitCount = totalBytesSent
             onEvent(.inProcess(progress))
         default:
-            logger.debug("[URLSession] Transfer Type not supported by \(#function): [\(transferTask.transferType.name)]")
+            logger.debug("Transfer Type not supported by \(#function): [\(transferTask.transferType.name)]")
         }
 
     }
@@ -163,7 +163,7 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
 extension StorageServiceSessionDelegate: URLSessionDownloadDelegate {
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        reportSessionActivity("[URLSession] session download task [\(downloadTask.taskIdentifier)] did write [\(bytesWritten)], [totalBytesWritten \(totalBytesWritten)], [totalBytesExpectedToWrite: \(totalBytesExpectedToWrite)]")
+        logURLSessionActivity("Session download task [\(downloadTask.taskIdentifier)] did write [\(bytesWritten)], [totalBytesWritten \(totalBytesWritten)], [totalBytesExpectedToWrite: \(totalBytesExpectedToWrite)]")
 
         guard let transferTask = findTransferTask(for: downloadTask.taskIdentifier) else { return }
 
@@ -173,7 +173,7 @@ extension StorageServiceSessionDelegate: URLSessionDownloadDelegate {
     }
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        reportSessionActivity("[URLSession] session download task [\(downloadTask.taskIdentifier)] did finish downloading to \(location.path)")
+        logURLSessionActivity("Session download task [\(downloadTask.taskIdentifier)] did finish downloading to \(location.path)")
 
         guard let storageService = storageService,
               let transferTask = findTransferTask(for: downloadTask.taskIdentifier) else { return }
@@ -181,9 +181,9 @@ extension StorageServiceSessionDelegate: URLSessionDownloadDelegate {
         let response = StorageTransferResponse(task: downloadTask, error: nil, transferTask: transferTask)
 
         if let responseError = response.responseError {
-            reportSessionActivity("[URLSession] Response Error: \(responseError)")
+            logURLSessionActivity("Response Error: \(responseError)")
             if let contents = try? String(contentsOf: location) {
-                reportSessionActivity("[URLSession] Contents:\n\(contents)")
+                logURLSessionActivity("Contents:\n\(contents)")
             }
         } else {
             storageService.completeDownload(taskIdentifier: downloadTask.taskIdentifier, sourceURL: location)
