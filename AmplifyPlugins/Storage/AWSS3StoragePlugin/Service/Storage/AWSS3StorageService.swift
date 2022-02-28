@@ -218,21 +218,28 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
 
     func completeDownload(taskIdentifier: TaskIdentifier, sourceURL: URL) {
         guard let transferTask = findTask(taskIdentifier: taskIdentifier),
-              let destinationLocation = transferTask.location,
               case .download(let onEvent) = transferTask.transferType else {
                   logger.info("Unable to complete download for task: \(taskIdentifier)")
                   return
               }
 
+        // When a location is provided the downloaded file could be moved there.
+        // Otherwise the Data can be returned on the completed result.
+
+        let data: Data?
         do {
-            try fileSystem.moveFile(from: sourceURL, to: destinationLocation)
-            let data = try Data(contentsOf: destinationLocation)
+            if let destinationLocation = transferTask.location {
+                try fileSystem.moveFile(from: sourceURL, to: destinationLocation)
+                data = nil
+            } else {
+                data = try Data(contentsOf: sourceURL)
+            }
             onEvent(.completed(data))
             transferTask.complete()
         } catch {
+            data = nil
             transferTask.fail(error: error)
         }
-        unregister(task: transferTask)
     }
 
 }
