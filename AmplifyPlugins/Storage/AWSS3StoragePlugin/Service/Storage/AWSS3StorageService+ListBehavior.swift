@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import AWSS3
 import Amplify
 
 extension AWSS3StorageService {
