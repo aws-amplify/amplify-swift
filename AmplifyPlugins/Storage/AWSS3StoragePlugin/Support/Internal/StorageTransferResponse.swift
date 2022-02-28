@@ -27,18 +27,18 @@ class StorageTransferResponse {
             let statusCode = httpResponse.statusCode
             if statusCode / 100 == 3, statusCode != 304 {
                 // 300 range: Redirection
-                error = .httpStatusError(statusCode, "Redirection error", nil)
+                error = .httpStatusError(statusCode, "Redirection error", self.error)
             } else if statusCode / 100 == 4 {
                 // 400 range: Client Error
-                error = .httpStatusError(statusCode, "Client error", nil)
+                error = .httpStatusError(statusCode, "Client error", self.error)
             } else if statusCode / 100 == 5 {
                 // 500 range: Server Error
-                error = .httpStatusError(statusCode, "Server error", nil)
+                error = .httpStatusError(statusCode, "Server error", self.error)
             } else {
                 error = nil
             }
         } else {
-            error = .unknown("Response is not an HTTP response", nil)
+            error = .unknown("Response is not an HTTP response", self.error)
         }
         return error
     }
