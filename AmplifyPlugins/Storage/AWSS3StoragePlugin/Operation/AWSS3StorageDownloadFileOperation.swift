@@ -8,7 +8,6 @@
 import Foundation
 import Amplify
 import AWSPluginsCore
-import AWSS3
 
 // TODO: thread safety: everything has to be locked down
 // TODO verify no retain cycle
