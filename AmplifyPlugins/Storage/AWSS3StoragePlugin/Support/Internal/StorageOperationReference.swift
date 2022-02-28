@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import AWSS3
 
 class StorageTaskReference {
     let task: StorageTask
