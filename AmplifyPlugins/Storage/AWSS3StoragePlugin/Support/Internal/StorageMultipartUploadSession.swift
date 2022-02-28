@@ -9,7 +9,6 @@
 // https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html
 
 import Foundation
-import AWSS3
 import Amplify
 
 typealias RequestHeaders = [String : String]

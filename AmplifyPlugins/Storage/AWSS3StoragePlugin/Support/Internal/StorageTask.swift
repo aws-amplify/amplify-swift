@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import AWSS3
 
 protocol StorageTask {
     func pause()
