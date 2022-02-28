@@ -115,7 +115,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             do {
                 let partialFileURL = try result.get()
 
-                guard let preSignedURL = serviceProxy.preSignedURLBuilder.getPreSignedURL(key: self.key) else {
+                guard let preSignedURL = serviceProxy.preSignedURLBuilder.getPreSignedURL(key: self.key, method: .put) else {
                     self.session?.fail(error: StorageError.unknown("Failed to get pre-signed URL", nil))
                     return
                 }
