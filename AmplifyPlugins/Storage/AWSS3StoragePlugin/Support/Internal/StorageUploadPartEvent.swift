@@ -48,4 +48,14 @@ enum StorageUploadPartEvent {
         return result
     }
 
+    var error: Error? {
+        let result: Error?
+        if case .failed(_, let error) = self {
+            result = error
+        } else {
+            result = nil
+        }
+        return result
+    }
+
 }
