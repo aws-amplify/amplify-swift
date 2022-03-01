@@ -80,8 +80,9 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     }
 
     public func getPreSignedURL(serviceKey: String,
-                                expires: Int,
-                                onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
+                         method: AWSS3HttpMethod = .get,
+                         expires: Int,
+                         onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
         getPreSignedURLCalled += 1
 
         getPreSignedURLServiceKey = serviceKey
@@ -148,7 +149,6 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     }
 
     public func getEscapeHatch() -> S3Client {
-//        return AWSS3()
         fatalError("Not Implemented")
     }
 
