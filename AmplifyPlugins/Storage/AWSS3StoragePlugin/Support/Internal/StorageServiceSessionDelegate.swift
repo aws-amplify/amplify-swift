@@ -107,12 +107,13 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
         switch transferTask.transferType {
         case .multiPartUploadPart(let uploadId, let partNumber):
             guard let multipartUploadSession = storageService.findMultipartUploadSession(uploadId: uploadId) else {
-                logger.info("MultipartUpload not found for uploadId: \(uploadId)")
+                logURLSessionActivity("MultipartUpload not found for uploadId: \(uploadId)")
                 return
             }
 
             guard let eTag = task.eTag else {
-                logger.error("Completed upload part does not include header value for ETAG: [\(partNumber), \(uploadId)]")
+                let message = "Completed upload part does not include header value for ETAG: [\(partNumber), \(uploadId)]"
+                logURLSessionActivity(message, warning: true)
                 multipartUploadSession.handle(uploadPartEvent: .failed(partNumber: partNumber, error: StorageError.unknown("Upload for part number does not include value for eTag", nil)))
                 return
             }
@@ -141,7 +142,7 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
         switch transferTask.transferType {
         case .multiPartUploadPart(let uploadId, let partNumber):
             guard let multipartUploadSession = storageService.findMultipartUploadSession(uploadId: uploadId) else {
-                logger.info("MultipartUpload not found for uploadId: \(uploadId)")
+                logURLSessionActivity("MultipartUpload not found for uploadId: \(uploadId)")
                 return
             }
 
