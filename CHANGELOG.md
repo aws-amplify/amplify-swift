@@ -103,7 +103,7 @@
 
 - **Core**: Amplify now directly depends on AWS SDK for Swift.
 - **Auth**: Redesigned AWSCognitoAuthPlugin implementation using a state machine architecture. Internal dependency on AWSMobileClient is removed and the plugin directly depends on AWS SDK for Swift. The escape hatch now returns the underlying Swift SDK for Cognito UserPool and Cognito Identity Pool.
-- **Storage**: Removed the dependency on TransferUtility and improved the internal logic of AWSS3StoragePlugin implementation.
+- **Storage**: Removed the dependency on AWSTransferUtility and improved the internal logic of AWSS3StoragePlugin implementation.
 
 ## 1.22.0 (2022-03-16)
 
