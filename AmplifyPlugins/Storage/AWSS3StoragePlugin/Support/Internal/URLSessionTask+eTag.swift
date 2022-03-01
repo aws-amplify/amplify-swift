@@ -9,11 +9,19 @@ import Foundation
 
 extension URLSessionTask {
     var eTag: String? {
-        guard let response = response as? HTTPURLResponse else {
+        guard let httpResponse = response as? HTTPURLResponse else {
             return nil
         }
 
-        let eTag = response.allHeaderFields["ETAG"] as? String
+        let keys = httpResponse.allHeaderFields.keys
+            .compactMap({ $0 as? String })
+            .filter({ $0.uppercased() == "ETAG" })
+
+        guard let key = keys.first,
+              let eTag = httpResponse.allHeaderFields[key] as? String else {
+                  return nil
+              }
+
         return eTag
     }
 }
