@@ -168,7 +168,7 @@ enum StorageMultipartUpload {
 
         for part in parts {
             if part.eTag == nil || part.eTag?.isEmpty ?? false {
-                throw Failure.invalidateParts(reason: "Part has invalid eTag")
+                throw Failure.invalidateParts(reason: "part has invalid eTag")
             }
         }
 
@@ -177,7 +177,7 @@ enum StorageMultipartUpload {
         }
 
         if uploadFile.size != totalBytes {
-            throw Failure.invalidateParts(reason: "Total bytes uploaded does not match file size")
+            throw Failure.invalidateParts(reason: "total bytes uploaded does not match file size")
         }
     }
 
