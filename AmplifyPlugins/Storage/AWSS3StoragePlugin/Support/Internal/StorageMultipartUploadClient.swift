@@ -16,7 +16,13 @@ protocol StorageMultipartUploadClient {
     func createMultipartUpload() throws
     func uploadPart(partNumber: PartNumber, multipartUpload: StorageMultipartUpload, subTask: StorageTransferTask) throws
     func completeMultipartUpload(uploadId: UploadID) throws
-    func abortMultipartUpload(uploadId: UploadID) throws
+    func abortMultipartUpload(uploadId: UploadID, error: Error?) throws
+}
+
+extension StorageMultipartUploadClient {
+    func abortMultipartUpload(uploadId: UploadID) throws {
+        try abortMultipartUpload(uploadId: uploadId, error: nil)
+    }
 }
 
 // Note: This may  be helpful in switching between Objective-C and Swift SDKs.
@@ -150,14 +156,18 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
     }
 
     // https://docs.aws.amazon.com/AmazonS3/latest/API/API_AbortMultipartUpload.html
-    func abortMultipartUpload(uploadId: UploadID) {
+    func abortMultipartUpload(uploadId: UploadID, error: Error? = nil) {
         guard let serviceProxy = serviceProxy,
             let session = session else { fatalError() }
 
         serviceProxy.awsS3.abortMultipartUpload(.init(bucket: bucket, key: key, uploadId: uploadId)) { result in
             switch result {
             case .success:
-                session.handle(multipartUploadEvent: .aborted(uploadId: uploadId))
+                if let error = error {
+                    session.fail(error: error)
+                } else {
+                    session.handle(multipartUploadEvent: .aborted(uploadId: uploadId))
+                }
             case .failure(let error):
                 session.fail(error: error)
             }
