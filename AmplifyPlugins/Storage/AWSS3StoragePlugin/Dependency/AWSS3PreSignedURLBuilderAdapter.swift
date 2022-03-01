@@ -32,16 +32,19 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
 
     /// Gets pre-signed URL.
     /// - Returns: Pre-Signed URL
-    func getPreSignedURL(key: String, method: AWSS3HttpMethod, expires: Int64? = nil) -> URL? {
+    func getPreSignedURL(key: String, signingOperation: AWSS3SigningOperation, expires: Int64? = nil) -> URL? {
         let expiresDate = Date(timeIntervalSinceNow: Double(expires ?? defaultExpiration))
         let expiration = Int64(expiresDate.timeIntervalSinceNow)
         let preSignedUrl: URL?
-        switch method {
-        case .get:
+        switch signingOperation {
+        case .getObject:
             let input = GetObjectInput(bucket: bucket, key: key)
             preSignedUrl = input.presignURL(config: config, expiration: expiration)
-        case .put:
+        case .putObject:
             let input = PutObjectInput(bucket: bucket, key: key)
+            preSignedUrl = input.presignURL(config: config, expiration: expiration)
+        case .uploadPart(let partNumber, let uploadId):
+            let input = UploadPartInput(bucket: bucket, key: key, partNumber: partNumber, uploadId: uploadId)
             preSignedUrl = input.presignURL(config: config, expiration: expiration)
         }
         return urlWithEscapedToken(preSignedUrl)

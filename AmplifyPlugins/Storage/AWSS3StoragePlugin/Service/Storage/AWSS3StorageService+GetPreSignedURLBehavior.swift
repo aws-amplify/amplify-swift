@@ -11,7 +11,7 @@ import Amplify
 extension AWSS3StorageService {
 
     func getPreSignedURL(serviceKey: String,
-                         method: AWSS3HttpMethod = .get, 
+                         signingOperation: AWSS3SigningOperation = .getObject, 
                          expires: Int,
                          onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
         guard let preSignedURL = preSignedURLBuilder.getPreSignedURL(key: serviceKey) else {

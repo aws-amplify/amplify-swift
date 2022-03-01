@@ -12,10 +12,6 @@ import AWSS3
 import ClientRuntime
 import AWSClientRuntime
 
-public enum AWSS3HttpMethod {
-    case get
-    case put
-}
 
 enum AWSS3PreSignedURLBuilderError: Error {
     case failed(reason: String, error: Error?)
@@ -26,18 +22,18 @@ protocol AWSS3PreSignedURLBuilderBehavior {
 
     /// Gets a pre-signed URL.
     /// - Returns: Pre-Signed URL
-    func getPreSignedURL(key: String, method: AWSS3HttpMethod, expires: Int64?) -> URL?
+    func getPreSignedURL(key: String, signingOperation: AWSS3SigningOperation, expires: Int64?) -> URL?
 
 }
 
 extension AWSS3PreSignedURLBuilderBehavior {
 
-    func getPreSignedURL(key: String, method: AWSS3HttpMethod) -> URL? {
-        getPreSignedURL(key: key, method: method, expires: nil)
+    func getPreSignedURL(key: String, signingOperation: AWSS3SigningOperation) -> URL? {
+        getPreSignedURL(key: key, signingOperation: signingOperation, expires: nil)
     }
 
     func getPreSignedURL(key: String) -> URL? {
-        getPreSignedURL(key: key, method: .get, expires: nil)
+        getPreSignedURL(key: key, signingOperation: .getObject, expires: nil)
     }
 
 }
