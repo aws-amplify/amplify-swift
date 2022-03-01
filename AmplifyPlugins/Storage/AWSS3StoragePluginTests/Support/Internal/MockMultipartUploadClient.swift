@@ -73,7 +73,7 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
         session.handle(multipartUploadEvent: .completed(uploadId: uploadId))
     }
 
-    func abortMultipartUpload(uploadId: UploadID) throws {
+    func abortMultipartUpload(uploadId: UploadID, error: Error?) throws {
         guard let session = session else { throw Failure.sessionNotIntegrated }
 
         abortMultipartUploadCount += 1
