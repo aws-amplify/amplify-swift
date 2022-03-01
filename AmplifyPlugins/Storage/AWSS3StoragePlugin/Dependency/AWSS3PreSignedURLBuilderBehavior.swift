@@ -12,7 +12,7 @@ import AWSS3
 import ClientRuntime
 import AWSClientRuntime
 
-enum AWSS3HttpMethod {
+public enum AWSS3HttpMethod {
     case get
     case put
 }
