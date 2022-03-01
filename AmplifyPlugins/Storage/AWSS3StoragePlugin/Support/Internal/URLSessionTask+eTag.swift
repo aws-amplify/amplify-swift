@@ -9,7 +9,8 @@ import Foundation
 
 extension URLSessionTask {
     var eTag: String? {
-        guard let httpResponse = response as? HTTPURLResponse else {
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
             return nil
         }
 
@@ -18,9 +19,11 @@ extension URLSessionTask {
             .filter({ $0.uppercased() == "ETAG" })
 
         guard let key = keys.first,
-              let eTag = httpResponse.allHeaderFields[key] as? String else {
+              let quotedValue = httpResponse.allHeaderFields[key] as? String else {
                   return nil
               }
+
+        let eTag = quotedValue.replacingOccurrences(of: "\"", with: "")
 
         return eTag
     }
