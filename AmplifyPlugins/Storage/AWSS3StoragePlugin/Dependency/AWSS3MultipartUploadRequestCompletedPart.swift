@@ -7,6 +7,8 @@
 
 import Foundation
 
+import AWSS3
+
 struct AWSS3MultipartUploadRequestCompletedPart {
     let partNumber: Int
     let eTag: String
@@ -27,6 +29,15 @@ extension AWSS3MultipartUploadRequestCompletedParts {
             AWSS3MultipartUploadRequestCompletedPart(partNumber: index + 1, eTag: eTags[index] ?? "")
         }
         self = parts
+    }
+
+    init(parts: [S3ClientTypes.Part]) {
+        self = parts.compactMap {
+            guard let eTag = $0.eTag else {
+                return nil
+            }
+            return AWSS3MultipartUploadRequestCompletedPart(partNumber: $0.partNumber, eTag: eTag)
+        }
     }
 
 }
