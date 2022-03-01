@@ -19,9 +19,11 @@ import AWSClientRuntime
 /// same method using the AWSS3 instance.
 class AWSS3Adapter: AWSS3Behavior {
     let awsS3: S3Client
+    let config: AWSClientRuntime.AWSClientConfiguration
     
-    init(_ awsS3: S3Client) {
+    init(_ awsS3: S3Client, config: AWSClientRuntime.AWSClientConfiguration) {
         self.awsS3 = awsS3
+        self.config = config
     }
     
     /// Deletes object identify by request.
@@ -85,7 +87,7 @@ class AWSS3Adapter: AWSS3Behavior {
                                                key: request.key,
                                                metadata: request.metadata)
         
-        awsS3.createMultipartUpload(input: input) { result in
+        awsS3.createMultipartUpload(config: config, input: input) { result in
             switch result {
             case .success(let response):
                 guard let bucket = response.bucket, let key = response.key, let uploadId = response.uploadId else {
@@ -109,14 +111,14 @@ class AWSS3Adapter: AWSS3Behavior {
         }
         let completedMultipartUpload = S3ClientTypes.CompletedMultipartUpload(parts: parts)
         let input = CompleteMultipartUploadInput(bucket: request.bucket, key: request.key, multipartUpload: completedMultipartUpload, uploadId: request.uploadId)
-        awsS3.completeMultipartUpload(input: input) { result in
+        awsS3.completeMultipartUpload(config: config, input: input) { result in
             switch result {
             case .success(let response):
-                guard let bucket = response.bucket, let key = response.key, let eTag = response.eTag else {
+                guard let eTag = response.eTag else {
                     completion(.failure(StorageError.unknown("Invalid response for completing multipart upload", nil)))
                     return
                 }
-                completion(.success(AWSS3CompleteMultipartUploadResponse(bucket: bucket, key: key, eTag: eTag)))
+                completion(.success(AWSS3CompleteMultipartUploadResponse(bucket: request.bucket, key: request.key, eTag: eTag)))
             case .failure(let error):
                 completion(.failure(error.storageError))
             }
@@ -145,4 +147,3 @@ class AWSS3Adapter: AWSS3Behavior {
         return awsS3
     }
 }
-
