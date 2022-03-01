@@ -258,7 +258,7 @@ class StorageMultipartUploadSession {
                 }
             } else if partsFailed {
                 if let uploadId = multipartUpload.uploadId {
-                    try client.abortMultipartUpload(uploadId: uploadId)
+                    try client.abortMultipartUpload(uploadId: uploadId, error: uploadPartEvent.error)
                 } else {
                     fatalError("Invalid state")
                 }
