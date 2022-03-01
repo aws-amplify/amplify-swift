@@ -11,6 +11,7 @@ import Amplify
 enum StorageMultipartUpload {
     enum Failure: Error {
         case invalidStateTransition(reason: String)
+        case invalidateParts(reason: String)
     }
 
     case none
@@ -150,6 +151,34 @@ enum StorageMultipartUpload {
               parts.count >= number else { return nil }
         let part = parts[number - 1]
         return part
+    }
+
+    func validateForCompletion() throws {
+        guard case .parts(let uploadId, let uploadFile, let partSize, let parts) = self else {
+            throw Failure.invalidateParts(reason: "not prepared to complete")
+        }
+
+        if uploadId.isEmpty {
+            throw Failure.invalidateParts(reason: "uploadId is not valid")
+        }
+
+        if partSize.size < Bytes.megabytes(5).bytes {
+            throw Failure.invalidateParts(reason: "parts size is below minimim size")
+        }
+
+        for part in parts {
+            if part.eTag == nil || part.eTag?.isEmpty ?? false {
+                throw Failure.invalidateParts(reason: "Part has invalid eTag")
+            }
+        }
+
+        let totalBytes = parts.reduce(into: 0) { result, part in
+            result += part.bytes
+        }
+
+        if uploadFile.size != totalBytes {
+            throw Failure.invalidateParts(reason: "Total bytes uploaded does not match file size")
+        }
     }
 
     // swiftlint:disable cyclomatic_complexity
