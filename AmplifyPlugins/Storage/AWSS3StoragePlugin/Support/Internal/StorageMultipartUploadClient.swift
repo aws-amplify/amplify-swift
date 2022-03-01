@@ -86,7 +86,8 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
     func uploadPart(partNumber: PartNumber, multipartUpload: StorageMultipartUpload, subTask: StorageTransferTask) throws {
         guard let serviceProxy = serviceProxy else { fatalError("Service Proxy is required") }
 
-        guard let uploadFile = multipartUpload.uploadFile,
+        guard let uploadId = multipartUpload.uploadId,
+              let uploadFile = multipartUpload.uploadFile,
               let partSize = multipartUpload.partSize,
               let part = multipartUpload.part(for: partNumber) else {
                   fatalError("Part number is required")
@@ -121,7 +122,8 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             do {
                 let partialFileURL = try result.get()
 
-                guard let preSignedURL = serviceProxy.preSignedURLBuilder.getPreSignedURL(key: self.key, method: .put) else {
+                let operation = AWSS3SigningOperation.uploadPart(partNumber: partNumber, uploadId: uploadId)
+                guard let preSignedURL = serviceProxy.preSignedURLBuilder.getPreSignedURL(key: self.key, signingOperation: operation) else {
                     self.session?.fail(error: StorageError.unknown("Failed to get pre-signed URL", nil))
                     return
                 }
