@@ -251,6 +251,13 @@ class StorageMultipartUploadSession {
                     fatalError("Invalid state")
                 }
             } else if partsCompleted {
+                do {
+                    try multipartUpload.validateForCompletion()
+                } catch {
+                    fail(error: error)
+                    return
+                }
+                
                 if let uploadId = multipartUpload.uploadId {
                     try client.completeMultipartUpload(uploadId: uploadId)
                 } else {
