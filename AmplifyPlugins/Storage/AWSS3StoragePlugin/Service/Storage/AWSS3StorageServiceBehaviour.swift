@@ -42,7 +42,7 @@ protocol AWSS3StorageServiceBehaviour {
                   onEvent: @escaping StorageServiceDownloadEventHandler)
 
     func getPreSignedURL(serviceKey: String,
-                         method: AWSS3HttpMethod,
+                         signingOperation: AWSS3SigningOperation,
                          expires: Int,
                          onEvent: @escaping StorageServiceGetPreSignedURLEventHandler)
 
@@ -70,6 +70,6 @@ extension AWSS3StorageServiceBehaviour {
     func getPreSignedURL(serviceKey: String,
                          expires: Int,
                          onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
-        getPreSignedURL(serviceKey: serviceKey, method: .get, expires: expires, onEvent: onEvent)
+        getPreSignedURL(serviceKey: serviceKey, signingOperation: .getObject, expires: expires, onEvent: onEvent)
     }
 }

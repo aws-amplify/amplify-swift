@@ -80,7 +80,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     }
 
     public func getPreSignedURL(serviceKey: String,
-                         method: AWSS3HttpMethod = .get,
+                         signingOperation: AWSS3SigningOperation = .getObject,
                          expires: Int,
                          onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
         getPreSignedURLCalled += 1
