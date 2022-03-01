@@ -75,7 +75,7 @@ extension SdkError {
                                                         "Received HTTP Response status code 404 NotFound",
                                                         "Make sure the key exists before trying to download it.")
             } else {
-                storageError = StorageError.httpStatusError(statusCode, localizedDescription)
+                storageError = StorageError.httpStatusError(statusCode, localizedDescription, self)
             }
         } else if let clientError = clientError {
             storageError = StorageError.unknown(clientError.localizedDescription, clientError)
