@@ -100,6 +100,22 @@ class AWSS3Adapter: AWSS3Behavior {
             }
         }
     }
+
+    func listParts(bucket: String, key: String, uploadId: UploadID, completion: @escaping (Result<AWSS3ListUploadPartResponse, StorageError>) -> Void) {
+        let input = ListPartsInput(bucket: bucket, key: key, uploadId: uploadId)
+        awsS3.listParts(input: input) { result in
+            switch result {
+            case .success(let sdkResponse):
+                guard let response = AWSS3ListUploadPartResponse(response: sdkResponse) else {
+                    completion(.failure(StorageError.unknown("ListParts response is invalid", nil)))
+                    return
+                }
+                completion(.success(response))
+            case .failure(let error):
+                completion(.failure(error.storageError))
+            }
+        }
+    }
     
     /// Completed a MultipartUpload
     /// - Parameters:
