@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### ⚠ BREAKING CHANGES
+- The escape hatch of Auth and Storage plugins now returns the underlying Swift SDK instead of AWSMobileClient and AWSTransferUtility.
+- Logging category loglevel enum were moved to Amplify class extension to namespace them.
+
 ### Features
 
 - **Core**: Amplify now directly depends on AWS SDK for Swift.
