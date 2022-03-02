@@ -10,7 +10,7 @@ import UIKit
 import AWSClientRuntime
 
 public class AmplifyAWSServiceConfiguration {
-    static let version = "1.22.0-swift-sdk-dev-preview.0"
+    static let version = "1.22.0-dev-preview.0"
     static let platformName = "amplify-ios"
     
     public static func frameworkMetaData() -> FrameworkMetadata {
