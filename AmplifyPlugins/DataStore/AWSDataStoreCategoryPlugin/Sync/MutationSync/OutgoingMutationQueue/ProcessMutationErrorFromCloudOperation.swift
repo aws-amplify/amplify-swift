@@ -280,7 +280,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             self.log.verbose("sendMutationToCloud received asyncEvent: \(result)")
             self.validate(cloudResult: result, request: apiRequest)
         }
-        mutationOperation = AtomicValue(initialValue: graphQLOperation)
+        mutationOperation.set(graphQLOperation)
     }
 
     private func validate(cloudResult: MutationSyncCloudResult, request: MutationSyncAPIRequest) {

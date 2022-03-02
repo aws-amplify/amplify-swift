@@ -211,7 +211,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
 
         log.verbose("\(#function) mutationEvent: \(mutationEvent)")
         var eventToPersist = mutationEvent
-        if nextEventPromise != nil {
+        if nextEventPromise.get() != nil {
             eventToPersist.inProcess = true
         }
         storageAdapter.save(eventToPersist, condition: nil) { result in
@@ -220,10 +220,9 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
                 self.log.verbose("\(#function): Error saving mutation event: \(dataStoreError)")
             case .success(let savedMutationEvent):
                 self.log.verbose("\(#function): saved \(savedMutationEvent)")
-                if let nextEventPromise = self.nextEventPromise {
+                if let nextEventPromise = self.nextEventPromise.getAndSet(nil) {
                     self.log.verbose("\(#function): invoking nextEventPromise with \(savedMutationEvent)")
                     nextEventPromise(.success(savedMutationEvent))
-                    self.nextEventPromise = nil
                 }
             }
             self.log.verbose("\(#function): invoking completionPromise with \(result)")
