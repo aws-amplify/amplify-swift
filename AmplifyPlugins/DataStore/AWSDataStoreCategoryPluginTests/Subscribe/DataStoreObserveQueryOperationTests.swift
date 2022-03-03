@@ -133,8 +133,9 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         sink.cancel()
     }
 
-    /// Multiple observed objects (more than the `.collect` count) in a short time window`
-    /// will return first snapshot with the count and the remaining in the second snapshot
+    /// Multiple published objects (more than the `.collect` count of 1000) in a relatively short time window
+    /// will cause the operation in test to exceed the limit of 1000 in its collection of items before sending a snapshot.
+    /// The first snapshot will have 1000 items, and subsequent snapshots will follow as the remaining objects are published and processed.
     ///
     /// - Given:  The operation has started and the first query has completed.
     /// - When:
@@ -187,7 +188,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
 
         wait(for: [secondSnapshot, thirdSnapshot], timeout: 10)
 
-        XCTAssertEqual(querySnapshots.count, 3)
+        XCTAssertTrue(querySnapshots.count >= 3)
         XCTAssertTrue(querySnapshots[0].items.count <= querySnapshots[1].items.count)
         XCTAssertTrue(querySnapshots[1].items.count <= querySnapshots[2].items.count)
         XCTAssertTrue(querySnapshots[2].items.count <= 1_100)

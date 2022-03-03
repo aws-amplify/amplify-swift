@@ -14,6 +14,7 @@ import Combine
 
 class AWSDataStorePluginSubscribeBehaviorTests: BaseDataStoreTests {
 
+    /// Calling the observeQuery API will eventually return a snapshot as it internally performs an initial query to SQL
     func testObserveQuery() throws {
         let snapshotReceived = expectation(description: "query snapshot received")
         let predicate = Post.keys.content.contains("someValue")
@@ -31,7 +32,7 @@ class AWSDataStorePluginSubscribeBehaviorTests: BaseDataStoreTests {
                 snapshotReceived.fulfill()
             }
 
-        wait(for: [snapshotReceived], timeout: 3)
+        wait(for: [snapshotReceived], timeout: 20)
         sink.cancel()
     }
 

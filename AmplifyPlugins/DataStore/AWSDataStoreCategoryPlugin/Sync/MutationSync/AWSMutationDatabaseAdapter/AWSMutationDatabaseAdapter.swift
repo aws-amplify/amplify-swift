@@ -30,11 +30,12 @@ final class AWSMutationDatabaseAdapter {
 
     /// If a request for 'next event' comes in while the queue is empty, this promise will be set, so that the next
     /// saved event can fulfill it
-    var nextEventPromise: Future<MutationEvent, DataStoreError>.Promise?
+    var nextEventPromise: AtomicValue<Future<MutationEvent, DataStoreError>.Promise?>
 
     /// Loads saved events from the database and delivers them to `mutationEventSubject`
     init(storageAdapter: StorageEngineAdapter) throws {
         self.storageAdapter = storageAdapter
+        self.nextEventPromise = .init(initialValue: nil)
         log.verbose("Initialized")
     }
 
@@ -49,7 +50,7 @@ extension AWSMutationDatabaseAdapter: Resettable {
     func reset(onComplete: () -> Void) {
         log.verbose("Resetting AWSMutationDatabaseAdapter")
         storageAdapter = nil
-        nextEventPromise = nil
+        nextEventPromise.set(nil)
         log.verbose("Resetting AWSMutationDatabaseAdapter: finished")
         onComplete()
     }

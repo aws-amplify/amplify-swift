@@ -30,7 +30,7 @@ extension AWSMutationDatabaseAdapter: MutationEventSource {
                                     completion(.failure(dataStoreError))
                                 case .success(let mutationEvents):
                                     guard let notInProcessEvent = mutationEvents.first else {
-                                        self.nextEventPromise = completion
+                                        self.nextEventPromise.set(completion)
                                         return
                                     }
                                     self.markInProcess(mutationEvent: notInProcessEvent,
