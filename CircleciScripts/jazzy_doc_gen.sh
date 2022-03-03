@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # This script generates API documentation using jazzy.
-# It requires jazzy and sourcekitten.
+# It requires jazzy.
 
 set -e
 
