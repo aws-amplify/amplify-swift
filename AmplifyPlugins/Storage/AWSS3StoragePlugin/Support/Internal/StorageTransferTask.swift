@@ -145,7 +145,7 @@ class StorageTransferTask {
     }
 
     func fail(error: Error) {
-        guard status == .error else {
+        guard status != .error else {
             logger.warn("Task is already failed: \(error)")
             return
         }
