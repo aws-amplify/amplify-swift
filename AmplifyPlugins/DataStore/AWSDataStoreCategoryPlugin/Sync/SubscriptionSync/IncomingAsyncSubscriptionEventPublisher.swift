@@ -45,6 +45,8 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
     private let consistencyQueue: DispatchQueue
 
+    private let modelName: ModelName
+
     init(modelSchema: ModelSchema,
          api: APICategoryGraphQLBehavior,
          modelPredicate: QueryPredicate?,
@@ -57,6 +59,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         self.consistencyQueue = DispatchQueue(
             label: "com.amazonaws.Amplify.RemoteSyncEngine.\(modelSchema.name)"
         )
+        self.modelName = modelSchema.name
 
         self.connectionStatusQueue = OperationQueue()
         connectionStatusQueue.name
@@ -185,6 +188,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         case .success:
             incomingSubscriptionEvents.send(completion: .finished)
         case .failure(let apiError):
+            log.verbose("API Subscription failed for model `\(modelName)` with error: \(apiError.errorDescription)")
             let dataStoreError = DataStoreError(error: apiError)
             incomingSubscriptionEvents.send(completion: .failure(dataStoreError))
         }
