@@ -65,15 +65,18 @@ extension SQLiteMutationSyncMetadataMigrationDelegate {
     ///     2. the total number of records that have the `id` match `<modelName>|<modelId>`
     func selectMutationSyncMetadataRecords() throws -> (metadataCount: Int64, metadataIdMatchNewKeyCount: Int64) {
         guard let storageAdapter = storageAdapter else {
-            log.debug("Missing SQLiteStorageEngineAdapter")
-            throw DataStoreError.unknown("Missing storage adapter for model migration", "", nil)
+            log.debug("Missing SQLiteStorageEngineAdapter for model migration")
+            throw DataStoreError.nilStorageAdapter()
+        }
+        guard let connection = storageAdapter.connection else {
+            throw DataStoreError.nilSQLiteConnection()
         }
         let sql = """
         select (select count(1) as count from MutationSyncMetadata) as allRecords,
         (select count(1) as count from MutationSyncMetadata where id like '%|%') as newKeys
         """
         log.debug("Checking MutationSyncMetadata records, SQL: \(sql)")
-        let rows = try storageAdapter.connection.run(sql)
+        let rows = try connection.run(sql)
         let iter = rows.makeIterator()
         while let row = try iter.failableNext() {
             if let metadataCount = row[0] as? Int64, let metadataIdMatchNewKeyCount = row[1] as? Int64 {
@@ -91,12 +94,15 @@ extension SQLiteMutationSyncMetadataMigrationDelegate {
 
     func containsDuplicateIdsAcrossModels() throws -> Bool {
         guard let storageAdapter = storageAdapter else {
-            log.debug("Missing SQLiteStorageEngineAdapter")
-            throw DataStoreError.unknown("Missing storage adapter for model migration", "", nil)
+            log.debug("Missing SQLiteStorageEngineAdapter for model migration")
+            throw DataStoreError.nilStorageAdapter()
+        }
+        guard let connection = storageAdapter.connection else {
+            throw DataStoreError.nilSQLiteConnection()
         }
         let sql = selectDuplicateIdAcrossModels()
         log.debug("Checking for duplicate IDs, SQL: \(sql)")
-        let rows = try storageAdapter.connection.run(sql)
+        let rows = try connection.run(sql)
         let iter = rows.makeIterator()
         while let row = try iter.failableNext() {
             return !row.isEmpty
