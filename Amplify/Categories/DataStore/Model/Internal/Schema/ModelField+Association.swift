@@ -108,7 +108,6 @@ public enum ModelAssociation {
     public static func belongsTo(associatedWith: CodingKey?, targetName: String?) -> ModelAssociation {
         return .belongsTo(associatedFieldName: associatedWith?.stringValue, targetName: targetName)
     }
-
 }
 
 extension ModelField {
@@ -207,10 +206,19 @@ extension ModelField {
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
     public var isAssociationOwner: Bool {
-        guard case .belongsTo = association else {
+        switch association {
+        case .belongsTo:
+            return true
+        case .hasOne:
+            // in case of a bi-directional association
+            // we pick the model with a belongs-to
+            if case .belongsTo = associatedField?.association {
+                return false
+            }
+            return true
+        default:
             return false
         }
-        return true
     }
 
     /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used

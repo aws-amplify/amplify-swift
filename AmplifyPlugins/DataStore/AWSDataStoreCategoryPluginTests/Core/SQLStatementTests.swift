@@ -26,6 +26,14 @@ class SQLStatementTests: XCTestCase {
         ModelRegistry.register(modelType: UserAccount.self)
         ModelRegistry.register(modelType: UserProfile.self)
 
+        // one-to-one associations with custom field
+        ModelRegistry.register(modelType: Project2V2.self)
+        ModelRegistry.register(modelType: Team2V2.self)
+
+        // one-to-one associations with default field
+        ModelRegistry.register(modelType: Project1V2.self)
+        ModelRegistry.register(modelType: Team1V2.self)
+
         // many-to-many association
         ModelRegistry.register(modelType: Author.self)
         ModelRegistry.register(modelType: Book.self)
@@ -90,6 +98,52 @@ class SQLStatementTests: XCTestCase {
           "createdAt" text not null,
           "commentPostId" text not null,
           foreign key("commentPostId") references "Post"("id")
+            on delete cascade
+        );
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `Project2V2`
+    ///   - the model has a foreign key
+    /// - Then:
+    ///   - check if the generated SQL statement is valid:
+    ///     - contains a `foreign key`named `teamID` referencing `Team`
+    func testCreateTableFromModelWithForeignKeyReferencedByField() {
+        let statement = CreateTableStatement(modelSchema: Project2V2.schema)
+        let expectedStatement = """
+        create table if not exists "Project2V2" (
+          "id" text primary key not null,
+          "createdAt" text,
+          "name" text,
+          "updatedAt" text,
+          "teamID" text unique,
+          foreign key("teamID") references "Team2V2"("id")
+            on delete cascade
+        );
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `Project2V2`
+    ///   - the model has a foreign key
+    /// - Then:
+    ///   - check if the generated SQL statement is valid:
+    ///     - contains a `foreign key`named `teamID` referencing `Team`
+    func testCreateTableFromModelWithForeignKeyReferencedByDefaultField() {
+        let statement = CreateTableStatement(modelSchema: Project1V2.schema)
+        let expectedStatement = """
+        create table if not exists "Project1V2" (
+          "id" text primary key not null,
+          "createdAt" text,
+          "name" text,
+          "updatedAt" text,
+          "project1V2TeamId" text unique,
+          foreign key("project1V2TeamId") references "Team1V2"("id")
             on delete cascade
         );
         """
@@ -220,6 +274,31 @@ class SQLStatementTests: XCTestCase {
         let variables = statement.variables
         XCTAssertEqual(variables[1] as? String, "comment")
         XCTAssertEqual(variables[3] as? String, post.id)
+    }
+
+    /// - Given: a `Model` instance
+    /// - When:
+    ///   - the model is of type `Project1V2`
+    ///   - it has a reference to a `Team1V2`
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if the variables match the expected values
+    ///   - check if the `project1V2TeamId` matches `team.id`
+    func testInsertStatementFromModelWithHasOneForeignKey() {
+        let team = Team1V2(name: "A-Team")
+        let projectName = "Project1"
+        let project = Project1V2(name: projectName, team: team)
+        let statement = InsertStatement(model: project, modelSchema: project.schema)
+
+        let expectedStatement = """
+        insert into "Project1V2" ("id", "createdAt", "name", "updatedAt", "project1V2TeamId")
+        values (?, ?, ?, ?, ?)
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+
+        let variables = statement.variables
+        XCTAssertEqual(variables[2] as? String, projectName)
+        XCTAssertEqual(variables[4] as? String, team.id)
     }
 
     // MARK: - Update Statements
