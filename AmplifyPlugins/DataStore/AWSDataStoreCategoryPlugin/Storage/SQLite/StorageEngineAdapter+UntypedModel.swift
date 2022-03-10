@@ -11,6 +11,11 @@ import SQLite
 extension SQLiteStorageEngineAdapter {
 
     func save(untypedModel: Model, completion: DataStoreCallback<Model>) {
+        guard let connection = connection else {
+            completion(.failure(.nilSQLiteConnection()))
+            return
+        }
+
         do {
             let modelName: ModelName
             if let jsonModel = untypedModel as? JSONValueHolder,
@@ -46,6 +51,10 @@ extension SQLiteStorageEngineAdapter {
     func query(modelSchema: ModelSchema,
                predicate: QueryPredicate? = nil,
                completion: DataStoreCallback<[Model]>) {
+        guard let connection = connection else {
+            completion(.failure(.nilSQLiteConnection()))
+            return
+        }
         do {
             let statement = SelectStatement(from: modelSchema, predicate: predicate)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
