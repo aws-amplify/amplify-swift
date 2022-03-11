@@ -8,8 +8,8 @@
 import Amplify
 
 class SortedList<ModelType: Model> {
-    var sortedModels: [ModelType]
-    var modelIds: Set<Model.Identifier>
+    private(set) var sortedModels: [ModelType]
+    private(set) var modelIds: Set<Model.Identifier>
     private let sortInput: [QuerySortDescriptor]?
     private let modelSchema: ModelSchema
 
@@ -20,10 +20,19 @@ class SortedList<ModelType: Model> {
         self.modelSchema = modelSchema
     }
 
+    /// Sets the internal data structures to the list of models. `sortedModels` should already be sorted to efficiently
+    /// update the internal instructures of `SortedList`. If `sortedModels` is not sorted, then the subsequent
+    /// methods used on the data structure will have adverse consequences, for example adding a model assumes the list
+    /// is already sorted (since it performs a binary search insertion).
+    func set(sortedModels: [ModelType]) {
+        self.sortedModels = sortedModels
+        modelIds = Set(sortedModels.map { $0.id })
+    }
+
     /// Apply the incoming `model` to the sorted array based on the mutation type. This logic accounts for duplicate
     /// events since identical events may have different sources (local and remote). When the mutation type is delete,
-    /// remove it if it exists in the array. When create/update and it has an sort order, then remove and add it back in the
-    /// correct sort order. if there is no sort order, replace it.
+    /// remove it if it exists in the array. When create/update and it has an sort order, then remove and add it back in
+    /// the correct sort order. if there is no sort order, replace it.
     /// Return `true` if something occured (added, replaced, deleted), otherwise `false`
     @discardableResult func apply(model: ModelType, mutationType: MutationEvent.MutationType) -> Bool {
         if mutationType == MutationEvent.MutationType.delete {
@@ -86,6 +95,12 @@ class SortedList<ModelType: Model> {
             sortedModels.append(model)
             modelIds.insert(model.id)
         }
+    }
+
+    /// Removes the models in the list
+    func reset() {
+        sortedModels.removeAll()
+        modelIds.removeAll()
     }
 }
 

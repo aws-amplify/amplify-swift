@@ -195,7 +195,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
                 self.observeQueryStarted = false
             }
             self.log.verbose("Resetting state")
-            self.currentItems.sortedModels.removeAll()
+            self.currentItems.reset()
             self.itemsChangedSink = nil
             self.batchItemsChangedSink = nil
         }
@@ -249,7 +249,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
 
                 switch queryResult {
                 case .success(let queriedModels):
-                    currentItems.sortedModels = queriedModels
+                    currentItems.set(sortedModels: queriedModels)
                     sendSnapshot()
                 case .failure(let error):
                     self.passthroughPublisher.send(completion: .failure(error))

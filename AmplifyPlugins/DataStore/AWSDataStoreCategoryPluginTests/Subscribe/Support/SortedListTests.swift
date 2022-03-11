@@ -16,6 +16,24 @@ import Combine
 
 class SortedListTests: XCTestCase {
 
+    func testSortedListSetAndReset() {
+        let posts = [createPost(id: "1", rating: 5.0),
+                     createPost(id: "2", rating: 5.0),
+                     createPost(id: "3", rating: 5.0),
+                     createPost(id: "4", rating: 5.0)]
+
+        let list = SortedList<Post>(sortInput: [QuerySortBy.ascending(Post.keys.rating).sortDescriptor],
+                                    modelSchema: Post.schema)
+        list.set(sortedModels: posts)
+
+        assertPosts(list.sortedModels, expectedIds: ["1", "2", "3", "4"])
+        XCTAssertEqual(list.modelIds.count, 4)
+
+        list.reset()
+        XCTAssertTrue(list.sortedModels.isEmpty)
+        XCTAssertTrue(list.modelIds.isEmpty)
+    }
+
     func testSortedListSingleSort() {
         let posts = [createPost(id: "1"),
                      createPost(id: "2"),
@@ -24,15 +42,18 @@ class SortedListTests: XCTestCase {
         let sortInput = [QuerySortBy.ascending(Post.keys.id).sortDescriptor]
         let list = SortedList<Post>(sortInput: sortInput,
                                     modelSchema: Post.schema)
-        list.sortedModels = posts
+
+        list.set(sortedModels: posts)
 
         // insert into the middle of the sorted list
         list.add(model: createPost(id: "3"), sortInputs: sortInput)
         assertPosts(list.sortedModels, expectedIds: ["1", "2", "3", "5", "6"])
+        XCTAssertEqual(list.modelIds.count, 5)
 
         // insert into the middle
         list.add(model: createPost(id: "4"), sortInputs: sortInput)
         assertPosts(list.sortedModels, expectedIds: ["1", "2", "3", "4", "5", "6"])
+        XCTAssertEqual(list.modelIds.count, 6)
 
         // insert at the beginning
         list.add(model: createPost(id: "0"), sortInputs: sortInput)
@@ -68,7 +89,7 @@ class SortedListTests: XCTestCase {
                          QuerySortBy.ascending(Post.keys.id).sortDescriptor]
         let list = SortedList<Post>(sortInput: sortInput,
                                     modelSchema: Post.schema)
-        list.sortedModels = posts
+        list.set(sortedModels: posts)
 
         // After id: "1", rating: 5.0
         list.add(model: createPost(id: "1", rating: 10.0), sortInputs: sortInput)
@@ -107,7 +128,7 @@ class SortedListTests: XCTestCase {
         let sortInput = [QuerySortBy.ascending(Post.keys.rating).sortDescriptor]
         let list = SortedList<Post>(sortInput: [QuerySortBy.ascending(Post.keys.rating).sortDescriptor],
                                     modelSchema: Post.schema)
-        list.sortedModels = posts
+        list.set(sortedModels: posts)
 
         // Since this is a binary search, the first index where the predicate returns `nil` is the middle index
         list.add(model: createPost(id: "5", rating: 5.0), sortInputs: sortInput)
