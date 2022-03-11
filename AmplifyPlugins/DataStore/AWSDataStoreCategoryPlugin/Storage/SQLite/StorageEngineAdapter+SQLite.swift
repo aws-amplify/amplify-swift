@@ -14,8 +14,8 @@ import AWSPluginsCore
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.
 final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
-    internal var connection: Connection?
-    private var dbFilePath: URL?
+    var connection: Connection?
+    var dbFilePath: URL?
     static let dbVersionKey = "com.amazonaws.DataStore.dbVersion"
 
     // TODO benchmark whether a SELECT FROM FOO WHERE ID IN (1, 2, 3...) performs measurably
