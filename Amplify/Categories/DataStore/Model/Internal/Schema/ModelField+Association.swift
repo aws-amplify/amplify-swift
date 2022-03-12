@@ -108,6 +108,18 @@ public enum ModelAssociation {
     public static func belongsTo(associatedWith: CodingKey?, targetName: String?) -> ModelAssociation {
         return .belongsTo(associatedFieldName: associatedWith?.stringValue, targetName: targetName)
     }
+
+    /// Convenience method to access the `targetName` for those associations that have one (currently `.belongsTo` and `.hasOne`).
+    /// Returns `nil` for associations that don't have an explicit target name.
+    public func targetName() -> String? {
+        switch self {
+        case .belongsTo(_, let targetName),
+                .hasOne(_, let targetName):
+            return targetName
+        case .hasMany:
+            return nil
+        }
+    }
 }
 
 extension ModelField {

@@ -17,8 +17,7 @@ extension Model {
     /// used as the `input` of GraphQL related operations.
     func graphQLInputForMutation(_ modelSchema: ModelSchema) -> GraphQLInput {
         var input: GraphQLInput = [:]
-        modelSchema.fields.forEach {
-            let modelField = $0.value
+        modelSchema.sortedFields.forEach { modelField in
 
             // When the field is read-only don't add it to the GraphQL input object
             if modelField.isReadOnly {
@@ -93,8 +92,7 @@ extension Model {
     private func fixHasOneAssociationsWithExplicitFieldOnModel(_ input: GraphQLInput,
                                                                modelSchema: ModelSchema) -> GraphQLInput {
         var input = input
-        modelSchema.fields.forEach {
-            let modelField = $0.value
+        modelSchema.sortedFields.forEach { modelField in
             if case .model = modelField.type,
                case .hasOne = modelField.association,
                input.keys.contains(modelField.name) {

@@ -107,12 +107,10 @@ extension ModelSchema {
     /// the owner of a foreign key to another `Model`. Fields that reference the inverse side of
     /// the relationship (i.e. the "one" side of a "one-to-many" relationship) are excluded.
     var columns: [ModelField] {
-        let targetFields = Set(sortedFields.compactMap { $0.association?.targetName() })
-
         // exclude explicit fields that are referenced as an association target
         // (i.e. team: Team => teamId: ID)
         return sortedFields.filter {
-            (!$0.hasAssociation || $0.isForeignKey) && !targetFields.contains($0.name)
+            (!$0.hasAssociation || $0.isForeignKey) && !associationsTargets.contains($0.name)
         }
     }
 
@@ -130,17 +128,5 @@ extension ModelSchema {
             }
         }
         return statement
-    }
-}
-
-extension ModelAssociation {
-    func targetName() -> String? {
-        switch self {
-        case .belongsTo(_, let targetName),
-                .hasOne(_, let targetName):
-            return targetName
-        default:
-            return nil
-        }
     }
 }

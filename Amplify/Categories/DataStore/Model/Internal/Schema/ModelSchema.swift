@@ -87,6 +87,9 @@ public struct ModelSchema {
 
     public let sortedFields: [ModelField]
 
+    /// Lazy view of associations target names
+    public var associationsTargets: Set<ModelFieldName>
+
     public var primaryKey: ModelField {
         guard let primaryKey = fields.first(where: { $1.isPrimaryKey }) else {
             preconditionFailure("Primary Key not defined for `\(name)`")
@@ -110,6 +113,8 @@ public struct ModelSchema {
         self.fields = fields
 
         self.sortedFields = fields.sortedFields()
+
+        self.associationsTargets = Set(sortedFields.compactMap { $0.association?.targetName() })
     }
 
     public func field(withName name: String) -> ModelField? {
