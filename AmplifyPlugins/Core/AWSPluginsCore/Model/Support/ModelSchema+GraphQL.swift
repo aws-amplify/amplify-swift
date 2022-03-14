@@ -49,7 +49,7 @@ extension ModelSchema {
     /// The list of fields formatted for GraphQL usage.
     var graphQLFields: [ModelField] {
         sortedFields.filter { field in
-            !field.hasAssociation || field.isAssociationOwner /*&& !associationsTargets.contains(field.name)*/
+            !field.hasAssociation || field.isAssociationOwner
         }
     }
 }
