@@ -1,8 +1,15 @@
 ## Amplify for iOS (Developer Preview)
 <img src="https://s3.amazonaws.com/aws-mobile-hub-images/aws-amplify-logo.png" alt="AWS Amplify" width="550" >
-AWS Amplify provides a declarative and easy-to-use interface across different categories of cloud operations. AWS Amplify goes well with any JavaScript based frontend workflow, and React Native for mobile developers.
 
-Our default implementation works with Amazon Web Services (AWS), but AWS Amplify is designed to be open and pluggable for any custom backend or service.
+AWS Amplify provides a declarative and easy-to-use interface across different categories of cloud operations. Our default implementation works with Amazon Web Services (AWS), but AWS Amplify is designed to be open and pluggable for any custom backend or service.
+
+The Developer Preview of the Amplify iOS Library is now exclusively using Swift and provides developers the ability to add cloud-based Auth, Storage, Data, and APIs to their apps. With this version, Swift developers will be able to debug and contribute to the underlying open-source codebase completely in Swift. We plan to incrementally add more Amplify features including Swift-based language features like structured concurrency.
+
+This developer preview version of Amplify iOS is layered on the [AWS SDK for Swift](https://aws.amazon.com/sdk-for-swift/), which was released as Developer Preview last year. This allows for access to the AWS SDK for Swift for a breadth of service-centric APIs.
+
+You can also quickly get started by using our [Photo Sharing Sample App](https://github.com/aws-amplify/amplify-ios-samples/tree/dev-preview).
+
+We deeply appreciate your feedback on this Developer Preview as we work towards our General Availability launch: [GitHub Discussion](https://github.com/aws-amplify/amplify-ios/discussions/categories/developer-preview) or [File a Bug Report](https://github.com/aws-amplify/amplify-ios/issues/new/choose).
 
 - **API Documentation**
   https://docs.amplify.aws/start/q/integration/ios
