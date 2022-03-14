@@ -16,6 +16,8 @@ class GraphQLUpdateMutationTests: XCTestCase {
     override func setUp() {
         ModelRegistry.register(modelType: Comment.self)
         ModelRegistry.register(modelType: Post.self)
+        ModelRegistry.register(modelType: Record.self)
+        ModelRegistry.register(modelType: RecordCover.self)
     }
 
     override func tearDown() {
@@ -141,6 +143,16 @@ class GraphQLUpdateMutationTests: XCTestCase {
             description
             name
             updatedAt
+            cover {
+              id
+              artist
+              createdAt
+              updatedAt
+              __typename
+              _version
+              _deleted
+              _lastChangedAt
+            }
             __typename
             _version
             _deleted

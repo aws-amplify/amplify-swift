@@ -16,6 +16,10 @@ class GraphQLCreateMutationTests: XCTestCase {
     override func setUp() {
         ModelRegistry.register(modelType: Comment.self)
         ModelRegistry.register(modelType: Post.self)
+        ModelRegistry.register(modelType: Project2V2.self)
+        ModelRegistry.register(modelType: Team2V2.self)
+        ModelRegistry.register(modelType: Record.self)
+        ModelRegistry.register(modelType: RecordCover.self)
     }
 
     override func tearDown() {
@@ -236,6 +240,66 @@ class GraphQLCreateMutationTests: XCTestCase {
         XCTAssertEqual(input["commentPostId"] as? String, post.id)
     }
 
+    /// - Given: a `Model` instance
+    /// - When:
+    ///   - the model is of type `Project2V2`
+    ///   - the model has an `hasOne` associations
+    ///   - the mutation is of type `.create`
+    /// - Then:
+    ///   - check if the generated GraphQL document is a valid mutation:
+    ///     - it is named `CreateProject2`
+    ///     - it contains an `input` of type `CreateProject2V2Input`
+    ///     - it has a list of fields with a `teamId`
+    func testCreateGraphQLMutationFromModelWithHasOneAssociationWithSyncEnabled() {
+        let team = Team1V2(name: "team1v2")
+        let project = Project1V2(name: "project1v2", team: team)
+
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Project2V2.schema,
+                                                               operationType: .mutation)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
+        documentBuilder.add(decorator: ModelDecorator(model: project))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        let document = documentBuilder.build()
+        let expectedQueryDocument = """
+        mutation CreateProject2V2($input: CreateProject2V2Input!) {
+          createProject2V2(input: $input) {
+            id
+            createdAt
+            name
+            teamID
+            updatedAt
+            team {
+              id
+              createdAt
+              name
+              updatedAt
+              __typename
+              _version
+              _deleted
+              _lastChangedAt
+            }
+            __typename
+            _version
+            _deleted
+            _lastChangedAt
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "createProject2V2")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        guard let input = variables["input"] as? GraphQLInput else {
+            XCTFail("Variables should contain a valid input")
+            return
+        }
+        XCTAssertEqual(input["id"] as? String, project.id)
+        XCTAssertEqual(input["name"] as? String, project.name)
+        XCTAssertEqual(input["teamID"] as? String, team.id)
+    }
+
     func testCreateGraphQLMutationFromModelWithReadonlyFields() {
         let recordCover = RecordCover(artist: "artist")
         let record = Record(name: "name", description: "description", cover: recordCover)
@@ -254,6 +318,16 @@ class GraphQLCreateMutationTests: XCTestCase {
             description
             name
             updatedAt
+            cover {
+              id
+              artist
+              createdAt
+              updatedAt
+              __typename
+              _version
+              _deleted
+              _lastChangedAt
+            }
             __typename
             _version
             _deleted

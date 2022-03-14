@@ -16,6 +16,8 @@ class GraphQLGetQueryTests: XCTestCase {
     override func setUp() {
         ModelRegistry.register(modelType: Comment.self)
         ModelRegistry.register(modelType: Post.self)
+        ModelRegistry.register(modelType: Record.self)
+        ModelRegistry.register(modelType: RecordCover.self)
     }
 
     /// - Given: a `Model` type
@@ -198,6 +200,13 @@ class GraphQLGetQueryTests: XCTestCase {
             description
             name
             updatedAt
+            cover {
+              id
+              artist
+              createdAt
+              updatedAt
+              __typename
+            }
             __typename
           }
         }
