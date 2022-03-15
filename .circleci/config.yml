@@ -84,12 +84,6 @@ commands:
       - store_artifacts:
           path: artifacts
 
-  generate_api_docs:
-    description: generate API documentation using jazzy
-    steps:
-      - run:
-          name: Jazzy API doc gen
-          command: bash ~/amplify-ios/CircleciScripts/jazzy_doc_gen.sh
 
 jobs:
   checkout_code:
@@ -210,6 +204,16 @@ jobs:
           path: build/reports
       - upload_artifacts
 
+  generate_api_docs:
+    <<: *defaults
+    steps:
+      - *restore_repo
+      - restore_gems
+      - check_bundle
+      - run:
+          name: Jazzy API doc generation
+          command: bash ~/amplify-ios/CircleciScripts/jazzy_doc_gen.sh
+
   deploy:
     <<: *defaults
     parameters:
@@ -228,7 +232,6 @@ jobs:
           name: Release pods
           command: bundle exec fastlane << parameters.lane >>
           no_output_timeout: 60m
-      - generate_api_docs
 
 deploy_requires: &deploy_requires
   requires:
@@ -331,3 +334,12 @@ workflows:
             branches:
               only:
                 - release
+      - generate_api_docs:
+          name: Generate api documentation
+          requires:
+            - deploy stable
+          filters:
+            branches:
+              only:
+                - release
+          
