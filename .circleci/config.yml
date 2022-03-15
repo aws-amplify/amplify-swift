@@ -337,9 +337,5 @@ workflows:
       - generate_api_docs:
           name: Generate api documentation
           requires:
-            - deploy
-          filters:
-            branches:
-              only:
-                - release
+            - install_gems
           
