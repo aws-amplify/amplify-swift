@@ -495,6 +495,6 @@ extension Project1V2: Equatable {
     public static func == (lhs: Project1V2, rhs: Project1V2) -> Bool {
         return lhs.id == rhs.id
         && lhs.name == rhs.name
-        // && lhs.project1V2TeamId == rhs.project1V2TeamId
+        && lhs.team == rhs.team
     }
 }
