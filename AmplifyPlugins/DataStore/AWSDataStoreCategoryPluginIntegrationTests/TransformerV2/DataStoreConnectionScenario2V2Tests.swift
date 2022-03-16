@@ -101,8 +101,12 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         try startAmplifyAndWaitForSync()
         let team = Team2V2(name: "name1")
         let anotherTeam = Team2V2(name: "name1")
-        var project = Project2V2(teamID: team.id, team: team)
-        let expectedUpdatedProject = Project2V2(id: project.id, name: project.name, teamID: anotherTeam.id)
+        var project = Project2V2(teamID: team.id,
+                                 team: team)
+        let expectedUpdatedProject = Project2V2(id: project.id,
+                                                name: project.name,
+                                                teamID: anotherTeam.id,
+                                                team: anotherTeam)
         let syncUpdatedProjectReceived = expectation(description: "received updated project from sync path")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in

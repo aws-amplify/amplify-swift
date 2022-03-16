@@ -120,7 +120,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
 
             if let syncedUpdatedProject = try? mutationEvent.decodeModel() as? Project1V2,
                 syncedUpdatedProject.id == expectedUpdatedProject.id,
-               syncedUpdatedProject.project1V2TeamId == expectedUpdatedProject.project1V2TeamId {
+               syncedUpdatedProject.team?.id == expectedUpdatedProject.team?.id {
                 syncUpdatedProjectReceived.fulfill()
             }
         }
@@ -270,7 +270,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Could not save team and project")
             return
         }
-        let createReceived = expectation(description: "received created items from cloud")
+        let createReceived = expectation(description: "Received created items from cloud")
         createReceived.expectedFulfillmentCount = 2 // 1 project and 1 team
         let deleteReceived = expectation(description: "Delete notification received")
         deleteReceived.expectedFulfillmentCount = 2 // 1 project and 1 team
@@ -495,6 +495,6 @@ extension Project1V2: Equatable {
     public static func == (lhs: Project1V2, rhs: Project1V2) -> Bool {
         return lhs.id == rhs.id
         && lhs.name == rhs.name
-        && lhs.project1V2TeamId == rhs.project1V2TeamId
+        // && lhs.project1V2TeamId == rhs.project1V2TeamId
     }
 }
