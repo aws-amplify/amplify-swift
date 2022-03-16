@@ -39,7 +39,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     let validAuthPluginKey: String
 
     var storageEngine: StorageEngineBehavior!
-    var storageEngineInitSemaphore: DispatchSemaphore
+    var storageEngineInitQueue = DispatchQueue(label: "AWSDataStorePlugin.storageEngineInitQueue")
     var storageEngineBehaviorFactory: StorageEngineBehaviorFactory
 
     var iStorageEngineSink: Any?
@@ -73,7 +73,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             self.dataStorePublisher = nil
         }
         self.dispatchedModelSyncedEvents = [:]
-        self.storageEngineInitSemaphore = DispatchSemaphore(value: 1)
     }
 
     /// Internal initializer for testing
@@ -94,7 +93,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.dispatchedModelSyncedEvents = [:]
         self.validAPIPluginKey = validAPIPluginKey
         self.validAuthPluginKey = validAuthPluginKey
-        self.storageEngineInitSemaphore = DispatchSemaphore(value: 1)
     }
 
     /// By the time this method gets called, DataStore will already have invoked
@@ -109,23 +107,44 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         ModelListDecoderRegistry.registerDecoder(DataStoreListDecoder.self)
     }
 
-    func reinitStorageEngineIfNeeded(completion: @escaping DataStoreCallback<Void> = {_ in}) {
-        storageEngineInitSemaphore.wait()
+    /// Initializes the underlying storage engine
+    /// - Returns: success if the engine is successfully initialized or
+    ///            a failure with a DataStoreError
+    func initStorageEngine() -> DataStoreResult<Void> {
+        storageEngineInitQueue.sync {
+            if storageEngine != nil {
+                return .successfulVoid
+            }
+            var result: DataStoreResult<Void>
+            do {
+                if #available(iOS 13.0, *) {
+                    if self.dataStorePublisher == nil {
+                        self.dataStorePublisher = DataStorePublisher()
+                    }
+                }
+                try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
+                try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
+                try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
+                result = .successfulVoid
+            } catch {
+                result = .failure(causedBy: error)
+                log.error(error: error)
+            }
+            return result
+        }
+    }
+
+    /// Initializes the underlying storage engine and starts the syncing process
+    /// - Parameter completion: completion handler called with a success if the sync process started
+    ///                         or with a DataStoreError in case of failure
+    func initStorageEngineAndStartSync(completion: @escaping DataStoreCallback<Void> = { _ in }) {
         if storageEngine != nil {
-            storageEngineInitSemaphore.signal()
             completion(.successfulVoid)
             return
         }
-        do {
-            if #available(iOS 13.0, *) {
-                if self.dataStorePublisher == nil {
-                    self.dataStorePublisher = DataStorePublisher()
-                }
-            }
-            try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
-            try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
-            try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
-            storageEngineInitSemaphore.signal()
+
+        switch initStorageEngine() {
+        case .success:
             storageEngine.startSync { result in
 
                 self.operationQueue.operations.forEach { operation in
@@ -135,10 +154,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
                 }
                 completion(result)
             }
-        } catch {
-            storageEngineInitSemaphore.signal()
+        case .failure(let error):
             completion(.failure(causedBy: error))
-            log.error(error: error)
         }
     }
 

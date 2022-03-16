@@ -460,4 +460,33 @@ class AWSAPICategoryPluginTests: XCTestCase {
             XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
         }
     }
+
+    /// - Given: Datastore plugin is NOT initialized
+    /// - When:
+    ///     - plugin.clear() is called
+    /// - Then: StorageEngine.clear is called
+    func testClearStorageWhenEngineIsNotStarted() {
+        let storageEngine = MockStorageEngineBehavior()
+        let pluginClearExpectation = expectation(description: "DataStore plugin .clear should called")
+        let storageClearExpectation = expectation(description: "StorageEngine .clear should be called")
+        storageEngine.responders[.clear] = ClearResponder { _ in
+            storageClearExpectation.fulfill()
+        }
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+            return storageEngine
+        }
+        let dataStorePublisher = DataStorePublisher()
+        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
+                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+                                        dataStorePublisher: dataStorePublisher,
+                                        validAPIPluginKey: "MockAPICategoryPlugin",
+                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+
+        plugin.clear {
+            if case .success = $0 {
+                pluginClearExpectation.fulfill()
+            }
+        }
+        waitForExpectations(timeout: 1.0)
+    }
 }
