@@ -21,6 +21,8 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
     var subscriptionItem: SubscriptionItem?
     var apiAuthProviderFactory: APIAuthProviderFactory
 
+    private let subscriptionQueue = DispatchQueue(label: "AWSGraphQLSubscriptionOperation.subscriptionQueue")
+
     init(request: GraphQLOperationRequest<R>,
          pluginConfig: AWSAPICategoryPluginConfiguration,
          subscriptionConnectionFactory: SubscriptionConnectionFactory,
@@ -42,11 +44,14 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
     }
 
     override public func cancel() {
-        if let subscriptionItem = subscriptionItem, let subscriptionConnection = subscriptionConnection {
-            subscriptionConnection.unsubscribe(item: subscriptionItem)
-            let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.disconnected)
-            dispatchInProcess(data: subscriptionEvent)
+        subscriptionQueue.sync {
+            if let subscriptionItem = subscriptionItem, let subscriptionConnection = subscriptionConnection {
+                subscriptionConnection.unsubscribe(item: subscriptionItem)
+                let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.disconnected)
+                dispatchInProcess(data: subscriptionEvent)
+            }
         }
+
         super.cancel()
         dispatch(result: .successfulVoid)
         finish()
@@ -90,27 +95,28 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         let pluginOptions = request.options.pluginOptions as? AWSPluginOptions
 
         // Retrieve the subscription connection
-        do {
-            subscriptionConnection = try subscriptionConnectionFactory
-                .getOrCreateConnection(for: endpointConfig,
-                                       authService: authService,
-                                       authType: pluginOptions?.authType,
-                                       apiAuthProviderFactory: apiAuthProviderFactory)
-        } catch {
-            let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
-            dispatch(result: .failure(error))
-            finish()
-            return
+        subscriptionQueue.sync {
+            do {
+                subscriptionConnection = try subscriptionConnectionFactory
+                    .getOrCreateConnection(for: endpointConfig,
+                                              authService: authService,
+                                              authType: pluginOptions?.authType,
+                                              apiAuthProviderFactory: apiAuthProviderFactory)
+            } catch {
+                let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
+                dispatch(result: .failure(error))
+                finish()
+                return
+            }
+
+            // Create subscription
+
+            subscriptionItem = subscriptionConnection?.subscribe(requestString: request.document,
+                                                                 variables: request.variables,
+                                                                 eventHandler: { [weak self] event, _ in
+                self?.onAsyncSubscriptionEvent(event: event)
+            })
         }
-
-        // Create subscription
-
-        subscriptionItem = subscriptionConnection?.subscribe(requestString: request.document,
-                                                             variables: request.variables,
-                                                             eventHandler: { [weak self] event, _ in
-            self?.onAsyncSubscriptionEvent(event: event)
-        })
-
     }
 
     private func onAsyncSubscriptionEvent(event: SubscriptionItemEvent) {

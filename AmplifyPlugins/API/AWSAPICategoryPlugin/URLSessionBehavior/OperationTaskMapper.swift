@@ -69,6 +69,10 @@ class OperationTaskMapper {
         OperationTaskMapper.concurrencyQueue.sync {
             operations.values.forEach { $0.cancelOperation() }
             tasks.values.forEach { $0.cancel() }
+            operations = [:]
+            tasks = [:]
+            operationIdsByTaskId = [:]
+            taskIdsByOperationId = [:]
         }
     }
 
