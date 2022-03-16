@@ -26,7 +26,6 @@ jobs:
         with:
           resource_subfolder: NA
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          external_id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 

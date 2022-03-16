@@ -8,9 +8,6 @@ inputs:
   aws_role_to_assume:
     required: true
     type: string
-  external_id:
-    required: true
-    type: string
   aws_region:
     required: true
     type: string
@@ -29,7 +26,6 @@ runs:
       uses: aws-actions/configure-aws-credentials@05b148adc31e091bafbaf404f745055d4d3bc9d2 # Pin to 1.6.1
       with:
           role-to-assume: ${{ inputs.aws_role_to_assume }}
-          role-external-id: ${{ inputs.external_id }}
           aws-region: ${{ inputs.aws_region }}
           role-session-name: IntegrationRoleSessions
           role-duration-seconds: 900
