@@ -180,24 +180,25 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     }
 
     public func stop(completion: @escaping DataStoreCallback<Void>) {
-        storageEngineInitSemaphore.wait()
-        operationQueue.operations.forEach { operation in
-            if let operation = operation as? DataStoreObserveQueryOperation {
-                operation.resetState()
+        storageEngineInitQueue.sync {
+            operationQueue.operations.forEach { operation in
+                if let operation = operation as? DataStoreObserveQueryOperation {
+                    operation.resetState()
+                }
             }
-        }
-        dispatchedModelSyncedEvents.forEach { _, dispatchedModelSynced in
-            dispatchedModelSynced.set(false)
-        }
-        if storageEngine == nil {
-            storageEngineInitSemaphore.signal()
-            completion(.successfulVoid)
-            return
-        }
-        storageEngineInitSemaphore.signal()
-        storageEngine.stopSync { result in
-            self.storageEngine = nil
-            completion(result)
+            dispatchedModelSyncedEvents.forEach { _, dispatchedModelSynced in
+                dispatchedModelSynced.set(false)
+            }
+            if storageEngine == nil {
+
+                completion(.successfulVoid)
+                return
+            }
+
+            storageEngine.stopSync { result in
+                self.storageEngine = nil
+                completion(result)
+            }
         }
     }
 
@@ -207,24 +208,23 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
             return
         }
 
-        storageEngineInitSemaphore.wait()
-        operationQueue.operations.forEach { operation in
-            if let operation = operation as? DataStoreObserveQueryOperation {
-                operation.resetState()
+        storageEngineInitQueue.sync {
+            operationQueue.operations.forEach { operation in
+                if let operation = operation as? DataStoreObserveQueryOperation {
+                    operation.resetState()
+                }
             }
-        }
-        dispatchedModelSyncedEvents.forEach { _, dispatchedModelSynced in
-            dispatchedModelSynced.set(false)
-        }
-        if storageEngine == nil {
-            storageEngineInitSemaphore.signal()
-            completion(.successfulVoid)
-            return
-        }
-        storageEngineInitSemaphore.signal()
-        storageEngine.clear { result in
-            self.storageEngine = nil
-            completion(result)
+            dispatchedModelSyncedEvents.forEach { _, dispatchedModelSynced in
+                dispatchedModelSynced.set(false)
+            }
+            if storageEngine == nil {
+                completion(.successfulVoid)
+                return
+            }
+            storageEngine.clear { result in
+                self.storageEngine = nil
+                completion(result)
+            }
         }
     }
 

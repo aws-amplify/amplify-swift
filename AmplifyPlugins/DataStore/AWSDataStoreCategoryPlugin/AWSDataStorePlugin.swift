@@ -39,7 +39,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     let validAuthPluginKey: String
 
     var storageEngine: StorageEngineBehavior!
-    var storageEngineInitSemaphore: DispatchSemaphore
+    var storageEngineInitQueue = DispatchQueue(label: "AWSDataStorePlugin.storageEngineInitQueue")
     var storageEngineBehaviorFactory: StorageEngineBehaviorFactory
 
     var iStorageEngineSink: Any?
@@ -73,7 +73,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             self.dataStorePublisher = nil
         }
         self.dispatchedModelSyncedEvents = [:]
-        self.storageEngineInitSemaphore = DispatchSemaphore(value: 1)
     }
 
     /// Internal initializer for testing
@@ -94,7 +93,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.dispatchedModelSyncedEvents = [:]
         self.validAPIPluginKey = validAPIPluginKey
         self.validAuthPluginKey = validAuthPluginKey
-        self.storageEngineInitSemaphore = DispatchSemaphore(value: 1)
     }
 
     /// By the time this method gets called, DataStore will already have invoked
@@ -113,28 +111,27 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// - Returns: success if the engine is successfully initialized or
     ///            a failure with a DataStoreError
     func initStorageEngine() -> DataStoreResult<Void> {
-        storageEngineInitSemaphore.wait()
-        if storageEngine != nil {
-            storageEngineInitSemaphore.signal()
-            return .successfulVoid
-        }
-        var result: DataStoreResult<Void>
-        do {
-            if #available(iOS 13.0, *) {
-                if self.dataStorePublisher == nil {
-                    self.dataStorePublisher = DataStorePublisher()
-                }
+        storageEngineInitQueue.sync {
+            if storageEngine != nil {
+                return .successfulVoid
             }
-            try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
-            try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
-            try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
-            result = .successfulVoid
-        } catch {
-            result = .failure(causedBy: error)
-            log.error(error: error)
+            var result: DataStoreResult<Void>
+            do {
+                if #available(iOS 13.0, *) {
+                    if self.dataStorePublisher == nil {
+                        self.dataStorePublisher = DataStorePublisher()
+                    }
+                }
+                try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
+                try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
+                try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
+                result = .successfulVoid
+            } catch {
+                result = .failure(causedBy: error)
+                log.error(error: error)
+            }
+            return result
         }
-        storageEngineInitSemaphore.signal()
-        return result
     }
 
     /// Initializes the underlying storage engine and starts the syncing process
