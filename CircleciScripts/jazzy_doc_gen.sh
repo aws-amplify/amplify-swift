@@ -17,6 +17,7 @@ generate_docs() {
     git checkout gh-pages
     git reset --hard origin/release
     pod install
+    gem install -n /usr/local/bin jazzy
     jazzy && ln -s ../readme-images docs
     git add docs
     git commit -m "chore: update API docs [skip ci]"
