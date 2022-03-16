@@ -107,11 +107,20 @@ extension ModelSchema {
     /// the owner of a foreign key to another `Model`. Fields that reference the inverse side of
     /// the relationship (i.e. the "one" side of a "one-to-many" relationship) are excluded.
     var columns: [ModelField] {
-        // exclude explicit fields that are referenced as an association target
-        // (i.e. team: Team => teamId: ID)
         return sortedFields.filter {
-            (!$0.hasAssociation || $0.isForeignKey) && !associationsTargets.contains($0.name)
+            !$0.hasAssociation || $0.isForeignKey
         }
+    }
+
+    /// This is a temporary workaround to circumvent a Codegen issue where
+    /// both the field representing an association and its target are explicitly emitted.
+    /// Warning: don't use it unless necessary, it will be removed in future releases.
+    /// Returns fields that represent actual columns on the SQL table.
+    /// It also exclude explicit fields that are referenced as an association target
+    /// (i.e. team: Team => teamId: ID).
+    var columnsUnique: [ModelField] {
+        return columns
+            .filter { !associationsTargets.contains($0.name) }
     }
 
     /// Filter the fields that represent foreign keys.

@@ -16,11 +16,12 @@ struct InsertStatement: SQLStatement {
 
     init(model: Model, modelSchema: ModelSchema) {
         self.modelSchema = modelSchema
-        self.variables = model.sqlValues(for: modelSchema.columns, modelSchema: modelSchema)
+        self.variables = model.sqlValues(for: modelSchema.columnsUnique,
+                                        modelSchema: modelSchema)
     }
 
     var stringValue: String {
-        let fields = modelSchema.columns
+        let fields = modelSchema.columnsUnique
         let columns = fields.map { $0.columnName() }
         var statement = "insert into \"\(modelSchema.name)\" "
         statement += "(\(columns.joined(separator: ", ")))\n"

@@ -28,12 +28,7 @@ struct SelectStatementMetadata {
         let tableName = modelSchema.name
         var columnMapping: ColumnMapping = [:]
         var columns = fields.map { field -> String in
-            /// use the target name instead of the actual field name
-            /// when a field represent a model association (i.e. team: Team => `teamId`)
-            let fieldName = field.hasAssociation
-            ? field.association?.targetName() ?? field.name
-            : field.name
-            columnMapping.updateValue((modelSchema, field), forKey: fieldName)
+            columnMapping.updateValue((modelSchema, field), forKey: field.name)
             return field.columnName(forNamespace: rootNamespace) + " as " + field.columnAlias()
         }
 
