@@ -1,5 +1,22 @@
 # Changelog
 ## Unreleased
+## 1.22.0 (2022-03-16)
+
+### Features
+
+- **DataStore**: Create SQLite indexes when setting up datastore (#1634)
+
+### Bug Fixes
+
+- **DataStore**: Clear API should delete local store (#1685)
+- **API**: DataRace - subscription cancel and OperationTaskMapper on reset (#1684)
+- **DataStore**: Debugging - Access DB File path (#1678)
+- **DataStore**: ObserveQuery InitialQuery empty modelIds set (#1663)
+- **DataStore**: FatalError accessing SQLite connection (#1671)
+- **DataStore**: add logging with model name for failed subscription request (#1665)
+- **DataStore**: enable thread sanitzer, fix data races (#1656)
+- **auth**: fix deleteUser Combine support (#1652)
+
 ## 1.21.0 (2022-02-23)
 
 ### Features

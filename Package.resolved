@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
         "state": {
           "branch": null,
-          "revision": "1932e1d6289e9f0c9656cefe6218d5097720bf3f",
-          "version": "1.8.0"
+          "revision": "57d5df1590e9ead5a0c3677ffa8d83688bd48608",
+          "version": "1.9.0"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/aws-amplify/aws-sdk-ios-spm.git",
         "state": {
           "branch": null,
-          "revision": "2fbb2199cee0124c584e58c5753c05e10e7d7348",
-          "version": "2.27.1"
+          "revision": "02704e61f9e6ad3588b744c65f2c56624932b609",
+          "version": "2.27.3"
         }
       },
       {
