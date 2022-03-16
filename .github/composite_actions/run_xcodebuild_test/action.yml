@@ -11,6 +11,10 @@ inputs:
   scheme:
     required: true
     type: string
+  simulator:
+    required: false
+    type: string
+    default: 'platform=iOS Simulator,name=iPhone 13,OS=15.0'
 
 runs:
   using: "composite"
@@ -19,12 +23,10 @@ runs:
       run: |
         cd ${{ inputs.project_path }}
         pod install
-        ls ~/.cocoapods
-        ls ~/Library/Caches/CocoaPods
       shell: bash
 
     - name: Test ${{ inputs.scheme }}
       run: |
         cd ${{ inputs.project_path }} 
-        xcodebuild test -workspace ${{ inputs.workspace }} -scheme ${{ inputs.scheme }} -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13,OS=15.0' | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]} 
+        xcodebuild test -workspace ${{ inputs.workspace }} -scheme ${{ inputs.scheme }} -sdk iphonesimulator -destination ${{ inputs.simulator }} | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]} 
       shell: bash
