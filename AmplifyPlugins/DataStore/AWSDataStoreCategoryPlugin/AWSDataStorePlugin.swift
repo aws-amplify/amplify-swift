@@ -109,13 +109,16 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         ModelListDecoderRegistry.registerDecoder(DataStoreListDecoder.self)
     }
 
-    func reinitStorageEngineIfNeeded(completion: @escaping DataStoreCallback<Void> = {_ in}) {
+    /// Initializes the underlying storage engine
+    /// - Returns: success if the engine is successfully initialized or
+    ///            a failure with a DataStoreError
+    func initStorageEngine() -> DataStoreResult<Void> {
         storageEngineInitSemaphore.wait()
         if storageEngine != nil {
             storageEngineInitSemaphore.signal()
-            completion(.successfulVoid)
-            return
+            return .successfulVoid
         }
+        var result: DataStoreResult<Void>
         do {
             if #available(iOS 13.0, *) {
                 if self.dataStorePublisher == nil {
@@ -125,7 +128,26 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
             try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
             try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
-            storageEngineInitSemaphore.signal()
+            result = .successfulVoid
+        } catch {
+            result = .failure(causedBy: error)
+            log.error(error: error)
+        }
+        storageEngineInitSemaphore.signal()
+        return result
+    }
+
+    /// Initializes the underlying storage engine and starts the syncing process
+    /// - Parameter completion: completion handler called with a success if the sync process started
+    ///                         or with a DataStoreError in case of failure
+    func initStorageEngineAndStartSync(completion: @escaping DataStoreCallback<Void> = { _ in }) {
+        if storageEngine != nil {
+            completion(.successfulVoid)
+            return
+        }
+
+        switch initStorageEngine() {
+        case .success:
             storageEngine.startSync { result in
 
                 self.operationQueue.operations.forEach { operation in
@@ -135,10 +157,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
                 }
                 completion(result)
             }
-        } catch {
-            storageEngineInitSemaphore.signal()
+        case .failure(let error):
             completion(.failure(causedBy: error))
-            log.error(error: error)
         }
     }
 
