@@ -58,7 +58,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
             return
         }
         let saveTeamCompleted = expectation(description: "save team completed")
-        plugin.save(team.model, modelSchema: Team1.schema) { result in
+        plugin.save(team.model, modelSchema: Team2.schema) { result in
             switch result {
             case .success:
                 saveTeamCompleted.fulfill()
