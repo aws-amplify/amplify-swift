@@ -14,7 +14,7 @@ inputs:
   simulator:
     required: false
     type: string
-    default: 'platform=iOS Simulator,name=iPhone 13,OS=15.0'
+    default: '\'platform=iOS Simulator,name=iPhone 13,OS=15.0\''
 
 runs:
   using: "composite"
