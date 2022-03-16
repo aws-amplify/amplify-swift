@@ -14,7 +14,7 @@ inputs:
   simulator:
     required: false
     type: string
-    default: '\'platform=iOS Simulator,name=iPhone 13,OS=15.0\''
+    default: 'platform=iOS Simulator,name=iPhone 13,OS=15.0'
 
 runs:
   using: "composite"
@@ -28,5 +28,5 @@ runs:
     - name: Test ${{ inputs.scheme }}
       run: |
         cd ${{ inputs.project_path }} 
-        xcodebuild test -workspace ${{ inputs.workspace }} -scheme ${{ inputs.scheme }} -sdk iphonesimulator -destination ${{ inputs.simulator }} | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]} 
+        xcodebuild test -workspace ${{ inputs.workspace }} -scheme ${{ inputs.scheme }} -sdk iphonesimulator -destination '${{ inputs.simulator }}' | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]} 
       shell: bash
