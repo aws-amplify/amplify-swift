@@ -36,7 +36,7 @@ extension AWSAuthorizationConfiguration {
                 throw PluginError.pluginConfigurationError(
                     "Could not get `ApiKey` from plugin configuration",
                     """
-                    The specified configuration does not have a string with the key `ApiKey`. Review the \
+                    The specified configuration does not have a string with the key `apiKey`. Review the \
                     configuration and ensure it contains the expected values.
                     """
                 )
