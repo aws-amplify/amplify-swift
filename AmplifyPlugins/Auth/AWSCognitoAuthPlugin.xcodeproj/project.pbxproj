@@ -53,7 +53,6 @@
 		B4136E94256D7B630011210B /* AuthDeviceForgetDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4136E93256D7B630011210B /* AuthDeviceForgetDeviceTests.swift */; };
 		B4136E9A256D7B700011210B /* AuthDeviceRememberDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4136E99256D7B700011210B /* AuthDeviceRememberDeviceTests.swift */; };
 		B415ACFE25CB2A7F0033090D /* AWSCognitoAuthPluginUserDefaultsBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415ACFD25CB2A7F0033090D /* AWSCognitoAuthPluginUserDefaultsBehavior.swift */; };
-		B41B62A12720CAD00004F49D /* AuthSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40F166A24784B3400CDB920 /* AuthSignInHelper.swift */; };
 		B41D0F8A2475A3960049D08D /* AuthHubEventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D0F2C2475A3960049D08D /* AuthHubEventHandler.swift */; };
 		B41D0F8B2475A3960049D08D /* AuthHubEventBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D0F2D2475A3960049D08D /* AuthHubEventBehavior.swift */; };
 		B41D0F8E2475A3960049D08D /* AuthenticationProviderAdapter+SignOut.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D0F322475A3960049D08D /* AuthenticationProviderAdapter+SignOut.swift */; };
@@ -210,7 +209,6 @@
 		B40F165824784AE300CDB920 /* AWSCognitoAuthPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSCognitoAuthPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B40F166724784B3400CDB920 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B40F166824784B3400CDB920 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		B40F166A24784B3400CDB920 /* AuthSignInHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSignInHelper.swift; sourceTree = "<group>"; };
 		B40F166D24784B3400CDB920 /* AuthUserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthUserTests.swift; sourceTree = "<group>"; };
 		B40F166F24784B3400CDB920 /* AuthSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSignUpTests.swift; sourceTree = "<group>"; };
 		B40F167024784B3400CDB920 /* AuthConfirmSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthConfirmSignUpTests.swift; sourceTree = "<group>"; };
@@ -467,7 +465,6 @@
 		B40F166924784B3400CDB920 /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				B40F166A24784B3400CDB920 /* AuthSignInHelper.swift */,
 				B44373A0247C869100DEF43C /* AuthSessionHelper.swift */,
 			);
 			path = Support;
@@ -1400,7 +1397,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B41B62A12720CAD00004F49D /* AuthSignInHelper.swift in Sources */,
 				B40F168624784B3400CDB920 /* AWSAuthBaseTest.swift in Sources */,
 				B40F168724784B3400CDB920 /* AuthDeviceOperationTests.swift in Sources */,
 				B40F168124784B3400CDB920 /* AuthConfirmSignUpTests.swift in Sources */,
