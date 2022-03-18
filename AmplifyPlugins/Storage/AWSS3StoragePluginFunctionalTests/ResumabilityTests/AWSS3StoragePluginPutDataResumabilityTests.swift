@@ -55,6 +55,9 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
         wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         operation.pause()
         wait(for: [completeInvoked, failedInvoked, noProgressAfterPause], timeout: 30)
+        operation.cancel()
+        // TODO: Remove in the future when the plugin no longer depends on the SDK and have addressed this problem.
+        sleep(5)
     }
 
     /// Given: A large data object to upload

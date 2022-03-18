@@ -7,5 +7,5 @@
 
 import Foundation
 class TestCommonConstants {
-    static let networkTimeout = TimeInterval(30)
+    static let networkTimeout = TimeInterval(60)
 }
