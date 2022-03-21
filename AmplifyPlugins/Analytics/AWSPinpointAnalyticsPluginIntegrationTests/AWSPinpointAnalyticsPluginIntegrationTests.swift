@@ -16,14 +16,14 @@ import AWSPinpoint
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
 
-    static let amplifyConfiguration = "AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration"
+    static let amplifyConfiguration = "testconfiguration/AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration"
     static let analyticsPluginKey = "awsPinpointAnalyticsPlugin"
 
     override func setUp() {
         do {
             let config = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: AWSPinpointAnalyticsPluginIntergrationTests.amplifyConfiguration)
-            try Amplify.add(plugin: AWSAuthPlugin())
+            try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSPinpointAnalyticsPlugin())
             try Amplify.configure(config)
         } catch {

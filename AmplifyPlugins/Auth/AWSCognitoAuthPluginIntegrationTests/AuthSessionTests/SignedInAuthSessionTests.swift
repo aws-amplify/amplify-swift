@@ -10,18 +10,21 @@ import XCTest
 @testable import Amplify
 import AWSCognitoAuthPlugin
 import AWSPluginsCore
+import AmplifyTestCommon
 
 class SignedInAuthSessionTests: AWSAuthBaseTest {
 
     override func setUp() {
         super.setUp()
         initializeAmplify()
+        AuthSessionHelper.clearKeychain()
     }
 
     override func tearDown() {
         super.tearDown()
         Amplify.reset()
         sleep(2)
+        AuthSessionHelper.clearKeychain()
     }
 
     /// Test if successful session is retreived after a user signin
