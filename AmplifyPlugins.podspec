@@ -52,7 +52,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'AWSDataStorePlugin' do |ss|
     ss.source_files = 'AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin/**/*.swift'
-    ss.dependency 'SQLite.swift', '0.12.2'
+    ss.dependency 'SQLite.swift', '0.13.2'
   end
 
   s.subspec 'AWSLocationGeoPlugin' do |ss|
