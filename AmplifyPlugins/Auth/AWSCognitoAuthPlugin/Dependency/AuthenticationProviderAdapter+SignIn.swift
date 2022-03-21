@@ -260,7 +260,7 @@ extension AuthenticationProviderAdapter {
                 break
             }
         }
-        if self.isErrorCausedByBadRequest(error) {
+        if isErrorCausedByBadRequest(error) {
             let errorDescription = error._userInfo?["error"]?
                 .description.trimmingCharacters(in: .whitespaces) ?? "unknown error"
             return AuthError.service(errorDescription,
@@ -270,7 +270,7 @@ extension AuthenticationProviderAdapter {
         let authError = AuthErrorHelper.toAuthError(error)
         return authError
     }
-    
+
     private func isErrorCausedByBadRequest(_ error: Error?) -> Bool {
         if let cognitoAuthError = error as NSError?,
                cognitoAuthError.domain == AWSCognitoAuthErrorDomain,

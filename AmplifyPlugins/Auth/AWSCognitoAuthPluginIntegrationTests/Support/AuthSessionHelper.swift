@@ -11,12 +11,19 @@ import AWSCognitoAuthPlugin
 
 struct AuthSessionHelper {
 
+    static func clearKeychain() {
+        let bundleID = Bundle.main.bundleIdentifier
+        let keychain = AWSUICKeyChainStore(service: "\(bundleID!).\(AWSCognitoIdentityUserPool.self)")
+        keychain.removeAllItems()
+    }
+
     static func invalidateSession(username: String) {
         let bundleID = Bundle.main.bundleIdentifier
         let keychain = AWSUICKeyChainStore(service: "\(bundleID!).\(AWSCognitoIdentityUserPool.self)")
-        let namespace = "\(AWSMobileClient.default().userPoolClient!.userPoolConfiguration.clientId).\(username)"
+        let namespace = "\(AWSMobileClient.default().userPoolClient!.userPoolConfiguration.clientId).\(username.lowercased())"
         let expirationKey = "\(namespace).tokenExpiration"
         let refreshTokenKey = "\(namespace).refreshToken"
+
         if keychain[expirationKey] == nil {
             print("No expiration key found in keychain")
         }
