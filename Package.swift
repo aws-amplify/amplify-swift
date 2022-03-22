@@ -316,12 +316,12 @@ let package = Package(
         .package(
             name: "ClientRuntime",
             url: "https://github.com/awslabs/smithy-swift.git",
-            .exact("0.1.3")
+            .exact("0.1.4")
         ),
         .package(
             name: "AWSSwiftSDK",
             url: "https://github.com/awslabs/aws-sdk-swift",
-            .exact("0.1.3")
+            .exact("0.1.4")
         ),
         .package(
             name: "CwlPreconditionTesting",
