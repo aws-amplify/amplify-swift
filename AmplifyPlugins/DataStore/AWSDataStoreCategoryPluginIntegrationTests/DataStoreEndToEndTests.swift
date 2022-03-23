@@ -13,7 +13,6 @@ import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-@available(iOS 13.0, *)
 class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
     func testCreateMutateDelete() throws {
@@ -438,7 +437,6 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     }
 }
 
-@available(iOS 13.0, *)
 extension DataStoreEndToEndTests: DefaultLogger {
 
 }

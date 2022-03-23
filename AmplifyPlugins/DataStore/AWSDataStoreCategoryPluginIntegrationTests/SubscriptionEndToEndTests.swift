@@ -13,7 +13,6 @@ import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-@available(iOS 13.0, *)
 class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
 
     /// - Given: An API-connected DataStore

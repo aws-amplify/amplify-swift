@@ -21,7 +21,6 @@ enum IncomingEventReconciliationQueueEvent {
 /// events for create, update, and delete events initiated by remote systems. In addition to pausing and resuming
 /// automatically-configured subscriptions for models, the queue provides an `offer` method for submitting events
 /// directly from other network events such as mutation callbacks or from base/initial sync queries.
-@available(iOS 13.0, *)
 protocol IncomingEventReconciliationQueue: AnyObject, AmplifyCancellable {
     func start()
     func pause()

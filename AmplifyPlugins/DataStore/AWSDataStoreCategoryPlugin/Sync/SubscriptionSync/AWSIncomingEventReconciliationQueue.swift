@@ -11,7 +11,6 @@ import Combine
 import Foundation
 
 // Used for testing:
-@available(iOS 13.0, *)
 typealias IncomingEventReconciliationQueueFactory =
     ([ModelSchema],
     APICategoryGraphQLBehavior,
@@ -22,7 +21,6 @@ typealias IncomingEventReconciliationQueueFactory =
     ModelReconciliationQueueFactory?
 ) -> IncomingEventReconciliationQueue
 
-@available(iOS 13.0, *)
 final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
 
     private var modelReconciliationQueueSinks: [String: AnyCancellable]
@@ -167,7 +165,6 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 }
 
 // MARK: - Static factory
-@available(iOS 13.0, *)
 extension AWSIncomingEventReconciliationQueue {
     static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, authModeStrategy, _ in
         AWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
@@ -181,7 +178,6 @@ extension AWSIncomingEventReconciliationQueue {
 }
 
 // MARK: - AWSIncomingEventReconciliationQueue + Resettable
-@available(iOS 13.0, *)
 extension AWSIncomingEventReconciliationQueue: Resettable {
 
     func reset(onComplete: () -> Void) {

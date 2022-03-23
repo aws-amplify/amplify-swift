@@ -10,7 +10,6 @@ import Combine
 import Foundation
 import AWSPluginsCore
 
-@available(iOS 13.0, *)
 extension RemoteSyncEngine: AuthModeStrategyDelegate {
     func isUserLoggedIn() -> Bool {
         // if OIDC is used as authentication provider
