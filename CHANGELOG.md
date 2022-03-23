@@ -1,5 +1,7 @@
 # Changelog
 ## Unreleased
+## 1.22.1 (2022-03-23)
+
 ## 1.22.0 (2022-03-16)
 
 ### Features
