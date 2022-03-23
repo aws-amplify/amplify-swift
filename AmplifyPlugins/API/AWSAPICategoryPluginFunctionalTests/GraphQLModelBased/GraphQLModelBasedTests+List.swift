@@ -38,7 +38,7 @@ extension GraphQLModelBasedTests {
         let post = Post.keys
         let predicate = post.id == uuid1 || post.id == uuid2
         var results: List<Post>?
-        _ = Amplify.API.query(request: .paginatedList(Post.self, where: predicate, limit: 1)) { event in
+        _ = Amplify.API.query(request: .list(Post.self, where: predicate, limit: 1)) { event in
             switch event {
             case .success(let response):
                 guard case let .success(graphQLResponse) = response else {
@@ -101,7 +101,8 @@ extension GraphQLModelBasedTests {
         let post = Post.keys
         let predicate = post.id == uuid1
         var results: List<Post>?
-        _ = Amplify.API.query(request: .paginatedList(Post.self, where: predicate)) { event in
+        let request: GraphQLRequest<List<Post>> = GraphQLRequest<Post>.list(Post.self, where: predicate)
+        _ = Amplify.API.query(request: request) { event in
             switch event {
             case .success(let response):
                 guard case let .success(graphQLResponse) = response else {

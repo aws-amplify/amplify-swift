@@ -113,10 +113,10 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
                     XCTFail("Missing editors")
                     return
                 }
-                editors.load { result in
+                editors.fetch { result in
                     switch result {
-                    case .success(let postEditors):
-                        XCTAssertEqual(postEditors.count, 1)
+                    case .success:
+                        XCTAssertEqual(editors.count, 1)
                         getPostEditorsCompleted.fulfill()
                     case .failure(let error):
                         XCTFail("\(error)")
@@ -160,9 +160,9 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
                     XCTFail("Missing posts")
                     return
                 }
-                posts.load { result in
+                posts.fetch { result in
                     switch result {
-                    case .success(let posts):
+                    case .success:
                         XCTAssertEqual(posts.count, 1)
                         getPostsCompleted.fulfill()
                     case .failure(let error):

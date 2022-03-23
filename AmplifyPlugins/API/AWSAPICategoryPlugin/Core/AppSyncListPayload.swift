@@ -28,7 +28,7 @@ public struct AppSyncListPayload: Codable {
     /// Extract from the `variables` object the original GraphQL "filter" is required to perform pagination by
     /// the `AppSyncListProvider` based on the original request filter criteria that was passed in as
     /// a `QueryPredicate`. This may be the association data used if lazy loading was originally performed, or the
-    /// predicate that was passed in when retrieving a list (`Amplify.API.query(.paginatedList(where: predicate)`)
+    /// predicate that was passed in when retrieving a list (`Amplify.API.query(.list(where: predicate)`)
     var graphQLFilter: [String: Any]? {
         guard let storedVariables = variables,
            let filters = storedVariables["filter"],
