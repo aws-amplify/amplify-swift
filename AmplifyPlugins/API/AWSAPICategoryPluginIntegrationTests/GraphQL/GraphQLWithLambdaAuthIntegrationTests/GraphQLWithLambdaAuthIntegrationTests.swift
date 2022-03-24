@@ -85,7 +85,8 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
     ///
     func testQueryTodos() {
         let completeInvoked = expectation(description: "request completed")
-        let sink = Amplify.API.query(request: .paginatedList(Todo.self))
+        let request = GraphQLRequest<Todo>.list(Todo.self)
+        let sink = Amplify.API.query(request: request)
             .resultPublisher
             .sink {
                 if case let .failure(error) = $0 {
