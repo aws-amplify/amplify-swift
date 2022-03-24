@@ -8,7 +8,6 @@
 import Amplify
 import Combine
 
-@available(iOS 13.0, *)
 extension OutgoingMutationQueue {
 
     struct Resolver {

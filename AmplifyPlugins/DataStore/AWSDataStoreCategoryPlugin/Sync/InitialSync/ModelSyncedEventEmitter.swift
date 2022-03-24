@@ -24,7 +24,6 @@ enum IncomingModelSyncedEmitterEvent {
 /// mutation event which causes the `ModelSyncedEvent` to be emitted afterwards by
 ///     - Check if it `ModelSyncedEvent` should be emitted, if so, emit it.
 ///     - Then send the mutation event which was used in the check above.
-@available(iOS 13.0, *)
 final class ModelSyncedEventEmitter {
     private let queue = DispatchQueue(label: "com.amazonaws.ModelSyncedEventEmitterQueue",
                                       target: DispatchQueue.global())
@@ -175,5 +174,4 @@ final class ModelSyncedEventEmitter {
     }
 }
 
-@available(iOS 13.0, *)
 extension ModelSyncedEventEmitter: DefaultLogger { }

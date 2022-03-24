@@ -9,7 +9,6 @@ import Amplify
 import Combine
 import Foundation
 
-@available(iOS 13.0, *)
 class StateMachine<State, Action> {
     typealias Reducer = (State, Action) -> State
 
@@ -51,5 +50,4 @@ class StateMachine<State, Action> {
 
 }
 
-@available(iOS 13.0, *)
 extension StateMachine: DefaultLogger { }

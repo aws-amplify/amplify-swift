@@ -10,7 +10,6 @@ import Combine
 import Foundation
 import AWSPluginsCore
 
-@available(iOS 13.0, *)
 protocol ReconcileAndSaveOperationQueue {
     func addOperation(_ operation: ReconcileAndLocalSaveOperation, modelName: String)
 
@@ -42,7 +41,6 @@ enum ReconcileAndSaveQueueEvent {
 /// Additionally, this queue allows per model type cancellations on the operations that are enqueued by calling
 /// `cancelOperations(modelName)`. This allows per model type clean up, while allowing other model reconcilliations to
 /// continue to operate.
-@available(iOS 13.0, *)
 class ReconcileAndSaveQueue: ReconcileAndSaveOperationQueue {
 
     private let serialQueue = DispatchQueue(label: "com.amazonaws.ReconcileAndSaveQueue.serialQueue",

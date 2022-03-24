@@ -12,7 +12,6 @@ import Foundation
 /// Note: This publisher accepts only a single subscriber. It retains a weak reference to
 /// its MutationEventSource even after downstream subscribers have issued a `cancel()`,
 /// so that subsequent subscribers will still receive event notifications.
-@available(iOS 13.0, *)
 final class AWSMutationEventPublisher: Publisher {
     typealias Output = MutationEvent
     typealias Failure = DataStoreError
@@ -86,17 +85,14 @@ final class AWSMutationEventPublisher: Publisher {
 
 }
 
-@available(iOS 13.0, *)
 extension AWSMutationEventPublisher: MutationEventPublisher {
     var publisher: AnyPublisher<MutationEvent, DataStoreError> {
         eraseToAnyPublisher()
     }
 }
 
-@available(iOS 13.0, *)
 extension AWSMutationEventPublisher: DefaultLogger { }
 
-@available(iOS 13.0, *)
 extension AWSMutationEventPublisher: Resettable {
     func reset(onComplete: BasicClosure) {
         eventSource = nil
