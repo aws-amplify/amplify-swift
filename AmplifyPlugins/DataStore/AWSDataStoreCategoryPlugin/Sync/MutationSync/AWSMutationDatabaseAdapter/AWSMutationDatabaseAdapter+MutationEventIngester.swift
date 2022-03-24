@@ -9,7 +9,6 @@ import Amplify
 import Combine
 import Foundation
 
-@available(iOS 13.0, *)
 extension AWSMutationDatabaseAdapter: MutationEventIngester {
 
     /// Accepts a mutation event without a version, applies the latest version from the MutationSyncMetadata table,

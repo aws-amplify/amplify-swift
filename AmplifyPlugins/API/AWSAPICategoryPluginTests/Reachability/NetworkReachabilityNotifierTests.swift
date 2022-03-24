@@ -10,7 +10,6 @@ import XCTest
 import Combine
 @testable import AWSAPIPlugin
 
-@available(iOS 13.0, *)
 class NetworkReachabilityNotifierTests: XCTestCase {
     var notification: Notification!
     var notifier: NetworkReachabilityNotifier!

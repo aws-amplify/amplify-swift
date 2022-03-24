@@ -14,7 +14,6 @@ import AWSPluginsCore
 @testable import AWSAPIPlugin
 @testable import AWSPluginsTestCommon
 
-@available(iOS 13.0, *)
 class AWSAPICategoryPluginReachabilityTests: XCTestCase {
 
     var apiPlugin: AWSAPIPlugin!

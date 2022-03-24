@@ -11,7 +11,6 @@ import XCTest
 @testable import AWSAPIPlugin
 @testable import AmplifyTestCommon
 
-@available(iOS 13.0, *)
 class GraphQLQueryCombineTests: OperationTestBase {
     let testDocument = "query { getTodo { id name description }}"
 

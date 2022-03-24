@@ -12,7 +12,6 @@ import AWSPluginsCore
 
 /// Reconciles an incoming model mutation with the stored model. If there is no conflict (e.g., the incoming model has
 /// a later version than the stored model), then write the new data to the store.
-@available(iOS 13.0, *)
 class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
     /// Disambiguation for the version of the model incoming from the remote API
@@ -451,7 +450,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     }
 }
 
-@available(iOS 13.0, *)
+
 extension ReconcileAndLocalSaveOperation: DefaultLogger { }
 
 enum ReconcileAndLocalSaveOperationEvent {

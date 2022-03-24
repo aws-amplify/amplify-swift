@@ -10,14 +10,12 @@ import AWSPluginsCore
 import Combine
 import Foundation
 
-@available(iOS 13.0, *)
 protocol InitialSyncOrchestrator {
     var publisher: AnyPublisher<InitialSyncOperationEvent, DataStoreError> { get }
     func sync(completion: @escaping (Result<Void, DataStoreError>) -> Void)
 }
 
 // For testing
-@available(iOS 13.0, *)
 typealias InitialSyncOrchestratorFactory =
     (DataStoreConfiguration,
      AuthModeStrategy,
@@ -25,7 +23,6 @@ typealias InitialSyncOrchestratorFactory =
     IncomingEventReconciliationQueue?,
     StorageEngineAdapter?) -> InitialSyncOrchestrator
 
-@available(iOS 13.0, *)
 final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     typealias SyncOperationResult = Result<Void, DataStoreError>
     typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
@@ -174,10 +171,8 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     }
 }
 
-@available(iOS 13.0, *)
 extension AWSInitialSyncOrchestrator: DefaultLogger { }
 
-@available(iOS 13.0, *)
 extension AWSInitialSyncOrchestrator: Resettable {
     func reset(onComplete: @escaping BasicClosure) {
         syncOperationQueue.cancelAllOperations()
@@ -186,7 +181,6 @@ extension AWSInitialSyncOrchestrator: Resettable {
     }
 }
 
-@available(iOS 13.0, *)
 extension AWSInitialSyncOrchestrator {
     private typealias ResponseType = PaginatedList<AnyModel>
     private func graphqlErrors(from error: GraphQLResponseError<ResponseType>?) -> [GraphQLError]? {

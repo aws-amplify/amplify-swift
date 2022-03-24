@@ -11,7 +11,6 @@ import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-@available(iOS 13.0, *)
 class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
 
     func testCreateMutateDelete() throws {

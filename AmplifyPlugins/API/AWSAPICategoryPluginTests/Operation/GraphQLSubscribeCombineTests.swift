@@ -14,7 +14,6 @@ import Amplify
 
 import AppSyncRealTimeClient
 
-@available(iOS 13.0, *)
 class GraphQLSubscribeCombineTests: OperationTestBase {
 
     // Setup expectations

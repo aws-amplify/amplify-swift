@@ -9,7 +9,6 @@ import Amplify
 import Combine
 import Foundation
 
-@available(iOS 13.0, *)
 extension RemoteSyncEngine {
     func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
         switch stateMachine.state {
