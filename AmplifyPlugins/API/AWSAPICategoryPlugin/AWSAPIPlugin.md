@@ -52,9 +52,9 @@ query getSimpleModel($input: GetSimpleModelInput!) {
 **App code**
 
 ```swift
-Amplify.API.query(request: .paginatedList(SimpleModel.self))
+Amplify.API.query(request: .list(SimpleModel.self))
 ```
-- `.paginatedList(SimpleModel.self)` will create a `GraphQLRequest` with selection set containing "items" and "nextToken", response type `List<SimpleModel>`, and variables containing the `limit` of 1000.
+- `.list(SimpleModel.self)` will create a `GraphQLRequest` with selection set containing "items" and "nextToken", response type `List<SimpleModel>`, and variables containing the `limit` of 1000.
 - `GraphQLResponseDecoder` checks if the response type conforms to `ModelListMarker`. If so, it encapsulates the original request and response using an `AppSyncListPayload`, and decodes the `AppSyncListPayload` to the `List` type.
 - `List`'s custom decoder logic will detect the `AppSyncListPayload` by first finding registered decoders in the `ModelListDecoderRegistry`. A registered decoder is used to decode the response into a `ModelListProvider` before instantiating the list instance.
 - The `AppSyncListDecoder` is returned from the `ModelListDecoderRegistry`. At config time, the `AWSAPIPlugin` registers `AppSyncListDecoder` with `ModelListDecoderRegistry` to provide runtime decoding functionality. 
@@ -175,7 +175,7 @@ foreach comment in post.comments {
 ```
 - The comments are implicitly loaded upon access by performing a query using the association data stored in the `AppSyncListProvider`. The plugin queries AppSync for `Comments` where `comment.postId == post.id`, as defined by the association in the model schema. It then decodes the query response into a `List` object as shown above, and returns that to the caller that is performing the access.
 ```swift
-Amplify.API.query(request: .paginatedList(Comment.self, limit: 100, where: Comment.keys.post == post.id))
+Amplify.API.query(request: .list(Comment.self, limit: 100, where: Comment.keys.post == post.id))
 ```
 
 4. As a developer, I can customize my request to retrieve multiple levels of data at once

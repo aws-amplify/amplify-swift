@@ -104,7 +104,7 @@ class GraphQLRequestModelTest: XCTestCase {
         documentBuilder.add(decorator: PaginationDecorator(limit: 10))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.paginatedList(Post.self, where: predicate, limit: 10)
+        let request = GraphQLRequest<Post>.list(Post.self, where: predicate, limit: 10)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == List<Post>.self)
