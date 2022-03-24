@@ -248,9 +248,6 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                                 modelSchema: ModelSchema,
                                                 mutationType: MutationEvent.MutationType) {
 
-        guard #available(iOS 13.0, *) else {
-            return
-        }
         let metadata = MutationSyncMetadata.keys
         let metadataId = MutationSyncMetadata.identifier(modelName: modelSchema.name, modelId: model.id)
         storageEngine.query(MutationSyncMetadata.self,

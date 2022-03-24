@@ -15,7 +15,6 @@ protocol DataStoreObserveQueryOperation {
     func startObserveQuery(with storageEngine: StorageEngineBehavior)
 }
 
-@available(iOS 13.0, *)
 public class ObserveQueryPublisher<M: Model>: Publisher {
     public typealias Output = DataStoreQuerySnapshot<M>
     public typealias Failure = DataStoreError
@@ -34,7 +33,6 @@ public class ObserveQueryPublisher<M: Model>: Publisher {
     }
 }
 
-@available(iOS 13.0, *)
 class ObserveQuerySubscription<Target: Subscriber, M: Model>: Subscription
 where Target.Input == DataStoreQuerySnapshot<M>, Target.Failure == DataStoreError {
 
@@ -93,7 +91,6 @@ where Target.Input == DataStoreQuerySnapshot<M>, Target.Failure == DataStoreErro
     }
 }
 
-@available(iOS 13.0, *)
 extension ObserveQuerySubscription: DefaultLogger { }
 
 /// Publishes a stream of `DataStoreQuerySnapshot` events.
@@ -110,7 +107,7 @@ extension ObserveQuerySubscription: DefaultLogger { }
 ///
 /// This operation should perform its methods under the serial DispatchQueue `serialQueue` to ensure all its properties
 /// remain thread-safe.
-@available(iOS 13.0, *)
+
 public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation, DataStoreObserveQueryOperation {
 
     private let serialQueue = DispatchQueue(label: "com.amazonaws.AWSDataStoreObseverQueryOperation.serialQueue",
@@ -421,5 +418,4 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     }
 }
 
-@available(iOS 13.0, *)
 extension AWSDataStoreObserveQueryOperation: DefaultLogger { }

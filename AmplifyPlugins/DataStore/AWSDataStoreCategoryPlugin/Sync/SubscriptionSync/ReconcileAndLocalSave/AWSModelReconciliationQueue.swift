@@ -11,7 +11,6 @@ import Combine
 import Foundation
 
 // Used for testing:
-@available(iOS 13.0, *)
 typealias ModelReconciliationQueueFactory = (
     ModelSchema,
     StorageEngineAdapter,
@@ -52,7 +51,6 @@ typealias ModelReconciliationQueueFactory = (
 ///   `incomingSubscriptionEventQueue`.
 /// - `incomingRemoteEventQueue` processes its operations, which are simply to call `enqueue` for each received remote
 ///   event.
-@available(iOS 13.0, *)
 final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     /// Exposes a publisher for incoming subscription events
     private let incomingSubscriptionEvents: IncomingSubscriptionEventPublisher
@@ -215,11 +213,9 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     }
 }
 
-@available(iOS 13.0, *)
 extension AWSModelReconciliationQueue: DefaultLogger { }
 
 // MARK: Resettable
-@available(iOS 13.0, *)
 extension AWSModelReconciliationQueue: Resettable {
 
     func reset(onComplete: @escaping BasicClosure) {
@@ -251,7 +247,6 @@ extension AWSModelReconciliationQueue: Resettable {
 }
 
 // MARK: Errors handling
-@available(iOS 13.0, *)
 extension AWSModelReconciliationQueue {
     private typealias ResponseType = MutationSync<AnyModel>
     private func graphqlErrors(from error: GraphQLResponseError<ResponseType>?) -> [GraphQLError]? {

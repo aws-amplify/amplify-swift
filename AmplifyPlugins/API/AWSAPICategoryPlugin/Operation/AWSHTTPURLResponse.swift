@@ -83,7 +83,6 @@ public class AWSHTTPURLResponse: HTTPURLResponse {
         response.allHeaderFields
     }
 
-    @available(iOS 13.0, *)
     public override func value(forHTTPHeaderField field: String) -> String? {
         response.value(forHTTPHeaderField: field)
     }

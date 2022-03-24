@@ -44,7 +44,6 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin, AWSAPIAuthInformat
 
     var authProviderFactory: APIAuthProviderFactory
 
-    @available(iOS 13.0, *)
     var reachabilityMap: [String: NetworkReachabilityNotifier] {
         get {
             if iReachabilityMap == nil {

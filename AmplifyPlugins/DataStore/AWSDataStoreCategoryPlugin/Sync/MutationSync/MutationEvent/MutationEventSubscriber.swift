@@ -8,7 +8,6 @@
 import Amplify
 import Combine
 
-@available(iOS 13.0, *)
 final class MutationEventSubscriber: Subscriber {
     typealias Input = MutationEvent
     typealias Failure = DataStoreError

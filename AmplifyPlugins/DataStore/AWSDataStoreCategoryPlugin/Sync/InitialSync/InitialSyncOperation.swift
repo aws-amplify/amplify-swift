@@ -10,7 +10,6 @@ import AWSPluginsCore
 import Combine
 import Foundation
 
-@available(iOS 13.0, *)
 final class InitialSyncOperation: AsynchronousOperation {
     typealias SyncQueryResult = PaginatedList<AnyModel>
 
@@ -242,5 +241,4 @@ final class InitialSyncOperation: AsynchronousOperation {
 
 }
 
-@available(iOS 13.0, *)
 extension InitialSyncOperation: DefaultLogger { }

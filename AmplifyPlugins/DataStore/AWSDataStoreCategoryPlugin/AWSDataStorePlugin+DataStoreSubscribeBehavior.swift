@@ -10,7 +10,6 @@ import Combine
 
 extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
 
-    @available(iOS 13.0, *)
     public var publisher: AnyPublisher<MutationEvent, DataStoreError> {
         initStorageEngineAndStartSync()
         // Force-unwrapping: The optional 'dataStorePublisher' is expected
@@ -18,17 +17,14 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
         return dataStorePublisher!.publisher
     }
 
-    @available(iOS 13.0, *)
     public func publisher<M: Model>(for modelType: M.Type) -> AnyPublisher<MutationEvent, DataStoreError> {
         return publisher(for: modelType.modelName)
     }
 
-    @available(iOS 13.0, *)
     public func publisher(for modelName: ModelName) -> AnyPublisher<MutationEvent, DataStoreError> {
         return publisher.filter { $0.modelName == modelName }.eraseToAnyPublisher()
     }
 
-    @available(iOS 13.0, *)
     public func observeQuery<M: Model>(for modelType: M.Type,
                                        where predicate: QueryPredicate? = nil,
                                        sort sortInput: QuerySortInput? = nil)
@@ -39,7 +35,6 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
                             sort: sortInput?.asSortDescriptors())
     }
 
-    @available(iOS 13.0, *)
     public func observeQuery<M: Model>(for modelType: M.Type,
                                        modelSchema: ModelSchema,
                                        where predicate: QueryPredicate? = nil,
