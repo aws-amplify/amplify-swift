@@ -13,7 +13,6 @@ enum IncomingReadyEventEmitter {
     case readyEvent
 }
 
-@available(iOS 13.0, *)
 final class ReadyEventEmitter {
     var readySink: AnyCancellable?
 
@@ -62,5 +61,4 @@ final class ReadyEventEmitter {
     }
 }
 
-@available(iOS 13.0, *)
 extension ReadyEventEmitter: DefaultLogger { }

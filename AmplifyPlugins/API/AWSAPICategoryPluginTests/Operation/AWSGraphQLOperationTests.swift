@@ -10,7 +10,6 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
 
-@available(iOS 13.0, *)
 class AWSGraphQLOperationTests: AWSAPICategoryPluginTestBase {
 
     /// Tests that upon completion, the operation is removed from the task mapper.

@@ -401,7 +401,6 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     ///    - The first snapshot will have initial models and may have additional models
     ///    - There may be subsequent snapshots based on how the items are batched
     ///    - The last snapshot will have a total of initial plus additional models
-    @available(iOS 13.0, *)
     func testObserveQuery() throws {
         setUp(withModels: TestModelRegistration())
         let cleared = expectation(description: "DataStore cleared")

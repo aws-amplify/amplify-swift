@@ -9,7 +9,6 @@ import Amplify
 import Foundation
 import Combine
 
-@available(iOS 13.0, *)
 class NetworkReachabilityNotifier {
     private var reachability: NetworkReachabilityProviding?
     private var allowsCellularAccess = true

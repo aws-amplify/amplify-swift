@@ -14,7 +14,6 @@ import Combine
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-@available(iOS 13.0, *)
 class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
     struct TestModelRegistration: AmplifyModelRegistration {
@@ -534,7 +533,6 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     }
 }
 
-@available(iOS 13.0, *)
 extension DataStoreEndToEndTests: DefaultLogger {
 
 }

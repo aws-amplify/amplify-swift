@@ -12,7 +12,6 @@ import Foundation
 
 /// Facade to hide the AsyncEventQueue/ModelMapper structures from the ModelReconciliationQueue.
 /// Provides a publisher for all incoming subscription types (onCreate, onUpdate, onDelete) for a single Model type.
-@available(iOS 13.0, *)
 final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPublisher {
 
     private let asyncEvents: IncomingAsyncSubscriptionEventPublisher
@@ -67,7 +66,6 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
 }
 
 // MARK: Resettable
-@available(iOS 13.0, *)
 extension AWSIncomingSubscriptionEventPublisher: Resettable {
 
     func reset(onComplete: () -> Void) {

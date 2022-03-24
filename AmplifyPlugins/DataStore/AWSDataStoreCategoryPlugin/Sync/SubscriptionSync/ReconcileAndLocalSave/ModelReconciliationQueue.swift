@@ -23,7 +23,6 @@ enum ModelReconciliationQueueEvent {
     case mutationEventDropped(modelName: String, error: DataStoreError? = nil)
 }
 
-@available(iOS 13.0, *)
 protocol ModelReconciliationQueue {
     func start()
     func pause()

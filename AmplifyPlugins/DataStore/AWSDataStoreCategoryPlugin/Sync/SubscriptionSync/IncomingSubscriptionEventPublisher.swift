@@ -14,7 +14,6 @@ enum IncomingSubscriptionEventPublisherEvent {
     case mutationEvent(MutationSync<AnyModel>)
 }
 
-@available(iOS 13.0, *)
 protocol IncomingSubscriptionEventPublisher: AmplifyCancellable {
     var publisher: AnyPublisher<IncomingSubscriptionEventPublisherEvent, DataStoreError> { get }
 }
