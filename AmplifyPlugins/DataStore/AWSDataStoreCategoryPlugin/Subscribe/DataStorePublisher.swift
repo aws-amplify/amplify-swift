@@ -8,7 +8,6 @@
 import Amplify
 import Combine
 
-@available(iOS 13.0, *)
 struct DataStorePublisher: ModelSubcriptionBehavior {
 
     private let subject = PassthroughSubject<MutationEvent, DataStoreError>()
@@ -32,7 +31,6 @@ struct DataStorePublisher: ModelSubcriptionBehavior {
 
 protocol ModelSubcriptionBehavior {
 
-    @available(iOS 13.0, *)
     var publisher: AnyPublisher<MutationEvent, DataStoreError> { get }
 
     func send(input: MutationEvent)

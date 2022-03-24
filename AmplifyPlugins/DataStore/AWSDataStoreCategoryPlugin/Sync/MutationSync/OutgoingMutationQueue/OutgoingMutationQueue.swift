@@ -11,7 +11,6 @@ import Foundation
 import AWSPluginsCore
 
 /// Submits outgoing mutation events to the provisioned API
-@available(iOS 13.0, *)
 protocol OutgoingMutationQueueBehavior: AnyObject {
     func stopSyncingToCloud(_ completion: @escaping BasicClosure)
     func startSyncingToCloud(api: APICategoryGraphQLBehavior,
@@ -19,7 +18,6 @@ protocol OutgoingMutationQueueBehavior: AnyObject {
     var publisher: AnyPublisher<MutationEvent, Never> { get }
 }
 
-@available(iOS 13.0, *)
 final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     private let stateMachine: StateMachine<State, Action>
@@ -369,7 +367,6 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
 }
 
-@available(iOS 13.0, *)
 extension OutgoingMutationQueue: Subscriber {
     typealias Input = MutationEvent
     typealias Failure = DataStoreError
@@ -396,12 +393,10 @@ extension OutgoingMutationQueue: Subscriber {
     }
 }
 
-@available(iOS 13.0, *)
 extension OutgoingMutationQueue: Resettable {
     func reset(onComplete: @escaping BasicClosure) {
         doStopWithoutNotifyingStateMachine(completion: onComplete)
     }
 }
 
-@available(iOS 13.0, *)
 extension OutgoingMutationQueue: DefaultLogger { }

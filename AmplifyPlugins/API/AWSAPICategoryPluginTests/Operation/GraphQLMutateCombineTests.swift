@@ -11,7 +11,6 @@ import XCTest
 @testable import AWSAPIPlugin
 @testable import AmplifyTestCommon
 
-@available(iOS 13.0, *)
 class GraphQLMutateCombineTests: OperationTestBase {
     let testDocument = "mutate { updateTodo { id name description }}"
 

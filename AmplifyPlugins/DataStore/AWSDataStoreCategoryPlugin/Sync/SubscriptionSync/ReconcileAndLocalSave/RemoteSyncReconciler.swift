@@ -8,7 +8,6 @@
 import Amplify
 
 /// Reconciles incoming sync mutations with the state of the local store, and mutation queue.
-@available(iOS 13.0, *)
 struct RemoteSyncReconciler {
     typealias LocalMetadata = ReconcileAndLocalSaveOperation.LocalMetadata
     typealias RemoteModel = ReconcileAndLocalSaveOperation.RemoteModel

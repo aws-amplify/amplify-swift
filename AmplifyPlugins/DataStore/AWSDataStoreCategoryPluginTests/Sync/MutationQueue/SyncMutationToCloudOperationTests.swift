@@ -14,7 +14,6 @@ import Combine
 @testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
 
-@available(iOS 13.0, *)
 class SyncMutationToCloudOperationTests: XCTestCase {
     let defaultAsyncWaitTimeout = 2.0
     let secondsInADay = 60 * 60 * 24

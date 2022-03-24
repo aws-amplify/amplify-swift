@@ -18,7 +18,6 @@ import Foundation
 /// At initialization, the Queue sets up subscriptions, via the provided `APICategoryGraphQLBehavior`, for each type
 /// `GraphQLSubscriptionType` and holds a reference to the returned operation. The operations' listeners enqueue
 /// incoming successful events onto a `Publisher`, that queue processors can subscribe to.
-@available(iOS 13.0, *)
 final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
     typealias Payload = MutationSync<AnyModel>
     typealias Event = SubscriptionEvent<GraphQLResponse<Payload>>
@@ -283,7 +282,6 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 }
 
 // MARK: - IncomingAsyncSubscriptionEventPublisher + API request factory
-@available(iOS 13.0, *)
 extension IncomingAsyncSubscriptionEventPublisher {
     static func apiRequestFactoryFor(for modelSchema: ModelSchema,
                                      subscriptionType: GraphQLSubscriptionType,
@@ -303,5 +301,4 @@ extension IncomingAsyncSubscriptionEventPublisher {
     }
 }
 
-@available(iOS 13.0, *)
 extension IncomingAsyncSubscriptionEventPublisher: DefaultLogger { }

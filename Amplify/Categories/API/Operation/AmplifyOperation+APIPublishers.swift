@@ -13,7 +13,6 @@ import Foundation
 // The overrides require a feature and bugfix introduced in Swift 5.2
 #if swift(>=5.2)
 
-@available(iOS 13.0, *)
 public extension GraphQLOperation {
     /// Publishes the final result of the operation
     var resultPublisher: AnyPublisher<Success, Failure> {
@@ -23,7 +22,6 @@ public extension GraphQLOperation {
 
 // MARK: - GraphQLSubscriptionOperation
 
-@available(iOS 13.0, *)
 public extension GraphQLSubscriptionOperation {
 
     /// Publishes the state of the GraphQL subscription's underlying network connection.
@@ -96,7 +94,6 @@ public extension GraphQLSubscriptionOperation {
 
 // MARK: - RESTOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == RESTOperation.Request,

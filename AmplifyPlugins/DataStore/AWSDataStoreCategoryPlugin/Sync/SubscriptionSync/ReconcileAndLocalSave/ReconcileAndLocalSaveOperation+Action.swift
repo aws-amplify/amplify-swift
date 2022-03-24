@@ -7,7 +7,6 @@
 
 import Amplify
 
-@available(iOS 13.0, *)
 extension ReconcileAndLocalSaveOperation {
 
     /// Actions are declarative, they say what I just did
