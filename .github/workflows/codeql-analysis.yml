@@ -67,9 +67,9 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
-    # - run: |
-    #   make bootstrap
-    #   make release
+    - run: |
+      make bootstrap
+      make release
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@2c6b76bc5a6dafa5a35d5865bb3aa1c1f21e7a44
