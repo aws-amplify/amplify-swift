@@ -13,10 +13,11 @@ name: "CodeQL"
 
 on:
   push:
-    branches: #[ main ]
+    branches: 
+      - ameter-codeql #[ main ]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: #[ main ]
+    branches: [ main ]
   schedule:
     #        ┌───────────── minute (0 - 59)
     #        │  ┌───────────── hour (0 - 23)
