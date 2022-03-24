@@ -69,72 +69,20 @@ class ListTests: BaseDataStoreTests {
                 XCTFail("Should not be loaded")
                 return
             }
-            comments.load {
+            comments.fetch {
                 switch $0 {
-                case .success(let loadedComments):
+                case .success:
                     guard case .loaded = comments.loadedState else {
                         XCTFail("Should be loaded")
                         return
                     }
-                    XCTAssertEqual(loadedComments.count, 2)
+                    XCTAssertEqual(comments.count, 2)
                     expect.fulfill()
                 case .failure(let error):
                     XCTFail(error.errorDescription)
                     expect.fulfill()
                 }
             }
-        }
-
-        Amplify.DataStore.query(Post.self, byId: postId) {
-            switch $0 {
-            case .success(let result):
-                if let post = result, let comments = post.comments {
-                    checkComments(comments)
-                } else {
-                    XCTFail("Failed to query recently saved post by id")
-                }
-            case .failure(let error):
-                XCTFail(error.errorDescription)
-                expect.fulfill()
-            }
-        }
-
-        wait(for: [expect], timeout: 1)
-    }
-
-    /// - Given: a list a `Post` and a few comments associated with it
-    /// - When:
-    ///   - the `post.comments` is accessed asynchronously using the Combine integration
-    /// - Then:
-    ///   - the list should be correctly loaded and populated through a `Publisher`
-    func testAsynchronousLazyLoadWithCombine() {
-        let expect = expectation(description: "a lazy list should return the correct results")
-
-        let postId = preparePostDataForTest()
-
-        func checkComments(_ comments: List<Comment>) {
-            guard case .notLoaded = comments.loadedState else {
-                XCTFail("Should not be loaded")
-                return
-            }
-            _ = comments.loadAsPublisher().sink(
-                receiveCompletion: {
-                    switch $0 {
-                    case .finished:
-                        expect.fulfill()
-                    case .failure(let error):
-                        XCTFail(error.errorDescription)
-                        expect.fulfill()
-                    }
-                },
-                receiveValue: { loadedComments in
-                    guard case .loaded = comments.loadedState else {
-                        XCTFail("Should be loaded")
-                        return
-                    }
-                    XCTAssertEqual(loadedComments.count, 2)
-                }
-            )
         }
 
         Amplify.DataStore.query(Post.self, byId: postId) {
