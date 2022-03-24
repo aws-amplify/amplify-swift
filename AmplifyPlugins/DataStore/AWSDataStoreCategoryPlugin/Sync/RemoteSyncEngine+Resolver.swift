@@ -8,7 +8,6 @@
 import Amplify
 import Combine
 
-@available(iOS 13.0, *)
 extension RemoteSyncEngine {
     struct Resolver {
         // swiftlint:disable cyclomatic_complexity

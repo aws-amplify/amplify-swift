@@ -9,7 +9,6 @@ import Amplify
 import Foundation
 
 /// All methods in this extension must be invoked from workQueue (as in during a `respond` call
-@available(iOS 13.0, *)
 extension RemoteSyncEngine {
 
     func resetCurrentAttemptNumber() {

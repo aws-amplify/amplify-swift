@@ -8,7 +8,6 @@
 import Amplify
 import Combine
 
-@available(iOS 13.0, *)
 final class MutationEventSubscription: Subscription {
 
     private var demand = Subscribers.Demand.none
@@ -33,5 +32,4 @@ final class MutationEventSubscription: Subscription {
     }
 }
 
-@available(iOS 13.0, *)
 extension MutationEventSubscription: DefaultLogger { }

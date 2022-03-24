@@ -7,7 +7,6 @@
 
 import Combine
 
-@available(iOS 13.0, *)
 extension List {
 
     public typealias LazyListPublisher = AnyPublisher<[Element], DataStoreError>

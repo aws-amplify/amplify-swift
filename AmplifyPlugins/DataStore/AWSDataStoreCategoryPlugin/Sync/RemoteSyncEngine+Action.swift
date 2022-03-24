@@ -8,7 +8,6 @@
 import Amplify
 import Combine
 
-@available(iOS 13.0, *)
 extension RemoteSyncEngine {
 
     /// Actions are declarative, they say what I just did

@@ -8,7 +8,6 @@
 import Amplify
 import Combine
 
-@available(iOS 13.0, *)
 extension OutgoingMutationQueue {
 
     /// States are descriptive, they say what is happening in the system right now

@@ -10,7 +10,6 @@ import Foundation
 import AWSPluginsCore
 import Combine
 
-@available(iOS 13.0, *)
 final class MutationRetryNotifier {
     private var lock: NSLock
     private var nextSyncTimer: DispatchSourceTimer?
@@ -58,7 +57,6 @@ final class MutationRetryNotifier {
     }
 }
 
-@available(iOS 13.0, *)
 extension MutationRetryNotifier: Subscriber {
     func receive(subscription: Subscription) {
         log.verbose(#function)
@@ -84,5 +82,4 @@ extension MutationRetryNotifier: Subscriber {
     }
 }
 
-@available(iOS 13.0, *)
 extension MutationRetryNotifier: DefaultLogger { }

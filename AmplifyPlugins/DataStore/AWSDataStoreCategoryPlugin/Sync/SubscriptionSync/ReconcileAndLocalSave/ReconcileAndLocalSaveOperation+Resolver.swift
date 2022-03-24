@@ -7,7 +7,6 @@
 
 import Amplify
 
-@available(iOS 13.0, *)
 extension ReconcileAndLocalSaveOperation {
     struct Resolver {
 

@@ -43,7 +43,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     var storageEngineBehaviorFactory: StorageEngineBehaviorFactory
 
     var iStorageEngineSink: Any?
-    @available(iOS 13.0, *)
     var storageEngineSink: AnyCancellable? {
         get {
             if let iStorageEngineSink = iStorageEngineSink as? AnyCancellable {
@@ -67,11 +66,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.validAuthPluginKey = "awsCognitoAuthPlugin"
         self.storageEngineBehaviorFactory =
             StorageEngine.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:)
-        if #available(iOS 13.0, *) {
-            self.dataStorePublisher = DataStorePublisher()
-        } else {
-            self.dataStorePublisher = nil
-        }
+        self.dataStorePublisher = DataStorePublisher()
         self.dispatchedModelSyncedEvents = [:]
     }
 
@@ -117,10 +112,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             }
             var result: DataStoreResult<Void>
             do {
-                if #available(iOS 13.0, *) {
-                    if self.dataStorePublisher == nil {
-                        self.dataStorePublisher = DataStorePublisher()
-                    }
+                if self.dataStorePublisher == nil {
+                    self.dataStorePublisher = DataStorePublisher()
                 }
                 try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
                 try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
@@ -171,20 +164,15 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
                                                          modelRegistration.version,
                                                          UserDefaults.standard)
 
-        if #available(iOS 13.0, *) {
-            setupStorageSink()
-        }
+        setupStorageSink()
     }
 
     // MARK: Private
 
     private func resolveSyncEnabled() {
-        if #available(iOS 13.0, *) {
-            isSyncEnabled = ModelRegistry.hasSyncableModels
-        }
+        isSyncEnabled = ModelRegistry.hasSyncableModels
     }
 
-    @available(iOS 13.0, *)
     private func setupStorageSink() {
         storageEngineSink = storageEngine
             .publisher
@@ -194,7 +182,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             )
     }
 
-    @available(iOS 13.0, *)
     private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
         switch completed {
         case .failure(let dataStoreError):
@@ -204,7 +191,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
     }
 
-    @available(iOS 13.0, *)
     func onReceiveValue(receiveValue: StorageEngineEvent) {
         guard let dataStorePublisher = self.dataStorePublisher else {
             log.error("Data store publisher not initalized")

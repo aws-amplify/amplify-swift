@@ -23,7 +23,6 @@ class MockAPICategoryPlugin: MessageReporter,
 
     private var oidcProvider: Any?
 
-    @available(iOS 13.0, *)
     init(reachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>) {
         self._reachabilityPublisher = reachabilityPublisher
         super.init()
@@ -126,12 +125,10 @@ class MockAPICategoryPlugin: MessageReporter,
             return operation
     }
 
-    @available(iOS 13.0, *)
     public func reachabilityPublisher(for apiName: String?) -> AnyPublisher<ReachabilityUpdate, Never>? {
         reachabilityPublisher()
     }
 
-    @available(iOS 13.0, *)
     public func reachabilityPublisher() -> AnyPublisher<ReachabilityUpdate, Never>? {
         if let reachabilityPublisher = _reachabilityPublisher as? AnyPublisher<ReachabilityUpdate, Never> {
             return reachabilityPublisher

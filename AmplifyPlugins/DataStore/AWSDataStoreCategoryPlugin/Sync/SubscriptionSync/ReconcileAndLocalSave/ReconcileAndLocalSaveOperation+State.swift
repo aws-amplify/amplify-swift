@@ -7,7 +7,6 @@
 
 import Amplify
 
-@available(iOS 13.0, *)
 extension ReconcileAndLocalSaveOperation {
 
     /// States are descriptive, they say what is happening in the system right now
