@@ -8,7 +8,6 @@
 import Amplify
 import Combine
 
-@available(iOS 13.0, *)
 /// Interface for saving and loading MutationEvents from storage
 final class AWSMutationDatabaseAdapter {
     /// Possible outcomes of a "submit" based on inspecting the locally stored MutationEvents
@@ -41,10 +40,8 @@ final class AWSMutationDatabaseAdapter {
 
 }
 
-@available(iOS 13.0, *)
 extension AWSMutationDatabaseAdapter: DefaultLogger { }
 
-@available(iOS 13.0, *)
 extension AWSMutationDatabaseAdapter: Resettable {
 
     func reset(onComplete: () -> Void) {

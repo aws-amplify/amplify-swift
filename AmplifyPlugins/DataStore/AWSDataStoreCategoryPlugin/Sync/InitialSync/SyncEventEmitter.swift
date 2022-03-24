@@ -20,7 +20,6 @@ enum IncomingSyncEventEmitterEvent {
 /// SyncEventEmitter holds onto one ModelSyncedEventEmitter per model. It counts the number of `modelSyncedEvent` to
 /// emit the `syncQueriesReady` and sends back the reconciliation events (`.mutationEventApplied`,
 /// `.mutationEventDropped`) to its subscribers.
-@available(iOS 13.0, *)
 final class SyncEventEmitter {
     private let queue = DispatchQueue(label: "com.amazonaws.SyncEventEmitter",
                                       target: DispatchQueue.global())
@@ -84,5 +83,4 @@ final class SyncEventEmitter {
     }
 }
 
-@available(iOS 13.0, *)
 extension SyncEventEmitter: DefaultLogger { }

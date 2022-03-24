@@ -19,7 +19,6 @@ enum StorageEngineEvent {
 
 protocol StorageEngineBehavior: AnyObject, ModelStorageBehavior {
 
-    @available(iOS 13.0, *)
     var publisher: AnyPublisher<StorageEngineEvent, DataStoreError> { get }
 
     /// start remote sync, based on if sync is enabled and/or authentication is required

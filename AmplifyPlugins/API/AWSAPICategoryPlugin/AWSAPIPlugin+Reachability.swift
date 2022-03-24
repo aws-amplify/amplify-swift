@@ -10,12 +10,10 @@ import Foundation
 import Combine
 
 extension AWSAPIPlugin {
-    @available(iOS 13.0, *)
     public func reachabilityPublisher() throws -> AnyPublisher<ReachabilityUpdate, Never>? {
         return try reachabilityPublisher(for: nil)
     }
 
-    @available(iOS 13.0, *)
     public func reachabilityPublisher(for apiName: String?) throws -> AnyPublisher<ReachabilityUpdate, Never>? {
         let endpoint = try pluginConfig.endpoints.getConfig(for: apiName)
         guard let hostName = endpoint.baseURL.host else {

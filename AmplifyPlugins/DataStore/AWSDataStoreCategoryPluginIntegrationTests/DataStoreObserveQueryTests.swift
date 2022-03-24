@@ -15,7 +15,6 @@ import AWSPluginsCore
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
-@available(iOS 13.0, *)
 class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
 
     struct TestModelRegistration: AmplifyModelRegistration {
@@ -585,5 +584,4 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     }
 }
 
-@available(iOS 13.0, *)
 extension DataStoreObserveQueryTests: DefaultLogger { }

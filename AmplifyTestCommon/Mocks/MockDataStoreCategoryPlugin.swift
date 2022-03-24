@@ -187,7 +187,6 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         }
     }
 
-    @available(iOS 13.0, *)
     func publisher<M: Model>(for modelType: M.Type)
     -> AnyPublisher<MutationEvent, DataStoreError> {
         let mutationEvent = MutationEvent(id: "testevent",
@@ -200,7 +199,6 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         return Result.Publisher(mutationEvent).eraseToAnyPublisher()
     }
 
-    @available(iOS 13.0, *)
     public func observeQuery<M: Model>(for modelType: M.Type,
                                        where predicate: QueryPredicate? = nil,
                                        sort sortInput: QuerySortInput? = nil)

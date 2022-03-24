@@ -17,7 +17,6 @@ enum IncomingAsyncSubscriptionEvent {
 
 // swiftlint:disable type_name
 /// Subscribes to an IncomingSubscriptionAsyncEventQueue, and publishes AnyModel
-@available(iOS 13.0, *)
 final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber, AmplifyCancellable {
     // swiftlint:enable type_name
 
@@ -94,7 +93,6 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber, AmplifyC
     }
 }
 
-@available(iOS 13.0, *)
 extension IncomingAsyncSubscriptionEventToAnyModelMapper: Resettable {
     func reset(onComplete: @escaping BasicClosure) {
         log.verbose("Resetting modelsFromSubscription and subscription")
@@ -106,5 +104,4 @@ extension IncomingAsyncSubscriptionEventToAnyModelMapper: Resettable {
     }
 }
 
-@available(iOS 13.0, *)
 extension IncomingAsyncSubscriptionEventToAnyModelMapper: DefaultLogger { }

@@ -10,7 +10,6 @@ import Combine
 import Foundation
 import AWSPluginsCore
 
-@available(iOS 13.0, *)
 class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     weak var storageAdapter: StorageEngineAdapter?
@@ -423,10 +422,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 }
 
-@available(iOS 13.0, *)
 extension RemoteSyncEngine: DefaultLogger { }
 
-@available(iOS 13.0, *)
 extension RemoteSyncEngine: Resettable {
     func reset(onComplete: @escaping BasicClosure) {
         let group = DispatchGroup()

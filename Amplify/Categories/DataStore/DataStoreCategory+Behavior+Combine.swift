@@ -8,10 +8,8 @@
 import Combine
 import Foundation
 
-@available(iOS 13.0, *)
 public typealias DataStorePublisher<Output> = AnyPublisher<Output, DataStoreError>
 
-@available(iOS 13.0, *)
 public extension DataStoreBaseBehavior {
 
     /// Clears the local data store

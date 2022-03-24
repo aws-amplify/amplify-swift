@@ -27,10 +27,8 @@ class AWSHTTPURLResponseTests: XCTestCase {
             XCTAssertEqual(response.statusCode, 200)
             XCTAssertEqual(response.allHeaderFields.count, 2)
 
-            if #available(iOS 13.0, *) {
-                XCTAssertNotNil(response.value(forHTTPHeaderField: "key1"))
-                XCTAssertNotNil(response.value(forHTTPHeaderField: "key2"))
-            }
+            XCTAssertNotNil(response.value(forHTTPHeaderField: "key1"))
+            XCTAssertNotNil(response.value(forHTTPHeaderField: "key2"))
         } else {
             XCTFail("Failed to initialize `AWSHTTPURLResponse`")
         }
