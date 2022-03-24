@@ -42,7 +42,7 @@ protocol ModelGraphQLRequestFactory {
     /// - Returns: a valid `GraphQLRequest` instance
     ///
     /// - seealso: `GraphQLQuery`, `GraphQLQueryType.list`
-    static func paginatedList<M: Model>(_ modelType: M.Type,
+    static func list<M: Model>(_ modelType: M.Type,
                                         where predicate: QueryPredicate?,
                                         limit: Int?) -> GraphQLRequest<List<M>>
 
@@ -232,7 +232,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                    decodePath: document.name + ".items")
     }
 
-    public static func paginatedList<M: Model>(_ modelType: M.Type,
+    public static func list<M: Model>(_ modelType: M.Type,
                                                where predicate: QueryPredicate? = nil,
                                                limit: Int? = nil) -> GraphQLRequest<List<M>> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema, operationType: .query)

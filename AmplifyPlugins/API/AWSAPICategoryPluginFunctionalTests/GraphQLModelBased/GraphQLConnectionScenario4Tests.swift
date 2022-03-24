@@ -279,7 +279,7 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
         let listCommentByPostIDCompleted = expectation(description: "list projects completed")
         let predicate = field("postID").eq(post.id)
         var results: List<Comment4>?
-        Amplify.API.query(request: .paginatedList(Comment4.self, where: predicate, limit: 1)) { result in
+        Amplify.API.query(request: .list(Comment4.self, where: predicate, limit: 1)) { result in
             switch result {
             case .success(let result):
                 switch result {

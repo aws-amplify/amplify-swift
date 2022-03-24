@@ -98,10 +98,10 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
                     XCTFail("Could not get comments")
                     return
                 }
-                queriedComments.load { result in
+                queriedComments.fetch { result in
                     switch result {
-                    case .success(let comments):
-                        XCTAssertEqual(comments.count, 1)
+                    case .success:
+                        XCTAssertEqual(queriedComments.count, 1)
                         getCommentsCompleted.fulfill()
                     case .failure(let error):
                         XCTFail("\(error)")

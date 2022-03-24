@@ -227,7 +227,7 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
         let listProjectByTeamIDCompleted = expectation(description: "list projects completed")
         var results: List<Project2>?
         let predicate = Project2.keys.teamID.eq(team.id)
-        Amplify.API.query(request: .paginatedList(Project2.self, where: predicate, limit: 1)) { result in
+        Amplify.API.query(request: .list(Project2.self, where: predicate, limit: 1)) { result in
             switch result {
             case .success(let result):
                 switch result {

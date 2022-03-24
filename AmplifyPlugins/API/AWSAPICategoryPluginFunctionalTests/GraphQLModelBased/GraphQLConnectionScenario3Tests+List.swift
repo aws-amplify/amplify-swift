@@ -271,7 +271,7 @@ extension GraphQLConnectionScenario3Tests {
         let listCommentByPostIDCompleted = expectation(description: "list projects completed")
         var results: List<Comment3>?
         let predicate = Comment3.keys.postID.eq(post.id)
-        Amplify.API.query(request: .paginatedList(Comment3.self, where: predicate, limit: 1)) { result in
+        Amplify.API.query(request: .list(Comment3.self, where: predicate, limit: 1)) { result in
             switch result {
             case .success(let result):
                 switch result {
@@ -331,7 +331,8 @@ extension GraphQLConnectionScenario3Tests {
         let post = Post3.keys
         let predicate = post.id == uuid1
         var results: List<Post3>?
-        _ = Amplify.API.query(request: .paginatedList(Post3.self, where: predicate)) { event in
+        let request: GraphQLRequest<List<Post3>> = GraphQLRequest<Post3>.list(Post3.self, where: predicate)
+        _ = Amplify.API.query(request: request) { event in
             switch event {
             case .success(let response):
                 guard case let .success(graphQLResponse) = response else {
