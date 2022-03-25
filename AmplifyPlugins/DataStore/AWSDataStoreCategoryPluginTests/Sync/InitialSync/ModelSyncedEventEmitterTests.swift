@@ -24,11 +24,7 @@ class ModelSyncedEventEmitterTests: XCTestCase {
                                                                  api: nil,
                                                                  reconciliationQueue: nil,
                                                                  storageAdapter: nil)
-        reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelSchemas: [Post.schema],
-                                                                      api: nil,
-                                                                      storageAdapter: nil,
-                                                                      syncExpressions: [],
-                                                                      auth: nil)
+        reconciliationQueue = MockAWSIncomingEventReconciliationQueue(syncableModelSchemas: [Post.schema])
         ModelRegistry.register(modelType: Post.self)
     }
 

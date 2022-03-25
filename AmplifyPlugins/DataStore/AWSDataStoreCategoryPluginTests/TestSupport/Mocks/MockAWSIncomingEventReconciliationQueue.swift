@@ -13,12 +13,11 @@ import Combine
 @testable import AWSDataStoreCategoryPlugin
 
 class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
-    static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, _, _  in
-        MockAWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
-                                                api: api,
-                                                storageAdapter: storageAdapter,
-                                                syncExpressions: syncExpressions,
-                                                auth: auth)
+
+    let syncableModelSchemas: [ModelSchema]
+
+    static let factory: IncomingEventReconciliationQueueFactory = { syncableModelSchemas, _  in
+        MockAWSIncomingEventReconciliationQueue(syncableModelSchemas: syncableModelSchemas)
     }
     let incomingEventSubject: PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>
     var publisher: AnyPublisher<IncomingEventReconciliationQueueEvent, DataStoreError> {
@@ -26,17 +25,22 @@ class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue 
     }
 
     static var lastInstance = AtomicValue<MockAWSIncomingEventReconciliationQueue?>(initialValue: nil)
-    init(modelSchemas: [ModelSchema],
-         api: APICategoryGraphQLBehavior?,
-         storageAdapter: StorageEngineAdapter?,
-         syncExpressions: [DataStoreSyncExpression],
-         auth: AuthCategoryBehavior?) {
+    init(syncableModelSchemas: [ModelSchema]) {
+        self.syncableModelSchemas = syncableModelSchemas
         self.incomingEventSubject = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
         updateLastInstance(instance: self)
     }
 
     func updateLastInstance(instance: MockAWSIncomingEventReconciliationQueue) {
         MockAWSIncomingEventReconciliationQueue.lastInstance.set(instance)
+    }
+
+    func initializeSubscriptions(syncExpressions: [DataStoreSyncExpression],
+                                 authModeStrategy: AuthModeStrategy,
+                                 storageAdapter: StorageEngineAdapter,
+                                 api: APICategoryGraphQLBehavior,
+                                 auth: AuthCategoryBehavior?) {
+        // no-op for mock
     }
 
     func start() {
@@ -47,7 +51,7 @@ class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue 
         incomingEventSubject.send(.paused)
     }
 
-    func offer(_ remoteModels: [MutationSync<AnyModel>], modelSchema: ModelSchema) {
+    func offer(_ remoteModels: [MutationSync<AnyModel>], modelName: String) {
         // no-op for mock
     }
 

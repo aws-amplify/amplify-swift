@@ -34,7 +34,8 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         mutationQueue = OutgoingMutationQueue(stateMachine,
                                               storageAdapter: storageAdapter,
                                               dataStoreConfiguration: .default,
-                                              authModeStrategy: AWSDefaultAuthModeStrategy())
+                                              authModeStrategy: AWSDefaultAuthModeStrategy(),
+                                              reconciliationQueue: MockAWSIncomingEventReconciliationQueue.init(syncableModelSchemas: []))
         eventSource = MockMutationEventSource()
         publisher = AWSMutationEventPublisher(eventSource: eventSource)
         apiBehavior = MockAPICategoryPlugin()
@@ -50,7 +51,8 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         mutationQueue = OutgoingMutationQueue(stateMachine,
                                               storageAdapter: storageAdapter,
                                               dataStoreConfiguration: .default,
-                                              authModeStrategy: AWSDefaultAuthModeStrategy())
+                                              authModeStrategy: AWSDefaultAuthModeStrategy(),
+                                              reconciliationQueue: nil)
         waitForExpectations(timeout: 1)
 
         XCTAssertEqual(stateMachine.state, OutgoingMutationQueue.State.notInitialized)

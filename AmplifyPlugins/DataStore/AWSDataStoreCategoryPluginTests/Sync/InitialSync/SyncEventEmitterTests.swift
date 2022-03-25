@@ -50,11 +50,7 @@ class SyncEventEmitterTests: XCTestCase {
         let anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
         let postMutationEvent = try MutationEvent(untypedModel: testPost, mutationType: .create)
 
-        reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelSchemas: [Post.schema],
-                                                                      api: nil,
-                                                                      storageAdapter: nil,
-                                                                      syncExpressions: [],
-                                                                      auth: nil)
+        reconciliationQueue = MockAWSIncomingEventReconciliationQueue(syncableModelSchemas: [Post.schema])
 
         initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
                                                                  api: nil,
@@ -125,11 +121,7 @@ class SyncEventEmitterTests: XCTestCase {
 
         let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
 
-        reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelSchemas: syncableModelSchemas,
-                                                                      api: nil,
-                                                                      storageAdapter: nil,
-                                                                      syncExpressions: [],
-                                                                      auth: nil)
+        reconciliationQueue = MockAWSIncomingEventReconciliationQueue(syncableModelSchemas: syncableModelSchemas)
 
         initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
                                                                  api: nil,
@@ -223,11 +215,7 @@ class SyncEventEmitterTests: XCTestCase {
 
         let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
 
-        reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelSchemas: syncableModelSchemas,
-                                                                      api: nil,
-                                                                      storageAdapter: nil,
-                                                                      syncExpressions: [],
-                                                                      auth: nil)
+        reconciliationQueue = MockAWSIncomingEventReconciliationQueue(syncableModelSchemas: syncableModelSchemas)
 
         initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
                                                                  api: nil,

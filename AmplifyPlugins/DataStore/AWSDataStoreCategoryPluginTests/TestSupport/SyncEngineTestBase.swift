@@ -101,7 +101,7 @@ class SyncEngineTestBase: XCTestCase {
     /// `mutationQueue`. If no mutationQueue is specified, uses  NoOpMutationQueue, meaning that incoming subscription
     /// events will never be delivered to the sync engine.
     func setUpDataStore(
-        mutationQueue: OutgoingMutationQueueBehavior = NoOpMutationQueue(),
+        mutationQueueFactory: @escaping OutgoingMutationQueueFactory = NoOpMutationQueue.factory,
         initialSyncOrchestratorFactory: @escaping InitialSyncOrchestratorFactory = NoOpInitialSyncOrchestrator.factory,
         modelRegistration: AmplifyModelRegistration = TestModelRegistration()
     ) throws {
@@ -113,7 +113,7 @@ class SyncEngineTestBase: XCTestCase {
         syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
                                       dataStoreConfiguration: .default,
                                       authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                      outgoingMutationQueue: mutationQueue,
+                                      outgoingMutationQueueFactory: mutationQueueFactory,
                                       mutationEventIngester: mutationDatabaseAdapter,
                                       mutationEventPublisher: awsMutationEventPublisher,
                                       initialSyncOrchestratorFactory: initialSyncOrchestratorFactory,

@@ -12,6 +12,13 @@ import Combine
 @testable import AWSDataStoreCategoryPlugin
 
 final class MockReconciliationQueue: MessageReporter, IncomingEventReconciliationQueue {
+    func initializeSubscriptions(syncExpressions: [DataStoreSyncExpression],
+                                 authModeStrategy: AuthModeStrategy,
+                                 storageAdapter: StorageEngineAdapter,
+                                 api: APICategoryGraphQLBehavior,
+                                 auth: AuthCategoryBehavior?) {
+        notify()
+    }
 
     func start() {
         notify()
@@ -21,7 +28,7 @@ final class MockReconciliationQueue: MessageReporter, IncomingEventReconciliatio
         notify()
     }
 
-    func offer(_ remoteModels: [MutationSync<AnyModel>], modelSchema: ModelSchema) {
+    func offer(_ remoteModels: [MutationSync<AnyModel>], modelName: String) {
         notify("offer(_:) remoteModels: \(remoteModels)")
     }
 

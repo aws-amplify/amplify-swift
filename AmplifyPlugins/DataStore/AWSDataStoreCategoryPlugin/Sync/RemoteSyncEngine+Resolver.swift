@@ -23,8 +23,8 @@ extension RemoteSyncEngine {
             case (.pausingMutationQueue, .pausedMutationQueue(let storageEngineAdapter)):
                 return .clearingStateOutgoingMutations(storageEngineAdapter)
 
-            case (.clearingStateOutgoingMutations, .clearedStateOutgoingMutations(let api, let storageEngineAdapter)):
-                return .initializingSubscriptions(api, storageEngineAdapter)
+            case (.clearingStateOutgoingMutations, .clearedStateOutgoingMutations(let api, let storageEngineAdapter, let auth)):
+                return .initializingSubscriptions(api, storageEngineAdapter, auth)
 
             case (.initializingSubscriptions, .initializedSubscriptions):
                 return .performingInitialSync

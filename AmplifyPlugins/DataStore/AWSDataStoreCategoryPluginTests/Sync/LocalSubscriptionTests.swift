@@ -33,7 +33,7 @@ class LocalSubscriptionTests: XCTestCase {
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
-            let outgoingMutationQueue = NoOpMutationQueue()
+            let outgoingMutationQueueFactory = NoOpMutationQueue.factory
             let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
             let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
             stateMachine = MockStateMachine(initialState: .notStarted,
@@ -43,7 +43,7 @@ class LocalSubscriptionTests: XCTestCase {
                 storageAdapter: storageAdapter,
                 dataStoreConfiguration: .default,
                 authModeStrategy: AWSDefaultAuthModeStrategy(),
-                outgoingMutationQueue: outgoingMutationQueue,
+                outgoingMutationQueueFactory: outgoingMutationQueueFactory,
                 mutationEventIngester: mutationDatabaseAdapter,
                 mutationEventPublisher: awsMutationEventPublisher,
                 initialSyncOrchestratorFactory: NoOpInitialSyncOrchestrator.factory,

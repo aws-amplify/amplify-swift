@@ -20,6 +20,14 @@ protocol OutgoingMutationQueueBehavior: AnyObject {
 }
 
 @available(iOS 13.0, *)
+typealias OutgoingMutationQueueFactory =
+(StateMachine<OutgoingMutationQueue.State, OutgoingMutationQueue.Action>?,
+     StorageEngineAdapter,
+     DataStoreConfiguration,
+     AuthModeStrategy,
+     IncomingEventReconciliationQueue?) -> OutgoingMutationQueueBehavior
+
+@available(iOS 13.0, *)
 final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     private let stateMachine: StateMachine<State, Action>
@@ -34,10 +42,12 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     )
 
     private weak var api: APICategoryGraphQLBehavior?
+    private weak var reconciliationQueue: IncomingEventReconciliationQueue?
 
     private var subscription: Subscription?
     private let dataStoreConfiguration: DataStoreConfiguration
     private let storageAdapter: StorageEngineAdapter
+
     private var authModeStrategy: AuthModeStrategy
 
     private let outgoingMutationQueueSubject: PassthroughSubject<MutationEvent, Never>
@@ -48,10 +58,12 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     init(_ stateMachine: StateMachine<State, Action>? = nil,
          storageAdapter: StorageEngineAdapter,
          dataStoreConfiguration: DataStoreConfiguration,
-         authModeStrategy: AuthModeStrategy) {
+         authModeStrategy: AuthModeStrategy,
+         reconciliationQueue: IncomingEventReconciliationQueue?) {
         self.storageAdapter = storageAdapter
         self.dataStoreConfiguration = dataStoreConfiguration
         self.authModeStrategy = authModeStrategy
+        self.reconciliationQueue = reconciliationQueue
 
         let operationQueue = OperationQueue()
         operationQueue.name = "com.amazonaws.OutgoingMutationOperationQueue"
@@ -241,6 +253,19 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     private func processSuccessEvent(_ mutationEvent: MutationEvent,
                                      mutationSync: MutationSync<AnyModel>?) {
         if let mutationSync = mutationSync {
+            guard let reconciliationQueue = reconciliationQueue else {
+                let dataStoreError = DataStoreError.configuration(
+                    "reconciliationQueue is unexpectedly nil",
+                    """
+                    The reference to reconciliationQueue has been released while an ongoing mutation was being processed.
+                    \(AmplifyErrorMessages.reportBugToAWS())
+                    """
+                )
+                stateMachine.notify(action: .errored(dataStoreError))
+                return
+            }
+
+            reconciliationQueue.offer([mutationSync], modelName: mutationEvent.modelName)
             MutationEvent.reconcilePendingMutationEventsVersion(
                 sent: mutationEvent,
                 received: mutationSync,
@@ -396,6 +421,15 @@ extension OutgoingMutationQueue: Subscriber {
     }
 }
 
+@available(iOS 13.0, *)
+extension OutgoingMutationQueue {
+    static let factory: OutgoingMutationQueueFactory = { _, storageEngineAdapter, dataStoreConfiguration, authModeStrategy, reconciliationQueue in
+        OutgoingMutationQueue(storageAdapter: storageEngineAdapter,
+                              dataStoreConfiguration: dataStoreConfiguration,
+                              authModeStrategy: authModeStrategy,
+                              reconciliationQueue: reconciliationQueue)
+    }
+}
 @available(iOS 13.0, *)
 extension OutgoingMutationQueue: Resettable {
     func reset(onComplete: @escaping BasicClosure) {

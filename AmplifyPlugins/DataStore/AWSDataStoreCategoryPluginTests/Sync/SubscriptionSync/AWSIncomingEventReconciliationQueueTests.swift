@@ -34,15 +34,18 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
     }
     var operationQueue: OperationQueue!
 
-    func initEventQueue(modelSchemas: [ModelSchema]) -> AWSIncomingEventReconciliationQueue {
+    func initEventQueueAndSubscriptions(modelSchemas: [ModelSchema]) -> AWSIncomingEventReconciliationQueue {
         let modelReconciliationQueueFactory = MockModelReconciliationQueue.init
-        return AWSIncomingEventReconciliationQueue(
-            modelSchemas: modelSchemas,
-            api: apiPlugin,
-            storageAdapter: storageAdapter,
-            syncExpressions: [],
-            authModeStrategy: AWSDefaultAuthModeStrategy(),
+        let queue = AWSIncomingEventReconciliationQueue(
+            syncableModelSchemas: modelSchemas,
             modelReconciliationQueueFactory: modelReconciliationQueueFactory)
+
+        queue.initializeSubscriptions(syncExpressions: [],
+                                      authModeStrategy: AWSDefaultAuthModeStrategy(),
+                                      storageAdapter: storageAdapter,
+                                      api: apiPlugin)
+
+        return queue
     }
 
     // This test case attempts to hit a race condition, and may be required to execute multiple times
@@ -50,7 +53,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
     func testTwoConnectionStatusUpdatesAtSameTime() {
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
 
-        let eventQueue = initEventQueue(modelSchemas: [Post.schema, Comment.schema])
+        let eventQueue = initEventQueueAndSubscriptions(modelSchemas: [Post.schema, Comment.schema])
         eventQueue.start()
 
         // We need to keep this in scope for the duration of the test or else Combine will release the listeners.
@@ -81,7 +84,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
 
     func testSubscriptionFailedWithSingleModelUnauthorizedError() {
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
-        let eventQueue = initEventQueue(modelSchemas: [Post.schema])
+        let eventQueue = initEventQueueAndSubscriptions(modelSchemas: [Post.schema])
         eventQueue.start()
 
         let sink = eventQueue.publisher.sink(receiveCompletion: { _ in
@@ -112,7 +115,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
     // model subscriptions out of two failed - Post subscription will fail but Comment will succeed
     func testSubscriptionFailedWithMultipleModels() {
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
-        let eventQueue = initEventQueue(modelSchemas: [Post.schema, Comment.schema])
+        let eventQueue = initEventQueueAndSubscriptions(modelSchemas: [Post.schema, Comment.schema])
         eventQueue.start()
 
         let sink = eventQueue.publisher.sink(receiveCompletion: { _ in
@@ -144,7 +147,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
 
     func testSubscriptionFailedWithSingleModelOperationDisabled() {
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
-        let eventQueue = initEventQueue(modelSchemas: [Post.schema])
+        let eventQueue = initEventQueueAndSubscriptions(modelSchemas: [Post.schema])
         eventQueue.start()
 
         let sink = eventQueue.publisher.sink(receiveCompletion: { _ in
@@ -178,7 +181,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
     // but Comment subscription will succeed
     func testSubscriptionFailedBecauseOfOperationDisabledWithMultipleModels() {
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
-        let eventQueue = initEventQueue(modelSchemas: [Post.schema])
+        let eventQueue = initEventQueueAndSubscriptions(modelSchemas: [Post.schema])
         eventQueue.start()
 
         let sink = eventQueue.publisher.sink(receiveCompletion: { _ in

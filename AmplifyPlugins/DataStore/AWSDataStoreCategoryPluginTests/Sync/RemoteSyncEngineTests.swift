@@ -28,13 +28,13 @@ class RemoteSyncEngineTests: XCTestCase {
         apiPlugin = MockAPICategoryPlugin()
         MockAWSInitialSyncOrchestrator.reset()
         storageAdapter = MockSQLiteStorageEngineAdapter()
-        let mockOutgoingMutationQueue = MockOutgoingMutationQueue()
+        let mockOutgoingMutationQueueFactory = MockOutgoingMutationQueue.factory
         mockRequestRetryablePolicy = MockRequestRetryablePolicy()
         do {
             remoteSyncEngine = try RemoteSyncEngine(
                 storageAdapter: storageAdapter,
                 dataStoreConfiguration: .default,
-                outgoingMutationQueue: mockOutgoingMutationQueue,
+                outgoingMutationQueueFactory: mockOutgoingMutationQueueFactory,
                 initialSyncOrchestratorFactory: MockAWSInitialSyncOrchestrator.factory,
                 reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
                 requestRetryablePolicy: mockRequestRetryablePolicy

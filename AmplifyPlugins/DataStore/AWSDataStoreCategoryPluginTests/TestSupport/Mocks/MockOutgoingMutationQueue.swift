@@ -13,6 +13,11 @@ import Combine
 @testable import AWSDataStoreCategoryPlugin
 
 class MockOutgoingMutationQueue: OutgoingMutationQueueBehavior {
+
+    static let factory: OutgoingMutationQueueFactory = { _, _, _, _, _ in
+        return MockOutgoingMutationQueue()
+    }
+
     func stopSyncingToCloud(_ completion: @escaping BasicClosure = {}) {
         completion()
     }

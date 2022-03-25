@@ -24,9 +24,8 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         tryOrFail {
             try setUpStorageAdapter()
-            try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
-                                                                    dataStoreConfiguration: .default,
-                                                                    authModeStrategy: AWSDefaultAuthModeStrategy()))
+            let outgoingMutationQueueFactory = OutgoingMutationQueue.init(_:storageAdapter:dataStoreConfiguration:authModeStrategy:reconciliationQueue:)
+            try setUpDataStore(mutationQueueFactory: outgoingMutationQueueFactory)
         }
         let post = Post(title: "Post title",
                         content: "Post content",
@@ -175,9 +174,8 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         }
 
         tryOrFail {
-            try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
-                                                                    dataStoreConfiguration: .default,
-                                                                    authModeStrategy: AWSDefaultAuthModeStrategy()))
+            let outgoingMutationQueueFactory = OutgoingMutationQueue.init(_:storageAdapter:dataStoreConfiguration:authModeStrategy:reconciliationQueue:)
+            try setUpDataStore(mutationQueueFactory: outgoingMutationQueueFactory)
             try startAmplify()
         }
 

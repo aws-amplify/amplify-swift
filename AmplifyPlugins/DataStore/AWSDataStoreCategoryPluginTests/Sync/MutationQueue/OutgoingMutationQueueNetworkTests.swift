@@ -58,13 +58,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
 
         let connection = try getDBConnection(inMemory: true)
         try setUpStorageAdapter(connection: connection)
-
-        let mutationQueue = OutgoingMutationQueue(
-            storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default,
-            authModeStrategy: AWSDefaultAuthModeStrategy()
-        )
-        try setUpDataStore(mutationQueue: mutationQueue)
+        try setUpDataStore(mutationQueueFactory: OutgoingMutationQueue.factory)
     }
 
     override func tearDownWithError() throws {

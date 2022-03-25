@@ -23,8 +23,13 @@ enum IncomingEventReconciliationQueueEvent {
 /// directly from other network events such as mutation callbacks or from base/initial sync queries.
 @available(iOS 13.0, *)
 protocol IncomingEventReconciliationQueue: AnyObject, AmplifyCancellable {
+    func initializeSubscriptions(syncExpressions: [DataStoreSyncExpression],
+                                 authModeStrategy: AuthModeStrategy,
+                                 storageAdapter: StorageEngineAdapter,
+                                 api: APICategoryGraphQLBehavior,
+                                 auth: AuthCategoryBehavior?)
     func start()
     func pause()
-    func offer(_ remoteModels: [MutationSync<AnyModel>], modelSchema: ModelSchema)
+    func offer(_ remoteModels: [MutationSync<AnyModel>], modelName: String)
     var publisher: AnyPublisher<IncomingEventReconciliationQueueEvent, DataStoreError> { get }
 }
