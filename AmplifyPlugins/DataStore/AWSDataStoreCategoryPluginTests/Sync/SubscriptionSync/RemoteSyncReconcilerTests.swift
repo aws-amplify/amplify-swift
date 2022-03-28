@@ -81,7 +81,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
         let disposition = RemoteSyncReconciler.getDisposition(remoteModel,
                                                               localMetadata: localSyncMetadata)
 
-        XCTAssertEqual(disposition, .update(remoteModel))
+        XCTAssertEqual(disposition, nil)
     }
 
     func testReconcileLocalMetadata_withLocalLowerVersion() {

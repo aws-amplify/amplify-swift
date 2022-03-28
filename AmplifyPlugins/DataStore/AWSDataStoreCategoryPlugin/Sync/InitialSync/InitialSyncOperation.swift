@@ -183,7 +183,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         let items = syncQueryResult.items
         recordsReceived += UInt(items.count)
 
-        reconciliationQueue.offer(items, modelSchema: modelSchema)
+        reconciliationQueue.offer(items, modelName: modelSchema.name)
         for item in items {
             initialSyncOperationTopic.send(.enqueued(item, modelName: modelSchema.name))
         }

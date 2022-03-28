@@ -18,8 +18,8 @@ extension OutgoingMutationQueue {
             case (.notInitialized, .initialized):
                 return .stopped
 
-            case (.stopped, .receivedStart(let api, let mutationEventPublisher)):
-                return .starting(api, mutationEventPublisher)
+            case (.stopped, .receivedStart(let api, let mutationEventPublisher, let reconciliationQueue)):
+                return .starting(api, mutationEventPublisher, reconciliationQueue)
 
             case (.starting, .receivedSubscription):
                 return .requestingEvent
