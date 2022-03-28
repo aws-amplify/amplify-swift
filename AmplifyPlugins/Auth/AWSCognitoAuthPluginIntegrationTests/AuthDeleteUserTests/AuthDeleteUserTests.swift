@@ -10,6 +10,7 @@ import XCTest
 @testable import Amplify
 import AWSCognitoAuthPlugin
 import AWSPluginsCore
+import AmplifyTestCommon
 
 class AuthDeleteUserTests: AWSAuthBaseTest {
 

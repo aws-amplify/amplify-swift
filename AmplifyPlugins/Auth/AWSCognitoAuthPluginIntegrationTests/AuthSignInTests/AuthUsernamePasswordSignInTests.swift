@@ -8,6 +8,7 @@
 import XCTest
 @testable import Amplify
 import AWSCognitoAuthPlugin
+import AmplifyTestCommon
 
 class AuthUsernamePasswordSignInTests: AWSAuthBaseTest {
 

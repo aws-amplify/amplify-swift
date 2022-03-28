@@ -15,26 +15,15 @@ import AmplifyPlugins
 @testable import AWSAPICategoryPluginTestCommon
 
 class GraphQLWithIAMIntegrationTests: XCTestCase {
-    struct User {
-        let username: String
-        let password: String
-    }
 
     let amplifyConfigurationFile = "testconfiguration/GraphQLWithIAMIntegrationTests-amplifyconfiguration"
-    let credentialsFile = "testconfiguration/GraphQLWithIAMIntegrationTests-credentials"
-    var user: User!
+
+    let username = "integTest\(UUID().uuidString)"
+    let password = "P123@\(UUID().uuidString)"
+    let email = UUID().uuidString + "@" + UUID().uuidString + ".com"
 
     override func setUp() {
         do {
-            let credentials = try TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
-
-            guard let username = credentials["username"],
-                  let password = credentials["password"] else {
-                XCTFail("Missing credentials.json data")
-                return
-            }
-
-            user = User(username: username, password: password)
 
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
@@ -63,7 +52,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
     ///    - The operation completes successfully with no errors and todo in response
     ///
     func testCreateTodoMutationWithCustomGraphQLDocument() {
-        signIn(username: user.username, password: user.password)
+        registerAndSignIn()
         let completeInvoked = expectation(description: "request completed")
 
         let expectedId = UUID().uuidString
@@ -146,7 +135,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
     ///    - The subscription should receive mutation events corresponding to the API calls performed.
     ///
     func testOnCreateTodo() {
-        signIn(username: user.username, password: user.password)
+        registerAndSignIn()
         let connectedInvoked = expectation(description: "Connection established")
         let disconnectedInvoked = expectation(description: "Connection disconnected")
         let completedInvoked = expectation(description: "Completed invoked")
@@ -207,17 +196,18 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
 
     // MARK: - Helpers
 
-    func signIn(username: String, password: String) {
-        let signInInvoked = expectation(description: "sign in completed")
-        _ = Amplify.Auth.signIn(username: username, password: password) { event in
-            switch event {
-            case .success:
-                signInInvoked.fulfill()
-            case .failure(let error):
+    func registerAndSignIn() {
+        let registerAndSignInComplete = expectation(description: "register and sign in completed")
+        AuthSignInHelper.registerAndSignInUser(username: username,
+                                               password: password,
+                                               email: email) { didSucceed, error in
+            if didSucceed {
+                registerAndSignInComplete.fulfill()
+            } else {
                 XCTFail("Failed to Sign in user \(error)")
             }
         }
-        wait(for: [signInInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [registerAndSignInComplete], timeout: TestCommonConstants.networkTimeout)
     }
 
     func isSignedIn() -> Bool {

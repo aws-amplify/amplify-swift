@@ -8,7 +8,7 @@ include_build_tools!
 target 'AWSDataStoreCategoryPlugin' do
   pod 'Amplify', :path => '../../'
   pod 'AWSPluginsCore', :path => '../../'
-  pod "SQLite.swift", "0.12.2"
+  pod "SQLite.swift", "0.13.2"
 
   target "AWSDataStoreCategoryPluginTests" do
     inherit! :complete

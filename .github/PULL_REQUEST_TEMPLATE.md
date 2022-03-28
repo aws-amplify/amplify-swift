@@ -8,6 +8,7 @@
 - [ ] Build succeeds with all target using Swift Package Manager
 - [ ] All unit tests pass
 - [ ] All integration tests pass
+- [ ] Security oriented best practices and standards are followed (e.g. using input sanitization, principle of least privilege, etc)
 - [ ] Documentation update for the change if required
 - [ ] PR title conforms to conventional commit style
 - [ ] If breaking change, documentation/changelog update with migration instructions
