@@ -270,7 +270,30 @@ let storageTargets: [Target] = [
     ),
 ]
 
-let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets
+let predictionTargets: [Target] = [
+    .target(
+        name: "CoreMLPredictionsPlugin",
+        dependencies: [
+            .target(name: "Amplify")],
+        path: "AmplifyPlugins/Predictions/CoreMLPredictionsPlugin"
+    ),
+    .testTarget(
+        name: "CoreMLPredictionsPluginTests",
+        dependencies: [
+            "CoreMLPredictionsPlugin"
+        ],
+        path: "AmplifyPlugins/Predictions/CoreMLPredictionsPluginTests"
+    ),
+    .testTarget(
+        name: "CoreMLPredictionsPluginIntegrationTests",
+        dependencies: [
+            "CoreMLPredictionsPlugin"
+        ],
+        path: "AmplifyPlugins/Predictions/CoreMLPredictionsPluginIntegrationTests"
+    ),
+]
+
+let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets + predictionTargets
 
 let package = Package(
     name: "Amplify",
@@ -295,6 +318,10 @@ let package = Package(
         .library(
             name: "AWSS3StoragePlugin",
             targets: ["AWSS3StoragePlugin"]
+        ),
+        .library(
+            name: "CoreMLPredictionsPlugin",
+            targets: ["CoreMLPredictionsPlugin"]
         ),
         
     ],
