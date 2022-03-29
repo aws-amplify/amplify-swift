@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.22.2 (2022-03-29)
+
+### Bug Fixes
+
+- update SQLite dependency to 0.13.2 (#1696)
+
 ## 1.22.1 (2022-03-23)
 
 ## 1.22.0 (2022-03-16)
