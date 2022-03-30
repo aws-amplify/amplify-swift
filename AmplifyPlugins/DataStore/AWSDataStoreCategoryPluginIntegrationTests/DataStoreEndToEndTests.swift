@@ -9,6 +9,7 @@ import XCTest
 
 import AmplifyPlugins
 import AWSPluginsCore
+import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -16,6 +17,88 @@ import AWSPluginsCore
 
 @available(iOS 13.0, *)
 class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
+
+    func testCreate() throws {
+        try startAmplifyAndWaitForSync()
+        var cancellables = Set<AnyCancellable>()
+        let date = Temporal.DateTime.now()
+        let newPost = Post(
+            title: "This is a new post I created",
+            content: "Original content from DataStoreEndToEndTests at \(date)",
+            createdAt: date)
+
+        let saveSuccess = expectation(description: "save was successful.")
+        let outboxMutationEnqueued = expectation(description: "received OutboxMutationEnqueuedEvent")
+        let outboxIsNotEmptyReceived = expectation(description: "received outboxStatusReceived(false)")
+        let outboxIsEmptyReceived = expectation(description: "received outboxStatusReceived(true)")
+        let outboxMutationProcessed = expectation(description: "received outboxMutationProcessed")
+        let syncReceived = expectation(description: "SyncReceived(MutationEvent(version: 1))")
+        let localEventReceived = expectation(description: "received mutation event with version nil")
+        let remoteEventReceived = expectation(description: "received mutation event with version 1")
+        Amplify.Hub.publisher(for: .dataStore)
+            .sink { payload in
+                let event = DataStoreHubEvent(payload: payload)
+                switch event {
+                case .outboxMutationEnqueued:
+                    outboxMutationEnqueued.fulfill()
+                case .outboxStatus(let status):
+                    if !status.isEmpty {
+                        outboxIsNotEmptyReceived.fulfill()
+                    } else {
+                        outboxIsEmptyReceived.fulfill()
+                    }
+                case .outboxMutationProcessed:
+                    outboxMutationProcessed.fulfill()
+                case .syncReceived(let mutationEvent):
+                    guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
+                        XCTFail("Could not decode to expected post")
+                        return
+                    }
+                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                        XCTAssertEqual(post.content, newPost.content)
+                        XCTAssertEqual(mutationEvent.version, 1)
+                        syncReceived.fulfill()
+                        return
+                    }
+                default:
+                    break
+                }
+            }.store(in: &cancellables)
+
+        Amplify.DataStore.publisher(for: Post.self).sink { completion in
+            switch completion {
+            case .finished:
+                break
+            case .failure(let error):
+                XCTFail("Failed \(error)")
+            }
+        } receiveValue: { mutationEvent in
+            if mutationEvent.version == nil {
+                localEventReceived.fulfill()
+            } else if mutationEvent.version == 1 {
+                remoteEventReceived.fulfill()
+            }
+        }.store(in: &cancellables)
+
+        Amplify.DataStore.save(newPost) { result in
+            switch result {
+            case .success(let post):
+                XCTAssertEqual(post.content, newPost.content)
+                saveSuccess.fulfill()
+            case .failure(let error):
+                XCTFail("Failed to save post \(error)")
+            }
+        }
+
+        wait(for: [saveSuccess,
+                   outboxMutationEnqueued,
+                   outboxIsNotEmptyReceived,
+                   outboxIsEmptyReceived,
+                   outboxMutationProcessed,
+                   syncReceived,
+                   localEventReceived,
+                   remoteEventReceived], timeout: 10.0)
+    }
 
     func testCreateMutateDelete() throws {
         try startAmplifyAndWaitForSync()

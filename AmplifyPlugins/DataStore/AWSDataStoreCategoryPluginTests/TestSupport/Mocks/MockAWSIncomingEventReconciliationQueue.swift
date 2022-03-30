@@ -47,7 +47,7 @@ class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue 
         incomingEventSubject.send(.paused)
     }
 
-    func offer(_ remoteModels: [MutationSync<AnyModel>], modelName: String) {
+    func offer(_ remoteModels: [MutationSync<AnyModel>], modelName: ModelName) {
         // no-op for mock
     }
 

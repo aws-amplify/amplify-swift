@@ -96,7 +96,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         eventReconciliationQueueTopic.send(.paused)
     }
 
-    func offer(_ remoteModels: [MutationSync<AnyModel>], modelName: String) {
+    func offer(_ remoteModels: [MutationSync<AnyModel>], modelName: ModelName) {
         guard let queue = reconciliationQueues[modelName] else {
             // TODO: Error handling
             return
