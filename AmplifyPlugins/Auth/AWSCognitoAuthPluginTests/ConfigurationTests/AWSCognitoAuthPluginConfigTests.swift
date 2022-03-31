@@ -62,7 +62,9 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
                     "PoolId": "xx",
                     "Region": "us-east-1",
                     "AppClientId": "xx",
-                    "AppClientSecret": "xx"]]
+                    "AppClientSecret": "xx",
+                    "Endpoint": "xx"
+                ]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
@@ -119,7 +121,8 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
                     "PoolId": "xx",
                     "Region": "us-east-1",
                     "AppClientId": "xx",
-                    "AppClientSecret": "xx"]]
+                    "AppClientSecret": "xx",
+                    "Endpoint": "xx"]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
@@ -210,7 +213,8 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
                     "PoolId": "xx",
                     "Region": "us-east-1",
                     "AppClientId": "xx",
-                    "AppClientSecret": "xx"]]
+                    "AppClientSecret": "xx",
+                    "Endpoint": "xx"]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
