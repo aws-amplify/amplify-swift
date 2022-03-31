@@ -308,20 +308,20 @@ let package = Package(
             url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
             from: "1.9.0"
         ),// We can remove AwsCrt and ClientRuntime once we move to the latest AWS SDK for Swift
-        .package(
-            name: "AwsCrt",
-            url: "https://github.com/awslabs/aws-crt-swift.git",
-            .exact("0.1.1")
-        ),
-        .package(
-            name: "ClientRuntime",
-            url: "https://github.com/awslabs/smithy-swift.git",
-            .exact("0.1.4")
-        ),
+//        .package(
+//            name: "AwsCrt",
+//            url: "https://github.com/awslabs/aws-crt-swift.git",
+//            .exact("0.1.1")
+//        ),
+//        .package(
+//            name: "ClientRuntime",
+//            url: "https://github.com/awslabs/smithy-swift.git",
+//            .exact("0.1.4")
+//        ),
         .package(
             name: "AWSSwiftSDK",
             url: "https://github.com/awslabs/aws-sdk-swift",
-            .exact("0.1.4")
+            from: "0.2.3"
         ),
         .package(
             name: "CwlPreconditionTesting",
