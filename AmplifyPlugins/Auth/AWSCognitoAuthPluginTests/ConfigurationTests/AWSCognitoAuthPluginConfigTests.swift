@@ -63,8 +63,7 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
                     "Region": "us-east-1",
                     "AppClientId": "xx",
                     "AppClientSecret": "xx",
-                    "Endpoint": "xx"
-                ]]
+                    "Endpoint": "xx"]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
