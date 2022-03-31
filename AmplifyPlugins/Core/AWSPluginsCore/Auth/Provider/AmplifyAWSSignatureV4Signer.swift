@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
 import Amplify
 import ClientRuntime
 import AWSClientRuntime
@@ -19,6 +20,7 @@ public protocol AWSSignatureV4Signer {
 }
 
 public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
+    let group = DispatchGroup()
     
     public init() {
     }
@@ -34,7 +36,7 @@ public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
 
             let flags = SigningFlags(useDoubleURIEncode: true,
                                      shouldNormalizeURIPath: true,
-                                     omitSessionToken: false) 
+                                     omitSessionToken: false)
             let signedBodyHeader: AWSSignedBodyHeader = .none
             let signedBodyValue: AWSSignedBodyValue = .empty
             let signingConfig = AWSSigningConfig(credentials: credentials,
@@ -45,7 +47,19 @@ public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
                                                  service: signingName,
                                                  region: signingRegion,
                                                  signatureType: .requestHeaders)
-            return AWSSigV4Signer.sigV4SignedRequest(requestBuilder: requestBuilder, signingConfig: signingConfig)
+            group.enter()
+            var httpRequest: SdkHttpRequest? = nil
+            let update: (SdkHttpRequest?) -> Void = {
+                httpRequest = $0
+                self.group.leave()
+            }
+            Task {
+                let value = await AWSSigV4Signer.sigV4SignedRequest(requestBuilder: requestBuilder, signingConfig: signingConfig)
+                update(value)
+            }
+            _ = group.wait(timeout: .distantFuture)
+
+            return httpRequest
         } catch let error {
             throw AuthError.unknown("Unable to sign request", error)
         }
