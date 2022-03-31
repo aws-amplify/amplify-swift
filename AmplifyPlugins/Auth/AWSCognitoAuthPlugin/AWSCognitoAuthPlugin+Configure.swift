@@ -107,7 +107,14 @@ extension AWSCognitoAuthPlugin {
             return nil
         }
         let region = (regionString as NSString).aws_regionTypeValue()
-        return AmplifyAWSServiceConfiguration(region: region)
+
+        let endpointKeyPath = "CognitoUserPool.Default.Endpoint"
+        if case .string(let endpointString) = authConfiguration.value(at: endpointKeyPath) {
+            return AmplifyAWSServiceConfiguration(region: region, endpoint: .init(urlString: endpointString)
+            )
+        } else {
+            return AmplifyAWSServiceConfiguration(region: region)
+        }
     }
 
     // MARK: Internal
