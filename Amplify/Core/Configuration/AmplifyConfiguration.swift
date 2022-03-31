@@ -96,7 +96,7 @@ extension Amplify {
     /// - Parameter configuration: The AmplifyConfiguration for specified Categories
     public static func configure(_ configuration: AmplifyConfiguration? = nil) throws {
         guard !isRunningForSwiftUIPreviews else {
-            log.info("Running for SwiftUI reviews, skipping configuration.")
+            log.info("Running for SwiftUI previews, skipping configuration.")
             return
         }
         log.info("Configuring")
