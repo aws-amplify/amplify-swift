@@ -13,23 +13,23 @@ import AWSClientRuntime
 
 extension S3Client {
 
-    func deleteObject(input: DeleteObjectInput, completion: @escaping (ClientRuntime.SdkResult<DeleteObjectOutputResponse, DeleteObjectOutputError>) -> Void) {
+    func deleteObject(input: DeleteObjectInput, completion: @escaping (SdkResult<DeleteObjectOutputResponse, DeleteObjectOutputError>) -> Void) {
 #warning("Not Implemented")
         fatalError("Not Implemented")
     }
 
-    func listObjectsV2(input: ListObjectsV2Input, completion: @escaping (ClientRuntime.SdkResult<ListObjectsV2OutputResponse, ListObjectsV2OutputError>) -> Void) {
+    func listObjectsV2(input: ListObjectsV2Input, completion: @escaping (SdkResult<ListObjectsV2OutputResponse, ListObjectsV2OutputError>) -> Void) {
 #warning("Not Implemented")
         fatalError("Not Implemented")
     }
 
-    func listParts(input: ListPartsInput, completion: @escaping (ClientRuntime.SdkResult<ListPartsOutputResponse, ListPartsOutputError>) -> Void)
+    func listParts(input: ListPartsInput, completion: @escaping (SdkResult<ListPartsOutputResponse, ListPartsOutputError>) -> Void)
     {
 #warning("Not Implemented")
         fatalError("Not Implemented")
     }
 
-    func abortMultipartUpload(input: AbortMultipartUploadInput, completion: @escaping (ClientRuntime.SdkResult<AbortMultipartUploadOutputResponse, AbortMultipartUploadOutputError>) -> Void) {
+    func abortMultipartUpload(input: AbortMultipartUploadInput, completion: @escaping (SdkResult<AbortMultipartUploadOutputResponse, AbortMultipartUploadOutputError>) -> Void) {
 #warning("Not Implemented")
         fatalError("Not Implemented")
     }

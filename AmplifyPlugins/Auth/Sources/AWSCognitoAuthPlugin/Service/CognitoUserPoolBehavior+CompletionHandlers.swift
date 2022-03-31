@@ -7,7 +7,9 @@
 
 import Foundation
 
+import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
+import AWSClientRuntime
 import ClientRuntime
 
 extension CognitoUserPoolBehavior {
@@ -26,16 +28,16 @@ extension CognitoUserPoolBehavior {
         fatalError("Not Implemented")
     }
 
-    func signUp(input: SignUpInput, completion: @escaping (ClientRuntime.SdkResult<SignUpOutputResponse, SignUpOutputError>) -> Void)
+    func signUp(input: SignUpInput, completion: @escaping (SdkResult<SignUpOutputResponse, SignUpOutputError>) -> Void)
 
-    func confirmSignUp(input: ConfirmSignUpInput, completion: @escaping (ClientRuntime.SdkResult<ConfirmSignUpOutputResponse, ConfirmSignUpOutputError>) -> Void) {
+    func confirmSignUp(input: ConfirmSignUpInput, completion: @escaping (SdkResult<ConfirmSignUpOutputResponse, ConfirmSignUpOutputError>) -> Void) {
 #warning("Not Implemented")
         fatalError("Not Implemented")
     }
 
     func globalSignOut(
         input: GlobalSignOutInput,
-        completion: @escaping (ClientRuntime.SdkResult<GlobalSignOutOutputResponse, GlobalSignOutOutputError>) -> Void
+        completion: @escaping (SdkResult<GlobalSignOutOutputResponse, GlobalSignOutOutputError>) -> Void
     ) {
 #warning("Not Implemented")
         fatalError("Not Implemented")
@@ -43,7 +45,7 @@ extension CognitoUserPoolBehavior {
 
     func revokeToken(
         input: RevokeTokenInput,
-        completion: @escaping (ClientRuntime.SdkResult<RevokeTokenOutputResponse, RevokeTokenOutputError>) -> Void
+        completion: @escaping (SdkResult<RevokeTokenOutputResponse, RevokeTokenOutputError>) -> Void
     ) {
 #warning("Not Implemented")
         fatalError("Not Implemented")

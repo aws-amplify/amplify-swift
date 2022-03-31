@@ -15,7 +15,7 @@ extension S3Client {
     
     func completeMultipartUpload(config: AWSClientRuntime.AWSClientConfiguration,
                                   input: CompleteMultipartUploadInput,
-                                  completion: @escaping (ClientRuntime.SdkResult<CompleteMultipartUploadOutputResponse, CompleteMultipartUploadOutputError>) -> Void)
+                                  completion: @escaping (SdkResult<CompleteMultipartUploadOutputResponse, CompleteMultipartUploadOutputError>) -> Void)
     {
         let serviceName = "S3"
         let client = ClientRuntime.SdkHttpClient(engine: config.httpClientEngine, config: config.httpClientConfiguration)

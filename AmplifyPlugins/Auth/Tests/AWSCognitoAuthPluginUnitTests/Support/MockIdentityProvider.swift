@@ -101,7 +101,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
 
     func revokeToken(
         input: RevokeTokenInput,
-        completion: @escaping (ClientRuntime.SdkResult<RevokeTokenOutputResponse, RevokeTokenOutputError>) -> Void
+        completion: @escaping (SdkResult<RevokeTokenOutputResponse, RevokeTokenOutputError>) -> Void
     ) {
         revokeTokenCallback?(input, completion)
     }
