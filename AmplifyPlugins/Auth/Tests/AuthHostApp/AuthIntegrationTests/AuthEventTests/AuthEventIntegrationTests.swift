@@ -45,18 +45,6 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
             switch payload.eventName {
             case HubPayload.EventName.Auth.signedIn:
                 signInExpectation.fulfill()
-            case HubPayload.EventName.Auth.sessionExpired:
-                print("Session expired")
-                // Re-authenticate the user
-
-            case HubPayload.EventName.Auth.signedOut:
-                print("User signed out")
-                // Update UI
-
-            case HubPayload.EventName.Auth.userDeleted:
-                print("User deleted")
-                // Update UI
-
             default:
                 break
             }
