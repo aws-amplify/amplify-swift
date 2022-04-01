@@ -47,9 +47,9 @@ class AWSS3Adapter: AWSS3Behavior {
     ///   - request: request identifying bucket and options
     ///   - completion: handle which return a result with list of items
     func listObjectsV2(_ request: AWSS3ListObjectsV2Request, completion: @escaping (Result<StorageListResult, StorageError>) -> Void) {
-        let input = ListObjectsV2Input(prefix: request.prefix,
-                                       bucket: request.bucket,
+        let input = ListObjectsV2Input(bucket: request.bucket,
                                        continuationToken: request.continuationToken,
+                                       prefix: request.prefix,
                                        delimiter: request.delimiter,
                                        maxKeys: request.maxKeys,
                                        startAfter: request.startAfter)
