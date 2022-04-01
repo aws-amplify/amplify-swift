@@ -28,7 +28,10 @@ extension CognitoUserPoolBehavior {
         fatalError("Not Implemented")
     }
 
-    func signUp(input: SignUpInput, completion: @escaping (SdkResult<SignUpOutputResponse, SignUpOutputError>) -> Void)
+    func signUp(input: SignUpInput, completion: @escaping (SdkResult<SignUpOutputResponse, SignUpOutputError>) -> Void){
+#warning("Not Implemented")
+        fatalError("Not Implemented")
+    }
 
     func confirmSignUp(input: ConfirmSignUpInput, completion: @escaping (SdkResult<ConfirmSignUpOutputResponse, ConfirmSignUpOutputError>) -> Void) {
 #warning("Not Implemented")

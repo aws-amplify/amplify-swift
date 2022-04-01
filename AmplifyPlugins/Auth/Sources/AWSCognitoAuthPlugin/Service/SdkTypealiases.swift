@@ -14,4 +14,3 @@ import ClientRuntime
 public typealias SdkResult<R, E> = Result<R, SdkError<E>>
 
 public typealias NetworkResult = (Result<HttpResponse, Error>) -> Void
-

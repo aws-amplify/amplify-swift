@@ -176,9 +176,7 @@ extension AWSCognitoAuthPlugin {
     func makeUserPool() throws -> CognitoUserPoolBehavior {
         switch authConfiguration {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
-            let configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
-                frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
-                region: userPoolConfig.region)
+            let configuration = try getCognitoIdentityProviderClientConfig(userPoolConfig: userPoolConfig)
             return CognitoIdentityProviderClient(config: configuration)
 
         default:
@@ -186,16 +184,68 @@ extension AWSCognitoAuthPlugin {
         }
     }
 
+    private func getCognitoIdentityProviderClientConfig(userPoolConfig: UserPoolConfigurationData) throws -> CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration {
+        let group = DispatchGroup()
+        group.enter()
+
+        var result: Result<CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration, Error>!
+        let setResult: (Result<CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration, Error>) -> Void = {
+            result = $0
+            group.leave()
+        }
+
+        group.enter()
+        Task {
+            do {
+                let value = try await CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
+                    frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
+                    region: userPoolConfig.region)
+                setResult(.success(value))
+            } catch {
+                setResult(.failure(error))
+            }
+        }
+
+        group.wait()
+
+        return try result.get()
+    }
+
     func makeIdentityClient() throws -> CognitoIdentityBehavior {
         switch authConfiguration {
         case .identityPools(let identityPoolConfig), .userPoolsAndIdentityPools(_, let identityPoolConfig):
-            let configuration = try CognitoIdentityClient.CognitoIdentityClientConfiguration(
-                frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
-                region: identityPoolConfig.region)
+            let configuration = try getCognitoIdentityConfig(identityPoolConfig: identityPoolConfig)
             return CognitoIdentityClient(config: configuration)
         default:
             fatalError()
         }
+    }
+
+    private func getCognitoIdentityConfig(identityPoolConfig: IdentityPoolConfigurationData) throws -> CognitoIdentityClient.CognitoIdentityClientConfiguration {
+        let group = DispatchGroup()
+        group.enter()
+
+        var result: Result<CognitoIdentityClient.CognitoIdentityClientConfiguration, Error>!
+        let setResult: (Result<CognitoIdentityClient.CognitoIdentityClientConfiguration, Error>) -> Void = {
+            result = $0
+            group.leave()
+        }
+
+        group.enter()
+        Task {
+            do {
+                let value = try await CognitoIdentityClient.CognitoIdentityClientConfiguration(
+                    frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
+                    region: identityPoolConfig.region)
+                setResult(.success(value))
+            } catch {
+                setResult(.failure(error))
+            }
+        }
+
+        group.wait()
+
+        return try result.get()
     }
 
     func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior &
