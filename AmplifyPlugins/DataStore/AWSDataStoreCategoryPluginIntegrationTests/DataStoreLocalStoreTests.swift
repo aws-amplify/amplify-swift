@@ -421,6 +421,58 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         sink.cancel()
     }
 
+    func testDeleteModelTypeWithPredicate() {
+        _ = setUpLocalStore(numberOfPosts: 5)
+        let deleteSuccess = expectation(description: "Delete all successful")
+        Amplify.DataStore.delete(Post.self, where: Post.keys.status.eq(PostStatus.draft)) { result in
+            switch result {
+            case .success:
+                deleteSuccess.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [deleteSuccess], timeout: 1)
+
+        let queryComplete = expectation(description: "query returns empty result")
+        Amplify.DataStore.query(Post.self, where: Post.keys.status.eq(PostStatus.draft)) { result in
+            switch result {
+            case .success(let posts):
+                XCTAssertEqual(posts.count, 0)
+                queryComplete.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [queryComplete], timeout: 1)
+    }
+
+    func testDeleteAll() {
+        _ = setUpLocalStore(numberOfPosts: 5)
+        let deleteSuccess = expectation(description: "Delete all successful")
+        Amplify.DataStore.delete(Post.self, where: QueryPredicateConstant.all) { result in
+            switch result {
+            case .success:
+                deleteSuccess.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [deleteSuccess], timeout: 1)
+
+        let queryComplete = expectation(description: "query returns empty result")
+        Amplify.DataStore.query(Post.self) { result in
+            switch result {
+            case .success(let posts):
+                XCTAssertEqual(posts.count, 0)
+                queryComplete.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [queryComplete], timeout: 1)
+    }
+
     func setUpLocalStore(numberOfPosts: Int) -> [Post] {
         var savedPosts = [Post]()
         for id in 0 ..< numberOfPosts {

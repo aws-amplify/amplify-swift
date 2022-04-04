@@ -7,7 +7,7 @@
 
 import XCTest
 import AmplifyPlugins
-import AWSMobileClient
+import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -39,6 +39,7 @@ import AWSMobileClient
  ```
  */
 
+@available(iOS 13.0, *)
 class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
 
     func testGetBlogThenFetchPostsThenFetchComments() throws {
@@ -201,6 +202,103 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
             XCTAssertEqual(fetchedPost.id, post.id)
             XCTAssertEqual(fetchedPost.comments?.count, 1)
         }
+    }
+
+    func testDeleteAll() throws {
+        try startAmplifyAndWaitForReady()
+        var cancellables = Set<AnyCancellable>()
+        let remoteEventReceived = expectation(description: "received mutation event with version 1")
+        let commentId = UUID().uuidString
+        Amplify.DataStore.publisher(for: Comment6.self).sink { completion in
+            switch completion {
+            case .finished:
+                break
+            case .failure(let error):
+                XCTFail("Failed \(error)")
+            }
+        } receiveValue: { mutationEvent in
+            if mutationEvent.modelId == commentId && mutationEvent.version == 1 {
+                remoteEventReceived.fulfill()
+            }
+        }.store(in: &cancellables)
+        guard let blog = saveBlog(name: "name"),
+              let post = savePost(title: "title", blog: blog),
+              saveComment(id: commentId, post: post, content: "content") != nil else {
+            XCTFail("Could not create blog, post, and comment")
+            return
+        }
+        wait(for: [remoteEventReceived], timeout: 5)
+
+        var blogCount = 0
+        let retrievedBlogCount = expectation(description: "retrieved blog count")
+        Amplify.DataStore.query(Blog6.self) { result in
+            switch result {
+            case .success(let blogs):
+                blogCount = blogs.count
+                retrievedBlogCount.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [retrievedBlogCount], timeout: 10)
+        var postCount = 0
+        let retrievedPostCount = expectation(description: "retrieved post count")
+        Amplify.DataStore.query(Post6.self) { result in
+            switch result {
+            case .success(let posts):
+                postCount = posts.count
+                retrievedPostCount.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [retrievedPostCount], timeout: 10)
+
+        var commentCount = 0
+        let retrievedCommentCount = expectation(description: "retrieved comment count")
+        Amplify.DataStore.query(Comment6.self) { result in
+            switch result {
+            case .success(let comments):
+                commentCount = comments.count
+                retrievedCommentCount.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+
+        wait(for: [retrievedCommentCount], timeout: 10)
+
+        let totalCount = blogCount + postCount + commentCount
+        Amplify.Logging.verbose("Retrieved blog \(blogCount) post \(postCount) comment \(commentCount)")
+
+        let outboxMutationProcessed = expectation(description: "received outboxMutationProcessed")
+        var processedSoFar = 0
+        Amplify.Hub.publisher(for: .dataStore)
+            .sink { payload in
+                let event = DataStoreHubEvent(payload: payload)
+                switch event {
+                case .outboxMutationProcessed:
+                    processedSoFar += 1
+                    print("Processed so far \(processedSoFar)")
+                    if processedSoFar == totalCount {
+                        outboxMutationProcessed.fulfill()
+                    }
+                default:
+                    break
+                }
+            }.store(in: &cancellables)
+
+        let deleteSuccess = expectation(description: "Delete all successful")
+        Amplify.DataStore.delete(Blog6.self, where: QueryPredicateConstant.all) { result in
+            switch result {
+            case .success:
+                deleteSuccess.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+
+        wait(for: [deleteSuccess, outboxMutationProcessed], timeout: 10)
     }
 
     func saveBlog(id: String = UUID().uuidString, name: String) -> Blog6? {

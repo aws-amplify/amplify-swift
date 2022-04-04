@@ -80,6 +80,18 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         }
     }
 
+    func delete<M: Model>(_ modelType: M.Type,
+                          where predicate: QueryPredicate,
+                          completion: (DataStoreResult<Void>) -> Void) {
+        notify("deleteModelTypeByPredicate")
+
+        if let responder = responders[.deleteModelTypeListener] as? DeleteModelTypeResponder<M> {
+            if let callback = responder.callback((modelType: modelType, where: predicate)) {
+                completion(callback)
+            }
+        }
+    }
+
     func delete<M: Model>(_ model: M,
                           where predicate: QueryPredicate? = nil,
                           completion: @escaping DataStoreCallback<Void>) {
