@@ -96,8 +96,8 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         eventReconciliationQueueTopic.send(.paused)
     }
 
-    func offer(_ remoteModels: [MutationSync<AnyModel>], modelSchema: ModelSchema) {
-        guard let queue = reconciliationQueues[modelSchema.name] else {
+    func offer(_ remoteModels: [MutationSync<AnyModel>], modelName: ModelName) {
+        guard let queue = reconciliationQueues[modelName] else {
             // TODO: Error handling
             return
         }
@@ -133,9 +133,11 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         case .disconnected(modelName: let modelName, reason: .operationDisabled),
              .disconnected(modelName: let modelName, reason: .unauthorized):
             connectionStatusSerialQueue.async {
-                self.reconciliationQueues[modelName]?.cancel()
-                self.modelReconciliationQueueSinks[modelName]?.cancel()
-                self.reconciliationQueueConnectionStatus[modelName] = false
+                Amplify.log.debug("Disconnected subscription for \(modelName) reason: \(receiveValue)")
+                // A disconnected subscription due to operation disabled or unauthorized will still contribute
+                // to the overall state of the reconciliation queue system on sending the `.initialized` event
+                // since subscriptions may be disabled and have to reconcile locally sourced mutation evemts.
+                self.reconciliationQueueConnectionStatus[modelName] = true
                 if self.isInitialized {
                     self.eventReconciliationQueueTopic.send(.initialized)
                 }
