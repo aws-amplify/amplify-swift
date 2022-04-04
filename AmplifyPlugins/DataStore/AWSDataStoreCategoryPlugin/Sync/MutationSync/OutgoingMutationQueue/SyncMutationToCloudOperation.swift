@@ -279,7 +279,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
     /// - Warning: Must be invoked from a locking context
     private func scheduleRetry(advice: RequestRetryAdvice,
                                withAuthType authType: AWSAuthorizationType? = nil) {
-        log.verbose("\(#function) scheduling retry for mutation")
+        log.verbose("\(#function) scheduling retry for mutation \(advice)")
         mutationRetryNotifier = MutationRetryNotifier(
             advice: advice,
             networkReachabilityPublisher: networkReachabilityPublisher
