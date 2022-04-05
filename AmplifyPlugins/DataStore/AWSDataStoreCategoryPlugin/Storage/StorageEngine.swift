@@ -238,115 +238,106 @@ final class StorageEngine: StorageEngineBehavior {
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
                           withId id: Model.Identifier,
-                          predicate: QueryPredicate? = nil,
+                          condition: QueryPredicate? = nil,
                           completion: @escaping (DataStoreResult<M?>) -> Void) {
         var deleteInput = DeleteInput.withId(id: id)
-        if let predicate = predicate {
-            deleteInput = .withIdAndPredicate(id: id, predicate: predicate)
+        if let condition = condition {
+            deleteInput = .withIdAndCondition(id: id, condition: condition)
         }
         let transactionResult = queryAndDeleteTransaction(modelType,
                                                           modelSchema: modelSchema,
                                                           deleteInput: deleteInput)
-        let modelsFromTransactionResult = collapseMResult(transactionResult)
-        let associatedModelsFromTransactionResult = resolveAssociatedModels(transactionResult)
-
-        let deletedModel: M
-        switch modelsFromTransactionResult {
-        case .success(let queriedModels):
-            guard queriedModels.count <= 1 else {
+        switch transactionResult {
+        case .success(let queryAndDeleteResult):
+            guard queryAndDeleteResult.deletedModels.count <= 1 else {
                 completion(.failure(.unknown("delete with id returned more than one result", "", nil)))
                 return
             }
 
-            guard let first = queriedModels.first else {
+            guard let deletedModel = queryAndDeleteResult.deletedModels.first else {
                 completion(.success(nil))
                 return
             }
-            deletedModel = first
-        case .failure(let error):
-            completion(.failure(error))
-            return
-        }
 
-        guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
-            if !modelSchema.isSystem {
-                log.error("Unable to sync modelType (\(modelType)) where isSyncable is false")
+            guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
+                if !modelSchema.isSystem {
+                    log.error("Unable to sync modelType (\(modelType)) where isSyncable is false")
+                }
+                if self.syncEngine == nil {
+                    log.error("Unable to sync because syncEngine is nil")
+                }
+                completion(.success(deletedModel))
+                return
             }
-            if self.syncEngine == nil {
-                log.error("Unable to sync because syncEngine is nil")
-            }
-            completion(.success(deletedModel))
-            return
-        }
 
-        if #available(iOS 13.0, *) {
-            let syncCompletionWrapper: DataStoreCallback<Void> = { syncResult in
-                switch syncResult {
+            guard #available(iOS 13.0, *) else {
+                completion(.success(deletedModel))
+                return
+            }
+
+            syncDeletions(of: modelType,
+                          modelSchema: modelSchema,
+                          withModels: [deletedModel],
+                          associatedModels: queryAndDeleteResult.associatedModelsMap,
+                          syncEngine: syncEngine) {
+                switch $0 {
                 case .success:
                     completion(.success(deletedModel))
                 case .failure(let error):
                     completion(.failure(error))
                 }
             }
-            self.syncDeletions(of: modelType,
-                               modelSchema: modelSchema,
-                               withModels: [deletedModel],
-                               associatedModels: associatedModelsFromTransactionResult,
-                               syncEngine: syncEngine,
-                               completion: syncCompletionWrapper)
-        } else {
-            completion(.success(deletedModel))
+        case .failure(let error):
+            completion(.failure(error))
         }
     }
 
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
-                          predicate: QueryPredicate,
+                          filter: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>) {
         let transactionResult = queryAndDeleteTransaction(modelType,
                                                           modelSchema: modelSchema,
-                                                          deleteInput: .withPredicate(predicate: predicate))
-        let modelsFromTransactionResult = collapseMResult(transactionResult)
-        let associatedModelsFromTransactionResult = resolveAssociatedModels(transactionResult)
-
-        guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
-            if !modelSchema.isSystem {
-                log.error("Unable to sync model (\(modelSchema.name)) where isSyncable is false")
+                                                          deleteInput: .withFilter(filter))
+        switch transactionResult {
+        case .success(let queryAndDeleteResult):
+            guard !queryAndDeleteResult.deletedModels.isEmpty else {
+                completion(.success(queryAndDeleteResult.deletedModels))
+                return
             }
-            if self.syncEngine == nil {
-                log.error("Unable to sync because syncEngine is nil")
+
+            guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
+                if !modelSchema.isSystem {
+                    log.error("Unable to sync model (\(modelSchema.name)) where isSyncable is false")
+                }
+                if self.syncEngine == nil {
+                    log.error("Unable to sync because syncEngine is nil")
+                }
+                completion(.success(queryAndDeleteResult.deletedModels))
+                return
             }
-            completion(modelsFromTransactionResult)
-            return
-        }
 
-        guard case .success(let queriedModels) = modelsFromTransactionResult else {
-            completion(modelsFromTransactionResult)
-            return
-        }
+            guard #available(iOS 13.0, *) else {
+                completion(.success(queryAndDeleteResult.deletedModels))
+                return
+            }
 
-        if #available(iOS 13.0, *) {
-            let syncCompletionWrapper: DataStoreCallback<Void> = { syncResult in
-                switch syncResult {
+            syncDeletions(of: modelType,
+                          modelSchema: modelSchema,
+                          withModels: queryAndDeleteResult.deletedModels,
+                          predicate: filter,
+                          associatedModels: queryAndDeleteResult.associatedModelsMap,
+                          syncEngine: syncEngine) {
+                switch $0 {
                 case .success:
-                    completion(modelsFromTransactionResult)
+                    completion(.success(queryAndDeleteResult.deletedModels))
                 case .failure(let error):
                     completion(.failure(error))
                 }
             }
-            if queriedModels.isEmpty {
-                completion(modelsFromTransactionResult)
-            } else {
-                self.syncDeletions(of: modelType,
-                                   modelSchema: modelSchema,
-                                   withModels: queriedModels,
-                                   predicate: predicate,
-                                   associatedModels: associatedModelsFromTransactionResult,
-                                   syncEngine: syncEngine,
-                                   completion: syncCompletionWrapper)
-            }
-        } else {
-            completion(modelsFromTransactionResult)
+
+        case .failure(let error):
+            completion(.failure(error))
         }
     }
 

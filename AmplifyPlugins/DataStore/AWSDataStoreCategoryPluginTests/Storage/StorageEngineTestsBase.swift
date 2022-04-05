@@ -102,7 +102,7 @@ class StorageEngineTestsBase: XCTestCase {
         storageEngine.delete(modelType,
                              modelSchema: modelType.schema,
                              withId: id,
-                             predicate: predicate,
+                             condition: predicate,
                              completion: { dResult in
             result = dResult
             deleteFinished.fulfill()
