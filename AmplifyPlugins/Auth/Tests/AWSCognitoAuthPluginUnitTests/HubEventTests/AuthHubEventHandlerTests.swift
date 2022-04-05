@@ -22,7 +22,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         authHandler = nil
     }
 
-    /// Test whether HubEvent emits a signedIn event for normal signIn operation
+    /// Test whether HubEvent emits a signedIn event for mocked signIn operation
     ///
     /// - Given: A listener to hub events
     /// - When:
@@ -47,7 +47,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     
     /* TODO: Enable these tests when the API's have been implemented
 
-    /// Test whether HubEvent emits a signedIn event for webUI signIn
+    /// Test whether HubEvent emits a mocked signedIn event for webUI signIn
     ///
     /// - Given: A listener to hub events
     /// - When:
@@ -70,7 +70,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         wait(for: [hubEventExpectation], timeout: 10)
     }
 
-    /// Test whether HubEvent emits a signedIn event for social provider signIn
+    /// Test whether HubEvent emits a mocked signedIn event for social provider signIn
     ///
     /// - Given: A listener to hub events
     /// - When:
@@ -92,6 +92,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         mockSuccessfulSocialWebUISignedInEvent()
         wait(for: [hubEventExpectation], timeout: 10)
     }
+    
     private func mockSuccessfulSocialWebUISignedInEvent() {
         let mockResult = AuthSignInResult(nextStep: .done)
         let mockEvent = AWSAuthSocialWebUISignInOperation.OperationResult.success(mockResult)
