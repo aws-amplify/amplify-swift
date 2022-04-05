@@ -139,7 +139,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
                     }
                 }
             }
-        wait(for: [signInExpectation, sessionExpiredExpectation], timeout: networkTimeout)
+        wait(for: [signInExpectation, sessionExpiredExpectation], timeout: networkTimeout, enforceOrder: true)
     }
 
 }
