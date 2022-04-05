@@ -121,7 +121,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) {
         initStorageEngineAndStartSync()
-        storageEngine.delete(modelType, modelSchema: modelSchema, withId: id, predicate: predicate) { result in
+        storageEngine.delete(modelType, modelSchema: modelSchema, withId: id, condition: predicate) { result in
             self.onDeleteCompletion(result: result, modelSchema: modelSchema, completion: completion)
         }
     }
@@ -140,7 +140,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         storageEngine.delete(type(of: model),
                              modelSchema: modelSchema,
                              withId: model.id,
-                             predicate: predicate) { result in
+                             condition: predicate) { result in
             self.onDeleteCompletion(result: result, modelSchema: modelSchema, completion: completion)
         }
     }
@@ -169,7 +169,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         }
         storageEngine.delete(modelType,
                              modelSchema: modelSchema,
-                             predicate: predicate,
+                             filter: predicate,
                              completion: onCompletion)
     }
 
