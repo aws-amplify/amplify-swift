@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.5
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 import PackageDescription
 
@@ -274,7 +274,7 @@ let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTar
 
 let package = Package(
     name: "Amplify",
-    platforms: [.iOS(.v11)],
+    platforms: [.iOS(.v13)],
     products: [
         .library(
             name: "Amplify",
