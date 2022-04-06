@@ -33,4 +33,14 @@ extension S3Client {
 #warning("Not Implemented")
         fatalError("Not Implemented")
     }
+    
+    func createMultipartUpload(input: CreateMultipartUploadInput, completion: @escaping (SdkResult<CreateMultipartUploadOutputResponse, CreateMultipartUploadOutputError>) -> Void) {
+#warning("Not Implemented")
+        fatalError("Not Implemented")
+    }
+    
+    func completeMultipartUpload(input: CompleteMultipartUploadInput, completion: @escaping (SdkResult<CompleteMultipartUploadOutputResponse, CompleteMultipartUploadOutputError>) -> Void) {
+#warning("Not Implemented")
+        fatalError("Not Implemented")
+    }
 }

@@ -8,6 +8,7 @@
 import Foundation
 
 @testable import AWSCognitoAuthPlugin
+@testable import AWSPluginsTestCommon
 import AWSCognitoIdentityProvider
 
 extension SignUpEvent {
@@ -41,10 +42,13 @@ extension SignUpEvent {
         id: "initiateSignUpFailure",
         eventType: .initiateSignUpFailure(error: SignUpError.invalidUsername(message: "")), time: nil
     )
-
+    
     static let confirmSignUpSuccessEvent = SignUpEvent(
         id: "confirmSignUpSuccess",
-        eventType: .confirmSignUpSuccess(confirmSignupResponse: ConfirmSignUpOutputResponse()), time: nil
+        eventType: .confirmSignUpSuccess(
+            confirmSignupResponse: try! ConfirmSignUpOutputResponse(httpResponse: MockHttpResponse.ok)
+        ),
+        time: nil
     )
 
     static let confirmSignUpFailureEvent = SignUpEvent(

@@ -55,11 +55,61 @@ enum Defaults {
 
 
     static func makeDefaultUserPool() throws -> CognitoUserPoolBehavior {
-        return try CognitoIdentityProviderClient(region: regionString)
+//        return try CognitoIdentityProviderClient(region: regionString)
+        return try getCognitoIdentityProviderClient(region: regionString)
+    }
+    
+    static private func getCognitoIdentityProviderClient(region: String) throws -> CognitoIdentityProviderClient {
+        let group = DispatchGroup()
+        group.enter()
+
+        var result: Result<CognitoIdentityProviderClient, Error>!
+        let setResult: (Result<CognitoIdentityProviderClient, Error>) -> Void = {
+            result = $0
+            group.leave()
+        }
+
+        group.enter()
+        Task {
+            do {
+                let value = try await CognitoIdentityProviderClient(region: region)
+                setResult(.success(value))
+            } catch {
+                setResult(.failure(error))
+            }
+        }
+        group.wait()
+
+        return try result.get()
     }
 
     static func makeIdentity() throws -> CognitoIdentityBehavior {
-        return try CognitoIdentityClient(region: regionString)
+//        return try CognitoIdentityClient(region: regionString)
+        return try getCognitoIdentityClient(region: regionString)
+    }
+    
+    static private func getCognitoIdentityClient(region: String) throws -> CognitoIdentityClient {
+        let group = DispatchGroup()
+        group.enter()
+
+        var result: Result<CognitoIdentityClient, Error>!
+        let setResult: (Result<CognitoIdentityClient, Error>) -> Void = {
+            result = $0
+            group.leave()
+        }
+
+        group.enter()
+        Task {
+            do {
+                let value = try await CognitoIdentityClient(region: region)
+                setResult(.success(value))
+            } catch {
+                setResult(.failure(error))
+            }
+        }
+        group.wait()
+
+        return try result.get()
     }
 
     static func makeDefaultUserPoolConfigData() -> UserPoolConfigurationData {

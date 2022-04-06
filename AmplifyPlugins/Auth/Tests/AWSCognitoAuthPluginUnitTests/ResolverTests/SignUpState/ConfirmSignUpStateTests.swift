@@ -8,7 +8,7 @@
 import XCTest
 
 @testable import AWSCognitoAuthPlugin
-
+@testable import AWSPluginsTestCommon
 import AWSCognitoIdentityProvider
 
 class ConfirmSignUpStateTests: XCTestCase {
@@ -40,7 +40,7 @@ class ConfirmSignUpStateTests: XCTestCase {
         let confirmationCode = "123456"
 
         let confirmSignUpCallback: MockIdentityProvider.ConfirmSignUpCallback = { input, callback in
-            let response = ConfirmSignUpOutputResponse()
+            let response = try! ConfirmSignUpOutputResponse(httpResponse: MockHttpResponse.ok)
             callback(.success(response))
             exp.fulfill()
         }

@@ -7,6 +7,7 @@
 
 import XCTest
 import AWSCognitoIdentityProvider
+@testable import AWSPluginsTestCommon
 @testable import AWSCognitoAuthPlugin
 
 class RevokeTokenTests: XCTestCase {
@@ -75,7 +76,7 @@ class RevokeTokenTests: XCTestCase {
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 revokeTokenCallback: { _, callback in
-                    let response = RevokeTokenOutputResponse()
+                    let response = try! RevokeTokenOutputResponse(httpResponse: MockHttpResponse.ok)
                     callback(.success(response))
                 }
             )

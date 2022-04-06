@@ -10,6 +10,7 @@ import Foundation
 import AWSS3
 import Amplify
 import AWSPluginsCore
+import AWSClientRuntime
 
 class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
 
@@ -46,9 +47,10 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
                      delegateQueue: OperationQueue? = nil,
                      logger: Logger = storageLogger) throws {
         let credentialsProvider = authService.getCredentialsProvider()
-        let clientConfig = try S3Client.S3ClientConfiguration(credentialsProvider: credentialsProvider,
-                                                              region: region,
-                                                              signingRegion: region)
+//        let clientConfig = try S3Client.S3ClientConfiguration(credentialsProvider: credentialsProvider,
+//                                                              region: region,
+//                                                              signingRegion: region)
+        let clientConfig = try Self.getS3ClientConfig(credentialsProvider: credentialsProvider, region: region)
 
         let s3Client = S3Client(config: clientConfig)
         let awsS3 = AWSS3Adapter(s3Client, config: clientConfig)
@@ -74,6 +76,32 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
                   preSignedURLBuilder: preSignedURLBuilder,
                   awsS3: awsS3,
                   bucket: bucket)
+    }
+    
+    private static func getS3ClientConfig(credentialsProvider: AWSClientRuntime.CredentialsProvider, region: String) throws -> S3Client.S3ClientConfiguration {
+        let group = DispatchGroup()
+        
+        var result: Result<S3Client.S3ClientConfiguration, Error>!
+        let setResult: (Result<S3Client.S3ClientConfiguration, Error>) -> Void = {
+            result = $0
+            group.leave()
+        }
+        
+        group.enter()
+        Task {
+            do {
+                let value = try await S3Client.S3ClientConfiguration(credentialsProvider: credentialsProvider,
+                                                                     region: region,
+                                                                     signingRegion: region)
+                setResult(.success(value))
+            } catch {
+                setResult(.failure(error))
+            }
+        }
+        
+        group.wait()
+        
+        return try result.get()
     }
 
     init(authService: AWSAuthServiceBehavior,

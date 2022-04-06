@@ -184,7 +184,9 @@ let authTargets: [Target] = [
     .testTarget(
         name: "AWSCognitoAuthPluginUnitTests",
         dependencies: [
-            "AWSCognitoAuthPlugin"
+            "AWSCognitoAuthPlugin",
+            "CwlPreconditionTesting",
+            "AWSPluginsTestCommon"
         ],
         path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests"
     ),
@@ -242,6 +244,7 @@ let storageTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
+            .product(name: "AWSCognitoIdentityProvider", package: "AWSSwiftSDK"),
             .product(name: "AWSS3", package: "AWSSwiftSDK")],
         path: "AmplifyPlugins/Storage/AWSS3StoragePlugin",
         exclude: [
