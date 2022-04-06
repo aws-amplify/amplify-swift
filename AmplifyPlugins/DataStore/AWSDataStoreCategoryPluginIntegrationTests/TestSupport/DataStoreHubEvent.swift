@@ -7,7 +7,7 @@
 
 import Foundation
 import Amplify
-import AWSDataStoreCategoryPlugin
+import AWSDataStorePlugin
 
 /// Initialize with `HubPayload`'s `eventName: String` and `data: Any?` fields to return an enum of events with their
 /// expected payloads in their respective types
