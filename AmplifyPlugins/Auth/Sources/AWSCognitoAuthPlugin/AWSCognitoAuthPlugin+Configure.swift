@@ -41,15 +41,18 @@ extension AWSCognitoAuthPlugin {
 
         let authStateMachine = StateMachine(resolver: authResolver, environment: authEnvironment)
         let credentialStoreMachine = StateMachine(resolver: credentialStoreResolver, environment: credentialEnvironment)
+        let hubEventHandler = AuthHubEventHandler()
 
         configure(authConfiguration: authConfiguration,
                   authStateMachine: authStateMachine,
-                  credentialStoreStateMachine: credentialStoreMachine)
+                  credentialStoreStateMachine: credentialStoreMachine,
+                  hubEventHandler: hubEventHandler)
     }
 
     func configure(authConfiguration: AuthConfiguration,
                    authStateMachine: StateMachine<AuthState, AuthEnvironment>,
                    credentialStoreStateMachine: StateMachine<CredentialStoreState, CredentialEnvironment>,
+                   hubEventHandler: AuthHubEventBehavior,
                    queue: OperationQueue = OperationQueue())
     {
         self.authConfiguration = authConfiguration
@@ -57,6 +60,7 @@ extension AWSCognitoAuthPlugin {
         self.queue.maxConcurrentOperationCount = 1
         self.authStateMachine = authStateMachine
         self.authStateListenerToken = listenToAuthStateChange(authStateMachine)
+        self.hubEventHandler = hubEventHandler
 
         self.credentialStoreStateMachine = credentialStoreStateMachine
         sendConfigureCredentialEvent()
