@@ -356,12 +356,12 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 
         guard !associatedModels.isEmpty else {
             syncDeletions(of: modelType,
-                               modelSchema: modelSchema,
-                               withModels: models,
-                               predicate: predicate,
-                               syncEngine: syncEngine,
-                               dataStoreError: savedDataStoreError,
-                               completion: completion)
+                          modelSchema: modelSchema,
+                          withModels: models,
+                          predicate: predicate,
+                          syncEngine: syncEngine,
+                          dataStoreError: savedDataStoreError,
+                          completion: completion)
             return
         }
 
@@ -392,17 +392,13 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                     }
 
                     if mutationEventsSubmitCompleted == associatedModels.count {
-                        if let lastEmittedDataStoreError = savedDataStoreError {
-                            completion(.failure(lastEmittedDataStoreError))
-                        } else {
-                            self.syncDeletions(of: modelType,
-                                               modelSchema: modelSchema,
-                                               withModels: models,
-                                               predicate: predicate,
-                                               syncEngine: syncEngine,
-                                               dataStoreError: savedDataStoreError,
-                                               completion: completion)
-                        }
+                        self.syncDeletions(of: modelType,
+                                           modelSchema: modelSchema,
+                                           withModels: models,
+                                           predicate: predicate,
+                                           syncEngine: syncEngine,
+                                           dataStoreError: savedDataStoreError,
+                                           completion: completion)
                     }
                 }
             }
