@@ -10,11 +10,11 @@ import Foundation
 extension AmplifyConfiguration {
     @resultBuilder
     public struct Builder {
-        public static func buildBlock(_ plugins: any Plugin...) -> [any Plugin] {
+        public static func buildBlock(_ plugins: Plugin...) -> [Plugin] {
             plugins
         }
         
-        public static func buildOptional(_ plugins: [any Plugin]?) -> [any Plugin] {
+        public static func buildOptional(_ plugins: [Plugin]?) -> [Plugin] {
             plugins ?? []
         }
     }
@@ -51,7 +51,7 @@ extension Amplify {
     ///     }
     ///
     /// - Parameter builder: The AmplifyConfiguration for specified Categories
-    public static func configure(@AmplifyConfiguration.Builder builder: () -> [any Plugin]) throws {
+    public static func configure(@AmplifyConfiguration.Builder builder: () -> [Plugin]) throws {
         let plugins = builder()
         try plugins.forEach { plugin in
             try add(plugin: plugin)
@@ -61,7 +61,7 @@ extension Amplify {
     
     // This was added as an internal overload of the existing public generic API.
     // This could replace the existing generic API in the future.
-    internal static func add(plugin: any Plugin) throws {
+    internal static func add(plugin: Plugin) throws {
         log.debug("Adding plugin: \(plugin))")
         switch plugin {
         case let plugin as AnalyticsCategoryPlugin:
