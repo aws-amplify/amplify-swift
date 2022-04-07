@@ -66,7 +66,7 @@ extension AWSCognitoAuthPlugin {
 
     func awsMobileClientAdapter(from authConfiguration: JSONValue) throws -> AWSMobileClientBehavior {
         let identityPoolConfig = identityPoolServiceConfiguration(from: authConfiguration)
-        let userPoolConfig = userPoolServiceConfiguration(from: authConfiguration)
+        let userPoolConfig = try userPoolServiceConfiguration(from: authConfiguration)
 
         // Auth plugin require atleast one of the Cognito service to work. Throw an error if both the service
         // configuration are nil.
@@ -100,7 +100,7 @@ extension AWSCognitoAuthPlugin {
         return AmplifyAWSServiceConfiguration(region: region, credentialsProvider: anonymousCredentialProvider)
     }
 
-    func userPoolServiceConfiguration(from authConfiguration: JSONValue) -> AmplifyAWSServiceConfiguration? {
+    func userPoolServiceConfiguration(from authConfiguration: JSONValue) throws -> AmplifyAWSServiceConfiguration? {
         let regionKeyPath = "CognitoUserPool.Default.Region"
         guard case .string(let regionString) = authConfiguration.value(at: regionKeyPath) else {
             Amplify.Logging.warn("Could not read Cognito user pool information from the configuration.")
@@ -108,12 +108,32 @@ extension AWSCognitoAuthPlugin {
         }
         let region = (regionString as NSString).aws_regionTypeValue()
 
-        let endpointKeyPath = "CognitoUserPool.Default.Endpoint"
-        if case .string(let endpointString) = authConfiguration.value(at: endpointKeyPath) {
-            return AmplifyAWSServiceConfiguration(region: region, endpoint: .init(urlString: endpointString))
+        if  let endpoint = try resolveCognitoOverrideEndpoint(using: authConfiguration, region: region) {
+            return AmplifyAWSServiceConfiguration(region: region, endpoint: endpoint)
         } else {
             return AmplifyAWSServiceConfiguration(region: region)
         }
+    }
+
+    func resolveCognitoOverrideEndpoint(
+        using authConfiguration: JSONValue,
+        region: AWSRegionType) throws -> AWSEndpoint? {
+
+        let endpointKeyPath = "CognitoUserPool.Default.Endpoint"
+        guard case .string(let endpointString) = authConfiguration.value(at: endpointKeyPath) else {
+            return nil
+        }
+            guard let components = URLComponents(string: endpointString),
+                  let url = components.url,
+                    components.scheme == "https" || components.scheme == "http" else {
+            let amplifyError = AuthError.configuration(
+                "Error configuring \(String(describing: self))",
+                """
+                Invalid Endpoint value \(endpointString). Expected a fully-qualified hostname.
+                """)
+            throw amplifyError
+        }
+        return AWSEndpoint(region: region, service: .CognitoIdentityProvider, url: url)
     }
 
     // MARK: Internal

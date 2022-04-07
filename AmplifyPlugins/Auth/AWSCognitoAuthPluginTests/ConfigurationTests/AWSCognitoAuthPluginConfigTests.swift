@@ -63,7 +63,7 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
                     "Region": "us-east-1",
                     "AppClientId": "xx",
                     "AppClientSecret": "xx",
-                    "Endpoint": "xx"]]
+                    "Endpoint": "https://aws.amazon.com"]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
@@ -121,7 +121,7 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
                     "Region": "us-east-1",
                     "AppClientId": "xx",
                     "AppClientSecret": "xx",
-                    "Endpoint": "xx"]]
+                    "Endpoint": "https://aws.amazon.com"]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
@@ -163,6 +163,41 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
         } catch {
             guard case AuthError.configuration = error else {
                 XCTFail("Should have thrown a AuthError.configuration error if both cognito service config are invalid")
+                return
+            }
+        }
+    }
+
+    /// Test Auth configuration with invalid endpoint url for user pool
+    ///
+    /// - Given: Given invalid endpoint url for user pool
+    /// - When:
+    ///    - I configure auth with the given configuration
+    /// - Then:
+    ///    - I should get an exception.
+    ///
+    func testConfigWithInvalidUserPoolEndpoint() throws {
+        let plugin = AWSCognitoAuthPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let categoryConfig = AuthCategoryConfiguration(plugins: [
+            "awsCognitoAuthPlugin": [
+                "CognitoUserPool": ["Default": [
+                    "PoolId": "xx",
+                    "Region": "us-east-1",
+                    "AppClientId": "xx",
+                    "AppClientSecret": "xx",
+                    "Endpoint": "xx"]]
+            ]
+        ])
+
+        let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
+        do {
+            try Amplify.configure(amplifyConfig)
+            XCTFail("Should have thrown a AuthError.configuration error for invalid endpoint url")
+        } catch {
+            guard case AuthError.configuration = error else {
+                XCTFail("Should have thrown a AuthError.configuration error for invalid endpoint url")
                 return
             }
         }
@@ -213,7 +248,7 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
                     "Region": "us-east-1",
                     "AppClientId": "xx",
                     "AppClientSecret": "xx",
-                    "Endpoint": "xx"]]
+                    "Endpoint": "https://aws.amazon.com"]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
