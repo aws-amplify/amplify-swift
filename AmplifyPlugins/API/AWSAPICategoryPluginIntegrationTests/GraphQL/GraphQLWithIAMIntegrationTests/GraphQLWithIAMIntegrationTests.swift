@@ -15,21 +15,14 @@ import AWSCognitoAuthPlugin
 
 class GraphQLWithIAMIntegrationTests: XCTestCase {
 
-    let amplifyConfigurationFile = "GraphQLWithIAMIntegrationTests-amplifyconfiguration"
-    let credentialsFile = "GraphQLWithIAMIntegrationTests-credentials"
-    var user: User!
+    let amplifyConfigurationFile = "testconfiguration/GraphQLWithIAMIntegrationTests-amplifyconfiguration"
+
+    let username = "integTest\(UUID().uuidString)"
+    let password = "P123@\(UUID().uuidString)"
+    let email = UUID().uuidString + "@" + UUID().uuidString + ".com"
 
     override func setUp() {
         do {
-            let credentials = try TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
-
-            guard let username = credentials["username"],
-                  let password = credentials["password"] else {
-                XCTFail("Missing credentials.json data")
-                return
-            }
-
-            user = User(username: username, password: password)
 
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
