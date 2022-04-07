@@ -172,9 +172,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             performInitialSync()
         case .activatingCloudSubscriptions:
             activateCloudSubscriptions()
-        case .activatingMutationQueue(let api, let mutationEventPublisher):
+        case .activatingMutationQueue(let api, let mutationEventPublisher, let reconciliationQueue):
             startMutationQueue(api: api,
-                               mutationEventPublisher: mutationEventPublisher)
+                               mutationEventPublisher: mutationEventPublisher,
+                               reconciliationQueue: reconciliationQueue)
         case .notifyingSyncStarted:
             notifySyncStarted()
 
@@ -358,10 +359,12 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     private func startMutationQueue(api: APICategoryGraphQLBehavior,
-                                    mutationEventPublisher: MutationEventPublisher) {
+                                    mutationEventPublisher: MutationEventPublisher,
+                                    reconciliationQueue: IncomingEventReconciliationQueue?) {
         log.debug(#function)
         outgoingMutationQueue.startSyncingToCloud(api: api,
-                                                  mutationEventPublisher: mutationEventPublisher)
+                                                  mutationEventPublisher: mutationEventPublisher,
+                                                  reconciliationQueue: reconciliationQueue)
 
         remoteSyncTopicPublisher.send(.mutationQueueStarted)
         stateMachine.notify(action: .activatedMutationQueue)

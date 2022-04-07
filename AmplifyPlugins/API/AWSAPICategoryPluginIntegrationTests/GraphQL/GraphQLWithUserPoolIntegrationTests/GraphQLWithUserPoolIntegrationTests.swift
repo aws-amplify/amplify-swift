@@ -21,20 +21,15 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     }
 
     let amplifyConfigurationFile = "testconfiguration/GraphQLWithUserPoolIntegrationTests-amplifyconfiguration"
-    let credentialsFile = "testconfiguration/GraphQLWithUserPoolIntegrationTests-credentials"
+
+    let username = "integTest\(UUID().uuidString)"
+    let password = "P123@\(UUID().uuidString)"
+    let email = UUID().uuidString + "@" + UUID().uuidString + ".com"
+
     var user: User!
 
     override func setUp() {
         do {
-            let credentials = try TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
-
-            guard let username = credentials["user1"],
-                  let password = credentials["password"] else {
-                XCTFail("Missing credentials.json data")
-                return
-            }
-
-            user = User(username: username, password: password)
 
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
@@ -57,8 +52,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// When: Call mutate API
     /// Then: The operation completes successfully with no errors and todo in response
     func testCreateTodoMutationWithUserPoolWithSignedInUser() {
-        signIn(username: user.username,
-                          password: user.password)
+        registerAndSignIn()
         let completeInvoked = expectation(description: "request completed")
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
@@ -126,8 +120,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// When: Call mutate API
     /// Then: The operation creates a Todo successfully, Todo object is returned, and empty errors array
     func testCreateTodoMutation() {
-        signIn(username: user.username,
-                          password: user.password)
+        registerAndSignIn()
         let completeInvoked = expectation(description: "request completed")
 
         let expectedId = UUID().uuidString
@@ -171,8 +164,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// When: Call mutate API
     /// Then: The mutation operation completes successfully with errors in graphQLResponse
     func testCreateTodoMutationWithMissingInputFromVariables() {
-        signIn(username: user.username,
-                          password: user.password)
+        registerAndSignIn()
         let completeInvoked = expectation(description: "request completed")
         let uuid = UUID().uuidString
 
@@ -216,8 +208,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// When: Call mutate API
     /// Then: The mutation operation fails with APIError
     func testCreateTodoMutationWithInvalidResponseType() {
-        signIn(username: user.username,
-                          password: user.password)
+        registerAndSignIn()
         let transformationErrorInvoked = expectation(description: "transform error invoked")
 
         let expectedId = UUID().uuidString
@@ -253,8 +244,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// When: Call query API for that Todo
     /// Then: The query operation returns successfully with the Todo object and empty errors
     func testGetTodoQuery() {
-        signIn(username: user.username,
-                          password: user.password)
+        registerAndSignIn()
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let name = testMethodName + "Name"
@@ -298,8 +288,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// When: Call query API
     /// Then: The query operation successfully with no errors and empty Todo object
     func testGetTodoQueryForMissingTodo() {
-        signIn(username: user.username,
-                          password: user.password)
+        registerAndSignIn()
         let uuid = UUID().uuidString
 
         let completeInvoked = expectation(description: "request completed")
@@ -328,8 +317,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// When: Call mutate API
     /// Then: The operation updates the Todo successfully and the Todo object is returned
     func testUpdateTodoMutation() {
-        signIn(username: user.username,
-                          password: user.password)
+        registerAndSignIn()
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let name = testMethodName + "Name"
@@ -375,8 +363,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// When: Call mutatate API with DeleteTodo mutation
     /// Then: The operation deletes the Todo successfully, Todo object is returned, and an query returns empty
     func testDeleteTodoMutation() {
-        signIn(username: user.username,
-                          password: user.password)
+        registerAndSignIn()
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let name = testMethodName + "Name"
@@ -438,13 +425,11 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
-    // TODO: first time run fails, hm
     /// Given: A successful Todo created
     /// When: Call query API with ListTodo mutation for all Todos
     /// Then: The operation completes successfully with list of Todos returned
     func testListTodosQuery() {
-        signIn(username: user.username,
-                          password: user.password)
+        registerAndSignIn()
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let name = testMethodName + "Name"
@@ -483,8 +468,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// When: Call query API with ListTodo mutation with filter on the random Id
     /// Then: The operation completes successfully with no errors and empty list
     func testListTodosQueryWithNoResults() {
-        signIn(username: user.username,
-                          password: user.password)
+        registerAndSignIn()
         let uuid = UUID().uuidString
         let filter = ["id": ["eq": uuid]]
         let variables = ListTodosQuery.variables(filter: filter, limit: 10)
@@ -518,8 +502,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// When: Call mutate API on CreateTodo
     /// Then: The subscription handler is called and Todo object is returned
     func testOnCreateTodoSubscription() {
-        signIn(username: user.username,
-                          password: user.password)
+        registerAndSignIn()
         let connectedInvoked = expectation(description: "Connection established")
         let disconnectedInvoked = expectation(description: "Connection disconnected")
         let completedInvoked = expectation(description: "Completed invoked")
@@ -580,8 +563,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// When: Call mutate API on UpdateTodo
     /// Then: The subscription handler is called and Todo object is returned
     func testOnUpdateTodoSubscription() {
-        signIn(username: user.username,
-                          password: user.password)
+        registerAndSignIn()
         let connectedInvoked = expectation(description: "Connection established")
         let disconnectedInvoked = expectation(description: "Connection disconnected")
         let completedInvoked = expectation(description: "Completed invoked")
@@ -647,8 +629,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// When: Call mutate API on DeleteTodo
     /// Then: The subscription handler is called and Todo object is returned
     func testOnDeleteTodoSubscription() {
-        signIn(username: user.username,
-                          password: user.password)
+        registerAndSignIn()
         let connectedInvoked = expectation(description: "Connection established")
         let disconnectedInvoked = expectation(description: "Connection disconnected")
         let completedInvoked = expectation(description: "Completed invoked")
@@ -706,8 +687,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
 
     // Query with two query documents, return two different objects.
     func testCreateMultipleSubscriptions() {
-        signIn(username: user.username,
-                          password: user.password)
+        registerAndSignIn()
         let operations = [createTodoSubscription(),
                           createTodoSubscription(),
                           createTodoSubscription(),
@@ -734,6 +714,20 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     }
 
     // MARK: - Helpers
+
+    func registerAndSignIn() {
+        let registerAndSignInComplete = expectation(description: "register and sign in completed")
+        AuthSignInHelper.registerAndSignInUser(username: username,
+                                               password: password,
+                                               email: email) { didSucceed, error in
+            if didSucceed {
+                registerAndSignInComplete.fulfill()
+            } else {
+                XCTFail("Failed to Sign in user \(error)")
+            }
+        }
+        wait(for: [registerAndSignInComplete], timeout: TestCommonConstants.networkTimeout)
+    }
 
     func signIn(username: String, password: String) {
         let signInInvoked = expectation(description: "sign in completed")

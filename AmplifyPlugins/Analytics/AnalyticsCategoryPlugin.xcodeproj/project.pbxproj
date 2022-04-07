@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		162EFDD55E53D5A773D62CF6 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4E592238332FBE98A8EFCC /* Pods_HostApp.framework */; };
-		21233DFA2475C8BB00039337 /* AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21233DF92475C8BA00039337 /* AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json */; };
 		21233E042475CAD500039337 /* AWSPinpointAnalyticsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSPinpointAnalyticsPlugin.framework */; };
 		21233E0A2475CAED00039337 /* AWSPinpointAnalyticsPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F77B2375046300C4F92B /* AWSPinpointAnalyticsPluginIntegrationTests.swift */; };
 		2149E68F238A6D2900873955 /* RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E68E238A6D2900873955 /* RepeatingTimer.swift */; };
@@ -83,7 +82,6 @@
 /* Begin PBXFileReference section */
 		0E13BFF24658D710D2D705F9 /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
 		1CC23DFF3F8AB7DF86A7A4C2 /* Pods-HostApp-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSPinpointAnalyticsPluginTests/Pods-HostApp-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		21233DF92475C8BA00039337 /* AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json"; sourceTree = "<group>"; };
 		21233DFF2475CAD400039337 /* AWSPinpointAnalyticsPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPinpointAnalyticsPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21233E032475CAD500039337 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2149E68E238A6D2900873955 /* RepeatingTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatingTimer.swift; sourceTree = "<group>"; };
@@ -187,7 +185,6 @@
 		21233E002475CAD500039337 /* AWSPinpointAnalyticsPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
-				21233DF92475C8BA00039337 /* AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json */,
 				B478F77B2375046300C4F92B /* AWSPinpointAnalyticsPluginIntegrationTests.swift */,
 				21233E032475CAD500039337 /* Info.plist */,
 			);
@@ -608,7 +605,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B478F6E32374E0CF00C4F92B /* Main.storyboard in Resources */,
-				21233DFA2475C8BB00039337 /* AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json in Resources */,
 				B478F6E12374E0CF00C4F92B /* Assets.xcassets in Resources */,
 				B478F6E22374E0CF00C4F92B /* LaunchScreen.storyboard in Resources */,
 			);

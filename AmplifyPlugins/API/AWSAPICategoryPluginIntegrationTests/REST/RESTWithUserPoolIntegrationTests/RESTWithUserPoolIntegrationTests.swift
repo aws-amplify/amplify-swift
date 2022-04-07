@@ -12,25 +12,15 @@ import AWSAPICategoryPlugin
 @testable import AmplifyTestCommon
 
 class RESTWithUserPoolIntegrationTests: XCTestCase {
-    struct User {
-        let username: String
-        let password: String
-    }
+    
     let amplifyConfigurationFile = "testconfiguration/RESTWithUserPoolIntegrationTests-amplifyconfiguration"
-    let credentialsFile = "testconfiguration/RESTWithUserPoolIntegrationTests-credentials"
-    var user1: User!
+    
+    let username = "integTest\(UUID().uuidString)"
+    let password = "P123@\(UUID().uuidString)"
+    let email = UUID().uuidString + "@" + UUID().uuidString + ".com"
 
     override func setUp() {
         do {
-
-            let credentials = try TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
-
-            guard let user1 = credentials["user1"], let password = credentials["password"] else {
-                XCTFail("Missing credentials.json data")
-                return
-            }
-            self.user1 = User(username: user1, password: password)
-
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
@@ -47,7 +37,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
     }
 
     func testGetAPISuccess() {
-        signIn(username: user1.username, password: user1.password)
+        registerAndSignIn()
         let completeInvoked = expectation(description: "request completed")
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.get(request: request) { event in
@@ -65,7 +55,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
     }
 
     func testGetAPIWithQueryParamsSuccess() {
-        signIn(username: user1.username, password: user1.password)
+        registerAndSignIn()
         let completeInvoked = expectation(description: "request completed")
         let request = RESTRequest(path: "/items",
                                   queryParameters: [
@@ -87,7 +77,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
     }
 
     func testGetAPIWithEncodedQueryParamsSuccess() {
-        signIn(username: user1.username, password: user1.password)
+        registerAndSignIn()
         let completeInvoked = expectation(description: "request completed")
         let request = RESTRequest(path: "/items",
                                   queryParameters: [
@@ -138,17 +128,20 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
         wait(for: [failedInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func signIn(username: String, password: String) {
-        let signInInvoked = expectation(description: "sign in completed")
-        _ = Amplify.Auth.signIn(username: username, password: password) { event in
-            switch event {
-            case .success:
-                signInInvoked.fulfill()
-            case .failure(let error):
+    // MARK: - Helpers
+
+    func registerAndSignIn() {
+        let registerAndSignInComplete = expectation(description: "register and sign in completed")
+        AuthSignInHelper.registerAndSignInUser(username: username,
+                                               password: password,
+                                               email: email) { didSucceed, error in
+            if didSucceed {
+                registerAndSignInComplete.fulfill()
+            } else {
                 XCTFail("Failed to Sign in user \(error)")
             }
         }
-        wait(for: [signInInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [registerAndSignInComplete], timeout: TestCommonConstants.networkTimeout)
     }
 
     func signOut() {

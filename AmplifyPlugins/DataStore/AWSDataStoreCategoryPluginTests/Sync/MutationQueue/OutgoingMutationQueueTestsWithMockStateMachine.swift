@@ -18,6 +18,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
     var mutationQueue: OutgoingMutationQueue!
     var stateMachine: MockStateMachine<OutgoingMutationQueue.State, OutgoingMutationQueue.Action>!
     var publisher: AWSMutationEventPublisher!
+    var reconciliationQueue: IncomingEventReconciliationQueue!
     var apiBehavior: MockAPICategoryPlugin!
     var storageAdapter: StorageEngineAdapter!
     var eventSource: MockMutationEventSource!
@@ -38,6 +39,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         eventSource = MockMutationEventSource()
         publisher = AWSMutationEventPublisher(eventSource: eventSource)
         apiBehavior = MockAPICategoryPlugin()
+        reconciliationQueue = MockReconciliationQueue()
     }
 
     func testInitialState() {
@@ -63,7 +65,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             expect.fulfill()
         }
 
-        stateMachine.state = .starting(apiBehavior, publisher)
+        stateMachine.state = .starting(apiBehavior, publisher, reconciliationQueue)
         waitForExpectations(timeout: 1)
     }
 
@@ -73,7 +75,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedSubscription)
             semaphore.signal()
         }
-        stateMachine.state = .starting(apiBehavior, publisher)
+        stateMachine.state = .starting(apiBehavior, publisher, reconciliationQueue)
         semaphore.wait()
 
         let json = "{\"id\":\"1234\",\"title\":\"t\",\"content\":\"c\",\"createdAt\":\"2020-09-03T22:55:13.424Z\"}"
@@ -140,7 +142,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedSubscription)
             receivedSubscription.fulfill()
         }
-        stateMachine.state = .starting(apiBehavior, publisher)
+        stateMachine.state = .starting(apiBehavior, publisher, reconciliationQueue)
         wait(for: [receivedSubscription], timeout: 0.1)
 
         //Mock incoming mutation event
@@ -185,12 +187,14 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         let startReceivedAgain = expectation(description: "Start received again")
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedStart(self.apiBehavior,
-                                                                              self.publisher))
+                                                                              self.publisher,
+                                                                              self.reconciliationQueue))
             startReceivedAgain.fulfill()
         }
 
         mutationQueue.startSyncingToCloud(api: apiBehavior,
-                                          mutationEventPublisher: publisher)
+                                          mutationEventPublisher: publisher,
+                                          reconciliationQueue: reconciliationQueue)
 
         wait(for: [startReceivedAgain], timeout: 1)
 

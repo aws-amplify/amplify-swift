@@ -14,7 +14,8 @@ import AWSPluginsCore
 protocol OutgoingMutationQueueBehavior: AnyObject {
     func stopSyncingToCloud(_ completion: @escaping BasicClosure)
     func startSyncingToCloud(api: APICategoryGraphQLBehavior,
-                             mutationEventPublisher: MutationEventPublisher)
+                             mutationEventPublisher: MutationEventPublisher,
+                             reconciliationQueue: IncomingEventReconciliationQueue?)
     var publisher: AnyPublisher<MutationEvent, Never> { get }
 }
 
@@ -32,6 +33,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     )
 
     private weak var api: APICategoryGraphQLBehavior?
+    private weak var reconciliationQueue: IncomingEventReconciliationQueue?
 
     private var subscription: Subscription?
     private let dataStoreConfiguration: DataStoreConfiguration
@@ -84,9 +86,10 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     // MARK: - Public API
 
     func startSyncingToCloud(api: APICategoryGraphQLBehavior,
-                             mutationEventPublisher: MutationEventPublisher) {
+                             mutationEventPublisher: MutationEventPublisher,
+                             reconciliationQueue: IncomingEventReconciliationQueue?) {
         log.verbose(#function)
-        stateMachine.notify(action: .receivedStart(api, mutationEventPublisher))
+        stateMachine.notify(action: .receivedStart(api, mutationEventPublisher, reconciliationQueue))
     }
 
     func stopSyncingToCloud(_ completion: @escaping BasicClosure) {
@@ -102,8 +105,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
         switch newState {
 
-        case .starting(let api, let mutationEventPublisher):
-            doStart(api: api, mutationEventPublisher: mutationEventPublisher)
+        case .starting(let api, let mutationEventPublisher, let reconciliationQueue):
+            doStart(api: api, mutationEventPublisher: mutationEventPublisher, reconciliationQueue: reconciliationQueue)
 
         case .requestingEvent:
             requestEvent()
@@ -129,9 +132,11 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     /// the publisher. After subscribing to the publisher, return actions:
     /// - receivedSubscription
     private func doStart(api: APICategoryGraphQLBehavior,
-                         mutationEventPublisher: MutationEventPublisher) {
+                         mutationEventPublisher: MutationEventPublisher,
+                         reconciliationQueue: IncomingEventReconciliationQueue?) {
         log.verbose(#function)
         self.api = api
+        self.reconciliationQueue = reconciliationQueue
 
         queryMutationEventsFromStorage {
             self.operationQueue.isSuspended = false
@@ -239,6 +244,18 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     private func processSuccessEvent(_ mutationEvent: MutationEvent,
                                      mutationSync: MutationSync<AnyModel>?) {
         if let mutationSync = mutationSync {
+            guard let reconciliationQueue = reconciliationQueue else {
+                let dataStoreError = DataStoreError.configuration(
+                    "reconciliationQueue is unexpectedly nil",
+                                """
+                                The reference to reconciliationQueue has been released while an ongoing mutation was being processed.
+                                \(AmplifyErrorMessages.reportBugToAWS())
+                                """
+                )
+                stateMachine.notify(action: .errored(dataStoreError))
+                return
+            }
+            reconciliationQueue.offer([mutationSync], modelName: mutationEvent.modelName)
             MutationEvent.reconcilePendingMutationEventsVersion(
                 sent: mutationEvent,
                 received: mutationSync,

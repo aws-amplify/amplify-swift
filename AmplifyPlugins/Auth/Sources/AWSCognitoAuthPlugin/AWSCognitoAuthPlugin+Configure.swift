@@ -61,6 +61,7 @@ extension AWSCognitoAuthPlugin {
         self.authStateMachine = authStateMachine
         self.authStateListenerToken = listenToAuthStateChange(authStateMachine)
         self.hubEventHandler = hubEventHandler
+
         self.credentialStoreStateMachine = credentialStoreStateMachine
         sendConfigureCredentialEvent()
     }

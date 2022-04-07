@@ -20,7 +20,7 @@ extension RemoteSyncEngine {
         case clearedStateOutgoingMutations(APICategoryGraphQLBehavior, StorageEngineAdapter)
         case initializedSubscriptions
         case performedInitialSync
-        case activatedCloudSubscriptions(APICategoryGraphQLBehavior, MutationEventPublisher)
+        case activatedCloudSubscriptions(APICategoryGraphQLBehavior, MutationEventPublisher, IncomingEventReconciliationQueue?)
         case activatedMutationQueue
         case notifiedSyncStarted
         case cleanedUp(AmplifyError)
