@@ -38,23 +38,9 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin, AWSAPIAuthInformat
     /// and is clearable by `reset()`. This is implicitly unwrapped to be destroyed when resetting.
     var subscriptionConnectionFactory: SubscriptionConnectionFactory!
 
-    /// The underlying map that retains instances of NetworkReachabilityNotifier.  Using a computed property
-    /// to work around @available for use on stored properties
-    var iReachabilityMap: [String: Any]?
-
     var authProviderFactory: APIAuthProviderFactory
 
-    var reachabilityMap: [String: NetworkReachabilityNotifier] {
-        get {
-            if iReachabilityMap == nil {
-                iReachabilityMap = [String: NetworkReachabilityNotifier]()
-            }
-            return iReachabilityMap as! [String: NetworkReachabilityNotifier] // swiftlint:disable:this force_cast
-        }
-        set {
-            iReachabilityMap = newValue
-        }
-    }
+    var reachabilityMap: [String: NetworkReachabilityNotifier]
 
     /// Lock used for performing operations atomically when getting and setting `reachabilityMap`.
     let reachabilityMapLock: NSLock
@@ -67,6 +53,7 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin, AWSAPIAuthInformat
         self.mapper = OperationTaskMapper()
         self.queue = OperationQueue()
         self.authProviderFactory = apiAuthProviderFactory ?? APIAuthProviderFactory()
+        self.reachabilityMap = [:]
         self.reachabilityMapLock = NSLock()
         super.init()
 

@@ -72,16 +72,6 @@
 - **analytics**: Set pinpointConfiguration.debug on debug mode (#1689)
 - **DataStore**: Reconcile locally sourced mutations while subscriptions are disabled (#1712)
 
-## 1.22.3 (2022-04-02)
-
-## 1.22.2 (2022-03-29)
-
-### Bug Fixes
-
-- update SQLite dependency to 0.13.2 (#1696)
-
-## 1.22.1 (2022-03-23)
-
 ### ⚠ BREAKING CHANGES
 - The escape hatch of Auth and Storage plugins now returns the underlying Swift SDK instead of AWSMobileClient and AWSTransferUtility.
 - Logging category loglevel enum were moved to Amplify class extension to namespace them.
@@ -91,6 +81,16 @@
 - **Core**: Amplify now directly depends on AWS SDK for Swift.
 - **Auth**: Redesigned AWSCognitoAuthPlugin implementation using a state machine architecture. Internal dependency on AWSMobileClient is removed and the plugin directly depends on AWS SDK for Swift. The escape hatch now returns the underlying Swift SDK for Cognito UserPool and Cognito Identity Pool.
 - **Storage**: Removed the dependency on AWSTransferUtility and improved the internal logic of AWSS3StoragePlugin implementation.
+
+## 1.22.3 (2022-04-02)
+
+## 1.22.2 (2022-03-29)
+
+### Bug Fixes
+
+- update SQLite dependency to 0.13.2 (#1696)
+
+## 1.22.1 (2022-03-23)
 
 ## 1.22.0 (2022-03-16)
 
