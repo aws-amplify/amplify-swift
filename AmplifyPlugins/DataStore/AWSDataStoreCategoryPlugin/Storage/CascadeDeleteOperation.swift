@@ -144,7 +144,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                 syncDeletions(of: modelType,
                               modelSchema: modelSchema,
                               withModels: queryAndDeleteResult.deletedModels,
-                              associatedModels: queryAndDeleteResult.associatedModelsMap,
+                              associatedModels: queryAndDeleteResult.associatedModels,
                               syncEngine: syncEngine) {
                     switch $0 {
                     case .success:
@@ -159,7 +159,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                               modelSchema: modelSchema,
                               withModels: queryAndDeleteResult.deletedModels,
                               predicate: filter,
-                              associatedModels: queryAndDeleteResult.associatedModelsMap,
+                              associatedModels: queryAndDeleteResult.associatedModels,
                               syncEngine: syncEngine) {
                     switch $0 {
                     case .success:
@@ -180,7 +180,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 
     struct QueryAndDeleteResult<M: Model> {
         let deletedModels: [M]
-        let associatedModelsMap: [ModelName: [Model]]
+        let associatedModels: [(ModelName, Model)]
     }
 
     func queryAndDeleteTransaction<M: Model>(_ modelType: M.Type,
@@ -246,7 +246,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 
         return collapseResults(queryResult: queriedResult,
                                deleteResult: deletedResult,
-                               associatedModelsMap: getAssociatedModelsMap(associatedModels: associatedModels))
+                               associatedModels: associatedModels)
     }
 
     func recurseQueryAssociatedModels(modelSchema: ModelSchema, ids: [Model.Identifier]) -> [(ModelName, Model)] {
@@ -307,17 +307,9 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         return queriedModels
     }
 
-    private func getAssociatedModelsMap(associatedModels: [(ModelName, Model)]) -> [ModelName: [Model]] {
-        var associatedModelsMap = [ModelName: [Model]]()
-        for (modelName, model) in associatedModels {
-            associatedModelsMap[modelName, default: []].append(model)
-        }
-        return associatedModelsMap
-    }
-
     private func collapseResults<M: Model>(queryResult: DataStoreResult<[M]>?,
                                            deleteResult: DataStoreResult<[M]>?,
-                                           associatedModelsMap: [ModelName: [Model]]) -> DataStoreResult<QueryAndDeleteResult<M>> {
+                                           associatedModels: [(ModelName, Model)]) -> DataStoreResult<QueryAndDeleteResult<M>> {
         if let queryResult = queryResult {
             switch queryResult {
             case .success(let models):
@@ -325,7 +317,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                     switch deleteResult {
                     case .success:
                         return .success(QueryAndDeleteResult(deletedModels: models,
-                                                             associatedModelsMap: associatedModelsMap))
+                                                             associatedModels: associatedModels))
                     case .failure(let error):
                         return .failure(error)
                     }
@@ -340,23 +332,93 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         }
     }
 
-    // Currently we will syncDeletions from the Parent `models` before `associatedModels`.
-    // The order may be observed to be from the parent models, before the children models, before its children models
-    // but in reality, since the `associatedModels` has no order, we cannot assert that the sequence is from
-    // parent to children, to its children. For example, if A has-many B, B has-many C, the observed behavior
-    // can be either sync deletions of A, then B, then C, or A, then C, then B.
-    // The map was originally created to perserve the modelName so that it can be synced properly for Flutter clients.
-    // Now the expected behavior to align with JS behavior is to perform the sync from C then B then A.
-    // We'll have to modify the `associatedModels` back to an array to maintain the ordering, and make it a tuple to
-    // hold the `ModelName` info. That way, we can sync from the back of `associatedModels` array (deleting C then B)
-    // followed by deleting `models` (deleting A models).
+    // `syncDeletions` will first sync all associated models in reversed order so the lowest level of children models
+    // are synced first, before the its parent models. See `recurseQueryAssociatedModels()` for more details on the
+    // ordering of the results in `associatedModels`. Once all the associated models are synced, sync the `models`,
+    // finishing the sequence of deletions from children to parent.
+    //
+    // For example, A has-many B and C, B has-many D, D has-many E. The query will result in associatedModels with
+    // the order [B, D, E, C]. Sync deletions will be performed the back to the front from C, E, D, B, then finally the
+    // parent models A.
+    //
+    // `.reversed()` will not allocate new space for its elements (what we want) by wrapping the underlying
+    // collection and provide access in reverse order.
+    // For more details: https://developer.apple.com/documentation/swift/array/1690025-reversed
     @available(iOS 13.0, *)
     private func syncDeletions<M: Model>(of modelType: M.Type,
                                          modelSchema: ModelSchema,
                                          withModels models: [M],
                                          predicate: QueryPredicate? = nil,
-                                         associatedModels: [ModelName: [Model]],
+                                         associatedModels: [(ModelName, Model)],
                                          syncEngine: RemoteSyncEngineBehavior,
+                                         completion: @escaping DataStoreCallback<Void>) {
+        var savedDataStoreError: DataStoreError?
+
+        guard !associatedModels.isEmpty else {
+            syncDeletions(of: modelType,
+                               modelSchema: modelSchema,
+                               withModels: models,
+                               predicate: predicate,
+                               syncEngine: syncEngine,
+                               dataStoreError: savedDataStoreError,
+                               completion: completion)
+            return
+        }
+
+        var mutationEventsSubmitCompleted = 0
+        for (modelName, associatedModel) in associatedModels.reversed() {
+            let mutationEvent: MutationEvent
+            do {
+                mutationEvent = try MutationEvent(untypedModel: associatedModel,
+                                                  modelName: modelName,
+                                                  mutationType: .delete)
+            } catch {
+                let dataStoreError = DataStoreError(error: error)
+                completion(.failure(dataStoreError))
+                return
+            }
+
+            let mutationEventCallback: DataStoreCallback<MutationEvent> = { result in
+                self.serialQueueSyncDeletions.async {
+                    mutationEventsSubmitCompleted += 1
+                    switch result {
+                    case .failure(let dataStoreError):
+                        self.log.error("\(#function) failed to submit to sync engine \(mutationEvent)")
+                        if savedDataStoreError == nil {
+                            savedDataStoreError = dataStoreError
+                        }
+                    case .success(let mutationEvent):
+                        self.log.verbose("\(#function) successfully submitted to sync engine \(mutationEvent)")
+                    }
+
+                    if mutationEventsSubmitCompleted == associatedModels.count {
+                        if let lastEmittedDataStoreError = savedDataStoreError {
+                            completion(.failure(lastEmittedDataStoreError))
+                        } else {
+                            self.syncDeletions(of: modelType,
+                                               modelSchema: modelSchema,
+                                               withModels: models,
+                                               predicate: predicate,
+                                               syncEngine: syncEngine,
+                                               dataStoreError: savedDataStoreError,
+                                               completion: completion)
+                        }
+                    }
+                }
+            }
+            submitToSyncEngine(mutationEvent: mutationEvent,
+                               syncEngine: syncEngine,
+                               completion: mutationEventCallback)
+
+        }
+    }
+    @available(iOS 13.0, *)
+    private func syncDeletions<M: Model>(of modelType: M.Type,
+                                         modelSchema: ModelSchema,
+                                         withModels models: [M],
+                                         predicate: QueryPredicate? = nil,
+                                         syncEngine: RemoteSyncEngineBehavior,
+                                         dataStoreError: DataStoreError?,
                                          completion: @escaping DataStoreCallback<Void>) {
         var graphQLFilterJSON: String?
         if let predicate = predicate {
@@ -370,7 +432,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             }
         }
         var mutationEventsSubmitCompleted = 0
-        var savedDataStoreError: DataStoreError?
+        var savedDataStoreError = dataStoreError
         for model in models {
             let mutationEvent: MutationEvent
             do {
@@ -397,10 +459,11 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                         self.log.verbose("\(#function) successfully submitted to sync engine \(mutationEvent)")
                     }
                     if mutationEventsSubmitCompleted == models.count {
-                        self.syncDeletions(of: associatedModels,
-                                           syncEngine: syncEngine,
-                                           dataStoreError: savedDataStoreError,
-                                           completion: completion)
+                        if let lastEmittedDataStoreError = savedDataStoreError {
+                            completion(.failure(lastEmittedDataStoreError))
+                        } else {
+                            completion(.successfulVoid)
+                        }
                     }
                 }
             }
@@ -408,66 +471,6 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             submitToSyncEngine(mutationEvent: mutationEvent,
                                syncEngine: syncEngine,
                                completion: mutationEventCallback)
-        }
-    }
-
-    @available(iOS 13.0, *)
-    private func syncDeletions(of associatedModelsMap: [ModelName: [Model]],
-                               syncEngine: RemoteSyncEngineBehavior,
-                               dataStoreError: DataStoreError?,
-                               completion: @escaping DataStoreCallback<Void>) {
-        guard !associatedModelsMap.isEmpty else {
-            if let savedDataStoreError = dataStoreError {
-                completion(.failure(savedDataStoreError))
-            } else {
-                completion(.successfulVoid)
-            }
-            return
-        }
-
-        var mutationEventsSubmitCompleted = 0
-        let associatedModelsCount = associatedModelsMap.values.reduce(0) { totalCount, models in
-            totalCount + models.count
-        }
-        var savedDataStoreError = dataStoreError
-        for (modelName, associatedModels) in associatedModelsMap {
-            for associatedModel in associatedModels {
-                let mutationEvent: MutationEvent
-                do {
-                    mutationEvent = try MutationEvent(untypedModel: associatedModel,
-                                                      modelName: modelName,
-                                                      mutationType: .delete)
-                } catch {
-                    let dataStoreError = DataStoreError(error: error)
-                    completion(.failure(dataStoreError))
-                    return
-                }
-
-                let mutationEventCallback: DataStoreCallback<MutationEvent> = { result in
-                    self.serialQueueSyncDeletions.async {
-                        mutationEventsSubmitCompleted += 1
-                        switch result {
-                        case .failure(let dataStoreError):
-                            self.log.error("\(#function) failed to submit to sync engine \(mutationEvent)")
-                            if savedDataStoreError == nil {
-                                savedDataStoreError = dataStoreError
-                            }
-                        case .success(let mutationEvent):
-                            self.log.verbose("\(#function) successfully submitted to sync engine \(mutationEvent)")
-                        }
-                        if mutationEventsSubmitCompleted == associatedModelsCount {
-                            if let lastEmittedDataStoreError = savedDataStoreError {
-                                completion(.failure(lastEmittedDataStoreError))
-                            } else {
-                                completion(.successfulVoid)
-                            }
-                        }
-                    }
-                }
-                submitToSyncEngine(mutationEvent: mutationEvent,
-                                   syncEngine: syncEngine,
-                                   completion: mutationEventCallback)
-            }
         }
     }
 
