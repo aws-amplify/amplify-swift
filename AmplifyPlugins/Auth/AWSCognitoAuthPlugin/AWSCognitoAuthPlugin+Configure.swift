@@ -119,22 +119,22 @@ extension AWSCognitoAuthPlugin {
         using authConfiguration: JSONValue,
         region: AWSRegionType) throws -> AWSEndpoint? {
 
-        let endpointKeyPath = "CognitoUserPool.Default.Endpoint"
-        guard case .string(let endpointString) = authConfiguration.value(at: endpointKeyPath) else {
-            return nil
-        }
+            let endpointKeyPath = "CognitoUserPool.Default.Endpoint"
+            guard case .string(let endpointString) = authConfiguration.value(at: endpointKeyPath) else {
+                return nil
+            }
             guard let components = URLComponents(string: endpointString),
                   let url = components.url,
-                    components.scheme == "https" || components.scheme == "http" else {
-            let amplifyError = AuthError.configuration(
-                "Error configuring \(String(describing: self))",
+                  components.scheme == "https" || components.scheme == "http" else {
+                let amplifyError = AuthError.configuration(
+                    "Error configuring \(String(describing: self))",
                 """
                 Invalid Endpoint value \(endpointString). Expected a fully-qualified hostname.
                 """)
-            throw amplifyError
+                throw amplifyError
+            }
+            return AWSEndpoint(region: region, service: .CognitoIdentityProvider, url: url)
         }
-        return AWSEndpoint(region: region, service: .CognitoIdentityProvider, url: url)
-    }
 
     // MARK: Internal
 
