@@ -61,7 +61,6 @@ enum Defaults {
     
     static private func getCognitoIdentityProviderClient(region: String) throws -> CognitoIdentityProviderClient {
         let group = DispatchGroup()
-        group.enter()
 
         var result: Result<CognitoIdentityProviderClient, Error>!
         let setResult: (Result<CognitoIdentityProviderClient, Error>) -> Void = {
