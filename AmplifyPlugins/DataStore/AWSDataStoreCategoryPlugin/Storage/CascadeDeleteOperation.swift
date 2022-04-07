@@ -340,6 +340,16 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         }
     }
 
+    // Currently we will syncDeletions from the Parent `models` before `associatedModels`.
+    // The order may be observed to be from the parent models, before the children models, before its children models
+    // but in reality, since the `associatedModels` has no order, we cannot assert that the sequence is from
+    // parent to children, to its children. For example, if A has-many B, B has-many C, the observed behavior
+    // can be either sync deletions of A, then B, then C, or A, then C, then B.
+    // The map was originally created to perserve the modelName so that it can be synced properly for Flutter clients.
+    // Now the expected behavior to align with JS behavior is to perform the sync from C then B then A.
+    // We'll have to modify the `associatedModels` back to an array to maintain the ordering, and make it a tuple to
+    // hold the `ModelName` info. That way, we can sync from the back of `associatedModels` array (deleting C then B)
+    // followed by deleting `models` (deleting A models).
     @available(iOS 13.0, *)
     private func syncDeletions<M: Model>(of modelType: M.Type,
                                          modelSchema: ModelSchema,
