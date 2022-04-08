@@ -423,6 +423,17 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
     func testDeleteModelTypeWithPredicate() {
         _ = setUpLocalStore(numberOfPosts: 5)
+        let queryOnSetUpSuccess = expectation(description: "query returns non-empty result")
+        Amplify.DataStore.query(Post.self, where: Post.keys.status.eq(PostStatus.draft)) { result in
+            switch result {
+            case .success(let posts):
+                XCTAssertFalse(posts.isEmpty)
+                queryOnSetUpSuccess.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [queryOnSetUpSuccess], timeout: 1)
         let deleteSuccess = expectation(description: "Delete all successful")
         Amplify.DataStore.delete(Post.self, where: Post.keys.status.eq(PostStatus.draft)) { result in
             switch result {
@@ -480,7 +491,8 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
             let post = Post(title: "title\(Int.random(in: 0 ... 5))",
                             content: "content",
                             createdAt: .now(),
-                            rating: Double(Int.random(in: 0 ... 5)))
+                            rating: Double(Int.random(in: 0 ... 5)),
+                            status: .draft)
             savedPosts.append(post)
             print("\(id) \(post.id)")
             Amplify.DataStore.save(post) { result in
