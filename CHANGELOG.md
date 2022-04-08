@@ -1,5 +1,12 @@
 # Changelog
 ## Unreleased
+## 1.22.4 (2022-04-07)
+
+### Bug Fixes
+
+- **analytics**: Set pinpointConfiguration.debug on debug mode (#1689)
+- **DataStore**: Reconcile locally sourced mutations while subscriptions are disabled (#1712)
+
 ## 1.22.3 (2022-04-02)
 
 ## 1.22.2 (2022-03-29)
