@@ -10,27 +10,22 @@ import ClientRuntime
 
 protocol CognitoUserPoolBehavior {
 
-    func initiateAuth(input: InitiateAuthInput,
-                      completion: @escaping (Result<InitiateAuthOutputResponse,
-                                             SdkError<InitiateAuthOutputError>>) -> Void)
-
-    func respondToAuthChallenge(input: RespondToAuthChallengeInput,
-                                completion: @escaping (Result<RespondToAuthChallengeOutputResponse,
-                                                       SdkError<RespondToAuthChallengeOutputError>>) -> Void)
-
-    func signUp(input: SignUpInput, completion: @escaping (SdkResult<SignUpOutputResponse, SignUpOutputError>) -> Void)
-
-    func confirmSignUp(input: ConfirmSignUpInput, completion: @escaping (SdkResult<ConfirmSignUpOutputResponse, ConfirmSignUpOutputError>) -> Void)
-
-    func globalSignOut(
-        input: GlobalSignOutInput,
-        completion: @escaping (SdkResult<GlobalSignOutOutputResponse, GlobalSignOutOutputError>) -> Void
-    )
-
-    func revokeToken(
-        input: RevokeTokenInput,
-        completion: @escaping (SdkResult<RevokeTokenOutputResponse, RevokeTokenOutputError>) -> Void
-    )
-    
+    /// Throws InitiateAuthOutputError
     func initiateAuth(input: InitiateAuthInput) async throws -> InitiateAuthOutputResponse
+    
+    /// Throws RespondToAuthChallengeOutputError
+    func respondToAuthChallenge(
+        input: RespondToAuthChallengeInput) async throws -> RespondToAuthChallengeOutputResponse
+
+    /// Throws SignUpOutputError
+    func signUp(input: SignUpInput) async throws -> SignUpOutputResponse
+
+    /// Throws ConfirmSignUpOutputError
+    func confirmSignUp(input: ConfirmSignUpInput) async throws -> ConfirmSignUpOutputResponse
+    
+    /// Throws GlobalSignOutOutputError
+    func globalSignOut(input: GlobalSignOutInput) async throws -> GlobalSignOutOutputResponse
+
+    /// Throws RevokeTokenOutputError
+    func revokeToken(input: RevokeTokenInput) async throws -> RevokeTokenOutputResponse
 }
