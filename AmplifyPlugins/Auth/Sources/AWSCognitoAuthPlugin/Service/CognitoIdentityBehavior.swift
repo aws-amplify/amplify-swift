@@ -24,5 +24,8 @@ protocol CognitoIdentityBehavior {
         input: GetCredentialsForIdentityInput,
         completion: @escaping (SdkResult<GetCredentialsForIdentityOutputResponse,
                                GetCredentialsForIdentityOutputError>) -> Void)
+    
+    func getCredentialsForIdentity(
+        input: GetCredentialsForIdentityInput) async throws -> GetCredentialsForIdentityOutputResponse
 
 }

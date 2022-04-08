@@ -31,4 +31,6 @@ protocol CognitoUserPoolBehavior {
         input: RevokeTokenInput,
         completion: @escaping (SdkResult<RevokeTokenOutputResponse, RevokeTokenOutputError>) -> Void
     )
+    
+    func initiateAuth(input: InitiateAuthInput) async throws -> InitiateAuthOutputResponse
 }

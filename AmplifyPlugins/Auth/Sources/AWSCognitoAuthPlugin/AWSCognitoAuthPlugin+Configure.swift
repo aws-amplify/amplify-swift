@@ -222,7 +222,6 @@ extension AWSCognitoAuthPlugin {
 
     private func getCognitoIdentityConfig(identityPoolConfig: IdentityPoolConfigurationData) throws -> CognitoIdentityClient.CognitoIdentityClientConfiguration {
         let group = DispatchGroup()
-        group.enter()
 
         var result: Result<CognitoIdentityClient.CognitoIdentityClientConfiguration, Error>!
         let setResult: (Result<CognitoIdentityClient.CognitoIdentityClientConfiguration, Error>) -> Void = {
