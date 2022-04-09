@@ -7,6 +7,7 @@
 
 import AWSCognitoIdentity
 import Foundation
+import ClientRuntime
 
 struct FetchAuthIdentityId: Action {
 
@@ -84,12 +85,13 @@ struct FetchAuthIdentityId: Action {
                 dispatcher.send(fetchAwsCredentialsEvent)
                 
             } catch {
-                let authError = AuthorizationError.service(error: error)
-                let event = FetchIdentityEvent(eventType: .throwError(authError))
+                let sdkError = error as? SdkError<GetCredentialsForIdentityOutputError> ?? SdkError.unknown(error)
+                let authZError = AuthorizationError.service(error: error)
+                let event = FetchIdentityEvent(eventType: .throwError(authZError))
                 dispatcher.send(event)
                 
                 let updateCognitoSession = cognitoSession.copySessionByUpdating(
-                    identityIdResult: .failure(authError.authError))
+                    identityIdResult: .failure(sdkError.authError))
                 let fetchAwsCredentialsEvent = FetchAuthSessionEvent(
                     eventType: .fetchAWSCredentials(updateCognitoSession))
                 logVerbose("\(#fileID) Sending event \(fetchAwsCredentialsEvent.type)",

@@ -9,6 +9,7 @@ import Amplify
 import AWSPluginsCore
 import AWSCognitoIdentityProvider
 import Foundation
+import ClientRuntime
 
 struct RefreshUserPoolTokens: Action {
 
@@ -113,27 +114,27 @@ struct RefreshUserPoolTokens: Action {
                            environment: environment)
                 dispatcher.send(fetchIdentityEvent)
                 
-                //            case .failure(let error):
             } catch {
-                let authError = AuthorizationError.service(error: error)
-                let event = FetchUserPoolTokensEvent(eventType: .throwError(authError))
+                let sdkError = error as? SdkError<InitiateAuthOutputError> ?? SdkError.unknown(error)
+                let authZError = AuthorizationError.service(error: error)
+                let event = FetchUserPoolTokensEvent(eventType: .throwError(authZError))
                 dispatcher.send(event)
                 
-                // TODO: Fix this error handling
                 // Update the cognito session with the relevant errors, so that subsequent states can act accordingly
-//                let updateCognitoSession: AWSAuthCognitoSession
-//                if case .notAuthorized = error.authError {
-//                    let result: Result<AuthCognitoTokens, AuthError>
-//                    result = .failure(
-//                        AuthError.sessionExpired(
-//                            AuthPluginErrorConstants.cognitoTokensSessionExpiredError.errorDescription,
-//                            AuthPluginErrorConstants.cognitoTokensSessionExpiredError.recoverySuggestion)
-//                    )
-//                    updateCognitoSession = cognitoSession.copySessionByUpdating(cognitoTokensResult: result)
-//                } else {
-//                    updateCognitoSession = cognitoSession.copySessionByUpdating(cognitoTokensResult: .failure(error.authError))
-                let updateCognitoSession = cognitoSession.copySessionByUpdating(cognitoTokensResult: .failure(authError.authError))
-//                }
+                let updateCognitoSession: AWSAuthCognitoSession
+                if case .notAuthorized = sdkError.authError {
+                    let result: Result<AuthCognitoTokens, AuthError>
+                    result = .failure(
+                        AuthError.sessionExpired(
+                            AuthPluginErrorConstants.cognitoTokensSessionExpiredError.errorDescription,
+                            AuthPluginErrorConstants.cognitoTokensSessionExpiredError.recoverySuggestion)
+                    )
+                    updateCognitoSession = cognitoSession.copySessionByUpdating(cognitoTokensResult: result)
+                } else {
+                    updateCognitoSession = cognitoSession.copySessionByUpdating(
+                        cognitoTokensResult: .failure(sdkError.authError)
+                    )
+                }
                 
                 let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity(updateCognitoSession))
                 logVerbose("\(#fileID) Sending event \(fetchIdentityEvent.type)",

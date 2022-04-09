@@ -8,6 +8,7 @@
 import AWSCognitoIdentity
 import Foundation
 import Amplify
+import ClientRuntime
 
 struct FetchAuthAWSCredentials: Action {
 
@@ -64,9 +65,7 @@ struct FetchAuthAWSCredentials: Action {
 
         let getCredentialsInput = GetCredentialsForIdentityInput(identityId: identityId,
                                                                  logins: loginsMap)
-//        client.getCredentialsForIdentity(input: getCredentialsInput) { result in
-//            switch result {
-//            case .success(let response):
+
         Task {
             do {
                 let response = try await client.getCredentialsForIdentity(input: getCredentialsInput)
@@ -125,16 +124,14 @@ struct FetchAuthAWSCredentials: Action {
                 logVerbose("\(#fileID) Sending event \(fetchedAuthSessionEvent.type)", environment: environment)
                 dispatcher.send(fetchedAuthSessionEvent)
                 
-                //            case .failure(let error):
             } catch {
-                let authError = AuthorizationError.service(error: error)
-                let event = FetchAWSCredentialEvent(eventType: .throwError(authError))
+                let sdkError = error as? SdkError<GetCredentialsForIdentityOutputError> ?? SdkError.unknown(error)
+                let authZError = AuthorizationError.service(error: error)
+                let event = FetchAWSCredentialEvent(eventType: .throwError(authZError))
                 dispatcher.send(event)
                 
-                // TODO: improve error handling
                 let updatedSession = cognitoSession.copySessionByUpdating(
-//                    awsCredentialsResult: .failure(error.authError))
-                    awsCredentialsResult: .failure(authError.authError))
+                    awsCredentialsResult: .failure(sdkError.authError))
                 let fetchedAuthSessionEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession(updatedSession))
                 logVerbose("\(#fileID) Sending event \(fetchedAuthSessionEvent.type)", environment: environment)
                 dispatcher.send(fetchedAuthSessionEvent)
