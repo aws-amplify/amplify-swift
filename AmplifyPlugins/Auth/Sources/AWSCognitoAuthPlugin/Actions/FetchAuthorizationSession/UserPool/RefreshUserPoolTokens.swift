@@ -69,12 +69,9 @@ struct RefreshUserPoolTokens: Action {
         Task {
             do {
                 let response = try await client?.initiateAuth(input: input)
-                //client?.initiateAuth(input: input, completion: { result in
                 
                 logVerbose("\(#fileID) Initiate auth response received", environment: environment)
                 
-                //            switch result {
-                //            case .success(let response):
                 guard let authenticationResult = response?.authenticationResult,
                       let idToken = authenticationResult.idToken,
                       let accessToken = authenticationResult.accessToken

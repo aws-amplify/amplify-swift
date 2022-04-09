@@ -55,7 +55,7 @@ struct ConfirmSignUp: Action {
             let event: SignUpEvent
             do {
                 let response = try await client.confirmSignUp(input: input)
-            logVerbose("\(#fileID) ConfirmSignUp received", environment: environment)
+                logVerbose("\(#fileID) ConfirmSignUp received", environment: environment)
                 event = SignUpEvent(id: UUID().uuidString,
                                     eventType: .confirmSignUpSuccess(confirmSignupResponse: response),
                                     time: Date())
