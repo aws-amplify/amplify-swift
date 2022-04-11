@@ -28,8 +28,17 @@ enum DeleteInput {
     }
 }
 
+/// CascadeDeleteOperation has the following logic:
+/// 1. Query models from local store based on the following use cases:
+///    1a. If the use case is Delete with id, then query by `id`
+///    1b. or Delete with id and condition, then query by `id` and `condition`. If the model given the condition does not exist,
+///        check if the model exists. if the model exists, then fail with `DataStoreError.invalidCondition`.
+///    1c. or Delete with filter, then query by `filter`.
+/// 2. If there are at least one item to delete, query for all its associated models recursively.
+/// 3. Delete the original queried items from local store. This performs a cascade delete by default (See
+///    **CreateTableStatement** for more details, `on delete cascade` when creating the SQL table enables this behavior).
+///    4. If sync is enabled, then submit the delete mutations to the sync engine, in the order of children to parent models.
 public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
-
     let storageAdapter: StorageEngineAdapter
     var syncEngine: RemoteSyncEngineBehavior?
     let modelType: M.Type
@@ -80,102 +89,8 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
     }
 
     override public func main() {
-        let transactionResult = queryAndDeleteTransaction(modelType,
-                                                          modelSchema: modelSchema,
-                                                          deleteInput: deleteInput)
-
-        switch transactionResult {
-        case .success(let queryAndDeleteResult):
-            switch deleteInput {
-            case .withId, .withIdAndCondition:
-                guard queryAndDeleteResult.deletedModels.count <= 1 else {
-                    completionForWithId?(.failure(.unknown("delete with id returned more than one result", "", nil)))
-                    finish()
-                    return
-                }
-
-                guard queryAndDeleteResult.deletedModels.first != nil else {
-                    completionForWithId?(.success(nil))
-                    finish()
-                    return
-                }
-            case .withFilter:
-                guard !queryAndDeleteResult.deletedModels.isEmpty else {
-                    completionForWithFilter?(.success(queryAndDeleteResult.deletedModels))
-                    finish()
-                    return
-                }
-            }
-
-            guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
-                if !modelSchema.isSystem {
-                    log.error("Unable to sync model (\(modelSchema.name)) where isSyncable is false")
-                }
-                if self.syncEngine == nil {
-                    log.error("Unable to sync because syncEngine is nil")
-                }
-                completionForWithId?(.success(queryAndDeleteResult.deletedModels.first))
-                completionForWithFilter?(.success(queryAndDeleteResult.deletedModels))
-                finish()
-                return
-            }
-
-            guard #available(iOS 13.0, *) else {
-                completionForWithId?(.success(queryAndDeleteResult.deletedModels.first))
-                completionForWithFilter?(.success(queryAndDeleteResult.deletedModels))
-                finish()
-                return
-            }
-
-            // TODO: This requires follow up.
-            // In the current code, when deleting a single model instance conditionally, the `condition` predicate is
-            // first applied locally to determine whether the item should be deleted or not. If met, the local item is
-            // deleted. When syncing this deleted model with the delete mutation event, the `condition` is not passed
-            // to the delete mutation. Should it be passed to the delete mutation as well?
-            //
-            // When deleting all models that match the `filter` predicate, the `filter` is passed to the
-            // delete mutation event. Since the item was originally retrieved using the filter as a way to narrow
-            // down which items should be deleted, then does it still need to be passed as the "condition" for the
-            // delete mutation if it will always be met? (Perhaps, this is needed as a way to guard against updates
-            // that move the model out of the filtered results). Should we stop passing the `filter` to the delete
-            // mutation?
-            switch deleteInput {
-            case .withId, .withIdAndCondition:
-                syncDeletions(of: modelType,
-                              modelSchema: modelSchema,
-                              withModels: queryAndDeleteResult.deletedModels,
-                              associatedModels: queryAndDeleteResult.associatedModels,
-                              syncEngine: syncEngine) {
-                    switch $0 {
-                    case .success:
-                        self.completionForWithId?(.success(queryAndDeleteResult.deletedModels.first))
-                    case .failure(let error):
-                        self.completionForWithId?(.failure(error))
-                    }
-                    self.finish()
-                }
-            case .withFilter(let filter):
-                syncDeletions(of: modelType,
-                              modelSchema: modelSchema,
-                              withModels: queryAndDeleteResult.deletedModels,
-                              predicate: filter,
-                              associatedModels: queryAndDeleteResult.associatedModels,
-                              syncEngine: syncEngine) {
-                    switch $0 {
-                    case .success:
-                        self.completionForWithFilter?(.success(queryAndDeleteResult.deletedModels))
-                    case .failure(let error):
-                        self.completionForWithFilter?(.failure(error))
-                    }
-                    self.finish()
-                }
-            }
-
-        case .failure(let error):
-            completionForWithId?(.failure(error))
-            completionForWithFilter?(.failure(error))
-            finish()
-        }
+        let transactionResult = queryAndDeleteTransaction()
+        syncIfNeededAndFinish(transactionResult)
     }
 
     struct QueryAndDeleteResult<M: Model> {
@@ -183,9 +98,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         let associatedModels: [(ModelName, Model)]
     }
 
-    func queryAndDeleteTransaction<M: Model>(_ modelType: M.Type,
-                                             modelSchema: ModelSchema,
-                                             deleteInput: DeleteInput) -> DataStoreResult<QueryAndDeleteResult<M>> {
+    func queryAndDeleteTransaction() -> DataStoreResult<QueryAndDeleteResult<M>> {
         var queriedResult: DataStoreResult<[M]>?
         var deletedResult: DataStoreResult<[M]>?
         var associatedModels: [(ModelName, Model)] = []
@@ -197,7 +110,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             }
 
             guard !queriedModels.isEmpty else {
-                guard case .withIdAndCondition(let id, _) = deleteInput else {
+                guard case .withIdAndCondition(let id, _) = self.deleteInput else {
                     // Query did not return any results, treat this as a successful no-op delete.
                     deletedResult = .success([M]())
                     return
@@ -205,7 +118,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 
                 // Query using the computed predicate did not return any results, check if model actually exists.
                 do {
-                    if try self.storageAdapter.exists(modelSchema, withId: id, predicate: nil) {
+                    if try self.storageAdapter.exists(self.modelSchema, withId: id, predicate: nil) {
                         queriedResult = .failure(
                             DataStoreError.invalidCondition(
                                 "Delete failed due to condition did not match existing model instance.",
@@ -221,21 +134,21 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             }
 
             let modelIds = queriedModels.map {$0.id}
-            associatedModels = self.recurseQueryAssociatedModels(modelSchema: modelSchema, ids: modelIds)
+            associatedModels = self.recurseQueryAssociatedModels(modelSchema: self.modelSchema, ids: modelIds)
             let deleteCompletionWrapper: DataStoreCallback<[M]> = { deleteResult in
                 deletedResult = deleteResult
             }
-            self.storageAdapter.delete(modelType,
-                                       modelSchema: modelSchema,
-                                       filter: deleteInput.predicate,
+            self.storageAdapter.delete(self.modelType,
+                                       modelSchema: self.modelSchema,
+                                       filter: self.deleteInput.predicate,
                                        completion: deleteCompletionWrapper)
         }
 
         do {
             try storageAdapter.transaction {
-                storageAdapter.query(modelType,
-                                     modelSchema: modelSchema,
-                                     predicate: deleteInput.predicate,
+                storageAdapter.query(self.modelType,
+                                     modelSchema: self.modelSchema,
+                                     predicate: self.deleteInput.predicate,
                                      sort: nil,
                                      paginationInput: nil,
                                      completion: queryCompletionBlock)
@@ -332,6 +245,97 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         }
     }
 
+    func syncIfNeededAndFinish(_ transactionResult: DataStoreResult<QueryAndDeleteResult<M>>) {
+        switch transactionResult {
+        case .success(let queryAndDeleteResult):
+            switch deleteInput {
+            case .withId, .withIdAndCondition:
+                guard queryAndDeleteResult.deletedModels.count <= 1 else {
+                    completionForWithId?(.failure(.unknown("delete with id returned more than one result", "", nil)))
+                    finish()
+                    return
+                }
+
+                guard queryAndDeleteResult.deletedModels.first != nil else {
+                    completionForWithId?(.success(nil))
+                    finish()
+                    return
+                }
+            case .withFilter:
+                guard !queryAndDeleteResult.deletedModels.isEmpty else {
+                    completionForWithFilter?(.success(queryAndDeleteResult.deletedModels))
+                    finish()
+                    return
+                }
+            }
+
+            guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
+                if !modelSchema.isSystem {
+                    log.error("Unable to sync model (\(modelSchema.name)) where isSyncable is false")
+                }
+                if self.syncEngine == nil {
+                    log.error("Unable to sync because syncEngine is nil")
+                }
+                completionForWithId?(.success(queryAndDeleteResult.deletedModels.first))
+                completionForWithFilter?(.success(queryAndDeleteResult.deletedModels))
+                finish()
+                return
+            }
+
+            guard #available(iOS 13.0, *) else {
+                completionForWithId?(.success(queryAndDeleteResult.deletedModels.first))
+                completionForWithFilter?(.success(queryAndDeleteResult.deletedModels))
+                finish()
+                return
+            }
+
+            // TODO: This requires follow up.
+            // In the current code, when deleting a single model instance conditionally, the `condition` predicate is
+            // first applied locally to determine whether the item should be deleted or not. If met, the local item is
+            // deleted. When syncing this deleted model with the delete mutation event, the `condition` is not passed
+            // to the delete mutation. Should it be passed to the delete mutation as well?
+            //
+            // When deleting all models that match the `filter` predicate, the `filter` is passed to the
+            // delete mutation event. Since the item was originally retrieved using the filter as a way to narrow
+            // down which items should be deleted, then does it still need to be passed as the "condition" for the
+            // delete mutation if it will always be met? (Perhaps, this is needed as a way to guard against updates
+            // that move the model out of the filtered results). Should we stop passing the `filter` to the delete
+            // mutation?
+            switch deleteInput {
+            case .withId, .withIdAndCondition:
+                syncDeletions(withModels: queryAndDeleteResult.deletedModels,
+                              associatedModels: queryAndDeleteResult.associatedModels,
+                              syncEngine: syncEngine) {
+                    switch $0 {
+                    case .success:
+                        self.completionForWithId?(.success(queryAndDeleteResult.deletedModels.first))
+                    case .failure(let error):
+                        self.completionForWithId?(.failure(error))
+                    }
+                    self.finish()
+                }
+            case .withFilter(let filter):
+                syncDeletions(withModels: queryAndDeleteResult.deletedModels,
+                              predicate: filter,
+                              associatedModels: queryAndDeleteResult.associatedModels,
+                              syncEngine: syncEngine) {
+                    switch $0 {
+                    case .success:
+                        self.completionForWithFilter?(.success(queryAndDeleteResult.deletedModels))
+                    case .failure(let error):
+                        self.completionForWithFilter?(.failure(error))
+                    }
+                    self.finish()
+                }
+            }
+
+        case .failure(let error):
+            completionForWithId?(.failure(error))
+            completionForWithFilter?(.failure(error))
+            finish()
+        }
+    }
+
     // `syncDeletions` will first sync all associated models in reversed order so the lowest level of children models
     // are synced first, before the its parent models. See `recurseQueryAssociatedModels()` for more details on the
     // ordering of the results in `associatedModels`. Once all the associated models are synced, sync the `models`,
@@ -345,19 +349,15 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
     // collection and provide access in reverse order.
     // For more details: https://developer.apple.com/documentation/swift/array/1690025-reversed
     @available(iOS 13.0, *)
-    private func syncDeletions<M: Model>(of modelType: M.Type,
-                                         modelSchema: ModelSchema,
-                                         withModels models: [M],
-                                         predicate: QueryPredicate? = nil,
-                                         associatedModels: [(ModelName, Model)],
-                                         syncEngine: RemoteSyncEngineBehavior,
-                                         completion: @escaping DataStoreCallback<Void>) {
+    private func syncDeletions(withModels models: [M],
+                               predicate: QueryPredicate? = nil,
+                               associatedModels: [(ModelName, Model)],
+                               syncEngine: RemoteSyncEngineBehavior,
+                               completion: @escaping DataStoreCallback<Void>) {
         var savedDataStoreError: DataStoreError?
 
         guard !associatedModels.isEmpty else {
-            syncDeletions(of: modelType,
-                          modelSchema: modelSchema,
-                          withModels: models,
+            syncDeletions(withModels: models,
                           predicate: predicate,
                           syncEngine: syncEngine,
                           dataStoreError: savedDataStoreError,
@@ -392,9 +392,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                     }
 
                     if mutationEventsSubmitCompleted == associatedModels.count {
-                        self.syncDeletions(of: modelType,
-                                           modelSchema: modelSchema,
-                                           withModels: models,
+                        self.syncDeletions(withModels: models,
                                            predicate: predicate,
                                            syncEngine: syncEngine,
                                            dataStoreError: savedDataStoreError,
@@ -409,13 +407,11 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         }
     }
     @available(iOS 13.0, *)
-    private func syncDeletions<M: Model>(of modelType: M.Type,
-                                         modelSchema: ModelSchema,
-                                         withModels models: [M],
-                                         predicate: QueryPredicate? = nil,
-                                         syncEngine: RemoteSyncEngineBehavior,
-                                         dataStoreError: DataStoreError?,
-                                         completion: @escaping DataStoreCallback<Void>) {
+    private func syncDeletions(withModels models: [M],
+                               predicate: QueryPredicate? = nil,
+                               syncEngine: RemoteSyncEngineBehavior,
+                               dataStoreError: DataStoreError?,
+                               completion: @escaping DataStoreCallback<Void>) {
         var graphQLFilterJSON: String?
         if let predicate = predicate {
             do {
@@ -487,7 +483,6 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                     }
                     mutationQueueSink?.cancel()
                     mutationQueueSink = nil
-
                 }, receiveValue: { mutationEvent in
                     self.log.verbose("\(#function) saved mutation event: \(mutationEvent)")
                     completion(.success(mutationEvent))
