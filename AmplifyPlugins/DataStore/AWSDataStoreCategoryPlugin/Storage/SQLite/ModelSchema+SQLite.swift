@@ -119,7 +119,7 @@ extension ModelSchema {
     func createIndexStatements() -> String {
         var statement = ""
         for index in indexes {
-            if case let .index(fields, name) = index, let name = name {
+            if case let .index(fields, name?) = index {
                 statement += CreateIndexStatement(modelSchema: self, fields: fields, indexName: name).stringValue
             }
         }
