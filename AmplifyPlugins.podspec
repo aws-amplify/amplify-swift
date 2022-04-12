@@ -7,7 +7,7 @@
 #
 
 # Version definitions
-$AMPLIFY_VERSION = '1.22.4'
+$AMPLIFY_VERSION = '1.23.0'
 $AMPLIFY_RELEASE_TAG = "v#{$AMPLIFY_VERSION}"
 
 $AWS_SDK_VERSION = '2.27.0'
