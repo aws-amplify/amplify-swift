@@ -1,5 +1,15 @@
 # Changelog
 ## Unreleased
+## 1.23.0 (2022-04-12)
+
+### Features
+
+- **DataStore**: DataStore.delete(modelType:where:) API (#1723)
+
+### Bug Fixes
+
+- **build**: remove ungated  >= Swift 5.4 features to allow building on Xcode 12 (#1737)
+
 ## 1.22.4 (2022-04-07)
 
 ### Bug Fixes
