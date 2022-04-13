@@ -50,9 +50,6 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
-      - name: List the copied configurations
-        run: ls ~/.aws-amplify/amplify-ios/testconfiguration/
-
       - name: Run Integration test
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -147,9 +144,6 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
-      - name: List the copied configurations
-        run: ls ~/.aws-amplify/amplify-ios/testconfiguration/
-
       - name: Run Integration test
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -223,9 +217,6 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
-      - name: List the copied configurations
-        run: ls ~/.aws-amplify/amplify-ios/testconfiguration/
-
       - name: Run Integration test
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -291,9 +282,6 @@ jobs:
           external_id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
-
-      - name: List the copied configurations
-        run: ls ~/.aws-amplify/amplify-ios/testconfiguration/
 
       - name: Run Integration test
         uses: ./.github/composite_actions/run_xcodebuild_test
