@@ -94,7 +94,6 @@
 		95DAAAF1237DFE5F0028544F /* VoiceType+AWSExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAAF0237DFE5F0028544F /* VoiceType+AWSExtension.swift */; };
 		95DAAB94237F53C50028544F /* AWSPollyVoiceId+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB93237F53C50028544F /* AWSPollyVoiceId+Extension.swift */; };
 		A54C2F5EE55421C229DD65CD /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85D4620E45EBA05AC83EF99D /* Pods_HostApp.framework */; };
-		B40397E62603D4A0008521A2 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = B40397E52603D4A0008521A2 /* amplifyconfiguration.json */; };
 		B42094AD2384A46B000F98A3 /* AWSTranslateErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42094A42384A46B000F98A3 /* AWSTranslateErrorMessage.swift */; };
 		B42094AE2384A46B000F98A3 /* AWSComprehendErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42094A52384A46B000F98A3 /* AWSComprehendErrorMessage.swift */; };
 		B42094AF2384A46B000F98A3 /* IdentifyMultiServiceErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42094A62384A46B000F98A3 /* IdentifyMultiServiceErrorMessage.swift */; };
@@ -324,7 +323,6 @@
 		9DF157BEADB426098FC5AA8C /* Pods-AWSPredictionsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPredictionsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPredictionsPlugin/Pods-AWSPredictionsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		AE9BC9BF5E7E9728E854E8F8 /* Pods-HostApp-AWSPredictionsPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSPredictionsPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSPredictionsPluginIntegrationTests/Pods-HostApp-AWSPredictionsPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		B0BEDE24E2CEB6BB19DE3117 /* Pods-CoreMLPredictionsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoreMLPredictionsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-CoreMLPredictionsPlugin/Pods-CoreMLPredictionsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		B40397E52603D4A0008521A2 /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 		B42094A42384A46B000F98A3 /* AWSTranslateErrorMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSTranslateErrorMessage.swift; sourceTree = "<group>"; };
 		B42094A52384A46B000F98A3 /* AWSComprehendErrorMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSComprehendErrorMessage.swift; sourceTree = "<group>"; };
 		B42094A62384A46B000F98A3 /* IdentifyMultiServiceErrorMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyMultiServiceErrorMessage.swift; sourceTree = "<group>"; };
@@ -850,7 +848,6 @@
 				B42094B92384A74A000F98A3 /* AWSPredictionsPluginTestBase.swift */,
 				B42094BA2384A74A000F98A3 /* InterpretBasicIntegrationTests.swift */,
 				950A26BA23CFEEC100D92B19 /* ConvertBasicIntegrationTests.swift */,
-				D852D5F424D8E22400F00DDE /* Configuration */,
 				B4DFA66F237B577B0013E17B /* Resources */,
 			);
 			path = AWSPredictionsPluginIntegrationTests;
@@ -1028,14 +1025,6 @@
 				0BF47728F4196554C2866132 /* Pods-HostApp-CoreMLPredictionsPluginTests.release.xcconfig */,
 			);
 			path = Pods;
-			sourceTree = "<group>";
-		};
-		D852D5F424D8E22400F00DDE /* Configuration */ = {
-			isa = PBXGroup;
-			children = (
-				B40397E52603D4A0008521A2 /* amplifyconfiguration.json */,
-			);
-			path = Configuration;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1296,7 +1285,6 @@
 				D8E8159724D1DBDD00F7C4C4 /* README.md in Resources */,
 				95CF45072385EEAC00479D24 /* testImageCeleb.jpg in Resources */,
 				D8A993B924D927DD00C8223E /* testImageTextWithTables.jpg in Resources */,
-				B40397E62603D4A0008521A2 /* amplifyconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
