@@ -97,15 +97,6 @@ amplify push
 
 This will create a amplifyconfiguration.json file in your local, copy that file to `~/.aws-amplify/amplify-ios/testconfiguration/` and rename as `AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json`.
 
-Next create `AWSCognitoAuthPluginIntegrationTests-credentials.json` and add it to the same folder path, with the following values:
-
 ```
-{
-    "test_email_1": [YOUR_EMAIL],
-    "test_email_2": [ANOTHER_EMAIL]
-}
+cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json
 ```
-
-The email should be a valid email you can use for testing, for example for making sure you receive a confirmation code when updating user's attributes with an email.
-
-After running tests pass that in `metadata`, you can verify the corresponding lambdas have been trigger with payloads containing this data.

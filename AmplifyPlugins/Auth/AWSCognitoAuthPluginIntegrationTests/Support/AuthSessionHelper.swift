@@ -20,7 +20,7 @@ struct AuthSessionHelper {
     static func invalidateSession(username: String) {
         let bundleID = Bundle.main.bundleIdentifier
         let keychain = AWSUICKeyChainStore(service: "\(bundleID!).\(AWSCognitoIdentityUserPool.self)")
-        let namespace = "\(AWSMobileClient.default().userPoolClient!.userPoolConfiguration.clientId).\(username.lowercased())"
+        let namespace = "\(AWSMobileClient.default().userPoolClient!.userPoolConfiguration.clientId).\(username)"
         let expirationKey = "\(namespace).tokenExpiration"
         let refreshTokenKey = "\(namespace).refreshToken"
 
