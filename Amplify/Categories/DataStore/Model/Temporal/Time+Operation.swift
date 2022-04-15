@@ -63,5 +63,4 @@ extension TemporalSpec where Self: TimeUnitOperable {
     public static func - (left: Self, right: TimeUnit) -> Self {
         return left.add(value: -right.value, to: right.calendarComponent)
     }
-
 }
