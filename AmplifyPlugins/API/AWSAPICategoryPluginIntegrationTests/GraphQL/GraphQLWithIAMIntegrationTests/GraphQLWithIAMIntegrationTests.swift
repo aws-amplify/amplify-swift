@@ -9,7 +9,7 @@ import XCTest
 import AWSPluginsCore
 import AWSAPICategoryPlugin
 import AmplifyPlugins
-
+import AWSCore
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPICategoryPluginTestCommon
@@ -24,7 +24,8 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
 
     override func setUp() {
         do {
-
+            AWSDDLog.sharedInstance.logLevel = .verbose
+            AWSDDLog.sharedInstance.add(AWSDDTTYLogger())
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
