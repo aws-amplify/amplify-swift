@@ -4,6 +4,8 @@ The following steps show how to set up an API endpoint with APIGateway and Lambd
 
 ### Set-up
 
+Latest tested with amplify CLI version 8.0.1 `amplify -v`
+
 1. Initialize an amplify project. `amplify init`
 
 2. Create an API Gateway which proxies requests to an AWS Lambda with no authorization needed. `amplify add api`. 
