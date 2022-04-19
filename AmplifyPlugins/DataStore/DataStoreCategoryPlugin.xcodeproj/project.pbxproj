@@ -891,9 +891,9 @@
 				2149E5E42388692E00873955 /* AWSDataStoreCategoryPluginTests */,
 				2149E61E23886CEE00873955 /* AWSDataStoreCategoryPluginIntegrationTests */,
 				21233DDE2475935600039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests */,
+				9C0CA4EF2748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests */,
 				2149E60623886C7B00873955 /* HostApp */,
 				9B5889A231ECAD33B03B5DF6 /* Pods */,
-				9C0CA4EF2748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests */,
 				2149E59C238867E100873955 /* Products */,
 				FA9C743C238CB493009DAFCF /* Recovered References */,
 				B158D86B8144CD1BD9589BA7 /* Frameworks */,
@@ -1893,8 +1893,8 @@
 				2149E5E22388692E00873955 /* AWSDataStoreCategoryPluginTests */,
 				2149E61C23886CEE00873955 /* AWSDataStoreCategoryPluginIntegrationTests */,
 				21233DDC2475935600039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests */,
-				2149E60423886C7B00873955 /* HostApp */,
 				9C0CA4ED2748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests */,
+				2149E60423886C7B00873955 /* HostApp */,
 			);
 		};
 /* End PBXProject section */
