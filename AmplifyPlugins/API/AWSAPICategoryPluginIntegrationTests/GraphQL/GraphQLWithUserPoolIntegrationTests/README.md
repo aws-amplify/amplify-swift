@@ -4,6 +4,8 @@ The following steps demonstrate how to set up an GraphQL endpoint with AppSync. 
 
 ### Set-up
 
+Latest tested with amplify CLI version 8.0.1 `amplify -v`
+
 * Note that these integration tests are only compatible with the V1 Transformer. * 
 
 1. `amplify init`
@@ -14,31 +16,7 @@ The following steps demonstrate how to set up an GraphQL endpoint with AppSync. 
 ? Please select from one of the below mentioned services: GraphQL
 ? Provide API name: `<APIName>`
 ? Choose the default authorization type for the API `Amazon Cognito User Pool`
-? Do you want to use the default authentication and security configuration? `Default configuration`
-? How do you want users to be able to sign in? `Email`
-? Do you want to configure advanced settings? `No, I am done.`
-? Do you want to configure advanced settings for the GraphQL API `No, I am done.`
-? Do you have an annotated GraphQL schema? `No`
-? Do you want a guided schema creation? `Yes`
-? What best describes your project: `Single object with fields (e.g., “Todo” with ID, name, description)`
-? Do you want to edit the schema now? `No`
-```
-
-The guided schema provided should look like this: 
-```json
-type Todo @model {
-  id: ID!
-  name: String!
-  description: String
-}
-```
-
-3. Some of the tests rely on the Auth plugin to be setup as a prerequisite
-
-    `amplify add auth`
-
-```
-Do you want to use the default authentication and security configuration? 
+? Do you want to use the default authentication and security configuration? 
     Manual configuration
 Select the authentication/authorization services that you want to use: 
     User Sign-Up, Sign-In, connected with AWS IAM controls (Enables ...)
@@ -47,7 +25,7 @@ Please provide a friendly name for your resource that will be used to label this
 Please enter a name for your identity pool. 
     <amplifyintegtestCIDP>
 Allow unauthenticated logins? (Provides scoped down permissions that you can control via AWS IAM) 
-    Yes
+    No
 Do you want to enable 3rd party authentication providers in your identity pool? 
     No
 Please provide a name for your user pool: 
@@ -86,11 +64,8 @@ Do you want to use an OAuth flow?
 Do you want to configure Lambda Triggers for Cognito? 
     Yes
 Which triggers do you want to enable for Cognito
-    Custom Message
     Pre Sign-up
     [Choose as many that you would like to manually verify later]
-What functionality do you want to use for Custom Message
-    Create your own module
 What functionality do you want to use for Pre Sign-up 
     Create your own module
 Succesfully added the Lambda function locally
@@ -107,25 +82,33 @@ exports.handler = async (event, context) => {
 };
 ```
 
-For Custom Message and any other lambdas
-
-```
-// you can simply set them to log the input so you can verify valid and correct validationData/clientMetadata
-exports.handler = (event) => {
-    console.log("Reached custom message lambda"); 
-};
-```
-
 Continue in the terminal;
 
 ```
 ? Press enter to continue
 Successfully added resource amplifyintegtest locally
+
+
+? Do you want to configure advanced settings for the GraphQL API `No, I am done.`
+? Do you have an annotated GraphQL schema? `No`
+? Do you want a guided schema creation? `Yes`
+? What best describes your project: `Single object with fields (e.g., “Todo” with ID, name, description)`
+? Do you want to edit the schema now? `No`
 ```
 
+The guided schema provided should look like this: 
+```json
+type Todo @model {
+  id: ID!
+  name: String!
+  description: String
+}
+```
 
+3. If you are using the latest CLI, update cli.json to include `"useExperimentalPipelinedTransformer": false` to ensure that it will use the v1 transformer.
 
 4. `amplify push`
+
 ```perl
 ? Are you sure you want to continue? `Yes`
 ? Do you want to generate code for your newly created GraphQL API `No`
