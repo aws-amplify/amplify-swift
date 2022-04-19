@@ -46,7 +46,6 @@ jobs:
         with:
           resource_subfolder: analytics
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          external_id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
@@ -74,7 +73,6 @@ jobs:
         with:
           resource_subfolder: api
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          external_id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
@@ -102,7 +100,6 @@ jobs:
         with:
           resource_subfolder: api
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          external_id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
@@ -130,7 +127,6 @@ jobs:
         with:
           resource_subfolder: api
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          external_id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
@@ -158,7 +154,6 @@ jobs:
         with:
           resource_subfolder: api
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          external_id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
@@ -186,7 +181,6 @@ jobs:
         with:
           resource_subfolder: api
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          external_id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
@@ -214,7 +208,6 @@ jobs:
         with:
           resource_subfolder: api
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          external_id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
@@ -242,7 +235,6 @@ jobs:
         with:
           resource_subfolder: auth
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          external_id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
@@ -270,7 +262,6 @@ jobs:
         with:
           resource_subfolder: datastore
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          external_id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
@@ -298,7 +289,6 @@ jobs:
         with:
           resource_subfolder: datastore
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          external_id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
@@ -326,7 +316,6 @@ jobs:
         with:
           resource_subfolder: datastore
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          external_id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
@@ -354,7 +343,6 @@ jobs:
         with:
           resource_subfolder: geo
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          external_id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
@@ -382,7 +370,6 @@ jobs:
         with:
           resource_subfolder: predictions
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          external_id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
@@ -420,7 +407,6 @@ jobs:
         with:
           resource_subfolder: storage
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          external_id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
