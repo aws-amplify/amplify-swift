@@ -20,7 +20,7 @@ m now)
 ? Select the default resolution strategy Auto Merge
 ? Here is the GraphQL API that we will create. Select a setting to edit or continue Continue
 ? Choose a schema template: Blank Schema
-? Do you want to edit the schema now? `No`
+? Do you want to edit the schema now? `Yes`
 ```
 
 Copy the content of the schema from `AWSDataStoreCategoryPluginAuthIntegrationTests/DefaultAuthCognito/singleauth-cognito-schema.graphql` into the newly created `schema.graphql` file
@@ -36,6 +36,10 @@ Copy the content of the schema from `AWSDataStoreCategoryPluginAuthIntegrationTe
 ```
 
 5. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreCategoryPluginAuthIntegrationTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
+```
+cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSDataStoreCategoryPluginAuthIntegrationTests-amplifyconfiguration.json
+```
+
 6. Create `AWSDataStoreCategoryPluginAuthIntegrationTests-credentials.json` inside the same folder with a json object containing `user1`, and `password`, used to create the cognito user in the userpool. In step 2, the cognito userpool is configured to allow users to sign up with their email as the username.
 
 ```json

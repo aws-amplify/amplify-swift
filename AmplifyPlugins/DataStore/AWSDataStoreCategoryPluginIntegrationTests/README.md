@@ -19,8 +19,8 @@ The following steps demonstrate how to set up DataStore with a conflict resoluti
 ? Configure additional auth types? `No`
 ? Configure conflict detection? `Yes`
 ? Select the default resolution strategy `Auto Merge`
-? Do you have an annotated GraphQL schema? `Yes`
-? Provide your schema file path: `schema.graphql`
+? Choose a schema template: `Blank Schema`
+? Do you want to edit the schema now? Y
 ```
 When asked to provide the schema, create the `schema.graphql` file
 ```
@@ -236,9 +236,15 @@ type CustomerOrder @model
 }
 
 ```
-3. `amplify push`
+3. If you are using the latest CLI, update cli.json to include `"useExperimentalPipelinedTransformer": false` to ensure that it will use the v1 transformer.
 
-4. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
+4. `amplify push`
+
+5. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
+
+```
+cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration.json
+```
 
 
 You should now be able to run all of the tests 
