@@ -26,7 +26,16 @@ import AWSMobileClient
 
 class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: CustomerSecondaryIndexV2.self)
+        }
+
+        let version: String = "1"
+    }
+
     func testSaveModelAndSync() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard var customer = saveCustomer(name: "name", accountRepresentativeID: "accountId") else {

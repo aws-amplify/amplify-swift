@@ -15,13 +15,12 @@ import AmplifyPlugins
 
 class LocalStoreIntegrationTestBase: XCTestCase {
 
-    override func setUp() {
-        super.setUp()
+    func setUp(withModels models: AmplifyModelRegistration) {
 
         continueAfterFailure = false
 
         do {
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: TestModelRegistration()))
+            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
             try Amplify.configure(AmplifyConfiguration(dataStore: nil))
         } catch {
             XCTFail(String(describing: error))

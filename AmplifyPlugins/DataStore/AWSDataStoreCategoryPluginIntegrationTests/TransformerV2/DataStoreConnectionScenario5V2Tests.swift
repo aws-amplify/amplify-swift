@@ -32,7 +32,18 @@ import AmplifyPlugins
 
 class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: Post5V2.self)
+            registry.register(modelType: User5V2.self)
+            registry.register(modelType: PostEditor5V2.self)
+        }
+
+        let version: String = "1"
+    }
+
     func testListPostEditorByPost() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -60,6 +71,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testListPostEditorByUser() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -87,6 +99,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testGetPostThenLoadPostEditors() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -134,6 +147,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testGetUserThenLoadPostEditors() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -179,6 +193,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testSavePostWithSyncAndReadPost() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard let post = savePost(title: "title") else {
@@ -218,6 +233,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testUpdatePostWithSync() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard var post = savePost(title: "title") else {
@@ -266,6 +282,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testDeletePostWithSync() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard let post = savePost(title: "title") else {
@@ -312,6 +329,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testDeletePostCascadeToPostEditor() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard let post = savePost(title: "title") else {

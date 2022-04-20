@@ -14,7 +14,7 @@ extension AWSAPIPlugin: Resettable {
         mapper.reset()
 
         let waitForReset = DispatchSemaphore(value: 0)
-        session.reset { waitForReset.signal() }
+        session?.reset { waitForReset.signal() }
         waitForReset.wait()
 
         session = nil

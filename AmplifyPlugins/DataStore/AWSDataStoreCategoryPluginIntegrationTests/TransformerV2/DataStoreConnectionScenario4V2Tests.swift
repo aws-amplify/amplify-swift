@@ -33,7 +33,17 @@ import AmplifyPlugins
 
 class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: Comment4V2.self)
+            registry.register(modelType: Post4V2.self)
+        }
+
+        let version: String = "1"
+    }
+
     func testCreateCommentAndGetCommentWithPost() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -64,6 +74,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testCreateCommentAndGetPostWithComments() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -106,6 +117,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testUpdateComment() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -134,6 +146,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testDeleteAndGetComment() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -171,6 +184,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testListCommentsByPostID() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -195,6 +209,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testSavePostWithSyncAndReadPost() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard let post = savePost(title: "title") else {
@@ -234,6 +249,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testUpdatePostWithSync() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard var post = savePost(title: "title") else {
@@ -283,6 +299,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testDeletePostWithSync() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard let post = savePost(title: "title") else {
@@ -329,6 +346,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testDeletePostCascadeToComments() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard let post = savePost(title: "title") else {

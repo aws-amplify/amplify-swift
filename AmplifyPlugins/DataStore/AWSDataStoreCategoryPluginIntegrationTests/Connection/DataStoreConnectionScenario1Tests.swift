@@ -33,7 +33,17 @@ import AWSMobileClient
 
 class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: Team1.self)
+            registry.register(modelType: Project1.self)
+        }
+
+        let version: String = "1"
+    }
+
     func testSaveTeamAndProjectSyncToCloud() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let team = Team1(name: "name1")
         let project = Project1(team: team)
@@ -100,6 +110,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
     }
 
     func testUpdateProjectWithAnotherTeam() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let team = Team1(name: "name1")
         let anotherTeam = Team1(name: "name1")
@@ -186,6 +197,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
     }
 
     func testDeleteAndGetProjectReturnsNilWithSync() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               let project = saveProject(teamID: team.id, team: team) else {
@@ -266,6 +278,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
     }
 
     func testDeleteWithValidCondition() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               let project = saveProject(teamID: team.id, team: team) else {
@@ -297,6 +310,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
     }
 
     func testDeleteWithInvalidCondition() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               let project = saveProject(teamID: team.id, team: team) else {
@@ -332,6 +346,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
     }
 
     func testListProjectsByTeamID() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name") else {
             XCTFail("Could not save team")

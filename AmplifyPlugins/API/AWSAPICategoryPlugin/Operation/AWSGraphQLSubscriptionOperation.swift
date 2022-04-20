@@ -13,9 +13,9 @@ import AppSyncRealTimeClient
 
 final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscriptionOperation<R> {
 
-    let pluginConfig: AWSAPICategoryPluginConfiguration
-    let subscriptionConnectionFactory: SubscriptionConnectionFactory
-    let authService: AWSAuthServiceBehavior
+    let pluginConfig: AWSAPICategoryPluginConfiguration?
+    let subscriptionConnectionFactory: SubscriptionConnectionFactory?
+    let authService: AWSAuthServiceBehavior?
 
     var subscriptionConnection: SubscriptionConnection?
     var subscriptionItem: SubscriptionItem?
@@ -24,9 +24,9 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
     private let subscriptionQueue = DispatchQueue(label: "AWSGraphQLSubscriptionOperation.subscriptionQueue")
 
     init(request: GraphQLOperationRequest<R>,
-         pluginConfig: AWSAPICategoryPluginConfiguration,
-         subscriptionConnectionFactory: SubscriptionConnectionFactory,
-         authService: AWSAuthServiceBehavior,
+         pluginConfig: AWSAPICategoryPluginConfiguration?,
+         subscriptionConnectionFactory: SubscriptionConnectionFactory?,
+         authService: AWSAuthServiceBehavior?,
          apiAuthProviderFactory: APIAuthProviderFactory,
          inProcessListener: AWSGraphQLSubscriptionOperation.InProcessListener?,
          resultListener: AWSGraphQLSubscriptionOperation.ResultListener?) {
@@ -79,13 +79,16 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         // Retrieve endpoint configuration
         let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
         do {
+            guard let pluginConfig = pluginConfig else {
+                throw PluginError.pluginConfigurationError("pluginConfig not yet configured", "")
+            }
             endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL)
         } catch let error as APIError {
             dispatch(result: .failure(error))
             finish()
             return
         } catch {
-            dispatch(result: .failure(APIError.unknown("Could not get endpoint configuration", "", nil)))
+            dispatch(result: .failure(APIError.unknown("Could not get endpoint configuration", "", error)))
             finish()
             return
         }
@@ -97,6 +100,12 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         // Retrieve the subscription connection
         subscriptionQueue.sync {
             do {
+                guard let subscriptionConnectionFactory = subscriptionConnectionFactory else {
+                    throw PluginError.pluginConfigurationError("subscriptionConnectionFactory not yet configured", "")
+                }
+                guard let authService = authService else {
+                    throw PluginError.pluginConfigurationError("authService not yet configured", "")
+                }
                 subscriptionConnection = try subscriptionConnectionFactory
                     .getOrCreateConnection(for: endpointConfig,
                                               authService: authService,

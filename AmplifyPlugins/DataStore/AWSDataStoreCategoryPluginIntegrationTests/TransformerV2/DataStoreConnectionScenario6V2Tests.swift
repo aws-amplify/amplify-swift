@@ -41,7 +41,18 @@ import AmplifyPlugins
 // swiftlint:disable type_body_length
 class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: Blog6V2.self)
+            registry.register(modelType: Post6V2.self)
+            registry.register(modelType: Comment6V2.self)
+        }
+
+        let version: String = "1"
+    }
+
     func testGetBlogThenFetchPostsThenFetchComments() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name"),
               let post1 = savePost(title: "title", blog: blog),
@@ -91,6 +102,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testGetCommentThenFetchPostThenFetchBlog() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name"),
               let post = savePost(title: "title", blog: blog),
@@ -140,6 +152,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testGetPostThenFetchBlogAndComment() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name"),
               let post = savePost(title: "title", blog: blog),
@@ -204,6 +217,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testSaveBlog() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name") else {
             XCTFail("Could not create blog")
@@ -251,6 +265,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testSaveBlogPost() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name"),
               let post1 = savePost(title: "title", blog: blog),
@@ -323,6 +338,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testSaveBlogPostComment() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name"),
               let post = savePost(title: "title", blog: blog),
@@ -404,6 +420,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testCascadeDeleteBlogDeletesPostAndComments() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name"),
               let post = savePost(title: "title", blog: blog),

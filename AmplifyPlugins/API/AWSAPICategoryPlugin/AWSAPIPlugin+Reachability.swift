@@ -17,6 +17,9 @@ extension AWSAPIPlugin {
 
     @available(iOS 13.0, *)
     public func reachabilityPublisher(for apiName: String?) throws -> AnyPublisher<ReachabilityUpdate, Never>? {
+        guard let pluginConfig = pluginConfig else {
+            throw PluginError.pluginConfigurationError("pluginConfig not yet configured", "")
+        }
         let endpoint = try pluginConfig.endpoints.getConfig(for: apiName)
         guard let hostName = endpoint.baseURL.host else {
             let error = APIError.invalidConfiguration("Invalid endpoint configuration",

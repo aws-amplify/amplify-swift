@@ -24,6 +24,12 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "DataStoreConsecutiveUpdatesTests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreEndToEndTests/testConcurrentSave()">
+               </Test>
+               <Test
                   Identifier = "SubscriptionTests/testSubscribeAtStartup()">
                </Test>
                <Test

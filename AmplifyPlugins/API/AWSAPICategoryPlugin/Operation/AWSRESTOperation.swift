@@ -17,14 +17,14 @@ final public class AWSRESTOperation: AmplifyOperation<
     // Data received by the operation
     var data = Data()
 
-    let session: URLSessionBehavior
+    let session: URLSessionBehavior?
     var mapper: OperationTaskMapper
-    let pluginConfig: AWSAPICategoryPluginConfiguration
+    let pluginConfig: AWSAPICategoryPluginConfiguration?
 
     init(request: RESTOperationRequest,
-         session: URLSessionBehavior,
+         session: URLSessionBehavior?,
          mapper: OperationTaskMapper,
-         pluginConfig: AWSAPICategoryPluginConfiguration,
+         pluginConfig: AWSAPICategoryPluginConfiguration?,
          resultListener: AWSRESTOperation.ResultListener?) {
 
         self.session = session
@@ -62,6 +62,9 @@ final public class AWSRESTOperation: AmplifyOperation<
         let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
         let requestInterceptors: [URLRequestInterceptor]
         do {
+            guard let pluginConfig = pluginConfig else {
+                throw PluginError.pluginConfigurationError("pluginConfig not yet configured", "")
+            }
             endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .rest)
             requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
         } catch let error as APIError {
@@ -69,7 +72,7 @@ final public class AWSRESTOperation: AmplifyOperation<
             finish()
             return
         } catch {
-            dispatch(result: .failure(APIError.unknown("Could not get endpoint configuration", "", nil)))
+            dispatch(result: .failure(APIError.unknown("Could not get endpoint configuration", "", error)))
             finish()
             return
         }
@@ -120,6 +123,12 @@ final public class AWSRESTOperation: AmplifyOperation<
         }
 
         // Begin network task
+        guard let session = session else {
+            dispatch(result: .failure(APIError.operationError("Missing session object", "", nil)))
+            finish()
+            return
+        }
+
         let task = session.dataTaskBehavior(with: finalRequest)
         mapper.addPair(operation: self, task: task)
         task.resume()

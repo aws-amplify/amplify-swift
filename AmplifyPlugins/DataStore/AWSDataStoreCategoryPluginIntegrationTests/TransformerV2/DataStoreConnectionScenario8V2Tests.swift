@@ -40,7 +40,18 @@ import AmplifyPlugins
 // swiftlint:disable type_body_length
 class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: Meeting8V2.self)
+            registry.register(modelType: Attendee8V2.self)
+            registry.register(modelType: Registration8V2.self)
+        }
+
+        let version: String = "1"
+    }
+
     func testSaveRegistration() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let attendee = saveAttendee(),
               let meeting = saveMeeting(),
@@ -119,6 +130,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testUpdateRegistrationToAnotherAttendee() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let attendee = saveAttendee(),
               let attendee2 = saveAttendee(),
@@ -218,6 +230,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testDeleteRegistration() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let attendee = saveAttendee(),
               let meeting = saveMeeting(),
@@ -309,6 +322,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testDeleteAttendeeShouldCascadeDeleteRegistration() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let attendee = saveAttendee(),
               let meeting = saveMeeting(),
@@ -401,6 +415,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testDeleteMeetingShouldCascadeDeleteRegistration() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let attendee = saveAttendee(),
               let meeting = saveMeeting(),

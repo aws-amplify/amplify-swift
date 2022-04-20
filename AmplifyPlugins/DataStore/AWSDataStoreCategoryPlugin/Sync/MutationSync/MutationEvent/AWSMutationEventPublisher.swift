@@ -99,7 +99,6 @@ extension AWSMutationEventPublisher: DefaultLogger { }
 @available(iOS 13.0, *)
 extension AWSMutationEventPublisher: Resettable {
     func reset(onComplete: BasicClosure) {
-        subscription = nil
         eventSource = nil
         onComplete()
     }

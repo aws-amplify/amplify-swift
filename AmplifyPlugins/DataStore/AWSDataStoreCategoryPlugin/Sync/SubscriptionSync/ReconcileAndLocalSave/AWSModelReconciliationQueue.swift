@@ -134,7 +134,6 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     /// unsubscribes from the incoming events publisher. The queue may not be restarted after cancelling.
     func cancel() {
         incomingEventsSink?.cancel()
-        incomingEventsSink = nil
         incomingSubscriptionEvents.cancel()
         reconcileAndSaveQueue.cancelOperations(modelName: modelSchema.name)
         incomingSubscriptionEventQueue.cancelAllOperations()

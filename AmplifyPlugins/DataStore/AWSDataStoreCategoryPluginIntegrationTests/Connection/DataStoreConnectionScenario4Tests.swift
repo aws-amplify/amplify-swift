@@ -35,7 +35,17 @@ import AWSMobileClient
 
 class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: Comment4.self)
+            registry.register(modelType: Post4.self)
+        }
+
+        let version: String = "1"
+    }
+
     func testCreateCommentAndGetCommentWithPost() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -66,6 +76,7 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
     }
 
     func testCreateCommentAndGetPostWithComments() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -108,6 +119,7 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
     }
 
     func testUpdateComment() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -136,6 +148,7 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
     }
 
     func testDeleteAndGetComment() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -173,6 +186,7 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
     }
 
     func testListCommentsByPostID() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
