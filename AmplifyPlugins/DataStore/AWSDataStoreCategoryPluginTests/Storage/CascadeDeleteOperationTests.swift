@@ -172,6 +172,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             return
         }
         XCTAssertEqual(queriedRestaurants.count, 1)
+        XCTAssertEqual(queriedRestaurants[0].restaurantName, restaurantName)
     }
 
     func testWithFilter() {
@@ -253,6 +254,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             return
         }
         XCTAssertEqual(queriedRestaurants.count, 1)
+        XCTAssertEqual(queriedRestaurants[0].restaurantName, restaurantName)
     }
 
     // MARK: - Query and delete (With Sync)
