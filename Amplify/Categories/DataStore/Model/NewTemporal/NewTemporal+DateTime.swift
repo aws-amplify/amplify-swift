@@ -7,12 +7,12 @@
 
 import Foundation
 
-extension NewTemporal {
-    public struct DateTime: NewTemporalSpec {
+extension _Temporal {
+    public struct DateTime: _TemporalSpec {
         public let foundationDate: Foundation.Date
         
         public static func now() -> Self {
-            NewTemporal.DateTime(Foundation.Date())
+            _Temporal.DateTime(Foundation.Date())
         }
         
         public var time: Time {
@@ -32,7 +32,7 @@ extension NewTemporal {
         }
         
         public init(_ date: Foundation.Date) {
-            let calendar = NewTemporal.iso8601Calendar
+            let calendar = _Temporal.iso8601Calendar
             let components = calendar.dateComponents(
                 DateTime.iso8601DateComponents,
                 from: date
@@ -56,7 +56,7 @@ extension NewTemporal {
     }
 }
 
-extension NewTemporal.DateTime {
+extension _Temporal.DateTime {
     public struct Format: TemporalSpecValidFormatRepresentable {
         public let value: String
         
@@ -74,3 +74,6 @@ extension NewTemporal.DateTime {
         ]
     }
 }
+
+extension _Temporal.DateTime: _DateUnitOperable, _TimeUnitOperable {}
+extension _Temporal.DateTime: _AnyTemporalSpec {}

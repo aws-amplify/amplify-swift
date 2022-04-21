@@ -7,31 +7,97 @@
 
 import Foundation
 
-public struct NewTimeUnit {
+/// `TimeUnit` for use in adding and subtracting units from `Temporal.DateTime`, and `Temporal.Time`.
+///
+/// `TimeUnit` uses `Calendar.Component` under the hood to ensure date oddities are accounted for.
+///
+///     let twoHoursFromNow = Temporal.Time.now() + .hours(1)
+///     let fiveMinutesAgo = Temporal.Time.now() - .minutes(5)
+///     let yesterday = Temporal.Date.now() - .days(1)
+///     let sixMonthsAgo = Temporal.Date.now() - .months(6)
+///
+/// - Attention: Don't use `TimeUnit` to calculate dates, use `DateUnit` instead.
+///   There are not always 24 hours in a day, 60 minutes in an hour, etc.
+public struct _TimeUnit {
     public let calendarComponent: Calendar.Component
     public let value: Int
     
+    /// One second. Equivalent to 1 x `Calendar.Component.second`
+    public static let oneSecond: _TimeUnit = .seconds(1)
+    
+    /// One minute. Equivalent to 1 x `Calendar.Component.minute`
+    public static let oneMinute: _TimeUnit = .minutes(1)
+    
+    /// One hour. Equivalent to 1 x `Calendar.Component.hour`
+    public static let oneHour: _TimeUnit = .hours(1)
+    
+    /// `TimeUnit` amount of hours.
+    ///
+    /// One hour is 1 x `Calendar.Component.hour`
+    ///
+    ///     let twoHours = TimeUnit.hours(2)
+    ///     // or
+    ///     let twoHours: TimeUnit = .hours(2)
+    ///
+    /// - Parameter value: Amount of hours in this `TimeUnit`
+    /// - Returns: A `TimeUnit` with the defined number of hours.
     public static func hours(_ value: Int) -> Self {
         .init(calendarComponent: .hour, value: value)
     }
     
+    /// `TimeUnit` amount of minutes.
+    ///
+    /// One minute is 1 x `Calendar.Component.minute`
+    ///
+    ///     let fiveMinutes = TimeUnit.minutes(5)
+    ///     // or
+    ///     let fiveMinutes: TimeUnit = .minutes(5)
+    ///
+    /// - Parameter value: Amount of minutes in this `TimeUnit`
+    /// - Returns: A `TimeUnit` with the defined number of minutes.
     public static func minutes(_ value: Int) -> Self {
         .init(calendarComponent: .minute, value: value)
     }
     
+    /// `TimeUnit` amount of seconds.
+    ///
+    /// One second is 1 x `Calendar.Component.seconds`
+    ///
+    ///     let thirtySeconds = TimeUnit.seconds(30)
+    ///     // or
+    ///     let thirtySeconds: TimeUnit = .seconds(30)
+    ///
+    /// - Parameter value: Amount of seconds in this `TimeUnit`
+    /// - Returns: A `TimeUnit` with the defined number of seconds.
     public static func seconds(_ value: Int) -> Self {
         .init(calendarComponent: .second, value: value)
     }
     
+    /// `TimeUnit` amount of milliseconds.
+    ///
+    /// One second is 1 x `Calendar.Component.nanosecond` \* `NSEC_PER_MSEC`
+    ///
+    ///     let oneMillisecond = TimeUnit.milliseconds(1)
+    ///     // or
+    ///     let oneMillisecond: TimeUnit = .milliseconds(1)
+    ///
+    /// - Parameter value: Amount of milliseconds in this `TimeUnit`
+    /// - Returns: A `TimeUnit` with the defined number of milliseconds.
     public static func milliseconds(_ value: Int) -> Self {
         .init(calendarComponent: .nanosecond, value: value * Int(NSEC_PER_MSEC))
     }
     
+    /// `TimeUnit` amount of nanoseconds.
+    ///
+    /// One second is 1 x `Calendar.Component.nanosecond`
+    ///
+    ///     let tenNanoseconds = TimeUnit.nanoseconds(10)
+    ///     // or
+    ///     let tenNanoseconds: TimeUnit = .nanoseconds(10)
+    ///
+    /// - Parameter value: Amount of nanoseconds in this `TimeUnit`
+    /// - Returns: A `TimeUnit` with the defined number of nanoseconds.
     public static func nanoseconds(_ value: Int) -> Self {
         .init(calendarComponent: .nanosecond, value: value)
     }
-    
-    public static let oneSecond: Self = .seconds(1)
-    public static let oneMinute: Self = .minutes(1)
-    public static let oneHour: Self = .hours(1)
 }
