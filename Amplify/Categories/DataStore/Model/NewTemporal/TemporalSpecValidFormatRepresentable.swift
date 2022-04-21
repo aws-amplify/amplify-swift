@@ -14,8 +14,17 @@ public protocol TemporalSpecValidFormatRepresentable: Equatable {
     static var medium: Self { get }
     static var long: Self { get }
     static var full: Self { get }
+    
+    /// Using `.unknown` will result in all of the formats being checked
+    /// in the order of `.allFormats`
+    ///
+    /// 1. `.full`
+    /// 2. `.long`
+    /// 3. `.medium`
+    /// 4. `.short`
     static var unknown: Self { get }
     
+    /// All supported formats in `[String]` form, ordered from most specific format to least.
     static var allFormats: [String] { get }
 }
 
