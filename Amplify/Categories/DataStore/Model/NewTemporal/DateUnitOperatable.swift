@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 /// Supports addition and subtraction of `Temporal.Date` and `Temporal.DateTime` with `DateUnit`
 public protocol _DateUnitOperable {
     static func + (left: Self, right: _DateUnit) -> Self

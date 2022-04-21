@@ -7,7 +7,8 @@
 
 import Foundation
 
-/// Type-erased protocol for `TemporalSpec`
+/// Type-erased protocol for `TemporalSpec` providing access to `iso8601String`
 public protocol _AnyTemporalSpec {
+    /// The ISO-8601 formatted string in the UTC `TimeZone`.
     var iso8601String: String { get }
 }

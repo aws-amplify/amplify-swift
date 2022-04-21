@@ -27,12 +27,12 @@ public protocol _TemporalSpec {
     /// - Parameters
     ///  - iso8601String: the string in the ISO8601 format
     ///  - format: The format of the `iso8601String`
-    /// - Throws: `DataStoreError.decodeError`in case the provided string is not
+    /// - Throws: `DataStoreError.decodeError` in case the provided string is not
     /// formatted as expected by the scalar type.
     init(iso8601String: String, format: Format) throws
     
     /// Constructs a `TemporalSpec` from a `Date` object.
-    /// - Parameter date: the `Date` instance that will be used as the reference of the
+    /// - Parameter date: The `Date` instance that will be used as the reference of the
     /// `TemporalSpec` instance.
     init(_ date: Foundation.Date)
     

@@ -8,6 +8,8 @@
 import Foundation
 
 @usableFromInline
+/// Internal generic method to reduce code reuse in the `init`s of `TemporalSpec`
+/// conforming types
 internal struct SpecBasedDateConverting<T: _TemporalSpec> {
     @usableFromInline
     internal typealias DateConverter = (String, T.Format) throws -> Date
