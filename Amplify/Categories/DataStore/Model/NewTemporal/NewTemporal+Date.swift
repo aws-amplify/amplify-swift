@@ -7,19 +7,19 @@
 
 import Foundation
 
-extension NewTemporal {
-    public struct Date: NewTemporalSpec {
+extension _Temporal {
+    public struct Date: _TemporalSpec {
         public let foundationDate: Foundation.Date
 
         public static func now() -> Self {
-            NewTemporal.Date(Foundation.Date())
+            _Temporal.Date(Foundation.Date())
         }
         
         @inlinable
         @inline(never)
         public init(
             iso8601String: String,
-            format: NewTemporal.Date.Format = .unknown
+            format: _Temporal.Date.Format = .unknown
         ) throws {
             let date = try SpecBasedDateConverting<Self>()
                 .convert(iso8601String, format)
@@ -28,14 +28,14 @@ extension NewTemporal {
         }
                 
         public init(_ date: Foundation.Date) {
-            foundationDate = NewTemporal
+            foundationDate = _Temporal
                 .iso8601Calendar
                 .startOfDay(for: date)
         }
     }
 }
 
-extension NewTemporal.Date {
+extension _Temporal.Date {
     public struct Format: TemporalSpecValidFormatRepresentable {
         public let value: String
         
@@ -53,3 +53,6 @@ extension NewTemporal.Date {
         ]
     }
 }
+
+extension _Temporal.Date: _DateUnitOperable {}
+extension _Temporal.Date: _AnyTemporalSpec {}

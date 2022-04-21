@@ -7,12 +7,12 @@
 
 import Foundation
 
-extension NewTemporal {
-    public struct Time: NewTemporalSpec {
+extension _Temporal {
+    public struct Time: _TemporalSpec {
         public let foundationDate: Foundation.Date
         
         public static func now() -> Self {
-            NewTemporal.Time(Foundation.Date())
+            _Temporal.Time(Foundation.Date())
         }
                 
         @inlinable
@@ -28,7 +28,7 @@ extension NewTemporal {
         
         public init(_ date: Foundation.Date) {
             // sets the date to a fixed instant so time-only operations are safe
-            let calendar = NewTemporal.iso8601Calendar
+            let calendar = _Temporal.iso8601Calendar
             var components = calendar.dateComponents(
                 [
                     .year,
@@ -54,7 +54,7 @@ extension NewTemporal {
     }
 }
 
-extension NewTemporal.Time {
+extension _Temporal.Time {
     public struct Format: TemporalSpecValidFormatRepresentable {
         public let value: String
         
@@ -72,3 +72,6 @@ extension NewTemporal.Time {
         ]
     }
 }
+
+extension _Temporal.Time: _TimeUnitOperable {}
+extension _Temporal.Time: _AnyTemporalSpec {}

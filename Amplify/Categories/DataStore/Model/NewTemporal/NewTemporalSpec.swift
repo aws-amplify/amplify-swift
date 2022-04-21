@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol NewTemporalSpec {
+public protocol _TemporalSpec {
     associatedtype Format: TemporalSpecValidFormatRepresentable
     /// A static builder that return an instance that represent the current point in time.
     static func now() -> Self
@@ -17,14 +17,16 @@ public protocol NewTemporalSpec {
     var foundationDate: Foundation.Date { get }
     
     /// The ISO-8601 formatted string in the UTC `TimeZone`.
-    /// - seealso: iso8601FormattedString(TemporalFormat, TimeZone) -> String
+    /// - SeeAlso: `iso8601FormattedString(TemporalFormat, TimeZone) -> String`
     var iso8601String: String { get }
     
     /// Parses an ISO-8601 `String` into a `TemporalSpec`.
     ///
     /// - Note: if no timezone is present in the string, `.autoupdatingCurrent` is used.
     ///
-    /// - Parameter iso8601String: the string in the ISO8601 format
+    /// - Parameters
+    ///  - iso8601String: the string in the ISO8601 format
+    ///  - format: The format of the `iso8601String`
     /// - Throws: `DataStoreError.decodeError`in case the provided string is not
     /// formatted as expected by the scalar type.
     init(iso8601String: String, format: Format) throws
@@ -37,25 +39,27 @@ public protocol NewTemporalSpec {
     /// A string representation of the underlying date formatted using ISO8601 rules.
     ///
     /// - Parameters:
-    ///   - format: the desired format
+    ///   - format: the desired format.
     ///   - timeZone: the target `TimeZone`
     /// - Returns: the ISO8601 formatted string in the requested format
     func iso8601FormattedString(format: Format, timeZone: TimeZone) -> String
 }
 
-extension NewTemporalSpec {
+extension _TemporalSpec {
     
     public func iso8601FormattedString(
         format: Format,
         timeZone: TimeZone = .utc
     ) -> String {
-        NewTemporal.string(
+        _Temporal.string(
             from: foundationDate,
             with: format.value,
             in: timeZone
         )
     }
     
+    /// The ISO8601 representation of the scalar using `.full` as the format and `.utc` as `TimeZone`.
+    /// - SeeAlso: `iso8601FormattedString(format:timeZone:)`
     public var iso8601String: String {
         iso8601FormattedString(format: .full)
     }

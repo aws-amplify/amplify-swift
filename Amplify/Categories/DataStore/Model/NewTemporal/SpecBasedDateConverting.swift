@@ -8,7 +8,7 @@
 import Foundation
 
 @usableFromInline
-internal struct SpecBasedDateConverting<T: NewTemporalSpec> {
+internal struct SpecBasedDateConverting<T: _TemporalSpec> {
     @usableFromInline
     internal typealias DateConverter = (String, T.Format) throws -> Date
     
@@ -29,12 +29,12 @@ internal struct SpecBasedDateConverting<T: NewTemporalSpec> {
     ) throws -> Date {
         let date: Foundation.Date
         if format == T.Format.unknown {
-            date = try NewTemporal.date(
+            date = try _Temporal.date(
                 from: iso8601String,
                 with: T.Format.allFormats
             )
         } else {
-            date = try NewTemporal.date(
+            date = try _Temporal.date(
                 from: iso8601String,
                 with: format.value
             )

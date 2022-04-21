@@ -7,15 +7,15 @@
 
 import Foundation
 
-extension NewTemporalSpec {
+extension _TemporalSpec {
 
     ///
     /// - Parameters:
     ///   - value: the amount to add, or subtract in case of negative values
     ///   - component: the component that will get the value added
-    /// - Returns: a new instance of the current DateScalar type
+    /// - Returns: a _ instance of the current DateScalar type
     func add(value: Int, to component: Calendar.Component) -> Self {
-        let calendar = NewTemporal.iso8601Calendar
+        let calendar = _Temporal.iso8601Calendar
         let result = calendar.date(
             byAdding: component,
             value: value,

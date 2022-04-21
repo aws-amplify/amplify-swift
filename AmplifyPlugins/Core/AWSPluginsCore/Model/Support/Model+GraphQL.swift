@@ -50,7 +50,7 @@ extension Model {
 
             switch modelField.type {
             case .date, .dateTime, .time:
-                if let date = value as? TemporalSpec {
+                if let date = value as? _AnyTemporalSpec {
                     input[name] = date.iso8601String
                 } else {
                     input[name] = value

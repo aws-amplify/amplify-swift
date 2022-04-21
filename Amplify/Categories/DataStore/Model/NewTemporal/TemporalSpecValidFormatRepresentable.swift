@@ -18,3 +18,7 @@ public protocol TemporalSpecValidFormatRepresentable: Equatable {
     
     static var allFormats: [String] { get }
 }
+
+public struct ValidFormatRepresenting<T> {
+    let value: String
+}
