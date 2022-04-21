@@ -19,18 +19,18 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErro
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
                           withId id: Model.Identifier,
-                          predicate: QueryPredicate?,
+                          condition: QueryPredicate?,
                           completion: @escaping DataStoreCallback<M?>)
 
     func delete(untypedModelType modelType: Model.Type,
                 modelSchema: ModelSchema,
                 withId id: Model.Identifier,
-                predicate: QueryPredicate?,
+                condition: QueryPredicate?,
                 completion: DataStoreCallback<Void>)
 
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
-                          predicate: QueryPredicate,
+                          filter: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>)
 
     func query(modelSchema: ModelSchema,
@@ -72,26 +72,26 @@ protocol StorageEngineMigrationAdapter {
 extension StorageEngineAdapter {
 
     func delete<M: Model>(_ modelType: M.Type,
-                          predicate: QueryPredicate,
+                          filter predicate: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>) {
-        delete(modelType, modelSchema: modelType.schema, predicate: predicate, completion: completion)
+        delete(modelType, modelSchema: modelType.schema, filter: predicate, completion: completion)
     }
 
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: Model.Identifier,
-                          predicate: QueryPredicate? = nil,
+                          condition: QueryPredicate? = nil,
                           completion: @escaping DataStoreCallback<M?>) {
-        delete(modelType, modelSchema: modelType.schema, withId: id, predicate: predicate, completion: completion)
+        delete(modelType, modelSchema: modelType.schema, withId: id, condition: condition, completion: completion)
     }
 
     func delete(untypedModelType modelType: Model.Type,
                 withId id: Model.Identifier,
-                predicate: QueryPredicate? = nil,
+                condition: QueryPredicate? = nil,
                 completion: DataStoreCallback<Void>) {
         delete(untypedModelType: modelType,
                modelSchema: modelType.schema,
                withId: id,
-               predicate: predicate,
+               condition: condition,
                completion: completion)
     }
 }

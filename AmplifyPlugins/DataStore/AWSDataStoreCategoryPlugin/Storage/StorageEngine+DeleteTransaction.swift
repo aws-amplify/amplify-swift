@@ -14,25 +14,30 @@ extension StorageEngine {
 
     enum DeleteInput {
         case withId(id: Model.Identifier)
-        case withIdAndPredicate(id: Model.Identifier, predicate: QueryPredicate)
-        case withPredicate(predicate: QueryPredicate)
+        case withIdAndCondition(id: Model.Identifier, condition: QueryPredicate)
+        case withFilter(_ filter: QueryPredicate)
 
         /// Returns a computed predicate based on the type of delete scenario it is.
         var predicate: QueryPredicate {
             switch self {
             case .withId(let id):
                 return field("id").eq(id)
-            case .withIdAndPredicate(let id, let predicate):
-                return field("id").eq(id).and(predicate)
-            case .withPredicate(let predicate):
-                return predicate
+            case .withIdAndCondition(let id, let condition):
+                return field("id").eq(id).and(condition)
+            case .withFilter(let filter):
+                return filter
             }
         }
     }
 
+    struct QueryAndDeleteResult<M: Model> {
+        let deletedModels: [M]
+        let associatedModelsMap: [ModelName: [Model]]
+    }
+
     func queryAndDeleteTransaction<M: Model>(_ modelType: M.Type,
                                              modelSchema: ModelSchema,
-                                             deleteInput: DeleteInput) -> DataStoreResult<([M], [ModelName: [Model]])> {
+                                             deleteInput: DeleteInput) -> DataStoreResult<QueryAndDeleteResult<M>> {
         var queriedResult: DataStoreResult<[M]>?
         var deletedResult: DataStoreResult<[M]>?
         var associatedModels: [(ModelName, Model)] = []
@@ -44,7 +49,7 @@ extension StorageEngine {
             }
 
             guard !queriedModels.isEmpty else {
-                guard case .withIdAndPredicate(let id, _) = deleteInput else {
+                guard case .withIdAndCondition(let id, _) = deleteInput else {
                     // Query did not return any results, treat this as a successful no-op delete.
                     deletedResult = .success([M]())
                     return
@@ -74,7 +79,7 @@ extension StorageEngine {
             }
             self.storageAdapter.delete(modelType,
                                        modelSchema: modelSchema,
-                                       predicate: deleteInput.predicate,
+                                       filter: deleteInput.predicate,
                                        completion: deleteCompletionWrapper)
         }
 
@@ -164,14 +169,15 @@ extension StorageEngine {
 
     private func collapseResults<M: Model>(queryResult: DataStoreResult<[M]>?,
                                            deleteResult: DataStoreResult<[M]>?,
-                                           associatedModelsMap: [ModelName: [Model]]) -> DataStoreResult<([M], [ModelName: [Model]])> {
+                                           associatedModelsMap: [ModelName: [Model]]) -> DataStoreResult<QueryAndDeleteResult<M>> {
         if let queryResult = queryResult {
             switch queryResult {
             case .success(let models):
                 if let deleteResult = deleteResult {
                     switch deleteResult {
                     case .success:
-                        return .success((models, associatedModelsMap))
+                        return .success(QueryAndDeleteResult(deletedModels: models,
+                                                             associatedModelsMap: associatedModelsMap))
                     case .failure(let error):
                         return .failure(error)
                     }
@@ -183,25 +189,6 @@ extension StorageEngine {
             }
         } else {
             return .failure(.unknown("queryResult not set during transaction", "coding error", nil))
-        }
-    }
-
-    func collapseMResult<M: Model>(_ result: DataStoreResult<([M], [ModelName: [Model]])>) -> DataStoreResult<[M]> {
-        switch result {
-        case .success(let results):
-            return .success(results.0)
-        case .failure(let error):
-            return .failure(error)
-        }
-    }
-
-    func resolveAssociatedModels<M: Model>(
-        _ result: DataStoreResult<([M], [ModelName: [Model]])>) -> [ModelName: [Model]] {
-        switch result {
-        case .success(let results):
-            return results.1
-        case .failure:
-            return [:]
         }
     }
 }
