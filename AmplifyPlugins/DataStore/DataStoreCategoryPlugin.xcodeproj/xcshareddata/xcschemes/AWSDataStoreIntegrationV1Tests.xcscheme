@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1120"
+   LastUpgradeVersion = "1320"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -10,8 +10,7 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      enableThreadSanitizer = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
             skipped = "NO">
@@ -24,19 +23,16 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "DataStoreConnectionScenario1Tests">
+                  Identifier = "AWSDataStorePluginConfigurationTests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConfigurationTests">
                </Test>
                <Test
                   Identifier = "DataStoreConnectionScenario1V2Tests">
                </Test>
                <Test
-                  Identifier = "DataStoreConnectionScenario2Tests">
-               </Test>
-               <Test
                   Identifier = "DataStoreConnectionScenario2V2Tests">
-               </Test>
-               <Test
-                  Identifier = "DataStoreConnectionScenario3Tests">
                </Test>
                <Test
                   Identifier = "DataStoreConnectionScenario3V2Tests">
@@ -45,19 +41,10 @@
                   Identifier = "DataStoreConnectionScenario3aV2Tests">
                </Test>
                <Test
-                  Identifier = "DataStoreConnectionScenario4Tests">
-               </Test>
-               <Test
                   Identifier = "DataStoreConnectionScenario4V2Tests">
                </Test>
                <Test
-                  Identifier = "DataStoreConnectionScenario5Tests">
-               </Test>
-               <Test
                   Identifier = "DataStoreConnectionScenario5V2Tests">
-               </Test>
-               <Test
-                  Identifier = "DataStoreConnectionScenario6Tests">
                </Test>
                <Test
                   Identifier = "DataStoreConnectionScenario6V2Tests">
@@ -75,7 +62,13 @@
                   Identifier = "DataStoreCustomPrimaryKeyTests">
                </Test>
                <Test
-                  Identifier = "DataStoreEndToEndTests/testConcurrentSave()">
+                  Identifier = "DataStoreEndToEndTests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreHubEventTests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreLocalStoreTests">
                </Test>
                <Test
                   Identifier = "DataStoreModelWithCustomTimestampTests">
@@ -90,6 +83,9 @@
                   Identifier = "DataStoreObserveQueryTests">
                </Test>
                <Test
+                  Identifier = "DataStoreScalarTests">
+               </Test>
+               <Test
                   Identifier = "DataStoreTestBase">
                </Test>
                <Test
@@ -99,13 +95,16 @@
                   Identifier = "LocalStoreIntegrationTestBase">
                </Test>
                <Test
-                  Identifier = "SubscriptionTests/testSubscribeAtStartup()">
+                  Identifier = "SubscriptionEndToEndTests">
                </Test>
                <Test
                   Identifier = "SyncEngineIntegrationTestBase">
                </Test>
                <Test
                   Identifier = "SyncEngineIntegrationV2TestBase">
+               </Test>
+               <Test
+                  Identifier = "SyncMetadataTests">
                </Test>
             </SkippedTests>
          </TestableReference>
