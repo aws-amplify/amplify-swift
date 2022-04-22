@@ -47,9 +47,6 @@
                   Identifier = "DataStoreConnectionScenario3V2Tests">
                </Test>
                <Test
-                  Identifier = "DataStoreConnectionScenario3aV2Tests">
-               </Test>
-               <Test
                   Identifier = "DataStoreConnectionScenario4Tests">
                </Test>
                <Test
@@ -87,6 +84,12 @@
                </Test>
                <Test
                   Identifier = "DataStoreLocalStoreTests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreModelWithCustomTimestampTests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreModelWithDefaultValueTests">
                </Test>
                <Test
                   Identifier = "DataStoreModelWithSecondaryIndexTests">

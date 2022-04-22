@@ -29,10 +29,19 @@
                   Identifier = "DataStoreConfigurationTests">
                </Test>
                <Test
+                  Identifier = "DataStoreConnectionScenario1Tests">
+               </Test>
+               <Test
                   Identifier = "DataStoreConnectionScenario1V2Tests">
                </Test>
                <Test
+                  Identifier = "DataStoreConnectionScenario2Tests">
+               </Test>
+               <Test
                   Identifier = "DataStoreConnectionScenario2V2Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario3Tests">
                </Test>
                <Test
                   Identifier = "DataStoreConnectionScenario3V2Tests">
@@ -41,10 +50,16 @@
                   Identifier = "DataStoreConnectionScenario3aV2Tests">
                </Test>
                <Test
-                  Identifier = "DataStoreConnectionScenario4V2Tests">
+                  Identifier = "DataStoreConnectionScenario4Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario5Tests">
                </Test>
                <Test
                   Identifier = "DataStoreConnectionScenario5V2Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario6Tests">
                </Test>
                <Test
                   Identifier = "DataStoreConnectionScenario6V2Tests">
