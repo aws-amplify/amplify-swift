@@ -75,14 +75,13 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - The models only contain models based on the predicate
     ///
     func testInitialSyncWithPredicate() throws {
-        setUp(withModels: TestModelRegistration())
+        setUp(withModels: TestModelRegistration(), logLevel: .info)
         try startAmplify()
         savePostAndWaitForSync(Post(title: "xyz 1", content: "content", createdAt: .now()))
         savePostAndWaitForSync(Post(title: "xyz 2", content: "content", createdAt: .now()))
         savePostAndWaitForSync(Post(title: "xyz 3", content: "content", createdAt: .now()))
         clearDataStore()
         var snapshots = [DataStoreQuerySnapshot<Post>]()
-        Amplify.Logging.logLevel = .info
         let snapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
         snapshotWithIsSynced.assertForOverFulfill = false
         var snapshotWithIsSyncedFulfilled = false
