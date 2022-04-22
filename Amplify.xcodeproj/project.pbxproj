@@ -349,20 +349,25 @@
 		76C0F4EC26797F4500F0E6AB /* AuthModeStrategyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C0F4EA26797F3C00F0E6AB /* AuthModeStrategyTests.swift */; };
 		76FFFC91267966D9001EC92B /* RetryableGraphQLOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FFFC90267966D9001EC92B /* RetryableGraphQLOperationTests.swift */; };
 		8484A17AAAFE78545A932849 /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1769ED39B45A981FD1D8AC /* Pods_Amplify.framework */; };
-		902AE0322812FB3500CD12CA /* SpecBasedDateConverting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0252812FB3400CD12CA /* SpecBasedDateConverting.swift */; };
-		902AE0332812FB3500CD12CA /* NewTemporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0262812FB3400CD12CA /* NewTemporal.swift */; };
-		902AE0342812FB3500CD12CA /* NewTemporal+Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0272812FB3400CD12CA /* NewTemporal+Time.swift */; };
-		902AE0352812FB3500CD12CA /* NewTemporalSpec+Add.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0282812FB3400CD12CA /* NewTemporalSpec+Add.swift */; };
-		902AE0362812FB3500CD12CA /* NewTemporal+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0292812FB3400CD12CA /* NewTemporal+Date.swift */; };
-		902AE0372812FB3500CD12CA /* NewTimeUnitOperatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE02A2812FB3400CD12CA /* NewTimeUnitOperatable.swift */; };
-		902AE0382812FB3500CD12CA /* NewTemporalSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE02B2812FB3400CD12CA /* NewTemporalSpec.swift */; };
-		902AE0392812FB3500CD12CA /* NewTemporal+DateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE02C2812FB3400CD12CA /* NewTemporal+DateTime.swift */; };
-		902AE03A2812FB3500CD12CA /* AnyTemporalSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE02D2812FB3400CD12CA /* AnyTemporalSpec.swift */; };
-		902AE03B2812FB3500CD12CA /* DateUnitOperatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE02E2812FB3400CD12CA /* DateUnitOperatable.swift */; };
-		902AE03C2812FB3500CD12CA /* DateUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE02F2812FB3400CD12CA /* DateUnit.swift */; };
-		902AE03D2812FB3500CD12CA /* TemporalSpecValidFormatRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0302812FB3400CD12CA /* TemporalSpecValidFormatRepresentable.swift */; };
-		902AE03E2812FB3500CD12CA /* NewTimeUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0312812FB3400CD12CA /* NewTimeUnit.swift */; };
-		902AE0402812FB5A00CD12CA /* TimeZone+UTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE03F2812FB5A00CD12CA /* TimeZone+UTC.swift */; };
+		902AE05B281304B800CD12CA /* SpecBasedDateConverting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE04C281304B800CD12CA /* SpecBasedDateConverting.swift */; };
+		902AE05C281304B800CD12CA /* Temporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE04D281304B800CD12CA /* Temporal.swift */; };
+		902AE05D281304B800CD12CA /* Temporal+Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE04E281304B800CD12CA /* Temporal+Time.swift */; };
+		902AE05E281304B800CD12CA /* TemporalSpec+Add.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE04F281304B800CD12CA /* TemporalSpec+Add.swift */; };
+		902AE05F281304B800CD12CA /* Temporal+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE050281304B800CD12CA /* Temporal+Date.swift */; };
+		902AE060281304B800CD12CA /* TimeUnitOperatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE051281304B800CD12CA /* TimeUnitOperatable.swift */; };
+		902AE061281304B800CD12CA /* TemporalSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE052281304B800CD12CA /* TemporalSpec.swift */; };
+		902AE062281304B800CD12CA /* TimeZone+UTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE053281304B800CD12CA /* TimeZone+UTC.swift */; };
+		902AE063281304B800CD12CA /* Temporal+DateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE054281304B800CD12CA /* Temporal+DateTime.swift */; };
+		902AE064281304B800CD12CA /* AnyTemporalSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE055281304B800CD12CA /* AnyTemporalSpec.swift */; };
+		902AE065281304B800CD12CA /* DateUnitOperatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE056281304B800CD12CA /* DateUnitOperatable.swift */; };
+		902AE066281304B800CD12CA /* DateUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE057281304B800CD12CA /* DateUnit.swift */; };
+		902AE067281304B800CD12CA /* TemporalSpecValidFormatRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE058281304B800CD12CA /* TemporalSpecValidFormatRepresentable.swift */; };
+		902AE068281304B800CD12CA /* TemporalUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE059281304B800CD12CA /* TemporalUnit.swift */; };
+		902AE069281304B800CD12CA /* TimeUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE05A281304B800CD12CA /* TimeUnit.swift */; };
+		902AE06D2813050200CD12CA /* Temporal+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE06A2813050200CD12CA /* Temporal+Codable.swift */; };
+		902AE06E2813050200CD12CA /* Temporal+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE06B2813050200CD12CA /* Temporal+Comparable.swift */; };
+		902AE06F2813050200CD12CA /* Temporal+Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE06C2813050200CD12CA /* Temporal+Hashable.swift */; };
+		902AE0712813052F00CD12CA /* DataStoreError+Temporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0702813052F00CD12CA /* DataStoreError+Temporal.swift */; };
 		90A8901327619D780042C3C1 /* AWSAuthServiceBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A8901227619D780042C3C1 /* AWSAuthServiceBehaviorTests.swift */; };
 		950A26DB23D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26D823D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift */; };
 		950A26DC23D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26D923D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift */; };
@@ -556,10 +561,6 @@
 		B4FEA92124635BFB0009B47B /* AuthCategoryDeviceBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEA92024635BFB0009B47B /* AuthCategoryDeviceBehavior.swift */; };
 		B4FEA92324635CA40009B47B /* AuthCategory+DeviceBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEA92224635CA40009B47B /* AuthCategory+DeviceBehavior.swift */; };
 		B912D1B6242960D40028F05C /* QueryPaginationInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = B912D1B5242960D40028F05C /* QueryPaginationInput.swift */; };
-		B91A879C23D125A50049A12F /* DateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A879B23D125A50049A12F /* DateTime.swift */; };
-		B91A879E23D12B730049A12F /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A879D23D12B730049A12F /* Time.swift */; };
-		B91A87A023D18A320049A12F /* Temporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A879F23D18A320049A12F /* Temporal.swift */; };
-		B91A87A223D641570049A12F /* Temporal+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A87A123D641570049A12F /* Temporal+Comparable.swift */; };
 		B91A87A423D64B0F0049A12F /* TemporalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A87A323D64B0F0049A12F /* TemporalTests.swift */; };
 		B92E03AD2367CE7A006CEB8D /* DataStoreCategory+Behavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E039E2367CE79006CEB8D /* DataStoreCategory+Behavior.swift */; };
 		B92E03AE2367CE7A006CEB8D /* DataStoreCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E039F2367CE79006CEB8D /* DataStoreCategoryPlugin.swift */; };
@@ -575,10 +576,6 @@
 		B92E03B82367CE7A006CEB8D /* ModelSchema+Definition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03AA2367CE7A006CEB8D /* ModelSchema+Definition.swift */; };
 		B92E03B92367CE7A006CEB8D /* Model+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03AB2367CE7A006CEB8D /* Model+Schema.swift */; };
 		B92E03BA2367CE7A006CEB8D /* Model+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */; };
-		B93D0FDF2473BBF500796879 /* Temporal+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93D0FDE2473BBF500796879 /* Temporal+Codable.swift */; };
-		B9485E9723F40848009C4F93 /* Time+Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9485E9623F40847009C4F93 /* Time+Operation.swift */; };
-		B9485E9923F40877009C4F93 /* Date+Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9485E9823F40877009C4F93 /* Date+Operation.swift */; };
-		B9485E9B23F4BEEC009C4F93 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B9485E9A23F4BEEC009C4F93 /* README.md */; };
 		B9521833237E21BA00F53237 /* Comment+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B952182E237E21B900F53237 /* Comment+Schema.swift */; };
 		B9521834237E21BA00F53237 /* schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = B952182F237E21B900F53237 /* schema.graphql */; };
 		B9521835237E21BA00F53237 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9521830237E21B900F53237 /* Comment.swift */; };
@@ -594,18 +591,10 @@
 		B996FC4423FF2FA8006D0F68 /* Encodable+AnyEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B996FC4323FF2FA8006D0F68 /* Encodable+AnyEncodable.swift */; };
 		B996FC4D24059918006D0F68 /* Model+Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = B996FC4C24059918006D0F68 /* Model+Enum.swift */; };
 		B99EF4B523DB020C00D821BC /* TemporalComparableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99EF4B423DB020C00D821BC /* TemporalComparableTests.swift */; };
-		B99EF4B723DB072000D821BC /* Temporal+Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99EF4B623DB072000D821BC /* Temporal+Hashable.swift */; };
 		B9A329CC243559BF00C5B80C /* TimeInterval+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A329CB243559BF00C5B80C /* TimeInterval+Helper.swift */; };
 		B9A6A4E024452E0D00AC2792 /* AccessLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A6A4DF24452E0D00AC2792 /* AccessLevel.swift */; };
 		B9AA09F12473CA29000E6FBB /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AA09F02473CA29000E6FBB /* PostStatus.swift */; };
-		B9AE8FD923D8C609002742F9 /* TemporalFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AE8FD823D8C609002742F9 /* TemporalFormat.swift */; };
-		B9AE8FDB23D8C643002742F9 /* TemporalFormat+Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AE8FDA23D8C643002742F9 /* TemporalFormat+Time.swift */; };
-		B9AF547A23F324DB0059E6C4 /* TemporalOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AF547923F324DB0059E6C4 /* TemporalOperation.swift */; };
 		B9AF547E23F37DF20059E6C4 /* TemporalOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AF547D23F37DF20059E6C4 /* TemporalOperationTests.swift */; };
-		B9B50DC223D9179F0086F1E1 /* TemporalFormat+DateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC123D9179F0086F1E1 /* TemporalFormat+DateTime.swift */; };
-		B9B50DC423D917BB0086F1E1 /* TemporalFormat+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC323D917BB0086F1E1 /* TemporalFormat+Date.swift */; };
-		B9B50DC623D918020086F1E1 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC523D918020086F1E1 /* Date.swift */; };
-		B9B50DC823DA15890086F1E1 /* DataStoreError+Temporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC723DA15890086F1E1 /* DataStoreError+Temporal.swift */; };
 		B9B64A9F23FCBF7E00730B68 /* ModelValueConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */; };
 		B9DCA263240F217C00075E22 /* AnyEncodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DCA262240F217C00075E22 /* AnyEncodableTests.swift */; };
 		B9FAA10B23878122009414B4 /* ModelField+Association.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10A23878122009414B4 /* ModelField+Association.swift */; };
@@ -1289,20 +1278,25 @@
 		7D502982E80B9B2796D71A48 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig"; sourceTree = "<group>"; };
 		852B5530E9E8794DAC86E44E /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig"; sourceTree = "<group>"; };
 		8E125EAA66C26B6F0705BB0C /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig"; sourceTree = "<group>"; };
-		902AE0252812FB3400CD12CA /* SpecBasedDateConverting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecBasedDateConverting.swift; sourceTree = "<group>"; };
-		902AE0262812FB3400CD12CA /* NewTemporal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTemporal.swift; sourceTree = "<group>"; };
-		902AE0272812FB3400CD12CA /* NewTemporal+Time.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewTemporal+Time.swift"; sourceTree = "<group>"; };
-		902AE0282812FB3400CD12CA /* NewTemporalSpec+Add.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewTemporalSpec+Add.swift"; sourceTree = "<group>"; };
-		902AE0292812FB3400CD12CA /* NewTemporal+Date.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewTemporal+Date.swift"; sourceTree = "<group>"; };
-		902AE02A2812FB3400CD12CA /* NewTimeUnitOperatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTimeUnitOperatable.swift; sourceTree = "<group>"; };
-		902AE02B2812FB3400CD12CA /* NewTemporalSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTemporalSpec.swift; sourceTree = "<group>"; };
-		902AE02C2812FB3400CD12CA /* NewTemporal+DateTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewTemporal+DateTime.swift"; sourceTree = "<group>"; };
-		902AE02D2812FB3400CD12CA /* AnyTemporalSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyTemporalSpec.swift; sourceTree = "<group>"; };
-		902AE02E2812FB3400CD12CA /* DateUnitOperatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateUnitOperatable.swift; sourceTree = "<group>"; };
-		902AE02F2812FB3400CD12CA /* DateUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateUnit.swift; sourceTree = "<group>"; };
-		902AE0302812FB3400CD12CA /* TemporalSpecValidFormatRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemporalSpecValidFormatRepresentable.swift; sourceTree = "<group>"; };
-		902AE0312812FB3400CD12CA /* NewTimeUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTimeUnit.swift; sourceTree = "<group>"; };
-		902AE03F2812FB5A00CD12CA /* TimeZone+UTC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "TimeZone+UTC.swift"; path = "Amplify/Categories/DataStore/Model/Temporal/TimeZone+UTC.swift"; sourceTree = SOURCE_ROOT; };
+		902AE04C281304B800CD12CA /* SpecBasedDateConverting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecBasedDateConverting.swift; sourceTree = "<group>"; };
+		902AE04D281304B800CD12CA /* Temporal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Temporal.swift; sourceTree = "<group>"; };
+		902AE04E281304B800CD12CA /* Temporal+Time.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Time.swift"; sourceTree = "<group>"; };
+		902AE04F281304B800CD12CA /* TemporalSpec+Add.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TemporalSpec+Add.swift"; sourceTree = "<group>"; };
+		902AE050281304B800CD12CA /* Temporal+Date.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Date.swift"; sourceTree = "<group>"; };
+		902AE051281304B800CD12CA /* TimeUnitOperatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeUnitOperatable.swift; sourceTree = "<group>"; };
+		902AE052281304B800CD12CA /* TemporalSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemporalSpec.swift; sourceTree = "<group>"; };
+		902AE053281304B800CD12CA /* TimeZone+UTC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TimeZone+UTC.swift"; sourceTree = "<group>"; };
+		902AE054281304B800CD12CA /* Temporal+DateTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+DateTime.swift"; sourceTree = "<group>"; };
+		902AE055281304B800CD12CA /* AnyTemporalSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyTemporalSpec.swift; sourceTree = "<group>"; };
+		902AE056281304B800CD12CA /* DateUnitOperatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateUnitOperatable.swift; sourceTree = "<group>"; };
+		902AE057281304B800CD12CA /* DateUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateUnit.swift; sourceTree = "<group>"; };
+		902AE058281304B800CD12CA /* TemporalSpecValidFormatRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemporalSpecValidFormatRepresentable.swift; sourceTree = "<group>"; };
+		902AE059281304B800CD12CA /* TemporalUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemporalUnit.swift; sourceTree = "<group>"; };
+		902AE05A281304B800CD12CA /* TimeUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeUnit.swift; sourceTree = "<group>"; };
+		902AE06A2813050200CD12CA /* Temporal+Codable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Codable.swift"; sourceTree = "<group>"; };
+		902AE06B2813050200CD12CA /* Temporal+Comparable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Comparable.swift"; sourceTree = "<group>"; };
+		902AE06C2813050200CD12CA /* Temporal+Hashable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Hashable.swift"; sourceTree = "<group>"; };
+		902AE0702813052F00CD12CA /* DataStoreError+Temporal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DataStoreError+Temporal.swift"; sourceTree = "<group>"; };
 		90A8901227619D780042C3C1 /* AWSAuthServiceBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthServiceBehaviorTests.swift; sourceTree = "<group>"; };
 		950A26D823D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsTranslateTextOperation.swift; sourceTree = "<group>"; };
 		950A26D923D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsTextToSpeechOperation.swift; sourceTree = "<group>"; };
@@ -1496,10 +1490,6 @@
 		B4FEA92024635BFB0009B47B /* AuthCategoryDeviceBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCategoryDeviceBehavior.swift; sourceTree = "<group>"; };
 		B4FEA92224635CA40009B47B /* AuthCategory+DeviceBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthCategory+DeviceBehavior.swift"; sourceTree = "<group>"; };
 		B912D1B5242960D40028F05C /* QueryPaginationInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryPaginationInput.swift; sourceTree = "<group>"; };
-		B91A879B23D125A50049A12F /* DateTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTime.swift; sourceTree = "<group>"; };
-		B91A879D23D12B730049A12F /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
-		B91A879F23D18A320049A12F /* Temporal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Temporal.swift; sourceTree = "<group>"; };
-		B91A87A123D641570049A12F /* Temporal+Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Temporal+Comparable.swift"; sourceTree = "<group>"; };
 		B91A87A323D64B0F0049A12F /* TemporalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporalTests.swift; sourceTree = "<group>"; };
 		B922E267236A029C00D09250 /* Query.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Query.swift; sourceTree = "<group>"; };
 		B922E268236A029C00D09250 /* ModelKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelKey.swift; sourceTree = "<group>"; };
@@ -1521,10 +1511,6 @@
 		B92E03AA2367CE7A006CEB8D /* ModelSchema+Definition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelSchema+Definition.swift"; sourceTree = "<group>"; };
 		B92E03AB2367CE7A006CEB8D /* Model+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Model+Schema.swift"; sourceTree = "<group>"; };
 		B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Model+Codable.swift"; sourceTree = "<group>"; };
-		B93D0FDE2473BBF500796879 /* Temporal+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Temporal+Codable.swift"; sourceTree = "<group>"; };
-		B9485E9623F40847009C4F93 /* Time+Operation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Time+Operation.swift"; sourceTree = "<group>"; };
-		B9485E9823F40877009C4F93 /* Date+Operation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Operation.swift"; sourceTree = "<group>"; };
-		B9485E9A23F4BEEC009C4F93 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		B952182E237E21B900F53237 /* Comment+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment+Schema.swift"; sourceTree = "<group>"; };
 		B952182F237E21B900F53237 /* schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
 		B9521830237E21B900F53237 /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
@@ -1541,18 +1527,10 @@
 		B996FC4323FF2FA8006D0F68 /* Encodable+AnyEncodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+AnyEncodable.swift"; sourceTree = "<group>"; };
 		B996FC4C24059918006D0F68 /* Model+Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+Enum.swift"; sourceTree = "<group>"; };
 		B99EF4B423DB020C00D821BC /* TemporalComparableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporalComparableTests.swift; sourceTree = "<group>"; };
-		B99EF4B623DB072000D821BC /* Temporal+Hashable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Temporal+Hashable.swift"; sourceTree = "<group>"; };
 		B9A329CB243559BF00C5B80C /* TimeInterval+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+Helper.swift"; sourceTree = "<group>"; };
 		B9A6A4DF24452E0D00AC2792 /* AccessLevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccessLevel.swift; sourceTree = "<group>"; };
 		B9AA09F02473CA29000E6FBB /* PostStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostStatus.swift; sourceTree = "<group>"; };
-		B9AE8FD823D8C609002742F9 /* TemporalFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporalFormat.swift; sourceTree = "<group>"; };
-		B9AE8FDA23D8C643002742F9 /* TemporalFormat+Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TemporalFormat+Time.swift"; sourceTree = "<group>"; };
-		B9AF547923F324DB0059E6C4 /* TemporalOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporalOperation.swift; sourceTree = "<group>"; };
 		B9AF547D23F37DF20059E6C4 /* TemporalOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporalOperationTests.swift; sourceTree = "<group>"; };
-		B9B50DC123D9179F0086F1E1 /* TemporalFormat+DateTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TemporalFormat+DateTime.swift"; sourceTree = "<group>"; };
-		B9B50DC323D917BB0086F1E1 /* TemporalFormat+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TemporalFormat+Date.swift"; sourceTree = "<group>"; };
-		B9B50DC523D918020086F1E1 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
-		B9B50DC723DA15890086F1E1 /* DataStoreError+Temporal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataStoreError+Temporal.swift"; sourceTree = "<group>"; };
 		B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelValueConverter.swift; sourceTree = "<group>"; };
 		B9DCA262240F217C00075E22 /* AnyEncodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyEncodableTests.swift; sourceTree = "<group>"; };
 		B9FAA10A23878122009414B4 /* ModelField+Association.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelField+Association.swift"; sourceTree = "<group>"; };
@@ -2708,25 +2686,30 @@
 			path = API;
 			sourceTree = "<group>";
 		};
-		902AE0242812FB3400CD12CA /* NewTemporal */ = {
+		902AE04B281304B800CD12CA /* Temporal */ = {
 			isa = PBXGroup;
 			children = (
-				902AE0252812FB3400CD12CA /* SpecBasedDateConverting.swift */,
-				902AE0262812FB3400CD12CA /* NewTemporal.swift */,
-				902AE0272812FB3400CD12CA /* NewTemporal+Time.swift */,
-				902AE0282812FB3400CD12CA /* NewTemporalSpec+Add.swift */,
-				902AE0292812FB3400CD12CA /* NewTemporal+Date.swift */,
-				902AE02A2812FB3400CD12CA /* NewTimeUnitOperatable.swift */,
-				902AE02B2812FB3400CD12CA /* NewTemporalSpec.swift */,
-				902AE02C2812FB3400CD12CA /* NewTemporal+DateTime.swift */,
-				902AE02D2812FB3400CD12CA /* AnyTemporalSpec.swift */,
-				902AE02E2812FB3400CD12CA /* DateUnitOperatable.swift */,
-				902AE02F2812FB3400CD12CA /* DateUnit.swift */,
-				902AE0302812FB3400CD12CA /* TemporalSpecValidFormatRepresentable.swift */,
-				902AE0312812FB3400CD12CA /* NewTimeUnit.swift */,
-				902AE03F2812FB5A00CD12CA /* TimeZone+UTC.swift */,
+				902AE04D281304B800CD12CA /* Temporal.swift */,
+				902AE050281304B800CD12CA /* Temporal+Date.swift */,
+				902AE054281304B800CD12CA /* Temporal+DateTime.swift */,
+				902AE04E281304B800CD12CA /* Temporal+Time.swift */,
+				902AE052281304B800CD12CA /* TemporalSpec.swift */,
+				902AE04F281304B800CD12CA /* TemporalSpec+Add.swift */,
+				902AE055281304B800CD12CA /* AnyTemporalSpec.swift */,
+				902AE057281304B800CD12CA /* DateUnit.swift */,
+				902AE056281304B800CD12CA /* DateUnitOperatable.swift */,
+				902AE05A281304B800CD12CA /* TimeUnit.swift */,
+				902AE051281304B800CD12CA /* TimeUnitOperatable.swift */,
+				902AE0702813052F00CD12CA /* DataStoreError+Temporal.swift */,
+				902AE06A2813050200CD12CA /* Temporal+Codable.swift */,
+				902AE06B2813050200CD12CA /* Temporal+Comparable.swift */,
+				902AE06C2813050200CD12CA /* Temporal+Hashable.swift */,
+				902AE04C281304B800CD12CA /* SpecBasedDateConverting.swift */,
+				902AE053281304B800CD12CA /* TimeZone+UTC.swift */,
+				902AE058281304B800CD12CA /* TemporalSpecValidFormatRepresentable.swift */,
+				902AE059281304B800CD12CA /* TemporalUnit.swift */,
 			);
-			path = NewTemporal;
+			path = Temporal;
 			sourceTree = "<group>";
 		};
 		95DAAB00237E63370028544F /* Models */ = {
@@ -3107,29 +3090,6 @@
 			path = Auth;
 			sourceTree = "<group>";
 		};
-		B91A879A23D1256B0049A12F /* Temporal */ = {
-			isa = PBXGroup;
-			children = (
-				B9485E9A23F4BEEC009C4F93 /* README.md */,
-				B9B50DC723DA15890086F1E1 /* DataStoreError+Temporal.swift */,
-				B9B50DC523D918020086F1E1 /* Date.swift */,
-				B9485E9823F40877009C4F93 /* Date+Operation.swift */,
-				B91A879B23D125A50049A12F /* DateTime.swift */,
-				B91A879F23D18A320049A12F /* Temporal.swift */,
-				B93D0FDE2473BBF500796879 /* Temporal+Codable.swift */,
-				B91A87A123D641570049A12F /* Temporal+Comparable.swift */,
-				B99EF4B623DB072000D821BC /* Temporal+Hashable.swift */,
-				B9AE8FD823D8C609002742F9 /* TemporalFormat.swift */,
-				B9B50DC323D917BB0086F1E1 /* TemporalFormat+Date.swift */,
-				B9B50DC123D9179F0086F1E1 /* TemporalFormat+DateTime.swift */,
-				B9AE8FDA23D8C643002742F9 /* TemporalFormat+Time.swift */,
-				B9AF547923F324DB0059E6C4 /* TemporalOperation.swift */,
-				B91A879D23D12B730049A12F /* Time.swift */,
-				B9485E9623F40847009C4F93 /* Time+Operation.swift */,
-			);
-			path = Temporal;
-			sourceTree = "<group>";
-		};
 		B92E03A62367CE7A006CEB8D /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -3137,10 +3097,9 @@
 				B92E03A72367CE7A006CEB8D /* Model.swift */,
 				FA8EE778238627040097E4F1 /* Model+ModelName.swift */,
 				2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */,
+				902AE04B281304B800CD12CA /* Temporal */,
 				B9FAA1232388BE2B009414B4 /* Collection */,
 				21AD424A249BEC440016FE95 /* Internal */,
-				902AE0242812FB3400CD12CA /* NewTemporal */,
-				B91A879A23D1256B0049A12F /* Temporal */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -4413,7 +4372,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B9485E9B23F4BEEC009C4F93 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5084,6 +5042,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B912D1B6242960D40028F05C /* QueryPaginationInput.swift in Sources */,
+				902AE066281304B800CD12CA /* DateUnit.swift in Sources */,
 				974FF18324B54B500050D01B /* DeviceInfoDetailView.swift in Sources */,
 				5C2D791526F5172E00420798 /* Geo+Country.swift in Sources */,
 				B4C499022415E0CA00067992 /* AuthWebUISignInOperation.swift in Sources */,
@@ -5104,14 +5063,13 @@
 				B4D3853C236C97360014653D /* PredictionsTranslateTextRequest.swift in Sources */,
 				B452F1D32450EEAE0069F7FA /* AuthResendSignUpCodeOperation.swift in Sources */,
 				FAC2352B227A053D00424678 /* AnalyticsEvent.swift in Sources */,
-				902AE03A2812FB3500CD12CA /* AnyTemporalSpec.swift in Sources */,
 				974FF19124B904A40050D01B /* EnvironmentInfoItem.swift in Sources */,
 				B4FEA92124635BFB0009B47B /* AuthCategoryDeviceBehavior.swift in Sources */,
 				FAA98B02239214A30039EE71 /* DataStoreConflict.swift in Sources */,
 				B450741124115C140098F02D /* AuthSignInOperation.swift in Sources */,
+				902AE05D281304B800CD12CA /* Temporal+Time.swift in Sources */,
 				FA093386238480EB00C2FD5F /* OSLogWrapper.swift in Sources */,
 				FAC23544227A055200424678 /* ConfigurationError.swift in Sources */,
-				B91A879C23D125A50049A12F /* DateTime.swift in Sources */,
 				95DAAB44237E639E0028544F /* ConvertResult.swift in Sources */,
 				21A4ED54259CD24E00E1047D /* ArrayLiteralListProvider.swift in Sources */,
 				FAC428A4235F802A0000F221 /* AmplifyAPICategory+InterceptorBehavior.swift in Sources */,
@@ -5162,12 +5120,11 @@
 				5C763DA626F2CD95006650E7 /* Geo+BoundingBox.swift in Sources */,
 				95DAAB84237F13940028544F /* VoiceType.swift in Sources */,
 				FAA2E8C223A00D5800E420EA /* APICategory+Resettable.swift in Sources */,
-				902AE0362812FB3500CD12CA /* NewTemporal+Date.swift in Sources */,
 				5C09CCB526CEDE1200CDCA9F /* GeoCategory+HubPayloadEventName.swift in Sources */,
+				902AE05C281304B800CD12CA /* Temporal.swift in Sources */,
 				B4FA336324105D1800E1C659 /* AuthCategoryPlugin.swift in Sources */,
 				B4B1E0E524733687007F3261 /* AuthEventName.swift in Sources */,
 				6B33896823AAACC900561E5B /* ReachabilityUpdate.swift in Sources */,
-				902AE03E2812FB3500CD12CA /* NewTimeUnit.swift in Sources */,
 				FAA2E8CC23A02A5400E420EA /* HubCategory+Resettable.swift in Sources */,
 				2142099823721F4400FA140C /* RESTOperationRequest.swift in Sources */,
 				6BB7441023A9954900B0EB6C /* DispatchSource+MakeOneOff.swift in Sources */,
@@ -5179,7 +5136,6 @@
 				95DAAB45237E639E0028544F /* IdentifyResult.swift in Sources */,
 				95DAAB21237E63370028544F /* LanguageDetectionResult.swift in Sources */,
 				FAC2351E227A053D00424678 /* APICategory.swift in Sources */,
-				B9B50DC223D9179F0086F1E1 /* TemporalFormat+DateTime.swift in Sources */,
 				B4944D21251C06EA00BF0BFE /* JSONValueHolder.swift in Sources */,
 				FAC2351B227A053D00424678 /* APICategoryBehavior.swift in Sources */,
 				B473B540245DE93100C45C72 /* AuthConfirmSignInRequest.swift in Sources */,
@@ -5188,8 +5144,9 @@
 				FA5D4CF3238AFD7B00D2F54A /* ModelRegistry+Syncable.swift in Sources */,
 				FAAFAF37239051E6002CF932 /* AtomicDictionary.swift in Sources */,
 				95DAAB2F237E63370028544F /* LanguageType.swift in Sources */,
-				902AE0392812FB3500CD12CA /* NewTemporal+DateTime.swift in Sources */,
 				B4D3852E236C97360014653D /* PredictionsIdentifyOperation.swift in Sources */,
+				902AE063281304B800CD12CA /* Temporal+DateTime.swift in Sources */,
+				902AE065281304B800CD12CA /* DateUnitOperatable.swift in Sources */,
 				5C3324932772BD3D00F2C47B /* AuthDeleteUserRequest.swift in Sources */,
 				FA09B9412321BB78000E064D /* JSONValue.swift in Sources */,
 				B9A6A4E024452E0D00AC2792 /* AccessLevel.swift in Sources */,
@@ -5199,8 +5156,6 @@
 				5CF43D092728C64100F636E1 /* Geo+Error.swift in Sources */,
 				2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */,
 				FAA2E8CA23A02A2600E420EA /* DataStoreCategory+Resettable.swift in Sources */,
-				B9B50DC423D917BB0086F1E1 /* TemporalFormat+Date.swift in Sources */,
-				902AE0402812FB5A00CD12CA /* TimeZone+UTC.swift in Sources */,
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,
 				21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */,
 				974FF19B24BD05AA0050D01B /* EnvironmentInfoItemType.swift in Sources */,
@@ -5230,7 +5185,6 @@
 				B46884142460A8E000221268 /* AuthForgetDeviceOperation.swift in Sources */,
 				FA56F72322B14B420039754A /* Cancellable.swift in Sources */,
 				95DAAB4B237E639E0028544F /* TranslateTextResult.swift in Sources */,
-				B9485E9923F40877009C4F93 /* Date+Operation.swift in Sources */,
 				5C763DA026F2CAF5006650E7 /* Geo.swift in Sources */,
 				FA6BC872235F5BD60001A882 /* GraphQLOperation.swift in Sources */,
 				974FF1A524BE18460050D01B /* PluginInfoHelper.swift in Sources */,
@@ -5250,8 +5204,8 @@
 				B4B5CC8B2457B32D0019C783 /* AuthConfirmUserAttributeRequest.swift in Sources */,
 				FA09337E2384677A00C2FD5F /* AWSUnifiedLoggingPlugin.swift in Sources */,
 				FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */,
-				B93D0FDF2473BBF500796879 /* Temporal+Codable.swift in Sources */,
 				FAAFAF2D23904ADF002CF932 /* AtomicValue+Numeric.swift in Sources */,
+				902AE068281304B800CD12CA /* TemporalUnit.swift in Sources */,
 				FA09B94B2322CBEB000E064D /* LoggingCategoryConfiguration.swift in Sources */,
 				B49A02FB2410BEDF00B42A25 /* AuthCategory+Resettable.swift in Sources */,
 				2129BE512395A66F006363A1 /* AmplifyModelRegistration.swift in Sources */,
@@ -5263,7 +5217,6 @@
 				5CB5DD27271707780078CCA2 /* Geo+SearchOptions.swift in Sources */,
 				FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */,
 				FA5704C9245F3C6900392C19 /* AmplifyInProcessReportingOperation.swift in Sources */,
-				902AE0372812FB3500CD12CA /* NewTimeUnitOperatable.swift in Sources */,
 				FA09B9332321A305000E064D /* HubCategory+CategoryConfigurable.swift in Sources */,
 				B4B5CC9A2457B7FA0019C783 /* AuthUpdateUserAttributeOperation.swift in Sources */,
 				B92E03B02367CE7A006CEB8D /* DataStoreCallback.swift in Sources */,
@@ -5271,22 +5224,18 @@
 				210B3E34245CB73400F43848 /* AuthRule.swift in Sources */,
 				974FF13324B043E60050D01B /* DevMenuBehavior.swift in Sources */,
 				FA8EE781238628490097E4F1 /* Persistable.swift in Sources */,
-				B9485E9723F40848009C4F93 /* Time+Operation.swift in Sources */,
 				FA5BF25F2385A0500070C843 /* Category+Logging.swift in Sources */,
 				FA249EE724C5FA4A009B3CE8 /* AmplifyInProcessReportingOperation+Combine.swift in Sources */,
 				FACBA78D23949588006349C8 /* Model+DateFormatting.swift in Sources */,
 				FADB3A6823612940006D6FE9 /* BasicClosure.swift in Sources */,
 				FAAFAF3D2390D4A6002CF932 /* AmplifyErrorMessages.swift in Sources */,
-				902AE0332812FB3500CD12CA /* NewTemporal.swift in Sources */,
 				B92E03B32367CE7A006CEB8D /* DataStoreCategory.swift in Sources */,
 				977007E324C1585100848468 /* LogEntryItem.swift in Sources */,
 				FA9FB77D232AA0D800C04D32 /* FilteredListener.swift in Sources */,
 				97DC3D5224C1FE4100D79E24 /* LogViewer.swift in Sources */,
 				B4B5CCA52458A1940019C783 /* AuthUpdateUserAttributesOperation.swift in Sources */,
 				B463D6CF24633E45008C0F85 /* AuthCategory+UserBehavior.swift in Sources */,
-				B9AE8FDB23D8C643002742F9 /* TemporalFormat+Time.swift in Sources */,
 				FAC2352D227A053D00424678 /* AnalyticsCategoryPlugin.swift in Sources */,
-				902AE03D2812FB3500CD12CA /* TemporalSpecValidFormatRepresentable.swift in Sources */,
 				2142099723721F4400FA140C /* RESTOperationType.swift in Sources */,
 				B4B5CC812457B0690019C783 /* AuthFetchUserAttributesRequest.swift in Sources */,
 				B493E69324524E8C00D9E521 /* AuthUserAttribute.swift in Sources */,
@@ -5305,6 +5254,7 @@
 				21FFF995230C96CB005878EA /* StorageListOperation.swift in Sources */,
 				95DAAB33237E63370028544F /* KeyPhrase.swift in Sources */,
 				5C763DAC26F2CFC2006650E7 /* Geo+MapStyle.swift in Sources */,
+				902AE05B281304B800CD12CA /* SpecBasedDateConverting.swift in Sources */,
 				21409C552384C55D000A53C9 /* LabelType.swift in Sources */,
 				FA315295233D634900DE78E7 /* StorageDownloadFileRequest.swift in Sources */,
 				95DAAB26237E63370028544F /* Sentiment.swift in Sources */,
@@ -5339,11 +5289,12 @@
 				FAC428A2235F80000000F221 /* AmplifyAPICategory+GraphQLBehavior.swift in Sources */,
 				95DAAB37237E63370028544F /* Attribute.swift in Sources */,
 				6B50C91C253E2B57007B16DD /* APICategoryAuthProviderFactoryBehavior.swift in Sources */,
+				902AE05E281304B800CD12CA /* TemporalSpec+Add.swift in Sources */,
 				95DAAB2D237E63370028544F /* EmotionType.swift in Sources */,
+				902AE060281304B800CD12CA /* TimeUnitOperatable.swift in Sources */,
 				B4BD6B392370932300A1F0A7 /* PredictionsIdentifyRequest.swift in Sources */,
 				21409C5B2384C57D000A53C9 /* GraphQLQueryType.swift in Sources */,
 				6B452B8225A7D0F600A1A811 /* Array+Extensions.swift in Sources */,
-				B91A87A223D641570049A12F /* Temporal+Comparable.swift in Sources */,
 				95DAAB29237E63370028544F /* EntityDetectionResult.swift in Sources */,
 				FA31529E233D645800DE78E7 /* StorageUploadDataRequest.swift in Sources */,
 				21644B7C2588258100C548A5 /* ModelListDecoder.swift in Sources */,
@@ -5359,13 +5310,13 @@
 				B92E03AD2367CE7A006CEB8D /* DataStoreCategory+Behavior.swift in Sources */,
 				FAC2354B227A055A00424678 /* Amplify.swift in Sources */,
 				FA09B92D2321A27F000E064D /* CategoryConfigurable.swift in Sources */,
-				902AE0342812FB3500CD12CA /* NewTemporal+Time.swift in Sources */,
 				B92E03B72367CE7A006CEB8D /* ModelRegistry.swift in Sources */,
 				95DAAB83237F13940028544F /* EntityMatch.swift in Sources */,
 				975751AB24CA27AD00FA0A6E /* IssueInfo.swift in Sources */,
 				FA09B93B2321A36F000E064D /* StorageCategory+CategoryConfigurable.swift in Sources */,
 				95DAAB4C237E639E0028544F /* IdentifyEntitiesResult.swift in Sources */,
 				975751A724CA0DCB00FA0A6E /* IssueReporter.swift in Sources */,
+				902AE05F281304B800CD12CA /* Temporal+Date.swift in Sources */,
 				B473B53E245DE8E100C45C72 /* AuthConfirmSignInOperation.swift in Sources */,
 				974FF13124B043B90050D01B /* TriggerRecognizer.swift in Sources */,
 				B43CD858241147F900BF5A60 /* AuthUser.swift in Sources */,
@@ -5379,7 +5330,6 @@
 				950A26DF23D15D9800D92B19 /* SpeechToTextResult.swift in Sources */,
 				B92E03AF2367CE7A006CEB8D /* DataStoreCategoryBehavior.swift in Sources */,
 				5C09CCBC26CEDE1200CDCA9F /* GeoCategory+ClientBehavior.swift in Sources */,
-				902AE0352812FB3500CD12CA /* NewTemporalSpec+Add.swift in Sources */,
 				FA31529C233D645400DE78E7 /* StorageListRequest.swift in Sources */,
 				95DAAB1D237E63370028544F /* IdentifiedWord.swift in Sources */,
 				B92E03B62367CE7A006CEB8D /* ModelSchema.swift in Sources */,
@@ -5387,11 +5337,14 @@
 				B473B548245E097600C45C72 /* AuthSignOutOperation.swift in Sources */,
 				21A4ED77259CDF6800E1047D /* List+Combine.swift in Sources */,
 				FA8F4D242395B1B600861D91 /* MutationEvent+Model.swift in Sources */,
+				902AE0712813052F00CD12CA /* DataStoreError+Temporal.swift in Sources */,
 				95DAAB38237E63370028544F /* Landmark.swift in Sources */,
+				902AE069281304B800CD12CA /* TimeUnit.swift in Sources */,
 				97CB860424AB936E000C65FB /* Amplify+DevMenu.swift in Sources */,
 				21FFF988230B7B2C005878EA /* AsychronousOperation.swift in Sources */,
 				95DAAB49237E639E0028544F /* IdentifyDocumentTextResult.swift in Sources */,
 				B46884122460A8D600221268 /* AuthFetchDevicesOperation.swift in Sources */,
+				902AE06F2813050200CD12CA /* Temporal+Hashable.swift in Sources */,
 				FA0173352375F8A5005DDDFC /* LoggingError.swift in Sources */,
 				B4D38540236C97360014653D /* PredictionsCategoryPlugin.swift in Sources */,
 				FA05B83424CE265E0026180B /* StorageCategory+ClientBehavior+Combine.swift in Sources */,
@@ -5403,8 +5356,9 @@
 				21558E3E237BB4BF0032A5BB /* GraphQLRequest.swift in Sources */,
 				FA6BC87D235F5D490001A882 /* APICategoryRESTBehavior.swift in Sources */,
 				B4B5CC982457B7FA0019C783 /* AuthConfirmUserAttributeOperation.swift in Sources */,
+				902AE06E2813050200CD12CA /* Temporal+Comparable.swift in Sources */,
+				902AE067281304B800CD12CA /* TemporalSpecValidFormatRepresentable.swift in Sources */,
 				B4507419241166580098F02D /* AuthSession.swift in Sources */,
-				B99EF4B723DB072000D821BC /* Temporal+Hashable.swift in Sources */,
 				B92E03B92367CE7A006CEB8D /* Model+Schema.swift in Sources */,
 				5C3324912772BCF700F2C47B /* AuthDeleteUserOperation.swift in Sources */,
 				FA58456724D9D6960028D65A /* AmplifyOperation+APIPublishers.swift in Sources */,
@@ -5414,7 +5368,6 @@
 				974FF19D24BE0B4B0050D01B /* InfoItemProvider.swift in Sources */,
 				B4D38530236C97360014653D /* PredictionsInterpretOperation.swift in Sources */,
 				FAD3936D2381FA1700463F5E /* MutationEvent+Schema.swift in Sources */,
-				902AE03B2812FB3500CD12CA /* DateUnitOperatable.swift in Sources */,
 				FAC23541227A055200424678 /* CategoryType.swift in Sources */,
 				210922502359634C00CEC295 /* AnalyticsProfile.swift in Sources */,
 				FAAF6B4F24742852007DB95F /* AuthResetPasswordRequest.swift in Sources */,
@@ -5430,15 +5383,14 @@
 				FAC0A2B222B4402000B50912 /* StorageCategory+ClientBehavior.swift in Sources */,
 				B4FA76072416E82B006F59CE /* AuthFetchSessionRequest.swift in Sources */,
 				B4340A24238325B900101BBA /* DefaultNetworkPolicy.swift in Sources */,
-				902AE0322812FB3500CD12CA /* SpecBasedDateConverting.swift in Sources */,
 				21A4ED5E259CD7F400E1047D /* CoreError.swift in Sources */,
 				97DC3D5424C200A600D79E24 /* LogEntryHelper.swift in Sources */,
 				B4D38537236C97360014653D /* PredictionsCategory+CategoryConfigurable.swift in Sources */,
 				FA00F68824DA37EE003E8A71 /* AuthCategoryBehavior+Combine.swift in Sources */,
-				B9AE8FD923D8C609002742F9 /* TemporalFormat.swift in Sources */,
 				FA4E730C23282917003B8EEB /* Amplify+Resolve.swift in Sources */,
 				FA8EE779238627040097E4F1 /* Model+ModelName.swift in Sources */,
 				FAB9D811233BF5F600928AA9 /* AmplifyOperationContext.swift in Sources */,
+				902AE062281304B800CD12CA /* TimeZone+UTC.swift in Sources */,
 				FA8EE77D238627350097E4F1 /* Model+Subscript.swift in Sources */,
 				21D79FDA237617C60057D00D /* SubscriptionEvent.swift in Sources */,
 				21A4ED4B259CD21700E1047D /* ModelListProvider.swift in Sources */,
@@ -5446,7 +5398,6 @@
 				B92E03B52367CE7A006CEB8D /* Model.swift in Sources */,
 				5C763DAA26F2CF66006650E7 /* Geo+Place.swift in Sources */,
 				95DAAB31237E63370028544F /* PartOfSpeech.swift in Sources */,
-				B91A87A023D18A320049A12F /* Temporal.swift in Sources */,
 				97CB85FE24AA451B000C65FB /* AmplifyDevMenu.swift in Sources */,
 				FA56F72522B14B6A0039754A /* Resumable.swift in Sources */,
 				B4C498FA2415D24B00067992 /* AuthProvider.swift in Sources */,
@@ -5470,7 +5421,6 @@
 				FA31529A233D645200DE78E7 /* StorageGetURLRequest.swift in Sources */,
 				95DAAB32237E63370028544F /* EntityType.swift in Sources */,
 				FA0173372375FAA5005DDDFC /* HubError.swift in Sources */,
-				902AE0382812FB3500CD12CA /* NewTemporalSpec.swift in Sources */,
 				2142099623721F4400FA140C /* GraphQLOperationType.swift in Sources */,
 				B450740D2411553D0098F02D /* AuthConfirmSignUpOperation.swift in Sources */,
 				B43CD8522411463000BF5A60 /* AuthCodeDeliveryDetails.swift in Sources */,
@@ -5481,8 +5431,8 @@
 				769CF2242669B1B9007843A0 /* RetryableGraphQLOperation.swift in Sources */,
 				B4251A0124250369007F59EF /* AuthConfirmResetPasswordRequest.swift in Sources */,
 				FAAFAF2F23904B14002CF932 /* AtomicValue+Bool.swift in Sources */,
-				B9B50DC823DA15890086F1E1 /* DataStoreError+Temporal.swift in Sources */,
 				211FFEE326CD650500F0DB75 /* DataStoreQuerySnapshot.swift in Sources */,
+				902AE061281304B800CD12CA /* TemporalSpec.swift in Sources */,
 				FA249EEB24C5FE66009B3CE8 /* AmplifyAPICategory+GraphQLBehavior+Combine.swift in Sources */,
 				FACD26502386E9410068FBE6 /* JSONValue+Subscript.swift in Sources */,
 				B450741324115C260098F02D /* AuthSignInRequest.swift in Sources */,
@@ -5504,17 +5454,15 @@
 				B4B5CC872457B2470019C783 /* AuthUpdateUserAttributeRequest.swift in Sources */,
 				76B17DD8264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift in Sources */,
 				B98E9D0E2372236300934B51 /* ModelKey.swift in Sources */,
-				B91A879E23D12B730049A12F /* Time.swift in Sources */,
 				B9FAA13C238BBE67009414B4 /* DataStoreCallback+Combine.swift in Sources */,
 				95DAAB8A237F13B70028544F /* TextToSpeechResult.swift in Sources */,
 				B4251A05242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift in Sources */,
+				902AE064281304B800CD12CA /* AnyTemporalSpec.swift in Sources */,
 				B98E9D122372236300934B51 /* QueryField.swift in Sources */,
-				B9AF547A23F324DB0059E6C4 /* TemporalOperation.swift in Sources */,
 				B98E9D0F2372236300934B51 /* QueryOperator.swift in Sources */,
 				FAA64FC52397344D00B9C3C6 /* AtomicValue+RangeReplaceableCollection.swift in Sources */,
-				902AE03C2812FB3500CD12CA /* DateUnit.swift in Sources */,
-				B9B50DC623D918020086F1E1 /* Date.swift in Sources */,
 				B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */,
+				902AE06D2813050200CD12CA /* Temporal+Codable.swift in Sources */,
 				21409C5A2384C57D000A53C9 /* GraphQLMutationType.swift in Sources */,
 				FA58456524D9CBD30028D65A /* Operation+StoragePublishers.swift in Sources */,
 				B493E69E245394E200D9E521 /* AuthSignUpStep.swift in Sources */,

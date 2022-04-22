@@ -16,20 +16,21 @@ import Foundation
 ///     let yesterday = Temporal.Date.now() - .days(1)
 ///     let sixMonthsAgo = Temporal.Date.now() - .months(6)
 ///
-/// - Attention: **Don't** use `TimeUnit` to calculate dates, use `DateUnit` instead. Also make sure to use the most applicable `Unit`, e.g. don't use `.minutes(60)` if you really want `.hours(1)`.
+/// - Attention: **Don't** use `TimeUnit` to calculate dates, use `DateUnit` instead.
+///   Also make sure to use the most applicable `Unit`, e.g. don't use `.minutes(60)` if you really want `.hours(1)`.
 ///   There are not always 24 hours in a day, 60 minutes in an hour, etc.
-public struct _TimeUnit {
+public struct TimeUnit {
     public let calendarComponent: Calendar.Component
     public let value: Int
 
     /// One second. Equivalent to 1 x `Calendar.Component.second`
-    public static let oneSecond: _TimeUnit = .seconds(1)
+    public static let oneSecond: TimeUnit = .seconds(1)
 
     /// One minute. Equivalent to 1 x `Calendar.Component.minute`
-    public static let oneMinute: _TimeUnit = .minutes(1)
+    public static let oneMinute: TimeUnit = .minutes(1)
 
     /// One hour. Equivalent to 1 x `Calendar.Component.hour`
-    public static let oneHour: _TimeUnit = .hours(1)
+    public static let oneHour: TimeUnit = .hours(1)
 
     /// `TimeUnit` amount of hours.
     ///

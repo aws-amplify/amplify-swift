@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension _Temporal {
+extension Temporal {
 
     /// `Temporal.Date` represents a `Date` with specific allowable formats.
     ///
@@ -17,13 +17,13 @@ extension _Temporal {
     ///  * `.full` => `yyyy-MM-ddZZZZZ`
     ///
     ///  - Note: `.medium`, `.long`, and `.full` are the same date format.
-    public struct Date: _TemporalSpec {
+    public struct Date: TemporalSpec {
         // Inherits documentation from `TemporalSpec`
         public let foundationDate: Foundation.Date
 
         // Inherits documentation from `TemporalSpec`
         public static func now() -> Self {
-            _Temporal.Date(Foundation.Date())
+            Temporal.Date(Foundation.Date())
         }
 
         @inlinable
@@ -31,7 +31,7 @@ extension _Temporal {
         // Inherits documentation from `TemporalSpec`
         public init(
             iso8601String: String,
-            format: _Temporal.Date.Format = .unknown
+            format: Temporal.Date.Format = .unknown
         ) throws {
             let date = try SpecBasedDateConverting<Self>()
                 .convert(iso8601String, format)
@@ -41,14 +41,14 @@ extension _Temporal {
 
         // Inherits documentation from `TemporalSpec`
         public init(_ date: Foundation.Date) {
-            self.foundationDate = _Temporal
+            self.foundationDate = Temporal
                 .iso8601Calendar
                 .startOfDay(for: date)
         }
     }
 }
 
-extension _Temporal.Date {
+extension Temporal.Date {
 
     /// Allowed `Format`s for `Temporal.Date`
     ///
@@ -85,7 +85,7 @@ extension _Temporal.Date {
 }
 
 // Allow date unit operations on `Temporal.Date`
-extension _Temporal.Date: _DateUnitOperable {}
+extension Temporal.Date: DateUnitOperable {}
 
 // Allow `Temporal.Date` to be typed erased
-extension _Temporal.Date: _AnyTemporalSpec {}
+extension Temporal.Date: AnyTemporalSpec {}

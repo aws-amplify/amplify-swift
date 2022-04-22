@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension _TemporalSpec {
+extension TemporalSpec {
 
     /// Add a certain amount of `Calendar.Component`s to a `TemporalSpec`
     /// - Parameters:
@@ -15,7 +15,7 @@ extension _TemporalSpec {
     ///   - component: The component that will get the value added
     /// - Returns: An instance of the current DateScalar type
     func add(value: Int, to component: Calendar.Component) -> Self {
-        let calendar = _Temporal.iso8601Calendar
+        let calendar = Temporal.iso8601Calendar
         let result = calendar.date(
             byAdding: component,
             value: value,
@@ -35,5 +35,4 @@ extension _TemporalSpec {
         }
         return Self.init(date)
     }
-
 }

@@ -17,22 +17,21 @@ import Foundation
 ///
 ///     let yesterday = Temporal.Date.now() - .days(1)
 ///     let sixMonthsAgo = Temporal.Date.now() - .months(6)
-// swiftlint:disable:next type_name
-public struct _DateUnit {
+public struct DateUnit {
     let calendarComponent: Calendar.Component
     let value: Int
 
     /// One day. Equivalent to 1 x `Calendar.Component.day`
-    public static let oneDay: _DateUnit = .days(1)
+    public static let oneDay: DateUnit = .days(1)
 
     /// One week. Equivalent to 7 x `Calendar.Component.day`
-    public static let oneWeek: _DateUnit = .weeks(1)
+    public static let oneWeek: DateUnit = .weeks(1)
 
     /// One month. Equivalent to 1 x `Calendar.Component.month`
-    public static let oneMonth: _DateUnit = .months(1)
+    public static let oneMonth: DateUnit = .months(1)
 
     /// One year. Equivalent to 1 x `Calendar.Component.year`
-    public static let oneYear: _DateUnit = .years(1)
+    public static let oneYear: DateUnit = .years(1)
 
     /// DateUnit amount of days.
     /// One day is 1 x `Calendar.Component.day`
