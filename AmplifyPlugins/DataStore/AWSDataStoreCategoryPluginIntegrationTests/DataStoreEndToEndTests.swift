@@ -383,11 +383,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             .filter { $0.eventName == HubPayload.EventName.DataStore.ready }
             .sink { _ in dataStoreStarted.fulfill() }
 
-        let amplifyStarted = expectation(description: "amplifyStarted")
-        try startAmplify {
-            amplifyStarted.fulfill()
-        }
-        wait(for: [amplifyStarted], timeout: 1.0)
+        try startAmplify()
 
         // We expect the query to complete, but not to return a value. Thus, we'll ignore the error
         let queryCompleted = expectation(description: "queryCompleted")

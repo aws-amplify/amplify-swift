@@ -39,11 +39,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///
     func testObserveQueryInitialSync() throws {
         setUp(withModels: TestModelRegistration())
-        let started = expectation(description: "Amplify started")
-        try startAmplify {
-            started.fulfill()
-        }
-        wait(for: [started], timeout: 2)
+        try startAmplify()
         clearDataStore()
         var snapshots = [DataStoreQuerySnapshot<Post>]()
         let snapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
@@ -80,11 +76,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///
     func testInitialSyncWithPredicate() throws {
         setUp(withModels: TestModelRegistration())
-        let started = expectation(description: "Amplify started")
-        try startAmplify {
-            started.fulfill()
-        }
-        wait(for: [started], timeout: 2)
+        try startAmplify()
         savePostAndWaitForSync(Post(title: "xyz 1", content: "content", createdAt: .now()))
         savePostAndWaitForSync(Post(title: "xyz 2", content: "content", createdAt: .now()))
         savePostAndWaitForSync(Post(title: "xyz 3", content: "content", createdAt: .now()))
@@ -132,11 +124,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///
     func testObserveQueryWithSort() throws {
         setUp(withModels: TestModelRegistration())
-        let started = expectation(description: "Amplify started")
-        try startAmplify {
-            started.fulfill()
-        }
-        wait(for: [started], timeout: 2)
+        try startAmplify()
         clearDataStore()
         let post1 = Post(title: "title", content: "content", createdAt: .now())
         let post2 = Post(title: "title", content: "content", createdAt: .now().add(value: 1, to: .second))
@@ -225,13 +213,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///     - Delete a model that matches the predicate. Model is removed from the snapshot
     ///     - Delete a model that does NOT match the predicate. No snapshot is emitted
     func testPredicateWithCreateUpdateDelete() throws {
-        setUp(withModels: TestModelRegistration())
-        let started = expectation(description: "Amplify started")
-        try startAmplify {
-            started.fulfill()
-        }
-        wait(for: [started], timeout: 2)
-        Amplify.Logging.logLevel = .info
+        setUp(withModels: TestModelRegistration(), logLevel: .info)
+        try startAmplify()
 
         let testId = UUID().uuidString
         let postMatchPredicate = Post(title: "xyz 1", content: testId, createdAt: .now())
@@ -324,13 +307,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - Delete models. The snapshot should have the models removed
     ///
     func testSortWithCreateUpdateDelete() throws {
-        setUp(withModels: TestModelRegistration())
-        let started = expectation(description: "Amplify started")
-        try startAmplify {
-            started.fulfill()
-        }
-        wait(for: [started], timeout: 2)
-        Amplify.Logging.logLevel = .info
+        setUp(withModels: TestModelRegistration(), logLevel: .info)
+        try startAmplify()
 
         let testId = UUID().uuidString
         var snapshotCount = 0
