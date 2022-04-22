@@ -29,7 +29,11 @@ class LocalStoreIntegrationTestBase: XCTestCase {
     }
 
     override func tearDown() {
-        Amplify.DataStore.clear(completion: { _ in })
+        let semaphore = DispatchSemaphore(value: 0)
+        Amplify.DataStore.clear { _ in
+            semaphore.signal()
+        }
+        semaphore.wait()
         Amplify.reset()
     }
 
