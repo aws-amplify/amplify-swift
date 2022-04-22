@@ -21,7 +21,6 @@ extension TemporalSpec where Self: Comparable {
     public static func < (lhs: Self, rhs: Self) -> Bool {
         return lhs.iso8601String < rhs.iso8601String
     }
-
 }
 
 extension Temporal.Date: Comparable {}

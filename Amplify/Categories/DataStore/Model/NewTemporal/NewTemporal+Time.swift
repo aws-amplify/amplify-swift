@@ -17,12 +17,12 @@ extension _Temporal {
     public struct Time: _TemporalSpec {
         // Inherits documentation from `TemporalSpec`
         public let foundationDate: Foundation.Date
-        
+
         // Inherits documentation from `TemporalSpec`
         public static func now() -> Self {
             _Temporal.Time(Foundation.Date())
         }
-                
+
         @inlinable
         @inline(never)
         // Inherits documentation from `TemporalSpec`
@@ -34,7 +34,7 @@ extension _Temporal {
                 .convert(iso8601String, format)
             self.init(date)
         }
-        
+
         // Inherits documentation from `TemporalSpec`
         public init(_ date: Foundation.Date) {
             // Sets the date to a fixed instant so time-only operations are safe
@@ -57,8 +57,8 @@ extension _Temporal {
             components.year = 2_000
             components.month = 1
             components.day = 1
-            
-            foundationDate = calendar
+
+            self.foundationDate = calendar
                 .date(from: components) ?? date
         }
     }
@@ -73,7 +73,7 @@ extension _Temporal.Time {
     ///  * `.full` => `HH:mm:ss.SSSZZZZZ`
     public struct Format: TemporalSpecValidFormatRepresentable {
         public let value: String
-        
+
         /// `HH:mm`
         public static let short = Format(value: "HH:mm")
         /// `HH:mm:ss`
@@ -82,10 +82,10 @@ extension _Temporal.Time {
         public static let long = Format(value: "HH:mm:ss.SSS")
         /// `HH:mm:ss.SSSZZZZZ`
         public static let full = Format(value: "HH:mm:ss.SSSZZZZZ")
-        
+
         // Inherits documentation from `TemporalSpecValidFormatRepresentable`
         public static let unknown = Format(value: "___")
-        
+
         // Inherits documentation from `TemporalSpecValidFormatRepresentable`
         public static let allFormats: [String] = [
             Self.full.value,

@@ -14,14 +14,15 @@ import Foundation
 /// - Temporal.Date
 /// - Temporal.DateTime
 /// - Temporal.Time
+// swiftlint:disable:next type_name
 public enum _Temporal {
-    
+
     // We lock on reads and writes to prevent race conditions
     // of the formatter cache dict.
     //
     // DateFormatter itself is thread safe.
     private static var formatterCache: [String: DateFormatter] = [:]
-        
+
     @usableFromInline
     /// The `Calendar` used for date operations.
     ///
@@ -32,10 +33,10 @@ public enum _Temporal {
         calendar.timeZone = .utc
         return calendar
     }()
-    
+
     /// Lock to ensure exclusive access
     private static var lock = os_unfair_lock_s()
-    
+
     /// Internal helper function to retrieve and/or create `DateFormatter`s
     /// - Parameters:
     ///   - format: The `DateFormatter().dateFormat`
@@ -46,10 +47,10 @@ public enum _Temporal {
         in timeZone: TimeZone
     ) -> DateFormatter {
         defer { os_unfair_lock_unlock(&lock) }
-        
+
         // lock before read from cache
         os_unfair_lock_lock(&lock)
-        
+
         // If the formatter is already in the cache and
         // the time zones match, we return it rather than
         // creating a new one.
@@ -58,7 +59,7 @@ public enum _Temporal {
                 return formatter
             // defer takes care of unlock
         }
-        
+
         // If:
         // - There's not another reference to this formatter
         // - It's already in the cache
@@ -66,13 +67,13 @@ public enum _Temporal {
         // Then:
         // We can safely change the formatter's time zone and return it
         if isKnownUniquelyReferenced(&formatterCache[format]),
-           var formatter = formatterCache[format],
+           let formatter = formatterCache[format],
            formatter.timeZone != timeZone {
             formatter.timeZone = timeZone
             return formatter
             // defer takes care of unlock
         }
-        
+
         // We're about to create a new formatter,
         // so let's make sure we're being responsible
         // about the amount of formatters we're caching.
@@ -86,11 +87,13 @@ public enum _Temporal {
             // through the lock, we can safely force unwrap here.
             let keyToEvict = formatterCache.randomElement()!.key
             formatterCache[keyToEvict] = nil
+            // This can likely be improved at a later time by
+            // using a LFU, or potentially LRU, eviction policy.
         }
-                
+
         // unlock if no early return
         os_unfair_lock_unlock(&lock)
-        
+
         // Finally, if the formatter is not in the cache
         // or a formatter with the matching format is cached,
         // but the time zone doesn't match *and* the formatter
@@ -107,12 +110,13 @@ public enum _Temporal {
         return formatter
         // defer takes care of unlock
     }
-    
+
     /// Turn a `String` into a `Foundation.Date`
     /// - Parameters:
     ///   - string: The date in `String` form.
     ///   - formats: Any formats in `String` form that you want to check as a variadic argument.
-    ///   - timeZone: The `TimeZone` used by the `DateFormatter` when converted. Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
+    ///   - timeZone: The `TimeZone` used by the `DateFormatter` when converted.
+    ///               Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
     /// - Returns: A `Foundation.Date` if conversion was successful.
     /// - Throws: `DataStoreError.invalidDateFormat(_:)` if conversion was unsuccessful.
     /// - SeeAlso: `date(from:with:in:)` overload that takes `[String]` rather than `String...`
@@ -130,19 +134,20 @@ public enum _Temporal {
         throw DataStoreError
             .invalidDateFormat(formats.joined(separator: " | "))
     }
-    
+
     /// Turn a `String` into a `Foundation.Date`
     /// - Parameters:
     ///   - string: The date in `String` form.
     ///   - formats: Any formats in `String` form that you want to check.
-    ///   - timeZone: The `TimeZone` used by the `DateFormatter` when converted. Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
+    ///   - timeZone: The `TimeZone` used by the `DateFormatter` when converted.
+    ///               Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
     /// - Returns: A `Foundation.Date` if conversion was successful.
     /// - Throws: `DataStoreError.invalidDateFormat(_:)` if conversion was unsuccessful.
     /// - SeeAlso: `date(from:with:in:)` overload that takes `String...` rather than `[String]`
     public static func date(
         from string: String,
         with formats: [String],
-        in timeZone: TimeZone = .utc
+        in timeZone: TimeZone = .autoupdatingCurrent
     ) throws -> Foundation.Date {
         for format in formats {
             let formatter = formatter(for: format, in: timeZone)
@@ -153,12 +158,13 @@ public enum _Temporal {
         throw DataStoreError
             .invalidDateFormat(formats.joined(separator: " | "))
     }
-    
+
     /// Turn a `Foundation.Date` into a `String`
     /// - Parameters:
     ///   - date: The `Foundation.Date` to be converted to `String` form.
     ///   - formats: Any formats in `String` form that you want to check.
-    ///   - timeZone: The `TimeZone` used by the `DateFormatter` when converted. Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
+    ///   - timeZone: The `TimeZone` used by the `DateFormatter` when converted.
+    ///               Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
     /// - Returns: The `String` representation of the `date` formatted according to the `format` argument..
     public static func string(
         from date: Foundation.Date,

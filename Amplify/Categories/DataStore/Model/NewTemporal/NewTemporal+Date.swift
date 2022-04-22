@@ -8,7 +8,7 @@
 import Foundation
 
 extension _Temporal {
-    
+
     /// `Temporal.Date` represents a `Date` with specific allowable formats.
     ///
     ///  * `.short` => `yyyy-MM-dd`
@@ -25,7 +25,7 @@ extension _Temporal {
         public static func now() -> Self {
             _Temporal.Date(Foundation.Date())
         }
-        
+
         @inlinable
         @inline(never)
         // Inherits documentation from `TemporalSpec`
@@ -35,13 +35,13 @@ extension _Temporal {
         ) throws {
             let date = try SpecBasedDateConverting<Self>()
                 .convert(iso8601String, format)
-                        
+
             self.init(date)
         }
-                
+
         // Inherits documentation from `TemporalSpec`
         public init(_ date: Foundation.Date) {
-            foundationDate = _Temporal
+            self.foundationDate = _Temporal
                 .iso8601Calendar
                 .startOfDay(for: date)
         }
@@ -49,7 +49,7 @@ extension _Temporal {
 }
 
 extension _Temporal.Date {
-    
+
     /// Allowed `Format`s for `Temporal.Date`
     ///
     ///  * `.short` => `yyyy-MM-dd`
@@ -60,22 +60,22 @@ extension _Temporal.Date {
     ///  - Note: `.medium`, `.long`, and `.full` are the same date format.
     public struct Format: TemporalSpecValidFormatRepresentable {
         public let value: String
-        
+
         /// `yyyy-MM-dd`
         public static let short = Format(value: "yyyy-MM-dd")
-        
+
         /// `yyyy-MM-ddZZZZZ`
         public static let medium = Format(value: "yyyy-MM-ddZZZZZ")
-        
+
         /// `yyyy-MM-ddZZZZZ`
         public static let long = Format(value: "yyyy-MM-ddZZZZZ")
-        
+
         /// `yyyy-MM-ddZZZZZ`
         public static let full = Format(value: "yyyy-MM-ddZZZZZ")
-        
+
         // Inherits documentation from `TemporalSpecValidFormatRepresentable`
         public static let unknown = Format(value: "___")
-        
+
         // Inherits documentation from `TemporalSpecValidFormatRepresentable`
         public static let allFormats: [String] = [
             Self.full.value,
