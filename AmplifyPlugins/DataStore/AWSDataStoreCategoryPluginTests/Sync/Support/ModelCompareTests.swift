@@ -210,7 +210,7 @@ class ModelCompareTests: BaseDataStoreTests {
         let id = UUID().uuidString
         let name = "QPredGenName"
         let formatter = DateFormatter()
-        formatter.dateFormat = TemporalFormat.short.dateFormat
+        formatter.dateFormat = Temporal.Date.Format.short.value
         let dateTime1 = Temporal.DateTime(formatter.date(from: "2021-09-01")!)
         let dateTime2 = Temporal.DateTime(formatter.date(from: "2020-09-01")!)
         let qPredGen1 = QPredGen(id: id, name: name, myDateTime: dateTime1)
@@ -339,7 +339,7 @@ class ModelCompareTests: BaseDataStoreTests {
         let id = UUID().uuidString
         let artist = "Artist"
         let formatter = DateFormatter()
-        formatter.dateFormat = TemporalFormat.short.dateFormat
+        formatter.dateFormat = Temporal.Date.Format.short.value
         let createdAt1 = Temporal.DateTime(formatter.date(from: "2021-09-01")!)
         let createdAt2 = Temporal.DateTime(formatter.date(from: "2020-09-01")!)
         let recordCover1 = RecordCover(id: id, artist: artist, createdAt: createdAt1)
