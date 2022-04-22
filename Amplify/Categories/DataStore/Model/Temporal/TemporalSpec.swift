@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol _TemporalSpec {
+public protocol TemporalSpec {
     associatedtype Format: TemporalSpecValidFormatRepresentable
     /// A static builder that return an instance that represent the current point in time.
     static func now() -> Self
@@ -45,13 +45,13 @@ public protocol _TemporalSpec {
     func iso8601FormattedString(format: Format, timeZone: TimeZone) -> String
 }
 
-extension _TemporalSpec {
+extension TemporalSpec {
 
     public func iso8601FormattedString(
         format: Format,
         timeZone: TimeZone = .utc
     ) -> String {
-        _Temporal.string(
+        Temporal.string(
             from: foundationDate,
             with: format.value,
             in: timeZone

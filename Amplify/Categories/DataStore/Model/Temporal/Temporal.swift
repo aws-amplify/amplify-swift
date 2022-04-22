@@ -7,101 +7,171 @@
 
 import Foundation
 
-public struct Temporal {
+/// `Temporal` is namespace to all temporal types and basic date operations. It can
+/// not be directly instantiated.
+///
+///  Available `Temporal` `Specs`
+/// - Temporal.Date
+/// - Temporal.DateTime
+/// - Temporal.Time
+public enum Temporal {
 
-    /// This struct is used as a namespace to all temporal types. It should
-    /// not be directly instantiated.
+    // We lock on reads and writes to prevent race conditions
+    // of the formatter cache dict.
+    //
+    // DateFormatter itself is thread safe.
+    private static var formatterCache: [String: DateFormatter] = [:]
+
+    @usableFromInline
+    /// The `Calendar` used for date operations.
     ///
-    /// - seealso: Temporal.Date
-    /// - seealso: Temporal.DateTime
-    /// - seealso: Temporal.Time
-    /// - seealso: Temporal.TimeStamp
-    private init() {}
-}
-
-/// The `TemporalSpec` protocol defines an [ISO-8601](https://www.iso.org/iso-8601-date-and-time-format.html)
-/// formatted Date value. Types that conform to this protocol are responsible for providing
-/// the parsing and formatting logic with the correct granularity.
-public protocol TemporalSpec {
-
-    /// A static builder that return an instance that represent the current point in time.
-    static func now() -> Self
-
-    /// The underlying `Date` object. All `TemporalSpec` implementations must be backed
-    /// by a Foundation `Date` instance.
-    var foundationDate: Foundation.Date { get }
-
-    /// The ISO-8601 formatted string in the UTC `TimeZone`.
-    /// - seealso: iso8601FormattedString(TemporalFormat, TimeZone) -> String
-    var iso8601String: String { get }
-
-    /// Parses an ISO-8601 `String` into a `TemporalSpec`.
-    ///
-    /// - Note: if no timezone is present in the string, `.autoupdatingCurrent` is used.
-    ///
-    /// - Parameter iso8601String: the string in the ISO8601 format
-    /// - Throws: `DataStoreError.decodeError`in case the provided string is not
-    /// formatted as expected by the scalar type.
-    init(iso8601String: String) throws
-
-    /// Constructs a `TemporalSpec` from a `Date` object.
-    /// - Parameter date: the `Date` instance that will be used as the reference of the
-    /// `TemporalSpec` instance.
-    init(_ date: Foundation.Date)
-
-    /// A string representation of the underlying date formatted using ISO8601 rules.
-    ///
-    /// - Parameters:
-    ///   - format: the desired format
-    ///   - timeZone: the target `TimeZone`
-    /// - Returns: the ISO8601 formatted string in the requested format
-    func iso8601FormattedString(format: TemporalFormat, timeZone: TimeZone) -> String
-}
-
-/// Extension to add default implementation to generic members of `TemporalSpec`.
-extension TemporalSpec {
-    static var iso8601Calendar: Calendar {
+    /// `identifier` is `.iso8601`
+    /// `timeZome` is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
+    internal static let iso8601Calendar: Calendar = {
         var calendar = Calendar(identifier: .iso8601)
         calendar.timeZone = .utc
         return calendar
-    }
+    }()
 
-    /// Utility used to created an ISO8601 with a pre-defined timezone `DateFormatter`.
-    ///
+    /// Lock to ensure exclusive access
+    private static var lock = os_unfair_lock_s()
+
+    /// Internal helper function to retrieve and/or create `DateFormatter`s
     /// - Parameters:
-    ///   - format: the desired format
-    ///   - timeZone: the target `TimeZone`
-    static func iso8601DateFormatter(format: TemporalFormat,
-                                     timeZone: TimeZone = .utc) -> DateFormatter {
+    ///   - format: The `DateFormatter().dateFormat`
+    ///   - timeZone: The `DateFormatter().timeZone`
+    /// - Returns: A `DateFormatter`
+    internal static func formatter(
+        for format: String,
+        in timeZone: TimeZone
+    ) -> DateFormatter {
+        defer { os_unfair_lock_unlock(&lock) }
+
+        // lock before read from cache
+        os_unfair_lock_lock(&lock)
+
+        // If the formatter is already in the cache and
+        // the time zones match, we return it rather than
+        // creating a new one.
+        if let formatter = formatterCache[format],
+           formatter.timeZone == timeZone {
+                return formatter
+            // defer takes care of unlock
+        }
+
+        // If:
+        // - There's not another reference to this formatter
+        // - It's already in the cache
+        // - The formatter's time zone doesn't match the requested time zone
+        // Then:
+        // We can safely change the formatter's time zone and return it
+        if isKnownUniquelyReferenced(&formatterCache[format]),
+           let formatter = formatterCache[format],
+           formatter.timeZone != timeZone {
+            formatter.timeZone = timeZone
+            return formatter
+            // defer takes care of unlock
+        }
+
+        // We're about to create a new formatter,
+        // so let's make sure we're being responsible
+        // about the amount of formatters we're caching.
+        // If we already have at least 15 formatters in the cache,
+        // we're going to evict one using a
+        // random replacement (RR) eviction policy
+        if formatterCache.count >= 15 {
+            // From the `randomElement()` documentation.
+            // "A random element from the collection. If the collection is empty, the method returns nil."
+            // Since we just confirmed the cache isn't empty, and we're guaranteeing exclusive access
+            // through the lock, we can safely force unwrap here.
+            let keyToEvict = formatterCache.randomElement()!.key
+            formatterCache[keyToEvict] = nil
+            // This can likely be improved at a later time by
+            // using a LFU, or potentially LRU, eviction policy.
+        }
+
+        // unlock if no early return
+        os_unfair_lock_unlock(&lock)
+
+        // Finally, if the formatter is not in the cache
+        // or a formatter with the matching format is cached,
+        // but the time zone doesn't match *and* the formatter
+        // is already referenced elsewhere, we create one.
         let formatter = DateFormatter()
+        formatter.dateFormat = format
         formatter.calendar = iso8601Calendar
-        formatter.dateFormat = format.getFormat(for: Self.self)
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = timeZone
+
+        // lock before write to cache
+        os_unfair_lock_lock(&lock)
+        formatterCache[format] = formatter
         return formatter
+        // defer takes care of unlock
     }
 
-    static func iso8601Date(from iso8601String: String) -> Foundation.Date? {
-        var date: Foundation.Date?
-        for format in TemporalFormat.sortedCasesForParsing {
-            let formatter = Self.iso8601DateFormatter(format: format)
-            if let convertedDate = formatter.date(from: iso8601String) {
-                date = convertedDate
-                break
+    /// Turn a `String` into a `Foundation.Date`
+    /// - Parameters:
+    ///   - string: The date in `String` form.
+    ///   - formats: Any formats in `String` form that you want to check as a variadic argument.
+    ///   - timeZone: The `TimeZone` used by the `DateFormatter` when converted.
+    ///               Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
+    /// - Returns: A `Foundation.Date` if conversion was successful.
+    /// - Throws: `DataStoreError.invalidDateFormat(_:)` if conversion was unsuccessful.
+    /// - SeeAlso: `date(from:with:in:)` overload that takes `[String]` rather than `String...`
+    public static func date(
+        from string: String,
+        with formats: String...,
+        in timeZone: TimeZone = .utc
+    ) throws -> Foundation.Date {
+        for format in formats {
+            let formatter = formatter(for: format, in: timeZone)
+            if let date = formatter.date(from: string) {
+                return date
             }
         }
-        return date
+        throw DataStoreError
+            .invalidDateFormat(formats.joined(separator: " | "))
     }
 
-    public func iso8601FormattedString(format: TemporalFormat,
-                                       timeZone: TimeZone = .utc) -> String {
-        let formatter = Self.iso8601DateFormatter(format: format, timeZone: timeZone)
-        return formatter.string(from: foundationDate)
+    /// Turn a `String` into a `Foundation.Date`
+    /// - Parameters:
+    ///   - string: The date in `String` form.
+    ///   - formats: Any formats in `String` form that you want to check.
+    ///   - timeZone: The `TimeZone` used by the `DateFormatter` when converted.
+    ///               Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
+    /// - Returns: A `Foundation.Date` if conversion was successful.
+    /// - Throws: `DataStoreError.invalidDateFormat(_:)` if conversion was unsuccessful.
+    /// - SeeAlso: `date(from:with:in:)` overload that takes `String...` rather than `[String]`
+    public static func date(
+        from string: String,
+        with formats: [String],
+        in timeZone: TimeZone = .utc
+    ) throws -> Foundation.Date {
+        for format in formats {
+            let formatter = formatter(for: format, in: timeZone)
+            if let date = formatter.date(from: string) {
+                return date
+            }
+        }
+        throw DataStoreError
+            .invalidDateFormat(formats.joined(separator: " | "))
     }
 
-    /// The ISO8601 representation of the scalar using `.full` as the format and `.utc` as `TimeZone`.
-    /// - seealso: iso8601FormattedString(TemporalFormat, TimeZone)
-    public var iso8601String: String {
-        iso8601FormattedString(format: .full)
+    /// Turn a `Foundation.Date` into a `String`
+    /// - Parameters:
+    ///   - date: The `Foundation.Date` to be converted to `String` form.
+    ///   - formats: Any formats in `String` form that you want to check.
+    ///   - timeZone: The `TimeZone` used by the `DateFormatter` when converted.
+    ///               Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
+    /// - Returns: The `String` representation of the `date` formatted according to the `format` argument..
+    public static func string(
+        from date: Foundation.Date,
+        with format: String,
+        in timeZone: TimeZone = .utc
+    ) -> String {
+        let formatter = formatter(for: format, in: timeZone)
+        let string = formatter.string(from: date)
+        return string
     }
 }

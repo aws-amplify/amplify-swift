@@ -7,10 +7,10 @@
 
 import Foundation
 
-@usableFromInline
 /// Internal generic method to reduce code reuse in the `init`s of `TemporalSpec`
 /// conforming types
-internal struct SpecBasedDateConverting<T: _TemporalSpec> {
+@usableFromInline
+internal struct SpecBasedDateConverting<T: TemporalSpec> {
     @usableFromInline
     internal typealias DateConverter = (String, T.Format) throws -> Date
 
@@ -31,12 +31,12 @@ internal struct SpecBasedDateConverting<T: _TemporalSpec> {
     ) throws -> Date {
         let date: Foundation.Date
         if format == T.Format.unknown {
-            date = try _Temporal.date(
+            date = try Temporal.date(
                 from: iso8601String,
                 with: T.Format.allFormats
             )
         } else {
-            date = try _Temporal.date(
+            date = try Temporal.date(
                 from: iso8601String,
                 with: format.value
             )

@@ -7,20 +7,20 @@
 
 import Foundation
 
-extension _Temporal {
+extension Temporal {
     /// `Temporal.DateTime` represents a `DateTime` with specific allowable formats.
     ///
     ///  * `.short` => `yyyy-MM-dd'T'HH:mm`
     ///  * `.medium` => `yyyy-MM-dd'T'HH:mm:ss`
     ///  * `.long` => `yyyy-MM-dd'T'HH:mm:ssZZZZZ`
     ///  * `.full` => `yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ`
-    public struct DateTime: _TemporalSpec {
+    public struct DateTime: TemporalSpec {
         // Inherits documentation from `TemporalSpec`
         public let foundationDate: Foundation.Date
 
         // Inherits documentation from `TemporalSpec`
         public static func now() -> Self {
-            _Temporal.DateTime(Foundation.Date())
+            Temporal.DateTime(Foundation.Date())
         }
 
         /// `Temporal.Time` of this `Temporal.DateTime`.
@@ -43,7 +43,7 @@ extension _Temporal {
 
         // Inherits documentation from `TemporalSpec`
         public init(_ date: Foundation.Date) {
-            let calendar = _Temporal.iso8601Calendar
+            let calendar = Temporal.iso8601Calendar
             let components = calendar.dateComponents(
                 DateTime.iso8601DateComponents,
                 from: date
@@ -52,7 +52,6 @@ extension _Temporal {
             foundationDate = calendar
                 .date(from: components) ?? date
         }
-
 
         /// `Calendar.Component`s used in `init(_ date:)`
         static let iso8601DateComponents: Set<Calendar.Component> =
@@ -69,7 +68,7 @@ extension _Temporal {
     }
 }
 
-extension _Temporal.DateTime {
+extension Temporal.DateTime {
     /// Allowed `Format`s for `Temporal.DateTime`
     ///
     ///  * `.short` => `yyyy-MM-dd'T'HH:mm`
@@ -105,7 +104,7 @@ extension _Temporal.DateTime {
 }
 
 // Allow date unit and time unit operations on `Temporal.DateTime`
-extension _Temporal.DateTime: _DateUnitOperable, _TimeUnitOperable {}
+extension Temporal.DateTime: DateUnitOperable, TimeUnitOperable {}
 
 // Allow `Temporal.DateTime` to be typed erased
-extension _Temporal.DateTime: _AnyTemporalSpec {}
+extension Temporal.DateTime: AnyTemporalSpec {}

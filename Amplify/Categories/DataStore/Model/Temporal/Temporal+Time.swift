@@ -7,20 +7,20 @@
 
 import Foundation
 
-extension _Temporal {
+extension Temporal {
     /// `Temporal.Time` represents a `Time` with specific allowable formats.
     ///
     ///  * `.short` => `HH:mm`
     ///  * `.medium` => `HH:mm:ss`
     ///  * `.long` => `HH:mm:ss.SSS`
     ///  * `.full` => `HH:mm:ss.SSSZZZZZ`
-    public struct Time: _TemporalSpec {
+    public struct Time: TemporalSpec {
         // Inherits documentation from `TemporalSpec`
         public let foundationDate: Foundation.Date
 
         // Inherits documentation from `TemporalSpec`
         public static func now() -> Self {
-            _Temporal.Time(Foundation.Date())
+            Temporal.Time(Foundation.Date())
         }
 
         @inlinable
@@ -38,7 +38,7 @@ extension _Temporal {
         // Inherits documentation from `TemporalSpec`
         public init(_ date: Foundation.Date) {
             // Sets the date to a fixed instant so time-only operations are safe
-            let calendar = _Temporal.iso8601Calendar
+            let calendar = Temporal.iso8601Calendar
             var components = calendar.dateComponents(
                 [
                     .year,
@@ -64,7 +64,7 @@ extension _Temporal {
     }
 }
 
-extension _Temporal.Time {
+extension Temporal.Time {
     /// Allowed `Format`s for `Temporal.Time`
     ///
     ///  * `.short` => `HH:mm`
@@ -97,7 +97,7 @@ extension _Temporal.Time {
 }
 
 // Allow time unit operations on `Temporal.Time`
-extension _Temporal.Time: _TimeUnitOperable {}
+extension Temporal.Time: TimeUnitOperable {}
 
 // Allow `Temporal.Time` to be typed erased
-extension _Temporal.Time: _AnyTemporalSpec {}
+extension Temporal.Time: AnyTemporalSpec {}

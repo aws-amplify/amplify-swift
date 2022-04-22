@@ -35,7 +35,7 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
         case .double:
             return value as? Double
         case .date, .dateTime, .time:
-            return (value as? TemporalSpec)?.iso8601String
+            return (value as? AnyTemporalSpec)?.iso8601String
         case .timestamp:
             return value as? Int
         case .bool:
