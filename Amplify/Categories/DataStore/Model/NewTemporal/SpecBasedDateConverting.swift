@@ -13,16 +13,16 @@ import Foundation
 internal struct SpecBasedDateConverting<T: _TemporalSpec> {
     @usableFromInline
     internal typealias DateConverter = (String, T.Format) throws -> Date
-    
+
     @usableFromInline
     internal let convert: DateConverter
-    
+
     @inlinable
     @inline(never)
     init(converter: @escaping DateConverter = Self.default) {
         self.convert = converter
     }
-    
+
     @inlinable
     @inline(never)
     internal static func `default`(

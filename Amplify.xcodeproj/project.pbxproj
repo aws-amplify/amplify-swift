@@ -349,6 +349,20 @@
 		76C0F4EC26797F4500F0E6AB /* AuthModeStrategyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C0F4EA26797F3C00F0E6AB /* AuthModeStrategyTests.swift */; };
 		76FFFC91267966D9001EC92B /* RetryableGraphQLOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FFFC90267966D9001EC92B /* RetryableGraphQLOperationTests.swift */; };
 		8484A17AAAFE78545A932849 /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1769ED39B45A981FD1D8AC /* Pods_Amplify.framework */; };
+		902AE0322812FB3500CD12CA /* SpecBasedDateConverting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0252812FB3400CD12CA /* SpecBasedDateConverting.swift */; };
+		902AE0332812FB3500CD12CA /* NewTemporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0262812FB3400CD12CA /* NewTemporal.swift */; };
+		902AE0342812FB3500CD12CA /* NewTemporal+Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0272812FB3400CD12CA /* NewTemporal+Time.swift */; };
+		902AE0352812FB3500CD12CA /* NewTemporalSpec+Add.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0282812FB3400CD12CA /* NewTemporalSpec+Add.swift */; };
+		902AE0362812FB3500CD12CA /* NewTemporal+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0292812FB3400CD12CA /* NewTemporal+Date.swift */; };
+		902AE0372812FB3500CD12CA /* NewTimeUnitOperatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE02A2812FB3400CD12CA /* NewTimeUnitOperatable.swift */; };
+		902AE0382812FB3500CD12CA /* NewTemporalSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE02B2812FB3400CD12CA /* NewTemporalSpec.swift */; };
+		902AE0392812FB3500CD12CA /* NewTemporal+DateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE02C2812FB3400CD12CA /* NewTemporal+DateTime.swift */; };
+		902AE03A2812FB3500CD12CA /* AnyTemporalSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE02D2812FB3400CD12CA /* AnyTemporalSpec.swift */; };
+		902AE03B2812FB3500CD12CA /* DateUnitOperatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE02E2812FB3400CD12CA /* DateUnitOperatable.swift */; };
+		902AE03C2812FB3500CD12CA /* DateUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE02F2812FB3400CD12CA /* DateUnit.swift */; };
+		902AE03D2812FB3500CD12CA /* TemporalSpecValidFormatRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0302812FB3400CD12CA /* TemporalSpecValidFormatRepresentable.swift */; };
+		902AE03E2812FB3500CD12CA /* NewTimeUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0312812FB3400CD12CA /* NewTimeUnit.swift */; };
+		902AE0402812FB5A00CD12CA /* TimeZone+UTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE03F2812FB5A00CD12CA /* TimeZone+UTC.swift */; };
 		90A8901327619D780042C3C1 /* AWSAuthServiceBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A8901227619D780042C3C1 /* AWSAuthServiceBehaviorTests.swift */; };
 		950A26DB23D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26D823D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift */; };
 		950A26DC23D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26D923D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift */; };
@@ -1275,6 +1289,20 @@
 		7D502982E80B9B2796D71A48 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig"; sourceTree = "<group>"; };
 		852B5530E9E8794DAC86E44E /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig"; sourceTree = "<group>"; };
 		8E125EAA66C26B6F0705BB0C /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig"; sourceTree = "<group>"; };
+		902AE0252812FB3400CD12CA /* SpecBasedDateConverting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecBasedDateConverting.swift; sourceTree = "<group>"; };
+		902AE0262812FB3400CD12CA /* NewTemporal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTemporal.swift; sourceTree = "<group>"; };
+		902AE0272812FB3400CD12CA /* NewTemporal+Time.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewTemporal+Time.swift"; sourceTree = "<group>"; };
+		902AE0282812FB3400CD12CA /* NewTemporalSpec+Add.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewTemporalSpec+Add.swift"; sourceTree = "<group>"; };
+		902AE0292812FB3400CD12CA /* NewTemporal+Date.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewTemporal+Date.swift"; sourceTree = "<group>"; };
+		902AE02A2812FB3400CD12CA /* NewTimeUnitOperatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTimeUnitOperatable.swift; sourceTree = "<group>"; };
+		902AE02B2812FB3400CD12CA /* NewTemporalSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTemporalSpec.swift; sourceTree = "<group>"; };
+		902AE02C2812FB3400CD12CA /* NewTemporal+DateTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewTemporal+DateTime.swift"; sourceTree = "<group>"; };
+		902AE02D2812FB3400CD12CA /* AnyTemporalSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyTemporalSpec.swift; sourceTree = "<group>"; };
+		902AE02E2812FB3400CD12CA /* DateUnitOperatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateUnitOperatable.swift; sourceTree = "<group>"; };
+		902AE02F2812FB3400CD12CA /* DateUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateUnit.swift; sourceTree = "<group>"; };
+		902AE0302812FB3400CD12CA /* TemporalSpecValidFormatRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemporalSpecValidFormatRepresentable.swift; sourceTree = "<group>"; };
+		902AE0312812FB3400CD12CA /* NewTimeUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTimeUnit.swift; sourceTree = "<group>"; };
+		902AE03F2812FB5A00CD12CA /* TimeZone+UTC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "TimeZone+UTC.swift"; path = "Amplify/Categories/DataStore/Model/Temporal/TimeZone+UTC.swift"; sourceTree = SOURCE_ROOT; };
 		90A8901227619D780042C3C1 /* AWSAuthServiceBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthServiceBehaviorTests.swift; sourceTree = "<group>"; };
 		950A26D823D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsTranslateTextOperation.swift; sourceTree = "<group>"; };
 		950A26D923D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsTextToSpeechOperation.swift; sourceTree = "<group>"; };
@@ -2680,6 +2708,27 @@
 			path = API;
 			sourceTree = "<group>";
 		};
+		902AE0242812FB3400CD12CA /* NewTemporal */ = {
+			isa = PBXGroup;
+			children = (
+				902AE0252812FB3400CD12CA /* SpecBasedDateConverting.swift */,
+				902AE0262812FB3400CD12CA /* NewTemporal.swift */,
+				902AE0272812FB3400CD12CA /* NewTemporal+Time.swift */,
+				902AE0282812FB3400CD12CA /* NewTemporalSpec+Add.swift */,
+				902AE0292812FB3400CD12CA /* NewTemporal+Date.swift */,
+				902AE02A2812FB3400CD12CA /* NewTimeUnitOperatable.swift */,
+				902AE02B2812FB3400CD12CA /* NewTemporalSpec.swift */,
+				902AE02C2812FB3400CD12CA /* NewTemporal+DateTime.swift */,
+				902AE02D2812FB3400CD12CA /* AnyTemporalSpec.swift */,
+				902AE02E2812FB3400CD12CA /* DateUnitOperatable.swift */,
+				902AE02F2812FB3400CD12CA /* DateUnit.swift */,
+				902AE0302812FB3400CD12CA /* TemporalSpecValidFormatRepresentable.swift */,
+				902AE0312812FB3400CD12CA /* NewTimeUnit.swift */,
+				902AE03F2812FB5A00CD12CA /* TimeZone+UTC.swift */,
+			);
+			path = NewTemporal;
+			sourceTree = "<group>";
+		};
 		95DAAB00237E63370028544F /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -3090,6 +3139,7 @@
 				2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */,
 				B9FAA1232388BE2B009414B4 /* Collection */,
 				21AD424A249BEC440016FE95 /* Internal */,
+				902AE0242812FB3400CD12CA /* NewTemporal */,
 				B91A879A23D1256B0049A12F /* Temporal */,
 			);
 			path = Model;
@@ -5054,6 +5104,7 @@
 				B4D3853C236C97360014653D /* PredictionsTranslateTextRequest.swift in Sources */,
 				B452F1D32450EEAE0069F7FA /* AuthResendSignUpCodeOperation.swift in Sources */,
 				FAC2352B227A053D00424678 /* AnalyticsEvent.swift in Sources */,
+				902AE03A2812FB3500CD12CA /* AnyTemporalSpec.swift in Sources */,
 				974FF19124B904A40050D01B /* EnvironmentInfoItem.swift in Sources */,
 				B4FEA92124635BFB0009B47B /* AuthCategoryDeviceBehavior.swift in Sources */,
 				FAA98B02239214A30039EE71 /* DataStoreConflict.swift in Sources */,
@@ -5111,10 +5162,12 @@
 				5C763DA626F2CD95006650E7 /* Geo+BoundingBox.swift in Sources */,
 				95DAAB84237F13940028544F /* VoiceType.swift in Sources */,
 				FAA2E8C223A00D5800E420EA /* APICategory+Resettable.swift in Sources */,
+				902AE0362812FB3500CD12CA /* NewTemporal+Date.swift in Sources */,
 				5C09CCB526CEDE1200CDCA9F /* GeoCategory+HubPayloadEventName.swift in Sources */,
 				B4FA336324105D1800E1C659 /* AuthCategoryPlugin.swift in Sources */,
 				B4B1E0E524733687007F3261 /* AuthEventName.swift in Sources */,
 				6B33896823AAACC900561E5B /* ReachabilityUpdate.swift in Sources */,
+				902AE03E2812FB3500CD12CA /* NewTimeUnit.swift in Sources */,
 				FAA2E8CC23A02A5400E420EA /* HubCategory+Resettable.swift in Sources */,
 				2142099823721F4400FA140C /* RESTOperationRequest.swift in Sources */,
 				6BB7441023A9954900B0EB6C /* DispatchSource+MakeOneOff.swift in Sources */,
@@ -5135,6 +5188,7 @@
 				FA5D4CF3238AFD7B00D2F54A /* ModelRegistry+Syncable.swift in Sources */,
 				FAAFAF37239051E6002CF932 /* AtomicDictionary.swift in Sources */,
 				95DAAB2F237E63370028544F /* LanguageType.swift in Sources */,
+				902AE0392812FB3500CD12CA /* NewTemporal+DateTime.swift in Sources */,
 				B4D3852E236C97360014653D /* PredictionsIdentifyOperation.swift in Sources */,
 				5C3324932772BD3D00F2C47B /* AuthDeleteUserRequest.swift in Sources */,
 				FA09B9412321BB78000E064D /* JSONValue.swift in Sources */,
@@ -5146,6 +5200,7 @@
 				2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */,
 				FAA2E8CA23A02A2600E420EA /* DataStoreCategory+Resettable.swift in Sources */,
 				B9B50DC423D917BB0086F1E1 /* TemporalFormat+Date.swift in Sources */,
+				902AE0402812FB5A00CD12CA /* TimeZone+UTC.swift in Sources */,
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,
 				21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */,
 				974FF19B24BD05AA0050D01B /* EnvironmentInfoItemType.swift in Sources */,
@@ -5208,6 +5263,7 @@
 				5CB5DD27271707780078CCA2 /* Geo+SearchOptions.swift in Sources */,
 				FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */,
 				FA5704C9245F3C6900392C19 /* AmplifyInProcessReportingOperation.swift in Sources */,
+				902AE0372812FB3500CD12CA /* NewTimeUnitOperatable.swift in Sources */,
 				FA09B9332321A305000E064D /* HubCategory+CategoryConfigurable.swift in Sources */,
 				B4B5CC9A2457B7FA0019C783 /* AuthUpdateUserAttributeOperation.swift in Sources */,
 				B92E03B02367CE7A006CEB8D /* DataStoreCallback.swift in Sources */,
@@ -5221,6 +5277,7 @@
 				FACBA78D23949588006349C8 /* Model+DateFormatting.swift in Sources */,
 				FADB3A6823612940006D6FE9 /* BasicClosure.swift in Sources */,
 				FAAFAF3D2390D4A6002CF932 /* AmplifyErrorMessages.swift in Sources */,
+				902AE0332812FB3500CD12CA /* NewTemporal.swift in Sources */,
 				B92E03B32367CE7A006CEB8D /* DataStoreCategory.swift in Sources */,
 				977007E324C1585100848468 /* LogEntryItem.swift in Sources */,
 				FA9FB77D232AA0D800C04D32 /* FilteredListener.swift in Sources */,
@@ -5229,6 +5286,7 @@
 				B463D6CF24633E45008C0F85 /* AuthCategory+UserBehavior.swift in Sources */,
 				B9AE8FDB23D8C643002742F9 /* TemporalFormat+Time.swift in Sources */,
 				FAC2352D227A053D00424678 /* AnalyticsCategoryPlugin.swift in Sources */,
+				902AE03D2812FB3500CD12CA /* TemporalSpecValidFormatRepresentable.swift in Sources */,
 				2142099723721F4400FA140C /* RESTOperationType.swift in Sources */,
 				B4B5CC812457B0690019C783 /* AuthFetchUserAttributesRequest.swift in Sources */,
 				B493E69324524E8C00D9E521 /* AuthUserAttribute.swift in Sources */,
@@ -5301,6 +5359,7 @@
 				B92E03AD2367CE7A006CEB8D /* DataStoreCategory+Behavior.swift in Sources */,
 				FAC2354B227A055A00424678 /* Amplify.swift in Sources */,
 				FA09B92D2321A27F000E064D /* CategoryConfigurable.swift in Sources */,
+				902AE0342812FB3500CD12CA /* NewTemporal+Time.swift in Sources */,
 				B92E03B72367CE7A006CEB8D /* ModelRegistry.swift in Sources */,
 				95DAAB83237F13940028544F /* EntityMatch.swift in Sources */,
 				975751AB24CA27AD00FA0A6E /* IssueInfo.swift in Sources */,
@@ -5320,6 +5379,7 @@
 				950A26DF23D15D9800D92B19 /* SpeechToTextResult.swift in Sources */,
 				B92E03AF2367CE7A006CEB8D /* DataStoreCategoryBehavior.swift in Sources */,
 				5C09CCBC26CEDE1200CDCA9F /* GeoCategory+ClientBehavior.swift in Sources */,
+				902AE0352812FB3500CD12CA /* NewTemporalSpec+Add.swift in Sources */,
 				FA31529C233D645400DE78E7 /* StorageListRequest.swift in Sources */,
 				95DAAB1D237E63370028544F /* IdentifiedWord.swift in Sources */,
 				B92E03B62367CE7A006CEB8D /* ModelSchema.swift in Sources */,
@@ -5354,6 +5414,7 @@
 				974FF19D24BE0B4B0050D01B /* InfoItemProvider.swift in Sources */,
 				B4D38530236C97360014653D /* PredictionsInterpretOperation.swift in Sources */,
 				FAD3936D2381FA1700463F5E /* MutationEvent+Schema.swift in Sources */,
+				902AE03B2812FB3500CD12CA /* DateUnitOperatable.swift in Sources */,
 				FAC23541227A055200424678 /* CategoryType.swift in Sources */,
 				210922502359634C00CEC295 /* AnalyticsProfile.swift in Sources */,
 				FAAF6B4F24742852007DB95F /* AuthResetPasswordRequest.swift in Sources */,
@@ -5369,6 +5430,7 @@
 				FAC0A2B222B4402000B50912 /* StorageCategory+ClientBehavior.swift in Sources */,
 				B4FA76072416E82B006F59CE /* AuthFetchSessionRequest.swift in Sources */,
 				B4340A24238325B900101BBA /* DefaultNetworkPolicy.swift in Sources */,
+				902AE0322812FB3500CD12CA /* SpecBasedDateConverting.swift in Sources */,
 				21A4ED5E259CD7F400E1047D /* CoreError.swift in Sources */,
 				97DC3D5424C200A600D79E24 /* LogEntryHelper.swift in Sources */,
 				B4D38537236C97360014653D /* PredictionsCategory+CategoryConfigurable.swift in Sources */,
@@ -5408,6 +5470,7 @@
 				FA31529A233D645200DE78E7 /* StorageGetURLRequest.swift in Sources */,
 				95DAAB32237E63370028544F /* EntityType.swift in Sources */,
 				FA0173372375FAA5005DDDFC /* HubError.swift in Sources */,
+				902AE0382812FB3500CD12CA /* NewTemporalSpec.swift in Sources */,
 				2142099623721F4400FA140C /* GraphQLOperationType.swift in Sources */,
 				B450740D2411553D0098F02D /* AuthConfirmSignUpOperation.swift in Sources */,
 				B43CD8522411463000BF5A60 /* AuthCodeDeliveryDetails.swift in Sources */,
@@ -5449,6 +5512,7 @@
 				B9AF547A23F324DB0059E6C4 /* TemporalOperation.swift in Sources */,
 				B98E9D0F2372236300934B51 /* QueryOperator.swift in Sources */,
 				FAA64FC52397344D00B9C3C6 /* AtomicValue+RangeReplaceableCollection.swift in Sources */,
+				902AE03C2812FB3500CD12CA /* DateUnit.swift in Sources */,
 				B9B50DC623D918020086F1E1 /* Date.swift in Sources */,
 				B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */,
 				21409C5A2384C57D000A53C9 /* GraphQLMutationType.swift in Sources */,
@@ -5826,7 +5890,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AmplifyPlugins/DataStore/AWSDataStoreCategoryPluginIntegrationTests",
@@ -5851,7 +5915,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AmplifyPlugins/DataStore/AWSDataStoreCategoryPluginIntegrationTests",
@@ -5877,7 +5941,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -5906,7 +5970,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -5932,7 +5996,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
 				INFOPLIST_FILE = AmplifyPlugins/Core/AWSPluginsCoreTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5954,7 +6018,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
 				INFOPLIST_FILE = AmplifyPlugins/Core/AWSPluginsCoreTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5974,9 +6038,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7D502982E80B9B2796D71A48 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -6000,9 +6065,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F782B97D62DBD8A0597E5AA9 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.release.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -6151,7 +6217,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -6178,7 +6244,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -6203,7 +6269,7 @@
 			baseConfigurationReference = AF4FA69A23AEB42CF7BB8336 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
 				INFOPLIST_FILE = AmplifyTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6222,7 +6288,7 @@
 			baseConfigurationReference = 0671E539A66859A57E071091 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
 				INFOPLIST_FILE = AmplifyTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6241,7 +6307,7 @@
 			baseConfigurationReference = D7F68696805B8C5835897413 /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
 				INFOPLIST_FILE = AmplifyFunctionalTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -6262,7 +6328,7 @@
 			baseConfigurationReference = 8E125EAA66C26B6F0705BB0C /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
 				INFOPLIST_FILE = AmplifyFunctionalTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -6286,7 +6352,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -6319,7 +6385,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";

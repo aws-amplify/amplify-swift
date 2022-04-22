@@ -17,22 +17,23 @@ import Foundation
 ///
 ///     let yesterday = Temporal.Date.now() - .days(1)
 ///     let sixMonthsAgo = Temporal.Date.now() - .months(6)
+// swiftlint:disable:next type_name
 public struct _DateUnit {
     let calendarComponent: Calendar.Component
     let value: Int
-    
+
     /// One day. Equivalent to 1 x `Calendar.Component.day`
     public static let oneDay: _DateUnit = .days(1)
-    
+
     /// One week. Equivalent to 7 x `Calendar.Component.day`
     public static let oneWeek: _DateUnit = .weeks(1)
-    
+
     /// One month. Equivalent to 1 x `Calendar.Component.month`
     public static let oneMonth: _DateUnit = .months(1)
-    
+
     /// One year. Equivalent to 1 x `Calendar.Component.year`
     public static let oneYear: _DateUnit = .years(1)
-    
+
     /// DateUnit amount of days.
     /// One day is 1 x `Calendar.Component.day`
     ///
@@ -45,7 +46,7 @@ public struct _DateUnit {
     public static func days(_ value: Int) -> Self {
         .init(calendarComponent: .day, value: value)
     }
-    
+
     /// DateUnit amount of weeks.
     /// One week is 7 x the `Calendar.Component.day`
     ///
@@ -58,7 +59,7 @@ public struct _DateUnit {
     public static func weeks(_ value: Int) -> Self {
         .init(calendarComponent: .day, value: value * 7)
     }
-    
+
     /// DateUnit amount of months.
     /// One month is 1 x `Calendar.Component.month`
     ///
@@ -71,7 +72,7 @@ public struct _DateUnit {
     public static func months(_ value: Int) -> Self {
         .init(calendarComponent: .month, value: value)
     }
-    
+
     /// DateUnit amount of years.
     /// One year is 1 x `Calendar.Component.year`
     ///

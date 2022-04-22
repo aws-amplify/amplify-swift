@@ -16,21 +16,21 @@ import Foundation
 ///     let yesterday = Temporal.Date.now() - .days(1)
 ///     let sixMonthsAgo = Temporal.Date.now() - .months(6)
 ///
-/// - Attention: Don't use `TimeUnit` to calculate dates, use `DateUnit` instead.
+/// - Attention: **Don't** use `TimeUnit` to calculate dates, use `DateUnit` instead. Also make sure to use the most applicable `Unit`, e.g. don't use `.minutes(60)` if you really want `.hours(1)`.
 ///   There are not always 24 hours in a day, 60 minutes in an hour, etc.
 public struct _TimeUnit {
     public let calendarComponent: Calendar.Component
     public let value: Int
-    
+
     /// One second. Equivalent to 1 x `Calendar.Component.second`
     public static let oneSecond: _TimeUnit = .seconds(1)
-    
+
     /// One minute. Equivalent to 1 x `Calendar.Component.minute`
     public static let oneMinute: _TimeUnit = .minutes(1)
-    
+
     /// One hour. Equivalent to 1 x `Calendar.Component.hour`
     public static let oneHour: _TimeUnit = .hours(1)
-    
+
     /// `TimeUnit` amount of hours.
     ///
     /// One hour is 1 x `Calendar.Component.hour`
@@ -44,7 +44,7 @@ public struct _TimeUnit {
     public static func hours(_ value: Int) -> Self {
         .init(calendarComponent: .hour, value: value)
     }
-    
+
     /// `TimeUnit` amount of minutes.
     ///
     /// One minute is 1 x `Calendar.Component.minute`
@@ -58,7 +58,7 @@ public struct _TimeUnit {
     public static func minutes(_ value: Int) -> Self {
         .init(calendarComponent: .minute, value: value)
     }
-    
+
     /// `TimeUnit` amount of seconds.
     ///
     /// One second is 1 x `Calendar.Component.seconds`
@@ -72,7 +72,7 @@ public struct _TimeUnit {
     public static func seconds(_ value: Int) -> Self {
         .init(calendarComponent: .second, value: value)
     }
-    
+
     /// `TimeUnit` amount of milliseconds.
     ///
     /// One second is 1 x `Calendar.Component.nanosecond` \* `NSEC_PER_MSEC`
@@ -86,7 +86,7 @@ public struct _TimeUnit {
     public static func milliseconds(_ value: Int) -> Self {
         .init(calendarComponent: .nanosecond, value: value * Int(NSEC_PER_MSEC))
     }
-    
+
     /// `TimeUnit` amount of nanoseconds.
     ///
     /// One second is 1 x `Calendar.Component.nanosecond`

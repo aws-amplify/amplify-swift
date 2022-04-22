@@ -17,17 +17,17 @@ extension _Temporal {
     public struct DateTime: _TemporalSpec {
         // Inherits documentation from `TemporalSpec`
         public let foundationDate: Foundation.Date
-        
+
         // Inherits documentation from `TemporalSpec`
         public static func now() -> Self {
             _Temporal.DateTime(Foundation.Date())
         }
-        
+
         /// `Temporal.Time` of this `Temporal.DateTime`.
         public var time: Time {
             Time(foundationDate)
         }
-        
+
         @inlinable
         @inline(never)
         // Inherits documentation from `TemporalSpec`
@@ -37,10 +37,10 @@ extension _Temporal {
         ) throws {
             let date = try SpecBasedDateConverting<Self>()
                 .convert(iso8601String, format)
-            
+
             self.init(date)
         }
-        
+
         // Inherits documentation from `TemporalSpec`
         public init(_ date: Foundation.Date) {
             let calendar = _Temporal.iso8601Calendar
@@ -48,12 +48,12 @@ extension _Temporal {
                 DateTime.iso8601DateComponents,
                 from: date
             )
-            
+
             foundationDate = calendar
                 .date(from: components) ?? date
         }
-        
-        
+
+
         /// `Calendar.Component`s used in `init(_ date:)`
         static let iso8601DateComponents: Set<Calendar.Component> =
         [
@@ -78,7 +78,7 @@ extension _Temporal.DateTime {
     ///  * `.full` => `yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ`
     public struct Format: TemporalSpecValidFormatRepresentable {
         public let value: String
-        
+
         /// `yyyy-MM-dd'T'HH:mm`
         public static let short = Format(value: "yyyy-MM-dd'T'HH:mm")
 

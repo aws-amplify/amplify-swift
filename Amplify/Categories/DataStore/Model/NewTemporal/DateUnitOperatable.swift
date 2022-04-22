@@ -14,8 +14,11 @@ public protocol _DateUnitOperable {
 }
 
 extension _TemporalSpec where Self: _DateUnitOperable {
-    
+
     /// Add a `DateUnit` to a `Temporal.Date` or `Temporal.DateTime`
+    ///
+    ///     let tomorrow = Temporal.Date.now() + .days(1)
+    ///
     /// - Parameters:
     ///   - left: `Temporal.Date` or `Temporal.DateTime`
     ///   - right: `DateUnit` to add to `left`
@@ -23,8 +26,11 @@ extension _TemporalSpec where Self: _DateUnitOperable {
     public static func + (left: Self, right: _DateUnit) -> Self {
         return left.add(value: right.value, to: right.calendarComponent)
     }
-    
+
     /// Subtract a `DateUnit` from a `Temporal.Date` or `Temporal.DateTime`
+    ///
+    ///     let yesterday = Temporal.Date.now() - .day(1)
+    ///
     /// - Parameters:
     ///   - left: `Temporal.Date` or `Temporal.DateTime`
     ///   - right: `DateUnit` to subtract from `left`
