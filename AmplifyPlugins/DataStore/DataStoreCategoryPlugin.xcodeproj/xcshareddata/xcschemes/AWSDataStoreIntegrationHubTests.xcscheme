@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1120"
+   LastUpgradeVersion = "1320"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -80,10 +80,7 @@
                   Identifier = "DataStoreCustomPrimaryKeyTests">
                </Test>
                <Test
-                  Identifier = "DataStoreEndToEndTests/testConcurrentSave()">
-               </Test>
-               <Test
-                  Identifier = "DataStoreHubEventTests">
+                  Identifier = "DataStoreEndToEndTests">
                </Test>
                <Test
                   Identifier = "DataStoreLocalStoreTests">
@@ -101,6 +98,9 @@
                   Identifier = "DataStoreObserveQueryTests">
                </Test>
                <Test
+                  Identifier = "DataStoreScalarTests">
+               </Test>
+               <Test
                   Identifier = "DataStoreTestBase">
                </Test>
                <Test
@@ -110,7 +110,10 @@
                   Identifier = "LocalStoreIntegrationTestBase">
                </Test>
                <Test
-                  Identifier = "SubscriptionTests/testSubscribeAtStartup()">
+                  Identifier = "SubscriptionEndToEndTests">
+               </Test>
+               <Test
+                  Identifier = "SubscriptionTests">
                </Test>
                <Test
                   Identifier = "SyncEngineIntegrationTestBase">
