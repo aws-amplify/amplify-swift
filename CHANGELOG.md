@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.23.1 (2022-04-25)
+
+### Bug Fixes
+
+- **DataStore**: Cascade delete sync from children to parent models (#1731)
+
 ## 1.23.0 (2022-04-12)
 
 ### Features
