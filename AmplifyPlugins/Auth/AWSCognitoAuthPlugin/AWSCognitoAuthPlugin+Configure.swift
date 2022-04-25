@@ -123,16 +123,26 @@ extension AWSCognitoAuthPlugin {
             guard case .string(let endpointString) = authConfiguration.value(at: endpointKeyPath) else {
                 return nil
             }
-            guard let components = URLComponents(string: endpointString),
-                  let url = components.url,
-                  components.scheme == "https" || components.scheme == "http" else {
-                let amplifyError = AuthError.configuration(
-                    "Error configuring \(String(describing: self))",
-                """
-                Invalid Endpoint value \(endpointString). Expected a fully-qualified hostname.
-                """)
+
+            let amplifyError = AuthError.configuration(
+                "Error configuring \(String(describing: self))",
+            """
+            Invalid Endpoint value \(endpointString). Expected a fully-qualified hostname.
+            """)
+
+            guard (URLComponents(string: endpointString)?.scheme ?? "").isEmpty else {
                 throw amplifyError
             }
+
+            let endpointStringWithScheme = "https://" + endpointString
+            guard
+                let components = URLComponents(string: endpointStringWithScheme),
+                components.path == "",
+                let url = components.url
+            else {
+                throw amplifyError
+            }
+
             return AWSEndpoint(region: region, service: .CognitoIdentityProvider, url: url)
         }
 
