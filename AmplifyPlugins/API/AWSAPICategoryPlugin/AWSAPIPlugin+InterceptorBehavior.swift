@@ -9,14 +9,11 @@ import Amplify
 
 public extension AWSAPIPlugin {
     func add(interceptor: URLRequestInterceptor, for apiName: String) throws {
-        guard pluginConfig != nil else {
-            throw PluginError.pluginConfigurationError("pluginConfig not yet configured", "")
-        }
-        guard pluginConfig?.endpoints[apiName] != nil else {
+        guard pluginConfig.endpoints[apiName] != nil else {
             throw PluginError.pluginConfigurationError("Failed to get endpoint configuration for apiName: \(apiName)",
                                                        "")
         }
 
-        pluginConfig?.addInterceptor(interceptor, toEndpoint: apiName)
+        pluginConfig.addInterceptor(interceptor, toEndpoint: apiName)
     }
 }

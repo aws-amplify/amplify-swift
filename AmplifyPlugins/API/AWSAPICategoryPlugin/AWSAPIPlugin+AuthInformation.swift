@@ -15,9 +15,6 @@ extension AWSAPIPlugin {
     }
 
     public func defaultAuthType(for apiName: String?) throws -> AWSAuthorizationType {
-        guard let pluginConfig = pluginConfig else {
-            throw PluginError.pluginConfigurationError("pluginConfig not yet configured", "")
-        }
-        return try pluginConfig.endpoints.getConfig(for: apiName).authorizationType
+        try pluginConfig.endpoints.getConfig(for: apiName).authorizationType
     }
 }

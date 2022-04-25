@@ -11,15 +11,15 @@ import Foundation
 
 final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
 
-    let session: URLSessionBehavior?
+    let session: URLSessionBehavior
     let mapper: OperationTaskMapper
-    let pluginConfig: AWSAPICategoryPluginConfiguration?
+    let pluginConfig: AWSAPICategoryPluginConfiguration
     let graphQLResponseDecoder: GraphQLResponseDecoder<R>
 
     init(request: GraphQLOperationRequest<R>,
-         session: URLSessionBehavior?,
+         session: URLSessionBehavior,
          mapper: OperationTaskMapper,
-         pluginConfig: AWSAPICategoryPluginConfiguration?,
+         pluginConfig: AWSAPICategoryPluginConfiguration,
          resultListener: AWSGraphQLOperation.ResultListener?) {
 
         self.session = session
@@ -59,9 +59,6 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         let requestInterceptors: [URLRequestInterceptor]
 
         do {
-            guard let pluginConfig = pluginConfig else {
-                throw PluginError.pluginConfigurationError("pluginConfig not yet configured", "")
-            }
             endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL)
 
             if let pluginOptions = request.options.pluginOptions as? AWSPluginOptions,
@@ -76,7 +73,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
             finish()
             return
         } catch {
-            dispatch(result: .failure(APIError.unknown("Could not get endpoint configuration", "", error)))
+            dispatch(result: .failure(APIError.unknown("Could not get endpoint configuration", "", nil)))
             finish()
             return
         }
@@ -128,11 +125,6 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         }
 
         // Begin network task
-        guard let session = session else {
-            dispatch(result: .failure(APIError.operationError("Missing session object", "", nil)))
-            finish()
-            return
-        }
         Amplify.API.log.debug("Starting network task for \(request.operationType) \(id)")
         let task = session.dataTaskBehavior(with: finalRequest)
         mapper.addPair(operation: self, task: task)
