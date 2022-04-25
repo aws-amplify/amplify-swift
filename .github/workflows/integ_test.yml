@@ -271,7 +271,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreCategoryPluginIntegrationTests
   datastore-integration-hub-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -297,7 +297,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationHubTests
   datastore-integration-local-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -324,7 +324,7 @@ jobs:
           scheme: AWSDataStoreIntegrationLocalTests
 
   datastore-integration-V1-S1-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -350,7 +350,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV1Scenario1Tests
   datastore-integration-V1-S2-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -376,7 +376,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV1Scenario2Tests
   datastore-integration-V1-S3-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -402,7 +402,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV1Scenario3Tests
   datastore-integration-V1-S4-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -428,7 +428,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV1Scenario4Tests
   datastore-integration-V1-S5-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -454,7 +454,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV1Scenario5Tests
   datastore-integration-V1-S6-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -480,7 +480,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV1Scenario6Tests
   datastore-integration-V2-S1-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -506,7 +506,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario1V2Tests
   datastore-integration-V2-S2-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -532,7 +532,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario2V2Tests
   datastore-integration-V2-S3a-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -558,7 +558,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario3aV2Tests
   datastore-integration-V2-S3-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -584,7 +584,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario3V2Tests
   datastore-integration-V2-S4-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -610,7 +610,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario4V2Tests
   datastore-integration-V2-S5-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -636,7 +636,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario5V2Tests
   datastore-integration-V2-S6-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -662,7 +662,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario6V2Tests
   datastore-integration-V2-S7-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -688,7 +688,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario7V2Tests
   datastore-integration-V2-S8-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -714,7 +714,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario8V2Tests
   datastore-integration-V2-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
@@ -740,7 +740,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario1V2Tests
   datastore-integration-observe-query-test:
-    needs: prepare-for-test
+    needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
     steps:
