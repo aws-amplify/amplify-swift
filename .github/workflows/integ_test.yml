@@ -1,7 +1,7 @@
 name: IntegrationTest
 on:
   push:
-    branches: [fix/ds-integ-run]
+    branches: [main]
 
 permissions:
     id-token: write
