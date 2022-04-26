@@ -42,7 +42,18 @@ import Combine
 @available(iOS 13.0, *)
 class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: Blog6.self)
+            registry.register(modelType: Post6.self)
+            registry.register(modelType: Comment6.self)
+        }
+
+        let version: String = "1"
+    }
+
     func testGetBlogThenFetchPostsThenFetchComments() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name"),
               let post1 = savePost(title: "title", blog: blog),
@@ -92,6 +103,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
     }
 
     func testGetCommentThenFetchPostThenFetchBlog() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name"),
               let post = savePost(title: "title", blog: blog),
@@ -141,6 +153,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
     }
 
     func testGetPostThenFetchBlogAndComment() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name"),
               let post = savePost(title: "title", blog: blog),
@@ -205,6 +218,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
     }
 
     func testDeleteAll() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForReady()
         var cancellables = Set<AnyCancellable>()
         let remoteEventReceived = expectation(description: "received mutation event with version 1")

@@ -18,6 +18,15 @@ import AWSPluginsCore
 // swiftlint:disable type_body_length
 class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: Post.self)
+            registry.register(modelType: Comment.self)
+        }
+
+        let version: String = "1"
+    }
+
     /// - Given: 4 posts that has been saved
     /// - When:
     ///    - query with grouped predicate
@@ -26,6 +35,7 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     ///    - second page returns the remaining 5 posts
     ///    - the 15 retrieved posts have unique identifiers
     func testQueryWithGroupedQueryPredicateInput() throws {
+        setUp(withModels: TestModelRegistration())
         setUpLocalStoreForGroupedPredicateTest()
         var posts = [Post]()
         let queryFirstTimeSuccess = expectation(description: "Query post completed")
@@ -55,6 +65,7 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     ///    - second page returns the remaining 5 posts
     ///    - the 15 retrieved posts have unique identifiers
     func testQueryWithPaginationInput() throws {
+        setUp(withModels: TestModelRegistration())
         _ = setUpLocalStore(numberOfPosts: 15)
         var posts = [Post]()
         let queryFirstTimeSuccess = expectation(description: "Query post completed")
@@ -99,6 +110,7 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     /// - Then:
     ///    - the existing data will be returned in expected order
     func testQueryWithSortReturnsPostsInAscendingOrder() throws {
+        setUp(withModels: TestModelRegistration())
         _ = setUpLocalStore(numberOfPosts: 20)
 
         let querySuccess = expectation(description: "Query post completed")
@@ -138,6 +150,7 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     /// - Then:
     ///    - the existing data will be returned in expected order
     func testQueryWithMultipleSortsReturnsPosts() throws {
+        setUp(withModels: TestModelRegistration())
         _ = setUpLocalStore(numberOfPosts: 50)
 
         let querySuccess = expectation(description: "Query post completed")
@@ -188,6 +201,7 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     /// - Then:
     ///    - the existing data that matches the given condition will be returned in ascending order by rating
     func testQueryWithPredicateAndSort() throws {
+        setUp(withModels: TestModelRegistration())
         _ = setUpLocalStore(numberOfPosts: 20)
 
         let querySuccess = expectation(description: "Query post completed")
@@ -229,6 +243,7 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     /// - Then:
     ///    - the existing data that matches the given condition will be returned in ascending order by rating
     func testQueryWithSortAndPagintate() throws {
+        setUp(withModels: TestModelRegistration())
         _ = setUpLocalStore(numberOfPosts: 20)
 
         let querySuccess = expectation(description: "Query post completed")
@@ -270,6 +285,7 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     /// - Then:
     ///    - 10 or less existing data that matches the given condition will be returned in ascending order by rating
     func testQueryWithPredicateAndSortAndPagintate() throws {
+        setUp(withModels: TestModelRegistration())
         let localPosts = setUpLocalStore(numberOfPosts: 50)
         let filteredPosts = localPosts.filter { $0.rating! >= 2.0 }
         let count = filteredPosts.count
@@ -319,6 +335,7 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     /// - Then:
     ///    - the existing data that matches the given condition will be returned in ascending order by rating
     func testQueryWithPredicateAndSortWithMultiplePages() throws {
+        setUp(withModels: TestModelRegistration())
         _ = setUpLocalStore(numberOfPosts: 50)
 
         var count = 0
@@ -387,6 +404,7 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     ///    - The last snapshot will have a total of initial plus additional models
     @available(iOS 13.0, *)
     func testObserveQuery() throws {
+        setUp(withModels: TestModelRegistration())
         let cleared = expectation(description: "DataStore cleared")
         Amplify.DataStore.clear { result in
             switch result {
@@ -397,7 +415,7 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
             }
         }
         wait(for: [cleared], timeout: 2)
-        _ = setUpLocalStore(numberOfPosts: 14)
+        _ = setUpLocalStore(numberOfPosts: 15)
         var snapshotCount = 0
         let allSnapshotsReceived = expectation(description: "query snapshots received")
 
@@ -422,6 +440,7 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     }
 
     func testDeleteModelTypeWithPredicate() {
+        setUp(withModels: TestModelRegistration())
         _ = setUpLocalStore(numberOfPosts: 5)
         let queryOnSetUpSuccess = expectation(description: "query returns non-empty result")
         Amplify.DataStore.query(Post.self, where: Post.keys.status.eq(PostStatus.draft)) { result in
@@ -459,6 +478,7 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     }
 
     func testDeleteAll() {
+        setUp(withModels: TestModelRegistration())
         _ = setUpLocalStore(numberOfPosts: 5)
         let deleteSuccess = expectation(description: "Delete all successful")
         Amplify.DataStore.delete(Post.self, where: QueryPredicateConstant.all) { result in

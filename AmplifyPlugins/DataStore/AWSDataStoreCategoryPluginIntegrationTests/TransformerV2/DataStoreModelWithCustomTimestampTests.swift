@@ -24,9 +24,18 @@ import AWSMobileClient
 
 class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: TodoCustomTimestampV2.self)
+        }
+
+        let version: String = "1"
+    }
+
     // TODO: Upates are not working due to CLI provisioning issue. the Update mutation is missing the `id`
     // https://github.com/aws-amplify/amplify-cli/issues/9136
     func testSaveModelAndSync() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard var todo = saveTodo(content: "content") else {

@@ -34,7 +34,17 @@ See https://docs.amplify.aws/cli/graphql-transformer/connection for more details
 
 class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: Post3.self)
+            registry.register(modelType: Comment3.self)
+        }
+
+        let version: String = "1"
+    }
+
     func testSavePostAndCommentSyncToCloud() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let post = Post3(title: "title")
         let comment = Comment3(postID: post.id, content: "content")
@@ -93,6 +103,7 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
     }
 
     func testSaveCommentAndGetPostWithComments() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard let post = savePost(title: "title") else {
@@ -136,6 +147,7 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
     }
 
     func testUpdateComment() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard let post = savePost(title: "title") else {
@@ -165,6 +177,7 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
     }
 
     func testDeleteAndGetComment() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -201,6 +214,7 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
     }
 
     func testListCommentsByPostID() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard let post = savePost(title: "title") else {

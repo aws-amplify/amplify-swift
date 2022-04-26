@@ -16,7 +16,7 @@ import Foundation
 final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPublisher {
 
     private let asyncEvents: IncomingAsyncSubscriptionEventPublisher
-    private var mapper: IncomingAsyncSubscriptionEventToAnyModelMapper?
+    private let mapper: IncomingAsyncSubscriptionEventToAnyModelMapper
     private let subscriptionEventSubject: PassthroughSubject<IncomingSubscriptionEventPublisherEvent, DataStoreError>
     private var mapperSink: AnyCancellable?
     var publisher: AnyPublisher<IncomingSubscriptionEventPublisherEvent, DataStoreError> {
@@ -35,9 +35,7 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
                                                                    auth: auth,
                                                                    authModeStrategy: authModeStrategy)
 
-        let mapper = IncomingAsyncSubscriptionEventToAnyModelMapper()
-        self.mapper = mapper
-
+        self.mapper = IncomingAsyncSubscriptionEventToAnyModelMapper()
         asyncEvents.subscribe(subscriber: mapper)
         self.mapperSink = mapper
             .publisher
@@ -64,8 +62,7 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
         mapperSink = nil
 
         asyncEvents.cancel()
-        mapper?.cancel()
-        mapper = nil
+        mapper.cancel()
     }
 }
 
@@ -83,13 +80,11 @@ extension AWSIncomingSubscriptionEventPublisher: Resettable {
             group.leave()
         }
 
-        if let mapper = mapper {
-            Amplify.log.verbose("Resetting mapper")
-            group.enter()
-            mapper.reset {
-                Amplify.log.verbose("Resetting mapper: finished")
-                group.leave()
-            }
+        Amplify.log.verbose("Resetting mapper")
+        group.enter()
+        mapper.reset {
+            Amplify.log.verbose("Resetting mapper: finished")
+            group.leave()
         }
 
         group.wait()

@@ -34,7 +34,17 @@ import AmplifyPlugins
 // swiftlint:disable type_body_length
 class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: Team2V2.self)
+            registry.register(modelType: Project2V2.self)
+        }
+
+        let version: String = "1"
+    }
+
     func testSaveTeamAndProjectSyncToCloud() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let team = Team2V2(name: "name1")
         let project = Project2V2(teamID: team.id, team: team)
@@ -98,6 +108,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testUpdateProjectWithAnotherTeam() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let team = Team2V2(name: "name1")
         let anotherTeam = Team2V2(name: "name1")
@@ -185,6 +196,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testCreateUpdateDeleteAndGetProjectReturnsNil() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               var project = saveProject(teamID: team.id, team: team) else {
@@ -256,6 +268,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testDeleteAndGetProjectReturnsNilWithSync() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               let project = saveProject(teamID: team.id, team: team) else {
@@ -348,6 +361,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testDeleteWithValidCondition() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               let project = saveProject(teamID: team.id, team: team) else {
@@ -379,6 +393,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testDeleteWithInvalidCondition() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               let project = saveProject(teamID: team.id, team: team) else {
@@ -414,6 +429,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testDeleteAlreadyDeletedItemWithCondition() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               let project = saveProject(teamID: team.id, team: team) else {
@@ -455,6 +471,7 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testListProjectsByTeamID() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name") else {
             XCTFail("Could not save team")

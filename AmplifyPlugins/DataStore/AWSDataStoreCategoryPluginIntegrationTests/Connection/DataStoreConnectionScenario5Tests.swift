@@ -46,7 +46,18 @@ import AWSMobileClient
 
 class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: PostEditor5.self)
+            registry.register(modelType: Post5.self)
+            registry.register(modelType: User5.self)
+        }
+
+        let version: String = "1"
+    }
+
     func testListPostEditorByPost() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -74,6 +85,7 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
     }
 
     func testListPostEditorByUser() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -101,6 +113,7 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
     }
 
     func testGetPostThenLoadPostEditors() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -148,6 +161,7 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
     }
 
     func testGetUserThenLoadPostEditors() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
