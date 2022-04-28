@@ -18,7 +18,7 @@ struct CognitoAuthTestHelper {
             let typ = "JWT"
         }
         
-        let secret = "your-256-bit-secret"
+        let secret = "256-bit-secret"
         let privateKey = SymmetricKey(data: Data(secret.utf8))
 
         let headerJSONData = try! JSONEncoder().encode(Header())

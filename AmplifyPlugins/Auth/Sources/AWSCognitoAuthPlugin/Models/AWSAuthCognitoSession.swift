@@ -90,7 +90,6 @@ internal extension AWSAuthCognitoSession {
             return true
         }
         
-        // let refreshInterval = AuthPluginConstants.sessionRefreshInterval
         // If the session expires < X minutes return it
         return (Date(timeIntervalSince1970: idTokenExpiration).compare(Date(timeIntervalSinceNow: seconds ?? 0)) == .orderedDescending &&
                 Date(timeIntervalSince1970: accessTokenExpiration).compare(Date(timeIntervalSinceNow: seconds ?? 0)) == .orderedDescending)
