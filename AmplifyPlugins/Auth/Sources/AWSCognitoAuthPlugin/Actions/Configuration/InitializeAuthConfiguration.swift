@@ -12,7 +12,7 @@ struct InitializeAuthConfiguration: Action {
     let identifier = "InitializeAuthConfiguration"
 
     let authConfiguration: AuthConfiguration
-    let storedCredentials: CognitoCredentials?
+    let storedCredentials: AmplifyCredentials?
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 

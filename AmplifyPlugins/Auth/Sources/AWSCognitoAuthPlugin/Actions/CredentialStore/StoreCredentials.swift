@@ -11,7 +11,7 @@ struct StoreCredentials: Action {
 
     let identifier = "StoreCredentials"
 
-    let credentials: CognitoCredentials
+    let credentials: AmplifyCredentials
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 

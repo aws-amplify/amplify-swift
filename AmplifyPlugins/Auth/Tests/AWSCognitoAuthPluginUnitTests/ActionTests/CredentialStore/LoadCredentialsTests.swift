@@ -19,7 +19,7 @@ class LoadCredentialsTests: XCTestCase {
     ///    - the credentials should be retrieved from the credential store
     func testLoadCredentials() {
         let mockedData = "mock"
-        let testData = CognitoCredentials.testData
+        let testData = AmplifyCredentials.testData
         let loadCredentialHandlerInvoked = expectation(description: "loadCredentialHandlerInvoked")
 
         let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(data: mockedData)

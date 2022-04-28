@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct CognitoCredentials: Codable {
+struct AmplifyCredentials: Codable {
     let userPoolTokens: AWSCognitoUserPoolTokens?
     let identityId: String?
     let awsCredential: AuthAWSCognitoCredentials?
 }
 
-extension CognitoCredentials: Equatable { }
+extension AmplifyCredentials: Equatable { }

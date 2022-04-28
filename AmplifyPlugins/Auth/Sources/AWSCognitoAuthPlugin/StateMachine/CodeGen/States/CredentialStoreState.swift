@@ -19,7 +19,7 @@ enum CredentialStoreState: State {
 
     case clearingCredentials
 
-    case success(CognitoCredentials?)
+    case success(AmplifyCredentials?)
 
     case error(CredentialStoreError)
 

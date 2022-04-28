@@ -99,7 +99,7 @@ internal extension AWSAuthCognitoSession {
 /// Helper method to update specific results if needed
 extension AWSAuthCognitoSession {
 
-    func getCognitoCredentials() -> CognitoCredentials {
+    func getCognitoCredentials() -> AmplifyCredentials {
         var identityId: String?
         if case let .success(unwrappedIdentityId) = getIdentityId() {
             identityId = unwrappedIdentityId
@@ -119,7 +119,7 @@ extension AWSAuthCognitoSession {
             awsCredentials = unwrappedCredentials
         }
 
-        return CognitoCredentials(userPoolTokens: cognitUserPoolTokens,
+        return AmplifyCredentials(userPoolTokens: cognitUserPoolTokens,
                                   identityId: identityId,
                                   awsCredential: awsCredentials)
     }

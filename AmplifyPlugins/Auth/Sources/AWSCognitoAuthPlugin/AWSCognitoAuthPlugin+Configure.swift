@@ -115,7 +115,7 @@ extension AWSCognitoAuthPlugin {
         }
     }
 
-    func sendConfigureAuthEvent(with storedCredentials: CognitoCredentials?) {
+    func sendConfigureAuthEvent(with storedCredentials: AmplifyCredentials?) {
         authStateMachine.send(AuthEvent(eventType: .configureAuth(authConfiguration, storedCredentials)))
     }
 

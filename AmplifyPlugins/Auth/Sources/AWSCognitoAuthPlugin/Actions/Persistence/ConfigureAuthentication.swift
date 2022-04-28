@@ -10,7 +10,7 @@ import Foundation
 struct ConfigureAuthentication: Action {
     let identifier = "ConfigureAuthentication"
     let configuration: AuthConfiguration
-    let storedCredentials: CognitoCredentials?
+    let storedCredentials: AmplifyCredentials?
 
     func execute(
         withDispatcher dispatcher: EventDispatcher,
