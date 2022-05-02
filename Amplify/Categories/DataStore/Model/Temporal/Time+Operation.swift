@@ -102,3 +102,30 @@ public struct TimeUnit {
         .init(calendarComponent: .nanosecond, value: value)
     }
 }
+
+/// Supports addition and subtraction of `Temporal.Time` and `Temporal.DateTime` with `TimeUnit`
+public protocol TimeUnitOperable {
+    static func + (left: Self, right: TimeUnit) -> Self
+    static func - (left: Self, right: TimeUnit) -> Self
+}
+
+extension TemporalSpec where Self: TimeUnitOperable {
+
+    /// Add a `TimeUnit` to a `Temporal.Time` or `Temporal.DateTime`
+    /// - Parameters:
+    ///   - left: `Temporal.Time` or `Temporal.DateTime`
+    ///   - right: `TimeUnit` to add to `left`
+    /// - Returns: A new `Temporal.Time` or `Temporal.DateTime` the `TimeUnit` was added to.
+    public static func + (left: Self, right: TimeUnit) -> Self {
+        return left.add(value: right.value, to: right.calendarComponent)
+    }
+
+    /// Subtract a `TimeUnit` from a `Temporal.Time` or `Temporal.DateTime`
+    /// - Parameters:
+    ///   - left: `Temporal.Time` or `Temporal.DateTime`
+    ///   - right: `TimeUnit` to subtract from `left`
+    /// - Returns: A new `Temporal.Time` or `Temporal.DateTime` the `TimeUnit` was subtracted from.
+    public static func - (left: Self, right: TimeUnit) -> Self {
+        return left.add(value: -right.value, to: right.calendarComponent)
+    }
+}

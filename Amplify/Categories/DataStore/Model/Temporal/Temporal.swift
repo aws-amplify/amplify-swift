@@ -110,6 +110,7 @@ public enum Temporal {
         // defer takes care of unlock
     }
 
+    @usableFromInline
     /// Turn a `String` into a `Foundation.Date`
     /// - Parameters:
     ///   - string: The date in `String` form.
@@ -119,7 +120,7 @@ public enum Temporal {
     /// - Returns: A `Foundation.Date` if conversion was successful.
     /// - Throws: `DataStoreError.invalidDateFormat(_:)` if conversion was unsuccessful.
     /// - SeeAlso: `date(from:with:in:)` overload that takes `[String]` rather than `String...`
-    public static func date(
+    internal static func date(
         from string: String,
         with formats: String...,
         in timeZone: TimeZone = .utc
@@ -134,6 +135,7 @@ public enum Temporal {
             .invalidDateFormat(formats.joined(separator: " | "))
     }
 
+    @usableFromInline
     /// Turn a `String` into a `Foundation.Date`
     /// - Parameters:
     ///   - string: The date in `String` form.
@@ -143,7 +145,7 @@ public enum Temporal {
     /// - Returns: A `Foundation.Date` if conversion was successful.
     /// - Throws: `DataStoreError.invalidDateFormat(_:)` if conversion was unsuccessful.
     /// - SeeAlso: `date(from:with:in:)` overload that takes `String...` rather than `[String]`
-    public static func date(
+    internal static func date(
         from string: String,
         with formats: [String],
         in timeZone: TimeZone = .utc
@@ -158,6 +160,7 @@ public enum Temporal {
             .invalidDateFormat(formats.joined(separator: " | "))
     }
 
+    @usableFromInline
     /// Turn a `Foundation.Date` into a `String`
     /// - Parameters:
     ///   - date: The `Foundation.Date` to be converted to `String` form.
@@ -165,7 +168,7 @@ public enum Temporal {
     ///   - timeZone: The `TimeZone` used by the `DateFormatter` when converted.
     ///               Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
     /// - Returns: The `String` representation of the `date` formatted according to the `format` argument..
-    public static func string(
+    internal static func string(
         from date: Foundation.Date,
         with format: String,
         in timeZone: TimeZone = .utc
@@ -173,5 +176,12 @@ public enum Temporal {
         let formatter = formatter(for: format, in: timeZone)
         let string = formatter.string(from: date)
         return string
+    }
+}
+
+extension TimeZone {
+    /// Utility UTC ("Coordinated Universal Time") TimeZone instance.
+    public static var utc: TimeZone {
+        TimeZone(abbreviation: "UTC")!
     }
 }
