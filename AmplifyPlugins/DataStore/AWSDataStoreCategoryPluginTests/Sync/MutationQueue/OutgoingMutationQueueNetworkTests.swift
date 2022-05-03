@@ -65,6 +65,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
             authModeStrategy: AWSDefaultAuthModeStrategy()
         )
         try setUpDataStore(mutationQueue: mutationQueue)
+        ModelRegistry.register(modelType: Post.self)
     }
 
     override func tearDownWithError() throws {

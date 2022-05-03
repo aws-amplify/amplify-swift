@@ -13,7 +13,6 @@ import AWSPluginsCore
 /// [SQLite](https://sqlite.org) `StorageEngineAdapter` implementation. This class provides
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.
 final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
-
     var connection: Connection?
     var dbFilePath: URL?
     static let dbVersionKey = "com.amazonaws.DataStore.dbVersion"
@@ -31,7 +30,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                      databaseName: String = "database",
                      userDefaults: UserDefaults = UserDefaults.standard) throws {
         var dbFilePath = SQLiteStorageEngineAdapter.getDbFilePath(databaseName: databaseName)
-        try SQLiteStorageEngineAdapter.clearIfNewVersion(version: version, dbFilePath: dbFilePath)
+        _ = try SQLiteStorageEngineAdapter.clearIfNewVersion(version: version, dbFilePath: dbFilePath)
 
         let path = dbFilePath.absoluteString
 
@@ -126,6 +125,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
+    // MARK: - Save
     func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: @escaping DataStoreCallback<M>) {
          save(model, modelSchema: model.schema, condition: condition, completion: completion)
      }
@@ -140,7 +140,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
         do {
             let modelType = type(of: model)
-            let modelExists = try exists(modelSchema, withId: model.id)
+            let modelExists = try exists(modelSchema, withIdentifier: model.identifier(schema: modelSchema))
 
             if !modelExists {
                 if let condition = condition, !condition.isAll {
@@ -157,7 +157,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
             if modelExists {
                 if let condition = condition, !condition.isAll {
-                    let modelExistsWithCondition = try exists(modelSchema, withId: model.id, predicate: condition)
+                    let modelExistsWithCondition = try exists(modelSchema,
+                                                              withIdentifier: model.identifier(schema: modelSchema),
+                                                              predicate: condition)
                     if !modelExistsWithCondition {
                         let dataStoreError = DataStoreError.invalidCondition(
                         "Save failed due to condition did not match existing model instance.",
@@ -175,7 +177,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             }
 
             // load the recent saved instance and pass it back to the callback
-            query(modelType, modelSchema: modelSchema, predicate: field("id").eq(model.id)) {
+            query(modelType, modelSchema: modelSchema, predicate: model.identifier(schema: modelSchema).predicate) {
                 switch $0 {
                 case .success(let result):
                     if let saved = result.first {
@@ -193,6 +195,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
+    // MARK: - Delete
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
                           filter: QueryPredicate,
@@ -215,7 +218,28 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                           withId id: Model.Identifier,
                           condition: QueryPredicate? = nil,
                           completion: (DataStoreResult<M?>) -> Void) {
-        delete(untypedModelType: modelType, modelSchema: modelSchema, withId: id, condition: condition) { result in
+        delete(untypedModelType: modelType,
+               modelSchema: modelSchema,
+               withId: id,
+               condition: condition) { result in
+            switch result {
+            case .success:
+                completion(.success(nil))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func delete<M>(_ modelType: M.Type,
+                   modelSchema: ModelSchema,
+                   withIdentifier identifier: ModelIdentifierProtocol,
+                   condition: QueryPredicate?,
+                   completion: @escaping DataStoreCallback<M?>) where M: Model {
+        delete(untypedModelType: modelType,
+               modelSchema: modelSchema,
+               withIdentifier: identifier,
+               condition: condition) { result in
             switch result {
             case .success:
                 completion(.success(nil))
@@ -230,12 +254,26 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                 withId id: Model.Identifier,
                 condition: QueryPredicate? = nil,
                 completion: DataStoreCallback<Void>) {
+        delete(untypedModelType: modelType,
+               modelSchema: modelSchema,
+               withIdentifier: DefaultModelIdentifier<AnyModel>.makeDefault(id: id),
+               predicate: predicate,
+               completion: completion)
+    }
+
+    func delete(untypedModelType modelType: Model.Type,
+                modelSchema: ModelSchema,
+                withIdentifier id: ModelIdentifierProtocol,
+                condition: QueryPredicate? = nil,
+                completion: DataStoreCallback<Void>) {
         guard let connection = connection else {
             completion(.failure(DataStoreError.nilSQLiteConnection()))
             return
         }
         do {
-            let statement = DeleteStatement(modelSchema: modelSchema, withId: id, predicate: condition)
+            let statement = DeleteStatement(modelSchema: modelSchema,
+                                            withIdentifier: id,
+                                            predicate: condition)
             _ = try connection.prepare(statement.stringValue).run(statement.variables)
             completion(.emptyResult)
         } catch {
@@ -243,6 +281,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
+    // MARK: - query
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate? = nil,
                          sort: [QuerySortDescriptor]? = nil,
@@ -281,15 +320,24 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
+    // MARK: - Exists
     func exists(_ modelSchema: ModelSchema,
-                withId id: Model.Identifier,
+                withId id: String,
+                predicate: QueryPredicate? = nil) throws -> Bool {
+        try exists(modelSchema,
+                        withIdentifier: DefaultModelIdentifier<AnyModel>.makeDefault(id: id),
+                        predicate: predicate)
+    }
+
+    func exists(_ modelSchema: ModelSchema,
+                withIdentifier id: ModelIdentifierProtocol,
                 predicate: QueryPredicate? = nil) throws -> Bool {
         guard let connection = connection else {
             throw DataStoreError.nilSQLiteConnection()
         }
-        let primaryKey = modelSchema.primaryKey.sqlName
+        let primaryKey = modelSchema.primaryKey.sqlName.quoted()
         var sql = "select count(\(primaryKey)) from \"\(modelSchema.name)\" where \(primaryKey) = ?"
-        var variables: [Binding?] = [id]
+        var variables: [Binding?] = [id.stringValue]
         if let predicate = predicate {
             let conditionStatement = ConditionStatement(modelSchema: modelSchema, predicate: predicate)
             sql = """
@@ -320,6 +368,11 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         guard let connection = connection else {
             throw DataStoreError.nilSQLiteConnection()
         }
+
+        guard let modelSchema = ModelRegistry.modelSchema(from: modelName) else {
+            throw DataStoreError.invalidModelName(modelName)
+        }
+
         let statement = SelectStatement(from: MutationSyncMetadata.schema)
         let primaryKey = MutationSyncMetadata.schema.primaryKey.sqlName
         // This is a temp workaround since we don't currently support the "in" operator
@@ -328,9 +381,10 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let sql = statement.stringValue + "\nwhere \(primaryKey) in (\(placeholders))"
 
         // group models by id for fast access when creating the tuple
-        let modelById = Dictionary(grouping: models,
-                                   by: { MutationSyncMetadata.identifier(modelName: modelName, modelId: $0.id) })
-            .mapValues { $0.first! }
+        let modelById = Dictionary(grouping: models, by: {
+            return MutationSyncMetadata.identifier(modelName: modelName,
+                                                   modelId: $0.identifier(schema: modelSchema).stringValue)
+        }).mapValues { $0.first! }
         let ids = [String](modelById.keys)
         let rows = try connection.prepare(sql).bind(ids)
 
@@ -352,7 +406,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         return try results.unique()
     }
 
-    func queryMutationSyncMetadata(for modelIds: [Model.Identifier], modelName: String) throws -> [MutationSyncMetadata] {
+    func queryMutationSyncMetadata(for modelIds: [Model.Identifier],
+                                   modelName: String) throws -> [MutationSyncMetadata] {
         guard let connection = connection else {
             throw DataStoreError.nilSQLiteConnection()
         }

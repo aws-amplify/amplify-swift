@@ -180,7 +180,8 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
         case .create:
             documentBuilder.add(decorator: ModelDecorator(model: model))
         case .delete:
-            documentBuilder.add(decorator: ModelIdDecorator(model: model))
+            documentBuilder.add(decorator: ModelIdDecorator(model: model,
+                                                            schema: modelSchema))
             if let predicate = predicate {
                 documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: modelSchema)))
             }

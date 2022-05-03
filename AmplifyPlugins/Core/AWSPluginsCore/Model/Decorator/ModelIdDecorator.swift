@@ -8,27 +8,38 @@
 import Foundation
 import Amplify
 
-/// Decorate the GraphQLDocument with the value of `Model.Identifier` for a "delete" mutation or "get" query.
+/// Decorate the GraphQLDocument with the value of `ModelIdentifier` for a "delete" mutation or "get" query.
 public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
+    /// Array of model fields and their stringified value
+    private let identifierFields: [(name: String, value: String)]
 
-    private let id: Model.Identifier
-    private let fields: [String: String]?
+    public init(model: Model, schema: ModelSchema) {
+        self.identifierFields = model.identifier(schema: schema).fields.compactMap { fieldName, _ in
+            guard let value = model.graphQLInputForPrimaryKey(modelFieldName: fieldName,
+                                                              modelSchema: schema) else {
+                      return nil
+                  }
 
-    public init(model: Model) {
-        var fields = [String: String]()
-        if let customPrimaryKeys = model.schema.customPrimaryIndexFields {
-            for key in customPrimaryKeys {
-                if let value = model.graphQLInputForPrimaryKey(modelFieldName: key) {
-                    fields[key] = value
-                }
-            }
+            return (name: fieldName, value: value)
         }
-        self.init(id: model.id, fields: fields)
     }
 
+    @available(*, deprecated, message: "Use init(model:schema:)")
+    public init(model: Model) {
+        self.init(model: model, schema: model.schema)
+    }
+
+    @available(*, deprecated, message: "Use init(model:schema:)")
     public init(id: Model.Identifier, fields: [String: String]? = nil) {
-        self.id = id
-        self.fields = fields
+        let identifier = (name: ModelIdentifierFormat.Default.name, value: id)
+        var identifierFields = [identifier]
+
+        if let fields = fields {
+            identifierFields.append(contentsOf: fields.map { key, value in
+                (name: key, value: value)
+            })
+        }
+        self.identifierFields = identifierFields
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
@@ -41,22 +52,19 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
         var inputs = document.inputs
 
         if case .mutation = document.operationType {
-            var objectMap = [String: String]()
-            if let fields = fields {
-                for (fieldName, value) in fields where fieldName != "id" {
-                    objectMap[fieldName] = value
-                }
+            var inputMap = [String: String]()
+            for (name, value) in identifierFields {
+                inputMap[name] = value
             }
-            objectMap["id"] = id
             inputs["input"] = GraphQLDocumentInput(type: "\(document.name.pascalCased())Input!",
-                                                   value: .object(objectMap))
-        } else if case .query = document.operationType {
-            inputs["id"] = GraphQLDocumentInput(type: "ID!", value: .scalar(id))
+                                                   value: .object(inputMap))
 
-            if let fields = fields {
-                for (fieldName, value) in fields where fieldName != "id" {
-                    inputs[fieldName] = GraphQLDocumentInput(type: "String!", value: .scalar(value))
-                }
+        } else if case .query = document.operationType {
+            for (name, value) in identifierFields {
+                let graphQLInput = name == ModelIdentifierFormat.Default.name ?
+                    GraphQLDocumentInput(type: "ID!", value: .scalar(value)) :
+                    GraphQLDocumentInput(type: "String!", value: .scalar(value))
+                inputs[name] = graphQLInput
             }
         }
 

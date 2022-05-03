@@ -39,8 +39,13 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErro
 
     // MARK: - Synchronous APIs
 
+    @available(*, deprecated, message: "Use exists(_:withIdentifier:predicate)")
     func exists(_ modelSchema: ModelSchema,
                 withId id: Model.Identifier,
+                predicate: QueryPredicate?) throws -> Bool
+
+    func exists(_ modelSchema: ModelSchema,
+                withIdentifier id: ModelIdentifierProtocol,
                 predicate: QueryPredicate?) throws -> Bool
 
     func queryMutationSync(for models: [Model], modelName: String) throws -> [MutationSync<AnyModel>]

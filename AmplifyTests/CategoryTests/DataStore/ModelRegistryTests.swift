@@ -51,7 +51,10 @@ class ModelRegistryTests: XCTestCase {
         ModelRegistry.register(modelType: Post.self)
         ModelRegistry.register(modelType: Comment.self)
 
-        let decodedPost = try ModelRegistry.decode(modelName: "Post", from: postJSON)
+        guard let decodedPost = try ModelRegistry.decode(modelName: "Post", from: postJSON) as? Post else {
+            XCTFail("Could not decode to Post")
+            return
+        }
 
         XCTAssertEqual(decodedPost.id, "1")
         XCTAssertEqual(decodedPost["title"] as? String, "title")

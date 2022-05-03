@@ -118,13 +118,14 @@ extension Model {
     /// Retrieve the custom primary key's value used for the GraphQL input.
     /// Only a subset of data types are applicable as custom indexes such as
     /// `date`, `dateTime`, `time`, `enum`, `string`, `double`, and `int`.
-    func graphQLInputForPrimaryKey(modelFieldName: ModelFieldName) -> String? {
+    func graphQLInputForPrimaryKey(modelFieldName: ModelFieldName,
+                                   modelSchema: ModelSchema) -> String? {
 
-        guard let modelField = schema.field(withName: modelFieldName) else {
+        guard let modelField = modelSchema.field(withName: modelFieldName) else {
             return nil
         }
 
-        let fieldValueOptional = getFieldValue(for: modelField.name, modelSchema: schema)
+        let fieldValueOptional = getFieldValue(for: modelField.name, modelSchema: modelSchema)
 
         guard let fieldValue = fieldValueOptional else {
             return nil
@@ -155,9 +156,10 @@ extension Model {
 
     private func getModelId(from value: Any, modelSchema: ModelSchema) -> String? {
         if let modelValue = value as? Model {
-            return modelValue.id
+            return modelValue.identifier(schema: modelSchema).stringValue
         } else if let value = value as? [String: JSONValue],
-                  case .string(let primaryKeyValue) = value[modelSchema.primaryKey.name] {
+                  // TODO CPK: fix this when associated model has composite primary key
+                  case .string(let primaryKeyValue) = value[modelSchema.primaryKey.fields[0].name] {
             return primaryKeyValue
         }
 
