@@ -61,6 +61,20 @@ extension Temporal {
             self.foundationDate = calendar
                 .date(from: components) ?? date
         }
+        
+        @available(*, deprecated, message: """
+        iso8601DateComponents will be removed from the public API in the future. This isn't
+        used to interact with any other public APIs and doesn't provide any value. If you
+        believe otherwise, please open an issue at
+        `https://github.com/aws-amplify/amplify-ios/issues/new/choose`
+        outlining your use case.
+        
+        If you're currently using this, please make a property in your own
+        module to replace the use of this one.
+        """)
+        public static var iso8601DateComponents: Set<Calendar.Component> {
+            [.hour, .minute, .second, .nanosecond, .timeZone]
+        }
     }
 }
 
