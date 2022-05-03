@@ -98,7 +98,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     func delete<M>(_ modelType: M.Type,
                    modelSchema: ModelSchema,
                    withIdentifier identifier: ModelIdentifierProtocol,
-                   predicate: QueryPredicate?, completion: @escaping DataStoreCallback<M?>) where M: Model {
+                   condition: QueryPredicate?, completion: @escaping DataStoreCallback<M?>) where M: Model {
         XCTFail("Not expected to execute")
     }
 
@@ -352,7 +352,7 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     func delete<M>(_ modelType: M.Type,
                    modelSchema: ModelSchema,
                    withIdentifier identifier: ModelIdentifierProtocol,
-                   predicate: QueryPredicate?,
+                   condition: QueryPredicate?,
                    completion: @escaping DataStoreCallback<M?>) where M: Model {
         completion(.success(nil))
     }
