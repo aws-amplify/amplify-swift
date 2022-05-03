@@ -1,5 +1,5 @@
-name: 'Run Test'
-description: 'Action runs the test specified at project_path for workspace and scheme'
+name: 'Run pod install; xcodebuild test'
+description: 'Action runs pod install and then runs the tests specified at project_path for workspace and scheme'
 
 inputs:
   project_path:
@@ -19,7 +19,15 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: CocoaPod Install
+    - name: CocoaPods Cache
+      uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+      with:
+        path: ~/Library/Caches/CocoaPods
+        key: pods-${{ inputs.workspace }}-${{ hashFiles('**/Podfile.lock') }}
+        restore-keys: |
+          pods-${{ inputs.workspace }}-
+
+    - name: CocoaPods Install
       run: |
         cd ${{ inputs.project_path }}
         pod install
