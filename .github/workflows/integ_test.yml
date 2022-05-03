@@ -1,7 +1,7 @@
 name: Integration Tests
 on:
   push:
-    branches: [main,chore/cocoapods-caching]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
