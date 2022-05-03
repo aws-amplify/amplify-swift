@@ -124,7 +124,7 @@ class ModelGraphQLTests: XCTestCase {
     }
 
     /// The GraphQL input should contain the `teamID` provided if the team object is not passed in.
-    func testProjectHasOneTeamMisingTeamObjectSuccess() {
+    func testProjectHasOneTeamMissingTeamObjectSuccess() {
         let team2 = Team2(name: "team")
         let project2 = Project2(teamID: team2.id)
         let graphQLInput = project2.graphQLInputForMutation(Project2.schema)
@@ -133,5 +133,21 @@ class ModelGraphQLTests: XCTestCase {
         XCTAssertNil(graphQLInput["name"]!)
         XCTAssertEqual(graphQLInput["teamID"] as? String, team2.id)
         XCTAssertFalse(graphQLInput.keys.contains("team"))
+    }
+
+    // MARK: - Custom Primary Key
+    func testModelWithExplicitCustomPrimaryKey() {
+        let model = ModelExplicitCustomPk(userId: "userId", name: "name")
+        let graphQLInput = model.graphQLInputForMutation(model.schema)
+        XCTAssertEqual(graphQLInput["userId"] as? String, model.userId)
+        XCTAssertEqual(graphQLInput["name"] as? String, model.name)
+    }
+
+    func testModelWithExplicitCompositePrimaryKey() {
+        let model = ModelCompositePk(id: "id", dob: Temporal.DateTime.now(), name: "name")
+        let graphQLInput = model.graphQLInputForMutation(model.schema)
+        XCTAssertEqual(graphQLInput["id"] as? String, model.id)
+        XCTAssertEqual(graphQLInput["dob"] as? String, model.dob.iso8601String)
+        XCTAssertEqual(graphQLInput["name"] as? String, model.name)
     }
 }

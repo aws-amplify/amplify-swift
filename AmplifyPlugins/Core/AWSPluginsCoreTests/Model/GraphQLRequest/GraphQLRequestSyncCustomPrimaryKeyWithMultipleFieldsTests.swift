@@ -40,15 +40,15 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
                 mutation DeleteCustomerWithMultipleFieldsinPK($input: DeleteCustomerWithMultipleFieldsinPKInput!) {
                   deleteCustomerWithMultipleFieldsinPK(input: $input) {
                     id
-                    createdAt
-                    date
                     dob
-                    firstName
-                    height
-                    lastName
+                    date
+                    time
                     phoneNumber
                     priority
-                    time
+                    height
+                    createdAt
+                    firstName
+                    lastName
                     updatedAt
                     __typename
                     _version
@@ -109,15 +109,15 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
                 subscription OnCreateCustomerWithMultipleFieldsinPK {
                   onCreateCustomerWithMultipleFieldsinPK {
                     id
-                    createdAt
-                    date
                     dob
-                    firstName
-                    height
-                    lastName
+                    date
+                    time
                     phoneNumber
                     priority
-                    time
+                    height
+                    createdAt
+                    firstName
+                    lastName
                     updatedAt
                     __typename
                     _version
@@ -149,15 +149,15 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
           syncCustomerWithMultipleFieldsinPKs(lastSync: $lastSync, limit: $limit, nextToken: $nextToken) {
             items {
               id
-              createdAt
-              date
               dob
-              firstName
-              height
-              lastName
+              date
+              time
               phoneNumber
               priority
-              time
+              height
+              createdAt
+              firstName
+              lastName
               updatedAt
               __typename
               _version

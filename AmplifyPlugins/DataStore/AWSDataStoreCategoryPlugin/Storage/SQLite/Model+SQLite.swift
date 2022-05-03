@@ -68,7 +68,9 @@ extension Model {
             // - `guard` to ensure the returned value isn't nil
             // - Attempt to cast to Persistable to ensure the model value isn't incorrectly assigned to a type we
             //   can't handle
-            if let jsonModel = self as? JSONValueHolder {
+            if field.name == ModelIdentifierFormat.Custom.name {
+                existingFieldOptionalValue = self.identifier(schema: modelSchema).stringValue
+            } else if let jsonModel = self as? JSONValueHolder {
                 existingFieldOptionalValue = jsonModel.jsonValue(for: field.name, modelSchema: modelSchema)
             } else {
                 existingFieldOptionalValue = self[field.name]
@@ -187,4 +189,9 @@ extension Array where Element == ModelSchema {
             modelSchema.hasAssociations
         }
     }
+}
+
+extension ModelIdentifierFormat.Custom {
+    /// Name for composite identifier (multiple fields)
+    public static let name = "@@primaryKey"
 }

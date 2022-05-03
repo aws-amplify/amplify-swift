@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 
 public struct AnyModel: Model {
-    public let id: Identifier
+    public let id: String
     public let instance: Model
 
     /// Overrides the convenience property with the model name of the instance, so that AnyModel can still be decoded
@@ -17,11 +17,20 @@ public struct AnyModel: Model {
     public let modelName: String
 
     public init(_ instance: Model) {
-        self.id = instance.id
+        self.id = instance.identifier
         self.instance = instance
         self.modelName = instance.modelName
     }
 
+    /// Delegates the identifier resolution to the wrapped model istance.
+    public func identifier(schema: ModelSchema) -> ModelIdentifierProtocol {
+        instance.identifier(schema: schema)
+    }
+
+    /// Delegates the identifier resolution to the wrapped model istance.
+    public var identifier: String {
+        instance.identifier
+    }
 }
 
 extension AnyModel {
@@ -40,10 +49,11 @@ extension AnyModel {
     public static let schema = defineSchema { definition in
         let anyModel = AnyModel.keys
 
-        definition.attributes(.isSystem)
+        definition.attributes(.isSystem,
+                              .primaryKey(fields: [anyModel.id]))
 
         definition.fields(
-            .id(),
+            .field(anyModel.id, is: .required, ofType: .string),
             .field(anyModel.instance, is: .required, ofType: .string),
             .field(anyModel.modelName, is: .required, ofType: .string)
         )

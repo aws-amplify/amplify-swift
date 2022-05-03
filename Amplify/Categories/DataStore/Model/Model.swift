@@ -11,8 +11,8 @@ import Foundation
 
 /// All persistent models should conform to the Model protocol.
 public protocol Model: Codable {
-
     /// Alias of Model identifier (i.e. primary key)
+    @available(*, deprecated, message: "Use ModelIdentifier")
     typealias Identifier = String
 
     /// A reference to the `ModelSchema` associated with this model.
@@ -26,6 +26,37 @@ public protocol Model: Codable {
     /// undefined behavior.
     var modelName: String { get }
 
-    /// The Model identifier (aka primary key)
-    var id: Identifier { get }
+    /// For internal use only when a model schema is provided
+    /// (i.e. calls from Flutter)
+    func identifier(schema: ModelSchema) -> ModelIdentifierProtocol
+
+    /// Convenience property to access the serialized value of a model identifier
+    var identifier: String { get }
+}
+
+extension Model {
+    public var identifier: String {
+        guard let schema = ModelRegistry.modelSchema(from: modelName) else {
+            preconditionFailure("Schema not found for \(modelName)")
+        }
+        return identifier(schema: schema).stringValue
+    }
+
+    public func identifier(schema modelSchema: ModelSchema) -> ModelIdentifierProtocol {
+        // resolve current instance identifier fields
+        let fields: ModelIdentifierProtocol.Fields = modelSchema.primaryKey.fields.map {
+            let value = self[$0.name] as? Persistable ?? ""
+            return (name: $0.name, value: value)
+        }
+
+        guard !modelSchema.fields.isEmpty else {
+            return DefaultModelIdentifier<Self>.makeDefault(fromModel: self)
+        }
+
+        if fields.count == 1, fields[0].name == ModelIdentifierFormat.Default.name {
+            return ModelIdentifier<Self, ModelIdentifierFormat.Default>(fields: fields)
+        } else {
+            return ModelIdentifier<Self, ModelIdentifierFormat.Custom>(fields: fields)
+        }
+    }
 }

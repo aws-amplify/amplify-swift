@@ -19,6 +19,7 @@ class InitialSyncOperationTests: XCTestCase {
 
     override func setUp() {
         continueAfterFailure = false
+        ModelRegistry.register(modelType: MockSynced.self)
     }
 
     /// - Given: An InitialSyncOperation
