@@ -209,7 +209,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
           storageEngine.delete(modelType,
                                modelSchema: modelSchema,
                                withIdentifier: identifier,
-                               predicate: predicate) { result in
+                               condition: predicate) { result in
               self.onDeleteCompletion(result: result,
                                       modelSchema: modelSchema,
                                       completion: completion)

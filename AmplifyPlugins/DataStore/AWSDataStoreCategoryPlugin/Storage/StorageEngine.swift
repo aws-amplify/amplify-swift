@@ -258,14 +258,14 @@ final class StorageEngine: StorageEngineBehavior {
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
                           withIdentifier identifier: ModelIdentifierProtocol,
-                          predicate: QueryPredicate?,
+                          condition: QueryPredicate?,
                           completion: @escaping DataStoreCallback<M?>) {
         let cascadeDeleteOperation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                             syncEngine: syncEngine,
                                                             modelType: modelType, modelSchema: modelSchema,
                                                             withIdentifier: identifier,
                                                             condition: condition) { completion($0) }
-        operationQueue.addOperation(cascadeDeleteOperation)                              
+        operationQueue.addOperation(cascadeDeleteOperation)
 
     }
 
