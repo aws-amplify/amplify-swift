@@ -49,6 +49,7 @@ extension AWSCognitoAuthPlugin {
                       userService: userService,
                       deviceService: deviceService,
                       hubEventHandler: hubEventHandler,
+                      authConfig: jsonValueConfiguration,
                       queue: operationQueue)
         } catch let authError as AuthError {
             throw authError
@@ -147,7 +148,6 @@ extension AWSCognitoAuthPlugin {
         }
 
     // MARK: Internal
-
     /// Internal configure method to set the properties of the plugin
     ///
     /// Called from the configure method which implements the Plugin protocol. Useful for testing by passing in mocks.
@@ -161,12 +161,14 @@ extension AWSCognitoAuthPlugin {
                    userService: AuthUserServiceBehavior,
                    deviceService: AuthDeviceServiceBehavior,
                    hubEventHandler: AuthHubEventBehavior,
+                   authConfig: JSONValue = JSONValue.object([:]),
                    queue: OperationQueue = OperationQueue()) {
         self.authenticationProvider = authenticationProvider
         self.authorizationProvider = authorizationProvider
         self.userService = userService
         self.deviceService = deviceService
         self.hubEventHandler = hubEventHandler
+        configuration = authConfig
         self.queue = queue
     }
 }

@@ -16,6 +16,8 @@ typealias SigInResultCompletion = (Result<AuthSignInResult, AuthError>) -> Void
 
 extension AuthenticationProviderAdapter {
 
+    static let cognitoClientKey = "CognitoUserPoolKey"
+
     func signIn(request: AuthSignInRequest,
                 completionHandler: @escaping SigInResultCompletion) {
 
@@ -27,6 +29,12 @@ extension AuthenticationProviderAdapter {
         let password = request.password ?? ""
 
         let clientMetaData = (request.options.pluginOptions as? AWSAuthSignInOptions)?.metadata ?? [:]
+        let authType = (request.options.pluginOptions as? AWSAuthSignInOptions)?.authFlowType
+
+        if authType != .unknown,
+           let client = AWSCognitoIdentityUserPool.init(forKey: Self.cognitoClientKey) {
+            client.isCustomAuth = (authType == .custom)
+        }
 
         awsMobileClient.signIn(username: username,
                                password: password,
