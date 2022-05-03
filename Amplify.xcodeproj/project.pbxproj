@@ -350,20 +350,12 @@
 		76FFFC91267966D9001EC92B /* RetryableGraphQLOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FFFC90267966D9001EC92B /* RetryableGraphQLOperationTests.swift */; };
 		8484A17AAAFE78545A932849 /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1769ED39B45A981FD1D8AC /* Pods_Amplify.framework */; };
 		902AE05B281304B800CD12CA /* SpecBasedDateConverting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE04C281304B800CD12CA /* SpecBasedDateConverting.swift */; };
-		902AE064281304B800CD12CA /* AnyTemporalSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE055281304B800CD12CA /* AnyTemporalSpec.swift */; };
-		902AE068281304B800CD12CA /* TemporalUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE059281304B800CD12CA /* TemporalUnit.swift */; };
 		902AE06D2813050200CD12CA /* Temporal+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE06A2813050200CD12CA /* Temporal+Codable.swift */; };
-		902AE06E2813050200CD12CA /* Temporal+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE06B2813050200CD12CA /* Temporal+Comparable.swift */; };
-		902AE06F2813050200CD12CA /* Temporal+Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE06C2813050200CD12CA /* Temporal+Hashable.swift */; };
 		9091FF7D2820771B0021D8E1 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 9091FF692820771B0021D8E1 /* README.md */; };
 		9091FF7E2820771B0021D8E1 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF6A2820771B0021D8E1 /* Date.swift */; };
-		9091FF7F2820771B0021D8E1 /* Temporal+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF6B2820771B0021D8E1 /* Temporal+Codable.swift */; };
 		9091FF802820771C0021D8E1 /* TemporalFormat+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF6C2820771B0021D8E1 /* TemporalFormat+Date.swift */; };
 		9091FF812820771C0021D8E1 /* TemporalFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF6D2820771B0021D8E1 /* TemporalFormat.swift */; };
-		9091FF822820771C0021D8E1 /* Temporal+Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF6E2820771B0021D8E1 /* Temporal+Hashable.swift */; };
 		9091FF832820771C0021D8E1 /* TemporalFormat+Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF6F2820771B0021D8E1 /* TemporalFormat+Time.swift */; };
-		9091FF842820771C0021D8E1 /* DataStoreError+Temporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF702820771B0021D8E1 /* DataStoreError+Temporal.swift */; };
-		9091FF852820771C0021D8E1 /* SpecBasedDateConverting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF712820771B0021D8E1 /* SpecBasedDateConverting.swift */; };
 		9091FF872820771C0021D8E1 /* TemporalFormat+DateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF732820771B0021D8E1 /* TemporalFormat+DateTime.swift */; };
 		9091FF882820771C0021D8E1 /* DateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF742820771B0021D8E1 /* DateTime.swift */; };
 		9091FF892820771C0021D8E1 /* Temporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF752820771B0021D8E1 /* Temporal.swift */; };
@@ -374,6 +366,9 @@
 		9091FF902820771C0021D8E1 /* AnyTemporalSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF7C2820771B0021D8E1 /* AnyTemporalSpec.swift */; };
 		9091FF9228207B8D0021D8E1 /* Temporal+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF9128207B8D0021D8E1 /* Temporal+Cache.swift */; };
 		9091FF9428215DF40021D8E1 /* TemporalUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF9328215DF40021D8E1 /* TemporalUnit.swift */; };
+		9091FF97282170EB0021D8E1 /* DataStoreError+Temporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0702813052F00CD12CA /* DataStoreError+Temporal.swift */; };
+		9091FF99282171840021D8E1 /* Temporal+Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF98282171840021D8E1 /* Temporal+Hashable.swift */; };
+		9091FF9A282171FF0021D8E1 /* Temporal+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF9528215DFD0021D8E1 /* Temporal+Comparable.swift */; };
 		90A8901327619D780042C3C1 /* AWSAuthServiceBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A8901227619D780042C3C1 /* AWSAuthServiceBehaviorTests.swift */; };
 		950A26DB23D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26D823D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift */; };
 		950A26DC23D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26D923D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift */; };
@@ -1285,11 +1280,7 @@
 		852B5530E9E8794DAC86E44E /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig"; sourceTree = "<group>"; };
 		8E125EAA66C26B6F0705BB0C /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig"; sourceTree = "<group>"; };
 		902AE04C281304B800CD12CA /* SpecBasedDateConverting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecBasedDateConverting.swift; sourceTree = "<group>"; };
-		902AE055281304B800CD12CA /* AnyTemporalSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyTemporalSpec.swift; sourceTree = "<group>"; };
-		902AE059281304B800CD12CA /* TemporalUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemporalUnit.swift; sourceTree = "<group>"; };
 		902AE06A2813050200CD12CA /* Temporal+Codable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Codable.swift"; sourceTree = "<group>"; };
-		902AE06B2813050200CD12CA /* Temporal+Comparable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Comparable.swift"; sourceTree = "<group>"; };
-		902AE06C2813050200CD12CA /* Temporal+Hashable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Hashable.swift"; sourceTree = "<group>"; };
 		902AE0702813052F00CD12CA /* DataStoreError+Temporal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DataStoreError+Temporal.swift"; sourceTree = "<group>"; };
 		902AE0722813088B00CD12CA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9091FF692820771B0021D8E1 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -1300,7 +1291,6 @@
 		9091FF6E2820771B0021D8E1 /* Temporal+Hashable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Hashable.swift"; sourceTree = "<group>"; };
 		9091FF6F2820771B0021D8E1 /* TemporalFormat+Time.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TemporalFormat+Time.swift"; sourceTree = "<group>"; };
 		9091FF702820771B0021D8E1 /* DataStoreError+Temporal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DataStoreError+Temporal.swift"; sourceTree = "<group>"; };
-		9091FF712820771B0021D8E1 /* SpecBasedDateConverting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecBasedDateConverting.swift; sourceTree = "<group>"; };
 		9091FF722820771B0021D8E1 /* Temporal+Comparable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Comparable.swift"; sourceTree = "<group>"; };
 		9091FF732820771B0021D8E1 /* TemporalFormat+DateTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TemporalFormat+DateTime.swift"; sourceTree = "<group>"; };
 		9091FF742820771B0021D8E1 /* DateTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateTime.swift; sourceTree = "<group>"; };
@@ -1314,6 +1304,7 @@
 		9091FF9128207B8D0021D8E1 /* Temporal+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Cache.swift"; sourceTree = "<group>"; };
 		9091FF9328215DF40021D8E1 /* TemporalUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemporalUnit.swift; sourceTree = "<group>"; };
 		9091FF9528215DFD0021D8E1 /* Temporal+Comparable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Comparable.swift"; sourceTree = "<group>"; };
+		9091FF98282171840021D8E1 /* Temporal+Hashable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Hashable.swift"; sourceTree = "<group>"; };
 		90A8901227619D780042C3C1 /* AWSAuthServiceBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthServiceBehaviorTests.swift; sourceTree = "<group>"; };
 		950A26D823D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsTranslateTextOperation.swift; sourceTree = "<group>"; };
 		950A26D923D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsTextToSpeechOperation.swift; sourceTree = "<group>"; };
@@ -2712,12 +2703,12 @@
 				9091FF762820771B0021D8E1 /* Date+Operation.swift */,
 				9091FF742820771B0021D8E1 /* DateTime.swift */,
 				902AE0722813088B00CD12CA /* README.md */,
-				9091FF712820771B0021D8E1 /* SpecBasedDateConverting.swift */,
+				902AE04C281304B800CD12CA /* SpecBasedDateConverting.swift */,
 				9091FF752820771B0021D8E1 /* Temporal.swift */,
 				9091FF9128207B8D0021D8E1 /* Temporal+Cache.swift */,
 				902AE06A2813050200CD12CA /* Temporal+Codable.swift */,
 				9091FF9528215DFD0021D8E1 /* Temporal+Comparable.swift */,
-				9091FF6E2820771B0021D8E1 /* Temporal+Hashable.swift */,
+				9091FF98282171840021D8E1 /* Temporal+Hashable.swift */,
 				9091FF6D2820771B0021D8E1 /* TemporalFormat.swift */,
 				9091FF6C2820771B0021D8E1 /* TemporalFormat+Date.swift */,
 				9091FF732820771B0021D8E1 /* TemporalFormat+DateTime.swift */,
@@ -2726,13 +2717,6 @@
 				9091FF9328215DF40021D8E1 /* TemporalUnit.swift */,
 				9091FF7A2820771B0021D8E1 /* Time.swift */,
 				9091FF7B2820771B0021D8E1 /* Time+Operation.swift */,
-				902AE055281304B800CD12CA /* AnyTemporalSpec.swift */,
-				902AE0702813052F00CD12CA /* DataStoreError+Temporal.swift */,
-				902AE06A2813050200CD12CA /* Temporal+Codable.swift */,
-				902AE06B2813050200CD12CA /* Temporal+Comparable.swift */,
-				902AE06C2813050200CD12CA /* Temporal+Hashable.swift */,
-				902AE04C281304B800CD12CA /* SpecBasedDateConverting.swift */,
-				902AE059281304B800CD12CA /* TemporalUnit.swift */,
 			);
 			path = Temporal;
 			sourceTree = "<group>";
@@ -3209,6 +3193,9 @@
 				9091FF792820771B0021D8E1 /* TemporalUnit.swift */,
 				9091FF722820771B0021D8E1 /* Temporal+Comparable.swift */,
 				9091FF692820771B0021D8E1 /* README.md */,
+				9091FF6B2820771B0021D8E1 /* Temporal+Codable.swift */,
+				9091FF702820771B0021D8E1 /* DataStoreError+Temporal.swift */,
+				9091FF6E2820771B0021D8E1 /* Temporal+Hashable.swift */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -5095,6 +5082,7 @@
 				B4FEA92124635BFB0009B47B /* AuthCategoryDeviceBehavior.swift in Sources */,
 				FAA98B02239214A30039EE71 /* DataStoreConflict.swift in Sources */,
 				B450741124115C140098F02D /* AuthSignInOperation.swift in Sources */,
+				9091FF99282171840021D8E1 /* Temporal+Hashable.swift in Sources */,
 				FA093386238480EB00C2FD5F /* OSLogWrapper.swift in Sources */,
 				FAC23544227A055200424678 /* ConfigurationError.swift in Sources */,
 				95DAAB44237E639E0028544F /* ConvertResult.swift in Sources */,
@@ -5186,6 +5174,7 @@
 				21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */,
 				974FF19B24BD05AA0050D01B /* EnvironmentInfoItemType.swift in Sources */,
 				9091FF902820771C0021D8E1 /* AnyTemporalSpec.swift in Sources */,
+				9091FF97282170EB0021D8E1 /* DataStoreError+Temporal.swift in Sources */,
 				FAC428A0235F7F980000F221 /* AmplifyAPICategory+RESTBehavior.swift in Sources */,
 				B43DC738241051A200D40275 /* AuthSignUpRequest.swift in Sources */,
 				FA00F68A24DA3A43003E8A71 /* AuthCategoryDeviceBehavior+Combine.swift in Sources */,
@@ -5234,7 +5223,6 @@
 				FA09337E2384677A00C2FD5F /* AWSUnifiedLoggingPlugin.swift in Sources */,
 				FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */,
 				FAAFAF2D23904ADF002CF932 /* AtomicValue+Numeric.swift in Sources */,
-				902AE068281304B800CD12CA /* TemporalUnit.swift in Sources */,
 				FA09B94B2322CBEB000E064D /* LoggingCategoryConfiguration.swift in Sources */,
 				B49A02FB2410BEDF00B42A25 /* AuthCategory+Resettable.swift in Sources */,
 				2129BE512395A66F006363A1 /* AmplifyModelRegistration.swift in Sources */,
@@ -5284,7 +5272,6 @@
 				21FFF995230C96CB005878EA /* StorageListOperation.swift in Sources */,
 				95DAAB33237E63370028544F /* KeyPhrase.swift in Sources */,
 				5C763DAC26F2CFC2006650E7 /* Geo+MapStyle.swift in Sources */,
-				9091FF852820771C0021D8E1 /* SpecBasedDateConverting.swift in Sources */,
 				902AE05B281304B800CD12CA /* SpecBasedDateConverting.swift in Sources */,
 				21409C552384C55D000A53C9 /* LabelType.swift in Sources */,
 				FA315295233D634900DE78E7 /* StorageDownloadFileRequest.swift in Sources */,
@@ -5314,7 +5301,6 @@
 				B4FA336824105E8100E1C659 /* AuthCategory+HubPayloadEventName.swift in Sources */,
 				950A26E123D15DCC00D92B19 /* PredictionsSpeechToTextRequest.swift in Sources */,
 				B4D38531236C97360014653D /* PredictionsCategoryBehavior.swift in Sources */,
-				9091FF7F2820771B0021D8E1 /* Temporal+Codable.swift in Sources */,
 				FAAFAF2B23904AAF002CF932 /* AtomicValue.swift in Sources */,
 				B4B5CCA12458A0490019C783 /* AuthUpdateAttributeResult.swift in Sources */,
 				95DAAB89237F13B70028544F /* IdentifyEntityMatchesResult.swift in Sources */,
@@ -5344,7 +5330,6 @@
 				B92E03B72367CE7A006CEB8D /* ModelRegistry.swift in Sources */,
 				95DAAB83237F13940028544F /* EntityMatch.swift in Sources */,
 				975751AB24CA27AD00FA0A6E /* IssueInfo.swift in Sources */,
-				9091FF822820771C0021D8E1 /* Temporal+Hashable.swift in Sources */,
 				FA09B93B2321A36F000E064D /* StorageCategory+CategoryConfigurable.swift in Sources */,
 				95DAAB4C237E639E0028544F /* IdentifyEntitiesResult.swift in Sources */,
 				975751A724CA0DCB00FA0A6E /* IssueReporter.swift in Sources */,
@@ -5359,7 +5344,6 @@
 				95DAAB2A237E63370028544F /* Pose.swift in Sources */,
 				9091FF8F2820771C0021D8E1 /* Time+Operation.swift in Sources */,
 				FA09B94D2322CC05000E064D /* StorageCategoryConfiguration.swift in Sources */,
-				9091FF842820771C0021D8E1 /* DataStoreError+Temporal.swift in Sources */,
 				950A26DF23D15D9800D92B19 /* SpeechToTextResult.swift in Sources */,
 				B92E03AF2367CE7A006CEB8D /* DataStoreCategoryBehavior.swift in Sources */,
 				5C09CCBC26CEDE1200CDCA9F /* GeoCategory+ClientBehavior.swift in Sources */,
@@ -5375,7 +5359,6 @@
 				21FFF988230B7B2C005878EA /* AsychronousOperation.swift in Sources */,
 				95DAAB49237E639E0028544F /* IdentifyDocumentTextResult.swift in Sources */,
 				B46884122460A8D600221268 /* AuthFetchDevicesOperation.swift in Sources */,
-				902AE06F2813050200CD12CA /* Temporal+Hashable.swift in Sources */,
 				FA0173352375F8A5005DDDFC /* LoggingError.swift in Sources */,
 				9091FF812820771C0021D8E1 /* TemporalFormat.swift in Sources */,
 				9091FF8E2820771C0021D8E1 /* Time.swift in Sources */,
@@ -5387,10 +5370,10 @@
 				FAC2351A227A053D00424678 /* StorageCategory.swift in Sources */,
 				974FF19F24BE13100050D01B /* PluginInfoItem.swift in Sources */,
 				21558E3E237BB4BF0032A5BB /* GraphQLRequest.swift in Sources */,
+				9091FF9A282171FF0021D8E1 /* Temporal+Comparable.swift in Sources */,
 				9091FF882820771C0021D8E1 /* DateTime.swift in Sources */,
 				FA6BC87D235F5D490001A882 /* APICategoryRESTBehavior.swift in Sources */,
 				B4B5CC982457B7FA0019C783 /* AuthConfirmUserAttributeOperation.swift in Sources */,
-				902AE06E2813050200CD12CA /* Temporal+Comparable.swift in Sources */,
 				B4507419241166580098F02D /* AuthSession.swift in Sources */,
 				B92E03B92367CE7A006CEB8D /* Model+Schema.swift in Sources */,
 				5C3324912772BCF700F2C47B /* AuthDeleteUserOperation.swift in Sources */,
@@ -5491,7 +5474,6 @@
 				B9FAA13C238BBE67009414B4 /* DataStoreCallback+Combine.swift in Sources */,
 				95DAAB8A237F13B70028544F /* TextToSpeechResult.swift in Sources */,
 				B4251A05242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift in Sources */,
-				902AE064281304B800CD12CA /* AnyTemporalSpec.swift in Sources */,
 				B98E9D122372236300934B51 /* QueryField.swift in Sources */,
 				B98E9D0F2372236300934B51 /* QueryOperator.swift in Sources */,
 				FAA64FC52397344D00B9C3C6 /* AtomicValue+RangeReplaceableCollection.swift in Sources */,

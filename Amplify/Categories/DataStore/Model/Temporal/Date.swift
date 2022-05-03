@@ -48,8 +48,6 @@ extension Temporal {
     }
 }
 
-
-
 // Allow date unit operations on `Temporal.Date`
 extension Temporal.Date: DateUnitOperable {}
 
