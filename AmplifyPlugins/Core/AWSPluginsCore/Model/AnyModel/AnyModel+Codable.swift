@@ -14,7 +14,7 @@ public extension AnyModel {
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
 
-        id = try values.decode(Identifier.self, forKey: .id)
+        id = try values.decode(String.self, forKey: .id)
         modelName = try values.decode(String.self, forKey: .modelName)
 
         let instanceJSON = try values.decode(String.self, forKey: .instance)

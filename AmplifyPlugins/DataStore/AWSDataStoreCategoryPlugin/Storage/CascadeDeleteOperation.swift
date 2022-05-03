@@ -10,24 +10,6 @@ import Amplify
 import AWSPluginsCore
 import Combine
 
-enum DeleteInput {
-    case withId(id: Model.Identifier)
-    case withIdAndCondition(id: Model.Identifier, condition: QueryPredicate)
-    case withFilter(_ filter: QueryPredicate)
-
-    /// Returns a computed predicate based on the type of delete scenario it is.
-    var predicate: QueryPredicate {
-        switch self {
-        case .withId(let id):
-            return field("id").eq(id)
-        case .withIdAndCondition(let id, let condition):
-            return field("id").eq(id).and(condition)
-        case .withFilter(let filter):
-            return filter
-        }
-    }
-}
-
 /// CascadeDeleteOperation has the following logic:
 /// 1. Query models from local store based on the following use cases:
 ///    1a. If the use case is Delete with id, then query by `id`
@@ -53,14 +35,14 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
          syncEngine: RemoteSyncEngineBehavior?,
          modelType: M.Type,
          modelSchema: ModelSchema,
-         withId id: String,
+         withIdentifier identifier: ModelIdentifierProtocol,
          condition: QueryPredicate? = nil,
          completion: @escaping (DataStoreResult<M?>) -> Void) {
         self.storageAdapter = storageAdapter
         self.syncEngine = syncEngine
         self.modelType = modelType
         self.modelSchema = modelSchema
-        var deleteInput = DeleteInput.withId(id: id)
+        var deleteInput = DeleteInput.withIdentifier(id: identifier)
         if let condition = condition {
             deleteInput = .withIdAndCondition(id: id, condition: condition)
         }
@@ -110,7 +92,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             }
 
             guard !queriedModels.isEmpty else {
-                guard case .withIdAndCondition(let id, _) = self.deleteInput else {
+                guard case .withIdentifierAndCondition(let identifier, _) = self.deleteInput else {
                     // Query did not return any results, treat this as a successful no-op delete.
                     deletedResult = .success([M]())
                     return
@@ -118,7 +100,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 
                 // Query using the computed predicate did not return any results, check if model actually exists.
                 do {
-                    if try self.storageAdapter.exists(self.modelSchema, withId: id, predicate: nil) {
+                    if try self.storageAdapter.exists(modelSchema, withIdentifier: identifier, predicate: nil) {
                         queriedResult = .failure(
                             DataStoreError.invalidCondition(
                                 "Delete failed due to condition did not match existing model instance.",
@@ -133,8 +115,9 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                 return
             }
 
-            let modelIds = queriedModels.map {$0.id}
-            associatedModels = self.recurseQueryAssociatedModels(modelSchema: self.modelSchema, ids: modelIds)
+            // TODO CPK: verify that is correct
+            let modelIds = queriedModels.map { $0.identifier(schema: modelSchema).stringValue }
+            associatedModels = self.recurseQueryAssociatedModels(modelSchema: modelSchema, ids: modelIds)
             let deleteCompletionWrapper: DataStoreCallback<[M]> = { deleteResult in
                 deletedResult = deleteResult
             }
@@ -146,9 +129,9 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 
         do {
             try storageAdapter.transaction {
-                storageAdapter.query(self.modelType,
-                                     modelSchema: self.modelSchema,
-                                     predicate: self.deleteInput.predicate,
+                storageAdapter.query(modelType,
+                                     modelSchema: modelSchema,
+                                     predicate: deleteInput.predicate,
                                      sort: nil,
                                      paginationInput: nil,
                                      completion: queryCompletionBlock)
@@ -175,7 +158,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             let queriedModels = queryAssociatedModels(modelName: associatedModelName,
                                                       associatedField: associatedField,
                                                       ids: ids)
-            let associatedModelIds = queriedModels.map { $0.1.id }
+            let associatedModelIds = queriedModels.map { $0.1.identifier(schema: modelSchema).stringValue }
             associatedModels.append(contentsOf: queriedModels)
             associatedModels.append(contentsOf: recurseQueryAssociatedModels(modelSchema: associatedModelSchema,
                                                                             ids: associatedModelIds))
@@ -249,7 +232,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         switch transactionResult {
         case .success(let queryAndDeleteResult):
             switch deleteInput {
-            case .withId, .withIdAndCondition:
+            case .withIdentifier, .withIdentifierAndCondition:
                 guard queryAndDeleteResult.deletedModels.count <= 1 else {
                     completionForWithId?(.failure(.unknown("delete with id returned more than one result", "", nil)))
                     finish()
@@ -302,7 +285,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             // that move the model out of the filtered results). Should we stop passing the `filter` to the delete
             // mutation?
             switch deleteInput {
-            case .withId, .withIdAndCondition:
+            case .withIdentifier, .withIdentifierAndCondition:
                 syncDeletions(withModels: queryAndDeleteResult.deletedModels,
                               associatedModels: queryAndDeleteResult.associatedModels,
                               syncEngine: syncEngine) {
@@ -487,6 +470,29 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                     self.log.verbose("\(#function) saved mutation event: \(mutationEvent)")
                     completion(.success(mutationEvent))
                 })
+    }
+}
+
+// MARK: - CascadeDeleteOperation.DeleteInput
+extension CascadeDeleteOperation {
+    enum DeleteInput {
+        case withIdentifier(id: ModelIdentifierProtocol)
+        case withIdentifierAndCondition(id: ModelIdentifierProtocol, condition: QueryPredicate)
+        case withFilter(_ filter: QueryPredicate)
+
+        /// Returns a computed predicate based on the type of delete scenario it is.
+        var predicate: QueryPredicate {
+            switch self {
+            case .withIdentifier(let identifier):
+                return identifier.predicate
+            case .withIdentifierAndCondition(let identifier, let predicate):
+                return QueryPredicateGroup(type: .and,
+                                           predicates: [identifier.predicate,
+                                                        predicate])
+            case .withFilter(let predicate):
+                return predicate
+            }
+        }
     }
 }
 

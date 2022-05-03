@@ -17,6 +17,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
 
     override func setUp() {
         continueAfterFailure = false
+        ModelRegistry.register(modelType: MockSynced.self)
     }
 
     // MARK: reconcile(pendingMutations)

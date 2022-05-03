@@ -21,14 +21,16 @@ struct CreateTableStatement: SQLStatement {
         let name = modelSchema.name
         var statement = #"create table if not exists "\#(name)" (\#n"#
 
+        let primaryKey = modelSchema.primaryKey
         let columns = modelSchema.columns
         let foreignKeys = modelSchema.foreignKeys
 
         for (index, column) in columns.enumerated() {
             statement += "  \"\(column.sqlName)\" \(column.sqlType.rawValue)"
-            if column.isPrimaryKey {
+            if column.name == primaryKey.name {
                 statement += " primary key"
             }
+
             if column.isRequired {
                 statement += " not null"
             }

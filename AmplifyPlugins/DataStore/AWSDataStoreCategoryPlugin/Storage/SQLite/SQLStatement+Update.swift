@@ -57,7 +57,7 @@ struct UpdateStatement: SQLStatement {
 
     var variables: [Binding?] {
         var bindings = model.sqlValues(for: updateColumns, modelSchema: modelSchema)
-        bindings.append(model.id)
+        bindings.append(model.identifier(schema: modelSchema).stringValue)
         if let conditionStatement = conditionStatement {
             bindings.append(contentsOf: conditionStatement.variables)
         }

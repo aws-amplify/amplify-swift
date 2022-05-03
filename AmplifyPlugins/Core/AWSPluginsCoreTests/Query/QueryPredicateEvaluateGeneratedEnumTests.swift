@@ -12,6 +12,9 @@ import XCTest
 @testable import AmplifyTestCommon
 
 class QueryPredicateEvaluateGeneratedEnumTests: XCTestCase {
+    override func setUp() {
+        ModelRegistry.register(modelType: Post.self)
+    }
 
     func testEnumNotEqual_False() throws {
         let predicate = Post.keys.status.ne(PostStatus.published)
