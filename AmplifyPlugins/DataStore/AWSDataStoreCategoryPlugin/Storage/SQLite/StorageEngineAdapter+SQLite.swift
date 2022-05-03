@@ -130,17 +130,15 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
          save(model, modelSchema: model.schema, condition: condition, completion: completion)
      }
 
-    func save<M: Model>(_ model: M,
-                        modelSchema: ModelSchema,
-                        condition: QueryPredicate? = nil,
-                        completion: DataStoreCallback<M>) {
+    func save<M: Model>(_ model: M, modelSchema: ModelSchema, condition: QueryPredicate? = nil, completion: DataStoreCallback<M>) {
         guard let connection = connection else {
             completion(.failure(DataStoreError.nilSQLiteConnection()))
             return
         }
         do {
             let modelType = type(of: model)
-            let modelExists = try exists(modelSchema, withIdentifier: model.identifier(schema: modelSchema))
+            let modelIdentifier = model.identifier(schema: modelSchema)
+            let modelExists = try exists(modelSchema, withIdentifier: modelIdentifier)
 
             if !modelExists {
                 if let condition = condition, !condition.isAll {
@@ -158,7 +156,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             if modelExists {
                 if let condition = condition, !condition.isAll {
                     let modelExistsWithCondition = try exists(modelSchema,
-                                                              withIdentifier: model.identifier(schema: modelSchema),
+                                                              withIdentifier: modelIdentifier,
                                                               predicate: condition)
                     if !modelExistsWithCondition {
                         let dataStoreError = DataStoreError.invalidCondition(
@@ -257,7 +255,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         delete(untypedModelType: modelType,
                modelSchema: modelSchema,
                withIdentifier: DefaultModelIdentifier<AnyModel>.makeDefault(id: id),
-               predicate: predicate,
+               condition: condition,
                completion: completion)
     }
 
@@ -401,12 +399,12 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         return mutationSyncList
     }
 
-    func queryMutationSyncMetadata(for modelId: Model.Identifier, modelName: String) throws -> MutationSyncMetadata? {
+    func queryMutationSyncMetadata(for modelId: String, modelName: String) throws -> MutationSyncMetadata? {
         let results = try queryMutationSyncMetadata(for: [modelId], modelName: modelName)
         return try results.unique()
     }
 
-    func queryMutationSyncMetadata(for modelIds: [Model.Identifier],
+    func queryMutationSyncMetadata(for modelIds: [String],
                                    modelName: String) throws -> [MutationSyncMetadata] {
         guard let connection = connection else {
             throw DataStoreError.nilSQLiteConnection()

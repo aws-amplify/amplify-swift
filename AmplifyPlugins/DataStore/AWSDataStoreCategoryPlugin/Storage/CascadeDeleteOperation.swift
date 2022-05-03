@@ -44,7 +44,8 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         self.modelSchema = modelSchema
         var deleteInput = DeleteInput.withIdentifier(id: identifier)
         if let condition = condition {
-            deleteInput = .withIdAndCondition(id: id, condition: condition)
+            deleteInput = .withIdentifierAndCondition(id: identifier,
+                                                      condition: condition)
         }
         self.deleteInput = deleteInput
         self.completionForWithId = completion
@@ -100,7 +101,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 
                 // Query using the computed predicate did not return any results, check if model actually exists.
                 do {
-                    if try self.storageAdapter.exists(modelSchema, withIdentifier: identifier, predicate: nil) {
+                    if try self.storageAdapter.exists(self.modelSchema, withIdentifier: identifier, predicate: nil) {
                         queriedResult = .failure(
                             DataStoreError.invalidCondition(
                                 "Delete failed due to condition did not match existing model instance.",
@@ -116,8 +117,8 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             }
 
             // TODO CPK: verify that is correct
-            let modelIds = queriedModels.map { $0.identifier(schema: modelSchema).stringValue }
-            associatedModels = self.recurseQueryAssociatedModels(modelSchema: modelSchema, ids: modelIds)
+            let modelIds = queriedModels.map { $0.identifier(schema: self.modelSchema).stringValue }
+            associatedModels = self.recurseQueryAssociatedModels(modelSchema: self.modelSchema, ids: modelIds)
             let deleteCompletionWrapper: DataStoreCallback<[M]> = { deleteResult in
                 deletedResult = deleteResult
             }
