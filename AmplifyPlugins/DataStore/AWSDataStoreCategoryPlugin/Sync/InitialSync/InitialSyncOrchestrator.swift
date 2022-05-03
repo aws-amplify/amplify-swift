@@ -159,8 +159,8 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         }
 
         var underlyingError: Error?
-        if syncErrors.contains(where: isNetworkError) {
-            underlyingError = getFirstUnderlyingNetworkError(errors: syncErrors)
+        if let error = syncErrors.first(where: isNetworkError(_:)) {
+            underlyingError = getFirstUnderlyingNetworkError(error)
         }
 
         let allMessages = syncErrors.map { String(describing: $0) }
@@ -242,22 +242,19 @@ extension AWSInitialSyncOrchestrator {
         return false
     }
 
-    private func getFirstUnderlyingNetworkError(errors: [DataStoreError]) -> Error? {
-        for error in errors {
-            guard case let .sync(_, _, underlyingError) = error,
-                  let datastoreError = underlyingError as? DataStoreError
-                  else {
-                continue
-            }
+    private func getFirstUnderlyingNetworkError(_ error: DataStoreError) -> Error? {
+        guard case let .sync(_, _, underlyingError) = error,
+              let datastoreError = underlyingError as? DataStoreError
+              else {
+            return nil
+        }
 
-            if case let .api(amplifyError, _) = datastoreError,
-               let apiError = amplifyError as? APIError,
-               case let .networkError(_, _, underlyingError) = apiError {
-                return underlyingError
-            }
+        if case let .api(amplifyError, _) = datastoreError,
+           let apiError = amplifyError as? APIError,
+           case let .networkError(_, _, underlyingError) = apiError {
+            return underlyingError
         }
 
         return nil
-
     }
 }
