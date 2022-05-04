@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.23.2 (2022-05-04)
+
+### Bug Fixes
+
+- **DataStore**: Nesting DataStore integration tests (#1757)
+
 ## 1.23.1 (2022-04-25)
 
 ### Bug Fixes
