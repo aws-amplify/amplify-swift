@@ -12,8 +12,6 @@ public class AmplifyAWSServiceConfiguration: AWSServiceConfiguration {
     static let version = "1.23.2"
 
     override public class func baseUserAgent() -> String! {
-        //TODO: Retrieve this version from a centralized location:
-        //https://github.com/aws-amplify/amplify-ios/issues/276
         let platformInfo = AmplifyAWSServiceConfiguration.platformInformation()
         let systemName = UIDevice.current.systemName.replacingOccurrences(of: " ", with: "-")
         let systemVersion = UIDevice.current.systemVersion
