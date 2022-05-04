@@ -14,7 +14,6 @@ struct GeoPluginTestConfig {
 
     // Plugin Test Configuration
     static let regionName = "us-east-2"
-    static let region = regionName.aws_regionTypeValue()
 
     // Map Test Configuration
     static let map = "testMap"

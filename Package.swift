@@ -181,15 +181,15 @@ let authTargets: [Target] = [
         cSettings: [
             .unsafeFlags(["-flto=thin"])  // for Dead Code Elimination
         ]    ),
-    .testTarget(
-        name: "AWSCognitoAuthPluginUnitTests",
-        dependencies: [
-            "AWSCognitoAuthPlugin",
-            "CwlPreconditionTesting",
-            "AWSPluginsTestCommon"
-        ],
-        path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests"
-    ),
+//    .testTarget(
+//        name: "AWSCognitoAuthPluginUnitTests",
+//        dependencies: [
+//            "AWSCognitoAuthPlugin",
+//            "CwlPreconditionTesting",
+//            "AWSPluginsTestCommon"
+//        ],
+//        path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests"
+//    ),
     .testTarget(
         name: "AmplifyBigIntegerTests",
         dependencies: [
@@ -273,7 +273,30 @@ let storageTargets: [Target] = [
     ),
 ]
 
-let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets
+let geoTargets: [Target] = [
+    .target(
+        name: "AWSLocationGeoPlugin",
+        dependencies: [
+            .target(name: "Amplify"),
+            .target(name: "AWSPluginsCore"),
+            .product(name: "AWSLocation", package: "AWSSwiftSDK")],
+        path: "AmplifyPlugins/Geo/AWSLocationGeoPlugin",
+        exclude: [
+            "Resources/Info.plist"
+        ]
+    ),
+    .testTarget(
+        name: "AWSLocationGeoPluginTests",
+        dependencies: [
+            "AWSLocationGeoPlugin",
+            "AmplifyTestCommon",
+            "AWSPluginsTestCommon"
+            ],
+        path: "AmplifyPlugins/Geo/AWSLocationGeoPluginTests"
+    ),
+]
+
+let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets + geoTargets
 
 let package = Package(
     name: "Amplify",

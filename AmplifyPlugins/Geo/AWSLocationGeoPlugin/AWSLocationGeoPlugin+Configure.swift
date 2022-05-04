@@ -9,11 +9,8 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
-#if COCOAPODS
 import AWSLocation
-#else
-import AWSLocationXCF
-#endif
+import AWSClientRuntime
 
 extension AWSLocationGeoPlugin {
     /// Configures AWSLocationPlugin with the specified configuration.
@@ -32,14 +29,10 @@ extension AWSLocationGeoPlugin {
     public func configure(using configuration: AWSLocationGeoPluginConfiguration) throws {
         let authService = AWSAuthService()
         let credentialsProvider = authService.getCredentialsProvider()
-        let region = configuration.region
+        let region = configuration.regionName
+        let serviceConfiguration = try getLocationClientConfig(credentialsProvider: credentialsProvider, region: region)
 
-        let serviceConfiguration = AmplifyAWSServiceConfiguration(region: region,
-                                                                  credentialsProvider: credentialsProvider)
-        AWSLocation.register(with: serviceConfiguration,
-                             forKey: key)
-
-        let location = AWSLocation(forKey: key)
+        let location = LocationClient(config: serviceConfiguration)
         let locationService = AWSLocationAdapter(location: location)
 
         configure(locationService: locationService,
@@ -47,6 +40,30 @@ extension AWSLocationGeoPlugin {
                   pluginConfig: configuration)
     }
 
+    private func getLocationClientConfig(credentialsProvider: CredentialsProvider, region: String) throws -> LocationClient.LocationClientConfiguration {
+        let group = DispatchGroup()
+
+        var result: Result<LocationClient.LocationClientConfiguration, Error>!
+        let setResult: (Result<LocationClient.LocationClientConfiguration, Error>) -> Void = {
+            result = $0
+            group.leave()
+        }
+
+        group.enter()
+        Task {
+            do {
+                let value = try await LocationClient.LocationClientConfiguration(credentialsProvider: credentialsProvider, region: region)
+                setResult(.success(value))
+            } catch {
+                setResult(.failure(error))
+            }
+        }
+
+        group.wait()
+
+        return try result.get()
+    }
+    
     // MARK: - Internal
 
     /// Internal configure method to set the properties of the plugin

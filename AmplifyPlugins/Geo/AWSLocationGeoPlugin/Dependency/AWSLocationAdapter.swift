@@ -6,15 +6,10 @@
 //
 
 import Amplify
-import AWSCore
 import AWSPluginsCore
 import Foundation
 
-#if COCOAPODS
 import AWSLocation
-#else
-import AWSLocationXCF
-#endif
 
 /// Conforms to AWSLocationBehavior which uses an instance of the AWSLocation to perform its methods.
 ///
@@ -24,29 +19,25 @@ import AWSLocationXCF
 class AWSLocationAdapter: AWSLocationBehavior {
 
     /// Underlying AWSLocation service client instance.
-    let location: AWSLocation
+    let location: LocationClient
 
     /// Initializer
     /// - Parameter location: AWSLocation instance to use.
-    init(location: AWSLocation) {
+    init(location: LocationClient) {
         self.location = location
     }
 
     /// Provides access to the underlying AWSLocation service client.
     /// - Returns: AWSLocation service client instance.
-    func getEscapeHatch() -> AWSLocation {
+    func getEscapeHatch() -> LocationClient {
         location
     }
 
-    func searchPlaceIndex(forText: AWSLocationSearchPlaceIndexForTextRequest,
-                          completionHandler: ((AWSLocationSearchPlaceIndexForTextResponse?,
-                                                         Error?) -> Void)?) {
-        location.searchPlaceIndex(forText: forText, completionHandler: completionHandler)
+    func searchPlaceIndex(forText: SearchPlaceIndexForTextInput) async throws -> SearchPlaceIndexForTextOutputResponse {
+        return try await location.searchPlaceIndexForText(input: forText)
     }
 
-    func searchPlaceIndex(forPosition: AWSLocationSearchPlaceIndexForPositionRequest,
-                          completionHandler: ((AWSLocationSearchPlaceIndexForPositionResponse?,
-                                                         Error?) -> Void)?) {
-        location.searchPlaceIndex(forPosition: forPosition, completionHandler: completionHandler)
+    func searchPlaceIndex(forPosition: SearchPlaceIndexForPositionInput) async throws -> SearchPlaceIndexForPositionOutputResponse {
+        return try await location.searchPlaceIndexForPosition(input: forPosition)
     }
 }

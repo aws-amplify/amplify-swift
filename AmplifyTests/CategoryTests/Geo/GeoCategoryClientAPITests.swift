@@ -43,7 +43,7 @@ class GeoCategoryClientAPITests: XCTestCase {
                 methodInvoked.fulfill()
             }
         }
-        geo.search(for: text) { _ in }
+        geo.search(for: text, options: nil) { _ in }
         waitForExpectations(timeout: 1.0)
     }
 
@@ -56,7 +56,7 @@ class GeoCategoryClientAPITests: XCTestCase {
                 methodInvoked.fulfill()
             }
         }
-        geo.search(for: coordinates) { _ in }
+        geo.search(for: coordinates, options: nil) { _ in }
         waitForExpectations(timeout: 1.0)
     }
 

@@ -112,20 +112,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSCognitoAuthPluginUnitTests"
-               BuildableName = "AWSCognitoAuthPluginUnitTests"
-               BlueprintName = "AWSCognitoAuthPluginUnitTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "AWSDataStoreCategoryPluginIntegrationTests"
                BuildableName = "AWSDataStoreCategoryPluginIntegrationTests"
                BlueprintName = "AWSDataStoreCategoryPluginIntegrationTests"
@@ -241,6 +227,20 @@
                BlueprintIdentifier = "RESTWithIAMIntegrationTests"
                BuildableName = "RESTWithIAMIntegrationTests"
                BlueprintName = "RESTWithIAMIntegrationTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSLocationGeoPlugin"
+               BuildableName = "AWSLocationGeoPlugin"
+               BlueprintName = "AWSLocationGeoPlugin"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -328,20 +328,6 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSS3StoragePlugin"
-               BuildableName = "AWSS3StoragePlugin"
-               BlueprintName = "AWSS3StoragePlugin"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -367,16 +353,6 @@
                BlueprintIdentifier = "AWSAPIPluginTests"
                BuildableName = "AWSAPIPluginTests"
                BlueprintName = "AWSAPIPluginTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSCognitoAuthPluginUnitTests"
-               BuildableName = "AWSCognitoAuthPluginUnitTests"
-               BlueprintName = "AWSCognitoAuthPluginUnitTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
@@ -474,9 +450,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSS3StoragePluginFunctionalTests"
-               BuildableName = "AWSS3StoragePluginFunctionalTests"
-               BlueprintName = "AWSS3StoragePluginFunctionalTests"
+               BlueprintIdentifier = "AWSLocationGeoPluginTests"
+               BuildableName = "AWSLocationGeoPluginTests"
+               BlueprintName = "AWSLocationGeoPluginTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
@@ -484,9 +460,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSS3StoragePluginTests"
-               BuildableName = "AWSS3StoragePluginTests"
-               BlueprintName = "AWSS3StoragePluginTests"
+               BlueprintIdentifier = "AWSLocationGeoPluginIntegrationTests"
+               BuildableName = "AWSLocationGeoPluginIntegrationTests"
+               BlueprintName = "AWSLocationGeoPluginIntegrationTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

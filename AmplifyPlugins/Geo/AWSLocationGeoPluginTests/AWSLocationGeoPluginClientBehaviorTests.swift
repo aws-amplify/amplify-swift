@@ -27,12 +27,12 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
     func testSearchForText() {
         let expResult = expectation(description: "Receive result")
 
-        geoPlugin.search(for: searchText) { [weak self] result in
+        geoPlugin.search(for: searchText, options: nil) { [weak self] result in
             switch result {
             case .failure(let error):
                 XCTFail("Failed with error: \(error)")
             case .success:
-                let request = AWSLocationSearchPlaceIndexForTextRequest()!
+                var request = SearchPlaceIndexForTextInput()
                 request.text = self?.searchText
                 self?.mockLocation.verifySearchPlaceIndexForText(request)
                 expResult.fulfill()
@@ -62,12 +62,12 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
             case .failure(let error):
                 XCTFail("Failed with error: \(error)")
             case .success:
-                let request = AWSLocationSearchPlaceIndexForTextRequest()!
+                var request = SearchPlaceIndexForTextInput()
                 request.text = self?.searchText
-                request.biasPosition = [(self?.coordinates.longitude ?? 0) as NSNumber,
-                                        (self?.coordinates.latitude ?? 0) as NSNumber]
+                request.biasPosition = [(self?.coordinates.longitude ?? 0),
+                                        (self?.coordinates.latitude ?? 0)]
                 request.filterCountries = options.countries?.map { $0.code }
-                request.maxResults = options.maxResults as NSNumber?
+                request.maxResults = options.maxResults ?? 0
                 request.indexName = (options.pluginOptions as? AWSLocationGeoPluginSearchOptions)?.searchIndex
                 self?.mockLocation.verifySearchPlaceIndexForText(request)
                 expResult.fulfill()
@@ -89,7 +89,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
 
         let expResult = expectation(description: "Receive result")
 
-        geoPlugin.search(for: searchText) { result in
+        geoPlugin.search(for: searchText, options: nil) { result in
             switch result {
             case .failure(let error):
                 XCTAssertEqual(error.errorDescription, "No default search index was found.")
@@ -113,14 +113,14 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
     func testSearchForCoordinates() {
         let expResult = expectation(description: "Receive result")
 
-        geoPlugin.search(for: coordinates) { [weak self] result in
+        geoPlugin.search(for: coordinates, options: nil) { [weak self] result in
             switch result {
             case .failure(let error):
                 XCTFail("Failed with error: \(error)")
             case .success:
-                let request = AWSLocationSearchPlaceIndexForPositionRequest()!
-                request.position = [(self?.coordinates.longitude ?? 0) as NSNumber,
-                                    (self?.coordinates.latitude ?? 0) as NSNumber]
+                var request = SearchPlaceIndexForPositionInput()
+                request.position = [(self?.coordinates.longitude ?? 0),
+                                    (self?.coordinates.latitude ?? 0)]
                 self?.mockLocation.verifySearchPlaceIndexForPosition(request)
                 expResult.fulfill()
             }
@@ -148,10 +148,10 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
             case .failure(let error):
                 XCTFail("Failed with error: \(error)")
             case .success:
-                let request = AWSLocationSearchPlaceIndexForPositionRequest()!
-                request.position = [(self?.coordinates.longitude ?? 0) as NSNumber,
-                                    (self?.coordinates.latitude ?? 0) as NSNumber]
-                request.maxResults = options.maxResults as NSNumber?
+                var request = SearchPlaceIndexForPositionInput()
+                request.position = [(self?.coordinates.longitude ?? 0),
+                                    (self?.coordinates.latitude ?? 0) ]
+                request.maxResults = options.maxResults ?? 0
                 request.indexName = (options.pluginOptions as? AWSLocationGeoPluginSearchOptions)?.searchIndex
                 self?.mockLocation.verifySearchPlaceIndexForPosition(request)
                 expResult.fulfill()
@@ -173,7 +173,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
 
         let expResult = expectation(description: "Receive result")
 
-        geoPlugin.search(for: coordinates) { result in
+        geoPlugin.search(for: coordinates, options: nil) { result in
             switch result {
             case .failure(let error):
                 XCTAssertEqual(error.errorDescription, "No default search index was found.")

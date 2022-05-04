@@ -8,29 +8,35 @@
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSLocationGeoPlugin
+@testable import AWSPluginsTestCommon
 import XCTest
+
 
 class AWSLocationGeoPluginTestBase: XCTestCase {
     var geoPlugin: AWSLocationGeoPlugin!
-    var mockLocation = MockAWSLocation()
+    var mockLocation: MockAWSLocation!
     var pluginConfig: AWSLocationGeoPluginConfiguration!
     var emptyPluginConfig: AWSLocationGeoPluginConfiguration!
 
     override func setUp() {
-        pluginConfig = AWSLocationGeoPluginConfiguration(region: GeoPluginTestConfig.region,
-                                                         regionName: GeoPluginTestConfig.regionName,
+        pluginConfig = AWSLocationGeoPluginConfiguration(regionName: GeoPluginTestConfig.regionName,
                                                          defaultMap: GeoPluginTestConfig.map,
                                                          maps: GeoPluginTestConfig.maps,
                                                          defaultSearchIndex: GeoPluginTestConfig.searchIndex,
                                                          searchIndices: GeoPluginTestConfig.searchIndices)
 
-        emptyPluginConfig = AWSLocationGeoPluginConfiguration(region: GeoPluginTestConfig.region,
-                                                              regionName: GeoPluginTestConfig.regionName,
+        emptyPluginConfig = AWSLocationGeoPluginConfiguration(regionName: GeoPluginTestConfig.regionName,
                                                               defaultMap: nil,
                                                               maps: [:],
                                                               defaultSearchIndex: nil,
                                                               searchIndices: [])
 
+        do {
+            mockLocation = try MockAWSLocation(pluginConfig: pluginConfig)
+        } catch {
+            XCTFail("Error initializing mockLocation: \(error)")
+        }
+        
         geoPlugin = AWSLocationGeoPlugin()
         geoPlugin.locationService = mockLocation
         geoPlugin.authService = MockAWSAuthService()

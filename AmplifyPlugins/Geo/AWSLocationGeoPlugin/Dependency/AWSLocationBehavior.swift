@@ -6,25 +6,18 @@
 //
 
 import Foundation
-
-#if COCOAPODS
 import AWSLocation
-#else
-import AWSLocationXCF
-#endif
 
 /// Behavior that `AWSLocationAdapter` will use.
 /// This protocol allows a way to create a Mock and ensure the plugin implementation is testable.
 protocol AWSLocationBehavior {
 
     // Get the lower level `AWSLocation` client.
-    func getEscapeHatch() -> AWSLocation
+    func getEscapeHatch() -> LocationClient
 
-    func searchPlaceIndex(forText: AWSLocationSearchPlaceIndexForTextRequest,
-                          completionHandler: ((AWSLocationSearchPlaceIndexForTextResponse?,
-                                               Error?) -> Void)?)
+    func searchPlaceIndex(forText: SearchPlaceIndexForTextInput)
+            async throws -> SearchPlaceIndexForTextOutputResponse
 
-    func searchPlaceIndex(forPosition: AWSLocationSearchPlaceIndexForPositionRequest,
-                          completionHandler: ((AWSLocationSearchPlaceIndexForPositionResponse?,
-                                               Error?) -> Void)?)
+        func searchPlaceIndex(forPosition: SearchPlaceIndexForPositionInput)
+            async throws -> SearchPlaceIndexForPositionOutputResponse
 }
