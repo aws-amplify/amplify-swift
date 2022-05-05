@@ -122,28 +122,29 @@ class GeoCategoryConfigurationTests: XCTestCase {
     }
 
     // TODO: Update the unit test to work with `CwlPreconditionTesting`
-//    func testPreconditionFailureInvokingWithMultiplePlugins() throws {
-//        let plugin1 = MockGeoCategoryPlugin()
-//        try Amplify.add(plugin: plugin1)
-//
-//        let plugin2 = MockSecondGeoCategoryPlugin()
-//        try Amplify.add(plugin: plugin2)
-//
-//        let geoConfig = GeoCategoryConfiguration(
-//            plugins: [
-//                "MockGeoCategoryPlugin": true,
-//                "MockSecondGeoCategoryPlugin": true
-//            ]
-//        )
-//
-//        let amplifyConfig = AmplifyConfiguration(geo: geoConfig)
-//
-//        try Amplify.configure(amplifyConfig)
-//
-//        try XCTAssertThrowFatalError {
-//            Amplify.Geo.search(for: "test", options: nil) { _ in }
-//        }
-//    }
+    func testPreconditionFailureInvokingWithMultiplePlugins() throws {
+        let plugin1 = MockGeoCategoryPlugin()
+        try Amplify.add(plugin: plugin1)
+
+        let plugin2 = MockSecondGeoCategoryPlugin()
+        try Amplify.add(plugin: plugin2)
+
+        let geoConfig = GeoCategoryConfiguration(
+            plugins: [
+                "MockGeoCategoryPlugin": true,
+                "MockSecondGeoCategoryPlugin": true
+            ]
+        )
+
+        let amplifyConfig = AmplifyConfiguration(geo: geoConfig)
+
+        try Amplify.configure(amplifyConfig)
+
+        throw XCTSkip("CwlPreconditionTesting is not compatible with async methods")
+        try XCTAssertThrowFatalError {
+            Amplify.Geo.search(for: "test", options: nil) { _ in }
+        }
+    }
 
     func testCanUseSpecifiedPlugin() throws {
         let plugin1 = MockGeoCategoryPlugin()
@@ -214,15 +215,16 @@ class GeoCategoryConfigurationTests: XCTestCase {
     }
 
     // TODO: Update the unit test to work with `CwlPreconditionTesting`
-//    func testPreconditionFailureInvokingBeforeConfig() throws {
-//        let plugin = MockGeoCategoryPlugin()
-//        try Amplify.add(plugin: plugin)
-//
-//        // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
-//        try XCTAssertThrowFatalError {
-//            Amplify.Geo.search(for: "test", options: nil) { _ in }
-//        }
-//    }
+    func testPreconditionFailureInvokingBeforeConfig() throws {
+        let plugin = MockGeoCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+
+        throw XCTSkip("CwlPreconditionTesting is not compatible with async methods")
+        // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
+        try XCTAssertThrowFatalError {
+            Amplify.Geo.search(for: "test", options: nil) { _ in }
+        }
+    }
 
     // MARK: - Test internal config behavior guarantees
 
