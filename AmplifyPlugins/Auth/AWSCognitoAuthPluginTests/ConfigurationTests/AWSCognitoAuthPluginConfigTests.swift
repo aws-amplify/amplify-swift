@@ -62,7 +62,8 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
                     "PoolId": "xx",
                     "Region": "us-east-1",
                     "AppClientId": "xx",
-                    "AppClientSecret": "xx"]]
+                    "AppClientSecret": "xx",
+                    "Endpoint": "example.org"]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
@@ -119,7 +120,8 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
                     "PoolId": "xx",
                     "Region": "us-east-1",
                     "AppClientId": "xx",
-                    "AppClientSecret": "xx"]]
+                    "AppClientSecret": "xx",
+                    "Endpoint": "example.org"]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
@@ -161,6 +163,76 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
         } catch {
             guard case AuthError.configuration = error else {
                 XCTFail("Should have thrown a AuthError.configuration error if both cognito service config are invalid")
+                return
+            }
+        }
+    }
+
+    /// Test Auth configuration with endpoint url containing scheme for user pool
+    ///
+    /// - Given: Given invalid config with endpoint url containing scheme for user pool
+    /// - When:
+    ///    - I configure auth with the given configuration
+    /// - Then:
+    ///    - I should get an exception.
+    ///
+    func testConfigWithInvalidUserPoolEndpointWithScheme() throws {
+        let plugin = AWSCognitoAuthPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let categoryConfig = AuthCategoryConfiguration(plugins: [
+            "awsCognitoAuthPlugin": [
+                "CognitoUserPool": ["Default": [
+                    "PoolId": "xx",
+                    "Region": "us-east-1",
+                    "AppClientId": "xx",
+                    "AppClientSecret": "xx",
+                    "Endpoint": "https://example.org"]]
+            ]
+        ])
+
+        let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
+        do {
+            try Amplify.configure(amplifyConfig)
+            XCTFail("Should have thrown a AuthError.configuration error for invalid endpoint url")
+        } catch {
+            guard case AuthError.configuration = error else {
+                XCTFail("Should have thrown a AuthError.configuration error for invalid endpoint url")
+                return
+            }
+        }
+    }
+
+    /// Test Auth configuration with endpoint url containing path for user pool
+    ///
+    /// - Given: Given invalid config with endpoint url containing path for user pool
+    /// - When:
+    ///    - I configure auth with the given configuration
+    /// - Then:
+    ///    - I should get an exception.
+    ///
+    func testConfigWithInvalidUserPoolEndpointWithPath() throws {
+        let plugin = AWSCognitoAuthPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let categoryConfig = AuthCategoryConfiguration(plugins: [
+            "awsCognitoAuthPlugin": [
+                "CognitoUserPool": ["Default": [
+                    "PoolId": "xx",
+                    "Region": "us-east-1",
+                    "AppClientId": "xx",
+                    "AppClientSecret": "xx",
+                    "Endpoint": "example.org/path"]]
+            ]
+        ])
+
+        let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
+        do {
+            try Amplify.configure(amplifyConfig)
+            XCTFail("Should have thrown a AuthError.configuration error for invalid endpoint url")
+        } catch {
+            guard case AuthError.configuration = error else {
+                XCTFail("Should have thrown a AuthError.configuration error for invalid endpoint url")
                 return
             }
         }
@@ -210,7 +282,8 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
                     "PoolId": "xx",
                     "Region": "us-east-1",
                     "AppClientId": "xx",
-                    "AppClientSecret": "xx"]]
+                    "AppClientSecret": "xx",
+                    "Endpoint": "example.org"]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)

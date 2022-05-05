@@ -40,6 +40,10 @@ public class AmplifyAWSServiceConfiguration: AWSServiceConfiguration {
         super.init(region: regionType, credentialsProvider: nil)
     }
 
+    public init(region regionType: AWSRegionType, endpoint: AWSEndpoint) {
+        super.init(region: regionType, endpoint: endpoint, credentialsProvider: nil)
+    }
+
     override public init(region regionType: AWSRegionType,
                          endpoint: AWSEndpoint,
                          credentialsProvider: AWSCredentialsProvider,
