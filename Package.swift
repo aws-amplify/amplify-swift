@@ -322,6 +322,10 @@ let package = Package(
             name: "AWSS3StoragePlugin",
             targets: ["AWSS3StoragePlugin"]
         ),
+        .library(
+            name: "AWSLocationGeoPlugin",
+            targets: ["AWSLocationGeoPlugin"]
+        )
         
     ],
     dependencies: [
@@ -347,7 +351,7 @@ let package = Package(
         .package(
             name: "AWSSwiftSDK",
             url: "https://github.com/awslabs/aws-sdk-swift",
-            from: "0.2.3"
+            .exact("0.2.3")
         ),
         .package(
             name: "CwlPreconditionTesting",
