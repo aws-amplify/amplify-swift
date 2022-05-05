@@ -63,7 +63,22 @@ extension AWSCognitoAuthPlugin {
         self.hubEventHandler = hubEventHandler
 
         self.credentialStoreStateMachine = credentialStoreStateMachine
-        sendConfigureCredentialEvent()
+        
+        initializeStateMachines()
+    }
+    
+    func initializeStateMachines() {
+        let semaphore = DispatchSemaphore(value: 0)
+        Task {
+            do {
+                let credentialStore = try await configureCredentialStoreMachine()
+                try await configureAuthStateMachine(with: credentialStore)
+                semaphore.signal()
+            } catch {
+                self.log.error(error: error)
+            }
+        }
+        semaphore.wait()
     }
 
     func listenToAuthStateChange(_ stateMachine: StateMachine<AuthState, AuthEnvironment>) ->
@@ -81,42 +96,65 @@ extension AWSCognitoAuthPlugin {
 
     }
 
-    func sendConfigureCredentialEvent() {
-        var token: CredentialStoreStateMachineToken?
-        token = credentialStoreStateMachine.listen { [weak self] in
-            guard let self = self else {
-                return
+    func configureCredentialStoreMachine() async throws -> CognitoCredentials? {
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            var token: CredentialStoreStateMachineToken?
+            token = credentialStoreStateMachine.listen { [weak self] in
+                guard let self = self else { return }
+                switch $0 {
+                case .success(let storedCredentials):
+                    if let token = token {
+                        self.credentialStoreStateMachine.cancel(listenerToken: token)
+                    }
+                    continuation.resume(returning: storedCredentials)
+                case .error(let credentialStoreError):
+                    if case .itemNotFound = credentialStoreError {
+                        continuation.resume(returning: nil)
+                    } else {
+                        let error = AuthError.service("An exception occurred when configuring credential store",
+                                                      AmplifyErrorMessages.reportBugToAWS(),
+                                                      credentialStoreError)
+                        Amplify.log.error(error: error)
+                        continuation.resume(throwing: error)
+                    }
+                    if let token = token {
+                        self.credentialStoreStateMachine.cancel(listenerToken: token)
+                    }
+                default:
+                    break
+                }
+            } onSubscribe: { [weak self] in
+                let event = CredentialStoreEvent(eventType: .migrateLegacyCredentialStore)
+                self?.credentialStoreStateMachine.send(event)
             }
-            switch $0 {
-            case .success(let storedCredentials):
-                self.sendConfigureAuthEvent(with: storedCredentials)
-                if let token = token {
-                    self.credentialStoreStateMachine.cancel(listenerToken: token)
-                }
-            case .error(let credentialStoreError):
-                if case .itemNotFound = credentialStoreError {
-                    self.sendConfigureAuthEvent(with: nil)
-                } else {
-                    let error = AuthError.service("An exception occurred when configuring credential store",
-                                                  AmplifyErrorMessages.reportBugToAWS(),
-                                                  credentialStoreError)
-                    Amplify.log.error(error: error)
-                }
-
-                if let token = token {
-                    self.credentialStoreStateMachine.cancel(listenerToken: token)
-                }
-            default:
-                break
-            }
-        } onSubscribe: { [weak self] in
-            let event = CredentialStoreEvent(eventType: .migrateLegacyCredentialStore)
-            self?.credentialStoreStateMachine.send(event)
         }
     }
 
-    func sendConfigureAuthEvent(with storedCredentials: CognitoCredentials?) {
-        authStateMachine.send(AuthEvent(eventType: .configureAuth(authConfiguration, storedCredentials)))
+    func configureAuthStateMachine(with storedCredentials: CognitoCredentials?) async throws {
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            var token: AuthStateMachineToken?
+            token = authStateMachine.listen { [weak self] in
+                guard let self = self else { return }
+                
+                switch $0 {
+                case .configured(let authNState, let authZState):
+                    guard case .notConfigured = authNState, case .notConfigured = authZState else {
+                        if let token = token {
+                            self.authStateMachine.cancel(listenerToken: token)
+                        }
+                        continuation.resume()
+                        return
+                    }
+                default:
+                    break
+                }
+            } onSubscribe: { [weak self] in
+                guard let self = self else { return }
+                self.authStateMachine.send(AuthEvent(eventType: .configureAuth(self.authConfiguration, storedCredentials)))
+            }
+        }
     }
 
     func authConfiguration(userPoolConfig: UserPoolConfigurationData?,

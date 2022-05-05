@@ -19,7 +19,9 @@ struct AuthSessionHelper {
     static func invalidateSession(with amplifyConfiguration: AmplifyConfiguration) {
         let configuration = getAuthConfiguration(configuration: amplifyConfiguration)
         let credentialStore = AWSCognitoAuthCredentialStore(authConfiguration: configuration, accessGroup: nil)
-        let credentials = try! credentialStore.retrieveCredential()
+        guard let credentials = try? credentialStore.retrieveCredential() else {
+            return
+        }
         
         if let tokens = credentials.userPoolTokens {
             let updatedCredentials = CognitoCredentials(

@@ -42,8 +42,15 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             finish()
             return
         }
-        doInitialize { [weak self] authenticationState in
-            self?.tryToInvokeSignIn(authenticationState)
+        authStateMachine.getCurrentState { [weak self] state in
+            guard let self = self else { return }
+            // Auth should be configured to start the signIn process
+            guard case .configured(let authenticationState, _) = state  else {
+                self.dispatch(AuthError.invalidState("Sign in reached an invalid state",
+                                                     AuthPluginErrorConstants.invalidStateError, nil))
+                return
+            }
+            self.tryToInvokeSignIn(authenticationState)
         }
     }
 
@@ -59,24 +66,10 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
                 AuthPluginErrorConstants.invalidStateError, nil))
             self.finish()
         default:
-            self.dispatch(AuthError.invalidState("Sign in reached an invalid state",
+            self.dispatch(AuthError.invalidState("Sign in reached an invalid state: \(authenticationState)",
                                                  AuthPluginErrorConstants.invalidStateError, nil))
             self.finish()
         }
-    }
-
-    func doInitialize(_ callback: @escaping (AuthenticationState) -> Void) {
-        var token: AuthStateMachineToken?
-        token = authStateMachine.listen { [weak self] in
-            guard let self = self else {
-                return
-            }
-            // Auth should be configured to start the signIn process
-            if case .configured(let authenticationState, _) = $0 {
-                callback(authenticationState)
-                self.cancelToken(token)
-            }
-        } onSubscribe: { }
     }
 
     func doSignIn() {
@@ -150,7 +143,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
                 self.tryToInvokeSignIn(authNState)
                 self.cancelToken(token)
             case .error(_, let error):
-                self.dispatch(AuthError.unknown("Some error", error))
+                self.dispatch(AuthError.unknown("Unable to cancel sign up", error))
                 self.cancelToken(token)
                 self.finish()
             default:

@@ -106,7 +106,7 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
                 XCTFail("SignIn with a empty username/password should fail")
             case .failure(let error):
                 guard case .validation = error else {
-                    XCTFail("Should throw validation error")
+                    XCTFail("Should throw validation error instead got: \(error)")
                     return
                 }
 
