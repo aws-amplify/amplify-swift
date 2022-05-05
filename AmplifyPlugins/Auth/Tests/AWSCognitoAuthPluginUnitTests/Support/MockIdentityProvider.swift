@@ -70,39 +70,101 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         self.revokeTokenCallback = revokeTokenCallback
     }
 
+    @available(*, renamed: "initiateAuth(input:)")
     func initiateAuth(input: InitiateAuthInput,
                       completion: @escaping (Result<InitiateAuthOutputResponse,
                                              SdkError<InitiateAuthOutputError>>) -> Void)
     {
         initiateAuthCallback?(input, completion)
     }
+    
+    func initiateAuth(input: InitiateAuthInput) async throws -> InitiateAuthOutputResponse {
+        return try await withCheckedThrowingContinuation { continuation in
+            initiateAuth(input: input) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+    
 
+    @available(*, renamed: "respondToAuthChallenge(input:)")
     func respondToAuthChallenge(input: RespondToAuthChallengeInput,
                                 completion: @escaping (Result<RespondToAuthChallengeOutputResponse,
                                                        SdkError<RespondToAuthChallengeOutputError>>) -> Void)
     {
         respondToAuthChallengeCallback?(input, completion)
     }
+    
+    func respondToAuthChallenge(input: RespondToAuthChallengeInput) async throws -> RespondToAuthChallengeOutputResponse {
+        return try await withCheckedThrowingContinuation { continuation in
+            respondToAuthChallenge(input: input) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+    
 
+    @available(*, renamed: "signUp(input:)")
     func signUp(input: SignUpInput, completion: @escaping (SdkResult<SignUpOutputResponse, SignUpOutputError>) -> Void) {
         signUpCallback?(input, completion)
     }
+    
+    func signUp(input: SignUpInput) async throws -> SignUpOutputResponse {
+        return try await withCheckedThrowingContinuation { continuation in
+            signUp(input: input) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+    
 
+    @available(*, renamed: "confirmSignUp(input:)")
     func confirmSignUp(input: ConfirmSignUpInput, completion: @escaping (SdkResult<ConfirmSignUpOutputResponse, ConfirmSignUpOutputError>) -> Void) {
         confirmSignUpCallback?(input, completion)
     }
+    
+    func confirmSignUp(input: ConfirmSignUpInput) async throws -> ConfirmSignUpOutputResponse {
+        return try await withCheckedThrowingContinuation { continuation in
+            confirmSignUp(input: input) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+    
 
+    @available(*, renamed: "globalSignOut(input:)")
     func globalSignOut(
         input: GlobalSignOutInput,
         completion: @escaping (SdkResult<GlobalSignOutOutputResponse, GlobalSignOutOutputError>) -> Void
     ) {
         globalSignOutCallback?(input, completion)
     }
+    
+    func globalSignOut(
+        input: GlobalSignOutInput) async throws -> GlobalSignOutOutputResponse {
+            return try await withCheckedThrowingContinuation { continuation in
+                globalSignOut(input: input) { result in
+                    continuation.resume(with: result)
+                }
+            }
+        }
+    
 
+    @available(*, renamed: "revokeToken(input:)")
     func revokeToken(
         input: RevokeTokenInput,
         completion: @escaping (SdkResult<RevokeTokenOutputResponse, RevokeTokenOutputError>) -> Void
     ) {
         revokeTokenCallback?(input, completion)
     }
+    
+    func revokeToken(
+        input: RevokeTokenInput) async throws -> RevokeTokenOutputResponse {
+            return try await withCheckedThrowingContinuation { continuation in
+                revokeToken(input: input) { result in
+                    continuation.resume(with: result)
+                }
+            }
+        }
+    
 }

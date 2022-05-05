@@ -181,15 +181,15 @@ let authTargets: [Target] = [
         cSettings: [
             .unsafeFlags(["-flto=thin"])  // for Dead Code Elimination
         ]    ),
-//    .testTarget(
-//        name: "AWSCognitoAuthPluginUnitTests",
-//        dependencies: [
-//            "AWSCognitoAuthPlugin",
-//            "CwlPreconditionTesting",
-//            "AWSPluginsTestCommon"
-//        ],
-//        path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests"
-//    ),
+    .testTarget(
+        name: "AWSCognitoAuthPluginUnitTests",
+        dependencies: [
+            "AWSCognitoAuthPlugin",
+            "CwlPreconditionTesting",
+            "AWSPluginsTestCommon"
+        ],
+        path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests"
+    ),
     .testTarget(
         name: "AmplifyBigIntegerTests",
         dependencies: [
