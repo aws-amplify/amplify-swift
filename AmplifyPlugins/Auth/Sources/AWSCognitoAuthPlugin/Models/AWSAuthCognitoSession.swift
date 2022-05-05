@@ -7,7 +7,6 @@
 
 import Amplify
 import AWSPluginsCore
-import Foundation
 
 public struct AWSAuthCognitoSession: AuthSession,
                                      AuthAWSCredentialsProvider,
