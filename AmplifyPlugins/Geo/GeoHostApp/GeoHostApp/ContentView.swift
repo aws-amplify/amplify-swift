@@ -1,8 +1,8 @@
 //
-//  ContentView.swift
-//  GeoHostApp
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Singh, Abhash Kumar on 5/4/22.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import SwiftUI
