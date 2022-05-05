@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.24.0 (2022-05-05)
+
+### Features
+
+- **auth**: Add support of custom endpoint for CognitoUserPool (#1715)
+
 ## 1.23.2 (2022-05-04)
 
 ### Bug Fixes
