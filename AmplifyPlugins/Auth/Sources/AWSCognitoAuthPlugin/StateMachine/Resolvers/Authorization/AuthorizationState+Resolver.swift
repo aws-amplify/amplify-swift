@@ -77,7 +77,7 @@ extension AuthorizationState {
             }
         }
 
-        private func resolveFetchAuthSessionEvent(storedCredentials: CognitoCredentials?) -> StateResolution<StateType> {
+        private func resolveFetchAuthSessionEvent(storedCredentials: AmplifyCredentials?) -> StateResolution<StateType> {
             let action = InitializeFetchAuthSession(storedCredentials: storedCredentials)
             let resolution = StateResolution(
                 newState: AuthorizationState.fetchingAuthSession(FetchAuthSessionState.initializingFetchAuthSession),

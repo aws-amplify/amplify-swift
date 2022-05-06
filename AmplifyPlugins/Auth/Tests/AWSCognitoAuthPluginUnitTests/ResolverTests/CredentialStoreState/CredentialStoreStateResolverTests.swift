@@ -26,7 +26,7 @@ extension CredentialStoreStateSequence {
 class CredentialStoreStateResolverTests: XCTestCase {
     func testValidCredentialStoreStateSequences() throws {
         let credentialStoreError = CredentialStoreError.configuration(message: "someError")
-        let testData = CognitoCredentials.testData
+        let testData = AmplifyCredentials.testData
 
         let validSequences: [CredentialStoreStateSequence] = [
             CredentialStoreStateSequence(

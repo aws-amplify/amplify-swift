@@ -11,9 +11,9 @@ import Foundation
 
      enum EventType: Equatable {
 
-        case configureAuth(AuthConfiguration, CognitoCredentials?)
+        case configureAuth(AuthConfiguration, AmplifyCredentials?)
 
-        case configureAuthentication(AuthConfiguration, CognitoCredentials?)
+        case configureAuthentication(AuthConfiguration, AmplifyCredentials?)
 
         case configureAuthorization(AuthConfiguration)
 

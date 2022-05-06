@@ -131,7 +131,7 @@ extension AWSCognitoAuthPlugin {
         }
     }
 
-    func configureAuthStateMachine(with storedCredentials: CognitoCredentials?) async throws {
+    func configureAuthStateMachine(with storedCredentials: AmplifyCredentials?) async throws {
         
         return try await withCheckedThrowingContinuation { continuation in
             var token: AuthStateMachineToken?
