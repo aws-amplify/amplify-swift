@@ -11,7 +11,7 @@ import AWSPluginsCore
 /// Internal Helpers for managing session tokens
 extension AuthCognitoTokens {
     
-    func areTokensExpiring(in seconds: TimeInterval? = nil) -> Bool {
+    func areTokensExpiring(in seconds: TimeInterval = 0) -> Bool {
         
         guard let idTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: idToken).get(),
               let accessTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: accessToken).get(),
@@ -20,9 +20,12 @@ extension AuthCognitoTokens {
             return true
         }
         
-        // If the session expires < X minutes return it
-        return (Date(timeIntervalSince1970: idTokenExpiration).compare(Date(timeIntervalSinceNow: seconds ?? 0)) == .orderedDescending &&
-                Date(timeIntervalSince1970: accessTokenExpiration).compare(Date(timeIntervalSinceNow: seconds ?? 0)) == .orderedDescending)
+        let idTokenExpiry = Date(timeIntervalSince1970: idTokenExpiration)
+        let accessTokenExpiry = Date(timeIntervalSince1970: accessTokenExpiration)
+        
+        let expiryTime = Date(timeIntervalSinceNow: seconds)
+        return (idTokenExpiry.compare(expiryTime) == .orderedDescending &&
+                accessTokenExpiry.compare(expiryTime) == .orderedDescending)
     }
     
 }
