@@ -45,3 +45,16 @@ public extension AuthSignUpRequest {
         }
     }
 }
+
+extension AuthSignUpRequest.Options: ExpressibleByDictionaryLiteral {
+    /// Intitializes a AuthSignUpRequest.Options object from a dictionary literal
+    ///
+    /// Example:
+    /// ```
+    /// let options = [.givenName: firstName, .familyName: lastName]
+    /// ```
+    public init(dictionaryLiteral elements: (AuthUserAttributeKey, String)...) {
+        let userAttributes = elements.map { AuthUserAttribute($0.0, value: $0.1) }
+        self.init(userAttributes: userAttributes)
+    }
+}
