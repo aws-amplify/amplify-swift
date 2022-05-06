@@ -24,7 +24,7 @@ struct AuthSessionHelper {
         }
         
         if let tokens = credentials.userPoolTokens {
-            let updatedCredentials = CognitoCredentials(
+            let updatedCredentials = AmplifyCredentials(
                 userPoolTokens: AWSCognitoUserPoolTokens(idToken: tokens.idToken,
                                                          accessToken: tokens.accessToken,
                                                          refreshToken: "invalid",

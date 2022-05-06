@@ -58,7 +58,7 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
         } onSubscribe: { }
     }
     
-    func initializeAuthStateMachine(with storedCredentials: CognitoCredentials?) {
+    func initializeAuthStateMachine(with storedCredentials: AmplifyCredentials?) {
         
         authStateMachine.getCurrentState { [weak self] state in
             guard case .configured = state  else {

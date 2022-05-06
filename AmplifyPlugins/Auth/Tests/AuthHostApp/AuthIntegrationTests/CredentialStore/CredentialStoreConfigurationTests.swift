@@ -32,7 +32,7 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         // Given
         let identityId = "identityId"
         let awsCredentials = AuthAWSCognitoCredentials.testData
-        let initialCognitoCredentials = CognitoCredentials(
+        let initialCognitoCredentials = AmplifyCredentials(
             userPoolTokens: nil,
             identityId: identityId,
             awsCredential: awsCredentials)
@@ -72,7 +72,7 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         // Given
         let identityId = "identityId"
         let awsCredentials = AuthAWSCognitoCredentials.testData
-        let initialCognitoCredentials = CognitoCredentials(
+        let initialCognitoCredentials = AmplifyCredentials(
             userPoolTokens: AWSCognitoUserPoolTokens.testData,
             identityId: identityId,
             awsCredential: awsCredentials)
@@ -110,7 +110,7 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         // Given
         let identityId = "identityId"
         let awsCredentials = AuthAWSCognitoCredentials.testData
-        let initialCognitoCredentials = CognitoCredentials(
+        let initialCognitoCredentials = AmplifyCredentials(
             userPoolTokens: nil,
             identityId: identityId,
             awsCredential: awsCredentials)
@@ -145,7 +145,7 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         // Given
         let identityId = "identityId"
         let awsCredentials = AuthAWSCognitoCredentials.testData
-        let initialCognitoCredentials = CognitoCredentials(
+        let initialCognitoCredentials = AmplifyCredentials(
             userPoolTokens: nil,
             identityId: identityId,
             awsCredential: awsCredentials)
@@ -179,7 +179,7 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         // Given
         let identityId = "identityId"
         let awsCredentials = AuthAWSCognitoCredentials.testData
-        let initialCognitoCredentials = CognitoCredentials(
+        let initialCognitoCredentials = AmplifyCredentials(
             userPoolTokens: AWSCognitoUserPoolTokens.testData,
             identityId: identityId,
             awsCredential: awsCredentials)

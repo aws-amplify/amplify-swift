@@ -96,7 +96,7 @@ extension AWSCognitoAuthPlugin {
 
     }
 
-    func configureCredentialStoreMachine() async throws -> CognitoCredentials? {
+    func configureCredentialStoreMachine() async throws -> AmplifyCredentials? {
         
         return try await withCheckedThrowingContinuation { continuation in
             var token: CredentialStoreStateMachineToken?
