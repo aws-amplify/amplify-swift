@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 public struct AWSAuthCognitoSession: AuthSession,
                                      AuthAWSCredentialsProvider,
@@ -77,10 +78,28 @@ public struct AWSAuthCognitoSession: AuthSession,
 
 }
 
+/// Internal Helpers for managing session tokens
+internal extension AWSAuthCognitoSession {
+    func areTokensExpiring(in seconds: TimeInterval? = nil) -> Bool {
+        
+        guard let tokens = try? cognitoTokensResult.get(),
+              let idTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: tokens.idToken).get(),
+              let accessTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: tokens.idToken).get(),
+              let idTokenExpiration = idTokenClaims["exp"]?.doubleValue,
+              let accessTokenExpiration = accessTokenClaims["exp"]?.doubleValue else {
+            return true
+        }
+        
+        // If the session expires < X minutes return it
+        return (Date(timeIntervalSince1970: idTokenExpiration).compare(Date(timeIntervalSinceNow: seconds ?? 0)) == .orderedDescending &&
+                Date(timeIntervalSince1970: accessTokenExpiration).compare(Date(timeIntervalSinceNow: seconds ?? 0)) == .orderedDescending)
+    }
+}
+
 /// Helper method to update specific results if needed
 extension AWSAuthCognitoSession {
 
-    func getCognitoCredentials() -> CognitoCredentials {
+    func getCognitoCredentials() -> AmplifyCredentials {
         var identityId: String?
         if case let .success(unwrappedIdentityId) = getIdentityId() {
             identityId = unwrappedIdentityId
@@ -100,7 +119,7 @@ extension AWSAuthCognitoSession {
             awsCredentials = unwrappedCredentials
         }
 
-        return CognitoCredentials(userPoolTokens: cognitUserPoolTokens,
+        return AmplifyCredentials(userPoolTokens: cognitUserPoolTokens,
                                   identityId: identityId,
                                   awsCredential: awsCredentials)
     }

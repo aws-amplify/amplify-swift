@@ -13,7 +13,7 @@ class InitializeFetchAuthSessionTests: XCTestCase {
 
     func testInitializeUserPoolTokens() {
         let expectation = expectation(description: "initializeUserPool")
-        let action = InitializeFetchAuthSession(storedCredentials: CognitoCredentials.testData)
+        let action = InitializeFetchAuthSession(storedCredentials: AmplifyCredentials.testData)
 
         let environment = Defaults.makeDefaultAuthEnvironment()
 
@@ -41,7 +41,7 @@ class InitializeFetchAuthSessionTests: XCTestCase {
         let expectation = expectation(description: "initializeIdentity")
 
         let action = InitializeFetchAuthSession(
-            storedCredentials: CognitoCredentials(userPoolTokens: nil, identityId: "", awsCredential: nil))
+            storedCredentials: AmplifyCredentials(userPoolTokens: nil, identityId: "", awsCredential: nil))
 
         let environment = Defaults.makeDefaultAuthEnvironment()
 

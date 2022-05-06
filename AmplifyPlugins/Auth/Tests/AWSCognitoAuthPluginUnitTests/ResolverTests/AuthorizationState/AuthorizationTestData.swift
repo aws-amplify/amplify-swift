@@ -28,9 +28,9 @@ extension AuthAWSCognitoCredentials {
     }
 }
 
-extension CognitoCredentials {
-    static var testData: CognitoCredentials {
-        CognitoCredentials(userPoolTokens: AWSCognitoUserPoolTokens.testData,
+extension AmplifyCredentials {
+    static var testData: AmplifyCredentials {
+        AmplifyCredentials(userPoolTokens: AWSCognitoUserPoolTokens.testData,
                            identityId: "identityId",
                            awsCredential: AuthAWSCognitoCredentials.testData)
     }
