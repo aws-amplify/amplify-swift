@@ -54,6 +54,7 @@ class AWSAuthCognitoSessionTests: XCTestCase {
                                               expiresIn: 121)
         
         let session = AWSAuthCognitoSession.testData.copySessionByUpdating(cognitoTokensResult: .success(tokens))
+
         let cognitoTokens = try! session.getCognitoTokens().get()
         XCTAssertTrue(cognitoTokens.areTokensExpiring())
     }

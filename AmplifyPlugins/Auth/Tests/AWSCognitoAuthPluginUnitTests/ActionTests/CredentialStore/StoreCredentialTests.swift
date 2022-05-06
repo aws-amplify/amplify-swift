@@ -19,7 +19,7 @@ class StoreCredentialTests: XCTestCase {
     ///    - the credentials should be saved into the credential store
     func testStoreCredentials() {
         let mockedData = "mock"
-        let testData = CognitoCredentials.testData
+        let testData = AmplifyCredentials.testData
         let saveCredentialHandlerInvoked = expectation(description: "saveCredentialHandlerInvoked")
 
         let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(data: mockedData)
@@ -92,7 +92,7 @@ class StoreCredentialTests: XCTestCase {
     ///    - the action should throw a known error
     func testStoreCredentialsKnownException() {
         let mockedData = "mock"
-        let testData = CognitoCredentials.testData
+        let testData = AmplifyCredentials.testData
         let expectation = expectation(description: "saveCredentialErrorInvoked")
 
         let expectedError = CredentialStoreError.securityError(30_534)
@@ -144,7 +144,7 @@ class StoreCredentialTests: XCTestCase {
     ///    - the action should throw an  unknown error
     func testStoreCredentialsUnknownKnownException() {
         let mockedData = "mock"
-        let testData = CognitoCredentials.testData
+        let testData = AmplifyCredentials.testData
         let expectation = expectation(description: "saveCredentialErrorInvoked")
 
         let unknownError = AuthorizationError.invalidIdentityId(message: "")
