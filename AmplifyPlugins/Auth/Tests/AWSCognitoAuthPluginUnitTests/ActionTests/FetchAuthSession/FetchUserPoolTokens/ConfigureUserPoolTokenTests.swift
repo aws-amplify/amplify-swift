@@ -46,8 +46,15 @@ class ConfigureUserPoolTokenTests: XCTestCase {
         let userPoolTokensValidExpectation = expectation(description: "userPoolTokensAreValid")
         let fetchIdentityIdExpectation = expectation(description: "fetchIdentity")
 
-        let cognitoUserPoolTokensInput = AWSCognitoUserPoolTokens(idToken: "idToken",
-                                                                  accessToken: "accessToken",
+        let tokenData = [
+            "sub": "1234567890",
+            "name": "John Doe",
+            "iat": "1516239022",
+            "exp": String(Date(timeIntervalSinceNow: 121).timeIntervalSince1970)
+        ]
+
+        let cognitoUserPoolTokensInput = AWSCognitoUserPoolTokens(idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+                                                                  accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
                                                                   refreshToken: "refreshToken",
                                                                   expiresIn: 121)
 
@@ -80,9 +87,16 @@ class ConfigureUserPoolTokenTests: XCTestCase {
     func testUserPoolTokensExpiring() {
 
         let expectation = expectation(description: "refreshUserPoolTokens")
+        
+        let tokenData = [
+            "sub": "1234567890",
+            "name": "John Doe",
+            "iat": "1516239022",
+            "exp": String(Date(timeIntervalSinceNow: 119).timeIntervalSince1970)
+        ]
 
-        let cognitoUserPoolTokensInput = AWSCognitoUserPoolTokens(idToken: "idToken",
-                                                                  accessToken: "accessToken",
+        let cognitoUserPoolTokensInput = AWSCognitoUserPoolTokens(idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+                                                                  accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
                                                                   refreshToken: "refreshToken",
                                                                   expiresIn: 119)
 
