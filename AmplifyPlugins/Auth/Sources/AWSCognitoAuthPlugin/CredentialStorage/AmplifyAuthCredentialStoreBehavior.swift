@@ -8,8 +8,8 @@
 import Foundation
 
 protocol AmplifyAuthCredentialStoreBehavior {
-    func saveCredential(_ credential: CognitoCredentials) throws
-    func retrieveCredential() throws -> CognitoCredentials
+    func saveCredential(_ credential: AmplifyCredentials) throws
+    func retrieveCredential() throws -> AmplifyCredentials
     func deleteCredential() throws
 }
 

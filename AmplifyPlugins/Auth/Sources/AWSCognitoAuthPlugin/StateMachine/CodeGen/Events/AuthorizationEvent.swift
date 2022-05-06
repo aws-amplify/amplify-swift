@@ -12,7 +12,7 @@ struct AuthorizationEvent: StateMachineEvent {
 
         case configure
 
-        case fetchAuthSession(CognitoCredentials?)
+        case fetchAuthSession(AmplifyCredentials?)
 
         case fetchedAuthSession(AWSAuthCognitoSession)
 
