@@ -30,10 +30,10 @@ class AWSAuthCognitoSessionTests: XCTestCase {
                                               expiresIn: 121)
         
         let session = AWSAuthCognitoSession.testData.copySessionByUpdating(cognitoTokensResult: .success(tokens))
-        
-        XCTAssertTrue(session.areTokensExpiring(in: 120))
-        XCTAssertFalse(session.areTokensExpiring(in: 122))
-        XCTAssertTrue(session.areTokensExpiring())
+        let cognitoTokens = try! session.getCognitoTokens().get()
+        XCTAssertTrue(cognitoTokens.areTokensExpiring(in: 120))
+        XCTAssertFalse(cognitoTokens.areTokensExpiring(in: 122))
+        XCTAssertTrue(cognitoTokens.areTokensExpiring())
     }
     
     /// Given: a JWT token
@@ -54,8 +54,9 @@ class AWSAuthCognitoSessionTests: XCTestCase {
                                               expiresIn: 121)
         
         let session = AWSAuthCognitoSession.testData.copySessionByUpdating(cognitoTokensResult: .success(tokens))
-        
-        XCTAssertTrue(session.areTokensExpiring())
+
+        let cognitoTokens = try! session.getCognitoTokens().get()
+        XCTAssertTrue(cognitoTokens.areTokensExpiring())
     }
 
 }

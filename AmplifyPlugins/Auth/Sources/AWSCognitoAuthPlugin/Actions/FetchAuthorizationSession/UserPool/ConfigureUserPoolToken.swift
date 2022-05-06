@@ -18,12 +18,11 @@ struct ConfigureUserPoolToken: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         switch cognitoSession.cognitoTokensResult {
-        case .success:
+        case .success(let cognitoTokens):
 
             let refreshInterval = AuthPluginConstants.sessionRefreshInterval
             // If the session expires > 2 minutes return it
-            if cognitoSession.areTokensExpiring(in: refreshInterval) {
-
+            if cognitoTokens.areTokensExpiring(in: refreshInterval) {
                 let userPoolTokensEvent = FetchUserPoolTokensEvent(eventType: .fetched)
                 logVerbose("\(#fileID) Sending event \(userPoolTokensEvent.type)", environment: environment)
                 dispatcher.send(userPoolTokensEvent)
