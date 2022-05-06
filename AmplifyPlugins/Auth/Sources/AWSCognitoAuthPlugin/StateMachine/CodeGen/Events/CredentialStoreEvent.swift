@@ -15,11 +15,11 @@ struct CredentialStoreEvent: StateMachineEvent {
 
         case loadCredentialStore
 
-        case storeCredentials(CognitoCredentials)
+        case storeCredentials(AmplifyCredentials)
 
         case clearCredentialStore
 
-        case completedOperation(CognitoCredentials?)
+        case completedOperation(AmplifyCredentials?)
 
         case throwError(CredentialStoreError)
 

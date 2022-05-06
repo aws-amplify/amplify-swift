@@ -13,7 +13,7 @@ struct InitializeFetchAuthSession: Action {
 
     let identifier = "InitializeFetchAuthSession"
 
-    let storedCredentials: CognitoCredentials?
+    let storedCredentials: AmplifyCredentials?
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 

@@ -87,7 +87,7 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
         }
     }
 
-    func doInitialize(with storedCredentials: CognitoCredentials?) {
+    func doInitialize(with storedCredentials: AmplifyCredentials?) {
         var token: AuthStateMachine.StateChangeListenerToken?
         token = authStateMachine.listen { [weak self] in
             guard let self = self else {
@@ -111,7 +111,7 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
         } onSubscribe: { }
     }
 
-    func fetchAuthSession(with storedCredentials: CognitoCredentials?) {
+    func fetchAuthSession(with storedCredentials: AmplifyCredentials?) {
         var token: AuthStateMachine.StateChangeListenerToken?
         token = authStateMachine.listen { [weak self] in
             guard let self = self else {
@@ -182,12 +182,12 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
         }
     }
 
-    private func sendStoreCredentialsEvent(with credentials: CognitoCredentials) {
+    private func sendStoreCredentialsEvent(with credentials: AmplifyCredentials) {
         let event = CredentialStoreEvent.init(eventType: .storeCredentials(credentials))
         credentialStoreStateMachine.send(event)
     }
 
-    private func sendFetchAuthSessionEvent(with storedCredentials: CognitoCredentials?) {
+    private func sendFetchAuthSessionEvent(with storedCredentials: AmplifyCredentials?) {
         let event = AuthorizationEvent.init(eventType: .fetchAuthSession(storedCredentials))
         authStateMachine.send(event)
     }
