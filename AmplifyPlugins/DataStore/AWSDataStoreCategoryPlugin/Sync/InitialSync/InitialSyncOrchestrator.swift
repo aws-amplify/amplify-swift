@@ -160,7 +160,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
         var underlyingError: Error?
         if let error = syncErrors.first(where: isNetworkError(_:)) {
-            underlyingError = getFirstUnderlyingNetworkError(error)
+            underlyingError = getUnderlyingNetworkError(error)
         }
 
         let allMessages = syncErrors.map { String(describing: $0) }
@@ -242,7 +242,7 @@ extension AWSInitialSyncOrchestrator {
         return false
     }
 
-    private func getFirstUnderlyingNetworkError(_ error: DataStoreError) -> Error? {
+    private func getUnderlyingNetworkError(_ error: DataStoreError) -> Error? {
         guard case let .sync(_, _, underlyingError) = error,
               let datastoreError = underlyingError as? DataStoreError
               else {
