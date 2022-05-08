@@ -158,10 +158,16 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
             return .successfulVoid
         }
 
+        var underlyingError: Error?
+        if let error = syncErrors.first(where: isNetworkError(_:)) {
+            underlyingError = getUnderlyingNetworkError(error)
+        }
+
         let allMessages = syncErrors.map { String(describing: $0) }
         let syncError = DataStoreError.sync(
             "One or more errors occurred syncing models. See below for detailed error description.",
-            allMessages.joined(separator: "\n")
+            allMessages.joined(separator: "\n"),
+            underlyingError
         )
         return .failure(syncError)
     }
@@ -218,5 +224,37 @@ extension AWSInitialSyncOrchestrator {
             return true
         }
         return false
+    }
+
+    private func isNetworkError(_ error: DataStoreError) -> Bool {
+        guard case let .sync(_, _, underlyingError) = error,
+              let datastoreError = underlyingError as? DataStoreError
+              else {
+            return false
+        }
+
+        if case let .api(amplifyError, _) = datastoreError,
+           let apiError = amplifyError as? APIError,
+           case .networkError = apiError {
+            return true
+        }
+
+        return false
+    }
+
+    private func getUnderlyingNetworkError(_ error: DataStoreError) -> Error? {
+        guard case let .sync(_, _, underlyingError) = error,
+              let datastoreError = underlyingError as? DataStoreError
+              else {
+            return nil
+        }
+
+        if case let .api(amplifyError, _) = datastoreError,
+           let apiError = amplifyError as? APIError,
+           case let .networkError(_, _, underlyingError) = apiError {
+            return underlyingError
+        }
+
+        return nil
     }
 }
