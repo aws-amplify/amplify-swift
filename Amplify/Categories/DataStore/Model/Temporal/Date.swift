@@ -26,19 +26,6 @@ extension Temporal {
             Temporal.Date(Foundation.Date())
         }
 
-        @inlinable
-        @inline(never)
-        // Inherits documentation from `TemporalSpec`
-        public init(
-            iso8601String: String,
-            format: Temporal.Date.Format = .unknown
-        ) throws {
-            let date = try SpecBasedDateConverting<Self>()
-                .convert(iso8601String, format)
-
-            self.init(date)
-        }
-
         // Inherits documentation from `TemporalSpec`
         public init(_ date: Foundation.Date) {
             self.foundationDate = Temporal
@@ -50,6 +37,3 @@ extension Temporal {
 
 // Allow date unit operations on `Temporal.Date`
 extension Temporal.Date: DateUnitOperable {}
-
-// Allow `Temporal.Date` to be typed erased
-extension Temporal.Date: AnyTemporalSpec {}
