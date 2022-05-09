@@ -6,10 +6,14 @@
 //
 
 import SwiftUI
+#if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 /// Issue report screen in developer menu
-@available(iOS 13.0, *)
+#if canImport(UIKit)
 struct IssueReporter: View {
     @State var issueDescription: String = ""
     @State var includeLogs = true
@@ -112,16 +116,18 @@ struct IssueReporter: View {
 
     /// Copy issue as a markdown string to clipboard
     private func copyToClipboard() {
-        UIPasteboard.general.string =
-            IssueInfoHelper.generateMarkdownForIssue(
-                issue: IssueInfo(issueDescription: issueDescription,
-                                 includeEnvInfo: includeEnvInfo,
-                                 includeDeviceInfo: includeDeviceInfo)
-            )
+        let issue = IssueInfo(issueDescription: issueDescription,
+                              includeEnvInfo: includeEnvInfo,
+                              includeDeviceInfo: includeDeviceInfo)
+        let value = IssueInfoHelper.generateMarkdownForIssue(issue: issue)
+#if canImport(UIKit)
+        UIPasteboard.general.string = value
+#elseif canImport(AppKit)
+        NSPasteboard.general.setString(value, forType: .string)
+#endif
     }
 }
 
-@available(iOS 13.0.0, *)
 final class IssueReporter_Previews: PreviewProvider {
     static var previews: some View {
         IssueReporter()
@@ -129,7 +135,6 @@ final class IssueReporter_Previews: PreviewProvider {
 }
 
 /// Custom defined view for multi line text field
-@available(iOS 13.0, *)
 final class MultilineTextField: UIViewRepresentable {
     @Binding var text: String
     var placeHolderText: String = ""
@@ -192,3 +197,4 @@ final class MultilineTextField: UIViewRepresentable {
         }
     }
 }
+#endif

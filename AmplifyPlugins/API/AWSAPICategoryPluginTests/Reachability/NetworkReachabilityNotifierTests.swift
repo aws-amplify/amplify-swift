@@ -8,6 +8,7 @@
 import Foundation
 import XCTest
 import Combine
+@testable import Amplify
 @testable import AWSAPIPlugin
 
 class NetworkReachabilityNotifierTests: XCTestCase {
@@ -33,7 +34,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         var values = [Bool]()
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             XCTFail("Not expecting any error")
-        }, receiveValue: { value in
+        }, receiveValue: { (value: ReachabilityUpdate) -> Void in
             values.append(value.isOnline)
             if values.count == 2 {
                 XCTAssertFalse(values[0])
@@ -54,7 +55,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         var values = [Bool]()
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             XCTFail("Not expecting any error")
-        }, receiveValue: { value in
+        }, receiveValue: { (value: ReachabilityUpdate) -> Void in
             values.append(value.isOnline)
             if values.count == 2 {
                 XCTAssertFalse(values[0])
@@ -76,7 +77,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         var values = [Bool]()
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             XCTFail("Not expecting any error")
-        }, receiveValue: { value in
+        }, receiveValue: { (value: ReachabilityUpdate) -> Void in
             values.append(value.isOnline)
             if values.count == 2 {
                 XCTAssertFalse(values[0])
@@ -98,7 +99,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         let completeExpect = expectation(description: ".sink receives completion")
         let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
             completeExpect.fulfill()
-        }, receiveValue: { value in
+        }, receiveValue: { (value: ReachabilityUpdate) -> Void in
             XCTAssertFalse(value.isOnline)
             defaultValueExpect.fulfill()
         })

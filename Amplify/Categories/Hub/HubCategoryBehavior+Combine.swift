@@ -5,23 +5,20 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(Combine)
 import Combine
 
-@available(iOS 13.0, *)
 public typealias HubPublisher = AnyPublisher<HubPayload, Never>
 
-@available(iOS 13.0, *)
 typealias HubSubject = PassthroughSubject<HubPayload, Never>
 
 /// Maintains a map of Subjects by Hub Channel. All downstream subscribers will
 /// attach to the same Subject.
-@available(iOS 13.0, *)
 private struct HubSubjectMap {
     static var `default` = HubSubjectMap()
     var subjectsByChannel = AtomicValue<[HubChannel: HubSubject]>(initialValue: [:])
 }
 
-@available(iOS 13.0, *)
 extension HubCategoryBehavior {
     /// Returns a publisher for all Hub messages sent to `channel`
     ///
@@ -52,3 +49,4 @@ extension HubCategoryBehavior {
     }
 
 }
+#endif

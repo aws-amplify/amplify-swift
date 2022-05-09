@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-@available(iOS 13.0.0, *)
 class PersistentLogWrapperTests: XCTestCase {
 
     let provider = MockDevMenuContextProvider()
@@ -137,3 +137,4 @@ class PersistentLogWrapperTests: XCTestCase {
         Amplify.reset()
     }
 }
+#endif

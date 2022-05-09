@@ -1,6 +1,17 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.6
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 import PackageDescription
+
+let platforms: [SupportedPlatform] = [.iOS(.v13)]
+let dependencies: [Package.Dependency] = [
+    .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.12.2"),
+    .package(url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", exact: "1.9.0"),
+    // We can remove AwsCrt and ClientRuntime once we move to the latest AWS SDK for Swift
+    .package(url: "https://github.com/awslabs/aws-crt-swift.git", exact: "0.1.1"),
+    .package(url: "https://github.com/awslabs/smithy-swift.git", exact: "0.1.4"),
+    .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.1.4"),
+    .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting", .upToNextMinor(from: "2.1.0"))
+]
 
 let amplifyTargets: [Target] = [
     .target(
@@ -15,7 +26,7 @@ let amplifyTargets: [Target] = [
         name: "AWSPluginsCore",
         dependencies: [
             "Amplify",
-            .product(name: "AWSClientRuntime", package: "AWSSwiftSDK")
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Core/AWSPluginsCore",
         exclude: [
@@ -57,7 +68,7 @@ let amplifyTargets: [Target] = [
         dependencies: [
             "Amplify",
             "AWSPluginsCore",
-            .product(name: "AWSClientRuntime", package: "AWSSwiftSDK")
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Core/AWSPluginsTestCommon",
         exclude: [
@@ -69,7 +80,7 @@ let amplifyTargets: [Target] = [
         dependencies: [
             "AWSPluginsCore",
             "AmplifyTestCommon",
-            .product(name: "AWSClientRuntime", package: "AWSSwiftSDK")
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Core/AWSPluginsCoreTests",
         exclude: [
@@ -84,7 +95,7 @@ let apiTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
-            .product(name: "AppSyncRealTimeClient", package: "AppSyncRealTimeClient")],
+            .product(name: "AppSyncRealTimeClient", package: "aws-appsync-realtime-client-ios")],
         path: "AmplifyPlugins/API/AWSAPICategoryPlugin",
         exclude: [
             "Info.plist",
@@ -164,9 +175,9 @@ let authTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AmplifySRP"),
             .target(name: "AWSPluginsCore"),
-            .product(name: "AWSClientRuntime", package: "AWSSwiftSDK"),
-            .product(name: "AWSCognitoIdentityProvider", package: "AWSSwiftSDK"),
-            .product(name: "AWSCognitoIdentity", package: "AWSSwiftSDK")
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift"),
+            .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
+            .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin"
     ),
@@ -242,7 +253,7 @@ let storageTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
-            .product(name: "AWSS3", package: "AWSSwiftSDK")],
+            .product(name: "AWSS3", package: "aws-sdk-swift")],
         path: "AmplifyPlugins/Storage/AWSS3StoragePlugin",
         exclude: [
             "Resources/Info.plist"
@@ -274,7 +285,7 @@ let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTar
 
 let package = Package(
     name: "Amplify",
-    platforms: [.iOS(.v13)],
+    platforms: platforms,
     products: [
         .library(
             name: "Amplify",
@@ -298,35 +309,6 @@ let package = Package(
         ),
         
     ],
-    dependencies: [
-        .package(
-            url: "https://github.com/stephencelis/SQLite.swift.git",
-            .exact("0.12.2")
-        ),
-        .package(
-            name: "AppSyncRealTimeClient",
-            url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
-            from: "1.9.0"
-        ),// We can remove AwsCrt and ClientRuntime once we move to the latest AWS SDK for Swift
-        .package(
-            name: "AwsCrt",
-            url: "https://github.com/awslabs/aws-crt-swift.git",
-            .exact("0.1.1")
-        ),
-        .package(
-            name: "ClientRuntime",
-            url: "https://github.com/awslabs/smithy-swift.git",
-            .exact("0.1.4")
-        ),
-        .package(
-            name: "AWSSwiftSDK",
-            url: "https://github.com/awslabs/aws-sdk-swift",
-            .exact("0.1.4")
-        ),
-        .package(
-            name: "CwlPreconditionTesting",
-            url: "https://github.com/mattgallagher/CwlPreconditionTesting",
-            .upToNextMinor(from: "2.1.0"))
-    ],
+    dependencies: dependencies,
     targets: targets
 )

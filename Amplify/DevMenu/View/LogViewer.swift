@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import SwiftUI
 
-@available(iOS 13.0.0, *)
 struct LogViewer: View {
 
     @State private var searchText: String = ""
@@ -69,7 +69,6 @@ struct LogViewer: View {
     }
 }
 
-@available(iOS 13.0.0, *)
 struct LogViewer_Previews: PreviewProvider {
     static var previews: some View {
         LogViewer()
@@ -77,7 +76,6 @@ struct LogViewer_Previews: PreviewProvider {
 }
 
 /// Search bar view
-@available(iOS 13.0, *)
 struct SearchBar: UIViewRepresentable {
 
     @Binding var text: String
@@ -113,3 +111,4 @@ struct SearchBar: UIViewRepresentable {
         uiView.text = text
     }
 }
+#endif

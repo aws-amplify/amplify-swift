@@ -91,8 +91,8 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
     ///    - I invoke DataStore.delete()
     /// - Then:
     ///    - The mutation queue writes events
-    func testMutationQueueStoresDeleteEvents() {
-        XCTFail("Not yet implemented")
+    func testMutationQueueStoresDeleteEvents() throws {
+        throw XCTSkip("Not yet implemented")
     }
 
     /// - Given: A sync-configured DataStore
@@ -191,8 +191,8 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
     ///    - I add mutations before the pending mutations have been processed
     /// - Then:
     ///    - The mutation queue delivers events in FIFO order
-    func testMutationQueueDeliversPendingMutationsFirst() {
-        XCTFail("Not yet implemented")
+    func testMutationQueueDeliversPendingMutationsFirst() throws {
+        throw XCTSkip("Not yet implemented")
     }
 
     /// - Given: A sync-configured DataStore
@@ -200,8 +200,8 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
     ///    - I successfully process a mutation
     /// - Then:
     ///    - The mutation queue deletes the event from its persistent store
-    func testMutationQueueDequeuesSavedEvents() {
-        XCTFail("Not yet implemented")
+    func testMutationQueueDequeuesSavedEvents() throws {
+        throw XCTSkip("Not yet implemented")
     }
 
     /// - Given: A sync-configured DataStore
@@ -209,8 +209,8 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
     ///    - I successfully process a mutation
     /// - Then:
     ///    - The mutation listener is unsubscribed from Hub
-    func testLocalMutationUnsubcsribesFromCloud() {
-        XCTFail("Not yet implemented")
+    func testLocalMutationUnsubcsribesFromCloud() throws {
+        throw XCTSkip("Not yet implemented")
     }
 
 }

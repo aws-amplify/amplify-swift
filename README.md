@@ -49,7 +49,7 @@ let task = awsS3.headBucket(input: input) { result in
 
 ## Platform Support
 
-Amplify supports iOS 13 and above. There are currently no plans to support Amplify on WatchOS, tvOS, or MacOS.
+Amplify supports iOS 13 and above. There are currently no plans to support Amplify on watchOS, tvOS, or macOS.
 
 ## License
 

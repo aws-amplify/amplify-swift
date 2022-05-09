@@ -109,9 +109,9 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
 
         super.init()
 
-        if #available(iOS 13.0, *) {
-            resultFuture = Future<Success, Failure> { self.resultPromise = $0 }
-        }
+#if canImport(Combine)
+        resultFuture = Future<Success, Failure> { self.resultPromise = $0 }
+#endif
 
         if let resultListener = resultListener {
             self.resultListenerUnsubscribeToken = subscribe(resultListener: resultListener)
@@ -146,14 +146,14 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
     /// Classes that override this method must emit a completion to the `resultPublisher` upon cancellation
     open override func cancel() {
         super.cancel()
-        if #available(iOS 13.0, *) {
-            let cancellationError = Failure(
-                errorDescription: "Operation cancelled",
-                recoverySuggestion: "The operation was cancelled before it completed",
-                error: OperationCancelledError()
-            )
-            publish(result: .failure(cancellationError))
-        }
+#if canImport(Combine)
+        let cancellationError = Failure(
+            errorDescription: "Operation cancelled",
+            recoverySuggestion: "The operation was cancelled before it completed",
+            error: OperationCancelledError()
+        )
+        publish(result: .failure(cancellationError))
+#endif
     }
 
     /// Dispatches an event to the hub. Internally, creates an
@@ -163,9 +163,9 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
     /// - Parameter result: The OperationResult to dispatch to the hub as part of the
     ///   HubPayload
     public func dispatch(result: OperationResult) {
-        if #available(iOS 13.0, *) {
-            publish(result: result)
-        }
+#if canImport(Combine)
+        publish(result: result)
+#endif
 
         let channel = HubChannel(from: categoryType)
         let context = AmplifyOperationContext(operationId: id, request: request)

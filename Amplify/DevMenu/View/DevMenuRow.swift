@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import SwiftUI
 
 /// View corresponding to each row in Developer Menu
-@available(iOS 13.0.0, *)
 struct DevMenuRow: View {
     var rowItem: DevMenuItem
 
@@ -23,9 +23,9 @@ struct DevMenuRow: View {
     }
 }
 
-@available(iOS 13.0.0, *)
 struct DevMenuRow_Previews: PreviewProvider {
     static var previews: some View {
         DevMenuRow(rowItem: DevMenuItem(type: .environmentInformation))
     }
 }
+#endif

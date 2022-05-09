@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Combine
+#if canImport(Combine)
 import Foundation
+import Combine
 
-@available(iOS 13.0, *)
 extension AmplifyInProcessReportingOperation {
     /// A Publisher that emits in-process values for an operation, or the associated
     /// failure. Cancelled operations will emit a completion without a value as long as
@@ -48,3 +48,4 @@ extension AmplifyInProcessReportingOperation {
     }
 
 }
+#endif

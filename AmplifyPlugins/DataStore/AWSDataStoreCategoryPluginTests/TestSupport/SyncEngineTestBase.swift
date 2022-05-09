@@ -124,7 +124,7 @@ class SyncEngineTestBase: XCTestCase {
         remoteSyncEngineSink = syncEngine
             .publisher
             .sink(receiveCompletion: {_ in },
-                  receiveValue: { event in
+                  receiveValue: { (event: RemoteSyncEngineEvent) in
                     switch event {
                     case .mutationsPaused:
                         //Assume AWSIncomingEventReconciliationQueue succeeds in establishing connections

@@ -5,15 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Combine
+#if canImport(Combine)
 import Foundation
+import Combine
 
 // MARK: - StorageDownloadDataOperation
 
-// The overrides require a feature and bugfix introduced in Swift 5.2
-#if swift(>=5.2)
-
-@available(iOS 13.0, *)
 public extension AmplifyInProcessReportingOperation
     where
     Request == StorageDownloadDataOperation.Request,
@@ -37,7 +34,6 @@ public extension AmplifyInProcessReportingOperation
 
 // MARK: - StorageDownloadFileOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyInProcessReportingOperation
     where
     Request == StorageDownloadFileOperation.Request,
@@ -61,7 +57,6 @@ public extension AmplifyInProcessReportingOperation
 
 // MARK: - StorageGetURLOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == StorageGetURLOperation.Request,
@@ -75,7 +70,6 @@ public extension AmplifyOperation
 
 // MARK: - StorageListOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == StorageListOperation.Request,
@@ -89,7 +83,6 @@ public extension AmplifyOperation
 
 // MARK: - StorageRemoveOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == StorageRemoveOperation.Request,
@@ -103,7 +96,6 @@ public extension AmplifyOperation
 
 // MARK: - StorageUploadDataOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyInProcessReportingOperation
     where
     Request == StorageUploadDataOperation.Request,
@@ -127,7 +119,6 @@ public extension AmplifyInProcessReportingOperation
 
 // MARK: - StorageUploadFileOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyInProcessReportingOperation
     where
     Request == StorageUploadFileOperation.Request,
@@ -148,5 +139,4 @@ public extension AmplifyInProcessReportingOperation
         internalInProcessPublisher
     }
 }
-
 #endif

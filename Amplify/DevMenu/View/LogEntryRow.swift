@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import SwiftUI
 
 /// View for each row in Log Viewer screen
-@available(iOS 13.0.0, *)
 struct LogEntryRow: View {
     var logEntryItem: LogEntryItem
 
@@ -26,3 +26,4 @@ struct LogEntryRow: View {
         }.padding(5)
     }
 }
+#endif

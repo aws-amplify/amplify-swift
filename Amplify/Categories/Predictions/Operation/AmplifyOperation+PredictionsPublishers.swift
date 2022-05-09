@@ -5,15 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Combine
+#if canImport(Combine)
 import Foundation
+import Combine
 
 // MARK: - PredictionsIdentifyOperation
 
-// The overrides require a feature and bugfix introduced in Swift 5.2
-#if swift(>=5.2)
-
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == PredictionsIdentifyOperation.Request,
@@ -27,7 +24,6 @@ public extension AmplifyOperation
 
 // MARK: - PredictionsInterpretOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == PredictionsInterpretOperation.Request,
@@ -41,7 +37,6 @@ public extension AmplifyOperation
 
 // MARK: - PredictionsSpeechToTextOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == PredictionsSpeechToTextOperation.Request,
@@ -55,7 +50,6 @@ public extension AmplifyOperation
 
 // MARK: - PredictionsTextToSpeechOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == PredictionsTextToSpeechOperation.Request,
@@ -69,7 +63,6 @@ public extension AmplifyOperation
 
 // MARK: - PredictionsTranslateTextOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == PredictionsTranslateTextOperation.Request,
@@ -80,5 +73,4 @@ public extension AmplifyOperation
         internalResultPublisher
     }
 }
-
 #endif

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(AuthenticationServices)
 import Foundation
-import UIKit
 
 /// Request to initiate sign in using a web UI.
 ///
@@ -65,3 +65,4 @@ public extension AuthWebUISignInRequest {
         }
     }
 }
+#endif
