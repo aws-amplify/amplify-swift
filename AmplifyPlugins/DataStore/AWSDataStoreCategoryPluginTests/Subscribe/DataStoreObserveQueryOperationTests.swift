@@ -548,7 +548,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         var updatedPost2 = try createPost(id: "2", title: "Does not match predicate")
         updatedPost2.mutationType = MutationEvent.MutationType.update.rawValue
         dataStorePublisher.send(input: updatedPost2)
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: 5)
 
         XCTAssertEqual(querySnapshots.count, 4)
 
