@@ -106,37 +106,11 @@ extension Temporal {
     /// Turn a `String` into a `Foundation.Date`
     /// - Parameters:
     ///   - string: The date in `String` form.
-    ///   - formats: Any formats in `String` form that you want to check as a variadic argument.
-    ///   - timeZone: The `TimeZone` used by the `DateFormatter` when converted.
-    ///               Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
-    /// - Returns: A `Foundation.Date` if conversion was successful.
-    /// - Throws: `DataStoreError.invalidDateFormat(_:)` if conversion was unsuccessful.
-    /// - SeeAlso: `date(from:with:in:)` overload that takes `[String]` rather than `String...`
-    internal static func date(
-        from string: String,
-        with formats: String...,
-        in timeZone: TimeZone = .utc
-    ) throws -> Foundation.Date {
-        for format in formats {
-            let formatter = formatter(for: format, in: timeZone)
-            if let date = formatter.date(from: string) {
-                return date
-            }
-        }
-        throw DataStoreError
-            .invalidDateFormat(formats.joined(separator: " | "))
-    }
-
-    @usableFromInline
-    /// Turn a `String` into a `Foundation.Date`
-    /// - Parameters:
-    ///   - string: The date in `String` form.
     ///   - formats: Any formats in `String` form that you want to check.
     ///   - timeZone: The `TimeZone` used by the `DateFormatter` when converted.
     ///               Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
     /// - Returns: A `Foundation.Date` if conversion was successful.
     /// - Throws: `DataStoreError.invalidDateFormat(_:)` if conversion was unsuccessful.
-    /// - SeeAlso: `date(from:with:in:)` overload that takes `String...` rather than `[String]`
     internal static func date(
         from string: String,
         with formats: [String],
