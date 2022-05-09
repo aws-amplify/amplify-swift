@@ -33,7 +33,7 @@ internal struct SpecBasedDateConverting<Spec: TemporalSpec> {
         if let format = format {
             date = try Temporal.date(
                 from: iso8601String,
-                with: format(for: Spec.self)
+                with: [format(for: Spec.self)]
             )
         } else {
             date = try Temporal.date(
