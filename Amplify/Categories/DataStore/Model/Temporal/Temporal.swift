@@ -20,7 +20,6 @@ public enum Temporal {}
 /// formatted Date value. Types that conform to this protocol are responsible for providing
 /// the parsing and formatting logic with the correct granularity.
 public protocol TemporalSpec {
-//    associatedtype Format: TemporalSpecValidFormatRepresentable
     /// A static builder that return an instance that represent the current point in time.
     static func now() -> Self
 
