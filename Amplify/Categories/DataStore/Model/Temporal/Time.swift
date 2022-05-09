@@ -23,18 +23,6 @@ extension Temporal {
             Temporal.Time(Foundation.Date())
         }
 
-        @inlinable
-        @inline(never)
-        // Inherits documentation from `TemporalSpec`
-        public init(
-            iso8601String: String,
-            format: Self.Format = .unknown
-        ) throws {
-            let date = try SpecBasedDateConverting<Self>()
-                .convert(iso8601String, format)
-            self.init(date)
-        }
-
         // Inherits documentation from `TemporalSpec`
         public init(_ date: Foundation.Date) {
             // Sets the date to a fixed instant so time-only operations are safe
@@ -80,6 +68,3 @@ extension Temporal {
 
 // Allow time unit operations on `Temporal.Time`
 extension Temporal.Time: TimeUnitOperable {}
-
-// Allow `Temporal.Time` to be typed erased
-extension Temporal.Time: AnyTemporalSpec {}

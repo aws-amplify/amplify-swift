@@ -11,7 +11,7 @@ extension TemporalSpec where Self: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let value = try container.decode(String.self)
-        try self.init(iso8601String: value, format: .unknown)
+        try self.init(iso8601String: value)
     }
 
     public func encode(to encoder: Encoder) throws {

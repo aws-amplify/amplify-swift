@@ -20,7 +20,7 @@ public enum Temporal {}
 /// formatted Date value. Types that conform to this protocol are responsible for providing
 /// the parsing and formatting logic with the correct granularity.
 public protocol TemporalSpec {
-    associatedtype Format: TemporalSpecValidFormatRepresentable
+//    associatedtype Format: TemporalSpecValidFormatRepresentable
     /// A static builder that return an instance that represent the current point in time.
     static func now() -> Self
 
@@ -38,10 +38,22 @@ public protocol TemporalSpec {
     ///
     /// - Parameters
     ///  - iso8601String: the string in the ISO8601 format
-    ///  - format: The format of the `iso8601String`
     /// - Throws: `DataStoreError.decodeError` in case the provided string is not
     /// formatted as expected by the scalar type.
-    init(iso8601String: String, format: Format) throws
+    /// - Important: This will cycle through all available formats for the concrete type.
+    /// If you know the format, use `init(iso8601String:format:) throws` instead.
+    init(iso8601String: String) throws
+
+    /// Parses an ISO-8601 `String` into a `TemporalSpec`.
+    ///
+    /// - Note: if no timezone is present in the string, `.autoupdatingCurrent` is used.
+    ///
+    /// - Parameters
+    ///  - iso8601String: the string in the ISO8601 format
+    ///  - format: The `TemporalFormat` of the `iso8601String`
+    /// - Throws: `DataStoreError.decodeError` in case the provided string is not
+    /// formatted as expected by the scalar type.
+    init(iso8601String: String, format: TemporalFormat) throws
 
     /// Constructs a `TemporalSpec` from a `Date` object.
     /// - Parameter date: The `Date` instance that will be used as the reference of the
@@ -51,10 +63,10 @@ public protocol TemporalSpec {
     /// A string representation of the underlying date formatted using ISO8601 rules.
     ///
     /// - Parameters:
-    ///   - format: the desired format.
+    ///   - format: the desired `TemporalFormat`.
     ///   - timeZone: the target `TimeZone`
     /// - Returns: the ISO8601 formatted string in the requested format
-    func iso8601FormattedString(format: Format, timeZone: TimeZone) -> String
+    func iso8601FormattedString(format: TemporalFormat, timeZone: TimeZone) -> String
 }
 
 extension TemporalSpec {
@@ -66,12 +78,12 @@ extension TemporalSpec {
     ///   Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
     /// - Returns: A `String` formatted according to the `format` and `timeZone` arguments.
     public func iso8601FormattedString(
-        format: Format,
+        format: TemporalFormat,
         timeZone: TimeZone = .utc
     ) -> String {
         Temporal.string(
             from: foundationDate,
-            with: format.value,
+            with: format(for: Self.self),
             in: timeZone
         )
     }
@@ -80,6 +92,24 @@ extension TemporalSpec {
     /// - SeeAlso: `iso8601FormattedString(format:timeZone:)`
     public var iso8601String: String {
         iso8601FormattedString(format: .full)
+    }
+
+    @inlinable
+    public init(iso8601String: String, format: TemporalFormat) throws {
+        let date = try SpecBasedDateConverting<Self>()
+            .convert(iso8601String, format)
+
+        self.init(date)
+    }
+
+    @inlinable
+    public init(
+        iso8601String: String
+    ) throws {
+        let date = try SpecBasedDateConverting<Self>()
+            .convert(iso8601String, nil)
+
+        self.init(date)
     }
 }
 

@@ -353,17 +353,13 @@
 		902AE06D2813050200CD12CA /* Temporal+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE06A2813050200CD12CA /* Temporal+Codable.swift */; };
 		9091FF7D2820771B0021D8E1 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 9091FF692820771B0021D8E1 /* README.md */; };
 		9091FF7E2820771B0021D8E1 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF6A2820771B0021D8E1 /* Date.swift */; };
-		9091FF802820771C0021D8E1 /* TemporalFormat+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF6C2820771B0021D8E1 /* TemporalFormat+Date.swift */; };
 		9091FF812820771C0021D8E1 /* TemporalFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF6D2820771B0021D8E1 /* TemporalFormat.swift */; };
-		9091FF832820771C0021D8E1 /* TemporalFormat+Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF6F2820771B0021D8E1 /* TemporalFormat+Time.swift */; };
-		9091FF872820771C0021D8E1 /* TemporalFormat+DateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF732820771B0021D8E1 /* TemporalFormat+DateTime.swift */; };
 		9091FF882820771C0021D8E1 /* DateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF742820771B0021D8E1 /* DateTime.swift */; };
 		9091FF892820771C0021D8E1 /* Temporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF752820771B0021D8E1 /* Temporal.swift */; };
 		9091FF8A2820771C0021D8E1 /* Date+Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF762820771B0021D8E1 /* Date+Operation.swift */; };
 		9091FF8B2820771C0021D8E1 /* TemporalOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF772820771B0021D8E1 /* TemporalOperation.swift */; };
 		9091FF8E2820771C0021D8E1 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF7A2820771B0021D8E1 /* Time.swift */; };
 		9091FF8F2820771C0021D8E1 /* Time+Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF7B2820771B0021D8E1 /* Time+Operation.swift */; };
-		9091FF902820771C0021D8E1 /* AnyTemporalSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF7C2820771B0021D8E1 /* AnyTemporalSpec.swift */; };
 		9091FF9228207B8D0021D8E1 /* Temporal+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF9128207B8D0021D8E1 /* Temporal+Cache.swift */; };
 		9091FF9428215DF40021D8E1 /* TemporalUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF9328215DF40021D8E1 /* TemporalUnit.swift */; };
 		9091FF97282170EB0021D8E1 /* DataStoreError+Temporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0702813052F00CD12CA /* DataStoreError+Temporal.swift */; };
@@ -1286,13 +1282,10 @@
 		9091FF692820771B0021D8E1 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9091FF6A2820771B0021D8E1 /* Date.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		9091FF6B2820771B0021D8E1 /* Temporal+Codable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Codable.swift"; sourceTree = "<group>"; };
-		9091FF6C2820771B0021D8E1 /* TemporalFormat+Date.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TemporalFormat+Date.swift"; sourceTree = "<group>"; };
 		9091FF6D2820771B0021D8E1 /* TemporalFormat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemporalFormat.swift; sourceTree = "<group>"; };
 		9091FF6E2820771B0021D8E1 /* Temporal+Hashable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Hashable.swift"; sourceTree = "<group>"; };
-		9091FF6F2820771B0021D8E1 /* TemporalFormat+Time.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TemporalFormat+Time.swift"; sourceTree = "<group>"; };
 		9091FF702820771B0021D8E1 /* DataStoreError+Temporal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DataStoreError+Temporal.swift"; sourceTree = "<group>"; };
 		9091FF722820771B0021D8E1 /* Temporal+Comparable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Comparable.swift"; sourceTree = "<group>"; };
-		9091FF732820771B0021D8E1 /* TemporalFormat+DateTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TemporalFormat+DateTime.swift"; sourceTree = "<group>"; };
 		9091FF742820771B0021D8E1 /* DateTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateTime.swift; sourceTree = "<group>"; };
 		9091FF752820771B0021D8E1 /* Temporal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Temporal.swift; sourceTree = "<group>"; };
 		9091FF762820771B0021D8E1 /* Date+Operation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date+Operation.swift"; sourceTree = "<group>"; };
@@ -1300,7 +1293,6 @@
 		9091FF792820771B0021D8E1 /* TemporalUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemporalUnit.swift; sourceTree = "<group>"; };
 		9091FF7A2820771B0021D8E1 /* Time.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		9091FF7B2820771B0021D8E1 /* Time+Operation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Time+Operation.swift"; sourceTree = "<group>"; };
-		9091FF7C2820771B0021D8E1 /* AnyTemporalSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyTemporalSpec.swift; sourceTree = "<group>"; };
 		9091FF9128207B8D0021D8E1 /* Temporal+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Cache.swift"; sourceTree = "<group>"; };
 		9091FF9328215DF40021D8E1 /* TemporalUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemporalUnit.swift; sourceTree = "<group>"; };
 		9091FF9528215DFD0021D8E1 /* Temporal+Comparable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Comparable.swift"; sourceTree = "<group>"; };
@@ -2697,7 +2689,6 @@
 		902AE04B281304B800CD12CA /* Temporal */ = {
 			isa = PBXGroup;
 			children = (
-				9091FF7C2820771B0021D8E1 /* AnyTemporalSpec.swift */,
 				902AE0702813052F00CD12CA /* DataStoreError+Temporal.swift */,
 				9091FF6A2820771B0021D8E1 /* Date.swift */,
 				9091FF762820771B0021D8E1 /* Date+Operation.swift */,
@@ -2710,9 +2701,6 @@
 				9091FF9528215DFD0021D8E1 /* Temporal+Comparable.swift */,
 				9091FF98282171840021D8E1 /* Temporal+Hashable.swift */,
 				9091FF6D2820771B0021D8E1 /* TemporalFormat.swift */,
-				9091FF6C2820771B0021D8E1 /* TemporalFormat+Date.swift */,
-				9091FF732820771B0021D8E1 /* TemporalFormat+DateTime.swift */,
-				9091FF6F2820771B0021D8E1 /* TemporalFormat+Time.swift */,
 				9091FF772820771B0021D8E1 /* TemporalOperation.swift */,
 				9091FF9328215DF40021D8E1 /* TemporalUnit.swift */,
 				9091FF7A2820771B0021D8E1 /* Time.swift */,
@@ -5173,7 +5161,6 @@
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,
 				21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */,
 				974FF19B24BD05AA0050D01B /* EnvironmentInfoItemType.swift in Sources */,
-				9091FF902820771C0021D8E1 /* AnyTemporalSpec.swift in Sources */,
 				9091FF97282170EB0021D8E1 /* DataStoreError+Temporal.swift in Sources */,
 				FAC428A0235F7F980000F221 /* AmplifyAPICategory+RESTBehavior.swift in Sources */,
 				B43DC738241051A200D40275 /* AuthSignUpRequest.swift in Sources */,
@@ -5193,7 +5180,6 @@
 				FAC23548227A055200424678 /* Category.swift in Sources */,
 				FACA35ED2326BB54000E74F6 /* AmplifyConfigurationInitialization.swift in Sources */,
 				FAA9FC3B23620CE50012638A /* URLRequestInterceptor.swift in Sources */,
-				9091FF872820771C0021D8E1 /* TemporalFormat+DateTime.swift in Sources */,
 				95DAAB1E237E63370028544F /* TextFormatType.swift in Sources */,
 				95DAAB2B237E63370028544F /* Table.swift in Sources */,
 				FA09B9382321A359000E064D /* LoggingCategory+CategoryConfigurable.swift in Sources */,
@@ -5209,7 +5195,6 @@
 				974FF1A324BE16F90050D01B /* EnvironmentInfoHelper.swift in Sources */,
 				974FF12D24B0434B0050D01B /* DevMenuPresentationContextProvider.swift in Sources */,
 				21687A41236371E1004A056E /* AnalyticsError.swift in Sources */,
-				9091FF802820771C0021D8E1 /* TemporalFormat+Date.swift in Sources */,
 				FAC23528227A053D00424678 /* AnalyticsCategory+ClientBehavior.swift in Sources */,
 				B43CD8562411472300BF5A60 /* AuthSignUpResult.swift in Sources */,
 				FACD26512386E9410068FBE6 /* JSONValue+KeyPath.swift in Sources */,
@@ -5442,7 +5427,6 @@
 				6B767FB923AC0A0D00C683ED /* APICategoryReachabilityBehavior.swift in Sources */,
 				95DAAB36237E63370028544F /* Selection.swift in Sources */,
 				B4251A0B242504FA007F59EF /* AuthChangePasswordOperation.swift in Sources */,
-				9091FF832820771C0021D8E1 /* TemporalFormat+Time.swift in Sources */,
 				FAC0A2AD22B43FE700B50912 /* HubCategory+ClientBehavior.swift in Sources */,
 				9091FF8B2820771C0021D8E1 /* TemporalOperation.swift in Sources */,
 				769CF2242669B1B9007843A0 /* RetryableGraphQLOperation.swift in Sources */,
