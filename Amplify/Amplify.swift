@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 /// At its core, the Amplify class is simply a router that provides clients top-level access to categories and
 /// configuration methods. It provides convenient access to default plugins via the top-level category properties,
 /// but clients can access specific plugins by invoking `getPlugin` on a category and issuing methods directly to
@@ -21,6 +23,9 @@ public class Amplify {
     /// If `true`, `configure()` has already been invoked, and subsequent calls to `configure` will throw a
     /// ConfigurationError.amplifyAlreadyConfigured error.
     static var isConfigured = false
+
+    /// Instance factory to use during testing.
+    static var instanceFactory: InstanceFactory?
 
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
     // It is not supported to mutate these category properties. They are `var` to support the `reset()` method for
@@ -74,6 +79,24 @@ public class Amplify {
             throw PluginError.pluginConfigurationError(
                 "Plugin category does not exist.",
                 "Verify that the library version is correct and supports the plugin's category.")
+        }
+    }
+
+    static var isTesting: Bool {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+    }
+
+    @discardableResult
+    public static func preconditionFailure<T>(_ message: @autoclosure () -> String = String(),
+                                              file: StaticString = #file,
+                                              line: UInt = #line) -> T {
+        guard isTesting, let instanceFactory = instanceFactory else {
+            Swift.preconditionFailure(message(), file: file, line: line)
+        }
+        do {
+            return try instanceFactory.get(type: T.self, message: message())
+        } catch {
+            fatalError("Error: \(error)")
         }
     }
 }

@@ -69,7 +69,7 @@ extension AWSPinpointAnalyticsPlugin {
         // TODO: check if there is a limit on total number of properties
         properties.forEach { key, _ in
             guard key.count >= 1, key.count <= 50 else {
-                preconditionFailure("""
+                return Amplify.preconditionFailure("""
                 The key `\(key)` is invalid.
                 Property keys must have a length from 1 to 50.
                 """)

@@ -18,7 +18,7 @@ final public class DataStoreCategory: Category {
     /// are added, or if more than one plugin is added, will cause a `preconditionFailure`.
     var plugin: DataStoreCategoryPlugin {
         guard isConfigured else {
-            preconditionFailure(
+            return Amplify.preconditionFailure(
                 """
                 \(categoryType.displayName) category is not configured. Call Amplify.configure() before using \
                 any methods on the category.
@@ -27,11 +27,11 @@ final public class DataStoreCategory: Category {
         }
 
         guard !plugins.isEmpty else {
-            preconditionFailure("No plugins added to \(categoryType.displayName) category.")
+            return Amplify.preconditionFailure("No plugins added to \(categoryType.displayName) category.")
         }
 
         guard plugins.count == 1 else {
-            preconditionFailure(
+            return Amplify.preconditionFailure(
                 """
                 More than 1 plugin added to \(categoryType.displayName) category. \
                 You must invoke operations on this category by getting the plugin you want, as in:
