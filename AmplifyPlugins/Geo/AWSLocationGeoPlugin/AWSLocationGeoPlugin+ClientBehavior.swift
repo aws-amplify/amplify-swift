@@ -23,6 +23,13 @@ extension AWSLocationGeoPlugin {
     ///   - placeIndexName: The name of the Place Index to query. (optional)
     /// - Returns :
     ///     It returns a Geo.Place array.
+    /// - Throws:
+    ///     `Geo.Error.accessDenied` if request authorization issue
+    ///     `Geo.Error.serviceError` if service is down/resource not found/throttling/validation error
+    ///     `Geo.Error.invalidConfiguration` if invalid configuration
+    ///     `Geo.Error.networkError` if request failed or network unavailable
+    ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
+    ///     `Geo.Error.unknown` if error is unknown
     public func search(for text: String,
                        options: Geo.SearchForTextOptions? = nil) async throws -> [Geo.Place] {
         
@@ -104,6 +111,13 @@ extension AWSLocationGeoPlugin {
     ///   - placeIndexName: The name of the Place Index to query. (optional)
     /// - Return value :
     ///     It returns a Geo.Place array.
+    /// - Throws:
+    ///     `Geo.Error.accessDenied` if request authorization issue
+    ///     `Geo.Error.serviceError` if service is down/resource not found/throttling/validation error
+    ///     `Geo.Error.invalidConfiguration` if invalid configuration
+    ///     `Geo.Error.networkError` if request failed or network unavailable
+    ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
+    ///     `Geo.Error.unknown` if error is unknown
     public func search(for coordinates: Geo.Coordinates,
                        options: Geo.SearchForCoordinatesOptions? = nil) async throws -> [Geo.Place] {
         
@@ -164,6 +178,13 @@ extension AWSLocationGeoPlugin {
 
     /// Retrieves metadata for available map resources.
     /// - Returns: Metadata for all available map resources.
+    /// - Throws:
+    ///     `Geo.Error.accessDenied` if request authorization issue
+    ///     `Geo.Error.serviceError` if service is down/resource not found/throttling/validation error
+    ///     `Geo.Error.invalidConfiguration` if invalid configuration
+    ///     `Geo.Error.networkError` if request failed or network unavailable
+    ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
+    ///     `Geo.Error.unknown` if error is unknown
     public func availableMaps() async throws -> [Geo.MapStyle] {
         let mapStyles = Array(pluginConfig.maps.values)
         guard !mapStyles.isEmpty else {
@@ -176,6 +197,13 @@ extension AWSLocationGeoPlugin {
 
     /// Retrieves the default map resource.
     /// - Returns: Metadata for the default map resource.
+    /// - Throws:
+    ///     `Geo.Error.accessDenied` if request authorization issue
+    ///     `Geo.Error.serviceError` if service is down/resource not found/throttling/validation error
+    ///     `Geo.Error.invalidConfiguration` if invalid configuration
+    ///     `Geo.Error.networkError` if request failed or network unavailable
+    ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
+    ///     `Geo.Error.unknown` if error is unknown
     public func defaultMap() async throws -> Geo.MapStyle {
         guard let mapName = pluginConfig.defaultMap, let mapStyle = pluginConfig.maps[mapName] else {
             throw Geo.Error.invalidConfiguration(

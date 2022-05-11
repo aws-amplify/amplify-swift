@@ -16,7 +16,6 @@ class GeoErrorHelper {
     }
 
     static func mapAWSLocationError(_ error: Error) -> Geo.Error {
-        let error = error as NSError
         let defaultError = GeoErrorHelper.getDefaultError(error)
         
         if let searchPlaceIndexForTextOutputError = error as? SearchPlaceIndexForTextOutputError {
