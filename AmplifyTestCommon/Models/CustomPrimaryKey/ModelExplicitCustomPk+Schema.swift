@@ -41,7 +41,7 @@ extension ModelExplicitCustomPk {
 
 extension ModelExplicitCustomPk: ModelIdentifiable {
     public typealias IdentifierFormat = ModelIdentifierFormat.Custom
-    public typealias Identifier = ModelIdentifier<ModelExplicitCustomPk, ModelIdentifierFormat.Custom>
+    public typealias Identifier = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
 extension ModelExplicitCustomPk.Identifier {
