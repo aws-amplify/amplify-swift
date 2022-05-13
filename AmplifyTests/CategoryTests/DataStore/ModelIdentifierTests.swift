@@ -56,12 +56,12 @@ class ModelIdentifierTests: XCTestCase {
 
     func testModelIdentifierCompositeKey() {
         let model = ModelCompositePk(id: "id", dob: Temporal.DateTime.now(), name: "name")
-        XCTAssertEqual(model.identifier, "\(model.id)#\(model.dob.iso8601String)")
+        XCTAssertEqual(model.identifier, "\"\(model.id)\"#\"\(model.dob.iso8601String)\"")
     }
 
     func testModelIdentifierLegacyModel() {
         let model = CustomerOrder(id: "123-456", orderId: "order-id", email: "hello@abc.com")
-        XCTAssertEqual(model.identifier, "\(model.orderId)#\(model.id)")
+        XCTAssertEqual(model.identifier, "\"\(model.orderId)\"#\"\(model.id)\"")
     }
 
     // MARK: - ModelIdentifier predicate
