@@ -1,0 +1,18 @@
+# Pushes main to release branch to kick-off the CircleCI release workflow
+
+name: Release Amplify iOS 
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Release 
+    runs-on: macos-latest
+
+    steps:
+      - name: Push main to release branch
+        run: git push main:ameter/test-release    # will change to release
