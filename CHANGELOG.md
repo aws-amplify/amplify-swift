@@ -1,5 +1,13 @@
 # Changelog
 ## Unreleased
+## 1.24.1 (2022-05-13)
+
+### Bug Fixes
+
+- **Auth**: Fixing a typo in the Auth error message (#1782) (#1798)
+- **DataStore**: retry on URLError.dataNotAllowed (#1791)
+- **DataStore**: retry initial sync network failures from RemoteSyncEngine (#1773)
+
 ## 1.24.0 (2022-05-05)
 
 ### Features
