@@ -22,7 +22,7 @@ public struct MutationEvent: Model {
     public var graphQLFilterJSON: String?
 
     public init(id: EventIdentifier = UUID().uuidString,
-                modelId: String,
+                modelId: ModelId,
                 modelName: String,
                 json: String,
                 mutationType: MutationType,

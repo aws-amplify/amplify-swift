@@ -56,7 +56,7 @@ extension ModelPrimaryKey: SQLColumn {
     }
 
     public var sqlName: String {
-        fields.count == 1 ? fields[0].name : ModelIdentifierFormat.Custom.name
+        fields.count == 1 ? fields[0].name : ModelIdentifierFormat.Custom.sqlColumnName
     }
 
     public var name: String {
@@ -68,7 +68,7 @@ extension ModelPrimaryKey: SQLColumn {
             return field.columnName(forNamespace: namespace)
         }
 
-        let columnName = ModelIdentifierFormat.Custom.name.quoted()
+        let columnName = ModelIdentifierFormat.Custom.sqlColumnName.quoted()
         if let namespace = namespace {
             return "\(namespace.quoted()).\(columnName)"
         }
