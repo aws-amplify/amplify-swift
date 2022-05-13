@@ -3,9 +3,10 @@
 name: Release Amplify iOS 
 
 on:
-  workflow_dispatch:
   push:
-    branches: [origin/chore/gha-release-kickoff] # remove this after first run
+    branches: 
+      - chore/gha-release-kickoff # remove this after first run
+  workflow_dispatch:
 
 permissions:
   contents: write
