@@ -10,7 +10,7 @@ import Amplify
 import Foundation
 
 public struct ModelExplicitCustomPk: Model {
-  public var userId: String
+  public let userId: String
   public var name: String?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
