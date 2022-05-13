@@ -55,7 +55,10 @@ public protocol ModelIdentifierProtocol {
 
 public extension ModelIdentifierProtocol {
     var stringValue: String {
-        fields.map { "\($0.value.stringValue)" }.joined(separator: ModelIdentifierFormat.Custom.separator)
+        if fields.count == 1, let field = fields.first {
+            return field.value.stringValue
+        }
+        return fields.map { "\"\($0.value.stringValue)\"" }.joined(separator: ModelIdentifierFormat.Custom.separator)
     }
 
     var keys: [String] {

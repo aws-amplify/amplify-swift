@@ -281,7 +281,7 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
 
         let variables = statement.variables
-        XCTAssertEqual(variables[0] as? String, "\(modelId)#\(dob.iso8601String)")
+        XCTAssertEqual(variables[0] as? String, "\"\(modelId)\"#\"\(dob.iso8601String)\"")
         XCTAssertEqual(variables[1] as? String, modelId)
         XCTAssertEqual(variables[2] as? String, dob.iso8601String)
         XCTAssertEqual(variables[4] as? String, "the-name")
