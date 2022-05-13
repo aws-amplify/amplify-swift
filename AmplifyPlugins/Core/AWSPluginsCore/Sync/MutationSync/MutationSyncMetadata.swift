@@ -10,6 +10,7 @@ import Amplify
 public struct MutationSyncMetadata: Model {
     /// Alias of MutationSyncMetadata's identifier, which has the format of `{modelName}|{modelId}`
     public typealias MutationSyncIdentifier = String
+    public typealias ModelId = String
 
     public let id: MutationSyncIdentifier
     public var deleted: Bool
@@ -36,7 +37,7 @@ public struct MutationSyncMetadata: Model {
         self.version = version
     }
 
-    public init(modelId: MutationSyncIdentifier, modelName: String, deleted: Bool, lastChangedAt: Int, version: Int) {
+    public init(modelId: ModelId, modelName: String, deleted: Bool, lastChangedAt: Int, version: Int) {
         self.id = Self.identifier(modelName: modelName, modelId: modelId)
         self.deleted = deleted
         self.lastChangedAt = lastChangedAt
