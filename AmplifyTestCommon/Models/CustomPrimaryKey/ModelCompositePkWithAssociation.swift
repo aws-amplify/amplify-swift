@@ -11,7 +11,7 @@ import Foundation
 
 public struct ModelCompositePkWithAssociation: Model {
   public let id: String
-  public var dob: Temporal.DateTime
+  public let dob: Temporal.DateTime
   public var name: String?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
