@@ -37,7 +37,9 @@ extension GeoCategory: GeoCategoryBehavior {
     Use search(for text: String,
                 options: Geo.SearchForTextOptions?) async throws -> [Geo.Place]
     """)
-    public func search(for text: String, options: Geo.SearchForTextOptions?, completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
+    public func search(for text: String,
+                       options: Geo.SearchForTextOptions?,
+                       completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
         Task {
             do {
                 let result = try await search(for: text, options: options)
@@ -62,7 +64,8 @@ extension GeoCategory: GeoCategoryBehavior {
     ///     `Geo.Error.networkError` if request failed or network unavailable
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
-    public func search(for coordinates: Geo.Coordinates, options: Geo.SearchForCoordinatesOptions?) async throws -> [Geo.Place] {
+    public func search(for coordinates: Geo.Coordinates,
+                       options: Geo.SearchForCoordinatesOptions?) async throws -> [Geo.Place] {
         return try await plugin.search(for: coordinates, options: options)
     }
     
@@ -77,7 +80,9 @@ extension GeoCategory: GeoCategoryBehavior {
     Use search(for coordinates: Geo.Coordinates,
                 options: Geo.SearchForCoordinatesOptions?) async throws -> [Geo.Place]
     """)
-    public func search(for coordinates: Geo.Coordinates, options: Geo.SearchForCoordinatesOptions?, completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
+    public func search(for coordinates: Geo.Coordinates,
+                       options: Geo.SearchForCoordinatesOptions?,
+                       completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
         Task {
             do {
                 let result = try await search(for: coordinates, options: options)

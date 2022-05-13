@@ -30,7 +30,7 @@ extension AWSLocationGeoPlugin {
         let authService = AWSAuthService()
         let credentialsProvider = authService.getCredentialsProvider()
         let region = configuration.regionName
-        let serviceConfiguration = try getLocationClientConfig(credentialsProvider: credentialsProvider, region: region)
+        let serviceConfiguration = try LocationClient.LocationClientConfiguration(region: region, credentialsProvider: credentialsProvider)
 
         let location = LocationClient(config: serviceConfiguration)
         let locationService = AWSLocationAdapter(location: location)
@@ -38,30 +38,6 @@ extension AWSLocationGeoPlugin {
         configure(locationService: locationService,
                   authService: authService,
                   pluginConfig: configuration)
-    }
-
-    private func getLocationClientConfig(credentialsProvider: CredentialsProvider, region: String) throws -> LocationClient.LocationClientConfiguration {
-        let group = DispatchGroup()
-
-        var result: Result<LocationClient.LocationClientConfiguration, Error>!
-        let setResult: (Result<LocationClient.LocationClientConfiguration, Error>) -> Void = {
-            result = $0
-            group.leave()
-        }
-
-        group.enter()
-        Task {
-            do {
-                let value = try await LocationClient.LocationClientConfiguration(credentialsProvider: credentialsProvider, region: region)
-                setResult(.success(value))
-            } catch {
-                setResult(.failure(error))
-            }
-        }
-
-        group.wait()
-
-        return try result.get()
     }
     
     // MARK: - Internal
