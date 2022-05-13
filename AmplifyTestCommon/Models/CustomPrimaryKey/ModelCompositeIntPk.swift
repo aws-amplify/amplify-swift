@@ -11,7 +11,7 @@ import Foundation
 
 public struct ModelCompositeIntPk: Model {
   public let id: String
-  public var serial: Int
+  public let serial: Int
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
