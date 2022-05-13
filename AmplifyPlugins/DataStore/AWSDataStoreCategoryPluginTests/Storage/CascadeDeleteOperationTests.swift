@@ -66,11 +66,12 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         XCTAssertEqual(queriedRestaurants.count, 1)
         let completed = expectation(description: "operation completed")
+        let identifier = DefaultModelIdentifier<Restaurant>.makeDefault(id: restaurant.id)
         let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                syncEngine: nil,
                                                modelType: Restaurant.self,
                                                modelSchema: Restaurant.schema,
-                                               withId: restaurant.id) { result in
+                                               withIdentifier: identifier) { result in
             switch result {
             case .success(let restaurant):
                 XCTAssertNotNil(restaurant)
@@ -106,11 +107,12 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(queriedRestaurants.count, 1)
         XCTAssertEqual(queriedRestaurants.first!.restaurantName, restaurantName)
         let completed = expectation(description: "operation completed")
+        let identifier = DefaultModelIdentifier<Restaurant>.makeDefault(id: restaurant.id)
         let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                syncEngine: nil,
                                                modelType: Restaurant.self,
                                                modelSchema: Restaurant.schema,
-                                               withId: restaurant.id,
+                                               withIdentifier: identifier,
                                                condition: Restaurant.keys.restaurantName.eq(restaurantName)) { result in
             switch result {
             case .success(let restaurant):
@@ -147,11 +149,12 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(queriedRestaurants.count, 1)
         XCTAssertEqual(queriedRestaurants.first!.restaurantName, restaurantName)
         let completed = expectation(description: "operation completed")
+        let identifier = DefaultModelIdentifier<Restaurant>.makeDefault(id: restaurant.id)
         let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                syncEngine: nil,
                                                modelType: Restaurant.self,
                                                modelSchema: Restaurant.schema,
-                                               withId: restaurant.id,
+                                               withIdentifier: identifier,
                                                condition: Restaurant.keys.restaurantName.ne(restaurantName)) { result in
             switch result {
             case .success:
@@ -299,11 +302,12 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
 
         let completed = expectation(description: "operation completed")
+        let identifier = DefaultModelIdentifier<Restaurant>.makeDefault(id: restaurant.id)
         let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                syncEngine: syncEngine,
                                                modelType: Restaurant.self,
                                                modelSchema: Restaurant.schema,
-                                               withId: restaurant.id) { result in
+                                               withIdentifier: identifier) { result in
             switch result {
             case .success(let restaurant):
                 XCTAssertNotNil(restaurant)
@@ -365,11 +369,12 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
 
         let completed = expectation(description: "operation completed")
+        let identifier = DefaultModelIdentifier<Restaurant>.makeDefault(id: restaurant.id)
         let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                syncEngine: syncEngine,
                                                modelType: Restaurant.self,
                                                modelSchema: Restaurant.schema,
-                                               withId: restaurant.id,
+                                               withIdentifier: identifier,
                                                condition: Restaurant.keys.restaurantName.eq(restaurantName)) { result in
             switch result {
             case .success(let restaurant):
@@ -463,11 +468,12 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             XCTFail("Failed to save")
             return
         }
+        let identifier = DefaultModelIdentifier<Restaurant>.makeDefault(id: restaurant.id)
         let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                syncEngine: syncEngine,
                                                modelType: Restaurant.self,
                                                modelSchema: Restaurant.schema,
-                                               withId: restaurant.id) { _ in }
+                                               withIdentifier: identifier) { _ in }
 
         let result = operation.queryAndDeleteTransaction()
         switch result {
@@ -519,11 +525,12 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
                 return
         }
         let completed = expectation(description: "operation completed")
+        let identifier = DefaultModelIdentifier<Restaurant>.makeDefault(id: restaurant.id)
         let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                syncEngine: syncEngine,
                                                modelType: Restaurant.self,
                                                modelSchema: Restaurant.schema,
-                                               withId: restaurant.id) { result in
+                                               withIdentifier: identifier) { result in
             switch result {
             case .success:
                 completed.fulfill()
@@ -594,11 +601,12 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
                 return
         }
         let completed = expectation(description: "operation completed")
+        let identifier = DefaultModelIdentifier<Restaurant>.makeDefault(id: restaurant.id)
         let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                syncEngine: syncEngine,
                                                modelType: Restaurant.self,
                                                modelSchema: Restaurant.schema,
-                                               withId: restaurant.id) { result in
+                                               withIdentifier: identifier) { result in
             switch result {
             case .success:
                 XCTFail("Should have failed")

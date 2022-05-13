@@ -373,7 +373,7 @@ extension AWSDataStoreAuthBaseTest {
             .filter { $0.eventName == HubPayload.EventName.DataStore.syncReceived }
             .sink { payload in
                 guard let mutationEvent = payload.data as? MutationEvent,
-                      mutationEvent.modelId == model.id else {
+                      mutationEvent.modelId == model.identifier else {
                     return
                 }
 

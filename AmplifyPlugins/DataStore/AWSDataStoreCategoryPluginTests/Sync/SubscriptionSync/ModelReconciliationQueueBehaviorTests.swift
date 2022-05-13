@@ -64,7 +64,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let event2Saved = expectation(description: "Event 2 saved")
         let event3Saved = expectation(description: "Event 3 saved")
         storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { model, completion in
-            switch model.id {
+            switch model.identifier(schema: MockSynced.schema).stringValue {
             case "id-1":
                 event1Saved.fulfill()
             case "id-2":
@@ -137,7 +137,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let event1Saved = expectation(description: "Event 1 saved")
         let event3Saved = expectation(description: "Event 3 saved")
         storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { model, completion in
-            switch model.id {
+            switch model.identifier(schema: MockSynced.schema).stringValue {
             case "id-1":
                 event1Saved.fulfill()
             case "id-2":

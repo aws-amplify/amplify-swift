@@ -77,7 +77,14 @@ public struct MutationSync<ModelType: Model>: Decodable {
                   )
               }
 
-        self.syncMetadata = MutationSyncMetadata(modelId: model.id,
+        // get the schema of the resolved model
+        guard let modelSchema = ModelRegistry.modelSchema(from: resolvedModelName) else {
+            throw DataStoreError.invalidModelName(resolvedModelName)
+        }
+
+        let modelIdentifier = model.identifier(schema: modelSchema).stringValue
+
+        self.syncMetadata = MutationSyncMetadata(modelId: modelIdentifier,
                                                  modelName: resolvedModelName,
                                                  deleted: deleted,
                                                  lastChangedAt: Int(lastChangedAt),

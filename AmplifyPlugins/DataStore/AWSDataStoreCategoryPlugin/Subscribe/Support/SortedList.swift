@@ -26,7 +26,7 @@ class SortedList<ModelType: Model> {
     /// is already sorted (since it performs a binary search insertion).
     func set(sortedModels: [ModelType]) {
         self.sortedModels = sortedModels
-        modelIds = Set(sortedModels.map { $0.id })
+        modelIds = Set(sortedModels.map { $0.identifier(schema: modelSchema).stringValue })
     }
 
     /// Apply the incoming `model` to the sorted array based on the mutation type. This logic accounts for duplicate
@@ -73,14 +73,18 @@ class SortedList<ModelType: Model> {
         }
 
         sortedModels.insert(model, at: index)
-        modelIds.insert(model.id)
+        modelIds.insert(model.identifier(schema: modelSchema).stringValue)
     }
 
     /// Tries to remove the `model`, if removed then return `true`, otherwise `false`
     func remove(_ model: ModelType) -> Bool {
-        if modelIds.contains(model.id), let index = sortedModels.firstIndex(where: { $0.id == model.id }) {
+        let identifier = model.identifier(schema: modelSchema)
+        if modelIds.contains(identifier.stringValue),
+           let index = sortedModels.firstIndex(where: {
+               $0.identifier(schema: $0.schema).stringValue == identifier.stringValue
+           }) {
             sortedModels.remove(at: index)
-            modelIds.remove(model.id)
+            modelIds.remove(identifier.stringValue)
             return true
         } else {
             return false
@@ -89,11 +93,13 @@ class SortedList<ModelType: Model> {
 
     /// Tries to replace the model with `model` if it already exists, otherwise append it to at the end
     func appendOrReplace(_ model: ModelType) {
-        if modelIds.contains(model.id), let index = sortedModels.firstIndex(where: { $0.id == model.id }) {
+        let identifier = model.identifier(schema: modelSchema)
+        if modelIds.contains(identifier.stringValue),
+           let index = sortedModels.firstIndex(where: { $0.identifier(schema: $0.schema).stringValue == identifier.stringValue }) {
             sortedModels[index] = model
         } else {
             sortedModels.append(model)
-            modelIds.insert(model.id)
+            modelIds.insert(identifier.stringValue)
         }
     }
 

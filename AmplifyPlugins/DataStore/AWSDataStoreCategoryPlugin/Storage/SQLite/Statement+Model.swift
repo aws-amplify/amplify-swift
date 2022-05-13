@@ -105,6 +105,8 @@ extension Statement: StatementModelConvertible {
                 }
             }
         }
+        modelDictionary["__typename"] = modelSchema.name
+
         // swiftlint:disable:next force_cast
         return modelDictionary as! ModelValues
     }

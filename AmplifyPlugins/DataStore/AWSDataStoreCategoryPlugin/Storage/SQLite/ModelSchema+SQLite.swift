@@ -37,6 +37,46 @@ protocol SQLColumn {
     var isForeignKey: Bool { get }
 }
 
+extension ModelPrimaryKey: SQLColumn {
+    /// Convenience method to convert a ModelPrimaryKey to an
+    /// ModelField to be used in a SQL query
+    var asField: ModelField {
+        ModelField(name: name,
+                   type: .string,
+                   isRequired: true,
+                   attributes: [.primaryKey])
+    }
+
+    var sqlType: SQLDataType {
+        .text
+    }
+
+    var isForeignKey: Bool {
+        false
+    }
+
+    public var sqlName: String {
+        fields.count == 1 ? fields[0].name : ModelIdentifierFormat.Custom.name
+    }
+
+    public var name: String {
+        sqlName
+    }
+
+    public func columnName(forNamespace namespace: String? = nil) -> String {
+        if fields.count == 1, let field = fields.first {
+            return field.columnName(forNamespace: namespace)
+        }
+
+        let columnName = ModelIdentifierFormat.Custom.name.quoted()
+        if let namespace = namespace {
+            return "\(namespace.quoted()).\(columnName)"
+        }
+
+        return columnName
+    }
+}
+
 extension ModelField: SQLColumn {
 
     var sqlName: String {
@@ -107,7 +147,11 @@ extension ModelSchema {
     /// the owner of a foreign key to another `Model`. Fields that reference the inverse side of
     /// the relationship (i.e. the "one" side of a "one-to-many" relationship) are excluded.
     var columns: [ModelField] {
-        sortedFields.filter { !$0.hasAssociation || $0.isForeignKey }
+        let fields = sortedFields.filter { !$0.hasAssociation || $0.isForeignKey }
+        if primaryKey.isCompositeKey {
+            return [primaryKey.asField] + fields
+        }
+        return fields
     }
 
     /// Filter the fields that represent foreign keys.
