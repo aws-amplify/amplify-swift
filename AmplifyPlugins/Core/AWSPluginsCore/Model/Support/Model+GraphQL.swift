@@ -31,6 +31,7 @@ extension Model {
                 return
             }
 
+            // DIEGO: THIS IS NOT USED FOR BELONGSTO!!!!!!!
             let name = modelField.graphQLName
             let fieldValueOptional = getFieldValue(for: modelField.name, modelSchema: modelSchema)
 
@@ -58,8 +59,9 @@ extension Model {
             case .enum:
                 input[name] = (value as? EnumPersistable)?.rawValue
             case .model:
-                let fieldName = getFieldNameForAssociatedModels(modelField: modelField)
-                input[fieldName] = getModelId(from: value, modelSchema: modelSchema)
+                for (fieldName, fieldValue) in getModelIdentifierFields(from: value, modelSchema: modelSchema) {
+                    input[fieldName] = fieldValue
+                }
             case .embedded, .embeddedCollection:
                 if let encodable = value as? Encodable {
                     let jsonEncoder = JSONEncoder(dateEncodingStrategy: ModelDateFormatting.encodingStrategy)
@@ -154,16 +156,19 @@ extension Model {
         }
     }
 
-    private func getModelId(from value: Any, modelSchema: ModelSchema) -> String? {
+    private func getModelIdentifierFields(from value: Any, modelSchema: ModelSchema) -> ModelIdentifierProtocol.Fields {
         if let modelValue = value as? Model {
-            return modelValue.identifier(schema: modelSchema).stringValue
-        } else if let value = value as? [String: JSONValue],
-                  // TODO CPK: fix this when associated model has composite primary key
-                  case .string(let primaryKeyValue) = value[modelSchema.primaryKey.fields[0].name] {
-            return primaryKeyValue
+            return modelValue.identifier(schema: modelSchema).fields
+        } else if let value = value as? [String: JSONValue] {
+            var primaryKeyValues: ModelIdentifierProtocol.Fields = []
+            for field in modelSchema.primaryKey.fields {
+                if case .string(let primaryKeyValue) = value[field.name] {
+                    primaryKeyValues.append((name: field.name, value: primaryKeyValue))
+                }
+            }
+            return primaryKeyValues
         }
-
-        return nil
+        return []
     }
 
     private func getFieldValue(for modelFieldName: String, modelSchema: ModelSchema) -> Any?? {
@@ -178,15 +183,16 @@ extension Model {
     /// By default, this is the current model + the associated Model + "Id", For example "comment" + "Post" + "Id"
     /// This information is also stored in the schema as `targetName` which is codegenerated to be the same as the
     /// default or an explicit field specified by the developer.
-    private func getFieldNameForAssociatedModels(modelField: ModelField) -> String {
+    private func getFieldNameForAssociatedModels(modelField: ModelField) -> [String] {
         let defaultFieldName = modelName.camelCased() + modelField.name.pascalCased() + "Id"
-        if case let .belongsTo(_, targetName) = modelField.association {
-            return targetName ?? defaultFieldName
-        } else if case let .hasOne(_, targetName) = modelField.association {
-            return targetName ?? defaultFieldName
+        if case let .belongsTo(_, targetNames) = modelField.association, !targetNames.isEmpty {
+            return targetNames
+        } else if case let .hasOne(_, targetNames) = modelField.association,
+                  !targetNames.isEmpty {
+            return targetNames
         }
 
-        return defaultFieldName
+        return [defaultFieldName]
     }
 
 }

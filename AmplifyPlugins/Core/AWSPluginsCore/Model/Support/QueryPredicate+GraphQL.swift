@@ -125,10 +125,18 @@ extension QueryPredicateOperation: GraphQLFilterConvertible {
         }
         let defaultFieldName = modelSchema.name.camelCased() + field.pascalCased() + "Id"
         switch modelField.association {
-        case .belongsTo(_, let targetName):
-            return targetName ?? defaultFieldName
-        case .hasOne(_, let targetName):
-            return targetName ?? defaultFieldName
+        case .belongsTo(_, let targetNames):
+            guard targetNames.count == 1 else {
+                preconditionFailure("QueryPredicate not supported on associated field with composite key: \(field)")
+            }
+            let targetName = targetNames.first ?? defaultFieldName
+            return targetName
+        case .hasOne(_, let targetNames):
+            guard targetNames.count == 1 else {
+                preconditionFailure("QueryPredicate not supported on associated field with composite key: \(field)")
+            }
+            let targetName = targetNames.first ?? defaultFieldName
+            return targetName
         default:
             return field
         }

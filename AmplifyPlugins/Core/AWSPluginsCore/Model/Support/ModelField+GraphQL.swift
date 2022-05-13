@@ -13,8 +13,8 @@ extension ModelField {
 
     /// The GraphQL name of the field.
     var graphQLName: String {
-        if isAssociationOwner, case let .belongsTo(_, targetName) = association {
-            return targetName ?? name.pascalCased() + "Id"
+        if isAssociationOwner, case let .belongsTo(_, targetNames) = association {
+            return targetNames.first ?? name.pascalCased() + "Id"
         }
         return name
     }
