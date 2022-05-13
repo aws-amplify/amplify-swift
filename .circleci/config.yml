@@ -224,7 +224,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - '80:9a:29:87:ac:5f:1a:9b:c5:a4:3d:37:c1:10:87:2f'
+            - '7a:f2:7f:a6:62:1a:9e:0f:f1:03:8c:fc:86:93:77:6e'
       - *restore_repo
       - restore_gems
       - check_bundle
