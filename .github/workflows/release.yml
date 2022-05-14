@@ -1,11 +1,10 @@
 # Pushes main to release branch to kick-off the CircleCI release workflow
-
 name: Release Amplify iOS 
 
 on:
   push:
     branches: 
-      - chore/gha-release-kickoff # remove this after first run
+      - chore/gha-release-kickoff # remove this after testing
   workflow_dispatch:
 
 permissions:
@@ -14,7 +13,6 @@ permissions:
 jobs:
   release:
     name: Release
-    environment: Release
     runs-on: macos-latest
 
     steps:
@@ -24,4 +22,4 @@ jobs:
           fetch-depth: 0
 
       - name: Push main to release branch
-        run: git push origin main:ameter/test-release    # will change to release
+        run: git push origin origin/main:ameter/test-release # will change to release after testing
