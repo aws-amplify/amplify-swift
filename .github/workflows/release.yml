@@ -22,4 +22,4 @@ jobs:
           fetch-depth: 0
 
       - name: Push main to release branch
-        run: git push origin origin/main:ameter/test-release # will change to release after testing
+        run: git push origin origin/main:ameter/test-release-clean # will change to release after testing
