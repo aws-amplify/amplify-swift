@@ -64,7 +64,7 @@ class AuthenticationProviderSigninTests: BaseAuthenticationProviderTest {
     /// - Then:
     ///    - I should get a .done response
     ///
-    func testSuccessfulSignInWuthAuthFlow() {
+    func testSuccessfulSignInWithAuthFlow() {
 
         let mockSigninResult = SignInResult(signInState: .signedIn)
         mockAWSMobileClient?.signInMockResult = .success(mockSigninResult)
