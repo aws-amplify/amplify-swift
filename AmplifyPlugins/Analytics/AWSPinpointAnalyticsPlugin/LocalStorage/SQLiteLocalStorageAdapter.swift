@@ -28,7 +28,6 @@ final class SQLiteLocalStorageAdapter: LocalStorageProtocol {
         }
 
         try self.init(connection: connection, dbFilePath: dbFilePath)
-
     }
     
     /// Initializer

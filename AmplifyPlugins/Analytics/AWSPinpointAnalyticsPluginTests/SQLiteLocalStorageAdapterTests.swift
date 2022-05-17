@@ -22,6 +22,9 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
         }
     }
     
+    /// - Given: A database name and database path
+    /// - When: Creating an instance of SQLiteLocalStorageAdapter
+    /// - Then: A database with the specified name is created at the specified path
     func testLocalStorageInitialization() {
         do {
             let dbPath = SQLiteLocalStorageAdapter.getDbFilePath(databaseName: databaseName)
@@ -31,9 +34,11 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
         } catch {
             XCTFail("Failed to create SQLiteLocalStorageAdapter: \(error)")
         }
-        
     }
     
+    /// - Given: An adapter to the SQLite local database
+    /// - When: An insert statement is executed
+    /// - Then: A new Event record is added to the database Event table
     func testLocalStorageInsert() {
         do {
             let adapter = try SQLiteLocalStorageAdapter(databaseName: databaseName)
@@ -58,6 +63,9 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
         }
     }
     
+    /// - Given: An adapter to the SQLite local database with an one Event record in the table
+    /// - When: An delete statement is executed
+    /// - Then: The Event table is empty with 0 records
     func testLocalStorageDelete() {
         do {
             let adapter = try SQLiteLocalStorageAdapter(databaseName: databaseName)
@@ -85,6 +93,9 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
         }
     }
     
+    /// - Given: An adapter to the SQLite local database with an one Event record that is not dirty
+    /// - When: An update statement is executed to update the record as dirty
+    /// - Then: The existing event record is updated as dirty
     func testLocalStorageUpdate() {
         do {
             let adapter = try SQLiteLocalStorageAdapter(databaseName: databaseName)
