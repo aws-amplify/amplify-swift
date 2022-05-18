@@ -68,14 +68,11 @@ extension AWSCognitoAuthPlugin {
     }
     
     func initializeStateMachines() {
+        
         let semaphore = DispatchSemaphore(value: 0)
-        Task {
-            do {
-                let credentialStore = try await configureCredentialStoreMachine()
-                try await configureAuthStateMachine(with: credentialStore)
+        configureCredentialStoreMachine { [weak self] credentials in
+            self?.configureAuthStateMachine(with: credentials) {
                 semaphore.signal()
-            } catch {
-                self.log.error(error: error)
             }
         }
         semaphore.wait()
@@ -90,70 +87,63 @@ extension AWSCognitoAuthPlugin {
             \(state)
 
             """)
-        } onSubscribe: {
-
-        }
-
+        } onSubscribe: { }
     }
 
-    func configureCredentialStoreMachine() async throws -> AmplifyCredentials? {
+    func configureCredentialStoreMachine(completion: @escaping (AmplifyCredentials?) -> Void) {
         
-        return try await withCheckedThrowingContinuation { continuation in
-            var token: CredentialStoreStateMachineToken?
-            token = credentialStoreStateMachine.listen { [weak self] in
-                guard let self = self else { return }
-                switch $0 {
-                case .success(let storedCredentials):
-                    if let token = token {
-                        self.credentialStoreStateMachine.cancel(listenerToken: token)
-                    }
-                    continuation.resume(returning: storedCredentials)
-                case .error(let credentialStoreError):
-                    if case .itemNotFound = credentialStoreError {
-                        continuation.resume(returning: nil)
-                    } else {
-                        let error = AuthError.service("An exception occurred when configuring credential store",
-                                                      AmplifyErrorMessages.reportBugToAWS(),
-                                                      credentialStoreError)
-                        Amplify.log.error(error: error)
-                        continuation.resume(throwing: error)
-                    }
-                    if let token = token {
-                        self.credentialStoreStateMachine.cancel(listenerToken: token)
-                    }
-                default:
-                    break
+        var token: CredentialStoreStateMachineToken?
+        token = credentialStoreStateMachine.listen { [weak self] in
+            guard let self = self else { return }
+            switch $0 {
+            case .success(let storedCredentials):
+                if let token = token {
+                    self.credentialStoreStateMachine.cancel(listenerToken: token)
                 }
-            } onSubscribe: { [weak self] in
-                let event = CredentialStoreEvent(eventType: .migrateLegacyCredentialStore)
-                self?.credentialStoreStateMachine.send(event)
+                completion(storedCredentials)
+            case .error(let credentialStoreError):
+                if case .itemNotFound = credentialStoreError {
+                    completion(nil)
+                } else {
+                    let error = AuthError.service("An exception occurred when configuring credential store",
+                                                  AmplifyErrorMessages.reportBugToAWS(),
+                                                  credentialStoreError)
+                    Amplify.log.error(error: error)
+                    completion(nil)
+                }
+                if let token = token {
+                    self.credentialStoreStateMachine.cancel(listenerToken: token)
+                }
+            default:
+                break
             }
+        } onSubscribe: { [weak self] in
+            let event = CredentialStoreEvent(eventType: .migrateLegacyCredentialStore)
+            self?.credentialStoreStateMachine.send(event)
         }
     }
 
-    func configureAuthStateMachine(with storedCredentials: AmplifyCredentials?) async throws {
+    func configureAuthStateMachine(with storedCredentials: AmplifyCredentials?, completion: @escaping () -> Void) {
         
-        return try await withCheckedThrowingContinuation { continuation in
-            var token: AuthStateMachineToken?
-            token = authStateMachine.listen { [weak self] in
-                guard let self = self else { return }
-                
-                switch $0 {
-                case .configured(let authNState, let authZState):
-                    guard case .notConfigured = authNState, case .notConfigured = authZState else {
-                        if let token = token {
-                            self.authStateMachine.cancel(listenerToken: token)
-                        }
-                        continuation.resume()
-                        return
+        var token: AuthStateMachineToken?
+        token = authStateMachine.listen { [weak self] in
+            guard let self = self else { return }
+            
+            switch $0 {
+            case .configured(let authNState, let authZState):
+                guard case .notConfigured = authNState, case .notConfigured = authZState else {
+                    if let token = token {
+                        self.authStateMachine.cancel(listenerToken: token)
                     }
-                default:
-                    break
+                    completion()
+                    return
                 }
-            } onSubscribe: { [weak self] in
-                guard let self = self else { return }
-                self.authStateMachine.send(AuthEvent(eventType: .configureAuth(self.authConfiguration, storedCredentials)))
+            default:
+                break
             }
+        } onSubscribe: { [weak self] in
+            guard let self = self else { return }
+            self.authStateMachine.send(AuthEvent(eventType: .configureAuth(self.authConfiguration, storedCredentials)))
         }
     }
 
