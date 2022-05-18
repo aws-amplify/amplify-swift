@@ -8,7 +8,7 @@
 import Foundation
 import SQLite
 
-protocol LocalStorageProtocol {
+protocol SQLStorageProtocol {
     /// Create SQL table
     /// - Parameter statement: SQL statement to create table
     func createTable(_ statement: String) throws

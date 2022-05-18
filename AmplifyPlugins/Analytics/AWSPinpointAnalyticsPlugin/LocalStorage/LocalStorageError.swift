@@ -7,7 +7,7 @@
 
 /// Errors interfacing with local storage
 enum LocalStorageError: Error {
-    case nilSQLiteConnection
+    case missingConnection
     case invalidDatabase(path: String, Error? = nil)
     case invalidOperation(causedBy: Error? = nil)
 }

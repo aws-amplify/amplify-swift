@@ -12,13 +12,13 @@ import SQLite
 
 class SQLiteLocalStorageAdapterTests: XCTestCase {
     let databaseName = "TestDatabase"
-    var adapter: LocalStorageProtocol!
+    var adapter: SQLStorageProtocol!
     
     override func setUp() {
         do {
             adapter = try SQLiteLocalStorageAdapter(databaseName: databaseName)
             let analyticsEventStorage = AnalyticsEventSQLStorage(dbAdapter: adapter)
-            try analyticsEventStorage.createTables()
+            try analyticsEventStorage.initializeStorage()
         } catch {
             XCTFail("Failed to remove SQLite as part of test setup")
         }

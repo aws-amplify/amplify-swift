@@ -9,7 +9,7 @@ import Foundation
 import SQLite
 
 /// Local storage adapter that implements local storage using SQLite.swift
-final class SQLiteLocalStorageAdapter: LocalStorageProtocol {
+final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
     private var connection: Connection?
     private var dbFilePath: URL?
     
@@ -76,7 +76,7 @@ final class SQLiteLocalStorageAdapter: LocalStorageProtocol {
     /// - Parameter statement: SQL statement to create a table
     func createTable(_ statement: String) throws {
         guard let connection = connection else {
-            throw LocalStorageError.nilSQLiteConnection
+            throw LocalStorageError.missingConnection
         }
         
         do {
@@ -93,7 +93,7 @@ final class SQLiteLocalStorageAdapter: LocalStorageProtocol {
     /// - Returns: A SQL statement result from the query
     func executeQuery(_ statement: String, _ bindings: [Binding?]) throws -> Statement {
         guard let connection = connection else {
-            throw LocalStorageError.nilSQLiteConnection
+            throw LocalStorageError.missingConnection
         }
         
         do {

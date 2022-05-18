@@ -9,17 +9,17 @@ import SQLite
 
 /// This is a temporary placeholder class to interface with the SQLiteLocalStorageAdapter
 /// This class needs to be updated to support Codable queries that can decode into a PinpointEvent object
-class AnalyticsEventSQLStorage {
-    private let dbAdapter: LocalStorageProtocol
+class AnalyticsEventSQLStorage: AnalyticsEventStorage {
+    private let dbAdapter: SQLStorageProtocol
     
     /// Initializer
     /// - Parameter dbAdapter: a LocalStorageProtocol adapter
-    init(dbAdapter: LocalStorageProtocol) {
+    init(dbAdapter: SQLStorageProtocol) {
         self.dbAdapter = dbAdapter
     }
     
     /// Create the Event and Dirty Event Tables
-    func createTables() throws {
+    func initializeStorage() throws {
         let createEventTableStatement = """
             CREATE TABLE IF NOT EXISTS Event (
             id TEXT NOT NULL,
@@ -130,5 +130,4 @@ class AnalyticsEventSQLStorage {
         """
         _ = try dbAdapter.executeQuery(queryStatement, [limit])
     }
-    
 }
