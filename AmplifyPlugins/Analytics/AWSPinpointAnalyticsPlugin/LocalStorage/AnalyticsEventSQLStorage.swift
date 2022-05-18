@@ -9,7 +9,7 @@ import SQLite
 
 /// This is a temporary placeholder class to interface with the SQLiteLocalStorageAdapter
 /// This class needs to be updated to support Codable queries that can decode into a PinpointEvent object
-class AnalyticsEventStorage {
+class AnalyticsEventSQLStorage {
     private let dbAdapter: LocalStorageProtocol
     
     /// Initializer

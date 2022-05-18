@@ -17,7 +17,7 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
     override func setUp() {
         do {
             adapter = try SQLiteLocalStorageAdapter(databaseName: databaseName)
-            let analyticsEventStorage = AnalyticsEventStorage(dbAdapter: adapter)
+            let analyticsEventStorage = AnalyticsEventSQLStorage(dbAdapter: adapter)
             try analyticsEventStorage.createTables()
         } catch {
             XCTFail("Failed to remove SQLite as part of test setup")
