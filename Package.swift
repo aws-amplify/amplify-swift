@@ -270,7 +270,21 @@ let storageTargets: [Target] = [
     ),
 ]
 
-let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets
+let analyticsTargets: [Target] = [
+    .target(
+        name: "AWSPinpointAnalyticsPlugin",
+        dependencies: [
+            .target(name: "Amplify"),
+            .target(name: "AWSCognitoAuthPlugin"),
+            .product(name: "AWSPinpoint", package: "AWSSwiftSDK")],
+        path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPlugin",
+        exclude: [
+            "Resources/Info.plist"
+        ]
+    )
+]
+
+let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets + analyticsTargets
 
 let package = Package(
     name: "Amplify",
@@ -296,6 +310,10 @@ let package = Package(
             name: "AWSS3StoragePlugin",
             targets: ["AWSS3StoragePlugin"]
         ),
+        .library(
+            name: "AWSPinpointAnalyticsPlugin",
+            targets: ["AWSPinpointAnalyticsPlugin"]
+        )
         
     ],
     dependencies: [

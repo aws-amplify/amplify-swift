@@ -23,8 +23,8 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
     static let defaultAutoSessionTrackingInterval = 5
 
     let appId: String
-    let region: AWSRegionType
-    let targetingRegion: AWSRegionType
+    let region: String
+    let targetingRegion: String
     let autoFlushEventsInterval: Int
     let trackAppSessions: Bool
     let autoSessionTrackingInterval: Int
@@ -86,8 +86,8 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
     }
 
     init(appId: String,
-         region: AWSRegionType,
-         targetingRegion: AWSRegionType,
+         region: String,
+         targetingRegion: String,
          autoFlushEventsInterval: Int,
          trackAppSessions: Bool,
          autoSessionTrackingInterval: Int) {
@@ -124,7 +124,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
         return appIdValue
     }
 
-    private static func getRegion(_ configuration: [String: JSONValue]) throws -> AWSRegionType {
+    private static func getRegion(_ configuration: [String: JSONValue]) throws -> String {
         guard let region = configuration[regionConfigKey] else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.missingRegion.errorDescription,
@@ -139,22 +139,15 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
             )
         }
 
-        if regionValue.isEmpty {
+        // TODO: Validate if Unknown is a valid type
+        if regionValue.isEmpty || regionValue == "Unknown" {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.emptyRegion.errorDescription,
                 AnalyticsPluginErrorConstant.emptyRegion.recoverySuggestion
             )
         }
 
-        let regionType = regionValue.aws_regionTypeValue()
-        guard regionType != AWSRegionType.Unknown else {
-            throw PluginError.pluginConfigurationError(
-                AnalyticsPluginErrorConstant.invalidRegion.errorDescription,
-                AnalyticsPluginErrorConstant.invalidRegion.recoverySuggestion
-            )
-        }
-
-        return regionType
+        return regionValue
     }
 
     private static func getAutoFlushEventsInterval(_ configuration: [String: JSONValue]) throws -> Int {

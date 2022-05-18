@@ -36,9 +36,8 @@ extension AWSPinpointAnalyticsPlugin {
         let credentialsProvider = authService.getCredentialsProvider()
 
         let pinpoint = try AWSPinpointAdapter(
-            pinpointAnalyticsAppId: configuration.appId,
-            pinpointAnalyticsRegion: configuration.region,
-            pinpointTargetingRegion: configuration.targetingRegion,
+            appId: configuration.appId,
+            region: configuration.region,
             credentialsProvider: credentialsProvider
         )
 

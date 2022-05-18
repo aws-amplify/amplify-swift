@@ -14,7 +14,7 @@ import Foundation
 /// This protocol allows a way to create a Mock and ensure plugin implementation is testable.
 protocol AWSPinpointBehavior: AWSPinpointAnalyticsClientBehavior, AWSPinpointTargetingClientBehavior {
     // Get the lower level `AWSPinpoint` client.
-    func getEscapeHatch() -> AWSPinpoint
+    func getEscapeHatch() -> PinpointClientProtocol
 }
 
 extension AWSPinpointBehavior {
