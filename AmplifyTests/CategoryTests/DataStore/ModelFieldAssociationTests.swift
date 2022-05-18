@@ -23,7 +23,7 @@ class ModelFieldAssociationTests: XCTestCase {
             return
         }
         XCTAssertEqual(fieldName, Comment.keys.post.stringValue)
-        XCTAssertEqual(target, "postID")
+        XCTAssertEqual(target, ["postID"])
     }
 
     func testHasManyWithCodingKeys() {
@@ -36,13 +36,13 @@ class ModelFieldAssociationTests: XCTestCase {
     }
 
     func testHasOneWithCodingKeys() {
-        let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post)
+        let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post, targetName: nil)
         guard case .hasOne(let fieldName, let target) = hasOne else {
             XCTFail("Should create hasOne association")
             return
         }
         XCTAssertEqual(fieldName, Comment.keys.post.stringValue)
-        XCTAssertNil(target)
+        XCTAssertEqual(target, [])
     }
 
     func testHasOneWithCodingKeysWithTargetName() {
@@ -52,7 +52,7 @@ class ModelFieldAssociationTests: XCTestCase {
             return
         }
         XCTAssertEqual(fieldName, Comment.keys.post.stringValue)
-        XCTAssertEqual(target, "postID")
+        XCTAssertEqual(target, ["postID"])
     }
 
     func testBelongsToWithTargetName() {
@@ -62,7 +62,7 @@ class ModelFieldAssociationTests: XCTestCase {
             return
         }
         XCTAssertNil(fieldName)
-        XCTAssertNil(target)
+        XCTAssertEqual(target, ["postID"])
     }
 
     func testModelFieldWithBelongsToAssociation() {

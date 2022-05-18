@@ -15,6 +15,9 @@ extension ModelCompositePkWithAssociation {
     case id
     case dob
     case name
+    case associatedModel
+    case modelCompositePkWithAssociationOwnerId
+    case modelCompositePkWithAssociationOwnerDob
     case createdAt
     case updatedAt
   }
@@ -23,7 +26,7 @@ extension ModelCompositePkWithAssociation {
   //  MARK: - ModelSchema
 
   public static let schema = defineSchema { model in
-    let modelCompositePk = ModelCompositePk.keys
+    let keys = ModelCompositePkWithAssociation.keys
 
     model.pluralName = "ModelCompositePkWithAssociation"
 
@@ -32,11 +35,17 @@ extension ModelCompositePkWithAssociation {
     )
 
     model.fields(
-        .field(modelCompositePk.id, is: .required, ofType: .string),
-        .field(modelCompositePk.dob, is: .required, ofType: .dateTime),
-        .field(modelCompositePk.name, is: .optional, ofType: .string),
-        .field(modelCompositePk.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
-        .field(modelCompositePk.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
+        .field(keys.id, is: .required, ofType: .string),
+        .field(keys.dob, is: .required, ofType: .dateTime),
+        .field(keys.name, is: .optional, ofType: .string),
+        .field(keys.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
+        .field(keys.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime),
+        .hasOne(keys.associatedModel,
+                is: .optional,
+                ofType: ModelCompositePk.self,
+                associatedWith: ModelCompositePk.keys.id,
+                targetNames: ["modelCompositePkWithAssociationOwnerId",
+                              "modelCompositePkWithAssociationOwnerDob"])
     )
     }
 }

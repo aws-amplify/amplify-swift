@@ -94,7 +94,8 @@ public enum ModelAssociation {
     public static let belongsTo: ModelAssociation = .belongsTo(associatedFieldName: nil, targetNames: [])
 
     public static func belongsTo(targetName: String? = nil) -> ModelAssociation {
-        return .belongsTo(associatedFieldName: nil, targetNames: [])
+        let targetNames = targetName.map { [$0] } ?? []
+        return .belongsTo(associatedFieldName: nil, targetNames: targetNames)
     }
 
     public static func hasMany(associatedWith: CodingKey?) -> ModelAssociation {
@@ -116,7 +117,7 @@ public enum ModelAssociation {
         let targetNames = targetName.map { [$0] } ?? []
         return .belongsTo(associatedFieldName: associatedWith?.stringValue, targetNames: targetNames)
     }
-    
+
     public static func belongsTo(associatedWith: CodingKey?, targetNames: [String] = []) -> ModelAssociation {
         return .belongsTo(associatedFieldName: associatedWith?.stringValue, targetNames: targetNames)
     }

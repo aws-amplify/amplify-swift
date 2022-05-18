@@ -247,15 +247,11 @@ public enum ModelFieldDefinition {
                               ofType type: Model.Type,
                               associatedWith associatedKey: CodingKey,
                               targetName: String? = nil) -> ModelFieldDefinition {
-        guard let targetName = targetName else {
-            preconditionFailure("Unexpected nil targetName found for association: \(associatedKey))")
-        }
-
         return .field(key,
                       is: nullability,
                       isReadOnly: isReadOnly,
                       ofType: .model(type: type),
-                      association: .hasOne(associatedWith: associatedKey, targetNames: [targetName]))
+                      association: .hasOne(associatedWith: associatedKey, targetName: targetName))
     }
 
     public static func hasOne(_ key: CodingKey,

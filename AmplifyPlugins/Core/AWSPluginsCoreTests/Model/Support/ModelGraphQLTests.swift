@@ -136,6 +136,13 @@ class ModelGraphQLTests: XCTestCase {
     }
 
     // MARK: - Custom Primary Key
+    func testModelWithExplicitDefaultPrimaryKey() {
+        let model = ModelExplicitDefaultPk(id: "an-id", name: "name")
+        let graphQLInput = model.graphQLInputForMutation(model.schema)
+        XCTAssertEqual(graphQLInput["id"] as? String, model.id)
+        XCTAssertEqual(graphQLInput["name"] as? String, model.name)
+    }
+
     func testModelWithExplicitCustomPrimaryKey() {
         let model = ModelExplicitCustomPk(userId: "userId", name: "name")
         let graphQLInput = model.graphQLInputForMutation(model.schema)
@@ -149,5 +156,23 @@ class ModelGraphQLTests: XCTestCase {
         XCTAssertEqual(graphQLInput["id"] as? String, model.id)
         XCTAssertEqual(graphQLInput["dob"] as? String, model.dob.iso8601String)
         XCTAssertEqual(graphQLInput["name"] as? String, model.name)
+    }
+
+    func testModelWithAssociationAndCompositePrimaryKey() {
+        let model1 = ModelCompositePk(id: "id1",
+                                      dob: Temporal.DateTime.now(),
+                                      name: "name")
+        let model2 = ModelCompositePkWithAssociation(id: "id2",
+                                                     dob: Temporal.DateTime.now(),
+                                                     name: "name",
+                                                     associatedModel: model1)
+        let graphQLInput = model2.graphQLInputForMutation(model2.schema)
+        XCTAssertEqual(graphQLInput["id"] as? String, model2.id)
+        XCTAssertEqual(graphQLInput["dob"] as? String, model2.dob.iso8601String)
+        XCTAssertEqual(graphQLInput["name"] as? String, model2.name)
+        XCTAssertEqual(graphQLInput["modelCompositePkWithAssociationOwnerId"] as? String,
+                       model1.id)
+        XCTAssertEqual(graphQLInput["modelCompositePkWithAssociationOwnerDob"] as? Temporal.DateTime,
+                       model1.dob)
     }
 }

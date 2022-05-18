@@ -13,43 +13,47 @@ typealias GraphQLInput = [String: Any?]
 /// Extension that adds GraphQL specific utilities to concret types of `Model`.
 extension Model {
 
-    /// Get the `Model` values as a `Dictionary` of `String` to `Any?` that can be
-    /// used as the `input` of GraphQL related operations.
+    /// Returns an array of model fields sorted by predefined rules (see ModelSchema+sortedFields)
+    /// and filtered according the following criteria:
+    /// - fields are not read-only
+    /// - fields exist on the model
+    private func fieldsForMutation(_ modelSchema: ModelSchema) -> [(ModelField, Any?)] {
+        modelSchema.sortedFields.compactMap { field in
+            guard !field.isReadOnly,
+                  let fieldValue = getFieldValue(for: field.name,
+                                                 modelSchema: modelSchema) else {
+                return nil
+            }
+            return (field, fieldValue)
+        }
+    }
+
+    /// Returns the input used for mutations
+    /// - Parameter modelSchema: model's schema
+    /// - Returns: A key-value map of the GraphQL mutation input
     func graphQLInputForMutation(_ modelSchema: ModelSchema) -> GraphQLInput {
         var input: GraphQLInput = [:]
-        modelSchema.fields.forEach {
-            let modelField = $0.value
 
-            // When the field is read-only don't add it to the GraphQL input object
-            if modelField.isReadOnly {
-                return
-            }
+        // filter existing non-readonly fields
+        let fields = fieldsForMutation(modelSchema)
 
-            // TODO how to handle associations of type "many" (i.e. cascade save)?
-            // This is not supported right now and might be added as a future feature
-            if case .collection = modelField.type {
-                return
-            }
+        for (modelField, modelFieldValue) in fields {
+            let name = modelField.name
 
-            // DIEGO: THIS IS NOT USED FOR BELONGSTO!!!!!!!
-            let name = modelField.graphQLName
-            let fieldValueOptional = getFieldValue(for: modelField.name, modelSchema: modelSchema)
-
-            // Since the returned value is Any?? we need to do the following:
-            // - `guard` to make sure the field name exists on the model
-            // - `guard` to ensure the returned value isn't nil
-            guard let fieldValue = fieldValueOptional else {
+            guard let value = modelFieldValue else {
+                // don't invalidate fields of type .model
+                // as we'll take care of this later on (see line 61)
+                if case .model = modelField.type {
+                    continue
+                }
                 input.updateValue(nil, forKey: name)
-                return
-            }
-
-            // swiftlint:disable:next syntactic_sugar
-            guard case .some(Optional<Any>.some(let value)) = fieldValue else {
-                input.updateValue(nil, forKey: name)
-                return
+                continue
             }
 
             switch modelField.type {
+            case .collection:
+                // we don't currently support this use case
+                continue
             case .date, .dateTime, .time:
                 if let date = value as? TemporalSpec {
                     input[name] = date.iso8601String
@@ -59,7 +63,10 @@ extension Model {
             case .enum:
                 input[name] = (value as? EnumPersistable)?.rawValue
             case .model:
-                for (fieldName, fieldValue) in getModelIdentifierFields(from: value, modelSchema: modelSchema) {
+                // get the associated model target names and their values
+                let associatedModelIds = zip(getFieldNameForAssociatedModels(modelField: modelField),
+                                             getModelIdentifierValues(from: value, modelSchema: modelSchema))
+                for (fieldName, fieldValue) in associatedModelIds {
                     input[fieldName] = fieldValue
                 }
             case .embedded, .embeddedCollection:
@@ -72,48 +79,10 @@ extension Model {
                         preconditionFailure("Could not turn into json object from \(value)")
                     }
                 }
-            case .string:
-                // The input may contain the same keys from `.model` case when the `getFieldNameForAssociatedModels`
-                // returns the same value as the `modelField.name`. If this is the case, let the `.model` case take
-                // precedent over the explicit string field on the Model by ignoring the value that is about to be added
-                if !input.keys.contains(name) {
-                    input[name] = value
-                }
-            default:
+            case .string, .int, .double, .timestamp, .bool:
                 input[name] = value
             }
         }
-
-        return fixHasOneAssociationsWithExplicitFieldOnModel(input, modelSchema: modelSchema)
-    }
-
-    /// This is to account for Models with an explicit field on the Model along with an object representing the hasOne
-    /// association to another model. See https://github.com/aws-amplify/amplify-ios/issues/920 for more details.
-    /// When the associated object is `nil`, remove the key from the GraphQL input to prevent runtime failures.
-    /// When the associated object is found, take this value over the explicit field's value by replacing the correct
-    /// entry for the field name of the associated model.
-    private func fixHasOneAssociationsWithExplicitFieldOnModel(_ input: GraphQLInput,
-                                                               modelSchema: ModelSchema) -> GraphQLInput {
-        var input = input
-        modelSchema.fields.forEach {
-            let modelField = $0.value
-            if case .model = modelField.type,
-               case .hasOne = modelField.association,
-               input.keys.contains(modelField.name) {
-
-                let modelIdOrNilOptional = input[modelField.name]
-                // swiftlint:disable:next syntactic_sugar
-                guard case .some(Optional<Any>.some(let modelIdOrNil)) = modelIdOrNilOptional else {
-                    input.removeValue(forKey: modelField.name)
-                    return
-                }
-                if let modelIdValue = modelIdOrNil as? String {
-                    let fieldName = getFieldNameForAssociatedModels(modelField: modelField)
-                    input[fieldName] = modelIdValue
-                }
-            }
-        }
-
         return input
     }
 
@@ -156,14 +125,20 @@ extension Model {
         }
     }
 
-    private func getModelIdentifierFields(from value: Any, modelSchema: ModelSchema) -> ModelIdentifierProtocol.Fields {
+    /// Given a model and its schema, returns the values of its identifier (primary key).
+    /// The return value is an array as models can have a composite identifier.
+    /// - Parameters:
+    ///   - value: model value
+    ///   - modelSchema: model's schema
+    /// - Returns: array of values of its primary key
+    private func getModelIdentifierValues(from value: Any, modelSchema: ModelSchema) -> [Persistable] {
         if let modelValue = value as? Model {
-            return modelValue.identifier(schema: modelSchema).fields
+            return modelValue.identifier(schema: modelSchema).values
         } else if let value = value as? [String: JSONValue] {
-            var primaryKeyValues: ModelIdentifierProtocol.Fields = []
+            var primaryKeyValues = [Persistable]()
             for field in modelSchema.primaryKey.fields {
                 if case .string(let primaryKeyValue) = value[field.name] {
-                    primaryKeyValues.append((name: field.name, value: primaryKeyValue))
+                    primaryKeyValues.append(primaryKeyValue)
                 }
             }
             return primaryKeyValues

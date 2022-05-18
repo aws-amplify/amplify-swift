@@ -116,7 +116,6 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                 return
             }
 
-            // TODO CPK: verify that is correct
             let modelIds = queriedModels.map { $0.identifier(schema: self.modelSchema).stringValue }
             associatedModels = self.recurseQueryAssociatedModels(modelSchema: self.modelSchema, ids: modelIds)
             let deleteCompletionWrapper: DataStoreCallback<[M]> = { deleteResult in
