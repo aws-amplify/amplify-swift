@@ -42,16 +42,23 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             finish()
             return
         }
-        authStateMachine.getCurrentState { [weak self] state in
-            guard let self = self else { return }
-            // Auth should be configured to start the signIn process
-            guard case .configured(let authenticationState, _) = state  else {
-                self.dispatch(AuthError.invalidState("Sign in reached an invalid state",
-                                                     AuthPluginErrorConstants.invalidStateError, nil))
+        doInitialize { [weak self] authenticationState in
+            self?.tryToInvokeSignIn(authenticationState)
+        }
+    }
+    
+    func doInitialize(_ callback: @escaping (AuthenticationState) -> Void) {
+        var token: AuthStateMachineToken?
+        token = authStateMachine.listen { [weak self] in
+            guard let self = self else {
                 return
             }
-            self.tryToInvokeSignIn(authenticationState)
-        }
+            // Auth should be configured to start the signIn process
+            if case .configured(let authenticationState, _) = $0 {
+                callback(authenticationState)
+                self.cancelToken(token)
+            }
+        } onSubscribe: { }
     }
 
     func tryToInvokeSignIn(_ authenticationState: AuthenticationState) {

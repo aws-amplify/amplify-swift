@@ -63,19 +63,7 @@ extension AWSCognitoAuthPlugin {
         self.hubEventHandler = hubEventHandler
 
         self.credentialStoreStateMachine = credentialStoreStateMachine
-        
-        initializeStateMachines()
-    }
-    
-    func initializeStateMachines() {
-        
-        let semaphore = DispatchSemaphore(value: 0)
-        configureCredentialStoreMachine { [weak self] credentials in
-            self?.configureAuthStateMachine(with: credentials) {
-                semaphore.signal()
-            }
-        }
-        semaphore.wait()
+        sendConfigureCredentialEvent()
     }
 
     func listenToAuthStateChange(_ stateMachine: StateMachine<AuthState, AuthEnvironment>) ->
@@ -87,30 +75,34 @@ extension AWSCognitoAuthPlugin {
             \(state)
 
             """)
-        } onSubscribe: { }
+        } onSubscribe: {
+
+        }
+
     }
 
-    func configureCredentialStoreMachine(completion: @escaping (AmplifyCredentials?) -> Void) {
-        
+    func sendConfigureCredentialEvent() {
         var token: CredentialStoreStateMachineToken?
         token = credentialStoreStateMachine.listen { [weak self] in
-            guard let self = self else { return }
+            guard let self = self else {
+                return
+            }
             switch $0 {
             case .success(let storedCredentials):
+                self.sendConfigureAuthEvent(with: storedCredentials)
                 if let token = token {
                     self.credentialStoreStateMachine.cancel(listenerToken: token)
                 }
-                completion(storedCredentials)
             case .error(let credentialStoreError):
                 if case .itemNotFound = credentialStoreError {
-                    completion(nil)
+                    self.sendConfigureAuthEvent(with: nil)
                 } else {
                     let error = AuthError.service("An exception occurred when configuring credential store",
                                                   AmplifyErrorMessages.reportBugToAWS(),
                                                   credentialStoreError)
                     Amplify.log.error(error: error)
-                    completion(nil)
                 }
+
                 if let token = token {
                     self.credentialStoreStateMachine.cancel(listenerToken: token)
                 }
@@ -123,28 +115,8 @@ extension AWSCognitoAuthPlugin {
         }
     }
 
-    func configureAuthStateMachine(with storedCredentials: AmplifyCredentials?, completion: @escaping () -> Void) {
-        
-        var token: AuthStateMachineToken?
-        token = authStateMachine.listen { [weak self] in
-            guard let self = self else { return }
-            
-            switch $0 {
-            case .configured(let authNState, let authZState):
-                guard case .notConfigured = authNState, case .notConfigured = authZState else {
-                    if let token = token {
-                        self.authStateMachine.cancel(listenerToken: token)
-                    }
-                    completion()
-                    return
-                }
-            default:
-                break
-            }
-        } onSubscribe: { [weak self] in
-            guard let self = self else { return }
-            self.authStateMachine.send(AuthEvent(eventType: .configureAuth(self.authConfiguration, storedCredentials)))
-        }
+    func sendConfigureAuthEvent(with storedCredentials: AmplifyCredentials?) {
+        authStateMachine.send(AuthEvent(eventType: .configureAuth(authConfiguration, storedCredentials)))
     }
 
     func authConfiguration(userPoolConfig: UserPoolConfigurationData?,

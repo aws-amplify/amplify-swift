@@ -35,24 +35,38 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
     }
 
     override public func main() {
+         if isCancelled {
+             finish()
+             return
+         }
+         doInitialize()
+     }
+
+    func doInitialize() {
         if isCancelled {
             finish()
             return
         }
-        stateMachine.getCurrentState { [weak self] state in
-            guard let self = self else { return }
-            if case .configured(let authNState, _) = state {
+        var token: AuthStateMachineToken?
+        token = stateMachine.listen { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            if case .configured(let authNState, _) = $0 {
                 switch authNState {
                 case .signedOut, .signingUp:
                     self.doConfirmSignUp()
+                    self.cancelListener(token)
                 default:
                     let message = "Auth state must be signed out to signup"
                     let error = AuthError.invalidState(message, "", nil)
                     self.dispatch(error)
                     self.finish()
+                    self.cancelListener(token)
                 }
             }
-        }
+        } onSubscribe: { }
     }
 
     func doConfirmSignUp() {
