@@ -43,49 +43,6 @@ final class SQLiteLocalStorageAdapter: LocalStorageProtocol {
         try initializeDatabase(connection: connection)
     }
     
-    /// Create the Event and Dirty Event Tables
-    private func createTables() throws {
-        guard let connection = connection else {
-            throw LocalStorageError.invalidOperation(causedBy: nil)
-        }
-
-        let createEventTableStatement = """
-            CREATE TABLE IF NOT EXISTS Event (
-            id TEXT NOT NULL,
-            attributes BLOB NOT NULL,
-            eventType TEXT NOT NULL,
-            metrics BLOB NOT NULL,
-            eventTimestamp TEXT NOT NULL,
-            sessionId TEXT NOT NULL,
-            sessionStartTime TEXT NOT NULL,
-            sessionStopTime TEXT NOT NULL,
-            timestamp REAL NOT NULL,
-            dirty INTEGER NOT NULL,
-            retryCount INTEGER NOT NULL)
-        """
-        let createDirtyEventTableStatement = """
-            CREATE TABLE IF NOT EXISTS DirtyEvent (
-            id TEXT NOT NULL,
-            attributes BLOB NOT NULL,
-            eventType TEXT NOT NULL,
-            metrics BLOB NOT NULL,
-            eventTimestamp TEXT NOT NULL,
-            sessionId TEXT NOT NULL,
-            sessionStartTime TEXT NOT NULL,
-            sessionStopTime TEXT NOT NULL,
-            timestamp REAL NOT NULL,
-            dirty INTEGER NOT NULL,
-            retryCount INTEGER NOT NULL)
-        """
-
-        do {
-            try connection.execute(createEventTableStatement)
-            try connection.execute(createDirtyEventTableStatement)
-        } catch {
-            throw LocalStorageError.invalidOperation(causedBy: error)
-        }
-    }
-    
     /// Initilizes the database and create the table if it doesn't already exists
     /// - Parameter connection: SQLite connection
     private func initializeDatabase(connection: Connection) throws {
@@ -97,7 +54,6 @@ final class SQLiteLocalStorageAdapter: LocalStorageProtocol {
         """
 
         try connection.execute(databaseInitializationStatement)
-        try createTables()
     }
     
     /// Get the database file path constructed by the database name and the Documents directory
@@ -116,12 +72,26 @@ final class SQLiteLocalStorageAdapter: LocalStorageProtocol {
         return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
     }
     
+    /// Create a SQL table
+    /// - Parameter statement: SQL statement to create a table
+    func createTable(_ statement: String) throws {
+        guard let connection = connection else {
+            throw LocalStorageError.nilSQLiteConnection
+        }
+        
+        do {
+            try connection.execute(statement)
+        } catch {
+            throw LocalStorageError.invalidOperation(causedBy: error)
+        }
+    }
+    
     /// Executes a SQL query
     /// - Parameters:
     ///   - statement: SQL query statement
     ///   - bindings: A collection of SQL bindings to prepare with the query statement
     /// - Returns: A SQL statement result from the query
-    func executeSqlQuery(_ statement: String, _ bindings: [Binding?]) throws -> Statement {
+    func executeQuery(_ statement: String, _ bindings: [Binding?]) throws -> Statement {
         guard let connection = connection else {
             throw LocalStorageError.nilSQLiteConnection
         }

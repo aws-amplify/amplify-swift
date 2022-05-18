@@ -18,6 +18,45 @@ class AnalyticsEventStorage {
         self.dbAdapter = dbAdapter
     }
     
+    /// Create the Event and Dirty Event Tables
+    func createTables() throws {
+        let createEventTableStatement = """
+            CREATE TABLE IF NOT EXISTS Event (
+            id TEXT NOT NULL,
+            attributes BLOB NOT NULL,
+            eventType TEXT NOT NULL,
+            metrics BLOB NOT NULL,
+            eventTimestamp TEXT NOT NULL,
+            sessionId TEXT NOT NULL,
+            sessionStartTime TEXT NOT NULL,
+            sessionStopTime TEXT NOT NULL,
+            timestamp REAL NOT NULL,
+            dirty INTEGER NOT NULL,
+            retryCount INTEGER NOT NULL)
+        """
+        let createDirtyEventTableStatement = """
+            CREATE TABLE IF NOT EXISTS DirtyEvent (
+            id TEXT NOT NULL,
+            attributes BLOB NOT NULL,
+            eventType TEXT NOT NULL,
+            metrics BLOB NOT NULL,
+            eventTimestamp TEXT NOT NULL,
+            sessionId TEXT NOT NULL,
+            sessionStartTime TEXT NOT NULL,
+            sessionStopTime TEXT NOT NULL,
+            timestamp REAL NOT NULL,
+            dirty INTEGER NOT NULL,
+            retryCount INTEGER NOT NULL)
+        """
+
+        do {
+            try dbAdapter.createTable(createEventTableStatement)
+            try dbAdapter.createTable(createDirtyEventTableStatement)
+        } catch {
+            throw LocalStorageError.invalidOperation(causedBy: error)
+        }
+    }
+    
     /// Insert an Event into the Even table
     /// - Parameter bindings: a collection of values to insert into the Event
     func insertEvent(bindings: [Binding]) throws {
@@ -28,7 +67,7 @@ class AnalyticsEventStorage {
             sessionStopTime, timestamp, dirty, retryCount)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
-        _ = try dbAdapter.executeSqlQuery(insertStatement, bindings)
+        _ = try dbAdapter.executeQuery(insertStatement, bindings)
     }
     
     /// Delete events from the Events older than a specified timestamp
@@ -38,15 +77,15 @@ class AnalyticsEventStorage {
          DELETE FROM Event
          WHERE timestamp < ?"
         """
-        _ = try dbAdapter.executeSqlQuery(deleteStatement, [timeStamp])
+        _ = try dbAdapter.executeQuery(deleteStatement, [timeStamp])
     }
     
     /// Delete all dirty events from the Event and DirtyEvent tables
     func deleteDirtyEvents() throws {
         let deleteFromDirtyEventTable = "DELETE FROM DirtyEvent"
         let deleteFromEventTable = "DELETE FROM Event WHERE dirty = true"
-        _ = try dbAdapter.executeSqlQuery(deleteFromDirtyEventTable, [])
-        _ = try dbAdapter.executeSqlQuery(deleteFromEventTable, [])
+        _ = try dbAdapter.executeQuery(deleteFromDirtyEventTable, [])
+        _ = try dbAdapter.executeQuery(deleteFromEventTable, [])
     }
     
     /// Delete the oldest event from the Event table
@@ -59,13 +98,13 @@ class AnalyticsEventStorage {
         ORDER BY timestamp ASC
         LIMIT 1)
         """
-        _ = try dbAdapter.executeSqlQuery(deleteStatements, [])
+        _ = try dbAdapter.executeQuery(deleteStatements, [])
     }
     
     /// Delete all events from the Event table
     func deleteAllEvents() throws {
         let deleteStatement = "DELETE FROM Event"
-        _ = try dbAdapter.executeSqlQuery(deleteStatement, [])
+        _ = try dbAdapter.executeQuery(deleteStatement, [])
     }
     
     /// Get the oldest event with limit
@@ -77,7 +116,7 @@ class AnalyticsEventStorage {
         ORDER BY timestamp ASC
         LIMIT ?
         """
-        _ = try dbAdapter.executeSqlQuery(queryStatement, [limit])
+        _ = try dbAdapter.executeQuery(queryStatement, [limit])
     }
     
     /// Get the oldest dirty events with limit
@@ -89,7 +128,7 @@ class AnalyticsEventStorage {
         ORDER BY timestamp ASC
         LIMIT ?
         """
-        _ = try dbAdapter.executeSqlQuery(queryStatement, [limit])
+        _ = try dbAdapter.executeQuery(queryStatement, [limit])
     }
     
 }

@@ -12,6 +12,17 @@ import SQLite
 
 class SQLiteLocalStorageAdapterTests: XCTestCase {
     let databaseName = "TestDatabase"
+    var adapter: LocalStorageProtocol!
+    
+    override func setUp() {
+        do {
+            adapter = try SQLiteLocalStorageAdapter(databaseName: databaseName)
+            let analyticsEventStorage = AnalyticsEventStorage(dbAdapter: adapter)
+            try analyticsEventStorage.createTables()
+        } catch {
+            XCTFail("Failed to remove SQLite as part of test setup")
+        }
+    }
     
     override class func tearDown() {
         let dbPath = SQLiteLocalStorageAdapter.getDbFilePath(databaseName: "TestDatabase")
@@ -22,18 +33,13 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
         }
     }
     
-    /// - Given: A database name and database path
-    /// - When: Creating an instance of SQLiteLocalStorageAdapter
-    /// - Then: A database with the specified name is created at the specified path
+    /// - Given: A database name
+    /// - When: accessing a file system
+    /// - Then: A database with the specified name exists at the specified path
     func testLocalStorageInitialization() {
-        do {
-            let dbPath = SQLiteLocalStorageAdapter.getDbFilePath(databaseName: databaseName)
-            _ = try SQLiteLocalStorageAdapter(databaseName: databaseName)
-            let fileExists = FileManager.default.fileExists(atPath: dbPath.path)
-            XCTAssertTrue(fileExists)
-        } catch {
-            XCTFail("Failed to create SQLiteLocalStorageAdapter: \(error)")
-        }
+        let dbPath = SQLiteLocalStorageAdapter.getDbFilePath(databaseName: databaseName)
+        let fileExists = FileManager.default.fileExists(atPath: dbPath.path)
+        XCTAssertTrue(fileExists)
     }
     
     /// - Given: An adapter to the SQLite local database
@@ -41,9 +47,8 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
     /// - Then: A new Event record is added to the database Event table
     func testLocalStorageInsert() {
         do {
-            let adapter = try SQLiteLocalStorageAdapter(databaseName: databaseName)
             let countStatement = "SELECT COUNT(*) FROM Event"
-            var result = try adapter.executeSqlQuery(countStatement, []).scalar() as! Int64
+            var result = try adapter.executeQuery(countStatement, []).scalar() as! Int64
             XCTAssertTrue(result == 0)
             
             
@@ -55,8 +60,8 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
             let bindings: [Binding] = [1, "", "", "", 100000, 2, 1000000, 1000000, 100000, true, 0]
-            _ = try adapter.executeSqlQuery(insertStatement, bindings)
-            result = try adapter.executeSqlQuery(countStatement, []).scalar() as! Int64
+            _ = try adapter.executeQuery(insertStatement, bindings)
+            result = try adapter.executeQuery(countStatement, []).scalar() as! Int64
             XCTAssertTrue(result == 1)
         } catch {
             XCTFail("Failed to create SQLiteLocalStorageAdapter: \(error)")
@@ -68,7 +73,6 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
     /// - Then: The Event table is empty with 0 records
     func testLocalStorageDelete() {
         do {
-            let adapter = try SQLiteLocalStorageAdapter(databaseName: databaseName)
             let insertStatement = """
                 INSERT INTO Event (
                 id, attributes, eventType, metrics,
@@ -77,15 +81,15 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
             let bindings: [Binding] = [1, "", "", "", 100000, 2, 1000000, 1000000, 100000, true, 0]
-            _ = try adapter.executeSqlQuery(insertStatement, bindings)
+            _ = try adapter.executeQuery(insertStatement, bindings)
             
             let countStatement = "SELECT COUNT(*) FROM Event"
-            var result = try adapter.executeSqlQuery(countStatement, []).scalar() as! Int64
+            var result = try adapter.executeQuery(countStatement, []).scalar() as! Int64
             XCTAssertTrue(result == 1)
             
             let deleteStatement = "DELETE FROM Event"
-            _ = try adapter.executeSqlQuery(deleteStatement, [])
-            result = try adapter.executeSqlQuery(countStatement, []).scalar() as! Int64
+            _ = try adapter.executeQuery(deleteStatement, [])
+            result = try adapter.executeQuery(countStatement, []).scalar() as! Int64
             XCTAssertTrue(result == 0)
 
         } catch {
@@ -98,7 +102,6 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
     /// - Then: The existing event record is updated as dirty
     func testLocalStorageUpdate() {
         do {
-            let adapter = try SQLiteLocalStorageAdapter(databaseName: databaseName)
             let insertStatement = """
                 INSERT INTO Event (
                 id, attributes, eventType, metrics,
@@ -107,10 +110,10 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
             let bindings: [Binding] = [123, "", "", "", 100000, 2, 1000000, 1000000, 100000, false, 0]
-            _ = try adapter.executeSqlQuery(insertStatement, bindings)
+            _ = try adapter.executeQuery(insertStatement, bindings)
             
             let countStatement = "SELECT COUNT(*) FROM Event WHERE dirty = false"
-            var result = try adapter.executeSqlQuery(countStatement, []).scalar() as! Int64
+            var result = try adapter.executeQuery(countStatement, []).scalar() as! Int64
             XCTAssertTrue(result == 1)
             
             let updateStatement = """
@@ -118,8 +121,8 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
                 SET dirty = ?
                 WHERE id = ?
             """
-            _ = try adapter.executeSqlQuery(updateStatement, [true, 123])
-            result = try adapter.executeSqlQuery(countStatement, []).scalar() as! Int64
+            _ = try adapter.executeQuery(updateStatement, [true, 123])
+            result = try adapter.executeQuery(countStatement, []).scalar() as! Int64
             XCTAssertTrue(result == 0)
             
         } catch {
