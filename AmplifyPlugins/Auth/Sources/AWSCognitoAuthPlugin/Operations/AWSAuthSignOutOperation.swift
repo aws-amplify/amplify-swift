@@ -35,31 +35,7 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
             finish()
             return
         }
-        doInitialize()
-    }
-
-    func doInitialize() {
-        stateListenerToken = authStateMachine.listen { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            if case .configured(let authNState, _) = $0 {
-                guard case .signedIn = authNState else {
-                    defer {
-                        self.finish()
-                    }
-
-                    self.dispatchSuccess()
-                    return
-                }
-
-                if let token = self.stateListenerToken {
-                    self.authStateMachine.cancel(listenerToken: token)
-                }
-                self.doSignOut()
-            }
-        } onSubscribe: { }
+        doSignOut()
     }
 
     func doSignOut() {
