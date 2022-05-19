@@ -37,6 +37,9 @@ final public class AWSCognitoAuthPlugin: AuthCategoryPlugin {
     /// Handles different auth event send through hub
     var hubEventHandler: AuthHubEventBehavior!
 
+    /// Auth configuration used during initialization
+    var configuration: JSONValue!
+
     /// The unique key of the plugin within the auth category.
     public var key: PluginKey {
         return "awsCognitoAuthPlugin"

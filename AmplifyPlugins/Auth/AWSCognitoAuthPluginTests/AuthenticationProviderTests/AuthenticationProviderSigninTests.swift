@@ -55,6 +55,46 @@ class AuthenticationProviderSigninTests: BaseAuthenticationProviderTest {
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
+    /// Test a signIn with valid inputs and authflow type
+    ///
+    /// - Given: Given an auth plugin with mocked service.
+    ///
+    /// - When:
+    ///    - I invoke signIn with valid values
+    /// - Then:
+    ///    - I should get a .done response
+    ///
+    func testSuccessfulSignInWithAuthFlow() {
+
+        let mockSigninResult = SignInResult(signInState: .signedIn)
+        mockAWSMobileClient?.signInMockResult = .success(mockSigninResult)
+
+        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
+                                                 metadata: ["somekey": "somevalue"],
+                                                 authFlowType: .userSRP)
+        let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
+
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+            switch result {
+            case .success(let signinResult):
+                guard case .done = signinResult.nextStep else {
+                    XCTFail("Result should be .done for next step")
+                    return
+                }
+                XCTAssertTrue(signinResult.isSignedIn, "Signin result should be complete")
+                XCTAssertFalse(self.mockUserDefault.isPrivateSessionPreferred(),
+                               "Prefer private session userdefaults should not be set.")
+            case .failure(let error):
+                XCTFail("Received failure with error \(error)")
+            }
+        }
+        wait(for: [resultExpectation], timeout: apiTimeout)
+    }
+
     /// Test a signIn with empty username
     ///
     /// - Given: Given an auth plugin with mocked service.

@@ -60,6 +60,150 @@ class AuthUsernamePasswordSignInTests: AWSAuthBaseTest {
         wait(for: [operationExpectation], timeout: networkTimeout)
     }
 
+    /// Test successful signIn of a valid user with authflowType
+    ///
+    /// - Given: A user registered in Cognito user pool
+    /// - When:
+    ///    - I invoke Amplify.Auth.signIn with the username and password
+    /// - Then:
+    ///    - I should get a completed signIn flow.
+    ///
+    func testSuccessfulSignInWithSRPFlow() {
+
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
+
+        let signUpExpectation = expectation(description: "SignUp operation should complete")
+        AuthSignInHelper.signUpUser(username: username, password: password,
+                                    email: email) { didSucceed, error in
+            signUpExpectation.fulfill()
+            XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
+        }
+        wait(for: [signUpExpectation], timeout: networkTimeout)
+
+        let operationExpectation = expectation(description: "Operation should complete")
+        let option = AWSAuthSignInOptions(authFlowType: .userSRP)
+        let operation = Amplify.Auth.signIn(username: username,
+                                            password: password,
+                                            options: .init(pluginOptions: option)) { result in
+            defer {
+                operationExpectation.fulfill()
+            }
+            switch result {
+            case .success(let signInResult):
+                XCTAssertTrue(signInResult.isSignedIn, "SignIn should be complete")
+            case .failure(let error):
+                XCTFail("SignIn with a valid username/password should not fail \(error)")
+            }
+        }
+        XCTAssertNotNil(operation, "SignIn operation should not be nil")
+        wait(for: [operationExpectation], timeout: networkTimeout)
+    }
+
+    /// Test  signIn error in invalid authflowtype
+    ///
+    /// - Given: A user registered in Cognito user pool
+    /// - When:
+    ///    - I invoke Amplify.Auth.signIn with a authflow not configured in user pool
+    /// - Then:
+    ///    - I should get a completed signIn flow with an error
+    ///
+    func testSuccessfulSignInWithCustomAuth() {
+
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
+
+        let signUpExpectation = expectation(description: "SignUp operation should complete")
+        AuthSignInHelper.signUpUser(username: username, password: password,
+                                    email: email) { didSucceed, error in
+            signUpExpectation.fulfill()
+            XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
+        }
+        wait(for: [signUpExpectation], timeout: networkTimeout)
+
+        let operationExpectation = expectation(description: "Operation should complete")
+        let option = AWSAuthSignInOptions(authFlowType: .custom)
+        let operation = Amplify.Auth.signIn(username: username,
+                                            password: password,
+                                            options: .init(pluginOptions: option)) { result in
+            defer {
+                operationExpectation.fulfill()
+            }
+            switch result {
+            case .success:
+                XCTFail("SignIn with invalid auth flow should not succeed")
+            case .failure(let error):
+                guard case .service = error else {
+                    XCTFail("Should return service error")
+                    return
+                }
+            }
+        }
+        XCTAssertNotNil(operation, "SignIn operation should not be nil")
+        wait(for: [operationExpectation], timeout: networkTimeout)
+    }
+
+    /// Test  signIn error in invalid authflowtype
+    ///
+    /// - Given: A user registered in Cognito user pool
+    /// - When:
+    ///    - I invoke Amplify.Auth.signIn with a authflow not configured in user pool
+    /// - Then:
+    ///    - I should get a completed signIn flow with an error
+    ///
+    func testRuntimeAuthFlowSwitch() {
+
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
+
+        let signUpExpectation = expectation(description: "SignUp operation should complete")
+        AuthSignInHelper.signUpUser(username: username, password: password,
+                                    email: email) { didSucceed, error in
+            signUpExpectation.fulfill()
+            XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
+        }
+        wait(for: [signUpExpectation], timeout: networkTimeout)
+
+        let operationExpectation = expectation(description: "Operation should complete")
+        let option = AWSAuthSignInOptions(authFlowType: .custom)
+        let operation = Amplify.Auth.signIn(username: username,
+                                            password: password,
+                                            options: .init(pluginOptions: option)) { result in
+            defer {
+                operationExpectation.fulfill()
+            }
+            switch result {
+            case .success:
+                XCTFail("SignIn with invalid auth flow should not succeed")
+            case .failure(let error):
+                guard case .service = error else {
+                    XCTFail("Should return service error")
+                    return
+                }
+            }
+        }
+        XCTAssertNotNil(operation, "SignIn operation should not be nil")
+        wait(for: [operationExpectation], timeout: networkTimeout)
+
+        let srpOperationExpectation = expectation(description: "Operation should complete")
+        let srpOption = AWSAuthSignInOptions(authFlowType: .userSRP)
+        let srpOperation = Amplify.Auth.signIn(username: username,
+                                            password: password,
+                                            options: .init(pluginOptions: srpOption)) { result in
+            defer {
+                srpOperationExpectation.fulfill()
+            }
+            switch result {
+            case .success(let signInResult):
+                XCTAssertTrue(signInResult.isSignedIn, "SignIn should be complete")
+            case .failure(let error):
+                XCTFail("SignIn with a valid username/password should not fail \(error)")
+            }
+        }
+        XCTAssertNotNil(srpOperation, "SignIn operation should not be nil")
+        wait(for: [srpOperationExpectation], timeout: networkTimeout)
+    }
+
     /// Test successful signIn of a valid user
     /// Internally, Two Cognito APIs will be called, Cognito's `InitiateAuth` and `RespondToAuthChallenge` API.
     ///

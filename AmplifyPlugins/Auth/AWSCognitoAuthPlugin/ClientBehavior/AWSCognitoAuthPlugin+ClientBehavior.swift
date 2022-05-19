@@ -59,6 +59,7 @@ extension AWSCognitoAuthPlugin {
                                         password: password,
                                         options: options)
         let signInOperation = AWSAuthSignInOperation(request,
+                                                     configuration: configuration,
                                                      authenticationProvider: authenticationProvider,
                                                      resultListener: listener)
         queue.addOperation(signInOperation)

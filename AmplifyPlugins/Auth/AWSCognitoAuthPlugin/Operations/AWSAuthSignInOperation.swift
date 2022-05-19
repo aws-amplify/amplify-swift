@@ -15,12 +15,15 @@ public class AWSAuthSignInOperation: AmplifyOperation<
 >, AuthSignInOperation {
 
     let authenticationProvider: AuthenticationProviderBehavior
+    let configuration: JSONValue
 
     init(_ request: AuthSignInRequest,
+         configuration: JSONValue,
          authenticationProvider: AuthenticationProviderBehavior,
          resultListener: ResultListener?) {
 
         self.authenticationProvider = authenticationProvider
+        self.configuration = configuration
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.signInAPI,
                    request: request,
@@ -39,7 +42,25 @@ public class AWSAuthSignInOperation: AmplifyOperation<
             return
         }
 
-        authenticationProvider.signIn(request: request) {[weak self]  result in
+        // Get the authflowType and apply that to the existing request.
+        guard let authFlowType = authFlowType(from: request) else {
+            let error = AuthError.configuration(
+                "Not a valid auth flow type",
+                "AWSCognitoAuthPlugin currently supports only SRP and Custom auth")
+            dispatch(error)
+            finish()
+            return
+        }
+
+        let currentOptions = request.options.pluginOptions as? AWSAuthSignInOptions
+        let options = AWSAuthSignInOptions(validationData: (currentOptions)?.validationData,
+                                           metadata: (currentOptions)?.metadata,
+                                           authFlowType: authFlowType)
+
+        let signInrequest = AuthSignInRequest(username: request.username,
+                                              password: request.password,
+                                              options: .init(pluginOptions: options))
+        authenticationProvider.signIn(request: signInrequest) {[weak self]  result in
             guard let self = self else { return }
 
             defer {
@@ -67,5 +88,31 @@ public class AWSAuthSignInOperation: AmplifyOperation<
     private func dispatch(_ error: AuthError) {
         let asyncEvent = AWSAuthSignInOperation.OperationResult.failure(error)
         dispatch(result: asyncEvent)
+    }
+
+    // Determine the auth flow type to use for the signIn flow.
+    //
+    // First we check if authflow type is passed as a parameter in the signIn api. If not we
+    // determine the authflow type from the configuration. If there is no configured authflowType
+    // we will take srp as the default type.
+    private func authFlowType(from request: AuthSignInRequest) -> AuthFlowType? {
+
+        if let authType = (request.options.pluginOptions as? AWSAuthSignInOptions)?.authFlowType,
+           authType != .unknown {
+            return authType
+        }
+
+        let authTypeKeyPath = "Auth.Default.authenticationFlowType"
+        guard case .string(let authTypeString) = configuration.value(at: authTypeKeyPath) else {
+            return .userSRP
+        }
+
+        switch authTypeString {
+        case "CUSTOM_AUTH": return .custom
+        case "USER_SRP_AUTH": return .userSRP
+        default:
+            return nil
+        }
+
     }
 }
