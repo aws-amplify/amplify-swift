@@ -26,7 +26,8 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
         sleep(2)
     }
 
-    /// Test hub event for successful signIn of a valid user
+    /// Test hub event for successful signIn
+    ///  of a valid user
     ///
     /// - Given: A user registered in Cognito user pool
     /// - When:
