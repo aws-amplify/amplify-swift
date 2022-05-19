@@ -6,8 +6,9 @@
 //
 
 @testable import AWSCognitoAuthPlugin
-import XCTest
 import AWSPluginsCore
+import CryptoKit
+import XCTest
 
 class AWSAuthCognitoSessionTests: XCTestCase {
 

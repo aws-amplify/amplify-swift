@@ -7,6 +7,8 @@
 
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+import AWSPluginsCore
+import CryptoKit
 import Foundation
 
 struct AuthSessionHelper {
@@ -19,12 +21,20 @@ struct AuthSessionHelper {
     static func invalidateSession(with amplifyConfiguration: AmplifyConfiguration) {
         let configuration = getAuthConfiguration(configuration: amplifyConfiguration)
         let credentialStore = AWSCognitoAuthCredentialStore(authConfiguration: configuration, accessGroup: nil)
-        let credentials = try! credentialStore.retrieveCredential()
+        guard let credentials = try? credentialStore.retrieveCredential() else {
+            return
+        }
         
-        if let tokens = credentials.userPoolTokens {
-            let updatedCredentials = CognitoCredentials(
-                userPoolTokens: AWSCognitoUserPoolTokens(idToken: tokens.idToken,
-                                                         accessToken: tokens.accessToken,
+        if let tokens = credentials.userPoolTokens,
+           var idTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: tokens.idToken).get(),
+           var accessTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: tokens.idToken).get() {
+            
+            idTokenClaims["exp"] = String(Date(timeIntervalSinceNow: -3000).timeIntervalSince1970) as AnyObject
+            accessTokenClaims["exp"] = String(Date(timeIntervalSinceNow: -3000).timeIntervalSince1970) as AnyObject
+            
+            let updatedCredentials = AmplifyCredentials(
+                userPoolTokens: AWSCognitoUserPoolTokens(idToken: CognitoAuthTestHelper.buildToken(for: idTokenClaims),
+                                                         accessToken: CognitoAuthTestHelper.buildToken(for: accessTokenClaims),
                                                          refreshToken: "invalid",
                                                          expiration: Date().addingTimeInterval(-50000)),
                 identityId: credentials.identityId,
@@ -100,3 +110,51 @@ struct AuthSessionHelper {
         )
     }
 }
+
+
+struct CognitoAuthTestHelper {
+    
+    /// Helper to build a JWT Token
+    static func buildToken(for payload: [String: AnyObject]) -> String {
+        
+        struct Header: Encodable {
+            let alg = "HS256"
+            let typ = "JWT"
+        }
+        
+        // target dict
+        var dictionary = [String: String]()
+        for (key, value) in payload {
+            if let value = value as? String { dictionary[key] = value }
+        }
+        
+        let secret = "256-bit-secret"
+        let privateKey = SymmetricKey(data: Data(secret.utf8))
+
+        let headerJSONData = try! JSONEncoder().encode(Header())
+        let headerBase64String = headerJSONData.urlSafeBase64EncodedString()
+
+        let payloadJSONData = try! JSONEncoder().encode(dictionary)
+        let payloadBase64String = payloadJSONData.urlSafeBase64EncodedString()
+
+        let toSign = Data((headerBase64String + "." + payloadBase64String).utf8)
+
+        let signature = HMAC<SHA256>.authenticationCode(for: toSign, using: privateKey)
+        let signatureBase64String = Data(signature).urlSafeBase64EncodedString()
+
+        let token = [headerBase64String, payloadBase64String, signatureBase64String].joined(separator: ".")
+        
+        return token
+    }
+}
+
+
+fileprivate extension Data {
+    func urlSafeBase64EncodedString() -> String {
+        return base64EncodedString()
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "=", with: "")
+    }
+}
+

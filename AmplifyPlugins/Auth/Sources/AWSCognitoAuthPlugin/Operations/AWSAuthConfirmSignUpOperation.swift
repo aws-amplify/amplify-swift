@@ -35,12 +35,12 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
     }
 
     override public func main() {
-        if isCancelled {
-            finish()
-            return
-        }
-        doInitialize()
-    }
+         if isCancelled {
+             finish()
+             return
+         }
+         doInitialize()
+     }
 
     func doInitialize() {
         if isCancelled {
@@ -52,18 +52,18 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
             guard let self = self else {
                 return
             }
-
+            
             if case .configured(let authNState, _) = $0 {
                 switch authNState {
                 case .signedOut, .signingUp:
-                    self.cancelListener(token)
                     self.doConfirmSignUp()
-                default:
                     self.cancelListener(token)
+                default:
                     let message = "Auth state must be signed out to signup"
                     let error = AuthError.invalidState(message, "", nil)
                     self.dispatch(error)
                     self.finish()
+                    self.cancelListener(token)
                 }
             }
         } onSubscribe: { }
