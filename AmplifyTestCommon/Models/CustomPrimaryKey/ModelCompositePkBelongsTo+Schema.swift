@@ -36,7 +36,12 @@ extension ModelCompositePkBelongsTo {
         .field(modelCompositePkBelongsTo.id, is: .required, ofType: .string),
         .field(modelCompositePkBelongsTo.dob, is: .required, ofType: .dateTime),
         .field(modelCompositePkBelongsTo.name, is: .optional, ofType: .string),
-        .belongsTo(modelCompositePkBelongsTo.owner, is: .optional, ofType: ModelCompositePkWithAssociation.self, targetName: "owner"),
+        .belongsTo(modelCompositePkBelongsTo.owner, is: .optional,
+                   ofType: ModelCompositePkWithAssociation.self,
+                   targetNames: [
+                    "modelCompositePkWithAssociationOtherModelsId",
+                    "modelCompositePkWithAssociationOtherModelsDob"
+                   ]),
         .field(modelCompositePkBelongsTo.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
         .field(modelCompositePkBelongsTo.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )

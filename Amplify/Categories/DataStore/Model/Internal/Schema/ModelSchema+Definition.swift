@@ -280,6 +280,19 @@ public enum ModelFieldDefinition {
                       association: .belongsTo(associatedWith: associatedKey, targetName: targetName))
     }
 
+    public static func belongsTo(_ key: CodingKey,
+                                 is nullability: ModelFieldNullability = .required,
+                                 isReadOnly: Bool = false,
+                                 ofType type: Model.Type,
+                                 associatedWith associatedKey: CodingKey? = nil,
+                                 targetNames: [String]) -> ModelFieldDefinition {
+        return .field(key,
+                      is: nullability,
+                      isReadOnly: isReadOnly,
+                      ofType: .model(type: type),
+                      association: .belongsTo(associatedWith: associatedKey, targetNames: targetNames))
+    }
+
     public var modelField: ModelField {
         guard case let .field(name,
                               type,

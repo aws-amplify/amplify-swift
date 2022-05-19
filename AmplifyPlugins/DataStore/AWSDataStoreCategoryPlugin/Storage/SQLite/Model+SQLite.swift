@@ -104,12 +104,13 @@ extension Model {
                let modelSchema = ModelRegistry.modelSchema(from: modelName) {
 
                 // Check if it is a Model or json object.
-                if let value = value as? Model {
-                    let associatedModel: Model.Type = type(of: value)
-                    return value[associatedModel.schema.primaryKey.name] as? String
+                if let associatedModelValue = value as? Model {
+                    // let associatedModelType: Model.Type = type(of: associatedModelValue)
+                    // return associatedModelValue[associatedModelType.schema.primaryKey.name] as? String
+                    return associatedModelValue.identifier
 
-                } else if let value = value as? [String: JSONValue],
-                   case .string(let primaryKeyValue) = value[modelSchema.primaryKey.name] {
+                } else if let associatedModelJSON = value as? [String: JSONValue],
+                   case .string(let primaryKeyValue) = associatedModelJSON[modelSchema.primaryKey.name] {
                     return primaryKeyValue
                 }
             }

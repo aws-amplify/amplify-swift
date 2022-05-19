@@ -81,9 +81,9 @@ extension ModelField: SQLColumn {
 
     var sqlName: String {
         if case let .belongsTo(_, targetNames) = association {
-            return targetNames.count == 1 ? targetNames[0] : name + "Id"
+            return targetNames.count == 1 ? targetNames[0] : foreignKeySqlName
         } else if case let .hasOne(_, targetNames) = association {
-            return targetNames.count == 1 ? targetNames[0] : name + "Id"
+            return targetNames.count == 1 ? targetNames[0] : foreignKeySqlName
         }
         return name
     }
@@ -103,6 +103,12 @@ extension ModelField: SQLColumn {
 
     var isForeignKey: Bool {
         isAssociationOwner
+    }
+
+    /// Default foreign value used to reference a model with a composite primary key.
+    /// It's only used for the local storage, the individual values will be sent to the cloud.
+    var foreignKeySqlName: String {
+        "@@\(name)ForeignKey"
     }
 
     /// Get the name of the `ModelField` as a SQL column name. Columns can be optionally namespaced

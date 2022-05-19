@@ -159,20 +159,21 @@ class ModelGraphQLTests: XCTestCase {
     }
 
     func testModelWithAssociationAndCompositePrimaryKey() {
-        let model1 = ModelCompositePk(id: "id1",
-                                      dob: Temporal.DateTime.now(),
-                                      name: "name")
-        let model2 = ModelCompositePkWithAssociation(id: "id2",
+        let owner = ModelCompositePkWithAssociation(id: "id2",
                                                      dob: Temporal.DateTime.now(),
-                                                     name: "name",
-                                                     associatedModel: model1)
-        let graphQLInput = model2.graphQLInputForMutation(model2.schema)
-        XCTAssertEqual(graphQLInput["id"] as? String, model2.id)
-        XCTAssertEqual(graphQLInput["dob"] as? String, model2.dob.iso8601String)
-        XCTAssertEqual(graphQLInput["name"] as? String, model2.name)
-        XCTAssertEqual(graphQLInput["modelCompositePkWithAssociationOwnerId"] as? String,
-                       model1.id)
-        XCTAssertEqual(graphQLInput["modelCompositePkWithAssociationOwnerDob"] as? Temporal.DateTime,
-                       model1.dob)
+                                                     name: "name")
+        let childModel = ModelCompositePkBelongsTo(id: "id1",
+                                               dob: Temporal.DateTime.now(),
+                                               name: "name",
+                                               owner: owner)
+
+        let graphQLInput = childModel.graphQLInputForMutation(childModel.schema)
+        XCTAssertEqual(graphQLInput["id"] as? String, childModel.id)
+        XCTAssertEqual(graphQLInput["dob"] as? String, childModel.dob.iso8601String)
+        XCTAssertEqual(graphQLInput["name"] as? String, childModel.name)
+        XCTAssertEqual(graphQLInput["modelCompositePkWithAssociationOtherModelsId"] as? String,
+                       owner.id)
+        XCTAssertEqual(graphQLInput["modelCompositePkWithAssociationOtherModelsDob"] as? Temporal.DateTime,
+                       owner.dob)
     }
 }

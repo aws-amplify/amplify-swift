@@ -346,6 +346,8 @@
 		76262ABB28369F3600273736 /* Book+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AB128369F3600273736 /* Book+Schema.swift */; };
 		76262ABC28369F3600273736 /* Author+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AB228369F3600273736 /* Author+Schema.swift */; };
 		76262ABD28369F3600273736 /* UserProfile+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AB328369F3600273736 /* UserProfile+Schema.swift */; };
+		76262AC42836E77500273736 /* ModelCompositePkBelongsTo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AC22836E77500273736 /* ModelCompositePkBelongsTo.swift */; };
+		76262AC52836E77500273736 /* ModelCompositePkBelongsTo+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AC32836E77500273736 /* ModelCompositePkBelongsTo+Schema.swift */; };
 		762C978526210F6400798FA3 /* RecordCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762C978426210F6400798FA3 /* RecordCover.swift */; };
 		762C978E26210FF100798FA3 /* RecordCover+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762C978D26210FF100798FA3 /* RecordCover+Schema.swift */; };
 		76310CF327E3EDD2004964DF /* ModelExplicitCustomPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76310CEB27E3EDD1004964DF /* ModelExplicitCustomPk.swift */; };
@@ -1285,6 +1287,8 @@
 		76262AB128369F3600273736 /* Book+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Book+Schema.swift"; path = "Associations/Book+Schema.swift"; sourceTree = "<group>"; };
 		76262AB228369F3600273736 /* Author+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Author+Schema.swift"; path = "Associations/Author+Schema.swift"; sourceTree = "<group>"; };
 		76262AB328369F3600273736 /* UserProfile+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UserProfile+Schema.swift"; path = "Associations/UserProfile+Schema.swift"; sourceTree = "<group>"; };
+		76262AC22836E77500273736 /* ModelCompositePkBelongsTo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePkBelongsTo.swift; sourceTree = "<group>"; };
+		76262AC32836E77500273736 /* ModelCompositePkBelongsTo+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePkBelongsTo+Schema.swift"; sourceTree = "<group>"; };
 		762C978426210F6400798FA3 /* RecordCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordCover.swift; sourceTree = "<group>"; };
 		762C978D26210FF100798FA3 /* RecordCover+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RecordCover+Schema.swift"; sourceTree = "<group>"; };
 		762F70A326683EE2001F8252 /* AuthRuleExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRuleExtensionTests.swift; sourceTree = "<group>"; };
@@ -2728,6 +2732,8 @@
 		76310CEA27E3ED87004964DF /* CustomPrimaryKey */ = {
 			isa = PBXGroup;
 			children = (
+				76262AC22836E77500273736 /* ModelCompositePkBelongsTo.swift */,
+				76262AC32836E77500273736 /* ModelCompositePkBelongsTo+Schema.swift */,
 				767B9D10282EE78F00A20BDB /* ModelCompositeIntPk.swift */,
 				767B9D11282EE78F00A20BDB /* ModelCompositeIntPk+Schema.swift */,
 				76310CF027E3EDD2004964DF /* ModelCompositePk.swift */,
@@ -5720,6 +5726,7 @@
 				217D5EB82577F9DF009F0639 /* Project2+Schema.swift in Sources */,
 				218F7848275A63140042334B /* Project2V2+Schema.swift in Sources */,
 				215D40A9277231920077E7DA /* Meeting8V2.swift in Sources */,
+				76262AC42836E77500273736 /* ModelCompositePkBelongsTo.swift in Sources */,
 				76310CF627E3EDD2004964DF /* ModelExplicitDefaultPk+Schema.swift in Sources */,
 				218F7844275A63090042334B /* Post6V2+Schema.swift in Sources */,
 				214F49792486D8A200DA616C /* UserFollowing+Schema.swift in Sources */,
@@ -5759,6 +5766,7 @@
 				216E45EF248E914F0035E3CE /* Todo+Schema.swift in Sources */,
 				218F7846275A630F0042334B /* Project1V2+Schema.swift in Sources */,
 				5C09CCC526D074B100CDCA9F /* MockGeoCategoryPlugin.swift in Sources */,
+				76262AC52836E77500273736 /* ModelCompositePkBelongsTo+Schema.swift in Sources */,
 				218F78C0275ABBEC0042334B /* User5V2+Schema.swift in Sources */,
 				FACA361E2327FC8E000E74F6 /* MockAnalyticsCategoryPlugin.swift in Sources */,
 				218F78E7275AD0310042334B /* Project4aV2.swift in Sources */,

@@ -204,6 +204,21 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
+    func testCreateTableFromModelWithCompositePkAndForeignKey() {
+        let statement = CreateTableStatement(modelSchema: ModelCompositePkBelongsTo.schema)
+        let expectedStatement = """
+        create table if not exists "ModelCompositePkBelongsTo" (
+          "@@primaryKey" text primary key not null,
+          "id" text not null,
+          "dob" text not null,
+          "createdAt" text,
+          "name" text,
+          "updatedAt" text
+        );
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
     // MARK: - Create Index
 
     /// - Given: a `Model` instance
@@ -333,16 +348,17 @@ class SQLStatementTests: XCTestCase {
         let statement = InsertStatement(model: childModel, modelSchema: childModel.schema)
 
         let expectedStatement = """
-        insert into "ModelCompositePkBelongsTo" ("id", "dob", "name", "createdAt", "updatedAt", "modelCompositePkWithAssociationOtherModelsId")
-        values (?, ?, ?, ?, ?, ?)
+        insert into "ModelCompositePkBelongsTo" ("@@primaryKey", "id", "dob", "createdAt", "name", "updatedAt", "@@ownerForeignKey")
+        values (?, ?, ?, ?, ?, ?, ?)
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
 
         let variables = statement.variables
-        XCTAssertEqual(variables[0] as? String, childModel.id)
-        XCTAssertEqual(variables[1] as? String, childModel.dob.iso8601String)
-        XCTAssertEqual(variables[2] as? String, childModel.name)
-        XCTAssertEqual(variables[5] as? String, parentModel.id)
+        XCTAssertEqual(variables[0] as? String, childModel.identifier)
+        XCTAssertEqual(variables[1] as? String, childModel.id)
+        XCTAssertEqual(variables[2] as? String, childModel.dob.iso8601String)
+        XCTAssertEqual(variables[4] as? String, childModel.name)
+        XCTAssertEqual(variables[6] as? String, parentModel.identifier)
     }
 
     // MARK: - Update Statements
