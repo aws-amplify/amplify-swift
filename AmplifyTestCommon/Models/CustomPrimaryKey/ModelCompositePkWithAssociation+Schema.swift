@@ -15,9 +15,7 @@ extension ModelCompositePkWithAssociation {
     case id
     case dob
     case name
-    case associatedModel
-    case modelCompositePkWithAssociationOwnerId
-    case modelCompositePkWithAssociationOwnerDob
+    case otherModels
     case createdAt
     case updatedAt
   }
@@ -26,28 +24,26 @@ extension ModelCompositePkWithAssociation {
   //  MARK: - ModelSchema
 
   public static let schema = defineSchema { model in
-    let keys = ModelCompositePkWithAssociation.keys
+    let modelCompositePkWithAssociation = ModelCompositePkWithAssociation.keys
 
-    model.pluralName = "ModelCompositePkWithAssociation"
+    model.pluralName = "ModelCompositePkWithAssociations"
 
     model.attributes(
-      .index(fields: ["id", "dob"], name: nil)
+        .index(fields: ["id", "dob"], name: nil)
     )
 
     model.fields(
-        .field(keys.id, is: .required, ofType: .string),
-        .field(keys.dob, is: .required, ofType: .dateTime),
-        .field(keys.name, is: .optional, ofType: .string),
-        .field(keys.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
-        .field(keys.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime),
-        .hasOne(keys.associatedModel,
-                is: .optional,
-                ofType: ModelCompositePk.self,
-                associatedWith: ModelCompositePk.keys.id,
-                targetNames: ["modelCompositePkWithAssociationOwnerId",
-                              "modelCompositePkWithAssociationOwnerDob"])
+        .field(modelCompositePkWithAssociation.id, is: .required, ofType: .string),
+        .field(modelCompositePkWithAssociation.dob, is: .required, ofType: .dateTime),
+        .field(modelCompositePkWithAssociation.name, is: .optional, ofType: .string),
+        .hasMany(modelCompositePkWithAssociation.otherModels,
+                 is: .optional,
+                 ofType: ModelCompositePkBelongsTo.self,
+                 associatedWith: ModelCompositePkBelongsTo.keys.owner),
+        .field(modelCompositePkWithAssociation.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
+        .field(modelCompositePkWithAssociation.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
-    }
+  }
 }
 
 extension ModelCompositePkWithAssociation: ModelIdentifiable {
