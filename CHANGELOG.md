@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.25.0 (2022-05-19)
+
+### Features
+
+- **auth**: Add support for authType as runtime parameter (#1774)
+
 ## 1.24.1 (2022-05-13)
 
 ### Bug Fixes
