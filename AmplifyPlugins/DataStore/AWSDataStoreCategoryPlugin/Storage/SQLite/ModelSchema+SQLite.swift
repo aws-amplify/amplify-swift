@@ -81,9 +81,9 @@ extension ModelField: SQLColumn {
 
     var sqlName: String {
         if case let .belongsTo(_, targetNames) = association {
-            return targetNames.count == 1 ? targetNames[0] : foreignKeySqlName
+            return foreignKeySqlName(withAssociationTargets: targetNames)
         } else if case let .hasOne(_, targetNames) = association {
-            return targetNames.count == 1 ? targetNames[0] : foreignKeySqlName
+            return foreignKeySqlName(withAssociationTargets: targetNames)
         }
         return name
     }
@@ -107,8 +107,18 @@ extension ModelField: SQLColumn {
 
     /// Default foreign value used to reference a model with a composite primary key.
     /// It's only used for the local storage, the individual values will be sent to the cloud.
-    var foreignKeySqlName: String {
-        "@@\(name)ForeignKey"
+    private func foreignKeySqlName(withAssociationTargets targetNames: [String]) -> String {
+        // default name for legacy models without a target name
+        if targetNames.isEmpty {
+            return name + "Id"
+
+        // association with a model with a single-field PK
+        } else if targetNames.count == 1,
+                  let keyName = targetNames.first {
+            return keyName
+        }
+        // composite PK
+        return "@@\(name)ForeignKey"
     }
 
     /// Get the name of the `ModelField` as a SQL column name. Columns can be optionally namespaced
