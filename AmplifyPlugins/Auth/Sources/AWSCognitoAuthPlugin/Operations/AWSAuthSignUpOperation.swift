@@ -47,11 +47,10 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation,
             finish()
             return
         }
+        /// The listener is needed to cancel already ongoing sign ups and hence a getCurrentState on the state machine cannot be use to initialize. 
         var token: AuthStateMachineToken?
         token = stateMachine.listen { [weak self] in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
 
             if case .configured(let authNState, _) = $0 {
 
