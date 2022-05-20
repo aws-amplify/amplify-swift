@@ -41,7 +41,7 @@ jobs:
 
       - name: "Verify PR title is 'chore: Kickoff release'" 
         shell: bash
-      - env:
+        env:
           TITLE: ${{ github.event.pull_request.title }}
           TEST: ${{ github.head_ref }}
         run: |
