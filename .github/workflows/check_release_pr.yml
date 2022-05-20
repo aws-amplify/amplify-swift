@@ -39,7 +39,4 @@ jobs:
           echo PRs targetting the release branch must have a head ref of main.
           echo Current head ref: $GITHUB_HEAD_REF
           echo ${{github.head_ref}}
-          echo ${{env.github.HEAD_REF}}
-          echo ${{env.github.head_ref}}
-
-
+          echo ${{env.GITHUB_HEAD_REF}}
