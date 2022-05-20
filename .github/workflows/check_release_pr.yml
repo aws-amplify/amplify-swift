@@ -3,22 +3,16 @@
 name: Check release PR
 
 on:
-  # push:
-  #   branches:
-  #     - chore/gha-release-pr-check
   pull_request:
     branches:
       - ameter/test-release-clean  # will change to release after testing
 
-# Limit the GITHUB_TOKEN permissions
 permissions: {}
 
 jobs:
   check:
     name: Check PR
     runs-on: ubuntu-latest
-
-    #if: ${{ !github.event.issue.pull_request && (contains(github.event.issue.labels.*.name, 'pending-response') || contains(github.event.issue.labels.*.name, 'closing soon')) }}
 
     steps:
       - name: Check
@@ -37,16 +31,34 @@ jobs:
           HEAD_REF: ${{ github.head_ref }}
         if: ${{ env.HEAD_REF == 'chore/gha-release-pr-check' }} # will change to main after testing
         run: |
-          echo Invalid Pull Request!
-          echo PRs targetting the release branch must have a head ref of main.
-          echo Current head ref: $GITHUB_HEAD_REF
+          echo
+          echo Invalid head ref!
+          echo PRs targeting the release branch must have a head ref of 'main'.
+          echo Current head ref: \'$GITHUB_HEAD_REF\'
 
-      - name: "Verify PR title is 'chore: Kickoff release'" 
+      - name: "Verify PR title is 'chore: kickoff release'" 
         shell: bash
         env:
           TITLE: ${{ github.event.pull_request.title }}
-          TEST: ${{ github.head_ref }}
-        if: ${{ env.TITLE == 'testing' }} # will change to 'chore: Kickoff release'
+        if: ${{ env.TITLE == 'testing' }} # will change to 'chore: kickoff release'
         run: |
-          echo $TITLE
-          echo $TEST
+          echo
+          echo Invalid title!
+          echo PRs targeting the release branch must have the title 'chore: kickoff rlease'
+          echo Current title: \'$TITLE\'
+      
+      - name: "Verify PR actor is '?'" 
+        shell: bash
+        env:
+          ACTOR: ${{ github.actor }}
+        if: ${{ env.ACTOR == 'ameter' }} # will change to '?'
+        run: |
+          echo
+          echo Invalid actor!
+          echo PRs targeting the release branch must have the actor '?'
+          echo Current actor: \'$ACTOR\'
+
+#TODO
+# flip logics
+# change values
+# add exit 1s
