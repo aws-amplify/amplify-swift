@@ -7,6 +7,7 @@
 
 import AWSPinpoint
 import Foundation
+import StoreKit
 
 extension AWSPinpointAdapter: AWSPinpointAnalyticsClientBehavior {
     func addGlobalAttribute(_ theValue: String, forKey theKey: String) {
@@ -17,11 +18,11 @@ extension AWSPinpointAdapter: AWSPinpointAnalyticsClientBehavior {
         pinpoint.analyticsClient.addGlobalAttribute(theValue, forKey: theKey, forEventType: theEventType)
     }
 
-    func addGlobalMetric(_ theValue: NSNumber, forKey theKey: String) {
+    func addGlobalMetric(_ theValue: Double, forKey theKey: String) {
         pinpoint.analyticsClient.addGlobalMetric(theValue, forKey: theKey)
     }
 
-    func addGlobalMetric(_ theValue: NSNumber, forKey theKey: String, forEventType theEventType: String) {
+    func addGlobalMetric(_ theValue: Double, forKey theKey: String, forEventType theEventType: String) {
         pinpoint.analyticsClient.addGlobalMetric(theValue, forKey: theKey, forEventType: theEventType)
     }
 
@@ -41,34 +42,36 @@ extension AWSPinpointAdapter: AWSPinpointAnalyticsClientBehavior {
         pinpoint.analyticsClient.removeGlobalMetric(forKey: theKey, forEventType: theEventType)
     }
 
-    func record(_ theEvent: AWSPinpointEvent) -> AWSTask<AnyObject> {
+    func record(_ theEvent: PinpointEvent) async throws {
         pinpoint.analyticsClient.record(theEvent)
     }
 
-    func createEvent(withEventType theEventType: String) -> AWSPinpointEvent {
-        pinpoint.analyticsClient.createEvent(withEventType: theEventType)
+    func createEvent(withEventType theEventType: String) -> PinpointEvent {
+        return pinpoint.analyticsClient.createEvent(withEventType: theEventType)
     }
 
     func createAppleMonetizationEvent(with transaction: SKPaymentTransaction,
-                                      with product: SKProduct) -> AWSPinpointEvent {
+                                      with product: SKProduct) -> PinpointEvent {
         pinpoint.analyticsClient.createAppleMonetizationEvent(with: transaction, with: product)
     }
 
     func createVirtualMonetizationEvent(withProductId theProductId: String,
                                         withItemPrice theItemPrice: Double,
                                         withQuantity theQuantity: Int,
-                                        withCurrency theCurrency: String) -> AWSPinpointEvent {
+                                        withCurrency theCurrency: String) -> PinpointEvent {
         pinpoint.analyticsClient.createVirtualMonetizationEvent(withProductId: theProductId,
                                                                 withItemPrice: theItemPrice,
                                                                 withQuantity: theQuantity,
                                                                 withCurrency: theCurrency)
     }
 
-    func submitEvents() -> AWSTask<AnyObject> {
-        pinpoint.analyticsClient.submitEvents()
+    func submitEvents() async throws -> [PinpointEvent] {
+        let result = try await pinpoint.analyticsClient.submitEvents()
+        return result
     }
 
-    func submitEvents(completionBlock: @escaping AWSPinpointCompletionBlock) -> AWSTask<AnyObject> {
-        pinpoint.analyticsClient.submitEvents(completionBlock: completionBlock)
+    // TODO: Do we need two methods? 
+    func submitEvents() async throws {
+        _ = try await pinpoint.analyticsClient.submitEvents()
     }
 }

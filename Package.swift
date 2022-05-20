@@ -322,7 +322,21 @@ let geoTargets: [Target] = [
     )
 ]
 
-let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets + geoTargets
+let analyticsTargets: [Target] = [
+    .target(
+        name: "AWSPinpointAnalyticsPlugin",
+        dependencies: [
+            .target(name: "Amplify"),
+            .target(name: "AWSCognitoAuthPlugin"),
+            .product(name: "AWSPinpoint", package: "AWSSwiftSDK")],
+        path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPlugin",
+        exclude: [
+            "Resources/Info.plist"
+        ]
+    )
+]
+
+let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets + geoTargets + analyticsTargets
 
 let package = Package(
     name: "Amplify",
@@ -351,8 +365,42 @@ let package = Package(
         .library(
             name: "AWSLocationGeoPlugin",
             targets: ["AWSLocationGeoPlugin"]
+        ),
+        .library(
+            name: "AWSPinpointAnalyticsPlugin",
+            targets: ["AWSPinpointAnalyticsPlugin"]
         )
-
+        
+    ],
+    dependencies: [
+        .package(
+            url: "https://github.com/stephencelis/SQLite.swift.git",
+            .exact("0.12.2")
+        ),
+        .package(
+            name: "AppSyncRealTimeClient",
+            url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
+            from: "1.9.0"
+        ),// We can remove AwsCrt and ClientRuntime once we move to the latest AWS SDK for Swift
+        .package(
+            name: "AwsCrt",
+            url: "https://github.com/awslabs/aws-crt-swift.git",
+            .exact("0.1.1")
+        ),
+        .package(
+            name: "ClientRuntime",
+            url: "https://github.com/awslabs/smithy-swift.git",
+            .exact("0.1.4")
+        ),
+        .package(
+            name: "AWSSwiftSDK",
+            url: "https://github.com/awslabs/aws-sdk-swift",
+            .exact("0.1.4")
+        ),
+        .package(
+            name: "CwlPreconditionTesting",
+            url: "https://github.com/mattgallagher/CwlPreconditionTesting",
+            .upToNextMinor(from: "2.1.0"))
     ],
     dependencies: dependencies,
     targets: targets
