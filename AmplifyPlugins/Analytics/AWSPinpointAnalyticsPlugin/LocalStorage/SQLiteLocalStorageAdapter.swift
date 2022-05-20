@@ -24,7 +24,7 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
             urlResourceValues.isExcludedFromBackup = true
             try dbFilePath.setResourceValues(urlResourceValues)
         } catch {
-            throw LocalStorageError.invalidDatabase(path: dbFilePath.absoluteString, error)
+            throw LocalStorageError.invalidStorage(path: dbFilePath.absoluteString, error)
         }
 
         try self.init(connection: connection, dbFilePath: dbFilePath)
