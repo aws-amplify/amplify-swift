@@ -337,7 +337,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 case .failure(let error):
                     XCTFail("Unexpected error \(error)")
                 }
-            } receiveValue: { event in
+            } receiveValue: { (event: ReconcileAndLocalSaveOperationEvent) in
                 switch event {
                 case .mutationEventDropped(let name):
                     XCTAssertEqual(name, Post.modelName)
@@ -481,7 +481,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 case .failure(let error):
                     XCTFail("Unexpected error \(error)")
                 }
-            } receiveValue: { event in
+            } receiveValue: { (event: ReconcileAndLocalSaveOperationEvent) in
                 switch event {
                 case .mutationEventDropped(let name):
                     XCTAssertEqual(name, Post.modelName)
@@ -571,7 +571,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 case .failure(let error):
                     XCTFail("Unexpected error \(error)")
                 }
-            } receiveValue: { event in
+            } receiveValue: { (event: ReconcileAndLocalSaveOperationEvent) in
                 switch event {
                 case .mutationEvent(let mutationEvent):
                     XCTAssertEqual(mutationEvent.modelId, self.anyPostMutationSync.model.id)
@@ -627,7 +627,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 case .failure(let error):
                     XCTFail("Unexpected error \(error)")
                 }
-            } receiveValue: { event in
+            } receiveValue: { (event: ReconcileAndLocalSaveOperationEvent) in
                 switch event {
                 case .mutationEvent(let mutationEvent):
                     XCTAssertEqual(mutationEvent.modelId, self.anyPostMutationSync.model.id)
@@ -683,7 +683,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 case .failure(let error):
                     XCTFail("Unexpected error \(error)")
                 }
-            } receiveValue: { event in
+            } receiveValue: { (event: ReconcileAndLocalSaveOperationEvent) in
                 switch event {
                 case .mutationEvent(let mutationEvent):
                     XCTAssertEqual(mutationEvent.modelId, self.anyPostMutationSync.model.id)
@@ -759,7 +759,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 case .failure(let error):
                     XCTFail("Unexpected error \(error)")
                 }
-            } receiveValue: { event in
+            } receiveValue: { (event: ReconcileAndLocalSaveOperationEvent) in
                 switch event {
                 case .mutationEvent(let mutationEvent):
                     XCTAssertEqual(mutationEvent.modelId, self.anyPostMutationSync.model.id)
@@ -846,9 +846,9 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 case .failure(let error):
                     XCTFail("Unexpected error \(error)")
                 }
-            } receiveValue: { event in
+            } receiveValue: { (event: ReconcileAndLocalSaveOperationEvent) in
                 switch event {
-                case .mutationEventDropped(let name):
+                case .mutationEventDropped:
                     expectDropped.fulfill()
                 default:
                     break

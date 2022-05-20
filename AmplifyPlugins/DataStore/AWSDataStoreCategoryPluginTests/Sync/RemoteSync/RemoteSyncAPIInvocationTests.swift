@@ -117,7 +117,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
     /// - Then:
     ///    - The listener is notified
     func testOnCreateNotifiesListener() throws {
-        //XCTFail("Not yet implemented")
+        //throw XCTSkip("Not yet implemented")
     }
 
     /// - Given: Amplify configured with an API
@@ -126,7 +126,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
     /// - Then:
     ///    - The listener is notified
     func testOnCreateUpdatesLocalStore() throws {
-        //XCTFail("Not yet implemented")
+        //throw XCTSkip("Not yet implemented")
     }
 
     /// - Given: Amplify configured with an API
@@ -135,7 +135,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
     /// - Then:
     ///    - The listener is notified
     func testOnUpdateNotifiesListener() throws {
-        //XCTFail("Not yet implemented")
+        //throw XCTSkip("Not yet implemented")
     }
 
     /// - Given: Amplify configured with an API
@@ -144,7 +144,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
     /// - Then:
     ///    - The listener is notified
     func testOnUpdateUpdatesLocalStore() throws {
-        //XCTFail("Not yet implemented")
+        //throw XCTSkip("Not yet implemented")
     }
 
     /// - Given: Amplify configured with an API
@@ -153,7 +153,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
     /// - Then:
     ///    - The listener is notified
     func testOnDeleteNotifiesListener() throws {
-        //XCTFail("Not yet implemented")
+        //throw XCTSkip("Not yet implemented")
     }
 
     /// - Given: Amplify configured with an API
@@ -162,7 +162,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
     /// - Then:
     ///    - The listener is notified
     func testOnDeleteUpdatesLocalStore() throws {
-       // XCTFail("Not yet implemented")
+       // throw XCTSkip("Not yet implemented")
     }
 
 }

@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 
 // struct to decode/encode information about developer environment in json format
@@ -25,3 +26,4 @@ struct DevEnvironmentInfo: Codable {
         case osVersion
     }
 }
+#endif

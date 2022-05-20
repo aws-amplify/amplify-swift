@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 
 /// Data class for  each item showing Developer Environment Information
-@available(iOS 13.0.0, *)
 struct EnvironmentInfoItem: Identifiable, InfoItemProvider {
 
     let id = UUID()
@@ -48,3 +48,4 @@ struct EnvironmentInfoItem: Identifiable, InfoItemProvider {
         }
     }
 }
+#endif

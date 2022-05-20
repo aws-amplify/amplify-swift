@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(Combine)
 import Foundation
 import Combine
 
@@ -20,3 +21,4 @@ extension AmplifyAPICategory: APICategoryReachabilityBehavior {
         return try plugin.reachabilityPublisher(for: nil)
     }
 }
+#endif

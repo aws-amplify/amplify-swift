@@ -52,6 +52,7 @@ extension AuthCategory: AuthCategoryBehavior {
                              listener: listener)
     }
 
+#if canImport(AuthenticationServices)
     @discardableResult
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthWebUISignInOperation.Request.Options? = nil,
@@ -72,6 +73,7 @@ extension AuthCategory: AuthCategoryBehavior {
                                           options: options,
                                           listener: listener)
     }
+#endif
 
     @discardableResult
     public func confirmSignIn(challengeResponse: String,
