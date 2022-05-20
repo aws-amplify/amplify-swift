@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(Combine)
 import Foundation
 import Combine
 
@@ -22,3 +23,4 @@ public protocol APICategoryReachabilityBehavior {
     func reachabilityPublisher() throws -> AnyPublisher<ReachabilityUpdate, Never>?
 
 }
+#endif

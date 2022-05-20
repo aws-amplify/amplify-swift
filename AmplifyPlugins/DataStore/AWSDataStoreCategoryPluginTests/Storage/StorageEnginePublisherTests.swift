@@ -52,7 +52,7 @@ class StorageEnginePublisherTests: StorageEngineTestsBase {
         let receivedSyncQueriesReadyEvent = expectation(description: "Received syncQueries event")
         let receivedReadyEvent = expectation(description: "Received ready event")
         let sink = storageEngine.publisher.sink { _ in
-        } receiveValue: { event in
+        } receiveValue: { (event: StorageEngineEvent) in
             switch event {
             case .mutationEvent(let mutationEventPayload):
                 XCTAssertEqual(mutationEventPayload, mutationEvent)

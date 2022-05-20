@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 
 /// Item types for each row displaying Developer Environment Information
@@ -16,3 +17,4 @@ enum EnvironmentInfoItemType {
     case xcodeVersion(String?)
     case osVersion(String?)
 }
+#endif

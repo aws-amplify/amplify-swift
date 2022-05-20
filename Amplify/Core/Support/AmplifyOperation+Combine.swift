@@ -5,8 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Combine
+#if canImport(Combine)
 import Foundation
+import Combine
 
 // Most APIs will return an operation that exposes a `resultPublisher`. The
 // Storage and API category methods that expose both a result and an in-process
@@ -28,7 +29,6 @@ import Foundation
 // isn't as meaningful at the call site of a Storage file operation as a
 // `progressPublisher`.
 
-@available(iOS 13.0, *)
 extension AmplifyOperation {
     /// A Publisher that emits the result of the operation, or the associated failure.
     /// Cancelled operations will emit a completion without a value as long as the
@@ -68,3 +68,4 @@ extension AmplifyOperation {
     }
 
 }
+#endif

@@ -6,7 +6,9 @@
 //
 
 import Foundation
+#if canImport(UIKit)
 import UIKit
+#endif
 
 // No-listener versions of the public APIs, to clean call sites that use Combine
 // publishers to get results
@@ -82,6 +84,7 @@ public extension AuthCategoryBehavior {
         signIn(username: username, password: password, options: options, listener: nil)
     }
 
+#if canImport(AuthenticationServices)
     /// SignIn using pre configured web UI.
     ///
     /// Calling this method will always launch the Auth plugin's default web user interface
@@ -118,6 +121,7 @@ public extension AuthCategoryBehavior {
             listener: nil
         )
     }
+#endif
 
     /// Confirms a next step in signIn flow.
     ///

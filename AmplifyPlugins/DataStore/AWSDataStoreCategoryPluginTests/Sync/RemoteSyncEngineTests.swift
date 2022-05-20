@@ -93,7 +93,7 @@ class RemoteSyncEngineTests: XCTestCase {
             .publisher
             .sink(receiveCompletion: { _ in
                 currCount = self.checkAndFulfill(currCount, 7, expectation: failureOnInitialSync)
-            }, receiveValue: { event in
+            }, receiveValue: { (event: RemoteSyncEngineEvent) in
                 switch event {
                 case .storageAdapterAvailable:
                     currCount = self.checkAndFulfill(currCount, 1, expectation: storageAdapterAvailable)
@@ -150,7 +150,7 @@ class RemoteSyncEngineTests: XCTestCase {
             .publisher
             .sink(receiveCompletion: { _ in
                 XCTFail("Completion should never happen")
-            }, receiveValue: { event in
+            }, receiveValue: { (event: RemoteSyncEngineEvent) in
                 switch event {
                 case .storageAdapterAvailable:
                     currCount = self.checkAndFulfill(currCount, 1, expectation: storageAdapterAvailable)
@@ -215,7 +215,7 @@ class RemoteSyncEngineTests: XCTestCase {
             .publisher
             .sink(receiveCompletion: { _ in
                 currCount = self.checkAndFulfill(currCount, 11, expectation: forceFailToNotRestartSyncEngine)
-            }, receiveValue: { event in
+            }, receiveValue: { (event: RemoteSyncEngineEvent) in
                 switch event {
                 case .storageAdapterAvailable:
                     currCount = self.checkAndFulfill(currCount, 1, expectation: storageAdapterAvailable)
@@ -289,7 +289,7 @@ class RemoteSyncEngineTests: XCTestCase {
             .publisher
             .sink(receiveCompletion: { _ in
                 currCount = self.checkAndFulfill(currCount, 11, expectation: forceFailToNotRestartSyncEngine)
-            }, receiveValue: { event in
+            }, receiveValue: { (event: RemoteSyncEngineEvent) in
                 switch event {
                 case .storageAdapterAvailable:
                     currCount = self.checkAndFulfill(currCount, 1, expectation: storageAdapterAvailable)

@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 import UIKit
 
 /// Helper class to fetch information for Device Information Screen
-@available(iOS 13.0.0, *)
 struct DeviceInfoHelper {
 
     static func getDeviceInformation() -> [DeviceInfoItem] {
@@ -27,3 +27,4 @@ struct DeviceInfoHelper {
             ]
     }
 }
+#endif

@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 
 /// String constants used in the developer menu
@@ -15,3 +16,4 @@ struct DevMenuStringConstants {
     static let logTag = "DevMenu"
     static let persistentLoggingPluginKey = "PersistentLoggingPlugin"
 }
+#endif

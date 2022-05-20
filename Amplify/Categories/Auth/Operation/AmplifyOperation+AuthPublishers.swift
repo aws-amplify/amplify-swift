@@ -5,15 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Combine
+#if canImport(Combine)
 import Foundation
+import Combine
 
 // MARK: - AuthAttributeResendConfirmationCodeOperation
 
-// The overrides require a feature and bugfix introduced in Swift 5.2
-#if swift(>=5.2)
-
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthAttributeResendConfirmationCodeOperation.Request,
@@ -27,7 +24,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthChangePasswordOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthChangePasswordOperation.Request,
@@ -41,7 +37,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthConfirmResetPasswordOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthConfirmResetPasswordOperation.Request,
@@ -55,7 +50,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthConfirmSignInOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthConfirmSignInOperation.Request,
@@ -69,7 +63,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthConfirmSignUpOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthConfirmSignUpOperation.Request,
@@ -83,7 +76,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthConfirmUserAttributeOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthConfirmUserAttributeOperation.Request,
@@ -97,7 +89,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthFetchDevicesOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthFetchDevicesOperation.Request,
@@ -111,7 +102,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthFetchSessionOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthFetchSessionOperation.Request,
@@ -125,7 +115,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthFetchUserAttributeOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthFetchUserAttributeOperation.Request,
@@ -139,7 +128,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthForgetDeviceOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthForgetDeviceOperation.Request,
@@ -153,7 +141,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthRememberDeviceOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthRememberDeviceOperation.Request,
@@ -167,7 +154,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthResendSignUpCodeOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthResendSignUpCodeOperation.Request,
@@ -181,7 +167,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthResetPasswordOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthResetPasswordOperation.Request,
@@ -195,7 +180,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthSignInOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthSignInOperation.Request,
@@ -209,7 +193,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthSignOutOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthSignOutOperation.Request,
@@ -223,7 +206,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthDeleteUserOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthDeleteUserOperation.Request,
@@ -237,7 +219,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthSignUpOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthSignUpOperation.Request,
@@ -251,7 +232,7 @@ public extension AmplifyOperation
 
 // MARK: - AuthSocialWebUISignInOperation and AuthWebUISignInOperation
 
-@available(iOS 13.0, *)
+#if canImport(UIKit)
 public extension AmplifyOperation
     where
     Request == AuthSocialWebUISignInOperation.Request,
@@ -262,10 +243,10 @@ public extension AmplifyOperation
         internalResultPublisher
     }
 }
+#endif
 
 // MARK: - AuthUpdateUserAttributeOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthUpdateUserAttributeOperation.Request,
@@ -279,7 +260,6 @@ public extension AmplifyOperation
 
 // MARK: - AuthUpdateUserAttributesOperation
 
-@available(iOS 13.0, *)
 public extension AmplifyOperation
     where
     Request == AuthUpdateUserAttributesOperation.Request,

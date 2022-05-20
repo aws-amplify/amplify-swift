@@ -14,47 +14,47 @@ import XCTest
 class SyncEngineStartupTests: SyncEngineTestBase {
 
     func testShouldPauseSubscriptions() throws {
-        XCTFail("Not yet implemented")
+        throw XCTSkip("Not yet implemented")
     }
 
     func testShouldBufferSubscriptions() throws {
-        XCTFail("Not yet implemented")
+        throw XCTSkip("Not yet implemented")
     }
 
     func testShouldBufferOutgoingMutations() throws {
-        XCTFail("Not yet implemented")
+        throw XCTSkip("Not yet implemented")
     }
 
     func testShouldSetUpSubscriptions() throws {
-        XCTFail("Not yet implemented")
+        throw XCTSkip("Not yet implemented")
     }
 
     func testShouldPerformInitialQueries() throws {
-        XCTFail("Not yet implemented")
+        throw XCTSkip("Not yet implemented")
     }
 
     func testShouldActivateSubscriptions() throws {
-        XCTFail("Not yet implemented")
+        throw XCTSkip("Not yet implemented")
     }
 
     func testShouldStartMutations() throws {
-        XCTFail("Not yet implemented")
+        throw XCTSkip("Not yet implemented")
     }
 
     func testDispatchesToHub() throws {
-        XCTFail("Not yet implemented")
+        throw XCTSkip("Not yet implemented")
     }
 
     func testOrderOfOperations() throws {
-        XCTFail("Not yet implemented")
+        throw XCTSkip("Not yet implemented")
     }
 
     func testInvokesGlobalErrorHandler() throws {
-        XCTFail("Not yet implemented")
+        throw XCTSkip("Not yet implemented")
     }
 
     func testDispatchesToHubOnError() throws {
-        XCTFail("Not yet implemented")
+        throw XCTSkip("Not yet implemented")
     }
 
 }

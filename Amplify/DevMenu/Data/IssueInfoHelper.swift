@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 
 /// Helper class to generate markdown text for issue reporting
-@available(iOS 13.0.0, *)
 struct IssueInfoHelper {
 
     private static let issueDescTitle = "Issue Description"
@@ -35,3 +35,4 @@ struct IssueInfoHelper {
     }
 
 }
+#endif

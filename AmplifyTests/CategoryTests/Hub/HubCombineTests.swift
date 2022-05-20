@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(Combine)
 import XCTest
 import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-@available(iOS 13.0, *)
 class HubCombineTests: XCTestCase {
 
     func testValue() {
@@ -68,3 +68,4 @@ class HubCombineTests: XCTestCase {
     }
 
 }
+#endif

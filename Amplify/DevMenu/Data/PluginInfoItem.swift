@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 
-@available(iOS 13.0.0, *)
 struct PluginInfoItem: Identifiable, InfoItemProvider {
 
     let id = UUID()
@@ -19,3 +19,4 @@ struct PluginInfoItem: Identifiable, InfoItemProvider {
         self.information = information.isEmpty ? DevMenuStringConstants.notAvailable : information
     }
 }
+#endif

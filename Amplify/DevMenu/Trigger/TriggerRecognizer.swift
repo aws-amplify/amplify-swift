@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 
 /// A protocol to be implemented for recognizing user interaction events
@@ -13,3 +14,4 @@ public protocol TriggerRecognizer {
     /// Update trigger delegate so that it can be notified in case a trigger happens
     func updateTriggerDelegate(delegate: TriggerDelegate)
 }
+#endif

@@ -5,8 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Combine
+#if canImport(Combine)
 import XCTest
+import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -286,3 +287,4 @@ class MockPublisherOperation: AmplifyOperation<MockPublisherRequest, Int, APIErr
     }
 
 }
+#endif

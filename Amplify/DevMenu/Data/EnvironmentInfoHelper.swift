@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 import UIKit
 
 /// Helper class to fetch Developer Environment Information
-@available(iOS 13.0.0, *)
 struct EnvironmentInfoHelper {
 
     static let environmentInfoSourceFileName = "local-env-info"
@@ -42,3 +42,4 @@ struct EnvironmentInfoHelper {
         ]
     }
 }
+#endif

@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import SwiftUI
 
 /// A factory to create detail views based on `DevMenuItemType`
-@available(iOS 13.0, *)
 class DetailViewFactory {
 
     static func getDetailView(type: DevMenuItemType) -> AnyView {
@@ -25,3 +25,4 @@ class DetailViewFactory {
     }
 
 }
+#endif

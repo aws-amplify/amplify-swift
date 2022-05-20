@@ -5,11 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 import SwiftUI
 
 /// Data class for each log item in Log Viewer Screen
-@available(iOS 13.0, *)
+
 struct LogEntryItem: Identifiable, Hashable {
     var id = UUID()
 
@@ -54,3 +55,4 @@ struct LogEntryItem: Identifiable, Hashable {
         }
     }
 }
+#endif

@@ -62,6 +62,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         return signInOperation
     }
 
+#if canImport(AuthenticationServices)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthWebUISignInOperation.Request.Options?,
                                 listener: AuthWebUISignInOperation.ResultListener?) -> AuthWebUISignInOperation
@@ -76,6 +77,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     {
         fatalError("Not implemented")
     }
+#endif
 
     public func confirmSignIn(challengeResponse: String,
                               options: AuthConfirmSignInOperation.Request.Options?,

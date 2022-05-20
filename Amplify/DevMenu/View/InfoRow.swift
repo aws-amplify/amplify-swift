@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import SwiftUI
 
 /// View corresponding to each row in Device Information Screen / Environment Information Screen
-@available(iOS 13.0.0, *)
 struct InfoRow: View {
     var infoItem: InfoItemProvider
 
@@ -20,9 +20,9 @@ struct InfoRow: View {
     }
 }
 
-@available(iOS 13.0.0, *)
 struct DeviceInfoRow_Previews: PreviewProvider {
     static var previews: some View {
         InfoRow(infoItem: DeviceInfoItem(type: .deviceName("iPhone")))
     }
 }
+#endif
