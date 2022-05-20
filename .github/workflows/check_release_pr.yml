@@ -38,4 +38,4 @@ jobs:
           echo Invalid Pull Request!
           echo PRs targetting the release branch must have a head ref of main.
           echo Current head ref: $GITHUB_HEAD_REF
-          echo ${{env}}
+
