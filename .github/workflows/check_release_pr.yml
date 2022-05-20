@@ -32,7 +32,7 @@ jobs:
           echo GITHUB_REF_NAME: $GITHUB_REF_NAME
 
       - name: Verify head ref is 'main'
-        if: ${{ github.head_ref != 'chore/gha-release-pr-check' }} #chore/gha-release-pr-check' }} # will change to main after testing
+        if: ${{ github.head_ref != 'chore/gha-release-pr-check' }} # will change to main after testing
         run: |
           echo Invalid Pull Request!
           echo PRs targetting the release branch must have a head ref of main.
@@ -44,6 +44,7 @@ jobs:
         env:
           TITLE: ${{ github.event.pull_request.title }}
           TEST: ${{ github.head_ref }}
+        if: ${{ env.TITLE == 'testing' }} # will change to 'chore: Kickoff release'
         run: |
           echo $TITLE
           echo $TEST
