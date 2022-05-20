@@ -26,7 +26,7 @@ jobs:
           echo PRs targeting the release branch must have a head ref of 'main'.
           echo Current head ref: \'$GITHUB_HEAD_REF\'
 
-      - name: "Verify PR title is 'chore: kickoff release'" 
+      - name: "Verify title is 'chore: kickoff release'" 
         shell: bash
         env:
           TITLE: ${{ github.event.pull_request.title }}
@@ -37,7 +37,7 @@ jobs:
           echo PRs targeting the release branch must have the title 'chore: kickoff rlease'
           echo Current title: \'$TITLE\'
       
-      - name: "Verify PR actor is '?'" 
+      - name: "Verify actor is '?'" 
         shell: bash
         env:
           ACTOR: ${{ github.actor }}
