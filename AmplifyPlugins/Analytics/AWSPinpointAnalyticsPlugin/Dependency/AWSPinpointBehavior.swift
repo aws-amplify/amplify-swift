@@ -13,8 +13,8 @@ import Foundation
 /// `pinpoint.targetingClient`.
 /// This protocol allows a way to create a Mock and ensure plugin implementation is testable.
 protocol AWSPinpointBehavior: AWSPinpointAnalyticsClientBehavior, AWSPinpointTargetingClientBehavior {
-    // Get the lower level `AWSPinpoint` client.
-    func getEscapeHatch() -> AWSPinpoint
+    // Get the lower level `PinpointClientProtocol` client.
+    func getEscapeHatch() -> PinpointClientProtocol
 }
 
 extension AWSPinpointBehavior {
@@ -30,9 +30,9 @@ extension AWSPinpointBehavior {
         if let value = value as? String {
             addGlobalAttribute(value, forKey: forKey)
         } else if let value = value as? Int {
-            addGlobalMetric(value as NSNumber, forKey: forKey)
+            addGlobalMetric(Double(value), forKey: forKey)
         } else if let value = value as? Double {
-            addGlobalMetric(value as NSNumber, forKey: forKey)
+            addGlobalMetric(value, forKey: forKey)
         } else if let value = value as? Bool {
             addGlobalAttribute(String(value), forKey: forKey)
         }

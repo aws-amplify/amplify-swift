@@ -6,44 +6,31 @@
 //
 
 import Amplify
-import AWSCore
+import AWSClientRuntime
 import AWSPinpoint
 import AWSPluginsCore
 import Foundation
 
 /// Conforms to `AWSPinpointBehavior` by storing an instance of the `AWSPinpoint` to expose AWS Pinpoint functionality
 class AWSPinpointAdapter: AWSPinpointBehavior {
-    let pinpoint: AWSPinpoint
+    let pinpoint: PinpointContext
 
-    convenience init(pinpointAnalyticsAppId: String,
-                     pinpointAnalyticsRegion: AWSRegionType,
-                     pinpointTargetingRegion: AWSRegionType,
-                     credentialsProvider: AWSCredentialsProvider) throws {
-        let pinpointConfiguration = AWSPinpointConfiguration(appId: pinpointAnalyticsAppId, launchOptions: nil)
-        let serviceConfiguration = AmplifyAWSServiceConfiguration(region: pinpointAnalyticsRegion,
-                                                                  credentialsProvider: credentialsProvider)
-        let targetingServiceConfiguration = AmplifyAWSServiceConfiguration(region: pinpointTargetingRegion,
-                                                                           credentialsProvider: credentialsProvider)
-
-        pinpointConfiguration.serviceConfiguration = serviceConfiguration
-        pinpointConfiguration.targetingServiceConfiguration = targetingServiceConfiguration
-        pinpointConfiguration.enableAutoSessionRecording = true
-
-        #if DEBUG
-        pinpointConfiguration.debug = true
-        Amplify.Logging.verbose("Setting pinpointConfiguration.debug to true")
-        #endif
-
-        let pinpoint = AWSPinpoint(configuration: pinpointConfiguration)
-
+    convenience init(appId: String,
+                     region: String,
+                     credentialsProvider: CredentialsProvider) throws {
+        // TODO: Do we stil need appID?
+        let pinpointConfiguration = try PinpointClient.PinpointClientConfiguration(credentialsProvider: credentialsProvider,
+                                                                                   frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
+                                                                                   region: region)
+        let pinpoint = PinpointContext(with: pinpointConfiguration)
         self.init(pinpoint: pinpoint)
     }
 
-    init(pinpoint: AWSPinpoint) {
+    init(pinpoint: PinpointContext) {
         self.pinpoint = pinpoint
     }
 
-    func getEscapeHatch() -> AWSPinpoint {
-        pinpoint
+    func getEscapeHatch() -> PinpointClientProtocol {
+        pinpoint.pinpointClient
     }
 }
