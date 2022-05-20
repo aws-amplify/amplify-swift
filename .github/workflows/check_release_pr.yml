@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: Check
         env:
-          GITHUB_HEAD_REF: ${{toJson(github.head_ref)}}
+          HEAD_REF: ${{toJson(github.head_ref)}}
         shell: bash
         run: |
           echo user: ${{ github.event.comment.user.login }}
@@ -39,4 +39,4 @@ jobs:
           echo PRs targetting the release branch must have a head ref of main.
           echo Current head ref: $GITHUB_HEAD_REF
           echo ${{github.head_ref}}
-          echo ${{env.GITHUB_HEAD_REF}}
+          echo ${{env.HEAD_REF}}
