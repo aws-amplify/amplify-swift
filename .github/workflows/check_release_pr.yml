@@ -49,6 +49,5 @@ jobs:
           echo Current actor: \'$ACTOR\'
 
 #TODO
-# flip logics
 # change values
 # add exit 1s
