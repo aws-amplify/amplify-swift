@@ -38,6 +38,6 @@ jobs:
         run: |
           echo Invalid Pull Request!
           echo PRs targetting the release branch must have a head ref of main.
-          echo This PR's head ref is: $GITHUB_HEAD_REF
+          echo Current head ref: $GITHUB_HEAD_REF
           exit(1)
 
