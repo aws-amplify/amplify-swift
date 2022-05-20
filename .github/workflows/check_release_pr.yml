@@ -40,6 +40,7 @@ jobs:
           exit 1
 
       - name: "Verify PR title is 'chore: Kickoff release'" 
+        shell: bash
       - env:
           TITLE: ${{ github.event.pull_request.title }}
           TEST: ${{ github.head_ref }}
