@@ -1,31 +1,36 @@
-# This is a basic workflow to help you get started with Actions
+# Check PRs targeting the release brach to ensure they are from the release GHA workflow.
 
-name: Notify Comments on Pending/Closing Soon Issues
+name: Check release PR
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on comment events on pending response issues
-  issue_comment:
-    types: [created]
+  push:
+    branches:
+      - chore/gha-release-pr-check
+  pull_request:
+    branches:
+      - ameter/test-release-clean  # will change to release after testing
 
 # Limit the GITHUB_TOKEN permissions
 permissions: {}
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "notify"
-  notify:
-    # The type of runner that the job will run on
+  check:
+    name: Check PR
     runs-on: ubuntu-latest
 
-    if: ${{ !github.event.issue.pull_request && (contains(github.event.issue.labels.*.name, 'pending-response') || contains(github.event.issue.labels.*.name, 'closing soon')) }}
+    #if: ${{ !github.event.issue.pull_request && (contains(github.event.issue.labels.*.name, 'pending-response') || contains(github.event.issue.labels.*.name, 'closing soon')) }}
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Runs a single command using the runners shell
-      - name: Run webhook curl command
-        env:
-          WEBHOOK_URL: ${{ secrets.SLACK_COMMENT_WEBHOOK_URL }}
-          COMMENT: ${{toJson(github.event.comment.body)}}
+      - name: Check
+        # env:
+        #   WEBHOOK_URL: ${{ secrets.SLACK_COMMENT_WEBHOOK_URL }}
+        #   COMMENT: ${{toJson(github.event.comment.body)}}
         shell: bash
-        run: echo $COMMENT | sed "s/\\\n/. /g; s/\\\r//g; s/[^a-zA-Z0-9 &().,:]//g" | xargs -I {} curl -s POST "$WEBHOOK_URL" -H "Content-Type:application/json" --data '{"comment":"{}", "commentUrl":"${{github.event.comment.html_url}}", "user":"${{github.event.comment.user.login}}"}'
+        run: |
+          echo "user: ${{ github.event.comment.user.login }}
+          echo GITHUB_ACTOR: $GITHUB_ACTOR
+          echo GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME
+          echo GITHUB_HEAD_REF: $GITHUB_HEAD_REF
+          echo GITHUB_REF: $GITHUB_REF
+          echo GITHUB_REF_NAME: $GITHUB_REF_NAME
+
