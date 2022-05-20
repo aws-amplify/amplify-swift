@@ -11,20 +11,10 @@ permissions: {}
 
 jobs:
   check:
-    name: Check PR
+    name: Run validation checks
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check
-        shell: bash
-        run: |
-          echo user: ${{ github.event.comment.user.login }}
-          echo GITHUB_ACTOR: $GITHUB_ACTOR
-          echo GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME
-          echo GITHUB_HEAD_REF: $GITHUB_HEAD_REF
-          echo GITHUB_REF: $GITHUB_REF
-          echo GITHUB_REF_NAME: $GITHUB_REF_NAME
-
       - name: Verify head ref is 'main'
         shell: bash
         env:
