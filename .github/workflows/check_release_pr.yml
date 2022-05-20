@@ -30,10 +30,18 @@ jobs:
           echo GITHUB_HEAD_REF: $GITHUB_HEAD_REF
           echo GITHUB_REF: $GITHUB_REF
           echo GITHUB_REF_NAME: $GITHUB_REF_NAME
-      - name: Verify head ref is main
+
+      - name: Verify head ref is 'main'
         if: ${{ github.head_ref != 'chore/gha-release-pr-check' }} #chore/gha-release-pr-check' }} # will change to main after testing
         run: |
           echo Invalid Pull Request!
           echo PRs targetting the release branch must have a head ref of main.
           echo Current head ref: $GITHUB_HEAD_REF
           exit 1
+
+      - name: "Verify PR title is 'chore: Kickoff release'" 
+      - env:
+          WEBHOOK_URL: ${{ secrets.SLACK_ISSUE_WEBHOOK_URL }}
+          TITLE: ${{ github.event.pull_request.title }}
+        run |
+          echo $TITLE
