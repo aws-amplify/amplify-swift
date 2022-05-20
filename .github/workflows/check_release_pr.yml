@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: Check
         env:
-          HEAD_REF: ${{github.head_ref}}
+          BLAH: ${{toJson(github.head_ref)}}
         shell: bash
         run: |
           echo user: ${{ github.event.comment.user.login }}
@@ -38,4 +38,5 @@ jobs:
           echo Invalid Pull Request!
           echo PRs targetting the release branch must have a head ref of main.
           echo Current head ref: $GITHUB_HEAD_REF
+          echo $BLAH
 
