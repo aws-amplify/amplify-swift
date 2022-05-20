@@ -9,30 +9,32 @@ import Amplify
 import AWSPinpoint
 import Foundation
 
-extension AWSPinpointEndpointProfileLocation {
-    func addLocation(_ location: AnalyticsUserProfile.Location) {
-        if let latitudeValue = location.latitude as NSNumber? {
-            latitude = latitudeValue
-        }
+// TODO: Implement in PinpointEndpointProfile
 
-        if let longitudeValue = location.longitude as NSNumber? {
-            longitude = longitudeValue
-        }
-
-        if let postalCodeValue = location.postalCode {
-            postalCode = postalCodeValue
-        }
-
-        if let cityValue = location.city {
-            city = cityValue
-        }
-
-        if let regionValue = location.region {
-            region = regionValue
-        }
-
-        if let countryValue = location.country {
-            country = countryValue
-        }
-    }
-}
+//extension AWSPinpointEndpointProfileLocation {
+//    func addLocation(_ location: AnalyticsUserProfile.Location) {
+//        if let latitudeValue = location.latitude as NSNumber? {
+//            latitude = latitudeValue
+//        }
+//
+//        if let longitudeValue = location.longitude as NSNumber? {
+//            longitude = longitudeValue
+//        }
+//
+//        if let postalCodeValue = location.postalCode {
+//            postalCode = postalCodeValue
+//        }
+//
+//        if let cityValue = location.city {
+//            city = cityValue
+//        }
+//
+//        if let regionValue = location.region {
+//            region = regionValue
+//        }
+//
+//        if let countryValue = location.country {
+//            country = countryValue
+//        }
+//    }
+//}

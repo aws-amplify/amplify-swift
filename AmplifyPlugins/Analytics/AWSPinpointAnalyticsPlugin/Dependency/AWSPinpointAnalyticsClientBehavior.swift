@@ -7,6 +7,7 @@
 
 import AWSPinpoint
 import Foundation
+import StoreKit
 
 /// Methods copied from `AWSPinpointAnalyticsClient`
 protocol AWSPinpointAnalyticsClientBehavior {
@@ -42,7 +43,7 @@ protocol AWSPinpointAnalyticsClientBehavior {
      @param theValue the value of the metric
      @param theKey the name of the metric to add
      */
-    func addGlobalMetric(_ theValue: NSNumber, forKey theKey: String)
+    func addGlobalMetric(_ theValue: Double, forKey theKey: String)
 
     /**
      Adds the specified metric to all subsequent recorded events with the specified event type.
@@ -51,7 +52,7 @@ protocol AWSPinpointAnalyticsClientBehavior {
      @param theKey the name of the metric to add
      @param theEventType the type of events to add the metric to
      */
-    func addGlobalMetric(_ theValue: NSNumber, forKey theKey: String, forEventType theEventType: String)
+    func addGlobalMetric(_ theValue: Double, forKey theKey: String, forEventType theEventType: String)
 
     /**
      Removes the specified attribute. All subsequent recorded events will no longer have this global attribute.
@@ -92,7 +93,7 @@ protocol AWSPinpointAnalyticsClientBehavior {
 
      @return AWSTask - task.result is always nil.
      */
-    func record(_ theEvent: AWSPinpointEvent) -> AWSTask<AnyObject>
+    func record(_ theEvent: PinpointEvent) async throws
 
     /**
      Create an AWSPinpointEvent with the specified theEventType
@@ -101,7 +102,7 @@ protocol AWSPinpointAnalyticsClientBehavior {
 
      @returns an AWSPinpointEvent with the specified event type
      */
-    func createEvent(withEventType theEventType: String) -> AWSPinpointEvent
+    func createEvent(withEventType theEventType: String) -> PinpointEvent
 
     /**
      Create an Apple monetization AWSPinpointEvent of type "_monetization.purchase" with the specified parameters.
@@ -112,7 +113,7 @@ protocol AWSPinpointAnalyticsClientBehavior {
      @returns an AWSPinpointEvent with the specified event type
      */
     func createAppleMonetizationEvent(with transaction: SKPaymentTransaction,
-                                      with product: SKProduct) -> AWSPinpointEvent
+                                      with product: SKProduct) -> PinpointEvent
 
     /**
      Create a Virtual monetization AWSPinpointEvent of type "_monetization.purchase" with the specified parameters.
@@ -127,7 +128,7 @@ protocol AWSPinpointAnalyticsClientBehavior {
     func createVirtualMonetizationEvent(withProductId theProductId: String,
                                         withItemPrice theItemPrice: Double,
                                         withQuantity theQuantity: Int,
-                                        withCurrency theCurrency: String) -> AWSPinpointEvent
+                                        withCurrency theCurrency: String) -> PinpointEvent
 
     /**
      Submits all recorded events to Pinpoint.
@@ -135,7 +136,7 @@ protocol AWSPinpointAnalyticsClientBehavior {
 
      @return AWSTask - task.result contains successful submitted events.
      */
-    func submitEvents() -> AWSTask<AnyObject>
+    func submitEvents() async throws -> [PinpointEvent]
 
     /**
      Submits all recorded events to Pinpoint.
@@ -145,5 +146,5 @@ protocol AWSPinpointAnalyticsClientBehavior {
 
      @return AWSTask - task.result is always nil.
      */
-    func submitEvents(completionBlock: @escaping AWSPinpointCompletionBlock) -> AWSTask<AnyObject>
+    func submitEvents() async throws
 }

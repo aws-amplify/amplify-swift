@@ -9,6 +9,10 @@ import Amplify
 import Foundation
 
 class AnalyticsErrorHelper {
+    static func getDefaultError(_ error: Error) -> AnalyticsError {
+        return getDefaultError(error as NSError)
+    }
+
     static func getDefaultError(_ error: NSError) -> AnalyticsError {
         let errorMessage = """
         Domain: [\(error.domain)

@@ -22,16 +22,13 @@ extension AWSPinpointAnalyticsPlugin {
             currentEndpointProfile.addUserProfile(userProfile)
         }
 
-        pinpoint.update(currentEndpointProfile).continueWith { (task) -> Any? in
-            guard task.error == nil else {
-                // TODO: some error mapping
-                let error = task.error! as NSError
+        Task {
+            do {
+                try await pinpoint.update(currentEndpointProfile)
+                Amplify.Hub.dispatchIdentifyUser(identityId, userProfile: userProfile)
+            } catch {
                 Amplify.Hub.dispatchIdentifyUser(AnalyticsErrorHelper.getDefaultError(error))
-                return nil
             }
-
-            Amplify.Hub.dispatchIdentifyUser(identityId, userProfile: userProfile)
-            return nil
         }
     }
 
@@ -46,17 +43,14 @@ extension AWSPinpointAnalyticsPlugin {
         if let properties = event.properties {
             pinpointEvent.addProperties(properties)
         }
-
-        pinpoint.record(pinpointEvent).continueWith { (task) -> Any? in
-            guard task.error == nil else {
-                // TODO: some error mapping
-                let error = task.error! as NSError
+        
+        Task {
+            do {
+                try await pinpoint.record(pinpointEvent)
+                Amplify.Hub.dispatchRecord(event)
+            } catch {
                 Amplify.Hub.dispatchRecord(AnalyticsErrorHelper.getDefaultError(error))
-                return nil
             }
-
-            Amplify.Hub.dispatchRecord(event)
-            return nil
         }
     }
 
@@ -105,21 +99,14 @@ extension AWSPinpointAnalyticsPlugin {
             log.warn("Cannot flushEvents. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
             return
         }
-
-        pinpoint.submitEvents().continueWith { (task) -> Any? in
-            guard task.error == nil else {
-                // TODO: some error mapping
-                let error = task.error! as NSError
+        
+        Task {
+            do {
+                let submittedEvents: [PinpointEvent] = try await pinpoint.submitEvents()
+                Amplify.Hub.dispatchFlushEvents(submittedEvents)
+            } catch {
                 Amplify.Hub.dispatchFlushEvents(AnalyticsErrorHelper.getDefaultError(error))
-                return nil
             }
-
-            if let pinpointEvents = task.result as? [AWSPinpointEvent] {
-                // TODO: revist this, this is exposing internal implementation
-                Amplify.Hub.dispatchFlushEvents(pinpointEvents)
-            }
-
-            return nil
         }
     }
 
@@ -131,10 +118,10 @@ extension AWSPinpointAnalyticsPlugin {
         isEnabled = false
     }
 
-    /// Retrieve the escape hatch to perform actions directly on AWSPinpoint.
+    /// Retrieve the escape hatch to perform actions directly on PinpointClient.
     ///
     /// - Returns: AWSPinpoint instance
-    public func getEscapeHatch() -> AWSPinpoint {
+    public func getEscapeHatch() -> PinpointClientProtocol {
         pinpoint.getEscapeHatch()
     }
 }
