@@ -11,7 +11,7 @@ import StoreKit
 class AnalyticsClient: InternalPinpointClient {
     private let eventRecorder: EventRecorder
     private var globalAttributes: [String: String] = [:]
-    private var globalMetrics: [String: Float] = [:]
+    private var globalMetrics: [String: Double] = [:]
         
     override init(context: PinpointContext) {
         eventRecorder = EventRecorder()
@@ -29,12 +29,12 @@ class AnalyticsClient: InternalPinpointClient {
         fatalError("Not yet implemented")
     }
 
-    func addGlobalMetric(_ metric: NSNumber, forKey key: String) {
+    func addGlobalMetric(_ metric: Double, forKey key: String) {
         // TODO: Implement
         fatalError("Not yet implemented")
     }
     
-    func addGlobalMetric(_ metric: NSNumber, forKey key: String, forEventType eventType: String) {
+    func addGlobalMetric(_ metric: Double, forKey key: String, forEventType eventType: String) {
         // TODO: Implement
         fatalError("Not yet implemented")
     }

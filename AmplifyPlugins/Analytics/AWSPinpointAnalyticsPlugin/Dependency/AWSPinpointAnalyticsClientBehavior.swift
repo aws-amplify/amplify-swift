@@ -43,7 +43,7 @@ protocol AWSPinpointAnalyticsClientBehavior {
      @param theValue the value of the metric
      @param theKey the name of the metric to add
      */
-    func addGlobalMetric(_ theValue: NSNumber, forKey theKey: String)
+    func addGlobalMetric(_ theValue: Double, forKey theKey: String)
 
     /**
      Adds the specified metric to all subsequent recorded events with the specified event type.
@@ -52,7 +52,7 @@ protocol AWSPinpointAnalyticsClientBehavior {
      @param theKey the name of the metric to add
      @param theEventType the type of events to add the metric to
      */
-    func addGlobalMetric(_ theValue: NSNumber, forKey theKey: String, forEventType theEventType: String)
+    func addGlobalMetric(_ theValue: Double, forKey theKey: String, forEventType theEventType: String)
 
     /**
      Removes the specified attribute. All subsequent recorded events will no longer have this global attribute.

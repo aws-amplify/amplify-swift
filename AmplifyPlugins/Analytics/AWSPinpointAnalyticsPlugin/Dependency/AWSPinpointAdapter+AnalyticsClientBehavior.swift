@@ -18,11 +18,11 @@ extension AWSPinpointAdapter: AWSPinpointAnalyticsClientBehavior {
         pinpoint.analyticsClient.addGlobalAttribute(theValue, forKey: theKey, forEventType: theEventType)
     }
 
-    func addGlobalMetric(_ theValue: NSNumber, forKey theKey: String) {
+    func addGlobalMetric(_ theValue: Double, forKey theKey: String) {
         pinpoint.analyticsClient.addGlobalMetric(theValue, forKey: theKey)
     }
 
-    func addGlobalMetric(_ theValue: NSNumber, forKey theKey: String, forEventType theEventType: String) {
+    func addGlobalMetric(_ theValue: Double, forKey theKey: String, forEventType theEventType: String) {
         pinpoint.analyticsClient.addGlobalMetric(theValue, forKey: theKey, forEventType: theEventType)
     }
 

@@ -27,7 +27,7 @@ extension AWSPinpointAnalyticsPlugin {
                 try await pinpoint.update(currentEndpointProfile)
                 Amplify.Hub.dispatchIdentifyUser(identityId, userProfile: userProfile)
             } catch {
-                Amplify.Hub.dispatchIdentifyUser(AnalyticsErrorHelper.getDefaultError(error as NSError))
+                Amplify.Hub.dispatchIdentifyUser(AnalyticsErrorHelper.getDefaultError(error))
             }
         }
     }
@@ -49,7 +49,7 @@ extension AWSPinpointAnalyticsPlugin {
                 try await pinpoint.record(pinpointEvent)
                 Amplify.Hub.dispatchRecord(event)
             } catch {
-                Amplify.Hub.dispatchRecord(AnalyticsErrorHelper.getDefaultError(error as NSError))
+                Amplify.Hub.dispatchRecord(AnalyticsErrorHelper.getDefaultError(error))
             }
         }
     }
@@ -105,7 +105,7 @@ extension AWSPinpointAnalyticsPlugin {
                 let submittedEvents: [PinpointEvent] = try await pinpoint.submitEvents()
                 Amplify.Hub.dispatchFlushEvents(submittedEvents)
             } catch {
-                Amplify.Hub.dispatchFlushEvents(AnalyticsErrorHelper.getDefaultError(error as NSError))
+                Amplify.Hub.dispatchFlushEvents(AnalyticsErrorHelper.getDefaultError(error))
             }
         }
     }

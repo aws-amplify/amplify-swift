@@ -33,7 +33,6 @@ class PinpointContext {
     }
 }
 
-
 class InternalPinpointClient {
     unowned let context: PinpointContext // ⚠️ This is known to be risky
 
