@@ -41,7 +41,7 @@ jobs:
 
       - name: "Verify PR title is 'chore: Kickoff release'" 
       - env:
-          WEBHOOK_URL: ${{ secrets.SLACK_ISSUE_WEBHOOK_URL }}
           TITLE: ${{ github.event.pull_request.title }}
-        run |
+          TEST: 
+        run: |
           echo $TITLE
