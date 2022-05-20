@@ -22,9 +22,8 @@ jobs:
 
     steps:
       - name: Check
-        # env:
-        #   WEBHOOK_URL: ${{ secrets.SLACK_COMMENT_WEBHOOK_URL }}
-        #   COMMENT: ${{toJson(github.event.comment.body)}}
+        env:
+          GITHUB_HEAD_REF: ${{toJson(github.head_ref)}}
         shell: bash
         run: |
           echo user: ${{ github.event.comment.user.login }}
@@ -34,9 +33,10 @@ jobs:
           echo GITHUB_REF: $GITHUB_REF
           echo GITHUB_REF_NAME: $GITHUB_REF_NAME
       - name: Verify head ref is main
-        if: ${{ github.head_ref == 'chore/gha-release-pr-check' }} #chore/gha-release-pr-check' }} # will change to main after testing
+        if: ${{ github.head_ref != 'blah-chore/gha-release-pr-check' }} #chore/gha-release-pr-check' }} # will change to main after testing
         run: |
           echo Invalid Pull Request!
           echo PRs targetting the release branch must have a head ref of main.
           echo Current head ref: $GITHUB_HEAD_REF
+          echo Context: ${{ env.GITHUB_HEAD_REF }}
           exit(1)
