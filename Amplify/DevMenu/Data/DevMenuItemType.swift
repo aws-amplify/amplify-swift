@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 
 /// Item types for each row in the Developer Menu
@@ -41,3 +42,4 @@ enum DevMenuItemType {
         }
     }
 }
+#endif

@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import UIKit
 import Foundation
 
 class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin {

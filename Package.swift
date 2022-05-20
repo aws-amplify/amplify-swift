@@ -2,6 +2,38 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 import PackageDescription
 
+let platforms: [SupportedPlatform] = [.iOS(.v13)]
+let dependencies: [Package.Dependency] = [
+    .package(
+        url: "https://github.com/stephencelis/SQLite.swift.git",
+        .exact("0.12.2")
+    ),
+    .package(
+        name: "AppSyncRealTimeClient",
+        url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
+        from: "1.9.0"
+    ),// We can remove AwsCrt and ClientRuntime once we move to the latest AWS SDK for Swift
+    .package(
+        name: "AwsCrt",
+        url: "https://github.com/awslabs/aws-crt-swift.git",
+        .exact("0.1.1")
+    ),
+    .package(
+        name: "ClientRuntime",
+        url: "https://github.com/awslabs/smithy-swift.git",
+        .exact("0.1.4")
+    ),
+    .package(
+        name: "AWSSwiftSDK",
+        url: "https://github.com/awslabs/aws-sdk-swift.git",
+        .exact("0.1.4")
+    ),
+    .package(
+        name: "CwlPreconditionTesting",
+        url: "https://github.com/mattgallagher/CwlPreconditionTesting.git",
+        .upToNextMinor(from: "2.1.0"))
+]
+
 let amplifyTargets: [Target] = [
     .target(
         name: "Amplify",
@@ -274,7 +306,7 @@ let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTar
 
 let package = Package(
     name: "Amplify",
-    platforms: [.iOS(.v13)],
+    platforms: platforms,
     products: [
         .library(
             name: "Amplify",
@@ -298,35 +330,6 @@ let package = Package(
         ),
         
     ],
-    dependencies: [
-        .package(
-            url: "https://github.com/stephencelis/SQLite.swift.git",
-            .exact("0.12.2")
-        ),
-        .package(
-            name: "AppSyncRealTimeClient",
-            url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
-            from: "1.9.0"
-        ),// We can remove AwsCrt and ClientRuntime once we move to the latest AWS SDK for Swift
-        .package(
-            name: "AwsCrt",
-            url: "https://github.com/awslabs/aws-crt-swift.git",
-            .exact("0.1.1")
-        ),
-        .package(
-            name: "ClientRuntime",
-            url: "https://github.com/awslabs/smithy-swift.git",
-            .exact("0.1.4")
-        ),
-        .package(
-            name: "AWSSwiftSDK",
-            url: "https://github.com/awslabs/aws-sdk-swift",
-            .exact("0.1.4")
-        ),
-        .package(
-            name: "CwlPreconditionTesting",
-            url: "https://github.com/mattgallagher/CwlPreconditionTesting",
-            .upToNextMinor(from: "2.1.0"))
-    ],
+    dependencies: dependencies,
     targets: targets
 )

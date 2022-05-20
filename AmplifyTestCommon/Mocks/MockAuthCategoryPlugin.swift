@@ -45,6 +45,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
+#if canImport(AuthenticationServices)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthWebUISignInOperation.Request.Options? = nil,
                                 listener: AuthWebUISignInOperation.ResultListener?) -> AuthWebUISignInOperation {
@@ -58,6 +59,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         -> AuthSocialWebUISignInOperation {
             fatalError()
     }
+#endif
 
     public func confirmSignIn(challengeResponse: String,
                               options: AuthConfirmSignInOperation.Request.Options? = nil,

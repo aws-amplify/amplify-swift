@@ -197,17 +197,9 @@ class FileSystem {
             do {
                 let fileHandle = try FileHandle(forReadingFrom: fileURL)
                 defer {
-                    if #available(iOS 13.0, *) {
-                        try? fileHandle.close()
-                    } else {
-                        fileHandle.closeFile()
-                    }
+                    try? fileHandle.close()
                 }
-                if #available(iOS 13.0, *) {
-                    try fileHandle.seek(toOffset: UInt64(offset))
-                } else {
-                    fileHandle.seek(toFileOffset: UInt64(offset))
-                }
+                try fileHandle.seek(toOffset: UInt64(offset))
                 let data = fileHandle.readData(ofLength: length)
                 let fileURL = try self.createTemporaryFile(data: data)
                 completionHandler(.success(fileURL))

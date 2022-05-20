@@ -57,9 +57,9 @@ extension Amplify {
             }
         }
 
-        if #available(iOS 13.0.0, *) {
-            devMenu = nil
-        }
+#if canImport(UIKit)
+        devMenu = nil
+#endif
 
         group.wait()
 

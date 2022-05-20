@@ -6,13 +6,15 @@
 //
 
 import Foundation
-import UIKit
+#if canImport(AuthenticationServices)
+import AuthenticationServices
 
-public typealias AuthUIPresentationAnchor = UIWindow
+public typealias AuthUIPresentationAnchor = ASPresentationAnchor
+#endif
 
 /// Behavior of the Auth category that clients will use
 public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDeviceBehavior {
-
+    
     /// SignUp a user with the authentication provider.
     ///
     /// If the signUp require multiple steps like passing a confirmation code, use the method
@@ -29,7 +31,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
                 password: String?,
                 options: AuthSignUpOperation.Request.Options?,
                 listener: AuthSignUpOperation.ResultListener?) -> AuthSignUpOperation
-
+    
     /// Confirms the `signUp` operation.
     ///
     /// Invoke this operation as a follow up for the signUp process if the authentication provider
@@ -45,7 +47,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
                        confirmationCode: String,
                        options: AuthConfirmSignUpOperation.Request.Options?,
                        listener: AuthConfirmSignUpOperation.ResultListener?) -> AuthConfirmSignUpOperation
-
+    
     /// Resends the confirmation code to confirm the signUp process
     ///
     /// - Parameters:
@@ -56,7 +58,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     func resendSignUpCode(for username: String,
                           options: AuthResendSignUpCodeOperation.Request.Options?,
                           listener: AuthResendSignUpCodeOperation.ResultListener?) -> AuthResendSignUpCodeOperation
-
+    
     /// SignIn to the authentication provider
     ///
     /// Username and password are optional values, check the plugin documentation to decide on what all values need to
@@ -73,6 +75,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
                 options: AuthSignInOperation.Request.Options?,
                 listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation
 
+#if canImport(AuthenticationServices)
     /// SignIn using pre configured web UI.
     ///
     /// Calling this method will always launch the Auth plugin's default web user interface
@@ -85,7 +88,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
                          options: AuthWebUISignInOperation.Request.Options?,
                          listener: AuthWebUISignInOperation.ResultListener?) -> AuthWebUISignInOperation
-
+    
     /// SignIn using an auth provider on a web UI
     ///
     /// Calling this method will invoke the AuthProvider's default web user interface. Depending on the plugin
@@ -102,7 +105,8 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
                          presentationAnchor: AuthUIPresentationAnchor,
                          options: AuthSocialWebUISignInOperation.Request.Options?,
                          listener: AuthSocialWebUISignInOperation.ResultListener?) -> AuthSocialWebUISignInOperation
-
+#endif
+    
     /// Confirms a next step in signIn flow.
     ///
     /// - Parameters:
@@ -113,7 +117,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     func confirmSignIn(challengeResponse: String,
                        options: AuthConfirmSignInOperation.Request.Options?,
                        listener: AuthConfirmSignInOperation.ResultListener?) -> AuthConfirmSignInOperation
-
+    
     /// Sign out the currently logged-in user.
     ///
     /// - Parameters:
@@ -123,7 +127,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     @discardableResult
     func signOut(options: AuthSignOutOperation.Request.Options?,
                  listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation
-
+    
     /// Delete the account of the currently logged-in user.
     ///
     /// - Parameters:
@@ -131,7 +135,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// - Returns: AuthDeleteUserOperation
     @discardableResult
     func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation
-
+    
     /// Fetch the current authentication session.
     ///
     /// - Parameters:
@@ -140,7 +144,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     @discardableResult
     func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options?,
                           listener: AuthFetchSessionOperation.ResultListener?) -> AuthFetchSessionOperation
-
+    
     /// Initiate a reset password flow for the user
     ///
     /// - Parameters:
@@ -151,7 +155,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     func resetPassword(for username: String,
                        options: AuthResetPasswordOperation.Request.Options?,
                        listener: AuthResetPasswordOperation.ResultListener?) -> AuthResetPasswordOperation
-
+    
     /// Confirms a reset password flow
     ///
     /// - Parameters:
@@ -166,6 +170,6 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
                               confirmationCode: String,
                               options: AuthConfirmResetPasswordOperation.Request.Options?,
                               listener: AuthConfirmResetPasswordOperation.ResultListener?)
-        -> AuthConfirmResetPasswordOperation
-
+    -> AuthConfirmResetPasswordOperation
+    
 }

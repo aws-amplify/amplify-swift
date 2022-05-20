@@ -115,8 +115,9 @@ struct CredentialStore: CredentialStoreBehavior {
 
     func removeAll() throws {
         var query = attributes.query()
+        // TODO: determine proper behavior for macOS
 #if !os(iOS) && !os(watchOS) && !os(tvOS)
-        query[MatchLimit] = MatchLimitAll
+        query[CredentialStoreConstant.MatchLimit] = CredentialStoreConstant.MatchLimitAll
 #endif
 
         let status = SecItemDelete(query as CFDictionary)
