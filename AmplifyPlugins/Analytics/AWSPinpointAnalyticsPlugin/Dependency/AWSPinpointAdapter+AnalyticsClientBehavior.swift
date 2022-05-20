@@ -43,7 +43,7 @@ extension AWSPinpointAdapter: AWSPinpointAnalyticsClientBehavior {
     }
 
     func record(_ theEvent: PinpointEvent) async throws {
-        pinpoint.analyticsClient.record(theEvent)
+        try await pinpoint.analyticsClient.record(theEvent)
     }
 
     func createEvent(withEventType theEventType: String) -> PinpointEvent {
