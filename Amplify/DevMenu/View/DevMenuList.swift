@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import SwiftUI
 
 /// View containing a list of developer menu items
-@available(iOS 13.0.0, *)
 struct DevMenuList: View {
 
     private let screenTitle = "Amplify Developer Menu"
@@ -40,3 +40,4 @@ struct AmplifyDevMenuList_Previews: PreviewProvider {
         DevMenuList()
     }
 }
+#endif

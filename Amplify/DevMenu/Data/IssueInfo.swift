@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 
 /// Struct consisting of information required to report an issue
-@available(iOS 13.0.0, *)
 struct IssueInfo {
 
     private var includeEnvironmentInfo: Bool
@@ -80,3 +80,4 @@ struct IssueInfo {
         }
     }
 }
+#endif

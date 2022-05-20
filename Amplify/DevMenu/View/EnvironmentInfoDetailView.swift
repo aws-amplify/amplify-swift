@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import SwiftUI
 
 /// Detail view showing environment information
-@available(iOS 13.0.0, *)
 struct EnvironmentInfoDetailView: View {
     private let screenTitle  = "Environment Information"
     private let amplifyPluginSectionTitle  = "Amplify Plugins Information"
@@ -50,14 +50,12 @@ struct EnvironmentInfoDetailView: View {
     }
 }
 
-@available(iOS 13.0.0, *)
 struct EnvironmentInfoDetailView_Previews: PreviewProvider {
     static var previews: some View {
         EnvironmentInfoDetailView()
     }
 }
 
-@available(iOS 13.0, *)
 struct NoItemView: View {
     var body: some View {
         HStack {
@@ -66,3 +64,4 @@ struct NoItemView: View {
         }
     }
 }
+#endif

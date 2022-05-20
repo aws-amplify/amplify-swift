@@ -15,8 +15,8 @@ class DataStoreHubTests: XCTestCase {
     /// - Then:
     ///    - Hub is notified
     ///    - Hub payload accurately represents the incoming sync
-    func testDataStoreDispatchesCreateToHub() {
-        XCTFail("Not yet implemented")
+    func testDataStoreDispatchesCreateToHub() throws {
+        throw XCTSkip("Not yet implemented")
     }
 
     /// - Given: An API-enabled DataStore
@@ -25,8 +25,8 @@ class DataStoreHubTests: XCTestCase {
     /// - Then:
     ///    - Hub is notified
     ///    - Hub payload accurately represents the incoming sync
-    func testDataStoreDispatchesUpdateToHub() {
-        XCTFail("Not yet implemented")
+    func testDataStoreDispatchesUpdateToHub() throws {
+        throw XCTSkip("Not yet implemented")
     }
 
     /// - Given: An API-enabled DataStore
@@ -35,8 +35,8 @@ class DataStoreHubTests: XCTestCase {
     /// - Then:
     ///    - Hub is notified
     ///    - Hub payload accurately represents the incoming sync
-    func testDataStoreDispatchesDeleteToHub() {
-        XCTFail("Not yet implemented")
+    func testDataStoreDispatchesDeleteToHub() throws {
+        throw XCTSkip("Not yet implemented")
     }
 
     /// - Given: An API-enabled DataStore
@@ -45,9 +45,9 @@ class DataStoreHubTests: XCTestCase {
     /// - Then:
     ///    - Hub is notified
     ///    - Hub payload accurately represents the incoming sync
-    func testDataStoreDispatchesConflictToHub() {
+    func testDataStoreDispatchesConflictToHub() throws {
         // TODO: Can this actually happen on an incoming sync?
-        XCTFail("Not yet implemented")
+        throw XCTSkip("Not yet implemented")
     }
 
     /// - Given: An API-enabled DataStore
@@ -55,8 +55,8 @@ class DataStoreHubTests: XCTestCase {
     ///    - DataStore encounters a sync error
     /// - Then:
     ///    - Hub is notified
-    func testDataStoreDispatchesErrorToHub() {
-        XCTFail("Not yet implemented")
+    func testDataStoreDispatchesErrorToHub() throws {
+        throw XCTSkip("Not yet implemented")
     }
 
 }

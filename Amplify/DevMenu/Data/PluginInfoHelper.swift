@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 
 /// Helper class to fetch Amplify plugin information
-@available(iOS 13.0.0, *)
 struct PluginInfoHelper {
 
     static func getPluginInformation() -> [PluginInfoItem] {
@@ -70,3 +70,4 @@ struct PluginInfoHelper {
     }
 
 }
+#endif

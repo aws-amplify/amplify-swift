@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Combine
+#if canImport(Combine)
 import XCTest
+import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-@available(iOS 13.0, *)
 // swiftlint:disable:next type_name
 class AmplifyInProcessReportingOperationChainedTests: XCTestCase {
 
@@ -161,3 +161,4 @@ class AmplifyInProcessReportingOperationChainedTests: XCTestCase {
     }
 
 }
+#endif
