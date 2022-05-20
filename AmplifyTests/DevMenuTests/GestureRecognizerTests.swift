@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -33,3 +34,4 @@ class GestureRecognizerTests: XCTestCase {
     }
 
 }
+#endif

@@ -12,24 +12,24 @@ import XCTest
 
 class AWSRESTOperationTests: OperationTestBase {
 
-    func testRESTOperationSuccess() {
-        XCTFail("Not yet implemented.")
+    func testRESTOperationSuccess() throws {
+        throw XCTSkip("Not yet implemented")
     }
 
-    func testRESTOperationValidationError() {
-        XCTFail("Not yet implemented.")
+    func testRESTOperationValidationError() throws {
+        throw XCTSkip("Not yet implemented")
     }
 
-    func testRESTOperationEndpointConfigurationError() {
-        XCTFail("Not yet implemented.")
+    func testRESTOperationEndpointConfigurationError() throws {
+        throw XCTSkip("Not yet implemented")
     }
 
-    func testRESTOperationConstructURLFailure() {
-        XCTFail("Not yet implemented.")
+    func testRESTOperationConstructURLFailure() throws {
+        throw XCTSkip("Not yet implemented")
     }
 
-    func testRESTOperationInterceptorError() {
-        XCTFail("Not yet implemented.")
+    func testRESTOperationInterceptorError() throws {
+        throw XCTSkip("Not yet implemented")
     }
 
     func testGetReturnsOperation() throws {

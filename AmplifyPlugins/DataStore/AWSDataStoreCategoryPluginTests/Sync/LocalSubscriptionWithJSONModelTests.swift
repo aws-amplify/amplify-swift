@@ -150,7 +150,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
                 case .finished:
                     break
                 }
-            }, receiveValue: { event in
+            }, receiveValue: { (event: MutationEvent) in
                 switch event.modelName {
                 case "Post":
                     receivedPostMutationEvent.fulfill()

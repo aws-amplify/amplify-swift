@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 
 /// Data class for a row shown in the Developer Menu
-@available(iOS 13.0.0, *)
 struct DevMenuItem: Identifiable {
     let id = UUID()
     let type: DevMenuItemType
@@ -17,3 +17,4 @@ struct DevMenuItem: Identifiable {
         self.type = type
     }
 }
+#endif

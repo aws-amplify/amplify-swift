@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 import UIKit
 
 /// A class for recognizing long press gesture which notifies a `TriggerDelegate` of the event
-@available(iOS 13.0.0, *)
 class LongPressGestureRecognizer: NSObject, TriggerRecognizer, UIGestureRecognizerDelegate {
 
     weak var triggerDelegate: TriggerDelegate?
@@ -56,3 +56,4 @@ class LongPressGestureRecognizer: NSObject, TriggerRecognizer, UIGestureRecogniz
         triggerDelegate = nil
     }
 }
+#endif

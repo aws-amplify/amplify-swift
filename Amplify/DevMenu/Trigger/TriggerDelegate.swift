@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 
 /// Implement this protocol to get notified of the trigger events recognized by
@@ -12,3 +13,4 @@ import Foundation
 public protocol TriggerDelegate: AnyObject {
     func onTrigger(triggerRecognizer: TriggerRecognizer)
 }
+#endif
