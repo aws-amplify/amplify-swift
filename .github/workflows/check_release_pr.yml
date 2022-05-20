@@ -46,3 +46,4 @@ jobs:
           TEST: ${{ github.head_ref }}
         run: |
           echo $TITLE
+          echo $TEST
