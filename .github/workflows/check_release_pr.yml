@@ -27,7 +27,7 @@ jobs:
         #   COMMENT: ${{toJson(github.event.comment.body)}}
         shell: bash
         run: |
-          echo "user: ${{ github.event.comment.user.login }}
+          echo user: ${{ github.event.comment.user.login }}
           echo GITHUB_ACTOR: $GITHUB_ACTOR
           echo GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME
           echo GITHUB_HEAD_REF: $GITHUB_HEAD_REF
