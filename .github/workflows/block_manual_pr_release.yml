@@ -4,7 +4,7 @@ name: Block Manual PR to Release
 on:
   pull_request:
     branches:
-      - ameter/test-release-clean  # will change to release after testing
+      - release
 
 permissions:
   pull-requests: write
