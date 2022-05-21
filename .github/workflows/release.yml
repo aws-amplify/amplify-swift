@@ -1,14 +1,11 @@
-# Pushes main to release branch to kick-off the CircleCI release workflow
+# Creates a PR to push main to release branch to kick-off the CircleCI release workflow
 name: Release Amplify iOS 
 
 on:
-  push:
-    branches: 
-      - chore/gha-release-kickoff # remove this after testing
   workflow_dispatch:
 
 permissions:
-  contents: write
+  pull-requests: write
 
 jobs:
   release:
@@ -17,9 +14,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
-        with:
-          persist-credentials: true
-          fetch-depth: 0
 
-      - name: Push main to release branch
-        run: git push origin origin/main:ameter/test-release-clean # will change to release after testing
+      - name: Create PR to push main to release branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: "gh pr create --title 'chore: kickoff release' --body 'kickoff release' --head main --base ameter/test-release-clean" # will change to release after testing
