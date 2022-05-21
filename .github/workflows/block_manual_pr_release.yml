@@ -2,9 +2,6 @@
 name: Block Manual PR to Release
 
 on:
-  push:
-    branches:
-      - chore/gha-release-kickoff
   pull_request:
     branches:
       - ameter/test-release-clean  # will change to release after testing
