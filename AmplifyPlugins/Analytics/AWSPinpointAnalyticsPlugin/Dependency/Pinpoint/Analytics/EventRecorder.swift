@@ -7,6 +7,19 @@
 
 import Foundation
 
-class EventRecorder {
+protocol AnalyticsEventRecording {
+    func save(_ event: PinpointEvent) async throws
+    func submitAllEvents() async throws -> [PinpointEvent]
+}
+
+class EventRecorder: AnalyticsEventRecording {
+    func save(_ event: PinpointEvent) async throws {
+        // TODO: Implement
+        fatalError("Not yet implemented")
+    }
     
+    func submitAllEvents() async throws -> [PinpointEvent] {
+        // TODO: Implement
+        fatalError("Not yet implemented")
+    }
 }

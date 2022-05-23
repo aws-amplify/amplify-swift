@@ -8,17 +8,6 @@
 import Amplify
 import Foundation
 
-struct PinpointEvent {
-    let eventType: String
-    let eventTyimestamp: TimeInterval
-    var session: PinpointSession?
-    
-    func addProperties(_ properties: [String: AnalyticsPropertyValue]) {
-        // TODO: Implement
-        fatalError("Not yet implemented")
-    }
-}
-
 struct PinpointSession {
     let startTime: Date
     let stopTime: Date?
