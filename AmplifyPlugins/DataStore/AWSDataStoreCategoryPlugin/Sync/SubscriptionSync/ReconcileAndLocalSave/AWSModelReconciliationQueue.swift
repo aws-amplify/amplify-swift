@@ -164,8 +164,8 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                     return
                 }
                 switch value {
-                case .mutationEventDropped(let modelName):
-                    self.modelReconciliationQueueSubject.send(.mutationEventDropped(modelName: modelName))
+                case .mutationEventDropped(let modelName, let error):
+                    self.modelReconciliationQueueSubject.send(.mutationEventDropped(modelName: modelName, error: error))
                 case .mutationEvent(let event):
                     self.modelReconciliationQueueSubject.send(.mutationEvent(event))
                 }

@@ -12,7 +12,7 @@ import Foundation
 
 enum IncomingSyncEventEmitterEvent {
     case mutationEventApplied(MutationEvent)
-    case mutationEventDropped(modelName: String)
+    case mutationEventDropped(modelName: String, error: DataStoreError? = nil)
     case modelSyncedEvent(ModelSyncedEvent)
     case syncQueriesReadyEvent
 }
@@ -71,8 +71,8 @@ final class SyncEventEmitter {
         switch value {
         case .mutationEventApplied(let mutationEvent):
             syncEventEmitterTopic.send(.mutationEventApplied(mutationEvent))
-        case .mutationEventDropped(let modelName):
-            syncEventEmitterTopic.send(.mutationEventDropped(modelName: modelName))
+        case .mutationEventDropped(let modelName, let error):
+            syncEventEmitterTopic.send(.mutationEventDropped(modelName: modelName, error: error))
         case .modelSyncedEvent(let modelSyncedEvent):
             modelSyncedReceived += 1
             syncEventEmitterTopic.send(.modelSyncedEvent(modelSyncedEvent))
