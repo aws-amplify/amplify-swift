@@ -14,7 +14,7 @@ struct AlterTableStatement: SQLStatement {
     var modelSchema: ModelSchema
 
     var stringValue: String {
-        return "ALTER TABLE \(fromModelSchema.name) RENAME TO \(modelSchema.name)"
+        return "ALTER TABLE \"\(fromModelSchema.name)\" RENAME TO \"\(modelSchema.name)\""
     }
 
     init(from fromModelSchema: ModelSchema, toModelSchema: ModelSchema) {
