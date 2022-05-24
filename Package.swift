@@ -276,6 +276,7 @@ let analyticsTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSCognitoAuthPlugin"),
+            .product(name: "SQLite", package: "SQLite.swift"),
             .product(name: "AWSPinpoint", package: "AWSSwiftSDK")],
         path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPlugin",
         exclude: [
