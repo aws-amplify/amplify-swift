@@ -235,7 +235,7 @@ class SQLStatementTests: XCTestCase {
         let statement = UpdateStatement(model: post, modelSchema: post.schema)
 
         let expectedStatement = """
-        update Post
+        update "Post"
         set
           "content" = ?,
           "createdAt" = ?,
@@ -266,7 +266,7 @@ class SQLStatementTests: XCTestCase {
         let statement = UpdateStatement(model: post, modelSchema: post.schema, condition: condition)
 
         let expectedStatement = """
-        update Post
+        update "Post"
         set
           "content" = ?,
           "createdAt" = ?,

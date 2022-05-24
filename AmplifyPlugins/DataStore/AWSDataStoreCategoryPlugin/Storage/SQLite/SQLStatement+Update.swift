@@ -39,7 +39,7 @@ struct UpdateStatement: SQLStatement {
         }
 
         var sql = """
-        update \(modelSchema.name)
+        update "\(modelSchema.name)"
         set
         \(columnsStatement.joined(separator: ",\n"))
         where \(modelSchema.primaryKey.columnName()) = ?
