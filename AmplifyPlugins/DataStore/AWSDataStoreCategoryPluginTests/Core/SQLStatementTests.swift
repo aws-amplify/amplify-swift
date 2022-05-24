@@ -232,6 +232,19 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement, expectedStatement)
     }
 
+    /// - Given: a `Model` instance with a composite primary key
+    /// - When:
+    ///     - the model is of type `ModelCompositePk`
+    /// - Then:
+    ///   - an index for the fields that make up the primary key should be generated
+    func testCreateIndexStatementFromModelWithCustomPKIndex() {
+        let statement = ModelCompositePk.schema.createIndexStatements()
+        let expectedStatement = """
+        create index if not exists "id_dob_pk" on "ModelCompositePk" ("id", "dob");
+        """
+        XCTAssertEqual(statement, expectedStatement)
+    }
+
     // MARK: - Insert Statements
 
     /// - Given: a `Model` instance
