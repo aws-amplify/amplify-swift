@@ -37,7 +37,7 @@ public protocol Model: Codable {
 extension Model {
     public var identifier: String {
         guard let schema = ModelRegistry.modelSchema(from: modelName) else {
-            preconditionFailure("Schema not found for \(modelName)")
+            preconditionFailure("Schema not found for \(modelName).")
         }
         return identifier(schema: schema).stringValue
     }
@@ -45,7 +45,9 @@ extension Model {
     public func identifier(schema modelSchema: ModelSchema) -> ModelIdentifierProtocol {
         // resolve current instance identifier fields
         let fields: ModelIdentifierProtocol.Fields = modelSchema.primaryKey.fields.map {
-            let value = self[$0.name] as? Persistable ?? ""
+            guard let value = self[$0.name] as? Persistable else {
+                preconditionFailure("Identifier field named \($0.name) for model \(modelSchema.name) not found.")
+            }
             return (name: $0.name, value: value)
         }
 
