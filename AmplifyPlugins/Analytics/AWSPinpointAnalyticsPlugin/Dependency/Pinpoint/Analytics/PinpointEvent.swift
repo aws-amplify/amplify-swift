@@ -10,13 +10,13 @@ import Foundation
 
 class PinpointEvent {
     let eventType: String
-    let eventTimestamp: TimeInterval
+    let eventTimestamp: Int64
     let session: PinpointSession
     private(set) lazy var attributes: [String: String] = [:]
     private(set) lazy var metrics: [String: Double] = [:]
     
     init(eventType: String,
-         eventTimestamp: TimeInterval,
+         eventTimestamp: Int64 = Date().utcTimeMillis,
          session: PinpointSession) {
         self.eventType = eventType
         self.eventTimestamp = eventTimestamp

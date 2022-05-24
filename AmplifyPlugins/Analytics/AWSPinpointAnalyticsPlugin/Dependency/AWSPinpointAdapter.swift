@@ -18,11 +18,10 @@ class AWSPinpointAdapter: AWSPinpointBehavior {
     convenience init(appId: String,
                      region: String,
                      credentialsProvider: CredentialsProvider) throws {
-        // TODO: Do we stil need appID?
-        let pinpointConfiguration = try PinpointClient.PinpointClientConfiguration(credentialsProvider: credentialsProvider,
-                                                                                   frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
-                                                                                   region: region)
-        let pinpoint = PinpointContext(with: pinpointConfiguration)
+        let configuration = PinpointContextConfiguration(appId: appId)
+        let pinpoint = try PinpointContext(with: configuration,
+                                           credentialsProvider: credentialsProvider,
+                                           region: region)
         self.init(pinpoint: pinpoint)
     }
 
