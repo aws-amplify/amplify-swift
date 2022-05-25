@@ -1,7 +1,7 @@
 name: Integration Tests
 on:
   push:
-    branches: [chore/temporal-acceleration-test]
+    branches: [main]
 
 permissions:
     id-token: write
