@@ -372,7 +372,7 @@
 		767F85FE2649FFCC0076D633 /* CustomerOrder+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */; };
 		769CF2242669B1B9007843A0 /* RetryableGraphQLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769CF2232669B1B9007843A0 /* RetryableGraphQLOperation.swift */; };
 		76A4023C264B1E3A009D4127 /* AWSAuthModeStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A4023B264B1E3A009D4127 /* AWSAuthModeStrategy.swift */; };
-		76A7BCD8283D9ED10077C6FF /* schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 76A7BCD7283D9ED10077C6FF /* schema.graphql */; };
+		76A7BCD8283D9ED10077C6FF /* primarykey_schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 76A7BCD7283D9ED10077C6FF /* primarykey_schema.graphql */; };
 		76B17DD8264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B17DD7264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift */; };
 		76B1B022280890330046343A /* ModelIdentifierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B1B021280890330046343A /* ModelIdentifierTests.swift */; };
 		76B1B02D280F7EC70046343A /* ModelCompositePkWithAssociation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B1B02B280F7EC60046343A /* ModelCompositePkWithAssociation.swift */; };
@@ -1314,7 +1314,7 @@
 		767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomerOrder+Schema.swift"; sourceTree = "<group>"; };
 		769CF2232669B1B9007843A0 /* RetryableGraphQLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetryableGraphQLOperation.swift; sourceTree = "<group>"; };
 		76A4023B264B1E3A009D4127 /* AWSAuthModeStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthModeStrategy.swift; sourceTree = "<group>"; };
-		76A7BCD7283D9ED10077C6FF /* schema.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
+		76A7BCD7283D9ED10077C6FF /* primarykey_schema.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = primarykey_schema.graphql; sourceTree = "<group>"; };
 		76B17DD7264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelSchema+AuthRulesByOperation.swift"; sourceTree = "<group>"; };
 		76B1B021280890330046343A /* ModelIdentifierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelIdentifierTests.swift; sourceTree = "<group>"; };
 		76B1B02B280F7EC60046343A /* ModelCompositePkWithAssociation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCompositePkWithAssociation.swift; sourceTree = "<group>"; };
@@ -2750,7 +2750,7 @@
 				76310CEE27E3EDD1004964DF /* ModelExplicitDefaultPk+Schema.swift */,
 				76310CF127E3EDD2004964DF /* ModelImplicitDefaultPk.swift */,
 				76310CED27E3EDD1004964DF /* ModelImplicitDefaultPk+Schema.swift */,
-				76A7BCD7283D9ED10077C6FF /* schema.graphql */,
+				76A7BCD7283D9ED10077C6FF /* primarykey_schema.graphql */,
 			);
 			path = CustomPrimaryKey;
 			sourceTree = "<group>";
@@ -4457,7 +4457,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				217D5ECE2577FA1B009F0639 /* connection-schema.graphql in Resources */,
-				76A7BCD8283D9ED10077C6FF /* schema.graphql in Resources */,
+				76A7BCD8283D9ED10077C6FF /* primarykey_schema.graphql in Resources */,
 				B9521834237E21BA00F53237 /* schema.graphql in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
