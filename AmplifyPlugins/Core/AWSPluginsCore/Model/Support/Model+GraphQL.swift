@@ -64,8 +64,9 @@ extension Model {
                 input[name] = (value as? EnumPersistable)?.rawValue
             case .model:
                 // get the associated model target names and their values
-                let associatedModelIds = zip(getFieldNameForAssociatedModels(modelField: modelField),
-                                             getModelIdentifierValues(from: value, modelSchema: modelSchema))
+                let associatedModelIds = associatedModelIdentifierFields(fromModelValue: value,
+                                                                         field: modelField,
+                                                                         schema: schema)
                 for (fieldName, fieldValue) in associatedModelIds {
                     input[fieldName] = fieldValue
                 }
@@ -125,6 +126,32 @@ extension Model {
         }
     }
 
+    /// Given a model value, its schema and a model field with associations returns
+    /// an array of key-value pairs of the associated model identifiers and their values.
+    /// - Parameters:
+    ///   - value: model value
+    ///   - field: model field
+    ///   - modelSchema: model schema
+    /// - Returns: an array of key-value pairs where `key` is the field name
+    ///            and `value` its value in the associated model
+    private func associatedModelIdentifierFields(fromModelValue value: Any,
+                                                 field: ModelField,
+                                                 schema modelSchema: ModelSchema) -> [(String, Persistable)] {
+        let fieldNames = getFieldNameForAssociatedModels(modelField: field)
+        let values = getModelIdentifierValues(from: value, modelSchema: modelSchema)
+
+        guard fieldNames.count == values.count else {
+            preconditionFailure(
+                """
+                Associated model target names and values for field \(field.name) of model \(modelName) mismatch.
+                There is a possibility that is an issue with the generated models.
+                """
+            )
+        }
+
+        return Array(zip(fieldNames, values))
+    }
+
     /// Given a model and its schema, returns the values of its identifier (primary key).
     /// The return value is an array as models can have a composite identifier.
     /// - Parameters:
@@ -146,14 +173,6 @@ extension Model {
         return []
     }
 
-    private func getFieldValue(for modelFieldName: String, modelSchema: ModelSchema) -> Any?? {
-        if let jsonModel = self as? JSONValueHolder {
-            return jsonModel.jsonValue(for: modelFieldName, modelSchema: modelSchema) ?? nil
-        } else {
-            return self[modelFieldName] ?? nil
-        }
-    }
-
     /// Retrieves the GraphQL field name that associates the current model with the target model.
     /// By default, this is the current model + the associated Model + "Id", For example "comment" + "Post" + "Id"
     /// This information is also stored in the schema as `targetName` which is codegenerated to be the same as the
@@ -170,4 +189,11 @@ extension Model {
         return [defaultFieldName]
     }
 
+    private func getFieldValue(for modelFieldName: String, modelSchema: ModelSchema) -> Any?? {
+        if let jsonModel = self as? JSONValueHolder {
+            return jsonModel.jsonValue(for: modelFieldName, modelSchema: modelSchema) ?? nil
+        } else {
+            return self[modelFieldName] ?? nil
+        }
+    }
 }

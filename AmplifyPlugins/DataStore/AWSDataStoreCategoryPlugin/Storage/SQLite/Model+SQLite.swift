@@ -105,8 +105,6 @@ extension Model {
 
                 // Check if it is a Model or json object.
                 if let associatedModelValue = value as? Model {
-                    // let associatedModelType: Model.Type = type(of: associatedModelValue)
-                    // return associatedModelValue[associatedModelType.schema.primaryKey.name] as? String
                     return associatedModelValue.identifier
 
                 } else if let associatedModelJSON = value as? [String: JSONValue],
