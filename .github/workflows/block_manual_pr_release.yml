@@ -1,4 +1,10 @@
 # Blocks PRs targeting the release branch that are not created by the release GHA workflow.
+#
+# This works because workflows cannot trigger other workflows unless they call them directly.
+# As a result, this workflow will only run with a PR targeting release is manually created.
+#
+# https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
+
 name: Block Manual PR to Release
 
 on:
