@@ -82,9 +82,6 @@ extension Temporal {
             // using a LFU, or potentially LRU, eviction policy.
         }
 
-        // unlock if no early return
-        os_unfair_lock_unlock(&lock)
-
         // Finally, if the formatter is not in the cache
         // or a formatter with the matching format is cached,
         // but the time zone doesn't match *and* the formatter
@@ -95,8 +92,6 @@ extension Temporal {
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = timeZone
 
-        // lock before write to cache
-        os_unfair_lock_lock(&lock)
         formatterCache[format] = formatter
         return formatter
         // defer takes care of unlock
