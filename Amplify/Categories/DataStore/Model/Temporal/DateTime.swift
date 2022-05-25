@@ -8,41 +8,52 @@
 import Foundation
 
 extension Temporal {
-
-    /// `DateTime` is an immutable `TemporalSpec` object that represents a date with a time,
-    /// often viewed as `yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ`.
+    /// `Temporal.DateTime` represents a `DateTime` with specific allowable formats.
     ///
-    /// `DateTime` can be represented to nanosecond precision and it also holds a reference
-    /// to a TimeZone. As all Date scalars, `DateTime` relies on the ISO-8601 calendar.
-    public struct DateTime: TemporalSpec, DateUnitOperable, TimeUnitOperable {
-
-        public static var iso8601DateComponents: Set<Calendar.Component> {
-            [.year, .month, .day, .hour, .minute, .second, .nanosecond, .timeZone]
-        }
-
-        public static func now() -> DateTime {
-            return DateTime(Foundation.Date())
-        }
-
+    ///  * `.short` => `yyyy-MM-dd'T'HH:mm`
+    ///  * `.medium` => `yyyy-MM-dd'T'HH:mm:ss`
+    ///  * `.long` => `yyyy-MM-dd'T'HH:mm:ssZZZZZ`
+    ///  * `.full` => `yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ`
+    public struct DateTime: TemporalSpec {
+        // Inherits documentation from `TemporalSpec`
         public let foundationDate: Foundation.Date
 
+        // Inherits documentation from `TemporalSpec`
+        public static func now() -> Self {
+            Temporal.DateTime(Foundation.Date())
+        }
+
+        /// `Temporal.Time` of this `Temporal.DateTime`.
         public var time: Time {
             Time(foundationDate)
         }
 
+        // Inherits documentation from `TemporalSpec`
         public init(_ date: Foundation.Date) {
-            let calendar = DateTime.iso8601Calendar
-            let components = calendar.dateComponents(DateTime.iso8601DateComponents, from: date)
-            self.foundationDate = components.date ?? date
+            let calendar = Temporal.iso8601Calendar
+            let components = calendar.dateComponents(
+                DateTime.iso8601DateComponents,
+                from: date
+            )
+
+            foundationDate = calendar
+                .date(from: components) ?? date
         }
 
-        public init(iso8601String: String) throws {
-            guard let date = DateTime.iso8601Date(from: iso8601String) else {
-                throw DataStoreError.invalidDateFormat(iso8601String)
-            }
-            self.foundationDate = date
-        }
-
+        /// `Calendar.Component`s used in `init(_ date:)`
+        static let iso8601DateComponents: Set<Calendar.Component> =
+        [
+            .year,
+            .month,
+            .day,
+            .hour,
+            .minute,
+            .second,
+            .nanosecond,
+            .timeZone
+        ]
     }
-
 }
+
+// Allow date unit and time unit operations on `Temporal.DateTime`
+extension Temporal.DateTime: DateUnitOperable, TimeUnitOperable {}

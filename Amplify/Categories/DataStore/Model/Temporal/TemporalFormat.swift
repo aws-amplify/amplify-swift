@@ -7,37 +7,92 @@
 
 import Foundation
 
-/// `Enum` that represent the different options for formatting ISO8601 values.
-/// Each implementation of a `TemporalSpec` is responsible for converting the enum value
-/// to a corresponding format string.
-public enum TemporalFormat: CaseIterable {
+public struct TemporalFormat {
+    let dateFormat: String
+    let dateTimeFormat: String
+    let timeFormat: String
 
-    case short
-    case medium
-    case long
-    case full
+    /**
+        dateFormat is `yyyy-MM-dd`
+        dateTimeFormat is `yyyy-MM-dd'T'HH:mm`
+        timeFormat is `HH:mm`
+     */
+    public static let short = TemporalFormat(
+        dateFormat: "yyyy-MM-dd",
+        dateTimeFormat: "yyyy-MM-dd'T'HH:mm",
+        timeFormat: "HH:mm"
+    )
 
-}
+    /**
+        dateFormat is `yyyy-MM-ddZZZZZ`
+        dateTimeFormat is `yyyy-MM-dd'T'HH:mm:ss`
+        timeFormat is `HH:mm:ss`
+     */
+    public static let medium = TemporalFormat(
+        dateFormat: "yyyy-MM-ddZZZZZ",
+        dateTimeFormat: "yyyy-MM-dd'T'HH:mm:ss",
+        timeFormat: "HH:mm:ss"
+    )
 
-extension TemporalFormat {
+    /**
+        dateFormat is `yyyy-MM-ddZZZZZ`
+        dateTimeFormat is `yyyy-MM-dd'T'HH:mm:ssZZZZZ`
+        timeFormat is `HH:mm:ss.SSS`
+     */
+    public static let long = TemporalFormat(
+        dateFormat: "yyyy-MM-ddZZZZZ",
+        dateTimeFormat: "yyyy-MM-dd'T'HH:mm:ssZZZZZ",
+        timeFormat: "HH:mm:ss.SSS"
+    )
 
-    /// The order in which an implementation of `TemporalSpec` is
-    /// parsed matters so no precision is lost. This stored property
-    /// represents the order, from the most to the least precise format.
-    ///
-    /// - Note: if more formats are added to the enum, this property
-    /// needs to be updated to reflect the expected parsing order.
-    static var sortedCasesForParsing: [TemporalFormat] {
-        [.full, .long, .medium, .short]
-    }
+    /**
+        dateFormat is `yyyy-MM-ddZZZZZ`
+        dateTimeFormat is `yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ`
+        timeFormat is `HH:mm:ss.SSSZZZZZ`
+     */
+    public static let full = TemporalFormat(
+        dateFormat: "yyyy-MM-ddZZZZZ",
+        dateTimeFormat: "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ",
+        timeFormat: "HH:mm:ss.SSSZZZZZ"
+    )
 
-    func getFormat(for type: TemporalSpec.Type) -> String {
+    public static let allCases = [
+        TemporalFormat.full,
+        .long,
+        .medium,
+        .short
+    ]
+
+    private func keyPath(for type: TemporalSpec.Type) -> KeyPath<TemporalFormat, String> {
+        let keyPath: KeyPath<TemporalFormat, String>
         if type == Temporal.Time.self {
-            return timeFormat
+            keyPath = \TemporalFormat.timeFormat
         } else if type == Temporal.Date.self {
-            return dateFormat
+            keyPath = \TemporalFormat.dateFormat
+        } else {
+            keyPath = \TemporalFormat.dateTimeFormat
         }
-        return dateTimeFormat
+        return keyPath
     }
 
+    @usableFromInline
+    internal static func sortedFormats(for type: TemporalSpec.Type) -> [String] {
+        let formats: [String]
+        // If the TemporalSpec is `Date`, let's only return `.full` and `.short`
+        // because `.medium`, `.long`, and `.full` are all the same format.
+        // If the formats ever differ, this needs to be updated.
+        if type == Temporal.Date.self {
+            formats = [TemporalFormat.full, .short]
+                .map { $0(for: type) }
+        } else {
+            formats = Self.allCases
+                .map { $0(for: type) }
+        }
+        return formats
+    }
+
+    @usableFromInline
+    internal func callAsFunction(for type: TemporalSpec.Type) -> String {
+        self[keyPath: keyPath(for: type)]
+    }
 }

@@ -5,8 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension TemporalSpec where Self: Codable {
+import Foundation
 
+extension TemporalSpec where Self: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let value = try container.decode(String.self)
@@ -17,7 +18,6 @@ extension TemporalSpec where Self: Codable {
         var container = encoder.singleValueContainer()
         try container.encode(iso8601String)
     }
-
 }
 
 extension Temporal.Date: Codable {}

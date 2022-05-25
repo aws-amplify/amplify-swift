@@ -349,6 +349,22 @@
 		76C0F4EC26797F4500F0E6AB /* AuthModeStrategyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C0F4EA26797F3C00F0E6AB /* AuthModeStrategyTests.swift */; };
 		76FFFC91267966D9001EC92B /* RetryableGraphQLOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FFFC90267966D9001EC92B /* RetryableGraphQLOperationTests.swift */; };
 		8484A17AAAFE78545A932849 /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1769ED39B45A981FD1D8AC /* Pods_Amplify.framework */; };
+		902AE05B281304B800CD12CA /* SpecBasedDateConverting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE04C281304B800CD12CA /* SpecBasedDateConverting.swift */; };
+		902AE06D2813050200CD12CA /* Temporal+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE06A2813050200CD12CA /* Temporal+Codable.swift */; };
+		9091FF7D2820771B0021D8E1 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 9091FF692820771B0021D8E1 /* README.md */; };
+		9091FF7E2820771B0021D8E1 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF6A2820771B0021D8E1 /* Date.swift */; };
+		9091FF812820771C0021D8E1 /* TemporalFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF6D2820771B0021D8E1 /* TemporalFormat.swift */; };
+		9091FF882820771C0021D8E1 /* DateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF742820771B0021D8E1 /* DateTime.swift */; };
+		9091FF892820771C0021D8E1 /* Temporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF752820771B0021D8E1 /* Temporal.swift */; };
+		9091FF8A2820771C0021D8E1 /* Date+Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF762820771B0021D8E1 /* Date+Operation.swift */; };
+		9091FF8B2820771C0021D8E1 /* TemporalOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF772820771B0021D8E1 /* TemporalOperation.swift */; };
+		9091FF8E2820771C0021D8E1 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF7A2820771B0021D8E1 /* Time.swift */; };
+		9091FF8F2820771C0021D8E1 /* Time+Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF7B2820771B0021D8E1 /* Time+Operation.swift */; };
+		9091FF9228207B8D0021D8E1 /* Temporal+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF9128207B8D0021D8E1 /* Temporal+Cache.swift */; };
+		9091FF9428215DF40021D8E1 /* TemporalUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF9328215DF40021D8E1 /* TemporalUnit.swift */; };
+		9091FF97282170EB0021D8E1 /* DataStoreError+Temporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902AE0702813052F00CD12CA /* DataStoreError+Temporal.swift */; };
+		9091FF99282171840021D8E1 /* Temporal+Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF98282171840021D8E1 /* Temporal+Hashable.swift */; };
+		9091FF9A282171FF0021D8E1 /* Temporal+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9091FF9528215DFD0021D8E1 /* Temporal+Comparable.swift */; };
 		90A8901327619D780042C3C1 /* AWSAuthServiceBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A8901227619D780042C3C1 /* AWSAuthServiceBehaviorTests.swift */; };
 		950A26DB23D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26D823D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift */; };
 		950A26DC23D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26D923D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift */; };
@@ -542,10 +558,6 @@
 		B4FEA92124635BFB0009B47B /* AuthCategoryDeviceBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEA92024635BFB0009B47B /* AuthCategoryDeviceBehavior.swift */; };
 		B4FEA92324635CA40009B47B /* AuthCategory+DeviceBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEA92224635CA40009B47B /* AuthCategory+DeviceBehavior.swift */; };
 		B912D1B6242960D40028F05C /* QueryPaginationInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = B912D1B5242960D40028F05C /* QueryPaginationInput.swift */; };
-		B91A879C23D125A50049A12F /* DateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A879B23D125A50049A12F /* DateTime.swift */; };
-		B91A879E23D12B730049A12F /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A879D23D12B730049A12F /* Time.swift */; };
-		B91A87A023D18A320049A12F /* Temporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A879F23D18A320049A12F /* Temporal.swift */; };
-		B91A87A223D641570049A12F /* Temporal+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A87A123D641570049A12F /* Temporal+Comparable.swift */; };
 		B91A87A423D64B0F0049A12F /* TemporalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A87A323D64B0F0049A12F /* TemporalTests.swift */; };
 		B92E03AD2367CE7A006CEB8D /* DataStoreCategory+Behavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E039E2367CE79006CEB8D /* DataStoreCategory+Behavior.swift */; };
 		B92E03AE2367CE7A006CEB8D /* DataStoreCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E039F2367CE79006CEB8D /* DataStoreCategoryPlugin.swift */; };
@@ -561,10 +573,6 @@
 		B92E03B82367CE7A006CEB8D /* ModelSchema+Definition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03AA2367CE7A006CEB8D /* ModelSchema+Definition.swift */; };
 		B92E03B92367CE7A006CEB8D /* Model+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03AB2367CE7A006CEB8D /* Model+Schema.swift */; };
 		B92E03BA2367CE7A006CEB8D /* Model+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */; };
-		B93D0FDF2473BBF500796879 /* Temporal+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93D0FDE2473BBF500796879 /* Temporal+Codable.swift */; };
-		B9485E9723F40848009C4F93 /* Time+Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9485E9623F40847009C4F93 /* Time+Operation.swift */; };
-		B9485E9923F40877009C4F93 /* Date+Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9485E9823F40877009C4F93 /* Date+Operation.swift */; };
-		B9485E9B23F4BEEC009C4F93 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B9485E9A23F4BEEC009C4F93 /* README.md */; };
 		B9521833237E21BA00F53237 /* Comment+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B952182E237E21B900F53237 /* Comment+Schema.swift */; };
 		B9521834237E21BA00F53237 /* schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = B952182F237E21B900F53237 /* schema.graphql */; };
 		B9521835237E21BA00F53237 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9521830237E21B900F53237 /* Comment.swift */; };
@@ -580,18 +588,10 @@
 		B996FC4423FF2FA8006D0F68 /* Encodable+AnyEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B996FC4323FF2FA8006D0F68 /* Encodable+AnyEncodable.swift */; };
 		B996FC4D24059918006D0F68 /* Model+Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = B996FC4C24059918006D0F68 /* Model+Enum.swift */; };
 		B99EF4B523DB020C00D821BC /* TemporalComparableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99EF4B423DB020C00D821BC /* TemporalComparableTests.swift */; };
-		B99EF4B723DB072000D821BC /* Temporal+Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99EF4B623DB072000D821BC /* Temporal+Hashable.swift */; };
 		B9A329CC243559BF00C5B80C /* TimeInterval+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A329CB243559BF00C5B80C /* TimeInterval+Helper.swift */; };
 		B9A6A4E024452E0D00AC2792 /* AccessLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A6A4DF24452E0D00AC2792 /* AccessLevel.swift */; };
 		B9AA09F12473CA29000E6FBB /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AA09F02473CA29000E6FBB /* PostStatus.swift */; };
-		B9AE8FD923D8C609002742F9 /* TemporalFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AE8FD823D8C609002742F9 /* TemporalFormat.swift */; };
-		B9AE8FDB23D8C643002742F9 /* TemporalFormat+Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AE8FDA23D8C643002742F9 /* TemporalFormat+Time.swift */; };
-		B9AF547A23F324DB0059E6C4 /* TemporalOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AF547923F324DB0059E6C4 /* TemporalOperation.swift */; };
 		B9AF547E23F37DF20059E6C4 /* TemporalOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AF547D23F37DF20059E6C4 /* TemporalOperationTests.swift */; };
-		B9B50DC223D9179F0086F1E1 /* TemporalFormat+DateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC123D9179F0086F1E1 /* TemporalFormat+DateTime.swift */; };
-		B9B50DC423D917BB0086F1E1 /* TemporalFormat+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC323D917BB0086F1E1 /* TemporalFormat+Date.swift */; };
-		B9B50DC623D918020086F1E1 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC523D918020086F1E1 /* Date.swift */; };
-		B9B50DC823DA15890086F1E1 /* DataStoreError+Temporal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC723DA15890086F1E1 /* DataStoreError+Temporal.swift */; };
 		B9B64A9F23FCBF7E00730B68 /* ModelValueConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */; };
 		B9DCA263240F217C00075E22 /* AnyEncodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DCA262240F217C00075E22 /* AnyEncodableTests.swift */; };
 		B9FAA10B23878122009414B4 /* ModelField+Association.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10A23878122009414B4 /* ModelField+Association.swift */; };
@@ -1275,6 +1275,28 @@
 		7D502982E80B9B2796D71A48 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig"; sourceTree = "<group>"; };
 		852B5530E9E8794DAC86E44E /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig"; sourceTree = "<group>"; };
 		8E125EAA66C26B6F0705BB0C /* Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests/Pods-Amplify-AmplifyTestConfigs-AmplifyFunctionalTests.release.xcconfig"; sourceTree = "<group>"; };
+		902AE04C281304B800CD12CA /* SpecBasedDateConverting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecBasedDateConverting.swift; sourceTree = "<group>"; };
+		902AE06A2813050200CD12CA /* Temporal+Codable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Codable.swift"; sourceTree = "<group>"; };
+		902AE0702813052F00CD12CA /* DataStoreError+Temporal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DataStoreError+Temporal.swift"; sourceTree = "<group>"; };
+		902AE0722813088B00CD12CA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		9091FF692820771B0021D8E1 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		9091FF6A2820771B0021D8E1 /* Date.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
+		9091FF6B2820771B0021D8E1 /* Temporal+Codable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Codable.swift"; sourceTree = "<group>"; };
+		9091FF6D2820771B0021D8E1 /* TemporalFormat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemporalFormat.swift; sourceTree = "<group>"; };
+		9091FF6E2820771B0021D8E1 /* Temporal+Hashable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Hashable.swift"; sourceTree = "<group>"; };
+		9091FF702820771B0021D8E1 /* DataStoreError+Temporal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DataStoreError+Temporal.swift"; sourceTree = "<group>"; };
+		9091FF722820771B0021D8E1 /* Temporal+Comparable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Comparable.swift"; sourceTree = "<group>"; };
+		9091FF742820771B0021D8E1 /* DateTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateTime.swift; sourceTree = "<group>"; };
+		9091FF752820771B0021D8E1 /* Temporal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Temporal.swift; sourceTree = "<group>"; };
+		9091FF762820771B0021D8E1 /* Date+Operation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date+Operation.swift"; sourceTree = "<group>"; };
+		9091FF772820771B0021D8E1 /* TemporalOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemporalOperation.swift; sourceTree = "<group>"; };
+		9091FF792820771B0021D8E1 /* TemporalUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemporalUnit.swift; sourceTree = "<group>"; };
+		9091FF7A2820771B0021D8E1 /* Time.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
+		9091FF7B2820771B0021D8E1 /* Time+Operation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Time+Operation.swift"; sourceTree = "<group>"; };
+		9091FF9128207B8D0021D8E1 /* Temporal+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Cache.swift"; sourceTree = "<group>"; };
+		9091FF9328215DF40021D8E1 /* TemporalUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemporalUnit.swift; sourceTree = "<group>"; };
+		9091FF9528215DFD0021D8E1 /* Temporal+Comparable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Comparable.swift"; sourceTree = "<group>"; };
+		9091FF98282171840021D8E1 /* Temporal+Hashable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Temporal+Hashable.swift"; sourceTree = "<group>"; };
 		90A8901227619D780042C3C1 /* AWSAuthServiceBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthServiceBehaviorTests.swift; sourceTree = "<group>"; };
 		950A26D823D15D7E00D92B19 /* PredictionsTranslateTextOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsTranslateTextOperation.swift; sourceTree = "<group>"; };
 		950A26D923D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsTextToSpeechOperation.swift; sourceTree = "<group>"; };
@@ -1468,10 +1490,6 @@
 		B4FEA92024635BFB0009B47B /* AuthCategoryDeviceBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCategoryDeviceBehavior.swift; sourceTree = "<group>"; };
 		B4FEA92224635CA40009B47B /* AuthCategory+DeviceBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthCategory+DeviceBehavior.swift"; sourceTree = "<group>"; };
 		B912D1B5242960D40028F05C /* QueryPaginationInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryPaginationInput.swift; sourceTree = "<group>"; };
-		B91A879B23D125A50049A12F /* DateTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTime.swift; sourceTree = "<group>"; };
-		B91A879D23D12B730049A12F /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
-		B91A879F23D18A320049A12F /* Temporal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Temporal.swift; sourceTree = "<group>"; };
-		B91A87A123D641570049A12F /* Temporal+Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Temporal+Comparable.swift"; sourceTree = "<group>"; };
 		B91A87A323D64B0F0049A12F /* TemporalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporalTests.swift; sourceTree = "<group>"; };
 		B922E267236A029C00D09250 /* Query.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Query.swift; sourceTree = "<group>"; };
 		B922E268236A029C00D09250 /* ModelKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelKey.swift; sourceTree = "<group>"; };
@@ -1493,10 +1511,6 @@
 		B92E03AA2367CE7A006CEB8D /* ModelSchema+Definition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelSchema+Definition.swift"; sourceTree = "<group>"; };
 		B92E03AB2367CE7A006CEB8D /* Model+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Model+Schema.swift"; sourceTree = "<group>"; };
 		B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Model+Codable.swift"; sourceTree = "<group>"; };
-		B93D0FDE2473BBF500796879 /* Temporal+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Temporal+Codable.swift"; sourceTree = "<group>"; };
-		B9485E9623F40847009C4F93 /* Time+Operation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Time+Operation.swift"; sourceTree = "<group>"; };
-		B9485E9823F40877009C4F93 /* Date+Operation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Operation.swift"; sourceTree = "<group>"; };
-		B9485E9A23F4BEEC009C4F93 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		B952182E237E21B900F53237 /* Comment+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment+Schema.swift"; sourceTree = "<group>"; };
 		B952182F237E21B900F53237 /* schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
 		B9521830237E21B900F53237 /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
@@ -1513,18 +1527,10 @@
 		B996FC4323FF2FA8006D0F68 /* Encodable+AnyEncodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+AnyEncodable.swift"; sourceTree = "<group>"; };
 		B996FC4C24059918006D0F68 /* Model+Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+Enum.swift"; sourceTree = "<group>"; };
 		B99EF4B423DB020C00D821BC /* TemporalComparableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporalComparableTests.swift; sourceTree = "<group>"; };
-		B99EF4B623DB072000D821BC /* Temporal+Hashable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Temporal+Hashable.swift"; sourceTree = "<group>"; };
 		B9A329CB243559BF00C5B80C /* TimeInterval+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+Helper.swift"; sourceTree = "<group>"; };
 		B9A6A4DF24452E0D00AC2792 /* AccessLevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccessLevel.swift; sourceTree = "<group>"; };
 		B9AA09F02473CA29000E6FBB /* PostStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostStatus.swift; sourceTree = "<group>"; };
-		B9AE8FD823D8C609002742F9 /* TemporalFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporalFormat.swift; sourceTree = "<group>"; };
-		B9AE8FDA23D8C643002742F9 /* TemporalFormat+Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TemporalFormat+Time.swift"; sourceTree = "<group>"; };
-		B9AF547923F324DB0059E6C4 /* TemporalOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporalOperation.swift; sourceTree = "<group>"; };
 		B9AF547D23F37DF20059E6C4 /* TemporalOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporalOperationTests.swift; sourceTree = "<group>"; };
-		B9B50DC123D9179F0086F1E1 /* TemporalFormat+DateTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TemporalFormat+DateTime.swift"; sourceTree = "<group>"; };
-		B9B50DC323D917BB0086F1E1 /* TemporalFormat+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TemporalFormat+Date.swift"; sourceTree = "<group>"; };
-		B9B50DC523D918020086F1E1 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
-		B9B50DC723DA15890086F1E1 /* DataStoreError+Temporal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataStoreError+Temporal.swift"; sourceTree = "<group>"; };
 		B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelValueConverter.swift; sourceTree = "<group>"; };
 		B9DCA262240F217C00075E22 /* AnyEncodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyEncodableTests.swift; sourceTree = "<group>"; };
 		B9FAA10A23878122009414B4 /* ModelField+Association.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelField+Association.swift"; sourceTree = "<group>"; };
@@ -2680,6 +2686,29 @@
 			path = API;
 			sourceTree = "<group>";
 		};
+		902AE04B281304B800CD12CA /* Temporal */ = {
+			isa = PBXGroup;
+			children = (
+				902AE0702813052F00CD12CA /* DataStoreError+Temporal.swift */,
+				9091FF6A2820771B0021D8E1 /* Date.swift */,
+				9091FF762820771B0021D8E1 /* Date+Operation.swift */,
+				9091FF742820771B0021D8E1 /* DateTime.swift */,
+				902AE0722813088B00CD12CA /* README.md */,
+				902AE04C281304B800CD12CA /* SpecBasedDateConverting.swift */,
+				9091FF752820771B0021D8E1 /* Temporal.swift */,
+				9091FF9128207B8D0021D8E1 /* Temporal+Cache.swift */,
+				902AE06A2813050200CD12CA /* Temporal+Codable.swift */,
+				9091FF9528215DFD0021D8E1 /* Temporal+Comparable.swift */,
+				9091FF98282171840021D8E1 /* Temporal+Hashable.swift */,
+				9091FF6D2820771B0021D8E1 /* TemporalFormat.swift */,
+				9091FF772820771B0021D8E1 /* TemporalOperation.swift */,
+				9091FF9328215DF40021D8E1 /* TemporalUnit.swift */,
+				9091FF7A2820771B0021D8E1 /* Time.swift */,
+				9091FF7B2820771B0021D8E1 /* Time+Operation.swift */,
+			);
+			path = Temporal;
+			sourceTree = "<group>";
+		};
 		95DAAB00237E63370028544F /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -3058,29 +3087,6 @@
 			path = Auth;
 			sourceTree = "<group>";
 		};
-		B91A879A23D1256B0049A12F /* Temporal */ = {
-			isa = PBXGroup;
-			children = (
-				B9485E9A23F4BEEC009C4F93 /* README.md */,
-				B9B50DC723DA15890086F1E1 /* DataStoreError+Temporal.swift */,
-				B9B50DC523D918020086F1E1 /* Date.swift */,
-				B9485E9823F40877009C4F93 /* Date+Operation.swift */,
-				B91A879B23D125A50049A12F /* DateTime.swift */,
-				B91A879F23D18A320049A12F /* Temporal.swift */,
-				B93D0FDE2473BBF500796879 /* Temporal+Codable.swift */,
-				B91A87A123D641570049A12F /* Temporal+Comparable.swift */,
-				B99EF4B623DB072000D821BC /* Temporal+Hashable.swift */,
-				B9AE8FD823D8C609002742F9 /* TemporalFormat.swift */,
-				B9B50DC323D917BB0086F1E1 /* TemporalFormat+Date.swift */,
-				B9B50DC123D9179F0086F1E1 /* TemporalFormat+DateTime.swift */,
-				B9AE8FDA23D8C643002742F9 /* TemporalFormat+Time.swift */,
-				B9AF547923F324DB0059E6C4 /* TemporalOperation.swift */,
-				B91A879D23D12B730049A12F /* Time.swift */,
-				B9485E9623F40847009C4F93 /* Time+Operation.swift */,
-			);
-			path = Temporal;
-			sourceTree = "<group>";
-		};
 		B92E03A62367CE7A006CEB8D /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -3088,9 +3094,9 @@
 				B92E03A72367CE7A006CEB8D /* Model.swift */,
 				FA8EE778238627040097E4F1 /* Model+ModelName.swift */,
 				2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */,
+				902AE04B281304B800CD12CA /* Temporal */,
 				B9FAA1232388BE2B009414B4 /* Collection */,
 				21AD424A249BEC440016FE95 /* Internal */,
-				B91A879A23D1256B0049A12F /* Temporal */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -3172,6 +3178,12 @@
 				217856BA2383320900A30D19 /* GraphQLQueryType.swift */,
 				218DC969258A73AF00D59FC6 /* CoreError.swift */,
 				218DC979258A73CA00D59FC6 /* Paginatable.swift */,
+				9091FF792820771B0021D8E1 /* TemporalUnit.swift */,
+				9091FF722820771B0021D8E1 /* Temporal+Comparable.swift */,
+				9091FF692820771B0021D8E1 /* README.md */,
+				9091FF6B2820771B0021D8E1 /* Temporal+Codable.swift */,
+				9091FF702820771B0021D8E1 /* DataStoreError+Temporal.swift */,
+				9091FF6E2820771B0021D8E1 /* Temporal+Hashable.swift */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -4363,7 +4375,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B9485E9B23F4BEEC009C4F93 /* README.md in Resources */,
+				9091FF7D2820771B0021D8E1 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5058,9 +5070,9 @@
 				B4FEA92124635BFB0009B47B /* AuthCategoryDeviceBehavior.swift in Sources */,
 				FAA98B02239214A30039EE71 /* DataStoreConflict.swift in Sources */,
 				B450741124115C140098F02D /* AuthSignInOperation.swift in Sources */,
+				9091FF99282171840021D8E1 /* Temporal+Hashable.swift in Sources */,
 				FA093386238480EB00C2FD5F /* OSLogWrapper.swift in Sources */,
 				FAC23544227A055200424678 /* ConfigurationError.swift in Sources */,
-				B91A879C23D125A50049A12F /* DateTime.swift in Sources */,
 				95DAAB44237E639E0028544F /* ConvertResult.swift in Sources */,
 				21A4ED54259CD24E00E1047D /* ArrayLiteralListProvider.swift in Sources */,
 				FAC428A4235F802A0000F221 /* AmplifyAPICategory+InterceptorBehavior.swift in Sources */,
@@ -5104,6 +5116,7 @@
 				B9FAA175238EFC5A009414B4 /* String+Extensions.swift in Sources */,
 				B4B5CC992457B7FA0019C783 /* AuthFetchUserAttributeOperation.swift in Sources */,
 				95DAAB25237E63370028544F /* Entity.swift in Sources */,
+				9091FF7E2820771B0021D8E1 /* Date.swift in Sources */,
 				B4C499042415E0F300067992 /* AuthWebUISignInRequest.swift in Sources */,
 				FA09337C23844E9F00C2FD5F /* GraphQLOperationRequest.swift in Sources */,
 				FAC23545227A055200424678 /* AmplifyConfiguration.swift in Sources */,
@@ -5126,10 +5139,10 @@
 				95DAAB45237E639E0028544F /* IdentifyResult.swift in Sources */,
 				95DAAB21237E63370028544F /* LanguageDetectionResult.swift in Sources */,
 				FAC2351E227A053D00424678 /* APICategory.swift in Sources */,
-				B9B50DC223D9179F0086F1E1 /* TemporalFormat+DateTime.swift in Sources */,
 				B4944D21251C06EA00BF0BFE /* JSONValueHolder.swift in Sources */,
 				FAC2351B227A053D00424678 /* APICategoryBehavior.swift in Sources */,
 				B473B540245DE93100C45C72 /* AuthConfirmSignInRequest.swift in Sources */,
+				9091FF9428215DF40021D8E1 /* TemporalUnit.swift in Sources */,
 				B46884102460A85200221268 /* AuthDevice.swift in Sources */,
 				974FF19724B910F70050D01B /* AmplifyVersionable.swift in Sources */,
 				FA5D4CF3238AFD7B00D2F54A /* ModelRegistry+Syncable.swift in Sources */,
@@ -5145,10 +5158,10 @@
 				5CF43D092728C64100F636E1 /* Geo+Error.swift in Sources */,
 				2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */,
 				FAA2E8CA23A02A2600E420EA /* DataStoreCategory+Resettable.swift in Sources */,
-				B9B50DC423D917BB0086F1E1 /* TemporalFormat+Date.swift in Sources */,
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,
 				21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */,
 				974FF19B24BD05AA0050D01B /* EnvironmentInfoItemType.swift in Sources */,
+				9091FF97282170EB0021D8E1 /* DataStoreError+Temporal.swift in Sources */,
 				FAC428A0235F7F980000F221 /* AmplifyAPICategory+RESTBehavior.swift in Sources */,
 				B43DC738241051A200D40275 /* AuthSignUpRequest.swift in Sources */,
 				FA00F68A24DA3A43003E8A71 /* AuthCategoryDeviceBehavior+Combine.swift in Sources */,
@@ -5175,7 +5188,6 @@
 				B46884142460A8E000221268 /* AuthForgetDeviceOperation.swift in Sources */,
 				FA56F72322B14B420039754A /* Cancellable.swift in Sources */,
 				95DAAB4B237E639E0028544F /* TranslateTextResult.swift in Sources */,
-				B9485E9923F40877009C4F93 /* Date+Operation.swift in Sources */,
 				5C763DA026F2CAF5006650E7 /* Geo.swift in Sources */,
 				FA6BC872235F5BD60001A882 /* GraphQLOperation.swift in Sources */,
 				974FF1A524BE18460050D01B /* PluginInfoHelper.swift in Sources */,
@@ -5195,12 +5207,12 @@
 				B4B5CC8B2457B32D0019C783 /* AuthConfirmUserAttributeRequest.swift in Sources */,
 				FA09337E2384677A00C2FD5F /* AWSUnifiedLoggingPlugin.swift in Sources */,
 				FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */,
-				B93D0FDF2473BBF500796879 /* Temporal+Codable.swift in Sources */,
 				FAAFAF2D23904ADF002CF932 /* AtomicValue+Numeric.swift in Sources */,
 				FA09B94B2322CBEB000E064D /* LoggingCategoryConfiguration.swift in Sources */,
 				B49A02FB2410BEDF00B42A25 /* AuthCategory+Resettable.swift in Sources */,
 				2129BE512395A66F006363A1 /* AmplifyModelRegistration.swift in Sources */,
 				210922572359693900CEC295 /* BasicAnalyticsEvent.swift in Sources */,
+				9091FF8A2820771C0021D8E1 /* Date+Operation.swift in Sources */,
 				FAC2353F227A055200424678 /* PluginError.swift in Sources */,
 				974FF18724B54E590050D01B /* DeviceInfoItem.swift in Sources */,
 				97CB860624ABA023000C65FB /* LongPressGestureRecognizer.swift in Sources */,
@@ -5215,7 +5227,6 @@
 				210B3E34245CB73400F43848 /* AuthRule.swift in Sources */,
 				974FF13324B043E60050D01B /* DevMenuBehavior.swift in Sources */,
 				FA8EE781238628490097E4F1 /* Persistable.swift in Sources */,
-				B9485E9723F40848009C4F93 /* Time+Operation.swift in Sources */,
 				FA5BF25F2385A0500070C843 /* Category+Logging.swift in Sources */,
 				FA249EE724C5FA4A009B3CE8 /* AmplifyInProcessReportingOperation+Combine.swift in Sources */,
 				FACBA78D23949588006349C8 /* Model+DateFormatting.swift in Sources */,
@@ -5227,7 +5238,6 @@
 				97DC3D5224C1FE4100D79E24 /* LogViewer.swift in Sources */,
 				B4B5CCA52458A1940019C783 /* AuthUpdateUserAttributesOperation.swift in Sources */,
 				B463D6CF24633E45008C0F85 /* AuthCategory+UserBehavior.swift in Sources */,
-				B9AE8FDB23D8C643002742F9 /* TemporalFormat+Time.swift in Sources */,
 				FAC2352D227A053D00424678 /* AnalyticsCategoryPlugin.swift in Sources */,
 				2142099723721F4400FA140C /* RESTOperationType.swift in Sources */,
 				B4B5CC812457B0690019C783 /* AuthFetchUserAttributesRequest.swift in Sources */,
@@ -5247,6 +5257,7 @@
 				21FFF995230C96CB005878EA /* StorageListOperation.swift in Sources */,
 				95DAAB33237E63370028544F /* KeyPhrase.swift in Sources */,
 				5C763DAC26F2CFC2006650E7 /* Geo+MapStyle.swift in Sources */,
+				902AE05B281304B800CD12CA /* SpecBasedDateConverting.swift in Sources */,
 				21409C552384C55D000A53C9 /* LabelType.swift in Sources */,
 				FA315295233D634900DE78E7 /* StorageDownloadFileRequest.swift in Sources */,
 				95DAAB26237E63370028544F /* Sentiment.swift in Sources */,
@@ -5259,6 +5270,7 @@
 				210DBC122332B3C0009B9E51 /* StorageDownloadFileOperation.swift in Sources */,
 				21FFF98E230C81E6005878EA /* StorageAccessLevel.swift in Sources */,
 				95DAAB4A237E639E0028544F /* InterpretResult.swift in Sources */,
+				9091FF9228207B8D0021D8E1 /* Temporal+Cache.swift in Sources */,
 				B4FA76082416E87E006F59CE /* AuthFetchSessionOperation.swift in Sources */,
 				B49A02F92410BEBE00B42A25 /* AuthCategory+CategoryConfigurable.swift in Sources */,
 				5C763DA426F2CCDF006650E7 /* CLocationCoordinate2D+Geo.Coordinates.swift in Sources */,
@@ -5285,7 +5297,6 @@
 				B4BD6B392370932300A1F0A7 /* PredictionsIdentifyRequest.swift in Sources */,
 				21409C5B2384C57D000A53C9 /* GraphQLQueryType.swift in Sources */,
 				6B452B8225A7D0F600A1A811 /* Array+Extensions.swift in Sources */,
-				B91A87A223D641570049A12F /* Temporal+Comparable.swift in Sources */,
 				95DAAB29237E63370028544F /* EntityDetectionResult.swift in Sources */,
 				FA31529E233D645800DE78E7 /* StorageUploadDataRequest.swift in Sources */,
 				21644B7C2588258100C548A5 /* ModelListDecoder.swift in Sources */,
@@ -5316,6 +5327,7 @@
 				FAA2E8BE23A00BD600E420EA /* AmplifyAPICategory.swift in Sources */,
 				210DBC142332B3C6009B9E51 /* StorageGetURLOperation.swift in Sources */,
 				95DAAB2A237E63370028544F /* Pose.swift in Sources */,
+				9091FF8F2820771C0021D8E1 /* Time+Operation.swift in Sources */,
 				FA09B94D2322CC05000E064D /* StorageCategoryConfiguration.swift in Sources */,
 				950A26DF23D15D9800D92B19 /* SpeechToTextResult.swift in Sources */,
 				B92E03AF2367CE7A006CEB8D /* DataStoreCategoryBehavior.swift in Sources */,
@@ -5333,6 +5345,8 @@
 				95DAAB49237E639E0028544F /* IdentifyDocumentTextResult.swift in Sources */,
 				B46884122460A8D600221268 /* AuthFetchDevicesOperation.swift in Sources */,
 				FA0173352375F8A5005DDDFC /* LoggingError.swift in Sources */,
+				9091FF812820771C0021D8E1 /* TemporalFormat.swift in Sources */,
+				9091FF8E2820771C0021D8E1 /* Time.swift in Sources */,
 				B4D38540236C97360014653D /* PredictionsCategoryPlugin.swift in Sources */,
 				FA05B83424CE265E0026180B /* StorageCategory+ClientBehavior+Combine.swift in Sources */,
 				B4B5CCA32458A1300019C783 /* AuthUpdateUserAttributesRequest.swift in Sources */,
@@ -5341,10 +5355,11 @@
 				FAC2351A227A053D00424678 /* StorageCategory.swift in Sources */,
 				974FF19F24BE13100050D01B /* PluginInfoItem.swift in Sources */,
 				21558E3E237BB4BF0032A5BB /* GraphQLRequest.swift in Sources */,
+				9091FF9A282171FF0021D8E1 /* Temporal+Comparable.swift in Sources */,
+				9091FF882820771C0021D8E1 /* DateTime.swift in Sources */,
 				FA6BC87D235F5D490001A882 /* APICategoryRESTBehavior.swift in Sources */,
 				B4B5CC982457B7FA0019C783 /* AuthConfirmUserAttributeOperation.swift in Sources */,
 				B4507419241166580098F02D /* AuthSession.swift in Sources */,
-				B99EF4B723DB072000D821BC /* Temporal+Hashable.swift in Sources */,
 				B92E03B92367CE7A006CEB8D /* Model+Schema.swift in Sources */,
 				5C3324912772BCF700F2C47B /* AuthDeleteUserOperation.swift in Sources */,
 				FA58456724D9D6960028D65A /* AmplifyOperation+APIPublishers.swift in Sources */,
@@ -5373,7 +5388,6 @@
 				97DC3D5424C200A600D79E24 /* LogEntryHelper.swift in Sources */,
 				B4D38537236C97360014653D /* PredictionsCategory+CategoryConfigurable.swift in Sources */,
 				FA00F68824DA37EE003E8A71 /* AuthCategoryBehavior+Combine.swift in Sources */,
-				B9AE8FD923D8C609002742F9 /* TemporalFormat.swift in Sources */,
 				FA4E730C23282917003B8EEB /* Amplify+Resolve.swift in Sources */,
 				FA8EE779238627040097E4F1 /* Model+ModelName.swift in Sources */,
 				FAB9D811233BF5F600928AA9 /* AmplifyOperationContext.swift in Sources */,
@@ -5384,7 +5398,6 @@
 				B92E03B52367CE7A006CEB8D /* Model.swift in Sources */,
 				5C763DAA26F2CF66006650E7 /* Geo+Place.swift in Sources */,
 				95DAAB31237E63370028544F /* PartOfSpeech.swift in Sources */,
-				B91A87A023D18A320049A12F /* Temporal.swift in Sources */,
 				97CB85FE24AA451B000C65FB /* AmplifyDevMenu.swift in Sources */,
 				FA56F72522B14B6A0039754A /* Resumable.swift in Sources */,
 				B4C498FA2415D24B00067992 /* AuthProvider.swift in Sources */,
@@ -5415,10 +5428,10 @@
 				95DAAB36237E63370028544F /* Selection.swift in Sources */,
 				B4251A0B242504FA007F59EF /* AuthChangePasswordOperation.swift in Sources */,
 				FAC0A2AD22B43FE700B50912 /* HubCategory+ClientBehavior.swift in Sources */,
+				9091FF8B2820771C0021D8E1 /* TemporalOperation.swift in Sources */,
 				769CF2242669B1B9007843A0 /* RetryableGraphQLOperation.swift in Sources */,
 				B4251A0124250369007F59EF /* AuthConfirmResetPasswordRequest.swift in Sources */,
 				FAAFAF2F23904B14002CF932 /* AtomicValue+Bool.swift in Sources */,
-				B9B50DC823DA15890086F1E1 /* DataStoreError+Temporal.swift in Sources */,
 				211FFEE326CD650500F0DB75 /* DataStoreQuerySnapshot.swift in Sources */,
 				FA249EEB24C5FE66009B3CE8 /* AmplifyAPICategory+GraphQLBehavior+Combine.swift in Sources */,
 				FACD26502386E9410068FBE6 /* JSONValue+Subscript.swift in Sources */,
@@ -5438,19 +5451,18 @@
 				B463D6CD24633DA2008C0F85 /* AuthCategoryUserBehavior.swift in Sources */,
 				FAC23522227A053D00424678 /* LoggingCategory.swift in Sources */,
 				FAC2358F227A4A6E00424678 /* HubCategory.swift in Sources */,
+				9091FF892820771C0021D8E1 /* Temporal.swift in Sources */,
 				B4B5CC872457B2470019C783 /* AuthUpdateUserAttributeRequest.swift in Sources */,
 				76B17DD8264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift in Sources */,
 				B98E9D0E2372236300934B51 /* ModelKey.swift in Sources */,
-				B91A879E23D12B730049A12F /* Time.swift in Sources */,
 				B9FAA13C238BBE67009414B4 /* DataStoreCallback+Combine.swift in Sources */,
 				95DAAB8A237F13B70028544F /* TextToSpeechResult.swift in Sources */,
 				B4251A05242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift in Sources */,
 				B98E9D122372236300934B51 /* QueryField.swift in Sources */,
-				B9AF547A23F324DB0059E6C4 /* TemporalOperation.swift in Sources */,
 				B98E9D0F2372236300934B51 /* QueryOperator.swift in Sources */,
 				FAA64FC52397344D00B9C3C6 /* AtomicValue+RangeReplaceableCollection.swift in Sources */,
-				B9B50DC623D918020086F1E1 /* Date.swift in Sources */,
 				B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */,
+				902AE06D2813050200CD12CA /* Temporal+Codable.swift in Sources */,
 				21409C5A2384C57D000A53C9 /* GraphQLMutationType.swift in Sources */,
 				FA58456524D9CBD30028D65A /* Operation+StoragePublishers.swift in Sources */,
 				B493E69E245394E200D9E521 /* AuthSignUpStep.swift in Sources */,
@@ -5974,6 +5986,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7D502982E80B9B2796D71A48 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
@@ -6000,6 +6013,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F782B97D62DBD8A0597E5AA9 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.release.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";

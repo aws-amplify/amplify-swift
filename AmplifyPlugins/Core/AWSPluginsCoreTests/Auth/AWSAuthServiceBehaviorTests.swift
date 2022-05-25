@@ -98,7 +98,7 @@ class AWSAuthServiceBehaviorTests: XCTestCase {
     }
 }
 
-fileprivate class _MockAWSAuthService: AWSAuthServiceBehavior {
+private class _MockAWSAuthService: AWSAuthServiceBehavior {
     let identityID: () -> Result<String, AuthError>
     let userPoolAccessToken: () -> Result<String, AuthError>
 
