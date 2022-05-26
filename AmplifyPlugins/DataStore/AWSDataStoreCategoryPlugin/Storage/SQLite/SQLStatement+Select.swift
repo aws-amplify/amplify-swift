@@ -96,7 +96,7 @@ struct SelectStatementMetadata {
                 let associatedModelName = foreignKey.requiredAssociatedModelName
 
                 guard let associatedSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
-                    preconditionFailure("""
+                    return Fatal.preconditionFailure("""
                     Could not retrieve schema for the model \(associatedModelName), verify that datastore is
                     initialized.
                     """)

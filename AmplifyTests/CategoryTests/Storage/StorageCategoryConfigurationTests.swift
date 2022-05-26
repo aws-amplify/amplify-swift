@@ -175,9 +175,14 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        try XCTAssertThrowFatalError {
-            _ = Amplify.Storage.downloadData(key: "", options: nil, resultListener: nil)
+        let registry = TypeRegistry.register(type: StorageCategoryPlugin.self) { _ in
+            MockStorageCategoryPlugin()
         }
+
+        // a precondition failure will happen since 2 plugins are added
+        _ = Amplify.Storage.downloadData(key: "", options: nil, resultListener: nil)
+
+        XCTAssertGreaterThan(registry.messages.count, 0)
     }
 
     func testCanConfigurePluginDirectly() throws {

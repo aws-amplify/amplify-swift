@@ -236,9 +236,13 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        try XCTAssertThrowFatalError {
-            _ = Amplify.Auth.update(oldPassword: "current", to: "new", listener: nil)
+        let registry = TypeRegistry.register(type: AuthCategoryPlugin.self) { _ in
+            MockAuthCategoryPlugin()
         }
+
+        _ = Amplify.Auth.update(oldPassword: "current", to: "new", listener: nil)
+
+        XCTAssertGreaterThan(registry.messages.count, 0)
     }
 
     /// Test if configuration Auth plugin with getPlugin() works
@@ -292,10 +296,14 @@ class AuthCategoryConfigurationTests: XCTestCase {
         let plugin = MockAuthCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
-        try XCTAssertThrowFatalError {
-            _ = Amplify.Auth.update(oldPassword: "current", to: "new", listener: nil)
+        let registry = TypeRegistry.register(type: AuthCategoryPlugin.self) { _ in
+            MockAuthCategoryPlugin()
         }
+
+        // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
+        _ = Amplify.Auth.update(oldPassword: "current", to: "new", listener: nil)
+
+        XCTAssertGreaterThan(registry.messages.count, 0)
     }
 
     // MARK: - Test internal config behavior guarantees
@@ -351,9 +359,13 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
         XCTAssertNoThrow(try Amplify.Auth.configure(using: config))
 
-        try XCTAssertNoThrowFatalError {
-            _ = Amplify.Auth.update(oldPassword: "current", to: "new", listener: nil)
+        let registry = TypeRegistry.register(type: AuthCategoryPlugin.self) { _ in
+            MockAuthCategoryPlugin()
         }
+
+        _ = Amplify.Auth.update(oldPassword: "current", to: "new", listener: nil)
+
+        XCTAssertEqual(registry.messages.count, 0)
     }
 
     /// Test that Amplify logs a warning if it encounters a plugin configuration key without a corresponding plugin
