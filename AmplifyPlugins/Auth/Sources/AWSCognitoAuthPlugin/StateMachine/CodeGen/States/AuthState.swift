@@ -19,6 +19,8 @@ enum AuthState: State {
 
     case configured(AuthenticationState, AuthorizationState)
 
+   // case configurationError(Error)
+
 }
 
 extension AuthState {

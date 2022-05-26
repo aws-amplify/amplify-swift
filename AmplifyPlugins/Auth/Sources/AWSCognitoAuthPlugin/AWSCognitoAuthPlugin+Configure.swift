@@ -24,14 +24,10 @@ extension AWSCognitoAuthPlugin {
         guard let jsonValueConfiguration = configuration as? JSONValue else {
             throw PluginError.pluginConfigurationError(
                 AuthPluginErrorConstants.decodeConfigurationError.errorDescription,
-                AuthPluginErrorConstants.decodeConfigurationError.recoverySuggestion
-            )
+                AuthPluginErrorConstants.decodeConfigurationError.recoverySuggestion)
         }
 
-        let userPoolConfigData = parseUserPoolConfigData(jsonValueConfiguration)
-        let identityPoolConfigData = parseIdentityPoolConfigData(jsonValueConfiguration)
-        let authConfiguration = try authConfiguration(userPoolConfig: userPoolConfigData,
-                                                      identityPoolConfig: identityPoolConfigData)
+        let authConfiguration = try ConfigurationHelper.authConfiguration(jsonValueConfiguration)
 
         let authResolver = AuthState.Resolver().eraseToAnyResolver()
         let authEnvironment = makeAuthEnvironment(authConfiguration: authConfiguration)
@@ -40,7 +36,8 @@ extension AWSCognitoAuthPlugin {
         let credentialEnvironment = credentialStoreEnvironment(authConfiguration: authConfiguration)
 
         let authStateMachine = StateMachine(resolver: authResolver, environment: authEnvironment)
-        let credentialStoreMachine = StateMachine(resolver: credentialStoreResolver, environment: credentialEnvironment)
+        let credentialStoreMachine = StateMachine(resolver: credentialStoreResolver,
+                                                  environment: credentialEnvironment)
         let hubEventHandler = AuthHubEventHandler()
 
         configure(authConfiguration: authConfiguration,
@@ -50,11 +47,11 @@ extension AWSCognitoAuthPlugin {
     }
 
     func configure(authConfiguration: AuthConfiguration,
-                   authStateMachine: StateMachine<AuthState, AuthEnvironment>,
-                   credentialStoreStateMachine: StateMachine<CredentialStoreState, CredentialEnvironment>,
+                   authStateMachine: AuthStateMachine,
+                   credentialStoreStateMachine: CredentialStoreStateMachine,
                    hubEventHandler: AuthHubEventBehavior,
-                   queue: OperationQueue = OperationQueue())
-    {
+                   queue: OperationQueue = OperationQueue()) {
+
         self.authConfiguration = authConfiguration
         self.queue = queue
         self.queue.maxConcurrentOperationCount = 1
@@ -63,118 +60,29 @@ extension AWSCognitoAuthPlugin {
         self.hubEventHandler = hubEventHandler
 
         self.credentialStoreStateMachine = credentialStoreStateMachine
-        sendConfigureCredentialEvent()
+        internalConfigure()
     }
 
-    func listenToAuthStateChange(_ stateMachine: StateMachine<AuthState, AuthEnvironment>) ->
-    StateMachine<AuthState, AuthEnvironment>.StateChangeListenerToken {
-       return stateMachine.listen { state in
+    func listenToAuthStateChange(_ stateMachine: AuthStateMachine) ->
+    AuthStateMachine.StateChangeListenerToken {
+
+        return stateMachine.listen { state in
             self.log.verbose("""
             Auth state change:
 
             \(state)
 
             """)
-        } onSubscribe: {
-
-        }
-
+        } onSubscribe: { }
     }
 
-    func sendConfigureCredentialEvent() {
-        var token: CredentialStoreStateMachineToken?
-        token = credentialStoreStateMachine.listen { [weak self] in
-            guard let self = self else {
-                return
-            }
-            switch $0 {
-            case .success(let storedCredentials):
-                self.sendConfigureAuthEvent(with: storedCredentials)
-                if let token = token {
-                    self.credentialStoreStateMachine.cancel(listenerToken: token)
-                }
-            case .error(let credentialStoreError):
-                if case .itemNotFound = credentialStoreError {
-                    self.sendConfigureAuthEvent(with: nil)
-                } else {
-                    let error = AuthError.service("An exception occurred when configuring credential store",
-                                                  AmplifyErrorMessages.reportBugToAWS(),
-                                                  credentialStoreError)
-                    Amplify.log.error(error: error)
-                }
-
-                if let token = token {
-                    self.credentialStoreStateMachine.cancel(listenerToken: token)
-                }
-            default:
-                break
-            }
-        } onSubscribe: { [weak self] in
-            let event = CredentialStoreEvent(eventType: .migrateLegacyCredentialStore)
-            self?.credentialStoreStateMachine.send(event)
-        }
-    }
-
-    func sendConfigureAuthEvent(with storedCredentials: AmplifyCredentials?) {
-        authStateMachine.send(AuthEvent(eventType: .configureAuth(authConfiguration, storedCredentials)))
-    }
-
-    func authConfiguration(userPoolConfig: UserPoolConfigurationData?,
-                           identityPoolConfig: IdentityPoolConfigurationData?) throws -> AuthConfiguration
-    {
-
-        if let userPoolConfigNonNil = userPoolConfig, let identityPoolConfigNonNil = identityPoolConfig {
-            return .userPoolsAndIdentityPools(userPoolConfigNonNil, identityPoolConfigNonNil)
-        }
-        if  let userPoolConfigNonNil = userPoolConfig {
-            return .userPools(userPoolConfigNonNil)
-        }
-        if  let identityPoolConfigNonNil = identityPoolConfig {
-            return .identityPools(identityPoolConfigNonNil)
-        }
-        // Could not get either Userpool or Identitypool configuration
-        // Throw an error to stop the configure flow.
-        throw AuthError.configuration(
-            "Error configuring \(String(describing: self))",
-            AuthPluginErrorConstants.configurationMissingError
-        )
-    }
-
-    func parseUserPoolConfigData(_ config: JSONValue) -> UserPoolConfigurationData? {
-        // TODO: Use JSON serialization here to convert.
-        guard let cognitoUserPoolJSON = config.value(at: "CognitoUserPool.Default") else {
-            Amplify.Logging.info("Could not find Cognito User Pool configuration")
-            return nil
-        }
-        guard case .string(let poolId)  = cognitoUserPoolJSON.value(at: "PoolId"),
-              case .string(let appClientId) = cognitoUserPoolJSON.value(at: "AppClientId"),
-              case .string(let region) = cognitoUserPoolJSON.value(at: "Region")
-        else {
-            return nil
-        }
-
-        var clientSecret: String?
-        if case .string(let clientSecretFromConfig) = cognitoUserPoolJSON.value(at: "AppClientSecret") {
-            clientSecret = clientSecretFromConfig
-        }
-        return UserPoolConfigurationData(poolId: poolId,
-                                         clientId: appClientId,
-                                         region: region,
-                                         clientSecret: clientSecret)
-    }
-
-    func parseIdentityPoolConfigData(_ config: JSONValue) -> IdentityPoolConfigurationData? {
-
-        guard let cognitoIdentityPoolJSON = config.value(at: "CredentialsProvider.CognitoIdentity.Default") else {
-            Amplify.Logging.info("Could not find Cognito Identity Pool configuration")
-            return nil
-        }
-        guard case .string(let poolId) = cognitoIdentityPoolJSON.value(at: "PoolId"),
-              case .string(let region) = cognitoIdentityPoolJSON.value(at: "Region")
-        else {
-            return nil
-        }
-        return IdentityPoolConfigurationData(poolId: poolId, region: region)
+    func internalConfigure() {
+        let request = AuthConfigureRequest(authConfiguration: authConfiguration)
+        let operation = AuthConfigureOperation(
+            request: request,
+            authStateMachine: authStateMachine,
+            credentialStoreStateMachine: credentialStoreStateMachine)
+        self.queue.addOperation(operation)
     }
 
     func makeUserPool() throws -> CognitoUserPoolBehavior {
