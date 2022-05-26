@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 /// At its core, the Amplify class is simply a router that provides clients top-level access to categories and
 /// configuration methods. It provides convenient access to default plugins via the top-level category properties,
 /// but clients can access specific plugins by invoking `getPlugin` on a category and issuing methods directly to
