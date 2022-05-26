@@ -1,5 +1,15 @@
 # Changelog
 ## Unreleased
+## 1.26.0 (2022-05-26)
+
+### Features
+
+- **DataStore**: Temporal performance enhancements (#1760)
+
+### Bug Fixes
+
+- **DataStore**: include table name inside quotes in SQL Update statement (#1824)
+
 ## 1.25.0 (2022-05-19)
 
 ### Features

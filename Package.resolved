@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
         "state": {
           "branch": null,
-          "revision": "810a305a8e2200db90d3a237c687b20cfc610268",
-          "version": "1.9.1"
+          "revision": "28f61d7ca362699941cc8844d34d082f1eb49602",
+          "version": "1.10.0"
         }
       },
       {
