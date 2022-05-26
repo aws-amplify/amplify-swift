@@ -67,7 +67,7 @@ extension Model {
                         let data = try jsonEncoder.encode(encodable.eraseToAnyEncodable())
                         input[name] = try JSONSerialization.jsonObject(with: data)
                     } catch {
-                        return Amplify.preconditionFailure("Could not turn into json object from \(value)")
+                        return Fatal.preconditionFailure("Could not turn into json object from \(value)")
                     }
                 }
             case .string:

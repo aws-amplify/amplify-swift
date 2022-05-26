@@ -28,7 +28,7 @@ public struct GraphQLFilterConverter {
                                        options: options)
 
         guard let serializedString = String(data: graphQLFilterData, encoding: .utf8) else {
-            return Amplify.preconditionFailure("""
+            return Fatal.preconditionFailure("""
                 Could not initialize String from the GraphQL representation of QueryPredicate:
                 \(String(describing: graphQLFilterData))
                 """)
@@ -47,7 +47,7 @@ public struct GraphQLFilterConverter {
                                                            options: options)
 
         guard let serializedString = String(data: graphQLFilterData, encoding: .utf8) else {
-            return Amplify.preconditionFailure("""
+            return Fatal.preconditionFailure("""
                 Could not initialize String from the GraphQL representation of QueryPredicate:
                 \(String(describing: graphQLFilterData))
                 """)
@@ -60,7 +60,7 @@ public struct GraphQLFilterConverter {
     public static func fromJSON(_ value: String) throws -> GraphQLFilter {
         guard let data = value.data(using: .utf8),
             let filter = try JSONSerialization.jsonObject(with: data) as? GraphQLFilter else {
-            return Amplify.preconditionFailure("Could not serialize to GraphQLFilter from: \(self))")
+            return Fatal.preconditionFailure("Could not serialize to GraphQLFilter from: \(self))")
         }
 
         return filter
@@ -81,7 +81,7 @@ extension QueryPredicate {
             return constant.graphQLFilter(for: modelSchema)
         }
 
-        return Amplify.preconditionFailure(
+        return Fatal.preconditionFailure(
             "Could not find QueryPredicateOperation or QueryPredicateGroup for \(String(describing: self))")
     }
 
@@ -95,7 +95,7 @@ extension QueryPredicate {
             return group.graphQLFilter(for: nil)
         }
 
-        return Amplify.preconditionFailure(
+        return Fatal.preconditionFailure(
             "Could not find QueryPredicateOperation or QueryPredicateGroup for \(String(describing: self))")
     }
 }
@@ -105,7 +105,7 @@ extension QueryPredicateConstant: GraphQLFilterConvertible {
         if self == .all {
             return [:]
         }
-        return Amplify.preconditionFailure("Could not find QueryPredicateConstant \(self)")
+        return Fatal.preconditionFailure("Could not find QueryPredicateConstant \(self)")
     }
 }
 
@@ -150,7 +150,7 @@ extension QueryPredicateGroup: GraphQLFilterConvertible {
             if let predicate = predicates.first {
                 return [logicalOperator: predicate.graphQLFilter(for: modelSchema)]
             } else {
-                return Amplify.preconditionFailure("Missing predicate for \(String(describing: self)) with type: \(type)")
+                return Fatal.preconditionFailure("Missing predicate for \(String(describing: self)) with type: \(type)")
             }
         }
     }
@@ -222,7 +222,7 @@ extension Persistable {
         case let temporalTime as Temporal.Time:
             return temporalTime.iso8601String
         default:
-            return Amplify.preconditionFailure("""
+            return Fatal.preconditionFailure("""
             Value \(String(describing: self)) of type \(String(describing: type(of: self))) \
             is not a compatible type.
             """)

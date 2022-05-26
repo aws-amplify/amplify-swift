@@ -99,7 +99,7 @@ public enum ModelFieldType {
         if let embeddedType = type as? Codable.Type {
             return .embedded(type: embeddedType)
         }
-        return Amplify.preconditionFailure("Could not create a ModelFieldType from \(String(describing: type)) MetaType")
+        return Fatal.preconditionFailure("Could not create a ModelFieldType from \(String(describing: type)) MetaType")
     }
 }
 
@@ -260,7 +260,7 @@ public enum ModelFieldDefinition {
                               association,
                               attributes,
                               authRules) = self else {
-            return Amplify.preconditionFailure("Unexpected enum value found: \(String(describing: self))")
+            return Fatal.preconditionFailure("Unexpected enum value found: \(String(describing: self))")
         }
         return ModelField(name: name,
                           type: type,

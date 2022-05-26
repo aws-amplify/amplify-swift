@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 // Credit: Dave DeLong
 // https://forums.swift.org/t/introducing-namespacing-for-common-swift-error-scenarios/10773
 
@@ -13,6 +15,20 @@ import Foundation
 /// An umbrella type supplying static members to handle common
 /// and conventional exit scenarios.
 public enum Fatal {
+
+    @discardableResult
+    public static func preconditionFailure<T>(_ message: @autoclosure () -> String = String(),
+                                              file: StaticString = #file,
+                                              line: UInt = #line) -> T {
+        guard let instanceFactory = AmplifyTesting.getInstanceFactory() else {
+            Swift.preconditionFailure(message(), file: file, line: line)
+        }
+        do {
+            return try instanceFactory.get(type: T.self, message: message())
+        } catch {
+            die(reason: "Error: \(error)", file: file, line: line)
+        }
+    }
 
     /// Die because a default method must be overriden by a
     /// subtype or extension.
@@ -55,7 +71,7 @@ public enum Fatal {
 
     /// Performs a diagnostic fatal error with reason and
     /// context information.
-    private static func die(reason: String, extra: String?, file: StaticString, line: UInt) -> Never {
+    private static func die(reason: String, extra: String? = nil, file: StaticString, line: UInt) -> Never {
         var message = reason
         if let extra = extra {
             message += ": \(extra)"
