@@ -59,12 +59,12 @@ public struct DataStoreListDecoder: ModelListDecoder {
 
             let message = "DataStoreListProvider could not be created from \(String(describing: json))"
             Amplify.DataStore.log.error(message)
-            assert(false, message)
+            assertionFailure(message)
             return nil
         default:
             let message = "DataStoreListProvider could not be created from \(String(describing: json))"
             Amplify.DataStore.log.error(message)
-            assert(false, message)
+            assertionFailure(message)
             return nil
         }
     }
