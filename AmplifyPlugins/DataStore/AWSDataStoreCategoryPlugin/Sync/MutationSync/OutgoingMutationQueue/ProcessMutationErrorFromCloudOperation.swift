@@ -200,7 +200,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                 self.sendMutation(describedBy: request)
             case .retry(let model):
                 guard let modelSchema = ModelRegistry.modelSchema(from: self.mutationEvent.modelName) else {
-                    preconditionFailure("""
+                    return Fatal.preconditionFailure("""
                     Could not retrieve schema for the model \(self.mutationEvent.modelName), verify that datastore is
                     initialized.
                     """)
@@ -232,7 +232,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                 self.saveCreateOrUpdateMutation(remoteModel: remoteModel)
             case .retryLocal:
                 guard let modelSchema = ModelRegistry.modelSchema(from: self.mutationEvent.modelName) else {
-                    preconditionFailure("""
+                    return Fatal.preconditionFailure("""
                     Could not retrieve schema for the model \(self.mutationEvent.modelName), verify that datastore is
                     initialized.
                     """)
@@ -243,7 +243,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                 self.sendMutation(describedBy: request)
             case .retry(let model):
                 guard let modelSchema = ModelRegistry.modelSchema(from: self.mutationEvent.modelName) else {
-                    preconditionFailure("""
+                    return Fatal.preconditionFailure("""
                     Could not retrieve schema for the model \(self.mutationEvent.modelName), verify that datastore is
                     initialized.
                     """)

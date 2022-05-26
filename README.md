@@ -103,7 +103,7 @@ Amplify requires Xcode 12 or higher to build.
             try Amplify.add(AWSAPIPlugin())
             // and so on ...
         } catch {
-            assert(false, "Error initializing Amplify: \(error)")
+            assertionFailure("Error initializing Amplify: \(error)")
         }
     }
     ```

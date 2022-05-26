@@ -29,7 +29,7 @@ extension Persistable {
             let binding = try SQLiteModelValueConverter.convertToTarget(from: value,
                                                                         fieldType: .from(type: valueType))
             guard let validBinding = binding else {
-                preconditionFailure("""
+                return Fatal.preconditionFailure("""
                 Converting \(String(describing: value)) of type \(String(describing: valueType))
                 to a SQLite Binding returned a nil value. This is likely a bug in the
                 SQLiteModelValueConverter logic.
@@ -37,7 +37,7 @@ extension Persistable {
             }
             return validBinding
         } catch {
-            preconditionFailure("""
+            return Fatal.preconditionFailure("""
             Value \(String(describing: value)) of type \(String(describing: valueType))
             is not a SQLite Binding compatible type. Error: \(error.localizedDescription)
 
@@ -187,7 +187,7 @@ extension Array where Element == ModelSchema {
                     .map { (schema) -> ModelSchema in
                         guard let associatedSchema = ModelRegistry.modelSchema(from: schema.requiredAssociatedModelName)
                         else {
-                            preconditionFailure("""
+                            return Fatal.preconditionFailure("""
                             Could not retrieve schema for the model \(schema.requiredAssociatedModelName), verify that
                             datastore is initialized.
                             """)

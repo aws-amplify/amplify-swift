@@ -53,7 +53,7 @@ struct CreateTableStatement: SQLStatement {
             statement += "  foreign key(\"\(foreignKey.sqlName)\") "
             let associatedModel = foreignKey.requiredAssociatedModelName
             guard let schema = ModelRegistry.modelSchema(from: associatedModel) else {
-                preconditionFailure("""
+                return Fatal.preconditionFailure("""
                 Could not retrieve schema for the model \(associatedModel), verify that datastore is initialized.
                 """)
             }

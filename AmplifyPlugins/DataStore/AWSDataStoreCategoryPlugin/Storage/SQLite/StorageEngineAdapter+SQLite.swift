@@ -82,7 +82,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     static func getDbFilePath(databaseName: String) -> URL {
         guard let documentsPath = getDocumentPath() else {
-            preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
+            return Fatal.preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
         }
         return documentsPath.appendingPathComponent("\(databaseName).db")
     }

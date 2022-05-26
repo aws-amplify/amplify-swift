@@ -45,7 +45,7 @@ public struct AppSyncListPayload: Codable {
               let filterVariablesJSON = try? JSONSerialization.jsonObject(with: filterVariablesData)
                 as? GraphQLFilter else {
 
-            assert(false, "Filter variables is not a valid JSON object: \(filterValue)")
+            assertionFailure("Filter variables is not a valid JSON object: \(filterValue)")
             return nil
         }
 

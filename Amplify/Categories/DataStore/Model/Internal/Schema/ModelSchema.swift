@@ -101,7 +101,7 @@ public struct ModelSchema {
     private var _primaryKey: ModelPrimaryKey?
     public var primaryKey: ModelPrimaryKey {
         guard let primaryKey = _primaryKey else {
-            preconditionFailure("Primary Key not defined for `\(name)`")
+            return Fatal.preconditionFailure("Primary Key not defined for `\(name)`")
         }
         return primaryKey
     }
