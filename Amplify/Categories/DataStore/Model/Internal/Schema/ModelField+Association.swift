@@ -173,7 +173,7 @@ extension ModelField {
         """)
     public var requiredAssociatedModel: Model.Type {
         guard let modelType = associatedModel else {
-            preconditionFailure("""
+            return Fatal.preconditionFailure("""
             Model fields that are foreign keys must be connected to another Model.
             Check the `ModelSchema` section of your "\(name)+Schema.swift" file.
             """)
@@ -194,7 +194,7 @@ extension ModelField {
     ///   breaking change.
     public var requiredAssociatedModelName: ModelName {
         guard let modelName = associatedModelName else {
-            preconditionFailure("""
+            return Fatal.preconditionFailure("""
             Model fields that are foreign keys must be connected to another Model.
             Check the `ModelSchema` section of your "\(name)+Schema.swift" file.
             """)

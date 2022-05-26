@@ -89,7 +89,7 @@ public struct ModelSchema {
 
     public var primaryKey: ModelField {
         guard let primaryKey = fields.first(where: { $1.isPrimaryKey }) else {
-            preconditionFailure("Primary Key not defined for `\(name)`")
+            return Fatal.preconditionFailure("Primary Key not defined for `\(name)`")
         }
         return primaryKey.value
     }
