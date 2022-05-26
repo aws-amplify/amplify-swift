@@ -158,6 +158,7 @@ class AnalyticsClient: InternalPinpointClient {
         try await eventRecorder.save(event)
     }
     
+    @discardableResult
     func submitEvents() async throws -> [PinpointEvent] {
         return try await eventRecorder.submitAllEvents()
     }
@@ -184,7 +185,9 @@ extension AnalyticsClient {
 }
 
 extension Date {
-    var utcTimeMillis: Int64 {
+    typealias Millisecond = Int64
+
+    var utcTimeMillis: Millisecond {
         return Int64(self.timeIntervalSince1970 * 1000)
     }
 }

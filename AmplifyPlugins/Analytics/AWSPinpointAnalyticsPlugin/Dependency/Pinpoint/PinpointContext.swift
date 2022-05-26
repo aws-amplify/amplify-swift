@@ -12,26 +12,34 @@ import AWSPluginsCore
 import Foundation
 
 protocol UserDefaultsBehaviour {
-    func set(_ value: Any?, forKey defaultName: String)
-    func removeObject(forKey defaultName: String)
-    func string(forKey defaultName: String) -> String?
-    func object(forKey defaultName: String) -> Any?
-    func data(forKey defaultName: String) -> Data?
+    func save(_ value: UserDefaultsBehaviourValue?, forKey key: String)
+    func removeObject(forKey key: String)
+    func string(forKey key: String) -> String?
+    func data(forKey key: String) -> Data?
 }
 
-extension UserDefaults: UserDefaultsBehaviour {}
+protocol UserDefaultsBehaviourValue {}
+extension String: UserDefaultsBehaviourValue {}
+extension Data: UserDefaultsBehaviourValue {}
+
+extension UserDefaults: UserDefaultsBehaviour {
+    func save(_ value: UserDefaultsBehaviourValue?, forKey key: String) {
+        set(value, forKey: key)
+    }
+}
 
 struct PinpointContextConfiguration {
+    typealias Megabyte = Int
     /// The Pinpoint AppId.
     let appId: String
     /// The session timeout in seconds. Defaults to 5 seconds.
     let sessionTimeout: TimeInterval
     /// The max storage size to use for event storage in MB. Defaults to 5 MB.
-    let maxStorageSize: Int
+    let maxStorageSize: Megabyte
 
     init(appId: String,
          sessionTimeout: TimeInterval = 5,
-         maxStorageSize: Int = (1024 * 1024 * 5)) {
+         maxStorageSize: Megabyte = (1024 * 1024 * 5)) {
         self.appId = appId
         self.sessionTimeout = sessionTimeout
         self.maxStorageSize = maxStorageSize
@@ -53,8 +61,8 @@ class PinpointContext {
         EndpointClient(context: self)
     }()
     
-    lazy var sessionTracker: SessionTracker = {
-        SessionTracker(context: self)
+    lazy var sessionTracker: SessionClient = {
+        SessionClient(context: self)
     }()
     
     private let keychainStore: KeychainStoreBehavior
@@ -127,7 +135,7 @@ class PinpointContext {
                 Amplify.Analytics.log.verbose("Fallback: Migrate UniqueId to UserDefaults: \(legacyUniqueId)")
                 
                 // Attempt to migrate to UserDefaults
-                userDefaults.set(legacyUniqueId, forKey: Constants.Keychain.uniqueIdKey)
+                userDefaults.save(legacyUniqueId, forKey: Constants.Keychain.uniqueIdKey)
                 
                 // Delete the old file
                 removeLegacyPreferencesFile()
@@ -160,7 +168,7 @@ class PinpointContext {
         } catch {
             Amplify.Analytics.log.error("Failed to save UniqueId in Keychain")
             Amplify.Analytics.log.verbose("Fallback: Created new Pinpoint UniqueId and saved it to UserDefaults: \(newUniqueId)")
-            userDefaults.set(newUniqueId, forKey: Constants.Keychain.uniqueIdKey)
+            userDefaults.save(newUniqueId, forKey: Constants.Keychain.uniqueIdKey)
         }
 
         return newUniqueId

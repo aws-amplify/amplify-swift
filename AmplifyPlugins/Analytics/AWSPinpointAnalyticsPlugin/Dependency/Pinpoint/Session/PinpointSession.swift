@@ -7,9 +7,7 @@
 
 import Foundation
 
-class PinpointSession: NSObject, NSSecureCoding {
-    static var supportsSecureCoding = true
-
+class PinpointSession: Codable {
     let sessionId: String
     let startTime: Date
     private(set) var stopTime: Date?
@@ -30,17 +28,6 @@ class PinpointSession: NSObject, NSSecureCoding {
         self.stopTime = stopTime
     }
     
-    required init?(coder: NSCoder) {
-        guard let sessionId = coder.decodeObject(of: NSString.self, forKey: Constants.CodingKeys.sessionId) as? String,
-              let startTime = coder.decodeObject(of: NSDate.self, forKey: Constants.CodingKeys.startTime) as? Date else {
-            return nil
-        }
-
-        self.sessionId = sessionId
-        self.startTime = startTime
-        self.stopTime = coder.decodeObject(of: NSDate.self, forKey: Constants.CodingKeys.stopTime) as? Date
-    }
-    
     var isPaused: Bool {
         return stopTime != nil
     }
@@ -48,12 +35,6 @@ class PinpointSession: NSObject, NSSecureCoding {
     var timeDurationInMillis: Int64 {
         let endTime = stopTime ?? Date()
         return endTime.utcTimeMillis - startTime.utcTimeMillis
-    }
-    
-    func encode(with coder: NSCoder) {
-        coder.encode(sessionId as NSString, forKey: Constants.CodingKeys.sessionId)
-        coder.encode(startTime as NSDate, forKey: Constants.CodingKeys.startTime)
-        coder.encode(stopTime as NSDate?, forKey: Constants.CodingKeys.stopTime)
     }
     
     func stop() {
@@ -99,6 +80,7 @@ class PinpointSession: NSObject, NSSecureCoding {
 
 extension PinpointSession {
     struct Constants {
+        static let defaultSessionId = "00000000-00000000"
         static let maxAppKeyLength = 8
         static let maxUniqueIdLength = 8
         static let paddingChar = "_"

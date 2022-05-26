@@ -136,15 +136,6 @@ protocol AWSPinpointAnalyticsClientBehavior {
 
      @return AWSTask - task.result contains successful submitted events.
      */
+    @discardableResult
     func submitEvents() async throws -> [PinpointEvent]
-
-    /**
-     Submits all recorded events to Pinpoint.
-     Events are automatically submitted when the application goes into the background.
-
-     @param completionBlock The block to be executed after submission has completed.
-
-     @return AWSTask - task.result is always nil.
-     */
-    func submitEvents() async throws
 }
