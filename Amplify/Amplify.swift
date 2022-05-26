@@ -24,9 +24,6 @@ public class Amplify {
     /// ConfigurationError.amplifyAlreadyConfigured error.
     static var isConfigured = false
 
-    /// Instance factory to use during testing.
-    static var instanceFactory: InstanceFactory?
-
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
     // It is not supported to mutate these category properties. They are `var` to support the `reset()` method for
     // ease of testing.
@@ -79,24 +76,6 @@ public class Amplify {
             throw PluginError.pluginConfigurationError(
                 "Plugin category does not exist.",
                 "Verify that the library version is correct and supports the plugin's category.")
-        }
-    }
-
-    static var isTesting: Bool {
-        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
-    }
-
-    @discardableResult
-    public static func preconditionFailure<T>(_ message: @autoclosure () -> String = String(),
-                                              file: StaticString = #file,
-                                              line: UInt = #line) -> T {
-        guard isTesting, let instanceFactory = instanceFactory else {
-            Swift.preconditionFailure(message(), file: file, line: line)
-        }
-        do {
-            return try instanceFactory.get(type: T.self, message: message())
-        } catch {
-            fatalError("Error: \(error)")
         }
     }
 }

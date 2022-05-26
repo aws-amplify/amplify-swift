@@ -175,26 +175,14 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        // increment when instance is created which indicates a precondition failed
-        var callCount = 0
-        var message: String? = nil
-        let registry = TypeRegistry()
-        registry.register(type: StorageCategoryPlugin.self) {
-            callCount += 1
-            message = $0
-            return MockStorageCategoryPlugin()
-        }
-
-        Amplify.instanceFactory = registry
-        defer {
-            Amplify.instanceFactory = nil
+        let registry = TypeRegistry.register(type: StorageCategoryPlugin.self) { _ in
+            MockStorageCategoryPlugin()
         }
 
         // a precondition failure will happen since 2 plugins are added
         _ = Amplify.Storage.downloadData(key: "", options: nil, resultListener: nil)
 
-        XCTAssertNotNil(message)
-        XCTAssertEqual(callCount, 1)
+        XCTAssertGreaterThan(registry.messages.count, 0)
     }
 
     func testCanConfigurePluginDirectly() throws {

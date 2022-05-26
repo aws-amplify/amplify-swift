@@ -236,24 +236,13 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        var callCount = 0
-        var message: String? = nil
-        let registry = TypeRegistry()
-        registry.register(type: AuthCategoryPlugin.self) {
-            callCount += 1
-            message = $0
-            return MockAuthCategoryPlugin()
-        }
-
-        Amplify.instanceFactory = registry
-        defer {
-            Amplify.instanceFactory = nil
+        let registry = TypeRegistry.register(type: AuthCategoryPlugin.self) { _ in
+            MockAuthCategoryPlugin()
         }
 
         _ = Amplify.Auth.update(oldPassword: "current", to: "new", listener: nil)
 
-        XCTAssertNotNil(message)
-        XCTAssertEqual(callCount, 1)
+        XCTAssertGreaterThan(registry.messages.count, 0)
     }
 
     /// Test if configuration Auth plugin with getPlugin() works
@@ -307,25 +296,14 @@ class AuthCategoryConfigurationTests: XCTestCase {
         let plugin = MockAuthCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        var callCount = 0
-        var message: String? = nil
-        let registry = TypeRegistry()
-        registry.register(type: AuthCategoryPlugin.self) {
-            callCount += 1
-            message = $0
-            return MockAuthCategoryPlugin()
-        }
-
-        Amplify.instanceFactory = registry
-        defer {
-            Amplify.instanceFactory = nil
+        let registry = TypeRegistry.register(type: AuthCategoryPlugin.self) { _ in
+            MockAuthCategoryPlugin()
         }
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
         _ = Amplify.Auth.update(oldPassword: "current", to: "new", listener: nil)
 
-        XCTAssertNotNil(message)
-        XCTAssertEqual(callCount, 1)
+        XCTAssertGreaterThan(registry.messages.count, 0)
     }
 
     // MARK: - Test internal config behavior guarantees
@@ -381,24 +359,13 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
         XCTAssertNoThrow(try Amplify.Auth.configure(using: config))
 
-        var callCount = 0
-        var message: String? = nil
-        let registry = TypeRegistry()
-        registry.register(type: AuthCategoryPlugin.self) {
-            callCount += 1
-            message = $0
-            return MockAuthCategoryPlugin()
-        }
-
-        Amplify.instanceFactory = registry
-        defer {
-            Amplify.instanceFactory = nil
+        let registry = TypeRegistry.register(type: AuthCategoryPlugin.self) { _ in
+            MockAuthCategoryPlugin()
         }
 
         _ = Amplify.Auth.update(oldPassword: "current", to: "new", listener: nil)
 
-        XCTAssertNil(message)
-        XCTAssertEqual(callCount, 0)
+        XCTAssertEqual(registry.messages.count, 0)
     }
 
     /// Test that Amplify logs a warning if it encounters a plugin configuration key without a corresponding plugin
