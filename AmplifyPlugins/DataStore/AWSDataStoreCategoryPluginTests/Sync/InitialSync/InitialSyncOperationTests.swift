@@ -451,7 +451,10 @@ class InitialSyncOperationTests: XCTestCase {
                 XCTAssertEqual(syncType, .fullSync)
                 syncStartedReceived.fulfill()
             case .finished(modelName: let modelName, error: let error):
-                XCTAssertNotNil(error)
+                guard case .api = error else {
+                    XCTFail("Should be api error")
+                    return
+                }
                 XCTAssertEqual(modelName, "MockSynced")
                 finishedReceived.fulfill()
             default:

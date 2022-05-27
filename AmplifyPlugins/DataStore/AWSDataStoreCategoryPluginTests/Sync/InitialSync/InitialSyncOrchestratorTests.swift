@@ -178,7 +178,10 @@ class InitialSyncOrchestratorTests: XCTestCase {
                     syncStartedReceived.fulfill()
                 case .finished(let modelName, let error):
                     if modelName == "Post" {
-                        XCTAssertNotNil(error)
+                        guard case .api(let apiError, _) = error, case .operationError = apiError as? APIError else {
+                            XCTFail("Should be api error")
+                            return
+                        }
                     } else if modelName == "Comment" {
                         XCTAssertNil(error)
                     }
