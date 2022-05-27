@@ -10,6 +10,25 @@ import AWSClientRuntime
 import AwsCommonRuntimeKit
 
 public class AmplifyAWSCredentialsProvider: CredentialsProvider {
+
+    public func getCredentials() async throws -> AWSCredentials {
+        try await withCheckedThrowingContinuation { continuation in
+            _  = Amplify.Auth.fetchAuthSession { result in
+                do {
+                    let session = try result.get()
+                    if let awsCredentialsProvider = session as? AuthAWSCredentialsProvider {
+                        let credentials = try awsCredentialsProvider.getAWSCredentials().get()
+                        continuation.resume(with: .success(credentials.toAWSSDKCredentials()))
+                    } else {
+                        let error = AuthError.unknown("Auth session does not include AWS credentials information")
+                        continuation.resume(with: .failure(error))
+                    }
+                } catch {
+                    continuation.resume(with: .failure(error))
+                }
+            }
+        }
+    }
     
     public func getCredentials() throws -> Future<AWSCredentials> {
         let future = Future<AWSCredentials>()

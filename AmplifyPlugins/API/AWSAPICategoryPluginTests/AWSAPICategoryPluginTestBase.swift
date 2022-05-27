@@ -64,6 +64,7 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
         }
 
         Amplify.reset()
+        sleep(2)
         let config = AmplifyConfiguration()
         do {
             try Amplify.configure(config)

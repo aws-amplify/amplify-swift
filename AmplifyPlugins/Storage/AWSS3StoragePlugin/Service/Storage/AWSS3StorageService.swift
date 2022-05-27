@@ -10,6 +10,7 @@ import Foundation
 import AWSS3
 import Amplify
 import AWSPluginsCore
+import AWSClientRuntime
 
 class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
 
@@ -46,8 +47,8 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
                      delegateQueue: OperationQueue? = nil,
                      logger: Logger = storageLogger) throws {
         let credentialsProvider = authService.getCredentialsProvider()
-        let clientConfig = try S3Client.S3ClientConfiguration(credentialsProvider: credentialsProvider,
-                                                              region: region,
+        let clientConfig = try S3Client.S3ClientConfiguration(region: region,
+                                                              credentialsProvider: credentialsProvider,
                                                               signingRegion: region)
 
         let s3Client = S3Client(config: clientConfig)

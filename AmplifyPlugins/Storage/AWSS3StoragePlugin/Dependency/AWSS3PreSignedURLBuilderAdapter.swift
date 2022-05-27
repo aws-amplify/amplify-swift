@@ -35,18 +35,40 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
     func getPreSignedURL(key: String, signingOperation: AWSS3SigningOperation, expires: Int64? = nil) -> URL? {
         let expiresDate = Date(timeIntervalSinceNow: Double(expires ?? defaultExpiration))
         let expiration = Int64(expiresDate.timeIntervalSinceNow)
-        let preSignedUrl: URL?
-        switch signingOperation {
-        case .getObject:
-            let input = GetObjectInput(bucket: bucket, key: key)
-            preSignedUrl = input.presignURL(config: config, expiration: expiration)
-        case .putObject:
-            let input = PutObjectInput(bucket: bucket, key: key)
-            preSignedUrl = input.presignURL(config: config, expiration: expiration)
-        case .uploadPart(let partNumber, let uploadId):
-            let input = UploadPartInput(bucket: bucket, key: key, partNumber: partNumber, uploadId: uploadId)
-            preSignedUrl = input.presignURL(config: config, expiration: expiration)
+        var preSignedUrl: URL?
+        
+        let group = DispatchGroup()
+        
+        let setValue: (URL?) -> Void = {
+            preSignedUrl = $0
+            group.leave()
         }
+        
+        group.enter()
+        Task {
+            do {
+                switch signingOperation {
+                case .getObject:
+                    let input = GetObjectInput(bucket: bucket, key: key)
+                    let value = try await input.presignURL(config: config, expiration: expiration)
+                    setValue(value)
+                case .putObject:
+                    let input = PutObjectInput(bucket: bucket, key: key)
+                    let value = try await input.presignURL(config: config, expiration: expiration)
+                    setValue(value)
+                case .uploadPart(let partNumber, let uploadId):
+                    let input = UploadPartInput(bucket: bucket, key: key, partNumber: partNumber, uploadId: uploadId)
+                    let value = try await input.presign(config: config, expiration: expiration)?.endpoint.url
+                    setValue(value)
+                }
+            } catch {
+                setValue(nil)
+                logger.error(error: error)
+            }
+        }
+        
+        group.wait()
+        
         return urlWithEscapedToken(preSignedUrl)
     }
 

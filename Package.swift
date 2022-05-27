@@ -11,27 +11,18 @@ let dependencies: [Package.Dependency] = [
     .package(
         name: "AppSyncRealTimeClient",
         url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
-        from: "1.9.0"
-    ),// We can remove AwsCrt and ClientRuntime once we move to the latest AWS SDK for Swift
-    .package(
-        name: "AwsCrt",
-        url: "https://github.com/awslabs/aws-crt-swift.git",
-        .exact("0.1.1")
-    ),
-    .package(
-        name: "ClientRuntime",
-        url: "https://github.com/awslabs/smithy-swift.git",
-        .exact("0.1.4")
+        from: "1.10.0"
     ),
     .package(
         name: "AWSSwiftSDK",
         url: "https://github.com/awslabs/aws-sdk-swift.git",
-        .exact("0.1.4")
+        .upToNextMinor(from: "0.2.4")
     ),
     .package(
         name: "CwlPreconditionTesting",
         url: "https://github.com/mattgallagher/CwlPreconditionTesting.git",
-        .upToNextMinor(from: "2.1.0"))
+        .upToNextMinor(from: "2.1.0")
+    )
 ]
 let swiftSettings: [SwiftSetting]? = [.define("DEV_PREVIEW_BUILD")]
 
@@ -219,7 +210,8 @@ let authTargets: [Target] = [
     .testTarget(
         name: "AWSCognitoAuthPluginUnitTests",
         dependencies: [
-            "AWSCognitoAuthPlugin"
+            "AWSCognitoAuthPlugin",
+            "AWSPluginsTestCommon"
         ],
         path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests"
     ),
@@ -278,6 +270,7 @@ let storageTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
+            .product(name: "AWSCognitoIdentityProvider", package: "AWSSwiftSDK"),
             .product(name: "AWSS3", package: "AWSSwiftSDK")],
         path: "AmplifyPlugins/Storage/AWSS3StoragePlugin",
         exclude: [

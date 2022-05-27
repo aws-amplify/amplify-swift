@@ -54,16 +54,16 @@ struct InitiateSignUp: Action {
                                 attributes: signUpEventData.attributes,
                                 userPoolConfiguration: environment.userPoolConfiguration)
         logVerbose("\(#fileID) Starting signup", environment: environment)
-        client.signUp(input: input) { result in
-            logVerbose("\(#fileID) SignUp received", environment: environment)
+        
+        Task {
             let event: SignUpEvent
-            switch result {
-            case .success(let response):
+            do {
+                let response = try await client.signUp(input: input)
+                logVerbose("\(#fileID) SignUp received", environment: environment)
                 event = SignUpEvent(eventType: .initiateSignUpSuccess(
-                    username: signUpEventData.username,
-                    signUpResponse: response)
-                )
-            case .failure(let error):
+                                    username: signUpEventData.username,
+                                    signUpResponse: response))
+            } catch {
                 let error = SignUpError.service(error: error)
                 event = SignUpEvent(eventType: .initiateSignUpFailure(error: error))
             }
@@ -149,3 +149,4 @@ extension SignUpInput {
         }
     }
 }
+

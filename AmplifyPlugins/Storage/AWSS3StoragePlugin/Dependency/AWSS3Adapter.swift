@@ -47,11 +47,11 @@ class AWSS3Adapter: AWSS3Behavior {
     ///   - request: request identifying bucket and options
     ///   - completion: handle which return a result with list of items
     func listObjectsV2(_ request: AWSS3ListObjectsV2Request, completion: @escaping (Result<StorageListResult, StorageError>) -> Void) {
-        let input = ListObjectsV2Input(prefix: request.prefix,
-                                       bucket: request.bucket,
+        let input = ListObjectsV2Input(bucket: request.bucket,
                                        continuationToken: request.continuationToken,
                                        delimiter: request.delimiter,
                                        maxKeys: request.maxKeys,
+                                       prefix: request.prefix,
                                        startAfter: request.startAfter)
         awsS3.listObjectsV2(input: input) { result in
             switch(result) {
@@ -87,7 +87,7 @@ class AWSS3Adapter: AWSS3Behavior {
                                                key: request.key,
                                                metadata: request.metadata)
         
-        awsS3.createMultipartUpload(config: config, input: input) { result in
+        awsS3.createMultipartUpload(input: input) { result in
             switch result {
             case .success(let response):
                 guard let bucket = response.bucket, let key = response.key, let uploadId = response.uploadId else {
@@ -127,7 +127,7 @@ class AWSS3Adapter: AWSS3Behavior {
         }
         let completedMultipartUpload = S3ClientTypes.CompletedMultipartUpload(parts: parts)
         let input = CompleteMultipartUploadInput(bucket: request.bucket, key: request.key, multipartUpload: completedMultipartUpload, uploadId: request.uploadId)
-        awsS3.completeMultipartUpload(config: config, input: input) { result in
+        awsS3.completeMultipartUpload(input: input) { result in
             switch result {
             case .success(let response):
                 guard let eTag = response.eTag else {

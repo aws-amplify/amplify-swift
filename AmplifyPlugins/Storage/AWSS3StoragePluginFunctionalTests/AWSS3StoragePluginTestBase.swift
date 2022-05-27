@@ -15,17 +15,32 @@ import AWSCognitoAuthPlugin
 class AWSS3StoragePluginTestBase: XCTestCase {
 
     static let amplifyConfiguration = "testconfiguration/AWSS3StoragePluginTests-amplifyconfiguration"
+    static let credentials = "testconfiguration/AWSS3StoragePluginTests-credentials"
 
     static let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * 6) // 6MB
 
-    static var user1: String = "integTest\(UUID().uuidString)"
-    static var user2: String = "integTest\(UUID().uuidString)"
-    static var password: String = "P123@\(UUID().uuidString)"
-    static var email1 = UUID().uuidString + "@" + UUID().uuidString + ".com"
-    static var email2 = UUID().uuidString + "@" + UUID().uuidString + ".com"
+    static var user1: String!
+    static var user2: String!
+    static var password: String!
 
-    static var isFirstUserSignedUp = false
-    static var isSecondUserSignedUp = false
+    static override func setUp() {
+        do {
+            let credentials = try TestConfigHelper
+                .retrieveCredentials(forResource: AWSS3StoragePluginTestBase.credentials)
+
+            guard let user1 = credentials["user1"],
+                let user2 = credentials["user2"],
+                let password = credentials["password"] else {
+                XCTFail("Missing credentials.json data")
+                return
+            }
+            AWSS3StoragePluginTestBase.user1 = user1
+            AWSS3StoragePluginTestBase.user2 = user2
+            AWSS3StoragePluginTestBase.password = password
+        } catch {
+            XCTFail("Failed to initialize test set up \(error)")
+        }
+    }
 
     override func setUp() {
         do {
@@ -35,7 +50,6 @@ class AWSS3StoragePluginTestBase: XCTestCase {
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
-            signUp()
         } catch {
             XCTFail("Failed to initialize and configure Amplify \(error)")
         }
@@ -87,41 +101,5 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         }
 
         return bucketValue
-    }
-
-    func signUp() {
-        guard !AWSS3StoragePluginTestBase.isFirstUserSignedUp,
-              !AWSS3StoragePluginTestBase.isSecondUserSignedUp else {
-            return
-        }
-
-        let registerFirstUserComplete = expectation(description: "register completed")
-        let registerSecondUserComplete = expectation(description: "register completed")
-        AuthSignInHelper.signUpUser(
-            username: AWSS3StoragePluginTestBase.user1,
-            password: AWSS3StoragePluginTestBase.password,
-            email: AWSS3StoragePluginTestBase.email1) { didSucceed, error in
-                if didSucceed {
-                    registerFirstUserComplete.fulfill()
-                    AWSS3StoragePluginTestBase.isFirstUserSignedUp = true
-                } else {
-                    XCTFail("Failed to Sign up user \(error)")
-                }
-        }
-
-        AuthSignInHelper.signUpUser(
-            username: AWSS3StoragePluginTestBase.user2,
-            password: AWSS3StoragePluginTestBase.password,
-            email: AWSS3StoragePluginTestBase.email2) { didSucceed, error in
-                if didSucceed {
-                    registerSecondUserComplete.fulfill()
-                    AWSS3StoragePluginTestBase.isSecondUserSignedUp = true
-                } else {
-                    XCTFail("Failed to Sign up user \(error)")
-                }
-        }
-
-        wait(for: [registerFirstUserComplete, registerSecondUserComplete], timeout: TestCommonConstants.networkTimeout)
-
     }
 }
