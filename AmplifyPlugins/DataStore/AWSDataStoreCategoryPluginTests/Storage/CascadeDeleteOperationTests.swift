@@ -102,12 +102,16 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         let predicate: QueryPredicate = ModelCompositePk.keys.id == modelId
             && ModelCompositePk.keys.dob == modelDob
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: ModelCompositePk.self,
+        guard case .success(let queriedModel) = queryModelSynchronous(modelType: ModelCompositePk.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
         }
-        XCTAssertEqual(queriedRestaurants.count, 1)
+        XCTAssertEqual(queriedModel.count, 1)
+        XCTAssertEqual(queriedModel[0].id, model.id)
+        XCTAssertEqual(queriedModel[0].name, model.name)
+        XCTAssertEqual(queriedModel[0].dob, model.dob)
+
         let completed = expectation(description: "operation completed")
         let identifier = ModelCompositePk.Identifier.identifier(id: modelId, dob: modelDob)
         let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
