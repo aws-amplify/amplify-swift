@@ -367,6 +367,8 @@
 		7674E5262798DD8F008F58F4 /* ModelIdentifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7674E5252798DD8F008F58F4 /* ModelIdentifiable.swift */; };
 		7678B38426017D5300B4917F /* AppSyncErrorTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */; };
 		7678B38526017D5300B4917F /* AppSyncErrorTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */; };
+		767B9D12282EE78F00A20BDB /* ModelCompositeIntPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767B9D10282EE78F00A20BDB /* ModelCompositeIntPk.swift */; };
+		767B9D13282EE78F00A20BDB /* ModelCompositeIntPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767B9D11282EE78F00A20BDB /* ModelCompositeIntPk+Schema.swift */; };
 		767F85FC2649FF540076D633 /* CustomerOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767F85FB2649FF540076D633 /* CustomerOrder.swift */; };
 		767F85FE2649FFCC0076D633 /* CustomerOrder+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */; };
 		769CF2242669B1B9007843A0 /* RetryableGraphQLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769CF2232669B1B9007843A0 /* RetryableGraphQLOperation.swift */; };
@@ -1318,6 +1320,8 @@
 		7638895226A7A9AC0061AF0B /* AWSLambdaAuthConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSLambdaAuthConfiguration.swift; sourceTree = "<group>"; };
 		7674E5252798DD8F008F58F4 /* ModelIdentifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelIdentifiable.swift; sourceTree = "<group>"; };
 		7678B38326017D5300B4917F /* AppSyncErrorTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorTypeTests.swift; sourceTree = "<group>"; };
+		767B9D10282EE78F00A20BDB /* ModelCompositeIntPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositeIntPk.swift; sourceTree = "<group>"; };
+		767B9D11282EE78F00A20BDB /* ModelCompositeIntPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositeIntPk+Schema.swift"; sourceTree = "<group>"; };
 		767F85FB2649FF540076D633 /* CustomerOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerOrder.swift; sourceTree = "<group>"; };
 		767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomerOrder+Schema.swift"; sourceTree = "<group>"; };
 		769CF2232669B1B9007843A0 /* RetryableGraphQLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetryableGraphQLOperation.swift; sourceTree = "<group>"; };
@@ -2769,6 +2773,8 @@
 		76310CEA27E3ED87004964DF /* CustomPrimaryKey */ = {
 			isa = PBXGroup;
 			children = (
+				767B9D10282EE78F00A20BDB /* ModelCompositeIntPk.swift */,
+				767B9D11282EE78F00A20BDB /* ModelCompositeIntPk+Schema.swift */,
 				76310CF027E3EDD2004964DF /* ModelCompositePk.swift */,
 				76310CEF27E3EDD2004964DF /* ModelCompositePk+Schema.swift */,
 				76B1B02B280F7EC60046343A /* ModelCompositePkWithAssociation.swift */,
@@ -5723,6 +5729,7 @@
 				6BE9D73B25A67F7400AB5C9A /* M2MPostEditor.swift in Sources */,
 				218F786E275A639D0042334B /* Team2V2.swift in Sources */,
 				218F78BF275ABBEC0042334B /* PostEditor5V2+Schema.swift in Sources */,
+				767B9D12282EE78F00A20BDB /* ModelCompositeIntPk.swift in Sources */,
 				6BE9D73A25A67F7400AB5C9A /* M2MUser+Schema.swift in Sources */,
 				218F7852275A63310042334B /* Post6V2.swift in Sources */,
 				218F78C1275ABBEC0042334B /* PostEditor5V2.swift in Sources */,
@@ -5765,6 +5772,7 @@
 				B9FAA11223878C96009414B4 /* UserAccount+Schema.swift in Sources */,
 				FACA36152327FC39000E74F6 /* MessageReporter.swift in Sources */,
 				FAF512AE23986791001ADF4E /* AmplifyModels.swift in Sources */,
+				767B9D13282EE78F00A20BDB /* ModelCompositeIntPk+Schema.swift in Sources */,
 				217D5EC42577F9DF009F0639 /* Team1+Schema.swift in Sources */,
 				97F793DA27BC6720000153D6 /* CustomerMultipleSecondaryIndexV2+Schema.swift in Sources */,
 				6BE9D73725A67F7400AB5C9A /* M2MPost.swift in Sources */,

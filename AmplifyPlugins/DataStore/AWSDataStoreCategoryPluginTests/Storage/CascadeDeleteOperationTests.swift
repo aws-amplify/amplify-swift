@@ -36,10 +36,12 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             ModelRegistry.register(modelType: Restaurant.self)
             ModelRegistry.register(modelType: Menu.self)
             ModelRegistry.register(modelType: Dish.self)
+            ModelRegistry.register(modelType: ModelCompositePk.self)
             do {
                 try storageEngine.setUp(modelSchemas: [Restaurant.schema])
                 try storageEngine.setUp(modelSchemas: [Menu.schema])
                 try storageEngine.setUp(modelSchemas: [Dish.schema])
+                try storageEngine.setUp(modelSchemas: [ModelCompositePk.schema])
 
             } catch {
                 XCTFail("Failed to setup storage engine")
@@ -88,6 +90,51 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             return
         }
         XCTAssertEqual(queriedRestaurants.count, 0)
+    }
+
+    func testWithCompositeIdentifier() {
+        let modelId = "model-id"
+        let modelDob = Temporal.DateTime.now()
+        let model = ModelCompositePk(id: modelId, dob: modelDob, name: "name")
+        guard case .success = saveModelSynchronous(model: model) else {
+            XCTFail("Failed to save")
+            return
+        }
+        let predicate: QueryPredicate = ModelCompositePk.keys.id == modelId
+            && ModelCompositePk.keys.dob == modelDob
+        guard case .success(let queriedModel) = queryModelSynchronous(modelType: ModelCompositePk.self,
+                                                                            predicate: predicate) else {
+            XCTFail("Failed to query")
+            return
+        }
+        XCTAssertEqual(queriedModel.count, 1)
+        XCTAssertEqual(queriedModel[0].id, model.id)
+        XCTAssertEqual(queriedModel[0].name, model.name)
+        XCTAssertEqual(queriedModel[0].dob, model.dob)
+
+        let completed = expectation(description: "operation completed")
+        let identifier = ModelCompositePk.Identifier.identifier(id: modelId, dob: modelDob)
+        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
+                                               syncEngine: nil,
+                                               modelType: ModelCompositePk.self,
+                                               modelSchema: ModelCompositePk.schema,
+                                               withIdentifier: identifier) { result in
+            switch result {
+            case .success(let model):
+                XCTAssertNotNil(model)
+                completed.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        operation.start()
+        wait(for: [completed], timeout: 1)
+        guard case .success(let queriedModel) = queryModelSynchronous(modelType: ModelCompositePk.self,
+                                                                            predicate: predicate) else {
+            XCTFail("Failed to query")
+            return
+        }
+        XCTAssertEqual(queriedModel.count, 0)
     }
 
     func testWithIdAndCondition() {
@@ -324,6 +371,74 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             return
         }
         XCTAssertEqual(queriedRestaurants.count, 0)
+    }
+
+    func testWithIdentifier_WithSync() {
+        let modelId = "model-id"
+        let modelDob = Temporal.DateTime.now()
+        let model = ModelCompositePk(id: modelId, dob: modelDob, name: "name")
+
+        guard case .success = saveModelSynchronous(model: model) else {
+            XCTFail("Failed to save")
+            return
+        }
+        let predicate: QueryPredicate = ModelCompositePk.keys.id == modelId
+            && ModelCompositePk.keys.dob == modelDob
+        guard case .success(let queriedModels) = queryModelSynchronous(modelType: ModelCompositePk.self,
+                                                                            predicate: predicate) else {
+            XCTFail("Failed to query")
+            return
+        }
+        XCTAssertEqual(queriedModels.count, 1)
+
+        let receivedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
+        receivedMutationEvent.expectedFulfillmentCount = 1
+        let expectedFailures = expectation(description: "Simulated failure on mutation event submitted to sync engine")
+        expectedFailures.isInverted = true
+        let expectedSuccess = expectation(description: "Simulated success on mutation event submitted to sync engine")
+        expectedSuccess.expectedFulfillmentCount = 1
+
+        syncEngine.setCallbackOnSubmit(callback: { _ in
+            receivedMutationEvent.fulfill()
+        })
+
+        syncEngine.setReturnOnSubmit { submittedMutationEvent in
+            if submittedMutationEvent.modelId == model.identifier {
+                expectedSuccess.fulfill()
+                return Future<MutationEvent, DataStoreError> { promise in
+                    promise(.success(submittedMutationEvent))
+                }
+            }
+
+            expectedFailures.fulfill()
+            return Future<MutationEvent, DataStoreError> { promise in
+                promise(.failure(.internalOperation("mockError", "", nil)))
+            }
+        }
+
+        let completed = expectation(description: "operation completed")
+        let identifier = ModelCompositePk.Identifier.identifier(id: modelId, dob: modelDob)
+        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
+                                               syncEngine: syncEngine,
+                                               modelType: ModelCompositePk.self,
+                                               modelSchema: ModelCompositePk.schema,
+                                               withIdentifier: identifier) { result in
+            switch result {
+            case .success(let restaurant):
+                XCTAssertNotNil(restaurant)
+                completed.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        operation.start()
+        wait(for: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        guard case .success(let queriedModels) = queryModelSynchronous(modelType: ModelCompositePk.self,
+                                                                            predicate: predicate) else {
+            XCTFail("Failed to query")
+            return
+        }
+        XCTAssertEqual(queriedModels.count, 0)
     }
 
     func testWithIdAndCondition_WithSync() {
