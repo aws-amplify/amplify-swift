@@ -193,7 +193,6 @@ final class InitialSyncOperation: AsynchronousOperation {
                 self.query(lastSyncTime: lastSyncTime, nextToken: nextToken)
             }
         } else {
-            initialSyncOperationTopic.send(.finished(modelName: modelSchema.name))
             updateModelSyncMetadata(lastSyncTime: syncQueryResult.startedAt)
         }
     }
@@ -233,8 +232,10 @@ final class InitialSyncOperation: AsynchronousOperation {
     private func finish(result: AWSInitialSyncOrchestrator.SyncOperationResult) {
         switch result {
         case .failure(let error):
+            initialSyncOperationTopic.send(.finished(modelName: modelSchema.name, error: error))
             initialSyncOperationTopic.send(completion: .failure(error))
         case .success:
+            initialSyncOperationTopic.send(.finished(modelName: modelSchema.name))
             initialSyncOperationTopic.send(completion: .finished)
         }
         super.finish()

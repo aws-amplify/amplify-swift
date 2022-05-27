@@ -115,21 +115,9 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         initialSyncOperationSinks[modelSchema.name] = initialSyncForModel
             .publisher
             .receive(on: concurrencyQueue)
-            .sink(receiveCompletion: { result in
-                if case .failure(let dataStoreError) = result {
-                    let syncError = DataStoreError.sync(
-                        "An error occurred syncing \(modelSchema.name)",
-                        "",
-                        dataStoreError)
-                    self.syncErrors.append(syncError)
-
-                    if self.isUnauthorizedError(syncError) {
-                        self.initialSyncOrchestratorTopic.send(.finished(modelName: modelSchema.name))
-                    }
-                }
-                self.initialSyncOperationSinks.removeValue(forKey: modelSchema.name)
-                self.onReceiveCompletion()
-            }, receiveValue: onReceiveValue(_:))
+            .sink(receiveCompletion: { result in self.onReceiveCompletion(modelSchema: modelSchema,
+                                                                          result: result) },
+                  receiveValue: onReceiveValue(_:))
 
         syncOperationQueue.addOperation(initialSyncForModel)
     }
@@ -138,7 +126,17 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         initialSyncOrchestratorTopic.send(value)
     }
 
-    private func onReceiveCompletion() {
+    private func onReceiveCompletion(modelSchema: ModelSchema, result: Subscribers.Completion<DataStoreError>) {
+        if case .failure(let dataStoreError) = result {
+            let syncError = DataStoreError.sync(
+                "An error occurred syncing \(modelSchema.name)",
+                "",
+                dataStoreError)
+            self.syncErrors.append(syncError)
+        }
+
+        initialSyncOperationSinks.removeValue(forKey: modelSchema.name)
+
         guard initialSyncOperationSinks.isEmpty else {
             return
         }
