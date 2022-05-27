@@ -33,6 +33,7 @@ let dependencies: [Package.Dependency] = [
         url: "https://github.com/mattgallagher/CwlPreconditionTesting.git",
         .upToNextMinor(from: "2.1.0"))
 ]
+let swiftSettings: [SwiftSetting]? = [.define("DEV_PREVIEW_BUILD")]
 
 let amplifyTargets: [Target] = [
     .target(
@@ -121,7 +122,8 @@ let apiTargets: [Target] = [
         exclude: [
             "Info.plist",
             "AWSAPIPlugin.md"
-        ]
+        ],
+        swiftSettings: swiftSettings
     ),
     .testTarget(
         name: "AWSAPIPluginTests",
@@ -200,7 +202,8 @@ let authTargets: [Target] = [
             .product(name: "AWSCognitoIdentityProvider", package: "AWSSwiftSDK"),
             .product(name: "AWSCognitoIdentity", package: "AWSSwiftSDK")
         ],
-        path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin"
+        path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin",
+        swiftSettings: swiftSettings
     ),
     .target(
         name: "libtommathAmplify",
@@ -239,7 +242,8 @@ let dataStoreTargets: [Target] = [
         path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin",
         exclude: [
             "Info.plist"
-        ]
+        ],
+        swiftSettings: swiftSettings
     ),
     .testTarget(
         name: "AWSDataStoreCategoryPluginTests",
@@ -278,7 +282,8 @@ let storageTargets: [Target] = [
         path: "AmplifyPlugins/Storage/AWSS3StoragePlugin",
         exclude: [
             "Resources/Info.plist"
-        ]
+        ],
+        swiftSettings: swiftSettings
     ),
     .testTarget(
         name: "AWSS3StoragePluginTests",
