@@ -207,6 +207,9 @@
 		762547F32735FD0C00E5F6A3 /* PrivatePublicUPAPIPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762547BD2735FD0C00E5F6A3 /* PrivatePublicUPAPIPost+Schema.swift */; };
 		762547F42735FD0C00E5F6A3 /* GroupPublicUPIAMPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762547BE2735FD0C00E5F6A3 /* GroupPublicUPIAMPost+Schema.swift */; };
 		7638898F26AB56580061AF0B /* StorageEngineSyncRequirementsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7638898E26AB56570061AF0B /* StorageEngineSyncRequirementsTests.swift */; };
+		763CB90727FE557D00DEA9BB /* AWSDataStorePrimaryKeyBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763CB90627FE557D00DEA9BB /* AWSDataStorePrimaryKeyBaseTest.swift */; };
+		763CB90A27FE578400DEA9BB /* schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 763CB90927FE578400DEA9BB /* schema.graphql */; };
+		763CB90C27FE5CEC00DEA9BB /* AWSDataStorePrimaryKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763CB90B27FE5CEC00DEA9BB /* AWSDataStorePrimaryKeyTests.swift */; };
 		7678B31025FAD93200B4917F /* InitialSyncOperationSyncExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7678B30F25FAD93200B4917F /* InitialSyncOperationSyncExpressionTests.swift */; };
 		767C398B266EE4DA00CB64B9 /* AWSDataStoreMultiAuthThreeRulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767C398A266EE4DA00CB64B9 /* AWSDataStoreMultiAuthThreeRulesTests.swift */; };
 		767C398D266EE59000CB64B9 /* AWSDataStoreMultiAuthThreeRulesTests+Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767C398C266EE59000CB64B9 /* AWSDataStoreMultiAuthThreeRulesTests+Models.swift */; };
@@ -640,6 +643,10 @@
 		762547BE2735FD0C00E5F6A3 /* GroupPublicUPIAMPost+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GroupPublicUPIAMPost+Schema.swift"; sourceTree = "<group>"; };
 		762547BF2735FD0C00E5F6A3 /* multiauth-schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "multiauth-schema.graphql"; sourceTree = "<group>"; };
 		7638898E26AB56570061AF0B /* StorageEngineSyncRequirementsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEngineSyncRequirementsTests.swift; sourceTree = "<group>"; };
+		763CB90627FE557D00DEA9BB /* AWSDataStorePrimaryKeyBaseTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStorePrimaryKeyBaseTest.swift; sourceTree = "<group>"; };
+		763CB90827FE56BB00DEA9BB /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		763CB90927FE578400DEA9BB /* schema.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
+		763CB90B27FE5CEC00DEA9BB /* AWSDataStorePrimaryKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStorePrimaryKeyTests.swift; sourceTree = "<group>"; };
 		7678B30F25FAD93200B4917F /* InitialSyncOperationSyncExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialSyncOperationSyncExpressionTests.swift; sourceTree = "<group>"; };
 		767C398A266EE4DA00CB64B9 /* AWSDataStoreMultiAuthThreeRulesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreMultiAuthThreeRulesTests.swift; sourceTree = "<group>"; };
 		767C398C266EE59000CB64B9 /* AWSDataStoreMultiAuthThreeRulesTests+Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSDataStoreMultiAuthThreeRulesTests+Models.swift"; sourceTree = "<group>"; };
@@ -1057,7 +1064,6 @@
 			children = (
 				FA6B0EA9249445D50062AA59 /* AWSDataStorePluginConfigurationTests.swift */,
 				217D61552578AEB0009F0639 /* Connection */,
-				218F787F275A80F50042334B /* TransformerV2 */,
 				D8C5BA58249815A6007C3A68 /* DataStoreConfigurationTests.swift */,
 				9728F2AF2683D98D00A506A8 /* DataStoreConsecutiveUpdatesTests.swift */,
 				97406B372666DC0200C41E19 /* DataStoreCustomPrimaryKeyTests.swift */,
@@ -1067,10 +1073,12 @@
 				2178C0A026D3F1E200C53065 /* DataStoreObserveQueryTests.swift */,
 				21A905B9261651FA00EC141D /* DataStoreScalarTests.swift */,
 				2149E62123886CEE00873955 /* Info.plist */,
+				763CB90527FE552600DEA9BB /* PrimaryKey */,
 				213481BE24213E13001966DE /* README.md */,
 				FA3841EA23889D6C0070AD5B /* SubscriptionEndToEndTests.swift */,
 				2149E62B23886D3900873955 /* SyncMetadataTests.swift */,
 				FAD2BDF7239583B5006EB065 /* TestSupport */,
+				218F787F275A80F50042334B /* TransformerV2 */,
 			);
 			path = AWSDataStoreCategoryPluginIntegrationTests;
 			sourceTree = "<group>";
@@ -1265,6 +1273,17 @@
 				762547B32735FD0C00E5F6A3 /* PublicPublicIAMAPIPost+Schema.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		763CB90527FE552600DEA9BB /* PrimaryKey */ = {
+			isa = PBXGroup;
+			children = (
+				763CB90627FE557D00DEA9BB /* AWSDataStorePrimaryKeyBaseTest.swift */,
+				763CB90B27FE5CEC00DEA9BB /* AWSDataStorePrimaryKeyTests.swift */,
+				763CB90827FE56BB00DEA9BB /* README.md */,
+				763CB90927FE578400DEA9BB /* schema.graphql */,
+			);
+			path = PrimaryKey;
 			sourceTree = "<group>";
 		};
 		769CF225266AF5C5007843A0 /* MultiAuth */ = {
@@ -1938,6 +1957,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				763CB90A27FE578400DEA9BB /* schema.graphql in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2631,6 +2651,7 @@
 				218F7888275A81410042334B /* DataStoreConnectionScenario6V2Tests.swift in Sources */,
 				D8E9992425013C2F0006170A /* DataStoreHubEventsTests.swift in Sources */,
 				D8C5BA59249815A6007C3A68 /* DataStoreConfigurationTests.swift in Sources */,
+				763CB90C27FE5CEC00DEA9BB /* AWSDataStorePrimaryKeyTests.swift in Sources */,
 				2178C0A126D3F1E200C53065 /* DataStoreObserveQueryTests.swift in Sources */,
 				2149E62D23886D3900873955 /* SyncMetadataTests.swift in Sources */,
 				218F788A275A81410042334B /* DataStoreConnectionScenario3V2Tests.swift in Sources */,
@@ -2645,6 +2666,7 @@
 				218F7889275A81410042334B /* DataStoreConnectionScenario4V2Tests.swift in Sources */,
 				FA3841EB23889D6C0070AD5B /* SubscriptionEndToEndTests.swift in Sources */,
 				218F788B275A81410042334B /* DataStoreConnectionScenario1V2Tests.swift in Sources */,
+				763CB90727FE557D00DEA9BB /* AWSDataStorePrimaryKeyBaseTest.swift in Sources */,
 				217D622B2579E15F009F0639 /* DataStoreConnectionScenario5Tests.swift in Sources */,
 				218F7887275A81410042334B /* DataStoreConnectionScenario2V2Tests.swift in Sources */,
 				218F788C275A81410042334B /* DataStoreConnectionScenario5V2Tests.swift in Sources */,
@@ -3063,6 +3085,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = AWSDataStoreCategoryPluginIntegrationTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -3085,6 +3108,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = AWSDataStoreCategoryPluginIntegrationTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
