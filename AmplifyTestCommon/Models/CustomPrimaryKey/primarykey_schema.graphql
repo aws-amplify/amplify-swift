@@ -1,0 +1,43 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+type ModelImplicitDefaultPk @model {
+    name: String
+}
+
+type ModelExplicitDefaultPk @model {
+  id: ID! @primaryKey
+  name: String
+}
+
+type ModelExplicitCustomPk @model {
+  userId: ID! @primaryKey
+  name: String
+}
+
+type ModelCompositePk @model {
+  id: ID! @primaryKey(sortKeyFields: ["dob"])
+  dob: AWSDateTime!
+  name: String
+}
+
+type ModelCustomPkDefined @model {
+  id: ID! @primaryKey(sortKeyFields: ["dob"])
+  dob: AWSDateTime!
+  name: String
+}
+
+type ModelCompositePkBelongsTo @model {
+  id: ID! @primaryKey(sortKeyFields: ["dob"])
+  dob: AWSDateTime!
+  name: String
+  owner: ModelCompositePkWithAssociation @belongsTo
+}
+
+type ModelCompositePkWithAssociation @model {
+  id: ID! @primaryKey(sortKeyFields: ["dob"])
+  dob: AWSDateTime!
+  name: String
+  otherModels: [ModelCompositePkBelongsTo] @hasMany
+}
