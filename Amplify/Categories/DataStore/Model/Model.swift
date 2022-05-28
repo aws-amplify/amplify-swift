@@ -45,10 +45,19 @@ extension Model {
     public func identifier(schema modelSchema: ModelSchema) -> ModelIdentifierProtocol {
         // resolve current instance identifier fields
         let fields: ModelIdentifierProtocol.Fields = modelSchema.primaryKey.fields.map {
-            guard let value = self[$0.name] as? Persistable else {
+            guard let fieldValue = self[$0.name] else {
                 preconditionFailure("Identifier field named \($0.name) for model \(modelSchema.name) not found.")
             }
-            return (name: $0.name, value: value)
+
+            switch fieldValue {
+            case let value as Persistable:
+                return (name: $0.name, value: value)
+            case let value as EnumPersistable:
+                return (name: $0.name, value: value.rawValue)
+            default:
+                preconditionFailure(
+                    "Invalid identifier value \(String(describing: fieldValue)) for field \($0.name) in model \(modelSchema.name)")
+            }
         }
 
         guard !modelSchema.fields.isEmpty else {

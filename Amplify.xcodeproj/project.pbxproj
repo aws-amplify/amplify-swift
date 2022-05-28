@@ -336,6 +336,18 @@
 		7608EE14268142F300FEC9CD /* AWSPluginOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7608EE13268142F300FEC9CD /* AWSPluginOptions.swift */; };
 		762167CC261542F70033FCD2 /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762167CB261542F70033FCD2 /* Record.swift */; };
 		762167D52615435C0033FCD2 /* Record+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762167D42615435C0033FCD2 /* Record+Schema.swift */; };
+		76262AB428369F3600273736 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AAA28369F3500273736 /* UserProfile.swift */; };
+		76262AB528369F3600273736 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AAB28369F3500273736 /* UserAccount.swift */; };
+		76262AB628369F3600273736 /* UserAccount+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AAC28369F3500273736 /* UserAccount+Schema.swift */; };
+		76262AB728369F3600273736 /* Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AAD28369F3500273736 /* Author.swift */; };
+		76262AB828369F3600273736 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AAE28369F3500273736 /* Book.swift */; };
+		76262AB928369F3600273736 /* BookAuthor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AAF28369F3500273736 /* BookAuthor.swift */; };
+		76262ABA28369F3600273736 /* BookAuthor+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AB028369F3500273736 /* BookAuthor+Schema.swift */; };
+		76262ABB28369F3600273736 /* Book+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AB128369F3600273736 /* Book+Schema.swift */; };
+		76262ABC28369F3600273736 /* Author+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AB228369F3600273736 /* Author+Schema.swift */; };
+		76262ABD28369F3600273736 /* UserProfile+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AB328369F3600273736 /* UserProfile+Schema.swift */; };
+		76262AC42836E77500273736 /* ModelCompositePkBelongsTo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AC22836E77500273736 /* ModelCompositePkBelongsTo.swift */; };
+		76262AC52836E77500273736 /* ModelCompositePkBelongsTo+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76262AC32836E77500273736 /* ModelCompositePkBelongsTo+Schema.swift */; };
 		762C978526210F6400798FA3 /* RecordCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762C978426210F6400798FA3 /* RecordCover.swift */; };
 		762C978E26210FF100798FA3 /* RecordCover+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762C978D26210FF100798FA3 /* RecordCover+Schema.swift */; };
 		76310CF327E3EDD2004964DF /* ModelExplicitCustomPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76310CEB27E3EDD1004964DF /* ModelExplicitCustomPk.swift */; };
@@ -360,6 +372,7 @@
 		767F85FE2649FFCC0076D633 /* CustomerOrder+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */; };
 		769CF2242669B1B9007843A0 /* RetryableGraphQLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769CF2232669B1B9007843A0 /* RetryableGraphQLOperation.swift */; };
 		76A4023C264B1E3A009D4127 /* AWSAuthModeStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A4023B264B1E3A009D4127 /* AWSAuthModeStrategy.swift */; };
+		76A7BCD8283D9ED10077C6FF /* primarykey_schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 76A7BCD7283D9ED10077C6FF /* primarykey_schema.graphql */; };
 		76B17DD8264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B17DD7264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift */; };
 		76B1B022280890330046343A /* ModelIdentifierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B1B021280890330046343A /* ModelIdentifierTests.swift */; };
 		76B1B02D280F7EC70046343A /* ModelCompositePkWithAssociation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B1B02B280F7EC60046343A /* ModelCompositePkWithAssociation.swift */; };
@@ -613,16 +626,6 @@
 		B9B64A9F23FCBF7E00730B68 /* ModelValueConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */; };
 		B9DCA263240F217C00075E22 /* AnyEncodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DCA262240F217C00075E22 /* AnyEncodableTests.swift */; };
 		B9FAA10B23878122009414B4 /* ModelField+Association.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10A23878122009414B4 /* ModelField+Association.swift */; };
-		B9FAA10E23878BF3009414B4 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10D23878BF3009414B4 /* UserAccount.swift */; };
-		B9FAA11023878C5E009414B4 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10F23878C5E009414B4 /* UserProfile.swift */; };
-		B9FAA11223878C96009414B4 /* UserAccount+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11123878C96009414B4 /* UserAccount+Schema.swift */; };
-		B9FAA11423878CEA009414B4 /* UserProfile+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11323878CEA009414B4 /* UserProfile+Schema.swift */; };
-		B9FAA116238799D3009414B4 /* Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA115238799D3009414B4 /* Author.swift */; };
-		B9FAA11823879A57009414B4 /* Author+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11723879A57009414B4 /* Author+Schema.swift */; };
-		B9FAA11A23879AC8009414B4 /* BookAuthor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11923879AC8009414B4 /* BookAuthor.swift */; };
-		B9FAA11C23879B35009414B4 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11B23879B35009414B4 /* Book.swift */; };
-		B9FAA11E23879B9F009414B4 /* Book+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11D23879B9F009414B4 /* Book+Schema.swift */; };
-		B9FAA12023879BD0009414B4 /* BookAuthor+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11F23879BD0009414B4 /* BookAuthor+Schema.swift */; };
 		B9FAA1252388BE48009414B4 /* List+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA1242388BE48009414B4 /* List+Model.swift */; };
 		B9FAA13C238BBE67009414B4 /* DataStoreCallback+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA13B238BBE67009414B4 /* DataStoreCallback+Combine.swift */; };
 		B9FAA175238EFC5A009414B4 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA174238EFC59009414B4 /* String+Extensions.swift */; };
@@ -1275,6 +1278,18 @@
 		7608EE13268142F300FEC9CD /* AWSPluginOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSPluginOptions.swift; sourceTree = "<group>"; };
 		762167CB261542F70033FCD2 /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
 		762167D42615435C0033FCD2 /* Record+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Record+Schema.swift"; sourceTree = "<group>"; };
+		76262AAA28369F3500273736 /* UserProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserProfile.swift; path = Associations/UserProfile.swift; sourceTree = "<group>"; };
+		76262AAB28369F3500273736 /* UserAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserAccount.swift; path = Associations/UserAccount.swift; sourceTree = "<group>"; };
+		76262AAC28369F3500273736 /* UserAccount+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UserAccount+Schema.swift"; path = "Associations/UserAccount+Schema.swift"; sourceTree = "<group>"; };
+		76262AAD28369F3500273736 /* Author.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Author.swift; path = Associations/Author.swift; sourceTree = "<group>"; };
+		76262AAE28369F3500273736 /* Book.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Book.swift; path = Associations/Book.swift; sourceTree = "<group>"; };
+		76262AAF28369F3500273736 /* BookAuthor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BookAuthor.swift; path = Associations/BookAuthor.swift; sourceTree = "<group>"; };
+		76262AB028369F3500273736 /* BookAuthor+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "BookAuthor+Schema.swift"; path = "Associations/BookAuthor+Schema.swift"; sourceTree = "<group>"; };
+		76262AB128369F3600273736 /* Book+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Book+Schema.swift"; path = "Associations/Book+Schema.swift"; sourceTree = "<group>"; };
+		76262AB228369F3600273736 /* Author+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Author+Schema.swift"; path = "Associations/Author+Schema.swift"; sourceTree = "<group>"; };
+		76262AB328369F3600273736 /* UserProfile+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UserProfile+Schema.swift"; path = "Associations/UserProfile+Schema.swift"; sourceTree = "<group>"; };
+		76262AC22836E77500273736 /* ModelCompositePkBelongsTo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePkBelongsTo.swift; sourceTree = "<group>"; };
+		76262AC32836E77500273736 /* ModelCompositePkBelongsTo+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePkBelongsTo+Schema.swift"; sourceTree = "<group>"; };
 		762C978426210F6400798FA3 /* RecordCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordCover.swift; sourceTree = "<group>"; };
 		762C978D26210FF100798FA3 /* RecordCover+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RecordCover+Schema.swift"; sourceTree = "<group>"; };
 		762F70A326683EE2001F8252 /* AuthRuleExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRuleExtensionTests.swift; sourceTree = "<group>"; };
@@ -1299,6 +1314,7 @@
 		767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomerOrder+Schema.swift"; sourceTree = "<group>"; };
 		769CF2232669B1B9007843A0 /* RetryableGraphQLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetryableGraphQLOperation.swift; sourceTree = "<group>"; };
 		76A4023B264B1E3A009D4127 /* AWSAuthModeStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthModeStrategy.swift; sourceTree = "<group>"; };
+		76A7BCD7283D9ED10077C6FF /* primarykey_schema.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = primarykey_schema.graphql; sourceTree = "<group>"; };
 		76B17DD7264C4D7D00735B30 /* ModelSchema+AuthRulesByOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelSchema+AuthRulesByOperation.swift"; sourceTree = "<group>"; };
 		76B1B021280890330046343A /* ModelIdentifierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelIdentifierTests.swift; sourceTree = "<group>"; };
 		76B1B02B280F7EC60046343A /* ModelCompositePkWithAssociation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCompositePkWithAssociation.swift; sourceTree = "<group>"; };
@@ -1564,16 +1580,6 @@
 		B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelValueConverter.swift; sourceTree = "<group>"; };
 		B9DCA262240F217C00075E22 /* AnyEncodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyEncodableTests.swift; sourceTree = "<group>"; };
 		B9FAA10A23878122009414B4 /* ModelField+Association.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelField+Association.swift"; sourceTree = "<group>"; };
-		B9FAA10D23878BF3009414B4 /* UserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccount.swift; sourceTree = "<group>"; };
-		B9FAA10F23878C5E009414B4 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
-		B9FAA11123878C96009414B4 /* UserAccount+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserAccount+Schema.swift"; sourceTree = "<group>"; };
-		B9FAA11323878CEA009414B4 /* UserProfile+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserProfile+Schema.swift"; sourceTree = "<group>"; };
-		B9FAA115238799D3009414B4 /* Author.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Author.swift; sourceTree = "<group>"; };
-		B9FAA11723879A57009414B4 /* Author+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Author+Schema.swift"; sourceTree = "<group>"; };
-		B9FAA11923879AC8009414B4 /* BookAuthor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookAuthor.swift; sourceTree = "<group>"; };
-		B9FAA11B23879B35009414B4 /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
-		B9FAA11D23879B9F009414B4 /* Book+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Book+Schema.swift"; sourceTree = "<group>"; };
-		B9FAA11F23879BD0009414B4 /* BookAuthor+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookAuthor+Schema.swift"; sourceTree = "<group>"; };
 		B9FAA1242388BE48009414B4 /* List+Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+Model.swift"; sourceTree = "<group>"; };
 		B9FAA13B238BBE67009414B4 /* DataStoreCallback+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataStoreCallback+Combine.swift"; sourceTree = "<group>"; };
 		B9FAA174238EFC59009414B4 /* String+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
@@ -2708,9 +2714,28 @@
 			path = Auth;
 			sourceTree = "<group>";
 		};
+		76262AA928369F2300273736 /* Associations */ = {
+			isa = PBXGroup;
+			children = (
+				76262AAD28369F3500273736 /* Author.swift */,
+				76262AB228369F3600273736 /* Author+Schema.swift */,
+				76262AAE28369F3500273736 /* Book.swift */,
+				76262AB128369F3600273736 /* Book+Schema.swift */,
+				76262AAF28369F3500273736 /* BookAuthor.swift */,
+				76262AB028369F3500273736 /* BookAuthor+Schema.swift */,
+				76262AAB28369F3500273736 /* UserAccount.swift */,
+				76262AAC28369F3500273736 /* UserAccount+Schema.swift */,
+				76262AAA28369F3500273736 /* UserProfile.swift */,
+				76262AB328369F3600273736 /* UserProfile+Schema.swift */,
+			);
+			name = Associations;
+			sourceTree = "<group>";
+		};
 		76310CEA27E3ED87004964DF /* CustomPrimaryKey */ = {
 			isa = PBXGroup;
 			children = (
+				76262AC22836E77500273736 /* ModelCompositePkBelongsTo.swift */,
+				76262AC32836E77500273736 /* ModelCompositePkBelongsTo+Schema.swift */,
 				767B9D10282EE78F00A20BDB /* ModelCompositeIntPk.swift */,
 				767B9D11282EE78F00A20BDB /* ModelCompositeIntPk+Schema.swift */,
 				76310CF027E3EDD2004964DF /* ModelCompositePk.swift */,
@@ -2725,6 +2750,7 @@
 				76310CEE27E3EDD1004964DF /* ModelExplicitDefaultPk+Schema.swift */,
 				76310CF127E3EDD2004964DF /* ModelImplicitDefaultPk.swift */,
 				76310CED27E3EDD1004964DF /* ModelImplicitDefaultPk+Schema.swift */,
+				76A7BCD7283D9ED10077C6FF /* primarykey_schema.graphql */,
 			);
 			path = CustomPrimaryKey;
 			sourceTree = "<group>";
@@ -3172,10 +3198,10 @@
 		B952182D237E21B900F53237 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				76262AA928369F2300273736 /* Associations */,
 				FAF512AD23986791001ADF4E /* AmplifyModels.swift */,
 				214F49CB24898E8400DA616C /* Article.swift */,
 				214F49CC24898E8500DA616C /* Article+Schema.swift */,
-				B9FAA10C23878BD6009414B4 /* Associations */,
 				217D5E992577F95D009F0639 /* Collection */,
 				B9521830237E21B900F53237 /* Comment.swift */,
 				B952182E237E21B900F53237 /* Comment+Schema.swift */,
@@ -3283,23 +3309,6 @@
 				FAD3936C2381F91C00463F5E /* Subscribe */,
 			);
 			path = DataStore;
-			sourceTree = "<group>";
-		};
-		B9FAA10C23878BD6009414B4 /* Associations */ = {
-			isa = PBXGroup;
-			children = (
-				B9FAA115238799D3009414B4 /* Author.swift */,
-				B9FAA11723879A57009414B4 /* Author+Schema.swift */,
-				B9FAA11B23879B35009414B4 /* Book.swift */,
-				B9FAA11D23879B9F009414B4 /* Book+Schema.swift */,
-				B9FAA11923879AC8009414B4 /* BookAuthor.swift */,
-				B9FAA11F23879BD0009414B4 /* BookAuthor+Schema.swift */,
-				B9FAA10D23878BF3009414B4 /* UserAccount.swift */,
-				B9FAA11123878C96009414B4 /* UserAccount+Schema.swift */,
-				B9FAA10F23878C5E009414B4 /* UserProfile.swift */,
-				B9FAA11323878CEA009414B4 /* UserProfile+Schema.swift */,
-			);
-			path = Associations;
 			sourceTree = "<group>";
 		};
 		B9FAA1232388BE2B009414B4 /* Collection */ = {
@@ -4448,6 +4457,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				217D5ECE2577FA1B009F0639 /* connection-schema.graphql in Resources */,
+				76A7BCD8283D9ED10077C6FF /* primarykey_schema.graphql in Resources */,
 				B9521834237E21BA00F53237 /* schema.graphql in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5619,8 +5629,8 @@
 				214F49CD24898E8500DA616C /* Article.swift in Sources */,
 				762167CC261542F70033FCD2 /* Record.swift in Sources */,
 				762167D52615435C0033FCD2 /* Record+Schema.swift in Sources */,
-				B9FAA116238799D3009414B4 /* Author.swift in Sources */,
 				B9521833237E21BA00F53237 /* Comment+Schema.swift in Sources */,
+				76262ABA28369F3600273736 /* BookAuthor+Schema.swift in Sources */,
 				FA176ED7238503C200C5C5F9 /* HubListenerTestUtilities.swift in Sources */,
 				218F78DF275AD0280042334B /* Team4bV2+Schema.swift in Sources */,
 				216E45EE248E914F0035E3CE /* Todo.swift in Sources */,
@@ -5631,6 +5641,7 @@
 				217D5EC52577F9DF009F0639 /* Project2.swift in Sources */,
 				B4F3543525361E0E0050FEE0 /* DynamicModel.swift in Sources */,
 				218F7864275A636C0042334B /* Comment4V2.swift in Sources */,
+				76262AB828369F3600273736 /* Book.swift in Sources */,
 				218F78E5275AD0310042334B /* Team4aV2.swift in Sources */,
 				6B7743E025906FD3001469F5 /* Menu.swift in Sources */,
 				218F789C275AB1F60042334B /* Post3aV2+Schema.swift in Sources */,
@@ -5662,6 +5673,7 @@
 				6BE9D73A25A67F7400AB5C9A /* M2MUser+Schema.swift in Sources */,
 				218F7852275A63310042334B /* Post6V2.swift in Sources */,
 				218F78C1275ABBEC0042334B /* PostEditor5V2.swift in Sources */,
+				76262AB528369F3600273736 /* UserAccount.swift in Sources */,
 				FACA361A2327FC69000E74F6 /* MockStorageCategoryPlugin.swift in Sources */,
 				217D5EB92577F9DF009F0639 /* Post3+Schema.swift in Sources */,
 				218F78BD275ABBEC0042334B /* User5V2.swift in Sources */,
@@ -5670,11 +5682,9 @@
 				218F787B275A64400042334B /* Comment7V2.swift in Sources */,
 				B9521837237E21BA00F53237 /* Post.swift in Sources */,
 				218F78E0275AD0280042334B /* Project4bV2.swift in Sources */,
-				B9FAA11A23879AC8009414B4 /* BookAuthor.swift in Sources */,
 				217D5EBF2577F9DF009F0639 /* Comment4.swift in Sources */,
 				218F78CF275AC6B40042334B /* TodoCustomTimestampV2+Schema.swift in Sources */,
 				FAA2E8BC239FFC7700E420EA /* MockModels.swift in Sources */,
-				B9FAA11E23879B9F009414B4 /* Book+Schema.swift in Sources */,
 				217D5EB52577F9DF009F0639 /* Project1.swift in Sources */,
 				218F785A275A63470042334B /* Project2V2.swift in Sources */,
 				6B9F7C552526864800F1F71C /* ScenarioATest6Post+Schema.swift in Sources */,
@@ -5683,7 +5693,6 @@
 				FACF52042329633500646E10 /* TestExtensions.swift in Sources */,
 				216E460824913D430035E3CE /* Color.swift in Sources */,
 				215D40A7277231920077E7DA /* Meeting8V2+Schema.swift in Sources */,
-				B9FAA11823879A57009414B4 /* Author+Schema.swift in Sources */,
 				B9521836237E21BA00F53237 /* Post+Schema.swift in Sources */,
 				6B7743DE25906FD3001469F5 /* Menu+Schema.swift in Sources */,
 				21A905352616446F00EC141D /* EnumTestModel+Schema.swift in Sources */,
@@ -5694,7 +5703,6 @@
 				214F497A2486D8A200DA616C /* User.swift in Sources */,
 				76310D0227E53990004964DF /* ModelCustomPkDefined+Schema.swift in Sources */,
 				218F7850275A632B0042334B /* Project1V2.swift in Sources */,
-				B9FAA11223878C96009414B4 /* UserAccount+Schema.swift in Sources */,
 				FACA36152327FC39000E74F6 /* MessageReporter.swift in Sources */,
 				FAF512AE23986791001ADF4E /* AmplifyModels.swift in Sources */,
 				767B9D13282EE78F00A20BDB /* ModelCompositeIntPk+Schema.swift in Sources */,
@@ -5702,7 +5710,6 @@
 				97F793DA27BC6720000153D6 /* CustomerMultipleSecondaryIndexV2+Schema.swift in Sources */,
 				6BE9D73725A67F7400AB5C9A /* M2MPost.swift in Sources */,
 				21A905362616446F00EC141D /* Nested.swift in Sources */,
-				B9FAA11C23879B35009414B4 /* Book.swift in Sources */,
 				6B597A0B2565D3E50038C3E2 /* QPredGen.swift in Sources */,
 				218F786A275A638B0042334B /* Comment3V2.swift in Sources */,
 				21A9052E2616446F00EC141D /* NestedTypeTestModel.swift in Sources */,
@@ -5710,28 +5717,32 @@
 				21A905342616446F00EC141D /* Nested+Schema.swift in Sources */,
 				218F785C275A63500042334B /* Post3V2.swift in Sources */,
 				6B597A0A2565D3E50038C3E2 /* QPredGen+Schema.swift in Sources */,
+				76262AB628369F3600273736 /* UserAccount+Schema.swift in Sources */,
 				218F78E8275AD0310042334B /* Project4aV2+Schema.swift in Sources */,
 				214F49772486D8A200DA616C /* UserFollowers+Schema.swift in Sources */,
 				21A905332616446F00EC141D /* ScalarContainer+Schema.swift in Sources */,
 				21A905382616446F00EC141D /* TestEnum.swift in Sources */,
-				B9FAA11423878CEA009414B4 /* UserProfile+Schema.swift in Sources */,
 				6BE9D6EF25A6622000AB5C9A /* Team+Schema.swift in Sources */,
 				762C978E26210FF100798FA3 /* RecordCover+Schema.swift in Sources */,
 				217D5EBC2577F9DF009F0639 /* User5.swift in Sources */,
 				6B7743DF25906FD3001469F5 /* Dish.swift in Sources */,
+				76262ABD28369F3600273736 /* UserProfile+Schema.swift in Sources */,
 				217D5EB82577F9DF009F0639 /* Project2+Schema.swift in Sources */,
 				218F7848275A63140042334B /* Project2V2+Schema.swift in Sources */,
 				215D40A9277231920077E7DA /* Meeting8V2.swift in Sources */,
+				76262AC42836E77500273736 /* ModelCompositePkBelongsTo.swift in Sources */,
 				76310CF627E3EDD2004964DF /* ModelExplicitDefaultPk+Schema.swift in Sources */,
 				218F7844275A63090042334B /* Post6V2+Schema.swift in Sources */,
 				214F49792486D8A200DA616C /* UserFollowing+Schema.swift in Sources */,
 				FACA361D2327FC84000E74F6 /* MockAPICategoryPlugin.swift in Sources */,
 				76310CF527E3EDD2004964DF /* ModelImplicitDefaultPk+Schema.swift in Sources */,
+				76262ABB28369F3600273736 /* Book+Schema.swift in Sources */,
 				21A905602616484A00EC141D /* Scalar+Equatable.swift in Sources */,
-				B9FAA11023878C5E009414B4 /* UserProfile.swift in Sources */,
 				FA32C42A264F35420057272F /* Transaction+Schema.swift in Sources */,
 				21A905322616446F00EC141D /* ListStringContainer+Schema.swift in Sources */,
 				6BE9D6EE25A6622000AB5C9A /* Team.swift in Sources */,
+				76262AB728369F3600273736 /* Author.swift in Sources */,
+				76262AB428369F3600273736 /* UserProfile.swift in Sources */,
 				B9AA09F12473CA29000E6FBB /* PostStatus.swift in Sources */,
 				6BEE081C2533CCFA00133961 /* OGCScenarioBPost+Schema.swift in Sources */,
 				218F78CD275AC6B30042334B /* TodoCustomTimestampV2.swift in Sources */,
@@ -5739,7 +5750,6 @@
 				6B9F7C562526864800F1F71C /* ScenarioATest6Post.swift in Sources */,
 				21A905372616446F00EC141D /* EnumTestModel.swift in Sources */,
 				218F78CA275AC6B30042334B /* TodoWithDefaultValueV2.swift in Sources */,
-				B9FAA12023879BD0009414B4 /* BookAuthor+Schema.swift in Sources */,
 				218F7866275A63710042334B /* Comment6V2.swift in Sources */,
 				21A9052D2616446F00EC141D /* ScalarContainer.swift in Sources */,
 				21F40A4023A295470074678E /* TestCommonConstants.swift in Sources */,
@@ -5760,10 +5770,12 @@
 				216E45EF248E914F0035E3CE /* Todo+Schema.swift in Sources */,
 				218F7846275A630F0042334B /* Project1V2+Schema.swift in Sources */,
 				5C09CCC526D074B100CDCA9F /* MockGeoCategoryPlugin.swift in Sources */,
+				76262AC52836E77500273736 /* ModelCompositePkBelongsTo+Schema.swift in Sources */,
 				218F78C0275ABBEC0042334B /* User5V2+Schema.swift in Sources */,
 				FACA361E2327FC8E000E74F6 /* MockAnalyticsCategoryPlugin.swift in Sources */,
 				218F78E7275AD0310042334B /* Project4aV2.swift in Sources */,
 				218F7860275A63620042334B /* Team1V2+Schema.swift in Sources */,
+				76262AB928369F3600273736 /* BookAuthor.swift in Sources */,
 				218F787A275A64400042334B /* Blog7V2+Schema.swift in Sources */,
 				2129BE012394627B006363A1 /* PostCommentModelRegistration.swift in Sources */,
 				218F7858275A63430042334B /* Blog6V2+Schema.swift in Sources */,
@@ -5774,7 +5786,6 @@
 				6BE9D73825A67F7400AB5C9A /* M2MPostEditor+Schema.swift in Sources */,
 				215D40AB277231920077E7DA /* Registration8V2+Schema.swift in Sources */,
 				218F78CE275AC6B30042334B /* CustomerSecondaryIndexV2+Schema.swift in Sources */,
-				B9FAA10E23878BF3009414B4 /* UserAccount.swift in Sources */,
 				76B1B02D280F7EC70046343A /* ModelCompositePkWithAssociation.swift in Sources */,
 				217D5EC12577F9DF009F0639 /* Team2.swift in Sources */,
 				217D5EBE2577F9DF009F0639 /* Post5+Schema.swift in Sources */,
@@ -5811,6 +5822,7 @@
 				215D40A6277231920077E7DA /* Registration8V2.swift in Sources */,
 				217D5EBD2577F9DF009F0639 /* Post5.swift in Sources */,
 				6B7743E425906FD3001469F5 /* Restaurant.swift in Sources */,
+				76262ABC28369F3600273736 /* Author+Schema.swift in Sources */,
 				FA1846EE23998E44009B9D01 /* MockAPIResponders.swift in Sources */,
 				6B7743E225906FD3001469F5 /* Dish+Schema.swift in Sources */,
 				217D5EC32577F9DF009F0639 /* PostEditor5.swift in Sources */,

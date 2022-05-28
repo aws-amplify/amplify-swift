@@ -8,9 +8,9 @@
 import Amplify
 import Foundation
 
-public class Book: Model {
+public struct Book: Model {
 
-    public let id: Model.Identifier
+    public let id: String
 
     // hasMany(associatedWith: "book")
     public var authors: List<BookAuthor>

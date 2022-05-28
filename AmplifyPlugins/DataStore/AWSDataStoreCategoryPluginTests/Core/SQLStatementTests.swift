@@ -43,6 +43,10 @@ class SQLStatementTests: XCTestCase {
         ModelRegistry.register(modelType: ModelExplicitDefaultPk.self)
         ModelRegistry.register(modelType: ModelExplicitCustomPk.self)
         ModelRegistry.register(modelType: ModelCompositePk.self)
+        ModelRegistry.register(modelType: ModelCompositePkBelongsTo.self)
+        ModelRegistry.register(modelType: ModelCompositePkWithAssociation.self)
+        ModelRegistry.register(modelType: PostWithCompositeKey.self)
+        ModelRegistry.register(modelType: CommentWithCompositeKey.self)
     }
 
     // MARK: - Create Table
@@ -147,7 +151,6 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
-
     func testCreateTableFromModelWithImplicitDefaultPk() {
         let statement = CreateTableStatement(modelSchema: ModelImplicitDefaultPk.schema)
         let expectedStatement = """
@@ -197,6 +200,24 @@ class SQLStatementTests: XCTestCase {
           "createdAt" text,
           "name" text,
           "updatedAt" text
+        );
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    func testCreateTableFromModelWithCompositePkAndForeignKey() {
+        let statement = CreateTableStatement(modelSchema: ModelCompositePkBelongsTo.schema)
+        let expectedStatement = """
+        create table if not exists "ModelCompositePkBelongsTo" (
+          "@@primaryKey" text primary key not null,
+          "id" text not null,
+          "dob" text not null,
+          "createdAt" text,
+          "name" text,
+          "updatedAt" text,
+          "@@ownerForeignKey" text,
+          foreign key("@@ownerForeignKey") references "ModelCompositePkWithAssociation"("@@primaryKey")
+            on delete cascade
         );
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
@@ -322,6 +343,70 @@ class SQLStatementTests: XCTestCase {
         let variables = statement.variables
         XCTAssertEqual(variables[1] as? String, "comment")
         XCTAssertEqual(variables[3] as? String, post.id)
+    }
+
+    /// - Given: a `Model` instance
+    /// - When:
+    ///   - the model is of type `ModelCompositePkBelongsTo`
+    ///   - it has a reference to another `ModelCompositePkWithAssociation`
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if the variables match the expected values
+    ///   - check if the foreign key matches `ModelCompositePkWithAssociation` PK
+    func testInsertStatementModelWithCompositeKeyAndHasManyBidirectional() {
+        let parentModel = ModelCompositePkWithAssociation(id: "parent-id",
+                                                          dob: .now(),
+                                                          name: "parent-name")
+        let childModel = ModelCompositePkBelongsTo(id: "child-id",
+                                               dob: .now(),
+                                               name: "child-name",
+                                               owner: parentModel)
+
+        let statement = InsertStatement(model: childModel, modelSchema: childModel.schema)
+
+        let expectedStatement = """
+        insert into "ModelCompositePkBelongsTo" ("@@primaryKey", "id", "dob", "createdAt", "name", "updatedAt", "@@ownerForeignKey")
+        values (?, ?, ?, ?, ?, ?, ?)
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+
+        let variables = statement.variables
+        XCTAssertEqual(variables[0] as? String, childModel.identifier)
+        XCTAssertEqual(variables[1] as? String, childModel.id)
+        XCTAssertEqual(variables[2] as? String, childModel.dob.iso8601String)
+        XCTAssertEqual(variables[4] as? String, childModel.name)
+        XCTAssertEqual(variables[6] as? String, parentModel.identifier)
+    }
+
+    /// - Given: a `Model` instance
+    /// - When:
+    ///   - the model is of type `ModelCompositePkBelongsTo`
+    ///   - it has a reference to another `ModelCompositePkWithAssociation`
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if the variables match the expected values
+    ///   - check if the foreign key matches `ModelCompositePkWithAssociation` PK
+    func testInsertStatementModelWithCompositeKeyAndHasManyUnidirectional() {
+        let parentModel = PostWithCompositeKey(id: "post-id", title: "post-title")
+        let childModel = CommentWithCompositeKey(id: "comment-id",
+                                                 content: "content",
+                                                 post21CommentsId: parentModel.id,
+                                                 post21CommentsTitle: parentModel.title)
+
+        let statement = InsertStatement(model: childModel, modelSchema: childModel.schema)
+
+        let expectedStatement = """
+        insert into "CommentWithCompositeKey" ("@@primaryKey", "id", "content", "createdAt", "post21CommentsId", "post21CommentsTitle", "updatedAt")
+        values (?, ?, ?, ?, ?, ?, ?)
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+
+        let variables = statement.variables
+        XCTAssertEqual(variables[0] as? String, childModel.identifier)
+        XCTAssertEqual(variables[1] as? String, childModel.id)
+        XCTAssertEqual(variables[2] as? String, childModel.content)
+        XCTAssertEqual(variables[4] as? String, parentModel.id)
+        XCTAssertEqual(variables[5] as? String, parentModel.title)
     }
 
     // MARK: - Update Statements

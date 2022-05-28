@@ -136,6 +136,13 @@ class ModelGraphQLTests: XCTestCase {
     }
 
     // MARK: - Custom Primary Key
+    func testModelWithExplicitDefaultPrimaryKey() {
+        let model = ModelExplicitDefaultPk(id: "an-id", name: "name")
+        let graphQLInput = model.graphQLInputForMutation(model.schema)
+        XCTAssertEqual(graphQLInput["id"] as? String, model.id)
+        XCTAssertEqual(graphQLInput["name"] as? String, model.name)
+    }
+
     func testModelWithExplicitCustomPrimaryKey() {
         let model = ModelExplicitCustomPk(userId: "userId", name: "name")
         let graphQLInput = model.graphQLInputForMutation(model.schema)
@@ -149,5 +156,24 @@ class ModelGraphQLTests: XCTestCase {
         XCTAssertEqual(graphQLInput["id"] as? String, model.id)
         XCTAssertEqual(graphQLInput["dob"] as? String, model.dob.iso8601String)
         XCTAssertEqual(graphQLInput["name"] as? String, model.name)
+    }
+
+    func testModelWithAssociationAndCompositePrimaryKey() {
+        let owner = ModelCompositePkWithAssociation(id: "id2",
+                                                     dob: Temporal.DateTime.now(),
+                                                     name: "name")
+        let childModel = ModelCompositePkBelongsTo(id: "id1",
+                                               dob: Temporal.DateTime.now(),
+                                               name: "name",
+                                               owner: owner)
+
+        let graphQLInput = childModel.graphQLInputForMutation(childModel.schema)
+        XCTAssertEqual(graphQLInput["id"] as? String, childModel.id)
+        XCTAssertEqual(graphQLInput["dob"] as? String, childModel.dob.iso8601String)
+        XCTAssertEqual(graphQLInput["name"] as? String, childModel.name)
+        XCTAssertEqual(graphQLInput["modelCompositePkWithAssociationOtherModelsId"] as? String,
+                       owner.id)
+        XCTAssertEqual(graphQLInput["modelCompositePkWithAssociationOtherModelsDob"] as? Temporal.DateTime,
+                       owner.dob)
     }
 }
