@@ -253,6 +253,19 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement, expectedStatement)
     }
 
+    /// - Given: a `Model` instance with a composite primary key
+    /// - When:
+    ///     - the model is of type `ModelCompositePk`
+    /// - Then:
+    ///   - an index for the fields that make up the primary key should be generated
+    func testCreateIndexStatementFromModelWithCustomPKIndex() {
+        let statement = ModelCompositePk.schema.createIndexStatements()
+        let expectedStatement = """
+        create index if not exists "id_dob_pk" on "ModelCompositePk" ("id", "dob");
+        """
+        XCTAssertEqual(statement, expectedStatement)
+    }
+
     // MARK: - Insert Statements
 
     /// - Given: a `Model` instance
@@ -695,14 +708,25 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the generated SQL statement is valid
     func testSelectStatementWithPredicateFromModelWithCompositePK() {
         let keys = ModelCompositePk.keys
-        let statement = SelectStatement(from: ModelCompositePk.schema)
+        let modelId = "an-id"
+        let dob = "2022-02-22"
+        let statement = SelectStatement(from: ModelCompositePk.schema,
+                                        predicate: keys.id == modelId && keys.dob == dob)
         let expectedStatement = """
         select
           "root"."@@primaryKey" as "@@primaryKey", "root"."id" as "id", "root"."dob" as "dob",
           "root"."createdAt" as "createdAt", "root"."name" as "name", "root"."updatedAt" as "updatedAt"
         from "ModelCompositePk" as "root"
+        where 1 = 1
+          and (
+            "root"."id" = ?
+            and "root"."dob" = ?
+          )
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
+        XCTAssertEqual(statement.variables.count, 2)
+        XCTAssertEqual(statement.variables[0] as? String, modelId)
+        XCTAssertEqual(statement.variables[1] as? String, dob)
     }
 
     /// - Given: a `Model` type

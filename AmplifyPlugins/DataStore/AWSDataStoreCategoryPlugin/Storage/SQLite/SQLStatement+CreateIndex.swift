@@ -19,10 +19,10 @@ struct CreateIndexStatement: SQLStatement {
     // name of the secondary index
     var indexName: String
 
-    init(modelSchema: ModelSchema, fields: [ModelFieldName], indexName: String) {
+    init(modelSchema: ModelSchema, fields: [ModelFieldName], indexName: String?) {
         self.modelSchema = modelSchema
         self.fields = fields
-        self.indexName = indexName
+        self.indexName = indexName ?? fields.joined(separator: "_") + "_pk"
     }
 
     var stringValue: String {

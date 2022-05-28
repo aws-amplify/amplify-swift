@@ -178,7 +178,7 @@ extension ModelSchema {
     /// Create SQLite indexes corresponding to secondary indexes in the model schema
     func createIndexStatements() -> String {
         var statement = ""
-        for case let .index(fields, name?) in indexes {
+        for case let .index(fields, name) in indexes {
             statement += CreateIndexStatement(
                 modelSchema: self,
                 fields: fields,
