@@ -68,5 +68,3 @@ extension SignOutGlobally: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
-
-

@@ -102,4 +102,3 @@ extension ConfirmSignUpInput {
         return macBase64
     }
 }
-

@@ -141,4 +141,3 @@ extension InitiateAuthSRP: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
-

@@ -153,4 +153,3 @@ extension FetchAuthAWSCredentials: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
-
