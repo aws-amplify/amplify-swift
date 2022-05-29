@@ -138,4 +138,3 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         fatalError("Not implemented")
     }
 }
-
