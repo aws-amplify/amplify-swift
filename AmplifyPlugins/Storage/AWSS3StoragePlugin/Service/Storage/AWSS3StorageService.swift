@@ -10,7 +10,6 @@ import Foundation
 import AWSS3
 import Amplify
 import AWSPluginsCore
-import AWSClientRuntime
 
 class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
 
