@@ -65,13 +65,8 @@ extension AWSPinpointAdapter: AWSPinpointAnalyticsClientBehavior {
                                                                 withCurrency: theCurrency)
     }
 
+    @discardableResult
     func submitEvents() async throws -> [PinpointEvent] {
-        let result = try await pinpoint.analyticsClient.submitEvents()
-        return result
-    }
-
-    // TODO: Do we need two methods? 
-    func submitEvents() async throws {
-        _ = try await pinpoint.analyticsClient.submitEvents()
+        return try await pinpoint.analyticsClient.submitEvents()
     }
 }
