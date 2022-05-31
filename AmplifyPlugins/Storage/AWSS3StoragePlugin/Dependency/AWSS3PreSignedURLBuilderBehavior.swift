@@ -22,18 +22,17 @@ protocol AWSS3PreSignedURLBuilderBehavior {
 
     /// Gets a pre-signed URL.
     /// - Returns: Pre-Signed URL
-    func getPreSignedURL(key: String, signingOperation: AWSS3SigningOperation, expires: Int64?) -> URL?
-
+    func getPreSignedURL(key: String, signingOperation: AWSS3SigningOperation, expires: Int64?) async throws -> URL
 }
 
 extension AWSS3PreSignedURLBuilderBehavior {
 
-    func getPreSignedURL(key: String, signingOperation: AWSS3SigningOperation) -> URL? {
-        getPreSignedURL(key: key, signingOperation: signingOperation, expires: nil)
+    func getPreSignedURL(key: String, signingOperation: AWSS3SigningOperation) async throws -> URL {
+        try await getPreSignedURL(key: key, signingOperation: signingOperation, expires: nil)
     }
 
-    func getPreSignedURL(key: String) -> URL? {
-        getPreSignedURL(key: key, signingOperation: .getObject, expires: nil)
+    func getPreSignedURL(key: String) async throws -> URL {
+        try await getPreSignedURL(key: key, signingOperation: .getObject, expires: nil)
     }
 
 }

@@ -32,44 +32,27 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
 
     /// Gets pre-signed URL.
     /// - Returns: Pre-Signed URL
-    func getPreSignedURL(key: String, signingOperation: AWSS3SigningOperation, expires: Int64? = nil) -> URL? {
+    func getPreSignedURL(key: String,
+                         signingOperation: AWSS3SigningOperation,
+                         expires: Int64? = nil) async throws -> URL {
         let expiresDate = Date(timeIntervalSinceNow: Double(expires ?? defaultExpiration))
         let expiration = Int64(expiresDate.timeIntervalSinceNow)
-        var preSignedUrl: URL?
-        
-        let group = DispatchGroup()
-        
-        let setValue: (URL?) -> Void = {
-            preSignedUrl = $0
-            group.leave()
+        let preSignedUrl: URL?
+        switch signingOperation {
+        case .getObject:
+            let input = GetObjectInput(bucket: bucket, key: key)
+            preSignedUrl = try await input.presignURL(config: config, expiration: expiration)
+        case .putObject:
+            let input = PutObjectInput(bucket: bucket, key: key)
+            preSignedUrl = try await input.presignURL(config: config, expiration: expiration)
+        case .uploadPart(let partNumber, let uploadId):
+            let input = UploadPartInput(bucket: bucket, key: key, partNumber: partNumber, uploadId: uploadId)
+            preSignedUrl = try await input.presign(config: config, expiration: expiration)?.endpoint.url
         }
-        
-        group.enter()
-        Task {
-            do {
-                switch signingOperation {
-                case .getObject:
-                    let input = GetObjectInput(bucket: bucket, key: key)
-                    let value = try await input.presignURL(config: config, expiration: expiration)
-                    setValue(value)
-                case .putObject:
-                    let input = PutObjectInput(bucket: bucket, key: key)
-                    let value = try await input.presignURL(config: config, expiration: expiration)
-                    setValue(value)
-                case .uploadPart(let partNumber, let uploadId):
-                    let input = UploadPartInput(bucket: bucket, key: key, partNumber: partNumber, uploadId: uploadId)
-                    let value = try await input.presign(config: config, expiration: expiration)?.endpoint.url
-                    setValue(value)
-                }
-            } catch {
-                setValue(nil)
-                logger.error(error: error)
-            }
+        guard let escapedURL = urlWithEscapedToken(preSignedUrl) else {
+            throw AWSS3PreSignedURLBuilderError.failed(reason: "Failed to get presigned URL.", error: nil)
         }
-        
-        group.wait()
-        
-        return urlWithEscapedToken(preSignedUrl)
+        return escapedURL
     }
 
     private func urlWithEscapedToken(_ url: URL?) -> URL? {
