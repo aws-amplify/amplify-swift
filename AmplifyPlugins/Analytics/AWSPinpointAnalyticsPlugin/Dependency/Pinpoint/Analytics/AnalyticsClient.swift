@@ -95,7 +95,6 @@ class AnalyticsClient: InternalPinpointClient {
                                          priceLocale: Locale? = nil,
                                          transactionId: String? = nil) -> PinpointEvent {
         let monetizationEvent = PinpointEvent(eventType: Constants.PurchaseEvent.name,
-                                              eventTimestamp: Date.utcTimeMillisNow,
                                               session: context.sessionTracker.currentSession)
         monetizationEvent.addAttribute(store,
                                        forKey: Constants.PurchaseEvent.Keys.store)
@@ -128,7 +127,6 @@ class AnalyticsClient: InternalPinpointClient {
     func createEvent(withEventType eventType: String) -> PinpointEvent {
         precondition(!eventType.isEmpty, "Event types must be at least 1 character in length.")
         return PinpointEvent(eventType: eventType,
-                             eventTimestamp: Date.utcTimeMillisNow,
                              session: context.sessionTracker.currentSession)
     }
     
@@ -160,6 +158,7 @@ class AnalyticsClient: InternalPinpointClient {
         try await eventRecorder.save(event)
     }
     
+    @discardableResult
     func submitEvents() async throws -> [PinpointEvent] {
         return try await eventRecorder.submitAllEvents()
     }
@@ -186,7 +185,9 @@ extension AnalyticsClient {
 }
 
 extension Date {
-    static var utcTimeMillisNow: TimeInterval {
-        return Date().timeIntervalSince1970 * 1000
+    typealias Millisecond = Int64
+
+    var utcTimeMillis: Millisecond {
+        return Int64(self.timeIntervalSince1970 * 1000)
     }
 }

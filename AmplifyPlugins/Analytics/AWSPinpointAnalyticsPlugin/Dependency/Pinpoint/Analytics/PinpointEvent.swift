@@ -10,13 +10,13 @@ import Foundation
 
 class PinpointEvent {
     let eventType: String
-    let eventTimestamp: TimeInterval
+    let eventTimestamp: Date.Millisecond
     let session: PinpointSession
     private(set) lazy var attributes: [String: String] = [:]
     private(set) lazy var metrics: [String: Double] = [:]
     
     init(eventType: String,
-         eventTimestamp: TimeInterval,
+         eventTimestamp: Date.Millisecond = Date().utcTimeMillis,
          session: PinpointSession) {
         self.eventType = eventType
         self.eventTimestamp = eventTimestamp
@@ -39,7 +39,7 @@ class PinpointEvent {
     
     func addAttribute(_ attribute: String, forKey key: String) {
         guard numberOfAttributesAndMetrics < Constants.maxNumberOfAttributesAndMetrics  else {
-            Amplify.Analytics.log.warn("Max number of attributes/metrics reached, dropping attribute with key \(key)")
+            log.warn("Max number of attributes/metrics reached, dropping attribute with key \(key)")
             return
         }
 
@@ -48,7 +48,7 @@ class PinpointEvent {
     
     func addMetric(_ metric: Double, forKey key: String) {
         guard numberOfAttributesAndMetrics < Constants.maxNumberOfAttributesAndMetrics  else {
-            Amplify.Analytics.log.warn("Max number of attributes/metrics reached, dropping attribute with key \(key)")
+            log.warn("Max number of attributes/metrics reached, dropping attribute with key \(key)")
             return
         }
 
@@ -79,6 +79,9 @@ class PinpointEvent {
         return String(string.prefix(Constants.maxValueLenght))
     }
 }
+
+// MARK: - DefaultLogger
+extension PinpointEvent: DefaultLogger {}
 
 extension PinpointEvent {
     private struct Constants {
