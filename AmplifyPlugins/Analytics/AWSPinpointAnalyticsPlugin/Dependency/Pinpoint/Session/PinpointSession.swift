@@ -8,7 +8,9 @@
 import Foundation
 
 class PinpointSession: Codable {
-    let sessionId: String
+    typealias SessionId = String
+
+    let sessionId: SessionId
     let startTime: Date
     private(set) var stopTime: Date?
     
@@ -20,7 +22,7 @@ class PinpointSession: Codable {
         stopTime = nil
     }
     
-    init(sessionId: String,
+    init(sessionId: SessionId,
          startTime: Date,
          stopTime: Date?) {
         self.sessionId = sessionId
@@ -32,7 +34,7 @@ class PinpointSession: Codable {
         return stopTime != nil
     }
     
-    var timeDurationInMillis: Int64 {
+    var duration: Date.Millisecond {
         let endTime = stopTime ?? Date()
         return endTime.utcTimeMillis - startTime.utcTimeMillis
     }
@@ -52,7 +54,7 @@ class PinpointSession: Codable {
     }
     
     private static func generateSessionId(appId: String,
-                                          uniqueId: String) -> String {
+                                          uniqueId: String) -> SessionId {
         let now = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone(abbreviation: Constants.Date.defaultTimezone)

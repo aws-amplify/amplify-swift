@@ -41,7 +41,7 @@ class SessionClient: InternalPinpointClient {
 
     private func startSession() {
         saveSession()
-        Amplify.Analytics.log.info("Session Started.")
+        log.info("Session Started.")
         activityTracker.delegate = self
         activityTracker.beginActivityTracking()
 
@@ -49,7 +49,7 @@ class SessionClient: InternalPinpointClient {
         // Update Endpoint and record Session Start event
         Task {
             try? await context.targetingClient.updateEndpointProfile()
-            Amplify.Analytics.log.verbose("Firing Session Event: Start")
+            log.verbose("Firing Session Event: Start")
             try? await context.analyticsClient.record(startEvent)
         }
     }
@@ -59,30 +59,30 @@ class SessionClient: InternalPinpointClient {
             let sessionData = try archiver.encode(session)
             context.userDefaults.save(sessionData, forKey: Constants.sessionKey)
         } catch {
-            Amplify.Analytics.log.error("Error archiving sessionData: \(error.localizedDescription)")
+            log.error("Error archiving sessionData: \(error.localizedDescription)")
         }
     }
     
     private func pauseSession() {
         session.pause()
         saveSession()
-        Amplify.Analytics.log.info("Session Paused.")
+        log.info("Session Paused.")
 
         let pauseEvent = context.analyticsClient.createEvent(withEventType: Constants.Events.pause)
         Task {
-            Amplify.Analytics.log.verbose("Firing Session Event: Pause")
+            log.verbose("Firing Session Event: Pause")
             try? await context.analyticsClient.record(pauseEvent)
         }
     }
     
     private func resumeSession() {
         guard session.isPaused else {
-            Amplify.Analytics.log.verbose("Session Resume Failed: Session is already runnning.")
+            log.verbose("Session Resume Failed: Session is already runnning.")
             return
         }
         
         guard !isSessionExpired(session) else {
-            Amplify.Analytics.log.verbose("Session has expired. Starting a fresh one...")
+            log.verbose("Session has expired. Starting a fresh one...")
             endSession()
             session = PinpointSession(appId: context.configuration.appId,
                                       uniqueId: context.uniqueId)
@@ -92,24 +92,24 @@ class SessionClient: InternalPinpointClient {
         
         session.resume()
         saveSession()
-        Amplify.Analytics.log.info("Session Resumed.")
+        log.info("Session Resumed.")
 
         let resumeEvent = context.analyticsClient.createEvent(withEventType: Constants.Events.resume)
         Task {
-            Amplify.Analytics.log.verbose("Firing Session Event: Resume")
+            log.verbose("Firing Session Event: Resume")
             try? await context.analyticsClient.record(resumeEvent)
         }
     }
     
     private func endSession() {
         session.stop()
-        Amplify.Analytics.log.info("Session Stopped.")
+        log.info("Session Stopped.")
 
         // TODO: Remove Global Event Source Attributes
 
         let stopEvent = context.analyticsClient.createEvent(withEventType: Constants.Events.stop)
         Task {
-            Amplify.Analytics.log.verbose("Firing Session Event: Stop")
+            log.verbose("Firing Session Event: Stop")
             try? await context.analyticsClient.record(stopEvent)
         }
     }
@@ -145,6 +145,9 @@ extension SessionClient: ActivityTrackerDelegate {
         }
     }
 }
+
+// MARK: - DefaultLogger
+extension SessionClient: DefaultLogger {}
 
 extension SessionClient {
     struct Constants {

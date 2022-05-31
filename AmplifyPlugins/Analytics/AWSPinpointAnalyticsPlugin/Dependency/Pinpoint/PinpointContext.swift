@@ -11,6 +11,7 @@ import AWSPinpoint
 import AWSPluginsCore
 import Foundation
 
+// MARK: - UserDefaultsBehaviour
 protocol UserDefaultsBehaviour {
     func save(_ value: UserDefaultsBehaviourValue?, forKey key: String)
     func removeObject(forKey key: String)
@@ -28,6 +29,16 @@ extension UserDefaults: UserDefaultsBehaviour {
     }
 }
 
+// MARK: - FileManagerBehaviour
+protocol FileManagerBehaviour {
+    func removeItem(atPath path: String) throws
+    func urls(for directory: FileManager.SearchPathDirectory, in domainMask: FileManager.SearchPathDomainMask) -> [URL]
+    func fileExists(atPath path: String) -> Bool
+}
+
+extension FileManager: FileManagerBehaviour {}
+
+// MARK: - PinpointContext
 struct PinpointContextConfiguration {
     typealias Megabyte = Int
     /// The Pinpoint AppId.
@@ -66,15 +77,18 @@ class PinpointContext {
     }()
     
     private let keychainStore: KeychainStoreBehavior
+    private let fileManager: FileManagerBehaviour
 
     init(with configuration: PinpointContextConfiguration,
          credentialsProvider: CredentialsProvider,
          region: String,
          userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
-         keychainStore: KeychainStoreBehavior = KeychainStore(service: Constants.Keychain.service)) throws {
+         keychainStore: KeychainStoreBehavior = KeychainStore(service: Constants.Keychain.service),
+         fileManager: FileManagerBehaviour = FileManager.default) throws {
         self.configuration = configuration
         self.keychainStore = keychainStore
         self.userDefaults = userDefaults
+        self.fileManager = fileManager
         let pinpointConfiguration = try PinpointClient.PinpointClientConfiguration(credentialsProvider: credentialsProvider,
                                                                                    frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
                                                                                    region: region)
@@ -82,8 +96,8 @@ class PinpointContext {
     }
     
     private var legacyPreferencesFilePath: String? {
-        let applicationSupportDirectoryUrls = FileManager.default.urls(for: .applicationSupportDirectory,
-                                                                      in: .userDomainMask)
+        let applicationSupportDirectoryUrls = fileManager.urls(for: .applicationSupportDirectory,
+                                                               in: .userDomainMask)
         let preferencesFileUrl = applicationSupportDirectoryUrls.first?
             .appendingPathComponent(Constants.Preferences.mobileAnalyticsRoot)
             .appendingPathComponent(configuration.appId)
@@ -98,15 +112,15 @@ class PinpointContext {
         }
         
         do {
-            try FileManager.default.removeItem(atPath: preferencesPath)
+            try fileManager.removeItem(atPath: preferencesPath)
         } catch {
-            Amplify.Analytics.log.verbose("Cannot remove legacy preferences file")
+            log.verbose("Cannot remove legacy preferences file")
         }
     }
     
     private func legacyUniqueId() -> String? {
         guard let preferencesPath = legacyPreferencesFilePath,
-              FileManager.default.fileExists(atPath: preferencesPath),
+              fileManager.fileExists(atPath: preferencesPath),
               let preferencesJson = try? JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: preferencesPath)),
                                                                       options: .mutableContainers) as? [String: String] else {
             return nil
@@ -115,6 +129,20 @@ class PinpointContext {
         return preferencesJson[Constants.Preferences.uniqueIdKey]
     }
     
+    /**
+     Attempts to retrieve a previously generated Device Unique ID.
+     
+     This value can be present in 3 places:
+     1. In a preferences file stored in disk
+     2. In UserDefauls
+     3. In the Keychain
+     
+     1 and 2 are legacy storage options that are supportted for backwards compability, but once retrieved those values will be migrated to the Keychain.
+     
+     If no existing Device Unique ID is found, a new one will be generated and stored in the Keychain.
+     
+     - Returns: A string representing the Device Unique ID
+     */
     private func retrieveUniqueId() -> String {
         // 1. Look for the UniqueId in the Keychain
         if let deviceUniqueId = try? keychainStore.getString(Constants.Keychain.uniqueIdKey) {
@@ -126,13 +154,13 @@ class PinpointContext {
             do {
                 // Attempt to migrate to Keychain
                 try keychainStore.set(legacyUniqueId, key: Constants.Keychain.uniqueIdKey)
-                Amplify.Analytics.log.verbose("Migrated Legacy Pinpoint UniqueId to Keychain: \(legacyUniqueId)")
+                log.verbose("Migrated Legacy Pinpoint UniqueId to Keychain: \(legacyUniqueId)")
                 
                 // Delete the old file
                 removeLegacyPreferencesFile()
             } catch {
-                Amplify.Analytics.log.error("Failed to migrate UniqueId to Keychain from preferences file")
-                Amplify.Analytics.log.verbose("Fallback: Migrate UniqueId to UserDefaults: \(legacyUniqueId)")
+                log.error("Failed to migrate UniqueId to Keychain from preferences file")
+                log.verbose("Fallback: Migrate UniqueId to UserDefaults: \(legacyUniqueId)")
                 
                 // Attempt to migrate to UserDefaults
                 userDefaults.save(legacyUniqueId, forKey: Constants.Keychain.uniqueIdKey)
@@ -149,12 +177,12 @@ class PinpointContext {
             // Attempt to migrate to Keychain
             do {
                 try keychainStore.set(userDefaultsUniqueId, key: Constants.Keychain.uniqueIdKey)
-                Amplify.Analytics.log.verbose("Migrated Pinpoint UniqueId from UserDefaults to Keychain: \(userDefaultsUniqueId)")
+                log.verbose("Migrated Pinpoint UniqueId from UserDefaults to Keychain: \(userDefaultsUniqueId)")
                 
                 // Delete the UserDefault entry
                 userDefaults.removeObject(forKey: Constants.Keychain.uniqueIdKey)
             } catch {
-                Amplify.Analytics.log.error("Failed to migrate UniqueId from UserDefaults to Keychain")
+                log.error("Failed to migrate UniqueId from UserDefaults to Keychain")
             }
             
             return userDefaultsUniqueId
@@ -164,16 +192,19 @@ class PinpointContext {
         let newUniqueId = UUID().uuidString
         do {
             try keychainStore.set(newUniqueId, key: Constants.Keychain.uniqueIdKey)
-            Amplify.Analytics.log.verbose("Created new Pinpoint UniqueId and saved it to Keychain: \(newUniqueId)")
+            log.verbose("Created new Pinpoint UniqueId and saved it to Keychain: \(newUniqueId)")
         } catch {
-            Amplify.Analytics.log.error("Failed to save UniqueId in Keychain")
-            Amplify.Analytics.log.verbose("Fallback: Created new Pinpoint UniqueId and saved it to UserDefaults: \(newUniqueId)")
+            log.error("Failed to save UniqueId in Keychain")
+            log.verbose("Fallback: Created new Pinpoint UniqueId and saved it to UserDefaults: \(newUniqueId)")
             userDefaults.save(newUniqueId, forKey: Constants.Keychain.uniqueIdKey)
         }
 
         return newUniqueId
     }
 }
+
+// MARK: - DefaultLogger
+extension PinpointContext: DefaultLogger {}
 
 extension PinpointContext {
     struct Constants {
