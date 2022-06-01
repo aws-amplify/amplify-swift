@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import AWSCognitoIdentity
-import AWSCognitoIdentityProvider
 import AWSClientRuntime
 import ClientRuntime
 
