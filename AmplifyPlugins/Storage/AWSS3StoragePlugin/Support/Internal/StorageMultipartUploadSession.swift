@@ -11,8 +11,8 @@
 import Foundation
 import Amplify
 
-typealias RequestHeaders = [String : String]
-typealias RequestParameters = [String : String]
+typealias RequestHeaders = [String: String]
+typealias RequestParameters = [String: String]
 
 /// Behavior for multipart upload
 enum StorageMultipartUploadBehavior {
@@ -257,7 +257,7 @@ class StorageMultipartUploadSession {
                     fail(error: error)
                     return
                 }
-                
+
                 if let uploadId = multipartUpload.uploadId {
                     try client.completeMultipartUpload(uploadId: uploadId)
                 } else {

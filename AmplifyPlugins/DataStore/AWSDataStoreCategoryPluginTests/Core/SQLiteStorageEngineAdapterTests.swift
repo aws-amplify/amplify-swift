@@ -559,7 +559,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
 
         let newVersion = "newVersion"
         let mockFileManager = MockFileManager()
-        mockFileManager.removeItem = { res in
+        mockFileManager.removeItem = { _ in
             XCTFail("Should not have called removeItem")
         }
 
@@ -586,7 +586,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         let newVersion = "previousVersion"
         let mockFileManager = MockFileManager()
         mockFileManager.fileExists = true
-        mockFileManager.removeItem = { res in
+        mockFileManager.removeItem = { _ in
             XCTFail("Should not have called removeItem")
         }
 
@@ -613,7 +613,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         let newVersion = "previousVersion"
         let mockFileManager = MockFileManager()
         mockFileManager.fileExists = true
-        mockFileManager.removeItem = { res in
+        mockFileManager.removeItem = { _ in
             XCTFail("Should not have called removeItem")
         }
 

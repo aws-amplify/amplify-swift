@@ -78,5 +78,3 @@ final class AmplifyBigIntDecimalTests: XCTestCase {
         XCTAssertEqual(result.asString, "-44")
     }
 }
-
-

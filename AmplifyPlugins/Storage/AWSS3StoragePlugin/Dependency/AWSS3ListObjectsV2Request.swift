@@ -20,7 +20,7 @@ struct AWSS3ListObjectsV2Request {
     let delimiter: String?
     let maxKeys: Int
     let startAfter: String?
-    
+
     init(bucket: String,
          prefix: String? = nil,
          continuationToken: String? = nil,
@@ -53,17 +53,17 @@ extension StorageListResult.Item {
         guard let fullKey = s3Object.key else {
             throw StorageError.unknown("Missing key in response")
         }
-        
+
         let resultKey = String(fullKey.dropFirst(prefix.count))
-        
+
         guard let eTag = s3Object.eTag else {
             throw StorageError.unknown("Missing eTag in response")
         }
-        
+
         guard let lastModified = s3Object.lastModified else {
             throw StorageError.unknown("Missing lastModified in response")
         }
-        
+
         self.init(key: resultKey, size: s3Object.size, eTag: eTag, lastModified: lastModified)
     }
 }

@@ -52,5 +52,3 @@ struct SignOutEvent: StateMachineEvent {
         self.time = time
     }
 }
-
-

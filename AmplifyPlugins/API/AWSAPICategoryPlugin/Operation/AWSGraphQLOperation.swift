@@ -101,7 +101,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         // Create request
         let urlRequest = GraphQLOperationRequestUtils.constructRequest(with: endpointConfig.baseURL,
                                                                        requestPayload: requestPayload)
-        
+
         Task {
             // Intercept request
             var finalRequest = urlRequest
@@ -118,7 +118,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
                     cancel()
                 }
             }
-            
+
             if isCancelled {
                 finish()
                 return

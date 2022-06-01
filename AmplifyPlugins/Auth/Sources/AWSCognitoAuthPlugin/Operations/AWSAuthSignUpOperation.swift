@@ -17,15 +17,13 @@ public typealias AmplifySignUpOperation = AmplifyOperation<
     AuthError>
 
 public class AWSAuthSignUpOperation: AmplifySignUpOperation,
-                                     AuthSignUpOperation
-{
+                                     AuthSignUpOperation {
 
     let stateMachine: AuthStateMachine
 
     init(_ request: AuthSignUpRequest,
          stateMachine: AuthStateMachine,
-         resultListener: ResultListener?)
-    {
+         resultListener: ResultListener?) {
 
         self.stateMachine = stateMachine
         super.init(categoryType: .auth,

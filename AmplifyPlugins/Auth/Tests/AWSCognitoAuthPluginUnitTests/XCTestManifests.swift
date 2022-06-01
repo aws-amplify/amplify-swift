@@ -10,7 +10,7 @@ import XCTest
 #if !canImport(ObjectiveC)
 public func allTests() -> [XCTestCaseEntry] {
     return [
-        testCase(AWSCognitoAuthPluginUnitTests.allTests),
+        testCase(AWSCognitoAuthPluginUnitTests.allTests)
     ]
 }
 #endif

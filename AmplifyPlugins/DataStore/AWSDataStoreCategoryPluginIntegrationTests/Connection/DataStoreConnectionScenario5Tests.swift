@@ -150,7 +150,6 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
                     }
                 }
 
-
             case .failure(let error):
                 XCTFail("\(error)")
             }

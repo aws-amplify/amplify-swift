@@ -12,10 +12,10 @@
 ////  Created by Schmelter, Tim on 1/6/21.
 ////
 //
-//import XCTest
-//@testable import AWSCognitoAuthPlugin
+// import XCTest
+// @testable import AWSCognitoAuthPlugin
 //
-//class ConfiguredTests: XCTestCase {
+// class ConfiguredTests: XCTestCase {
 //
 //    var resolver: AuthenticationState.Resolver {
 //        AuthenticationState.Resolver()
@@ -76,4 +76,4 @@
 //        AuthenticationEvent.allTestEvents.forEach(assertIfUnsupported(_:))
 //    }
 //
-//}
+// }

@@ -17,7 +17,7 @@ import AWSClientRuntime
 // TODO: Consolidate this to AWSPluginsCore for all other plugins to use.
 struct AWSAPIPluginsCore {
     static let version = "1.16.1"
-    
+
     static var platformMapping: [Platform: String] = [:]
 
     static var systemName: String {
@@ -34,9 +34,9 @@ struct AWSAPIPluginsCore {
         ProcessInfo.processInfo.operatingSystemVersionString
 #endif
     }
-    
+
     static func baseUserAgent() -> String! {
-        //TODO: Retrieve this version from a centralized location:
+        // TODO: Retrieve this version from a centralized location:
         //https://github.com/aws-amplify/amplify-ios/issues/276
         let platformInfo = AWSAPIPluginsCore.platformInformation()
         let systemName = Self.systemName
@@ -44,16 +44,16 @@ struct AWSAPIPluginsCore {
         let localeIdentifier = Locale.current.identifier
         return "\(platformInfo) \(systemName)/\(systemVersion) \(localeIdentifier)"
     }
-    
+
     public enum Platform: String {
         case flutter = "amplify-flutter"
     }
-    
+
     static func platformInformation() -> String {
         var platformTokens = platformMapping.map { "\($0.rawValue)/\($1)" }
         platformTokens.append("amplify-iOS/\(AWSAPIPluginsCore.version)")
         return platformTokens.joined(separator: " ")
     }
-    
-    public static let AWSDateISO8601DateFormat2 = "yyyyMMdd'T'HHmmss'Z'";
+
+    public static let AWSDateISO8601DateFormat2 = "yyyyMMdd'T'HHmmss'Z'"
 }

@@ -32,7 +32,6 @@ extension SignUpEvent {
         eventType: .confirmSignUp(ConfirmSignUpEventData()), time: nil
     )
 
-
     static let initiateSignUpSuccessEvent = SignUpEvent(
         id: "initiateSignUpSuccess",
         eventType: .initiateSignUpSuccess(username: "", signUpResponse: SignUpOutputResponse()), time: nil

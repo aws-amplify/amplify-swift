@@ -122,7 +122,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             Task {
                 do {
                     let partialFileURL = try result.get()
-                    
+
                     let operation = AWSS3SigningOperation.uploadPart(partNumber: partNumber, uploadId: uploadId)
                     let preSignedURL = try await serviceProxy.preSignedURLBuilder.getPreSignedURL(
                         key: self.key,
@@ -182,7 +182,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
     // MARK: - Private -
 
     // Note: the headers were previously filtered in the SDK
-    func filter(requestHeaders: RequestHeaders) ->  RequestHeaders {
+    func filter(requestHeaders: RequestHeaders) -> RequestHeaders {
         let disallowedHeaders: Set<String> = ["x-amz-acl", "x-amz-tagging", "x-amz-storage-class", "x-amz-server-side-encryption"]
         let shouldExcludeKey: (String) -> Bool = {
             $0.hasPrefix("x-amz-meta") ||

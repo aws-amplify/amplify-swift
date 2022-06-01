@@ -12,8 +12,7 @@ struct IdentityPoolConfigurationData: Equatable {
     let region: String
 
     init(poolId: String,
-                region: String)
-    {
+                region: String) {
         self.poolId = poolId
         self.region = region
     }

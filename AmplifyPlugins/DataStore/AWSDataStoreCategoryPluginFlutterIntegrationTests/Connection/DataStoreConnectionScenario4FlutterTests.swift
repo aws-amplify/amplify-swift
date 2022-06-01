@@ -56,7 +56,7 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [getCommentCompleted], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     func testUpdateComment() throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
@@ -149,7 +149,7 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     func savePost(id: String = UUID().uuidString, title: String, plugin: AWSDataStorePlugin) throws -> Post4Wrapper? {
         let post = try Post4Wrapper(id: id, title: title)
         var result: Post4Wrapper?

@@ -116,8 +116,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
                 print(error)
                 if case let .httpStatusError(_, response) = error,
                     let awsResponse = response as? AWSHTTPURLResponse,
-                    let responseBody = awsResponse.body
-                {
+                    let responseBody = awsResponse.body {
                     print("Response contains a \(responseBody.count) byte long response body")
                 }
                 XCTFail("Failed with error \(error)")
@@ -194,7 +193,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         wait(for: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
         XCTAssertTrue(operation.isFinished)
     }
-    
+
     /// A subscription to onCreate todo should receive an event for each create Todo mutation API called
     ///
     /// - Given:  An onCreate Todo subscription established

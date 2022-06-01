@@ -8,7 +8,6 @@
 import XCTest
 import AWSCognitoIdentityProvider
 
-
 @testable import AWSCognitoAuthPlugin
 
 class InitiateAuthSRPTests: XCTestCase {

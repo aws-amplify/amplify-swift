@@ -68,12 +68,10 @@ class ConfigureUserPoolTokenTests: XCTestCase {
             withDispatcher: MockDispatcher { event in
 
                 if let event = event as? FetchUserPoolTokensEvent,
-                   case .fetched = event.eventType
-                {
+                   case .fetched = event.eventType {
                     userPoolTokensValidExpectation.fulfill()
                 } else if let event = event as? FetchAuthSessionEvent,
-                          case let .fetchIdentity(cognitoSession) = event.eventType
-                {
+                          case let .fetchIdentity(cognitoSession) = event.eventType {
                     XCTAssertEqual(cognitoSession, cognitoSessionInput)
                     fetchIdentityIdExpectation.fulfill()
                 }
@@ -87,7 +85,7 @@ class ConfigureUserPoolTokenTests: XCTestCase {
     func testUserPoolTokensExpiring() {
 
         let expectation = expectation(description: "refreshUserPoolTokens")
-        
+
         let tokenData = [
             "sub": "1234567890",
             "name": "John Doe",

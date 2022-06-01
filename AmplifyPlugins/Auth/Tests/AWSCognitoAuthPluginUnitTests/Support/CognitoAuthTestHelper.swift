@@ -9,15 +9,15 @@ import CryptoKit
 import Foundation
 
 struct CognitoAuthTestHelper {
-    
+
     /// Helper to build a JWT Token
     static func buildToken(for payload: [String: String]) -> String {
-        
+
         struct Header: Encodable {
             let alg = "HS256"
             let typ = "JWT"
         }
-        
+
         let secret = "256-bit-secret"
         let privateKey = SymmetricKey(data: Data(secret.utf8))
 
@@ -33,11 +33,10 @@ struct CognitoAuthTestHelper {
         let signatureBase64String = Data(signature).urlSafeBase64EncodedString()
 
         let token = [headerBase64String, payloadBase64String, signatureBase64String].joined(separator: ".")
-        
+
         return token
     }
 }
-
 
 fileprivate extension Data {
     func urlSafeBase64EncodedString() -> String {

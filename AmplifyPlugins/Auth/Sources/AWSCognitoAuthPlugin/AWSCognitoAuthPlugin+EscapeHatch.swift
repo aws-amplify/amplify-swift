@@ -34,8 +34,7 @@ public extension AWSCognitoAuthPlugin {
             if let userPoolClient = userPoolClient
                 as? CognitoIdentityProviderClient,
                let identityPoolClient = identityPoolClient
-                as? CognitoIdentityClient
-            {
+                as? CognitoIdentityClient {
 
                 service = .userPoolAndIdentityPool(userPoolClient,
                                                    identityPoolClient)

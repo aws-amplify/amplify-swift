@@ -35,10 +35,10 @@ struct SignOutGlobally: Action {
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             return
         }
-        
+
         logVerbose("\(#fileID) Starting Global signOut", environment: environment)
         let input = GlobalSignOutInput(accessToken: signedInData.cognitoUserPoolTokens.accessToken)
-        
+
         Task {
             do {
                 _ = try await client.globalSignOut(input: input)

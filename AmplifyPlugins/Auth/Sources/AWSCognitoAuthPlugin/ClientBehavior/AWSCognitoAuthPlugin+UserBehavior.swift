@@ -21,8 +21,7 @@ public extension AWSCognitoAuthPlugin {
 
     func update(userAttribute: AuthUserAttribute,
                        options: AuthUpdateUserAttributeOperation.Request.Options? = nil,
-                       listener: AuthUpdateUserAttributeOperation.ResultListener?) -> AuthUpdateUserAttributeOperation
-    {
+                       listener: AuthUpdateUserAttributeOperation.ResultListener?) -> AuthUpdateUserAttributeOperation {
         //        let options = options ?? AuthUpdateUserAttributeRequest.Options()
         //        let request = AuthUpdateUserAttributeRequest(userAttribute: userAttribute, options: options)
         fatalError("Not implemented")
@@ -61,8 +60,7 @@ public extension AWSCognitoAuthPlugin {
     func update(oldPassword: String,
                        to newPassword: String,
                        options: AuthChangePasswordOperation.Request.Options? = nil,
-                       listener: AuthChangePasswordOperation.ResultListener?) -> AuthChangePasswordOperation
-    {
+                       listener: AuthChangePasswordOperation.ResultListener?) -> AuthChangePasswordOperation {
         //        let options = options ?? AuthChangePasswordRequest.Options()
         //        let request = AuthChangePasswordRequest(oldPassword: oldPassword,
         //                                                newPassword: newPassword,

@@ -51,8 +51,7 @@ struct MigrateLegacyCredentialStore: Action {
 
         // IdentityId and AWSCredentials should exist together
         if let (storedIdentityId, storedAWSCredentials) = try? getIdentityIdAndAWSCredentials(from: credentialStoreEnvironment,
-                                                                                            with: authConfiguration)
-        {
+                                                                                            with: authConfiguration) {
             identityId = storedIdentityId
             awsCredentials = storedAWSCredentials
         }
@@ -84,8 +83,7 @@ struct MigrateLegacyCredentialStore: Action {
     }
 
     private func getUserPoolTokens(from credentialStoreEnvironment: CredentialStoreEnvironment,
-                                   with authConfiguration: AuthConfiguration) throws -> AWSCognitoUserPoolTokens
-    {
+                                   with authConfiguration: AuthConfiguration) throws -> AWSCognitoUserPoolTokens {
 
         guard let bundleIdentifier = Bundle.main.bundleIdentifier,
               let userPoolConfig = authConfiguration.getUserPoolConfiguration()
@@ -144,8 +142,7 @@ struct MigrateLegacyCredentialStore: Action {
 
     private func getIdentityIdAndAWSCredentials(
         from credentialStoreEnvironment: CredentialStoreEnvironment,
-        with authConfiguration: AuthConfiguration) throws -> (identityId: String, awsCredentials: AuthAWSCognitoCredentials)
-    {
+        with authConfiguration: AuthConfiguration) throws -> (identityId: String, awsCredentials: AuthAWSCognitoCredentials) {
 
         guard let bundleIdentifier = Bundle.main.bundleIdentifier,
               let identityPoolConfig = authConfiguration.getIdentityPoolConfiguration()

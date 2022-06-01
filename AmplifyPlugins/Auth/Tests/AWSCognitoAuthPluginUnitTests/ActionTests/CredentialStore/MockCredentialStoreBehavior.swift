@@ -17,8 +17,7 @@ class MockCredentialStoreBehavior: CredentialStoreBehavior {
     let removeAllHandler: VoidHandler?
 
     init(data: String,
-         removeAllHandler: VoidHandler? = nil)
-    {
+         removeAllHandler: VoidHandler? = nil) {
         self.data = data
         self.removeAllHandler = removeAllHandler
     }

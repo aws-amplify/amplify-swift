@@ -12,8 +12,7 @@ struct CancelSignUp: Action {
     let identifier = "CancelSignUp"
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment)
-    {
+                 environment: Environment) {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
 

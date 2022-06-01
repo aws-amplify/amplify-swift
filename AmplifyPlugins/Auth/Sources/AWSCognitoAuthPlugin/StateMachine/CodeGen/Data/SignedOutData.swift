@@ -22,7 +22,7 @@ extension SignedOutData: Equatable { }
 extension SignedOutData: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
-            "lastKnownUserName": lastKnownUserName.masked(),
+            "lastKnownUserName": lastKnownUserName.masked()
         ]
     }
 }

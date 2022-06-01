@@ -189,7 +189,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         }
         XCTAssertEqual(dishes.count, numberOfDishes)
 
-        //let startTime = CFAbsoluteTimeGetCurrent()
+        // let startTime = CFAbsoluteTimeGetCurrent()
         // Delete Top level of restaurant
         let receivedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
         receivedMutationEvent.expectedFulfillmentCount = numberOfMenus + numberOfDishes + 1
