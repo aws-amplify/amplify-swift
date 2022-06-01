@@ -9,7 +9,6 @@ import Foundation
 
 public enum AmplifyBigIntHelper {
 
-
     /// Converts the signed number into a bytes array.
     /// - Parameter num: The Signed number to be converted
     /// - Returns: Data format for the signed number

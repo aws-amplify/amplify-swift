@@ -36,7 +36,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
     func testSetUp() {
         XCTAssertTrue(true)
     }
-    
+
     func testGetAPISuccess() {
         let completeInvoked = expectation(description: "request completed")
         let request = RESTRequest(path: "/items")
@@ -49,8 +49,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             case .failure(let error):
                 if case let .httpStatusError(_, response) = error,
                     let awsResponse = response as? AWSHTTPURLResponse,
-                    let responseBody = awsResponse.body
-                {
+                    let responseBody = awsResponse.body {
                     let str = String(decoding: responseBody, as: UTF8.self)
 
                     print("Response contains a \(str)")
@@ -134,7 +133,6 @@ class RESTWithIAMIntegrationTests: XCTestCase {
 
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
     }
-
 
     func testPutAPISuccess() {
         let completeInvoked = expectation(description: "request completed")

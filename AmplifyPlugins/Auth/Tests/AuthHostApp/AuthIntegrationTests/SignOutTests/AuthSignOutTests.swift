@@ -51,7 +51,7 @@ class AuthSignOutTests: AWSAuthBaseTest {
             XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
         }
         wait(for: [signUpExpectation], timeout: networkTimeout)
-        
+
         print("calling signOut...")
         let signOutExpectation = expectation(description: "SignOut operation should complete")
         let signOutOperation = signOut(globalSignOut: true, completion: signOutExpectation.fulfill)
@@ -79,7 +79,7 @@ class AuthSignOutTests: AWSAuthBaseTest {
             XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
         }
         wait(for: [signUpExpectation], timeout: networkTimeout)
-        
+
         print("calling signOut...")
         let signOutExpectation = expectation(description: "SignOut operation should complete")
         let signOutOperation = signOut(globalSignOut: false, completion: signOutExpectation.fulfill)
@@ -112,7 +112,7 @@ class AuthSignOutTests: AWSAuthBaseTest {
         wait(for: [operationExpectation], timeout: networkTimeout)
     }
 
-    private func signOut(globalSignOut: Bool, completion: @escaping ()->Void) -> AuthSignOutOperation {
+    private func signOut(globalSignOut: Bool, completion: @escaping () -> Void) -> AuthSignOutOperation {
         let options = AuthSignOutRequest.Options(globalSignOut: globalSignOut)
 
         let operation = Amplify.Auth.signOut(options: options) { result in
@@ -130,4 +130,3 @@ class AuthSignOutTests: AWSAuthBaseTest {
         return operation
     }
 }
-

@@ -10,10 +10,10 @@ import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-//swiftlint:disable type_body_length
-//swiftlint:disable file_length
-//swiftlint:disable type_name
-//swiftlint:disable line_length
+// swiftlint:disable type_body_length
+// swiftlint:disable file_length
+// swiftlint:disable type_name
+// swiftlint:disable line_length
 class QueryPredicateEvaluateGeneratedDateTimeTests: XCTestCase {
     func testTemporalDateTimeTemporal_DateTime_nownotEqualTemporalDateTimeTemporal_DateTime_now() throws {
         let dateTimeNow = Temporal.DateTime.now()

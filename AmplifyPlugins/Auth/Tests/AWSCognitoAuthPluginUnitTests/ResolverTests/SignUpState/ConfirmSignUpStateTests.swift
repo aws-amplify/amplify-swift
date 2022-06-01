@@ -38,7 +38,7 @@ class ConfirmSignUpStateTests: XCTestCase {
         let username = "bob"
         let confirmationCode = "123456"
 
-        let confirmSignUpCallback: MockIdentityProvider.ConfirmSignUpCallback = { input, callback in
+        let confirmSignUpCallback: MockIdentityProvider.ConfirmSignUpCallback = { _, callback in
             let response = try! ConfirmSignUpOutputResponse(httpResponse: MockHttpResponse.ok)
             callback(.success(response))
             exp.fulfill()

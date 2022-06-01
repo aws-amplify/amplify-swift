@@ -39,7 +39,7 @@ public extension AWSAPIPlugin {
 
         // Initialize SwiftSDK's CRT dependency for SigV4 signing functionality
         AwsCommonRuntimeKit.initialize()
-        
+
         log.info("Configure finished")
     }
 }

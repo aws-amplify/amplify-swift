@@ -33,7 +33,7 @@ class CommandImportModelsTasksTests: XCTestCase {
             override func glob(pattern: String) -> [String] {
                 [
                    "Todo.swift",
-                   "Note.swift",
+                   "Note.swift"
                ]
 
             }

@@ -88,7 +88,7 @@ extension Model {
             // At this point, we have a value: Any. However, remember that Any could itself be an optional, so we're
             // not quite done yet.
             let value: Any
-            // swiftlint:disable syntactic_sugar
+            // swiftlint:disable:next syntactic_sugar
             if case Optional<Any>.some(let unwrappedValue) = anyValue {
                 value = unwrappedValue
             } else {

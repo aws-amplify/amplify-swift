@@ -15,8 +15,7 @@ struct InitializeAuthenticationConfiguration: Action {
     let cognitoCredentials: AmplifyCredentials?
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                        environment: Environment)
-    {
+                        environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let event = AuthenticationEvent(eventType: .configure(configuration, cognitoCredentials))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)

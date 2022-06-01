@@ -22,4 +22,3 @@ extension AmplifyBigInt: CustomStringConvertible {
         asString(radix: 10)
     }
 }
-

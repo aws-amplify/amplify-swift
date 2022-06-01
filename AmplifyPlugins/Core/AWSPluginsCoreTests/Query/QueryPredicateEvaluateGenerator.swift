@@ -139,7 +139,7 @@ class QueryPredicateGenerator: XCTestCase {
         "Temporal.Time,Temporal.Time": [("Temporal.Time.now().add(value:1, to:.hour)", "Temporal.Time.now().add(value:3, to:.hour)")]
     ]
 
-    //the type of v3 is the type of v1 (which is the first part of the key)
+    // the type of v3 is the type of v1 (which is the first part of the key)
     let typePairTov3BetweenTestsMap = [
         "Double,Double": ["0", "0.0", "1", "1.1", "2", "1.2", "3", "3.1", "3.2", "4", ""],
         "Double,Int": ["0", "0.0", "1", "1.1", "2", "1.2", "3", "3.1", "3.2", "4", ""],
@@ -220,7 +220,7 @@ class QueryPredicateGenerator: XCTestCase {
             }
         } else {
             if type1 == "Int" && type2 == "Double" {
-                //Unable to assign a double value to a Int Type, so these tests are invalid
+                // Unable to assign a double value to a Int Type, so these tests are invalid
                 return 0
             }
             for val1 in values1 {
@@ -266,7 +266,7 @@ class QueryPredicateGenerator: XCTestCase {
         let type1 = type1.replacingOccurrences(of: ".", with: "")
         let type2 = type2.replacingOccurrences(of: ".", with: "")
 
-        //In cases of between, we should check we have v1, v2 and v3, E.g.: (v1 < v3 && v3 > v2)
+        // In cases of between, we should check we have v1, v2 and v3, E.g.: (v1 < v3 && v3 > v2)
         if val2 == "" {
             return false
         }
@@ -490,7 +490,7 @@ class QueryPredicateGenerator: XCTestCase {
     func attemptToResolveTemporal(_ type1: String, _ sv1: String,
                                   _ type2: String, _ sv2: String,
                                   _ operation: String) -> Bool {
-        //Use built-in Date to determine the assert logic
+        // Use built-in Date to determine the assert logic
         let val1 = temporalToTimeMap[sv1]!
         let val2 = temporalToTimeMap[sv2]!
 
@@ -521,7 +521,7 @@ class QueryPredicateGenerator: XCTestCase {
         if sv3 == "" {
             return false
         }
-        //Use built-in Date to determine the assert logic
+        // Use built-in Date to determine the assert logic
         let val1 = temporalToTimeMap[sv1]!
         let val2 = temporalToTimeMap[sv2]!
         let val3 = temporalToTimeMap[sv3]!

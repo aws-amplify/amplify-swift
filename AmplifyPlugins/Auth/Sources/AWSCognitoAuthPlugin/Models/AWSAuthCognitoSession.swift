@@ -12,8 +12,7 @@ import Foundation
 public struct AWSAuthCognitoSession: AuthSession,
                                      AuthAWSCredentialsProvider,
                                      AuthCognitoTokensProvider,
-                                     AuthCognitoIdentityProvider
-{
+                                     AuthCognitoIdentityProvider {
 
     /// Indicates whether the user is signedIn or not
     public var isSignedIn: Bool
@@ -31,8 +30,7 @@ public struct AWSAuthCognitoSession: AuthSession,
     init(isSignedIn: Bool,
          identityIdResult: Result<String, AuthError>,
          awsCredentialsResult: Result<AuthAWSCredentials, AuthError>,
-         cognitoTokensResult: Result<AuthCognitoTokens, AuthError>)
-    {
+         cognitoTokensResult: Result<AuthCognitoTokens, AuthError>) {
         self.isSignedIn = isSignedIn
         self.identityIdResult = identityIdResult
         self.awsCredentialsResult = awsCredentialsResult
@@ -66,7 +64,7 @@ public struct AWSAuthCognitoSession: AuthSession,
             return .failure(AuthError.signedOut(
                             AuthPluginErrorConstants.userSubSignOutError.errorDescription,
                             AuthPluginErrorConstants.userSubSignOutError.recoverySuggestion))
-        } catch let error as AuthError{
+        } catch let error as AuthError {
             return .failure(error)
         } catch {
             let error = AuthError.unknown("""
@@ -81,7 +79,7 @@ public struct AWSAuthCognitoSession: AuthSession,
 /// Internal Helpers for managing session tokens
 internal extension AWSAuthCognitoSession {
     func areTokensExpiring(in seconds: TimeInterval? = nil) -> Bool {
-        
+
         guard let tokens = try? cognitoTokensResult.get(),
               let idTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: tokens.idToken).get(),
               let accessTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: tokens.idToken).get(),
@@ -89,7 +87,7 @@ internal extension AWSAuthCognitoSession {
               let accessTokenExpiration = accessTokenClaims["exp"]?.doubleValue else {
             return true
         }
-        
+
         // If the session expires < X minutes return it
         return (Date(timeIntervalSince1970: idTokenExpiration).compare(Date(timeIntervalSinceNow: seconds ?? 0)) == .orderedDescending &&
                 Date(timeIntervalSince1970: accessTokenExpiration).compare(Date(timeIntervalSinceNow: seconds ?? 0)) == .orderedDescending)
@@ -107,15 +105,13 @@ extension AWSAuthCognitoSession {
 
         var cognitUserPoolTokens: AWSCognitoUserPoolTokens?
         if case let .success(tokens) = getCognitoTokens(),
-           let unwrappedTokens = tokens as? AWSCognitoUserPoolTokens
-        {
+           let unwrappedTokens = tokens as? AWSCognitoUserPoolTokens {
             cognitUserPoolTokens = unwrappedTokens
         }
 
         var awsCredentials: AuthAWSCognitoCredentials?
         if case let .success(credentials) = getAWSCredentials(),
-           let unwrappedCredentials = credentials as? AuthAWSCognitoCredentials
-        {
+           let unwrappedCredentials = credentials as? AuthAWSCognitoCredentials {
             awsCredentials = unwrappedCredentials
         }
 

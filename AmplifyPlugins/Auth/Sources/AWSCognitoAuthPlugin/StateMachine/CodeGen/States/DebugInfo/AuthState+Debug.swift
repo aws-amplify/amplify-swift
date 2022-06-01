@@ -10,7 +10,7 @@ import Foundation
 extension AuthState: CustomDebugStringConvertible {
 
     var debugDictionary: [String: Any] {
-       
+
         var additionalMetadataDictionary: [String: Any] = [:]
 
         switch self {

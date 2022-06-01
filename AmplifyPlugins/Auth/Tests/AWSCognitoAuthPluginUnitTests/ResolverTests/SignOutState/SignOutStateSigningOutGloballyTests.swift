@@ -36,4 +36,3 @@ class SignOutStateSigningOutGloballyTests: XCTestCase {
         SignOutEvent.allEvents.forEach(assertIfUnsupported(_:))
     }
 }
-

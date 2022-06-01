@@ -28,7 +28,7 @@ import XCTest
 
  */
 class GraphQLConnectionScenario1Tests: XCTestCase {
-        
+
     override func setUp() {
         do {
             Amplify.Logging.logLevel = .verbose

@@ -44,7 +44,7 @@ class AmplifyAWSServiceConfigurationTests: XCTestCase {
         XCTAssertNotNil(frameworkMetaData)
         XCTAssertEqual(frameworkMetaData.sanitizedName, "amplify-flutter")
         XCTAssertEqual(frameworkMetaData.sanitizedVersion, "1.1")
-        
+
         XCTAssertNotNil(frameworkMetaData.extras)
         XCTAssertEqual(frameworkMetaData.extras["amplify-ios"], AmplifyAWSServiceConfiguration.version)
     }

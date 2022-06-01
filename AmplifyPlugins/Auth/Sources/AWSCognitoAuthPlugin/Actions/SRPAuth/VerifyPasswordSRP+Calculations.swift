@@ -15,8 +15,7 @@ extension VerifyPasswordSRP {
                    secretBlock: Data,
                    serverPublicBHexString: String,
                    srpClient: SRPClientBehavior,
-                   environment: SRPAuthEnvironment) throws -> String
-    {
+                   environment: SRPAuthEnvironment) throws -> String {
 
         let sharedSecret = try sharedSecret(
             userIdForSRP: userIdForSRP,
@@ -60,8 +59,7 @@ extension VerifyPasswordSRP {
                       saltHex: String,
                       serverPublicBHexString: String,
                       srpClient: SRPClientBehavior,
-                      environment: SRPAuthEnvironment) throws -> String
-    {
+                      environment: SRPAuthEnvironment) throws -> String {
         let strippedPoolId =  strippedPoolId(environment)
         let usernameForS = "\(strippedPoolId)\(userIdForSRP)"
         do {
@@ -93,8 +91,7 @@ extension VerifyPasswordSRP {
                            authenticationKey: Data,
                            srpUserName: String,
                            poolName: String,
-                           serviceSecretBlock: Data) -> Data
-    {
+                           serviceSecretBlock: Data) -> Data {
         let key = SymmetricKey(data: authenticationKey)
         var hmac = HMAC<SHA256>.init(key: key)
         hmac.update(data: poolName.data(using: .utf8)!)

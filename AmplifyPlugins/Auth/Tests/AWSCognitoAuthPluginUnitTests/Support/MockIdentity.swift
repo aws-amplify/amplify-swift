@@ -13,11 +13,10 @@ struct MockIdentity: CognitoIdentityBehavior {
     func getId(input: GetIdInput) async throws -> GetIdOutputResponse {
         fatalError("Not implemented")
     }
-    
+
     func getCredentialsForIdentity(input: GetCredentialsForIdentityInput) async throws -> GetCredentialsForIdentityOutputResponse {
         fatalError("Not implemented")
     }
-    
 
     typealias GetIdCallback = (
         GetIdInput,
@@ -33,8 +32,7 @@ struct MockIdentity: CognitoIdentityBehavior {
     let getCredentialsCallback: GetCredentialsCallback?
 
     init(getIdCallback: GetIdCallback? = nil,
-         getCredentialsCallback: GetCredentialsCallback? = nil)
-    {
+         getCredentialsCallback: GetCredentialsCallback? = nil) {
         self.getIdCallback = getIdCallback
         self.getCredentialsCallback = getCredentialsCallback
     }

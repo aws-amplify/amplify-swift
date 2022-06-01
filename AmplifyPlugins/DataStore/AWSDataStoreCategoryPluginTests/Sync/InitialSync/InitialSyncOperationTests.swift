@@ -547,7 +547,7 @@ class InitialSyncOperationTests: XCTestCase {
     }
 
     func testBaseQueryWhenExpiredLastSync() throws {
-        //Set start date to 100 seconds in the past
+        // Set start date to 100 seconds in the past
         let startDateMilliSeconds = (Int(Date().timeIntervalSince1970) - 100) * 1_000
 
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))

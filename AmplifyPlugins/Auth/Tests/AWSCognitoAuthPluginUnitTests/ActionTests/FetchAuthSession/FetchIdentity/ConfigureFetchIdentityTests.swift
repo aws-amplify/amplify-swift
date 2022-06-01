@@ -13,7 +13,6 @@ import AWSPluginsCore
 
 class ConfigureFetchIdentityTests: XCTestCase {
 
-
     func testWithValidIdentity() {
 
         let identityIdExpectation = expectation(description: "fetchedIdentityId")
@@ -28,12 +27,10 @@ class ConfigureFetchIdentityTests: XCTestCase {
             withDispatcher: MockDispatcher { event in
 
                 if let event = event as? FetchIdentityEvent,
-                   case .fetched = event.eventType
-                {
+                   case .fetched = event.eventType {
                     identityIdExpectation.fulfill()
                 } else if let event = event as? FetchAuthSessionEvent,
-                          case let .fetchAWSCredentials(cognitoSession) = event.eventType
-                {
+                          case let .fetchAWSCredentials(cognitoSession) = event.eventType {
                     XCTAssertEqual(cognitoSession, cognitoSessionInput)
                     fetchAWSCredentialEventExpectation.fulfill()
                 }

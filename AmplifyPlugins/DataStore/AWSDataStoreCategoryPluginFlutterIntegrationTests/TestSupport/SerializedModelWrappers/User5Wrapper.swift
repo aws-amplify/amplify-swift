@@ -16,19 +16,19 @@ import AmplifyTestCommon
  */
 class User5Wrapper: NSCopying {
     var model: FlutterSerializedModel
-    
+
     init(id: String, username: String) throws {
         self.model = FlutterSerializedModel(id: id, map: try FlutterDataStoreRequestUtils.getJSONValue(["username": username]))
     }
-    
+
     init(model: FlutterSerializedModel) {
         self.model = model
     }
-    
+
     func idString() -> String {
         return self.model.id
     }
-    
+
     func id() -> JSONValue? {
         return self.model.values["id"]
     }

@@ -65,7 +65,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [saveTeamCompleted, syncedTeamReceived], timeout: networkTimeout)
         let saveProjectCompleted = expectation(description: "save project completed")
-        plugin.save(project.model,  modelSchema: Project2.schema) { result in
+        plugin.save(project.model, modelSchema: Project2.schema) { result in
             switch result {
             case .success:
                 saveProjectCompleted.fulfill()
@@ -96,7 +96,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         let project = try Project2Wrapper(name: "project1", team: team.model, teamID: team.idString())
         let expectedUpdatedProject = project.copy() as! Project2Wrapper
         try expectedUpdatedProject.setTeam(name: "project1", team: anotherTeam.model, teamID: anotherTeam.idString())
-        
+
         let syncUpdatedProjectReceived = expectation(description: "received updated project from sync path")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
@@ -224,7 +224,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-        plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where:  Project2.keys.id.eq(project!.model.id)) { result in
+        plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where: Project2.keys.id.eq(project!.model.id)) { result in
             switch result {
             case .success(let project2):
                 XCTAssert(project2.isEmpty)
@@ -259,7 +259,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [deleteProjectFailed], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-        plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where:  Project2.keys.id.eq(project.model.id)) { result in
+        plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where: Project2.keys.id.eq(project.model.id)) { result in
             switch result {
             case .success(let project2):
                 XCTAssertNotNil(project2)
@@ -290,7 +290,7 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-        plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where:  Project2.keys.id.eq(project.model.id)) { result in
+        plugin.query(FlutterSerializedModel.self, modelSchema: Project2.schema, where: Project2.keys.id.eq(project.model.id)) { result in
             switch result {
             case .success(let project2):
                 XCTAssert(project2.isEmpty)
@@ -312,7 +312,6 @@ class DataStoreConnectionScenario2FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [deleteProjectSuccessful2], timeout: TestCommonConstants.networkTimeout)
     }
-
 
     func testListProjectsByTeamID() throws {
         try startAmplifyAndWaitForSync()

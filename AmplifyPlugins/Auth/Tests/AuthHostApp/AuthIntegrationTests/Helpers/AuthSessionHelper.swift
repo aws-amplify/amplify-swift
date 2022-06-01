@@ -17,21 +17,21 @@ struct AuthSessionHelper {
         let store = CredentialStore(service: "com.amplify.credentialStore")
         try? store.removeAll()
     }
-    
+
     static func invalidateSession(with amplifyConfiguration: AmplifyConfiguration) {
         let configuration = getAuthConfiguration(configuration: amplifyConfiguration)
         let credentialStore = AWSCognitoAuthCredentialStore(authConfiguration: configuration, accessGroup: nil)
         guard let credentials = try? credentialStore.retrieveCredential() else {
             return
         }
-        
+
         if let tokens = credentials.userPoolTokens,
            var idTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: tokens.idToken).get(),
            var accessTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: tokens.idToken).get() {
-            
+
             idTokenClaims["exp"] = String(Date(timeIntervalSinceNow: -3000).timeIntervalSince1970) as AnyObject
             accessTokenClaims["exp"] = String(Date(timeIntervalSinceNow: -3000).timeIntervalSince1970) as AnyObject
-            
+
             let updatedCredentials = AmplifyCredentials(
                 userPoolTokens: AWSCognitoUserPoolTokens(idToken: CognitoAuthTestHelper.buildToken(for: idTokenClaims),
                                                          accessToken: CognitoAuthTestHelper.buildToken(for: accessTokenClaims),
@@ -42,7 +42,7 @@ struct AuthSessionHelper {
             try! credentialStore.saveCredential(updatedCredentials)
         }
     }
-    
+
     static private func getAuthConfiguration(configuration: AmplifyConfiguration) -> AuthConfiguration {
         let jsonValueConfiguration = configuration.auth!.plugins["awsCognitoAuthPlugin"]!
         let userPoolConfigData = parseUserPoolConfigData(jsonValueConfiguration)
@@ -50,8 +50,7 @@ struct AuthSessionHelper {
         return try! authConfiguration(userPoolConfig: userPoolConfigData,
                                       identityPoolConfig: identityPoolConfigData)
     }
-    
-    
+
     static private func parseUserPoolConfigData(_ config: JSONValue) -> UserPoolConfigurationData? {
         // TODO: Use JSON serialization here to convert.
         guard let cognitoUserPoolJSON = config.value(at: "CognitoUserPool.Default") else {
@@ -88,10 +87,9 @@ struct AuthSessionHelper {
         }
         return IdentityPoolConfigurationData(poolId: poolId, region: region)
     }
-    
+
     static private func authConfiguration(userPoolConfig: UserPoolConfigurationData?,
-                           identityPoolConfig: IdentityPoolConfigurationData?) throws -> AuthConfiguration
-    {
+                           identityPoolConfig: IdentityPoolConfigurationData?) throws -> AuthConfiguration {
 
         if let userPoolConfigNonNil = userPoolConfig, let identityPoolConfigNonNil = identityPoolConfig {
             return .userPoolsAndIdentityPools(userPoolConfigNonNil, identityPoolConfigNonNil)
@@ -111,23 +109,22 @@ struct AuthSessionHelper {
     }
 }
 
-
 struct CognitoAuthTestHelper {
-    
+
     /// Helper to build a JWT Token
     static func buildToken(for payload: [String: AnyObject]) -> String {
-        
+
         struct Header: Encodable {
             let alg = "HS256"
             let typ = "JWT"
         }
-        
+
         // target dict
         var dictionary = [String: String]()
         for (key, value) in payload {
             if let value = value as? String { dictionary[key] = value }
         }
-        
+
         let secret = "256-bit-secret"
         let privateKey = SymmetricKey(data: Data(secret.utf8))
 
@@ -143,11 +140,10 @@ struct CognitoAuthTestHelper {
         let signatureBase64String = Data(signature).urlSafeBase64EncodedString()
 
         let token = [headerBase64String, payloadBase64String, signatureBase64String].joined(separator: ".")
-        
+
         return token
     }
 }
-
 
 fileprivate extension Data {
     func urlSafeBase64EncodedString() -> String {
@@ -157,4 +153,3 @@ fileprivate extension Data {
             .replacingOccurrences(of: "=", with: "")
     }
 }
-

@@ -459,7 +459,6 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     }
 }
 
-
 extension ReconcileAndLocalSaveOperation: DefaultLogger { }
 
 enum ReconcileAndLocalSaveOperationEvent {

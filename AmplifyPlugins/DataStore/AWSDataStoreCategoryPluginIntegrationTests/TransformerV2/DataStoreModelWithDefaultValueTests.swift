@@ -147,4 +147,3 @@ class DataStoreModelWithDefaultValueTests: SyncEngineIntegrationV2TestBase {
         return result
     }
 }
-

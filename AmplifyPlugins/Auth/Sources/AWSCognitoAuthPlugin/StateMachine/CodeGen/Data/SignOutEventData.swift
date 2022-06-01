@@ -27,4 +27,3 @@ extension SignOutEventData: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
-

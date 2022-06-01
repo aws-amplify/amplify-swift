@@ -11,6 +11,6 @@ import Combine
 extension List {
 
     public typealias LazyListPublisher = AnyPublisher<[Element], DataStoreError>
-    
+
 }
 #endif

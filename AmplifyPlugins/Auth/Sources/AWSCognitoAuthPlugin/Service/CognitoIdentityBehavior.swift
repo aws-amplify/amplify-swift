@@ -22,5 +22,5 @@ protocol CognitoIdentityBehavior {
     /// Throws GetCredentialsForIdentityOutputError
     func getCredentialsForIdentity(
         input: GetCredentialsForIdentityInput) async throws -> GetCredentialsForIdentityOutputResponse
-    
+
 }
