@@ -12,7 +12,6 @@ import Combine
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-@available(iOS 13.0, *)
 class AmplifyOperationCombineTests: XCTestCase {
 
     func testResultPublisherSucceeds() {

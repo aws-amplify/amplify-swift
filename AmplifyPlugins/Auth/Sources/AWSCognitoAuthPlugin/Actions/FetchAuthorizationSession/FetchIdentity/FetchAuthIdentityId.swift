@@ -7,6 +7,7 @@
 
 import AWSCognitoIdentity
 import Foundation
+import ClientRuntime
 
 struct FetchAuthIdentityId: Action {
 
@@ -46,48 +47,51 @@ struct FetchAuthIdentityId: Action {
 
         let getIdInput = GetIdInput(identityPoolId: authZEnvironment.identityPoolConfiguration.poolId,
                                     logins: loginsMap)
-        client.getId(input: getIdInput) { result in
-            switch result {
-            case .success(let response):
+        
+        Task {
+            do {
+                let response = try await client.getId(input: getIdInput)
+                
                 guard let identityId = response.identityId else {
                     let authZError = AuthorizationError.invalidIdentityId(
                         message: "IdentityId is invalid.")
                     let event = FetchIdentityEvent(eventType: .throwError(authZError))
                     dispatcher.send(event)
-
+                    
                     let updateCognitoSession = cognitoSession.copySessionByUpdating(
                         identityIdResult: .failure(authZError.authError))
                     // Move to fetching the AWS Credentials
                     let fetchAwsCredentialsEvent = FetchAuthSessionEvent(
                         eventType: .fetchAWSCredentials(updateCognitoSession))
                     dispatcher.send(fetchAwsCredentialsEvent)
-
+                    
                     logVerbose("\(#fileID) Sending event \(fetchAwsCredentialsEvent.type)",
                                environment: environment)
                     return
                 }
-
+                
                 let updateCognitoSession = cognitoSession.copySessionByUpdating(
                     identityIdResult: .success(identityId))
-
+                
                 let fetchIdentityEvent = FetchIdentityEvent(eventType: .fetched)
                 logVerbose("\(#fileID) Sending event \(fetchIdentityEvent.type)",
                            environment: environment)
                 dispatcher.send(fetchIdentityEvent)
-
+                
                 let fetchAwsCredentialsEvent = FetchAuthSessionEvent(
                     eventType: .fetchAWSCredentials(updateCognitoSession))
                 logVerbose("\(#fileID) Sending event \(fetchAwsCredentialsEvent.type)",
                            environment: environment)
                 dispatcher.send(fetchAwsCredentialsEvent)
-
-            case .failure(let error):
-                let authError = AuthorizationError.service(error: error)
-                let event = FetchIdentityEvent(eventType: .throwError(authError))
+                
+            } catch {
+                let sdkError = error as? SdkError<GetCredentialsForIdentityOutputError> ?? SdkError.unknown(error)
+                let authZError = AuthorizationError.service(error: error)
+                let event = FetchIdentityEvent(eventType: .throwError(authZError))
                 dispatcher.send(event)
-
+                
                 let updateCognitoSession = cognitoSession.copySessionByUpdating(
-                    identityIdResult: .failure(error.authError))
+                    identityIdResult: .failure(sdkError.authError))
                 let fetchAwsCredentialsEvent = FetchAuthSessionEvent(
                     eventType: .fetchAWSCredentials(updateCognitoSession))
                 logVerbose("\(#fileID) Sending event \(fetchAwsCredentialsEvent.type)",
@@ -111,3 +115,4 @@ extension FetchAuthIdentityId: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
+
