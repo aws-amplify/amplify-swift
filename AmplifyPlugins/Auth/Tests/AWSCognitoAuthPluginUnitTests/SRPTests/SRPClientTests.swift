@@ -28,7 +28,7 @@ class SRPClientTests: XCTestCase {
         XCTAssertNotNil(keyPair.publicKeyHexValue)
     }
 
-    //MARK: - Test K value
+    // MARK: - Test K value
 
     func testGeneratedK() throws {
         let expectedK = "538282c4354742d7cbbde2359fcf67f9f5b3a6b08791e5011b43b8a5b66d9ee6"
@@ -36,7 +36,7 @@ class SRPClientTests: XCTestCase {
         XCTAssertEqual(srpClient.kHexValue, expectedK.uppercased())
     }
 
-    //MARK: - Test U value
+    // MARK: - Test U value
     func testCalculateU_1() throws {
         let clientPublicKey =
         "27042f8575322fee79d27caaec003ab3dd7bf6b7c40c3438ebac8c7532" +
@@ -149,7 +149,7 @@ class SRPClientTests: XCTestCase {
         XCTAssertEqual(u, "4aa339a24ed483e6058e9e7afdc001409a4586af2f08ff009e4c3f8d12a0bce4".uppercased())
     }
 
-    //MARK: - Test Shared secret value
+    // MARK: - Test Shared secret value
 
     func testCalculateSharedSecret_1() throws {
 

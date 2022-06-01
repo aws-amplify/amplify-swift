@@ -23,7 +23,7 @@ extension ConfirmSignUpEventData: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "username": username.masked(),
-            "confirmationCode": confirmationCode.masked(),
+            "confirmationCode": confirmationCode.masked()
         ]
     }
 }

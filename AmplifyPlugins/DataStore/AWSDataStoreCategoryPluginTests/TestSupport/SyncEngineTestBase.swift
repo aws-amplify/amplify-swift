@@ -127,7 +127,7 @@ class SyncEngineTestBase: XCTestCase {
                   receiveValue: { (event: RemoteSyncEngineEvent) in
                     switch event {
                     case .mutationsPaused:
-                        //Assume AWSIncomingEventReconciliationQueue succeeds in establishing connections
+                        // Assume AWSIncomingEventReconciliationQueue succeeds in establishing connections
                         DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
                             MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
                         }

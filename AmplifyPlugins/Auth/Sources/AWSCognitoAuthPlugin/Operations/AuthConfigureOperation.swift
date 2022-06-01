@@ -49,7 +49,7 @@ class AuthConfigureOperation: ConfigureOperation {
         }
 
         /// Auth needs the Credential Store to be configured first.
-        sendConfigureCredentialEvent() { result in
+        sendConfigureCredentialEvent { result in
             self.credentialStoreToken = nil
             do {
                 /// If Credential store is successfully configured send event to configure auth statemachine.
@@ -95,7 +95,7 @@ class AuthConfigureOperation: ConfigureOperation {
     func sendConfigureAuthEvent(with storedCredentials: AmplifyCredentials?) {
         authToken = authStateMachine.listen({ [weak self] state in
             switch state {
-            case .configured(_, _):
+            case .configured:
                 self?.finish()
             default: break
             }
@@ -110,7 +110,6 @@ class AuthConfigureOperation: ConfigureOperation {
     }
 }
 
-
 struct AuthConfigureRequest: AmplifyOperationRequest {
 
     let authConfiguration: AuthConfiguration
@@ -122,7 +121,6 @@ struct AuthConfigureRequest: AmplifyOperationRequest {
         self.options = options
     }
 }
-
 
 extension AuthConfigureRequest {
 

@@ -44,6 +44,6 @@ struct MockIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPublishe
     }
 
     func cancel() {
-        //no-op for mock
+        // no-op for mock
     }
 }

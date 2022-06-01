@@ -19,6 +19,6 @@ public protocol AuthCognitoTokens {
     var accessToken: String {get}
 
     var refreshToken: String {get}
-    
+
     var expiration: Date {get}
 }

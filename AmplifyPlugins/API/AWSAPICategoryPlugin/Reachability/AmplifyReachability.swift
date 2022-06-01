@@ -26,7 +26,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-//This code was taken from the 5.0.0 release
+// This code was taken from the 5.0.0 release
 // Commit SHA1: 98e968e7b6c1318fb61df23e347bc319761e8acb
 import SystemConfiguration
 import Foundation
@@ -269,7 +269,6 @@ private extension AmplifyReachability {
             self.flags = flags
         }
     }
-
 
     func notifyReachabilityChanged() {
         let notify = { [weak self] in

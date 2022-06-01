@@ -98,7 +98,7 @@ final class StorageEngine: StorageEngineBehavior {
         let storageAdapter = try SQLiteStorageEngineAdapter(version: modelRegistryVersion, databaseName: databaseName)
 
         try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
-        
+
         let syncEngine = isSyncEnabled ? try? RemoteSyncEngine(storageAdapter: storageAdapter,
                                                                    dataStoreConfiguration: dataStoreConfiguration) : nil
         self.init(storageAdapter: storageAdapter,
@@ -200,7 +200,6 @@ final class StorageEngine: StorageEngineBehavior {
                 return
             }
 
-            
             self.log.verbose("\(#function) syncing mutation for \(savedModel)")
             self.syncMutation(of: savedModel,
                               modelSchema: modelSchema,

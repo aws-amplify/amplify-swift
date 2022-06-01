@@ -76,7 +76,7 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
         XCTAssertNotNil(operation, "Operation should not be nil")
         wait(for: [authSessionExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test if we can retreive valid credentials for a signedOut session multiple times
     ///
     /// - Given: Auth category with a signedOut state
@@ -103,7 +103,7 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
             }
             firstAuthSessionExpectation.fulfill()
         }
-        
+
         let secondAuthSessionExpectation = expectation(description: "Received event result from fetchAuth")
         let secondOperation = Amplify.Auth.fetchAuthSession {event in
             switch event {

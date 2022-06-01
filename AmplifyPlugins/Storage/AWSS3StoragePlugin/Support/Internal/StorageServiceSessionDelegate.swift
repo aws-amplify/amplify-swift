@@ -46,7 +46,7 @@ public extension Notification.Name {
     static let reachabilityChanged = Notification.Name("reachabilityChanged")
 }
 
-// MARK:  - URLSessionDelegate -
+// MARK: - URLSessionDelegate -
 
 extension StorageServiceSessionDelegate: URLSessionDelegate {
 

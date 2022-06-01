@@ -16,29 +16,29 @@ import AmplifyTestCommon
  */
 class Comment4Wrapper: NSCopying {
     var model: FlutterSerializedModel
-    
+
     init(id: String = UUID().uuidString, content: String, post: FlutterSerializedModel) throws {
         self.model = FlutterSerializedModel(id: UUID().uuidString, map: try FlutterDataStoreRequestUtils.getJSONValue(["content": content, "post": post.toMap(modelSchema: Post4.schema)]))
     }
-    
+
     init(model: FlutterSerializedModel) {
         self.model = model
     }
-    
+
     init(json: String) throws {
         let data = json.data(using: .utf8)!
-        let map = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
+        let map = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
         self.model = FlutterSerializedModel(id: map!["id"] as! String, map: try FlutterDataStoreRequestUtils.getJSONValue(map!))
     }
-    
+
     func setPost(post: FlutterSerializedModel) throws {
         self.model = FlutterSerializedModel(id: self.model.id, map: try FlutterDataStoreRequestUtils.getJSONValue(["content": "content", "post": post.toMap(modelSchema: Post4.schema)]))
     }
-    
+
     func idString() -> String {
         return self.model.id
     }
-    
+
     func id() -> JSONValue? {
         return self.model.values["id"]
     }

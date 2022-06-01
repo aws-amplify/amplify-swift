@@ -156,7 +156,6 @@ extension GraphQLModelBasedTests {
         wait(for: [invalidFetchCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-
     /// This test shows the issue with retrieving comments by postId. The schema used to create `Post.swift` and
     /// `Comment.swift` provisions an AppSync API that does not provide a list query operation for comments by postId.
     ///

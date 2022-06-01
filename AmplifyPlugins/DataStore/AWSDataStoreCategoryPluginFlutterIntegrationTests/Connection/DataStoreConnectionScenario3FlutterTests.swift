@@ -49,7 +49,7 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
                       syncComment == comment.idString() {
                 syncCommentReceived.fulfill()
             }
-            
+
         }
         guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
@@ -181,7 +181,7 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
         }
         wait(for: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     func savePost(id: String = UUID().uuidString, title: String, plugin: AWSDataStorePlugin) throws -> Post3Wrapper? {
         let post = try Post3Wrapper(
             id: id,

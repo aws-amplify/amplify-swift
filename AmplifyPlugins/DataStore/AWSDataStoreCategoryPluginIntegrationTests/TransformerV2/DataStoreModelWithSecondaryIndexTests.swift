@@ -122,4 +122,3 @@ class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
         return result
     }
 }
-

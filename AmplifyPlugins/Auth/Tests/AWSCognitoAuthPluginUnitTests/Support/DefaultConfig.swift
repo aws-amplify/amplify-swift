@@ -52,8 +52,6 @@ enum Defaults {
         return authConfig
     }
 
-
-
     static func makeDefaultUserPool() throws -> CognitoUserPoolBehavior {
         return try CognitoIdentityProviderClient(region: regionString)
     }

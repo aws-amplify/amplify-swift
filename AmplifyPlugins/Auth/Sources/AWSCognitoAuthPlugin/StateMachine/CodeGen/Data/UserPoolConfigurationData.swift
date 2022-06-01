@@ -19,8 +19,7 @@ struct UserPoolConfigurationData: Equatable {
                 region: String,
                 clientSecret: String? = nil,
                 pinpointAppId: String? = nil,
-                hostedUIConfig: HostedUIConfigurationData? = nil)
-    {
+                hostedUIConfig: HostedUIConfigurationData? = nil) {
         self.poolId = poolId
         self.clientId = clientId
         self.region = region

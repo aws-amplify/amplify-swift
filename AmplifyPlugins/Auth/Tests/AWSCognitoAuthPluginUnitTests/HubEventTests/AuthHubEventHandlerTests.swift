@@ -44,7 +44,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         mockSuccessfulSignedInEvent()
         wait(for: [hubEventExpectation], timeout: 10)
     }
-    
+
     /* TODO: Enable these tests when the API's have been implemented
 
     /// Test whether HubEvent emits a mocked signedIn event for webUI signIn

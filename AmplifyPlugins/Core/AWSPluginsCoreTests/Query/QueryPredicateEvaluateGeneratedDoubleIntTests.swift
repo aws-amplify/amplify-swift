@@ -10,9 +10,9 @@ import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-//swiftlint:disable type_body_length
-//swiftlint:disable file_length
-//swiftlint:disable type_name
+// swiftlint:disable type_body_length
+// swiftlint:disable file_length
+// swiftlint:disable type_name
 class QueryPredicateEvaluateGeneratedDoubleIntTests: XCTestCase {
     func testDouble1_1notEqualInt1() throws {
         let predicate = QPredGen.keys.myDouble.ne(1.1)

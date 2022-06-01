@@ -16,8 +16,7 @@ struct AuthorizationSessionEstablished: Action {
     let cognitoSession: AWSAuthCognitoSession
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment)
-    {
+                 environment: Environment) {
         let authorizationSessionEvent = AuthorizationEvent(eventType: .fetchedAuthSession(cognitoSession))
         dispatcher.send(authorizationSessionEvent)
     }

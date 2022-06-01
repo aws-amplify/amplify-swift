@@ -8,7 +8,6 @@
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-
 class NotStartedTests: XCTestCase {
     var resolver: AnyResolver<SRPSignInState> {
         SRPSignInState.Resolver().logging().eraseToAnyResolver()

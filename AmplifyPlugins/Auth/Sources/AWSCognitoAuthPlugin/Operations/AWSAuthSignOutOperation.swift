@@ -19,8 +19,7 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
     init(_ request: AuthSignOutRequest,
          authStateMachine: AuthStateMachine,
          credentialStoreStateMachine: CredentialStoreStateMachine,
-         resultListener: ResultListener?)
-    {
+         resultListener: ResultListener?) {
         self.authStateMachine = authStateMachine
         self.credentialStoreStateMachine = credentialStoreStateMachine
 
