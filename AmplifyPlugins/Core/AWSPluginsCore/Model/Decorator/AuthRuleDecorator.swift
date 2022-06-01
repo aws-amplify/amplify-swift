@@ -32,7 +32,6 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
     private let input: AuthRuleDecoratorInput
     private let authType: AWSAuthorizationType?
 
-
     /// Initializes a new AuthRuleDecorator
     /// - Parameters:
     ///   - authRuleDecoratorInput: decorator input

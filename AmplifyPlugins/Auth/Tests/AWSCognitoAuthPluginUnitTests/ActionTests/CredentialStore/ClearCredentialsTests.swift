@@ -22,7 +22,7 @@ class ClearCredentialsTests: XCTestCase {
         let expectation = expectation(description: "clearCredentialHandlerInvoked")
 
         let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(data: mockedData)
-        let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { service in
+        let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { _ in
             return mockLegacyCredentialStoreBehavior
         }
         let mockAmplifyCredentialStoreBehavior = MockAmplifyCredentialStoreBehavior(
@@ -94,7 +94,7 @@ class ClearCredentialsTests: XCTestCase {
         let expectedError = CredentialStoreError.securityError(30_534)
 
         let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(data: mockedData)
-        let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { service in
+        let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { _ in
             return mockLegacyCredentialStoreBehavior
         }
         let mockAmplifyCredentialStoreBehavior = MockAmplifyCredentialStoreBehavior(
@@ -146,7 +146,7 @@ class ClearCredentialsTests: XCTestCase {
         let expectedError = CredentialStoreError.unknown("An unknown error occurred", unknownError)
 
         let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(data: mockedData)
-        let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { service in
+        let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { _ in
             return mockLegacyCredentialStoreBehavior
         }
         let mockAmplifyCredentialStoreBehavior = MockAmplifyCredentialStoreBehavior(

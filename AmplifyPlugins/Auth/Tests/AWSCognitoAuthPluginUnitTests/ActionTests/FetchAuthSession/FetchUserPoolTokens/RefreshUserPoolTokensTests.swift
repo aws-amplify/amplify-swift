@@ -132,12 +132,10 @@ class RefreshUserPoolTokensTests: XCTestCase {
             withDispatcher: MockDispatcher { event in
 
                 if let userPoolEvent = event as? FetchUserPoolTokensEvent,
-                   case .fetched = userPoolEvent.eventType
-                {
+                   case .fetched = userPoolEvent.eventType {
                     expectation.fulfill()
                 } else if let authSessionEvent = event as? FetchAuthSessionEvent,
-                          case let .fetchIdentity(credentials) = authSessionEvent.eventType
-                {
+                          case let .fetchIdentity(credentials) = authSessionEvent.eventType {
                     XCTAssertNotNil(credentials)
                     fetchIdentityExpectation.fulfill()
                 }
@@ -172,14 +170,12 @@ class RefreshUserPoolTokensTests: XCTestCase {
             withDispatcher: MockDispatcher { event in
 
                 if let userPoolEvent = event as? FetchUserPoolTokensEvent,
-                   case let .throwError(error) = userPoolEvent.eventType
-                {
+                   case let .throwError(error) = userPoolEvent.eventType {
                     XCTAssertNotNil(error)
                     XCTAssertEqual(error, AuthorizationError.service(error: testError))
                     expectation.fulfill()
                 } else if let authSessionEvent = event as? FetchAuthSessionEvent,
-                          case let .fetchIdentity(credentials) = authSessionEvent.eventType
-                {
+                          case let .fetchIdentity(credentials) = authSessionEvent.eventType {
                     XCTAssertNotNil(credentials)
                     fetchIdentityExpectation.fulfill()
                 }

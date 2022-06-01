@@ -70,7 +70,6 @@ class SignUpInputTests: XCTestCase {
         #endif
     }
 
-
     func assertHasAttributeType(name: String,
                                 validationData: [CognitoIdentityProviderClientTypes.AttributeType],
                                 file: StaticString = #file, line: UInt = #line)

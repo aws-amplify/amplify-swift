@@ -76,7 +76,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             return nil
         }
 
-        //TODO: Update to use TimeInterval.milliseconds when it is pushed to main branch
+        // TODO: Update to use TimeInterval.milliseconds when it is pushed to main branch
         // https://github.com/aws-amplify/amplify-ios/issues/398
         let lastSyncDate = Date(timeIntervalSince1970: TimeInterval(lastSync) / 1_000)
         let secondsSinceLastSync = (lastSyncDate.timeIntervalSinceNow * -1)

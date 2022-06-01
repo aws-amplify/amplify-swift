@@ -84,14 +84,13 @@ extension Model {
 
             // At this point, we have a value: Any. However, remember that Any could itself be an optional, so we're
             // not quite done yet.
-            // swiftlint:disable syntactic_sugar
             let value: Any
+            // swiftlint:disable:next syntactic_sugar
             if case Optional<Any>.some(let unwrappedValue) = anyValue {
                 value = unwrappedValue
             } else {
                 return nil
             }
-            // swiftlint:enable syntactic_sugar
 
             // Now `value` is still an Any, but we've assured ourselves that it's not an Optional, which means we can
             // safely attempt a cast to Persistable below.

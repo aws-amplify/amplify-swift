@@ -12,7 +12,7 @@ import AWSS3
 struct AWSS3MultipartUploadRequestCompletedPart {
     let partNumber: Int
     let eTag: String
-    
+
     init(partNumber: Int, eTag: String) {
         self.partNumber = partNumber
         self.eTag = eTag

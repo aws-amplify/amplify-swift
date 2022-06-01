@@ -38,7 +38,7 @@ class StateMachineListenerTests: XCTestCase {
         let subscribed = expectation(description: "subscribed")
         let notified = expectation(description: "notified")
         notified.expectedFulfillmentCount = 2
-        stateMachine.listen { state in
+        stateMachine.listen { _ in
             notified.fulfill()
         }
         onSubscribe: {
@@ -58,7 +58,7 @@ class StateMachineListenerTests: XCTestCase {
         let subscribed = expectation(description: "subscribed")
         let notified = expectation(description: "notified")
         notified.expectedFulfillmentCount = 1
-        stateMachine.listen { state in
+        stateMachine.listen { _ in
             notified.fulfill()
         }
         onSubscribe: {
@@ -78,7 +78,7 @@ class StateMachineListenerTests: XCTestCase {
         let subscribed = expectation(description: "subscribed")
         let notified = expectation(description: "notified")
         notified.expectedFulfillmentCount = 1
-        let token = stateMachine.listen { state in
+        let token = stateMachine.listen { _ in
             notified.fulfill()
         }
         onSubscribe: {
@@ -98,8 +98,7 @@ class StateMachineListenerTests: XCTestCase {
 
         let notified = expectation(description: "notified")
         notified.isInverted = true
-        let token = stateMachine.listen(
-            { state in
+        let token = stateMachine.listen({ _ in
                 notified.fulfill()
             },
             onSubscribe: nil

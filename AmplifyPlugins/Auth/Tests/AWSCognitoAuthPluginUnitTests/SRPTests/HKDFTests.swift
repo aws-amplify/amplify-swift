@@ -10,7 +10,6 @@ import XCTest
 
 import AWSCognitoIdentityProvider
 
-
 @testable import AWSCognitoAuthPlugin
 
 class HKDFTests: XCTestCase {

@@ -8,7 +8,7 @@ import Foundation
 import Amplify
 
 public class FlutterDataStoreRequestUtils {
-    
+
     static func getJSONValue(_ jsonDict: [String: Any]) throws -> [String: JSONValue] {
         guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonDict) else {
             throw DataStoreError.decodingError("Unable to deserialize json data", "Check the model structure.")

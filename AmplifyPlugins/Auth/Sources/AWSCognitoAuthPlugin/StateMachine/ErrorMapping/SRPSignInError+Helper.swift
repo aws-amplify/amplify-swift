@@ -17,13 +17,11 @@ extension SRPSignInError {
         case .service(error: let serviceError):
             if let cognitoError = serviceError as? SdkError<InitiateAuthOutputError>,
                case .service(let serviceError, _) = cognitoError,
-               case .userNotConfirmedException = serviceError
-            {
+               case .userNotConfirmedException = serviceError {
                 return true
             } else if let cognitoError = serviceError as? SdkError<RespondToAuthChallengeOutputError>,
                     case .service(let serviceError, _) = cognitoError,
-                    case .userNotConfirmedException = serviceError
-            {
+                    case .userNotConfirmedException = serviceError {
                 return true
             }
             return false
@@ -37,13 +35,11 @@ extension SRPSignInError {
         case .service(error: let serviceError):
             if let cognitoError = serviceError as? SdkError<InitiateAuthOutputError>,
                case .service(let serviceError, _) = cognitoError,
-               case .passwordResetRequiredException = serviceError
-            {
+               case .passwordResetRequiredException = serviceError {
                 return true
             } else if let cognitoError = serviceError as? SdkError<RespondToAuthChallengeOutputError>,
                     case .service(let serviceError, _) = cognitoError,
-                    case .passwordResetRequiredException = serviceError
-            {
+                    case .passwordResetRequiredException = serviceError {
                 return true
             }
             return false

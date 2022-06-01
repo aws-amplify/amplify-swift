@@ -18,8 +18,7 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
     init(_ request: AuthFetchSessionRequest,
          authStateMachine: AuthStateMachine,
          credentialStoreStateMachine: CredentialStoreStateMachine,
-         resultListener: ResultListener?)
-    {
+         resultListener: ResultListener?) {
 
         self.authStateMachine = authStateMachine
         self.credentialStoreStateMachine = credentialStoreStateMachine
@@ -57,9 +56,9 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
 
         } onSubscribe: { }
     }
-    
+
     func initializeAuthStateMachine(with storedCredentials: AmplifyCredentials?) {
-        
+
         authStateMachine.getCurrentState { [weak self] state in
             guard case .configured = state  else {
                 let message = "Credential store state machine not in idle state: \(state)"
@@ -70,7 +69,6 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
             self?.fetchAuthSession(with: storedCredentials)
         }
     }
-
 
     func fetchStoredCredentials() {
 

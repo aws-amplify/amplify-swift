@@ -23,11 +23,11 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
 
         let y = try decoder.container(keyedBy: CodingKeys.self)
         id = try y.decode(String.self, forKey: .id)
-        
+
         let json = try JSONValue(from: decoder)
         let typeName = json["__typename"]
         let modified = FlutterSerializedModel.removeReservedNames(json)
-        
+
         if case .object(var v) = modified {
             v["__typename"] = typeName
             values = v
@@ -39,7 +39,7 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
     private static func removeReservedNames(_ jsonValue: JSONValue) -> JSONValue {
         if case .object(let jsonObject) = jsonValue {
             var modifiedJsonValue: [String: JSONValue] = [:]
-            
+
             for key in jsonObject.keys {
                 if key != "__typename" {
                     let modifiedItem = removeReservedNames(jsonObject[key]!)
@@ -49,7 +49,7 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
             return .object(modifiedJsonValue)
         }
         if case .array(let jsonArray) = jsonValue {
-            var modifiedArray:[JSONValue] = []
+            var modifiedArray: [JSONValue] = []
             for item in jsonArray {
                 let modifiedItem = removeReservedNames(item)
                 modifiedArray.append(modifiedItem)
@@ -58,12 +58,12 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
         }
         return jsonValue
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var x = encoder.unkeyedContainer()
         try x.encode(values)
     }
-    
+
     public func jsonValue(for key: String) -> Any?? {
         if key == "id" {
             return id
@@ -85,7 +85,7 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
             return nil
         }
     }
-    
+
     public func jsonValue(for key: String, modelSchema: ModelSchema) -> Any?? {
         let field = modelSchema.field(withName: key)
         if case .int = field?.type,
@@ -100,15 +100,14 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
         } else if case .time = field?.type,
                   case .some(.string(let deserializedValue)) = values[key] {
             return FlutterTemporal(iso8601String: deserializedValue)
-        }
-        else if case .timestamp = field?.type,
+        } else if case .timestamp = field?.type,
                   case .some(.number(let deserializedValue)) = values[key] {
             return NSNumber(value: deserializedValue)
         }
-        
+
         return jsonValue(for: key)
     }
-    
+
     private func deserializeValue(value: JSONValue?, fieldType: Codable.Type) -> Any?? {
         if fieldType is Int.Type,
            case .some(.number(let deserializedValue)) = value {
@@ -146,20 +145,19 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
         }
     }
 
-    private func generateSerializedData(modelSchema: ModelSchema) -> [String: Any]{
+    private func generateSerializedData(modelSchema: ModelSchema) -> [String: Any] {
         var result = [String: Any]()
         for(key, value) in values {
             let field = modelSchema.field(withName: key)
-            
-            if(value == nil){
+
+            if value == nil {
                 continue
             }
-            if case .model = field?.type{
+            if case .model = field?.type {
 
                 let map = jsonValue(for: key, modelSchema: modelSchema) as! [String: JSONValue]
                 if case .string(let deserializedValue) = map["id"],
-                    case .model(let name) = field!.type
-                    {
+                    case .model(let name) = field!.type {
                     result[key] = [
                         "id": deserializedValue,
                         "modelName": name,
@@ -168,49 +166,42 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
                         ]
                     ]
                 }
-    
-            }
-            else if case .collection = field?.type{
+
+            } else if case .collection = field?.type {
                 continue
-            }
-            else if case .embeddedCollection(let fieldType, _) = field?.type{
+            } else if case .embeddedCollection(let fieldType, _) = field?.type {
                 if case .array(let jsonArray) = value {
-                    var modifiedArray:[Any??] = []
+                    var modifiedArray: [Any??] = []
                     for item in jsonArray {
                         let parsedItem = deserializeValue(value: item, fieldType: fieldType)
                         modifiedArray.append(parsedItem)
                     }
                     result[key] = modifiedArray
                 }
-            }
-            else if case .dateTime = field?.type,
+            } else if case .dateTime = field?.type,
                 case .some(.string(let deserializedValue)) = values[key] {
 
                 result[key] = deserializedValue
-            }
-            else if case .date = field?.type,
+            } else if case .date = field?.type,
                 case .some(.string(let deserializedValue)) = values[key] {
 
                 result[key] = deserializedValue
-            }
-            else if case .time = field?.type,
+            } else if case .time = field?.type,
                 case .some(.string(let deserializedValue)) = values[key] {
 
                 result[key] = deserializedValue
-            }
-            else if case .timestamp = field?.type,
+            } else if case .timestamp = field?.type,
                 case .some(.number(let deserializedValue)) = values[key] {
-                
+
                 result[key] = NSNumber(value: Int(deserializedValue) )
-            }
-            else{
+            } else {
                 result[key] = jsonValue(for: key, modelSchema: modelSchema)!
             }
         }
-        
-        return result;
+
+        return result
     }
-    
+
     public func toMap(modelSchema: ModelSchema) -> [String: Any] {
         return [
             "id": id,

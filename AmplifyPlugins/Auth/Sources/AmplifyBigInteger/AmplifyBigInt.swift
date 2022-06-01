@@ -8,7 +8,6 @@
 import Foundation
 import libtommathAmplify
 
-
 public final class AmplifyBigInt {
 
     var value = amplify_mp_int(used: 0, alloc: 0, sign: AMPLIFY_MP_ZPOS, dp: nil)

@@ -29,7 +29,7 @@ struct FlutterTemporal: TemporalSpec {
     static func now() -> FlutterTemporal {
         return FlutterTemporal(Foundation.Date())
     }
-    func iso8601FormattedString(format: TemporalFormat, timeZone: TimeZone) -> String{
-        return "";
+    func iso8601FormattedString(format: TemporalFormat, timeZone: TimeZone) -> String {
+        return ""
     }
 }

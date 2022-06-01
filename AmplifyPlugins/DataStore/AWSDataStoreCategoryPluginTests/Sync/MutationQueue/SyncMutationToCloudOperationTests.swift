@@ -56,14 +56,14 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                 XCTFail("This should not be called more than once")
             }
             numberOfTimesEntered += 1
-            //We could return an operation here, but we don't need to.
-            //The main reason for having this responder is to get the eventListener.
-            //the eventListener block will execute the the call to validateResponseFromCloud
+            // We could return an operation here, but we don't need to.
+            // The main reason for having this responder is to get the eventListener.
+            // the eventListener block will execute the the call to validateResponseFromCloud
             return nil
         }
         mockAPIPlugin.responders[.mutateRequestListener] = responder
 
-        let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener = { asyncEvent in
+        let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener = { _ in
             expectMutationRequestCompletion.fulfill()
         }
 
@@ -99,7 +99,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                                                       version: 2)
         let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
         listenerFromSecondRequest(.success(.success(remoteMutationSync)))
-        //waitForExpectations(timeout: 1)
+        // waitForExpectations(timeout: 1)
         wait(for: [expectMutationRequestCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
@@ -129,14 +129,14 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                 XCTFail("This should not be called more than once")
             }
             numberOfTimesEntered += 1
-            //We could return an operation here, but we don't need to.
-            //The main reason for having this responder is to get the eventListener.
-            //the eventListener block will execute the the call to validateResponseFromCloud
+            // We could return an operation here, but we don't need to.
+            // The main reason for having this responder is to get the eventListener.
+            // the eventListener block will execute the the call to validateResponseFromCloud
             return nil
         }
         mockAPIPlugin.responders[.mutateRequestListener] = responder
 
-        let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener = { asyncEvent in
+        let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener = { _ in
             expectMutationRequestCompletion.fulfill()
         }
         let operation = SyncMutationToCloudOperation(mutationEvent: mutationEvent,
@@ -197,9 +197,9 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                 XCTFail("This should not be called more than once")
             }
             numberOfTimesEntered += 1
-            //We could return an operation here, but we don't need to.
-            //The main reason for having this responder is to get the eventListener.
-            //the eventListener block will execute the the call to validateResponseFromCloud
+            // We could return an operation here, but we don't need to.
+            // The main reason for having this responder is to get the eventListener.
+            // the eventListener block will execute the the call to validateResponseFromCloud
             return nil
         }
         mockAPIPlugin.responders[.mutateRequestListener] = responder
@@ -230,7 +230,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         let urlError = URLError(URLError.notConnectedToInternet)
         listenerFromFirstRequest(.failure(APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
 
-        //At this point, we will be "waiting forever" to retry our request or until the operation is canceled
+        // At this point, we will be "waiting forever" to retry our request or until the operation is canceled
         operation.cancel()
         wait(for: [expectMutationRequestFailed], timeout: defaultAsyncWaitTimeout)
     }

@@ -30,7 +30,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     func setUpAmplify(withCollection: Bool = false) {
 
         if withCollection {
-            //set test collection id to invoke collection method of rekognition
+            // set test collection id to invoke collection method of rekognition
             mockConfigurationJSON = """
             {
             "defaultRegion": "us-west-2",

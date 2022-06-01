@@ -10,7 +10,7 @@ import XCTest
 @testable import AWSDataStorePlugin
 
 class SyncEngineFlutterIntegrationTestBase: XCTestCase {
-    
+
     static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration"
 
     static let networkTimeout = TimeInterval(180)
@@ -26,7 +26,7 @@ class SyncEngineFlutterIntegrationTestBase: XCTestCase {
         let storageAdapter = storageEngine.storageAdapter as! SQLiteStorageEngineAdapter
         return storageAdapter
     }
-    
+
     // swiftlint:enable force_try
     // swiftlint:enable force_cast
     override func setUp() {

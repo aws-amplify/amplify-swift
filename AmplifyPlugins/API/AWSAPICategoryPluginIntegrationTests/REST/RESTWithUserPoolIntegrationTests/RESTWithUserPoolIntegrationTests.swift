@@ -12,9 +12,9 @@ import AWSAPICategoryPlugin
 @testable import AmplifyTestCommon
 
 class RESTWithUserPoolIntegrationTests: XCTestCase {
-    
+
     let amplifyConfigurationFile = "testconfiguration/RESTWithUserPoolIntegrationTests-amplifyconfiguration"
-    
+
     let username = "integTest\(UUID().uuidString)"
     let password = "P123@\(UUID().uuidString)"
     let email = UUID().uuidString + "@" + UUID().uuidString + ".com"

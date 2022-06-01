@@ -137,4 +137,3 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
         return result
     }
 }
-

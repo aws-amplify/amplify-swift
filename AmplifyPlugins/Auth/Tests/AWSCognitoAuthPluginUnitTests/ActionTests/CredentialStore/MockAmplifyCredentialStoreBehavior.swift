@@ -22,10 +22,9 @@ class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior, Am
     let clearCredentialHandler: ClearCredentialHandler?
 
     init(migrationCompleteHandler: Migrationhandler? = nil,
-         saveCredentialHandler:  SaveCredentialHandler? = nil,
+         saveCredentialHandler: SaveCredentialHandler? = nil,
          getCredentialHandler: GetCredentialHandler? = nil,
-         clearCredentialHandler: ClearCredentialHandler? = nil)
-    {
+         clearCredentialHandler: ClearCredentialHandler? = nil) {
         self.migrationCompleteHandler = migrationCompleteHandler
         self.saveCredentialHandler = saveCredentialHandler
         self.getCredentialHandler = getCredentialHandler

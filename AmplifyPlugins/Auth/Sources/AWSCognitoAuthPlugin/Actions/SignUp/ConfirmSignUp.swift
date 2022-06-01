@@ -48,7 +48,7 @@ struct ConfirmSignUp: Action {
         }
 
         let input = ConfirmSignUpInput(username: confirmSignUpEventData.username,
-                                       confirmationCode:  confirmSignUpEventData.confirmationCode,
+                                       confirmationCode: confirmSignUpEventData.confirmationCode,
                                        userPoolConfiguration: environment.userPoolConfiguration)
         logVerbose("\(#fileID) Starting ConfirmSignUp", environment: environment)
         Task {

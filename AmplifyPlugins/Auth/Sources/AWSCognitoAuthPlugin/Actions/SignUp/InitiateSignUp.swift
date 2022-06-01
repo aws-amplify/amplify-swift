@@ -54,7 +54,7 @@ struct InitiateSignUp: Action {
                                 attributes: signUpEventData.attributes,
                                 userPoolConfiguration: environment.userPoolConfiguration)
         logVerbose("\(#fileID) Starting signup", environment: environment)
-        
+
         Task {
             let event: SignUpEvent
             do {
@@ -82,8 +82,7 @@ extension SignUpInput {
     init(username: String,
          password: String,
          attributes: [String: String],
-         userPoolConfiguration: UserPoolConfigurationData)
-    {
+         userPoolConfiguration: UserPoolConfigurationData) {
         let secretHash = Self.calculateSecretHash(username: username, userPoolConfiguration: userPoolConfiguration)
         let validationData = Self.getValidationData()
         let convertedAttributes = Self.convertAttributes(attributes)
