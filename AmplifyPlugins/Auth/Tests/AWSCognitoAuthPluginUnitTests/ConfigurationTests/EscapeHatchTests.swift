@@ -13,6 +13,7 @@ class EscapeHatchTests: XCTestCase {
 
     override func tearDown() {
         Amplify.reset()
+
     }
 
     /// Test escape hatch with valid config for user pool and identity pool
@@ -24,6 +25,7 @@ class EscapeHatchTests: XCTestCase {
     ///    - I should get back user pool and identity pool clients
     ///
     func testEscapeHatchWithUserPoolAndIdentityPool() throws {
+        Amplify.Logging.logLevel = .verbose
         let plugin = AWSCognitoAuthPlugin()
         try Amplify.add(plugin: plugin)
 

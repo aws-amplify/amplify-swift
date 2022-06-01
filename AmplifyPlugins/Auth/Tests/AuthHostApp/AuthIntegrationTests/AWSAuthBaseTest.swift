@@ -13,8 +13,8 @@ class AWSAuthBaseTest: XCTestCase {
 
     let networkTimeout = TimeInterval(5)
     
-    var defaultTestEmail = "xx"
-    var defaultTestPassword = "xx"
+    var defaultTestEmail = UUID().uuidString + "@" + UUID().uuidString + ".com"
+    var defaultTestPassword = UUID().uuidString
 
     let amplifyConfigurationFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration"
     let credentialsFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-credentials"
@@ -23,9 +23,9 @@ class AWSAuthBaseTest: XCTestCase {
 
     func initializeAmplify() {
         do {
-            let credentialsConfiguration = try TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
-            defaultTestEmail = credentialsConfiguration["test_email_1"] ?? defaultTestEmail
-            defaultTestPassword = credentialsConfiguration["password"] ?? defaultTestPassword
+            let credentialsConfiguration = try? TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
+            defaultTestEmail = credentialsConfiguration?["test_email_1"] ?? defaultTestEmail
+            defaultTestPassword = credentialsConfiguration?["password"] ?? defaultTestPassword
             let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: amplifyConfigurationFile)
             amplifyConfiguration = configuration

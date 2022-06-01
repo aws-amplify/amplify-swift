@@ -102,10 +102,14 @@ extension AuthenticationState {
         ) -> StateResolution<StateType> {
             switch authEvent.eventType {
             case .signInRequested(let signInData):
-                return resolveAuthMethod(
-                    for: signInData,
-                    currentConfiguration: currentConfiguration,
-                    currentSignedOutData: currentSignedOutData
+                /// Initiate signInState notStarted
+                /// Send action to check signIN event.
+                ///
+                let signInState = SignInState.signingInWithSRP(.notStarted, signInData)
+                let action = StartSRPFlow(signInEventData: signInData)
+                return StateResolution(
+                    newState: AuthenticationState.signingIn(currentConfiguration, signInState),
+                    actions: [action]
                 )
             default:
                 return .from(.signedOut(currentConfiguration, currentSignedOutData))
@@ -133,32 +137,6 @@ extension AuthenticationState {
             }
         }
 
-        /// Resolves the appropriate auth method to use for the incoming sign in event data
-        /// and the current configuration.
-        ///
-        /// TODO: See if this belongs here or in the plugin code. Fix error handling code
-        ///
-        /// - Parameters:
-        ///   - signInData: The SignInEventData for the sign in request
-        ///   - currentSignedOutData: The current signed out data, including configuration of
-        ///   the Authentication system
-        /// - Returns: A StateResolution for the appropriate next step, which may be
-        /// signing in with the appropriate method, or resolving to an error if the
-        /// configuration and event data is invalid.
-        private func resolveAuthMethod(
-            for signInData: SignInEventData,
-            currentConfiguration: AuthConfiguration,
-            currentSignedOutData: SignedOutData
-        ) -> StateResolution<StateType> {
-            let action = StartSRPFlow(signInEventData: signInData)
-            let signInState = SignInState.signingInWithSRP(.notStarted, signInData)
-            let resolution = StateResolution(
-                newState: AuthenticationState.signingIn(currentConfiguration, signInState),
-                actions: [action]
-            )
-            return resolution
-        }
-
         private func resolveSigningUpState(oldState: AuthenticationState,
                                            event: StateMachineEvent)  -> StateResolution<StateType>
         {
@@ -182,42 +160,37 @@ extension AuthenticationState {
             return .init(newState: newState, actions: resolution.actions)
         }
 
-        private func resolveSigningInState(oldState: AuthenticationState,
-                                           event: StateMachineEvent) -> StateResolution<StateType>
-        {
-            if let authEvent = event as? AuthenticationEvent,
-                  case .error(let error) = authEvent.eventType
-            {
-                return .from(.error(nil, error))
-            }
-            if let authEvent = event as? AuthenticationEvent,
-                  case .cancelSignIn(let config) = authEvent.eventType
-            {
-                let signedOutData = SignedOutData(lastKnownUserName: nil)
-                return .from(.signedOut(config, signedOutData))
-            }
-
-            guard case .signingIn(let authConfiguration, let signInState) = oldState else {
-                return .from(oldState)
-            }
-            var resolution: StateResolution<StateType>!
-            switch signInState {
-            case .signingInWithSRP(let srpSignInState, let signInEventData):
-                let resolution = SRPSignInState.Resolver().resolve(oldState: srpSignInState, byApplying: event)
-                if case .signedIn(let signedInData) = resolution.newState {
-                    let newState = AuthenticationState.signedIn(authConfiguration, signedInData)
-                    return .init(newState: newState, actions: resolution.actions)
-                } else {
-                    let signingInWithSRP = SignInState.signingInWithSRP(resolution.newState, signInEventData)
-                    let newState = AuthenticationState.signingIn(authConfiguration, signingInWithSRP)
-                    return .init(newState: newState, actions: resolution.actions)
+        private func resolveSigningInState(
+            oldState: AuthenticationState,
+            event: StateMachineEvent) -> StateResolution<StateType> {
+                if let authEvent = event as? AuthenticationEvent,
+                   case .error(let error) = authEvent.eventType {
+                    return .from(.error(nil, error))
                 }
 
-            default:
-                resolution = .from(oldState)
+                /// Move to signedOut state if cancelSignIn
+                if let authEvent = event as? AuthenticationEvent,
+                   case .cancelSignIn(let config) = authEvent.eventType {
+                    let signedOutData = SignedOutData(lastKnownUserName: nil)
+                    return .from(.signedOut(config, signedOutData))
+                }
+
+                guard case .signingIn(let authConfiguration, let signInState) = oldState else {
+                    return .from(oldState)
+                }
+
+                /// Move to signedIn state if signin flow completed
+                if let authEvent = event as? AuthenticationEvent,
+                   case .signInCompleted(let signedInData) = authEvent.eventType {
+                    return .init(newState: .signedIn(authConfiguration, signedInData))
+                }
+
+                let resolution = SignInState.Resolver().resolve(oldState: signInState,
+                                                                   byApplying: event)
+                return .init(newState: .signingIn(authConfiguration, resolution.newState),
+                             actions: resolution.actions)
+
             }
-            return resolution
-        }
 
         private func resolveSigningOutState(
             byApplying event: StateMachineEvent,

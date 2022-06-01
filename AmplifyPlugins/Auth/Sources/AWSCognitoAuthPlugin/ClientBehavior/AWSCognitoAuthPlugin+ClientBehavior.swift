@@ -81,9 +81,19 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 
     public func confirmSignIn(challengeResponse: String,
                               options: AuthConfirmSignInOperation.Request.Options?,
-                              listener: AuthConfirmSignInOperation.ResultListener?) -> AuthConfirmSignInOperation
-    {
-        fatalError("Not implemented")
+                              listener: AuthConfirmSignInOperation.ResultListener?)
+    -> AuthConfirmSignInOperation {
+        
+        let options = options ?? AuthConfirmSignInRequest.Options()
+        let request = AuthConfirmSignInRequest(challengeResponse: challengeResponse,
+                                               options: options)
+        let operation = AWSAuthConfirmSignInOperation(
+            request,
+            stateMachine: authStateMachine,
+            credentialStoreStateMachine: credentialStoreStateMachine,
+            resultListener: listener)
+        queue.addOperation(operation)
+        return operation
     }
 
     public func signOut(options: AuthSignOutOperation.Request.Options?,

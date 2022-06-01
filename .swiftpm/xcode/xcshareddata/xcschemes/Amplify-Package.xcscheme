@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1320"
+   LastUpgradeVersion = "1330"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -328,20 +328,6 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSS3StoragePlugin"
-               BuildableName = "AWSS3StoragePlugin"
-               BlueprintName = "AWSS3StoragePlugin"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -467,26 +453,6 @@
                BlueprintIdentifier = "RESTWithIAMIntegrationTests"
                BuildableName = "RESTWithIAMIntegrationTests"
                BlueprintName = "RESTWithIAMIntegrationTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSS3StoragePluginFunctionalTests"
-               BuildableName = "AWSS3StoragePluginFunctionalTests"
-               BlueprintName = "AWSS3StoragePluginFunctionalTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSS3StoragePluginTests"
-               BuildableName = "AWSS3StoragePluginTests"
-               BlueprintName = "AWSS3StoragePluginTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

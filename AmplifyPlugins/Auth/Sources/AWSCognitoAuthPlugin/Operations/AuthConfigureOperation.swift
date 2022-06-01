@@ -66,7 +66,7 @@ class AuthConfigureOperation: ConfigureOperation {
     func sendConfigureCredentialEvent(
         completion: @escaping (Result<AmplifyCredentials?, Error>) -> Void) {
         credentialStoreToken = credentialStoreStateMachine.listen {
-
+            print($0)
             switch $0 {
             case .success(let storedCredentials):
                 completion(.success(storedCredentials))

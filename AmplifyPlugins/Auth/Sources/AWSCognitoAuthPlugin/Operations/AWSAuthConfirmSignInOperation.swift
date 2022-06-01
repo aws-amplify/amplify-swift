@@ -11,26 +11,25 @@ import Amplify
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-public typealias AmplifySignInOperation = AmplifyOperation<
-    AuthSignInRequest,
+public typealias AmplifyConfirmSignInOperation = AmplifyOperation<
+    AuthConfirmSignInRequest,
     AuthSignInResult,
     AuthError>
 
-public class AWSAuthSignInOperation: AmplifySignInOperation,
-                                     AuthSignInOperation {
+public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation, AuthConfirmSignInOperation {
 
     let authStateMachine: AuthStateMachine
     let credentialStoreStateMachine: CredentialStoreStateMachine
 
-    init(_ request: AuthSignInRequest,
-         authStateMachine: AuthStateMachine,
+    init(_ request: AuthConfirmSignInRequest,
+         stateMachine: AuthStateMachine,
          credentialStoreStateMachine: CredentialStoreStateMachine,
          resultListener: ResultListener?) {
 
-        self.authStateMachine = authStateMachine
+        self.authStateMachine = stateMachine
         self.credentialStoreStateMachine = credentialStoreStateMachine
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.signInAPI,
+                   eventName: HubPayload.EventName.Auth.signUpAPI,
                    request: request,
                    resultListener: resultListener)
     }
@@ -41,28 +40,24 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             return
         }
         authStateMachine.getCurrentState { [weak self] in
-            guard case .configured(let authenticationState, _) = $0 else {
+            guard case .configured(let authenticationState, _) = $0,
+                  case .signingIn(_, let signInState) = authenticationState else {
                 return
             }
 
-            switch authenticationState {
-            case .signedIn:
-                self?.dispatch(AuthError.invalidState(
-                    "There is already a user in signedIn state. SignOut the user first before calling signIn",
-                    AuthPluginErrorConstants.invalidStateError, nil))
-                self?.finish()
+            switch signInState {
+            case .resolvingSMSChallenge(let challengeState):
+                guard case .waitingForAnswer(let challenge) = challengeState else {
+                    return
+                }
+                sendConfirmSignInEvent()
             default:
-                self?.doSignIn()
+                print("")
             }
         }
     }
 
-    func doSignIn() {
-        if isCancelled {
-            finish()
-            return
-        }
-
+    func sendConfirmSignInEvent() {
         var token: AuthStateMachine.StateChangeListenerToken?
         token = authStateMachine.listen { [weak self] in
             guard let self = self else {
@@ -71,18 +66,12 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             guard case .configured(let authNState, _) = $0 else {
                 return
             }
-
             switch authNState {
-            case .signedOut:
-                self.sendSignInEvent()
-
-            case .signingUp(let configuration, _):
-                self.sendCancelSignUpEvent(configuration)
 
             case .signedIn(_, let signedInData):
                 let cognitoTokens = signedInData.cognitoUserPoolTokens
                 self.storeUserPoolTokens(cognitoTokens)
-                self.cancelToken(token)
+                
 
             case .error(_, let error):
                 self.dispatch(AuthError.unknown("Sign in reached an error state", error))
@@ -104,7 +93,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
                     self.finish()
                 } else if case .resolvingSMSChallenge(let challengeState) = signInState,
                           case .waitingForAnswer(let challenge) = challengeState {
-                    let delivery = challenge.codeDeliveryDetails
+                    let delivery = AuthCodeDeliveryDetails(destination: .sms(nil))
                     self.dispatch(.init(nextStep: .confirmSignInWithSMSMFACode(delivery, nil)))
                     self.cancelToken(token)
                     self.finish()
@@ -112,7 +101,9 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             default:
                 break
             }
-        } onSubscribe: { }
+        } onSubscribe: {
+
+        }
     }
 
     func storeUserPoolTokens(_ tokens: AWSCognitoUserPoolTokens) {
@@ -150,27 +141,15 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
         credentialStoreStateMachine.send(event)
     }
 
-    private func sendSignInEvent() {
-        let signInData = SignInEventData(username: request.username, password: request.password)
-        let event = AuthenticationEvent.init(eventType: .signInRequested(signInData))
-        authStateMachine.send(event)
-    }
-
-    private func sendCancelSignUpEvent(_ configuration: AuthConfiguration) {
-        let event = AuthenticationEvent(
-            eventType: .cancelSignUp(configuration))
-        authStateMachine.send(event)
-    }
-
     private func dispatch(_ result: AuthSignInResult) {
         let asyncEvent = AWSAuthSignInOperation.OperationResult.success(result)
         dispatch(result: asyncEvent)
     }
 
     private func dispatch(_ error: AuthError) {
-        let asyncEvent = AWSAuthSignInOperation.OperationResult.failure(error)
-        dispatch(result: asyncEvent)
+        dispatch(result: .failure(error))
     }
+
 
     // TODO: Find a differnet mechanism to cancel the tokens
     private func cancelToken(_ token: AuthStateMachineToken?) {
