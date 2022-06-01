@@ -10,6 +10,14 @@ import AWSCognitoIdentity
 import ClientRuntime
 
 struct MockIdentity: CognitoIdentityBehavior {
+    func getId(input: GetIdInput) async throws -> GetIdOutputResponse {
+        fatalError("Not implemented")
+    }
+    
+    func getCredentialsForIdentity(input: GetCredentialsForIdentityInput) async throws -> GetCredentialsForIdentityOutputResponse {
+        fatalError("Not implemented")
+    }
+    
 
     typealias GetIdCallback = (
         GetIdInput,

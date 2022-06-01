@@ -12,7 +12,7 @@ import AppSyncRealTimeClient
 import AWSClientRuntime
 import ClientRuntime
 
-class IAMAuthInterceptor: AuthInterceptor {
+class IAMAuthInterceptor: AuthInterceptorAsync {
 
     private static let defaultLowercasedHeaderKeys: Set = [SubscriptionConstants.authorizationkey.lowercased(),
                                                            RealtimeProviderConstants.acceptKey.lowercased(),
@@ -29,10 +29,10 @@ class IAMAuthInterceptor: AuthInterceptor {
         self.region = region
     }
 
-    func interceptMessage(_ message: AppSyncMessage, for endpoint: URL) -> AppSyncMessage {
+    func interceptMessage(_ message: AppSyncMessage, for endpoint: URL) async -> AppSyncMessage {
         switch message.messageType {
         case .subscribe:
-            let authHeader = getAuthHeader(endpoint, with: message.payload?.data ?? "")
+            let authHeader = await getAuthHeader(endpoint, with: message.payload?.data ?? "")
             var payload = message.payload ?? AppSyncMessage.Payload()
             payload.authHeader = authHeader
             let signedMessage = AppSyncMessage(id: message.id,
@@ -46,10 +46,10 @@ class IAMAuthInterceptor: AuthInterceptor {
     }
 
     func interceptConnection(_ request: AppSyncConnectionRequest,
-                             for endpoint: URL) -> AppSyncConnectionRequest {
+                             for endpoint: URL) async -> AppSyncConnectionRequest {
         let url = endpoint.appendingPathComponent(RealtimeProviderConstants.iamConnectPath)
         let payloadString = SubscriptionConstants.emptyPayload
-        guard let authHeader = getAuthHeader(url, with: payloadString) else {
+        guard let authHeader = await getAuthHeader(url, with: payloadString) else {
             return request
         }
         let base64Auth = AppSyncJSONHelper.base64AuthenticationBlob(authHeader)
@@ -72,7 +72,7 @@ class IAMAuthInterceptor: AuthInterceptor {
 
     func getAuthHeader(_ endpoint: URL,
                        with payload: String,
-                       signer: AWSSignatureV4Signer = AmplifyAWSSignatureV4Signer()) -> IAMAuthenticationHeader? {
+                       signer: AWSSignatureV4Signer = AmplifyAWSSignatureV4Signer()) async -> IAMAuthenticationHeader? {
         guard let host = endpoint.host else {
             return nil
         }
@@ -96,7 +96,7 @@ class IAMAuthInterceptor: AuthInterceptor {
         /// 2. The request is SigV4 signed by using all the available headers on the request. By signing the request, the signature is added to
         /// the request headers as authorization and security token.
         do {
-            guard let urlRequest = try signer.sigV4SignedRequest(requestBuilder: requestBuilder,
+            guard let urlRequest = try await signer.sigV4SignedRequest(requestBuilder: requestBuilder,
                                                                  credentialsProvider: authProvider,
                                                                  signingName: SubscriptionConstants.appsyncServiceName,
                                                                  signingRegion: region,
