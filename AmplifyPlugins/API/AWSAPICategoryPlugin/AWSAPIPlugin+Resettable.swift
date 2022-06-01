@@ -31,7 +31,7 @@ extension AWSAPIPlugin: Resettable {
         subscriptionConnectionFactory = nil
 
         AwsCommonRuntimeKit.cleanUp()
-        
+
         onComplete()
     }
 

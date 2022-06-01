@@ -26,7 +26,7 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = AWSAPIPluginsCore.AWSDateISO8601DateFormat2
         let amzDate = dateFormatter.string(from: date)
-        
+
         mutableRequest.setValue(amzDate,
                                 forHTTPHeaderField: URLRequestConstants.Header.xAmzDate)
         mutableRequest.setValue(URLRequestConstants.ContentType.applicationJson,

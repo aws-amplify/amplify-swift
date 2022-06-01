@@ -21,7 +21,7 @@ public final class AWSCognitoAuthPlugin: AuthCategoryPlugin {
 
     /// Configuration for the auth plugin
     var authConfiguration: AuthConfiguration!
-    
+
     /// Handles different auth event send through hub
     var hubEventHandler: AuthHubEventBehavior!
 

@@ -113,7 +113,7 @@ final public class AWSRESTOperation: AmplifyOperation<
                     cancel()
                 }
             }
-            
+
             if isCancelled {
                 finish()
                 return

@@ -10,7 +10,7 @@ import XCTest
 import AWSCognitoAuthPlugin
 
 class AuthEventIntegrationTests: AWSAuthBaseTest {
-    
+
     var unsubscribeToken: UnsubscribeToken!
 
     override func setUp() {
@@ -39,9 +39,9 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        
+
         let signInExpectation = expectation(description: "SignIn event should be fired")
-        
+
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
             case HubPayload.EventName.Auth.signedIn:
@@ -50,18 +50,18 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
                 break
             }
         }
-        
+
         AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail) { didSucceed, error in
+            email: defaultTestEmail) { _, error in
                 if let unwrappedError = error {
                     XCTFail("Unable to sign in with error: \(unwrappedError)")
                 }
             }
         wait(for: [signInExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test hub event for successful signOut of a valid user
     ///
     /// - Given: A user registered in Cognito user pool
@@ -74,9 +74,9 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        
+
         let signOutExpectation = expectation(description: "SignOut event should be fired")
-        
+
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
             case HubPayload.EventName.Auth.signedOut:
@@ -85,11 +85,11 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
                 break
             }
         }
-        
+
         AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail) { didSucceed, error in
+            email: defaultTestEmail) { _, error in
                 if let unwrappedError = error {
                     XCTFail("Unable to sign in with error: \(unwrappedError)")
                 } else {
@@ -98,7 +98,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
             }
         wait(for: [signOutExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test hub event for session expired of a valid user
     ///
     /// - Given: A user registered in Cognito user pool
@@ -111,10 +111,10 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        
+
         let signInExpectation = expectation(description: "SignIn event should be fired")
         let sessionExpiredExpectation = expectation(description: "Session expired event should be fired")
-        
+
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
             case HubPayload.EventName.Auth.signedIn:
@@ -125,11 +125,11 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
                 break
             }
         }
-        
+
         AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail) { didSucceed, error in
+            email: defaultTestEmail) { _, error in
                 if let unwrappedError = error {
                     XCTFail("Unable to sign in with error: \(unwrappedError)")
                 } else {

@@ -45,4 +45,3 @@ extension InitiateSignOut: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
-

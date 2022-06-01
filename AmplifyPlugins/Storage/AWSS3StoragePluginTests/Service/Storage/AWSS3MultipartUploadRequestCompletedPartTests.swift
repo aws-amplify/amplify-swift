@@ -18,7 +18,7 @@ class AWSS3MultipartUploadRequestCompletedPartTests: XCTestCase {
             .completed(bytes: Bytes.megabytes(5).bytes, eTag: "eTag-2"),
             .completed(bytes: Bytes.megabytes(5).bytes, eTag: "eTag-3"),
             .completed(bytes: Bytes.megabytes(5).bytes, eTag: "eTag-4"),
-            .completed(bytes: Bytes.megabytes(5).bytes, eTag: "eTag-5"),
+            .completed(bytes: Bytes.megabytes(5).bytes, eTag: "eTag-5")
         ]
 
         let multipartUploadRequestCompletedParts = AWSS3MultipartUploadRequestCompletedParts(completedParts: completedParts)
@@ -44,5 +44,5 @@ class AWSS3MultipartUploadRequestCompletedPartTests: XCTestCase {
         XCTAssertEqual(multipartUploadRequestCompletedParts[3].eTag, "eTag-4")
         XCTAssertEqual(multipartUploadRequestCompletedParts[4].eTag, "eTag-5")
     }
-    
+
 }

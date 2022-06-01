@@ -59,12 +59,10 @@ class ConfigureFetchAWSCredentialsTests: XCTestCase {
             withDispatcher: MockDispatcher { event in
 
                 if let event = event as? FetchAWSCredentialEvent,
-                   case .fetched = event.eventType
-                {
+                   case .fetched = event.eventType {
                     credentialValidExpectation.fulfill()
                 } else if let event = event as? FetchAuthSessionEvent,
-                          case .fetchedAuthSession = event.eventType
-                {
+                          case .fetchedAuthSession = event.eventType {
                     fetchedAuthSessionExpectation.fulfill()
                 }
             },

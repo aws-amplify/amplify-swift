@@ -14,7 +14,7 @@ class AWSDataStorePluginConfigurationTests: XCTestCase {
     override func setUp() {
         Amplify.reset()
     }
-    
+
     func testDoesNotThrowOnMissingConfig() throws {
         let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration())
         try Amplify.add(plugin: plugin)

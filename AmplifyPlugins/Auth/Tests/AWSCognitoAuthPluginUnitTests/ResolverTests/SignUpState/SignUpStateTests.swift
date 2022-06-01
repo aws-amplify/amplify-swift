@@ -39,7 +39,7 @@ class SignUpStateTests: XCTestCase {
         let username = "bob"
         let password = "yearandmydogsname"
 
-        let signUpCallback: MockIdentityProvider.SignUpCallback = { input, callback in
+        let signUpCallback: MockIdentityProvider.SignUpCallback = { _, callback in
             let response = SignUpOutputResponse(userConfirmed: false, userSub: username)
             callback(.success(response))
             exp.fulfill()

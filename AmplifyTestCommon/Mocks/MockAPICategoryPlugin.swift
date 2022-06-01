@@ -13,8 +13,6 @@ class MockAPICategoryPlugin: MessageReporter,
                              APICategoryPlugin,
                              APICategoryReachabilityBehavior {
 
-
-
     var authProviderFactory: APIAuthProviderFactory?
 
     var responders = [ResponderKeys: Any]()

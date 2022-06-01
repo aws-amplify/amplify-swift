@@ -14,7 +14,7 @@ struct AWSS3CompleteMultipartUploadRequest {
     let key: String
     let uploadId: String
     let parts: [AWSS3MultipartUploadRequestCompletedPart]
-    
+
     init(bucket: String,
          key: String,
          uploadId: String,

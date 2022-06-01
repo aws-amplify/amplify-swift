@@ -12,7 +12,6 @@ import AWSAPIPlugin
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-
 class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
     static let amplifyConfigurationFile = "AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration"

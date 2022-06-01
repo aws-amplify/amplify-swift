@@ -16,16 +16,14 @@ public typealias AmplifyConfirmSignUpOperation = AmplifyOperation<
     AuthError>
 
 public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
-                                            AuthConfirmSignUpOperation
-{
+                                            AuthConfirmSignUpOperation {
 
     let stateMachine: AuthStateMachine
     var statelistenerToken: AuthStateMachineToken?
 
     init(_ request: AuthConfirmSignUpRequest,
          stateMachine: AuthStateMachine,
-         resultListener: ResultListener?)
-    {
+         resultListener: ResultListener?) {
 
         self.stateMachine = stateMachine
         super.init(categoryType: .auth,
@@ -52,7 +50,7 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
             guard let self = self else {
                 return
             }
-            
+
             if case .configured(let authNState, _) = $0 {
                 switch authNState {
                 case .signedOut, .signingUp:

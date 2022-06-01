@@ -15,8 +15,7 @@ struct ConfigureFetchIdentity: Action {
     let cognitoSession: AWSAuthCognitoSession
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment)
-    {
+                 environment: Environment) {
 
         switch cognitoSession.cognitoTokensResult {
         case .success: break

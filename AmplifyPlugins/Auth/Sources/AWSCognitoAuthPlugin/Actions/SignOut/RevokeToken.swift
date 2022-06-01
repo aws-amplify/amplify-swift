@@ -71,5 +71,3 @@ extension RevokeToken: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
-
-

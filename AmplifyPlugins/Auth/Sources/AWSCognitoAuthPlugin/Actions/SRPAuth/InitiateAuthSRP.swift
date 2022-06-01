@@ -22,8 +22,7 @@ struct InitiateAuthSRP: Action {
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment)
-    {
+                 environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
             let environment = try SRPSignInHelper.srpEnvironment(environment)
@@ -65,8 +64,7 @@ struct InitiateAuthSRP: Action {
     }
 
     private func request(environment: SRPAuthEnvironment,
-                         publicHexValue: String) -> InitiateAuthInput
-    {
+                         publicHexValue: String) -> InitiateAuthInput {
         let userPoolClientId = environment.userPoolConfiguration.clientId
         var authParameters = [
             "USERNAME": username,
@@ -97,12 +95,11 @@ struct InitiateAuthSRP: Action {
     private func sendRequest(request: InitiateAuthInput,
                      environment: SRPAuthEnvironment,
                              srpStateData: SRPStateData,
-                             callback: @escaping (SRPSignInEvent) -> Void) throws
-    {
-        
+                             callback: @escaping (SRPSignInEvent) -> Void) throws {
+
         let cognitoClient = try environment.cognitoUserPoolFactory()
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        
+
         Task {
             let event: SRPSignInEvent!
             do {
@@ -116,7 +113,7 @@ struct InitiateAuthSRP: Action {
             callback(event)
         }
     }
-    
+
     // TODO: Implement this
     private static func getDeviceId() -> String? {
         return nil

@@ -16,27 +16,27 @@ import AmplifyTestCommon
  */
 class PostWrapper: NSCopying {
     var model: FlutterSerializedModel
-    
+
     init(id: String = UUID().uuidString, title: String, content: String, createdAt: String = Temporal.DateTime.now().iso8601String, rating: Double = 1) throws {
         let map: [String: Any] = [
             "title": title,
             "content": content,
             "createdAt": createdAt,
-            "rating": rating,
+            "rating": rating
         ]
         self.model = FlutterSerializedModel(id: id, map: try FlutterDataStoreRequestUtils.getJSONValue(map))
     }
-    
+
     init(model: FlutterSerializedModel) {
         self.model = model
     }
-    
+
     init(json: String) throws {
         let data = json.data(using: .utf8)!
-        let map = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
+        let map = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
         self.model = FlutterSerializedModel(id: map!["id"] as! String, map: try FlutterDataStoreRequestUtils.getJSONValue(map!))
     }
-    
+
     init(post: Post) throws {
         let map: [String: Any] = [
             "title": post.title,
@@ -46,13 +46,13 @@ class PostWrapper: NSCopying {
         ]
         self.model = FlutterSerializedModel(id: post.id, map: try FlutterDataStoreRequestUtils.getJSONValue(map))
     }
-    
+
     func updateRating(rating: Double) throws {
         var map = self.model.values
         map["rating"] = JSONValue.init(floatLiteral: rating)
         self.model = FlutterSerializedModel(id: self.model.id, map: map)
     }
-    
+
     func updateStringProp(key: String, value: String) throws {
         var map = self.model.values
         map[key] = JSONValue.string(value)
@@ -62,7 +62,7 @@ class PostWrapper: NSCopying {
     func idString() -> String {
         return self.model.id
     }
-    
+
     func id() -> JSONValue? {
         return self.model.values["id"]
     }
@@ -70,15 +70,15 @@ class PostWrapper: NSCopying {
     func title() -> JSONValue? {
         return self.model.values["title"]
     }
-    
+
     func rating() -> JSONValue? {
         return self.model.values["rating"]
     }
-    
+
     func content() -> JSONValue? {
         return self.model.values["content"]
     }
-    
+
     func createdAt() -> JSONValue? {
         return self.model.values["createdAt"]
     }

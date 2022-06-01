@@ -11,9 +11,9 @@ import AWSClientRuntime
 public class AmplifyAWSServiceConfiguration {
     static let version = "1.26.2-swift-sdk-dev-preview.0"
     static let platformName = "amplify-ios"
-    
+
     public static func frameworkMetaData() -> FrameworkMetadata {
-        
+
         guard let flutterVersion = platformMapping[Platform.flutter] else {
             return FrameworkMetadata(name: platformName, version: version)
         }
