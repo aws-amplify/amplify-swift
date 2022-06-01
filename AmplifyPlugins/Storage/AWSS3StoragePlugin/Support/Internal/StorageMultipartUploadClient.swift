@@ -119,17 +119,19 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
 
         let partialFileResultHandler: (Result<URL, Error>) -> Void = { [weak self] result in
             guard let self = self else { return }
-            do {
-                let partialFileURL = try result.get()
-
-                let operation = AWSS3SigningOperation.uploadPart(partNumber: partNumber, uploadId: uploadId)
-                guard let preSignedURL = serviceProxy.preSignedURLBuilder.getPreSignedURL(key: self.key, signingOperation: operation) else {
-                    self.session?.fail(error: StorageError.unknown("Failed to get pre-signed URL", nil))
-                    return
+            Task {
+                do {
+                    let partialFileURL = try result.get()
+                    
+                    let operation = AWSS3SigningOperation.uploadPart(partNumber: partNumber, uploadId: uploadId)
+                    let preSignedURL = try await serviceProxy.preSignedURLBuilder.getPreSignedURL(
+                        key: self.key,
+                        signingOperation: operation
+                    )
+                    startUploadPart(partialFileURL, preSignedURL)
+                } catch {
+                    self.session?.fail(error: error)
                 }
-                startUploadPart(partialFileURL, preSignedURL)
-            } catch {
-                self.session?.fail(error: error)
             }
         }
 

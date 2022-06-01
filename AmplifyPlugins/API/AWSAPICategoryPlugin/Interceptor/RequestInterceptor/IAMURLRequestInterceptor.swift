@@ -25,7 +25,7 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
         self.endpointType = endpointType
     }
 
-    func intercept(_ request: URLRequest) throws -> URLRequest {
+    func intercept(_ request: URLRequest) async throws -> URLRequest {
         guard let mutableRequest = (request as NSURLRequest).mutableCopy() as? NSMutableURLRequest else {
             throw APIError.unknown("Could not get mutable request", "")
         }
@@ -60,7 +60,7 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
             
         }
         
-        guard let urlRequest = try AmplifyAWSSignatureV4Signer().sigV4SignedRequest(requestBuilder: requestBuilder,
+        guard let urlRequest = try await AmplifyAWSSignatureV4Signer().sigV4SignedRequest(requestBuilder: requestBuilder,
                                                                                     credentialsProvider: iamCredentialsProvider.getCredentialsProvider(),
                                                                                     signingName: signingName,
                                                                                     signingRegion: region,

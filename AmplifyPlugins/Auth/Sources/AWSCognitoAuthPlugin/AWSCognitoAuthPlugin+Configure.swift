@@ -181,8 +181,7 @@ extension AWSCognitoAuthPlugin {
         switch authConfiguration {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
             let configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
-                frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
-                region: userPoolConfig.region)
+                region: userPoolConfig.region, frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData())
             return CognitoIdentityProviderClient(config: configuration)
 
         default:
@@ -194,8 +193,7 @@ extension AWSCognitoAuthPlugin {
         switch authConfiguration {
         case .identityPools(let identityPoolConfig), .userPoolsAndIdentityPools(_, let identityPoolConfig):
             let configuration = try CognitoIdentityClient.CognitoIdentityClientConfiguration(
-                frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
-                region: identityPoolConfig.region)
+                region: identityPoolConfig.region, frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData())
             return CognitoIdentityClient(config: configuration)
         default:
             fatalError()

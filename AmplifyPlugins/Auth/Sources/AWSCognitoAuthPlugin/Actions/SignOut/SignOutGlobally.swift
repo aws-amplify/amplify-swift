@@ -35,22 +35,21 @@ struct SignOutGlobally: Action {
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             return
         }
-
+        
         logVerbose("\(#fileID) Starting Global signOut", environment: environment)
         let input = GlobalSignOutInput(accessToken: signedInData.cognitoUserPoolTokens.accessToken)
-
-        client.globalSignOut(input: input) { result in
-            // Log the result, but proceed to attempt to revoke tokens regardless of globalSignOut result.
-            logVerbose("\(#fileID) Global signOut response received", environment: environment)
-            switch result {
-            case .success:
+        
+        Task {
+            do {
+                _ = try await client.globalSignOut(input: input)
+                // Log the result, but proceed to attempt to revoke tokens regardless of globalSignOut result.
                 logVerbose("\(#fileID) Global SignOut success", environment: environment)
-            case .failure(let error):
+            } catch {
                 logVerbose("\(#fileID) Global SignOut failed \(error)", environment: environment)
             }
             let event = SignOutEvent(eventType: .revokeToken(signedInData))
-            dispatcher.send(event)
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+            dispatcher.send(event)
         }
     }
 }
@@ -69,4 +68,3 @@ extension SignOutGlobally: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
-
