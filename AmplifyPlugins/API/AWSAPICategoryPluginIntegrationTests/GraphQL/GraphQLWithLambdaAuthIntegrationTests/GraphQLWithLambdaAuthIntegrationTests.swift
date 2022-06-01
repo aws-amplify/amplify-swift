@@ -74,7 +74,7 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     /// Test paginated query
     ///
     /// - Given:  paginated query request

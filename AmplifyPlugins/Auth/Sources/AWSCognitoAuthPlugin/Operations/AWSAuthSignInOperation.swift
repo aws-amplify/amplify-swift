@@ -17,8 +17,7 @@ public typealias AmplifySignInOperation = AmplifyOperation<
     AuthError>
 
 public class AWSAuthSignInOperation: AmplifySignInOperation,
-                                     AuthSignInOperation
-{
+                                     AuthSignInOperation {
 
     let authStateMachine: AuthStateMachine
     let credentialStoreStateMachine: CredentialStoreStateMachine
@@ -26,8 +25,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
     init(_ request: AuthSignInRequest,
          authStateMachine: AuthStateMachine,
          credentialStoreStateMachine: CredentialStoreStateMachine,
-         resultListener: ResultListener?)
-    {
+         resultListener: ResultListener?) {
 
         self.authStateMachine = authStateMachine
         self.credentialStoreStateMachine = credentialStoreStateMachine
@@ -46,7 +44,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             self?.tryToInvokeSignIn(authenticationState)
         }
     }
-    
+
     func doInitialize(_ callback: @escaping (AuthenticationState) -> Void) {
         var token: AuthStateMachineToken?
         token = authStateMachine.listen { [weak self] in
@@ -105,8 +103,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
                 self.finish()
             case .signingIn(_, let signInState):
                 if case .signingInWithSRP(let srpState, _) = signInState,
-                   case .error(let signInError) = srpState
-                {
+                   case .error(let signInError) = srpState {
                     if signInError.isUserUnConfirmed {
                         self.dispatch(AuthSignInResult(nextStep: .confirmSignUp(nil)))
                     } else if signInError.isResetPassword {

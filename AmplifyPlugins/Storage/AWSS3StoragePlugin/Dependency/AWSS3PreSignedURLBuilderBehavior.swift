@@ -12,7 +12,6 @@ import AWSS3
 import ClientRuntime
 import AWSClientRuntime
 
-
 enum AWSS3PreSignedURLBuilderError: Error {
     case failed(reason: String, error: Error?)
 }

@@ -96,7 +96,6 @@ public class AWSDefaultAuthModeStrategy: AuthModeStrategy {
     }
 }
 
-
 // MARK: - AWSMultiAuthModeStrategy
 
 /// Multi-auth strategy implementation based on schema metadata

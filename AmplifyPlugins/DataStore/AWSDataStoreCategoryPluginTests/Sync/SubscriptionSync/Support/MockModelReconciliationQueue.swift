@@ -36,18 +36,18 @@ class MockModelReconciliationQueue: ModelReconciliationQueue {
     }
 
     func start() {
-        //no-op
+        // no-op
     }
     func pause() {
-        //no-op
+        // no-op
     }
 
     func cancel() {
-        //no-op
+        // no-op
     }
 
     func enqueue(_ remoteModels: [MutationSync<AnyModel>]) {
-        //no-op
+        // no-op
     }
 
     static func reset() {

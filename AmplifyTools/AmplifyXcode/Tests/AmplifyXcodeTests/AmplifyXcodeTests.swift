@@ -47,6 +47,6 @@ final class AmplifyXcodeTests: XCTestCase {
     }
 
     static var allTests = [
-        ("smokeTest", testExecutable),
+        ("smokeTest", testExecutable)
     ]
 }

@@ -225,7 +225,6 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         return request
     }
 
-
     static func hasOIDCAuthProviderAvailable(api: APICategoryGraphQLBehavior) -> AmplifyOIDCAuthProvider? {
         if let apiPlugin = api as? APICategoryAuthProviderFactoryBehavior,
             let oidcAuthProvider = apiPlugin.apiAuthProviderFactory().oidcAuthProvider() {

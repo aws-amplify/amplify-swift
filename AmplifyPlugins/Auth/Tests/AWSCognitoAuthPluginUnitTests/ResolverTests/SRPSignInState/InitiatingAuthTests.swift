@@ -17,7 +17,6 @@ class InitiatingAuthTests: XCTestCase {
 
     let oldState = SRPSignInState.initiatingSRPA(SignInEventData.testData)
 
-
     func testInitiateAuthResponseReceived() {
         let expected = SRPSignInState.respondingPasswordVerifier(SRPStateData.testData)
         XCTAssertEqual(

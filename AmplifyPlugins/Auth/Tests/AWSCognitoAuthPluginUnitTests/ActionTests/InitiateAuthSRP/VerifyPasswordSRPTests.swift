@@ -28,7 +28,7 @@ class VerifyPasswordSRPTests: XCTestCase {
         )
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
-                respondToAuthChallengeCallback: { input, callback
+                respondToAuthChallengeCallback: { _, _
                     in verifyPasswordInvoked.fulfill()
                 })
         }
@@ -62,7 +62,7 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
-                respondToAuthChallengeCallback: { input, callback in
+                respondToAuthChallengeCallback: { _, callback in
                     callback(.success(RespondToAuthChallengeOutputResponse()))
                 })
         }
@@ -111,7 +111,7 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
-                respondToAuthChallengeCallback: { input, callback in
+                respondToAuthChallengeCallback: { _, callback in
                     callback(.success(RespondToAuthChallengeOutputResponse()))
                 })
         }
@@ -160,7 +160,7 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
-                respondToAuthChallengeCallback: { input, callback in
+                respondToAuthChallengeCallback: { _, callback in
                     callback(.success(RespondToAuthChallengeOutputResponse()))
                 })
         }
@@ -209,7 +209,7 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
-                respondToAuthChallengeCallback: { input, callback in
+                respondToAuthChallengeCallback: { _, callback in
                     callback(.success(RespondToAuthChallengeOutputResponse()))
                 })
         }
@@ -258,7 +258,7 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
-                respondToAuthChallengeCallback: { input, callback in
+                respondToAuthChallengeCallback: { _, callback in
                     callback(.success(RespondToAuthChallengeOutputResponse()))
                 })
         }
@@ -307,7 +307,7 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
-                respondToAuthChallengeCallback: { input, callback in
+                respondToAuthChallengeCallback: { _, callback in
                     callback(.success(RespondToAuthChallengeOutputResponse()))
                 })
         }
@@ -355,7 +355,7 @@ class VerifyPasswordSRPTests: XCTestCase {
     func testSuccessfulRespondToAuthChallengePropagatesSuccess() {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
-                respondToAuthChallengeCallback: { input, callback in
+                respondToAuthChallengeCallback: { _, callback in
                     callback(
                         .success(
                             RespondToAuthChallengeOutputResponse.testData()
@@ -402,7 +402,7 @@ class VerifyPasswordSRPTests: XCTestCase {
     func testRespondToAuthChallengePropagatesError() {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
-                respondToAuthChallengeCallback: { input, callback in
+                respondToAuthChallengeCallback: { _, callback in
                     callback(
                         .failure(.unknown(nil))
                     )

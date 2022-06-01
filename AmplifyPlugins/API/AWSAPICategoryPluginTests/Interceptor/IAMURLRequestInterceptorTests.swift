@@ -9,6 +9,6 @@ import XCTest
 
 class IAMURLRequestInterceptorTests: XCTestCase {
     func testClassMustNotBeEmptyOrSwiftFormatWillCrash() {
-        //TODO implement code
+        // TODO implement code
     }
 }

@@ -7,13 +7,12 @@
 
 import Foundation
 
-
 extension SignOutState {
 
     var debugDictionary: [String: Any] {
 
         var additionalMetadataDictionary: [String: Any] = [:]
-        
+
         switch self {
         case .error(let error):
             additionalMetadataDictionary = ["Error": error]
@@ -23,4 +22,3 @@ extension SignOutState {
         return [type: additionalMetadataDictionary]
     }
 }
-

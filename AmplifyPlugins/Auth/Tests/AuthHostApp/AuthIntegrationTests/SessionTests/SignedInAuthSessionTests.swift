@@ -115,7 +115,6 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         wait(for: [authSessionExpiredExpectation], timeout: networkTimeout)
     }
 
-
     /// Test if signedOut error is returned when session is cleared
     ///
     /// - Given: Valid signedIn session
@@ -171,7 +170,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         }
         wait(for: [authSessionExpiredExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test if successful session is retreived after a user signin and tried to fetch auth session multiple times
     ///
     /// - Given: A signedout Amplify Auth Category
@@ -203,7 +202,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
                 XCTFail("Should not receive error \(error)")
             }
         }
-        
+
         let secondAuthSessionExpectation = expectation(description: "Received event result from fetchAuth")
         _ = Amplify.Auth.fetchAuthSession { result in
             defer {

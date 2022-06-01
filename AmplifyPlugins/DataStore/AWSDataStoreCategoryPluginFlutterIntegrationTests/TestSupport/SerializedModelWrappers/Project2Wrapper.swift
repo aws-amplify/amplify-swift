@@ -16,23 +16,23 @@ import AmplifyTestCommon
  */
 class Project2Wrapper: NSCopying {
     var model: FlutterSerializedModel
-        
+
     init(name: String, team: FlutterSerializedModel, teamID: String) throws {
         self.model = FlutterSerializedModel(id: UUID().uuidString, map: try FlutterDataStoreRequestUtils.getJSONValue(["name": name, "team": team.toMap(modelSchema: Team2.schema), "teamID": teamID]))
     }
-    
+
     init(model: FlutterSerializedModel) {
-        self.model = model;
+        self.model = model
     }
-    
+
     func setTeam(name: String, team: FlutterSerializedModel, teamID: String) throws {
         self.model = FlutterSerializedModel(id: self.model.id, map: try FlutterDataStoreRequestUtils.getJSONValue(["name": name, "team": team.toMap(modelSchema: Team2.schema), "teamID": teamID]))
     }
-    
+
     func idString() -> String {
         return self.model.id
     }
-    
+
     func id() -> JSONValue? {
         return self.model.values["id"]
     }
@@ -40,7 +40,7 @@ class Project2Wrapper: NSCopying {
     func teamID() -> JSONValue? {
         return self.model.values["teamID"]
     }
-    
+
     func teamName() -> JSONValue? {
         return self.model.values["team"]!["name"]
     }

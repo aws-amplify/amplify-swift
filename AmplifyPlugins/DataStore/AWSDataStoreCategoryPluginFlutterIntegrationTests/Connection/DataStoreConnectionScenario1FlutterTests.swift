@@ -43,8 +43,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
             if let syncedTeam = mutationEvent.modelId as String?,
                syncedTeam == team.idString() {
                 syncedTeamReceived.fulfill()
-            }
-            else if let syncedProject = mutationEvent.modelId as String?,
+            } else if let syncedProject = mutationEvent.modelId as String?,
 
                     syncedProject == project.idString() {
                 syncProjectReceived.fulfill()
@@ -164,7 +163,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         plugin.query(FlutterSerializedModel.self, modelSchema: Project1.schema, where: Project1.keys.id.eq(project.model.id)) { result in
             switch result {
             case .success(let queriedProjectList):
-                
+
                 guard queriedProjectList.count == 1 else {
                     XCTFail("project query failed")
                     return
@@ -223,12 +222,12 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         XCTAssertNotNil(queriedProjectExpect1)
         XCTAssertEqual(1, queriedProjectExpect1!.count)
         XCTAssertEqual(project.idString(), queriedProjectExpect1![0].id)
-        if (queriedProjectExpect1!.count == 1) {
+        if queriedProjectExpect1!.count == 1 {
             queriedProjectExpect1Successful.fulfill()
         }
         wait(for: [queriedProjectExpect1Successful], timeout: TestCommonConstants.networkTimeout)
         let deleteProjectSuccessful = expectation(description: "delete project")
-        plugin.delete(project.model, modelSchema: Project1.schema,  where: Project1.keys.id.eq(project.idString())) { result in
+        plugin.delete(project.model, modelSchema: Project1.schema, where: Project1.keys.id.eq(project.idString())) { result in
             switch result {
             case .success:
                 deleteProjectSuccessful.fulfill()
@@ -241,7 +240,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         let queriedProjectExpect0 = queryProject(id: project.model.id)
         XCTAssertNotNil(queriedProjectExpect0)
         XCTAssertEqual(0, queriedProjectExpect0!.count)
-        if (queriedProjectExpect0!.count == 0) {
+        if queriedProjectExpect0!.count == 0 {
             getProjectAfterDeleteCompleted.fulfill()
         }
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
@@ -260,7 +259,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         XCTAssertNotNil(queriedProjectExpect1)
         XCTAssertEqual(1, queriedProjectExpect1!.count)
         XCTAssertEqual(project.idString(), queriedProjectExpect1![0].id)
-        if (queriedProjectExpect1!.count == 1) {
+        if queriedProjectExpect1!.count == 1 {
             queriedProjectExpect1Successful.fulfill()
         }
         wait(for: [queriedProjectExpect1Successful], timeout: TestCommonConstants.networkTimeout)
@@ -283,7 +282,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         XCTAssertNotNil(queriedProjectExpectUnDeleted)
         XCTAssertEqual(1, queriedProjectExpectUnDeleted!.count)
         XCTAssertEqual(project.idString(), queriedProjectExpectUnDeleted![0].id)
-        if (queriedProjectExpectUnDeleted!.count == 1) {
+        if queriedProjectExpectUnDeleted!.count == 1 {
             getProjectAfterDeleteCompleted.fulfill()
         }
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
@@ -353,7 +352,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return Project1Wrapper(model: result!)
     }
-    
+
     func queryProject(id: String) -> [FlutterSerializedModel]? {
         var queryResults: [FlutterSerializedModel]?
         do {

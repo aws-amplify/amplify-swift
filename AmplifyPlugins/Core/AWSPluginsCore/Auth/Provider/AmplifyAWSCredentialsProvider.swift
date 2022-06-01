@@ -29,11 +29,11 @@ public class AmplifyAWSCredentialsProvider: CredentialsProvider {
             }
         }
     }
-    
+
     public func getCredentials() throws -> Future<AWSCredentials> {
         let future = Future<AWSCredentials>()
         _  = Amplify.Auth.fetchAuthSession { result in
-            
+
             do {
                 let session = try result.get()
                 if let awsCredentialsProvider = session as? AuthAWSCredentialsProvider {
@@ -52,9 +52,9 @@ public class AmplifyAWSCredentialsProvider: CredentialsProvider {
 }
 
 extension AuthAWSCredentials {
-    
+
     func toAWSSDKCredentials() -> AWSCredentials {
-        if let tempCredentials = self as? AuthAWSTemporaryCredentials  {
+        if let tempCredentials = self as? AuthAWSTemporaryCredentials {
             return AWSCredentials(accessKey: tempCredentials.accessKey,
                                   secret: tempCredentials.secretKey,
                                   expirationTimeout: UInt64(tempCredentials.expiration.timeIntervalSinceNow),
@@ -62,6 +62,6 @@ extension AuthAWSCredentials {
         } else {
             return AWSCredentials(accessKey: accessKey, secret: secretKey, expirationTimeout: 0)
         }
-        
+
     }
 }

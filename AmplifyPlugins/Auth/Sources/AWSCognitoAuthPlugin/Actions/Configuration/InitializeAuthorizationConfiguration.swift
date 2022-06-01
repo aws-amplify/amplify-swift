@@ -12,8 +12,7 @@ struct InitializeAuthorizationConfiguration: Action {
     let identifier = "InitializeAuthorizationConfiguration"
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                        environment: Environment)
-    {
+                        environment: Environment) {
         // ATM this is a no-op action
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let event = AuthorizationEvent(eventType: .configure)

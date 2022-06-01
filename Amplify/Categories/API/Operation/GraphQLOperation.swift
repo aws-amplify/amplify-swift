@@ -12,7 +12,6 @@ open class GraphQLOperation<R: Decodable>: AmplifyOperation<
     APIError
 > { }
 
-
 /// GraphQL Subscription Operation
 open class GraphQLSubscriptionOperation<R: Decodable>: AmplifyInProcessReportingOperation<
     GraphQLOperationRequest<R>,

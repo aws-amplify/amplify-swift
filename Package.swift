@@ -99,7 +99,7 @@ let amplifyTargets: [Target] = [
         exclude: [
             "Info.plist"
         ]
-    ),
+    )
 ]
 
 let apiTargets: [Target] = [
@@ -159,14 +159,14 @@ let apiTargets: [Target] = [
         dependencies: [
             "AWSAPIPlugin",
             "AWSCognitoAuthPlugin",
-            "AmplifyTestCommon",
+            "AmplifyTestCommon"
         ],
         path: "AmplifyPlugins/API/AWSAPICategoryPluginIntegrationTests/REST/RESTWithIAMIntegrationTests/",
         exclude: [
             "README.md",
             "Info.plist"
         ]
-    ),
+    )
 ]
 
 let authTargets: [Target] = [
@@ -179,7 +179,7 @@ let authTargets: [Target] = [
     .target(
         name: "AmplifySRP",
         dependencies: [
-            .target(name: "AmplifyBigInteger"),
+            .target(name: "AmplifyBigInteger")
         ],
         path: "AmplifyPlugins/Auth/Sources/AmplifySRP"
     ),
@@ -221,7 +221,7 @@ let authTargets: [Target] = [
             "AmplifyBigInteger"
         ],
         path: "AmplifyPlugins/Auth/Tests/AmplifyBigIntegerUnitTests"
-    ),
+    )
 ]
 
 let dataStoreTargets: [Target] = [
@@ -261,7 +261,7 @@ let dataStoreTargets: [Target] = [
             "README.md",
             "Info.plist"
         ]
-    ),
+    )
 ]
 
 let storageTargets: [Target] = [
@@ -296,7 +296,7 @@ let storageTargets: [Target] = [
             "AWSCognitoAuthPlugin"
         ],
         path: "AmplifyPlugins/Storage/AWSS3StoragePluginFunctionalTests"
-    ),
+    )
 ]
 
 let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets
@@ -324,8 +324,8 @@ let package = Package(
         .library(
             name: "AWSS3StoragePlugin",
             targets: ["AWSS3StoragePlugin"]
-        ),
-        
+        )
+
     ],
     dependencies: dependencies,
     targets: targets

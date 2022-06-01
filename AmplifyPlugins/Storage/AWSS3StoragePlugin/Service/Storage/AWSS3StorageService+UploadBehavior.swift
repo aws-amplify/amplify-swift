@@ -29,9 +29,9 @@ extension AWSS3StorageService {
             let uploadFileURL: URL
             guard let uploadFile = attempt(try uploadSource.getFile(), fail: fail) else { return }
             uploadFileURL = uploadFile.fileURL
-            
+
             let contentType = contentType ?? "application/octet-stream"
-            
+
             do {
                 let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(key: serviceKey,
                                                                                  signingOperation: .putObject)

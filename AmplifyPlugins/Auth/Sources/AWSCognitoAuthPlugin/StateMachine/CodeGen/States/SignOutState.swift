@@ -47,5 +47,3 @@ extension SignOutState {
         }
     }
 }
-
-

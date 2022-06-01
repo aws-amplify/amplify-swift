@@ -72,15 +72,13 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
 
     func initiateAuth(input: InitiateAuthInput,
                       completion: @escaping (Result<InitiateAuthOutputResponse,
-                                             SdkError<InitiateAuthOutputError>>) -> Void)
-    {
+                                             SdkError<InitiateAuthOutputError>>) -> Void) {
         initiateAuthCallback?(input, completion)
     }
 
     func respondToAuthChallenge(input: RespondToAuthChallengeInput,
                                 completion: @escaping (Result<RespondToAuthChallengeOutputResponse,
-                                                       SdkError<RespondToAuthChallengeOutputError>>) -> Void)
-    {
+                                                       SdkError<RespondToAuthChallengeOutputError>>) -> Void) {
         respondToAuthChallengeCallback?(input, completion)
     }
 
@@ -105,12 +103,12 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     ) {
         revokeTokenCallback?(input, completion)
     }
-    
+
     /// Throws InitiateAuthOutputError
     func initiateAuth(input: InitiateAuthInput) async throws -> InitiateAuthOutputResponse {
         fatalError("Not implemented")
     }
-    
+
     /// Throws RespondToAuthChallengeOutputError
     func respondToAuthChallenge(
         input: RespondToAuthChallengeInput
@@ -127,7 +125,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     func confirmSignUp(input: ConfirmSignUpInput) async throws -> ConfirmSignUpOutputResponse {
         fatalError("Not implemented")
     }
-    
+
     /// Throws GlobalSignOutOutputError
     func globalSignOut(input: GlobalSignOutInput) async throws -> GlobalSignOutOutputResponse {
         fatalError("Not implemented")
