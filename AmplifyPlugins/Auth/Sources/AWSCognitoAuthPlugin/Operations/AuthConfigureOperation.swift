@@ -1,8 +1,8 @@
 //
-//  File.swift
-//  
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Roy, Jithin on 5/25/22.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
