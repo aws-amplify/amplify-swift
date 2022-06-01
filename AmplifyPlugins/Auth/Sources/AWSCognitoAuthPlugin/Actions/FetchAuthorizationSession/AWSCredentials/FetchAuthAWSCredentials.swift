@@ -11,61 +11,61 @@ import Amplify
 import ClientRuntime
 
 struct FetchAuthAWSCredentials: Action {
-
+    
     let identifier = "FetchAuthAwsCredentials"
-
+    
     let cognitoSession: AWSAuthCognitoSession
-
+    
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
         guard let authEnv = environment as? AuthEnvironment,
               let authZEnvironment = authEnv.authorizationEnvironment,
               let client = try? authZEnvironment.cognitoIdentityFactory()
         else {
             let authZError = AuthorizationError.configuration(message: AuthPluginErrorConstants.signedInAWSCredentialsWithNoCIDPError.errorDescription)
-                  let event = FetchAWSCredentialEvent(eventType: .throwError(authZError))
-                  dispatcher.send(event)
-
-                  let updatedSession = cognitoSession.copySessionByUpdating(
-                    awsCredentialsResult: .failure(authZError.authError))
-                  let fetchedAuthSessionEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession(updatedSession))
-                  dispatcher.send(fetchedAuthSessionEvent)
-
-                  return
-              }
-
+            let event = FetchAWSCredentialEvent(eventType: .throwError(authZError))
+            dispatcher.send(event)
+            
+            let updatedSession = cognitoSession.copySessionByUpdating(
+                awsCredentialsResult: .failure(authZError.authError))
+            let fetchedAuthSessionEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession(updatedSession))
+            dispatcher.send(fetchedAuthSessionEvent)
+            
+            return
+        }
+        
         guard case let .success(identityId) = cognitoSession.identityIdResult else {
-
+            
             // Ideally the unknown error would never happen
             var authError = AuthError.unknown("Unknown Error", nil)
             if case let .failure(error) = cognitoSession.identityIdResult {
                 authError = error
             }
-
+            
             let authZError = AuthorizationError.service(error: authError)
             let event = FetchAWSCredentialEvent(eventType: .throwError(authZError))
             dispatcher.send(event)
-
+            
             let updatedSession = cognitoSession.copySessionByUpdating(awsCredentialsResult: .failure(authError))
             let fetchedAuthSessionEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession(updatedSession))
             dispatcher.send(fetchedAuthSessionEvent)
-
+            
             return
         }
-
+        
         logVerbose("\(#fileID) Starting execution", environment: environment)
-
+        
         var loginsMap: [String: String] = [:]
         if case let .success(cognitoUserPoolTokens) = cognitoSession.cognitoTokensResult,
            let userPoolEnvironment = environment as? UserPoolEnvironment
         {
-
+            
             let identityProviderName = userPoolEnvironment.userPoolConfiguration.getIdentityProviderName()
             loginsMap[identityProviderName] = cognitoUserPoolTokens.idToken
         }
-
+        
         let getCredentialsInput = GetCredentialsForIdentityInput(identityId: identityId,
                                                                  logins: loginsMap)
-
+        
         Task {
             do {
                 let response = try await client.getCredentialsForIdentity(input: getCredentialsInput)
