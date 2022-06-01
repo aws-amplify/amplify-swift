@@ -44,7 +44,7 @@ extension UserPoolConfigurationData: CustomDebugDictionaryConvertible {
         [
             "poolId": poolId.masked(interiorCount: 4, retainingCount: 4),
             "clientId": clientId.masked(interiorCount: 4, retainingCount: 4),
-            "region": region.masked(interiorCount: 4, retainingCount: 4),
+            "region": region.redacted(),
             "clientSecret": clientSecret.masked(interiorCount: 4),
             "pinpointAppId": pinpointAppId.masked(interiorCount: 4, retainingCount: 4),
             "hostedUI": hostedUIConfig?.debugDescription ?? "NA"

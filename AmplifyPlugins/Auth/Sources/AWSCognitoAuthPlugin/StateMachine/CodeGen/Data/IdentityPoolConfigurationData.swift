@@ -26,7 +26,7 @@ extension IdentityPoolConfigurationData: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "poolId": poolId.masked(interiorCount: 4, retainingCount: 4),
-            "region": region.masked(interiorCount: 4, retainingCount: 4)
+            "region": region.redacted()
         ]
     }
 }
