@@ -14,11 +14,12 @@ extension AWSS3StorageService {
                          signingOperation: AWSS3SigningOperation = .getObject, 
                          expires: Int,
                          onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
-        guard let preSignedURL = preSignedURLBuilder.getPreSignedURL(key: serviceKey) else {
-            onEvent(.failed(StorageError.unknown("Failed to get pre-signed URL", nil)))
-            return
+        Task {
+            do {
+                onEvent(.completed(try await preSignedURLBuilder.getPreSignedURL(key: serviceKey)))
+            } catch {
+                onEvent(.failed(StorageError.unknown("Failed to get pre-signed URL", nil)))
+            }
         }
-        onEvent(.completed(preSignedURL))
     }
-
 }

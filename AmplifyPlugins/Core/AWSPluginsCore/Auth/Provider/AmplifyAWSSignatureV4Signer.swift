@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
 import Amplify
 import ClientRuntime
 import AWSClientRuntime
@@ -15,11 +16,10 @@ public protocol AWSSignatureV4Signer {
                             credentialsProvider: CredentialsProvider,
                             signingName: Swift.String,
                             signingRegion: Swift.String,
-                            date: ClientRuntime.Date) throws -> SdkHttpRequest?
+                            date: ClientRuntime.Date) async throws -> SdkHttpRequest?
 }
 
 public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
-    
     public init() {
     }
     
@@ -27,14 +27,13 @@ public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
                                    credentialsProvider: CredentialsProvider,
                                    signingName: Swift.String,
                                    signingRegion: Swift.String,
-                                   date: ClientRuntime.Date) throws -> SdkHttpRequest? {
+                                   date: ClientRuntime.Date) async throws -> SdkHttpRequest? {
         do {
-            let credentialsResult = try credentialsProvider.getCredentials()
-            let credentials = try credentialsResult.get()
+            let credentials = try await credentialsProvider.getCredentials()
 
             let flags = SigningFlags(useDoubleURIEncode: true,
                                      shouldNormalizeURIPath: true,
-                                     omitSessionToken: false) 
+                                     omitSessionToken: false)
             let signedBodyHeader: AWSSignedBodyHeader = .none
             let signedBodyValue: AWSSignedBodyValue = .empty
             let signingConfig = AWSSigningConfig(credentials: credentials,
@@ -45,7 +44,9 @@ public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
                                                  service: signingName,
                                                  region: signingRegion,
                                                  signatureType: .requestHeaders)
-            return AWSSigV4Signer.sigV4SignedRequest(requestBuilder: requestBuilder, signingConfig: signingConfig)
+            
+            let httpRequest = await AWSSigV4Signer.sigV4SignedRequest(requestBuilder: requestBuilder, signingConfig: signingConfig)
+            return httpRequest
         } catch let error {
             throw AuthError.unknown("Unable to sign request", error)
         }
