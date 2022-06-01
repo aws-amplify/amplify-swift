@@ -18,7 +18,7 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    if: ${{ !github.event.issue.pull_request && (contains(github.event.issue.labels.*.name, 'pending-response') || contains(github.event.issue.labels.*.name, 'closing soon')) }}
+    if: ${{ !github.event.issue.pull_request && !contains(fromJSON('["palpatim", "brennanMKE", "diegocstn", "lawmicha", "harsh62", "thisisabhash", "ameter", "royjit", "atierian", "ukhan-amazon", "ruisebas", "phantumcode"]'), github.event.comment.user.login) }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
