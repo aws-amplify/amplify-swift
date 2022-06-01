@@ -46,7 +46,7 @@ struct RevokeToken: Action {
         Task {
             do {
                 _ = try await client.revokeToken(input: input)
-                logVerbose("\(#fileID) Revoke token succeedd", environment: environment)
+                logVerbose("\(#fileID) Revoke token succeeded", environment: environment)
             } catch {
                 logVerbose("\(#fileID) Revoke token failed \(error)", environment: environment)
             }
