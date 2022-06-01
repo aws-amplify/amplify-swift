@@ -49,7 +49,6 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
             let input = UploadPartInput(bucket: bucket, key: key, partNumber: partNumber, uploadId: uploadId)
             preSignedUrl = try await input.presignURL(config: config, expiration: expiration)
         }
-        dump(preSignedUrl)
         guard let escapedURL = urlWithEscapedToken(preSignedUrl) else {
             throw AWSS3PreSignedURLBuilderError.failed(reason: "Failed to get presigned URL.", error: nil)
         }
@@ -57,7 +56,6 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
     }
 
     private func urlWithEscapedToken(_ url: URL?) -> URL? {
-        print("Received URL: \(url?.absoluteString ?? "nil")")
         guard let url = url,
               var components = URLComponents(string: url.absoluteString),
               var token = components.queryItems?.first(where: { $0.name == "X-Amz-Security-Token" }) else {
