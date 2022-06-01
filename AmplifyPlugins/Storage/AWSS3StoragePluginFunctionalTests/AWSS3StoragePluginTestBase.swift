@@ -105,7 +105,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
                     registerFirstUserComplete.fulfill()
                     AWSS3StoragePluginTestBase.isFirstUserSignedUp = true
                 } else {
-                    XCTFail("Failed to Sign up user \(error)")
+                    XCTFail("Failed to Sign up user \(error.debugDescription)")
                 }
         }
 
@@ -117,7 +117,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
                     registerSecondUserComplete.fulfill()
                     AWSS3StoragePluginTestBase.isSecondUserSignedUp = true
                 } else {
-                    XCTFail("Failed to Sign up user \(error)")
+                    XCTFail("Failed to Sign up user \(error.debugDescription)")
                 }
         }
 
