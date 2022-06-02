@@ -330,9 +330,8 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
     private func setUpPendingMutationQueue(_ modelId: String,
                                            _ mutationEvents: [MutationEvent],
                                            _ expectedHeadOfQueue: MutationEvent) {
-        let mutationEventSaveExpectation = expectation(description: "save mutation event success")
-        mutationEventSaveExpectation.expectedFulfillmentCount = mutationEvents.count
         for mutationEvent in mutationEvents {
+            let mutationEventSaveExpectation = expectation(description: "save mutation event success")
             storageAdapter.save(mutationEvent) { result in
                 guard case .success = result else {
                     XCTFail("Failed to save metadata")
@@ -340,8 +339,8 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 }
                 mutationEventSaveExpectation.fulfill()
             }
+            wait(for: [mutationEventSaveExpectation], timeout: 1)
         }
-        wait(for: [mutationEventSaveExpectation], timeout: 1)
 
         // verify the head of queue is expected
         let headOfQueueExpectation = expectation(description: "head of mutation event queue is as expected")
