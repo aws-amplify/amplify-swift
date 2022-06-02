@@ -10,10 +10,10 @@ import Amplify
 import ClientRuntime
 
 extension SdkError: AuthErrorConvertible {
-    
+
     var authError: AuthError {
         switch self {
-            
+
         case .service(let serviceError, _):
             if let authErrorMappable = serviceError as? AuthErrorConvertible {
                 return authErrorMappable.authError
@@ -29,7 +29,7 @@ extension SdkError: AuthErrorConvertible {
                                      unknownError)
         }
     }
-    
+
     func convertToAuthError(clientError: ClientError,
                             httpResponse: HttpResponse? = nil) -> AuthError {
         switch clientError {
@@ -40,43 +40,42 @@ extension SdkError: AuthErrorConvertible {
                                     HTTP Response stauts code: \(String(describing: httpResponse?.statusCode))
                                     """,
                                      AWSCognitoAuthError.network)
-            
+
         case .crtError(let cRTError):
             return AuthError.service(cRTError.localizedDescription,
                                      "Check the underlying error for more details",
                                      cRTError)
-            
+
         case .pathCreationFailed(let message):
             return AuthError.service(message, "", clientError)
-            
+
         case .serializationFailed(let message):
             return AuthError.service(message, "", clientError)
-            
+
         case .deserializationFailed(let error):
             return AuthError.service(error.localizedDescription,
                                      "",
                                      error)
-            
+
         case .dataNotFound(let message):
             return AuthError.service(message, "", clientError)
-            
+
         case .authError(let message):
             return AuthError.notAuthorized(message, "Check if you are authorized to perform the request")
-            
+
         case .retryError(let error):
             if let authError = error as? AuthErrorConvertible {
                 return authError.authError
-            }
-            else {
+            } else {
                 return AuthError.service(error.localizedDescription,
                                          "",
                                          AWSCognitoAuthError.network)
-                
+
             }
-            
+
         case .unknownError(let message):
             return AuthError.unknown(message, clientError)
         }
     }
-    
+
 }

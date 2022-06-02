@@ -19,7 +19,6 @@ enum SignInChallengeState: State {
     case error(RespondToAuthChallenge)
 }
 
-
 extension SignInChallengeState {
 
     var type: String {

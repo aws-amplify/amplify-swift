@@ -4,6 +4,7 @@
 
 excluded:
   - Pods
+  - .build
 
 analyzer_rules:
   - unused_import

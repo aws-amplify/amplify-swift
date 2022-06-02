@@ -134,7 +134,6 @@ extension AuthenticationState {
             }
         }
 
-
         private func resolveSigningUpState(oldState: AuthenticationState,
                                            event: StateMachineEvent)  -> StateResolution<StateType> {
             if let authEvent = event as? AuthenticationEvent,

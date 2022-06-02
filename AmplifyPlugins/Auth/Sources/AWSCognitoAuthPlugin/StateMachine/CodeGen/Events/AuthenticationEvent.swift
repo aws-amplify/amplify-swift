@@ -46,7 +46,7 @@ struct AuthenticationEvent: StateMachineEvent {
     let id: String
     let eventType: EventType
     let time: Date?
-    
+
     var type: String {
         switch eventType {
         case .configure:
