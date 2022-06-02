@@ -57,11 +57,8 @@ struct RefreshUserPoolTokens: Action {
                       let accessToken = authenticationResult.accessToken
                 else {
 
-                    let authZError = AuthorizationError.invalidUserPoolTokens(
-                        message: "UserPoolTokens are invalid.")
-                    let event = AuthorizationEvent(eventType: .throwError(authZError))
+                    let event = RefreshSessionEvent(eventType: .throwError(.invalidTokens))
                     dispatcher.send(event)
-
                     logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
                     return
                 }
@@ -86,8 +83,9 @@ struct RefreshUserPoolTokens: Action {
                 dispatcher.send(event)
 
             } catch {
-                // TODO: To implement
-                fatalError("")
+                let event = RefreshSessionEvent(eventType: .throwError(.service(error)))
+                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+                dispatcher.send(event)
             }
 
             logVerbose("\(#fileID) Initiate auth complete", environment: environment)
