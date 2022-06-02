@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+import Amplify
 import SQLite
 
 /// This is a temporary placeholder class to interface with the SQLiteLocalStorageAdapter
@@ -20,6 +22,7 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
     
     /// Create the Event and Dirty Event Tables
     func initializeStorage() throws {
+        log.debug("Initializing storage")
         let createEventTableStatement = """
             CREATE TABLE IF NOT EXISTS Event (
             id TEXT NOT NULL,
@@ -53,13 +56,14 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
             try dbAdapter.createTable(createEventTableStatement)
             try dbAdapter.createTable(createDirtyEventTableStatement)
         } catch {
+            log.error("Failed to create local storage table")
             throw LocalStorageError.invalidOperation(causedBy: error)
         }
     }
     
     /// Insert an Event into the Even table
     /// - Parameter bindings: a collection of values to insert into the Event
-    func insertEvent(bindings: [Binding]) throws {
+    func saveEvent(_ event: PinpointEvent) throws {
         let insertStatement = """
             INSERT INTO Event (
             id, attributes, eventType, metrics,
@@ -67,7 +71,7 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
             sessionStopTime, timestamp, dirty, retryCount)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
-        _ = try dbAdapter.executeQuery(insertStatement, bindings)
+        _ = try dbAdapter.executeQuery(insertStatement, event.getInsertBindings())
     }
     
     /// Delete events from the Events older than a specified timestamp
@@ -83,7 +87,7 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
     /// Delete all dirty events from the Event and DirtyEvent tables
     func deleteDirtyEvents() throws {
         let deleteFromDirtyEventTable = "DELETE FROM DirtyEvent"
-        let deleteFromEventTable = "DELETE FROM Event WHERE dirty = true"
+        let deleteFromEventTable = "DELETE FROM Event WHERE dirty = 1"
         _ = try dbAdapter.executeQuery(deleteFromDirtyEventTable, [])
         _ = try dbAdapter.executeQuery(deleteFromEventTable, [])
     }
@@ -109,25 +113,96 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
     
     /// Get the oldest event with limit
     /// - Parameter limit: The number of query result to limit
-    func getEventsWith(limit: Binding) throws {
+    /// - Returns: A collection of PinpointEvent
+    func getEventsWith(limit: Int) throws -> [PinpointEvent] {
         let queryStatement = """
         SELECT id, attributes, eventType, metrics, eventTimestamp, sessionId, sessionStartTime, sessionStopTime, timestamp, retryCount
         FROM Event
         ORDER BY timestamp ASC
         LIMIT ?
         """
-        _ = try dbAdapter.executeQuery(queryStatement, [limit])
+        let rows = try dbAdapter.executeQuery(queryStatement, [limit])
+        var result = [PinpointEvent]()
+        for element in rows {
+            if let event = PinpointEvent.convertToEvent(element) {
+                result.append(event)
+            }
+        }
+        return result
     }
     
     /// Get the oldest dirty events with limit
     /// - Parameter limit: The number of query result to limit
-    func getDirtyEventsWith(limit: Binding) throws {
+    /// - Returns: A collection of PinpointEvent
+    func getDirtyEventsWith(limit: Int) throws -> [PinpointEvent] {
         let queryStatement = """
         SELECT id, attributes, eventType, metrics, eventTimestamp, sessionId, sessionStartTime, sessionStopTime, timestamp, retryCount
         FROM DirtyEvent
         ORDER BY timestamp ASC
         LIMIT ?
         """
-        _ = try dbAdapter.executeQuery(queryStatement, [limit])
+        let rows = try dbAdapter.executeQuery(queryStatement, [limit])
+        var result = [PinpointEvent]()
+        for element in rows {
+            if let event = PinpointEvent.convertToEvent(element) {
+                result.append(event)
+            }
+        }
+        return result
+    }
+    
+    /// Set the dirty column to 1 for the event in the Event table
+    /// - Parameter eventId: The event id for the event to update
+    func setDirtyEvent(eventId: String) throws {
+        let updateStatement = """
+            UPDATE Event SET dirty = 1 WHERE id = ?
+        """
+        _ = try dbAdapter.executeQuery(updateStatement, [eventId])
+    }
+    
+    /// Increment the retry count on the event in the event table by 1
+    /// - Parameter eventId: The event id for the event to update
+    func incrementEventRetry(eventId: String) throws {
+        let updateStatement = """
+        UPDATE Event SET retryCount = retryCount + 1 WHERE id = ?
+        """
+        _ = try dbAdapter.executeQuery(updateStatement, [eventId])
+    }
+    
+    /// Delete the event in the Event table
+    /// - Parameter eventId: The event id for the event to delete
+    func deleteEvent(eventId: String) throws {
+        let deleteStatement = """
+        DELETE FROM Event WHERE id = ?
+        """
+        _ = try dbAdapter.executeQuery(deleteStatement, [eventId])
+    }
+    
+    /// Set the dirty column to 1 for the event
+    /// Move the dirty event to the DirtyEvent table
+    /// Delete the dirty evetn from the Event table
+    /// - Parameter eventId: The event id for the event to update
+    func removeFailedEvents() throws {
+        let markStatement = """
+        UPDATE Event
+        SET dirty = 1
+        WHERE retryCount > 3
+        """
+        
+        let moveStatement = """
+        INSERT INTO DirtyEvent
+        SELECT * FROM Event
+        WHERE dirty = 1
+        """
+        
+        let deleteStatement = """
+        DELETE FROM Event
+        WHERE dirty = 1
+        """
+        _ = try dbAdapter.executeQuery(markStatement, [])
+        _ = try dbAdapter.executeQuery(moveStatement, [])
+        _ = try dbAdapter.executeQuery(deleteStatement, [])
     }
 }
+
+extension AnalyticsEventSQLStorage: DefaultLogger { }

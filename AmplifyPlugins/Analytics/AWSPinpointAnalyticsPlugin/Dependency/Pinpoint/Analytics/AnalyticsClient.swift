@@ -7,17 +7,30 @@
 
 import Foundation
 import StoreKit
+import Amplify
 
 class AnalyticsClient: InternalPinpointClient {
-    private let eventRecorder: AnalyticsEventRecording
+    private var eventRecorder: AnalyticsEventRecording?
     private lazy var globalAttributes: [String: String] = [:]
     private lazy var globalMetrics: [String: Double] = [:]
     private lazy var eventTypeAttributes: [String: [String: String]] = [:]
     private lazy var eventTypeMetrics: [String: [String: Double]] = [:]
+    //needs to be this path to be backward compatible with legacy aws-ios-sdk
+    private let AWSPinpointClientRecorderDatabasePathPrefix = "com/amazonaws/AWSPinpointRecorder/"
     
-    init(eventRecorder: AnalyticsEventRecording = EventRecorder(),
-         context: PinpointContext) {
-        self.eventRecorder = eventRecorder
+    override init(
+        context: PinpointContext
+    ) {
+        do {
+            let storage = try AnalyticsEventSQLStorage(dbAdapter: SQLiteLocalStorageAdapter(prefixPath: AWSPinpointClientRecorderDatabasePathPrefix, databaseName: context.configuration.appId))
+            self.eventRecorder = try EventRecorder(
+                appId: context.configuration.appId,
+                storage: storage,
+                pinpointClient: context.pinpointClient
+            )
+        } catch {
+            //TODO: handle init error
+        }
         super.init(context: context)
     }
     
@@ -155,14 +168,21 @@ class AnalyticsClient: InternalPinpointClient {
             event.addMetric(metric, forKey: key)
         }
 
-        try await eventRecorder.save(event)
+        try eventRecorder?.save(event)
     }
     
     @discardableResult
     func submitEvents() async throws -> [PinpointEvent] {
+        guard let eventRecorder = eventRecorder else {
+            //TODO: handle missing event recorder error
+            return []
+        }
+
         return try await eventRecorder.submitAllEvents()
     }
 }
+
+extension AnalyticsClient: DefaultLogger { }
 
 extension AnalyticsClient {
     private struct Constants {
