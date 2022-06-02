@@ -377,6 +377,5 @@ let package = Package(
             url: "https://github.com/mattgallagher/CwlPreconditionTesting",
             .upToNextMinor(from: "2.1.0"))
     ],
-    dependencies: dependencies,
     targets: targets
 )
