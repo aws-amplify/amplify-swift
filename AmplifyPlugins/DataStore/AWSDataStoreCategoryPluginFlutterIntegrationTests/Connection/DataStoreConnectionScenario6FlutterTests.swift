@@ -75,7 +75,7 @@ class DataStoreConnectionScenario6FlutterTests: SyncEngineFlutterIntegrationTest
         XCTAssertEqual(fetchedBlog["id"], blog.id())
         XCTAssertEqual(fetchedBlog["name"], blog.name())
     }
-    
+
     /// TODO: Include testGetPostThenFetchBlogAndComment when nested model lazy loading is implemented
     func saveBlog(id: String = UUID().uuidString, name: String, plugin: AWSDataStorePlugin) throws -> Blog6Wrapper? {
         let blog = try Blog6Wrapper(name: name)

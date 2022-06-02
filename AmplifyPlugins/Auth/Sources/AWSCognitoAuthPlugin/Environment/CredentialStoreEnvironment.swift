@@ -33,8 +33,7 @@ struct BasicCredentialStoreEnvironment: CredentialStoreEnvironment {
 
     init(amplifyCredentialStoreFactory: @escaping AmplifyAuthCredentialStoreFactory,
          legacyCredentialStoreFactory: @escaping CredentialStoreFactory,
-         eventIDFactory: @escaping EventIDFactory = UUIDFactory.factory)
-    {
+         eventIDFactory: @escaping EventIDFactory = UUIDFactory.factory) {
         self.amplifyCredentialStoreFactory = amplifyCredentialStoreFactory
         self.legacyCredentialStoreFactory = legacyCredentialStoreFactory
         self.eventIDFactory = eventIDFactory

@@ -94,7 +94,6 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
         XCTAssertNotNil(operation1, "SignIn operation should not be nil")
         wait(for: [operationExpectation1], timeout: networkTimeout)
 
-
         // Test once more to verify that the state machine recovered from the previous error
         let operationExpectation2 = expectation(description: "Operation should complete")
         let operation2 = Amplify.Auth.signIn(username: username, password: password) { result in

@@ -49,10 +49,10 @@ extension AnyModelTester: Equatable { }
 
 extension AnyModel: Equatable {
     public static func == (lhs: AnyModel, rhs: AnyModel) -> Bool {
-        //swiftlint:disable force_try
+        // swiftlint:disable force_try
         let lhsInstance = try! lhs.instance.toJSON()
         let rhsInstance = try! rhs.instance.toJSON()
-        //swiftlint:enable force_try
+        // swiftlint:enable force_try
 
         return lhs.id == rhs.id
             && lhs.modelName == rhs.modelName

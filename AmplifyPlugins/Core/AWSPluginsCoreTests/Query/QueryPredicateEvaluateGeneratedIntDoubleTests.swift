@@ -11,7 +11,7 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-//swiftlint:disable type_name
+// swiftlint:disable type_name
 class QueryPredicateEvaluateGeneratedIntDoubleTests: XCTestCase {
     func testbetweenInt1betweenDouble3_1with0() throws {
         let predicate = QPredGen.keys.myInt.between(start: 1, end: 3.1)

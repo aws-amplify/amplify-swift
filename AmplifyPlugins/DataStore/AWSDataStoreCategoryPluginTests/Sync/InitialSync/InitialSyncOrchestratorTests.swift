@@ -18,7 +18,6 @@ class InitialSyncOrchestratorTests: XCTestCase {
         Amplify.Logging.logLevel = .info
     }
 
-
     /// - Given: An InitialSyncOrchestrator with a model dependency graph
     /// - When:
     ///    - The orchestrator starts up

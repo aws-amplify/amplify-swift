@@ -20,12 +20,12 @@ import AWSClientRuntime
 class AWSS3Adapter: AWSS3Behavior {
     let awsS3: S3Client
     let config: AWSClientRuntime.AWSClientConfiguration
-    
+
     init(_ awsS3: S3Client, config: AWSClientRuntime.AWSClientConfiguration) {
         self.awsS3 = awsS3
         self.config = config
     }
-    
+
     /// Deletes object identify by request.
     /// - Parameters:
     ///   - request:: request identifying object
@@ -41,7 +41,7 @@ class AWSS3Adapter: AWSS3Behavior {
             }
         }
     }
-    
+
     /// Lists objects in the bucket specified by `request`.
     /// - Parameters:
     ///   - request: request identifying bucket and options
@@ -67,7 +67,7 @@ class AWSS3Adapter: AWSS3Behavior {
             }
         }
     }
-    
+
     /// Creates a MultipartUpload
     /// - Parameters:
     ///   - request: request
@@ -83,7 +83,7 @@ class AWSS3Adapter: AWSS3Behavior {
                                                    expires: request.expires,
                                                    key: request.key,
                                                    metadata: request.metadata)
-            
+
             do {
                 let response = try await awsS3.createMultipartUpload(input: input)
                 guard let bucket = response.bucket, let key = response.key, let uploadId = response.uploadId else {
@@ -96,7 +96,7 @@ class AWSS3Adapter: AWSS3Behavior {
             }
         }
     }
-    
+
     func listParts(bucket: String, key: String, uploadId: UploadID, completion: @escaping (Result<AWSS3ListUploadPartResponse, StorageError>) -> Void) {
         Task {
             let input = ListPartsInput(bucket: bucket, key: key, uploadId: uploadId)
@@ -112,7 +112,7 @@ class AWSS3Adapter: AWSS3Behavior {
             }
         }
     }
-    
+
     /// Completed a MultipartUpload
     /// - Parameters:
     ///   - request: request which includes uploadId
@@ -136,7 +136,7 @@ class AWSS3Adapter: AWSS3Behavior {
             }
         }
     }
-    
+
     /// Aborts a MultipartUpload
     /// - Parameters:
     ///   - request: request which includes uploadId
@@ -152,7 +152,7 @@ class AWSS3Adapter: AWSS3Behavior {
             }
         }
     }
-    
+
     /// Instance of S3 service.
     /// - Returns: S3 service instance.
     func getS3() -> S3Client {

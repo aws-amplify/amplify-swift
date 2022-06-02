@@ -30,7 +30,7 @@ extension SocialNote {
   }
 
   public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema
+  // MARK: - ModelSchema
 
   public static let schema = defineSchema { model in
     let socialNote = SocialNote.keys

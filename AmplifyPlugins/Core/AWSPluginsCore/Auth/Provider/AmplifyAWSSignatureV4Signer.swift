@@ -22,7 +22,7 @@ public protocol AWSSignatureV4Signer {
 public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
     public init() {
     }
-    
+
     public func sigV4SignedRequest(requestBuilder: SdkHttpRequestBuilder,
                                    credentialsProvider: CredentialsProvider,
                                    signingName: Swift.String,
@@ -44,7 +44,7 @@ public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
                                                  service: signingName,
                                                  region: signingRegion,
                                                  signatureType: .requestHeaders)
-            
+
             let httpRequest = await AWSSigV4Signer.sigV4SignedRequest(requestBuilder: requestBuilder, signingConfig: signingConfig)
             return httpRequest
         } catch let error {

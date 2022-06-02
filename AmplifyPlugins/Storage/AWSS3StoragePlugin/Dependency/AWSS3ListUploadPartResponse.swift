@@ -41,5 +41,5 @@ extension AWSS3ListUploadPartResponse {
         self.uploadId = uploadId
         self.parts = AWSS3MultipartUploadRequestCompletedParts(parts: parts)
     }
-    
+
 }

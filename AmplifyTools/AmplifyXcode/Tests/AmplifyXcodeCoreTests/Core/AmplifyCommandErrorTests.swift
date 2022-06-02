@@ -33,7 +33,7 @@ class AmplifyCommandErrorTests: XCTestCase {
                         recoverySuggestion: recoveryMessage,
                         error: error)),
             .success("Task 1 success message"),
-            .success("Task 2 success message"),
+            .success("Task 2 success message")
         ]
         let wrappingError = AmplifyCommandError(from: tasksResults)
 

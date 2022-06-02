@@ -12,13 +12,13 @@ import AWSCognitoAuthPlugin
 class AWSAuthBaseTest: XCTestCase {
 
     let networkTimeout = TimeInterval(5)
-    
+
     var defaultTestEmail = "xx"
     var defaultTestPassword = "xx"
 
     let amplifyConfigurationFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration"
     let credentialsFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-credentials"
-    
+
     var amplifyConfiguration: AmplifyConfiguration!
 
     func initializeAmplify() {

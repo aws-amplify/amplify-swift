@@ -16,7 +16,7 @@ import AmplifyTestCommon
  */
 class Post6Wrapper: NSCopying {
     var model: FlutterSerializedModel
-    
+
     init(title: String, blog: FlutterSerializedModel) throws {
         let map: [String: Any] = [
             "title": title,
@@ -24,22 +24,21 @@ class Post6Wrapper: NSCopying {
         ]
         self.model = FlutterSerializedModel(id: UUID().uuidString, map: try FlutterDataStoreRequestUtils.getJSONValue(map))
     }
-    
+
     init(model: FlutterSerializedModel) {
         self.model = model
     }
-    
+
     init(json: String) throws {
         let data = json.data(using: .utf8)!
-        let map = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
+        let map = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
         self.model = FlutterSerializedModel(id: map!["id"] as! String, map: try FlutterDataStoreRequestUtils.getJSONValue(map!))
     }
 
-    
     func idString() -> String {
         return self.model.id
     }
-    
+
     func id() -> JSONValue? {
         return self.model.values["id"]
     }
@@ -47,7 +46,7 @@ class Post6Wrapper: NSCopying {
     func title() -> JSONValue? {
         return self.model.values["title"]
     }
-    
+
     func blog() -> JSONValue? {
         return self.model.values["blog"]
     }

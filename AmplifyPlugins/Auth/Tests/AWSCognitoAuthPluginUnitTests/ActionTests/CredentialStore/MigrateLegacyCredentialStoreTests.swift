@@ -22,7 +22,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         let saveCredentialHandlerInvoked = expectation(description: "saveCredentialHandlerInvoked")
 
         let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(data: mockedData)
-        let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { service in
+        let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { _ in
             return mockLegacyCredentialStoreBehavior
         }
         let mockAmplifyCredentialStoreBehavior = MockAmplifyCredentialStoreBehavior(
@@ -75,7 +75,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
                 migrationCompletionInvoked.fulfill()
             }
         )
-        let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { service in
+        let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { _ in
             return mockLegacyCredentialStoreBehavior
         }
         let mockAmplifyCredentialStoreBehavior = MockAmplifyCredentialStoreBehavior()

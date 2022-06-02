@@ -36,5 +36,3 @@ class SignOutStateRevokingTokenTests: XCTestCase {
         SignOutEvent.allEvents.forEach(assertIfUnsupported(_:))
     }
 }
-
-

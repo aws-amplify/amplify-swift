@@ -13,8 +13,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     public func signUp(username: String,
                        password: String?,
                        options: AuthSignUpOperation.Request.Options?,
-                       listener: AuthSignUpOperation.ResultListener?) -> AuthSignUpOperation
-    {
+                       listener: AuthSignUpOperation.ResultListener?) -> AuthSignUpOperation {
         let options = options ?? AuthSignUpRequest.Options()
         let request = AuthSignUpRequest(username: username,
                                         password: password,
@@ -27,8 +26,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     public func confirmSignUp(for username: String,
                               confirmationCode: String,
                               options: AuthConfirmSignUpOperation.Request.Options?,
-                              listener: AuthConfirmSignUpOperation.ResultListener?) -> AuthConfirmSignUpOperation
-    {
+                              listener: AuthConfirmSignUpOperation.ResultListener?) -> AuthConfirmSignUpOperation {
         let options = options ?? AuthConfirmSignUpRequest.Options()
         let request = AuthConfirmSignUpRequest(username: username, code: confirmationCode, options: options)
         let confirmSignUpOperation = AWSAuthConfirmSignUpOperation(request, stateMachine: authStateMachine, resultListener: listener)
@@ -39,16 +37,14 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 
     public func resendSignUpCode(for username: String,
                                  options: AuthResendSignUpCodeOperation.Request.Options?,
-                                 listener: AuthResendSignUpCodeOperation.ResultListener?) -> AuthResendSignUpCodeOperation
-    {
+                                 listener: AuthResendSignUpCodeOperation.ResultListener?) -> AuthResendSignUpCodeOperation {
         fatalError("Not implemented")
     }
 
     public func signIn(username: String?,
                        password: String?,
                        options: AuthSignInOperation.Request.Options?,
-                       listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation
-    {
+                       listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation {
         let options = options ?? AuthSignInRequest.Options()
         let request = AuthSignInRequest(username: username,
                                         password: password,
@@ -65,16 +61,14 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 #if canImport(AuthenticationServices)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthWebUISignInOperation.Request.Options?,
-                                listener: AuthWebUISignInOperation.ResultListener?) -> AuthWebUISignInOperation
-    {
+                                listener: AuthWebUISignInOperation.ResultListener?) -> AuthWebUISignInOperation {
         fatalError("Not implemented")
     }
 
     public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthSocialWebUISignInOperation.Request.Options?,
-                                listener: AuthSocialWebUISignInOperation.ResultListener?) -> AuthSocialWebUISignInOperation
-    {
+                                listener: AuthSocialWebUISignInOperation.ResultListener?) -> AuthSocialWebUISignInOperation {
         fatalError("Not implemented")
     }
 #endif
@@ -87,8 +81,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     }
 
     public func signOut(options: AuthSignOutOperation.Request.Options?,
-                        listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation
-    {
+                        listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation {
         let options = options ?? AuthSignOutRequest.Options()
         let request = AuthSignOutRequest(options: options)
         let signOutOperation = AWSAuthSignOutOperation(request,
@@ -101,8 +94,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     }
 
     public func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options?,
-                                 listener: AuthFetchSessionOperation.ResultListener?) -> AuthFetchSessionOperation
-    {
+                                 listener: AuthFetchSessionOperation.ResultListener?) -> AuthFetchSessionOperation {
         let options = options ?? AuthFetchSessionRequest.Options()
         let request = AuthFetchSessionRequest(options: options)
         let fetchAuthSessionOperation = AWSAuthFetchSessionOperation(request,
@@ -115,8 +107,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 
     public func resetPassword(for username: String,
                               options: AuthResetPasswordOperation.Request.Options?,
-                              listener: AuthResetPasswordOperation.ResultListener?) -> AuthResetPasswordOperation
-    {
+                              listener: AuthResetPasswordOperation.ResultListener?) -> AuthResetPasswordOperation {
         fatalError("Not implemented")
     }
 

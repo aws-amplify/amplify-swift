@@ -189,7 +189,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         }
         XCTAssertEqual(dishes.count, numberOfDishes)
 
-        //let startTime = CFAbsoluteTimeGetCurrent()
+        // let startTime = CFAbsoluteTimeGetCurrent()
         // Delete Top level of restaurant
         let receivedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
         receivedMutationEvent.expectedFulfillmentCount = numberOfMenus + numberOfDishes + 1
@@ -203,8 +203,8 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
                                                                         return
         }
         wait(for: [receivedMutationEvent], timeout: 10)
-        //let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-        //print("Time elapsed time to delete: \(timeElapsed) s.")
+        // let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+        // print("Time elapsed time to delete: \(timeElapsed) s.")
     }
 
     func testErrorOnSingleSubmissionToSyncEngine() {

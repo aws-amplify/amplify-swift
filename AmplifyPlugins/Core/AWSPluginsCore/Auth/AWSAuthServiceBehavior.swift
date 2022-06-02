@@ -10,21 +10,21 @@ import Amplify
 import AWSClientRuntime
 
 public protocol AWSAuthServiceBehavior: AnyObject {
-    
+
     func getCredentialsProvider() -> CredentialsProvider
-    
+
     @available(*, deprecated, message: "Use getIdentityID(completion:) instead")
     func getIdentityId() -> Result<String, AuthError>
-    
+
     @available(*, deprecated, message: "Use getUserPoolAccessToken(completion:) instead")
     func getToken() -> Result<String, AuthError>
-    
+
     func getTokenClaims(tokenString: String) -> Result<[String: AnyObject], AuthError>
-    
+
     /// Retrieves the identity identifier of for the Auth service
     /// - Parameter completion: Completion handler defined for the input `Result<String, AuthError>`
     func getIdentityID(completion: @escaping (Result<String, AuthError>) -> Void)
-    
+
     /// Retrieves the token from the Auth token provider
     /// - Parameter completion: Completion handler defined for the input `Result<String, AuthError>`
     func getUserPoolAccessToken(completion: @escaping (Result<String, AuthError>) -> Void)
@@ -73,4 +73,3 @@ extension AWSAuthServiceBehavior {
         }
     }
 }
-

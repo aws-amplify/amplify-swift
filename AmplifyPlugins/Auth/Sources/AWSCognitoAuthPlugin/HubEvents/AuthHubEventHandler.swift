@@ -44,7 +44,7 @@ class AuthHubEventHandler: AuthHubEventBehavior {
                         return
                 }
                 self?.handleSignInEvent(result)
-                
+
             /* TODO: Need to implement these hub events
             case HubPayload.EventName.Auth.confirmSignInAPI:
                 guard let event = payload.data as? AWSAuthConfirmSignInOperation.OperationResult,
@@ -81,7 +81,6 @@ class AuthHubEventHandler: AuthHubEventBehavior {
                         return
                 }
                 self?.sendUserSignedOutEvent()
-
 
             case HubPayload.EventName.Auth.fetchSessionAPI:
                 guard let event = payload.data as? AWSAuthFetchSessionOperation.OperationResult,

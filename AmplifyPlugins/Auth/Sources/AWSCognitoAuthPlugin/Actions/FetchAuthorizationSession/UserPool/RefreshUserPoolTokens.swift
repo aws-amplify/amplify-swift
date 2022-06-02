@@ -65,58 +65,58 @@ struct RefreshUserPoolTokens: Action {
                                       userContextData: nil)
 
         logVerbose("\(#fileID) Starting initiate auth refresh token", environment: environment)
-        
+
         Task {
             do {
                 let response = try await client?.initiateAuth(input: input)
-                
+
                 logVerbose("\(#fileID) Initiate auth response received", environment: environment)
-                
+
                 guard let authenticationResult = response?.authenticationResult,
                       let idToken = authenticationResult.idToken,
                       let accessToken = authenticationResult.accessToken
                 else {
-                    
+
                     let authZError = AuthorizationError.invalidUserPoolTokens(
                         message: "UserPoolTokens are invalid.")
                     let event = FetchUserPoolTokensEvent(eventType: .throwError(authZError))
                     dispatcher.send(event)
-                    
+
                     let updateCognitoSession = cognitoSession.copySessionByUpdating(
                         cognitoTokensResult: .failure(authZError.authError))
                     let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity(updateCognitoSession))
                     dispatcher.send(fetchIdentityEvent)
-                    
+
                     logVerbose("\(#fileID) Sending event \(fetchIdentityEvent.type)",
                                environment: environment)
                     return
                 }
-                
+
                 let userPoolTokens = AWSCognitoUserPoolTokens(
                     idToken: idToken,
                     accessToken: accessToken,
                     refreshToken: cognitoUserPoolTokens.refreshToken,
                     expiresIn: authenticationResult.expiresIn
                 )
-                
+
                 let updateCognitoSession = cognitoSession.copySessionByUpdating(cognitoTokensResult: .success(userPoolTokens))
-                
+
                 let fetchedTokenEvent = FetchUserPoolTokensEvent(eventType: .fetched)
                 logVerbose("\(#fileID) Sending event \(fetchedTokenEvent.type)",
                            environment: environment)
                 dispatcher.send(fetchedTokenEvent)
-                
+
                 let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity(updateCognitoSession))
                 logVerbose("\(#fileID) Sending event \(fetchIdentityEvent.type)",
                            environment: environment)
                 dispatcher.send(fetchIdentityEvent)
-                
+
             } catch {
                 let sdkError = error as? SdkError<InitiateAuthOutputError> ?? SdkError.unknown(error)
                 let authZError = AuthorizationError.service(error: error)
                 let event = FetchUserPoolTokensEvent(eventType: .throwError(authZError))
                 dispatcher.send(event)
-                
+
                 // Update the cognito session with the relevant errors, so that subsequent states can act accordingly
                 let updateCognitoSession: AWSAuthCognitoSession
                 if case .notAuthorized = sdkError.authError {
@@ -132,13 +132,13 @@ struct RefreshUserPoolTokens: Action {
                         cognitoTokensResult: .failure(sdkError.authError)
                     )
                 }
-                
+
                 let fetchIdentityEvent = FetchAuthSessionEvent(eventType: .fetchIdentity(updateCognitoSession))
                 logVerbose("\(#fileID) Sending event \(fetchIdentityEvent.type)",
                            environment: environment)
                 dispatcher.send(fetchIdentityEvent)
             }
-            
+
             logVerbose("\(#fileID) Initiate auth complete", environment: environment)
         }
     }
@@ -159,4 +159,3 @@ extension RefreshUserPoolTokens: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
-

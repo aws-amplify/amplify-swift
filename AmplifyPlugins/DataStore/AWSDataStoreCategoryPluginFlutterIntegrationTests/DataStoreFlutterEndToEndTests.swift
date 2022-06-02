@@ -19,7 +19,7 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
 
         let title = "This is a new post I created"
         let date = Temporal.DateTime.now().iso8601String
-        
+
         let newPost = try PostWrapper(
             title: title,
             content: "Original content from DataStoreEndToEndTests at \(date)")
@@ -41,7 +41,7 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
                         XCTFail("Can't cast payload as mutation event")
                         return
                 }
-            
+
                 guard let post = try? PostWrapper(json: mutationEvent.json), mutationEvent.modelName == "Post", post.idString() == newPost.idString() else {
                     return
                 }
@@ -93,10 +93,10 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
     func testCreateThenMutateWithCondition() throws {
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         try startAmplifyAndWaitForSync()
-        
+
         let title = "This is a new post I created"
         let date = Temporal.DateTime.now().iso8601String
-        
+
         let post = Post.keys
 
         let newPost = try PostWrapper(
@@ -190,7 +190,7 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
         try validateSavePost(plugin: plugin)
 
     }
-    
+
     /// Ensure the DataStore is automatically started when querying for the first time
     ///
     /// - Given: DataStore is configured but not started
@@ -220,7 +220,7 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
         wait(for: [dataStoreStarted, queryCompleted], timeout: networkTimeout)
         sink.cancel()
     }
-    
+
     /// Ensure DataStore.clear followed by DataStore.start is successful
     ///
     /// - Given:  DataStore has completely started
@@ -252,7 +252,7 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
         wait(for: [clearStartSuccess], timeout: networkTimeout)
         try validateSavePost(plugin: plugin)
     }
-    
+
     // MARK: - Helpers
     func validateSavePost(plugin: AWSDataStorePlugin) throws {
         let date = Temporal.DateTime.now()

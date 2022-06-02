@@ -38,8 +38,7 @@ extension FetchUserPoolTokensState {
 
         private func resolveConfiguringState(
             byApplying fetchUserPoolTokenEvent: FetchUserPoolTokensEvent,
-            from oldState: FetchUserPoolTokensState) -> StateResolution<StateType>
-        {
+            from oldState: FetchUserPoolTokensState) -> StateResolution<StateType> {
                 switch fetchUserPoolTokenEvent.eventType {
                 case .refresh(let cognitoSession):
                     let newState = FetchUserPoolTokensState.refreshing
@@ -54,8 +53,7 @@ extension FetchUserPoolTokensState {
 
         private func resolveRefreshingState(
             byApplying fetchUserPoolTokenEvent: FetchUserPoolTokensEvent,
-            from oldState: FetchUserPoolTokensState) -> StateResolution<StateType>
-        {
+            from oldState: FetchUserPoolTokensState) -> StateResolution<StateType> {
                 switch fetchUserPoolTokenEvent.eventType {
                 case .fetched:
                     return .init(newState: FetchUserPoolTokensState.fetched)
