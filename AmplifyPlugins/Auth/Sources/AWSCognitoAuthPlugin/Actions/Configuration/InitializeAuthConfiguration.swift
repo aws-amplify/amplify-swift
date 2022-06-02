@@ -12,19 +12,11 @@ struct InitializeAuthConfiguration: Action {
     let identifier = "InitializeAuthConfiguration"
 
     let authConfiguration: AuthConfiguration
-    let storedCredentials: AmplifyCredentials?
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
-
-        var event: StateMachineEvent
-        switch authConfiguration {
-        case .identityPools:
-            event = AuthEvent(eventType: .configureAuthorization(authConfiguration))
-        default:
-            event = AuthEvent(eventType: .configureAuthentication(authConfiguration, storedCredentials))
-        }
+        let event = AuthEvent(eventType: .fetchCachedCredentials(authConfiguration))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }

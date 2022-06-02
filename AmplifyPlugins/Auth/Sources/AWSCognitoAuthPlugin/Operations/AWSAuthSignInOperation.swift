@@ -145,7 +145,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
     }
 
     private func sendStoreCredentialsEvent(with userPoolTokens: AWSCognitoUserPoolTokens) {
-        let credentials = AmplifyCredentials(userPoolTokens: userPoolTokens, identityId: nil, awsCredential: nil)
+        let credentials = AmplifyCredentials.noCredentials
         let event = CredentialStoreEvent.init(eventType: .storeCredentials(credentials))
         credentialStoreStateMachine.send(event)
     }

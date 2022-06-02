@@ -10,9 +10,9 @@ import Foundation
 struct FetchIdentityEvent: StateMachineEvent {
     enum EventType: Equatable {
 
-        case fetch(AWSAuthCognitoSession)
+        case fetch
 
-        case fetched
+        case fetched(String)
 
         case throwError(AuthorizationError)
 

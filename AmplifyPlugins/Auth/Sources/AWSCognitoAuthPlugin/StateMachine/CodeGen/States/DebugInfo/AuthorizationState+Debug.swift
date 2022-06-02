@@ -18,8 +18,10 @@ extension AuthorizationState: CustomDebugDictionaryConvertible {
             additionalMetadataDictionary = [:]
         case .fetchingAuthSession(let state):
             additionalMetadataDictionary = state.debugDictionary
-        case .sessionEstablished:
+        case .signingIn:
             additionalMetadataDictionary = [:]
+        case .sessionEstablished(let credentials):
+            return [type: credentials.debugDescription]
         case .error(let error):
             additionalMetadataDictionary = ["Error": error]
         }

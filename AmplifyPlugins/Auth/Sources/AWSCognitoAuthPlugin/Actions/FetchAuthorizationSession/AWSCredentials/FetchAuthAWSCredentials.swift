@@ -14,72 +14,34 @@ struct FetchAuthAWSCredentials: Action {
 
     let identifier = "FetchAuthAwsCredentials"
 
-    let cognitoSession: AWSAuthCognitoSession
+    let loginsMap: [String: String]
+
+    let identityID: String
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+
+        logVerbose("\(#fileID) Starting execution", environment: environment)
+
         guard let authEnv = environment as? AuthEnvironment,
               let authZEnvironment = authEnv.authorizationEnvironment,
               let client = try? authZEnvironment.cognitoIdentityFactory()
         else {
-            let authZError = AuthorizationError.configuration(message: AuthPluginErrorConstants.signedInAWSCredentialsWithNoCIDPError.errorDescription)
-            let event = FetchAWSCredentialEvent(eventType: .throwError(authZError))
+            let authZError = FetchSessionError.noIdentityPool
+            let event = FetchAuthSessionEvent(eventType: .throwError(authZError))
             dispatcher.send(event)
-
-            let updatedSession = cognitoSession.copySessionByUpdating(
-                awsCredentialsResult: .failure(authZError.authError))
-            let fetchedAuthSessionEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession(updatedSession))
-            dispatcher.send(fetchedAuthSessionEvent)
-
             return
         }
 
-        guard case let .success(identityId) = cognitoSession.identityIdResult else {
-
-            // Ideally the unknown error would never happen
-            var authError = AuthError.unknown("Unknown Error", nil)
-            if case let .failure(error) = cognitoSession.identityIdResult {
-                authError = error
-            }
-
-            let authZError = AuthorizationError.service(error: authError)
-            let event = FetchAWSCredentialEvent(eventType: .throwError(authZError))
-            dispatcher.send(event)
-
-            let updatedSession = cognitoSession.copySessionByUpdating(awsCredentialsResult: .failure(authError))
-            let fetchedAuthSessionEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession(updatedSession))
-            dispatcher.send(fetchedAuthSessionEvent)
-
-            return
-        }
-
-        logVerbose("\(#fileID) Starting execution", environment: environment)
-
-        var loginsMap: [String: String] = [:]
-        if case let .success(cognitoUserPoolTokens) = cognitoSession.cognitoTokensResult,
-           let userPoolEnvironment = environment as? UserPoolEnvironment {
-
-            let identityProviderName = userPoolEnvironment.userPoolConfiguration.getIdentityProviderName()
-            loginsMap[identityProviderName] = cognitoUserPoolTokens.idToken
-        }
-
-        let getCredentialsInput = GetCredentialsForIdentityInput(identityId: identityId,
+        let getCredentialsInput = GetCredentialsForIdentityInput(identityId: identityID,
                                                                  logins: loginsMap)
 
         Task {
             do {
                 let response = try await client.getCredentialsForIdentity(input: getCredentialsInput)
                 guard let identityId = response.identityId else {
-                    let authZError = AuthorizationError.invalidIdentityId(
-                        message: "IdentityId is invalid.")
-                    let event = FetchAWSCredentialEvent(eventType: .throwError(authZError))
+                    let event = FetchAuthSessionEvent(eventType: .throwError(.invalidIdentityID))
                     dispatcher.send(event)
-
-                    let updatedSession = cognitoSession.copySessionByUpdating(
-                        awsCredentialsResult: .failure(authZError.authError))
-                    let fetchedAuthSessionEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession(updatedSession))
-                    dispatcher.send(fetchedAuthSessionEvent)
-
-                    logVerbose("\(#fileID) Sending event \(fetchedAuthSessionEvent.type)",
+                    logVerbose("\(#fileID) Sending event \(event.type)",
                                environment: environment)
                     return
                 }
@@ -89,51 +51,25 @@ struct FetchAuthAWSCredentials: Action {
                       let sessionKey = awsCredentials.sessionToken,
                       let expiration = awsCredentials.expiration
                 else {
-                    let authZError = AuthorizationError.invalidAWSCredentials(
-                        message: "AWSCredentials are invalid.")
-                    let event = FetchAWSCredentialEvent(eventType: .throwError(authZError))
-                    dispatcher.send(event)
-
-                    let updatedSession = cognitoSession.copySessionByUpdating(
-                        awsCredentialsResult: .failure(authZError.authError))
-                    let fetchedAuthSessionEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession(updatedSession))
-                    dispatcher.send(fetchedAuthSessionEvent)
-
-                    logVerbose("\(#fileID) Sending event \(fetchedAuthSessionEvent.type)",
-                               environment: environment)
-                    return
+                   fatalError()
                 }
-                let awsCognitoCredentials = AuthAWSCognitoCredentials(
-                    accessKey: accessKey,
-                    secretKey: secretKey,
-                    sessionKey: sessionKey,
-                    expiration: expiration
-                )
-
-                let updatedSession = cognitoSession.copySessionByUpdating(
-                    identityIdResult: .success(identityId),
-                    awsCredentialsResult: .success(awsCognitoCredentials)
-                )
-
-                let fetchedAWSCredentialEvent = FetchAWSCredentialEvent(eventType: .fetched)
-                logVerbose("\(#fileID) Sending event \(fetchedAWSCredentialEvent.type)", environment: environment)
+                let awsCognitoCredentials = AuthAWSCognitoCredentials(accessKey: accessKey,
+                                                                      secretKey: secretKey,
+                                                                      sessionKey: sessionKey,
+                                                                      expiration: expiration)
+                let fetchedAWSCredentialEvent = FetchAuthSessionEvent(
+                    eventType: .fetchedAWSCredentials(identityId, awsCognitoCredentials))
+                logVerbose("\(#fileID) Sending event \(fetchedAWSCredentialEvent.type)",
+                           environment: environment)
                 dispatcher.send(fetchedAWSCredentialEvent)
 
-                let fetchedAuthSessionEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession(updatedSession))
-                logVerbose("\(#fileID) Sending event \(fetchedAuthSessionEvent.type)", environment: environment)
-                dispatcher.send(fetchedAuthSessionEvent)
-
             } catch {
-                let sdkError = error as? SdkError<GetCredentialsForIdentityOutputError> ?? SdkError.unknown(error)
-                let authZError = AuthorizationError.service(error: error)
-                let event = FetchAWSCredentialEvent(eventType: .throwError(authZError))
-                dispatcher.send(event)
-
-                let updatedSession = cognitoSession.copySessionByUpdating(
-                    awsCredentialsResult: .failure(sdkError.authError))
-                let fetchedAuthSessionEvent = FetchAuthSessionEvent(eventType: .fetchedAuthSession(updatedSession))
-                logVerbose("\(#fileID) Sending event \(fetchedAuthSessionEvent.type)", environment: environment)
-                dispatcher.send(fetchedAuthSessionEvent)
+//                let sdkError = error as? SdkError<GetCredentialsForIdentityOutputError> ?? SdkError.unknown(error)
+//                let authZError = AuthorizationError.service(error: error)
+//                let event = FetchAWSCredentialEvent(eventType: .throwError(authZError))
+//                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+//                dispatcher.send(event)
+                fatalError()
             }
         }
     }

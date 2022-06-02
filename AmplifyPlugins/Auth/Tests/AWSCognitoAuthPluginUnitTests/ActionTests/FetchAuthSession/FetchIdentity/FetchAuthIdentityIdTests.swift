@@ -17,7 +17,7 @@ class FetchAuthIdentityIdTests: XCTestCase {
 
         let expectation = expectation(description: "noIdentityEnvironment")
 
-        let action = FetchAuthIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
 
         action.execute(
             withDispatcher: MockDispatcher { event in
@@ -50,7 +50,7 @@ class FetchAuthIdentityIdTests: XCTestCase {
                                                                      cognitoIdentityFactory: identityProviderFactory)
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(authZEnvironment: authorizationEnvironment)
 
-        let action = FetchAuthIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
 
         action.execute(
             withDispatcher: MockDispatcher { event in
@@ -87,7 +87,7 @@ class FetchAuthIdentityIdTests: XCTestCase {
                                                                      cognitoIdentityFactory: identityProviderFactory)
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(authZEnvironment: authorizationEnvironment)
 
-        let action = FetchAuthIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
 
         action.execute(
             withDispatcher: MockDispatcher { event in
@@ -123,7 +123,7 @@ class FetchAuthIdentityIdTests: XCTestCase {
                                                                      cognitoIdentityFactory: identityProviderFactory)
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(authZEnvironment: authorizationEnvironment)
 
-        let action = FetchAuthIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchIdentityId(cognitoSession: AWSAuthCognitoSession.testData)
 
         action.execute(
             withDispatcher: MockDispatcher { event in

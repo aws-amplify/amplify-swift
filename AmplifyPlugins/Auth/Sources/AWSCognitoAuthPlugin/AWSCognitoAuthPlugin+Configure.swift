@@ -56,33 +56,9 @@ extension AWSCognitoAuthPlugin {
         self.queue = queue
         self.queue.maxConcurrentOperationCount = 1
         self.authStateMachine = authStateMachine
-        self.authStateListenerToken = listenToAuthStateChange(authStateMachine)
-        self.hubEventHandler = hubEventHandler
-
         self.credentialStoreStateMachine = credentialStoreStateMachine
-        internalConfigure()
-    }
-
-    func listenToAuthStateChange(_ stateMachine: AuthStateMachine) ->
-    AuthStateMachine.StateChangeListenerToken {
-
-        return stateMachine.listen { state in
-            self.log.verbose("""
-            Auth state change:
-
-            \(state)
-
-            """)
-        } onSubscribe: { }
-    }
-
-    func internalConfigure() {
-        let request = AuthConfigureRequest(authConfiguration: authConfiguration)
-        let operation = AuthConfigureOperation(
-            request: request,
-            authStateMachine: authStateMachine,
-            credentialStoreStateMachine: credentialStoreStateMachine)
-        self.queue.addOperation(operation)
+        self.setupStateMachine()
+        self.hubEventHandler = hubEventHandler
     }
 
     func makeUserPool() throws -> CognitoUserPoolBehavior {

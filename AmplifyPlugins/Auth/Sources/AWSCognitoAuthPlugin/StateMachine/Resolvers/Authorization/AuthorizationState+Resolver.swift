@@ -27,30 +27,44 @@ extension AuthorizationState {
                 }
                 return resolveNotConfigured(byApplying: authZEvent)
             case .configured:
-                guard case .fetchAuthSession(let cognitoCredentials) = isAuthorizationEvent(event)?.eventType else {
+                guard case .fetchUnAuthSession = isAuthorizationEvent(event)?.eventType else {
                     return .from(oldState)
                 }
-                return resolveFetchAuthSessionEvent(storedCredentials: cognitoCredentials)
+                let action = InitializeFetchUnAuthSession(storedCredentials: .noCredentials)
+                return .init(newState: .fetchingAuthSession(.notStarted), actions: [action])
             case .sessionEstablished, .error:
-                guard case .configure = isAuthorizationEvent(event)?.eventType else {
-                    return .from(oldState)
+                if let authenEvent = event as? AuthenticationEvent,
+                   case .signInRequested = authenEvent.eventType {
+                    return .from(.signingIn)
                 }
-                return .init(newState: .configured)
-            case .fetchingAuthSession(let fetchAuthSessionState):
-                let fetchAuthSessionStateResolver = FetchAuthSessionState.Resolver()
-                let fetchAuthSessionResolution = fetchAuthSessionStateResolver.resolve(
-                    oldState: fetchAuthSessionState, byApplying: event)
-                guard case let .fetchedAuthSession(sessionData) = isAuthorizationEvent(event)?.eventType else {
-                    let authorizationState = AuthorizationState.fetchingAuthSession(fetchAuthSessionResolution.newState)
-                    return .init(newState: authorizationState, actions: fetchAuthSessionResolution.actions)
+                if case .fetchUnAuthSession = isAuthorizationEvent(event)?.eventType {
+
+                    return .init(newState: .fetchingAuthSession(.notStarted))
                 }
-                // Move the Authorization back to configured
-                let action = InitializeAuthorizationConfiguration()
-                let resolution = StateResolution(
-                    newState: AuthorizationState.sessionEstablished(sessionData),
-                    actions: [action]
-                )
-                return resolution
+                return .from(oldState)
+
+            case .signingIn:
+                if let authEvent = event as? AuthenticationEvent {
+                    switch authEvent.eventType {
+//                    case .signInCompleted(let event):
+//                        return resolveFetchAuthSessionEvent(storedCredentials: .noCredentials)
+//                    case .cancelSignIn:
+//                        return resolveFetchAuthSessionEvent(storedCredentials: .noCredentials)
+                    default: return .from(.signingIn)
+                    }
+                }
+                return .from(.signingIn)
+            case .fetchingAuthSession(let fetchSessionState):
+
+                if case .fetchedAuthSession(let credentials) = isAuthorizationEvent(event)?.eventType {
+
+                    return .init(newState: .sessionEstablished(credentials))
+                }
+
+                let resolver = FetchAuthSessionState.Resolver()
+                let resolution = resolver.resolve(oldState: fetchSessionState, byApplying: event)
+                return .init(newState: .fetchingAuthSession(resolution.newState),
+                             actions: resolution.actions)
             }
         }
 
@@ -65,8 +79,15 @@ extension AuthorizationState {
                     actions: [action]
                 )
                 return resolution
+            case .cachedCredentialsAvailable(let credentials):
+                let action = ConfigureAuthorization()
+                let resolution = StateResolution(
+                    newState: AuthorizationState.sessionEstablished(credentials),
+                    actions: [action]
+                )
+                return resolution
             case .throwError(let authorizationError):
-                let action = InitializeAuthorizationConfiguration()
+                let action = InitializeAuthorizationConfiguration(storedCredentials: .noCredentials)
                 let resolution = StateResolution(
                     newState: AuthorizationState.error(authorizationError),
                     actions: [action]
@@ -77,14 +98,15 @@ extension AuthorizationState {
             }
         }
 
-        private func resolveFetchAuthSessionEvent(storedCredentials: AmplifyCredentials?) -> StateResolution<StateType> {
-            let action = InitializeFetchAuthSession(storedCredentials: storedCredentials)
-            let resolution = StateResolution(
-                newState: AuthorizationState.fetchingAuthSession(FetchAuthSessionState.initializingFetchAuthSession),
-                actions: [action]
-            )
-            return resolution
-        }
+//        private func resolveFetchAuthSessionEvent(storedCredentials: AmplifyCredentials)
+//        -> StateResolution<StateType> {
+//            let action = InitializeFetchAuthSession(storedCredentials: storedCredentials)
+//            let resolution = StateResolution(
+//                newState: AuthorizationState.fetchingAuthSession(.initializingFetchAuthSession),
+//                actions: [action]
+//            )
+//            return resolution
+//        }
 
         private func isAuthorizationEvent(_ event: StateMachineEvent) -> AuthorizationEvent? {
             guard let authZEvent = event as? AuthorizationEvent else {

@@ -13,57 +13,66 @@ struct InitializeFetchAuthSession: Action {
 
     let identifier = "InitializeFetchAuthSession"
 
-    let storedCredentials: AmplifyCredentials?
+    let storedCredentials: AmplifyCredentials
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
-        let isSignedIn = storedCredentials?.userPoolTokens != nil
-        let identityIdResult: Result<String, AuthError>
-        let awsCredentialsResult: Result<AuthAWSCredentials, AuthError>
-        let cognitoTokensResult: Result<AuthCognitoTokens, AuthError>
-
-        if let userPoolTokens = storedCredentials?.userPoolTokens {
-            cognitoTokensResult = .success(userPoolTokens)
-        } else {
-            cognitoTokensResult = .failure(
-                AuthError.signedOut(AuthPluginErrorConstants.cognitoTokensSignOutError.errorDescription,
-                                    AuthPluginErrorConstants.cognitoTokensSignOutError.recoverySuggestion)
-            )
-        }
-
-        if let identityId = storedCredentials?.identityId {
-            identityIdResult = .success(identityId)
-        } else {
-            let identityIdError = AuthError.service(
-                AuthPluginErrorConstants.identityIdSignOutError.errorDescription,
-                AuthPluginErrorConstants.identityIdSignOutError.recoverySuggestion,
-                AWSCognitoAuthError.invalidAccountTypeException)
-            identityIdResult = .failure(identityIdError)
-        }
-
-        if let awsCredentials = storedCredentials?.awsCredential {
-            awsCredentialsResult = .success(awsCredentials)
-        } else {
-            let awsCredentialsError = AuthError.service(
-                AuthPluginErrorConstants.awsCredentialsSignOutError.errorDescription,
-                AuthPluginErrorConstants.awsCredentialsSignOutError.recoverySuggestion,
-                AWSCognitoAuthError.invalidAccountTypeException)
-            awsCredentialsResult = .failure(awsCredentialsError)
-        }
-
-        let session = AWSAuthCognitoSession(isSignedIn: isSignedIn,
-                                            identityIdResult: identityIdResult,
-                                            awsCredentialsResult: awsCredentialsResult,
-                                            cognitoTokensResult: cognitoTokensResult)
-
+        logVerbose("\(#fileID) Starting execution", environment: environment)
         let event: FetchAuthSessionEvent
-        if let _ = storedCredentials?.userPoolTokens {
-            event = FetchAuthSessionEvent(eventType: .fetchUserPoolTokens(session))
-        } else {
-            event = FetchAuthSessionEvent(eventType: .fetchIdentity(session))
+        switch storedCredentials {
+        case .noCredentials:
+            // No stored credentials, try to fetch identity ID for guest user.
+            event = FetchAuthSessionEvent(eventType: .fetchUnAuthIdentityID)
+        default: fatalError("Not implemented")
         }
+
+//        let isSignedIn = storedCredentials?.userPoolTokens != nil
+//        let identityIdResult: Result<String, AuthError>
+//        let awsCredentialsResult: Result<AuthAWSCredentials, AuthError>
+//        let cognitoTokensResult: Result<AuthCognitoTokens, AuthError>
+//
+//        if let userPoolTokens = storedCredentials?.userPoolTokens {
+//            cognitoTokensResult = .success(userPoolTokens)
+//        } else {
+//            cognitoTokensResult = .failure(
+//                AuthError.signedOut(AuthPluginErrorConstants.cognitoTokensSignOutError.errorDescription,
+//                                    AuthPluginErrorConstants.cognitoTokensSignOutError.recoverySuggestion)
+//            )
+//        }
+//
+//        if let identityId = storedCredentials?.identityId {
+//            identityIdResult = .success(identityId)
+//        } else {
+//            let identityIdError = AuthError.service(
+//                AuthPluginErrorConstants.identityIdSignOutError.errorDescription,
+//                AuthPluginErrorConstants.identityIdSignOutError.recoverySuggestion,
+//                AWSCognitoAuthError.invalidAccountTypeException)
+//            identityIdResult = .failure(identityIdError)
+//        }
+//
+//        if let awsCredentials = storedCredentials?.awsCredential {
+//            awsCredentialsResult = .success(awsCredentials)
+//        } else {
+//            let awsCredentialsError = AuthError.service(
+//                AuthPluginErrorConstants.awsCredentialsSignOutError.errorDescription,
+//                AuthPluginErrorConstants.awsCredentialsSignOutError.recoverySuggestion,
+//                AWSCognitoAuthError.invalidAccountTypeException)
+//            awsCredentialsResult = .failure(awsCredentialsError)
+//        }
+//
+//        let session = AWSAuthCognitoSession(isSignedIn: isSignedIn,
+//                                            identityIdResult: identityIdResult,
+//                                            awsCredentialsResult: awsCredentialsResult,
+//                                            cognitoTokensResult: cognitoTokensResult)
+//
+//        let event: FetchAuthSessionEvent
+//        if let _ = storedCredentials?.userPoolTokens {
+//            event = FetchAuthSessionEvent(eventType: .fetchUserPoolTokens(session))
+//        } else {
+//            event = FetchAuthSessionEvent(eventType: .fetchIdentity(session))
+//        }
 
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)

@@ -13,9 +13,11 @@ enum AuthorizationState: State {
 
     case configured
 
+    case signingIn
+
     case fetchingAuthSession(FetchAuthSessionState)
 
-    case sessionEstablished(AWSAuthCognitoSession)
+    case sessionEstablished(AmplifyCredentials)
 
     case error(AuthorizationError)
 }
@@ -25,6 +27,7 @@ extension AuthorizationState {
         switch self {
         case .notConfigured: return "AuthorizationState.notConfigured"
         case .configured: return "AuthorizationState.configured"
+        case .signingIn: return "AuthorizationState.signingIn"
         case .fetchingAuthSession: return "AuthorizationState.fetchingAuthSession"
         case .sessionEstablished: return "AuthorizationState.sessionEstablished"
         case .error: return "AuthorizationState.error"

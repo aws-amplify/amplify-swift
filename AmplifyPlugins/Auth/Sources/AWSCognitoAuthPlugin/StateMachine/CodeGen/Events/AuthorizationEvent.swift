@@ -12,9 +12,13 @@ struct AuthorizationEvent: StateMachineEvent {
 
         case configure
 
-        case fetchAuthSession(AmplifyCredentials?)
+        case fetchAuthSession(AmplifyCredentials)
 
-        case fetchedAuthSession(AWSAuthCognitoSession)
+        case fetchUnAuthSession
+
+        case cachedCredentialsAvailable(AmplifyCredentials)
+
+        case fetchedAuthSession(AmplifyCredentials)
 
         case throwError(AuthorizationError)
 
@@ -30,6 +34,8 @@ struct AuthorizationEvent: StateMachineEvent {
         case .fetchAuthSession: return "AuthorizationEvent.fetchAuthSession"
         case .fetchedAuthSession: return "AuthorizationEvent.fetchedAuthSession"
         case .throwError: return "AuthorizationEvent.throwError"
+        case .cachedCredentialsAvailable: return "AuthorizationEvent.cachedCredentialsAvailable"
+        case .fetchUnAuthSession: return "AuthorizationEvent.fetchUnAuthSession"
         }
     }
 
