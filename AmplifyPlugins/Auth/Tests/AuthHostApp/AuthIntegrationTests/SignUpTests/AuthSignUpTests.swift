@@ -145,7 +145,7 @@ class AuthSignUpTests: AWSAuthBaseTest {
 
         let operationExpectation = expectation(description: "Operation should complete")
         let options = AuthSignUpRequest.Options(userAttributes: [AuthUserAttribute(.email, value: defaultTestEmail)])
-        print("Going to second signup")
+
         let operation = Amplify.Auth.signUp(username: username, password: password, options: options) { result in
             defer {
                 operationExpectation.fulfill()
