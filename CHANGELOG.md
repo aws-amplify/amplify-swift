@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.26.1 (2022-06-02)
+
+### Bug Fixes
+
+- **datastore**: ModelSyncedEvent dispatch consistency (#1823)
+
 ## 1.26.0 (2022-05-26)
 
 ### Features
