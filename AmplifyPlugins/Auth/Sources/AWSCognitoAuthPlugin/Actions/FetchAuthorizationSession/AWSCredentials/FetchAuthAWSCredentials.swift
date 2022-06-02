@@ -41,8 +41,7 @@ struct FetchAuthAWSCredentials: Action {
                 guard let identityId = response.identityId else {
                     let event = FetchAuthSessionEvent(eventType: .throwError(.invalidIdentityID))
                     dispatcher.send(event)
-                    logVerbose("\(#fileID) Sending event \(event.type)",
-                               environment: environment)
+                    logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
                     return
                 }
                 guard let awsCredentials = response.credentials,
@@ -51,27 +50,24 @@ struct FetchAuthAWSCredentials: Action {
                       let sessionKey = awsCredentials.sessionToken,
                       let expiration = awsCredentials.expiration
                 else {
-                    // TODO: Handle error
-                   fatalError()
+                    let event = FetchAuthSessionEvent(eventType: .throwError(.invalidAWSCredentials))
+                    dispatcher.send(event)
+                    logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+                    return
                 }
                 let awsCognitoCredentials = AuthAWSCognitoCredentials(accessKey: accessKey,
                                                                       secretKey: secretKey,
                                                                       sessionKey: sessionKey,
                                                                       expiration: expiration)
-                let fetchedAWSCredentialEvent = FetchAuthSessionEvent(
+                let event = FetchAuthSessionEvent(
                     eventType: .fetchedAWSCredentials(identityId, awsCognitoCredentials))
-                logVerbose("\(#fileID) Sending event \(fetchedAWSCredentialEvent.type)",
-                           environment: environment)
-                dispatcher.send(fetchedAWSCredentialEvent)
+                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+                dispatcher.send(event)
 
             } catch {
-                // TODO: Handle error
-//                let sdkError = error as? SdkError<GetCredentialsForIdentityOutputError> ?? SdkError.unknown(error)
-//                let authZError = AuthorizationError.service(error: error)
-//                let event = FetchAWSCredentialEvent(eventType: .throwError(authZError))
-//                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-//                dispatcher.send(event)
-                fatalError()
+                let event = FetchAuthSessionEvent(eventType: .throwError(.service(error)))
+                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+                dispatcher.send(event)
             }
         }
     }

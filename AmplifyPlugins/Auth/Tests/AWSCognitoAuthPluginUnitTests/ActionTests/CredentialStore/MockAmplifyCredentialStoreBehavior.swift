@@ -12,8 +12,8 @@ import Foundation
 class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior, AmplifyAuthCredentialStoreProvider {
 
     typealias Migrationhandler = () -> Void
-    typealias SaveCredentialHandler = (AmplifyCredentials) throws -> Void
-    typealias GetCredentialHandler = () throws -> (AmplifyCredentials)
+    typealias SaveCredentialHandler = (Codable) throws -> Void
+    typealias GetCredentialHandler = () throws -> (Codable)
     typealias ClearCredentialHandler = () throws -> Void
 
     let migrationCompleteHandler: Migrationhandler?
@@ -31,11 +31,11 @@ class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior, Am
         self.clearCredentialHandler = clearCredentialHandler
     }
 
-    func saveCredential(_ credential: AmplifyCredentials) throws {
+    func saveCredential(_ credential: Codable) throws {
         try saveCredentialHandler?(credential)
     }
 
-    func retrieveCredential() throws -> AmplifyCredentials {
+    func retrieveCredential() throws -> Codable {
         guard let credentials = try getCredentialHandler?() else {
             throw CredentialStoreError.unknown("", nil)
         }
