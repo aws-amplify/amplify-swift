@@ -8,7 +8,7 @@
 import Foundation
 
 class EndpointClient: InternalPinpointClient {
-    internal var context: PinpointContext
+    unowned var context: PinpointContext
     
     init(context: PinpointContext) {
         self.context = context

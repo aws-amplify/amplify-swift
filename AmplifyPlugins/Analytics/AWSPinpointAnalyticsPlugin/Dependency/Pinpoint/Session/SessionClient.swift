@@ -12,7 +12,7 @@ class SessionClient: InternalPinpointClient {
     private let archiver: AmplifyArchiverBehaviour
     private let activityTracker: ActivityTracker
     private var session: PinpointSession
-    internal var context: PinpointContext
+    unowned var context: PinpointContext
 
     init(context: PinpointContext,
          archiver: AmplifyArchiverBehaviour = AmplifyArchiver()) {

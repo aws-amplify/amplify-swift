@@ -10,7 +10,7 @@ import StoreKit
 
 actor AnalyticsClient: InternalPinpointClient {
     private let eventRecorder: AnalyticsEventRecording
-    internal let context: PinpointContext
+    unowned let context: PinpointContext
     private lazy var globalAttributes: [String: String] = [:]
     private lazy var globalMetrics: [String: Double] = [:]
     private lazy var eventTypeAttributes: [String: [String: String]] = [:]
