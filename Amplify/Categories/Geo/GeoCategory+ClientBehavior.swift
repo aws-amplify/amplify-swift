@@ -38,7 +38,7 @@ extension GeoCategory: GeoCategoryBehavior {
                 options: Geo.SearchForTextOptions?) async throws -> [Geo.Place]
     """)
     public func search(for text: String,
-                       options: Geo.SearchForTextOptions?,
+                       options: Geo.SearchForTextOptions? = nil,
                        completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
         Task {
             do {
@@ -65,7 +65,7 @@ extension GeoCategory: GeoCategoryBehavior {
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
     public func search(for coordinates: Geo.Coordinates,
-                       options: Geo.SearchForCoordinatesOptions?) async throws -> [Geo.Place] {
+                       options: Geo.SearchForCoordinatesOptions? = nil) async throws -> [Geo.Place] {
         return try await plugin.search(for: coordinates, options: options)
     }
     
@@ -81,7 +81,7 @@ extension GeoCategory: GeoCategoryBehavior {
                 options: Geo.SearchForCoordinatesOptions?) async throws -> [Geo.Place]
     """)
     public func search(for coordinates: Geo.Coordinates,
-                       options: Geo.SearchForCoordinatesOptions?,
+                       options: Geo.SearchForCoordinatesOptions? = nil,
                        completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
         Task {
             do {
@@ -92,7 +92,7 @@ extension GeoCategory: GeoCategoryBehavior {
             }
         }
     }
-    
+
     // MARK: - Maps
 
     /// Retrieves metadata for available Map resources.

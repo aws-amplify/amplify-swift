@@ -39,7 +39,7 @@ extension AWSLocationGeoPlugin {
                   authService: authService,
                   pluginConfig: configuration)
     }
-    
+
     // MARK: - Internal
 
     /// Internal configure method to set the properties of the plugin
