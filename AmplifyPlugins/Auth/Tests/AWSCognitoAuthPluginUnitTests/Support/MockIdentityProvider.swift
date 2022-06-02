@@ -11,41 +11,19 @@ import ClientRuntime
 
 struct MockIdentityProvider: CognitoUserPoolBehavior {
 
-    typealias InitiateAuthCallback = (
-        InitiateAuthInput,
-        (Result<InitiateAuthOutputResponse,
-         SdkError<InitiateAuthOutputError>>) -> Void
-    ) -> Void
+    typealias InitiateAuthCallback = (InitiateAuthInput) throws
+    -> InitiateAuthOutputResponse
 
-    typealias RespondToAuthChallengeCallback = (
-        RespondToAuthChallengeInput,
-        (Result<RespondToAuthChallengeOutputResponse,
-         SdkError<RespondToAuthChallengeOutputError>>) -> Void
-    ) -> Void
+    typealias RespondToAuthChallengeCallback = (RespondToAuthChallengeInput) throws
+    -> RespondToAuthChallengeOutputResponse
 
-    typealias SignUpCallback = (
-        SignUpInput,
-        (Result<SignUpOutputResponse,
-         SdkError<SignUpOutputError>>) -> Void
-    ) -> Void
+    typealias SignUpCallback = (SignUpInput) throws -> SignUpOutputResponse
 
-    typealias ConfirmSignUpCallback = (
-        ConfirmSignUpInput,
-        (Result<ConfirmSignUpOutputResponse,
-         SdkError<ConfirmSignUpOutputError>>) -> Void
-    ) -> Void
+    typealias ConfirmSignUpCallback = (ConfirmSignUpInput) throws -> ConfirmSignUpOutputResponse
 
-    typealias GlobalSignOutCallback = (
-        GlobalSignOutInput,
-        (Result<GlobalSignOutOutputResponse,
-         SdkError<GlobalSignOutOutputError>>) -> Void
-    ) -> Void
+    typealias GlobalSignOutCallback = (GlobalSignOutInput) throws -> GlobalSignOutOutputResponse
 
-    typealias RevokeTokenCallback = (
-        RevokeTokenInput,
-        (Result<RevokeTokenOutputResponse,
-         SdkError<RevokeTokenOutputError>>) -> Void
-    ) -> Void
+    typealias RevokeTokenCallback = (RevokeTokenInput) throws -> RevokeTokenOutputResponse
 
     let initiateAuthCallback: InitiateAuthCallback?
     let respondToAuthChallengeCallback: RespondToAuthChallengeCallback?
@@ -60,7 +38,8 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         signUpCallback: SignUpCallback? = nil,
         confirmSignUpCallback: ConfirmSignUpCallback? = nil,
         globalSignOutCallback: GlobalSignOutCallback? = nil,
-        revokeTokenCallback: RevokeTokenCallback? = nil
+        revokeTokenCallback: RevokeTokenCallback? = nil,
+        newInitiate:  ((InitiateAuthInput) throws -> InitiateAuthOutputResponse)? = nil
     ) {
         self.initiateAuthCallback = initiateAuthCallback
         self.respondToAuthChallengeCallback = respondToAuthChallengeCallback
@@ -70,69 +49,36 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         self.revokeTokenCallback = revokeTokenCallback
     }
 
-    func initiateAuth(input: InitiateAuthInput,
-                      completion: @escaping (Result<InitiateAuthOutputResponse,
-                                             SdkError<InitiateAuthOutputError>>) -> Void) {
-        initiateAuthCallback?(input, completion)
-    }
-
-    func respondToAuthChallenge(input: RespondToAuthChallengeInput,
-                                completion: @escaping (Result<RespondToAuthChallengeOutputResponse,
-                                                       SdkError<RespondToAuthChallengeOutputError>>) -> Void) {
-        respondToAuthChallengeCallback?(input, completion)
-    }
-
-    func signUp(input: SignUpInput, completion: @escaping (SdkResult<SignUpOutputResponse, SignUpOutputError>) -> Void) {
-        signUpCallback?(input, completion)
-    }
-
-    func confirmSignUp(input: ConfirmSignUpInput, completion: @escaping (SdkResult<ConfirmSignUpOutputResponse, ConfirmSignUpOutputError>) -> Void) {
-        confirmSignUpCallback?(input, completion)
-    }
-
-    func globalSignOut(
-        input: GlobalSignOutInput,
-        completion: @escaping (SdkResult<GlobalSignOutOutputResponse, GlobalSignOutOutputError>) -> Void
-    ) {
-        globalSignOutCallback?(input, completion)
-    }
-
-    func revokeToken(
-        input: RevokeTokenInput,
-        completion: @escaping (SdkResult<RevokeTokenOutputResponse, RevokeTokenOutputError>) -> Void
-    ) {
-        revokeTokenCallback?(input, completion)
-    }
 
     /// Throws InitiateAuthOutputError
     func initiateAuth(input: InitiateAuthInput) async throws -> InitiateAuthOutputResponse {
-        fatalError("Not implemented")
+        return try initiateAuthCallback!(input)
     }
 
     /// Throws RespondToAuthChallengeOutputError
     func respondToAuthChallenge(
         input: RespondToAuthChallengeInput
     ) async throws -> RespondToAuthChallengeOutputResponse {
-        fatalError("Not implemented")
+        return try respondToAuthChallengeCallback!(input)
     }
 
     /// Throws SignUpOutputError
     func signUp(input: SignUpInput) async throws -> SignUpOutputResponse {
-        fatalError("Not implemented")
+        return try signUpCallback!(input)
     }
 
     /// Throws ConfirmSignUpOutputError
     func confirmSignUp(input: ConfirmSignUpInput) async throws -> ConfirmSignUpOutputResponse {
-        fatalError("Not implemented")
+        return try confirmSignUpCallback!(input)
     }
 
     /// Throws GlobalSignOutOutputError
     func globalSignOut(input: GlobalSignOutInput) async throws -> GlobalSignOutOutputResponse {
-        fatalError("Not implemented")
+        return try globalSignOutCallback!(input)
     }
 
     /// Throws RevokeTokenOutputError
     func revokeToken(input: RevokeTokenInput) async throws -> RevokeTokenOutputResponse {
-        fatalError("Not implemented")
+        return try revokeTokenCallback!(input)
     }
 }

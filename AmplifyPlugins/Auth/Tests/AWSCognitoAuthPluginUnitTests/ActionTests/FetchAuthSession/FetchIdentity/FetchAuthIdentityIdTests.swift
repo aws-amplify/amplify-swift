@@ -42,8 +42,8 @@ class FetchAuthIdentityIdTests: XCTestCase {
 
         let expectation = expectation(description: "fetchIdentity")
         let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
-            MockIdentity { _, callback in
-                callback(.success(GetIdOutputResponse()))
+            MockIdentity { _ in
+                return GetIdOutputResponse()
             }
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
@@ -79,8 +79,8 @@ class FetchAuthIdentityIdTests: XCTestCase {
         let updatedIdentityId = "updatedIdentityId"
 
         let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
-            MockIdentity { _, callback in
-                callback(.success(GetIdOutputResponse(identityId: updatedIdentityId)))
+            MockIdentity { _ in
+                return GetIdOutputResponse(identityId: updatedIdentityId)
             }
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
@@ -114,8 +114,8 @@ class FetchAuthIdentityIdTests: XCTestCase {
         let testError = NSError(domain: "testError", code: 0, userInfo: nil)
 
         let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
-            MockIdentity(getIdCallback: { _, callback in
-                callback(.failure(.unknown(testError)))
+            MockIdentity(getIdCallback: { _ in
+                throw testError
             })
         }
 

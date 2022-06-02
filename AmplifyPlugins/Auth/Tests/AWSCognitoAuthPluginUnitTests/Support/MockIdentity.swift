@@ -10,23 +10,11 @@ import AWSCognitoIdentity
 import ClientRuntime
 
 struct MockIdentity: CognitoIdentityBehavior {
-    func getId(input: GetIdInput) async throws -> GetIdOutputResponse {
-        fatalError("Not implemented")
-    }
 
-    func getCredentialsForIdentity(input: GetCredentialsForIdentityInput) async throws -> GetCredentialsForIdentityOutputResponse {
-        fatalError("Not implemented")
-    }
+    typealias GetIdCallback = (GetIdInput) throws -> GetIdOutputResponse
 
-    typealias GetIdCallback = (
-        GetIdInput,
-        (SdkResult<GetIdOutputResponse, GetIdOutputError>) -> Void
-    ) -> Void
-
-    typealias GetCredentialsCallback = (
-        GetCredentialsForIdentityInput,
-        (SdkResult<GetCredentialsForIdentityOutputResponse, GetCredentialsForIdentityOutputError>) -> Void
-    ) -> Void
+    typealias GetCredentialsCallback = (GetCredentialsForIdentityInput) throws
+    -> GetCredentialsForIdentityOutputResponse
 
     let getIdCallback: GetIdCallback?
     let getCredentialsCallback: GetCredentialsCallback?
@@ -37,12 +25,12 @@ struct MockIdentity: CognitoIdentityBehavior {
         self.getCredentialsCallback = getCredentialsCallback
     }
 
-    func getId(input: GetIdInput, completion: @escaping (SdkResult<GetIdOutputResponse, GetIdOutputError>) -> Void) {
-        getIdCallback?(input, completion)
+    func getId(input: GetIdInput) async throws -> GetIdOutputResponse {
+        return try getIdCallback!(input)
     }
 
-    func getCredentialsForIdentity(input: GetCredentialsForIdentityInput, completion: @escaping (SdkResult<GetCredentialsForIdentityOutputResponse, GetCredentialsForIdentityOutputError>) -> Void) {
-        getCredentialsCallback?(input, completion)
+    func getCredentialsForIdentity(input: GetCredentialsForIdentityInput) async throws -> GetCredentialsForIdentityOutputResponse {
+        return try getCredentialsCallback!(input)
     }
 
 }
