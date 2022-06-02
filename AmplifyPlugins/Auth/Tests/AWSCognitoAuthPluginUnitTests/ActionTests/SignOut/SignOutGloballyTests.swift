@@ -16,7 +16,7 @@ class SignOutGloballyTests: XCTestCase {
         let globalSignOutInvoked = expectation(description: "globalSignOutInvoked")
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                globalSignOutCallback: { _ in
+                mockGlobalSignOutResponse: { _ in
                     globalSignOutInvoked.fulfill()
                     return try GlobalSignOutOutputResponse(httpResponse: MockHttpResponse.ok)
                 }
@@ -40,7 +40,7 @@ class SignOutGloballyTests: XCTestCase {
     func testFailedGlobalSignOutTriggersRevokeToken() {
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                globalSignOutCallback: { _ in
+                mockGlobalSignOutResponse: { _ in
                     throw NSError(domain: "testError", code: 0, userInfo: nil)
                 }
             )
@@ -77,7 +77,7 @@ class SignOutGloballyTests: XCTestCase {
     func testSuccessfulGlobalSignOutTriggersRevokeToken() {
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                globalSignOutCallback: { _ in
+                mockGlobalSignOutResponse: { _ in
                     return try GlobalSignOutOutputResponse(httpResponse: MockHttpResponse.ok)
                 }
             )

@@ -11,26 +11,26 @@ import ClientRuntime
 
 struct MockIdentity: CognitoIdentityBehavior {
 
-    typealias GetIdCallback = (GetIdInput) throws -> GetIdOutputResponse
+    typealias MockGetIdResponse = (GetIdInput) async throws -> GetIdOutputResponse
 
-    typealias GetCredentialsCallback = (GetCredentialsForIdentityInput) throws
+    typealias MockGetCredentialsResponse = (GetCredentialsForIdentityInput) async throws
     -> GetCredentialsForIdentityOutputResponse
 
-    let getIdCallback: GetIdCallback?
-    let getCredentialsCallback: GetCredentialsCallback?
+    let mockGetIdResponse: MockGetIdResponse?
+    let mockGetCredentialsResponse: MockGetCredentialsResponse?
 
-    init(getIdCallback: GetIdCallback? = nil,
-         getCredentialsCallback: GetCredentialsCallback? = nil) {
-        self.getIdCallback = getIdCallback
-        self.getCredentialsCallback = getCredentialsCallback
+    init(mockGetIdResponse: MockGetIdResponse? = nil,
+         mockGetCredentialsResponse: MockGetCredentialsResponse? = nil) {
+        self.mockGetIdResponse = mockGetIdResponse
+        self.mockGetCredentialsResponse = mockGetCredentialsResponse
     }
 
     func getId(input: GetIdInput) async throws -> GetIdOutputResponse {
-        return try getIdCallback!(input)
+        return try await mockGetIdResponse!(input)
     }
 
     func getCredentialsForIdentity(input: GetCredentialsForIdentityInput) async throws -> GetCredentialsForIdentityOutputResponse {
-        return try getCredentialsCallback!(input)
+        return try await mockGetCredentialsResponse!(input)
     }
 
 }

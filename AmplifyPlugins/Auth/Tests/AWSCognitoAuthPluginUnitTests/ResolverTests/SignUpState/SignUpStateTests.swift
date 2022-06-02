@@ -39,13 +39,13 @@ class SignUpStateTests: XCTestCase {
         let username = "bob"
         let password = "yearandmydogsname"
 
-        let signUpCallback: MockIdentityProvider.SignUpCallback = { _ in
+        let signUpCallback: MockIdentityProvider.MockSignUpResponse = { _ in
             exp.fulfill()
             return SignUpOutputResponse(userConfirmed: false, userSub: username)
         }
 
         let cognitoUserPoolFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
-            MockIdentityProvider(signUpCallback: signUpCallback)
+            MockIdentityProvider(mockSignUpResponse: signUpCallback)
         }
 
         let environment = BasicUserPoolEnvironment(userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),

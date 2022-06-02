@@ -72,7 +72,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
         let cognitoSessionInput = AWSAuthCognitoSession.testData
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                initiateAuthCallback: { _ in
+                mockInitiateAuthResponse: { _ in
                     return InitiateAuthOutputResponse()
                 }
             )
@@ -110,7 +110,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
         let cognitoSessionInput = AWSAuthCognitoSession.testData
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                initiateAuthCallback: { _ in
+                mockInitiateAuthResponse: { _ in
                    return InitiateAuthOutputResponse(
                         authenticationResult: CognitoIdentityProviderClientTypes.AuthenticationResultType(
                             accessToken: "accessTokenNew",
@@ -153,7 +153,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
         let cognitoSessionInput = AWSAuthCognitoSession.testData
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                initiateAuthCallback: { _ in
+                mockInitiateAuthResponse: { _ in
                     throw NSError(domain: "testError", code: 0, userInfo: nil)
                 }
             )

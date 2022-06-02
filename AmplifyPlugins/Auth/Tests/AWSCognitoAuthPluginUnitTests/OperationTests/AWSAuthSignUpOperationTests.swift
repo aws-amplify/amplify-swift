@@ -42,7 +42,7 @@ class AWSAuthSignUpOperationTests: XCTestCase {
         let exp = expectation(description: #function)
         let functionExpectation = expectation(description: "API call should be invoked")
         
-        let signUp: MockIdentityProvider.SignUpCallback = { _ in
+        let signUp: MockIdentityProvider.MockSignUpResponse = { _ in
             functionExpectation.fulfill()
             return .init(codeDeliveryDetails: nil, userConfirmed: true, userSub: UUID().uuidString)
         }
@@ -54,7 +54,7 @@ class AWSAuthSignUpOperationTests: XCTestCase {
         
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
-            userPoolFactory: {MockIdentityProvider(signUpCallback: signUp)})
+            userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
         let operation = AWSAuthSignUpOperation(request, stateMachine: statemachine) {  result in
             switch result {
             case .success(let signUpResult):
@@ -72,7 +72,7 @@ class AWSAuthSignUpOperationTests: XCTestCase {
     func testSignUpOperationFailure() throws {
         let exp = expectation(description: #function)
         let functionExpectation = expectation(description: "API call should be invoked")
-        let signUp: MockIdentityProvider.SignUpCallback = { _ in
+        let signUp: MockIdentityProvider.MockSignUpResponse = { _ in
             functionExpectation.fulfill()
             throw try SignUpOutputError(httpResponse: MockHttpResponse.ok)
         }
@@ -83,7 +83,7 @@ class AWSAuthSignUpOperationTests: XCTestCase {
         
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
-            userPoolFactory: {MockIdentityProvider(signUpCallback: signUp)})
+            userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
         let operation = AWSAuthSignUpOperation(request, stateMachine: statemachine) {  result in
             switch result {
             case .success:

@@ -114,7 +114,7 @@ class FetchAuthIdentityIdTests: XCTestCase {
         let testError = NSError(domain: "testError", code: 0, userInfo: nil)
 
         let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
-            MockIdentity(getIdCallback: { _ in
+            MockIdentity(mockGetIdResponse: { _ in
                 throw testError
             })
         }

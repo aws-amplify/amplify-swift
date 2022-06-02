@@ -42,14 +42,14 @@ class AWSAuthConfirmSignUpOperationTests: XCTestCase {
         let exp = expectation(description: #function)
         let functionExpectation = expectation(description: "API call should be invoked")
         
-        let confirmSignUp: MockIdentityProvider.ConfirmSignUpCallback = { _ in
+        let confirmSignUp: MockIdentityProvider.MockConfirmSignUpResponse = { _ in
             functionExpectation.fulfill()
             return try .init(httpResponse: MockHttpResponse.ok)
         }
         
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
-            userPoolFactory: {MockIdentityProvider(confirmSignUpCallback: confirmSignUp)})
+            userPoolFactory: {MockIdentityProvider(mockConfirmSignUpResponse: confirmSignUp)})
         
         let request = AuthConfirmSignUpRequest(username: "jeffb",
                                                code: "213",
@@ -73,14 +73,14 @@ class AWSAuthConfirmSignUpOperationTests: XCTestCase {
         let exp = expectation(description: #function)
         let functionExpectation = expectation(description: "API call should be invoked")
         
-        let confirmSignUp: MockIdentityProvider.ConfirmSignUpCallback = { _ in
+        let confirmSignUp: MockIdentityProvider.MockConfirmSignUpResponse = { _ in
             functionExpectation.fulfill()
             throw try ConfirmSignUpOutputError(httpResponse: MockHttpResponse.ok)
         }
         
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
-            userPoolFactory: {MockIdentityProvider(confirmSignUpCallback: confirmSignUp)})
+            userPoolFactory: {MockIdentityProvider(mockConfirmSignUpResponse: confirmSignUp)})
         
         let request = AuthConfirmSignUpRequest(username: "jeffb",
                                                code: "213",

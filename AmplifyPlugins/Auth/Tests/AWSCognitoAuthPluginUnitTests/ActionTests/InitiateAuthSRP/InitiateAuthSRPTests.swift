@@ -16,7 +16,7 @@ class InitiateAuthSRPTests: XCTestCase {
         let initiateAuthInvoked = expectation(description: "initiateAuthInvoked")
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                initiateAuthCallback: { _ in
+                mockInitiateAuthResponse: { _ in
                     initiateAuthInvoked.fulfill()
                     return InitiateAuthOutputResponse()
                 }
@@ -40,7 +40,7 @@ class InitiateAuthSRPTests: XCTestCase {
     func testFailedInitiateAuthPropagatesError() {
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                initiateAuthCallback: { _ in
+                mockInitiateAuthResponse: { _ in
                     throw NSError(domain: "testError", code: 0, userInfo: nil)
 
                 }
@@ -80,7 +80,7 @@ class InitiateAuthSRPTests: XCTestCase {
     func testSuccessfulInitiateAuthPropagatesSuccess() {
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                initiateAuthCallback: { _ in
+                mockInitiateAuthResponse: { _ in
                     return InitiateAuthOutputResponse()
                 }
             )

@@ -11,73 +11,78 @@ import ClientRuntime
 
 struct MockIdentityProvider: CognitoUserPoolBehavior {
 
-    typealias InitiateAuthCallback = (InitiateAuthInput) throws
+    typealias MockSignUpResponse = (SignUpInput) async throws
+    -> SignUpOutputResponse
+
+    typealias MockRevokeTokenResponse = (RevokeTokenInput) async throws
+    -> RevokeTokenOutputResponse
+
+    typealias MockInitiateAuthResponse = (InitiateAuthInput) async throws
     -> InitiateAuthOutputResponse
 
-    typealias RespondToAuthChallengeCallback = (RespondToAuthChallengeInput) throws
+    typealias MockConfirmSignUpResponse = (ConfirmSignUpInput) async throws
+    -> ConfirmSignUpOutputResponse
+
+    typealias MockGlobalSignOutResponse = (GlobalSignOutInput) async throws
+    -> GlobalSignOutOutputResponse
+
+    typealias MockRespondToAuthChallengeResponse = (RespondToAuthChallengeInput) async throws
     -> RespondToAuthChallengeOutputResponse
 
-    typealias SignUpCallback = (SignUpInput) throws -> SignUpOutputResponse
 
-    typealias ConfirmSignUpCallback = (ConfirmSignUpInput) throws -> ConfirmSignUpOutputResponse
-
-    typealias GlobalSignOutCallback = (GlobalSignOutInput) throws -> GlobalSignOutOutputResponse
-
-    typealias RevokeTokenCallback = (RevokeTokenInput) throws -> RevokeTokenOutputResponse
-
-    let initiateAuthCallback: InitiateAuthCallback?
-    let respondToAuthChallengeCallback: RespondToAuthChallengeCallback?
-    let signUpCallback: SignUpCallback?
-    let confirmSignUpCallback: ConfirmSignUpCallback?
-    let globalSignOutCallback: GlobalSignOutCallback?
-    let revokeTokenCallback: RevokeTokenCallback?
+    let mockSignUpResponse: MockSignUpResponse?
+    let mockRevokeTokenResponse: MockRevokeTokenResponse?
+    let mockInitiateAuthResponse: MockInitiateAuthResponse?
+    let mockGlobalSignOutResponse: MockGlobalSignOutResponse?
+    let mockConfirmSignUpResponse: MockConfirmSignUpResponse?
+    let mockRespondToAuthChallengeResponse: MockRespondToAuthChallengeResponse?
 
     init(
-        initiateAuthCallback: InitiateAuthCallback? = nil,
-        respondToAuthChallengeCallback: RespondToAuthChallengeCallback? = nil,
-        signUpCallback: SignUpCallback? = nil,
-        confirmSignUpCallback: ConfirmSignUpCallback? = nil,
-        globalSignOutCallback: GlobalSignOutCallback? = nil,
-        revokeTokenCallback: RevokeTokenCallback? = nil
+        mockSignUpResponse: MockSignUpResponse? = nil,
+        mockRevokeTokenResponse: MockRevokeTokenResponse? = nil,
+        mockInitiateAuthResponse: MockInitiateAuthResponse? = nil,
+        mockGlobalSignOutResponse: MockGlobalSignOutResponse? = nil,
+        mockConfirmSignUpResponse: MockConfirmSignUpResponse? = nil,
+        mockRespondToAuthChallengeResponse: MockRespondToAuthChallengeResponse? = nil
     ) {
-        self.initiateAuthCallback = initiateAuthCallback
-        self.respondToAuthChallengeCallback = respondToAuthChallengeCallback
-        self.signUpCallback = signUpCallback
-        self.confirmSignUpCallback = confirmSignUpCallback
-        self.globalSignOutCallback = globalSignOutCallback
-        self.revokeTokenCallback = revokeTokenCallback
+        self.mockSignUpResponse = mockSignUpResponse
+        self.mockRevokeTokenResponse = mockRevokeTokenResponse
+        self.mockInitiateAuthResponse = mockInitiateAuthResponse
+        self.mockGlobalSignOutResponse = mockGlobalSignOutResponse
+        self.mockConfirmSignUpResponse = mockConfirmSignUpResponse
+        self.mockRespondToAuthChallengeResponse = mockRespondToAuthChallengeResponse
     }
 
 
     /// Throws InitiateAuthOutputError
     func initiateAuth(input: InitiateAuthInput) async throws -> InitiateAuthOutputResponse {
-        return try initiateAuthCallback!(input)
+        return try await mockInitiateAuthResponse!(input)
     }
 
     /// Throws RespondToAuthChallengeOutputError
     func respondToAuthChallenge(
         input: RespondToAuthChallengeInput
     ) async throws -> RespondToAuthChallengeOutputResponse {
-        return try respondToAuthChallengeCallback!(input)
+        return try await mockRespondToAuthChallengeResponse!(input)
     }
 
     /// Throws SignUpOutputError
     func signUp(input: SignUpInput) async throws -> SignUpOutputResponse {
-        return try signUpCallback!(input)
+        return try await mockSignUpResponse!(input)
     }
 
     /// Throws ConfirmSignUpOutputError
     func confirmSignUp(input: ConfirmSignUpInput) async throws -> ConfirmSignUpOutputResponse {
-        return try confirmSignUpCallback!(input)
+        return try await mockConfirmSignUpResponse!(input)
     }
 
     /// Throws GlobalSignOutOutputError
     func globalSignOut(input: GlobalSignOutInput) async throws -> GlobalSignOutOutputResponse {
-        return try globalSignOutCallback!(input)
+        return try await mockGlobalSignOutResponse!(input)
     }
 
     /// Throws RevokeTokenOutputError
     func revokeToken(input: RevokeTokenInput) async throws -> RevokeTokenOutputResponse {
-        return try revokeTokenCallback!(input)
+        return try await mockRevokeTokenResponse!(input)
     }
 }

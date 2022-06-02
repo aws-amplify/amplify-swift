@@ -16,7 +16,7 @@ class RevokeTokenTests: XCTestCase {
         let revokeTokenInvoked = expectation(description: "revokeTokenInvoked")
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                revokeTokenCallback: { _ in
+                mockRevokeTokenResponse: { _ in
                     revokeTokenInvoked.fulfill()
                     return try RevokeTokenOutputResponse(httpResponse: MockHttpResponse.ok)
                 }
@@ -40,7 +40,7 @@ class RevokeTokenTests: XCTestCase {
     func testFailedRevokeTokenTriggersClearCredentialStore() {
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                revokeTokenCallback: { _ in
+                mockRevokeTokenResponse: { _ in
                     throw NSError(domain: "testError", code: 0, userInfo: nil)
                 }
             )
@@ -77,7 +77,7 @@ class RevokeTokenTests: XCTestCase {
     func testSuccessfulRevokeTokenTriggersClearCredentialStore() {
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                revokeTokenCallback: { _ in
+                mockRevokeTokenResponse: { _ in
                     return try RevokeTokenOutputResponse(httpResponse: MockHttpResponse.ok)
                 }
             )
