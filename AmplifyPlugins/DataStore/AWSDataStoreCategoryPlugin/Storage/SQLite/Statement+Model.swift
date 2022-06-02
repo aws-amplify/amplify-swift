@@ -74,6 +74,7 @@ extension Statement: StatementModelConvertible {
                  using statement: SelectStatement) throws -> ModelValues {
         let columnMapping = statement.metadata.columnMapping
         let modelDictionary = ([:] as ModelValues).mutableCopy()
+        var skipColumn = Set<String>()
         for (index, value) in row.enumerated() {
             let column = columnNames[index]
             guard let (schema, field) = columnMapping[column] else {
@@ -84,13 +85,45 @@ extension Statement: StatementModelConvertible {
                 continue
             }
 
+
             let modelValue = try SQLiteModelValueConverter.convertToSource(
                 from: value,
                 fieldType: field.type
             )
-            modelDictionary.updateValue(modelValue, forKeyPath: column)
+
+            // Check if the value for the primary key is `nil`. This is when an associated model does not exist.
+            // To create a decodable `modelDictionary` that can be decoded to the Model types, the entire
+            // object at this particular key should be set to `nil`. The following code does that by dropping the last
+            // path from the column, for example given "blog.id" `column` has a nil `modelValue`, then set the
+            // modelDictionary["blog"] to nil.
+            //
+            // `skipColumn` keeps track of this scenario. At this point in the code we cannot make an assumption about
+            // the ordering of the columns, it may handle "blog.description", then "blog.id", then "blog.title". The
+            // code will perform the following:
+            //  1. set modelDictionary["blog"]["description"] to `nil`, because it has not encountered a `nil` primary key
+            //  2. set modelDictionary["blog"] = `nil`, because the value is the primary key and is nil
+            //  3. skip setting modelDictionary["blog"]["title"], because `skipColumn` has been set for "blog".
+            if field.isPrimaryKey && modelValue == nil {
+                let keyPathParent = dropLastPath(column)
+                skipColumn.insert(keyPathParent)
+                modelDictionary.updateValue(nil, forKeyPath: keyPathParent)
+            }
+
+            if skipColumn.isEmpty {
+                modelDictionary.updateValue(modelValue, forKeyPath: column)
+            } else {
+                let keyPathParent = dropLastPath(column)
+                if !skipColumn.contains(keyPathParent) {
+                    modelDictionary.updateValue(modelValue, forKeyPath: column)
+                }
+            }
 
             // create lazy list for "many" relationships
+            // this code only executes once when the `id` is the primary key of the current model
+            // and runs in an iteration over all of the associations
+            // For example, when the value is the `id` of the Blog, then the field.isPrimaryKey is satisfied.
+            // Every association of the Blog, such as the has-many Post is populated with the List with
+            // associatedId == blog's id. This way, the list of post can be lazily loaded later using the associated id.
             if let id = modelValue as? String, field.isPrimaryKey {
                 let associations = schema.fields.values.filter {
                     $0.isArray && $0.hasAssociation
@@ -105,10 +138,27 @@ extension Statement: StatementModelConvertible {
                 }
             }
         }
+
         // swiftlint:disable:next force_cast
         return modelDictionary as! ModelValues
     }
 
+    /// Utility to return the second last keypath (if available) given a keypath. For example,
+    ///
+    /// - "post" returns the key path root "post"
+    /// - "post.id" returns "post", dropping the path "id"
+    /// - "post.blog.id" returns "post.blog", dropping the path "id"
+    ///
+    /// - Parameter keyPath: the key path as a `String` (e.g. "nested.key")
+    func dropLastPath(_ keyPath: String) -> String {
+        if keyPath.firstIndex(of: ".") == nil {
+            return keyPath
+        }
+
+        let keyComponents = keyPath.components(separatedBy: ".")
+        let index = keyComponents.count - 2
+        return keyComponents[index]
+    }
 }
 
 internal extension List {
