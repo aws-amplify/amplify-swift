@@ -8,6 +8,7 @@
 import Foundation
 import Amplify
 
+/// Internal representation of Credentials Auth category maintain.
 enum AmplifyCredentials {
 
     case userPoolOnly(tokens: AWSCognitoUserPoolTokens)
@@ -179,4 +180,15 @@ extension AmplifyCredentials: CustomDebugStringConvertible {
         }
     }
 
+}
+
+extension AmplifyCredentials {
+
+    var areUserPoolTokenValid: Bool {
+        return false
+    }
+
+    var areAWSCredentialsValid: Bool {
+        return false
+    }
 }

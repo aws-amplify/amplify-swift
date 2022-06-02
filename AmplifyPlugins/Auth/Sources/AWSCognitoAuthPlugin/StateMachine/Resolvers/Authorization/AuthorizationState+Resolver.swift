@@ -41,11 +41,21 @@ extension AuthorizationState {
 
                 return .from(oldState)
 
-            case .sessionEstablished:
+            case .sessionEstablished(let credentials):
                 if let authenEvent = event as? AuthenticationEvent,
                    case .signInRequested = authenEvent.eventType {
                     return .from(.signingIn)
                 }
+
+                if case .refreshSession = isAuthorizationEvent(event)?.eventType {
+                    let action = InitializeRefreshSession(existingCredentials: credentials,
+                                                          isForceRefresh: false)
+                    let subState = RefreshSessionState.notStarted
+                    return .init(newState: .refreshingSession(
+                        existingCredentials: credentials,
+                        subState), actions: [action])
+                }
+
                 return .from(oldState)
 
             case .signingIn:
@@ -92,6 +102,14 @@ extension AuthorizationState {
                 let resolution = resolver.resolve(oldState: fetchSessionState, byApplying: event)
                 return .init(newState: .fetchingAuthSessionWithUserPool(resolution.newState, tokens),
                              actions: resolution.actions)
+
+            case .refreshingSession(let existingCredentials, let refreshState):
+                let resolver = RefreshSessionState.Resolver()
+                let resolution = resolver.resolve(oldState: refreshState, byApplying: event)
+                return .init(newState: .refreshingSession(
+                    existingCredentials: existingCredentials,
+                    resolution.newState), actions: resolution.actions)
+
             case .waitingToStore:
                 if case .receivedCachedCredentials(let credentials) = isAuthEvent(event)?.eventType {
                     return .init(newState: .sessionEstablished(credentials))
