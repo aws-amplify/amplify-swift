@@ -38,8 +38,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         signUpCallback: SignUpCallback? = nil,
         confirmSignUpCallback: ConfirmSignUpCallback? = nil,
         globalSignOutCallback: GlobalSignOutCallback? = nil,
-        revokeTokenCallback: RevokeTokenCallback? = nil,
-        newInitiate:  ((InitiateAuthInput) throws -> InitiateAuthOutputResponse)? = nil
+        revokeTokenCallback: RevokeTokenCallback? = nil
     ) {
         self.initiateAuthCallback = initiateAuthCallback
         self.respondToAuthChallengeCallback = respondToAuthChallengeCallback
