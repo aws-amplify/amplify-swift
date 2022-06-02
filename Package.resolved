@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/awslabs/aws-crt-swift.git",
         "state": {
           "branch": null,
-          "revision": "d654b82a55aec736ad8b4354027acab17394a060",
-          "version": "0.2.2"
+          "revision": "e13003f436e956a871d3d90e100695fd6916180e",
+          "version": "0.1.1"
         }
       },
       {
@@ -71,15 +71,6 @@
           "branch": null,
           "revision": "df8d82047f6654d8e4b655d1b1525c64e1059d21",
           "version": "4.0.4"
-        }
-      },
-      {
-        "package": "swift-collections",
-        "repositoryURL": "https://github.com/apple/swift-collections",
-        "state": {
-          "branch": null,
-          "revision": "48254824bb4248676bf7ce56014ff57b142b77eb",
-          "version": "1.0.2"
         }
       },
       {
