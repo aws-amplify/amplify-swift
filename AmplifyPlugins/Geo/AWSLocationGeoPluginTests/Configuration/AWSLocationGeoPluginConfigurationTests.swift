@@ -16,7 +16,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
         do {
             let config = try AWSLocationGeoPluginConfiguration(config: GeoPluginTestConfig.geoPluginConfigJSON)
             XCTAssertNotNil(config)
-            XCTAssertEqual(config.region, GeoPluginTestConfig.region)
+            XCTAssertEqual(config.regionName, GeoPluginTestConfig.regionName)
             XCTAssertEqual(config.maps, GeoPluginTestConfig.maps)
             XCTAssertEqual(config.defaultMap, GeoPluginTestConfig.map)
             XCTAssertEqual(config.searchIndices, GeoPluginTestConfig.searchIndices)
@@ -33,7 +33,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
         do {
             let config = try AWSLocationGeoPluginConfiguration(config: geoPluginConfigJSON)
             XCTAssertNotNil(config)
-            XCTAssertEqual(config.region, GeoPluginTestConfig.region)
+            XCTAssertEqual(config.regionName, GeoPluginTestConfig.regionName)
             XCTAssertTrue(config.maps.isEmpty)
             XCTAssertNil(config.defaultMap)
             XCTAssertTrue(config.searchIndices.isEmpty)
@@ -51,7 +51,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
         do {
             let config = try AWSLocationGeoPluginConfiguration(config: geoPluginConfigJSON)
             XCTAssertNotNil(config)
-            XCTAssertEqual(config.region, GeoPluginTestConfig.region)
+            XCTAssertEqual(config.regionName, GeoPluginTestConfig.regionName)
             XCTAssertEqual(config.maps, GeoPluginTestConfig.maps)
             XCTAssertEqual(config.defaultMap, GeoPluginTestConfig.map)
             XCTAssertTrue(config.searchIndices.isEmpty)
@@ -69,7 +69,7 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
         do {
             let config = try AWSLocationGeoPluginConfiguration(config: geoPluginConfigJSON)
             XCTAssertNotNil(config)
-            XCTAssertEqual(config.region, GeoPluginTestConfig.region)
+            XCTAssertEqual(config.regionName, GeoPluginTestConfig.regionName)
             XCTAssertTrue(config.maps.isEmpty)
             XCTAssertNil(config.defaultMap)
             XCTAssertEqual(config.searchIndices, GeoPluginTestConfig.searchIndices)

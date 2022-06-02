@@ -28,21 +28,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSCognitoAuthPluginUnitTests"
-               BuildableName = "AWSCognitoAuthPluginUnitTests"
-               BlueprintName = "AWSCognitoAuthPluginUnitTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "EscapeHatchTests">
-               </Test>
-            </SkippedTests>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

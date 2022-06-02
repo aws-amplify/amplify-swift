@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSDataStorePlugin"
-               BuildableName = "AWSDataStorePlugin"
-               BlueprintName = "AWSDataStorePlugin"
-               ReferencedContainer = "container:">
+               BlueprintIdentifier = "97AD222D28230B98001AFCC1"
+               BuildableName = "GeoHostApp.app"
+               BlueprintName = "GeoHostApp"
+               ReferencedContainer = "container:GeoHostApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,6 +28,16 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "97AD225F28231287001AFCC1"
+               BuildableName = "AWSLocationGeoPluginIntegrationTests.xctest"
+               BlueprintName = "AWSLocationGeoPluginIntegrationTests"
+               ReferencedContainer = "container:GeoHostApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -40,6 +50,16 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "97AD222D28230B98001AFCC1"
+            BuildableName = "GeoHostApp.app"
+            BlueprintName = "GeoHostApp"
+            ReferencedContainer = "container:GeoHostApp.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -47,15 +67,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AWSDataStorePlugin"
-            BuildableName = "AWSDataStorePlugin"
-            BlueprintName = "AWSDataStorePlugin"
-            ReferencedContainer = "container:">
+            BlueprintIdentifier = "97AD222D28230B98001AFCC1"
+            BuildableName = "GeoHostApp.app"
+            BlueprintName = "GeoHostApp"
+            ReferencedContainer = "container:GeoHostApp.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

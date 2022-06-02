@@ -8,11 +8,7 @@
 import Amplify
 import Foundation
 
-#if COCOAPODS
 import AWSLocation
-#else
-import AWSLocationXCF
-#endif
 
 extension AWSLocationGeoPlugin {
 
@@ -25,51 +21,85 @@ extension AWSLocationGeoPlugin {
     ///   - countries: Limits the search to the given a list of countries/regions. (optional)
     ///   - maxResults: The maximum number of results returned per request. (optional)
     ///   - placeIndexName: The name of the Place Index to query. (optional)
-    ///   - completionHandler: The completion handler receives a Response object.  The
-    ///   success case provides a Place array.
+    /// - Returns :
+    ///     It returns a Geo.Place array.
+    /// - Throws:
+    ///     `Geo.Error.accessDenied` if request authorization issue
+    ///     `Geo.Error.serviceError` if service is down/resource not found/throttling/validation error
+    ///     `Geo.Error.invalidConfiguration` if invalid configuration
+    ///     `Geo.Error.networkError` if request failed or network unavailable
+    ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
+    ///     `Geo.Error.unknown` if error is unknown
     public func search(for text: String,
-                       options: Geo.SearchForTextOptions? = nil,
-                       completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
-
-        let request = AWSLocationSearchPlaceIndexForTextRequest()!
-
+                       options: Geo.SearchForTextOptions? = nil) async throws -> [Geo.Place] {
+        
+        var request = SearchPlaceIndexForTextInput()
+        
         request.indexName = (options?.pluginOptions as? AWSLocationGeoPluginSearchOptions)?
             .searchIndex ?? pluginConfig.defaultSearchIndex
-
+        
         guard request.indexName != nil else {
-            completionHandler(.failure(.invalidConfiguration(
+            throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingDefaultSearchIndex.errorDescription,
-                GeoPluginErrorConstants.missingDefaultSearchIndex.recoverySuggestion)))
-            return
+                GeoPluginErrorConstants.missingDefaultSearchIndex.recoverySuggestion)
         }
-
+        
         request.text = text
-
+        
         if let area = options?.area {
             switch area {
             case .near(let coordinates):
-                request.biasPosition = [coordinates.longitude as NSNumber,
-                                        coordinates.latitude as NSNumber]
+                request.biasPosition = [coordinates.longitude,
+                                        coordinates.latitude]
             case .within(let boundingBox):
-                request.filterBBox = [boundingBox.southwest.longitude as NSNumber,
-                                      boundingBox.southwest.latitude as NSNumber,
-                                      boundingBox.northeast.longitude as NSNumber,
-                                      boundingBox.northeast.latitude as NSNumber]
+                request.filterBBox = [boundingBox.southwest.longitude,
+                                      boundingBox.southwest.latitude,
+                                      boundingBox.northeast.longitude,
+                                      boundingBox.northeast.latitude]
             }
         }
-
+        
         if let countries = options?.countries {
             request.filterCountries = countries.map { country in
                 country.code
             }
         }
-
+        
         if let maxResults = options?.maxResults {
-            request.maxResults = maxResults as NSNumber
+            request.maxResults = maxResults as Int
         }
+        
+        do {
+            let response = try await locationService.searchPlaceIndex(forText: request)
+            var results = [LocationClientTypes.Place]()
+            if let responseResults = response.results {
+                results = responseResults.compactMap {
+                    $0.place
+                }
+            }
+            
+            let places: [Geo.Place] = results.compactMap {
+                guard let long = $0.geometry?.point?.first,
+                      let lat = $0.geometry?.point?.last
+                else {
+                    return nil
+                }
 
-        locationService.searchPlaceIndex(forText: request) { response, error in
-            completionHandler(AWSLocationGeoPlugin.parsePlaceResponse(response: response, error: error))
+                return Geo.Place(coordinates: Geo.Coordinates(latitude: lat, longitude: long),
+                                 label: $0.label,
+                                 addressNumber: $0.addressNumber,
+                                 street: $0.street,
+                                 municipality: $0.municipality,
+                                 neighborhood: $0.neighborhood,
+                                 region: $0.region,
+                                 subRegion: $0.subRegion,
+                                 postalCode: $0.postalCode,
+                                 country: $0.country)
+            }
+            return places
+        } catch {
+            let geoError = GeoErrorHelper.mapAWSLocationError(error)
+            throw geoError
         }
     }
 
@@ -79,102 +109,171 @@ extension AWSLocationGeoPlugin {
     ///   - coordinates: Specifies a coordinate for the query.
     ///   - maxResults: The maximum number of results returned per request. (optional)
     ///   - placeIndexName: The name of the Place Index to query. (optional)
-    ///   - completionHandler: The completion handler receives a Response object.  The
-    ///   success case provides a Place array.
+    /// - Return value :
+    ///     It returns a Geo.Place array.
+    /// - Throws:
+    ///     `Geo.Error.accessDenied` if request authorization issue
+    ///     `Geo.Error.serviceError` if service is down/resource not found/throttling/validation error
+    ///     `Geo.Error.invalidConfiguration` if invalid configuration
+    ///     `Geo.Error.networkError` if request failed or network unavailable
+    ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
+    ///     `Geo.Error.unknown` if error is unknown
     public func search(for coordinates: Geo.Coordinates,
-                       options: Geo.SearchForCoordinatesOptions? = nil,
-                       completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
-
-        let request = AWSLocationSearchPlaceIndexForPositionRequest()!
-
+                       options: Geo.SearchForCoordinatesOptions? = nil) async throws -> [Geo.Place] {
+        
+        var request = SearchPlaceIndexForPositionInput()
+        
         request.indexName = (options?.pluginOptions as? AWSLocationGeoPluginSearchOptions)?
             .searchIndex ?? pluginConfig.defaultSearchIndex
-
+        
         guard request.indexName != nil else {
-            completionHandler(.failure(.invalidConfiguration(
+            throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingDefaultSearchIndex.errorDescription,
-                GeoPluginErrorConstants.missingDefaultSearchIndex.recoverySuggestion)))
-            return
+                GeoPluginErrorConstants.missingDefaultSearchIndex.recoverySuggestion)
         }
-
-        request.position = [coordinates.longitude as NSNumber,
-                            coordinates.latitude as NSNumber]
-
+        
+        request.position = [coordinates.longitude,
+                            coordinates.latitude]
+        
         if let maxResults = options?.maxResults {
-            request.maxResults = maxResults as NSNumber
+            request.maxResults = maxResults as Int
         }
+        
+        
+        do {
+            let response = try await locationService.searchPlaceIndex(forPosition: request)
+            var results = [LocationClientTypes.Place]()
+            if let responseResults = response.results {
+                results = responseResults.compactMap {
+                    $0.place
+                }
+            }
+            
+            let places: [Geo.Place] = results.compactMap {
+                guard let long = $0.geometry?.point?.first,
+                      let lat = $0.geometry?.point?.last
+                else {
+                    return nil
+                }
 
-        locationService.searchPlaceIndex(forPosition: request) { response, error in
-            completionHandler(AWSLocationGeoPlugin.parsePlaceResponse(response: response, error: error))
-        }
-    }
-
-    static private func parsePlaceResponse(response: AWSModel?, error: Error?) -> Result<[Geo.Place], Geo.Error> {
-        if let error = error {
+                return Geo.Place(coordinates: Geo.Coordinates(latitude: lat, longitude: long),
+                                 label: $0.label,
+                                 addressNumber: $0.addressNumber,
+                                 street: $0.street,
+                                 municipality: $0.municipality,
+                                 neighborhood: $0.neighborhood,
+                                 region: $0.region,
+                                 subRegion: $0.subRegion,
+                                 postalCode: $0.postalCode,
+                                 country: $0.country)
+            }
+            return places
+        } catch {
             let geoError = GeoErrorHelper.mapAWSLocationError(error)
-            return .failure(geoError)
+            throw geoError
         }
-
-        var results = [AWSLocationPlace]()
-
-        if let responseResults = (response as? AWSLocationSearchPlaceIndexForTextResponse)?.results {
-            results = responseResults.compactMap {
-                $0.place
-            }
-        }
-
-        if let responseResults = (response as? AWSLocationSearchPlaceIndexForPositionResponse)?.results {
-            results = responseResults.compactMap {
-                $0.place
-            }
-        }
-
-        let places: [Geo.Place] = results.compactMap {
-            guard let long = $0.geometry?.point?.first as? Double,
-                  let lat = $0.geometry?.point?.last as? Double
-            else {
-                return nil
-            }
-
-            return Geo.Place(coordinates: Geo.Coordinates(latitude: lat, longitude: long),
-                             label: $0.label,
-                             addressNumber: $0.addressNumber,
-                             street: $0.street,
-                             municipality: $0.municipality,
-                             neighborhood: $0.neighborhood,
-                             region: $0.region,
-                             subRegion: $0.subRegion,
-                             postalCode: $0.postalCode,
-                             country: $0.country)
-        }
-
-        return .success(places)
     }
 
     // MARK: - Maps
 
     /// Retrieves metadata for available map resources.
     /// - Returns: Metadata for all available map resources.
-    public func availableMaps(completionHandler: @escaping Geo.ResultsHandler<[Geo.MapStyle]>) {
+    /// - Throws:
+    ///     `Geo.Error.accessDenied` if request authorization issue
+    ///     `Geo.Error.serviceError` if service is down/resource not found/throttling/validation error
+    ///     `Geo.Error.invalidConfiguration` if invalid configuration
+    ///     `Geo.Error.networkError` if request failed or network unavailable
+    ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
+    ///     `Geo.Error.unknown` if error is unknown
+    public func availableMaps() async throws -> [Geo.MapStyle] {
         let mapStyles = Array(pluginConfig.maps.values)
         guard !mapStyles.isEmpty else {
-            completionHandler(.failure(.invalidConfiguration(
+            throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingMaps.errorDescription,
-                GeoPluginErrorConstants.missingMaps.recoverySuggestion)))
-            return
+                GeoPluginErrorConstants.missingMaps.recoverySuggestion)
         }
-        completionHandler(.success(mapStyles))
+        return mapStyles
     }
 
     /// Retrieves the default map resource.
     /// - Returns: Metadata for the default map resource.
-    public func defaultMap(completionHandler: @escaping Geo.ResultsHandler<Geo.MapStyle>) {
+    /// - Throws:
+    ///     `Geo.Error.accessDenied` if request authorization issue
+    ///     `Geo.Error.serviceError` if service is down/resource not found/throttling/validation error
+    ///     `Geo.Error.invalidConfiguration` if invalid configuration
+    ///     `Geo.Error.networkError` if request failed or network unavailable
+    ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
+    ///     `Geo.Error.unknown` if error is unknown
+    public func defaultMap() async throws -> Geo.MapStyle {
         guard let mapName = pluginConfig.defaultMap, let mapStyle = pluginConfig.maps[mapName] else {
-            completionHandler(.failure(.invalidConfiguration(
+            throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingDefaultMap.errorDescription,
-                GeoPluginErrorConstants.missingDefaultMap.recoverySuggestion)))
-            return
+                GeoPluginErrorConstants.missingDefaultMap.recoverySuggestion)
         }
-        completionHandler(.success(mapStyle))
+        return mapStyle
+    }
+    
+    @available(*, deprecated, message: """
+    Use search(for text: String,
+    options: Geo.SearchForTextOptions?) async throws -> [Geo.Place]
+    """)
+    @available(*, deprecated)
+    public func search(for text: String, options: Geo.SearchForTextOptions?, completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
+        Task {
+            do {
+                let result = try await search(for: text, options: options)
+                completionHandler(.success(result))
+            } catch {
+                completionHandler(.failure(error as! Geo.Error))
+            }
+        }
+    }
+    
+    @available(*, deprecated, message: """
+    Use search(for coordinates: Geo.Coordinates,
+                options: Geo.SearchForCoordinatesOptions?,
+                completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>)
+    """)
+    public func search(for coordinates: Geo.Coordinates, options: Geo.SearchForCoordinatesOptions?, completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
+        Task {
+            do {
+                let result = try await search(for: coordinates, options: options)
+                completionHandler(.success(result))
+            } catch {
+                completionHandler(.failure(error as! Geo.Error))
+            }
+        }
+    }
+    
+    /// Retrieves metadata for available map resources.
+    /// - Returns: Metadata for all available map resources.
+    @available(*, deprecated, message: """
+    Use availableMaps() async throws -> [Geo.MapStyle]
+    """)
+    public func availableMaps(completionHandler: @escaping Geo.ResultsHandler<[Geo.MapStyle]>) {
+        Task {
+            do {
+                let result = try await availableMaps()
+                completionHandler(.success(result))
+            } catch {
+                completionHandler(.failure(error as! Geo.Error))
+            }
+        }
+    }
+    
+    /// Retrieves the default map resource.
+    /// - Returns: Metadata for the default map resource.
+    @available(*, deprecated, message: """
+    Use defaultMap() async throws -> Geo.MapStyle
+    """)
+    public func defaultMap(completionHandler: @escaping Geo.ResultsHandler<Geo.MapStyle>) {
+        Task {
+            do {
+                let result = try await defaultMap()
+                completionHandler(.success(result))
+            } catch {
+                completionHandler(.failure(error as! Geo.Error))
+            }
+        }
     }
 }

@@ -299,7 +299,30 @@ let storageTargets: [Target] = [
     ),
 ]
 
-let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets
+let geoTargets: [Target] = [
+    .target(
+        name: "AWSLocationGeoPlugin",
+        dependencies: [
+            .target(name: "Amplify"),
+            .target(name: "AWSPluginsCore"),
+            .product(name: "AWSLocation", package: "AWSSwiftSDK")],
+        path: "AmplifyPlugins/Geo/AWSLocationGeoPlugin",
+        exclude: [
+            "Resources/Info.plist"
+        ]
+    ),
+    .testTarget(
+        name: "AWSLocationGeoPluginTests",
+        dependencies: [
+            "AWSLocationGeoPlugin",
+            "AmplifyTestCommon",
+            "AWSPluginsTestCommon"
+            ],
+        path: "AmplifyPlugins/Geo/AWSLocationGeoPluginTests"
+    ),
+]
+
+let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets + geoTargets
 
 let package = Package(
     name: "Amplify",
@@ -325,6 +348,10 @@ let package = Package(
             name: "AWSS3StoragePlugin",
             targets: ["AWSS3StoragePlugin"]
         ),
+        .library(
+            name: "AWSLocationGeoPlugin",
+            targets: ["AWSLocationGeoPlugin"]
+        )
         
     ],
     dependencies: dependencies,
