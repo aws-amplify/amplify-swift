@@ -63,7 +63,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
             environment: environment
         )
 
-        waitForExpectations(timeout: 0.1)
+        waitForExpectations(timeout: 1)
     }
 
     func testInvalidSuccessfulResponse() {
@@ -72,9 +72,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
         let cognitoSessionInput = AWSAuthCognitoSession.testData
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                initiateAuthCallback: { _, callback in
-                    let response = InitiateAuthOutputResponse()
-                    callback(.success(response))
+                mockInitiateAuthResponse: { _ in
+                    return InitiateAuthOutputResponse()
                 }
             )
         }
@@ -111,14 +110,13 @@ class RefreshUserPoolTokensTests: XCTestCase {
         let cognitoSessionInput = AWSAuthCognitoSession.testData
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                initiateAuthCallback: { _, callback in
-                    let response = InitiateAuthOutputResponse(
+                mockInitiateAuthResponse: { _ in
+                   return InitiateAuthOutputResponse(
                         authenticationResult: CognitoIdentityProviderClientTypes.AuthenticationResultType(
                             accessToken: "accessTokenNew",
                             expiresIn: 100,
                             idToken: "idTokenNew",
                             refreshToken: "refreshTokenNew"))
-                    callback(.success(response))
                 }
             )
         }
@@ -155,8 +153,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
         let cognitoSessionInput = AWSAuthCognitoSession.testData
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                initiateAuthCallback: { _, callback in
-                    callback(.failure(.unknown(testError)))
+                mockInitiateAuthResponse: { _ in
+                    throw NSError(domain: "testError", code: 0, userInfo: nil)
                 }
             )
         }
