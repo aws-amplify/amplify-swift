@@ -26,8 +26,36 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      enableThreadSanitizer = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSAPIPluginTests"
+               BuildableName = "AWSAPIPluginTests"
+               BlueprintName = "AWSAPIPluginTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "AWSRESTOperationTests/testRESTOperationConstructURLFailure()">
+               </Test>
+               <Test
+                  Identifier = "AWSRESTOperationTests/testRESTOperationEndpointConfigurationError()">
+               </Test>
+               <Test
+                  Identifier = "AWSRESTOperationTests/testRESTOperationInterceptorError()">
+               </Test>
+               <Test
+                  Identifier = "AWSRESTOperationTests/testRESTOperationSuccess()">
+               </Test>
+               <Test
+                  Identifier = "AWSRESTOperationTests/testRESTOperationValidationError()">
+               </Test>
+            </SkippedTests>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
