@@ -7,14 +7,9 @@
 
 import Amplify
 import Foundation
-#if COCOAPODS
 import AWSLocation
-#else
-import AWSLocationXCF
-#endif
 
 public struct AWSLocationGeoPluginConfiguration {
-    let region: AWSRegionType
     let defaultMap: String?
     let maps: [String: Geo.MapStyle]
     let defaultSearchIndex: String?
@@ -29,10 +24,7 @@ public struct AWSLocationGeoPluginConfiguration {
 
         let configObject = try AWSLocationGeoPluginConfiguration.getConfigObject(section: .plugin,
                                                                               configJSON: configJSON)
-        let regionInfo = try AWSLocationGeoPluginConfiguration.getRegion(configObject)
-
-        let region = regionInfo.type
-        let regionName = regionInfo.name
+        let regionName = try AWSLocationGeoPluginConfiguration.getRegion(configObject)
 
         var maps = [String: Geo.MapStyle]()
         var defaultMap: String?
@@ -62,21 +54,18 @@ public struct AWSLocationGeoPluginConfiguration {
             }
         }
 
-        self.init(region: region,
-                  regionName: regionName,
+        self.init(regionName: regionName,
                   defaultMap: defaultMap,
                   maps: maps,
                   defaultSearchIndex: defaultSearchIndex,
                   searchIndices: searchIndices)
     }
 
-    init(region: AWSRegionType,
-         regionName: String,
+    init(regionName: String,
          defaultMap: String?,
          maps: [String: Geo.MapStyle],
          defaultSearchIndex: String?,
          searchIndices: [String]) {
-        self.region = region
         self.regionName = regionName
         self.defaultMap = defaultMap
         self.maps = maps
@@ -86,7 +75,7 @@ public struct AWSLocationGeoPluginConfiguration {
 
     // MARK: - Private helper methods
 
-    private static func getRegion(_ configObject: [String: JSONValue]) throws -> (name: String, type: AWSRegionType) {
+    private static func getRegion(_ configObject: [String: JSONValue]) throws -> String {
         guard let regionJSON = configObject[Node.region.key] else {
             throw GeoPluginConfigError.regionMissing
         }
@@ -99,12 +88,11 @@ public struct AWSLocationGeoPluginConfiguration {
             throw GeoPluginConfigError.regionEmpty
         }
 
-        let regionType = region.aws_regionTypeValue()
-        guard regionType != AWSRegionType.Unknown else {
+        guard region != "Unknown" else {
             throw GeoPluginConfigError.regionMissing
         }
 
-        return (region, regionType)
+        return region
     }
 
     private static func getDefault(section: Section, configObject: [String: JSONValue]) throws -> String {

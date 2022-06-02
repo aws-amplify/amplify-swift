@@ -43,8 +43,26 @@ class GeoCategoryClientAPITests: XCTestCase {
                 methodInvoked.fulfill()
             }
         }
-        geo.search(for: text) { _ in }
+        geo.search(for: text, options: nil) { _ in }
         waitForExpectations(timeout: 1.0)
+    }
+    
+    func testSearchForTextAsync() async {
+        let text = "test"
+        let expectedMessage = "search(for text:\(text))"
+        var expectedFunctionCalled = false
+        plugin.listeners.append { message in
+            print(message)
+            if message == expectedMessage {
+                expectedFunctionCalled = true
+            }
+        }
+        do {
+            _ = try await geo.search(for: text, options: nil)
+            XCTAssertTrue(expectedFunctionCalled)
+        } catch {
+            XCTFail("Error: \(error)")
+        }
     }
 
     func testSearchForCoords() throws {
@@ -56,8 +74,26 @@ class GeoCategoryClientAPITests: XCTestCase {
                 methodInvoked.fulfill()
             }
         }
-        geo.search(for: coordinates) { _ in }
+        geo.search(for: coordinates, options: nil) { _ in }
         waitForExpectations(timeout: 1.0)
+    }
+    
+    func testSearchForCoordsAsync() async {
+        let coordinates = Geo.Coordinates(latitude: 0, longitude: 0)
+        let expectedMessage = "search(for coordinates:\(coordinates))"
+        var expectedFunctionCalled = false
+        plugin.listeners.append { message in
+            print(message)
+            if message == expectedMessage {
+                expectedFunctionCalled = true
+            }
+        }
+        do {
+            _ = try await geo.search(for: coordinates, options: nil)
+            XCTAssertTrue(expectedFunctionCalled)
+        } catch {
+            XCTFail("Error: \(error)")
+        }
     }
 
     func testGetAvailableMaps() throws {
@@ -73,6 +109,24 @@ class GeoCategoryClientAPITests: XCTestCase {
         geo.availableMaps { _ in }
         waitForExpectations(timeout: 1.0)
     }
+    
+    func testGetAvailableMapsAsync() async {
+        let expectedMessage = "availableMaps"
+        var expectedFunctionCalled = false
+        plugin.listeners.append { message in
+            print(message)
+            if message == expectedMessage {
+                expectedFunctionCalled = true
+            }
+        }
+
+        do {
+            _ = try await geo.availableMaps()
+            XCTAssertTrue(expectedFunctionCalled)
+        } catch {
+            XCTFail("Error: \(error)")
+        }
+    }
 
     func testGetDefaultMap() throws {
         let expectedMessage = "defaultMap"
@@ -86,5 +140,23 @@ class GeoCategoryClientAPITests: XCTestCase {
 
         geo.defaultMap { _ in }
         waitForExpectations(timeout: 1.0)
+    }
+    
+    func testGetDefaultMapAsync() async {
+        let expectedMessage = "defaultMap"
+        var expectedFunctionCalled = false
+        plugin.listeners.append { message in
+            print(message)
+            if message == expectedMessage {
+                expectedFunctionCalled = true
+            }
+        }
+
+        do {
+            _ = try await geo.defaultMap()
+            XCTAssertTrue(expectedFunctionCalled)
+        } catch {
+            XCTFail("Error: \(error)")
+        }
     }
 }

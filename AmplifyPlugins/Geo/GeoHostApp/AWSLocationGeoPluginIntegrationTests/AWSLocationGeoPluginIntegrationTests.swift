@@ -7,9 +7,10 @@
 
 import XCTest
 import AWSLocation
+
 @testable import Amplify
+@testable import AWSCognitoAuthPlugin
 @testable import AWSLocationGeoPlugin
-@testable import AmplifyTestCommon
 
 class AWSLocationGeoPluginIntergrationTests: XCTestCase {
     let timeout = 30.0
@@ -70,6 +71,24 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
 
         waitForExpectations(timeout: timeout)
     }
+    
+    /// Test if search(for: text) successfully gets Place results.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke search(for: text)
+    /// - Then:
+    ///    - Place results are returned.
+    ///
+    func testSearchForTextAsync() async {
+        let options = Geo.SearchForTextOptions(area: .near(coordinates))
+        do {
+            let places = try await Amplify.Geo.search(for: searchText, options: options)
+            XCTAssertFalse(places.isEmpty)
+        } catch {
+            XCTFail("Failed with error: \(error)")
+        }
+    }
 
     /// Test if search(for: coordinates) successfully gets Place results.
     ///
@@ -82,7 +101,7 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
     func testSearchForCoordinates() {
         let expResult = expectation(description: "Receive result")
 
-        Amplify.Geo.search(for: coordinates) { result in
+        Amplify.Geo.search(for: coordinates, options: nil) { result in
             switch result {
             case .failure(let error):
                 XCTFail("Failed with error: \(error)")
@@ -94,6 +113,24 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
         }
 
         waitForExpectations(timeout: timeout)
+    }
+    
+    /// Test if search(for: coordinates) successfully gets Place results.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke search(for: coordinates)
+    /// - Then:
+    ///    - Place results are returned.
+    ///
+    func testSearchForCoordinatesAsync() async {
+        do {
+            let places = try await Amplify.Geo.search(for: coordinates, options: nil)
+            XCTAssertFalse(places.isEmpty)
+            XCTAssertNotNil(places.first?.coordinates)
+        } catch {
+            XCTFail("Failed with error: \(error)")
+        }
     }
 
     // MARK: - Maps
@@ -125,6 +162,26 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
         waitForExpectations(timeout: timeout)
     }
 
+    /// Test if defaultMap() successfully gets the default map metadata.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke defaultMap().
+    /// - Then:
+    ///    - Default map metadata is returned.
+    ///
+    func testDefaultMapAsync() async {
+        do {
+            let map = try await Amplify.Geo.defaultMap()
+            XCTAssertNotNil(map)
+            XCTAssertNotNil(map.mapName)
+            XCTAssertNotNil(map.style)
+            XCTAssertNotNil(map.styleURL)
+        } catch {
+            XCTFail("Failed with error: \(error)")
+        }
+    }
+    
     /// Test if availableMaps() successfully gets metadata for all available maps.
     ///
     /// - Given: Geo plugin with a valid configuration.
@@ -133,7 +190,7 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
     /// - Then:
     ///    - Metadata for all available maps is returned.
     ///
-    func testAvailtableMaps() {
+    func testAvailableMaps() {
         let expResult = expectation(description: "Receive result")
 
         Amplify.Geo.availableMaps { result in
@@ -150,5 +207,25 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
         }
 
         waitForExpectations(timeout: timeout)
+    }
+    
+    /// Test if availableMaps() successfully gets metadata for all available maps.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke availableMaps().
+    /// - Then:
+    ///    - Metadata for all available maps is returned.
+    ///
+    func testAvailableMapsAsync() async {
+        do {
+            let maps = try await Amplify.Geo.availableMaps()
+            XCTAssertFalse(maps.isEmpty)
+            XCTAssertNotNil(maps.first?.mapName)
+            XCTAssertNotNil(maps.first?.style)
+            XCTAssertNotNil(maps.first?.styleURL)
+        } catch {
+            XCTFail("Failed with error: \(error)")
+        }
     }
 }

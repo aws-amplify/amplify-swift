@@ -13,20 +13,25 @@ import XCTest
 
 public class MockAWSLocation: AWSLocationBehavior {
 
+    // MARK: - Location Client
+    var locationClient: LocationClient
+    
     // MARK: - Method call counts for AWSLocation
     var getEscapeHatchCalled = 0
     var searchPlaceIndexForTextCalled = 0
     var searchPlaceIndexForPositionCalled = 0
 
     // MARK: - Method arguments for AWSLocation
-    var searchPlaceIndexForTextRequest: AWSLocationSearchPlaceIndexForTextRequest?
-    var searchPlaceIndexForPositionRequest: AWSLocationSearchPlaceIndexForPositionRequest?
+    var searchPlaceIndexForTextRequest: SearchPlaceIndexForTextInput?
+    var searchPlaceIndexForPositionRequest: SearchPlaceIndexForPositionInput?
 
-    public init() {}
+    public init(pluginConfig: AWSLocationGeoPluginConfiguration) throws {
+        self.locationClient = try LocationClient(config: MockAWSClientConfiguration(config: pluginConfig))
+    }
 
-    public func getEscapeHatch() -> AWSLocation {
+    public func getEscapeHatch() -> LocationClient {
         getEscapeHatchCalled += 1
-        return AWSLocation()
+        return self.locationClient
     }
 }
 
@@ -35,7 +40,7 @@ extension MockAWSLocation {
         XCTAssertEqual(getEscapeHatchCalled, 1)
     }
 
-    public func verifySearchPlaceIndexForText(_ request: AWSLocationSearchPlaceIndexForTextRequest) {
+    public func verifySearchPlaceIndexForText(_ request: SearchPlaceIndexForTextInput) {
         XCTAssertEqual(searchPlaceIndexForTextCalled, 1)
         guard let receivedRequest = searchPlaceIndexForTextRequest else {
             XCTFail("Did not receive request.")
@@ -52,7 +57,7 @@ extension MockAWSLocation {
         XCTAssertEqual(receivedRequest.maxResults, request.maxResults)
     }
 
-    public func verifySearchPlaceIndexForPosition(_ request: AWSLocationSearchPlaceIndexForPositionRequest) {
+    public func verifySearchPlaceIndexForPosition(_ request: SearchPlaceIndexForPositionInput) {
         XCTAssertEqual(searchPlaceIndexForPositionCalled, 1)
         guard let receivedRequest = searchPlaceIndexForPositionRequest else {
             XCTFail("Did not receive request.")
