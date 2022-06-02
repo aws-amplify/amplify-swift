@@ -8,8 +8,9 @@
 import Foundation
 import StoreKit
 
-class AnalyticsClient: InternalPinpointClient {
+actor AnalyticsClient: InternalPinpointClient {
     private let eventRecorder: AnalyticsEventRecording
+    internal let context: PinpointContext
     private lazy var globalAttributes: [String: String] = [:]
     private lazy var globalMetrics: [String: Double] = [:]
     private lazy var eventTypeAttributes: [String: [String: String]] = [:]
@@ -18,7 +19,7 @@ class AnalyticsClient: InternalPinpointClient {
     init(eventRecorder: AnalyticsEventRecording = EventRecorder(),
          context: PinpointContext) {
         self.eventRecorder = eventRecorder
-        super.init(context: context)
+        self.context = context
     }
     
     // MARK: - Attributes & Metrics
@@ -59,8 +60,8 @@ class AnalyticsClient: InternalPinpointClient {
     }
     
     // MARK: - Monetization events
-    func createAppleMonetizationEvent(with transaction: SKPaymentTransaction,
-                                      with product: SKProduct) -> PinpointEvent {
+    nonisolated func createAppleMonetizationEvent(with transaction: SKPaymentTransaction,
+                                                  with product: SKProduct) -> PinpointEvent {
         let numberFormatter = NumberFormatter()
         numberFormatter.locale = product.priceLocale
         numberFormatter.numberStyle = .currency
@@ -75,10 +76,10 @@ class AnalyticsClient: InternalPinpointClient {
                                        transactionId: transaction.transactionIdentifier)
     }
 
-    func createVirtualMonetizationEvent(withProductId productId: String,
-                                        withItemPrice itemPrice: Double,
-                                        withQuantity quantity: Int,
-                                        withCurrency currency: String) -> PinpointEvent {
+    nonisolated func createVirtualMonetizationEvent(withProductId productId: String,
+                                                    withItemPrice itemPrice: Double,
+                                                    withQuantity quantity: Int,
+                                                    withCurrency currency: String) -> PinpointEvent {
         return createMonetizationEvent(withStore: Constants.PurchaseEvent.virtual,
                                        productId: productId,
                                        quantity: quantity,
@@ -86,14 +87,14 @@ class AnalyticsClient: InternalPinpointClient {
                                        currencyCode: currency)
     }
     
-    private func createMonetizationEvent(withStore store: String,
-                                         productId: String,
-                                         quantity: Int,
-                                         itemPrice: Double,
-                                         currencyCode: String?,
-                                         formattedItemPrice: String? = nil,
-                                         priceLocale: Locale? = nil,
-                                         transactionId: String? = nil) -> PinpointEvent {
+    private nonisolated func createMonetizationEvent(withStore store: String,
+                                                     productId: String,
+                                                     quantity: Int,
+                                                     itemPrice: Double,
+                                                     currencyCode: String?,
+                                                     formattedItemPrice: String? = nil,
+                                                     priceLocale: Locale? = nil,
+                                                     transactionId: String? = nil) -> PinpointEvent {
         let monetizationEvent = PinpointEvent(eventType: Constants.PurchaseEvent.name,
                                               session: context.sessionTracker.currentSession)
         monetizationEvent.addAttribute(store,
@@ -124,7 +125,7 @@ class AnalyticsClient: InternalPinpointClient {
     }
 
     // MARK: - Event recording
-    func createEvent(withEventType eventType: String) -> PinpointEvent {
+    nonisolated func createEvent(withEventType eventType: String) -> PinpointEvent {
         precondition(!eventType.isEmpty, "Event types must be at least 1 character in length.")
         return PinpointEvent(eventType: eventType,
                              session: context.sessionTracker.currentSession)

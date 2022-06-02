@@ -89,9 +89,9 @@ class PinpointContext {
         self.keychainStore = keychainStore
         self.userDefaults = userDefaults
         self.fileManager = fileManager
-        let pinpointConfiguration = try PinpointClient.PinpointClientConfiguration(credentialsProvider: credentialsProvider,
-                                                                                   frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
-                                                                                   region: region)
+        let pinpointConfiguration = try PinpointClient.PinpointClientConfiguration(region: region,
+                                                                                   credentialsProvider: credentialsProvider,
+                                                                                   frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData())
         pinpointClient = PinpointClient(config: pinpointConfiguration)
     }
     
@@ -221,10 +221,6 @@ extension PinpointContext {
     }
 }
 
-class InternalPinpointClient {
-    unowned let context: PinpointContext // ⚠️ This is known to be risky
-
-    init(context: PinpointContext) {
-        self.context = context
-    }
+protocol InternalPinpointClient {
+    var context: PinpointContext { get }
 }

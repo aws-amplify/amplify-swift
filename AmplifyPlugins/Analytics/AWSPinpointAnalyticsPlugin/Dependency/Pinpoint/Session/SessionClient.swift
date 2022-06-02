@@ -12,14 +12,15 @@ class SessionClient: InternalPinpointClient {
     private let archiver: AmplifyArchiverBehaviour
     private let activityTracker: ActivityTracker
     private var session: PinpointSession
+    internal var context: PinpointContext
 
     init(context: PinpointContext,
          archiver: AmplifyArchiverBehaviour = AmplifyArchiver()) {
         activityTracker = ActivityTracker(timeout: context.configuration.sessionTimeout)
         self.archiver = archiver
+        self.context = context
         session = PinpointSession(appId: context.configuration.appId,
                                   uniqueId: context.uniqueId)
-        super.init(context: context)
         startSession()
     }
 
@@ -46,6 +47,7 @@ class SessionClient: InternalPinpointClient {
         activityTracker.beginActivityTracking()
 
         let startEvent = context.analyticsClient.createEvent(withEventType: Constants.Events.start)
+        
         // Update Endpoint and record Session Start event
         Task {
             try? await context.targetingClient.updateEndpointProfile()
