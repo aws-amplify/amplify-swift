@@ -104,6 +104,10 @@ extension AuthorizationState {
                              actions: resolution.actions)
 
             case .refreshingSession(let existingCredentials, let refreshState):
+                if case .refreshed(let amplifyCredentials) = event.isAuthorizationEvent {
+                    return .init(newState: .waitingToStore(amplifyCredentials))
+                }
+
                 let resolver = RefreshSessionState.Resolver()
                 let resolution = resolver.resolve(oldState: refreshState, byApplying: event)
                 return .init(newState: .refreshingSession(
