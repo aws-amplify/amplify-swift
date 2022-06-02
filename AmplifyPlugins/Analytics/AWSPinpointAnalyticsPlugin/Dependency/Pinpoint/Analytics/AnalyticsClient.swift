@@ -15,23 +15,23 @@ class AnalyticsClient: InternalPinpointClient {
     private lazy var globalMetrics: [String: Double] = [:]
     private lazy var eventTypeAttributes: [String: [String: String]] = [:]
     private lazy var eventTypeMetrics: [String: [String: Double]] = [:]
-    //needs to be this path to be backward compatible with legacy aws-ios-sdk
-    private let AWSPinpointClientRecorderDatabasePathPrefix = "com/amazonaws/AWSPinpointRecorder/"
     
-    override init(
-        context: PinpointContext
+    init(
+        context: PinpointContext,
+        eventRecorder: AnalyticsEventRecording?
     ) {
-        do {
-            let storage = try AnalyticsEventSQLStorage(dbAdapter: SQLiteLocalStorageAdapter(prefixPath: AWSPinpointClientRecorderDatabasePathPrefix, databaseName: context.configuration.appId))
-            self.eventRecorder = try EventRecorder(
-                appId: context.configuration.appId,
-                storage: storage,
-                pinpointClient: context.pinpointClient
-            )
-        } catch {
-            //TODO: handle init error
-        }
+        self.eventRecorder = eventRecorder
         super.init(context: context)
+    }
+    
+    convenience override init(context: PinpointContext) {
+        if let storage = try? AnalyticsEventSQLStorage(dbAdapter: SQLiteLocalStorageAdapter(prefixPath: Constants.EventRecorderStoragePathPrefix, databaseName: context.configuration.appId)),
+           let eventRecorder = try? EventRecorder(appId: context.configuration.appId,storage: storage,pinpointClient: context.pinpointClient) {
+            self.init(context: context, eventRecorder: eventRecorder)
+        } else {
+            self.init(context: context)
+            log.error("Analytics Client missing event recorder")
+        }
     }
     
     // MARK: - Attributes & Metrics
@@ -174,7 +174,7 @@ class AnalyticsClient: InternalPinpointClient {
     @discardableResult
     func submitEvents() async throws -> [PinpointEvent] {
         guard let eventRecorder = eventRecorder else {
-            //TODO: handle missing event recorder error
+            log.error("Analytics Client missing event recorder when submitting events")
             return []
         }
 
@@ -201,6 +201,8 @@ extension AnalyticsClient {
                 static let transactionId = "_transaction_id"
             }
         }
+        
+        static let EventRecorderStoragePathPrefix = "com/amazonaws/AWSPinpointRecorder/"
     }
 }
 

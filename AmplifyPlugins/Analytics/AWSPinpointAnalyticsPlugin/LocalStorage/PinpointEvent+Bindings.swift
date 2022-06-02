@@ -12,9 +12,7 @@ extension PinpointEvent {
     typealias PintPointEventAttributes = [String: String]
     typealias PintPointEventMetrics = [String: Double]
     
-    static var archiver: AmplifyArchiverBehaviour {
-        return AmplifyArchiver()
-    }
+    static var archiver: AmplifyArchiverBehaviour = AmplifyArchiver()
     
     /// Converts a Pinpoint Event to a collection of SQL Bindings for SQL insert statements
     /// - Parameters:

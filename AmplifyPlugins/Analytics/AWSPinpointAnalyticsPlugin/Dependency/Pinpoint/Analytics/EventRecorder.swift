@@ -24,8 +24,7 @@ class EventRecorder: AnalyticsEventRecording {
     let appId: String
     let storage: AnalyticsEventStorage
     let pinpointClient: PinpointClientProtocol
-    let AWSPinpointServiceDefinedMaxEventsPerBatch = 100
-    var submittedEvents: [PinpointEvent] = []
+    private var submittedEvents: [PinpointEvent] = []
     
     /// Initializer for Event Recorder
     /// - Parameters:
@@ -65,7 +64,7 @@ class EventRecorder: AnalyticsEventRecording {
     }
     
     private func getBatchRecords() throws -> [PinpointEvent] {
-        return try storage.getEventsWith(limit: AWSPinpointServiceDefinedMaxEventsPerBatch)
+        return try storage.getEventsWith(limit: Constants.maxEventsSubmittedPerBatch)
     }
     
     private func submit(_ eventBatch: [PinpointEvent]) async throws {
@@ -116,5 +115,11 @@ class EventRecorder: AnalyticsEventRecording {
                     })
                 }
         }
+    }
+}
+
+extension EventRecorder {
+    private struct Constants {
+        static let maxEventsSubmittedPerBatch = 100
     }
 }
