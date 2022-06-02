@@ -26,9 +26,13 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
         let post = Post(id: modelId, title: "title", content: "content", createdAt: .now())
         let requestMutationEvent = try createMutationEvent(model: post,
                                                            mutationType: .create,
+                                                           createdAt: .now(),
                                                            version: nil,
                                                            inProcess: true)
-        let pendingMutationEvent = try createMutationEvent(model: post, mutationType: .update, version: nil)
+        let pendingMutationEvent = try createMutationEvent(model: post,
+                                                           mutationType: .update,
+                                                           createdAt: .now().add(value: 1, to: .second),
+                                                           version: nil)
         let responseMutationSync = createMutationSync(model: post, version: 1)
 
         setUpPendingMutationQueue(modelId, [requestMutationEvent, pendingMutationEvent], pendingMutationEvent)
@@ -84,10 +88,19 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
     func testSentModelWithNilVersion_SecondPendingEventNotReconciled() throws {
         let modelId = UUID().uuidString
         let post = Post(id: modelId, title: "title", content: "content", createdAt: .now())
-        let requestMutationEvent =
-            try createMutationEvent(model: post, mutationType: .create, version: nil, inProcess: true)
-        let pendingUpdateMutationEvent = try createMutationEvent(model: post, mutationType: .update, version: nil)
-        let pendingDeleteMutationEvent = try createMutationEvent(model: post, mutationType: .delete, version: nil)
+        let requestMutationEvent = try createMutationEvent(model: post,
+                                                           mutationType: .create,
+                                                           createdAt: .now(),
+                                                           version: nil,
+                                                           inProcess: true)
+        let pendingUpdateMutationEvent = try createMutationEvent(model: post,
+                                                                 mutationType: .update,
+                                                                 createdAt: .now().add(value: 1, to: .second),
+                                                                 version: nil)
+        let pendingDeleteMutationEvent = try createMutationEvent(model: post,
+                                                                 mutationType: .delete,
+                                                                 createdAt: .now().add(value: 2, to: .second),
+                                                                 version: nil)
         let responseMutationSync = createMutationSync(model: post, version: 1)
 
         setUpPendingMutationQueue(modelId,
@@ -145,9 +158,15 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
         let modelId = UUID().uuidString
         let post1 = Post(id: modelId, title: "title1", content: "content1", createdAt: .now())
         let post2 = Post(id: modelId, title: "title2", content: "content2", createdAt: .now())
-        let requestMutationEvent =
-            try createMutationEvent(model: post1, mutationType: .create, version: 2, inProcess: true)
-        let pendingMutationEvent = try createMutationEvent(model: post2, mutationType: .update, version: 2)
+        let requestMutationEvent = try createMutationEvent(model: post1,
+                                                           mutationType: .create,
+                                                           createdAt: .now(),
+                                                           version: 2,
+                                                           inProcess: true)
+        let pendingMutationEvent = try createMutationEvent(model: post2,
+                                                           mutationType: .update,
+                                                           createdAt: .now().add(value: 1, to: .second),
+                                                           version: 2)
         let responseMutationSync = createMutationSync(model: post1, version: 1)
 
         setUpPendingMutationQueue(modelId, [requestMutationEvent, pendingMutationEvent], pendingMutationEvent)
@@ -202,9 +221,15 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
         let post1 = Post(id: modelId, title: "title1", content: "content1", createdAt: .now())
         let post2 = Post(id: modelId, title: "title2", content: "content2", createdAt: .now())
         let post3 = Post(id: modelId, title: "title3", content: "content3", createdAt: .now())
-        let requestMutationEvent =
-            try createMutationEvent(model: post1, mutationType: .update, version: 1, inProcess: true)
-        let pendingMutationEvent = try createMutationEvent(model: post2, mutationType: .update, version: 1)
+        let requestMutationEvent = try createMutationEvent(model: post1,
+                                                           mutationType: .update,
+                                                           createdAt: .now(),
+                                                           version: 1,
+                                                           inProcess: true)
+        let pendingMutationEvent = try createMutationEvent(model: post2,
+                                                           mutationType: .update,
+                                                           createdAt: .now().add(value: 1, to: .second),
+                                                           version: 1)
         let responseMutationSync = createMutationSync(model: post3, version: 2)
 
         setUpPendingMutationQueue(modelId, [requestMutationEvent, pendingMutationEvent], pendingMutationEvent)
@@ -258,9 +283,15 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
         let modelId = UUID().uuidString
         let post1 = Post(id: modelId, title: "title1", content: "content1", createdAt: .now())
         let post2 = Post(id: modelId, title: "title2", content: "content2", createdAt: .now())
-        let requestMutationEvent =
-            try createMutationEvent(model: post1, mutationType: .update, version: 1, inProcess: true)
-        let pendingMutationEvent = try createMutationEvent(model: post2, mutationType: .update, version: 1)
+        let requestMutationEvent = try createMutationEvent(model: post1,
+                                                           mutationType: .update,
+                                                           createdAt: .now(),
+                                                           version: 1,
+                                                           inProcess: true)
+        let pendingMutationEvent = try createMutationEvent(model: post2,
+                                                           mutationType: .update,
+                                                           createdAt: .now().add(value: 1, to: .second),
+                                                           version: 1)
         let responseMutationSync = createMutationSync(model: post1, version: 2)
 
         setUpPendingMutationQueue(modelId, [requestMutationEvent, pendingMutationEvent], pendingMutationEvent)
@@ -307,6 +338,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
 
     private func createMutationEvent(model: Model,
                                      mutationType: MutationEvent.MutationType,
+                                     createdAt: Temporal.DateTime,
                                      version: Int? = nil,
                                      inProcess: Bool = false) throws -> MutationEvent {
         return MutationEvent(id: UUID().uuidString,
@@ -314,6 +346,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                              modelName: model.modelName,
                              json: try model.toJSON(),
                              mutationType: mutationType,
+                             createdAt: createdAt,
                              version: version,
                              inProcess: inProcess)
     }

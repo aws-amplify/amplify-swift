@@ -1,0 +1,33 @@
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+# This is to address optional associations use case (Post can exist without a Blog)
+# See issue https://github.com/aws-amplify/amplify-ios/issues/1792 for more details
+
+type Blog8 @model {
+  id: ID!
+  name: String!
+  customs: [MyCustomModel8]
+  notes: [String]
+  post: [Post8] @hasMany(indexName: "postByBlog", fields: ["id"])
+}
+
+type Post8 @model {
+  id: ID!
+  name: String!
+  blog_id: ID @index(name: "postByBlog")
+  random_id: String @index(name: "byRandom")
+  blog: Blog8 @belongsTo(fields: ["blog_id"])
+}
+
+type MyCustomModel8 {
+  id: ID!
+  name: String!
+  desc: String
+  children: [MyNestedModel8]
+}
+
+type MyNestedModel8 {
+  id: ID!
+  nestedName: String!
+  notes: [String]
+}
