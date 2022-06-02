@@ -9,40 +9,30 @@
 import Amplify
 import Foundation
 
-public struct Post8: Model {
+public struct Comment8: Model {
   public let id: String
-  public var name: String
-  public var randomId: String?
-  public var blog: Blog8?
-  public var comments: List<Comment8>?
+  public var content: String?
+  public var post: Post8?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
   public init(id: String = UUID().uuidString,
-      name: String,
-      randomId: String? = nil,
-      blog: Blog8? = nil,
-      comments: List<Comment8>? = []) {
+      content: String? = nil,
+      post: Post8? = nil) {
     self.init(id: id,
-      name: name,
-      randomId: randomId,
-      blog: blog,
-      comments: comments,
+      content: content,
+      post: post,
       createdAt: nil,
       updatedAt: nil)
   }
   internal init(id: String = UUID().uuidString,
-      name: String,
-      randomId: String? = nil,
-      blog: Blog8? = nil,
-      comments: List<Comment8>? = [],
+      content: String? = nil,
+      post: Post8? = nil,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
       self.id = id
-      self.name = name
-      self.randomId = randomId
-      self.blog = blog
-      self.comments = comments
+      self.content = content
+      self.post = post
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }

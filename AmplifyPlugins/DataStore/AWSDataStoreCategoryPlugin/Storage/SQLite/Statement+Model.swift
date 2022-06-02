@@ -74,7 +74,7 @@ extension Statement: StatementModelConvertible {
                  using statement: SelectStatement) throws -> ModelValues {
         let columnMapping = statement.metadata.columnMapping
         let modelDictionary = ([:] as ModelValues).mutableCopy()
-        var skipColumn = Set<String>()
+        var skipColumns = Set<String>()
         for (index, value) in row.enumerated() {
             let column = columnNames[index]
             guard let (schema, field) = columnMapping[column] else {
@@ -85,7 +85,6 @@ extension Statement: StatementModelConvertible {
                 continue
             }
 
-
             let modelValue = try SQLiteModelValueConverter.convertToSource(
                 from: value,
                 fieldType: field.type
@@ -94,26 +93,25 @@ extension Statement: StatementModelConvertible {
             // Check if the value for the primary key is `nil`. This is when an associated model does not exist.
             // To create a decodable `modelDictionary` that can be decoded to the Model types, the entire
             // object at this particular key should be set to `nil`. The following code does that by dropping the last
-            // path from the column, for example given "blog.id" `column` has a nil `modelValue`, then set the
-            // modelDictionary["blog"] to nil.
+            // path from the column, for example given "blog.id" `column` has a nil `modelValue`, then store the
+            // keypath in `skipColumns`, which will be used to set modelDictionary["blog"] to nil later on.
             //
-            // `skipColumn` keeps track of this scenario. At this point in the code we cannot make an assumption about
-            // the ordering of the columns, it may handle "blog.description", then "blog.id", then "blog.title". The
-            // code will perform the following:
-            //  1. set modelDictionary["blog"]["description"] to `nil`, because it has not encountered a `nil` primary key
-            //  2. set modelDictionary["blog"] = `nil`, because the value is the primary key and is nil
+            // `skipColumns` keeps track of these scenarios. At this point in the code we cannot make an assumption
+            // about the ordering of the columns, it may handle "blog.description", then "blog.id", then "blog.title".
+            // The code will perform the following:
+            //  1. set ["blog"]["description"] = `nil`, because it has not encountered `nil` primary key
+            //  2. store skipColumn["blog"], because the value is the primary key and is nil
             //  3. skip setting modelDictionary["blog"]["title"], because `skipColumn` has been set for "blog".
             if field.isPrimaryKey && modelValue == nil {
-                let keyPathParent = dropLastPath(column)
-                skipColumn.insert(keyPathParent)
-                modelDictionary.updateValue(nil, forKeyPath: keyPathParent)
+                let keyPathParent = column.dropLastPath()
+                skipColumns.insert(keyPathParent)
             }
 
-            if skipColumn.isEmpty {
+            if skipColumns.isEmpty {
                 modelDictionary.updateValue(modelValue, forKeyPath: column)
             } else {
-                let keyPathParent = dropLastPath(column)
-                if !skipColumn.contains(keyPathParent) {
+                let keyPathParent = column.dropLastPath()
+                if !skipColumns.contains(keyPathParent) {
                     modelDictionary.updateValue(modelValue, forKeyPath: column)
                 }
             }
@@ -139,25 +137,29 @@ extension Statement: StatementModelConvertible {
             }
         }
 
-        // swiftlint:disable:next force_cast
-        return modelDictionary as! ModelValues
-    }
-
-    /// Utility to return the second last keypath (if available) given a keypath. For example,
-    ///
-    /// - "post" returns the key path root "post"
-    /// - "post.id" returns "post", dropping the path "id"
-    /// - "post.blog.id" returns "post.blog", dropping the path "id"
-    ///
-    /// - Parameter keyPath: the key path as a `String` (e.g. "nested.key")
-    func dropLastPath(_ keyPath: String) -> String {
-        if keyPath.firstIndex(of: ".") == nil {
-            return keyPath
+        // the `skipColumns` is sorted from longest to shortest since we eager load all belongs-to, for the example of
+        // a Comment, that belongs to a Post, that belongs to a Blog. Comment has nil Post and nil Blog. The
+        // `skipColumns` will be populated as
+        //  - skipColumns["post"]
+        //  - skipColumns["post.blog"]
+        //
+        // By ordering it as "post.blog" then "post", before setting the `nil` values for those keypaths, then the
+        // shortest keypath will the last key in the `modelDictionary`. modelDictionary["post"]["blog"] will be
+        // replaced with modelDictionary["post"] = nil.
+        //
+        // If there does exist a post but no blog on the post, then the following `skipColumns` would be populated:
+        //  - skipColumns["post.blog"] (since only primary key for blog does not exist, post object exists)
+        // and the resulting modelDictionary will be populated:
+        // modelDictionary["post"]["id"] = <ID>
+        // modelDictionary["post"][<remaining required/optional fields of post>] = <values>
+        // modelDictionary["post"]["blog"] = nil
+        let sortedColumns = skipColumns.sorted(by: { $0.count > $1.count })
+        for skipColumn in sortedColumns {
+            modelDictionary.updateValue(nil, forKeyPath: skipColumn)
         }
 
-        let keyComponents = keyPath.components(separatedBy: ".")
-        let index = keyComponents.count - 2
-        return keyComponents[index]
+        // swiftlint:disable:next force_cast
+        return modelDictionary as! ModelValues
     }
 }
 
@@ -244,4 +246,28 @@ private extension NSMutableDictionary {
         }
     }
 
+}
+
+extension String {
+    /// Utility to return the second last keypath (if available) given a keypath. For example,
+    ///
+    /// - "post" returns the key path root "post"
+    /// - "post.id" returns "post", dropping the path "id"
+    /// - "post.blog.id" returns "post.blog", dropping the path "id"
+    ///
+    /// - Parameter keyPath: the key path as a `String` (e.g. "nested.key")
+    func dropLastPath() -> String {
+        if firstIndex(of: ".") == nil {
+            return self
+        }
+
+        let keyComponents = components(separatedBy: ".")
+        let index = keyComponents.count - 2
+        if index == 0 {
+            return keyComponents[index]
+        } else {
+            let subKeyComponents = keyComponents.dropLast()
+            return subKeyComponents.joined(separator: ".")
+        }
+    }
 }

@@ -8,15 +8,23 @@ type Blog8 @model {
   name: String!
   customs: [MyCustomModel8]
   notes: [String]
-  post: [Post8] @hasMany(indexName: "postByBlog", fields: ["id"])
+  posts: [Post8] @hasMany(indexName: "postByBlog", fields: ["id"])
 }
 
 type Post8 @model {
   id: ID!
   name: String!
-  blog_id: ID @index(name: "postByBlog")
-  random_id: String @index(name: "byRandom")
-  blog: Blog8 @belongsTo(fields: ["blog_id"])
+  blogId: ID @index(name: "postByBlog")
+  randomId: String @index(name: "byRandom")
+  blog: Blog8 @belongsTo(fields: ["blogId"])
+  comments: [Comment8] @hasMany(indexName: "commentByPost", fields: ["id"])
+}
+
+type Comment8 @model {
+  id: ID!
+  content: String
+  postId: ID @index(name: "commentByPost")
+  post: Post8 @belongsTo(fields: ["postId"])
 }
 
 type MyCustomModel8 {

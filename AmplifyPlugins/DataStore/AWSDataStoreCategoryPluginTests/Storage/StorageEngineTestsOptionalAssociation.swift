@@ -34,9 +34,11 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
                                           validAuthPluginKey: validAuthPluginKey)
             ModelRegistry.register(modelType: Blog8.self)
             ModelRegistry.register(modelType: Post8.self)
+            ModelRegistry.register(modelType: Comment8.self)
             do {
                 try storageEngine.setUp(modelSchemas: [Blog8.schema])
                 try storageEngine.setUp(modelSchemas: [Post8.schema])
+                try storageEngine.setUp(modelSchemas: [Comment8.schema])
             } catch {
                 XCTFail("Failed to setup storage engine")
             }
@@ -46,21 +48,194 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
         }
     }
 
+    func testSaveCommentThenQuery() {
+        let comment = Comment8(content: "content")
+        guard case .success = saveModelSynchronous(model: comment) else {
+            XCTFail("Failed to save comment")
+            return
+        }
+
+        guard case let .success(queriedComment) =
+            querySingleModelSynchronous(modelType: Comment8.self,
+                                        predicate: Comment8.keys.id == comment.id) else {
+                XCTFail("Failed to query post")
+                return
+        }
+        XCTAssertEqual(queriedComment.id, comment.id)
+        XCTAssertNil(queriedComment.post)
+    }
+
     func testSavePostThenQuery() {
-        
+        let post = Post8(name: "name", randomId: "random", blog: nil)
+        guard case .success = saveModelSynchronous(model: post) else {
+            XCTFail("Failed to save post")
+            return
+        }
+
+        guard case let .success(queriedPost) =
+            querySingleModelSynchronous(modelType: Post8.self,
+                                        predicate: Post8.keys.id == post.id) else {
+                XCTFail("Failed to query post")
+                return
+        }
+        XCTAssertEqual(queriedPost.id, post.id)
+        XCTAssertNil(queriedPost.blog)
     }
-    
+
     func testSaveBlogThenQuery() {
-        
+        let nestedModel = MyNestedModel8(id: UUID().uuidString, nestedName: "nestedName", notes: ["notes1", "notes2"])
+        let customModel = MyCustomModel8(id: UUID().uuidString, name: "name", desc: "desc", children: [nestedModel])
+        let blog = Blog8(name: "name", customs: [customModel], notes: ["notes1", "notes2"])
+        guard case .success = saveModelSynchronous(model: blog) else {
+            XCTFail("Failed to save blog")
+            return
+        }
+
+        guard case let .success(queriedBlog) =
+            querySingleModelSynchronous(modelType: Blog8.self,
+                                        predicate: Blog8.keys.id == blog.id) else {
+                XCTFail("Failed to query blog")
+                return
+        }
+        XCTAssertEqual(queriedBlog.id, blog.id)
     }
-    
+
+    func testUpdateCommentWithPostThenQuery() {
+        var comment = Comment8(content: "content")
+        guard case .success = saveModelSynchronous(model: comment) else {
+            XCTFail("Failed to save comment")
+            return
+        }
+        let post = Post8(name: "name", randomId: "random", blog: nil)
+        guard case .success = saveModelSynchronous(model: post) else {
+            XCTFail("Failed to save post")
+            return
+        }
+        comment.post = post
+        guard case .success = saveModelSynchronous(model: comment) else {
+            XCTFail("Failed to save comment")
+            return
+        }
+
+        guard case let .success(queriedComment) =
+            querySingleModelSynchronous(modelType: Comment8.self,
+                                        predicate: Comment8.keys.id == comment.id) else {
+                XCTFail("Failed to query post")
+                return
+        }
+        XCTAssertEqual(queriedComment.id, comment.id)
+        XCTAssertEqual(queriedComment.post?.id, post.id)
+    }
+
     func testUpdatePostWithBlogThenQueryAndLazyLoad() {
-        
+        var post = Post8(name: "name", randomId: "random", blog: nil)
+        guard case .success = saveModelSynchronous(model: post) else {
+            XCTFail("Failed to save post")
+            return
+        }
+        let nestedModel = MyNestedModel8(id: UUID().uuidString, nestedName: "nestedName", notes: ["notes1", "notes2"])
+        let customModel = MyCustomModel8(id: UUID().uuidString, name: "name", desc: "desc", children: [nestedModel])
+        let blog = Blog8(name: "name", customs: [customModel], notes: ["notes1", "notes2"])
+        guard case .success = saveModelSynchronous(model: blog) else {
+            XCTFail("Failed to save blog")
+            return
+        }
+        post.blog = blog
+        guard case .success = saveModelSynchronous(model: post) else {
+            XCTFail("Failed to save post")
+            return
+        }
+
+        guard case let .success(updatedPost) =
+            querySingleModelSynchronous(modelType: Post8.self,
+                                        predicate: Post8.keys.id == post.id) else {
+                XCTFail("Failed to query post")
+                return
+        }
+        XCTAssertEqual(updatedPost.id, post.id)
+        XCTAssertNotNil(updatedPost.blog)
+        XCTAssertEqual(updatedPost.blog?.id, blog.id)
     }
-    
-    func testQueryAllPost() {
-        
+
+    func testUpdateCommentWithPostAndBlog() {
+        let nestedModel = MyNestedModel8(id: UUID().uuidString, nestedName: "nestedName", notes: ["notes1", "notes2"])
+        let customModel = MyCustomModel8(id: UUID().uuidString, name: "name", desc: "desc", children: [nestedModel])
+        let blog = Blog8(name: "name", customs: [customModel], notes: ["notes1", "notes2"])
+        guard case .success = saveModelSynchronous(model: blog) else {
+            XCTFail("Failed to save blog")
+            return
+        }
+        let post = Post8(name: "name", randomId: "random", blog: blog)
+        guard case .success = saveModelSynchronous(model: post) else {
+            XCTFail("Failed to save post")
+            return
+        }
+        let comment = Comment8(content: "content", post: post)
+        guard case .success = saveModelSynchronous(model: comment) else {
+            XCTFail("Failed to save comment")
+            return
+        }
+
+        guard case let .success(queriedComment) =
+            querySingleModelSynchronous(modelType: Comment8.self,
+                                        predicate: Comment8.keys.id == comment.id) else {
+                XCTFail("Failed to query post")
+                return
+        }
+        XCTAssertEqual(queriedComment.id, comment.id)
+        XCTAssertEqual(queriedComment.post?.id, post.id)
+        XCTAssertEqual(queriedComment.post?.blog?.id, blog.id)
     }
-    
-    // MARK: Helpers
+
+    func testPostSelectStatement() throws {
+        let post = Post8(name: "name", randomId: "random", blog: nil)
+        guard case .success = saveModelSynchronous(model: post) else {
+            XCTFail("Failed to save post")
+            return
+        }
+        let statement = SelectStatement(from: Post8.schema,
+                                        predicate: nil,
+                                        sort: nil,
+                                        paginationInput: nil)
+        let rows = try connection.prepare(statement.stringValue).run(statement.variables)
+        XCTAssertEqual(rows.columnCount, 12)
+        let results: [Post8] = try rows.convert(to: Post8.self,
+                                                withSchema: Post8.schema,
+                                                using: statement)
+
+        XCTAssertNotNil(results)
+        XCTAssertEqual(results.count, 1)
+        XCTAssertNil(results.first!.blog)
+    }
+
+    func testPostWithBlogSelectStatement() throws {
+        var post = Post8(name: "name", randomId: "random", blog: nil)
+        guard case .success = saveModelSynchronous(model: post) else {
+            XCTFail("Failed to save post")
+            return
+        }
+        let blog = Blog8(name: "name", customs: nil, notes: nil)
+        guard case .success = saveModelSynchronous(model: blog) else {
+            XCTFail("Failed to save blog")
+            return
+        }
+        post.blog = blog
+        guard case .success = saveModelSynchronous(model: post) else {
+            XCTFail("Failed to save post")
+            return
+        }
+
+        let statement = SelectStatement(from: Post8.schema,
+                                        predicate: nil,
+                                        sort: nil,
+                                        paginationInput: nil)
+        let rows = try connection.prepare(statement.stringValue).run(statement.variables)
+        let results: [Post8] = try rows.convert(to: Post8.self,
+                                                withSchema: Post8.schema,
+                                                using: statement)
+
+        XCTAssertNotNil(results)
+        XCTAssertEqual(results.count, 1)
+        XCTAssertEqual(results.first!.blog?.id, blog.id)
+    }
 }

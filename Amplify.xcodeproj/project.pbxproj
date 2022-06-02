@@ -19,6 +19,8 @@
 		2104FE4C28490338007CF949 /* MyNestedModel8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE4428490338007CF949 /* MyNestedModel8+Schema.swift */; };
 		2104FE4D28490338007CF949 /* MyCustomModel8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE4528490338007CF949 /* MyCustomModel8.swift */; };
 		2104FE4E28490338007CF949 /* Post8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE4628490338007CF949 /* Post8+Schema.swift */; };
+		2104FE562849115B007CF949 /* Comment8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE542849115B007CF949 /* Comment8+Schema.swift */; };
+		2104FE572849115B007CF949 /* Comment8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE552849115B007CF949 /* Comment8.swift */; };
 		210922502359634C00CEC295 /* AnalyticsProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210922492359634B00CEC295 /* AnalyticsProfile.swift */; };
 		210922522359634C00CEC295 /* AnalyticsPropertyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2109224B2359634C00CEC295 /* AnalyticsPropertyValue.swift */; };
 		210922572359693900CEC295 /* BasicAnalyticsEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210922562359693800CEC295 /* BasicAnalyticsEvent.swift */; };
@@ -948,6 +950,8 @@
 		2104FE4428490338007CF949 /* MyNestedModel8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MyNestedModel8+Schema.swift"; sourceTree = "<group>"; };
 		2104FE4528490338007CF949 /* MyCustomModel8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCustomModel8.swift; sourceTree = "<group>"; };
 		2104FE4628490338007CF949 /* Post8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post8+Schema.swift"; sourceTree = "<group>"; };
+		2104FE542849115B007CF949 /* Comment8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment8+Schema.swift"; sourceTree = "<group>"; };
+		2104FE552849115B007CF949 /* Comment8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment8.swift; sourceTree = "<group>"; };
 		210922492359634B00CEC295 /* AnalyticsProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsProfile.swift; sourceTree = "<group>"; };
 		2109224B2359634C00CEC295 /* AnalyticsPropertyValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsPropertyValue.swift; sourceTree = "<group>"; };
 		210922562359693800CEC295 /* BasicAnalyticsEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicAnalyticsEvent.swift; sourceTree = "<group>"; };
@@ -1904,6 +1908,8 @@
 			children = (
 				2104FE4228490338007CF949 /* Blog8.swift */,
 				2104FE3F28490337007CF949 /* Blog8+Schema.swift */,
+				2104FE552849115B007CF949 /* Comment8.swift */,
+				2104FE542849115B007CF949 /* Comment8+Schema.swift */,
 				2104FE4528490338007CF949 /* MyCustomModel8.swift */,
 				2104FE4128490338007CF949 /* MyCustomModel8+Schema.swift */,
 				2104FE4028490337007CF949 /* MyNestedModel8.swift */,
@@ -5757,6 +5763,7 @@
 				218F7846275A630F0042334B /* Project1V2+Schema.swift in Sources */,
 				5C09CCC526D074B100CDCA9F /* MockGeoCategoryPlugin.swift in Sources */,
 				218F78C0275ABBEC0042334B /* User5V2+Schema.swift in Sources */,
+				2104FE562849115B007CF949 /* Comment8+Schema.swift in Sources */,
 				FACA361E2327FC8E000E74F6 /* MockAnalyticsCategoryPlugin.swift in Sources */,
 				218F78E7275AD0310042334B /* Project4aV2.swift in Sources */,
 				218F7860275A63620042334B /* Team1V2+Schema.swift in Sources */,
@@ -5807,6 +5814,7 @@
 				217D5EC32577F9DF009F0639 /* PostEditor5.swift in Sources */,
 				762C978526210F6400798FA3 /* RecordCover.swift in Sources */,
 				218F7868275A63790042334B /* Blog6V2.swift in Sources */,
+				2104FE572849115B007CF949 /* Comment8.swift in Sources */,
 				2104FE4C28490338007CF949 /* MyNestedModel8+Schema.swift in Sources */,
 				216E45ED248E914F0035E3CE /* Category.swift in Sources */,
 				6BE9D6ED25A6622000AB5C9A /* Project+Schema.swift in Sources */,

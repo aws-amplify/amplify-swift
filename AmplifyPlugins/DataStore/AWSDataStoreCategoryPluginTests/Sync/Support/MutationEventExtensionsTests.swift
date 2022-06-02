@@ -14,6 +14,7 @@ import XCTest
 @testable import AWSDataStoreCategoryPlugin
 @testable import AWSPluginsCore
 
+// TODO: This flaky test has been disabled, tracking issue: https://github.com/aws-amplify/amplify-ios/issues/1831
 // swiftlint:disable type_body_length
 class MutationEventExtensionsTest: BaseDataStoreTests {
 

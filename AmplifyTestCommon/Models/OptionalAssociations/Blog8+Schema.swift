@@ -16,6 +16,9 @@ extension Blog8 {
     case name
     case customs
     case notes
+    case posts
+    case createdAt
+    case updatedAt
   }
 
   public static let keys = CodingKeys.self
@@ -30,7 +33,10 @@ extension Blog8 {
       .id(),
       .field(blog8.name, is: .required, ofType: .string),
       .field(blog8.customs, is: .optional, ofType: .embeddedCollection(of: MyCustomModel8.self)),
-      .field(blog8.notes, is: .optional, ofType: .embeddedCollection(of: String.self))
+      .field(blog8.notes, is: .optional, ofType: .embeddedCollection(of: String.self)),
+      .hasMany(blog8.posts, is: .optional, ofType: Post8.self, associatedWith: Post8.keys.blog),
+      .field(blog8.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
+      .field(blog8.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
 }

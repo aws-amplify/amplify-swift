@@ -13,5 +13,5 @@ public struct MyCustomModel8: Embeddable {
   var id: String
   var name: String
   var desc: String?
-  var children: [MyNestedModel8]?
+  var children: [MyNestedModel8?]?
 }
