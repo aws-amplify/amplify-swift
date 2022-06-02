@@ -10,25 +10,25 @@ enum AuthenticationState: State {
     case notConfigured
 
     /// System is configured, and now knows how to find persisted config data, if any
-    case configured(AuthConfiguration)
+    case configured
 
     /// User is signing out
-    case signingOut(AuthConfiguration, SignOutState)
+    case signingOut(SignOutState)
 
     /// System is configured and ready for user to sign in
-    case signedOut(AuthConfiguration, SignedOutData)
+    case signedOut(SignedOutData)
 
     /// System is trying to sign up
-    case signingUp(AuthConfiguration, SignUpState)
+    case signingUp(SignUpState)
 
     /// System is trying to sign in
-    case signingIn(AuthConfiguration, SignInState)
+    case signingIn(SignInState)
 
     /// System is signed in
-    case signedIn(AuthConfiguration, SignedInData)
+    case signedIn(SignedInData)
 
     /// System encountered an error
-    case error(AuthConfiguration?, AuthenticationError)
+    case error(AuthenticationError)
 
 }
 

@@ -47,7 +47,7 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
             }
 
             switch authNState {
-            case .signingOut(_, let signOutState):
+            case .signingOut(let signOutState):
                 if case .signingOutLocally = signOutState {
                     self.clearCredentialStore()
                 }
@@ -62,7 +62,7 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
                     self.authStateMachine.cancel(listenerToken: token)
                 }
 
-            case .error(_, let error):
+            case .error(let error):
                 defer {
                     self.finish()
                 }
