@@ -37,8 +37,7 @@ struct InitiateSignUp: Action {
 
         let client: CognitoUserPoolBehavior
         do {
-            client = try createIdentityProviderClient(key: signUpEventData.key,
-                                                      environment: environment)
+            client = try environment.cognitoUserPoolFactory()
         } catch {
             let authError = AuthenticationError.configuration(message: "Failed to get CognitoUserPool client: \(error)")
             let event = SignUpEvent(
