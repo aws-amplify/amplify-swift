@@ -9,6 +9,9 @@ import Foundation
 import SQLite
 
 extension PinpointEvent {
+    typealias PintPointEventAttributes = [String: String]
+    typealias PintPointEventMetrics = [String: Double]
+    
     static var archiver: AmplifyArchiverBehaviour {
         return AmplifyArchiver()
     }
@@ -66,14 +69,14 @@ extension PinpointEvent {
         let pinpointEvent = PinpointEvent(eventType: eventType, eventTimestamp: Date.Millisecond(timeStamp), session: session)
         
         if let attributes = element[EventPropertyIndex.attributes] as? String, let data = Data(base64Encoded: attributes),
-           let decodedAttributes = try? archiver.decode([String: String].self, from: data) {
+           let decodedAttributes = try? archiver.decode(PintPointEventAttributes.self, from: data) {
             for (key, value) in decodedAttributes {
                 pinpointEvent.addAttribute(value, forKey: key)
             }
         }
         
         if let metrics = element[EventPropertyIndex.metrics] as? String, let data = Data(base64Encoded: metrics),
-           let decodedMetrics = try? archiver.decode([String: Double].self, from: data) {
+           let decodedMetrics = try? archiver.decode(PintPointEventMetrics.self, from: data) {
             for (key, value) in decodedMetrics {
                 pinpointEvent.addMetric(value, forKey: key)
             }
