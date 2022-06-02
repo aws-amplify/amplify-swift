@@ -342,6 +342,20 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSLocationGeoPlugin"
+               BuildableName = "AWSLocationGeoPlugin"
+               BlueprintName = "AWSLocationGeoPlugin"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -427,6 +441,16 @@
                BlueprintIdentifier = "AWSS3StoragePluginTests"
                BuildableName = "AWSS3StoragePluginTests"
                BlueprintName = "AWSS3StoragePluginTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSLocationGeoPluginTests"
+               BuildableName = "AWSLocationGeoPluginTests"
+               BlueprintName = "AWSLocationGeoPluginTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

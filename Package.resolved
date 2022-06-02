@@ -21,7 +21,7 @@
       },
       {
         "package": "AWSSwiftSDK",
-        "repositoryURL": "https://github.com/awslabs/aws-sdk-swift",
+        "repositoryURL": "https://github.com/awslabs/aws-sdk-swift.git",
         "state": {
           "branch": null,
           "revision": "e907e654466a8bfafbcd79a78cb87964abecb1a0",
@@ -39,7 +39,7 @@
       },
       {
         "package": "CwlPreconditionTesting",
-        "repositoryURL": "https://github.com/mattgallagher/CwlPreconditionTesting",
+        "repositoryURL": "https://github.com/mattgallagher/CwlPreconditionTesting.git",
         "state": {
           "branch": null,
           "revision": "c21f7bab5ca8eee0a9998bbd17ca1d0eb45d4688",
