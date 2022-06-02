@@ -24,6 +24,9 @@ struct AuthenticationEvent: StateMachineEvent {
         /// resolves the initial state
         case initializedSignedIn(SignedInData)
 
+        /// Emitted when a user sign in flow completed successfully
+        case signInCompleted(SignedInData)
+
         /// Emitted when a user sign in is requested
         case signInRequested(SignInEventData)
 
@@ -43,7 +46,7 @@ struct AuthenticationEvent: StateMachineEvent {
     let id: String
     let eventType: EventType
     let time: Date?
-
+    
     var type: String {
         switch eventType {
         case .configure:
@@ -55,7 +58,9 @@ struct AuthenticationEvent: StateMachineEvent {
         case .initializedSignedOut:
             return "AuthenticationEvent.initializedSignedOut"
         case .signInRequested:
-            return "AuthenticationEvent.signIn"
+            return "AuthenticationEvent.signInRequested"
+        case .signInCompleted:
+            return "AuthenticationEvent.signInCompleted"
         case .signOutRequested:
             return "AuthenticationEvent.signOut"
         case .cancelSignIn:
