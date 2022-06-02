@@ -109,7 +109,7 @@ class AWSAuthSignUpOperationTests: XCTestCase {
         Amplify.Logging.logLevel = .verbose
         let exp = expectation(description: #function)
         let functionExpectation = expectation(description: "API call should be invoked")
-        let signUp: MockIdentityProvider.SignUpCallback = { _ in
+        let signUp: MockIdentityProvider.MockSignUpResponse = { _ in
             functionExpectation.fulfill()
             return .init(codeDeliveryDetails: nil, userConfirmed: true, userSub: UUID().uuidString)
         }
@@ -123,7 +123,7 @@ class AWSAuthSignUpOperationTests: XCTestCase {
             .configured)
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
-            userPoolFactory: {MockIdentityProvider(signUpCallback: signUp)})
+            userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
         let operation = AWSAuthSignUpOperation(request, stateMachine: statemachine) {  result in
             switch result {
             case .success(let signUpResult):
