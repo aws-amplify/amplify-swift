@@ -89,7 +89,8 @@ extension SRPSignInState {
         -> StateResolution<SRPSignInState> {
             switch signInEvent.eventType {
             case .finalizeSRPSignIn(let signedInData):
-                return .from(.signedIn(signedInData))
+                return .init(newState: .signedIn(signedInData),
+                             actions: [SignInComplete(signedInData: signedInData)])
             case .respondNextAuthChallenge(let authChallengeResponse):
                 return .from(.nextAuthChallenge(authChallengeResponse))
             case .cancelSRPSignIn:
