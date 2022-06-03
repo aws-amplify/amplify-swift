@@ -14,6 +14,7 @@
 		2104FE64284E8B21007CF949 /* DataStoreInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE63284E8B21007CF949 /* DataStoreInternal.swift */; };
 		2104FE5028490638007CF949 /* StorageEngineTestsOptionalAssociation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE4F28490638007CF949 /* StorageEngineTestsOptionalAssociation.swift */; };
 		2104FE5328490DFE007CF949 /* StatementModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5228490DFE007CF949 /* StatementModelTests.swift */; };
+		2104FE5928492D67007CF949 /* DataStoreConnectionOptionalAssociations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5828492D67007CF949 /* DataStoreConnectionOptionalAssociations.swift */; };
 		210E218226601C1C00D90ED8 /* MutationEventQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210E218126601C1C00D90ED8 /* MutationEventQueryTests.swift */; };
 		211A81D7270F787200C5483D /* SortedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A81D6270F787200C5483D /* SortedList.swift */; };
 		211A81D9270F78B100C5483D /* SortedListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A81D8270F78B100C5483D /* SortedListTests.swift */; };
@@ -428,6 +429,7 @@
 		2104FE63284E8B21007CF949 /* DataStoreInternal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreInternal.swift; sourceTree = "<group>"; };
 		2104FE4F28490638007CF949 /* StorageEngineTestsOptionalAssociation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageEngineTestsOptionalAssociation.swift; sourceTree = "<group>"; };
 		2104FE5228490DFE007CF949 /* StatementModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementModelTests.swift; sourceTree = "<group>"; };
+		2104FE5828492D67007CF949 /* DataStoreConnectionOptionalAssociations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionOptionalAssociations.swift; sourceTree = "<group>"; };
 		210E218126601C1C00D90ED8 /* MutationEventQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEventQueryTests.swift; sourceTree = "<group>"; };
 		211A81D6270F787200C5483D /* SortedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedList.swift; sourceTree = "<group>"; };
 		211A81D8270F78B100C5483D /* SortedListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedListTests.swift; sourceTree = "<group>"; };
@@ -1145,6 +1147,7 @@
 				218F7881275A81400042334B /* DataStoreConnectionScenario6V2Tests.swift */,
 				218F7886275A81410042334B /* DataStoreConnectionScenario7V2Tests.swift */,
 				215D40AC277233340077E7DA /* DataStoreConnectionScenario8V2Tests.swift */,
+				2104FE5828492D67007CF949 /* DataStoreConnectionOptionalAssociations.swift */,
 				218F78D3275AC7CD0042334B /* DataStoreModelWithCustomTimestampTests.swift */,
 				218F78D2275AC7CD0042334B /* DataStoreModelWithDefaultValueTests.swift */,
 				218F78D1275AC7CD0042334B /* DataStoreModelWithSecondaryIndexTests.swift */,
@@ -2664,6 +2667,7 @@
 				217D622225798ED3009F0639 /* DataStoreConnectionScenario1Tests.swift in Sources */,
 				217D61752578AF85009F0639 /* DataStoreConnectionScenario2Tests.swift in Sources */,
 				D888E80C24A65DC200F4CE3E /* LocalStoreIntegrationTestBase.swift in Sources */,
+				2104FE5928492D67007CF949 /* DataStoreConnectionOptionalAssociations.swift in Sources */,
 				97406B382666DC0200C41E19 /* DataStoreCustomPrimaryKeyTests.swift in Sources */,
 				218F7889275A81410042334B /* DataStoreConnectionScenario4V2Tests.swift in Sources */,
 				FA3841EB23889D6C0070AD5B /* SubscriptionEndToEndTests.swift in Sources */,
