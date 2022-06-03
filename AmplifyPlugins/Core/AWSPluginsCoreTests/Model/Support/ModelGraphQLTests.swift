@@ -200,7 +200,7 @@ class ModelGraphQLTests: XCTestCase {
         let graphQLInput = childModel.graphQLInputForMutation(childModel.schema)
         XCTAssertEqual(graphQLInput["id"] as? String, childModel.id)
         XCTAssertEqual(graphQLInput["content"] as? String, childModel.content)
-        XCTAssertEqual(graphQLInput["post22CommentsId"] as? String, parent.id)
-        XCTAssertEqual(graphQLInput["post22CommentsTitle"] as? String, parent.title)
+        XCTAssertEqual(graphQLInput["postWithCompositeKeyCommentsId"] as? String, parent.id)
+        XCTAssertEqual(graphQLInput["postWithCompositeKeyCommentsTitle"] as? String, parent.title)
     }
 }

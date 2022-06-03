@@ -206,6 +206,90 @@ extension AWSDataStorePrimaryKeyBaseTest {
 
         wait(for: [expectations.mutationDelete, expectations.mutationDeleteProcessed], timeout: 60)
     }
+
+    /// Assert that a save and a delete mutation complete successfully.
+    /// - Parameters:
+    ///   - model: model instance saved and then deleted
+    ///   - expectations: test expectations
+    ///   - onFailure: failure callback
+    func assertMutationsParentChild<P: Model & ModelIdentifiable,
+                                    C: Model & ModelIdentifiable>(parent: P,
+                                                                  child: C,
+                                                                  _ expectations: TestExpectations,
+                                                                  onFailure: @escaping (_ error: DataStoreError) -> Void) {
+        expectations.mutationSave.expectedFulfillmentCount = 2
+        expectations.mutationSaveProcessed.expectedFulfillmentCount = 2
+
+        Amplify
+            .Hub
+            .publisher(for: .dataStore)
+            .filter { $0.eventName == HubPayload.EventName.DataStore.syncReceived }
+            .sink { payload in
+                guard let mutationEvent = payload.data as? MutationEvent,
+                      mutationEvent.modelId == parent.identifier || mutationEvent.modelId == child.identifier else {
+                    return
+                }
+
+                if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                    expectations.mutationSaveProcessed.fulfill()
+                    return
+                }
+
+                if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
+                    expectations.mutationDeleteProcessed.fulfill()
+                    return
+                }
+            }
+            .store(in: &requests)
+
+        // save parent first
+        Amplify.DataStore.save(parent).sink {
+            if case let .failure(error) = $0 {
+                onFailure(error)
+            }
+        }
+        receiveValue: { posts in
+            XCTAssertNotNil(posts)
+            expectations.mutationSave.fulfill()
+        }.store(in: &requests)
+
+        // save child
+        Amplify.DataStore.save(child).sink {
+            if case let .failure(error) = $0 {
+                onFailure(error)
+            }
+        }
+        receiveValue: { posts in
+            XCTAssertNotNil(posts)
+            expectations.mutationSave.fulfill()
+        }.store(in: &requests)
+
+        wait(for: [expectations.mutationSave, expectations.mutationSaveProcessed], timeout: 60)
+
+        // delete child first
+        Amplify.DataStore.delete(child).sink {
+            if case let .failure(error) = $0 {
+                onFailure(error)
+            }
+        }
+        receiveValue: { posts in
+            XCTAssertNotNil(posts)
+            expectations.mutationDelete.fulfill()
+        }.store(in: &requests)
+
+        // delete parent
+        Amplify.DataStore.delete(parent).sink {
+            if case let .failure(error) = $0 {
+                onFailure(error)
+            }
+        }
+        receiveValue: { posts in
+            XCTAssertNotNil(posts)
+            expectations.mutationDelete.fulfill()
+        }.store(in: &requests)
+
+        wait(for: [expectations.mutationDelete, expectations.mutationDeleteProcessed], timeout: 60)
+    }
 }
 
 // MARK: - Expectations
