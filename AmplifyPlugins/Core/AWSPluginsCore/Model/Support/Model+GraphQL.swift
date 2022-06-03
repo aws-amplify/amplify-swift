@@ -62,11 +62,11 @@ extension Model {
                 }
             case .enum:
                 input[name] = (value as? EnumPersistable)?.rawValue
-            case .model:
+            case .model(let associateModelName):
                 // get the associated model target names and their values
                 let associatedModelIds = associatedModelIdentifierFields(fromModelValue: value,
                                                                          field: modelField,
-                                                                         schema: schema)
+                                                                         associatedModelName: associateModelName)
                 for (fieldName, fieldValue) in associatedModelIds {
                     input[fieldName] = fieldValue
                 }
@@ -136,9 +136,13 @@ extension Model {
     ///            and `value` its value in the associated model
     private func associatedModelIdentifierFields(fromModelValue value: Any,
                                                  field: ModelField,
-                                                 schema modelSchema: ModelSchema) -> [(String, Persistable)] {
+                                                 associatedModelName: String) -> [(String, Persistable)] {
+        guard let associateModelSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
+            preconditionFailure("Associated model \(associatedModelName) not found.")
+        }
+
         let fieldNames = getFieldNameForAssociatedModels(modelField: field)
-        let values = getModelIdentifierValues(from: value, modelSchema: modelSchema)
+        let values = getModelIdentifierValues(from: value, modelSchema: associateModelSchema)
 
         guard fieldNames.count == values.count else {
             preconditionFailure(

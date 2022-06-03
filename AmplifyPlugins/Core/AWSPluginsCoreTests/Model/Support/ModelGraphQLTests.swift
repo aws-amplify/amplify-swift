@@ -12,6 +12,22 @@ import XCTest
 
 class ModelGraphQLTests: XCTestCase {
 
+    override func setUp() {
+        ModelRegistry.register(modelType: Post.self)
+        ModelRegistry.register(modelType: Team1.self)
+        ModelRegistry.register(modelType: Project1.self)
+        ModelRegistry.register(modelType: Team2.self)
+        ModelRegistry.register(modelType: Project2.self)
+        ModelRegistry.register(modelType: ModelExplicitDefaultPk.self)
+        ModelRegistry.register(modelType: ModelExplicitCustomPk.self)
+        ModelRegistry.register(modelType: ModelImplicitDefaultPk.self)
+        ModelRegistry.register(modelType: ModelCompositePk.self)
+        ModelRegistry.register(modelType: ModelCompositePkWithAssociation.self)
+        ModelRegistry.register(modelType: ModelCompositePkBelongsTo.self)
+        ModelRegistry.register(modelType: PostWithCompositeKey.self)
+        ModelRegistry.register(modelType: CommentWithCompositeKey.self)
+    }
+
     /// - Given: a `Model` type
     /// - When:
     ///    - the model is of type `Post`
@@ -175,5 +191,16 @@ class ModelGraphQLTests: XCTestCase {
                        owner.id)
         XCTAssertEqual(graphQLInput["modelCompositePkWithAssociationOtherModelsDob"] as? Temporal.DateTime,
                        owner.dob)
+    }
+
+    func testModelWithHasManyAssociationAndCompositePrimaryKey() {
+        let parent = PostWithCompositeKey(title: "title")
+        let childModel = CommentWithCompositeKey(content: "comment", post: parent)
+
+        let graphQLInput = childModel.graphQLInputForMutation(childModel.schema)
+        XCTAssertEqual(graphQLInput["id"] as? String, childModel.id)
+        XCTAssertEqual(graphQLInput["content"] as? String, childModel.content)
+        XCTAssertEqual(graphQLInput["post22CommentsId"] as? String, parent.id)
+        XCTAssertEqual(graphQLInput["post22CommentsTitle"] as? String, parent.title)
     }
 }
