@@ -116,27 +116,25 @@ class AWSDataStorePrimaryKeyIntegrationTests: AWSDataStorePrimaryKeyBaseTest {
             XCTFail("Error mutation \(error)")
         }
     }
-    
-    func testModelWithCompositePrimaryKeyWithIntValue() {
+
+    func testModelWithCompositePrimaryKeyAndAssociations() {
         setup(withModels: CompositeKeyWithAssociations())
 
         let expectations = makeExpectations()
 
         assertDataStoreReady(expectations)
-        
-        let model1 = Post22(title: "Post22")
-        let model2 = Comment22(content: "Comment22", post: model1)
 
         // Query
-        assertQuerySuccess(modelType: ModelCompositeIntPk.self,
+        assertQuerySuccess(modelType: PostWithCompositeKey.self,
                            expectations) { error in
             XCTFail("Error query \(error)")
         }
 
-        let model = ModelCompositeIntPk(id: UUID().uuidString, serial: 1)
+        let parent = PostWithCompositeKey(title: "Post22")
+        let child = CommentWithCompositeKey(content: "Comment", post: parent)
 
         // Mutations
-        assertMutations(model: model, expectations) { error in
+        assertMutationsParentChild(parent: parent, child: child, expectations) { error in
             XCTFail("Error mutation \(error)")
         }
     }
@@ -177,12 +175,12 @@ extension AWSDataStorePrimaryKeyIntegrationTests {
             ModelRegistry.register(modelType: ModelCompositeIntPk.self)
         }
     }
-    
+
     struct CompositeKeyWithAssociations: AmplifyModelRegistration {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: PostWithCompositeKey.self)
-            ModelRegistry.register(modelType: PostWithCompositeKey.self)
+            ModelRegistry.register(modelType: CommentWithCompositeKey.self)
         }
     }
 }
