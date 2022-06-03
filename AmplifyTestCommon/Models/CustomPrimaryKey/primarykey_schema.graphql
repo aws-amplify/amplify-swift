@@ -41,3 +41,15 @@ type ModelCompositePkWithAssociation @model {
   name: String
   otherModels: [ModelCompositePkBelongsTo] @hasMany
 }
+
+type PostWithCompositeKey @model {
+  id: ID! @primaryKey(sortKeyFields: ["title"])
+  title: String!
+  comments: [CommentWithCompositeKey] @hasMany
+}
+
+type CommentWithCompositeKey @model {
+  id: ID! @primaryKey(sortKeyFields: ["content"])
+  content: String!
+  post: PostWithCompositeKey @belongsTo
+}

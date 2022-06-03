@@ -165,6 +165,9 @@ extension Model {
     private func getModelIdentifierValues(from value: Any, modelSchema: ModelSchema) -> [Persistable] {
         if let modelValue = value as? Model {
             return modelValue.identifier(schema: modelSchema).values
+        } else if let optionalModel = value as? Model?,
+                  let modelValue = optionalModel {
+            return modelValue.identifier(schema: modelSchema).values
         } else if let value = value as? [String: JSONValue] {
             var primaryKeyValues = [Persistable]()
             for field in modelSchema.primaryKey.fields {
