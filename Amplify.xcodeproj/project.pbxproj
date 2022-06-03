@@ -370,6 +370,10 @@
 		767B9D13282EE78F00A20BDB /* ModelCompositeIntPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767B9D11282EE78F00A20BDB /* ModelCompositeIntPk+Schema.swift */; };
 		767F85FC2649FF540076D633 /* CustomerOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767F85FB2649FF540076D633 /* CustomerOrder.swift */; };
 		767F85FE2649FFCC0076D633 /* CustomerOrder+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */; };
+		76808179284983C900843C85 /* CommentWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76808175284983C900843C85 /* CommentWithCompositeKey.swift */; };
+		7680817A284983C900843C85 /* PostWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76808176284983C900843C85 /* PostWithCompositeKey+Schema.swift */; };
+		7680817B284983C900843C85 /* CommentWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76808177284983C900843C85 /* CommentWithCompositeKey+Schema.swift */; };
+		7680817C284983C900843C85 /* PostWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76808178284983C900843C85 /* PostWithCompositeKey.swift */; };
 		769CF2242669B1B9007843A0 /* RetryableGraphQLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769CF2232669B1B9007843A0 /* RetryableGraphQLOperation.swift */; };
 		76A4023C264B1E3A009D4127 /* AWSAuthModeStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A4023B264B1E3A009D4127 /* AWSAuthModeStrategy.swift */; };
 		76A7BCD8283D9ED10077C6FF /* primarykey_schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 76A7BCD7283D9ED10077C6FF /* primarykey_schema.graphql */; };
@@ -1312,6 +1316,10 @@
 		767B9D11282EE78F00A20BDB /* ModelCompositeIntPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositeIntPk+Schema.swift"; sourceTree = "<group>"; };
 		767F85FB2649FF540076D633 /* CustomerOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerOrder.swift; sourceTree = "<group>"; };
 		767F85FD2649FFCC0076D633 /* CustomerOrder+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomerOrder+Schema.swift"; sourceTree = "<group>"; };
+		76808175284983C900843C85 /* CommentWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKey.swift; sourceTree = "<group>"; };
+		76808176284983C900843C85 /* PostWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		76808177284983C900843C85 /* CommentWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		76808178284983C900843C85 /* PostWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKey.swift; sourceTree = "<group>"; };
 		769CF2232669B1B9007843A0 /* RetryableGraphQLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetryableGraphQLOperation.swift; sourceTree = "<group>"; };
 		76A4023B264B1E3A009D4127 /* AWSAuthModeStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthModeStrategy.swift; sourceTree = "<group>"; };
 		76A7BCD7283D9ED10077C6FF /* primarykey_schema.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = primarykey_schema.graphql; sourceTree = "<group>"; };
@@ -2734,6 +2742,10 @@
 		76310CEA27E3ED87004964DF /* CustomPrimaryKey */ = {
 			isa = PBXGroup;
 			children = (
+				76808175284983C900843C85 /* CommentWithCompositeKey.swift */,
+				76808177284983C900843C85 /* CommentWithCompositeKey+Schema.swift */,
+				76808178284983C900843C85 /* PostWithCompositeKey.swift */,
+				76808176284983C900843C85 /* PostWithCompositeKey+Schema.swift */,
 				76262AC22836E77500273736 /* ModelCompositePkBelongsTo.swift */,
 				76262AC32836E77500273736 /* ModelCompositePkBelongsTo+Schema.swift */,
 				767B9D10282EE78F00A20BDB /* ModelCompositeIntPk.swift */,
@@ -5631,6 +5643,7 @@
 				762167D52615435C0033FCD2 /* Record+Schema.swift in Sources */,
 				B9521833237E21BA00F53237 /* Comment+Schema.swift in Sources */,
 				76262ABA28369F3600273736 /* BookAuthor+Schema.swift in Sources */,
+				7680817C284983C900843C85 /* PostWithCompositeKey.swift in Sources */,
 				FA176ED7238503C200C5C5F9 /* HubListenerTestUtilities.swift in Sources */,
 				218F78DF275AD0280042334B /* Team4bV2+Schema.swift in Sources */,
 				216E45EE248E914F0035E3CE /* Todo.swift in Sources */,
@@ -5659,6 +5672,7 @@
 				767F85FC2649FF540076D633 /* CustomerOrder.swift in Sources */,
 				217D5EBB2577F9DF009F0639 /* Team1.swift in Sources */,
 				6BEE08252533D30800133961 /* OGCScenarioBMGroupPost+Schema.swift in Sources */,
+				76808179284983C900843C85 /* CommentWithCompositeKey.swift in Sources */,
 				218F7862275A63670042334B /* Team2V2+Schema.swift in Sources */,
 				21FDBB662587D7A30086FCDC /* Blog6+Schema.swift in Sources */,
 				218F7856275A633C0042334B /* Post4V2+Schema.swift in Sources */,
@@ -5685,6 +5699,7 @@
 				217D5EBF2577F9DF009F0639 /* Comment4.swift in Sources */,
 				218F78CF275AC6B40042334B /* TodoCustomTimestampV2+Schema.swift in Sources */,
 				FAA2E8BC239FFC7700E420EA /* MockModels.swift in Sources */,
+				7680817A284983C900843C85 /* PostWithCompositeKey+Schema.swift in Sources */,
 				217D5EB52577F9DF009F0639 /* Project1.swift in Sources */,
 				218F785A275A63470042334B /* Project2V2.swift in Sources */,
 				6B9F7C552526864800F1F71C /* ScenarioATest6Post+Schema.swift in Sources */,
@@ -5772,6 +5787,7 @@
 				5C09CCC526D074B100CDCA9F /* MockGeoCategoryPlugin.swift in Sources */,
 				76262AC52836E77500273736 /* ModelCompositePkBelongsTo+Schema.swift in Sources */,
 				218F78C0275ABBEC0042334B /* User5V2+Schema.swift in Sources */,
+				7680817B284983C900843C85 /* CommentWithCompositeKey+Schema.swift in Sources */,
 				FACA361E2327FC8E000E74F6 /* MockAnalyticsCategoryPlugin.swift in Sources */,
 				218F78E7275AD0310042334B /* Project4aV2.swift in Sources */,
 				218F7860275A63620042334B /* Team1V2+Schema.swift in Sources */,

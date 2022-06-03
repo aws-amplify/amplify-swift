@@ -1,14 +1,21 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
 public struct PostWithCompositeKey: Model {
   public let id: String
-  public var title: String
+  public let title: String
   public var comments: List<CommentWithCompositeKey>?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
+
   public init(id: String = UUID().uuidString,
       title: String,
       comments: List<CommentWithCompositeKey>? = []) {
