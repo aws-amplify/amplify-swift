@@ -380,24 +380,23 @@ class SQLStatementTests: XCTestCase {
 
     /// - Given: a `Model` instance
     /// - When:
-    ///   - the model is of type `ModelCompositePkBelongsTo`
-    ///   - it has a reference to another `ModelCompositePkWithAssociation`
+    ///   - the model is of type `CommentWithCompositeKey`
+    ///   - it has a reference to another `PostWithCompositeKey`
     /// - Then:
     ///   - check if the generated SQL statement is valid
     ///   - check if the variables match the expected values
-    ///   - check if the foreign key matches `ModelCompositePkWithAssociation` PK
-    func testInsertStatementModelWithCompositeKeyAndHasManyUnidirectional() {
+    ///   - check if the foreign key matches `PostWithCompositeKey` PK
+    func testInsertStatementModelWithCompositeKeyAndHasManyBidirectional2() {
         let parentModel = PostWithCompositeKey(id: "post-id", title: "post-title")
         let childModel = CommentWithCompositeKey(id: "comment-id",
                                                  content: "content",
-                                                 post21CommentsId: parentModel.id,
-                                                 post21CommentsTitle: parentModel.title)
+                                                 post: parentModel)
 
         let statement = InsertStatement(model: childModel, modelSchema: childModel.schema)
 
         let expectedStatement = """
-        insert into "CommentWithCompositeKey" ("@@primaryKey", "id", "content", "createdAt", "post21CommentsId", "post21CommentsTitle", "updatedAt")
-        values (?, ?, ?, ?, ?, ?, ?)
+        insert into "CommentWithCompositeKey" ("@@primaryKey", "id", "content", "createdAt", "updatedAt", "@@postForeignKey")
+        values (?, ?, ?, ?, ?, ?)
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
 
@@ -405,8 +404,7 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(variables[0] as? String, childModel.identifier)
         XCTAssertEqual(variables[1] as? String, childModel.id)
         XCTAssertEqual(variables[2] as? String, childModel.content)
-        XCTAssertEqual(variables[4] as? String, parentModel.id)
-        XCTAssertEqual(variables[5] as? String, parentModel.title)
+        XCTAssertEqual(variables[5] as? String, parentModel.identifier)
     }
 
     // MARK: - Update Statements
