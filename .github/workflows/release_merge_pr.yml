@@ -21,4 +21,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR: ${{ github.event.pull_request.number }}
-        run: "gh pr merge $PR --repo ameter/github-actions-test --merge --subject 'chore: kickoff release' --body ''"
+        run: "gh pr merge $PR --repo aws-amplify/amplify-ios --merge --subject 'chore: kickoff release' --body ''"
