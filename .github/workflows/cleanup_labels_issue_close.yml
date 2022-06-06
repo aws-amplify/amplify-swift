@@ -13,7 +13,7 @@ jobs:
   cleanup:
     name: Remove labels 
     runs-on: ubuntu-latest
-    if: ${{ !github.event.issue.pull_request && (contains(github.event.issue.labels.*.name, 'pending-response') || contains(github.event.issue.labels.*.name, 'closing soon')) || contains(github.event.issue.labels.*.name, 'pending-release')) }}
+    if: ${{ !github.event.issue.pull_request && (contains(github.event.issue.labels.*.name, 'pending-response') || contains(github.event.issue.labels.*.name, 'closing soon') || contains(github.event.issue.labels.*.name, 'pending-release')) }}
 
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
