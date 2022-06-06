@@ -167,6 +167,8 @@ final class StorageEngine: StorageEngineBehavior {
             storageEnginePublisher.send(.syncQueriesReadyEvent)
         case .readyEvent:
             storageEnginePublisher.send(.readyEvent)
+        case .schedulingRestart:
+            break
         }
     }
 
