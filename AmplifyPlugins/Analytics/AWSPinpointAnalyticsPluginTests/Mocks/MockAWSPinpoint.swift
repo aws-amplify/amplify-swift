@@ -7,6 +7,7 @@
 
 import AWSPinpoint
 import Foundation
+import StoreKit
 import XCTest
 
 @testable import AWSPinpointAnalyticsPlugin
@@ -27,11 +28,11 @@ public class MockAWSPinpoint: AWSPinpointBehavior {
 
     // MARK: Method arguments for AWSPinpointTargetingClient
 
-    var updateEndpointProfileValue: AWSPinpointEndpointProfile?
+    var updateEndpointProfileValue: PinpointEndpointProfile?
     var addAttributeValue: [Any]?
     var addAttributeKey: String?
     var removeAttributeKey: String?
-    var addMetricValue: NSNumber?
+    var addMetricValue: Double?
     var addMetricKey: String?
     var removeMetricKey: String?
 
@@ -52,14 +53,14 @@ public class MockAWSPinpoint: AWSPinpointBehavior {
     var addGlobalAttributeValue: String?
     var addGlobalAttributeKey: String?
     var addGlobalAttributeEventType: String?
-    var addGlobalMetricValue: NSNumber?
+    var addGlobalMetricValue: Double?
     var addGlobalMetricKey: String?
     var addGlobalMetricEventType: String?
     var removeGlobalAttributeKey: String?
     var removeGlobalAttributeEventType: String?
     var removeGlobalMetricKey: String?
     var removeglobalMetricEventType: String?
-    var recordEvent: AWSPinpointEvent?
+    var recordEvent: PinpointEvent?
     var createEventEventType: String?
     var createAppleMonetizationEventTransaction: SKPaymentTransaction?
     var createAppleMonetizationEventProduct: SKProduct?
@@ -70,21 +71,21 @@ public class MockAWSPinpoint: AWSPinpointBehavior {
 
     // MARK: Mock behavior for AWSPinpointTargetingClient
 
-    var updateEndpointProfileResult: AWSTask<AnyObject>?
+    var updateEndpointProfileResult: PinpointEndpointProfile?
 
     // MARK: Mock behavior for AWSPinpointAnalyticsClient
 
-    var recordResult: AWSTask<AnyObject>?
-    var createEventResult: AWSPinpointEvent?
-    var createAppleMonetizationEventResult: AWSPinpointEvent?
-    var createVirtualMonetizationEventResult: AWSPinpointEvent?
-    var submitEventsResult: AWSTask<AnyObject>?
+    var recordResult: Result<PinpointEvent, Error>?
+    var createEventResult: PinpointEvent?
+    var createAppleMonetizationEventResult: PinpointEvent?
+    var createVirtualMonetizationEventResult: PinpointEvent?
+    var submitEventsResult: Result<[PinpointEvent], Error>?
 
     public init() {}
 
-    public func getEscapeHatch() -> AWSPinpoint {
+    public func getEscapeHatch() -> PinpointClientProtocol {
         escapeHatchCalled += 1
-        return AWSPinpoint()
+        return try! PinpointClient(region: "us-east-1")
     }
 }
 
@@ -97,41 +98,42 @@ extension MockAWSPinpoint {
         XCTAssertEqual(updateEndpointProfileCalled, 1)
     }
 
-    public func verifyUpdate(_ endpointProfile: AWSPinpointEndpointProfile) {
-        XCTAssertEqual(updateEndpointProfileCalled, 1)
-        XCTAssertNotNil(updateEndpointProfileValue)
-        guard let actualEndpointProfile = updateEndpointProfileValue else {
-            XCTFail("actual EndpointProfile is nil")
-            return
-        }
-
-        if endpointProfile.location != nil {
-            guard let actualLocation = actualEndpointProfile.location else {
-                XCTFail("actual Location is nil")
-                return
-            }
-            let expectedLocation = endpointProfile.location!
-            XCTAssertEqual(actualLocation.latitude, expectedLocation.latitude)
-            XCTAssertEqual(actualLocation.longitude, expectedLocation.longitude)
-            XCTAssertEqual(actualLocation.postalCode, expectedLocation.postalCode)
-            XCTAssertEqual(actualLocation.city, expectedLocation.city)
-            XCTAssertEqual(actualLocation.region, expectedLocation.region)
-            XCTAssertEqual(actualLocation.country, expectedLocation.country)
-        } else {
-            XCTAssertNil(actualEndpointProfile.location)
-        }
-
-        if endpointProfile.user != nil {
-            guard let actualUser = actualEndpointProfile.user else {
-                XCTFail("actual User is nil")
-                return
-            }
-
-            let expectedUser = endpointProfile.user
-            XCTAssertEqual(actualUser.userId, expectedUser?.userId)
-        } else {
-            XCTAssertNil(actualEndpointProfile.user)
-        }
+    public func verifyUpdate(_ endpointProfile: PinpointEndpointProfile) {
+        fatalError("Not implemented")
+//        XCTAssertEqual(updateEndpointProfileCalled, 1)
+//        XCTAssertNotNil(updateEndpointProfileValue)
+//        guard let actualEndpointProfile = updateEndpointProfileValue else {
+//            XCTFail("actual EndpointProfile is nil")
+//            return
+//        }
+//
+//        if endpointProfile.location != nil {
+//            guard let actualLocation = actualEndpointProfile.location else {
+//                XCTFail("actual Location is nil")
+//                return
+//            }
+//            let expectedLocation = endpointProfile.location!
+//            XCTAssertEqual(actualLocation.latitude, expectedLocation.latitude)
+//            XCTAssertEqual(actualLocation.longitude, expectedLocation.longitude)
+//            XCTAssertEqual(actualLocation.postalCode, expectedLocation.postalCode)
+//            XCTAssertEqual(actualLocation.city, expectedLocation.city)
+//            XCTAssertEqual(actualLocation.region, expectedLocation.region)
+//            XCTAssertEqual(actualLocation.country, expectedLocation.country)
+//        } else {
+//            XCTAssertNil(actualEndpointProfile.location)
+//        }
+//
+//        if endpointProfile.user != nil {
+//            guard let actualUser = actualEndpointProfile.user else {
+//                XCTFail("actual User is nil")
+//                return
+//            }
+//
+//            let expectedUser = endpointProfile.user
+//            XCTAssertEqual(actualUser.userId, expectedUser?.userId)
+//        } else {
+//            XCTAssertNil(actualEndpointProfile.user)
+//        }
     }
 
     public func verifyAddAttribute(_ theValue: [Any], forKey theKey: String) {
@@ -146,7 +148,7 @@ extension MockAWSPinpoint {
         XCTAssertEqual(removeAttributeKey, theKey)
     }
 
-    public func verifyAddMetric(_ theValue: NSNumber, forKey theKey: String) {
+    public func verifyAddMetric(_ theValue: Double, forKey theKey: String) {
         XCTAssertEqual(addMetricCalled, 1)
         XCTAssertEqual(addMetricValue, theValue)
         XCTAssertEqual(addMetricKey, theKey)
@@ -174,14 +176,14 @@ extension MockAWSPinpoint {
         XCTAssertEqual(addGlobalAttributeEventType, theEventType)
     }
 
-    public func verifyAddGlobalMetric(_ theValue: NSNumber, forKey theKey: String) {
+    public func verifyAddGlobalMetric(_ theValue: Double, forKey theKey: String) {
         XCTAssertEqual(addGlobalMetricCalled, 1)
 
         XCTAssertEqual(addGlobalMetricValue, theValue)
         XCTAssertEqual(addGlobalMetricKey, theKey)
     }
 
-    public func verifyAddGlobalMetric(_ theValue: NSNumber, forKey theKey: String, forEventType theEventType: String) {
+    public func verifyAddGlobalMetric(_ theValue: Double, forKey theKey: String, forEventType theEventType: String) {
         XCTAssertEqual(addGlobalMetricCalled, 1)
 
         XCTAssertEqual(addGlobalMetricValue, theValue)
@@ -212,7 +214,7 @@ extension MockAWSPinpoint {
         XCTAssertEqual(removeglobalMetricEventType, theEventType)
     }
 
-    public func verifyRecord(_ theEvent: AWSPinpointEvent) {
+    public func verifyRecord(_ theEvent: PinpointEvent) {
         XCTAssertEqual(recordCalled, 1)
         XCTAssertEqual(recordEvent, theEvent)
     }

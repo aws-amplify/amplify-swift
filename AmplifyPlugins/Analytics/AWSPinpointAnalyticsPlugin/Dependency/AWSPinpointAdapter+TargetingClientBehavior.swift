@@ -29,7 +29,7 @@ extension AWSPinpointAdapter: AWSPinpointTargetingClientBehavior {
        pinpoint.targetingClient.removeAttributes(forKey: key)
     }
 
-    func addMetric(_ metric: Float, forKey key: String) {
+    func addMetric(_ metric: Double, forKey key: String) {
         pinpoint.targetingClient.addMetric(metric, forKey: key)
     }
 

@@ -80,6 +80,17 @@ class PinpointEvent {
     }
 }
 
+// MARK: - Equatable
+extension PinpointEvent: Equatable {
+    static func == (lhs: PinpointEvent, rhs: PinpointEvent) -> Bool {
+        return lhs.eventType == rhs.eventType
+        && lhs.eventTimestamp == rhs.eventTimestamp
+        && lhs.session == rhs.session
+        && lhs.attributes == rhs.attributes
+        && lhs.metrics == rhs.metrics
+    }
+}
+
 // MARK: - DefaultLogger
 extension PinpointEvent: DefaultLogger {}
 

@@ -41,8 +41,8 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             let config = try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)
             XCTAssertNotNil(config)
             XCTAssertEqual(config.appId, testAppId)
-            XCTAssertEqual(config.region, testRegion.aws_regionTypeValue())
-            XCTAssertEqual(config.targetingRegion, testRegion.aws_regionTypeValue())
+            XCTAssertEqual(config.region, testRegion)
+            XCTAssertEqual(config.targetingRegion, testRegion)
             XCTAssertEqual(config.autoFlushEventsInterval,
                            AWSPinpointAnalyticsPluginConfiguration.defaultAutoFlushEventsInterval)
             XCTAssertEqual(config.trackAppSessions,
@@ -66,8 +66,8 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             let config = try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)
             XCTAssertNotNil(config)
             XCTAssertEqual(config.appId, testAppId)
-            XCTAssertEqual(config.region, testRegion.aws_regionTypeValue())
-            XCTAssertEqual(config.targetingRegion, testRegion.aws_regionTypeValue())
+            XCTAssertEqual(config.region, testRegion)
+            XCTAssertEqual(config.targetingRegion, testRegion)
             XCTAssertEqual(config.autoFlushEventsInterval, testAutoFlushInterval)
             XCTAssertEqual(config.trackAppSessions,
                            AWSPinpointAnalyticsPluginConfiguration.defaultTrackAppSession)
@@ -109,8 +109,8 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             let config = try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)
             XCTAssertNotNil(config)
             XCTAssertEqual(config.appId, testAppId)
-            XCTAssertEqual(config.region, testRegion.aws_regionTypeValue())
-            XCTAssertEqual(config.targetingRegion, testRegion.aws_regionTypeValue())
+            XCTAssertEqual(config.region, testRegion)
+            XCTAssertEqual(config.targetingRegion, testRegion)
             XCTAssertEqual(config.autoFlushEventsInterval,
                            AWSPinpointAnalyticsPluginConfiguration.defaultAutoFlushEventsInterval)
             XCTAssertEqual(config.trackAppSessions, testTrackAppSession)
@@ -133,8 +133,8 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             let config = try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)
             XCTAssertNotNil(config)
             XCTAssertEqual(config.appId, testAppId)
-            XCTAssertEqual(config.region, testRegion.aws_regionTypeValue())
-            XCTAssertEqual(config.targetingRegion, testRegion.aws_regionTypeValue())
+            XCTAssertEqual(config.region, testRegion)
+            XCTAssertEqual(config.targetingRegion, testRegion)
             XCTAssertEqual(config.autoFlushEventsInterval,
                            AWSPinpointAnalyticsPluginConfiguration.defaultAutoFlushEventsInterval)
             XCTAssertEqual(config.trackAppSessions, AWSPinpointAnalyticsPluginConfiguration.defaultTrackAppSession)
@@ -314,7 +314,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
         let pinpointAnalyticsPluginConfiguration = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.appIdConfigKey, appId),
-            (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, "invalidRegion")
+            (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, "")
         )
         let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
@@ -327,7 +327,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.invalidRegion.errorDescription)
+            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.emptyRegion.errorDescription)
         }
     }
 
@@ -402,7 +402,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
 
     func testConfigureThrowsErrorForInvalidPinpointTargetingRegionValue() {
         let regionConfiguration = JSONValue(dictionaryLiteral:
-            (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, "invalidRegion"))
+            (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, ""))
         let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
@@ -414,7 +414,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.invalidRegion.errorDescription)
+            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.emptyRegion.errorDescription)
         }
     }
 
