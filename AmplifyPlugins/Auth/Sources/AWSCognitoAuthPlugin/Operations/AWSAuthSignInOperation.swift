@@ -76,20 +76,20 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             case .signedOut:
                 self.sendSignInEvent()
 
-            case .signingUp(let configuration, _):
-                self.sendCancelSignUpEvent(configuration)
+            case .signingUp:
+                self.sendCancelSignUpEvent()
 
-            case .signedIn(_, let signedInData):
+            case .signedIn(let signedInData):
                 let cognitoTokens = signedInData.cognitoUserPoolTokens
                 self.storeUserPoolTokens(cognitoTokens)
                 self.cancelToken(token)
 
-            case .error(_, let error):
+            case .error(let error):
                 self.dispatch(AuthError.unknown("Sign in reached an error state", error))
                 self.cancelToken(token)
                 self.finish()
 
-            case .signingIn(_, let signInState):
+            case .signingIn(let signInState):
                 if case .signingInWithSRP(let srpState, _) = signInState,
                    case .error(let signInError) = srpState {
                     if signInError.isUserUnConfirmed {
@@ -150,9 +150,8 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
         authStateMachine.send(event)
     }
 
-    private func sendCancelSignUpEvent(_ configuration: AuthConfiguration) {
-        let event = AuthenticationEvent(
-            eventType: .cancelSignUp(configuration))
+    private func sendCancelSignUpEvent() {
+        let event = AuthenticationEvent(eventType: .cancelSignUp)
         authStateMachine.send(event)
     }
 

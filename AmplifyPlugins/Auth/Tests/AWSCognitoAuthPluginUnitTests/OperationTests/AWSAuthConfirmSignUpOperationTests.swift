@@ -23,9 +23,7 @@ class AWSAuthConfirmSignUpOperationTests: XCTestCase {
 
     var queue: OperationQueue?
 
-    let initialState = AuthState.configured(
-        .signedOut(Defaults.makeDefaultAuthConfigData(), .init(lastKnownUserName: nil)),
-        .configured)
+    let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
 
     override func setUp() {
         super.setUp()
