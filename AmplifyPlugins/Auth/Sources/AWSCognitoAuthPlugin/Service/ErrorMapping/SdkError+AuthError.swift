@@ -64,9 +64,14 @@ extension SdkError: AuthErrorConvertible {
             return AuthError.notAuthorized(message, "Check if you are authorized to perform the request")
 
         case .retryError(let error):
-            return AuthError.service(error.localizedDescription,
-                                     "",
-                                     AWSCognitoAuthError.network)
+            if let authError = error as? AuthErrorConvertible {
+                return authError.authError
+            } else {
+                return AuthError.service(error.localizedDescription,
+                                         "",
+                                         AWSCognitoAuthError.network)
+
+            }
 
         case .unknownError(let message):
             return AuthError.unknown(message, clientError)

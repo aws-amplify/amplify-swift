@@ -29,7 +29,6 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     typealias MockRespondToAuthChallengeResponse = (RespondToAuthChallengeInput) async throws
     -> RespondToAuthChallengeOutputResponse
 
-
     let mockSignUpResponse: MockSignUpResponse?
     let mockRevokeTokenResponse: MockRevokeTokenResponse?
     let mockInitiateAuthResponse: MockInitiateAuthResponse?
@@ -52,7 +51,6 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         self.mockConfirmSignUpResponse = mockConfirmSignUpResponse
         self.mockRespondToAuthChallengeResponse = mockRespondToAuthChallengeResponse
     }
-
 
     /// Throws InitiateAuthOutputError
     func initiateAuth(input: InitiateAuthInput) async throws -> InitiateAuthOutputResponse {
