@@ -88,32 +88,17 @@ class EventRecorder: AnalyticsEventRecording {
             let eventRequest = PinpointClientTypes.EventsRequest(batchItem: batchItem)
             let putEventsInput = PutEventsInput(applicationId: self.appId, eventsRequest: eventRequest)
             
-            //TODO: use new async/await api from new Swift SDK when it's available
-            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                    pinpointClient.putEvents(input: putEventsInput, completion: { result in
-                        switch result {
-                        case .success(_):
-                            do {
-                                try self.storage.deleteEvent(eventId: event.id)
-                                self.submittedEvents.append(event)
-                                continuation.resume()
-                            } catch {
-                                continuation.resume(throwing: error)
-                            }
-                        case .failure(let sdkError):
-                            do {
-                                if sdkError.isRetryable {
-                                    try self.storage.incrementEventRetry(eventId: event.id)
-                                } else {
-                                    try self.storage.setDirtyEvent(eventId: event.id)
-                                }
-                                continuation.resume()
-                            } catch {
-                                continuation.resume(throwing: error)
-                            }
-                        }
-                    })
+            do {
+                _ = try await pinpointClient.putEvents(input: putEventsInput)
+                try self.storage.deleteEvent(eventId: event.id)
+                self.submittedEvents.append(event)
+            } catch {
+                if let sdkError = error as? SdkError<Any>, sdkError.isRetryable {
+                    try self.storage.incrementEventRetry(eventId: event.id)
+                } else {
+                    try self.storage.setDirtyEvent(eventId: event.id)
                 }
+            }
         }
     }
 }

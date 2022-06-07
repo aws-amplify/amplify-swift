@@ -11,10 +11,10 @@ import Amplify
 
 class AnalyticsClient: InternalPinpointClient {
     private var eventRecorder: AnalyticsEventRecording?
-    private lazy var globalAttributes: [String: String] = [:]
-    private lazy var globalMetrics: [String: Double] = [:]
-    private lazy var eventTypeAttributes: [String: [String: String]] = [:]
-    private lazy var eventTypeMetrics: [String: [String: Double]] = [:]
+    private lazy var globalAttributes: PinpointEventAttributes = [:]
+    private lazy var globalMetrics: PinpointEventMetrics = [:]
+    private lazy var eventTypeAttributes: [String: PinpointEventAttributes] = [:]
+    private lazy var eventTypeMetrics: [String: PinpointEventMetrics] = [:]
     
     init(
         context: PinpointContext,
@@ -25,8 +25,8 @@ class AnalyticsClient: InternalPinpointClient {
     }
     
     convenience override init(context: PinpointContext) {
-        if let storage = try? AnalyticsEventSQLStorage(dbAdapter: SQLiteLocalStorageAdapter(prefixPath: Constants.EventRecorderStoragePathPrefix, databaseName: context.configuration.appId)),
-           let eventRecorder = try? EventRecorder(appId: context.configuration.appId,storage: storage,pinpointClient: context.pinpointClient) {
+        if let storage = try? AnalyticsEventSQLStorage(dbAdapter: SQLiteLocalStorageAdapter(prefixPath: Constants.eventRecorderStoragePathPrefix, databaseName: context.configuration.appId)),
+           let eventRecorder = try? EventRecorder(appId: context.configuration.appId, storage: storage,pinpointClient: context.pinpointClient) {
             self.init(context: context, eventRecorder: eventRecorder)
         } else {
             self.init(context: context)
@@ -202,8 +202,11 @@ extension AnalyticsClient {
             }
         }
         
-        static let EventRecorderStoragePathPrefix = "com/amazonaws/AWSPinpointRecorder/"
+        static let eventRecorderStoragePathPrefix = "com/amazonaws/AWSPinpointRecorder/"
     }
+    
+    typealias PinpointEventAttributes = [String: String]
+    typealias PinpointEventMetrics = [String: Double]
 }
 
 extension Date {
