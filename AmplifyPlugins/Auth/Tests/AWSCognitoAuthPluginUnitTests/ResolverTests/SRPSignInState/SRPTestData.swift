@@ -269,4 +269,9 @@ extension InitiateAuthOutputResponse {
                  "129c2eef61d22994ad70c96d286e6e8c1abc65e7060ba69cb0d8c4a31cc08cc7d76ef9" +
                  "2f757b2a34e7ae236aadbced9bb7a4a06e67da3a084833e0f3a0b903af0a74816031",
         "USERNAME": "royji2"]
+
+    static let validSMSChallengeParams: [String: String] = [
+        "CODE_DELIVERY_DELIVERY_MEDIUM": "SMS",
+        "CODE_DELIVERY_DESTINATION": "123"
+    ]
 }

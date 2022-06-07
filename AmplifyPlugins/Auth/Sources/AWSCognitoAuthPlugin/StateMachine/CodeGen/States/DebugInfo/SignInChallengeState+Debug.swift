@@ -10,6 +10,15 @@ import Foundation
 extension SignInChallengeState {
 
     var debugDictionary: [String: Any] {
-        return [type: ""]
+        var additionalMetadataDictionary: [String: Any] = [:]
+        switch self {
+
+        case .waitingForAnswer(let respondAuthChallenge),
+                .verifying(let respondAuthChallenge, _),
+                .error(let respondAuthChallenge):
+            additionalMetadataDictionary = respondAuthChallenge.debugDictionary
+        default: additionalMetadataDictionary = [:]
+        }
+        return [type: additionalMetadataDictionary]
     }
 }

@@ -36,4 +36,9 @@ extension RespondToAuthChallenge {
                                        attributeKey: nil)
     }
 
+    var debugDictionary: [String: Any] {
+        return ["challenge": challenge,
+                "username": username]
+    }
+
 }
