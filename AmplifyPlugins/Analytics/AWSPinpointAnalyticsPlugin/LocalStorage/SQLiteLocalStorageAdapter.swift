@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 import SQLite
 
@@ -15,7 +16,7 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
     
     /// Initializer
     /// - Parameter databaseName: The database name
-    convenience init(databaseName: String) throws {
+    convenience init(prefixPath: String = "", databaseName: String) throws {
         var dbFilePath = SQLiteLocalStorageAdapter.getDbFilePath(databaseName: databaseName)
         let connection: Connection
         do {
@@ -46,6 +47,7 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
     /// Initilizes the database and create the table if it doesn't already exists
     /// - Parameter connection: SQLite connection
     private func initializeDatabase(connection: Connection) throws {
+        log.debug("Initializing database connection: \(String(describing: connection))")
         let databaseInitializationStatement = """
         pragma auto_vacuum = full;
         pragma encoding = "utf-8";
@@ -59,11 +61,11 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
     /// Get the database file path constructed by the database name and the Documents directory
     /// - Parameter databaseName: The database file name
     /// - Returns: URL containing the location of the database
-    internal static func getDbFilePath(databaseName: String) -> URL {
+    internal static func getDbFilePath(prefixPath: String = "", databaseName: String) -> URL {
         guard let documentsPath = getDocumentPath() else {
             preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
         }
-        return documentsPath.appendingPathComponent("\(databaseName).db")
+        return documentsPath.appendingPathComponent(prefixPath).appendingPathComponent("\(databaseName).db")
     }
     
     /// Get document path
@@ -104,3 +106,5 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
         }
     }
 }
+
+extension SQLiteLocalStorageAdapter: DefaultLogger { }
