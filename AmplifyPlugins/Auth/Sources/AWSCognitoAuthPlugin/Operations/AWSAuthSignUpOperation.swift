@@ -44,8 +44,8 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation, AuthSignUpOperation
             switch authenticationState {
             case .signedOut:
                 self?.doSignUp()
-            case .signingUp(let authConfig, _):
-                let event = AuthenticationEvent(eventType: .cancelSignUp(authConfig))
+            case .signingUp:
+                let event = AuthenticationEvent(eventType: .cancelSignUp)
                 self?.stateMachine.send(event)
                 self?.doSignUp()
             default:
@@ -74,7 +74,7 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation, AuthSignUpOperation
             switch authNState {
             case .signedOut:
                 self.sendSignUpEvent()
-            case .signingUp(_, let signUpState):
+            case .signingUp(let signUpState):
 
                 switch signUpState {
                 case .signingUpInitiated(_, response: let response):

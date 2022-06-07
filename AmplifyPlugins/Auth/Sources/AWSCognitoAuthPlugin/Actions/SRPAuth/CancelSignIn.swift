@@ -25,7 +25,7 @@ struct CancelSignIn: Action {
 
             return
         }
-        let event = AuthenticationEvent(eventType: .cancelSignIn(environment.configuration))
+        let event = AuthenticationEvent(eventType: .cancelSignIn)
         logVerbose("\(#fileID) Sending event \(event)", environment: environment)
         dispatcher.send(event)
 
