@@ -20,13 +20,13 @@ import ClientRuntime
 import AWSCognitoIdentityProvider
 
 class AWSAuthSignUpOperationTests: XCTestCase {
-    
+
     var queue: OperationQueue?
-    
+
     let initialState = AuthState.configured(
         .signedOut(Defaults.makeDefaultAuthConfigData(), .init(lastKnownUserName: nil)),
         .configured)
-    
+
     override func setUp() {
         super.setUp()
         queue = OperationQueue()
@@ -37,21 +37,20 @@ class AWSAuthSignUpOperationTests: XCTestCase {
         Amplify.reset()
         sleep(2)
     }
-    
+
     func testSignUpOperationSuccess() throws {
         let exp = expectation(description: #function)
         let functionExpectation = expectation(description: "API call should be invoked")
-        
+
         let signUp: MockIdentityProvider.MockSignUpResponse = { _ in
             functionExpectation.fulfill()
             return .init(codeDeliveryDetails: nil, userConfirmed: true, userSub: UUID().uuidString)
         }
-        
+
         let request = AuthSignUpRequest(username: "jeffb",
                                         password: "Valid&99",
                                         options: AuthSignUpRequest.Options())
-        
-        
+
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
             userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
@@ -66,7 +65,7 @@ class AWSAuthSignUpOperationTests: XCTestCase {
         }
         queue?.addOperation(operation)
         wait(for: [exp, functionExpectation], timeout: 1)
-        
+
     }
 
     /// Given: Configured AuthState machine
@@ -80,11 +79,11 @@ class AWSAuthSignUpOperationTests: XCTestCase {
             functionExpectation.fulfill()
             throw try SignUpOutputError(httpResponse: MockHttpResponse.ok)
         }
-        
+
         let request = AuthSignUpRequest(username: "jeffb",
                                         password: "Valid&99",
                                         options: AuthSignUpRequest.Options())
-        
+
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
             userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
@@ -137,4 +136,3 @@ class AWSAuthSignUpOperationTests: XCTestCase {
         wait(for: [exp, functionExpectation], timeout: 1)
     }
 }
-
