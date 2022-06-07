@@ -69,7 +69,7 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
             }
 
             switch authNState {
-            case .signingUp(_, let signUpState):
+            case .signingUp(let signUpState):
                 switch signUpState {
                 case .signedUp:
                     self.dispatch(result: .success(AuthSignUpResult(.done)))

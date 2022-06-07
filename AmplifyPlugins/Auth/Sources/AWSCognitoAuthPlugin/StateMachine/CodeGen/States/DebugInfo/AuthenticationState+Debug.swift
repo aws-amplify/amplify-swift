@@ -16,32 +16,22 @@ extension AuthenticationState: CustomDebugDictionaryConvertible {
         case .configured:
             additionalMetadataDictionary = [:]
 
-        case .signingOut(let authenticationConfiguration, let signOutState):
-            additionalMetadataDictionary = authenticationConfiguration.debugDictionary.merging(
-                signOutState.debugDictionary, uniquingKeysWith: {$1}
-            )
+        case .signingOut(let signOutState):
+            additionalMetadataDictionary = signOutState.debugDictionary
 
-        case .signedOut(let authenticationConfiguration, let signedOutData):
-            additionalMetadataDictionary = authenticationConfiguration.debugDictionary.merging(
-                signedOutData.debugDictionary, uniquingKeysWith: {$1}
-            )
+        case .signedOut(let signedOutData):
+            additionalMetadataDictionary = signedOutData.debugDictionary
 
-        case .signingUp(let authenticationConfiguration, let signUpState):
-            additionalMetadataDictionary = authenticationConfiguration.debugDictionary.merging(
-                signUpState.debugDictionary, uniquingKeysWith: {$1}
-            )
+        case .signingUp(let signUpState):
+            additionalMetadataDictionary = signUpState.debugDictionary
 
-        case .signingIn(let authenticationConfiguration, let signInState):
-            additionalMetadataDictionary = authenticationConfiguration.debugDictionary.merging(
-                signInState.debugDictionary, uniquingKeysWith: {$1}
-            )
+        case .signingIn(let signInState):
+            additionalMetadataDictionary = signInState.debugDictionary
 
-        case .signedIn(let authenticationConfiguration, let signedInData):
-            additionalMetadataDictionary = authenticationConfiguration.debugDictionary.merging(
-                signedInData.debugDictionary, uniquingKeysWith: {$1}
-            )
+        case .signedIn(let signedInData):
+            additionalMetadataDictionary = signedInData.debugDictionary
 
-        case .error(_, let error):
+        case .error(let error):
             additionalMetadataDictionary = [
                 "Error": error
             ]

@@ -5,12 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-//// Copyright Amazon.com Inc. or its affiliates.
-// All Rights Reserved.
-//
-// SPDX-License-Identifier: Apache-2.0
-//
-
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
@@ -23,9 +17,7 @@ class AWSAuthSignUpOperationTests: XCTestCase {
 
     var queue: OperationQueue?
 
-    let initialState = AuthState.configured(
-        .signedOut(Defaults.makeDefaultAuthConfigData(), .init(lastKnownUserName: nil)),
-        .configured)
+    let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
 
     override func setUp() {
         super.setUp()
@@ -117,9 +109,7 @@ class AWSAuthSignUpOperationTests: XCTestCase {
                                         password: "Valid&99",
                                         options: AuthSignUpRequest.Options())
 
-        let initialState = AuthState.configured(
-            .signingUp(Defaults.makeDefaultAuthConfigData(), .notStarted),
-            .configured)
+        let initialState = AuthState.configured(.signingUp(.notStarted), .configured)
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
             userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
