@@ -14,7 +14,7 @@ struct AuthenticationEvent: StateMachineEvent {
         case configure(AuthConfiguration, AmplifyCredentials?)
 
         /// Emitted at startup when the Authentication system finished configuring
-        case configured(AuthConfiguration)
+        case configured
 
         /// Emitted after configuration, when the system restores persisted state and
         /// resolves the initial state
@@ -31,10 +31,10 @@ struct AuthenticationEvent: StateMachineEvent {
         case signInRequested(SignInEventData)
 
         /// Emitted when we should cancel the signIn
-        case cancelSignIn(AuthConfiguration)
+        case cancelSignIn
 
         /// Emitted when we should cancel the signIn
-        case cancelSignUp(AuthConfiguration)
+        case cancelSignUp
 
         /// Emitted when a user sign out is requested
         case signOutRequested(SignOutEventData)

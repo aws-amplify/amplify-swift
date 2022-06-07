@@ -21,7 +21,7 @@ extension AuthenticationEvent {
 
     static let configuredTest = AuthenticationEvent(
         id: "configuredTest",
-        eventType: .configured(.testData)
+        eventType: .configured
     )
 
     static let initializedSignedInTest = AuthenticationEvent(

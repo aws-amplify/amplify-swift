@@ -1,8 +1,8 @@
 //
-//  AWSAuthCognitoSessionTests.swift
-//  
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Singh, Harshdeep on 2022-04-28.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 @testable import AWSCognitoAuthPlugin
