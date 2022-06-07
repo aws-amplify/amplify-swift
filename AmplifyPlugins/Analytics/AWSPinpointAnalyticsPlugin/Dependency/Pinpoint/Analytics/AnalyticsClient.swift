@@ -7,19 +7,32 @@
 
 import Foundation
 import StoreKit
+import Amplify
 
 actor AnalyticsClient: InternalPinpointClient {
     private let eventRecorder: AnalyticsEventRecording
     unowned let context: PinpointContext
-    private lazy var globalAttributes: [String: String] = [:]
-    private lazy var globalMetrics: [String: Double] = [:]
-    private lazy var eventTypeAttributes: [String: [String: String]] = [:]
-    private lazy var eventTypeMetrics: [String: [String: Double]] = [:]
+    private lazy var globalAttributes: PinpointEventAttributes = [:]
+    private lazy var globalMetrics: PinpointEventMetrics = [:]
+    private lazy var eventTypeAttributes: [String: PinpointEventAttributes] = [:]
+    private lazy var eventTypeMetrics: [String: PinpointEventMetrics] = [:]
     
-    init(eventRecorder: AnalyticsEventRecording = EventRecorder(),
-         context: PinpointContext) {
+    init(
+        context: PinpointContext,
+        eventRecorder: AnalyticsEventRecording?
+    ) {
         self.eventRecorder = eventRecorder
         self.context = context
+    }
+    
+    convenience override init(context: PinpointContext) {
+        if let storage = try? AnalyticsEventSQLStorage(dbAdapter: SQLiteLocalStorageAdapter(prefixPath: Constants.eventRecorderStoragePathPrefix, databaseName: context.configuration.appId)),
+           let eventRecorder = try? EventRecorder(appId: context.configuration.appId, storage: storage,pinpointClient: context.pinpointClient) {
+            self.init(context: context, eventRecorder: eventRecorder)
+        } else {
+            self.init(context: context)
+            log.error("Analytics Client missing event recorder")
+        }
     }
     
     // MARK: - Attributes & Metrics
@@ -156,14 +169,21 @@ actor AnalyticsClient: InternalPinpointClient {
             event.addMetric(metric, forKey: key)
         }
 
-        try await eventRecorder.save(event)
+        try eventRecorder?.save(event)
     }
     
     @discardableResult
     func submitEvents() async throws -> [PinpointEvent] {
+        guard let eventRecorder = eventRecorder else {
+            log.error("Analytics Client missing event recorder when submitting events")
+            return []
+        }
+
         return try await eventRecorder.submitAllEvents()
     }
 }
+
+extension AnalyticsClient: DefaultLogger { }
 
 extension AnalyticsClient {
     private struct Constants {
@@ -182,7 +202,12 @@ extension AnalyticsClient {
                 static let transactionId = "_transaction_id"
             }
         }
+        
+        static let eventRecorderStoragePathPrefix = "com/amazonaws/AWSPinpointRecorder/"
     }
+    
+    typealias PinpointEventAttributes = [String: String]
+    typealias PinpointEventMetrics = [String: Double]
 }
 
 extension Date {

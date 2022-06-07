@@ -9,15 +9,18 @@ import Amplify
 import Foundation
 
 class PinpointEvent {
+    let id: String
     let eventType: String
     let eventTimestamp: Date.Millisecond
     let session: PinpointSession
     private(set) lazy var attributes: [String: String] = [:]
     private(set) lazy var metrics: [String: Double] = [:]
     
-    init(eventType: String,
+    init(id: String = UUID().uuidString,
+         eventType: String,
          eventTimestamp: Date.Millisecond = Date().utcTimeMillis,
          session: PinpointSession) {
+        self.id = id
         self.eventType = eventType
         self.eventTimestamp = eventTimestamp
         self.session = session
