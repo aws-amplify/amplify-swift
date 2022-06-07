@@ -1,0 +1,54 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches: 
+      - main
+      - dev-preview
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches:
+      - main
+      - dev-preview
+  schedule:
+    #        ┌───────────── minute (0 - 59)
+    #        │  ┌───────────── hour (0 - 23)
+    #        │  │ ┌───────────── day of the month (1 - 31)
+    #        │  │ │ ┌───────────── month (1 - 12 or JAN-DEC)
+    #        │  │ │ │ ┌───────────── day of the week (0 - 6 or SUN-SAT)
+    #        │  │ │ │ │
+    #        │  │ │ │ │
+    #        │  │ │ │ │
+    #        *  * * * *
+    - cron: '30 1 * * 0'
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['javascript']
+        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
+        # Learn more about CodeQL language support at https://git.io/codeql-language-support
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@822fe5ef9a15bd752ef127e9ff6eac38ec37dd9c
+      with:
+        languages: ${{ matrix.language }}
+        config-file: ./.github/codeql/config.yml
+        debug: true
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@822fe5ef9a15bd752ef127e9ff6eac38ec37dd9c
+
