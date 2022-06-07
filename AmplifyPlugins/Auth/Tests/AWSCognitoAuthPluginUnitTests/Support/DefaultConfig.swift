@@ -115,7 +115,7 @@ enum Defaults {
         identityPoolFactory: @escaping () throws -> CognitoIdentityBehavior = makeIdentity,
         userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool) ->
     AuthStateMachine {
-        
+
             let environment = makeDefaultAuthEnvironment(identityPoolFactory: identityPoolFactory,
                                                          userPoolFactory: userPoolFactory)
             return AuthStateMachine(resolver: AuthState.Resolver(),
