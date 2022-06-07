@@ -11,35 +11,51 @@ import StoreKit
 
 extension AWSPinpointAdapter: AWSPinpointAnalyticsClientBehavior {
     func addGlobalAttribute(_ theValue: String, forKey theKey: String) {
-        pinpoint.analyticsClient.addGlobalAttribute(theValue, forKey: theKey)
+        Task {
+            await pinpoint.analyticsClient.addGlobalAttribute(theValue, forKey: theKey)
+        }
     }
 
     func addGlobalAttribute(_ theValue: String, forKey theKey: String, forEventType theEventType: String) {
-        pinpoint.analyticsClient.addGlobalAttribute(theValue, forKey: theKey, forEventType: theEventType)
+        Task {
+            await pinpoint.analyticsClient.addGlobalAttribute(theValue, forKey: theKey, forEventType: theEventType)
+        }
     }
 
     func addGlobalMetric(_ theValue: Double, forKey theKey: String) {
-        pinpoint.analyticsClient.addGlobalMetric(theValue, forKey: theKey)
+        Task {
+            await pinpoint.analyticsClient.addGlobalMetric(theValue, forKey: theKey)
+        }
     }
 
     func addGlobalMetric(_ theValue: Double, forKey theKey: String, forEventType theEventType: String) {
-        pinpoint.analyticsClient.addGlobalMetric(theValue, forKey: theKey, forEventType: theEventType)
+        Task {
+            await pinpoint.analyticsClient.addGlobalMetric(theValue, forKey: theKey, forEventType: theEventType)
+        }
     }
 
     func removeGlobalAttribute(forKey theKey: String) {
-        pinpoint.analyticsClient.removeGlobalAttribute(forKey: theKey)
+        Task {
+            await pinpoint.analyticsClient.removeGlobalAttribute(forKey: theKey)
+        }
     }
 
     func removeGlobalAttribute(forKey theKey: String, forEventType _: String) {
-        pinpoint.analyticsClient.removeGlobalAttribute(forKey: theKey)
+        Task {
+            await pinpoint.analyticsClient.removeGlobalAttribute(forKey: theKey)
+        }
     }
 
     func removeGlobalMetric(forKey theKey: String) {
-        pinpoint.analyticsClient.removeGlobalMetric(forKey: theKey)
+        Task {
+            await pinpoint.analyticsClient.removeGlobalMetric(forKey: theKey)
+        }
     }
 
     func removeGlobalMetric(forKey theKey: String, forEventType theEventType: String) {
-        pinpoint.analyticsClient.removeGlobalMetric(forKey: theKey, forEventType: theEventType)
+        Task {
+            await pinpoint.analyticsClient.removeGlobalMetric(forKey: theKey, forEventType: theEventType)
+        }
     }
 
     func record(_ theEvent: PinpointEvent) async throws {
