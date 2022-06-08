@@ -335,7 +335,29 @@ let analyticsTargets: [Target] = [
         exclude: [
             "Resources/Info.plist"
         ]
-    )
+    ),
+    .testTarget(
+        name: "AWSPinpointAnalyticsPluginTests",
+        dependencies: [
+            "AWSPinpointAnalyticsPlugin",
+            "AmplifyTestCommon",
+            //"AWSPluginsTestCommon"
+        ],
+        path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPluginTests"
+    ),
+    .testTarget(
+        name: "AWSPinpointAnalyticsPluginIntegrationTests",
+        dependencies: [
+            "AWSPinpointAnalyticsPlugin",
+            "AWSCognitoAuthPlugin",
+            "AmplifyTestCommon"
+        ],
+        path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPluginIntegrationTests",
+        exclude: [
+            "README.md",
+            "Info.plist"
+        ]
+    ),
 ]
 
 let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets + geoTargets + analyticsTargets

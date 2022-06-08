@@ -8,6 +8,7 @@
 import AWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
 import Foundation
+import StoreKit
 
 extension MockAWSPinpoint: AWSPinpointAnalyticsClientBehavior {
     public func addGlobalAttribute(_ theValue: String, forKey theKey: String) {
@@ -25,14 +26,14 @@ extension MockAWSPinpoint: AWSPinpointAnalyticsClientBehavior {
         addGlobalAttributeEventType = theEventType
     }
 
-    public func addGlobalMetric(_ theValue: NSNumber, forKey theKey: String) {
+    public func addGlobalMetric(_ theValue: Double, forKey theKey: String) {
         addGlobalMetricCalled += 1
 
         addGlobalMetricValue = theValue
         addGlobalMetricKey = theKey
     }
 
-    public func addGlobalMetric(_ theValue: NSNumber, forKey theKey: String, forEventType theEventType: String) {
+    public func addGlobalMetric(_ theValue: Double, forKey theKey: String, forEventType theEventType: String) {
         addGlobalMetricCalled += 1
 
         addGlobalMetricValue = theValue
@@ -63,55 +64,62 @@ extension MockAWSPinpoint: AWSPinpointAnalyticsClientBehavior {
         removeglobalMetricEventType = theEventType
     }
 
-    public func record(_ theEvent: AWSPinpointEvent) -> AWSTask<AnyObject> {
+    public func record(_ theEvent: PinpointEvent) async throws {
         recordCalled += 1
         recordEvent = theEvent
 
-        return recordResult ?? AWSTask<AnyObject>.init(result: "" as AnyObject)
+        if case let .failure(error) = recordResult {
+            throw error
+        }
     }
 
-    public func createEvent(withEventType theEventType: String) -> AWSPinpointEvent {
+    public func createEvent(withEventType theEventType: String) -> PinpointEvent {
         createEventCalled += 1
         createEventEventType = theEventType
 
-        return createEventResult ?? AWSPinpointEvent()
+        return createEventResult ?? createEmptyEvent()
     }
 
     public func createAppleMonetizationEvent(with transaction: SKPaymentTransaction,
-                                             with product: SKProduct) -> AWSPinpointEvent {
+                                             with product: SKProduct) -> PinpointEvent {
         createAppleMonetizationEventCalled += 1
         createAppleMonetizationEventTransaction = transaction
         createAppleMonetizationEventProduct = product
 
-        return createAppleMonetizationEventResult ?? AWSPinpointEvent()
+        return createAppleMonetizationEventResult ?? createEmptyEvent()
     }
 
     public func createVirtualMonetizationEvent(withProductId theProductId: String,
                                                withItemPrice theItemPrice: Double,
                                                withQuantity theQuantity: Int,
-                                               withCurrency theCurrency: String) -> AWSPinpointEvent {
+                                               withCurrency theCurrency: String) -> PinpointEvent {
         createVirtualMonetizationEventCalled += 1
         createVirtualMonetizationEventProductId = theProductId
         createVirtualMonetizationEventItemPrice = theItemPrice
         createVirtualMonetizationEventQuantity = theQuantity
         createVirtualMonetizationEventCurrency = theCurrency
 
-        return createVirtualMonetizationEventResult ?? AWSPinpointEvent()
+        return createVirtualMonetizationEventResult ?? createEmptyEvent()
     }
 
-    public func submitEvents() -> AWSTask<AnyObject> {
+    public func submitEvents() async throws {
         submitEventsCalled += 1
-
-        return submitEventsResult ?? AWSTask<AnyObject>.init(result: "" as AnyObject)
     }
 
-    public func submitEvents(completionBlock: @escaping AWSPinpointCompletionBlock) -> AWSTask<AnyObject> {
+    public func submitEvents() async throws -> [PinpointEvent] {
         submitEventsCalled += 1
-
-        if let result = submitEventsResult {
-            _ = completionBlock(result)
+        switch submitEventsResult {
+        case .success(let result):
+            return result
+        case .failure(let error):
+            throw error
+        case .none:
+            return []
         }
-
-        return submitEventsResult ?? AWSTask<AnyObject>.init(result: "" as AnyObject)
+    }
+    
+    private func createEmptyEvent() -> PinpointEvent {
+        return PinpointEvent(eventType: "",
+                             session: PinpointSession(appId: "", uniqueId: ""))
     }
 }

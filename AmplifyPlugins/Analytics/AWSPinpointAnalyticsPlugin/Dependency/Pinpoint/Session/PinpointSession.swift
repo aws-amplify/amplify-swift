@@ -80,6 +80,15 @@ class PinpointSession: Codable {
     }
 }
 
+// MARK: - Equatable
+extension PinpointSession: Equatable {
+    static func == (lhs: PinpointSession, rhs: PinpointSession) -> Bool {
+        return lhs.sessionId == rhs.sessionId
+        && lhs.startTime == rhs.startTime
+        && lhs.stopTime == rhs.stopTime
+    }
+}
+
 extension PinpointSession {
     struct Constants {
         static let defaultSessionId = "00000000-00000000"
