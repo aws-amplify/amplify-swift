@@ -28,6 +28,9 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
 
     typealias MockRespondToAuthChallengeResponse = (RespondToAuthChallengeInput) async throws
     -> RespondToAuthChallengeOutputResponse
+    
+    typealias MockGetUserAttributeVerificationCodeOutputResponse = (GetUserAttributeVerificationCodeInput) async throws
+    -> GetUserAttributeVerificationCodeOutputResponse
 
     let mockSignUpResponse: MockSignUpResponse?
     let mockRevokeTokenResponse: MockRevokeTokenResponse?
@@ -35,6 +38,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     let mockGlobalSignOutResponse: MockGlobalSignOutResponse?
     let mockConfirmSignUpResponse: MockConfirmSignUpResponse?
     let mockRespondToAuthChallengeResponse: MockRespondToAuthChallengeResponse?
+    let mockGetUserAttributeVerificationCodeOutputResponse: MockGetUserAttributeVerificationCodeOutputResponse?
 
     init(
         mockSignUpResponse: MockSignUpResponse? = nil,
@@ -42,7 +46,8 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         mockInitiateAuthResponse: MockInitiateAuthResponse? = nil,
         mockGlobalSignOutResponse: MockGlobalSignOutResponse? = nil,
         mockConfirmSignUpResponse: MockConfirmSignUpResponse? = nil,
-        mockRespondToAuthChallengeResponse: MockRespondToAuthChallengeResponse? = nil
+        mockRespondToAuthChallengeResponse: MockRespondToAuthChallengeResponse? = nil,
+        mockGetUserAttributeVerificationCodeOutputResponse: MockGetUserAttributeVerificationCodeOutputResponse? = nil
     ) {
         self.mockSignUpResponse = mockSignUpResponse
         self.mockRevokeTokenResponse = mockRevokeTokenResponse
@@ -50,6 +55,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         self.mockGlobalSignOutResponse = mockGlobalSignOutResponse
         self.mockConfirmSignUpResponse = mockConfirmSignUpResponse
         self.mockRespondToAuthChallengeResponse = mockRespondToAuthChallengeResponse
+        self.mockGetUserAttributeVerificationCodeOutputResponse = mockGetUserAttributeVerificationCodeOutputResponse
     }
 
     /// Throws InitiateAuthOutputError
@@ -82,5 +88,9 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     /// Throws RevokeTokenOutputError
     func revokeToken(input: RevokeTokenInput) async throws -> RevokeTokenOutputResponse {
         return try await mockRevokeTokenResponse!(input)
+    }
+    
+    func getUserAttributeVerificationCode(input: GetUserAttributeVerificationCodeInput) async throws -> GetUserAttributeVerificationCodeOutputResponse {
+        return try await mockGetUserAttributeVerificationCodeOutputResponse!(input)
     }
 }

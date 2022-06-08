@@ -37,12 +37,20 @@ public extension AWSCognitoAuthPlugin {
     }
 
     func resendConfirmationCode(for attributeKey: AuthUserAttributeKey,
-                                       options: AuthAttributeResendConfirmationCodeOperation.Request.Options? = nil,
-                                       listener: AuthAttributeResendConfirmationCodeOperation.ResultListener?)
+                                options: AuthAttributeResendConfirmationCodeOperation.Request.Options? = nil,
+                                listener: AuthAttributeResendConfirmationCodeOperation.ResultListener?)
     -> AuthAttributeResendConfirmationCodeOperation {
-        //        let options = options ?? AuthAttributeResendConfirmationCodeRequest.Options()
-        //        let request = AuthAttributeResendConfirmationCodeRequest(attributeKey: attributeKey, options: options)
-        fatalError("Not implemented")
+        
+        let options = options ?? AuthAttributeResendConfirmationCodeRequest.Options()
+        let request = AuthAttributeResendConfirmationCodeRequest(attributeKey: attributeKey, options: options)
+        let operation = AWSAuthAttributeResendConfirmationCodeOperation(
+            request,
+            authStateMachine: authStateMachine,
+            credentialStoreStateMachine: credentialStoreStateMachine,
+            userPoolFactory: makeUserPool,
+            resultListener: listener)
+        queue.addOperation(operation)
+        return operation
     }
 
     func confirm(userAttribute: AuthUserAttributeKey,
