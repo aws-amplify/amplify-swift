@@ -12,8 +12,7 @@ import AWSCognitoIdentityProvider
 public class AWSAuthAttributeResendConfirmationCodeOperation: AmplifyOperation<
 AuthAttributeResendConfirmationCodeRequest,
 AuthCodeDeliveryDetails,
-AuthError
->, AuthAttributeResendConfirmationCodeOperation {
+AuthError>, AuthAttributeResendConfirmationCodeOperation {
     
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
     
@@ -70,11 +69,11 @@ AuthError
             userPoolService = try userPoolFactory()
         }
         catch let error {
-            self.dispatch(AuthError.configuration(
+            let error = AuthError.configuration(
                 "Unable to create a Swift SDK user pool service",
                 AuthPluginErrorConstants.configurationError,
                 error)
-            )
+            self.dispatch(error)
             return
         }
         
@@ -96,12 +95,13 @@ AuthError
             }
             switch result {
             case .failure(let error):
-                print(error)
-                self.dispatch(AuthError.unknown("", error))
+                self.dispatch(error.authError)
             case .success(let result):
-                print(result)
                 guard let deliveryDetails = result.codeDeliveryDetails?.toAuthCodeDeliveryDetails() else {
-                    self.dispatch(AuthError.unknown("", nil))
+                    let authError = AuthError.service("Unable to get Auth code delivery details",
+                                                      AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
+                                                      nil)
+                    self.dispatch(authError)
                     return
                 }
                 self.dispatch(deliveryDetails)
@@ -110,14 +110,15 @@ AuthError
     }
     
     private func dispatch(_ result: AuthCodeDeliveryDetails) {
-        finish()
         let result = OperationResult.success(result)
         dispatch(result: result)
+        finish()
     }
     
     private func dispatch(_ error: AuthError) {
-        finish()
         let result = OperationResult.failure(error)
         dispatch(result: result)
+        Amplify.log.error(error: error)
+        finish()
     }
 }

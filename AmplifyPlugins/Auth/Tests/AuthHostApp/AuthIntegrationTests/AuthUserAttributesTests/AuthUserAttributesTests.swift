@@ -23,7 +23,6 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         Amplify.reset()
     }
     
-    /*
     /// Test updating the user's email attribute.
     /// Internally, Cognito's `UpdateUserAttributes` API will be called with metadata as clientMetadata.
     /// The configured lambda trigger will invoke the custom message lambda with the client metadata payload. See
@@ -39,11 +38,12 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     func testSuccessfulUpdateEmailAttribute() throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
+        let updatedEmail = "\(username)@amazon.com"
 
         let signInExpectation = expectation(description: "SignIn operation should complete")
         AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,
-                                               email: email) { didSucceed, error in
+                                               email: defaultTestEmail) { didSucceed, error in
             signInExpectation.fulfill()
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
@@ -52,7 +52,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         let updateExpectation = expectation(description: "Update operation should complete")
         let pluginOptions = AWSUpdateUserAttributeOptions(metadata: ["mydata": "myvalue"])
         let options = AuthUpdateUserAttributeRequest.Options(pluginOptions: pluginOptions)
-        _ = Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: email), options: options) { result in
+        _ = Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: updatedEmail), options: options) { result in
             switch result {
             case .success:
                 updateExpectation.fulfill()
@@ -75,14 +75,15 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     /// - Then:
     ///    - The request should be successful and the email specified should receive a second confirmation code
     ///
-    func testSuccessfulResendConfirmationCode() throws {
+    func testSuccessfulResendConfirmationCodeWithUpdatedEmail() throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-
+        let updatedEmail = "\(username)@amazon.com"
+        
         let signInExpectation = expectation(description: "SignIn operation should complete")
         AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,
-                                               email: email) { didSucceed, error in
+                                               email: defaultTestEmail) { didSucceed, error in
             signInExpectation.fulfill()
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
@@ -90,7 +91,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
 
         let updateExpectation = expectation(description: "Update operation should complete")
 
-        _ = Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: email2)) { result in
+        _ = Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: updatedEmail)) { result in
             switch result {
             case .success:
                 updateExpectation.fulfill()
@@ -115,9 +116,6 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         }
         wait(for: [resendExpectation], timeout: networkTimeout)
     }
-    */
-
-    
     
     /// Test resending code for the user's updated email attribute.
     /// Internally, Cognito's `GetUserAttributeVerificationCode` API will be called with metadata as clientMetadata.
