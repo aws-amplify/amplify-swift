@@ -203,4 +203,17 @@ class ModelGraphQLTests: XCTestCase {
         XCTAssertEqual(graphQLInput["postWithCompositeKeyCommentsId"] as? String, parent.id)
         XCTAssertEqual(graphQLInput["postWithCompositeKeyCommentsTitle"] as? String, parent.title)
     }
+
+    func testModelWithHasManyUnidirectionalAssociationAndCompositePrimaryKey() {
+        let parent = PostWithCompositeKeyUnidirectional(title: "title")
+        let childModel = CommentWithCompositeKeyUnidirectional(content: "comment",
+                                                               postWithCompositeKeyUnidirectionalCommentsId: parent.id,
+                                                               postWithCompositeKeyUnidirectionalCommentsTitle: parent.title)
+
+        let graphQLInput = childModel.graphQLInputForMutation(childModel.schema)
+        XCTAssertEqual(graphQLInput["id"] as? String, childModel.id)
+        XCTAssertEqual(graphQLInput["content"] as? String, childModel.content)
+        XCTAssertEqual(graphQLInput["postWithCompositeKeyUnidirectionalCommentsId"] as? String, parent.id)
+        XCTAssertEqual(graphQLInput["postWithCompositeKeyUnidirectionalCommentsTitle"] as? String, parent.title)
+    }
 }

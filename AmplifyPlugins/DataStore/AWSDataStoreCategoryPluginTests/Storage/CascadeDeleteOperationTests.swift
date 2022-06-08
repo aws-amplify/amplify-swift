@@ -37,11 +37,15 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             ModelRegistry.register(modelType: Menu.self)
             ModelRegistry.register(modelType: Dish.self)
             ModelRegistry.register(modelType: ModelCompositePk.self)
+            ModelRegistry.register(modelType: PostWithCompositeKey.self)
+            ModelRegistry.register(modelType: CommentWithCompositeKey.self)
             do {
                 try storageEngine.setUp(modelSchemas: [Restaurant.schema])
                 try storageEngine.setUp(modelSchemas: [Menu.schema])
                 try storageEngine.setUp(modelSchemas: [Dish.schema])
                 try storageEngine.setUp(modelSchemas: [ModelCompositePk.schema])
+                try storageEngine.setUp(modelSchemas: [PostWithCompositeKey.schema])
+                try storageEngine.setUp(modelSchemas: [CommentWithCompositeKey.schema])
 
             } catch {
                 XCTFail("Failed to setup storage engine")
@@ -702,6 +706,80 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(submittedEvents[0].modelName, Dish.modelName)
         XCTAssertEqual(submittedEvents[1].modelName, Menu.modelName)
         XCTAssertEqual(submittedEvents[2].modelName, Restaurant.modelName)
+    }
+
+    func testDeleteWithAssociatedModelsAndCompositePK() {
+        let post = PostWithCompositeKey(id: "post-id", title: "title")
+        let comment = CommentWithCompositeKey(id: "comment-id", content: "comment-content", post: post)
+
+        if case .failure(let error) = saveModelSynchronous(model: post) {
+            XCTFail("Failed to save post with error \(error)")
+        }
+
+        if case .failure(let error) = saveModelSynchronous(model: comment) {
+            XCTFail("Failed to save comment with error \(error)")
+        }
+
+        let completed = expectation(description: "operation completed")
+        let identifier = PostWithCompositeKey.Identifier.identifier(id: post.id, title: post.title)
+        let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
+                                               syncEngine: syncEngine,
+                                               modelType: PostWithCompositeKey.self,
+                                               modelSchema: PostWithCompositeKey.schema,
+                                               withIdentifier: identifier) { result in
+            switch result {
+            case .success:
+                completed.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+
+        let result = operation.queryAndDeleteTransaction()
+        switch result {
+        case .success(let queryAndDeleteResult):
+            XCTAssertEqual(queryAndDeleteResult.deletedModels.count, 1)
+            XCTAssertEqual(queryAndDeleteResult.associatedModels.count, 1)
+            // The associated models are retrieved in order (Restaurant to Menu to Dish)
+            XCTAssertEqual(queryAndDeleteResult.associatedModels[0].0, CommentWithCompositeKey.modelName)
+        case .failure(let error):
+            XCTFail("\(error)")
+        }
+
+        let receivedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
+        receivedMutationEvent.expectedFulfillmentCount = 2
+        let expectedFailures = expectation(description: "Simulated failure on mutation event submitted to sync engine")
+        expectedFailures.isInverted = true
+        let expectedSuccess = expectation(description: "Simulated success on mutation event submitted to sync engine")
+        expectedSuccess.expectedFulfillmentCount = 2
+
+        var submittedEvents = [MutationEvent]()
+        syncEngine.setCallbackOnSubmit(callback: { mutationEvent in
+            submittedEvents.append(mutationEvent)
+            receivedMutationEvent.fulfill()
+        })
+
+        syncEngine.setReturnOnSubmit { submittedMutationEvent in
+            if submittedMutationEvent.modelId == post.identifier ||
+                submittedMutationEvent.modelId == comment.identifier {
+                expectedSuccess.fulfill()
+                return Future<MutationEvent, DataStoreError> { promise in
+                    promise(.success(submittedMutationEvent))
+                }
+            }
+
+            expectedFailures.fulfill()
+            return Future<MutationEvent, DataStoreError> { promise in
+                promise(.failure(.internalOperation("mockError", "", nil)))
+            }
+        }
+
+        operation.syncIfNeededAndFinish(result)
+        wait(for: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        XCTAssertEqual(submittedEvents.count, 2)
+        // The delete mutations should be synced in reverse order (children to parent)
+        XCTAssertEqual(submittedEvents[0].modelName, CommentWithCompositeKey.modelName)
+        XCTAssertEqual(submittedEvents[1].modelName, PostWithCompositeKey.modelName)
     }
 
     func testDeleteWithAssociatedModels_SingleFailure() {
